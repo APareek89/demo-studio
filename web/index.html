@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="/web/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mark"></span>Demo <b>Studio</b></div>
+  <nav class="tabs" id="tabs">
+    <a href="#/demos" data-tab="demos">Demos</a>
+    <a href="#/studio" data-tab="studio">Studio</a>
+  </nav>
+  <div class="health" id="health" title="API keys">
+    <span class="k" data-k="anthropic">Claude</span><span class="k" data-k="gemini">Gemini</span>
+  </div>
+</header>
+<main id="main"></main>
+<div id="toasts" class="toasts"></div>
+<script type="module" src="/web/app.js"></script>
+</body>
+</html>

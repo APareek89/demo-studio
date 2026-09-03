@@ -1,0 +1,52 @@
+%% 03 · Align loop — one prompt dock, one agent, structured actions
+flowchart TD
+  MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
+  ATT["attachments → sources<br/>[FUNCTION · app.align_message]<br/>files saved as role=product before the agent sees them"]:::fn
+  BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec
+  WAIT["409 'Still working on the last change'<br/>[term]"]:::term
+  HIST["conversation.json<br/>[DATA · last 12 turns sent as history]"]:::data
+  AGENT["align agent<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: 4 cards summary, approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
+  APPLY{"action type<br/>[FUNCTION · orchestrator.apply_actions]"}:::dec
+  A1["approve(card)<br/>[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)"]:::fn
+  A2["edit_fact / remove_fact / resolve_unknown<br/>[FUNCTION] direct registry edit · author marked stale"]:::fn
+  A3["set_ctas / set_voice<br/>[FUNCTION] plan.json patched · voice sample re-rendered"]:::fn
+  A4["request_upload<br/>[term] note only — user must add files"]:::term
+  A5["revise(stage, instruction)<br/>[FUNCTION] lowest stage wins if several"]:::fn
+  A6["build<br/>[FUNCTION] only if all 4 approved"]:::fn
+  A7["answer<br/>[term] nothing changes"]:::term
+  REV{"which stage?<br/>[FUNCTION · _revise thread]"}:::dec
+  R1["understand(instr) → plan<br/>approvals visuals+facts reset"]:::fn
+  R2["plan(instr) → voice sample"]:::fn
+  R3["author(instr)"]:::fn
+  RB{"demo was ready, or context=rehearse?"}:::dec
+  RBUILD["author(if stale) → voice → bundle<br/>status ready · phase_done build"]:::fn
+  RALIGN["status align · phase_done revise"]:::term
+  REPLY["reply appended to conversation<br/>[DATA] + SSE 'message'"]:::data
+
+  MSG --> ATT --> BUSY
+  BUSY -- "yes" --> WAIT
+  BUSY -- "no" --> HIST --> AGENT --> APPLY
+  APPLY --> A1
+  APPLY --> A2
+  APPLY --> A3
+  APPLY --> A4
+  APPLY --> A5 --> REV
+  APPLY --> A6
+  APPLY --> A7
+  REV -- "understand" --> R1 --> RB
+  REV -- "plan" --> R2 --> RB
+  REV -- "author" --> R3 --> RB
+  RB -- "yes" --> RBUILD
+  RB -- "no" --> RALIGN
+  A1 --> REPLY
+  A2 --> REPLY
+  A3 --> REPLY
+  A7 --> REPLY
+  ATT -.->|"files but no revise action → revise('understand')"| A5
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;

@@ -1,0 +1,33 @@
+%% 02 · Read phase — Understand (Gemini looks, Claude reads) then Plan
+flowchart TD
+  SRC["sources[]<br/>[DATA · demo.json]"]:::data
+  ISV{"kind?<br/>[FUNCTION · understand.run]"}:::dec
+  UPV["gemini.upload_file<br/>[LIBRARY · Gemini Files API]<br/>in: mp4/mov · out: file uri (poll until ACTIVE, ≤600 s)"]:::data
+  SHOTS["shot list<br/>[AGENT · gemini-2.5-flash]<br/>in: whole video + VIDEO_PROMPT<br/>out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)"]:::agent
+  IMGS["image tags<br/>[AGENT · gemini-2.5-flash]<br/>in: batches of ≤12 images<br/>out: ImagesOut · description, angle, parts, quality"]:::agent
+  IDS["assign ids<br/>[FUNCTION]<br/>sh01.., im01.. + source_id"]:::fn
+  DOCS["sources.source_text<br/>[LIBRARY · pypdf / python-docx / httpx+bs4]<br/>in: pdf/docx/txt/url<br/>out: text with [page n] markers; PDFs also attached natively"]:::data
+  FACTS["fact registry + brand + product<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: all documents + product hint (+ previous registry + revision instruction)<br/>out: FactsOut · facts with source ref/locator/quote, unknowns, brand"]:::agent
+  FIDS["assign F001.. / U01.. · keep human edits<br/>[FUNCTION]"]:::fn
+  UND["understanding.json<br/>[DATA]"]:::data
+  PLAN["demo plan<br/>[AGENT · claude-opus-5]<br/>in: registry, shots, images, brand, URL (+ previous plan)<br/>out: Plan · persona, concerns, 6-10 segments, CTAs, voice brief, visual gaps, intake"]:::agent
+  PVAL["drop refs that don't exist<br/>[FUNCTION · plan.run]<br/>fact_ids ⊆ registry · visual_refs ⊆ shots∪images"]:::fn
+  PJ["plan.json<br/>[DATA]"]:::data
+  SAMPLE["voice sample<br/>[LIBRARY · Gemini TTS (or gcloud/browser)]<br/>in: voice.sample_line · out: audio/hash.wav"]:::data
+  OPEN["opening message<br/>[AGENT · claude-opus-5 · text]<br/>in: card summary · out: 3-5 sentences (template fallback on error)"]:::agent
+  CONV["conversation.json<br/>[DATA] + SSE 'message'"]:::data
+
+  SRC --> ISV
+  ISV -- "video" --> UPV --> SHOTS --> IDS
+  ISV -- "image" --> IMGS --> IDS
+  ISV -- "pdf / doc / url / text" --> DOCS --> FACTS --> FIDS
+  IDS --> UND
+  FIDS --> UND
+  UND --> PLAN --> PVAL --> PJ --> SAMPLE --> OPEN --> CONV
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;

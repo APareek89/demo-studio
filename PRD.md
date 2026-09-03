@@ -1,0 +1,38 @@
+# PRD.md — Demo Studio
+> ONE PAGE MAX. This is the product context the whole system reads: Loop.MD evals are
+> drafted from it, FMEA scans cross-reference it, Sentinel checks code against it.
+> AGENT: keep it current when the product direction changes — a stale brief makes every
+> downstream check generic.
+
+## What we're building
+A local app that turns any product's video, images and documents into a **voice-led,
+interruptible product demo** a prospective buyer can run on the brand's website — built by an
+agentic pipeline with a human checkpoint at every place the agent could be wrong.
+
+## Users & jobs
+- **Brand / product-marketing user (Anand, testing as the builder):** drop in sources → approve
+  what the agent found (visuals, facts, persona & voice, calls to action) → rehearse the demo as the
+  customer → give feedback → publish. Wants a demo for *any* product, not just the sample.
+- **Prospective buyer (the demo's audience):** watch a 4–5 minute walkthrough shaped around their
+  concerns, interrupt with questions, get honest answers, take a call to action.
+
+## Must never break
+- **No citation, no claim.** The guide may only state facts in the registry, each with a source.
+  An unanswerable question takes the "I won't guess" path and is escalated — never invented.
+  Enforced deterministically at authoring (validator) and at runtime (server-side Q&A validator).
+- **Keys stay server-side.** API keys live in `.env`; the browser never sees them.
+- **A stage failure never corrupts a demo.** Each stage writes its own JSON; a failed run leaves the
+  previous outputs intact and the UI shows the error with a retry.
+- **The user's approvals are honoured.** Cards re-approve only when their inputs changed; the agent
+  never approves a card on its own.
+
+## Done for v1
+One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
+end-to-end **locally**: Sources → *Reading your sources…* → Align (4 cards approved through the
+prompt dock) → *Building your demo…* → Rehearse (voice intake, segments with visuals, grounded Q&A,
+check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. `MOCK_LLM=1` exercises the
+same path without keys.
+
+## Out of scope (for now)
+Database, auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
+measurement, video clipping/ffmpeg, mobile-specific player layout, payments.

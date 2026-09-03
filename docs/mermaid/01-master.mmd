@@ -1,0 +1,34 @@
+%% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
+flowchart TD
+  U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask
+  ING["store.add_*_source<br/>[FUNCTION · server/store.py]<br/>in: uploads / URL<br/>out: sources[] in data/demos/id/demo.json"]:::fn
+  READBTN["POST /api/demos/id/read<br/>[FUNCTION · server/app.py]<br/>gate: ≥1 source · keys present or MOCK_LLM=1"]:::fn
+  READ["READ phase (thread)<br/>[FUNCTION · orchestrator._read]<br/>Understand → Plan → voice sample → opening message<br/>see diagram 02"]:::fn
+  SSE["GET /api/demos/id/events<br/>[FUNCTION · SSE, polls events.py every 0.35 s]<br/>out: progress / stage / status / message / phase_done"]:::fn
+  OVER1["UI overlay<br/>'Reading your sources…'<br/>[FUNCTION · web/studio/align.js]"]:::term
+  CARDS["Align: 4 cards<br/>Visuals · Facts · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json]"]:::data
+  DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
+  ALIGN["Align loop<br/>[AGENT · claude-opus-5 → actions]<br/>see diagram 03"]:::agent
+  APPR{"all 4 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
+  BUILD["BUILD phase (thread)<br/>[FUNCTION · orchestrator._build]<br/>Author → Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
+  OVER2["UI overlay<br/>'Building your demo…'"]:::term
+  BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data
+  PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>see diagram 05"]:::fn
+  FB["USER gives feedback<br/>[ask · Rehearse panel]"]:::ask
+  FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · claude-opus-5]<br/>revise('author'|'plan'|'understand') → rebuild"]:::agent
+  LIB["Demos tab<br/>[DATA · list of data/demos/*/demo.json]"]:::data
+
+  U --> ING --> READBTN --> READ --> SSE --> OVER1 --> CARDS
+  CARDS --> DOCK --> ALIGN --> CARDS
+  CARDS --> APPR
+  APPR -- "no" --> DOCK
+  APPR -- "yes · POST /build" --> BUILD --> OVER2 --> BUNDLE --> PLAY
+  PLAY --> FB --> FBA -.->|"status building → ready, player remounts"| BUILD
+  LIB -.-> U
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;

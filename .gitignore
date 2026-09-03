@@ -1,0 +1,15 @@
+# secrets
+.env
+.env.*
+!.env.example
+# python
+.venv/
+__pycache__/
+*.pyc
+# user data (uploads, generated demos, audio) — local only
+data/
+!data/.gitkeep
+# os / editor
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,75 @@
+{
+  "version": "1.0.0",
+  "consent": {
+    "git_checkpoints": "auto",
+    "fmea_full_scan": "ask",
+    "paid_evals": "ask"
+  },
+  "modules": {
+    "fmea": {
+      "enabled": true,
+      "triggers": {
+        "on_feature_complete": true,
+        "on_pre_commit": false,
+        "smart_suggest": false,
+        "manual_only": false
+      },
+      "smart_suggest_signals": [
+        "diff_exceeds_lines:200",
+        "new_external_api_integration",
+        "payment_billing_logic_touched",
+        "async_queue_worker_modified",
+        "error_handling_changed",
+        "auth_access_control_touched",
+        "database_migration_added",
+        "environment_config_changed",
+        "new_webhook_handler",
+        "retry_logic_modified"
+      ],
+      "scoring": {
+        "p0_threshold": 200,
+        "p1_threshold": 100,
+        "p2_threshold": 0
+      },
+      "failure_categories": [
+        "unhandled_error_paths",
+        "external_dependency_failures",
+        "race_conditions_and_state",
+        "resource_exhaustion",
+        "security_access_control",
+        "data_integrity_partial_writes",
+        "observability_gaps",
+        "scale_and_load_failures",
+        "billing_credit_mismatches",
+        "retry_idempotency_issues",
+        "config_feature_flag_drift",
+        "edge_cases_from_prd"
+      ],
+      "context_sources": {
+        "prd_path": "PRD.md",
+        "architecture_doc": "docs/ARCHITECTURE_FLOW.md",
+        "known_incidents": "Learning.MD",
+        "infra_constraints": "local only; Gemini TTS free tier is tiny (few requests/day); Claude calls are paid; no Node/ffmpeg on the machine"
+      },
+      "output": {
+        "format": "markdown_table",
+        "include_rpn": true,
+        "include_recommended_actions": true,
+        "include_priority_badges": true,
+        "max_failure_modes": 25,
+        "sort_by": "rpn_desc"
+      }
+    },
+    "sentinel": {
+      "enabled": true,
+      "manual_only": false
+    },
+    "session_pulse": {
+      "enabled": true
+    },
+    "security_baseline": {
+      "done": true,
+      "completed_date": "2026-09-03"
+    }
+  }
+}

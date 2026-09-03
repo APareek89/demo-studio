@@ -1,0 +1,220 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Architecture Flow</title>
+<style>
+ body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1100px;margin:0 auto;padding:24px 20px 80px;color:#1f2937;background:#fafafa}
+ h1{border-bottom:2px solid #e5e7eb;padding-bottom:8px}
+ h2{margin-top:36px;border-top:1px solid #e5e7eb;padding-top:18px;color:#111827}
+ pre.mermaid{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin:14px 0 28px;overflow:auto;text-align:center}
+ .hint{position:sticky;top:0;background:#fff8e1;border:1px solid #f0d264;border-radius:6px;padding:8px 12px;font-size:13px;color:#5a4a00;margin-bottom:16px}
+ .mermaid svg{max-width:100%;height:auto}
+</style></head><body>
+<div class="hint">Tip: use Ctrl/Cmd + scroll or browser zoom to enlarge a diagram. Diagrams are authored by hand — check the .mmd mtime against the code.</div>
+<h1>Architecture Flow — Demo Studio</h1>
+<h2>01 · Master flow — Demo Studio (Sources → Align → Rehearse)</h2>
+<pre class="mermaid">%% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
+flowchart TD
+  U[&quot;USER adds sources&lt;br/&gt;[ask · Studio › Sources]&lt;br/&gt;in: video, images, PDF/DOCX/TXT, product URL, pasted brand text&quot;]:::ask
+  ING[&quot;store.add_*_source&lt;br/&gt;[FUNCTION · server/store.py]&lt;br/&gt;in: uploads / URL&lt;br/&gt;out: sources[] in data/demos/id/demo.json&quot;]:::fn
+  READBTN[&quot;POST /api/demos/id/read&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;gate: ≥1 source · keys present or MOCK_LLM=1&quot;]:::fn
+  READ[&quot;READ phase (thread)&lt;br/&gt;[FUNCTION · orchestrator._read]&lt;br/&gt;Understand → Plan → voice sample → opening message&lt;br/&gt;see diagram 02&quot;]:::fn
+  SSE[&quot;GET /api/demos/id/events&lt;br/&gt;[FUNCTION · SSE, polls events.py every 0.35 s]&lt;br/&gt;out: progress / stage / status / message / phase_done&quot;]:::fn
+  OVER1[&quot;UI overlay&lt;br/&gt;&#x27;Reading your sources…&#x27;&lt;br/&gt;[FUNCTION · web/studio/align.js]&quot;]:::term
+  CARDS[&quot;Align: 4 cards&lt;br/&gt;Visuals · Facts · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + plan.json]&quot;]:::data
+  DOCK[&quot;USER speaks to the prompt dock&lt;br/&gt;[ask · text + optional files]&quot;]:::ask
+  ALIGN[&quot;Align loop&lt;br/&gt;[AGENT · claude-opus-5 → actions]&lt;br/&gt;see diagram 03&quot;]:::agent
+  APPR{&quot;all 4 cards approved?&lt;br/&gt;[FUNCTION · demo.approvals]&quot;}:::dec
+  BUILD[&quot;BUILD phase (thread)&lt;br/&gt;[FUNCTION · orchestrator._build]&lt;br/&gt;Author → Voice → Rehearsal → Bundle&lt;br/&gt;see diagram 04&quot;]:::fn
+  OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
+  BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
+  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;see diagram 05&quot;]:::fn
+  FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
+  FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
+  LIB[&quot;Demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&quot;]:::data
+
+  U --&gt; ING --&gt; READBTN --&gt; READ --&gt; SSE --&gt; OVER1 --&gt; CARDS
+  CARDS --&gt; DOCK --&gt; ALIGN --&gt; CARDS
+  CARDS --&gt; APPR
+  APPR -- &quot;no&quot; --&gt; DOCK
+  APPR -- &quot;yes · POST /build&quot; --&gt; BUILD --&gt; OVER2 --&gt; BUNDLE --&gt; PLAY
+  PLAY --&gt; FB --&gt; FBA -.-&gt;|&quot;status building → ready, player remounts&quot;| BUILD
+  LIB -.-&gt; U
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
+<h2>02 · Read phase — Understand (Gemini looks, Claude reads) then Plan</h2>
+<pre class="mermaid">%% 02 · Read phase — Understand (Gemini looks, Claude reads) then Plan
+flowchart TD
+  SRC[&quot;sources[]&lt;br/&gt;[DATA · demo.json]&quot;]:::data
+  ISV{&quot;kind?&lt;br/&gt;[FUNCTION · understand.run]&quot;}:::dec
+  UPV[&quot;gemini.upload_file&lt;br/&gt;[LIBRARY · Gemini Files API]&lt;br/&gt;in: mp4/mov · out: file uri (poll until ACTIVE, ≤600 s)&quot;]:::data
+  SHOTS[&quot;shot list&lt;br/&gt;[AGENT · gemini-2.5-flash]&lt;br/&gt;in: whole video + VIDEO_PROMPT&lt;br/&gt;out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)&quot;]:::agent
+  IMGS[&quot;image tags&lt;br/&gt;[AGENT · gemini-2.5-flash]&lt;br/&gt;in: batches of ≤12 images&lt;br/&gt;out: ImagesOut · description, angle, parts, quality&quot;]:::agent
+  IDS[&quot;assign ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;sh01.., im01.. + source_id&quot;]:::fn
+  DOCS[&quot;sources.source_text&lt;br/&gt;[LIBRARY · pypdf / python-docx / httpx+bs4]&lt;br/&gt;in: pdf/docx/txt/url&lt;br/&gt;out: text with [page n] markers; PDFs also attached natively&quot;]:::data
+  FACTS[&quot;fact registry + brand + product&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: all documents + product hint (+ previous registry + revision instruction)&lt;br/&gt;out: FactsOut · facts with source ref/locator/quote, unknowns, brand&quot;]:::agent
+  FIDS[&quot;assign F001.. / U01.. · keep human edits&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  UND[&quot;understanding.json&lt;br/&gt;[DATA]&quot;]:::data
+  PLAN[&quot;demo plan&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: registry, shots, images, brand, URL (+ previous plan)&lt;br/&gt;out: Plan · persona, concerns, 6-10 segments, CTAs, voice brief, visual gaps, intake&quot;]:::agent
+  PVAL[&quot;drop refs that don&#x27;t exist&lt;br/&gt;[FUNCTION · plan.run]&lt;br/&gt;fact_ids ⊆ registry · visual_refs ⊆ shots∪images&quot;]:::fn
+  PJ[&quot;plan.json&lt;br/&gt;[DATA]&quot;]:::data
+  SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Gemini TTS (or gcloud/browser)]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
+  OPEN[&quot;opening message&lt;br/&gt;[AGENT · claude-opus-5 · text]&lt;br/&gt;in: card summary · out: 3-5 sentences (template fallback on error)&quot;]:::agent
+  CONV[&quot;conversation.json&lt;br/&gt;[DATA] + SSE &#x27;message&#x27;&quot;]:::data
+
+  SRC --&gt; ISV
+  ISV -- &quot;video&quot; --&gt; UPV --&gt; SHOTS --&gt; IDS
+  ISV -- &quot;image&quot; --&gt; IMGS --&gt; IDS
+  ISV -- &quot;pdf / doc / url / text&quot; --&gt; DOCS --&gt; FACTS --&gt; FIDS
+  IDS --&gt; UND
+  FIDS --&gt; UND
+  UND --&gt; PLAN --&gt; PVAL --&gt; PJ --&gt; SAMPLE --&gt; OPEN --&gt; CONV
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
+<h2>03 · Align loop — one prompt dock, one agent, structured actions</h2>
+<pre class="mermaid">%% 03 · Align loop — one prompt dock, one agent, structured actions
+flowchart TD
+  MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
+  ATT[&quot;attachments → sources&lt;br/&gt;[FUNCTION · app.align_message]&lt;br/&gt;files saved as role=product before the agent sees them&quot;]:::fn
+  BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
+  WAIT[&quot;409 &#x27;Still working on the last change&#x27;&lt;br/&gt;[term]&quot;]:::term
+  HIST[&quot;conversation.json&lt;br/&gt;[DATA · last 12 turns sent as history]&quot;]:::data
+  AGENT[&quot;align agent&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: 4 cards summary, approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
+  APPLY{&quot;action type&lt;br/&gt;[FUNCTION · orchestrator.apply_actions]&quot;}:::dec
+  A1[&quot;approve(card)&lt;br/&gt;[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)&quot;]:::fn
+  A2[&quot;edit_fact / remove_fact / resolve_unknown&lt;br/&gt;[FUNCTION] direct registry edit · author marked stale&quot;]:::fn
+  A3[&quot;set_ctas / set_voice&lt;br/&gt;[FUNCTION] plan.json patched · voice sample re-rendered&quot;]:::fn
+  A4[&quot;request_upload&lt;br/&gt;[term] note only — user must add files&quot;]:::term
+  A5[&quot;revise(stage, instruction)&lt;br/&gt;[FUNCTION] lowest stage wins if several&quot;]:::fn
+  A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 4 approved&quot;]:::fn
+  A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
+  REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
+  R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
+  R2[&quot;plan(instr) → voice sample&quot;]:::fn
+  R3[&quot;author(instr)&quot;]:::fn
+  RB{&quot;demo was ready, or context=rehearse?&quot;}:::dec
+  RBUILD[&quot;author(if stale) → voice → bundle&lt;br/&gt;status ready · phase_done build&quot;]:::fn
+  RALIGN[&quot;status align · phase_done revise&quot;]:::term
+  REPLY[&quot;reply appended to conversation&lt;br/&gt;[DATA] + SSE &#x27;message&#x27;&quot;]:::data
+
+  MSG --&gt; ATT --&gt; BUSY
+  BUSY -- &quot;yes&quot; --&gt; WAIT
+  BUSY -- &quot;no&quot; --&gt; HIST --&gt; AGENT --&gt; APPLY
+  APPLY --&gt; A1
+  APPLY --&gt; A2
+  APPLY --&gt; A3
+  APPLY --&gt; A4
+  APPLY --&gt; A5 --&gt; REV
+  APPLY --&gt; A6
+  APPLY --&gt; A7
+  REV -- &quot;understand&quot; --&gt; R1 --&gt; RB
+  REV -- &quot;plan&quot; --&gt; R2 --&gt; RB
+  REV -- &quot;author&quot; --&gt; R3 --&gt; RB
+  RB -- &quot;yes&quot; --&gt; RBUILD
+  RB -- &quot;no&quot; --&gt; RALIGN
+  A1 --&gt; REPLY
+  A2 --&gt; REPLY
+  A3 --&gt; REPLY
+  A7 --&gt; REPLY
+  ATT -.-&gt;|&quot;files but no revise action → revise(&#x27;understand&#x27;)&quot;| A5
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
+<h2>04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle</h2>
+<pre class="mermaid">%% 04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle
+flowchart TD
+  GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 4 approvals true&quot;]:::fn
+  AUTH[&quot;script draft&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · segments › lines {text, visual, fact_ids, card}, checkin, deeper, closing, intake q1/q2&quot;]:::agent
+  VAL[&quot;grounding validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified&quot;]:::fn
+  ISS{&quot;issues &gt; 0?&quot;}:::dec
+  FIX[&quot;one repair pass&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: draft + issue list · out: full script&quot;]:::agent
+  VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining offenders stay unverified → excluded from voice &amp; bundle, listed on Facts card&quot;]:::fn
+  SJ[&quot;script.json&lt;br/&gt;[DATA] ids seg-L1.., version++&quot;]:::data
+  PROV{&quot;tts provider?&lt;br/&gt;[FUNCTION · voice.provider_for]&lt;br/&gt;gemini · gcloud · browser (no key)&quot;}:::dec
+  TTS[&quot;render every line&lt;br/&gt;[LIBRARY · Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|text) → audio/*.wav|mp3&lt;br/&gt;0.25 s pause · stop after 4 failures&quot;]:::data
+  BROWSER[&quot;voice_provider=browser&lt;br/&gt;[term] player speaks with Web Speech&quot;]:::term
+  QGEN[&quot;likely customer questions&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)&quot;]:::agent
+  QA[&quot;answer each via qa.answer&lt;br/&gt;[AGENT · claude-opus-5 + FUNCTION validator]&lt;br/&gt;see diagram 05 · one paid call per question&quot;]:::agent
+  COV[&quot;coverage = answered / N · gaps list&lt;br/&gt;[FUNCTION] → rehearsal.json&quot;]:::fn
+  BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script&lt;br/&gt;out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns; version++&quot;]:::fn
+  READY[&quot;status ready · SSE phase_done build&lt;br/&gt;[term]&quot;]:::term
+
+  GO --&gt; AUTH --&gt; VAL --&gt; ISS
+  ISS -- &quot;yes&quot; --&gt; FIX --&gt; VAL2 --&gt; SJ
+  ISS -- &quot;no&quot; --&gt; SJ
+  SJ --&gt; PROV
+  PROV -- &quot;gemini / gcloud&quot; --&gt; TTS --&gt; QGEN
+  PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; QGEN
+  QGEN --&gt; QA --&gt; COV --&gt; BUN --&gt; READY
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
+<h2>05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)</h2>
+<pre class="mermaid">%% 05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)
+flowchart TD
+  START[&quot;USER clicks Start&lt;br/&gt;[ask]&quot;]:::ask
+  Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;your name and why you&#x27;re interested&#x27;&quot;]:::data
+  L1[&quot;listen ≤10 s&lt;br/&gt;[LIBRARY · Web Speech recognition]&lt;br/&gt;mic denied or silent → typed fallback input&quot;]:::data
+  P1[&quot;parse name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
+  Q2[&quot;speak ack + intake q2&lt;br/&gt;&#x27;anything specific, or get going?&#x27;&quot;]:::data
+  L2[&quot;listen ≤10 s → isGetGoing?&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  PLAN[&quot;order segments&lt;br/&gt;[FUNCTION · planSegments]&lt;br/&gt;welcome first · focus topics next · rest in bundle order&quot;]:::fn
+  LINE[&quot;play line&lt;br/&gt;[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite &#x27;sources: F..&#x27;&lt;br/&gt;speak: server audio else browser TTS&quot;]:::fn
+  CHK[&quot;check-in question&lt;br/&gt;[LIBRARY · audio] then chips&quot;]:::data
+  WAIT[&quot;waitFor 15 s countdown + auto-listen 8 s&lt;br/&gt;[FUNCTION · interpretReply — regex, NO LLM]&lt;br/&gt;yes/continue · deeper · question · timeout&quot;]:::fn
+  DEEP[&quot;deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  QIN[&quot;question text&lt;br/&gt;[ask · voice or 💬 typed]&quot;]:::ask
+  QA[&quot;POST /api/demos/id/run/qa&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: question, last 8 turns, profile, registry, visuals, CTAs&lt;br/&gt;out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered&quot;]:::agent
+  QV{&quot;valid?&lt;br/&gt;[FUNCTION · qa.answer]&lt;br/&gt;fact_ids ⊆ registry AND (answered OR no number/claim words)&quot;}:::dec
+  SPEAK[&quot;speak answer · seek to visual · card &#x27;Sources for that answer&#x27;&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  NOG[&quot;&#x27;I don&#x27;t want to guess…&#x27; · escalate=question&lt;br/&gt;[FUNCTION] question appended to understanding.unknowns (origin runtime)&quot;]:::term
+  CONF[&quot;&#x27;Did that answer it?&#x27; → chips yes / not quite (20 s)&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  RES[&quot;resume: next segment if at check-in, else same line&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
+  CLOSE[&quot;closing lines → CTA chips from bundle.ctas + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
+  HAND[&quot;handoff summary&lt;br/&gt;[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json&quot;]:::data
+
+  START --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; Q2 --&gt; L2 --&gt; PLAN --&gt; LINE
+  LINE --&gt; CHK --&gt; WAIT
+  WAIT -- &quot;continue / timeout&quot; --&gt; LINE
+  WAIT -- &quot;deeper&quot; --&gt; DEEP --&gt; WAIT
+  WAIT -- &quot;question&quot; --&gt; QIN --&gt; QA --&gt; QV
+  QV -- &quot;yes&quot; --&gt; SPEAK --&gt; CONF --&gt; RES --&gt; LINE
+  QV -- &quot;no&quot; --&gt; NOG --&gt; CONF
+  LINE -- &quot;last segment&quot; --&gt; CLOSE --&gt; HAND
+  QIN -.-&gt;|&quot;interrupt at any moment cancels speech (run token)&quot;| LINE
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+mermaid.initialize({ startOnLoad:false, securityLevel:"loose", theme:"base",
+  themeVariables:{ fontFamily:"-apple-system, Segoe UI, Roboto, sans-serif", fontSize:"14px" } });
+await mermaid.run({ querySelector:"pre.mermaid" });
+</script>
+</body></html>

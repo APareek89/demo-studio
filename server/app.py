@@ -1,0 +1,358 @@
+"""Demo Studio — FastAPI app. Run:  .venv/bin/uvicorn server.app:app --port 8877 --reload"""
+from __future__ import annotations
+
+import asyncio
+import json
+import time
+from pathlib import Path
+
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
+
+from . import config, events, orchestrator, store
+from .agents import align, qa, voice
+
+app = FastAPI(title="Demo Studio", version="0.1.0")
+
+
+def _demo_or_404(demo_id: str) -> dict:
+    try:
+        return store.load(demo_id)
+    except KeyError:
+        raise HTTPException(404, "demo not found")
+
+
+# ---------- pages & media ----------
+
+@app.get("/")
+def index():
+    return FileResponse(config.WEB_DIR / "index.html")
+
+
+@app.get("/media/{demo_id}/{rel:path}")
+def media(demo_id: str, rel: str):
+    try:
+        p = store.media_path(demo_id, rel)
+    except KeyError:
+        raise HTTPException(404)
+    if not p.exists() or not p.is_file():
+        raise HTTPException(404)
+    return FileResponse(p)
+
+
+# ---------- demos ----------
+
+@app.get("/api/health")
+def health():
+    return config.health()
+
+
+@app.get("/api/demos")
+def list_demos():
+    return store.list_demos()
+
+
+@app.post("/api/demos")
+async def create_demo(req: Request):
+    body = await req.json()
+    name = (body.get("name") or "").strip()
+    demo = store.new_demo(name or "Untitled demo")
+    url = (body.get("url") or "").strip()
+    if url:
+        store.update(demo["id"], lambda d: d["product"].__setitem__("url", url))
+        store.add_url_source(demo["id"], url, role="product")
+    return store.load(demo["id"])
+
+
+@app.get("/api/demos/{demo_id}")
+def get_demo(demo_id: str):
+    demo = _demo_or_404(demo_id)
+    return {"demo": demo, "cards": align.cards(demo_id) if demo["status"] not in ("sources",) else None,
+            "conversation": store.read_json(demo_id, "conversation.json", []), "rehearsal": store.read_json(demo_id, "rehearsal.json"),
+            "bundle_ready": store.path(demo_id, "bundle.json").exists(), "running": orchestrator.is_running(demo_id),
+            "sessions": _sessions(demo_id)}
+
+
+@app.delete("/api/demos/{demo_id}")
+def delete_demo(demo_id: str):
+    _demo_or_404(demo_id)
+    store.delete_demo(demo_id)
+    return {"ok": True}
+
+
+@app.post("/api/demos/{demo_id}/duplicate")
+def duplicate(demo_id: str):
+    _demo_or_404(demo_id)
+    return store.duplicate_demo(demo_id)
+
+
+@app.patch("/api/demos/{demo_id}")
+async def patch_demo(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+
+    def fn(d):
+        if "name" in body:
+            d["name"] = body["name"].strip() or d["name"]
+        if "product" in body:
+            d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
+        if "settings" in body:
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "language", "rehearsal_questions")}
+            d["settings"].update(allowed)
+            if "voice_name" in allowed:
+                d["settings"]["voice_locked"] = True
+    return store.update(demo_id, fn)
+
+
+# ---------- sources ----------
+
+@app.post("/api/demos/{demo_id}/sources")
+async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), role: str = Form(default="product"),
+                      url: str = Form(default=""), text: str = Form(default=""), text_name: str = Form(default="brand-guidelines")):
+    _demo_or_404(demo_id)
+    added = []
+    for f in files:
+        data = await f.read()
+        if len(data) > config.MAX_UPLOAD_MB * 1024 * 1024:
+            raise HTTPException(413, f"{f.filename} is larger than {config.MAX_UPLOAD_MB} MB")
+        try:
+            added.append(store.add_file_source(demo_id, f.filename or "file", data, role))
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+    if url.strip():
+        u = url.strip()
+        if not u.startswith("http"):
+            u = "https://" + u
+        added.append(store.add_url_source(demo_id, u, role))
+        if role == "product":
+            store.update(demo_id, lambda d: d["product"].__setitem__("url", u))
+    if text.strip():
+        added.append(store.add_text_source(demo_id, text_name, text, role))
+    return {"added": added, "sources": store.load(demo_id)["sources"]}
+
+
+@app.delete("/api/demos/{demo_id}/sources/{source_id}")
+def remove_source(demo_id: str, source_id: str):
+    _demo_or_404(demo_id)
+    store.remove_source(demo_id, source_id)
+    return {"sources": store.load(demo_id)["sources"]}
+
+
+@app.post("/api/demos/{demo_id}/read")
+def read_sources(demo_id: str):
+    demo = _demo_or_404(demo_id)
+    if not demo["sources"]:
+        raise HTTPException(400, "Add at least one source first")
+    if not config.ANTHROPIC_API_KEY and not config.MOCK_LLM:
+        raise HTTPException(400, "ANTHROPIC_API_KEY missing in .env")
+    if any(s["kind"] in ("video", "image") for s in demo["sources"]) and not config.GEMINI_API_KEY and not config.MOCK_LLM:
+        raise HTTPException(400, "GEMINI_API_KEY missing in .env (needed for video/images)")
+    try:
+        orchestrator.start_read(demo_id)
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+    return {"ok": True}
+
+
+# ---------- events (SSE) ----------
+
+@app.get("/api/demos/{demo_id}/events")
+async def sse(demo_id: str, since: int = 0):
+    _demo_or_404(demo_id)
+
+    async def gen():
+        seq = since
+        last_beat = time.time()
+        yield f"event: hello\ndata: {json.dumps({'seq': events.latest_seq(demo_id)})}\n\n"
+        while True:
+            evs = events.since(demo_id, seq)
+            for ev in evs:
+                seq = ev["seq"]
+                yield f"id: {seq}\nevent: {ev['type']}\ndata: {json.dumps(ev)}\n\n"
+            if time.time() - last_beat > 15:
+                last_beat = time.time()
+                yield ": keepalive\n\n"
+            await asyncio.sleep(0.35)
+
+    return StreamingResponse(gen(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+# ---------- align ----------
+
+@app.post("/api/demos/{demo_id}/align")
+async def align_message(demo_id: str, message: str = Form(default=""), files: list[UploadFile] = File(default=[]),
+                        context: str = Form(default="align")):
+    _demo_or_404(demo_id)
+    attachments = []
+    for f in files:
+        data = await f.read()
+        try:
+            attachments.append(store.add_file_source(demo_id, f.filename or "file", data, "product"))
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+    if not message.strip() and not attachments:
+        raise HTTPException(400, "Say something or attach a file")
+    try:
+        out = orchestrator.handle_message(demo_id, message, attachments, context)
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+    return out
+
+
+@app.post("/api/demos/{demo_id}/approve/{card}")
+def approve(demo_id: str, card: str):
+    demo = _demo_or_404(demo_id)
+    if card not in store.CARDS:
+        raise HTTPException(400, "unknown card")
+    notes = orchestrator.apply_actions(demo_id, [{"type": "approve", "card": card}], [], "align")
+    return {"approvals": store.load(demo_id)["approvals"], "notes": notes}
+
+
+@app.post("/api/demos/{demo_id}/unapprove/{card}")
+def unapprove(demo_id: str, card: str):
+    _demo_or_404(demo_id)
+    if card not in store.CARDS:
+        raise HTTPException(400, "unknown card")
+    return store.update(demo_id, lambda d: d["approvals"].__setitem__(card, False))["approvals"]
+
+
+@app.post("/api/demos/{demo_id}/ctas")
+async def set_ctas(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    ctas = body.get("ctas") or []
+    notes = orchestrator.apply_actions(demo_id, [{"type": "set_ctas", "ctas": ctas}], [], "align")
+    return {"ctas": (store.read_json(demo_id, "plan.json") or {}).get("ctas", []), "notes": notes}
+
+
+@app.post("/api/demos/{demo_id}/build")
+def build(demo_id: str):
+    _demo_or_404(demo_id)
+    try:
+        orchestrator.start_build(demo_id)
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+    return {"ok": True}
+
+
+@app.post("/api/demos/{demo_id}/revise")
+async def revise(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    stage = body.get("stage")
+    if stage not in ("understand", "plan", "author"):
+        raise HTTPException(400, "stage must be understand | plan | author")
+    try:
+        orchestrator.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+    return {"ok": True}
+
+
+@app.post("/api/demos/{demo_id}/voice/sample")
+async def voice_sample(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    text = (body.get("text") or "Hello, I'm your guide for today. Shall we begin?").strip()
+    try:
+        rel = voice.sample(demo_id, text)
+    except Exception as e:
+        raise HTTPException(502, str(e)[:300])
+    return {"url": f"/media/{demo_id}/{rel}" if rel else None, "provider": voice.provider_for(store.load(demo_id))}
+
+
+# ---------- runtime ----------
+
+@app.get("/api/demos/{demo_id}/bundle")
+def get_bundle(demo_id: str):
+    _demo_or_404(demo_id)
+    b = store.read_json(demo_id, "bundle.json")
+    if not b:
+        raise HTTPException(404, "not built yet")
+    return b
+
+
+@app.post("/api/demos/{demo_id}/run/qa")
+async def run_qa(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    q = (body.get("question") or "").strip()
+    if not q:
+        raise HTTPException(400, "question required")
+    try:
+        return qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None)
+    except RuntimeError as e:
+        raise HTTPException(502, str(e))
+
+
+@app.post("/api/demos/{demo_id}/run/tts")
+async def run_tts(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    text = (body.get("text") or "").strip()
+    if not text:
+        raise HTTPException(400, "text required")
+    try:
+        rel = voice.render_line(demo_id, text)
+    except Exception as e:
+        raise HTTPException(502, str(e)[:300])
+    return {"url": f"/media/{demo_id}/{rel}" if rel else None}
+
+
+@app.post("/api/demos/{demo_id}/run/session")
+async def save_session(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    sid = body.get("id") or f"s_{int(time.time())}"
+    body["id"] = sid
+    body["saved_at"] = time.time()
+    store.write_json(demo_id, f"sessions/{sid}.json", body)
+    return {"ok": True, "id": sid}
+
+
+def _sessions(demo_id: str) -> list[dict]:
+    out = []
+    d = store.path(demo_id, "sessions")
+    if d.exists():
+        for p in sorted(d.glob("*.json"), reverse=True)[:20]:
+            try:
+                s = json.loads(p.read_text())
+                out.append({"id": s.get("id"), "saved_at": s.get("saved_at"), "profile": s.get("profile"), "cta": s.get("cta"),
+                            "questions": len(s.get("questions", [])), "intent": s.get("intent"), "drop_point": s.get("drop_point"), "escalations": s.get("escalations", [])})
+            except Exception:
+                pass
+    return out
+
+
+@app.get("/api/demos/{demo_id}/sessions/{sid}")
+def get_session(demo_id: str, sid: str):
+    _demo_or_404(demo_id)
+    s = store.read_json(demo_id, f"sessions/{sid}.json")
+    if not s:
+        raise HTTPException(404)
+    return s
+
+
+@app.post("/api/demos/{demo_id}/feedback")
+async def feedback(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    msg = (body.get("message") or "").strip()
+    if not msg:
+        raise HTTPException(400, "message required")
+    ctx = body.get("context") or {}
+    if ctx:
+        msg += f"\n\n(Player context: {json.dumps(ctx)[:1500]})"
+    try:
+        return orchestrator.handle_message(demo_id, msg, [], "rehearse")
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+
+
+app.mount("/web", StaticFiles(directory=str(config.WEB_DIR)), name="web")
+
+
+@app.exception_handler(Exception)
+async def on_error(request: Request, exc: Exception):
+    return JSONResponse(status_code=500, content={"detail": str(exc)[:500]})
