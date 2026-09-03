@@ -147,7 +147,7 @@ flowchart TD
   VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining offenders stay unverified → excluded from voice &amp; bundle, listed on Facts card&quot;]:::fn
   SJ[&quot;script.json&lt;br/&gt;[DATA] ids seg-L1.., version++&quot;]:::data
   PROV{&quot;tts provider chain?&lt;br/&gt;[FUNCTION · voice.provider_chain]&lt;br/&gt;sarvam → gemini → gcloud → browser (no key)&quot;}:::dec
-  TTS[&quot;render every line (main language)&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3&lt;br/&gt;0.25 s pause · stop after 4 failures · every call traced (latency, chars)&quot;]:::data
+  TTS[&quot;render every line (main language)&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3&lt;br/&gt;VOICE_WORKERS=4 parallel (contextvars copied per task) · stop after 4 failures · circuit breaker: 401/402/403/quota trips a provider for 10 min → next in chain · failures traced&quot;]:::data
   BROWSER[&quot;voice_provider=browser&lt;br/&gt;[term] player speaks with Web Speech&quot;]:::term
   LANGS{&quot;settings.languages&lt;br/&gt;has extra languages?&quot;}:::dec
   TRANS[&quot;translate script per extra language&lt;br/&gt;[AGENT · claude-opus-5 · translate.py · stage &#x27;translate&#x27;]&lt;br/&gt;in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&amp;lt;lang&amp;gt;.json&quot;]:::agent

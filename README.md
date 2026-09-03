@@ -29,3 +29,11 @@ guide can only say what's in the registry ("no citation, no claim"), at authorin
 
 Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` · `Handoff.MD` (session state) ·
 `Loop.MD` (evals) · `Learning.MD` (root causes).
+
+## What changed on 2026-09-03 (batch 2)
+- **3-minute pitch shape**: fixed opening (≤60 s) → main pitch (top 2–3 USPs, pain point first) → one "more features" block → close; signposted ("Let's start with what matters most to you —"); every number translated into the customer's routine. Technical detail only in `deeper` lines and Q&A.
+- **Audience setting** (Sources → "Who is the demo for"): `everyday` (default) bans kWh / IDC / amp / Nm… from narration; the validator flags them and the author repairs.
+- **Languages**: pick several; the first is the main script, the rest are translated and voiced at build; the player offers a chooser before Start; Q&A answers in the chosen language.
+- **Observability** tab: every Claude / Gemini / Sarvam call with stage, latency, tokens, cost, system prompt, input and response (`data/demos/<id>/trace.jsonl`, `GET /api/demos/<id>/trace`).
+- Player: ⏸ / ⏹ controls, image motion for image-only demos, at most 3 fact rows per card. Align: Approve on every card + Approve all + lightbox. Light-blue theme. Voice picker with preview. Bundled ffmpeg (`imageio-ffmpeg`).
+- QA: `evals/smoke_mock.py` (free), `evals/qa_accept.py` (free, upload failure cases), `evals/qa_real.py images|video [--lang hi-IN] [--resume <id>]` (paid; writes `docs/qa/<id>.md`). Report: `docs/QA-2026-09-03.md`.

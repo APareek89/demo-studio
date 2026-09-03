@@ -17,7 +17,7 @@ export function mountPlayer(host, bundle, api) {
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
   let LANG = (bundle.language === "hinglish" ? "hi-IN" : bundle.language) || "en-IN";
   Object.defineProperty(S, "lang", { set(v) { LANG = v === "hinglish" ? "hi-IN" : v; }, get() { return LANG; } });
-  const serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
+  let serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
   const canListen = () => (serverSTT && navigator.mediaDevices?.getUserMedia) || SR;
   const opening = (bundle.segments || []).filter((s) => s.role === "intro" || s.role === "outcome");
   const library = (bundle.segments || []).filter((s) => s.role !== "intro" && s.role !== "outcome");
@@ -138,7 +138,7 @@ export function mountPlayer(host, bundle, api) {
       const finish = async () => { if (done) return; done = true; S.stopServerListen = null; try { proc.disconnect(); src.disconnect(); stream.getTracks().forEach((t) => t.stop()); await ctx.close(); } catch (e) {} S.micOn = false; setMicUI(false);
         if (!spoke || !chunks.length) { res(""); return; }
         setStatus("thinking", "Transcribing"); onInterim("…");
-        try { const t = await api.stt(encodeWav(chunks, ctx.sampleRate), LANG); res((t || "").trim()); } catch (e) { res(""); } };
+        try { const t = await api.stt(encodeWav(chunks, ctx.sampleRate), LANG); res((t || "").trim()); } catch (e) { if (SR) { serverSTT = false; addMsg("note", "Server listening is unavailable — using the browser's speech recognition."); } res(""); } };
       S.stopServerListen = finish;
       proc.onaudioprocess = (e) => { const d = e.inputBuffer.getChannelData(0); chunks.push(new Float32Array(d)); let sum = 0; for (let i = 0; i < d.length; i++) sum += d[i] * d[i]; const rms = Math.sqrt(sum / d.length); const now = Date.now(); if (rms > 0.012) { spoke = true; lastVoice = now; } if ((spoke && now - lastVoice > 1300) || now - t0 > timeout || (!spoke && now - t0 > Math.min(timeout, 7000))) finish(); };
       src.connect(proc); proc.connect(ctx.destination);

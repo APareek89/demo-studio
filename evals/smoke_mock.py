@@ -1,6 +1,7 @@
 """Free eval: full pipeline with MOCK_LLM=1 through the FastAPI TestClient (no server, no keys)."""
 import os, sys, time, json
 os.environ["MOCK_LLM"] = "1"
+os.environ.setdefault("DEMO_STUDIO_DATA", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "test-demos"))  # keep test demos out of the real list
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi.testclient import TestClient
 from server.app import app

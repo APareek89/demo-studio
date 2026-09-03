@@ -9,6 +9,7 @@ import time
 import zlib
 
 os.environ["MOCK_LLM"] = "1"
+os.environ.setdefault("DEMO_STUDIO_DATA", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "test-demos"))  # keep test demos out of the real list
 os.environ["MAX_UPLOAD_MB"] = "5"  # keep the "too big" case cheap: 5 MB limit for this run
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi.testclient import TestClient  # noqa: E402

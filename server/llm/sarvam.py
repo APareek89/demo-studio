@@ -80,6 +80,7 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
                 body["inputs"] = [chunk]
                 r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
             if r.status_code != 200:
+                usage.trace("sarvam-tts", config.SARVAM_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=f"[{speaker} · {lang_code(language)}] " + text, error=f"{r.status_code}: {r.text[:300]}", chars=len(text))
                 raise RuntimeError(f"sarvam tts {r.status_code}: {r.text[:160]}")
             audios = r.json().get("audios") or []
             if not audios:

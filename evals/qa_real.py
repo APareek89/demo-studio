@@ -12,6 +12,7 @@ import urllib.request
 
 BASE = os.getenv("DEMO_STUDIO_URL", "http://127.0.0.1:8877")
 mode = sys.argv[1] if len(sys.argv) > 1 else "images"
+resume = sys.argv[sys.argv.index("--resume") + 1] if "--resume" in sys.argv else None  # continue an existing demo from build
 extra_lang = sys.argv[sys.argv.index("--lang") + 1] if "--lang" in sys.argv else None
 
 
@@ -49,41 +50,66 @@ def wait(i, want, secs):
     raise SystemExit(f"timeout waiting for {want}")
 
 
+def build_with_retry(i):
+    """The read thread can still be finishing (voice sample, opening message) right after status flips to align → 409."""
+    for n in range(20):
+        try:
+            return api("POST", f"/api/demos/{i}/build")
+        except urllib.error.HTTPError as e:
+            if e.code != 409:
+                raise
+            print(f"  build 409 ({e.read().decode()[:80]}) — retrying in 5 s", flush=True)
+            time.sleep(5)
+    raise SystemExit("build never accepted")
+
+
 t_all = time.time()
 name = f"QA {mode}" + (f" +{extra_lang}" if extra_lang else "") + " " + time.strftime("%H:%M")
-d = api("POST", "/api/demos", {"name": name, "url": "https://www.tvsmotor.com/electric-scooters/tvs-iqube"})
-i = d["id"]
-print("demo", i, name)
-settings = {"audience": "everyday", "pitch_minutes": 3}
-if extra_lang:
-    settings["languages"] = ["en-IN", extra_lang]
-api("PATCH", f"/api/demos/{i}", {"settings": settings})
-imgs = sorted(os.listdir("samples/iqube"))
-api("POST", f"/api/demos/{i}/sources", files=[("files", (n, open(f"samples/iqube/{n}", "rb").read(), "image/webp")) for n in imgs], data={"role": "product"})
-if mode == "video":
-    api("POST", f"/api/demos/{i}/sources", files=[("files", ("iqube_dummy.mp4", open("samples/iqube_dummy.mp4", "rb").read(), "video/mp4"))], data={"role": "product"})
-spec = open("samples/iqube_spec.txt").read() if os.path.exists("samples/iqube_spec.txt") else (
-    "TVS iQube (2025) — official spec sheet extract.\nVariants: iQube 2.2 kWh, iQube 3.5 kWh, iQube ST 3.5 kWh, iQube ST 5.3 kWh.\n"
-    "IDC range: 2.2 kWh 94 km; 3.5 kWh 145 km; ST 5.3 kWh 212 km (IDC certified, ideal conditions).\n"
-    "Real-world range (company stated, mixed city riding): 3.5 kWh about 100 km.\nTop speed: 78 km/h (3.5 kWh), 82 km/h (ST 5.3 kWh).\n"
-    "Charging: 0-80% in 4 h 30 min with the standard 950 W charger from a normal 15A home socket (3.5 kWh).\n"
-    "Battery warranty: 3 years or 50,000 km, whichever is earlier. Vehicle warranty: 3 years.\n"
-    "Boot space: 32 litres under the seat. Motor: 4.4 kW peak hub motor. Kerb weight: 121 kg (3.5 kWh).\n"
-    "Ex-showroom price Delhi: iQube 2.2 kWh Rs 99,990; iQube 3.5 kWh Rs 1,24,990; ST 5.3 kWh Rs 1,59,990 (as of the spec sheet date).\n"
-    "Water resistance: IP67 battery. Display: 7-inch TFT with navigation, call and music control. Colours: Titanium Grey, Pearl White, Lucid Yellow, Copper Bronze, Walnut Brown, Starlight Blue, Coral Sand.\n"
-    "Service: 11 free service visits in first 3 years. Roadside assistance included for 3 years.")
-api("POST", f"/api/demos/{i}/sources", data={"role": "catalogue", "text": spec})
-api("POST", f"/api/demos/{i}/sources", data={"role": "brand", "text": "Warm, direct, honest. Never say 'cheapest'. Say 'TVS iQube', never 'the iQube'."})
+if resume:
+    i = resume
+    d = api("GET", f"/api/demos/{i}")["demo"]
+    name = d["name"]
+    mode = "video" if any(s["kind"] == "video" for s in d["sources"]) else "images"
+    print("resuming", i, name, "status", d["status"])
+    imgs = [s["name"] for s in d["sources"] if s["kind"] == "image"]
+    t_read = (d["stages"]["understand"].get("seconds") or 0) + (d["stages"]["plan"].get("seconds") or 0)
+else:
+    d = api("POST", "/api/demos", {"name": name, "url": "https://www.tvsmotor.com/electric-scooters/tvs-iqube"})
+    i = d["id"]
+    print("demo", i, name)
+if not resume:
+    settings = {"audience": "everyday", "pitch_minutes": 3}
+    if extra_lang:
+        settings["languages"] = ["en-IN", extra_lang]
+    api("PATCH", f"/api/demos/{i}", {"settings": settings})
+    imgs = sorted(os.listdir("samples/iqube"))
+    api("POST", f"/api/demos/{i}/sources", files=[("files", (n, open(f"samples/iqube/{n}", "rb").read(), "image/webp")) for n in imgs], data={"role": "product"})
+    if mode == "video":
+        api("POST", f"/api/demos/{i}/sources", files=[("files", ("iqube_dummy.mp4", open("samples/iqube_dummy.mp4", "rb").read(), "video/mp4"))], data={"role": "product"})
+    spec = open("samples/iqube_spec.txt").read() if os.path.exists("samples/iqube_spec.txt") else (
+        "TVS iQube (2025) — official spec sheet extract.\nVariants: iQube 2.2 kWh, iQube 3.5 kWh, iQube ST 3.5 kWh, iQube ST 5.3 kWh.\n"
+        "IDC range: 2.2 kWh 94 km; 3.5 kWh 145 km; ST 5.3 kWh 212 km (IDC certified, ideal conditions).\n"
+        "Real-world range (company stated, mixed city riding): 3.5 kWh about 100 km.\nTop speed: 78 km/h (3.5 kWh), 82 km/h (ST 5.3 kWh).\n"
+        "Charging: 0-80% in 4 h 30 min with the standard 950 W charger from a normal 15A home socket (3.5 kWh).\n"
+        "Battery warranty: 3 years or 50,000 km, whichever is earlier. Vehicle warranty: 3 years.\n"
+        "Boot space: 32 litres under the seat. Motor: 4.4 kW peak hub motor. Kerb weight: 121 kg (3.5 kWh).\n"
+        "Ex-showroom price Delhi: iQube 2.2 kWh Rs 99,990; iQube 3.5 kWh Rs 1,24,990; ST 5.3 kWh Rs 1,59,990 (as of the spec sheet date).\n"
+        "Water resistance: IP67 battery. Display: 7-inch TFT with navigation, call and music control. Colours: Titanium Grey, Pearl White, Lucid Yellow, Copper Bronze, Walnut Brown, Starlight Blue, Coral Sand.\n"
+        "Service: 11 free service visits in first 3 years. Roadside assistance included for 3 years.")
+    api("POST", f"/api/demos/{i}/sources", data={"role": "catalogue", "text": spec})
+    api("POST", f"/api/demos/{i}/sources", data={"role": "brand", "text": "Warm, direct, honest. Never say 'cheapest'. Say 'TVS iQube', never 'the iQube'."})
+    t0 = time.time()
+    api("POST", f"/api/demos/{i}/read")
+    wait(i, "align", 900)
+    t_read = time.time() - t0
+    for card in ("visuals", "facts", "pitch", "persona", "ctas"):
+        api("POST", f"/api/demos/{i}/approve/{card}")
 t0 = time.time()
-api("POST", f"/api/demos/{i}/read")
-wait(i, "align", 900)
-t_read = time.time() - t0
-for card in ("visuals", "facts", "pitch", "persona", "ctas"):
-    api("POST", f"/api/demos/{i}/approve/{card}")
-t0 = time.time()
-api("POST", f"/api/demos/{i}/build")
+st = api("GET", f"/api/demos/{i}")["demo"]["status"]
+if st not in ("building", "ready"):
+    build_with_retry(i)
 wait(i, "ready", 1800)
-t_build = time.time() - t0
+t_build = time.time() - t0 if st != "ready" else sum((api("GET", f"/api/demos/{i}")["demo"]["stages"][k].get("seconds") or 0) for k in ("author", "voice", "rehearsal", "bundle"))
 b = api("GET", f"/api/demos/{i}/bundle")
 
 # runtime probes

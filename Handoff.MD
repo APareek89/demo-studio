@@ -6,70 +6,63 @@
 > Keep this file ONE SCREEN: current state only; history lives in Learning.MD and git.
 
 ## Compact summary of previous session
-2026-09-03 — Built Demo Studio v1 (FastAPI + no-build web; Claude reasons/writes, Gemini looks/speaks),
-then folded in the evidence-based sales playbook: principles P01–P10 in the plan/author/pitch/Q&A prompts,
-a fixed standard opening (intro + outcome) followed by a **runtime pitch planner** (customer state → one
-follow-up → personalised route with grounded bridges), a 5th Align card (Pitch: decision frame, takeaway,
-USPs, advance), a demo scorecard, callback/lead capture on the don't-guess path, per-demo Indian language,
-and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Gemini fallback.
+2026-09-03 — Built Demo Studio v1 (FastAPI + no-build web; Claude reasons/writes, Gemini looks, Sarvam speaks),
+folded in the evidence-based sales playbook (P01–P10, fixed opening + runtime pitch planner, scorecard, callback
+lead capture, Indian languages), then the second feedback batch: **3-minute pitch shape** (opening ≤60 s → main
+pitch → one "more features" block → close; signposts; every number translated into the customer's routine; a
+plain-language **audience** setting with a jargon validator), **multi-language demos** (translate + voice per
+language, chooser in the player), **Observability** tab (every call: stage, model, latency, tokens, cost, prompt,
+response), light-blue theme, player pause/stop + image motion (max 3 fact rows), Approve on every Align card +
+Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffmpeg, acceptance/failure QA.
 
 ## Current state
-- ✅ Backend: `server/app.py` (routes), `server/orchestrator.py` (stage graph, invalidation, threads,
-  align actions), `server/agents/*` (understand, plan, author, voice, rehearsal, qa, align, bundle),
-  `server/llm/{claude,gemini,mock}.py`, `server/store.py` (folder-per-demo JSON), `server/events.py` (SSE log).
-- ✅ Frontend: `web/app.js` (router/shell), `demos.js`, `studio/{sources,align,rehearse}.js`, `player/player.js`
-  (standard opening → `/run/pitch` while it plays → decision frame → follow-up → refined route with bridges →
-  proof blocks → establish → advance; Sarvam STT capture via PCM→WAV→`/run/stt`; lead capture; language-aware).
-- ✅ Sales layer: `server/agents/principles.py`, `pitch.py` (runtime planner + bridge validator), scorecard in
-  `rehearsal.py`, `qa.py` don't-guess → callback + `parse_phone`/`save_lead`, `llm/sarvam.py`, provider chain in `voice.py`.
-- ✅ Playground tab (`web/playground.js`): ask the guide (text), evals (typed or generated, saved to `evals/`), cost so far
-  (`server/usage.py` — every Claude/Gemini/Sarvam call logs tokens/chars; price table in `.env`), refine → align agent.
-- ✅ Sources: AVIF/HEIC accepted (converted to JPEG for the models, originals served), 1 GB uploads, per-source
-  "use in demo" toggle (learn from it, don't show it), competitor URL zone + comparisons setting (default off),
-  optional ffmpeg 720p proxy / fast-start (`server/media.py`; ffmpeg not installed here).
-- ✅ Facts card: open questions grouped by category with the document that would answer them; "Download FAQ template" (Markdown).
-- ✅ Q&A decline rules by category (pricing, discounts, finance, insurance, features, availability, warranty/service,
-  comparisons); pitch planner on a 50 s budget (soft JSON, low effort) with a visible "planning your route" state and
-  `personalized:false` in the session when it falls back.
-- ✅ Verified with MOCK_LLM=1: `evals/smoke_mock.py` (create → sources → read → align → approve → CTAs → build →
-  bundle+audio served → Q&A don't-guess path → session → feedback → rehearsal) passes; UI checked in the browser
-  (Demos, Sources, Align cards + conversation, Rehearse player). Real-key run NOT yet done (no .env).
+- ✅ Backend: `server/app.py`, `orchestrator.py` (stage graph + per-stage seconds), `agents/{understand,plan,author,
+  translate,voice,rehearsal,qa,align,pitch,bundle,principles}.py`, `llm/{claude,gemini,sarvam,mock}.py`, `store.py`,
+  `usage.py` (usage.jsonl + trace.jsonl), `media.py` (AVIF/HEIC → JPEG; ffmpeg via imageio-ffmpeg: fast-start remux, 720p proxy >60 MB).
+- ✅ Frontend: `web/app.js`, `demos.js`, `studio/{sources,align,rehearse}.js`, `player/player.js`, `playground.js`,
+  `observability.js`, `styles.css` (light blue). Tabs: Demos · Studio (Sources → Align → Rehearse) · Playground · Observability.
+- ✅ Settings per demo: `audience` (everyday | informed | expert), `languages` (first = main script), `pitch_minutes`,
+  voice (`sarvam_speaker` / `voice_name`), `competition` (off), `rehearsal_questions`.
+- ✅ Free evals green: `evals/smoke_mock.py` (pipeline + settings + hi-IN bundle + trace + jargon), `evals/qa_accept.py`
+  (24/24 upload cases), browser click-through of Align approvals / lightbox / player pause-stop / Observability (mock server 8878).
+- ✅ Paid QA drivers: `evals/qa_real.py images|video [--lang hi-IN]` → `docs/qa/<demo_id>.md` (stage seconds, calls, cost,
+  runtime probes, opening script). Reports summarised in `docs/QA-2026-09-03.md`.
 - ▶ Loop offered (Loop.MD `status: offered`) — awaiting the user's answer.
 
 ## Pending points
-- ✅ Keys present in `.env` (Anthropic, Gemini, Sarvam); all four live APIs probed OK on 2026-09-03 (`evals/probe_keys.py`).
-- ✅ REAL RUN done: demo `dm_d5675e7f` (TVS iQube, 5 images + URL + pasted brand line) → 71 facts / 17 unknowns → plan
-  (persona Meera, 9 segments, 5 USPs, 3 CTAs, 5 visual gaps) → script 37 lines, 0 unverified → 68 Sarvam lines →
-  rehearsal 6/12 answered (gaps are real source gaps) → scorecard 17/20 → bundle v1 → status ready. Open it at
-  http://localhost:8877/#/studio/dm_d5675e7f/rehearse (server: `.venv/bin/uvicorn server.app:app --port 8877`).
-- 🧑 USER: decide (a) competitor comparisons policy — keep default OFF, or ON from user-added official URLs with the
-  verify caveat; (b) whether "use in demo" should default ON for uploaded video (current) — see the chat summary of 2026-09-03.
-- 🧑 USER: run the Rehearse player yourself (mic on), then give feedback in the panel; upload a charger/display/under-seat
-  image and a spec PDF to close the visual and fact gaps the agent listed; try the Playground on `dm_d5675e7f`.
-- 🤖 AGENT: apply the scorecard's fixes (route to 1 primary + 2 supporting by default; pass/fail condition on the advance).
-- 🤖 AGENT: Gemini price rows in `usage.py` are assumptions (set PRICE_GEMINI_IN/OUT in .env once known); Sarvam per-char price likewise.
-- 🧑 USER: edit Loop.MD — confirm the goal and replace the example evals with real ones.
-- 🤖 AGENT: Loop was offered on 2026-09-03; set Loop.MD status on/off per the user's reply. FMEA full scan offered (feature complete).
+- 🧑 USER: open http://localhost:8877 (server: `.venv/bin/uvicorn server.app:app --port 8877`), run the two QA demos
+  listed in `docs/QA-2026-09-03.md` in Rehearse (mic on), judge the 3-minute shape and the plain-language narration.
+- 🧑 USER: decide (a) competitor comparisons policy (default OFF); (b) "use in demo" default for uploaded video (ON);
+  (c) turn the Loop on/off (Loop.MD); (d) FMEA full scan (offered at feature-complete).
+- 🧑 USER: **Sarvam has no credits left** (HTTP 402 on 2026-09-03 17:58 during the Hindi lines of `dm_f79d9170`; 10 lines fell back
+  to Gemini TTS, and the video QA run voiced entirely on Gemini). Top up at dashboard.sarvam.ai, then rebuild the two QA demos
+  (Rehearse → Restart demo → rebuild) so every line is Sarvam again. Until then the player uses Gemini voice + browser listening.
+- 🤖 AGENT: prices for Gemini / Sarvam in `usage.py` are assumptions — set PRICE_* in `.env` once known.
+- 🤖 AGENT: mock traces only Claude calls; Gemini/Sarvam mock branches are untraced (fine for UI QA).
+- 🤖 AGENT: `validate-mmd.mjs` needs Node (not installed) — diagrams checked by eye; viewer built with `docs/build_viewer.py`.
 - 🤖 AGENT: publish step (embed snippet / share link) — out of v1 scope, parked.
-- 🤖 AGENT: `validate-mmd.mjs` needs Node (not installed) — diagrams were checked by eye; viewer built with `docs/build_viewer.py`.
 
 ## Decisions
-- 2026-09-03 — Python FastAPI + no-build ES-module frontend — machine has Python 3.11, no Node/ffmpeg.
-- 2026-09-03 — Gemini for video/images/TTS, Claude Opus 5 for plan/author/align/Q&A/rehearsal — by model strength; Claude can't take video, Gemini shouldn't own grounding.
+- 2026-09-03 — Python FastAPI + no-build ES-module frontend — machine has Python 3.11, no Node; ffmpeg now bundled via imageio-ffmpeg.
+- 2026-09-03 — Gemini for video/images (+TTS fallback), Claude Opus 5 for plan/author/translate/align/Q&A/rehearsal, Sarvam for Indian speech — by model strength.
 - 2026-09-03 — Fact registry with ids + deterministic validator (authoring and runtime), not RAG — "you can validate an id, not a vibe".
 - 2026-09-03 — Stage graph with one align agent emitting structured actions; orchestrator executes and invalidates — auditable, re-runnable.
-- 2026-09-03 — Playback seeks the original video to timecodes; no clipping — no ffmpeg dependency.
+- 2026-09-03 — Playback seeks the original video to timecodes; no clipping. Fast-start remux + 720p agent proxy only when ffmpeg is present.
 - 2026-09-03 — Folder-per-demo JSON store (`data/demos/<id>/`), DB later via one adapter.
-- 2026-09-03 — Names: Studio → Sources · Align · Rehearse; Demos tab. Streaming states "Reading your sources…" / "Building your demo…".
-- 2026-09-03 — Rehearsal default 12 questions (each a paid Claude call); configurable per demo.
+- 2026-09-03 — Names: Studio → Sources · Align · Rehearse; "Configure Demo" starts the read. Streaming states "Reading your sources…" / "Building your demo…".
 - 2026-09-03 — power-coding: Handoff (all 3 sections), git checkpoints auto, diagrams+viewer only (no debug tab), FMEA on feature-complete, Sentinel on, Pulse on.
-- 2026-09-03 — Standard opening (intro + outcome, ≤ ~2 min) is pre-authored and never changes; everything after is planned at runtime per buyer from approved proof blocks — "pre-render the spine, generate the edges" applied to the pitch.
+- 2026-09-03 — Standard opening (intro + outcome, ≤ 60 s) is pre-authored and never changes; everything after is planned at runtime per buyer from approved blocks.
 - 2026-09-03 — Runtime bridges obey the same validator as the script (figure without fact id → dropped); the planner may reorder/skip blocks but cannot invent content.
-- 2026-09-03 — Don't-guess path offers a salesperson callback and captures a 10-digit Indian mobile (regex `[6-9]\d{9}`) → `leads/`; the guide never asks for the number itself, the player does.
-- 2026-09-03 — Speech: Sarvam primary (Indian languages), Gemini → Cloud TTS → browser fallback per line; STT Sarvam when its key is set, else Web Speech. Language is a per-demo setting used by plan/author/Q&A/TTS/STT.
+- 2026-09-03 — Don't-guess path offers a salesperson callback and captures a 10-digit Indian mobile (`[6-9]\d{9}`) → `leads/`.
+- 2026-09-03 — Speech: Sarvam primary, Gemini → Cloud TTS → browser fallback per line; STT Sarvam when its key is set, else Web Speech.
 - 2026-09-03 — Align has 5 cards (Pitch added); the playbook's 10-criterion scorecard runs at build time as a Claude judge.
-- 2026-09-03 — Videos are never transcoded for playback (the demo plays the original; ffmpeg only adds a fast-start remux and a 720p agent proxy when present); Gemini receives the original up to 2 GB.
-- 2026-09-03 — Competitor comparisons are OFF by default; when on, only user-added official URLs are read, facts get C-ids, and every comparative line carries the verify caveat.
-- 2026-09-03 — Runtime cost is measured, not estimated: `usage.jsonl` per demo; one grounded Q&A on the iQube registry is about $0.03.
+- 2026-09-03 — Competitor comparisons OFF by default; when on, only user-added official URLs, C-ids, verify caveat on every comparative line.
+- 2026-09-03 — Cost is measured, not estimated: `usage.jsonl` + `trace.jsonl` per demo; Observability reads both.
+- 2026-09-03 — Pitch shape: ≤3 min narrated (opening ≤115 words, proof ≤60 words each ×3, features block ≤110, establish ≤45, closing ≤45; route ≤480 words) then Q&A; technical detail only in `deeper` lines and answers. Audience default `everyday` = no kWh/IDC/amp/Nm in narration.
+- 2026-09-03 — Extra languages are translations of the approved script (same ids, visuals, facts), voiced at build; Q&A/pitch answer in the session's language; the player switches bundles client-side.
+- 2026-09-03 — Voice providers have a circuit breaker: a 401/402/403/quota error trips the provider for 10 minutes so the chain
+  moves on per line instead of retrying every line; the stage log and `/api/voices.unavailable` say which provider is out.
+- 2026-09-03 — Narration lines render in parallel (`VOICE_WORKERS`, default 4) with per-task contextvars so usage/trace rows keep the demo id.
+- 2026-09-03 — Observability keeps the full system prompt / input / response per call (truncated at 6k chars) in `trace.jsonl`; it is local data, never sent anywhere.
 
-**Session efficiency:** 🎯 ~65% feature · 🔧 ~20% support (pip wheels, no Node, server restarts, .env not saved) · 🔁 ~15% rework (mock Literal defaults, smoke SSE hang, three live-API drifts, grammar-too-large)
+**Session efficiency:** 🎯 ~70% feature · 🔧 ~15% support (server restarts, no Node, ffmpeg) · 🔁 ~15% rework (approve-button miss, derived/ folder, mock traces)

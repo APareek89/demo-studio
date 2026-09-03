@@ -36,3 +36,9 @@ same path without keys.
 ## Out of scope (for now)
 Database, auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
 measurement, video clipping/ffmpeg, mobile-specific player layout, payments.
+
+## Added 2026-09-03 (batch 2)
+- A demo is at most ~3 minutes of narration before Q&A: opening ≤ 60 s, main pitch 60–90 s, one "more features" block 60–90 s, close ≤ 30 s. The guide signposts, translates numbers into the customer's routine, and keeps technical detail for questions.
+- Every demo has an audience level; the default assumes a non-technical buyer, so unit jargon never appears in narration.
+- A demo can carry several languages (translations of the same approved script); the customer picks one before it starts.
+- Everything the agents do is observable per call (stage, model, latency, tokens, cost, prompt, response) inside the app.

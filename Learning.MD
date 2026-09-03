@@ -85,3 +85,13 @@
 **Deepest why type:** `code`
 **Action taken:** `play.parent.mkdir(parents=True, exist_ok=True)` before the remux; the acceptance QA (`evals/qa_accept.py`) now uploads a real 20 s MP4 so the path runs on every loop pass. Targets Why 1 and Why 2.
 **Preventive action:** Graceful-degradation branches must also *log to the trace* (not only emit), so a swallowed error is visible in Observability; any code path that writes to a derived folder does its own `mkdir`.
+
+### 2026-09-03 — Ten Hindi lines silently switched voice mid-demo (Sarvam out of credits, fallback hid it)
+
+**Symptom:** The images QA build finished "successfully", but the trace showed 10 `gemini-2.5-flash-preview-tts` calls among 96 Sarvam calls — the Hindi demo changes voice for those lines. No error row anywhere.
+**Why 1:** Sarvam returned HTTP 402 "No credits available" once the account's balance hit zero; `render_line` caught it and fell through to Gemini TTS as designed.
+**Why 2:** `sarvam.tts` only traced *successful* calls, and the fallback path emitted nothing, so the failure was invisible in Observability and in the build log.
+**Why 3:** Per-line fallback retried Sarvam on every remaining line (≈0.3 s each) — wasteful, and no signal reached the person who could fix it (top up credits).
+**Deepest why type:** `design`
+**Action taken:** Sarvam failures are traced with the HTTP body; a circuit breaker trips a provider for 10 minutes on 401/402/403/quota errors; the voice stage emits "sarvam is unavailable (…) — lines used the next provider… top up, then rebuild"; `/api/voices` reports `unavailable` and the Sources voice picker shows it; the player falls back to browser speech recognition when server STT fails. Targets Why 2 and Why 3.
+**Preventive action:** Every fallback in a provider chain must (1) trace the failure and (2) surface a one-line, actionable message to the user in the same stage log. Add a paid probe to `evals/probe_keys.py` before big builds — it costs one line of TTS and would have shown the 402 up front.

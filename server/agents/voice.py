@@ -2,7 +2,11 @@
 from __future__ import annotations
 
 import base64
+import contextvars
 import hashlib
+import os
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
 import httpx
@@ -12,6 +16,9 @@ from . import translate
 from ..llm import gemini, sarvam
 
 GEMINI_VOICES = ["Sulafat", "Aoede", "Leda", "Despina", "Kore", "Achernar", "Zephyr"]
+
+
+VOICE_WORKERS = max(1, int(os.getenv("VOICE_WORKERS", "4")))  # parallel narration lines per stage
 
 
 def provider_chain(demo: dict) -> list[str]:
@@ -71,6 +78,33 @@ def _gcloud(text: str, voice: str) -> tuple[bytes, str]:
         return base64.b64decode(r.json()["audioContent"]), "mp3"
 
 
+# Circuit breaker: a provider that answers "no credits" / "unauthorized" is skipped for a while instead of
+# being retried on every line (it failed 10× in a row on 2026-09-03 when Sarvam ran out of credits).
+_TRIPPED: dict[str, tuple[float, str]] = {}
+_TRIP_SECONDS = 600
+_TRIP_MARKERS = ("402", "insufficient_quota", "no credits", "quota", "401", "403", "invalid api key", "unauthorized")
+
+
+def _tripped(provider: str) -> bool:
+    t = _TRIPPED.get(provider)
+    if not t:
+        return False
+    if time.time() > t[0]:
+        _TRIPPED.pop(provider, None)
+        return False
+    return True
+
+
+def _maybe_trip(provider: str, err: Exception) -> None:
+    msg = str(err).lower()
+    if any(m in msg for m in _TRIP_MARKERS):
+        _TRIPPED[provider] = (time.time() + _TRIP_SECONDS, str(err)[:160])
+
+
+def tripped_providers() -> dict[str, str]:
+    return {k: v[1] for k, v in _TRIPPED.items() if _tripped(k)}
+
+
 def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str | None = None) -> str | None:
     """Returns a media-relative path like 'audio/<hash>.wav', or None when only the browser voice is available.
     Tries the provider chain in order (Sarvam → Gemini → Cloud TTS); a failure on one falls through to the next."""
@@ -83,6 +117,9 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
     lang = lang or demo.get("settings", {}).get("language", "en-IN")
     last_err: Exception | None = None
     for provider in chain:
+        if _tripped(provider):
+            last_err = RuntimeError(f"{provider} skipped: {_TRIPPED[provider][1]}")
+            continue
         voice = voice_name_for(demo, provider)
         key = hashlib.sha1(f"{provider}|{voice}|{lang}|{text.strip()}".encode()).hexdigest()[:20]
         for ext in ("wav", "mp3"):
@@ -98,6 +135,7 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
                 data, ext = _gcloud(text, voice)
         except Exception as e:
             last_err = e
+            _maybe_trip(provider, e)
             continue
         p = store.path(demo_id, "audio", f"{key}.{ext}")
         p.parent.mkdir(parents=True, exist_ok=True)
@@ -147,29 +185,50 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
     total = len(todo) + 2
     done, failures = 0, 0
     emit(f"Recording narration with {provider}" + (f" in {lang}" if lang else "") + (f" (fallbacks: {', '.join(chain[1:])})" if len(chain) > 1 else "") + f" — {total} lines…")
-    for obj, key in todo:
+    # Lines render in parallel (VOICE_WORKERS, default 4); contextvars are copied per task so usage/trace rows keep the demo id.
+    lock = threading.Lock()
+    stop = threading.Event()
+
+    def work(item):
+        obj, key = item
+        if stop.is_set():
+            return (obj, key, None, "skipped")
         text = obj["text"] if key == "audio" else obj["checkin"]
         try:
-            obj[key] = render_line(demo_id, text, demo=demo, lang=lang)
-            time.sleep(0.25)
+            return (obj, key, render_line(demo_id, text, demo=demo, lang=lang), None)
         except Exception as e:
-            failures += 1
-            obj[key] = None
-            msg = str(e)[:160]
-            if failures == 1:
-                emit(f"Voice provider error: {msg} — continuing; missing lines fall back to the browser voice.")
-            if failures >= 4:
-                emit("Too many voice errors — stopping narration rendering; the player will use the browser voice for the rest.")
-                break
-        done += 1
-        if done % 8 == 0:
-            emit(f"Recorded {done}/{total} lines…")
-            store.write_json(demo_id, path, script)
+            return (obj, key, None, str(e)[:160])
+
+    with ThreadPoolExecutor(max_workers=VOICE_WORKERS) as pool:
+        futures = [pool.submit(contextvars.copy_context().run, work, item) for item in todo]
+        for fut in as_completed(futures):
+            obj, key, rel, err = fut.result()
+            with lock:
+                if err == "skipped":
+                    obj[key] = None
+                    continue
+                obj[key] = rel
+                if err:
+                    failures += 1
+                    if failures == 1:
+                        emit(f"Voice provider error: {err} — continuing; missing lines fall back to the browser voice.")
+                    if failures >= 4 and not stop.is_set():
+                        stop.set()
+                        emit("Too many voice errors — stopping narration rendering; the player will use the browser voice for the rest.")
+                done += 1
+                if done % 8 == 0:
+                    emit(f"Recorded {done}/{total} lines…")
+                    store.write_json(demo_id, path, script)
     for k, text in intake.items():
         try:
             script.setdefault("intake_audio", {})[k] = render_line(demo_id, text, demo=demo, lang=lang) if failures < 4 else None
         except Exception:
             script.setdefault("intake_audio", {})[k] = None
+    if tripped_providers():
+        for prov, why in tripped_providers().items():
+            emit(f"{prov} is unavailable ({why[:90]}) — lines used the next provider in the chain. Top up / fix the key, then rebuild to re-record.")
+        used = next((c for c in chain if not _tripped(c)), "browser")
+        provider = used if used != "browser" else provider
     script["voice_provider"] = provider
     script["voice_name"] = voice_name_for(demo, provider)
     script["voice_failures"] = failures

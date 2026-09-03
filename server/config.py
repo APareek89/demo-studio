@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
 
-DATA_DIR = ROOT / "data" / "demos"
+DATA_DIR = Path(os.getenv("DEMO_STUDIO_DATA")).resolve() if os.getenv("DEMO_STUDIO_DATA") else ROOT / "data" / "demos"  # tests set DEMO_STUDIO_DATA=data/test-demos
 WEB_DIR = ROOT / "web"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 

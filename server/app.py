@@ -443,7 +443,7 @@ def voices(demo_id: str = ""):
         key = "voice_name"
     else:
         opts, key = [], "voice_name"
-    return {"provider": prov, "chain": chain, "setting_key": key, "voices": opts, "current": voice.voice_name_for(demo, prov) if prov != "browser" else "", "stt": config.STT_PROVIDER}
+    return {"provider": prov, "chain": chain, "setting_key": key, "voices": opts, "current": voice.voice_name_for(demo, prov) if prov != "browser" else "", "stt": config.STT_PROVIDER, "unavailable": voice.tripped_providers()}
 
 
 @app.post("/api/demos/{demo_id}/run/stt")

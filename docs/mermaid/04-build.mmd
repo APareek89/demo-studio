@@ -8,7 +8,7 @@ flowchart TD
   VAL2["re-validate<br/>[FUNCTION] remaining offenders stay unverified → excluded from voice & bundle, listed on Facts card"]:::fn
   SJ["script.json<br/>[DATA] ids seg-L1.., version++"]:::data
   PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>sarvam → gemini → gcloud → browser (no key)"}:::dec
-  TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>0.25 s pause · stop after 4 failures · every call traced (latency, chars)"]:::data
+  TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>VOICE_WORKERS=4 parallel (contextvars copied per task) · stop after 4 failures · circuit breaker: 401/402/403/quota trips a provider for 10 min → next in chain · failures traced"]:::data
   BROWSER["voice_provider=browser<br/>[term] player speaks with Web Speech"]:::term
   LANGS{"settings.languages<br/>has extra languages?"}:::dec
   TRANS["translate script per extra language<br/>[AGENT · claude-opus-5 · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent
