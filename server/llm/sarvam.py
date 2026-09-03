@@ -75,6 +75,11 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
             if pace and abs(pace - 1.0) > 1e-3:
                 body["pace"] = pace  # bulbul:v3 rejects pitch/loudness; pace only when changed
             r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
+            for wait_s in (1.5, 3.0, 6.0):  # 429 / 5xx are transient — back off before giving the line to the next provider
+                if r.status_code not in (429, 500, 502, 503, 504):
+                    break
+                time.sleep(wait_s)
+                r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
             if r.status_code == 400 and "inputs" in r.text:  # older bulbul:v1 request shape
                 body.pop("text")
                 body["inputs"] = [chunk]

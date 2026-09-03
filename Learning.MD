@@ -95,3 +95,13 @@
 **Deepest why type:** `design`
 **Action taken:** Sarvam failures are traced with the HTTP body; a circuit breaker trips a provider for 10 minutes on 401/402/403/quota errors; the voice stage emits "sarvam is unavailable (…) — lines used the next provider… top up, then rebuild"; `/api/voices` reports `unavailable` and the Sources voice picker shows it; the player falls back to browser speech recognition when server STT fails. Targets Why 2 and Why 3.
 **Preventive action:** Every fallback in a provider chain must (1) trace the failure and (2) surface a one-line, actionable message to the user in the same stage log. Add a paid probe to `evals/probe_keys.py` before big builds — it costs one line of TTS and would have shown the 402 up front.
+
+### 2026-09-03 — Parallel narration tripped Sarvam's rate limit; the fallback failed silently and two lines shipped without audio
+
+**Symptom:** The video QA build reported "audio lines 28/30". Trace: four Sarvam HTTP 429 "Rate limit exceeded" rows; no Gemini-TTS rows at all, although Gemini is next in the chain.
+**Why 1:** Four workers fired Sarvam requests at once; Sarvam's per-second limit rejected some; the chain moved to Gemini TTS, which also failed for those lines.
+**Why 2:** Gemini's failure left no trace row — `render_line` swallowed provider errors and only Sarvam traced its own — so the second failure was invisible and the line silently became "browser voice".
+**Why 3:** The parallel change was made minutes before the run to cut a 613 s stage; rate-limit behaviour of the providers was never measured, and there was no second pass for lines that fail under load.
+**Deepest why type:** `design`
+**Action taken:** Sarvam client backs off on 429/5xx (1.5 s → 3 s → 6 s); default `VOICE_WORKERS` 3; a sequential second pass re-records lines that failed under parallel load; every provider failure in the chain is traced (`gemini-tts` / `gcloud-tts` rows with the error). The two lines of `dm_78890026` were re-rendered and the bundle rebuilt (v2, 30/30). Targets Why 2 and Why 3.
+**Preventive action:** Any parallelisation of a paid provider ships with (a) back-off on 429, (b) a sequential retry pass, (c) a trace row per failure — and the stage log must state "N lines on browser voice" rather than "Narration ready". Loop.MD eval 21 covers the provider-failure path.

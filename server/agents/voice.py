@@ -11,14 +11,14 @@ import time
 
 import httpx
 
-from .. import config, store
+from .. import config, store, usage
 from . import translate
 from ..llm import gemini, sarvam
 
 GEMINI_VOICES = ["Sulafat", "Aoede", "Leda", "Despina", "Kore", "Achernar", "Zephyr"]
 
 
-VOICE_WORKERS = max(1, int(os.getenv("VOICE_WORKERS", "4")))  # parallel narration lines per stage
+VOICE_WORKERS = max(1, int(os.getenv("VOICE_WORKERS", "3")))  # parallel narration lines per stage
 
 
 def provider_chain(demo: dict) -> list[str]:
@@ -136,6 +136,8 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
         except Exception as e:
             last_err = e
             _maybe_trip(provider, e)
+            if provider != "sarvam":  # sarvam traces its own failures; gemini / gcloud failures were invisible before
+                usage.trace(f"{provider}-tts", provider, latency_ms=0, user=text, error=str(e)[:300], chars=len(text))
             continue
         p = store.path(demo_id, "audio", f"{key}.{ext}")
         p.parent.mkdir(parents=True, exist_ok=True)
@@ -219,6 +221,21 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
                 if done % 8 == 0:
                     emit(f"Recorded {done}/{total} lines…")
                     store.write_json(demo_id, path, script)
+    # Second pass, one at a time: lines that failed under parallel load (rate limits) usually succeed alone.
+    retry = [(obj, key) for obj, key in todo if obj.get(key) is None]
+    if retry and not stop.is_set():
+        emit(f"Re-recording {len(retry)} line(s) that failed the first time…")
+        recovered = 0
+        for obj, key in retry:
+            text = obj["text"] if key == "audio" else obj["checkin"]
+            try:
+                obj[key] = render_line(demo_id, text, demo=demo, lang=lang)
+                recovered += 1
+                time.sleep(0.5)
+            except Exception as e:
+                obj[key] = None
+                emit(f"Still no audio for one line ({str(e)[:100]}) — the player will use the browser voice for it.")
+        failures = max(0, failures - recovered)
     for k, text in intake.items():
         try:
             script.setdefault("intake_audio", {})[k] = render_line(demo_id, text, demo=demo, lang=lang) if failures < 4 else None
