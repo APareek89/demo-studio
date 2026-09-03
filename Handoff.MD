@@ -30,6 +30,13 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ⏹ Loop is OFF by user decision (2026-09-03); FMEA stays on per config.
 
 ## Pending points
+- 🧑 USER: pick one of the four Playground/tab-redesign prototypes (docs/design/README.md; artifacts published 2026-09-03 evening:
+  A Console · B Stage · C Worksheet · D Guided) and confirm the 8 "missing links" listed there — nothing in the app changes until then.
+- 🤖 AGENT: after the pick — build: tab rename/order, `#/play/<id>` full-screen route, Playground v2 (approved-only list → Test Now →
+  Q/expected-A table with AI pre-fill → demo-mode evals with a Claude grader → insights by decline category → Take Action → additions-only
+  rebuild → before/after). Playground QA on existing demos passed 2026-09-03 (docs/qa/playground-2026-09-03.md); answer latency outliers of
+  17–26 s on decline paths are worth a look (soft-JSON path with long reasoning).
+- 🤖 AGENT: FMEA full scan of the 2026-09-03 batch → docs/FMEA-2026-09-03.md (two runs died on API limits; third run launched 20:20).
 - 🧑 USER: open http://localhost:8877 (server: `.venv/bin/uvicorn server.app:app --port 8877`) → Rehearse on `dm_f79d9170`
   (images, English + Hindi) and `dm_78890026` (video); judge the 3-minute shape and the plain-language narration. Numbers in `docs/QA-2026-09-03.md`.
 - 🧑 USER: decide (a) competitor comparisons policy (default OFF); (b) "use in demo" default for uploaded video (ON).
