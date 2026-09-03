@@ -30,8 +30,8 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ▶ Loop offered (Loop.MD `status: offered`) — awaiting the user's answer.
 
 ## Pending points
-- 🧑 USER: open http://localhost:8877 (server: `.venv/bin/uvicorn server.app:app --port 8877`), run the two QA demos
-  listed in `docs/QA-2026-09-03.md` in Rehearse (mic on), judge the 3-minute shape and the plain-language narration.
+- 🧑 USER: open http://localhost:8877 (server: `.venv/bin/uvicorn server.app:app --port 8877`) → Rehearse on `dm_f79d9170`
+  (images, English + Hindi) and `dm_78890026` (video); judge the 3-minute shape and the plain-language narration. Numbers in `docs/QA-2026-09-03.md`.
 - 🧑 USER: decide (a) competitor comparisons policy (default OFF); (b) "use in demo" default for uploaded video (ON);
   (c) turn the Loop on/off (Loop.MD); (d) FMEA full scan (offered at feature-complete).
 - 🧑 USER: **Sarvam has no credits left** (HTTP 402 on 2026-09-03 17:58 during the Hindi lines of `dm_f79d9170`; 10 lines fell back
