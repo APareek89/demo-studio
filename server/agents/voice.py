@@ -17,6 +17,8 @@ def provider_for(demo: dict) -> str:
     p = demo.get("settings", {}).get("tts_provider") or config.TTS_PROVIDER
     if config.MOCK_LLM:
         return "gemini"
+    if p not in ("gemini", "gcloud", "browser"):  # a typo must not route to the wrong provider
+        p = "gemini" if config.GEMINI_API_KEY else ("gcloud" if config.GCLOUD_TTS_API_KEY else "browser")
     if p == "gemini" and not config.GEMINI_API_KEY:
         p = "gcloud" if config.GCLOUD_TTS_API_KEY else "browser"
     if p == "gcloud" and not config.GCLOUD_TTS_API_KEY:

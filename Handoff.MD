@@ -16,14 +16,16 @@ whole path runs without keys. Configured power-coding (all layers).
   align actions), `server/agents/*` (understand, plan, author, voice, rehearsal, qa, align, bundle),
   `server/llm/{claude,gemini,mock}.py`, `server/store.py` (folder-per-demo JSON), `server/events.py` (SSE log).
 - ✅ Frontend: `web/app.js` (router/shell), `demos.js`, `studio/{sources,align,rehearse}.js`, `player/player.js`.
-- ▶ Verification: backend compiles/imports; mock outputs validate. **Browser run of the full flow with
-  MOCK_LLM=1: in progress this session — see Loop.MD evals.** Real-key run not yet done (keys not in .env).
+- ✅ Verified with MOCK_LLM=1: `evals/smoke_mock.py` (create → sources → read → align → approve → CTAs → build →
+  bundle+audio served → Q&A don't-guess path → session → feedback → rehearsal) passes; UI checked in the browser
+  (Demos, Sources, Align cards + conversation, Rehearse player). Real-key run NOT yet done (no .env).
+- ▶ Loop offered (Loop.MD `status: offered`) — awaiting the user's answer.
 
 ## Pending points
 - 🧑 USER: copy `.env.example` → `.env`, add `ANTHROPIC_API_KEY` and `GEMINI_API_KEY`; run one real demo
   (samples/iqube images + https://www.tvsmotor.com/electric-scooters/tvs-iqube) and report what's off.
 - 🧑 USER: edit Loop.MD — confirm the goal and replace the example evals with real ones.
-- 🤖 AGENT: offer the Loop when the first working draft is confirmed (mock run green + one real run).
+- 🤖 AGENT: Loop was offered on 2026-09-03; set Loop.MD status on/off per the user's reply. FMEA full scan offered (feature complete).
 - 🤖 AGENT: publish step (embed snippet / share link) — out of v1 scope, parked.
 - 🤖 AGENT: `validate-mmd.mjs` needs Node (not installed) — diagrams were checked by eye; viewer built with `docs/build_viewer.py`.
 
