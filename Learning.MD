@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+### 2026-09-03 — Three live-API drifts on the first real-key check (Gemini model, Sarvam model, Sarvam speakers)
+
+**Symptom:** With real keys: Gemini returned 404 for `gemini-2.5-flash` ("no longer available to new users → gemini-3.6-flash"); Sarvam returned 400 for `bulbul:v2` ("deprecated → bulbul:v3"), then 400 for `pitch`/`loudness` on v3, then 400 for speaker `anushka` (v2-only).
+**Why 1:** Model ids and request shapes were written from memory of the public docs, not probed against the live service.
+**Why 2:** Providers retire models and change parameter sets on a cadence faster than any training data.
+**Why 3:** No "probe the provider" step existed in setup — the smoke test runs in mock mode and can't see drift.
+**Deepest why type:** `process`
+**Action taken:** `GEMINI_MODEL` → `gemini-3.6-flash` (env-overridable); `SARVAM_TTS_MODEL` → `bulbul:v3`; v3 body drops pitch/loudness; speaker list probed from the API's own error message (37 v3 voices, default `priya`). Verified TTS hi-IN/en-IN and STT round-trip live. Targets Why 3.
+**Preventive action:** Keep the tiny live-probe script as `evals/probe_keys.py` and run it whenever a key is added or a provider 4xx appears — it costs a few paise and takes ten seconds. Never hard-code a speaker list without a probe.
+
 ### 2026-09-03 — Mock pitch planner returned an empty route (every script segment was "intro")
 
 **Symptom:** `evals/smoke_mock.py` failed at `/run/pitch`: `route: []` even though the script had 3 segments.

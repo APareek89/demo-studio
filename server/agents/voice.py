@@ -35,7 +35,7 @@ def voice_name_for(demo: dict, provider: str) -> str:
     lang = st.get("language", "en-IN") or "en-IN"
     if provider == "sarvam":
         v = st.get("sarvam_speaker", "")
-        return v if v in sarvam.SPEAKERS else "anushka"
+        return v if v in sarvam.SPEAKERS else "priya"
     v = st.get("voice_name", "")
     if provider == "gemini":
         return v if v in GEMINI_VOICES else config.GEMINI_TTS_VOICE  # Gemini voices are language-agnostic

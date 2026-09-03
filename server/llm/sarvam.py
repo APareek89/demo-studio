@@ -10,8 +10,7 @@ from .. import config
 from . import mock
 
 BASE = "https://api.sarvam.ai"
-SPEAKERS = {"anushka": "Anushka (female, warm)", "manisha": "Manisha (female)", "vidya": "Vidya (female)", "arya": "Arya (female)",
-            "abhilash": "Abhilash (male)", "karun": "Karun (male)", "hitesh": "Hitesh (male)"}
+SPEAKERS = {"aditya": "Aditya", "ritu": "Ritu", "priya": "Priya", "neha": "Neha", "rahul": "Rahul", "pooja": "Pooja", "rohan": "Rohan", "simran": "Simran", "kavya": "Kavya", "amit": "Amit", "dev": "Dev", "ishita": "Ishita", "shreya": "Shreya", "ratan": "Ratan", "varun": "Varun", "manan": "Manan", "sumit": "Sumit", "roopa": "Roopa", "kabir": "Kabir", "aayan": "Aayan", "shubh": "Shubh", "ashutosh": "Ashutosh", "advait": "Advait", "anand": "Anand", "tanya": "Tanya", "tarun": "Tarun", "sunny": "Sunny", "mani": "Mani", "gokul": "Gokul", "vijay": "Vijay", "shruti": "Shruti", "suhani": "Suhani", "mohit": "Mohit", "kavitha": "Kavitha", "rehan": "Rehan", "soham": "Soham", "rupali": "Rupali"}  # bulbul:v3 speakers, probed from the API 2026-09-03
 LANG = {"hinglish": "hi-IN", "en": "en-IN", "hi": "hi-IN"}
 SUPPORTED = {"en-IN", "hi-IN", "bn-IN", "gu-IN", "kn-IN", "ml-IN", "mr-IN", "od-IN", "pa-IN", "ta-IN", "te-IN"}
 
@@ -61,16 +60,18 @@ def _wav_concat(parts: list[bytes]) -> bytes:
     return buf.getvalue()
 
 
-def tts(text: str, speaker: str = "anushka", language: str = "en-IN", pace: float = 1.0) -> tuple[bytes, str]:
-    """Bulbul v2. Returns (wav_bytes, 'wav')."""
+def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float = 1.0) -> tuple[bytes, str]:
+    """Bulbul v3. Returns (wav_bytes, 'wav')."""
     if config.MOCK_LLM:
         return mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
-    speaker = speaker if speaker in SPEAKERS else "anushka"
+    speaker = speaker if speaker in SPEAKERS else "priya"
     parts = []
     with httpx.Client(timeout=60) as c:
         for chunk in _chunks(text):
             body = {"text": chunk, "target_language_code": lang_code(language), "speaker": speaker, "model": config.SARVAM_TTS_MODEL,
-                    "pace": pace, "pitch": 0, "loudness": 1.0, "speech_sample_rate": 22050, "enable_preprocessing": True}
+                    "speech_sample_rate": 22050, "enable_preprocessing": True}
+            if pace and abs(pace - 1.0) > 1e-3:
+                body["pace"] = pace  # bulbul:v3 rejects pitch/loudness; pace only when changed
             r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
             if r.status_code == 400 and "inputs" in r.text:  # older bulbul:v1 request shape
                 body.pop("text")

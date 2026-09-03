@@ -28,12 +28,8 @@ and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Ge
 - ▶ Loop offered (Loop.MD `status: offered`) — awaiting the user's answer.
 
 ## Pending points
-- 🧑 USER: `.env` is still EMPTY (all keys) — add `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `SARVAM_API_KEY`
-  (`open -a "Visual Studio Code" /Users/macbook/Documents/demo-studio/.env`), then run one real demo
-  (samples/iqube images + https://www.tvsmotor.com/electric-scooters/tvs-iqube) and report what's off.
-- ⚠️ Sarvam request shapes (`/text-to-speech` bulbul:v2 `text`/`speaker`; `/speech-to-text` saarika:v2.5 multipart)
-  are from memory of the public API and untested against the live service — first real run will confirm; `sarvam.py`
-  already retries the older `inputs` body shape on a 400.
+- ✅ Keys present in `.env` (Anthropic, Gemini, Sarvam); all four live APIs probed OK on 2026-09-03 (`evals/probe_keys.py`).
+- 🤖 AGENT: run one REAL demo end-to-end (samples/iqube images + TVS URL) on port 8877 and record what's off in Learning.MD.
 - 🧑 USER: edit Loop.MD — confirm the goal and replace the example evals with real ones.
 - 🤖 AGENT: Loop was offered on 2026-09-03; set Loop.MD status on/off per the user's reply. FMEA full scan offered (feature complete).
 - 🤖 AGENT: publish step (embed snippet / share link) — out of v1 scope, parked.

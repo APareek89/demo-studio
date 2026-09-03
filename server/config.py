@@ -17,7 +17,7 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
-SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v2").strip() or "bulbul:v2"
+SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3").strip() or "bulbul:v3"  # v2 deprecated Sep 2026
 SARVAM_STT_MODEL = os.getenv("SARVAM_STT_MODEL", "saarika:v2.5").strip() or "saarika:v2.5"
 # Speech: Sarvam is primary for the Indian context when its key is present; Gemini / Cloud TTS / browser fall back.
 _default_tts = "sarvam" if SARVAM_API_KEY else "gemini"
@@ -30,7 +30,7 @@ if STT_PROVIDER == "sarvam" and not SARVAM_API_KEY:
 MOCK_LLM = os.getenv("MOCK_LLM", "").strip() == "1"  # schema-shaped fake outputs, no keys, no spend
 
 CLAUDE_MODEL = "claude-opus-5"
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip() or "gemini-3.6-flash"  # 2.5-flash is closed to new keys
 GEMINI_TTS_MODEL = "gemini-2.5-flash-preview-tts"
 GCLOUD_TTS_VOICE = "en-IN-Chirp3-HD-Aoede"
 GEMINI_TTS_VOICE = "Sulafat"
