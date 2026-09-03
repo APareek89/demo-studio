@@ -1,5 +1,6 @@
 # Loop.MD — Demo Studio
-status: offered
+status: off
+> USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 
 > AGENT INSTRUCTION — read every session and obey:
 > - While `status: waiting_for_first_draft`: the moment the first working draft exists

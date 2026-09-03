@@ -27,13 +27,12 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
   (24/24 upload cases), browser click-through of Align approvals / lightbox / player pause-stop / Observability (mock server 8878).
 - ✅ Paid QA drivers: `evals/qa_real.py images|video [--lang hi-IN]` → `docs/qa/<demo_id>.md` (stage seconds, calls, cost,
   runtime probes, opening script). Reports summarised in `docs/QA-2026-09-03.md`.
-- ▶ Loop offered (Loop.MD `status: offered`) — awaiting the user's answer.
+- ⏹ Loop is OFF by user decision (2026-09-03); FMEA stays on per config.
 
 ## Pending points
 - 🧑 USER: open http://localhost:8877 (server: `.venv/bin/uvicorn server.app:app --port 8877`) → Rehearse on `dm_f79d9170`
   (images, English + Hindi) and `dm_78890026` (video); judge the 3-minute shape and the plain-language narration. Numbers in `docs/QA-2026-09-03.md`.
-- 🧑 USER: decide (a) competitor comparisons policy (default OFF); (b) "use in demo" default for uploaded video (ON);
-  (c) turn the Loop on/off (Loop.MD); (d) FMEA full scan (offered at feature-complete).
+- 🧑 USER: decide (a) competitor comparisons policy (default OFF); (b) "use in demo" default for uploaded video (ON).
 - 🧑 USER: **Sarvam has no credits left** (HTTP 402 on 2026-09-03 17:58 during the Hindi lines of `dm_f79d9170`; 10 lines fell back
   to Gemini TTS, and the video QA run voiced entirely on Gemini). Top up at dashboard.sarvam.ai, then rebuild the two QA demos
   (Rehearse → Restart demo → rebuild) so every line is Sarvam again. Until then the player uses Gemini voice + browser listening.
@@ -63,6 +62,7 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - 2026-09-03 — Voice providers have a circuit breaker: a 401/402/403/quota error trips the provider for 10 minutes so the chain
   moves on per line instead of retrying every line; the stage log and `/api/voices.unavailable` say which provider is out.
 - 2026-09-03 — Narration lines render in parallel (`VOICE_WORKERS`, default 4) with per-task contextvars so usage/trace rows keep the demo id.
+- 2026-09-03 — Loop.MD stays `off` in this project (user decision); FMEA scans continue per `.power-coding/config.json`.
 - 2026-09-03 — Observability keeps the full system prompt / input / response per call (truncated at 6k chars) in `trace.jsonl`; it is local data, never sent anywhere.
 
 **Session efficiency:** 🎯 ~70% feature · 🔧 ~15% support (server restarts, no Node, ffmpeg) · 🔁 ~15% rework (approve-button miss, derived/ folder, mock traces)
