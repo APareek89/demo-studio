@@ -46,8 +46,10 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     demo = store.load(demo_id)
     emit("Planning the pitch: decision frame, outcome, proof blocks…")
     facts_txt = "\n".join(f"{f['id']} [{f['kind']}·{f.get('truth','stated')}] {f['claim']}: {f['value']}" + (f" ({f['conditions']})" if f.get("conditions") else "") for f in und["facts"] if f.get("approved", True))
-    shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"])
-    imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(i['parts'])} · {i['description']}" for i in und["images"])
+    vshots = [s for s in und["shots"] if store.visual_allowed(demo, s["source_id"])]
+    vimgs = [i for i in und["images"] if store.visual_allowed(demo, i["source_id"])]
+    shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in vshots)
+    imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(i['parts'])} · {i['description']}" for i in vimgs)
     unk_txt = "\n".join(f"{u['id']} {u['question']}" for u in und["unknowns"] if u.get("status") == "open")
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND PROFILE: {json.dumps(und['brand'])}
@@ -76,7 +78,7 @@ IMAGES ({len(und['images'])}):
         raise RuntimeError(f"Planning failed: {claude.describe_error(e)}") from e
 
     fact_ids = {f["id"] for f in und["facts"]}
-    vis_ids = {s["id"] for s in und["shots"]} | {i["id"] for i in und["images"]}
+    vis_ids = {s["id"] for s in vshots} | {i["id"] for i in vimgs}
     p = plan.model_dump()
     usp_ids = {u["id"] for u in p["usps"]}
     for u in p["usps"]:

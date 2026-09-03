@@ -227,6 +227,35 @@ flowchart TD
   classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
   classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
 </pre>
+<h2>06 · Playground — ask, evals, cost, refine (web/playground.js)</h2>
+<pre class="mermaid">%% 06 · Playground — ask, evals, cost, refine (web/playground.js)
+flowchart TD
+  SEL[&quot;USER picks a demo&lt;br/&gt;[ask · Playground tab]&quot;]:::ask
+  ASK[&quot;Ask the guide&lt;br/&gt;[FUNCTION · POST /run/qa]&lt;br/&gt;in: question, profile &#x27;Playground&#x27;&lt;br/&gt;out: answer, answered?, cited facts table, callback / clarifier flags&quot;]:::fn
+  QA[&quot;grounded Q&amp;A + validator&lt;br/&gt;[AGENT · claude-opus-5 + FUNCTION]&lt;br/&gt;see diagram 05&quot;]:::agent
+  EV[&quot;Evals&lt;br/&gt;[FUNCTION · POST /evals]&lt;br/&gt;in: questions (typed) or generate=true (N=12)&lt;br/&gt;out: per-question ✓/✗, facts, coverage · saved to evals/ev_*.json&quot;]:::fn
+  QGEN[&quot;question generation&lt;br/&gt;[AGENT · claude-opus-5 · rehearsal.generate_questions]&quot;]:::agent
+  LOOP[&quot;for each question → qa.answer&lt;br/&gt;[FUNCTION] one paid call each&quot;]:::fn
+  COST[&quot;Cost so far&lt;br/&gt;[FUNCTION · GET /usage]&lt;br/&gt;in: usage.jsonl rows (tokens / chars / seconds per call, by stage)&lt;br/&gt;out: USD + INR totals, by stage, by model, per session; price assumptions shown&quot;]:::fn
+  USE[&quot;usage.jsonl&lt;br/&gt;[DATA · appended by claude.py, gemini.py, sarvam.py via contextvars]&quot;]:::data
+  FB[&quot;Refine&lt;br/&gt;[FUNCTION · POST /feedback context=rehearse]&quot;]:::fn
+  ALIGN[&quot;align agent → actions → rebuild&lt;br/&gt;[AGENT · claude-opus-5] see diagram 03&quot;]:::agent
+
+  SEL --&gt; ASK --&gt; QA
+  SEL --&gt; EV
+  EV -- &quot;generate&quot; --&gt; QGEN --&gt; LOOP
+  EV -- &quot;typed&quot; --&gt; LOOP --&gt; QA
+  SEL --&gt; COST
+  USE --&gt; COST
+  SEL --&gt; FB --&gt; ALIGN
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
 <script type="module">
 import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
 mermaid.initialize({ startOnLoad:false, securityLevel:"loose", theme:"base",

@@ -51,7 +51,7 @@ def words(t: str) -> int:
 
 def validate(script: dict, und: dict) -> list[str]:
     fact_ids = {f["id"] for f in und["facts"]}
-    vis = {s["id"]: "shot" for s in und["shots"]} | {i["id"]: "image" for i in und["images"]}
+    vis = {s["id"]: "shot" for s in und["shots"] if s.get("_allowed", True)} | {i["id"]: "image" for i in und["images"] if i.get("_allowed", True)}
     issues: list[str] = []
 
     def check(line: dict, where: str):
@@ -105,11 +105,15 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     if not (und and plan):
         raise RuntimeError("Plan first, then author")
     demo = store.load(demo_id)
+    for s in und["shots"]:
+        s["_allowed"] = store.visual_allowed(demo, s["source_id"])
+    for i in und["images"]:
+        i["_allowed"] = store.visual_allowed(demo, i["source_id"])
     prev = store.read_json(demo_id, "script.json")
     emit("Writing the script…")
     facts_txt = "\n".join(f"{f['id']} [{f['kind']}·{f.get('truth','stated')}] {f['claim']}: {f['value']}" + (f" (condition: {f['conditions']})" if f.get("conditions") else "") for f in und["facts"] if f.get("approved", True))
-    shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"])
-    imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(i['parts'])} · {i['description']}" for i in und["images"])
+    shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
+    imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(i['parts'])} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
     plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance")}
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND: {json.dumps(und['brand'])}

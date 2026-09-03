@@ -1,9 +1,10 @@
 import { api, h, toast, fmtSize } from "/web/api.js";
 
 const ZONES = [
-  { role: "product", title: "Product video & images", desc: "MP4/MOV video, JPG/PNG/WEBP images. The demo seeks into the video and uses the images as visuals.", accept: "video/*,image/*", multiple: true },
+  { role: "product", title: "Product video & images", desc: "MP4/MOV video (up to 1 GB — the demo plays your original; export with “fast start” so seeking is instant), JPG/PNG/WEBP/AVIF/HEIC images.", accept: "video/*,image/*,.avif,.heic,.heif", multiple: true },
   { role: "catalogue", title: "Catalogue, spec sheet, price list", desc: "PDF, DOCX, TXT, MD. Every fact the guide will ever state comes from here — with a citation.", accept: ".pdf,.docx,.txt,.md,.csv", multiple: true },
   { role: "brand", title: "Brand guidelines", desc: "PDF/DOCX, or paste a few lines about tone and what never to say. Optional — the agent infers a restrained default.", accept: ".pdf,.docx,.txt,.md", multiple: true, text: true },
+  { role: "competitor", title: "Competitor pages (optional)", desc: "Official product-page URLs only. Figures are extracted with citations and used for comparisons only if you switch comparisons on — every comparison ends with “as per their website when we checked — please verify”.", url: true },
 ];
 
 export function renderSources(ctx) {
@@ -21,6 +22,7 @@ export function renderSources(ctx) {
     list.replaceChildren(...demo.sources.map((s) => h("div", { class: "src-item" },
       h("span", { class: "kind" }, s.kind), h("span", { class: "name", title: s.name }, s.name),
       h("span", { class: "pill" }, s.role), h("span", { class: "size" }, s.size ? fmtSize(s.size) : "url"),
+      (s.kind === "video" || s.kind === "image") ? h("label", { class: "use", title: "Off = the agent still learns from it, but it is not shown in the demo" }, h("input", { type: "checkbox", checked: s.use_in_demo !== false, onchange: async (e) => { try { const r = await api.patch(`/api/demos/${demoId}/sources/${s.id}`, { use_in_demo: e.target.checked }); demo.sources = r.sources; } catch (err) { toast(err.message, true); } } }), "use in demo") : null,
       h("button", { class: "btn sm ghost", onclick: async () => { const r = await api.del(`/api/demos/${demoId}/sources/${s.id}`); demo.sources = r.sources; refreshList(); } }, "✕"))));
     readBtn.disabled = !demo.sources.length;
   }
@@ -37,6 +39,11 @@ export function renderSources(ctx) {
   }
 
   function zone(z) {
+    if (z.url) {
+      const u = h("input", { placeholder: "https://… competitor product page", style: "flex:1;min-width:260px" });
+      const compSel = h("select", { onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { competition: compSel.value } }); toast(compSel.value === "on" ? "Comparisons on — cited, with a verify caveat" : "Comparisons off"); } catch (e) { toast(e.message, true); } } }, h("option", { value: "off", selected: (demo.settings?.competition || "off") === "off" }, "Comparisons: off (guide declines to compare)"), h("option", { value: "on", selected: demo.settings?.competition === "on" }, "Comparisons: on — only from these pages, always with a verify caveat"));
+      return h("div", { class: "zone wide" }, h("h3", {}, z.title), h("p", {}, z.desc), h("div", { class: "pick" }, u, h("button", { class: "btn sm", onclick: () => { const v = u.value.trim(); if (v) { upload("competitor", [], { url: v }); u.value = ""; } } }, "Add page"), compSel));
+    }
     const input = h("input", { type: "file", accept: z.accept, multiple: z.multiple });
     input.addEventListener("change", () => { if (input.files.length) upload(z.role, [...input.files]); input.value = ""; });
     const el = h("div", { class: "zone" + (z.text ? " wide" : "") },

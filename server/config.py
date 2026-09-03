@@ -39,7 +39,7 @@ GEMINI_TTS_VOICE = "Sulafat"
 # Each one is a paid Claude call — kept small on purpose; raise in demo settings.
 REHEARSAL_QUESTIONS = int(os.getenv("REHEARSAL_QUESTIONS", "12"))
 
-MAX_UPLOAD_MB = 500
+MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "1024"))  # Gemini Files API takes up to 2 GB; playback streams the original
 
 
 def health() -> dict:

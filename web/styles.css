@@ -291,3 +291,17 @@ main{flex:1;min-height:0;display:flex}
   .align,.rehearse{grid-template-columns:1fr}.cards,.rpanel{border-right:0;border-bottom:1px solid var(--line);max-height:45vh}
   .src-grid{grid-template-columns:1fr}.pl-dock{grid-template-columns:1fr}.pl-controls{align-items:stretch}.pl-chips{justify-content:flex-start}
 }
+
+/* ---------- Playground ---------- */
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pg .box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.pg .box h3{margin:0 0 6px;font-size:14.5px}
+.pg input{width:100%}
+.pg textarea{width:100%}
+.pg-out{margin-top:10px;min-height:1em}
+.pg .facts-table td.src{white-space:normal}
+.unk-group{margin-top:10px}
+.unk-group .eyebrow{margin:0 0 4px}
+.unk-group .doc{font-family:var(--mono);font-size:10.5px;color:var(--warn);margin:0 0 6px}
+.src-item label.use{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;color:var(--muted);white-space:nowrap}
+@media (max-width:980px){.pg{grid-template-columns:1fr}}

@@ -338,8 +338,10 @@ export function mountPlayer(host, bundle, api) {
     // pitch plan runs while the standard opening plays
     const pitchP = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 45000) : Promise.resolve(null);
     const okO = await playOpening(run); if (!okO) return;
-    setStatus("thinking", "Planning"); el.cap.textContent = "…";
+    setStatus("thinking", "Planning your route"); el.cap.textContent = "Planning the rest of this around what you told me…";
     let plan = await pitchP; if (run !== S.run) return;
+    S.personalized = !!plan;
+    if (!plan) addMsg("note", "planner unavailable — playing the standard route");
     if (plan) {
       S.pitch = plan; S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
       if (plan.decision_frame) { const ok = await speak(plan.decision_frame, run); if (!ok) return; }
@@ -363,8 +365,8 @@ export function mountPlayer(host, bundle, api) {
   function showHandoff(c) {
     const mins = Math.round((Date.now() - S.started) / 6000) / 10; const topics = [...S.raised];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.seg.usp_ids || []))];
-    const session = { profile: S.profile, customer_state: S.pitch?.customer_state, route: S.plan.map((st) => st.seg.id), usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.seg.title, minutes: mins, transcript: S.transcript };
-    el.handoffBox.replaceChildren(h("h2", {}, c ? c.label : "Your summary"), h("div", { class: "sub" }, `what the guide passes to the team · ${mins} min · ${S.pitch?.customer_state || "no state"}`),
+    const session = { profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.seg.id), usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.seg.title, minutes: mins, transcript: S.transcript };
+    el.handoffBox.replaceChildren(h("h2", {}, c ? c.label : "Your summary"), h("div", { class: "sub" }, `what the guide passes to the team · ${mins} min · ${S.pitch?.customer_state || "no state"}${S.personalized ? "" : " · standard route (not personalised)"}`),
       h("div", { class: "grid2" },
         h("div", { class: "kvbox" }, h("h5", {}, "Intent"), h("div", { class: "score" }, intentScore(), h("small", {}, " / 100"))),
         h("div", { class: "kvbox" }, h("h5", {}, "Profile"), h("ul", {}, h("li", {}, S.profile.name || "Name not given"), S.profile.why ? h("li", {}, "Why: “", S.profile.why.slice(0, 140), "”") : null, S.profile.followup ? h("li", {}, "Follow-up: “", S.profile.followup.slice(0, 140), "”") : null, h("li", {}, "Focus: ", S.profile.focus.join(", ") || "none stated"))),

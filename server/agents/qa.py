@@ -29,6 +29,10 @@ HARD RULES
 - Prefer a visual: pick the shot or image id that literally shows what you are talking about.
 - If the customer asks to take an action (book, buy, reserve, talk to someone), set cta to the matching id.
 - topic: one of {topics}.
+- DECLINE RULES: for pricing, discounts, finance/EMI, insurance, product features/specs, availability/delivery,
+  warranty/service terms and brand comparisons — if the registry does not state it, decline (answered=false) and let the
+  callback happen. Never estimate these categories, even when a "typical" figure feels obvious.
+{competitors}
 {language}
 
 CUSTOMER: {profile}
@@ -54,12 +58,21 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     facts_txt = "\n".join(f"{f['id']} [{f['kind']}·{f.get('truth','stated')}] {f['claim']}: {f['value']}" + (f" (condition: {f['conditions']})" if f.get("conditions") else "") for f in facts) or "(empty)"
     vis_txt = "\n".join([f"{s['id']} shot {s['start']:.0f}-{s['end']:.0f}s · {s['part']} · {s['description']}" for s in und.get("shots", [])] + [f"{i['id']} image · {i['angle']} · {i['description']}" for i in und.get("images", [])]) or "(none)"
     topics = sorted({s.get("topic", "") for s in plan.get("segments", [])} | {"other"})
+    comp_txt = ""
+    if demo.get("settings", {}).get("competition") == "on" and und.get("competitors"):
+        rows = []
+        for c in und["competitors"]:
+            for f in c["facts"]:
+                rows.append(f"{f['id']} [{c['name']} · {f['kind']}] {f['claim']}: {f['value']} (source {c['url']})")
+        comp_txt = ("- COMPARISONS ARE ALLOWED ONLY against this COMPETITOR REGISTRY (figures from their official pages, as read on "
+                    "the date shown). Cite the C-fact ids, compare like with like (same test condition), and END every comparative "
+                    "statement with: 'that is as per their website when we checked — please verify on their site'.\nCOMPETITOR REGISTRY:\n" + "\n".join(rows))
     sys = QA_SYSTEM.format(
         persona_name=voice.get("persona_name", "Maya"), product_name=und.get("product", {}).get("name", "the product"),
         category=und.get("product", {}).get("category", ""), tone=voice.get("tone", "warm, direct, honest"),
         topics=", ".join(t for t in topics if t), profile=json.dumps(profile or {"note": "unknown"}),
         ctas=json.dumps([{"id": c["id"], "label": c["label"], "kind": c["kind"]} for c in plan.get("ctas", [])]),
-        facts=facts_txt, visuals=vis_txt, language=language_instruction(demo.get("settings", {}).get("language", "en-IN")),
+        facts=facts_txt, visuals=vis_txt, language=language_instruction(demo.get("settings", {}).get("language", "en-IN")), competitors=comp_txt,
     )
     return sys, und, plan
 
@@ -83,6 +96,8 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         raise RuntimeError(claude.describe_error(e)) from e
 
     fact_ids = {f["id"] for f in und.get("facts", []) if f.get("approved", True)}
+    if store.load(demo_id).get("settings", {}).get("competition") == "on":
+        fact_ids |= {f["id"] for c in und.get("competitors", []) for f in c["facts"]}
     valid = [x for x in out.fact_ids if x in fact_ids]
     text = out.answer.strip()
     escalate = out.escalate.strip()
@@ -103,10 +118,28 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         for i in und.get("images", []):
             if i["id"] == out.visual_ref:
                 vis = {"kind": "image", "ref": i["id"], "source_id": i["source_id"]}
-    facts = [f for f in und.get("facts", []) if f["id"] in valid]
+    facts = [f for f in und.get("facts", []) if f["id"] in valid] + [f for c in und.get("competitors", []) for f in c["facts"] if f["id"] in valid]
     return {"answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
             "visual": vis, "escalate": escalate, "topic": out.topic, "cta": out.cta, "answered": answered,
             "clarifying_question": (out.clarifying_question or "").strip() if answered else "", "offer_callback": offer_callback}
+
+
+CATEGORY_RULES = [
+    (re.compile(r"\b(emi|loan|financ|down.?payment|interest|instal)", re.I), "finance", "EMI schedule / bank tie-up sheet"),
+    (re.compile(r"\binsur", re.I), "insurance", "insurance partner terms and premium sheet"),
+    (re.compile(r"\b(price|cost|discount|offer|on.?road|ex.?showroom|cheaper|rate)\b", re.I), "pricing", "state-wise on-road price list / current offers sheet"),
+    (re.compile(r"\b(warrant|service|guarantee|maintenance|repair|dealer)", re.I), "warranty_service", "warranty terms + service schedule / price list"),
+    (re.compile(r"\b(deliver|availab|stock|waiting|colou?r)", re.I), "availability", "availability / delivery timelines by city"),
+    (re.compile(r"\b(vs|versus|compare|better than|ather|ola|competitor)", re.I), "comparison", "competitor pages (add as competitor URLs) or a comparison sheet"),
+    (re.compile(r"\b(feature|spec|weight|boot|storage|display|app|brake|abs|tyre|seat)", re.I), "features", "spec sheet PDF / owner's manual"),
+]
+
+
+def classify(question: str) -> tuple[str, str]:
+    for rx_, cat, doc in CATEGORY_RULES:
+        if rx_.search(question):
+            return cat, doc
+    return "other", "FAQ page"
 
 
 def _record_unknown(demo_id: str, question: str) -> None:
@@ -117,7 +150,8 @@ def _record_unknown(demo_id: str, question: str) -> None:
     for u in und.get("unknowns", []):
         if u["question"].strip().lower() == q.lower():
             return
-    und.setdefault("unknowns", []).append({"id": f"U{len(und['unknowns'])+1:02d}", "question": q, "why_customers_ask": "asked during a demo", "status": "open", "origin": "runtime"})
+    cat, doc = classify(q)
+    und.setdefault("unknowns", []).append({"id": f"U{len(und['unknowns'])+1:02d}", "question": q, "why_customers_ask": "asked during a demo", "status": "open", "origin": "runtime", "category": cat, "suggested_document": doc})
     store.write_json(demo_id, "understanding.json", und)
 
 

@@ -57,6 +57,8 @@ class FactOut(BaseModel):
 class UnknownOut(BaseModel):
     question: str = Field(description="a question a real customer would ask that the sources do not answer")
     why_customers_ask: str = Field(default="")
+    category: Literal["pricing", "finance", "insurance", "warranty_service", "features", "availability", "comparison", "usage", "other"] = Field(default="other")
+    suggested_document: str = Field(default="", description="the document the brand should upload to answer it, e.g. 'EMI schedule / bank tie-up sheet', 'insurance partner terms', 'spec sheet PDF', 'FAQ page'")
 
 
 class Brand(BaseModel):
@@ -79,6 +81,15 @@ class FactsOut(BaseModel):
     facts: list[FactOut]
     unknowns: list[UnknownOut]
     brand: Brand
+
+
+class CompetitorOut(BaseModel):
+    name: str = Field(description="competitor product name as the site calls it")
+    facts: list[FactOut] = Field(description="only figures stated on that official page, with quotes")
+
+
+class CompetitorsOut(BaseModel):
+    competitors: list[CompetitorOut]
 
 
 # ---------- stored understanding (ids assigned by code) ----------
@@ -117,6 +128,7 @@ class Understanding(BaseModel):
     unknowns: list[Unknown] = []
     brand: Brand
     video_summaries: dict[str, str] = {}
+    competitors: list[dict] = []
 
 
 # ---------- Plan (Claude) ----------

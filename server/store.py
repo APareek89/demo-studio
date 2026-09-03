@@ -25,7 +25,7 @@ CARDS = ["visuals", "facts", "pitch", "persona", "ctas"]
 
 KIND_BY_EXT = {
     ".mp4": "video", ".mov": "video", ".webm": "video", ".m4v": "video",
-    ".jpg": "image", ".jpeg": "image", ".png": "image", ".webp": "image", ".gif": "image",
+    ".jpg": "image", ".jpeg": "image", ".png": "image", ".webp": "image", ".gif": "image", ".avif": "image", ".heic": "image", ".heif": "image",
     ".pdf": "pdf", ".docx": "doc", ".doc": "doc", ".txt": "text", ".md": "text",
     ".csv": "text", ".json": "text",
 }
@@ -79,6 +79,7 @@ def new_demo(name: str) -> dict:
             "tts_provider": config.TTS_PROVIDER,
             "voice_name": config.GEMINI_TTS_VOICE if config.TTS_PROVIDER == "gemini" else config.GCLOUD_TTS_VOICE,
             "language": "en-IN",  # en-IN | hinglish | hi-IN | ta-IN | te-IN | kn-IN | mr-IN | bn-IN | gu-IN | ml-IN | pa-IN
+            "competition": "off",  # off | on — compare only against competitor URLs the user added, always with a verify caveat
             "rehearsal_questions": config.REHEARSAL_QUESTIONS,
         },
         "running": None,
@@ -198,7 +199,7 @@ def add_file_source(demo_id: str, filename: str, data: bytes, role: str = "produ
     src = {
         "id": sid, "kind": kind, "name": Path(filename).name, "path": rel, "url": "",
         "mime": mimetypes.guess_type(filename)[0] or "application/octet-stream",
-        "size": len(data), "role": role, "added_at": now(),
+        "size": len(data), "role": role, "added_at": now(), "use_in_demo": True,
     }
     update(demo_id, lambda d: d["sources"].append(src))
     return src
@@ -207,7 +208,7 @@ def add_file_source(demo_id: str, filename: str, data: bytes, role: str = "produ
 def add_url_source(demo_id: str, url: str, role: str = "product") -> dict:
     sid = "src_" + secrets.token_hex(3)
     src = {"id": sid, "kind": "url", "name": url, "path": "", "url": url, "mime": "text/html",
-           "size": 0, "role": role, "added_at": now()}
+           "size": 0, "role": role, "added_at": now(), "use_in_demo": True}
     update(demo_id, lambda d: d["sources"].append(src))
     return src
 
@@ -230,6 +231,22 @@ def remove_source(demo_id: str, source_id: str) -> None:
                 keep.append(s)
         d["sources"] = keep
     update(demo_id, fn)
+
+
+def patch_source(demo_id: str, source_id: str, fields: dict) -> dict:
+    allowed = {k: v for k, v in fields.items() if k in ("use_in_demo", "role", "name", "play", "proxy")}
+    def fn(d):
+        for s in d["sources"]:
+            if s["id"] == source_id:
+                s.update(allowed)
+    return update(demo_id, fn)
+
+
+def visual_allowed(demo: dict, source_id: str) -> bool:
+    for s in demo.get("sources", []):
+        if s["id"] == source_id:
+            return s.get("use_in_demo", True) is not False
+    return True
 
 
 def media_path(demo_id: str, rel: str) -> Path:

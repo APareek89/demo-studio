@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 
-from .. import schemas, sources, store
+from .. import media, schemas, sources, store
 from ..llm import claude, gemini
 
 VIDEO_PROMPT = """You are indexing product footage so a demo can seek to the exact moment that shows a feature.
@@ -30,11 +30,19 @@ agent will be allowed to say. Rules:
 - Never invent, round, or "fill in" a value. If two sources disagree, keep both facts and note it in conditions.
 - Marketing adjectives are not facts. "Best-in-class" without a number is a claim with confidence ≤ 0.4.
 - UNKNOWNS: list 8-15 questions a real buyer of this kind of product would ask that these sources do NOT answer
-  (e.g. weight, delivery time, service cost). These become the gap list the brand sees.
+  (e.g. weight, delivery time, service cost). These become the gap list the brand sees. Give each a category
+  (pricing, finance, insurance, warranty_service, features, availability, comparison, usage, other) and name the
+  document that would answer it (e.g. "EMI schedule / bank tie-up sheet", "insurance partner terms", "spec sheet PDF",
+  "FAQ page", "dealer price list for the state").
 - BRAND: from the brand guideline if given; otherwise infer a sensible, restrained profile from the product and
   its category and say so in persona_hint.
 - PRODUCT: name, category, a factual 2-sentence summary, and who buys it.
 Return only what the schema asks for."""
+
+
+COMP_SYSTEM = """You extract ONLY stated figures from a competitor's official product page, for a strictly-cited comparison.
+Rules: one fact per row, value exactly as stated with units, a locator and a short exact quote; kinds spec/price/offer/policy/
+feature/availability; never infer or round; ignore marketing adjectives. Name the product as the page names it."""
 
 
 def _hint(demo: dict) -> str:
@@ -56,9 +64,12 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     imgs = [s for s in demo["sources"] if s["kind"] == "image"]
     for src in videos:
         emit(f"Watching {src['name']}…")
-        p = store.path(demo_id, src["path"])
+        prep = media.prepare_video(demo_id, src, emit)
+        if prep.get("play") and prep["play"] != src["path"]:
+            store.patch_source(demo_id, src["id"], {"play": prep["play"], "proxy": bool(prep.get("proxy"))})
+        p = prep["model"]
         try:
-            up = gemini.upload_file(p, src.get("mime"))
+            up = gemini.upload_file(p, src.get("mime") if not prep.get("proxy") else "video/mp4")
             out = gemini.structured(VIDEO_PROMPT.format(hint=hint), [gemini.file_part(up)], schemas.ShotsOut)
         except Exception as e:
             raise RuntimeError(f"Video understanding failed for {src['name']}: {gemini.describe_error(e)}") from e
@@ -73,7 +84,13 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         emit(f"Looking at {len(imgs)} image{'s' if len(imgs) != 1 else ''}…")
         for i in range(0, len(imgs), 12):
             batch = imgs[i:i + 12]
-            parts = [gemini.bytes_part(store.path(demo_id, s["path"])) for s in batch]
+            parts = []
+            for s in batch:
+                try:
+                    parts.append(gemini.bytes_part(media.model_image_path(demo_id, s)))
+                except Exception as e:
+                    emit(f"Could not decode {s['name']} ({str(e)[:60]}) — skipping it for tagging.")
+                    parts.append(None)
             try:
                 out = gemini.structured(IMAGES_PROMPT.format(hint=hint), parts, schemas.ImagesOut)
                 by_index = {im.index: im for im in out.images}
@@ -135,10 +152,28 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
             if e:
                 f["value"], f["edited"] = e["value"], True
 
+    # ---- competitors (only from URLs the user added with role=competitor; used at runtime only when enabled)
+    competitors = []
+    comp_urls = [s for s in demo["sources"] if s.get("role") == "competitor" and s["kind"] == "url"]
+    for s in comp_urls:
+        emit(f"Reading competitor page {s['url'][:60]}…")
+        st = sources.source_text(demo_id, s)
+        try:
+            cout = claude.structured(COMP_SYSTEM, f"=== SOURCE {s['id']} · competitor official page · {st['name']} ===\n{st['text'][:50000]}", schemas.CompetitorsOut, max_tokens=12000)
+        except Exception as e:
+            emit(f"Competitor page skipped: {claude.describe_error(e)[:100]}")
+            continue
+        for comp in cout.competitors:
+            cfacts = []
+            for fi, f in enumerate(comp.facts, 1):
+                d = f.model_dump()
+                d.update({"id": f"C{len(competitors)+1}-{fi:03d}", "approved": True, "edited": False})
+                cfacts.append(d)
+            competitors.append({"name": comp.name, "url": s["url"], "source_id": s["id"], "facts": cfacts, "fetched_at": store.now()})
     und = {
         "product": out.product.model_dump(), "shots": shots, "images": images,
         "facts": facts, "unknowns": unknowns, "brand": out.brand.model_dump(),
-        "video_summaries": video_summaries,
+        "video_summaries": video_summaries, "competitors": competitors,
     }
     schemas.Understanding.model_validate(und)  # contract check
     store.write_json(demo_id, "understanding.json", und)

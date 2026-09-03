@@ -54,6 +54,12 @@ import struct
 wav = b"RIFF" + struct.pack("<I", 36 + 4000) + b"WAVEfmt " + struct.pack("<IHHIIHH", 16, 1, 1, 16000, 32000, 2, 16) + b"data" + struct.pack("<I", 4000) + b"\x00" * 4000
 r = c.post(f"/api/demos/{i}/run/stt", files={"file": ("a.wav", wav, "audio/wav")}, data={"language": "hi-IN"}); assert r.status_code == 200 and r.json()["transcript"], r.text; print("stt ok:", r.json()["transcript"])
 v = c.get("/api/voices", params={"demo_id": i}).json(); assert v["provider"] in ("sarvam", "gemini") and v["voices"], v; print("voices:", v["provider"], len(v["voices"]))
+sid0 = c.get(f"/api/demos/{i}").json()["demo"]["sources"][0]["id"]
+r = c.patch(f"/api/demos/{i}/sources/{sid0}", json={"use_in_demo": False}); assert r.status_code == 200 and r.json()["sources"][0]["use_in_demo"] is False, r.text; print("source toggle ok")
+r = c.get(f"/api/demos/{i}/faq-template"); assert r.status_code == 200 and "# FAQ" in r.text, r.text[:100]; print("faq template ok:", len(r.text), "chars")
+u = c.get(f"/api/demos/{i}/usage").json(); print("usage rows", u["rows"], "usd", u["total_usd"])
+r = c.post(f"/api/demos/{i}/evals", json={"questions": ["what is the kerb weight?", "how much is the EMI?"]}); assert r.status_code == 200 and len(r.json()["results"]) == 2, r.text; print("evals ok coverage", r.json()["coverage"])
+assert c.get(f"/api/demos/{i}/evals").json(), "evals not listed"
 r = c.post(f"/api/demos/{i}/run/session", json={"profile": {"name": "Anand"}, "questions": ["kerb weight"], "cta": "Book a test ride", "intent": 61}); assert r.status_code == 200
 r = c.post(f"/api/demos/{i}/feedback", json={"message": "say the warranty before the price", "context": {"segment": "x"}}); assert r.status_code == 200, r.text; print("feedback reply:", r.json()["reply"][:60])
 reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])), "scorecard", reh and reh.get("scorecard") and reh["scorecard"].get("total"))

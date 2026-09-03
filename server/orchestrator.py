@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 
-from . import events, store
+from . import events, store, usage
 from .agents import align, author, bundle, plan, rehearsal, understand, voice
 from .store import STAGES
 
@@ -54,6 +54,8 @@ def invalidate(demo_id: str, stage: str) -> None:
 
 
 def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set(stage)
     set_stage(demo_id, stage, "running")
     emit = emit_for(demo_id, stage)
     try:
@@ -202,6 +204,8 @@ def start_revise(demo_id: str, stage: str, instruction: str, rebuild: bool = Fal
 # ---------- align: message → actions → effects ----------
 
 def handle_message(demo_id: str, message: str, attachments: list[dict], context: str = "align") -> dict:
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("align")
     if is_running(demo_id):
         raise RuntimeError("Still working on the last change — give me a moment")
     history = store.read_json(demo_id, "conversation.json", []) or []

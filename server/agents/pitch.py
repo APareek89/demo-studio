@@ -65,7 +65,8 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     )
     ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
     try:
-        out = claude.structured(sys, ask, schemas.PitchPlan, max_tokens=4000)
+        # soft JSON + low effort + hard timeout: the plan must land while the ~2-minute standard opening plays
+        out = claude.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, soft=True, effort="low", timeout=50.0)
     except Exception as e:
         raise RuntimeError(claude.describe_error(e)) from e
     p = out.model_dump()

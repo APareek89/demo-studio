@@ -6,7 +6,7 @@ import base64
 
 import httpx
 
-from .. import config
+from .. import config, usage
 from . import mock
 
 BASE = "https://api.sarvam.ai"
@@ -83,6 +83,7 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
             if not audios:
                 raise RuntimeError("sarvam tts: no audio returned")
             parts.append(base64.b64decode(audios[0]))
+    usage.record("sarvam-tts", config.SARVAM_TTS_MODEL, chars=len(text))
     return _wav_concat(parts), "wav"
 
 
@@ -96,6 +97,7 @@ def stt(audio: bytes, filename: str = "audio.wav", language: str = "en-IN", mime
                    data={"model": config.SARVAM_STT_MODEL, "language_code": code if language not in ("", None) else "unknown"})
         if r.status_code != 200:
             raise RuntimeError(f"sarvam stt {r.status_code}: {r.text[:160]}")
+        usage.record("sarvam-stt", config.SARVAM_STT_MODEL, seconds=max(0.5, len(audio) / 32000))
         return (r.json().get("transcript") or "").strip()
 
 

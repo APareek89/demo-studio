@@ -10,8 +10,8 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import config, events, orchestrator, store
-from .agents import align, pitch, qa, voice
+from . import config, events, orchestrator, store, usage
+from .agents import align, pitch, qa, rehearsal, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -99,7 +99,7 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "rehearsal_questions")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "rehearsal_questions", "competition")}
             d["settings"].update(allowed)
             if "voice_name" in allowed:
                 d["settings"]["voice_locked"] = True
@@ -131,6 +131,95 @@ async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), 
     if text.strip():
         added.append(store.add_text_source(demo_id, text_name, text, role))
     return {"added": added, "sources": store.load(demo_id)["sources"]}
+
+
+@app.patch("/api/demos/{demo_id}/sources/{source_id}")
+async def patch_source(demo_id: str, source_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    return {"sources": store.patch_source(demo_id, source_id, body)["sources"]}
+
+
+@app.get("/api/demos/{demo_id}/faq-template")
+def faq_template(demo_id: str):
+    demo = _demo_or_404(demo_id)
+    und = store.read_json(demo_id, "understanding.json") or {}
+    reh = store.read_json(demo_id, "rehearsal.json") or {}
+    groups: dict[str, list] = {}
+    for u in und.get("unknowns", []):
+        if u.get("status", "open") == "open":
+            groups.setdefault(u.get("category", "other"), []).append(u)
+    order = ["pricing", "finance", "insurance", "warranty_service", "features", "availability", "comparison", "usage", "other"]
+    titles = {"pricing": "Pricing & offers", "finance": "Finance / EMI", "insurance": "Insurance", "warranty_service": "Warranty & service", "features": "Features & specs", "availability": "Availability & delivery", "comparison": "Comparisons", "usage": "Usage & ownership", "other": "Other"}
+    lines = [f"# FAQ — {demo['name']}", "", "Fill in the answers below (only what is true and current), save as FAQ.md, and upload it on the Facts card.", "The guide will then answer these questions with a citation to this document.", ""]
+    for cat in order:
+        if cat not in groups:
+            continue
+        lines.append(f"## {titles[cat]}")
+        docs = sorted({u.get("suggested_document", "") for u in groups[cat] if u.get("suggested_document")})
+        if docs:
+            lines.append("_Documents that would answer these: " + "; ".join(docs) + "_")
+        lines.append("")
+        for u in groups[cat]:
+            tag = "  \n_(asked " + str(u.get("origin")) + ")_" if u.get("origin") in ("runtime", "rehearsal") else ""
+            lines.append("**Q: " + u["question"] + "**" + tag)
+            lines.append("A: ")
+            lines.append("")
+    gaps = [g for g in reh.get("gaps", []) if not any(g.strip().lower() == u["question"].strip().lower() for u in und.get("unknowns", []))]
+    if gaps:
+        lines.append("## Asked in rehearsal, unanswered")
+        for g in gaps:
+            lines += ["**Q: " + g + "**", "A: ", ""]
+    from fastapi.responses import Response
+    return Response("\n".join(lines), media_type="text/markdown", headers={"Content-Disposition": "attachment; filename=FAQ-" + demo_id + ".md"})
+
+
+@app.get("/api/demos/{demo_id}/usage")
+def get_usage(demo_id: str):
+    _demo_or_404(demo_id)
+    return usage.summary(demo_id)
+
+
+@app.get("/api/demos/{demo_id}/evals")
+def list_evals(demo_id: str):
+    _demo_or_404(demo_id)
+    out = []
+    d = store.path(demo_id, "evals")
+    if d.exists():
+        for p in sorted(d.glob("*.json"), reverse=True)[:20]:
+            try:
+                e = json.loads(p.read_text())
+                out.append({"id": e.get("id"), "at": e.get("at"), "n": len(e.get("results", [])), "coverage": e.get("coverage"), "label": e.get("label", "")})
+            except Exception:
+                pass
+    return out
+
+
+@app.post("/api/demos/{demo_id}/evals")
+async def run_evals(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("evals")
+    body = await req.json()
+    questions = [q.strip() for q in (body.get("questions") or []) if q and q.strip()][:40]
+    if not questions and body.get("generate"):
+        try:
+            questions = rehearsal.generate_questions(demo_id, int(body.get("n") or 12))
+        except RuntimeError as e:
+            raise HTTPException(502, str(e))
+    if not questions:
+        raise HTTPException(400, "give questions, or set generate=true")
+    results = []
+    for q in questions:
+        try:
+            r = qa.answer(demo_id, q, [], body.get("profile") or None)
+            results.append({"question": q, "answered": r["answered"], "fact_ids": r["fact_ids"], "answer": r["answer"], "escalate": r["escalate"], "clarifying_question": r.get("clarifying_question", "")})
+        except Exception as e:
+            results.append({"question": q, "answered": False, "fact_ids": [], "answer": "", "escalate": "error: " + str(e)[:120]})
+    cov = round(sum(1 for r in results if r["answered"]) / max(1, len(results)), 2)
+    ev = {"id": "ev_" + str(int(time.time())), "at": time.time(), "label": body.get("label", ""), "results": results, "coverage": cov}
+    store.write_json(demo_id, "evals/" + ev["id"] + ".json", ev)
+    return ev
 
 
 @app.delete("/api/demos/{demo_id}/sources/{source_id}")
@@ -277,6 +366,8 @@ def get_bundle(demo_id: str):
 @app.post("/api/demos/{demo_id}/run/qa")
 async def run_qa(demo_id: str, req: Request):
     _demo_or_404(demo_id)
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("runtime")
     body = await req.json()
     q = (body.get("question") or "").strip()
     if not q:
@@ -290,6 +381,8 @@ async def run_qa(demo_id: str, req: Request):
 @app.post("/api/demos/{demo_id}/run/pitch")
 async def run_pitch(demo_id: str, req: Request):
     _demo_or_404(demo_id)
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("runtime")
     body = await req.json()
     try:
         return pitch.plan_pitch(demo_id, body.get("profile") or {}, bool(body.get("refine")))
@@ -343,6 +436,8 @@ def voices(demo_id: str = ""):
 @app.post("/api/demos/{demo_id}/run/stt")
 async def run_stt(demo_id: str, file: UploadFile = File(...), language: str = Form(default="en-IN")):
     _demo_or_404(demo_id)
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("runtime")
     if config.STT_PROVIDER != "sarvam" and not config.MOCK_LLM:
         raise HTTPException(400, "server STT not configured (set SARVAM_API_KEY)")
     data = await file.read()
@@ -358,6 +453,8 @@ async def run_stt(demo_id: str, file: UploadFile = File(...), language: str = Fo
 @app.post("/api/demos/{demo_id}/run/tts")
 async def run_tts(demo_id: str, req: Request):
     _demo_or_404(demo_id)
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("runtime")
     body = await req.json()
     text = (body.get("text") or "").strip()
     if not text:

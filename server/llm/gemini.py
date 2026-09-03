@@ -11,7 +11,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from .. import config
+from .. import config, usage
 from . import mock
 
 _client = None
@@ -79,6 +79,11 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
         contents=contents,
         config=t.GenerateContentConfig(response_mime_type="application/json", response_schema=schema, temperature=temperature),
     ))
+    try:
+        um = resp.usage_metadata
+        usage.record("gemini", config.GEMINI_MODEL, input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0)
+    except Exception:
+        pass
     text = resp.text or ""
     try:
         return schema.model_validate_json(text)
@@ -128,6 +133,11 @@ def tts(text: str, voice_name: str, style: str = "") -> tuple[bytes, str]:
             speech_config=t.SpeechConfig(voice_config=t.VoiceConfig(prebuilt_voice_config=t.PrebuiltVoiceConfig(voice_name=voice_name))),
         ),
     ))
+    try:
+        um = resp.usage_metadata
+        usage.record("gemini-tts", config.GEMINI_TTS_MODEL, input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0, chars=len(text))
+    except Exception:
+        pass
     part = None
     for cand in resp.candidates or []:
         for p in (cand.content.parts if cand.content else []) or []:

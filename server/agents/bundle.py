@@ -27,10 +27,14 @@ def build(demo_id: str, emit) -> dict:
         if v["ref"] in shots:
             s = shots[v["ref"]]
             src = src_by_id.get(s["source_id"], {})
-            return {"kind": "shot", "ref": s["id"], "url": media_url(demo_id, src.get("path")), "start": s["start"], "end": s["end"], "focus": v.get("focus", ""), "description": s["description"]}
+            if src.get("use_in_demo", True) is False:
+                return {"kind": "none"}
+            return {"kind": "shot", "ref": s["id"], "url": media_url(demo_id, src.get("play") or src.get("path")), "start": s["start"], "end": s["end"], "focus": v.get("focus", ""), "description": s["description"]}
         if v["ref"] in images:
             i = images[v["ref"]]
             src = src_by_id.get(i["source_id"], {})
+            if src.get("use_in_demo", True) is False:
+                return {"kind": "none"}
             return {"kind": "image", "ref": i["id"], "url": media_url(demo_id, src.get("path")), "focus": v.get("focus", ""), "description": i["description"]}
         return {"kind": "none"}
 
@@ -50,8 +54,8 @@ def build(demo_id: str, emit) -> dict:
         })
     price_facts = [f for f in facts.values() if f["kind"] in ("price", "offer")]
     spec_facts = [f for f in facts.values() if f["kind"] in ("spec", "feature", "policy")]
-    all_images = [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "angle": i["angle"], "description": i["description"]} for i in und.get("images", [])]
-    videos = [{"id": s["id"], "url": media_url(demo_id, s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video"]
+    all_images = [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "angle": i["angle"], "description": i["description"]} for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
+    videos = [{"id": s["id"], "url": media_url(demo_id, s.get("play") or s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video" and s.get("use_in_demo", True) is not False]
     b = {
         "id": demo_id, "name": demo["name"], "version": demo.get("version", 0) + 1, "built_at": time.time(),
         "product": und.get("product", {}), "customer_persona": plan.get("customer_persona", ""),

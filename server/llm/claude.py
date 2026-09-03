@@ -11,7 +11,7 @@ from typing import Any, TypeVar
 import anthropic
 from pydantic import BaseModel
 
-from .. import config
+from .. import config, usage
 from . import mock
 
 T = TypeVar("T", bound=BaseModel)
@@ -47,13 +47,24 @@ def text_block(text: str) -> dict:
     return {"type": "text", "text": text}
 
 
+def _record(resp, kind: str = "claude") -> None:
+    try:
+        u = resp.usage
+        usage.record(kind, config.CLAUDE_MODEL, input_tokens=(u.input_tokens or 0) + (getattr(u, "cache_read_input_tokens", 0) or 0) + (getattr(u, "cache_creation_input_tokens", 0) or 0), output_tokens=u.output_tokens or 0)
+    except Exception:
+        pass
+
+
 def structured(system: str, content: list[dict] | str, schema: type[T], *, max_tokens: int = 16000,
-               history: list[dict] | None = None) -> T:
-    """One call, validated output. `content` is the user turn (blocks or plain text)."""
+               history: list[dict] | None = None, soft: bool = False, effort: str | None = None, timeout: float | None = None) -> T:
+    """One call, validated output. `content` is the user turn (blocks or plain text).
+    soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit."""
     if config.MOCK_LLM:
         return mock.fake(schema)
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
+    if soft:
+        return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout)
     try:
         resp = client().messages.parse(
             model=config.CLAUDE_MODEL,
@@ -68,6 +79,7 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
         if "grammar" in str(e).lower() or "too large" in str(e).lower() or "schema" in str(e).lower():
             return _soft_structured(system, msgs, schema, max_tokens)
         raise
+    _record(resp, "claude-structured")
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     parsed = resp.parsed_output
@@ -83,9 +95,12 @@ def _extract_json(text: str) -> str:
     return t[s:e + 1] if s >= 0 and e > s else t
 
 
-def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens: int) -> T:
+def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens: int, effort: str | None = None, timeout: float | None = None) -> T:
     sys2 = system + "\n\nOUTPUT FORMAT: return ONLY one JSON object — no markdown fences, no prose before or after — that validates against this JSON schema:\n" + json.dumps(schema.model_json_schema())
-    resp = client().messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=msgs)
+    kw = {"output_config": {"effort": effort}} if effort else {}
+    c = client().with_options(timeout=timeout) if timeout else client()
+    resp = c.messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=msgs, **kw)
+    _record(resp, "claude-soft")
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     text = _extract_json("".join(b.text for b in resp.content if b.type == "text"))
@@ -94,7 +109,8 @@ def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens:
     except Exception as ve:  # one repair pass with the validation errors
         repair = msgs + [{"role": "assistant", "content": text[:120000]},
                          {"role": "user", "content": f"That JSON failed validation:\n{str(ve)[:3000]}\nReturn the corrected JSON object only."}]
-        resp2 = client().messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=repair)
+        resp2 = c.messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=repair, **kw)
+        _record(resp2, "claude-soft-repair")
         text2 = _extract_json("".join(b.text for b in resp2.content if b.type == "text"))
         return schema.model_validate_json(text2)
 
@@ -105,6 +121,7 @@ def text(system: str, content: list[dict] | str, *, max_tokens: int = 4000, hist
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
     resp = client().messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=system, messages=msgs)
+    _record(resp, "claude-text")
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     return "".join(b.text for b in resp.content if b.type == "text").strip()
