@@ -20,10 +20,10 @@ flowchart TD
   READ[&quot;READ phase (thread)&lt;br/&gt;[FUNCTION · orchestrator._read]&lt;br/&gt;Understand → Plan → voice sample → opening message&lt;br/&gt;see diagram 02&quot;]:::fn
   SSE[&quot;GET /api/demos/id/events&lt;br/&gt;[FUNCTION · SSE, polls events.py every 0.35 s]&lt;br/&gt;out: progress / stage / status / message / phase_done&quot;]:::fn
   OVER1[&quot;UI overlay&lt;br/&gt;&#x27;Reading your sources…&#x27;&lt;br/&gt;[FUNCTION · web/studio/align.js]&quot;]:::term
-  CARDS[&quot;Align: 4 cards&lt;br/&gt;Visuals · Facts · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + plan.json]&quot;]:::data
+  CARDS[&quot;Align: 5 cards&lt;br/&gt;Visuals · Facts · Pitch · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + plan.json]&quot;]:::data
   DOCK[&quot;USER speaks to the prompt dock&lt;br/&gt;[ask · text + optional files]&quot;]:::ask
   ALIGN[&quot;Align loop&lt;br/&gt;[AGENT · claude-opus-5 → actions]&lt;br/&gt;see diagram 03&quot;]:::agent
-  APPR{&quot;all 4 cards approved?&lt;br/&gt;[FUNCTION · demo.approvals]&quot;}:::dec
+  APPR{&quot;all 5 cards approved?&lt;br/&gt;[FUNCTION · demo.approvals]&quot;}:::dec
   BUILD[&quot;BUILD phase (thread)&lt;br/&gt;[FUNCTION · orchestrator._build]&lt;br/&gt;Author → Voice → Rehearsal → Bundle&lt;br/&gt;see diagram 04&quot;]:::fn
   OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
@@ -60,7 +60,7 @@ flowchart TD
   FACTS[&quot;fact registry + brand + product&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: all documents + product hint (+ previous registry + revision instruction)&lt;br/&gt;out: FactsOut · facts with source ref/locator/quote, unknowns, brand&quot;]:::agent
   FIDS[&quot;assign F001.. / U01.. · keep human edits&lt;br/&gt;[FUNCTION]&quot;]:::fn
   UND[&quot;understanding.json&lt;br/&gt;[DATA]&quot;]:::data
-  PLAN[&quot;demo plan&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: registry, shots, images, brand, URL (+ previous plan)&lt;br/&gt;out: Plan · persona, concerns, 6-10 segments, CTAs, voice brief, visual gaps, intake&quot;]:::agent
+  PLAN[&quot;demo plan (sales principles P01-P10 in prompt)&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: registry, shots, images, brand, URL, language (+ previous plan)&lt;br/&gt;out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if&quot;]:::agent
   PVAL[&quot;drop refs that don&#x27;t exist&lt;br/&gt;[FUNCTION · plan.run]&lt;br/&gt;fact_ids ⊆ registry · visual_refs ⊆ shots∪images&quot;]:::fn
   PJ[&quot;plan.json&lt;br/&gt;[DATA]&quot;]:::data
   SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Gemini TTS (or gcloud/browser)]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
@@ -90,14 +90,14 @@ flowchart TD
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
   WAIT[&quot;409 &#x27;Still working on the last change&#x27;&lt;br/&gt;[term]&quot;]:::term
   HIST[&quot;conversation.json&lt;br/&gt;[DATA · last 12 turns sent as history]&quot;]:::data
-  AGENT[&quot;align agent&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: 4 cards summary, approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
+  AGENT[&quot;align agent&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: 5 cards summary (Visuals, Facts, Pitch, Persona, CTAs), approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
   APPLY{&quot;action type&lt;br/&gt;[FUNCTION · orchestrator.apply_actions]&quot;}:::dec
   A1[&quot;approve(card)&lt;br/&gt;[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)&quot;]:::fn
   A2[&quot;edit_fact / remove_fact / resolve_unknown&lt;br/&gt;[FUNCTION] direct registry edit · author marked stale&quot;]:::fn
   A3[&quot;set_ctas / set_voice&lt;br/&gt;[FUNCTION] plan.json patched · voice sample re-rendered&quot;]:::fn
   A4[&quot;request_upload&lt;br/&gt;[term] note only — user must add files&quot;]:::term
   A5[&quot;revise(stage, instruction)&lt;br/&gt;[FUNCTION] lowest stage wins if several&quot;]:::fn
-  A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 4 approved&quot;]:::fn
+  A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 5 approved&quot;]:::fn
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
   REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
   R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
@@ -139,9 +139,9 @@ flowchart TD
 <h2>04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle</h2>
 <pre class="mermaid">%% 04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle
 flowchart TD
-  GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 4 approvals true&quot;]:::fn
-  AUTH[&quot;script draft&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · segments › lines {text, visual, fact_ids, card}, checkin, deeper, closing, intake q1/q2&quot;]:::agent
-  VAL[&quot;grounding validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified&quot;]:::fn
+  GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 5 approvals true&quot;]:::fn
+  AUTH[&quot;script draft (principles + say/show/translate/confirm)&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand, language (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · intro + outcome (standard opening) + proof blocks + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper; closing = advance&quot;]:::agent
+  VAL[&quot;grounding + pacing validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified · intro+outcome ≤ 260 words · proof block ≤ 165 words · proof needs a CONFIRM question&quot;]:::fn
   ISS{&quot;issues &gt; 0?&quot;}:::dec
   FIX[&quot;one repair pass&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: draft + issue list · out: full script&quot;]:::agent
   VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining offenders stay unverified → excluded from voice &amp; bundle, listed on Facts card&quot;]:::fn
@@ -152,6 +152,7 @@ flowchart TD
   QGEN[&quot;likely customer questions&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)&quot;]:::agent
   QA[&quot;answer each via qa.answer&lt;br/&gt;[AGENT · claude-opus-5 + FUNCTION validator]&lt;br/&gt;see diagram 05 · one paid call per question&quot;]:::agent
   COV[&quot;coverage = answered / N · gaps list&lt;br/&gt;[FUNCTION] → rehearsal.json&quot;]:::fn
+  SCORE[&quot;demo scorecard&lt;br/&gt;[AGENT · claude-opus-5 · judge]&lt;br/&gt;in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes&quot;]:::agent
   BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script&lt;br/&gt;out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns; version++&quot;]:::fn
   READY[&quot;status ready · SSE phase_done build&lt;br/&gt;[term]&quot;]:::term
 
@@ -161,7 +162,7 @@ flowchart TD
   SJ --&gt; PROV
   PROV -- &quot;gemini / gcloud&quot; --&gt; TTS --&gt; QGEN
   PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; QGEN
-  QGEN --&gt; QA --&gt; COV --&gt; BUN --&gt; READY
+  QGEN --&gt; QA --&gt; COV --&gt; SCORE --&gt; BUN --&gt; READY
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
@@ -174,13 +175,18 @@ flowchart TD
 <pre class="mermaid">%% 05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)
 flowchart TD
   START[&quot;USER clicks Start&lt;br/&gt;[ask]&quot;]:::ask
-  Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;your name and why you&#x27;re interested&#x27;&quot;]:::data
+  Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;your name + what should this change for you&#x27; (P02 open question)&quot;]:::data
   L1[&quot;listen ≤10 s&lt;br/&gt;[LIBRARY · Web Speech recognition]&lt;br/&gt;mic denied or silent → typed fallback input&quot;]:::data
   P1[&quot;parse name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
-  Q2[&quot;speak ack + intake q2&lt;br/&gt;&#x27;anything specific, or get going?&#x27;&quot;]:::data
-  L2[&quot;listen ≤10 s → isGetGoing?&lt;br/&gt;[FUNCTION]&quot;]:::fn
-  PLAN[&quot;order segments&lt;br/&gt;[FUNCTION · planSegments]&lt;br/&gt;welcome first · focus topics next · rest in bundle order&quot;]:::fn
-  LINE[&quot;play line&lt;br/&gt;[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite &#x27;sources: F..&#x27;&lt;br/&gt;speak: server audio else browser TTS&quot;]:::fn
+  OPEN[&quot;STANDARD OPENING · unchanged, 1-2 min&lt;br/&gt;[FUNCTION · playOpening]&lt;br/&gt;intro (frame) + outcome (end state first) · pre-rendered audio&quot;]:::fn
+  PITCH[&quot;pitch plan (runs while the opening plays)&lt;br/&gt;[AGENT · claude-opus-5 · POST /run/pitch]&lt;br/&gt;in: profile (name, why), library of proof blocks, USPs, registry&lt;br/&gt;out: customer_state, decision_frame, ONE follow-up question, route with bridges, advance&quot;]:::agent
+  PV[&quot;bridge validator&lt;br/&gt;[FUNCTION · pitch.plan_pitch]&lt;br/&gt;segment ids exist · bridge with a figure and no fact id → dropped · establish last&quot;]:::fn
+  DF[&quot;speak personalised decision frame&lt;br/&gt;[LIBRARY · /run/tts]&quot;]:::data
+  FU[&quot;ask the ONE follow-up (P03) → listen ≤12 s&lt;br/&gt;[LIBRARY · Web Speech]&quot;]:::data
+  REF[&quot;refine route with the answer&lt;br/&gt;[AGENT · POST /run/pitch refine=true]&quot;]:::agent
+  FALL[&quot;fallback: bundle q2 + keyword focus order&lt;br/&gt;[FUNCTION] if the planner times out (45 s)&quot;]:::fn
+  PLAN[&quot;route = ordered proof blocks + establish&lt;br/&gt;[FUNCTION · buildRoute]&quot;]:::fn
+  LINE[&quot;play block: bridge (personalised, /run/tts) then lines&lt;br/&gt;[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite &#x27;sources: F..&#x27;&lt;br/&gt;speak: server audio else browser TTS&quot;]:::fn
   CHK[&quot;check-in question&lt;br/&gt;[LIBRARY · audio] then chips&quot;]:::data
   WAIT[&quot;waitFor 15 s countdown + auto-listen 8 s&lt;br/&gt;[FUNCTION · interpretReply — regex, NO LLM]&lt;br/&gt;yes/continue · deeper · question · timeout&quot;]:::fn
   DEEP[&quot;deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]&quot;]:::fn
@@ -188,19 +194,29 @@ flowchart TD
   QA[&quot;POST /api/demos/id/run/qa&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: question, last 8 turns, profile, registry, visuals, CTAs&lt;br/&gt;out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered&quot;]:::agent
   QV{&quot;valid?&lt;br/&gt;[FUNCTION · qa.answer]&lt;br/&gt;fact_ids ⊆ registry AND (answered OR no number/claim words)&quot;}:::dec
   SPEAK[&quot;speak answer · seek to visual · card &#x27;Sources for that answer&#x27;&lt;br/&gt;[FUNCTION]&quot;]:::fn
-  NOG[&quot;&#x27;I don&#x27;t want to guess…&#x27; · escalate=question&lt;br/&gt;[FUNCTION] question appended to understanding.unknowns (origin runtime)&quot;]:::term
+  NOG[&quot;&#x27;I&#x27;m not sure from the material — I won&#x27;t guess; a salesperson can call you&#x27;&lt;br/&gt;[FUNCTION] question → understanding.unknowns (origin runtime) · offer_callback=true&quot;]:::term
+  LEAD{&quot;customer says call me / gives a number?&lt;br/&gt;[FUNCTION · offerCallback, regex [6-9]\\d{9}]&quot;}:::dec
+  SAVE[&quot;POST /run/lead → leads/*.json&lt;br/&gt;[DATA] read back the number · continue&quot;]:::data
   CONF[&quot;&#x27;Did that answer it?&#x27; → chips yes / not quite (20 s)&lt;br/&gt;[FUNCTION]&quot;]:::fn
   RES[&quot;resume: next segment if at check-in, else same line&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
-  CLOSE[&quot;closing lines → CTA chips from bundle.ctas + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
+  CLOSE[&quot;advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
   HAND[&quot;handoff summary&lt;br/&gt;[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json&quot;]:::data
 
-  START --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; Q2 --&gt; L2 --&gt; PLAN --&gt; LINE
+  START --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; OPEN
+  P1 -.-&gt;|&quot;in parallel&quot;| PITCH --&gt; PV
+  OPEN --&gt; DF --&gt; FU --&gt; REF --&gt; PLAN
+  PV --&gt; DF
+  PITCH -.-&gt;|&quot;timeout / error&quot;| FALL --&gt; PLAN
+  PLAN --&gt; LINE
   LINE --&gt; CHK --&gt; WAIT
   WAIT -- &quot;continue / timeout&quot; --&gt; LINE
   WAIT -- &quot;deeper&quot; --&gt; DEEP --&gt; WAIT
   WAIT -- &quot;question&quot; --&gt; QIN --&gt; QA --&gt; QV
   QV -- &quot;yes&quot; --&gt; SPEAK --&gt; CONF --&gt; RES --&gt; LINE
-  QV -- &quot;no&quot; --&gt; NOG --&gt; CONF
+  QV -- &quot;no&quot; --&gt; NOG --&gt; LEAD
+  LEAD -- &quot;yes&quot; --&gt; SAVE --&gt; RES
+  LEAD -- &quot;no / continue&quot; --&gt; RES
+  SPEAK -.-&gt;|&quot;clarifying_question (P03)&quot;| QIN
   LINE -- &quot;last segment&quot; --&gt; CLOSE --&gt; HAND
   QIN -.-&gt;|&quot;interrupt at any moment cancels speech (run token)&quot;| LINE
 

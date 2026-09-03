@@ -11,7 +11,8 @@ from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import config, events, orchestrator, store
-from .agents import align, qa, voice
+from .agents import align, pitch, qa, voice
+from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
 
@@ -71,7 +72,7 @@ def get_demo(demo_id: str):
     return {"demo": demo, "cards": align.cards(demo_id) if demo["status"] not in ("sources",) else None,
             "conversation": store.read_json(demo_id, "conversation.json", []), "rehearsal": store.read_json(demo_id, "rehearsal.json"),
             "bundle_ready": store.path(demo_id, "bundle.json").exists(), "running": orchestrator.is_running(demo_id),
-            "sessions": _sessions(demo_id)}
+            "sessions": _sessions(demo_id), "leads": _leads(demo_id)}
 
 
 @app.delete("/api/demos/{demo_id}")
@@ -98,7 +99,7 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "language", "rehearsal_questions")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "rehearsal_questions")}
             d["settings"].update(allowed)
             if "voice_name" in allowed:
                 d["settings"]["voice_locked"] = True
@@ -284,6 +285,74 @@ async def run_qa(demo_id: str, req: Request):
         return qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None)
     except RuntimeError as e:
         raise HTTPException(502, str(e))
+
+
+@app.post("/api/demos/{demo_id}/run/pitch")
+async def run_pitch(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    try:
+        return pitch.plan_pitch(demo_id, body.get("profile") or {}, bool(body.get("refine")))
+    except RuntimeError as e:
+        raise HTTPException(502, str(e))
+
+
+@app.post("/api/demos/{demo_id}/run/lead")
+async def run_lead(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    body = await req.json()
+    phone = qa.parse_phone(body.get("phone") or body.get("text") or "")
+    if not phone:
+        raise HTTPException(400, "no valid Indian mobile number found")
+    lead = qa.save_lead(demo_id, phone, (body.get("question") or "").strip(), body.get("profile") or None, body.get("session_id"))
+    return {"ok": True, "lead": lead}
+
+
+def _leads(demo_id: str) -> list[dict]:
+    out = []
+    d = store.path(demo_id, "leads")
+    if d.exists():
+        for p in sorted(d.glob("*.json"), reverse=True)[:50]:
+            try:
+                out.append(json.loads(p.read_text()))
+            except Exception:
+                pass
+    return out
+
+
+@app.get("/api/voices")
+def voices(demo_id: str = ""):
+    demo = store.load(demo_id) if demo_id and store.exists(demo_id) else {"settings": {}}
+    chain = voice.provider_chain(demo)
+    prov = chain[0]
+    if prov == "sarvam":
+        opts = [{"id": k, "label": v} for k, v in sarvam.SPEAKERS.items()]
+        key = "sarvam_speaker"
+    elif prov == "gemini":
+        opts = [{"id": v, "label": v} for v in voice.GEMINI_VOICES]
+        key = "voice_name"
+    elif prov == "gcloud":
+        lang = voice.GCLOUD_LANG.get(demo["settings"].get("language", "en-IN"), demo["settings"].get("language", "en-IN"))
+        opts = [{"id": f"{lang}-Chirp3-HD-{n}", "label": f"{n} ({lang})"} for n in ("Aoede", "Kore", "Leda", "Zephyr", "Achernar", "Sulafat")]
+        key = "voice_name"
+    else:
+        opts, key = [], "voice_name"
+    return {"provider": prov, "chain": chain, "setting_key": key, "voices": opts, "current": voice.voice_name_for(demo, prov) if prov != "browser" else "", "stt": config.STT_PROVIDER}
+
+
+@app.post("/api/demos/{demo_id}/run/stt")
+async def run_stt(demo_id: str, file: UploadFile = File(...), language: str = Form(default="en-IN")):
+    _demo_or_404(demo_id)
+    if config.STT_PROVIDER != "sarvam" and not config.MOCK_LLM:
+        raise HTTPException(400, "server STT not configured (set SARVAM_API_KEY)")
+    data = await file.read()
+    if len(data) < 1000:
+        return {"transcript": ""}
+    try:
+        text = sarvam.stt(data, file.filename or "audio.wav", language, file.content_type or "audio/wav")
+    except Exception as e:
+        raise HTTPException(502, sarvam.describe_error(e))
+    return {"transcript": text}
 
 
 @app.post("/api/demos/{demo_id}/run/tts")

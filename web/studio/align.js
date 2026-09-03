@@ -3,10 +3,10 @@ import { api, h, toast, esc } from "/web/api.js";
 const CARD_DEFS = [
   { key: "visuals", n: "1", title: "Visuals" },
   { key: "facts", n: "2", title: "Facts" },
-  { key: "persona", n: "3", title: "Persona & voice" },
-  { key: "ctas", n: "4", title: "Calls to action" },
+  { key: "pitch", n: "3", title: "Pitch" },
+  { key: "persona", n: "4", title: "Persona & voice" },
+  { key: "ctas", n: "5", title: "Calls to action" },
 ];
-const GEMINI_VOICES = ["Sulafat", "Aoede", "Leda", "Despina", "Kore", "Achernar", "Zephyr"];
 const PHASE_TITLES = { reading: ["Reading your sources…", "Gemini is watching the footage; Claude is building the fact registry."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
 
 export function renderAlign(ctx) {
@@ -23,7 +23,7 @@ export function renderAlign(ctx) {
   const fileIn = h("input", { type: "file", multiple: true, accept: "video/*,image/*,.pdf,.docx,.txt,.md,.csv" });
   const attachRow = h("div", { class: "attach" });
   const sendBtn = h("button", { class: "btn primary", onclick: send }, "Send");
-  const buildBar = h("div", { class: "build-bar hidden" }, h("span", {}, "All four cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo →"));
+  const buildBar = h("div", { class: "build-bar hidden" }, h("span", {}, "All five cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo →"));
   let pending = [];
 
   area.replaceChildren(overlay, h("div", { class: "align" }, cardsCol,
@@ -63,7 +63,7 @@ export function renderAlign(ctx) {
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
             approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve"),
-            h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key]; dockTa.focus(); } }, "Give feedback")) : null));
+            h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", pitch: "About the pitch: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key]; dockTa.focus(); } }, "Give feedback")) : null));
       return el;
     }));
     buildBar.classList.toggle("hidden", !(cards && CARD_DEFS.every((c) => approvals[c.key]) && demo.status !== "ready"));
@@ -92,15 +92,31 @@ export function renderAlign(ctx) {
         open.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `${open.length} questions the sources don't answer`), h("div", { class: "unknowns" }, ...open.map((u) => h("div", { class: "unk" }, h("span", { class: "id" }, u.id), h("span", {}, u.question, u.origin === "rehearsal" ? h("span", { class: "muted" }, " · from rehearsal") : u.origin === "runtime" ? h("span", { class: "muted" }, " · asked in a demo") : null))))) : null,
         f.script_issues?.length ? h("div", { class: "gap" }, h("b", {}, "Script lines held back: "), f.script_issues.length, " — they stated something without a citation and were excluded from narration.") : null);
     }
+    if (key === "pitch") {
+      const pt = cards.pitch || {};
+      const roleLabel = { intro: "standard opening · frame", outcome: "standard opening · outcome first", proof: "proof block", establish: "establish" };
+      return h("div", {},
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Proves"), h("span", {}, pt.primary_outcome || "—", (pt.supporting_outcomes || []).length ? h("div", { class: "muted small" }, "then: " + pt.supporting_outcomes.join(" · ")) : null), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Won't recommend if"), h("span", { class: "muted" }, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Language"), h("span", {}, pt.language || "en-IN")),
+        h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `${(pt.usps || []).length} USPs`),
+        h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", h("span", { class: "muted" }, u.why_it_matters), u.fact_ids?.length ? h("span", { class: "mono small muted" }, ` [${u.fact_ids.join(", ")}]`) : h("span", { class: "small", style: "color:var(--warn)" }, " · no facts — a claim")))),
+        h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, "Blocks"),
+        h("div", { class: "unknowns" }, ...(pt.segments || []).map((s) => h("div", { class: "unk" }, h("span", { class: "id" }, s.role === "intro" || s.role === "outcome" ? "fixed" : s.role), h("span", {}, h("b", {}, s.title), s.outcome ? h("span", { class: "muted" }, ` — ${s.outcome}`) : null, h("div", { class: "small muted" }, roleLabel[s.role] || s.role, s.usp_ids?.length ? ` · usps ${s.usp_ids.join(", ")}` : ""))))),
+        (pt.state_questions || []).length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, "Follow-up by customer state"), h("ul", { class: "gaplist" }, ...pt.state_questions.map((q) => h("li", {}, h("b", {}, q.state.replace("_", " ")), ": ", q.question)))) : null,
+        pt.scorecard ? h("p", { class: "small muted", style: "margin:12px 0 0" }, `Last scorecard: ${pt.scorecard.total}/20 — weakest: ${(pt.scorecard.weakest || []).slice(0, 2).join("; ")}`) : null,
+        h("p", { class: "small muted", style: "margin:10px 0 0" }, "The first two blocks always play unchanged (the standard 1–2 minute opening). At runtime the guide plans the rest per buyer from these proof blocks."));
+    }
     if (key === "persona") {
       const p = cards.persona;
-      const sel = h("select", {}, ...GEMINI_VOICES.map((v) => h("option", { value: v, selected: v === (p.voice_name || p.suggested_voice) }, v)));
+      const sel = h("select", {}, h("option", { value: "" }, "loading voices…"));
+      let vinfo = null;
+      api.get(`/api/voices?demo_id=${demoId}`).then((v) => { vinfo = v; sel.replaceChildren(...v.voices.map((o) => h("option", { value: o.id, selected: o.id === v.current }, o.label))); provLbl.textContent = `Voice: ${v.provider}` + (v.chain.length > 1 ? ` → falls back to ${v.chain.slice(1).join(" → ")}` : "") + ` · Listening: ${v.stt === "sarvam" ? "Sarvam Saarika" : "browser"}`; }).catch(() => { sel.replaceChildren(h("option", { value: "" }, "browser voice")); });
+      const provLbl = h("span", { class: "small muted" }, `Provider: ${p.provider || "…"}`);
       const sample = p.sample_audio ? h("audio", { controls: true, src: p.sample_audio, style: "width:100%;margin-top:10px" }) : h("p", { class: "small muted" }, p.provider === "browser" ? "No TTS key — the demo will use the browser voice." : "No sample yet.");
       return h("div", {},
         h("div", { class: "kv" }, h("span", { class: "k" }, "Persona"), h("span", {}, h("b", {}, p.persona_name), " — ", p.persona_description), h("span", { class: "k" }, "Tone"), h("span", {}, p.tone), h("span", { class: "k" }, "Sample line"), h("span", { class: "muted" }, "“", p.sample_line, "”"), h("span", { class: "k" }, "Brand"), h("span", { class: "small" }, p.brand?.voice_style || "", p.brand?.donts?.length ? h("div", { class: "muted" }, "Never: ", p.brand.donts.join("; ")) : null)),
         sample,
-        h("div", { style: "display:flex;gap:8px;align-items:center;margin-top:10px" }, h("span", { class: "eyebrow" }, "Voice"), sel, h("button", { class: "btn sm", onclick: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { voice_name: sel.value } }); const r = await api.post(`/api/demos/${demoId}/voice/sample`, { text: p.sample_line }); toast("Sample re-recorded"); await reload(); } catch (e) { toast(e.message, true); } } }, "Re-record sample")),
-        h("p", { class: "small muted", style: "margin:8px 0 0" }, `Provider: ${p.provider}. Say “warmer”, “more formal”, “a younger voice” in the dock to change the persona.`));
+        h("div", { style: "display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap" }, h("span", { class: "eyebrow" }, "Voice"), sel, h("button", { class: "btn sm", onclick: async () => { if (!vinfo || !sel.value) return; try { await api.patch(`/api/demos/${demoId}`, { settings: { [vinfo.setting_key]: sel.value } }); await api.post(`/api/demos/${demoId}/voice/sample`, { text: p.sample_line }); toast("Sample re-recorded"); await reload(); } catch (e) { toast(e.message, true); } } }, "Re-record sample")),
+        h("p", { class: "small muted", style: "margin:8px 0 0" }, provLbl, " · Say “warmer”, “more formal”, “a male voice” in the dock to change the persona."));
     }
     if (key === "ctas") {
       const list = cards.ctas.map((c) => ({ ...c }));

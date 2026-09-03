@@ -11,12 +11,14 @@ export function renderRehearse(ctx) {
   const fbBtn = h("button", { class: "btn primary", onclick: sendFeedback }, "Incorporate feedback");
   const fbReply = h("div", { class: "small muted", style: "margin-top:8px;line-height:1.5" });
   const covBox = h("div", { class: "box" });
+  const scoreBox = h("div", { class: "box" });
   const sessBox = h("div", { class: "box" });
+  const leadBox = h("div", { class: "box" });
 
   area.replaceChildren(overlay, h("div", { class: "rehearse" },
     h("div", { class: "rpanel" },
       h("div", { class: "box" }, h("h3", {}, "Feedback"), h("p", { class: "small muted", style: "margin:0 0 8px" }, "Run the demo as the customer. Tell the agent what's off — it decides whether to rewrite the script, fix a fact or re-plan, then rebuilds."), fb, h("div", { style: "margin-top:8px;display:flex;gap:8px" }, fbBtn, h("button", { class: "btn ghost", onclick: () => player && player.restart() }, "Restart demo")), fbReply),
-      covBox, sessBox,
+      scoreBox, covBox, leadBox, sessBox,
       h("div", { class: "box" }, h("h3", {}, "Publish"), h("p", { class: "small muted", style: "margin:0" }, "Coming next: an embed snippet and a share link. For now the playground is the demo."))),
     host));
 
@@ -35,6 +37,17 @@ export function renderRehearse(ctx) {
           r.gaps.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:10px 0 0" }, "couldn't answer"), h("ul", { class: "gaplist" }, ...r.gaps.map((g) => h("li", {}, g)))) : h("p", { class: "small muted" }, "No gaps — every rehearsal question had a cited answer."),
           h("p", { class: "small muted", style: "margin:8px 0 0" }, "Gaps are also listed on the Facts card in Align — upload material there to close them.")));
   }
+  function renderScore() {
+    const sc = state.rehearsal?.scorecard;
+    scoreBox.replaceChildren(h("h3", {}, "Demo scorecard"), !sc ? h("p", { class: "small muted", style: "margin:0" }, "Scored at build time against the playbook (10 criteria × 0–2).") :
+      h("div", {}, h("div", { class: "coverage" }, sc.total, h("small", {}, " / 20 — ≥16 is a good first demo")),
+        h("div", { style: "display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12.5px;margin-top:8px" }, ...sc.scores.map((s) => [h("span", { title: s.note }, s.criterion), h("b", { class: "mono", style: `color:${s.score === 2 ? "var(--accent)" : s.score === 1 ? "var(--warn)" : "var(--bad)"}` }, String(s.score))]).flat()),
+        sc.weakest?.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:10px 0 4px" }, "fix first"), h("ul", { class: "gaplist" }, ...sc.weakest.map((w) => h("li", {}, w)))) : null));
+  }
+  function renderLeads() {
+    const ls = state.leads || [];
+    leadBox.replaceChildren(h("h3", {}, "Callback requests"), ls.length ? h("div", {}, ...ls.slice(0, 8).map((l) => h("div", { class: "sess" }, h("span", {}, h("b", { class: "mono" }, l.phone), h("span", { class: "muted" }, ` · ${l.profile?.name || "anonymous"}`)), h("span", { class: "muted small" }, `“${(l.question || "").slice(0, 60)}”`)))) : h("p", { class: "small muted", style: "margin:0" }, "When the guide can't answer from the sources it offers a salesperson callback; numbers land here."));
+  }
   function renderSessions() {
     const ss = state.sessions || [];
     sessBox.replaceChildren(h("h3", {}, "Sessions"), ss.length ? h("div", {}, ...ss.slice(0, 8).map((s) => h("div", { class: "sess" }, h("span", {}, s.profile?.name || "anonymous", h("span", { class: "muted" }, ` · ${s.questions} q · ${s.cta || "no cta"}`)), h("span", { class: "mono muted" }, s.intent != null ? `intent ${s.intent}` : "", s.saved_at ? " · " + fmtTime(s.saved_at) : "")))) : h("p", { class: "small muted", style: "margin:0" }, "Every run of the playground is saved here with its handoff summary."));
@@ -43,15 +56,18 @@ export function renderRehearse(ctx) {
   async function mount() {
     let bundle;
     try { bundle = await api.get(`/api/demos/${demoId}/bundle`); }
-    catch (e) { host.replaceChildren(h("div", { class: "empty", style: "margin:30px" }, demo.status === "building" ? "Building…" : "Not built yet — approve the four cards in Align and build the demo.")); return; }
+    catch (e) { host.replaceChildren(h("div", { class: "empty", style: "margin:30px" }, demo.status === "building" ? "Building…" : "Not built yet — approve the five cards in Align and build the demo.")); return; }
     if (player) player.destroy();
     player = mountPlayer(host, bundle, {
       qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),
       tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
+      pitch: (body) => api.post(`/api/demos/${demoId}/run/pitch`, body),
+      lead: (body) => api.post(`/api/demos/${demoId}/run/lead`, body),
+      stt: (blob, lang) => { const fd = new FormData(); fd.append("file", blob, "speech.wav"); fd.append("language", lang || "en-IN"); return api.form(`/api/demos/${demoId}/run/stt`, fd).then((r) => r.transcript || ""); },
       saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s).then(() => refreshState()),
     });
   }
-  async function refreshState() { try { state = await api.get(`/api/demos/${demoId}`); demo = state.demo; renderCoverage(); renderSessions(); } catch (e) {} }
+  async function refreshState() { try { state = await api.get(`/api/demos/${demoId}`); demo = state.demo; renderCoverage(); renderScore(); renderLeads(); renderSessions(); } catch (e) {} }
 
   async function sendFeedback() {
     const msg = fb.value.trim(); if (!msg) return;
@@ -68,6 +84,6 @@ export function renderRehearse(ctx) {
     else if (type === "phase_error") showOverlay("Rebuilding…", ev.error);
   });
 
-  renderCoverage(); renderSessions(); mount();
+  renderCoverage(); renderScore(); renderLeads(); renderSessions(); mount();
   if (demo.status === "building" || state.running) showOverlay("Building your demo…");
 }

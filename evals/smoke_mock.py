@@ -31,7 +31,7 @@ assert st["cards"] and st["cards"]["facts"]["facts"], "no facts"
 assert any(m["role"] == "agent" for m in st["conversation"]), "no opening message"
 print("cards: images", len(st["cards"]["visuals"]["images"]), "facts", len(st["cards"]["facts"]["facts"]), "ctas", len(st["cards"]["ctas"]))
 r = c.post(f"/api/demos/{i}/align", data={"message": "looks fine", "context": "align"}); assert r.status_code == 200, r.text; print("align reply:", r.json()["reply"][:60])
-for card in ("visuals", "facts", "persona", "ctas"):
+for card in ("visuals", "facts", "pitch", "persona", "ctas"):
     r = c.post(f"/api/demos/{i}/approve/{card}"); assert r.status_code == 200, r.text
 assert all(c.get(f"/api/demos/{i}").json()["demo"]["approvals"].values()); print("approved all")
 r = c.post(f"/api/demos/{i}/ctas", json={"ctas": [{"id": "book", "label": "Book a test ride", "kind": "book", "url": "", "primary": True, "when": "always"}]}); assert r.status_code == 200, r.text
@@ -45,7 +45,17 @@ if audio and audio[0]:
 r = c.post(f"/api/demos/{i}/run/qa", json={"question": "what is the kerb weight?", "history": [], "profile": {"name": "Anand"}}); assert r.status_code == 200, r.text
 qa = r.json(); assert qa["answered"] is False and qa["fact_ids"] == [], qa; print("qa don't-guess ok:", qa["answer"][:50])
 und = store.read_json(i, "understanding.json"); assert any(u["origin"] == "runtime" for u in und["unknowns"]), "runtime unknown not recorded"
+r = c.post(f"/api/demos/{i}/run/pitch", json={"profile": {"name": "Anand", "why": "replace my Activa for a 25 km commute", "focus": []}, "refine": False}); assert r.status_code == 200, r.text
+pp = r.json(); assert pp["route"] and all(s["segment_id"] for s in pp["route"]), pp; print("pitch route", [s["segment_id"] for s in pp["route"]], "state", pp["customer_state"])
+r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "my number is 98765 43210", "question": "kerb weight", "profile": {"name": "Anand"}}); assert r.status_code == 200 and r.json()["lead"]["phone"] == "9876543210", r.text; print("lead saved")
+r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "call me on 12345", "question": "x"}); assert r.status_code == 400, "bad phone accepted"
+assert c.get(f"/api/demos/{i}").json()["leads"], "lead not listed"
+import struct
+wav = b"RIFF" + struct.pack("<I", 36 + 4000) + b"WAVEfmt " + struct.pack("<IHHIIHH", 16, 1, 1, 16000, 32000, 2, 16) + b"data" + struct.pack("<I", 4000) + b"\x00" * 4000
+r = c.post(f"/api/demos/{i}/run/stt", files={"file": ("a.wav", wav, "audio/wav")}, data={"language": "hi-IN"}); assert r.status_code == 200 and r.json()["transcript"], r.text; print("stt ok:", r.json()["transcript"])
+v = c.get("/api/voices", params={"demo_id": i}).json(); assert v["provider"] in ("sarvam", "gemini") and v["voices"], v; print("voices:", v["provider"], len(v["voices"]))
 r = c.post(f"/api/demos/{i}/run/session", json={"profile": {"name": "Anand"}, "questions": ["kerb weight"], "cta": "Book a test ride", "intent": 61}); assert r.status_code == 200
 r = c.post(f"/api/demos/{i}/feedback", json={"message": "say the warranty before the price", "context": {"segment": "x"}}); assert r.status_code == 200, r.text; print("feedback reply:", r.json()["reply"][:60])
-reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])))
+reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])), "scorecard", reh and reh.get("scorecard") and reh["scorecard"].get("total"))
+b2 = c.get(f"/api/demos/{i}/bundle").json(); assert b2.get("pitch") and "language" in b2, "bundle lacks pitch/language"; roles = [s["role"] for s in b2["segments"]]; print("roles", roles)
 print("SMOKE OK", i)

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import time
 
-from .. import store
+from .. import config, store
 
 
 def media_url(demo_id: str, rel: str | None) -> str | None:
@@ -43,6 +43,7 @@ def build(demo_id: str, emit) -> dict:
         splan = next((s for s in plan.get("segments", []) if s["id"] == seg["id"]), {})
         segments.append({
             "id": seg["id"], "title": seg["title"], "topic": seg["topic"], "priority": bool(splan.get("priority_topic")),
+            "role": seg.get("role", "proof"), "outcome": seg.get("outcome") or splan.get("outcome", ""), "usp_ids": seg.get("usp_ids") or splan.get("usp_ids", []),
             "lines": [line(l) for l in seg["lines"] if not l.get("unverified")],
             "checkin": {"text": seg.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))},
             "deeper": [line(l) for l in seg.get("deeper", []) if not l.get("unverified")],
@@ -59,6 +60,9 @@ def build(demo_id: str, emit) -> dict:
         "segments": segments,
         "closing": [line(l) for l in script.get("closing", [])],
         "ctas": plan.get("ctas", []),
+        "pitch": {"decision_frame": plan.get("decision_frame", ""), "takeaway": plan.get("takeaway", ""), "primary_outcome": plan.get("primary_outcome", ""), "supporting_outcomes": plan.get("supporting_outcomes", []), "usps": plan.get("usps", []), "advance": plan.get("advance", ""), "do_not_recommend_if": plan.get("do_not_recommend_if", ""), "state_questions": plan.get("state_questions", [])},
+        "language": demo.get("settings", {}).get("language", "en-IN"),
+        "stt": {"provider": config.STT_PROVIDER},
         "facts": list(facts.values()),
         "cards": {"price": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in price_facts][:12],
                   "facts": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in spec_facts][:12]},

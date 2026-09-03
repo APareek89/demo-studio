@@ -5,14 +5,14 @@ flowchart TD
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec
   WAIT["409 'Still working on the last change'<br/>[term]"]:::term
   HIST["conversation.json<br/>[DATA · last 12 turns sent as history]"]:::data
-  AGENT["align agent<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: 4 cards summary, approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
+  AGENT["align agent<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: 5 cards summary (Visuals, Facts, Pitch, Persona, CTAs), approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
   APPLY{"action type<br/>[FUNCTION · orchestrator.apply_actions]"}:::dec
   A1["approve(card)<br/>[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)"]:::fn
   A2["edit_fact / remove_fact / resolve_unknown<br/>[FUNCTION] direct registry edit · author marked stale"]:::fn
   A3["set_ctas / set_voice<br/>[FUNCTION] plan.json patched · voice sample re-rendered"]:::fn
   A4["request_upload<br/>[term] note only — user must add files"]:::term
   A5["revise(stage, instruction)<br/>[FUNCTION] lowest stage wins if several"]:::fn
-  A6["build<br/>[FUNCTION] only if all 4 approved"]:::fn
+  A6["build<br/>[FUNCTION] only if all 5 approved"]:::fn
   A7["answer<br/>[term] nothing changes"]:::term
   REV{"which stage?<br/>[FUNCTION · _revise thread]"}:::dec
   R1["understand(instr) → plan<br/>approvals visuals+facts reset"]:::fn

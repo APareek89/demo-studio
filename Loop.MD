@@ -42,6 +42,10 @@ rebuilds the demo.
 | 5 | (EXAMPLE — replace me) Author validator: a script line "It does 145 km on a charge" with `fact_ids:[]` | line flagged unverified and excluded from voice + bundle; issue listed on the Facts card |
 | 6 | (EXAMPLE — negative) Player with mic denied (`micDenied`) or no SpeechRecognition | intake shows the typed fallback within 10 s; check-ins still offer tap chips; demo completes to the handoff |
 | 7 | (EXAMPLE — replace me) `POST …/feedback {message:"say the warranty before the price"}` in Rehearse | align agent returns a `revise('author', …)` action; status `building` → `ready`; bundle version increments |
+| 8 | (EXAMPLE — replace me) `POST …/run/pitch {profile:{why:"25 km commute, replace my Activa"}}` | `route` non-empty, every `segment_id` exists in the script, establish segment last, a bridge with a figure but no fact id is dropped (`bridge_dropped` set) |
+| 9 | (EXAMPLE — replace me) `POST …/run/lead {phone:"my number is 98765 43210", question:"kerb weight"}` and `{phone:"12345"}` | first → 200 with `phone:"9876543210"` and a file under `data/demos/<id>/leads/`; second → 400 |
+| 10 | (EXAMPLE — replace me) `POST …/run/stt` with a 0.1 s WAV, `GET /api/voices?demo_id=` | 200 with a transcript (mock: "(mock transcript)"); voices lists Sarvam speakers when `SARVAM_API_KEY` is set, Gemini voices otherwise, and `chain` shows the fallback order |
+| 11 | (EXAMPLE — negative) Player with an empty route (no proof blocks) | standard opening plays, then the closing + CTAs — no crash, no infinite loop |
 
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |
@@ -55,7 +59,11 @@ rebuilds the demo.
 | G7 | (EXAMPLE — replace me) Align message with an attached PDF spec sheet | `revise('understand', …)` action; registry grows; approvals for visuals/facts reset | rubric |
 | G8 | (EXAMPLE — hard) Product with NO documents (images only) | registry empty; unknowns ≥ 8; plan still produces segments whose goals say the sources are silent; every scripted line passes the validator | rubric |
 | G9 | (EXAMPLE — replace me) Rehearsal on the iQube demo | coverage ≥ 0.6; gaps include at least one genuinely unstated item (weight/delivery) | rubric |
-| G10 | (EXAMPLE — replace me) Voice: persona sample renders with Gemini TTS | a WAV under `data/demos/<id>/audio/`, playable on the Persona card | exact: file exists |
+| G10 | (EXAMPLE — replace me) Voice: persona sample renders with Sarvam Bulbul (falls back to Gemini) | a WAV under `data/demos/<id>/audio/`, playable on the Persona card; `voice_provider` in script.json says which provider produced it | exact: file exists |
+| G11 | (EXAMPLE — replace me) Pitch plan for "I need at least 100 km range" | `customer_state: stated_want`; follow-up asks whether it's one long day or charging less often (P03); route leads with the range proof block | rubric |
+| G12 | (EXAMPLE — replace me) Pitch plan for "45 km commute, want it cheaper than petrol without range worry" | `customer_state: stated_need`; decision frame recaps 45 km + cost + range in the buyer's words; bridges cite fact ids | rubric |
+| G13 | (EXAMPLE — replace me) Script scorecard on the iQube demo | total ≥ 14 on first build; `weakest` names concrete rewrites | rubric |
+| G14 | (EXAMPLE — replace me) Demo language = Hinglish | intake q1 and proof lines in Devanagari-mixed Hinglish, product names/units unchanged; Sarvam TTS renders `hi-IN` | rubric |
 
 ## Run journal (paid/slow checks only)
 | Date | Hypothesis (changed X, expect eval N to flip because W) | Result | Cost note |

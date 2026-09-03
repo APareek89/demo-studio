@@ -8,30 +8,42 @@ import time
 import httpx
 
 from .. import config, store
-from ..llm import gemini
+from ..llm import gemini, sarvam
 
 GEMINI_VOICES = ["Sulafat", "Aoede", "Leda", "Despina", "Kore", "Achernar", "Zephyr"]
 
 
-def provider_for(demo: dict) -> str:
-    p = demo.get("settings", {}).get("tts_provider") or config.TTS_PROVIDER
+def provider_chain(demo: dict) -> list[str]:
+    """Primary provider first, then every other configured provider; 'browser' last (= no server audio)."""
     if config.MOCK_LLM:
-        return "gemini"
-    if p not in ("gemini", "gcloud", "browser"):  # a typo must not route to the wrong provider
-        p = "gemini" if config.GEMINI_API_KEY else ("gcloud" if config.GCLOUD_TTS_API_KEY else "browser")
-    if p == "gemini" and not config.GEMINI_API_KEY:
-        p = "gcloud" if config.GCLOUD_TTS_API_KEY else "browser"
-    if p == "gcloud" and not config.GCLOUD_TTS_API_KEY:
-        p = "gemini" if config.GEMINI_API_KEY else "browser"
-    return p
+        return ["sarvam", "gemini"]
+    p = demo.get("settings", {}).get("tts_provider") or config.TTS_PROVIDER
+    avail = [x for x, ok in (("sarvam", bool(config.SARVAM_API_KEY)), ("gemini", bool(config.GEMINI_API_KEY)), ("gcloud", bool(config.GCLOUD_TTS_API_KEY))) if ok]
+    chain = ([p] if p in avail else []) + [x for x in avail if x != p]
+    return chain or ["browser"]
+
+
+def provider_for(demo: dict) -> str:
+    return provider_chain(demo)[0]
+
+
+GCLOUD_LANG = {"hinglish": "hi-IN"}
 
 
 def voice_name_for(demo: dict, provider: str) -> str:
-    v = demo.get("settings", {}).get("voice_name", "")
+    st = demo.get("settings", {})
+    lang = st.get("language", "en-IN") or "en-IN"
+    if provider == "sarvam":
+        v = st.get("sarvam_speaker", "")
+        return v if v in sarvam.SPEAKERS else "anushka"
+    v = st.get("voice_name", "")
     if provider == "gemini":
-        return v if v in GEMINI_VOICES else config.GEMINI_TTS_VOICE
+        return v if v in GEMINI_VOICES else config.GEMINI_TTS_VOICE  # Gemini voices are language-agnostic
     if provider == "gcloud":
-        return v if v.startswith("en-") else config.GCLOUD_TTS_VOICE
+        lang = GCLOUD_LANG.get(lang, lang)
+        if v.startswith(lang + "-"):
+            return v
+        return f"{lang}-Chirp3-HD-Aoede"
     return v
 
 
@@ -40,7 +52,10 @@ def _style(demo_id: str) -> str:
     v = plan.get("voice", {})
     if not v:
         return "Speak as a warm, welcoming product guide, natural conversational pace, Indian English:"
-    return f"Speak as {v.get('persona_description','a warm product guide')} Tone: {v.get('tone','warm and direct')}. Natural conversational pace, no rush:"
+    demo = store.load(demo_id)
+    lang = demo.get("settings", {}).get("language", "en-IN")
+    lang_note = "" if lang in ("", "en-IN") else f" The text is in {lang}; pronounce it natively."
+    return f"Speak as {v.get('persona_description','a warm product guide')} Tone: {v.get('tone','warm and direct')}. Natural conversational pace, no rush.{lang_note}"
 
 
 def _gcloud(text: str, voice: str) -> tuple[bytes, str]:
@@ -48,33 +63,46 @@ def _gcloud(text: str, voice: str) -> tuple[bytes, str]:
             "audioConfig": {"audioEncoding": "MP3", "speakingRate": 1.0}}
     with httpx.Client(timeout=60) as c:
         r = c.post("https://texttospeech.googleapis.com/v1/text:synthesize", params={"key": config.GCLOUD_TTS_API_KEY}, json=body)
-        if r.status_code != 200 and voice != "en-IN-Neural2-A":
-            body["voice"]["name"] = "en-IN-Neural2-A"
+        if r.status_code != 200 and "Neural2" not in voice and "Wavenet" not in voice:
+            body["voice"]["name"] = body["voice"]["languageCode"] + "-Wavenet-A"
             r = c.post("https://texttospeech.googleapis.com/v1/text:synthesize", params={"key": config.GCLOUD_TTS_API_KEY}, json=body)
         r.raise_for_status()
         return base64.b64decode(r.json()["audioContent"]), "mp3"
 
 
 def render_line(demo_id: str, text: str, *, demo: dict | None = None) -> str | None:
-    """Returns a media-relative path like 'audio/<hash>.wav' or None when using the browser voice."""
+    """Returns a media-relative path like 'audio/<hash>.wav', or None when only the browser voice is available.
+    Tries the provider chain in order (Sarvam → Gemini → Cloud TTS); a failure on one falls through to the next."""
     demo = demo or store.load(demo_id)
-    provider = provider_for(demo)
-    if provider == "browser" or not text.strip():
+    if not text.strip():
         return None
-    voice = voice_name_for(demo, provider)
-    key = hashlib.sha1(f"{provider}|{voice}|{text.strip()}".encode()).hexdigest()[:20]
-    for ext in ("wav", "mp3"):
+    chain = provider_chain(demo)
+    if chain == ["browser"]:
+        return None
+    lang = demo.get("settings", {}).get("language", "en-IN")
+    last_err: Exception | None = None
+    for provider in chain:
+        voice = voice_name_for(demo, provider)
+        key = hashlib.sha1(f"{provider}|{voice}|{lang}|{text.strip()}".encode()).hexdigest()[:20]
+        for ext in ("wav", "mp3"):
+            p = store.path(demo_id, "audio", f"{key}.{ext}")
+            if p.exists():
+                return f"audio/{key}.{ext}"
+        try:
+            if provider == "sarvam":
+                data, ext = sarvam.tts(text, voice, lang)
+            elif provider == "gemini":
+                data, ext = gemini.tts(text, voice, _style(demo_id))
+            else:
+                data, ext = _gcloud(text, voice)
+        except Exception as e:
+            last_err = e
+            continue
         p = store.path(demo_id, "audio", f"{key}.{ext}")
-        if p.exists():
-            return f"audio/{key}.{ext}"
-    if provider == "gemini":
-        data, ext = gemini.tts(text, voice, _style(demo_id))
-    else:
-        data, ext = _gcloud(text, voice)
-    p = store.path(demo_id, "audio", f"{key}.{ext}")
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_bytes(data)
-    return f"audio/{key}.{ext}"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)
+        return f"audio/{key}.{ext}"
+    raise RuntimeError(f"all voice providers failed: {str(last_err)[:160]}")
 
 
 def render_script(demo_id: str, emit) -> dict:
@@ -83,6 +111,7 @@ def render_script(demo_id: str, emit) -> dict:
     if not script:
         raise RuntimeError("No script to voice")
     provider = provider_for(demo)
+    chain = provider_chain(demo)
     if provider == "browser":
         emit("No TTS key configured — the player will use the browser voice.")
         script["voice_provider"] = "browser"
@@ -103,7 +132,7 @@ def render_script(demo_id: str, emit) -> dict:
     intake = {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")}
     total = len(todo) + 2
     done, failures = 0, 0
-    emit(f"Recording narration with {provider} ({total} lines)…")
+    emit(f"Recording narration with {provider}" + (f" (fallbacks: {', '.join(chain[1:])})" if len(chain) > 1 else "") + f" — {total} lines…")
     for obj, key in todo:
         text = obj["text"] if key == "audio" else obj["checkin"]
         try:
@@ -112,7 +141,7 @@ def render_script(demo_id: str, emit) -> dict:
         except Exception as e:
             failures += 1
             obj[key] = None
-            msg = gemini.describe_error(e) if provider == "gemini" else str(e)[:160]
+            msg = str(e)[:160]
             if failures == 1:
                 emit(f"Voice provider error: {msg} — continuing; missing lines fall back to the browser voice.")
             if failures >= 4:

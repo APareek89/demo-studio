@@ -15,10 +15,13 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
         args = [a for a in get_args(ann) if a is not type(None)]
         return _fake_value(name, args[0], depth) if args else None
     if origin is Literal:
+        prefer = {"role": "proof", "step": "say", "customer_state": "unknown", "kind": "spec", "truth": "stated", "type": "answer", "card": "none"}
+        if name in prefer and prefer[name] in get_args(ann):
+            return prefer[name]
         return get_args(ann)[0]
     if origin is list:
         (item,) = get_args(ann) or (str,)
-        n = 2 if depth > 1 else 3
+        n = 2 if depth > 1 else (5 if name == "segments" else 3)
         out = [_fake_value(name, item, depth + 1) for _ in range(n)]
         for i, o in enumerate(out):
             if isinstance(o, dict):
@@ -28,6 +31,10 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
                     o["index"] = i
                 if "id" in o and isinstance(o["id"], str):
                     o["id"] = f"{o['id'].split(' ')[0]}{i+1}"
+                if "role" in o and "lines" in o or ("role" in o and "goal" in o):  # segments: a realistic role mix
+                    o["role"] = ["intro", "outcome", "proof", "establish", "proof"][i % 5]
+                if "segment_id" in o:
+                    o["segment_id"] = f"mock{3 + (i % 2)}"
         return out
     if origin is dict:
         return {"k1": "v1 (mock)"}
@@ -44,6 +51,14 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
         return "mock"
     if lower == "type":
         return "answer"
+    if lower == "role":
+        return "proof"
+    if lower == "step":
+        return "say"
+    if lower == "customer_state":
+        return "unknown"
+    if lower == "truth":
+        return "stated"
     if lower in ("kind",):
         return "spec"
     if lower == "suggested_voice" or lower == "voice_name":

@@ -187,7 +187,7 @@ def start_read(demo_id: str, instruction: str = "") -> None:
 def start_build(demo_id: str) -> None:
     demo = store.load(demo_id)
     if not all(demo["approvals"].values()):
-        raise RuntimeError("Approve all four cards before building")
+        raise RuntimeError("Approve all five cards before building")
     _spawn(demo_id, _build)
 
 

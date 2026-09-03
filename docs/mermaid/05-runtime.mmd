@@ -1,13 +1,18 @@
 %% 05 · Runtime — the player (web/player/player.js) and grounded Q&A (server/agents/qa.py)
 flowchart TD
   START["USER clicks Start<br/>[ask]"]:::ask
-  Q1["speak intake q1<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>'your name and why you're interested'"]:::data
+  Q1["speak intake q1<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>'your name + what should this change for you' (P02 open question)"]:::data
   L1["listen ≤10 s<br/>[LIBRARY · Web Speech recognition]<br/>mic denied or silent → typed fallback input"]:::data
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
-  Q2["speak ack + intake q2<br/>'anything specific, or get going?'"]:::data
-  L2["listen ≤10 s → isGetGoing?<br/>[FUNCTION]"]:::fn
-  PLAN["order segments<br/>[FUNCTION · planSegments]<br/>welcome first · focus topics next · rest in bundle order"]:::fn
-  LINE["play line<br/>[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite 'sources: F..'<br/>speak: server audio else browser TTS"]:::fn
+  OPEN["STANDARD OPENING · unchanged, 1-2 min<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
+  PITCH["pitch plan (runs while the opening plays)<br/>[AGENT · claude-opus-5 · POST /run/pitch]<br/>in: profile (name, why), library of proof blocks, USPs, registry<br/>out: customer_state, decision_frame, ONE follow-up question, route with bridges, advance"]:::agent
+  PV["bridge validator<br/>[FUNCTION · pitch.plan_pitch]<br/>segment ids exist · bridge with a figure and no fact id → dropped · establish last"]:::fn
+  DF["speak personalised decision frame<br/>[LIBRARY · /run/tts]"]:::data
+  FU["ask the ONE follow-up (P03) → listen ≤12 s<br/>[LIBRARY · Web Speech]"]:::data
+  REF["refine route with the answer<br/>[AGENT · POST /run/pitch refine=true]"]:::agent
+  FALL["fallback: bundle q2 + keyword focus order<br/>[FUNCTION] if the planner times out (45 s)"]:::fn
+  PLAN["route = ordered proof blocks + establish<br/>[FUNCTION · buildRoute]"]:::fn
+  LINE["play block: bridge (personalised, /run/tts) then lines<br/>[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite 'sources: F..'<br/>speak: server audio else browser TTS"]:::fn
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
@@ -15,19 +20,29 @@ flowchart TD
   QA["POST /api/demos/id/run/qa<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: question, last 8 turns, profile, registry, visuals, CTAs<br/>out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
   SPEAK["speak answer · seek to visual · card 'Sources for that answer'<br/>[FUNCTION]"]:::fn
-  NOG["'I don't want to guess…' · escalate=question<br/>[FUNCTION] question appended to understanding.unknowns (origin runtime)"]:::term
+  NOG["'I'm not sure from the material — I won't guess; a salesperson can call you'<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · offer_callback=true"]:::term
+  LEAD{"customer says call me / gives a number?<br/>[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
+  SAVE["POST /run/lead → leads/*.json<br/>[DATA] read back the number · continue"]:::data
   CONF["'Did that answer it?' → chips yes / not quite (20 s)<br/>[FUNCTION]"]:::fn
   RES["resume: next segment if at check-in, else same line<br/>[FUNCTION · resumeAfterQA]"]:::fn
-  CLOSE["closing lines → CTA chips from bundle.ctas + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
+  CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
   HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
 
-  START --> Q1 --> L1 --> P1 --> Q2 --> L2 --> PLAN --> LINE
+  START --> Q1 --> L1 --> P1 --> OPEN
+  P1 -.->|"in parallel"| PITCH --> PV
+  OPEN --> DF --> FU --> REF --> PLAN
+  PV --> DF
+  PITCH -.->|"timeout / error"| FALL --> PLAN
+  PLAN --> LINE
   LINE --> CHK --> WAIT
   WAIT -- "continue / timeout" --> LINE
   WAIT -- "deeper" --> DEEP --> WAIT
   WAIT -- "question" --> QIN --> QA --> QV
   QV -- "yes" --> SPEAK --> CONF --> RES --> LINE
-  QV -- "no" --> NOG --> CONF
+  QV -- "no" --> NOG --> LEAD
+  LEAD -- "yes" --> SAVE --> RES
+  LEAD -- "no / continue" --> RES
+  SPEAK -.->|"clarifying_question (P03)"| QIN
   LINE -- "last segment" --> CLOSE --> HAND
   QIN -.->|"interrupt at any moment cancels speech (run token)"| LINE
 

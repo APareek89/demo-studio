@@ -1,8 +1,8 @@
 %% 04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle
 flowchart TD
-  GO["POST /api/demos/id/build<br/>[FUNCTION] gate: all 4 approvals true"]:::fn
-  AUTH["script draft<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: plan, registry, shots, images, brand (+ previous script + instruction)<br/>out: ScriptOut · segments › lines {text, visual, fact_ids, card}, checkin, deeper, closing, intake q1/q2"]:::agent
-  VAL["grounding validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified"]:::fn
+  GO["POST /api/demos/id/build<br/>[FUNCTION] gate: all 5 approvals true"]:::fn
+  AUTH["script draft (principles + say/show/translate/confirm)<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: plan, registry, shots, images, brand, language (+ previous script + instruction)<br/>out: ScriptOut · intro + outcome (standard opening) + proof blocks + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper; closing = advance"]:::agent
+  VAL["grounding + pacing validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified · intro+outcome ≤ 260 words · proof block ≤ 165 words · proof needs a CONFIRM question"]:::fn
   ISS{"issues > 0?"}:::dec
   FIX["one repair pass<br/>[AGENT · claude-opus-5]<br/>in: draft + issue list · out: full script"]:::agent
   VAL2["re-validate<br/>[FUNCTION] remaining offenders stay unverified → excluded from voice & bundle, listed on Facts card"]:::fn
@@ -13,6 +13,7 @@ flowchart TD
   QGEN["likely customer questions<br/>[AGENT · claude-opus-5]<br/>in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)"]:::agent
   QA["answer each via qa.answer<br/>[AGENT · claude-opus-5 + FUNCTION validator]<br/>see diagram 05 · one paid call per question"]:::agent
   COV["coverage = answered / N · gaps list<br/>[FUNCTION] → rehearsal.json"]:::fn
+  SCORE["demo scorecard<br/>[AGENT · claude-opus-5 · judge]<br/>in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes"]:::agent
   BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script<br/>out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns; version++"]:::fn
   READY["status ready · SSE phase_done build<br/>[term]"]:::term
 
@@ -22,7 +23,7 @@ flowchart TD
   SJ --> PROV
   PROV -- "gemini / gcloud" --> TTS --> QGEN
   PROV -- "browser" --> BROWSER --> QGEN
-  QGEN --> QA --> COV --> BUN --> READY
+  QGEN --> QA --> COV --> SCORE --> BUN --> READY
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

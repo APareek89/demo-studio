@@ -10,7 +10,7 @@ flowchart TD
   FACTS["fact registry + brand + product<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: all documents + product hint (+ previous registry + revision instruction)<br/>out: FactsOut · facts with source ref/locator/quote, unknowns, brand"]:::agent
   FIDS["assign F001.. / U01.. · keep human edits<br/>[FUNCTION]"]:::fn
   UND["understanding.json<br/>[DATA]"]:::data
-  PLAN["demo plan<br/>[AGENT · claude-opus-5]<br/>in: registry, shots, images, brand, URL (+ previous plan)<br/>out: Plan · persona, concerns, 6-10 segments, CTAs, voice brief, visual gaps, intake"]:::agent
+  PLAN["demo plan (sales principles P01-P10 in prompt)<br/>[AGENT · claude-opus-5]<br/>in: registry, shots, images, brand, URL, language (+ previous plan)<br/>out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if"]:::agent
   PVAL["drop refs that don't exist<br/>[FUNCTION · plan.run]<br/>fact_ids ⊆ registry · visual_refs ⊆ shots∪images"]:::fn
   PJ["plan.json<br/>[DATA]"]:::data
   SAMPLE["voice sample<br/>[LIBRARY · Gemini TTS (or gcloud/browser)]<br/>in: voice.sample_line · out: audio/hash.wav"]:::data

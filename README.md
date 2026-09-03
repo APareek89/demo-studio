@@ -7,7 +7,7 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 # one-time
 python3 -m venv .venv
 .venv/bin/python -m pip install --prefer-binary --only-binary=cryptography -r requirements.txt
-cp .env.example .env   # add ANTHROPIC_API_KEY and GEMINI_API_KEY
+cp .env.example .env   # add ANTHROPIC_API_KEY, GEMINI_API_KEY and (for Indian-language speech) SARVAM_API_KEY
 
 # run
 .venv/bin/uvicorn server.app:app --port 8877
@@ -21,6 +21,8 @@ schema-shaped fake outputs (plumbing only, no intelligence).
 *Reading your sources…* → **Align** (approve Visuals · Facts · Persona & voice · Calls to action
 through the prompt dock) → *Building your demo…* → **Rehearse** (run it as the customer, give
 feedback, it rebuilds).
+
+Speech: Sarvam (Bulbul TTS + Saarika STT) is primary when its key is set, Gemini falls back, then the browser voice.
 
 Everything a demo produces lives in `data/demos/<id>/` as JSON + media. Facts carry citations; the
 guide can only say what's in the registry ("no citation, no claim"), at authoring and at runtime.

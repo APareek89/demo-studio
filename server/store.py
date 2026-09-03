@@ -21,7 +21,7 @@ _locks: dict[str, threading.Lock] = {}
 _locks_guard = threading.Lock()
 
 STAGES = ["understand", "plan", "author", "voice", "rehearsal", "bundle"]
-CARDS = ["visuals", "facts", "persona", "ctas"]
+CARDS = ["visuals", "facts", "pitch", "persona", "ctas"]
 
 KIND_BY_EXT = {
     ".mp4": "video", ".mov": "video", ".webm": "video", ".m4v": "video",
@@ -62,7 +62,7 @@ def exists(demo_id: str) -> bool:
 def new_demo(name: str) -> dict:
     demo_id = "dm_" + secrets.token_hex(4)
     d = demo_dir(demo_id)
-    for sub in ("sources", "audio", "sessions", "logs"):
+    for sub in ("sources", "audio", "sessions", "logs", "leads"):
         (d / sub).mkdir(parents=True, exist_ok=True)
     demo = {
         "id": demo_id,
@@ -78,7 +78,7 @@ def new_demo(name: str) -> dict:
         "settings": {
             "tts_provider": config.TTS_PROVIDER,
             "voice_name": config.GEMINI_TTS_VOICE if config.TTS_PROVIDER == "gemini" else config.GCLOUD_TTS_VOICE,
-            "language": "en-IN",
+            "language": "en-IN",  # en-IN | hinglish | hi-IN | ta-IN | te-IN | kn-IN | mr-IN | bn-IN | gu-IN | ml-IN | pa-IN
             "rehearsal_questions": config.REHEARSAL_QUESTIONS,
         },
         "running": None,

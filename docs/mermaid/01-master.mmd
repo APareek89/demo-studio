@@ -6,10 +6,10 @@ flowchart TD
   READ["READ phase (thread)<br/>[FUNCTION · orchestrator._read]<br/>Understand → Plan → voice sample → opening message<br/>see diagram 02"]:::fn
   SSE["GET /api/demos/id/events<br/>[FUNCTION · SSE, polls events.py every 0.35 s]<br/>out: progress / stage / status / message / phase_done"]:::fn
   OVER1["UI overlay<br/>'Reading your sources…'<br/>[FUNCTION · web/studio/align.js]"]:::term
-  CARDS["Align: 4 cards<br/>Visuals · Facts · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json]"]:::data
+  CARDS["Align: 5 cards<br/>Visuals · Facts · Pitch · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json]"]:::data
   DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
   ALIGN["Align loop<br/>[AGENT · claude-opus-5 → actions]<br/>see diagram 03"]:::agent
-  APPR{"all 4 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
+  APPR{"all 5 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
   BUILD["BUILD phase (thread)<br/>[FUNCTION · orchestrator._build]<br/>Author → Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data

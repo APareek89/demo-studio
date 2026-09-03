@@ -16,7 +16,17 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
-TTS_PROVIDER = os.getenv("TTS_PROVIDER", "gemini").strip() or "gemini"
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
+SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v2").strip() or "bulbul:v2"
+SARVAM_STT_MODEL = os.getenv("SARVAM_STT_MODEL", "saarika:v2.5").strip() or "saarika:v2.5"
+# Speech: Sarvam is primary for the Indian context when its key is present; Gemini / Cloud TTS / browser fall back.
+_default_tts = "sarvam" if SARVAM_API_KEY else "gemini"
+TTS_PROVIDER = os.getenv("TTS_PROVIDER", "").strip() or _default_tts
+if TTS_PROVIDER == "sarvam" and not SARVAM_API_KEY:
+    TTS_PROVIDER = "gemini"
+STT_PROVIDER = os.getenv("STT_PROVIDER", "").strip() or ("sarvam" if SARVAM_API_KEY else "browser")
+if STT_PROVIDER == "sarvam" and not SARVAM_API_KEY:
+    STT_PROVIDER = "browser"
 MOCK_LLM = os.getenv("MOCK_LLM", "").strip() == "1"  # schema-shaped fake outputs, no keys, no spend
 
 CLAUDE_MODEL = "claude-opus-5"
@@ -37,7 +47,9 @@ def health() -> dict:
         "anthropic": bool(ANTHROPIC_API_KEY),
         "gemini": bool(GEMINI_API_KEY),
         "gcloud_tts": bool(GCLOUD_TTS_API_KEY),
+        "sarvam": bool(SARVAM_API_KEY),
         "tts_provider": TTS_PROVIDER,
+        "stt_provider": STT_PROVIDER,
         "mock": MOCK_LLM,
         "claude_model": CLAUDE_MODEL,
         "gemini_model": GEMINI_MODEL,

@@ -13,6 +13,8 @@ export function renderSources(ctx) {
   const uploading = h("span", { class: "uploading" });
   const nameIn = h("input", { value: demo.product?.name || demo.name || "" });
   const urlIn = h("input", { value: demo.product?.url || "", placeholder: "https://… product page" });
+  const LANGS = [["en-IN", "Indian English"], ["hinglish", "Hinglish"], ["hi-IN", "Hindi"], ["ta-IN", "Tamil"], ["te-IN", "Telugu"], ["kn-IN", "Kannada"], ["mr-IN", "Marathi"], ["bn-IN", "Bengali"], ["gu-IN", "Gujarati"], ["ml-IN", "Malayalam"], ["pa-IN", "Punjabi"]];
+  const langSel = h("select", { onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { language: langSel.value } }); toast("Demo language: " + langSel.selectedOptions[0].textContent); } catch (e) { toast(e.message, true); } } }, ...LANGS.map(([v, l]) => h("option", { value: v, selected: v === (demo.settings?.language || "en-IN") }, l)));
   const readBtn = h("button", { class: "btn primary", onclick: startRead }, "Read sources →");
 
   async function refreshList() {
@@ -66,7 +68,7 @@ export function renderSources(ctx) {
   area.replaceChildren(h("div", { class: "sources" },
     h("h1", {}, "Sources"),
     h("p", { class: "lede" }, "Give the agent what a good salesperson would have: footage or photos of the product, the catalogue with the numbers, and how the brand likes to speak. It reads everything and shows you what it found before anything is built."),
-    h("div", { class: "form-row" }, h("div", {}, h("label", {}, "Product name"), nameIn), h("div", {}, h("label", {}, "Product page URL"), urlIn)),
+    h("div", { class: "form-row", style: "grid-template-columns:1fr 1.4fr .7fr" }, h("div", {}, h("label", {}, "Product name"), nameIn), h("div", {}, h("label", {}, "Product page URL"), urlIn), h("div", {}, h("label", {}, "Demo language"), langSel)),
     h("div", { class: "src-grid" }, ...ZONES.map(zone)),
     list,
     h("div", { class: "src-actions" },

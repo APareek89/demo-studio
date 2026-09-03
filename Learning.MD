@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+### 2026-09-03 — Mock pitch planner returned an empty route (every script segment was "intro")
+
+**Symptom:** `evals/smoke_mock.py` failed at `/run/pitch`: `route: []` even though the script had 3 segments.
+**Why 1:** The pitch planner only routes through segments whose role is `proof` or `establish`; all mock segments had role `intro`.
+**Why 2:** `mock._fake_value` returned the FIRST Literal value for every `Literal` field, and the name-based overrides ran after the Literal branch, so `role` never reached them.
+**Why 3:** The mock generator was written before roles existed and was never given a notion of "a realistic mix" for list items.
+**Deepest why type:** `code`
+**Action taken:** Literal fields now honour a small preference map (`role→proof`, `step→say`, …) and segment lists get a realistic role cycle (intro, outcome, proof, establish, proof); route steps point at real segment ids. Targets Why 2.
+**Preventive action:** When a schema gains a `Literal` field whose *first* value is a degenerate default, add it to `mock.py`'s preference map in the same change — Loop.MD eval 8 checks the mock route is non-empty.
+
 ### 2026-09-03 — pip could not install `cryptography` (built from source, Rust failed)
 
 **Symptom:** `pip install -r requirements.txt` failed with `error[E0463]: can't find crate for core` while building `cryptography`.

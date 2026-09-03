@@ -11,13 +11,14 @@ from .. import schemas, store
 from ..llm import claude
 from .bundle import media_url
 
-CARD_ORDER = ["visuals", "facts", "persona", "ctas"]
-CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "persona": "Persona & voice", "ctas": "Calls to action"}
+CARD_ORDER = ["visuals", "facts", "pitch", "persona", "ctas"]
+CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "pitch": "Pitch", "persona": "Persona & voice", "ctas": "Calls to action"}
 
 ALIGN_SYSTEM = """You are the alignment agent inside Demo Studio. A brand user is reviewing what the pipeline produced
-for their product demo, in four cards: Visuals (video shots + images the demo will use, and visual gaps),
-Facts (the fact registry with citations, and open unknowns), Persona & voice (who the guide is, how it sounds,
-a sample audio), Calls to action (buttons shown in the demo). They approve each card, or say what is wrong.
+for their product demo, in five cards: Visuals (video shots + images the demo will use, and visual gaps),
+Facts (the fact registry with citations, and open unknowns), Pitch (decision frame, takeaway, primary outcome, USPs,
+standard opening + proof blocks, advance, when-not-to-recommend — edits here are revise('plan', …)), Persona & voice
+(who the guide is, how it sounds, a sample audio), Calls to action (buttons shown in the demo). They approve each card, or say what is wrong.
 
 You return ONE reply for the user and a list of ACTIONS for the orchestrator. Actions:
 - approve(card) — ONLY when the user clearly approves that card ("looks good", "approve", "yes go ahead"). Never approve on your own.
@@ -29,7 +30,7 @@ You return ONE reply for the user and a list of ACTIONS for the orchestrator. Ac
 - set_voice(voice_name, persona_description, tone) — voice_name one of Sulafat, Aoede, Leda, Despina, Kore, Achernar, Zephyr; fill only what changes.
 - request_upload(upload_kind, reason) — when the right fix is more material (a missing image, the spec sheet).
 - resolve_unknown(unknown_id) — when the user says an unknown is irrelevant or now answered (pair with edit_fact/revise as needed).
-- build() — only when all four cards are approved AND the user asks to build/proceed/finish.
+- build() — only when all five cards are approved AND the user asks to build/proceed/finish.
 - answer — a question that changes nothing.
 Rules: never invent product facts yourself — route corrections through edit_fact/revise. If the user attached files,
 the orchestrator has ALREADY added them as sources; if they are meant to fix facts or visuals, emit revise('understand', …)
@@ -60,6 +61,7 @@ def cards(demo_id: str) -> dict:
         "persona": {**voice, "sample_audio": media_url(demo_id, plan.get("voice_sample_audio")), "brand": und.get("brand", {}),
                     "provider": demo.get("settings", {}).get("tts_provider"), "voice_name": demo.get("settings", {}).get("voice_name")},
         "ctas": plan.get("ctas", []),
+        "pitch": {k: plan.get(k) for k in ("decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "usps", "advance", "do_not_recommend_if", "state_questions", "customer_persona")} | {"segments": [{"id": s["id"], "title": s["title"], "role": s.get("role", "proof"), "outcome": s.get("outcome", ""), "usp_ids": s.get("usp_ids", [])} for s in plan.get("segments", [])], "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard")},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),
         "stages": demo.get("stages", {}),
@@ -87,6 +89,7 @@ def _cards_text(c: dict) -> str:
         f"SOURCES: " + "; ".join(f"{s['id']} {s['kind']} {s['name']} role={s.get('role')}" for s in f["sources"]),
         f"PERSONA & VOICE: {json.dumps({k: p.get(k) for k in ('persona_name', 'persona_description', 'tone', 'suggested_voice', 'sample_line')})} provider={p.get('provider')} voice={p.get('voice_name')}",
         f"CTAS: {json.dumps(c['ctas'])}",
+        f"PITCH: {json.dumps({k: c['pitch'].get(k) for k in ('decision_frame','takeaway','primary_outcome','supporting_outcomes','advance','do_not_recommend_if')})} usps={[u['name'] for u in (c['pitch'].get('usps') or [])]} segments={[(s['id'], s['role']) for s in c['pitch']['segments']]} language={c['pitch'].get('language')}",
         f"PLAN: persona={c['plan']['customer_persona']} segments={[s['id'] for s in c['plan']['segments']]} concerns={[x['topic'] for x in c['plan']['concerns']]}",
     ]
     if f.get("gaps"):
@@ -148,9 +151,12 @@ def card_prompt(demo_id: str, card: str) -> str:
     if card == "facts":
         f = c["facts"]
         return f"Next, the Facts card: {len(f['facts'])} facts, each with a source. Check the ones that matter most — prices, warranty, headline specs. Tell me any that are wrong and I'll fix the registry; {len([u for u in f['unknowns'] if u['status']=='open'])} open questions are listed too — upload material for any you want covered."
+    if card == "pitch":
+        pt = c["pitch"]
+        return f"Next, the Pitch card — the sales logic. Decision frame: “{pt.get('decision_frame','')}” Takeaway: “{pt.get('takeaway','')}” It proves “{pt.get('primary_outcome','')}” first, with {len(pt.get('usps') or [])} USPs, and closes on: “{pt.get('advance','')}”. Approve, or tell me what the pitch should lead with, drop, or promise differently."
     if card == "persona":
         p = c["persona"]
         return f"Next, Persona & voice: the guide is “{p.get('persona_name','')}” — {p.get('tone','')} There's a sample line to listen to. Approve, or tell me how it should sound (warmer, more formal, a different voice)."
     if card == "ctas":
         return "Last card: the calls to action shown during the demo — " + ", ".join(f"“{x['label']}”" for x in c["ctas"]) + ". Confirm these, or tell me the buttons and links you want."
-    return "All four cards are approved. Say “build the demo” and I'll write the script, record the narration, rehearse it against likely customer questions and open the playground."
+    return "All five cards are approved. Say “build the demo” and I'll write the script, record the narration, rehearse it against likely customer questions and open the playground."
