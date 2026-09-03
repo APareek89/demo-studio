@@ -36,7 +36,9 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
   Q/expected-A table with AI pre-fill → demo-mode evals with a Claude grader → insights by decline category → Take Action → additions-only
   rebuild → before/after). Playground QA on existing demos passed 2026-09-03 (docs/qa/playground-2026-09-03.md); answer latency outliers of
   17–26 s on decline paths are worth a look (soft-JSON path with long reasoning).
-- 🤖 AGENT: FMEA full scan of the 2026-09-03 batch → docs/FMEA-2026-09-03.md (two runs died on API limits; third run launched 20:20).
+- ✅ FMEA scan done in-session (docs/FMEA-2026-09-03.md): 1 P0 + 3 P1 fixed the same evening (translation figure guard, trace PII
+  redaction + TRACE_CAPTURE, breaker hard/soft classes, eval double-click guard); 14 P2 items tracked there — next: trace rotation,
+  streamed uploads, settings snapshot at build, language-code allow-list, route trim to 480 words.
 - 🧑 USER: open http://localhost:8877 (server: `.venv/bin/uvicorn server.app:app --port 8877`) → Rehearse on `dm_f79d9170`
   (images, English + Hindi) and `dm_78890026` (video); judge the 3-minute shape and the plain-language narration. Numbers in `docs/QA-2026-09-03.md`.
 - 🧑 USER: decide (a) competitor comparisons policy (default OFF); (b) "use in demo" default for uploaded video (ON).

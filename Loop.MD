@@ -57,6 +57,7 @@ rebuilds the demo.
 | 19 | `GET …/trace` after a mock build; open the Observability tab | stages carry `seconds`; rows exist (mock Claude calls are traced); clicking a row reveals system prompt / input / response |
 | 20 | `author.validate` on a script whose intro says "3.4 kWh … 15A … IDC" with audience=everyday | issue list names the jargon term and asks for plain language; route > 480 words is reported as over budget |
 | 21 | Monkeypatch `sarvam.tts` to raise `RuntimeError("sarvam tts 402: No credits")`, call `voice.render_line` twice (mock off, gemini key present) | first call falls through to Gemini and trips sarvam; second call skips sarvam without calling it; `GET /api/voices` lists `unavailable.sarvam`; the voice stage log says "sarvam is unavailable … top up, then rebuild" |
+| 22 | `translate._keeps_numbers("145 km certified, Rs 1,24,990", "१४५ किमी प्रमाणित, ₹1,24,990")` is True; with "१४० किमी" it is False; a mock build with languages en-IN + hi-IN reports 0 "kept in the main language" | translated lines keep every source figure; a changed figure keeps the English line and is counted in `logs/translate` |
 
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |

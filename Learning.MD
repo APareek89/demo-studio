@@ -105,3 +105,13 @@
 **Deepest why type:** `design`
 **Action taken:** Sarvam client backs off on 429/5xx (1.5 s → 3 s → 6 s); default `VOICE_WORKERS` 3; a sequential second pass re-records lines that failed under parallel load; every provider failure in the chain is traced (`gemini-tts` / `gcloud-tts` rows with the error). The two lines of `dm_78890026` were re-rendered and the bundle rebuilt (v2, 30/30). Targets Why 2 and Why 3.
 **Preventive action:** Any parallelisation of a paid provider ships with (a) back-off on 429, (b) a sequential retry pass, (c) a trace row per failure — and the stage log must state "N lines on browser voice" rather than "Narration ready". Loop.MD eval 21 covers the provider-failure path.
+
+### 2026-09-03 — FMEA found the grounding rule bypassed in every extra language
+
+**Symptom:** The in-session FMEA scan (three subagent runs died on API 429/529) scored one P0: translated scripts are voiced without re-validation, so a Hindi line can carry a figure the registry never certified.
+**Why 1:** `translate.py` copies the English script, swaps text per line id and keeps the fact_ids — the ids stay valid, the words don't have to.
+**Why 2:** The grounding validator (`author.validate`) is tied to the authoring stage and English regexes; nobody re-ran it for translations because the "same ids" felt like the same script.
+**Why 3:** Multi-language was added as a voice feature, not as a content feature — the checklist for "new content path → validator" wasn't applied.
+**Deepest why type:** `design`
+**Action taken:** Every translated line must keep exactly the digit groups of its source (Indian-script numerals normalised, separators stripped); a line that changes a number is kept in the main language and counted ("N lines kept in the main language"). Also from the scan: PII redaction + `TRACE_CAPTURE=meta` for traces, hard/soft breaker classes (transient quota → 90 s, account failures → 10 min), an in-flight guard on the Playground eval buttons. Targets Why 2.
+**Preventive action:** Any stage that produces spoken text — author, translate, runtime bridges, Q&A — runs a figure check against its source before voice. Loop.MD eval 22 covers translation; the FMEA report `docs/FMEA-2026-09-03.md` carries the 14 P2 items.

@@ -38,7 +38,9 @@ export async function renderPlayground({ main, navigate, demoId }) {
   const evIn = h("textarea", { style: "min-height:130px", placeholder: "One question per line. Leave empty and click “Generate 12 & run” to let the agent write them." }, seed.join("\n"));
   const evOut = h("div", { class: "pg-out" }); const evHist = h("div", { class: "small muted" });
   async function loadHist() { try { const hs = await api.get(`/api/demos/${id}/evals`); rc(evHist, ...hs.slice(0, 6).map((e) => h("div", { class: "sess" }, h("span", {}, e.label || e.id, h("span", { class: "muted" }, ` · ${e.n} q`)), h("span", { class: "mono" }, `${Math.round((e.coverage || 0) * 100)}%`, e.at ? " · " + fmtTime(e.at) : "")))); } catch (e) {} }
+  let evBusy = false; const evBtns = [];
   async function runEvals(generate) {
+    if (evBusy) return; evBusy = true; evBtns.forEach((b) => { b.disabled = true; }); try {
     const qs = evIn.value.split("\n").map((s) => s.trim()).filter(Boolean);
     if (!generate && !qs.length) { toast("Add questions first, or generate them", true); return; }
     rc(evOut, h("div", { class: "muted mono small" }, `running ${generate ? "12 generated" : qs.length} questions — one paid call each…`));
@@ -49,9 +51,10 @@ export async function renderPlayground({ main, navigate, demoId }) {
         h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, ""), h("th", {}, "question"), h("th", {}, "answer"), h("th", {}, "facts"))), h("tbody", {}, ...r.results.map((x) => h("tr", {}, h("td", {}, x.answered ? "✓" : "✗"), h("td", {}, x.question), h("td", { class: "small" }, (x.answer || "").slice(0, 140), x.escalate ? h("div", { style: "color:var(--warn)" }, "→ ", x.escalate.slice(0, 80)) : null), h("td", { class: "src" }, (x.fact_ids || []).join(", ")))))));
       loadHist();
     } catch (e) { rc(evOut, h("div", { class: "small", style: "color:var(--bad)" }, e.message)); }
+    } finally { evBusy = false; evBtns.forEach((b) => { b.disabled = false; }); }
   }
   grid.append(h("div", { class: "box" }, h("h3", {}, "Evals"), h("p", { class: "small muted", style: "margin:0 0 8px" }, "Every question runs through the real Q&A; ✗ means the guide declined because the sources don't say. Each question is a paid call."), evIn,
-    h("div", { style: "display:flex;gap:8px;margin-top:8px;flex-wrap:wrap" }, h("button", { class: "btn primary", onclick: () => runEvals(false) }, "Run these"), h("button", { class: "btn", onclick: () => runEvals(true) }, "Generate 12 & run")), evOut, h("p", { class: "eyebrow", style: "margin:12px 0 4px" }, "history"), evHist));
+    h("div", { style: "display:flex;gap:8px;margin-top:8px;flex-wrap:wrap" }, evBtns[0] = h("button", { class: "btn primary", onclick: () => runEvals(false) }, "Run these"), evBtns[1] = h("button", { class: "btn", onclick: () => runEvals(true) }, "Generate 12 & run")), evOut, h("p", { class: "eyebrow", style: "margin:12px 0 4px" }, "history"), evHist));
   loadHist();
 
   // ---------- Cost ----------

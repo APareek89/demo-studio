@@ -37,6 +37,21 @@ class TScript(BaseModel):
     intake_q2: str
 
 
+_DIGIT_MAP = {ord(c): str(i) for digits in ("०१२३४५६७८९", "০১২৩৪৫৬৭৮৯", "௦௧௨௩௪௫௬௭௮௯", "౦౧౨౩౪౫౬౭౮౯", "೦೧೨೩೪೫೬೭೮೯", "൦൧൨൩൪൫൬൭൮൯", "૦૧૨૩૪૫૬૭૮૯", "੦੧੨੩੪੫੬੭੮੯") for i, c in enumerate(digits)}
+
+
+def _numbers(text: str) -> list[str]:
+    """Digit groups in a line, with Indian-script numerals normalised and thousands separators removed."""
+    import re
+    t = (text or "").translate(_DIGIT_MAP)
+    t = re.sub(r"(?<=\d)[,\s](?=\d{2,3}\b)", "", t)
+    return sorted(re.findall(r"\d+(?:\.\d+)?", t))
+
+
+def _keeps_numbers(src: str, dst: str) -> bool:
+    return _numbers(src) == _numbers(dst)
+
+
 def script_path(lang: str) -> str:
     return f"script.{lang}.json"
 
@@ -95,23 +110,33 @@ def translate(demo_id: str, lang: str, emit) -> dict:
     for l in t.closing:
         tmap[l.id] = l.text
     missing = 0
+    kept = 0  # lines whose translation changed a figure — kept in the source language (no citation, no claim)
+
+    def take(ln: dict) -> None:
+        nonlocal missing, kept
+        t = tmap.get(ln["id"])
+        if not t:
+            missing += 1
+            return
+        if not _keeps_numbers(ln["text"], t):
+            kept += 1
+            ln["kept_source"] = True
+            return
+        ln["text"] = t
+
     for seg in out["segments"]:
         seg["title"] = tmap.get(f"title:{seg['id']}") or seg["title"]
         if seg.get("checkin"):
-            seg["checkin"] = tmap.get(f"checkin:{seg['id']}") or seg["checkin"]
+            seg["checkin"] = tmap[f"checkin:{seg['id']}"] if _keeps_numbers(seg["checkin"], tmap.get(f"checkin:{seg['id']}") or "") and tmap.get(f"checkin:{seg['id']}") else seg["checkin"]
         for ln in seg["lines"] + seg.get("deeper", []):
-            if tmap.get(ln["id"]):
-                ln["text"] = tmap[ln["id"]]
-            else:
-                missing += 1
+            take(ln)
     for ln in out.get("closing", []):
-        if tmap.get(ln["id"]):
-            ln["text"] = tmap[ln["id"]]
-        else:
-            missing += 1
+        take(ln)
+    if kept:
+        emit(f"{kept} line(s) kept in the main language: the translation changed a number, and only registry figures may be spoken.")
     out["intake_q1"], out["intake_q2"] = t.intake_q1 or out["intake_q1"], t.intake_q2 or out["intake_q2"]
     if missing:
         emit(f"{missing} line(s) came back untranslated — kept in the main language.")
     store.write_json(demo_id, script_path(lang), out)
-    store.log(demo_id, "translate", {"language": lang, "missing": missing})
+    store.log(demo_id, "translate", {"language": lang, "missing": missing, "kept_source": kept})
     return out

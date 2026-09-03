@@ -82,7 +82,9 @@ def _gcloud(text: str, voice: str) -> tuple[bytes, str]:
 # being retried on every line (it failed 10× in a row on 2026-09-03 when Sarvam ran out of credits).
 _TRIPPED: dict[str, tuple[float, str]] = {}
 _TRIP_SECONDS = 600
-_TRIP_MARKERS = ("402", "insufficient_quota", "no credits", "quota", "401", "403", "invalid api key", "unauthorized")
+_HARD_MARKERS = ("402", "insufficient_quota", "no credits", "invalid api key", "unauthorized", " 401", " 403")  # account-level: 10 min
+_SOFT_MARKERS = ("quota", "rate limit", "resource_exhausted")  # transient windows: 90 s
+_SOFT_SECONDS = 90
 
 
 def _tripped(provider: str) -> bool:
@@ -97,8 +99,10 @@ def _tripped(provider: str) -> bool:
 
 def _maybe_trip(provider: str, err: Exception) -> None:
     msg = str(err).lower()
-    if any(m in msg for m in _TRIP_MARKERS):
+    if any(m in msg for m in _HARD_MARKERS):
         _TRIPPED[provider] = (time.time() + _TRIP_SECONDS, str(err)[:160])
+    elif any(m in msg for m in _SOFT_MARKERS):
+        _TRIPPED[provider] = (time.time() + _SOFT_SECONDS, str(err)[:160])
 
 
 def tripped_providers() -> dict[str, str]:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextvars
 import json
 import os
+import re
 import time
 
 from . import store
@@ -21,6 +22,15 @@ PRICES = {
     "sarvam-stt": {"per_min_inr": float(os.getenv("PRICE_SARVAM_STT_INR_MIN", "0.5")), "note": "assumed ₹/min — set PRICE_SARVAM_STT_INR_MIN"},
 }
 FX_INR = float(os.getenv("FX_INR", "84"))
+TRACE_CAPTURE = os.getenv("TRACE_CAPTURE", "full").strip().lower()  # full | meta (meta = lengths only, no prompt text)
+_PHONE = re.compile(r"(?<!\d)[6-9]\d(?:[\s-]?\d){8}(?!\d)")  # 10-digit Indian mobiles, with or without spaces/dashes
+_EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
+
+
+def _redact(text: str, limit: int = 6000) -> str:
+    t = (text or "")[:limit]
+    return _EMAIL.sub("[email]", _PHONE.sub("[phone]", t))
+
 
 
 def record(kind: str, model: str, *, input_tokens: int = 0, output_tokens: int = 0, chars: int = 0, seconds: float = 0.0, demo_id: str | None = None, stage: str | None = None) -> None:
@@ -45,7 +55,9 @@ def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: s
         return
     row = {"t": time.time(), "stage": stage or current_stage.get(), "kind": kind, "model": model, "latency_ms": round(latency_ms),
            "in": int(input_tokens or 0), "out": int(output_tokens or 0), "chars": int(chars or 0),
-           "system": (system or "")[:6000], "user": (user or "")[:6000], "response": (response or "")[:6000], "error": (error or "")[:400]}
+           "system": (system or "")[:6000] if TRACE_CAPTURE == "full" else f"[{len(system or '')} chars]",
+           "user": _redact(user) if TRACE_CAPTURE == "full" else f"[{len(user or '')} chars]",
+           "response": _redact(response) if TRACE_CAPTURE == "full" else f"[{len(response or '')} chars]", "error": (error or "")[:400]}
     row["usd"] = round(_cost_usd({**row, "sec": 0}), 5)
     try:
         with store.path(demo_id, "trace.jsonl").open("a") as f:
