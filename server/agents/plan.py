@@ -6,7 +6,7 @@ import json
 
 from .. import schemas, store
 from ..llm import claude
-from .principles import CUSTOMER_STATES, PRINCIPLES, PROOF_BLOCK, language_instruction
+from .principles import CUSTOMER_STATES, PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, audience_instruction, language_instruction
 
 PLAN_SYSTEM = """You are the product-demo planner. You turn a fact registry and a set of visuals into the plan for a
 voice-led, interruptible demo that a prospective buyer watches on the brand's website. The demo is a
@@ -16,16 +16,19 @@ SALES conversation built to close on the next evidence-producing step, not a pro
 
 {states}
 
-Structure you must produce (this is the standard shape every demo follows):
-- decision_frame (P01), takeaway, primary_outcome + ≤2 supporting_outcomes (P05), 3-5 usps tied to facts.
+{shape}
+
+{audience}
+
+Structure you must produce:
+- decision_frame (P01), takeaway, primary_outcome + ≤2 supporting_outcomes (P05), 3-5 usps tied to facts — the USPs ARE the main pitch.
 - segments, in this order and with these roles:
-  1. role=intro — "Frame": the STANDARD OPENING, always played first, unchanged: the decision frame, the takeaway,
-     what the demo will prove, permission to proceed. ~45-60 seconds. No features yet.
-  2. role=outcome — "Act": the desired end state shown FIRST (P04), in the buyer's terms, with the best visual.
-     Together intro + outcome are the fixed first 1-2 minutes.
-  3. 3-6 × role=proof — "Map" blocks, one customer outcome each, each covering ≥1 USP or concern; say/show/translate/confirm.
-  4. role=establish — assumptions, written terms (warranty/service/support), the truth split, do_not_recommend_if.
-  The runtime planner picks and orders the proof blocks per buyer, so each must stand alone.
+  1. role=intro — the STANDARD OPENING, always played first, unchanged: the decision in one breath and what you'll show. ≤ 25 s. No features.
+  2. role=outcome — the end state FIRST (P04), in the buyer's routine, best visual. ≤ 30 s. intro + outcome together ≤ 60 s.
+  3. 3-5 × role=proof — main-pitch blocks, one per USP/pain point (the runtime plays the best 2-3 for this buyer, ~25 s each): pain → the feature that removes it → what it means daily.
+  4. exactly one role=features — "a few more things you'll like": 3-5 other features, one sentence each, no numbers unless decisive; ends by inviting questions.
+  5. role=establish — one short block: the honest condition (do_not_recommend_if), written terms in one line, service/support in one line.
+  Each block must stand alone; the runtime planner reorders proof blocks per buyer.
 - state_questions: the one follow-up question for an unknown buyer, a stated want, a stated need.
 - advance (P10): the next action naming a CTA label. do_not_recommend_if (P09).
 - A segment may only use facts that exist. If a concern has no facts, plan the segment to say so honestly — never invent.
@@ -71,7 +74,7 @@ IMAGES ({len(und['images'])}):
         content += f"\nPREVIOUS PLAN (keep what still works; change only what the instruction asks):\n{json.dumps(prev)[:24000]}\n"
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
-    sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
+    sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, shape=PITCH_SHAPE, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
     try:
         plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000)
     except Exception as e:
@@ -95,7 +98,10 @@ IMAGES ({len(und['images'])}):
         p["segments"][0]["role"] = "intro"
     if "outcome" not in roles and len(p["segments"]) > 1:
         p["segments"][1]["role"] = "outcome"
-    order = {"intro": 0, "outcome": 1, "proof": 2, "establish": 3}
+    if "features" not in roles and p["segments"]:
+        # guarantee the "a few more things" block exists
+        p["segments"].append({"id": "more-features", "title": "A few more things", "role": "features", "goal": "three to five other features, one sentence each, then invite questions", "outcome": "", "topic": "features", "fact_ids": [], "usp_ids": [], "visual_refs": [], "priority_topic": False})
+    order = {"intro": 0, "outcome": 1, "proof": 2, "features": 3, "establish": 4}
     p["segments"].sort(key=lambda s: order.get(s["role"], 2))
     p["supporting_outcomes"] = p["supporting_outcomes"][:2]
     if prev and instruction:

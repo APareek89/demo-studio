@@ -99,7 +99,10 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "rehearsal_questions", "competition")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes")}
+            if "languages" in allowed:
+                allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
+                allowed["language"] = allowed["languages"][0]
             d["settings"].update(allowed)
             if "voice_name" in allowed:
                 d["settings"]["voice_locked"] = True
@@ -115,6 +118,8 @@ async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), 
     added = []
     for f in files:
         data = await f.read()
+        if not data:
+            raise HTTPException(400, f"{f.filename} is empty (0 bytes) — export it again and re-upload")
         if len(data) > config.MAX_UPLOAD_MB * 1024 * 1024:
             raise HTTPException(413, f"{f.filename} is larger than {config.MAX_UPLOAD_MB} MB")
         try:
@@ -180,6 +185,12 @@ def faq_template(demo_id: str):
 def get_usage(demo_id: str):
     _demo_or_404(demo_id)
     return usage.summary(demo_id)
+
+
+@app.get("/api/demos/{demo_id}/trace")
+def get_trace(demo_id: str, limit: int = 300):
+    demo = _demo_or_404(demo_id)
+    return {"stages": demo.get("stages", {}), "rows": usage.traces(demo_id, limit), "usage": usage.summary(demo_id)}
 
 
 @app.get("/api/demos/{demo_id}/evals")
@@ -462,7 +473,7 @@ async def run_tts(demo_id: str, req: Request):
     if not text:
         raise HTTPException(400, "text required")
     try:
-        rel = voice.render_line(demo_id, text)
+        rel = voice.render_line(demo_id, text, lang=(body.get("language") or None))
     except Exception as e:
         raise HTTPException(502, str(e)[:300])
     return {"url": f"/media/{demo_id}/{rel}" if rel else None}

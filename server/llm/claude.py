@@ -5,6 +5,7 @@ import base64
 import json
 import mimetypes
 import re
+import time
 from pathlib import Path
 from typing import Any, TypeVar
 
@@ -47,10 +48,30 @@ def text_block(text: str) -> dict:
     return {"type": "text", "text": text}
 
 
-def _record(resp, kind: str = "claude") -> None:
+def _blocks_text(content) -> str:
+    if isinstance(content, str):
+        return content
+    out = []
+    for b in content or []:
+        if isinstance(b, dict):
+            if b.get("type") == "text":
+                out.append(b.get("text", ""))
+            elif b.get("type") == "document":
+                out.append("[pdf document]")
+            elif b.get("type") == "image":
+                out.append("[image]")
+    return "\n".join(out)
+
+
+def _record(resp, kind: str = "claude", *, t0: float | None = None, system: str = "", msgs: list | None = None, error: str = "") -> None:
     try:
-        u = resp.usage
-        usage.record(kind, config.CLAUDE_MODEL, input_tokens=(u.input_tokens or 0) + (getattr(u, "cache_read_input_tokens", 0) or 0) + (getattr(u, "cache_creation_input_tokens", 0) or 0), output_tokens=u.output_tokens or 0)
+        u = resp.usage if resp is not None else None
+        inp = ((u.input_tokens or 0) + (getattr(u, "cache_read_input_tokens", 0) or 0) + (getattr(u, "cache_creation_input_tokens", 0) or 0)) if u else 0
+        outp = (u.output_tokens or 0) if u else 0
+        usage.record(kind, config.CLAUDE_MODEL, input_tokens=inp, output_tokens=outp)
+        resp_text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text") if resp is not None else ""
+        last_user = _blocks_text(msgs[-1]["content"]) if msgs else ""
+        usage.trace(kind, config.CLAUDE_MODEL, latency_ms=(time.time() - t0) * 1000 if t0 else 0, system=system, user=last_user, response=resp_text, error=error, input_tokens=inp, output_tokens=outp)
     except Exception:
         pass
 
@@ -60,11 +81,14 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
     """One call, validated output. `content` is the user turn (blocks or plain text).
     soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit."""
     if config.MOCK_LLM:
-        return mock.fake(schema)
+        out = mock.fake(schema)
+        usage.trace("claude", "mock", latency_ms=5, system=system, user=(content if isinstance(content, str) else json.dumps(content)[:4000]), response=out.model_dump_json()[:4000])
+        return out
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
     if soft:
         return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout)
+    t0 = time.time()
     try:
         resp = client().messages.parse(
             model=config.CLAUDE_MODEL,
@@ -79,7 +103,7 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
         if "grammar" in str(e).lower() or "too large" in str(e).lower() or "schema" in str(e).lower():
             return _soft_structured(system, msgs, schema, max_tokens)
         raise
-    _record(resp, "claude-structured")
+    _record(resp, "claude-structured", t0=t0, system=system, msgs=msgs)
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     parsed = resp.parsed_output
@@ -99,8 +123,9 @@ def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens:
     sys2 = system + "\n\nOUTPUT FORMAT: return ONLY one JSON object — no markdown fences, no prose before or after — that validates against this JSON schema:\n" + json.dumps(schema.model_json_schema())
     kw = {"output_config": {"effort": effort}} if effort else {}
     c = client().with_options(timeout=timeout) if timeout else client()
+    t0 = time.time()
     resp = c.messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=msgs, **kw)
-    _record(resp, "claude-soft")
+    _record(resp, "claude-soft", t0=t0, system=system, msgs=msgs)
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     text = _extract_json("".join(b.text for b in resp.content if b.type == "text"))
@@ -109,8 +134,9 @@ def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens:
     except Exception as ve:  # one repair pass with the validation errors
         repair = msgs + [{"role": "assistant", "content": text[:120000]},
                          {"role": "user", "content": f"That JSON failed validation:\n{str(ve)[:3000]}\nReturn the corrected JSON object only."}]
+        t1 = time.time()
         resp2 = c.messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=repair, **kw)
-        _record(resp2, "claude-soft-repair")
+        _record(resp2, "claude-soft-repair", t0=t1, system=system, msgs=repair)
         text2 = _extract_json("".join(b.text for b in resp2.content if b.type == "text"))
         return schema.model_validate_json(text2)
 
@@ -120,8 +146,9 @@ def text(system: str, content: list[dict] | str, *, max_tokens: int = 4000, hist
         return "This is a mock reply — set real keys in .env to get the alignment agent."
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
+    t0 = time.time()
     resp = client().messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=system, messages=msgs)
-    _record(resp, "claude-text")
+    _record(resp, "claude-text", t0=t0, system=system, msgs=msgs)
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     return "".join(b.text for b in resp.content if b.type == "text").strip()

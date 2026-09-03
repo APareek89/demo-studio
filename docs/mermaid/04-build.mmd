@@ -1,28 +1,33 @@
-%% 04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle
+%% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
   GO["POST /api/demos/id/build<br/>[FUNCTION] gate: all 5 approvals true"]:::fn
-  AUTH["script draft (principles + say/show/translate/confirm)<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: plan, registry, shots, images, brand, language (+ previous script + instruction)<br/>out: ScriptOut · intro + outcome (standard opening) + proof blocks + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper; closing = advance"]:::agent
-  VAL["grounding + pacing validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified · intro+outcome ≤ 260 words · proof block ≤ 165 words · proof needs a CONFIRM question"]:::fn
+  AUTH["script draft (principles + PITCH_SHAPE + audience level)<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)<br/>out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one 'more features' block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance"]:::agent
+  VAL["grounding + pacing + plain-language validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue"]:::fn
   ISS{"issues > 0?"}:::dec
   FIX["one repair pass<br/>[AGENT · claude-opus-5]<br/>in: draft + issue list · out: full script"]:::agent
   VAL2["re-validate<br/>[FUNCTION] remaining offenders stay unverified → excluded from voice & bundle, listed on Facts card"]:::fn
   SJ["script.json<br/>[DATA] ids seg-L1.., version++"]:::data
-  PROV{"tts provider?<br/>[FUNCTION · voice.provider_for]<br/>gemini · gcloud · browser (no key)"}:::dec
-  TTS["render every line<br/>[LIBRARY · Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|text) → audio/*.wav|mp3<br/>0.25 s pause · stop after 4 failures"]:::data
+  PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>sarvam → gemini → gcloud → browser (no key)"}:::dec
+  TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>0.25 s pause · stop after 4 failures · every call traced (latency, chars)"]:::data
   BROWSER["voice_provider=browser<br/>[term] player speaks with Web Speech"]:::term
+  LANGS{"settings.languages<br/>has extra languages?"}:::dec
+  TRANS["translate script per extra language<br/>[AGENT · claude-opus-5 · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent
+  TTS2["render every translated line<br/>[LIBRARY · same chain, lang override]"]:::data
   QGEN["likely customer questions<br/>[AGENT · claude-opus-5]<br/>in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)"]:::agent
   QA["answer each via qa.answer<br/>[AGENT · claude-opus-5 + FUNCTION validator]<br/>see diagram 05 · one paid call per question"]:::agent
   COV["coverage = answered / N · gaps list<br/>[FUNCTION] → rehearsal.json"]:::fn
   SCORE["demo scorecard<br/>[AGENT · claude-opus-5 · judge]<br/>in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes"]:::agent
-  BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script<br/>out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns; version++"]:::fn
-  READY["status ready · SSE phase_done build<br/>[term]"]:::term
+  BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script (+ script.&lt;lang&gt;.json)<br/>out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns, languages + alt_languages; version++"]:::fn
+  READY["status ready · SSE phase_done build · stage seconds recorded for Observability<br/>[term]"]:::term
 
   GO --> AUTH --> VAL --> ISS
   ISS -- "yes" --> FIX --> VAL2 --> SJ
   ISS -- "no" --> SJ
   SJ --> PROV
-  PROV -- "gemini / gcloud" --> TTS --> QGEN
+  PROV -- "sarvam / gemini / gcloud" --> TTS --> LANGS
   PROV -- "browser" --> BROWSER --> QGEN
+  LANGS -- "yes" --> TRANS --> TTS2 --> QGEN
+  LANGS -- "no" --> QGEN
   QGEN --> QA --> COV --> SCORE --> BUN --> READY
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;

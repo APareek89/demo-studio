@@ -65,3 +65,16 @@ r = c.post(f"/api/demos/{i}/feedback", json={"message": "say the warranty before
 reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])), "scorecard", reh and reh.get("scorecard") and reh["scorecard"].get("total"))
 b2 = c.get(f"/api/demos/{i}/bundle").json(); assert b2.get("pitch") and "language" in b2, "bundle lacks pitch/language"; roles = [s["role"] for s in b2["segments"]]; print("roles", roles)
 print("SMOKE OK", i)
+# --- settings, multi-language, observability (added 2026-09-03) ---
+r = c.patch(f"/api/demos/{i}", json={"settings": {"audience": "everyday", "languages": ["en-IN", "hi-IN"], "pitch_minutes": 3}}); assert r.status_code == 200, r.text
+st = c.get(f"/api/demos/{i}").json()["demo"]["settings"]; assert st["languages"] == ["en-IN", "hi-IN"] and st["language"] == "en-IN" and st["audience"] == "everyday", st; print("settings ok", st["languages"], st["audience"])
+r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
+wait(i, "ready", 180)
+b3 = c.get(f"/api/demos/{i}/bundle").json(); assert b3.get("languages") == ["en-IN", "hi-IN"] and "hi-IN" in b3.get("alt_languages", {}), b3.get("languages"); alt = b3["alt_languages"]["hi-IN"]
+assert len(alt["segments"]) == len(b3["segments"]) and alt["segments"][0]["lines"][0]["text"].startswith("[hi-IN]"), alt["segments"][0]["lines"][0]; assert alt["segments"][0]["lines"][0]["audio"], "no hi-IN audio"; print("multi-language bundle ok: hi-IN", len(alt["segments"]), "segments, audio", bool(alt["segments"][0]["lines"][0]["audio"]))
+r = c.post(f"/api/demos/{i}/run/tts", json={"text": "नमस्ते", "language": "hi-IN"}); assert r.status_code == 200 and r.json()["url"], r.text; print("tts with language ok")
+tr = c.get(f"/api/demos/{i}/trace").json(); assert "stages" in tr and "rows" in tr and "usage" in tr, tr.keys(); assert any(v.get("seconds") is not None for v in tr["stages"].values()), tr["stages"]; print("trace ok: stages", {k: v.get("seconds") for k, v in tr["stages"].items()}, "rows", len(tr["rows"]))
+from server.agents import author
+und = store.read_json(i, "understanding.json"); bad = {"segments": [{"id": "s1", "role": "intro", "title": "t", "topic": "t", "lines": [{"id": "l1", "text": "It has a 3.4 kWh battery and 15A charging with IDC range.", "fact_ids": [], "visual": None, "card": "none"}], "checkin": "", "deeper": []}], "closing": [], "intake_q1": "", "intake_q2": ""}
+iss = author.validate(bad, und, "everyday"); assert any("jargon" in x.lower() or "kwh" in x.lower() for x in iss), iss; print("jargon check ok:", iss[:2])
+print("SMOKE OK (phase 2)", i)

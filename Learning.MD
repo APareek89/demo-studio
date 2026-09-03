@@ -64,3 +64,24 @@
 **Deepest why type:** `design`
 **Action taken:** `listen()` resolves empty on `not-allowed`, sets `micDenied`, and every voice prompt falls back to a typed input; check-ins keep tap chips. Verified the typed path in the pane.
 **Preventive action:** Any new voice interaction must have a typed/tap equivalent before it ships (Loop.MD eval 6).
+
+### 2026-09-03 — Approve buttons unreachable on four of five Align cards (user could not build a demo)
+
+**Symptom:** "There is no approve button anywhere except for the last one … I couldn't generate demo … what kind of QA is being done by you?" Only the last card's Approve was clickable; the user got through by typing "approve all" to the agent.
+**Why 1:** Approve/Feedback lived inside each card's *body*, and only the current card's body was open by default; opening another card pushed its body below the visible area.
+**Why 2:** The cards column could not scroll: it is a CSS-grid item, and a grid item's default `min-height:auto` lets it grow past the row instead of scrolling, so `overflow:auto` never engaged.
+**Why 3:** The browser QA of the Align screen was done at a viewport where all five closed cards fit, on a demo whose *first* card was the open one — the failing state (a later card opened, at a normal laptop height) was never exercised.
+**Why 4:** There was no click-through eval for the approval path; the smoke test approves via the API, which cannot see layout.
+**Deepest why type:** `process`
+**Action taken:** `.cards{min-height:0}` so the column scrolls; Approve / Un-approve moved into every card *head* (always visible), plus an "Approve all" button and an explicit note that anything not provided will not be answered. Targets Why 2 and Why 1.
+**Preventive action:** Every screen with a required action gets a browser click-through in the pane at 800×450 (the smallest realistic height), exercising the *non-default* state (last card, second tab, long list) — Loop.MD eval 16. API-level smoke never counts as UI QA.
+
+### 2026-09-03 — Fast-start remux silently skipped for every video ≤ 60 MB
+
+**Symptom:** The acceptance QA printed `Error opening output …/derived/…_play.mp4: No such file or directory`; the read stage still succeeded, so nobody noticed the remux never ran.
+**Why 1:** `prepare_video` created `derived/` only on the >60 MB proxy branch; the fast-start remux branch assumed the folder existed.
+**Why 2:** The remux path was never executed on this machine before today — ffmpeg was not installed until `imageio-ffmpeg` bundled it, and the mock smoke test uses images only.
+**Why 3:** The `except` around the ffmpeg steps emits a one-line notice and continues, which is right for the customer but hid the bug from the developer.
+**Deepest why type:** `code`
+**Action taken:** `play.parent.mkdir(parents=True, exist_ok=True)` before the remux; the acceptance QA (`evals/qa_accept.py`) now uploads a real 20 s MP4 so the path runs on every loop pass. Targets Why 1 and Why 2.
+**Preventive action:** Graceful-degradation branches must also *log to the trace* (not only emit), so a swallowed error is visible in Observability; any code path that writes to a derived folder does its own `mkdir`.

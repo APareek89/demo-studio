@@ -50,6 +50,11 @@ rebuilds the demo.
 | 13 | (EXAMPLE — replace me) `PATCH …/sources/{id} {use_in_demo:false}` then build | that source's visuals never appear in `bundle.json`; the registry still contains facts learned from it |
 | 14 | (EXAMPLE — replace me) `GET …/faq-template` | Markdown grouped by category with suggested documents; `POST …/evals {questions:[…]}` returns per-question ✓/✗ and is listed by `GET …/evals` |
 | 15 | (EXAMPLE — replace me) `GET …/usage` after one `/run/qa` | one `runtime` row with input/output tokens and a non-zero USD estimate |
+| 16 | UI click-through (mock server, pane at 800×450): open `#/studio/<id>/align`, click **Approve** in the head of the 2nd card, click a thumbnail, click **Approve all** | Approve/Un-approve visible in *every* card head without scrolling tricks; the cards column scrolls; lightbox opens and closes on click; all five approved; no console errors |
+| 17 | `MOCK_LLM=1 .venv/bin/python evals/qa_accept.py` (acceptance / failure QA) | 24/24: supported formats accepted (webp/png/jpg/avif/heic/mp4/mov/pdf/txt/docx), unsupported rejected 400 with the extension named, empty file 400, over-limit 413, corrupted media accepted and the READ stage still reaches `align`; path-traversal name stays inside the demo folder |
+| 18 | `PATCH …/ {settings:{languages:["en-IN","hi-IN"]}}` then build (mock) | `bundle.languages == [en-IN, hi-IN]`, `alt_languages.hi-IN` has the same segment count with its own audio; `/run/tts {language:"hi-IN"}` returns a URL; the player shows a language chooser before Start |
+| 19 | `GET …/trace` after a mock build; open the Observability tab | stages carry `seconds`; rows exist (mock Claude calls are traced); clicking a row reveals system prompt / input / response |
+| 20 | `author.validate` on a script whose intro says "3.4 kWh … 15A … IDC" with audience=everyday | issue list names the jargon term and asks for plain language; route > 480 words is reported as over budget |
 
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |

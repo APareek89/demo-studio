@@ -48,3 +48,34 @@ def language_instruction(code: str) -> str:
     if code in (None, "", "en-IN"):
         return "LANGUAGE: Indian English, spoken register."
     return f"LANGUAGE: write every spoken line in {name}. Product names, prices, units and fact ids stay exactly as in the registry. Spoken register, short clauses."
+
+
+PITCH_SHAPE = """DEMO SHAPE — a 3-minute pitch, then questions (the customer decides what goes deeper):
+- OPENING (≤ 60 s, fixed): frame the decision in one breath, then the outcome in the customer's life — e.g. "for a
+  fifteen-kilometre commute that's about a week between charges, on the certified figure". Signpost it:
+  "Let's start with what matters most to you —".
+- MAIN PITCH (60–90 s): the top two or three things that make this product the right choice — pain point first, then the
+  one feature that removes it, then what it means day to day. Signpost: "Now — what sets this one apart —".
+- MORE FEATURES (60–90 s, one block): three to five other things worth knowing, one sentence each, no numbers unless they
+  decide something. Signpost: "Quickly, a few more things you'll like —" and end with "ask me about any of these".
+- CLOSE (≤ 30 s): the honest condition ("I wouldn't recommend it if…"), the written terms in one line, the next step.
+Technical detail lives in the `deeper` layers and in Q&A — never in the main narration unless the customer asks.
+Every number spoken is translated into the customer's routine (days between charges, monthly cost, minutes of charging)."""
+
+SIGNPOSTS = ["Let's start with what matters most to you —", "Now — what sets this one apart —", "Here's the part people ask about first —",
+             "Quickly, a few more things you'll like —", "One honest caveat before you decide —", "So, where that leaves you —"]
+
+AUDIENCE = {
+    "everyday": """PLAIN LANGUAGE — the customer is not technical. NEVER say: IDC, kWh, kW, amp, 15A, torque, Nm, IP67, TFT, RPM, ABS, CBS,
+Li-ion, BMS, regen. Say instead: "certified on the standard test", "battery size", "the motor", "a normal household socket — the
+same plug point your geyser uses", "pulling power", "sealed against water and dust", "the screen", "the brakes". Keep only the
+numbers that decide (range, charging time, price, warranty) and translate each into daily life. Put technical detail in the
+`deeper` layer; in Q&A give the plain answer first and offer the detail.""",
+    "informed": """LANGUAGE — the customer knows the basics. Technical terms are fine with a two-word gloss the first time
+("IDC — the certified test range"). Still lead with what a number means for them, not the number.""",
+    "expert": """LANGUAGE — the customer is technical. Use the proper terms and test conditions; precision over warmth, no dumbing down.""",
+}
+
+
+def audience_instruction(level: str) -> str:
+    return AUDIENCE.get(level or "everyday", AUDIENCE["everyday"])

@@ -42,6 +42,29 @@ def build(demo_id: str, emit) -> dict:
         return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": visual(ln.get("visual")),
                 "fact_ids": ln.get("fact_ids", []), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
 
+    def assemble(sc: dict) -> dict:
+        segs = []
+        for seg in sc.get("segments", []):
+            splan = next((s for s in plan.get("segments", []) if s["id"] == seg["id"]), {})
+            segs.append({
+                "id": seg["id"], "title": seg["title"], "topic": seg["topic"], "priority": bool(splan.get("priority_topic")),
+                "role": seg.get("role", "proof"), "outcome": seg.get("outcome") or splan.get("outcome", ""), "usp_ids": seg.get("usp_ids") or splan.get("usp_ids", []),
+                "lines": [line(l) for l in seg["lines"] if not l.get("unverified")],
+                "checkin": {"text": seg.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))},
+                "deeper": [line(l) for l in seg.get("deeper", []) if not l.get("unverified")],
+            })
+        return {"segments": segs, "closing": [line(l) for l in sc.get("closing", [])],
+                "intake": {"q1": sc.get("intake_q1", ""), "q2": sc.get("intake_q2", ""), "audio": {k: media_url(demo_id, v) for k, v in (sc.get("intake_audio") or {}).items()}, "chips": plan.get("intake", {}).get("chips", [])},
+                "voice_provider": sc.get("voice_provider", "browser")}
+
+    main_lang = demo.get("settings", {}).get("language", "en-IN")
+    alt = {}
+    for lang in (demo.get("settings", {}).get("languages") or []):
+        if lang == main_lang:
+            continue
+        sc = store.read_json(demo_id, f"script.{lang}.json")
+        if sc:
+            alt[lang] = assemble(sc)
     segments = []
     for seg in script.get("segments", []):
         splan = next((s for s in plan.get("segments", []) if s["id"] == seg["id"]), {})
@@ -65,7 +88,7 @@ def build(demo_id: str, emit) -> dict:
         "closing": [line(l) for l in script.get("closing", [])],
         "ctas": plan.get("ctas", []),
         "pitch": {"decision_frame": plan.get("decision_frame", ""), "takeaway": plan.get("takeaway", ""), "primary_outcome": plan.get("primary_outcome", ""), "supporting_outcomes": plan.get("supporting_outcomes", []), "usps": plan.get("usps", []), "advance": plan.get("advance", ""), "do_not_recommend_if": plan.get("do_not_recommend_if", ""), "state_questions": plan.get("state_questions", [])},
-        "language": demo.get("settings", {}).get("language", "en-IN"),
+        "language": main_lang, "languages": [main_lang] + list(alt.keys()), "alt_languages": alt,
         "stt": {"provider": config.STT_PROVIDER},
         "facts": list(facts.values()),
         "cards": {"price": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in price_facts][:12],
@@ -80,5 +103,5 @@ def build(demo_id: str, emit) -> dict:
     def upd(d):
         d["version"] = b["version"]
     store.update(demo_id, upd)
-    emit(f"Bundle v{b['version']}: {len(segments)} segments, {len(facts)} facts, {len(b['ctas'])} calls to action.")
+    emit(f"Bundle v{b['version']}: {len(segments)} segments, {len(facts)} facts, {len(b['ctas'])} calls to action" + (f", {len(alt)} extra language(s)" if alt else "") + ".")
     return b

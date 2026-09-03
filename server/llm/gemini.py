@@ -74,17 +74,19 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
         return mock.fake(schema)
     t = _types()
     contents = [p for p in parts if p is not None] + [prompt]
+    t0 = time.time()
     resp = _retry(lambda: client().models.generate_content(
         model=config.GEMINI_MODEL,
         contents=contents,
         config=t.GenerateContentConfig(response_mime_type="application/json", response_schema=schema, temperature=temperature),
     ))
+    text = resp.text or ""
     try:
         um = resp.usage_metadata
         usage.record("gemini", config.GEMINI_MODEL, input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0)
+        usage.trace("gemini", config.GEMINI_MODEL, latency_ms=(time.time() - t0) * 1000, user=prompt + f"\n[{len([p for p in parts if p is not None])} media part(s)]", response=text, input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0)
     except Exception:
         pass
-    text = resp.text or ""
     try:
         return schema.model_validate_json(text)
     except Exception:
@@ -125,6 +127,7 @@ def tts(text: str, voice_name: str, style: str = "") -> tuple[bytes, str]:
         return mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
     t = _types()
     prompt = (f"{style.strip()} " if style else "") + text
+    t0 = time.time()
     resp = _retry(lambda: client().models.generate_content(
         model=config.GEMINI_TTS_MODEL,
         contents=prompt,
@@ -136,6 +139,7 @@ def tts(text: str, voice_name: str, style: str = "") -> tuple[bytes, str]:
     try:
         um = resp.usage_metadata
         usage.record("gemini-tts", config.GEMINI_TTS_MODEL, input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0, chars=len(text))
+        usage.trace("gemini-tts", config.GEMINI_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=text, response="[audio]", input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0, chars=len(text))
     except Exception:
         pass
     part = None

@@ -37,6 +37,36 @@ def record(kind: str, model: str, *, input_tokens: int = 0, output_tokens: int =
         pass
 
 
+def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: str = "", response: str = "", error: str = "",
+          input_tokens: int = 0, output_tokens: int = 0, chars: int = 0, demo_id: str | None = None, stage: str | None = None) -> None:
+    """Observability row: what was sent, what came back, how long, what it cost."""
+    demo_id = demo_id or current_demo.get()
+    if not demo_id or not store.exists(demo_id):
+        return
+    row = {"t": time.time(), "stage": stage or current_stage.get(), "kind": kind, "model": model, "latency_ms": round(latency_ms),
+           "in": int(input_tokens or 0), "out": int(output_tokens or 0), "chars": int(chars or 0),
+           "system": (system or "")[:6000], "user": (user or "")[:6000], "response": (response or "")[:6000], "error": (error or "")[:400]}
+    row["usd"] = round(_cost_usd({**row, "sec": 0}), 5)
+    try:
+        with store.path(demo_id, "trace.jsonl").open("a") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
+def traces(demo_id: str, limit: int = 300) -> list[dict]:
+    p = store.path(demo_id, "trace.jsonl")
+    if not p.exists():
+        return []
+    rows = []
+    for line in p.read_text().splitlines()[-limit:]:
+        try:
+            rows.append(json.loads(line))
+        except Exception:
+            pass
+    return rows
+
+
 def _cost_usd(row: dict) -> float:
     m = row["model"]
     if m.startswith("claude"):

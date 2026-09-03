@@ -9,7 +9,7 @@ import time
 from .. import schemas, store
 from ..llm import claude
 from .author import CLAIMISH, NUMBERISH
-from .principles import language_instruction
+from .principles import audience_instruction, language_instruction
 
 QA_SYSTEM = """You are {persona_name}, the voice guide in a live product demo of {product_name} ({category}).
 Reply in 1-3 short spoken sentences in the persona's voice ({tone}). No markdown.
@@ -33,7 +33,9 @@ HARD RULES
   warranty/service terms and brand comparisons — if the registry does not state it, decline (answered=false) and let the
   callback happen. Never estimate these categories, even when a "typical" figure feels obvious.
 {competitors}
+{audience}
 {language}
+- Answer in plain words first, in one or two sentences; offer the technical detail rather than volunteering it.
 
 CUSTOMER: {profile}
 
@@ -72,7 +74,7 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
         category=und.get("product", {}).get("category", ""), tone=voice.get("tone", "warm, direct, honest"),
         topics=", ".join(t for t in topics if t), profile=json.dumps(profile or {"note": "unknown"}),
         ctas=json.dumps([{"id": c["id"], "label": c["label"], "kind": c["kind"]} for c in plan.get("ctas", [])]),
-        facts=facts_txt, visuals=vis_txt, language=language_instruction(demo.get("settings", {}).get("language", "en-IN")), competitors=comp_txt,
+        facts=facts_txt, visuals=vis_txt, language=language_instruction((profile or {}).get("language") or demo.get("settings", {}).get("language", "en-IN")), competitors=comp_txt, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")),
     )
     return sys, und, plan
 

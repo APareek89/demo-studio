@@ -15,7 +15,8 @@ export function mountPlayer(host, bundle, api) {
     cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null }, awaitingPhone: null };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
-  const LANG = (bundle.language === "hinglish" ? "hi-IN" : bundle.language) || "en-IN";
+  let LANG = (bundle.language === "hinglish" ? "hi-IN" : bundle.language) || "en-IN";
+  Object.defineProperty(S, "lang", { set(v) { LANG = v === "hinglish" ? "hi-IN" : v; }, get() { return LANG; } });
   const serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
   const canListen = () => (serverSTT && navigator.mediaDevices?.getUserMedia) || SR;
   const opening = (bundle.segments || []).filter((s) => s.role === "intro" || s.role === "outcome");
@@ -26,7 +27,7 @@ export function mountPlayer(host, bundle, api) {
   const root = h("div", { class: "pl" },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
-      h("div", { class: "right" }, el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"))),
+      h("div", { class: "right" }, el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"))),
     el.stage = h("div", { class: "pl-stage" },
       el.media = h("div", { class: "pl-media" }, el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" })),
       el.card = h("div", { class: "pl-card" }),
@@ -60,14 +61,22 @@ export function mountPlayer(host, bundle, api) {
     if (!v || v.kind === "none" || !v.url) return;
     if (v.kind === "image") {
       el.video.pause(); el.video.style.display = "none"; el.video.style.opacity = 0;
-      if (el.img.getAttribute("src") !== v.url) { el.img.style.opacity = 0; el.img.src = v.url; el.img.onload = () => { el.img.style.opacity = 1; }; } else el.img.style.opacity = 1;
-      el.img.style.display = ""; const z = 1 + Math.random() * 0.18; el.img.style.setProperty("--z", z.toFixed(2)); el.img.style.setProperty("--ox", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.setProperty("--oy", (35 + Math.random() * 30).toFixed(0) + "%");
+      const url = v.cycle === false ? v.url : nextImageUrl(v.url);
+      if (el.img.getAttribute("src") !== url) { el.img.style.opacity = 0; el.img.classList.remove("kb"); el.img.src = url; el.img.onload = () => { el.img.style.opacity = 1; el.img.style.setProperty("--ox", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.setProperty("--oy", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.animationDelay = (-Math.random() * 12).toFixed(1) + "s"; el.img.classList.add("kb"); }; } else { el.img.style.opacity = 1; el.img.classList.add("kb"); }
+      el.img.style.display = "";
     } else if (v.kind === "shot") {
       el.img.style.opacity = 0; el.img.style.display = "none"; el.video.style.display = ""; el.video.style.setProperty("--z", "1");
       const vid = el.video; if (videoStop) { vid.removeEventListener("timeupdate", videoStop); videoStop = null; }
       const start = () => { vid.currentTime = Math.max(0, v.start || 0); vid.style.opacity = 1; vid.play().catch(() => {}); videoStop = () => { if (vid.currentTime >= (v.end || 1e9)) vid.pause(); }; vid.addEventListener("timeupdate", videoStop); };
       if (vid.getAttribute("src") !== v.url) { vid.src = v.url; vid.onloadedmetadata = start; } else start();
     }
+  }
+  let lastImg = null;
+  function nextImageUrl(url) {
+    const imgs = (bundle.media?.images || []).map((i) => i.url).filter(Boolean);
+    if (imgs.length < 2) return url;
+    if (url !== lastImg) { lastImg = url; return url; }
+    const i = imgs.indexOf(url); const n = imgs[(i + 1) % imgs.length]; lastImg = n; return n;  // same image twice in a row → move on
   }
   function firstVisual(seg) { return (seg?.lines || []).map((l) => l.visual).find((v) => v && v.kind !== "none") || null; }
   function showCard(kind, extra) {
@@ -79,6 +88,7 @@ export function mountPlayer(host, bundle, api) {
     else if (kind === "contrast") { rows = (bundle.cards?.price || []).slice(0, 3).concat((bundle.cards?.facts || []).slice(0, 3)); title = "Today vs. after"; }
     else if (kind === "cite" && extra) { rows = extra.map((f) => ({ claim: f.claim, value: f.value, conditions: [f.truth && f.truth !== "stated" ? f.truth : "", f.source?.locator ? `source ${f.source.ref} ${f.source.locator}` : ""].filter(Boolean).join(" · ") })); title = "Sources for that answer"; }
     if (!rows.length) { el.card.classList.remove("on"); return; }
+    rows = rows.slice(0, 3);  // never more than three boxes at once
     el.card.replaceChildren(h("h4", {}, title), ...rows.map((r) => h("div", { class: "row" }, h("span", {}, r.claim, r.conditions ? h("div", { class: "cond" }, r.conditions) : null), h("b", {}, r.value))));
     el.card.classList.add("on");
   }
@@ -303,6 +313,7 @@ export function mountPlayer(host, bundle, api) {
     resumeAfterQA(S.atCheckin);
   }
   function profileForServer() { return { name: S.profile.name, why: S.profile.why, followup: S.profile.followup, focus: S.profile.focus, customer_state: S.pitch?.customer_state, language: bundle.language }; }
+  const _origTts = api.tts; api.tts = (text) => _origTts ? api.tts_lang ? api.tts_lang(text, bundle.language) : _origTts(text) : Promise.resolve(null);
   function contactCta() { const c = (bundle.ctas || []).find((x) => x.kind === "contact") || (bundle.ctas || [])[0]; return c ? c.id : "contact"; }
   function mediaUrlFor(v) { if (!v) return null; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && vid.url.includes(src)) return vid.url; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; return (bundle.media?.videos || [])[0]?.url || null; }
   function resumeAfterQA(wasAtCheckin) { if (!S.plan.length) { const run = newRun(); speak("Let's get back to the demo.", run).then((ok) => { if (ok) startAfterIntake(); }); return; } if (S.seg >= S.plan.length) { closeFlow(newRun()); return; } if (wasAtCheckin) playFrom(S.seg + 1, 0); else { const run = newRun(); speak(pick(["Picking up where we left off.", "Back to where we were."]), run).then((ok) => { if (ok) playFrom(S.seg, S.line); }); } }
@@ -378,6 +389,15 @@ export function mountPlayer(host, bundle, api) {
     el.handoff.classList.add("open"); api.saveSession(session).catch(() => {});
   }
 
+  // ---------- pause / stop ----------
+  function togglePause() {
+    if (S.paused) { S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); const r = S.resume; S.resume = null; if (r) r(); else if (S.plan.length) playFrom(S.seg, S.line); return; }
+    const wasAt = S.atCheckin, seg = S.seg, line = S.line, intake = S.intakeOpen;
+    interruptAll(); S.paused = true; el.pauseBtn.textContent = "▶"; el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press ▶ to continue.";
+    S.resume = () => { if (intake) { runIntake(); return; } if (!S.plan.length) { startAfterIntake(); return; } if (wasAt) playFrom(seg + 1, 0); else playFrom(seg, line); };
+  }
+  function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
+
   // ---------- lifecycle ----------
   function restart() { interruptAll(); el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
@@ -388,5 +408,18 @@ export function mountPlayer(host, bundle, api) {
   if (bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 });
   const startBtn = h("div", { class: "pl-intake open" }, h("div", { class: "inner" }, h("div", { class: "orb" }, h("div", { class: "r" })), h("div", { class: "state" }, guide), h("p", { class: "q" }, bundle.pitch?.takeaway || `A voice-led walkthrough of ${bundle.product?.name || bundle.name}. Just talk — interrupt anytime.`), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "▶ Start"), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Skip the intro"))));
   el.stage.append(startBtn);
+  // language chooser (multi-language bundles)
+  const alts = bundle.alt_languages ? Object.keys(bundle.alt_languages) : [];
+  if (alts.length) {
+    const NAMES = { "en-IN": "English", "hinglish": "Hinglish", "hi-IN": "हिंदी", "ta-IN": "தமிழ்", "te-IN": "తెలుగు", "kn-IN": "ಕನ್ನಡ", "mr-IN": "मराठी", "bn-IN": "বাংলা", "gu-IN": "ગુજરાતી", "ml-IN": "മലയാളം", "pa-IN": "ਪੰਜਾਬੀ" };
+    const row = h("div", { class: "pl-langs" }, h("button", { class: "chip primary" }, NAMES[bundle.language] || bundle.language), ...alts.map((code) => h("button", { class: "chip", onclick: (e) => { applyLanguage(code); row.querySelectorAll(".chip").forEach((c) => c.classList.remove("primary")); e.currentTarget.classList.add("primary"); } }, NAMES[code] || code)));
+    startBtn.querySelector(".inner").insertBefore(row, startBtn.querySelector(".actions"));
+  }
+  function applyLanguage(code) {
+    const alt = bundle.alt_languages?.[code]; if (!alt) return;
+    bundle.segments = alt.segments; bundle.closing = alt.closing; bundle.intake = alt.intake; bundle.language = code; bundle.voice = { ...bundle.voice, provider: alt.voice_provider || bundle.voice.provider };
+    opening.length = 0; opening.push(...bundle.segments.filter((s) => s.role === "intro" || s.role === "outcome")); library.length = 0; library.push(...bundle.segments.filter((s) => s.role !== "intro" && s.role !== "outcome"));
+    S.lang = code;
+  }
   return { destroy, restart, pause, context };
 }

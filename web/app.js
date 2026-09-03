@@ -5,6 +5,7 @@ import { renderSources } from "/web/studio/sources.js";
 import { renderAlign } from "/web/studio/align.js";
 import { renderRehearse } from "/web/studio/rehearse.js";
 import { renderPlayground } from "/web/playground.js";
+import { renderObservability } from "/web/observability.js";
 
 const main = document.getElementById("main");
 let current = { unsub: null, demoId: null };
@@ -21,7 +22,7 @@ function setTab(name) { for (const a of document.querySelectorAll("#tabs a")) a.
 export function navigate(hash) { location.hash = hash; }
 
 const STEPS = [
-  { key: "sources", n: "1", label: "Sources", sub: "video, images, documents" },
+  { key: "sources", n: "1", label: "Sources", sub: "upload, then configure" },
   { key: "align", n: "2", label: "Align", sub: "approve what the agent found" },
   { key: "rehearse", n: "3", label: "Rehearse", sub: "run it, give feedback" },
 ];
@@ -67,6 +68,7 @@ async function renderStudio(demoId, stage) {
 async function route() {
   const parts = (location.hash || "#/demos").slice(2).split("/");
   if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2]); }
+  if (parts[0] === "observability") { setTab("observability"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderObservability({ main, navigate, demoId: parts[1] }); }
   if (parts[0] === "playground") { setTab("playground"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderPlayground({ main, navigate, demoId: parts[1] }); }
   setTab("demos");
   if (current.unsub) { current.unsub(); current.unsub = null; }

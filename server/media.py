@@ -62,7 +62,14 @@ def image_size(demo_id: str, src: dict) -> tuple[int, int] | None:
 # ---------- video ----------
 
 def ffmpeg() -> str | None:
-    return shutil.which("ffmpeg")
+    p = shutil.which("ffmpeg")
+    if p:
+        return p
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return None
 
 
 def ffprobe_duration(p: Path) -> float | None:
@@ -96,6 +103,7 @@ def prepare_video(demo_id: str, src: dict, emit=lambda m: None) -> dict:
             out["model"], out["proxy"] = proxy, True
         play = store.path(demo_id, "derived", p.stem + "_play.mp4")
         if p.suffix.lower() in (".mp4", ".m4v", ".mov") and not play.exists():
+            play.parent.mkdir(parents=True, exist_ok=True)
             subprocess.run([ff, "-y", "-v", "error", "-i", str(p), "-c", "copy", "-movflags", "+faststart", str(play)], check=True, timeout=1800)
         if play.exists():
             out["play"] = f"derived/{play.name}"

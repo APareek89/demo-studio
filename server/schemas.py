@@ -154,7 +154,7 @@ class StateQuestion(BaseModel):
 class SegmentPlan(BaseModel):
     id: str = Field(description="short slug id, e.g. 'range'")
     title: str
-    role: Literal["intro", "outcome", "proof", "establish"] = Field(description="intro = Frame (standard, always first); outcome = Act (the end state, always second); proof = Map block; establish = assumptions, terms, when not to recommend")
+    role: Literal["intro", "outcome", "proof", "features", "establish"] = Field(description="intro = Frame (standard, always first); outcome = Act (the end state, always second); proof = main-pitch block (top 2-3); features = the one 'a few more things' block; establish = assumptions, terms, when not to recommend")
     goal: str = Field(description="what the customer should believe or understand after this segment")
     outcome: str = Field(description="the customer outcome this segment proves, 3-8 words (empty for intro)")
     topic: str
@@ -237,7 +237,7 @@ class LineOut(BaseModel):
 class SegmentOut(BaseModel):
     id: str
     title: str
-    role: Literal["intro", "outcome", "proof", "establish"]
+    role: Literal["intro", "outcome", "proof", "features", "establish"]
     topic: str
     outcome: str = ""
     usp_ids: list[str] = Field(default_factory=list)
@@ -262,7 +262,7 @@ class Line(LineOut):
 class Segment(BaseModel):
     id: str
     title: str
-    role: Literal["intro", "outcome", "proof", "establish"] = "proof"
+    role: Literal["intro", "outcome", "proof", "features", "establish"] = "proof"
     topic: str
     outcome: str = ""
     usp_ids: list[str] = []
@@ -285,7 +285,7 @@ class Script(BaseModel):
 # ---------- Runtime: pitch planner ----------
 
 class RouteStep(BaseModel):
-    segment_id: str = Field(description="a segment id from the library (proof or establish only)")
+    segment_id: str = Field(description="a segment id from the library (proof, features or establish only)")
     bridge: str = Field(default="", description="ONE personalised sentence spoken before the segment, in the buyer's own nouns and numbers (P07); empty if nothing personal to add")
     bridge_fact_ids: list[str] = Field(default_factory=list, description="facts the bridge relies on; a bridge with a number and no fact id will be dropped")
 

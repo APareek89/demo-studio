@@ -32,7 +32,7 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
                 if "id" in o and isinstance(o["id"], str):
                     o["id"] = f"{o['id'].split(' ')[0]}{i+1}"
                 if "role" in o and "lines" in o or ("role" in o and "goal" in o):  # segments: a realistic role mix
-                    o["role"] = ["intro", "outcome", "proof", "establish", "proof"][i % 5]
+                    o["role"] = ["intro", "outcome", "proof", "features", "establish"][i % 5]
                 if "segment_id" in o:
                     o["segment_id"] = f"mock{3 + (i % 2)}"
         return out

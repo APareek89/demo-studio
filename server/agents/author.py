@@ -7,7 +7,7 @@ import re
 
 from .. import schemas, store
 from ..llm import claude
-from .principles import PRINCIPLES, PROOF_BLOCK, language_instruction
+from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, language_instruction
 
 AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can
 interrupt at any moment, so every line must stand alone and every segment must stand alone (no "as I said").
@@ -25,31 +25,38 @@ Hard rules:
    guess — the team can confirm"). Never paper over a gap with a plausible number.
 3. VISUALS. Every line binds to one visual: a video shot id (the player seeks to that range) or an image id.
    Choose the visual that literally shows what the line says. 'focus' is a 2-5 word label shown on screen.
-4. SHAPE. Follow the plan's segments and roles exactly:
-   - intro (Frame): 3-5 lines, step=frame — the decision frame, the takeaway, what will be proved, permission. ≤ 110 words. No check-in.
-   - outcome (Act): 3-4 lines — the end state first, in the buyer's terms, best visual. ≤ 110 words. No check-in.
-   - proof (Map): 4-5 lines with steps say → show → translate (+ optional second show/translate); the CONFIRM question
-     goes in `checkin`. ≤ 150 words per block. A 2-3 line `deeper` layer, grounded.
-   - establish: 3-5 lines, step=establish — assumptions, written terms, service/support, and the do_not_recommend_if sentence.
-   - closing: 2-3 lines, step=advance — the advance (P10) naming the CTA label, then the offer to answer anything else.
-   Use card='contrast' on the line that puts today's cost/friction next to the desired routine (P08), 'price' for
-   variants/prices, 'facts' for a cluster of specs, 'summary' in the closing.
+4. SHAPE — the whole narration is a 3-minute pitch; the budgets are hard limits checked by a validator:
+   - intro: 2-3 lines, step=frame, ≤ 50 words. Opens with a signpost. No features, no numbers except the one that frames the decision.
+   - outcome: 2-3 lines, ≤ 55 words — the end state in the buyer's routine ("for a fifteen-kilometre commute that's about a
+     week between charges, on the certified figure"), best visual. No check-in on intro/outcome.
+   - proof: 3-4 lines, ≤ 55 words — signpost → pain point → the feature that removes it → what it means daily; CONFIRM question in `checkin`.
+     A 2-3 line `deeper` layer holds the technical detail (this is where specifications and conditions go).
+   - features: 4-6 lines, ≤ 100 words — signpost, then one sentence per feature, no numbers unless decisive; the last line invites questions; checkin = "anything there you'd like me to open up?"
+   - establish: 2-3 lines, ≤ 40 words — the honest condition, the written terms in one line, support in one line.
+   - closing: 2 lines, ≤ 40 words, step=advance — the next step naming the CTA label; then the offer to answer anything.
+   Signposts to use (in the persona's voice, varied): {signposts}
+   Use card='contrast' on the line that puts today next to after (P08), 'price' only if the block is about price, 'facts' at most once, 'summary' in the closing. A card shows at most 3 rows.
 5. VOICE. Follow the persona and tone exactly. Spoken, not written: contractions, short clauses, numbers as words
    where natural. No markdown, no bullet points, no emojis. Concrete nouns (P07); no "smart/convenient/economical".
+   No monologue: never more than two facts in a row without translating what they mean for this person.
 6. intake_q1 / intake_q2: the two spoken intake questions from the plan, polished in the persona's voice.
+{audience}
 {language}"""
 
 
 NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,})", re.I)
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
-LIMITS = {"intro": 120, "outcome": 120, "proof": 165, "establish": 165}
+LIMITS = {"intro": 55, "outcome": 60, "proof": 60, "features": 110, "establish": 45}
+CLOSING_LIMIT = 45
+ROUTE_LIMIT = 480  # ≈ 3 minutes at ~150 wpm: intro + outcome + best 3 proof + features + establish + closing
+JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|IP6\d|TFT|RPM|ABS|CBS|Li-ion|BMS|regen)\b")
 
 
 def words(t: str) -> int:
     return len(re.findall(r"\S+", t or ""))
 
 
-def validate(script: dict, und: dict) -> list[str]:
+def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     fact_ids = {f["id"] for f in und["facts"]}
     vis = {s["id"]: "shot" for s in und["shots"] if s.get("_allowed", True)} | {i["id"]: "image" for i in und["images"] if i.get("_allowed", True)}
     issues: list[str] = []
@@ -79,13 +86,28 @@ def validate(script: dict, und: dict) -> list[str]:
         lim = LIMITS.get(seg.get("role", "proof"), 165)
         if total > lim:
             issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, limit {lim} — shorten (P06)")
-        if seg.get("role") == "proof" and not (seg.get("checkin") or "").strip():
-            issues.append(f"{seg['id']}: proof block needs a CONFIRM question in checkin (P06)")
+        if seg.get("role") in ("proof", "features") and not (seg.get("checkin") or "").strip():
+            issues.append(f"{seg['id']}: {seg.get('role')} block needs a CONFIRM question in checkin (P06)")
+        if audience == "everyday":
+            for l in seg["lines"]:
+                m = JARGON.search(l["text"])
+                if m:
+                    issues.append(f"{seg['id']}: jargon '{m.group(0)}' in the main narration — say it plainly (technical detail belongs in deeper)")
+                    break
     intro_words = sum(words(l["text"]) for s in script["segments"] if s.get("role") in ("intro", "outcome") for l in s["lines"])
-    if intro_words > 260:
-        issues.append(f"standard opening (intro + outcome) is {intro_words} words; keep it under 260 (~2 minutes)")
+    if intro_words > 115:
+        issues.append(f"opening (intro + outcome) is {intro_words} words; keep it under 115 (~45 s)")
     for n, ln in enumerate(script.get("closing", []), 1):
         check(ln, f"closing {n}")
+    closing_words = sum(words(l["text"]) for l in script.get("closing", []))
+    if closing_words > CLOSING_LIMIT:
+        issues.append(f"closing is {closing_words} words, limit {CLOSING_LIMIT}")
+    by_role = {}
+    for s in script["segments"]:
+        by_role.setdefault(s.get("role", "proof"), []).append(sum(words(l["text"]) for l in s["lines"]))
+    route = sum(by_role.get("intro", [0])) + sum(by_role.get("outcome", [0])) + sum(sorted(by_role.get("proof", []), reverse=True)[:3]) + sum(by_role.get("features", [0])) + sum(by_role.get("establish", [0])) + closing_words
+    if route > ROUTE_LIMIT:
+        issues.append(f"a full route would run {route} words (~{route/150:.1f} min); keep it under {ROUTE_LIMIT} (3 minutes) — cut, don't compress")
     return issues
 
 
@@ -132,13 +154,14 @@ IMAGES:
         content += f"\nPREVIOUS SCRIPT (revise; keep segment ids):\n{json.dumps({'segments': prev['segments'], 'closing': prev['closing']})[:40000]}\n"
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
-    sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES, proof_block=PROOF_BLOCK, language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
+    audience = demo.get("settings", {}).get("audience", "everyday")
+    sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES + "\n\n" + PITCH_SHAPE, proof_block=PROOF_BLOCK, signposts=" | ".join(SIGNPOSTS), audience=audience_instruction(audience), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
     try:
         out = claude.structured(sys, content, schemas.ScriptOut, max_tokens=40000)
     except Exception as e:
         raise RuntimeError(f"Script writing failed: {claude.describe_error(e)}") from e
     script = out.model_dump()
-    issues = validate(script, und)
+    issues = validate(script, und, audience)
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
         fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({"segments": script["segments"], "closing": script["closing"], "intake_q1": script["intake_q1"], "intake_q2": script["intake_q2"]})[:60000]
@@ -146,7 +169,7 @@ IMAGES:
         try:
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)
             script = out2.model_dump()
-            issues = validate(script, und)
+            issues = validate(script, und, audience)
         except Exception:
             pass
     _assign_ids(script)

@@ -136,32 +136,37 @@ flowchart TD
   classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
   classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
 </pre>
-<h2>04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle</h2>
-<pre class="mermaid">%% 04 · Build phase — Author (validated) → Voice → Rehearsal → Bundle
+<h2>04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle</h2>
+<pre class="mermaid">%% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
   GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 5 approvals true&quot;]:::fn
-  AUTH[&quot;script draft (principles + say/show/translate/confirm)&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand, language (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · intro + outcome (standard opening) + proof blocks + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper; closing = advance&quot;]:::agent
-  VAL[&quot;grounding + pacing validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH or CLAIMISH text with no fact id → unverified · intro+outcome ≤ 260 words · proof block ≤ 165 words · proof needs a CONFIRM question&quot;]:::fn
+  AUTH[&quot;script draft (principles + PITCH_SHAPE + audience level)&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one &#x27;more features&#x27; block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance&quot;]:::agent
+  VAL[&quot;grounding + pacing + plain-language validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue&quot;]:::fn
   ISS{&quot;issues &gt; 0?&quot;}:::dec
   FIX[&quot;one repair pass&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: draft + issue list · out: full script&quot;]:::agent
   VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining offenders stay unverified → excluded from voice &amp; bundle, listed on Facts card&quot;]:::fn
   SJ[&quot;script.json&lt;br/&gt;[DATA] ids seg-L1.., version++&quot;]:::data
-  PROV{&quot;tts provider?&lt;br/&gt;[FUNCTION · voice.provider_for]&lt;br/&gt;gemini · gcloud · browser (no key)&quot;}:::dec
-  TTS[&quot;render every line&lt;br/&gt;[LIBRARY · Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|text) → audio/*.wav|mp3&lt;br/&gt;0.25 s pause · stop after 4 failures&quot;]:::data
+  PROV{&quot;tts provider chain?&lt;br/&gt;[FUNCTION · voice.provider_chain]&lt;br/&gt;sarvam → gemini → gcloud → browser (no key)&quot;}:::dec
+  TTS[&quot;render every line (main language)&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3&lt;br/&gt;0.25 s pause · stop after 4 failures · every call traced (latency, chars)&quot;]:::data
   BROWSER[&quot;voice_provider=browser&lt;br/&gt;[term] player speaks with Web Speech&quot;]:::term
+  LANGS{&quot;settings.languages&lt;br/&gt;has extra languages?&quot;}:::dec
+  TRANS[&quot;translate script per extra language&lt;br/&gt;[AGENT · claude-opus-5 · translate.py · stage &#x27;translate&#x27;]&lt;br/&gt;in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&amp;lt;lang&amp;gt;.json&quot;]:::agent
+  TTS2[&quot;render every translated line&lt;br/&gt;[LIBRARY · same chain, lang override]&quot;]:::data
   QGEN[&quot;likely customer questions&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)&quot;]:::agent
   QA[&quot;answer each via qa.answer&lt;br/&gt;[AGENT · claude-opus-5 + FUNCTION validator]&lt;br/&gt;see diagram 05 · one paid call per question&quot;]:::agent
   COV[&quot;coverage = answered / N · gaps list&lt;br/&gt;[FUNCTION] → rehearsal.json&quot;]:::fn
   SCORE[&quot;demo scorecard&lt;br/&gt;[AGENT · claude-opus-5 · judge]&lt;br/&gt;in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes&quot;]:::agent
-  BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script&lt;br/&gt;out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns; version++&quot;]:::fn
-  READY[&quot;status ready · SSE phase_done build&lt;br/&gt;[term]&quot;]:::term
+  BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script (+ script.&amp;lt;lang&amp;gt;.json)&lt;br/&gt;out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns, languages + alt_languages; version++&quot;]:::fn
+  READY[&quot;status ready · SSE phase_done build · stage seconds recorded for Observability&lt;br/&gt;[term]&quot;]:::term
 
   GO --&gt; AUTH --&gt; VAL --&gt; ISS
   ISS -- &quot;yes&quot; --&gt; FIX --&gt; VAL2 --&gt; SJ
   ISS -- &quot;no&quot; --&gt; SJ
   SJ --&gt; PROV
-  PROV -- &quot;gemini / gcloud&quot; --&gt; TTS --&gt; QGEN
+  PROV -- &quot;sarvam / gemini / gcloud&quot; --&gt; TTS --&gt; LANGS
   PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; QGEN
+  LANGS -- &quot;yes&quot; --&gt; TRANS --&gt; TTS2 --&gt; QGEN
+  LANGS -- &quot;no&quot; --&gt; QGEN
   QGEN --&gt; QA --&gt; COV --&gt; SCORE --&gt; BUN --&gt; READY
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
@@ -248,6 +253,34 @@ flowchart TD
   SEL --&gt; COST
   USE --&gt; COST
   SEL --&gt; FB --&gt; ALIGN
+
+  classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
+  classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;
+  classDef term fill:#e5e7eb,stroke:#6b7280,color:#111827;
+  classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
+  classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
+</pre>
+<h2>07 · Observability — every model / speech call → trace.jsonl → Observability tab (web/observability.js)</h2>
+<pre class="mermaid">%% 07 · Observability — every model / speech call → trace.jsonl → Observability tab (web/observability.js)
+flowchart TD
+  CTX[&quot;contextvars current_demo · current_stage&lt;br/&gt;[FUNCTION · usage.py] set by orchestrator._run_stage (build stages) and by runtime routes (stage &#x27;runtime&#x27;), translate sets &#x27;translate&#x27;&quot;]:::fn
+  CALL[&quot;one call&lt;br/&gt;[LIBRARY · claude.py structured/_soft_structured/text · gemini.py structured/tts · sarvam.py tts/stt]&lt;br/&gt;t0 → response → latency_ms&quot;]:::fn
+  REC[&quot;usage.record (tokens / chars / seconds)&lt;br/&gt;[DATA · usage.jsonl] → cost estimate (Playground › Cost)&quot;]:::data
+  TR[&quot;usage.trace&lt;br/&gt;[DATA · trace.jsonl] {t, stage, kind, model, latency_ms, in, out, chars, usd, system[:6000], user[:6000], response[:6000], error}&quot;]:::data
+  STG[&quot;stage timings&lt;br/&gt;[DATA · demo.stages[stage] {status, started_at, seconds, error}] written by orchestrator._run_stage&quot;]:::data
+  API[&quot;GET /api/demos/id/trace?limit=N&lt;br/&gt;[FUNCTION] → {stages, rows, usage summary}&quot;]:::fn
+  TAB[&quot;Observability tab&lt;br/&gt;[ask · demo picker · stage filter]&lt;br/&gt;stage cards (seconds, status) · totals by model · calls table (when, stage, call·model, latency, tokens, cost) · click a row → system prompt, input, response, error&quot;]:::ask
+  MOCK[&quot;MOCK_LLM=1 · claude.structured traces the fake call too&lt;br/&gt;[FUNCTION] so the tab can be QA&#x27;d without spend&quot;]:::fn
+
+  CTX --&gt; CALL --&gt; REC
+  CALL --&gt; TR
+  CTX --&gt; STG
+  TR --&gt; API
+  STG --&gt; API
+  REC --&gt; API
+  API --&gt; TAB
+  MOCK -.-&gt; TR
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

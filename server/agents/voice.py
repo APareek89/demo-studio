@@ -8,6 +8,7 @@ import time
 import httpx
 
 from .. import config, store
+from . import translate
 from ..llm import gemini, sarvam
 
 GEMINI_VOICES = ["Sulafat", "Aoede", "Leda", "Despina", "Kore", "Achernar", "Zephyr"]
@@ -70,7 +71,7 @@ def _gcloud(text: str, voice: str) -> tuple[bytes, str]:
         return base64.b64decode(r.json()["audioContent"]), "mp3"
 
 
-def render_line(demo_id: str, text: str, *, demo: dict | None = None) -> str | None:
+def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str | None = None) -> str | None:
     """Returns a media-relative path like 'audio/<hash>.wav', or None when only the browser voice is available.
     Tries the provider chain in order (Sarvam → Gemini → Cloud TTS); a failure on one falls through to the next."""
     demo = demo or store.load(demo_id)
@@ -79,7 +80,7 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None) -> str | N
     chain = provider_chain(demo)
     if chain == ["browser"]:
         return None
-    lang = demo.get("settings", {}).get("language", "en-IN")
+    lang = lang or demo.get("settings", {}).get("language", "en-IN")
     last_err: Exception | None = None
     for provider in chain:
         voice = voice_name_for(demo, provider)
@@ -106,8 +107,21 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None) -> str | N
 
 
 def render_script(demo_id: str, emit) -> dict:
+    """Voice the main script, then translate + voice every extra language from settings.languages."""
     demo = store.load(demo_id)
-    script = store.read_json(demo_id, "script.json")
+    script = _render_one(demo_id, emit, demo, "script.json", None)
+    extra = [l for l in (demo.get("settings", {}).get("languages") or []) if l and l != demo.get("settings", {}).get("language", "en-IN")]
+    for lang in extra:
+        try:
+            translate.translate(demo_id, lang, emit)
+            _render_one(demo_id, emit, demo, translate.script_path(lang), lang)
+        except Exception as e:
+            emit(f"{lang}: skipped ({str(e)[:120]}).")
+    return script
+
+
+def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> dict:
+    script = store.read_json(demo_id, path)
     if not script:
         raise RuntimeError("No script to voice")
     provider = provider_for(demo)
@@ -115,7 +129,7 @@ def render_script(demo_id: str, emit) -> dict:
     if provider == "browser":
         emit("No TTS key configured — the player will use the browser voice.")
         script["voice_provider"] = "browser"
-        store.write_json(demo_id, "script.json", script)
+        store.write_json(demo_id, path, script)
         return script
     todo: list[tuple[dict, str]] = []
     for seg in script["segments"]:
@@ -132,11 +146,11 @@ def render_script(demo_id: str, emit) -> dict:
     intake = {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")}
     total = len(todo) + 2
     done, failures = 0, 0
-    emit(f"Recording narration with {provider}" + (f" (fallbacks: {', '.join(chain[1:])})" if len(chain) > 1 else "") + f" — {total} lines…")
+    emit(f"Recording narration with {provider}" + (f" in {lang}" if lang else "") + (f" (fallbacks: {', '.join(chain[1:])})" if len(chain) > 1 else "") + f" — {total} lines…")
     for obj, key in todo:
         text = obj["text"] if key == "audio" else obj["checkin"]
         try:
-            obj[key] = render_line(demo_id, text, demo=demo)
+            obj[key] = render_line(demo_id, text, demo=demo, lang=lang)
             time.sleep(0.25)
         except Exception as e:
             failures += 1
@@ -150,17 +164,17 @@ def render_script(demo_id: str, emit) -> dict:
         done += 1
         if done % 8 == 0:
             emit(f"Recorded {done}/{total} lines…")
-            store.write_json(demo_id, "script.json", script)
+            store.write_json(demo_id, path, script)
     for k, text in intake.items():
         try:
-            script.setdefault("intake_audio", {})[k] = render_line(demo_id, text, demo=demo) if failures < 4 else None
+            script.setdefault("intake_audio", {})[k] = render_line(demo_id, text, demo=demo, lang=lang) if failures < 4 else None
         except Exception:
             script.setdefault("intake_audio", {})[k] = None
     script["voice_provider"] = provider
     script["voice_name"] = voice_name_for(demo, provider)
     script["voice_failures"] = failures
-    store.write_json(demo_id, "script.json", script)
-    store.log(demo_id, "voice", {"provider": provider, "lines": total, "failures": failures})
+    store.write_json(demo_id, path, script)
+    store.log(demo_id, "voice", {"provider": provider, "lines": total, "failures": failures, "language": lang})
     emit("Narration ready." if not failures else f"Narration ready with {failures} line(s) on browser voice.")
     return script
 

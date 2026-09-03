@@ -57,9 +57,12 @@ export function renderAlign(ctx) {
     const approvals = demo.approvals || {};
     const current = CARD_DEFS.find((c) => !approvals[c.key])?.key;
     if (openCard === null) openCard = current || "visuals";
-    cardsCol.replaceChildren(...CARD_DEFS.map((c) => {
+    const allDone = cards && CARD_DEFS.every((c) => approvals[c.key]);
+    const noteEl = h("div", { class: "align-note" }, "Approve each card as-is or tell the agent what to change. Nothing here has to be complete — ", h("b", {}, "anything you don't provide, the guide will not answer"), "; it says so and offers a callback. ", cards && !allDone ? h("button", { class: "btn sm", style: "margin-left:6px", onclick: approveAll }, "Approve all") : null);
+    cardsCol.replaceChildren(noteEl, ...CARD_DEFS.map((c) => {
       const el = h("div", { class: `acard${approvals[c.key] ? " approved" : ""}${current === c.key ? " current" : ""}${openCard === c.key ? " open" : ""}` },
-        h("div", { class: "head", onclick: () => { openCard = openCard === c.key ? "" : c.key; renderCards(); } }, h("span", { class: "n" }, approvals[c.key] ? "✓" : c.n), h("h3", {}, c.title), h("span", { class: "st" }, approvals[c.key] ? "approved" : current === c.key ? "review now" : "pending")),
+        h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); } }, h("span", { class: "n" }, approvals[c.key] ? "✓" : c.n), h("h3", {}, c.title), h("span", { class: "st" }, approvals[c.key] ? "approved" : current === c.key ? "review now" : "pending"),
+          cards ? h("span", { class: "hact" }, approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve")) : null),
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
             approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve"),
@@ -74,8 +77,9 @@ export function renderAlign(ctx) {
       const v = cards.visuals;
       return h("div", {},
         h("p", { class: "small muted", style: "margin:10px 0 0" }, `${v.shots.length} video shots · ${v.images.length} images · ${v.segments.length} planned segments`),
-        v.shots.length ? h("div", { class: "thumbs" }, ...v.shots.slice(0, 24).map((s) => h("div", { class: "thumb", title: s.description }, h("video", { src: `${s.url}#t=${(s.start + 0.2).toFixed(1)}`, preload: "metadata", muted: true, playsinline: true }), h("div", { class: "cap" }, `${s.id} · ${s.start.toFixed(0)}–${s.end.toFixed(0)}s · q${s.quality}`)))) : null,
-        v.images.length ? h("div", { class: "thumbs" }, ...v.images.map((i) => h("div", { class: "thumb", title: i.description }, h("img", { src: i.url, alt: i.description }), h("div", { class: "cap" }, `${i.id} · ${i.angle} · q${i.quality}`)))) : null,
+        v.shots.length ? h("div", { class: "thumbs" }, ...v.shots.map((s) => { const vid = h("video", { src: `${s.url}#t=${(s.start + 0.2).toFixed(1)}`, preload: "metadata", muted: true, playsinline: true }); return h("div", { class: "thumb", title: s.description, onclick: () => lightbox(vid, `${s.id} · ${s.start.toFixed(0)}–${s.end.toFixed(0)}s · ${s.description}`) }, vid, h("div", { class: "cap" }, `${s.id} · ${s.start.toFixed(0)}–${s.end.toFixed(0)}s · q${s.quality}`)); })) : null,
+        v.images.length ? h("div", { class: "thumbs" }, ...v.images.map((i) => { const img = h("img", { src: i.url, alt: i.description }); return h("div", { class: "thumb", title: i.description, onclick: () => lightbox(img, `${i.id} · ${i.angle} · ${i.description}`) }, img, h("div", { class: "cap" }, `${i.id} · ${i.angle} · q${i.quality}`)); })) : null,
+        h("p", { class: "small muted", style: "margin:8px 0 0" }, "Click a thumbnail to enlarge. Scroll inside the grid for more."),
         ...v.gaps.map((g) => h("div", { class: "gap" }, h("b", {}, "Missing: "), g.what, " — ", g.why, h("div", { class: "small muted" }, "Suggested: ", g.suggestion))),
         Object.keys(v.video_summaries || {}).length ? h("p", { class: "small muted", style: "margin:10px 0 0" }, Object.values(v.video_summaries).join(" ")) : null);
     }
@@ -135,6 +139,15 @@ export function renderAlign(ctx) {
     }
   }
 
+  async function approveAll() {
+    try { for (const c of CARD_DEFS) if (!demo.approvals[c.key]) await api.post(`/api/demos/${demoId}/approve/${c.key}`); await reload(); toast("All cards approved — build when ready"); }
+    catch (e) { toast(e.message, true); }
+  }
+  function lightbox(node, cap) {
+    const clone = node.cloneNode(true); clone.removeAttribute("style"); if (clone.tagName === "VIDEO") { clone.controls = true; clone.muted = false; }
+    const lb = h("div", { class: "lightbox", onclick: () => lb.remove() }, clone, h("div", { class: "cap" }, cap || ""));
+    document.body.appendChild(lb);
+  }
   async function setApproval(card, on) {
     try { await api.post(`/api/demos/${demoId}/${on ? "approve" : "unapprove"}/${card}`); await reload(); if (on) { openCard = CARD_DEFS.find((c) => !demo.approvals[c.key])?.key || ""; renderCards(); } }
     catch (e) { toast(e.message, true); }

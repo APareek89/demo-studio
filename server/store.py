@@ -80,6 +80,9 @@ def new_demo(name: str) -> dict:
             "voice_name": config.GEMINI_TTS_VOICE if config.TTS_PROVIDER == "gemini" else config.GCLOUD_TTS_VOICE,
             "language": "en-IN",  # en-IN | hinglish | hi-IN | ta-IN | te-IN | kn-IN | mr-IN | bn-IN | gu-IN | ml-IN | pa-IN
             "competition": "off",  # off | on — compare only against competitor URLs the user added, always with a verify caveat
+            "audience": "everyday",  # everyday | informed | expert — controls jargon and technical depth
+            "pitch_minutes": 3,  # narration budget before Q&A
+            "languages": ["en-IN"],  # additional demo languages are translated + voiced at build
             "rehearsal_questions": config.REHEARSAL_QUESTIONS,
         },
         "running": None,
@@ -255,3 +258,8 @@ def media_path(demo_id: str, rel: str) -> Path:
     if base not in p.parents:
         raise KeyError("outside demo folder")
     return p
+
+
+def digest(text: str) -> str:
+    import hashlib
+    return hashlib.sha1(text.encode()).hexdigest()[:16]

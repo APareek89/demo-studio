@@ -36,7 +36,10 @@ def emit_for(demo_id: str, stage: str | None = None):
 
 def set_stage(demo_id: str, stage: str, status: str, error: str | None = None, message: str = "") -> None:
     def fn(d):
-        d["stages"][stage] = {"status": status, "updated_at": time.time(), "error": error, "message": message}
+        prev = d["stages"].get(stage, {})
+        started = time.time() if status == "running" else prev.get("started_at")
+        d["stages"][stage] = {"status": status, "updated_at": time.time(), "error": error, "message": message, "started_at": started,
+                              "seconds": round(time.time() - started, 1) if started and status in ("done", "error") else prev.get("seconds")}
         if status == "running":
             d["running"] = stage
         elif d.get("running") == stage:

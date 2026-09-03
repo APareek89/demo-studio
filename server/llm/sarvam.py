@@ -3,6 +3,7 @@ Primary for India; Gemini / Google Cloud / browser are the fallbacks."""
 from __future__ import annotations
 
 import base64
+import time
 
 import httpx
 
@@ -66,6 +67,7 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
         return mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
     speaker = speaker if speaker in SPEAKERS else "priya"
     parts = []
+    t0 = time.time()
     with httpx.Client(timeout=60) as c:
         for chunk in _chunks(text):
             body = {"text": chunk, "target_language_code": lang_code(language), "speaker": speaker, "model": config.SARVAM_TTS_MODEL,
@@ -84,6 +86,7 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
                 raise RuntimeError("sarvam tts: no audio returned")
             parts.append(base64.b64decode(audios[0]))
     usage.record("sarvam-tts", config.SARVAM_TTS_MODEL, chars=len(text))
+    usage.trace("sarvam-tts", config.SARVAM_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=f"[{speaker} · {lang_code(language)}] " + text, response="[audio]", chars=len(text))
     return _wav_concat(parts), "wav"
 
 
@@ -92,13 +95,16 @@ def stt(audio: bytes, filename: str = "audio.wav", language: str = "en-IN", mime
     if config.MOCK_LLM:
         return "(mock transcript)"
     code = lang_code(language)
+    t0 = time.time()
     with httpx.Client(timeout=60) as c:
         r = c.post(f"{BASE}/speech-to-text", headers=_headers(), files={"file": (filename, audio, mime)},
                    data={"model": config.SARVAM_STT_MODEL, "language_code": code if language not in ("", None) else "unknown"})
         if r.status_code != 200:
             raise RuntimeError(f"sarvam stt {r.status_code}: {r.text[:160]}")
         usage.record("sarvam-stt", config.SARVAM_STT_MODEL, seconds=max(0.5, len(audio) / 32000))
-        return (r.json().get("transcript") or "").strip()
+        txt = (r.json().get("transcript") or "").strip()
+        usage.trace("sarvam-stt", config.SARVAM_STT_MODEL, latency_ms=(time.time() - t0) * 1000, user=f"[{code} audio {len(audio)//1024} KB]", response=txt)
+        return txt
 
 
 def describe_error(e: Exception) -> str:
