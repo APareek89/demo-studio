@@ -57,7 +57,8 @@ def run(demo_id: str, emit) -> dict:
     return out
 
 
-SCORE_SYSTEM = """You are a demanding sales-demo coach. Score the SCRIPT below on the 10 criteria (0 absent, 1 partial,
+SCORE_SYSTEM = """JUDGING NOTE: the script deliberately has ONE short "more features" block (3–5 one-line items, ≤110 words) after the proof blocks — that is the product's demo shape, not a feature inventory. Do not penalise "Minimal proof" for its existence; penalise only proof blocks beyond one primary + two supporting, or feature items that carry numbers/claims.
+You are a demanding sales-demo coach. Score the SCRIPT below on the 10 criteria (0 absent, 1 partial,
 2 clear and evidenced), quoting the script in your notes. Be strict: a first demo should score ≥16/20 with no zero on
 customer signal, outcome first, truth split, or advance. The runtime personalises the route per buyer (customer signal and
 concrete language are partly delivered at runtime) — score what the SCRIPT itself enables. Then name the 2-3 weakest
