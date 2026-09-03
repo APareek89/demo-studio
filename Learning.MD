@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+### 2026-09-03 — A multi-file patch script silently applied nothing (Python quoting)
+
+**Symptom:** After "backend batch 2" the compile step said OK but none of the edits were present; the smoke test still passed on old code.
+**Why 1:** The patch script (a Python heredoc) had an unterminated triple-quoted string, so Python rejected the whole file before running a single replacement — the following `py_compile` then checked the unchanged sources.
+**Why 2:** Replacement bodies were embedded as triple-quoted literals while some bodies themselves contained triple quotes; one mismatch invalidated the file. (The same slip then hit the docs script once more.)
+**Why 3:** The batch was applied as one shell heredoc, so a parse error had no per-file feedback and the success message came from a different command.
+**Deepest why type:** `process`
+**Action taken:** Re-applied from a saved script file with bodies in named variables and plain-string concatenation where quotes clash; every `patch()` prints its file.
+**Preventive action:** For edits across many files, write the patch script to a file first and require every `patch()` to print — a missing "patched X" line is the failure signal, not the compile step. Never put three quote characters inside a triple-quoted body.
+
 ### 2026-09-03 — Anthropic 400 "compiled grammar is too large" on the Plan schema (first real run)
 
 **Symptom:** Understand succeeded (71 facts) but Plan failed: `400 invalid_request_error: The compiled grammar is too large… Simplify your tool schemas`.

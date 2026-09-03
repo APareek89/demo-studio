@@ -46,6 +46,10 @@ rebuilds the demo.
 | 9 | (EXAMPLE — replace me) `POST …/run/lead {phone:"my number is 98765 43210", question:"kerb weight"}` and `{phone:"12345"}` | first → 200 with `phone:"9876543210"` and a file under `data/demos/<id>/leads/`; second → 400 |
 | 10 | (EXAMPLE — replace me) `POST …/run/stt` with a 0.1 s WAV, `GET /api/voices?demo_id=` | 200 with a transcript (mock: "(mock transcript)"); voices lists Sarvam speakers when `SARVAM_API_KEY` is set, Gemini voices otherwise, and `chain` shows the fallback order |
 | 11 | (EXAMPLE — negative) Player with an empty route (no proof blocks) | standard opening plays, then the closing + CTAs — no crash, no infinite loop |
+| 12 | (EXAMPLE — replace me) Upload an `.avif` and a `.heic` image | accepted as `image`; `derived/*.jpg` created for the models; original served at `/media/…` |
+| 13 | (EXAMPLE — replace me) `PATCH …/sources/{id} {use_in_demo:false}` then build | that source's visuals never appear in `bundle.json`; the registry still contains facts learned from it |
+| 14 | (EXAMPLE — replace me) `GET …/faq-template` | Markdown grouped by category with suggested documents; `POST …/evals {questions:[…]}` returns per-question ✓/✗ and is listed by `GET …/evals` |
+| 15 | (EXAMPLE — replace me) `GET …/usage` after one `/run/qa` | one `runtime` row with input/output tokens and a non-zero USD estimate |
 
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |

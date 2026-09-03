@@ -22,6 +22,15 @@ and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Ge
   proof blocks → establish → advance; Sarvam STT capture via PCM→WAV→`/run/stt`; lead capture; language-aware).
 - ✅ Sales layer: `server/agents/principles.py`, `pitch.py` (runtime planner + bridge validator), scorecard in
   `rehearsal.py`, `qa.py` don't-guess → callback + `parse_phone`/`save_lead`, `llm/sarvam.py`, provider chain in `voice.py`.
+- ✅ Playground tab (`web/playground.js`): ask the guide (text), evals (typed or generated, saved to `evals/`), cost so far
+  (`server/usage.py` — every Claude/Gemini/Sarvam call logs tokens/chars; price table in `.env`), refine → align agent.
+- ✅ Sources: AVIF/HEIC accepted (converted to JPEG for the models, originals served), 1 GB uploads, per-source
+  "use in demo" toggle (learn from it, don't show it), competitor URL zone + comparisons setting (default off),
+  optional ffmpeg 720p proxy / fast-start (`server/media.py`; ffmpeg not installed here).
+- ✅ Facts card: open questions grouped by category with the document that would answer them; "Download FAQ template" (Markdown).
+- ✅ Q&A decline rules by category (pricing, discounts, finance, insurance, features, availability, warranty/service,
+  comparisons); pitch planner on a 50 s budget (soft JSON, low effort) with a visible "planning your route" state and
+  `personalized:false` in the session when it falls back.
 - ✅ Verified with MOCK_LLM=1: `evals/smoke_mock.py` (create → sources → read → align → approve → CTAs → build →
   bundle+audio served → Q&A don't-guess path → session → feedback → rehearsal) passes; UI checked in the browser
   (Demos, Sources, Align cards + conversation, Rehearse player). Real-key run NOT yet done (no .env).
@@ -33,9 +42,12 @@ and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Ge
   (persona Meera, 9 segments, 5 USPs, 3 CTAs, 5 visual gaps) → script 37 lines, 0 unverified → 68 Sarvam lines →
   rehearsal 6/12 answered (gaps are real source gaps) → scorecard 17/20 → bundle v1 → status ready. Open it at
   http://localhost:8877/#/studio/dm_d5675e7f/rehearse (server: `.venv/bin/uvicorn server.app:app --port 8877`).
+- 🧑 USER: decide (a) competitor comparisons policy — keep default OFF, or ON from user-added official URLs with the
+  verify caveat; (b) whether "use in demo" should default ON for uploaded video (current) — see the chat summary of 2026-09-03.
 - 🧑 USER: run the Rehearse player yourself (mic on), then give feedback in the panel; upload a charger/display/under-seat
-  image and a spec PDF to close the visual and fact gaps the agent listed.
+  image and a spec PDF to close the visual and fact gaps the agent listed; try the Playground on `dm_d5675e7f`.
 - 🤖 AGENT: apply the scorecard's fixes (route to 1 primary + 2 supporting by default; pass/fail condition on the advance).
+- 🤖 AGENT: Gemini price rows in `usage.py` are assumptions (set PRICE_GEMINI_IN/OUT in .env once known); Sarvam per-char price likewise.
 - 🧑 USER: edit Loop.MD — confirm the goal and replace the example evals with real ones.
 - 🤖 AGENT: Loop was offered on 2026-09-03; set Loop.MD status on/off per the user's reply. FMEA full scan offered (feature complete).
 - 🤖 AGENT: publish step (embed snippet / share link) — out of v1 scope, parked.
@@ -56,5 +68,8 @@ and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Ge
 - 2026-09-03 — Don't-guess path offers a salesperson callback and captures a 10-digit Indian mobile (regex `[6-9]\d{9}`) → `leads/`; the guide never asks for the number itself, the player does.
 - 2026-09-03 — Speech: Sarvam primary (Indian languages), Gemini → Cloud TTS → browser fallback per line; STT Sarvam when its key is set, else Web Speech. Language is a per-demo setting used by plan/author/Q&A/TTS/STT.
 - 2026-09-03 — Align has 5 cards (Pitch added); the playbook's 10-criterion scorecard runs at build time as a Claude judge.
+- 2026-09-03 — Videos are never transcoded for playback (the demo plays the original; ffmpeg only adds a fast-start remux and a 720p agent proxy when present); Gemini receives the original up to 2 GB.
+- 2026-09-03 — Competitor comparisons are OFF by default; when on, only user-added official URLs are read, facts get C-ids, and every comparative line carries the verify caveat.
+- 2026-09-03 — Runtime cost is measured, not estimated: `usage.jsonl` per demo; one grounded Q&A on the iQube registry is about $0.03.
 
 **Session efficiency:** 🎯 ~65% feature · 🔧 ~20% support (pip wheels, no Node, server restarts, .env not saved) · 🔁 ~15% rework (mock Literal defaults, smoke SSE hang, three live-API drifts, grammar-too-large)
