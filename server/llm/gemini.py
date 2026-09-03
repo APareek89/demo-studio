@@ -32,6 +32,22 @@ def _types():
     return types
 
 
+def _retry(fn, tries: int = 4, waits=(4, 10, 25)):
+    """Gemini returns 503 'high demand' and 429 transiently; the SDK's own retry is short. Back off and try again."""
+    last = None
+    for i in range(tries):
+        try:
+            return fn()
+        except Exception as e:  # noqa: BLE001
+            s = str(e)
+            transient = any(k in s for k in ("503", "UNAVAILABLE", "429", "RESOURCE_EXHAUSTED", "500 INTERNAL", "502", "504", "overloaded", "high demand"))
+            last = e
+            if not transient or i == tries - 1:
+                raise
+            time.sleep(waits[min(i, len(waits) - 1)])
+    raise last
+
+
 def upload_file(p: Path, mime: str | None = None):
     """Upload to the Gemini Files API and wait until it is processed (video needs this)."""
     if config.MOCK_LLM:
@@ -58,11 +74,11 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
         return mock.fake(schema)
     t = _types()
     contents = [p for p in parts if p is not None] + [prompt]
-    resp = client().models.generate_content(
+    resp = _retry(lambda: client().models.generate_content(
         model=config.GEMINI_MODEL,
         contents=contents,
         config=t.GenerateContentConfig(response_mime_type="application/json", response_schema=schema, temperature=temperature),
-    )
+    ))
     text = resp.text or ""
     try:
         return schema.model_validate_json(text)
@@ -104,14 +120,14 @@ def tts(text: str, voice_name: str, style: str = "") -> tuple[bytes, str]:
         return mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
     t = _types()
     prompt = (f"{style.strip()} " if style else "") + text
-    resp = client().models.generate_content(
+    resp = _retry(lambda: client().models.generate_content(
         model=config.GEMINI_TTS_MODEL,
         contents=prompt,
         config=t.GenerateContentConfig(
             response_modalities=["AUDIO"],
             speech_config=t.SpeechConfig(voice_config=t.VoiceConfig(prebuilt_voice_config=t.PrebuiltVoiceConfig(voice_name=voice_name))),
         ),
-    )
+    ))
     part = None
     for cand in resp.candidates or []:
         for p in (cand.content.parts if cand.content else []) or []:

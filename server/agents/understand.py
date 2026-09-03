@@ -76,14 +76,16 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
             parts = [gemini.bytes_part(store.path(demo_id, s["path"])) for s in batch]
             try:
                 out = gemini.structured(IMAGES_PROMPT.format(hint=hint), parts, schemas.ImagesOut)
+                by_index = {im.index: im for im in out.images}
             except Exception as e:
-                raise RuntimeError(f"Image understanding failed: {gemini.describe_error(e)}") from e
-            by_index = {im.index: im for im in out.images}
+                # Don't fail the whole read for a transient vision outage: keep the images untagged and say so.
+                emit(f"Image tagging unavailable ({gemini.describe_error(e)[:90]}) — keeping the images untagged; re-read later to tag them.")
+                by_index = {}
             for j, s in enumerate(batch):
                 im = by_index.get(j)
                 images.append({
                     "id": f"im{len(images)+1:02d}", "source_id": s["id"],
-                    "description": im.description if im else s["name"], "angle": im.angle if im else "",
+                    "description": im.description if im else f"{s['name']} (untagged — image tagging was unavailable)", "angle": im.angle if im else "",
                     "parts": im.parts if im else [], "quality": im.quality if im else 3,
                 })
 

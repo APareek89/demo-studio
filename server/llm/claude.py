@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import base64
+import json
 import mimetypes
+import re
 from pathlib import Path
 from typing import Any, TypeVar
 
@@ -52,19 +54,49 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
         return mock.fake(schema)
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
-    resp = client().messages.parse(
-        model=config.CLAUDE_MODEL,
-        max_tokens=max_tokens,
-        system=system,
-        messages=msgs,
-        output_format=schema,
-    )
+    try:
+        resp = client().messages.parse(
+            model=config.CLAUDE_MODEL,
+            max_tokens=max_tokens,
+            system=system,
+            messages=msgs,
+            output_format=schema,
+        )
+    except anthropic.BadRequestError as e:
+        # Large schemas (Plan, ScriptOut) can exceed the constrained-decoding grammar limit.
+        # Fall back to plain JSON + Pydantic validation with one repair pass.
+        if "grammar" in str(e).lower() or "too large" in str(e).lower() or "schema" in str(e).lower():
+            return _soft_structured(system, msgs, schema, max_tokens)
+        raise
     if resp.stop_reason == "refusal":
         raise RuntimeError("Claude declined this request")
     parsed = resp.parsed_output
     if parsed is None:
         raise RuntimeError("Claude returned no structured output")
     return parsed
+
+
+def _extract_json(text: str) -> str:
+    t = text.strip()
+    t = re.sub(r"^```(?:json)?\s*|\s*```$", "", t, flags=re.S).strip()
+    s, e = t.find("{"), t.rfind("}")
+    return t[s:e + 1] if s >= 0 and e > s else t
+
+
+def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens: int) -> T:
+    sys2 = system + "\n\nOUTPUT FORMAT: return ONLY one JSON object — no markdown fences, no prose before or after — that validates against this JSON schema:\n" + json.dumps(schema.model_json_schema())
+    resp = client().messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=msgs)
+    if resp.stop_reason == "refusal":
+        raise RuntimeError("Claude declined this request")
+    text = _extract_json("".join(b.text for b in resp.content if b.type == "text"))
+    try:
+        return schema.model_validate_json(text)
+    except Exception as ve:  # one repair pass with the validation errors
+        repair = msgs + [{"role": "assistant", "content": text[:120000]},
+                         {"role": "user", "content": f"That JSON failed validation:\n{str(ve)[:3000]}\nReturn the corrected JSON object only."}]
+        resp2 = client().messages.create(model=config.CLAUDE_MODEL, max_tokens=max_tokens, system=sys2, messages=repair)
+        text2 = _extract_json("".join(b.text for b in resp2.content if b.type == "text"))
+        return schema.model_validate_json(text2)
 
 
 def text(system: str, content: list[dict] | str, *, max_tokens: int = 4000, history: list[dict] | None = None) -> str:

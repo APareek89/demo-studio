@@ -107,7 +107,11 @@ def _spawn(demo_id: str, target, *args) -> None:
 def _read(demo_id: str, instruction: str = "") -> None:
     try:
         _set_status(demo_id, "reading")
-        _run_stage(demo_id, "understand", instruction)
+        st = store.load(demo_id)["stages"]
+        if instruction or st["understand"]["status"] != "done" or not store.read_json(demo_id, "understanding.json"):
+            _run_stage(demo_id, "understand", instruction)
+        else:
+            events.publish(demo_id, "progress", stage="understand", message="Sources already read — reusing the registry and visuals.")
         _run_stage(demo_id, "plan", "")
         _persona_sample(demo_id)
         _set_status(demo_id, "align")
