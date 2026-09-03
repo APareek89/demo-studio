@@ -148,6 +148,8 @@ def faq_template(demo_id: str):
     groups: dict[str, list] = {}
     for u in und.get("unknowns", []):
         if u.get("status", "open") == "open":
+            if not u.get("category") or (u.get("category") == "other" and not u.get("suggested_document")):
+                u = {**u, "category": qa.classify(u["question"])[0], "suggested_document": qa.classify(u["question"])[1]}
             groups.setdefault(u.get("category", "other"), []).append(u)
     order = ["pricing", "finance", "insurance", "warranty_service", "features", "availability", "comparison", "usage", "other"]
     titles = {"pricing": "Pricing & offers", "finance": "Finance / EMI", "insurance": "Insurance", "warranty_service": "Warranty & service", "features": "Features & specs", "availability": "Availability & delivery", "comparison": "Comparisons", "usage": "Usage & ownership", "other": "Other"}

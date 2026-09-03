@@ -10,6 +10,7 @@ import json
 from .. import schemas, store
 from ..llm import claude
 from .bundle import media_url
+from .qa import classify
 
 CARD_ORDER = ["visuals", "facts", "pitch", "persona", "ctas"]
 CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "pitch": "Pitch", "persona": "Persona & voice", "ctas": "Calls to action"}
@@ -56,7 +57,7 @@ def cards(demo_id: str) -> dict:
         "product": und.get("product", {"name": demo["name"]}),
         "visuals": {"shots": shots, "images": images, "gaps": plan.get("visual_gaps", []), "video_summaries": und.get("video_summaries", {}),
                     "segments": [{"id": s["id"], "title": s["title"], "visual_refs": s["visual_refs"]} for s in plan.get("segments", [])]},
-        "facts": {"facts": und.get("facts", []), "unknowns": und.get("unknowns", []), "sources": demo["sources"],
+        "facts": {"facts": und.get("facts", []), "unknowns": [({**u, "category": classify(u["question"])[0], "suggested_document": classify(u["question"])[1]} if not u.get("category") or u.get("category") == "other" and not u.get("suggested_document") else u) for u in und.get("unknowns", [])], "sources": demo["sources"],
                   "gaps": reh.get("gaps", []), "script_issues": script.get("issues", [])},
         "persona": {**voice, "sample_audio": media_url(demo_id, plan.get("voice_sample_audio")), "brand": und.get("brand", {}),
                     "provider": demo.get("settings", {}).get("tts_provider"), "voice_name": demo.get("settings", {}).get("voice_name")},
