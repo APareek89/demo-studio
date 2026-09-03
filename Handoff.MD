@@ -29,7 +29,13 @@ and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Ge
 
 ## Pending points
 - ✅ Keys present in `.env` (Anthropic, Gemini, Sarvam); all four live APIs probed OK on 2026-09-03 (`evals/probe_keys.py`).
-- 🤖 AGENT: run one REAL demo end-to-end (samples/iqube images + TVS URL) on port 8877 and record what's off in Learning.MD.
+- ✅ REAL RUN done: demo `dm_d5675e7f` (TVS iQube, 5 images + URL + pasted brand line) → 71 facts / 17 unknowns → plan
+  (persona Meera, 9 segments, 5 USPs, 3 CTAs, 5 visual gaps) → script 37 lines, 0 unverified → 68 Sarvam lines →
+  rehearsal 6/12 answered (gaps are real source gaps) → scorecard 17/20 → bundle v1 → status ready. Open it at
+  http://localhost:8877/#/studio/dm_d5675e7f/rehearse (server: `.venv/bin/uvicorn server.app:app --port 8877`).
+- 🧑 USER: run the Rehearse player yourself (mic on), then give feedback in the panel; upload a charger/display/under-seat
+  image and a spec PDF to close the visual and fact gaps the agent listed.
+- 🤖 AGENT: apply the scorecard's fixes (route to 1 primary + 2 supporting by default; pass/fail condition on the advance).
 - 🧑 USER: edit Loop.MD — confirm the goal and replace the example evals with real ones.
 - 🤖 AGENT: Loop was offered on 2026-09-03; set Loop.MD status on/off per the user's reply. FMEA full scan offered (feature complete).
 - 🤖 AGENT: publish step (embed snippet / share link) — out of v1 scope, parked.
@@ -51,4 +57,4 @@ and **Sarvam** (Bulbul TTS + Saarika STT) as the primary speech provider with Ge
 - 2026-09-03 — Speech: Sarvam primary (Indian languages), Gemini → Cloud TTS → browser fallback per line; STT Sarvam when its key is set, else Web Speech. Language is a per-demo setting used by plan/author/Q&A/TTS/STT.
 - 2026-09-03 — Align has 5 cards (Pitch added); the playbook's 10-criterion scorecard runs at build time as a Claude judge.
 
-**Session efficiency:** 🎯 ~75% feature · 🔧 ~20% support (pip `cryptography` wheel on Anaconda Python; no Node) · 🔁 ~5% rework
+**Session efficiency:** 🎯 ~65% feature · 🔧 ~20% support (pip wheels, no Node, server restarts, .env not saved) · 🔁 ~15% rework (mock Literal defaults, smoke SSE hang, three live-API drifts, grammar-too-large)

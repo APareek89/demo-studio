@@ -68,3 +68,4 @@ rebuilds the demo.
 ## Run journal (paid/slow checks only)
 | Date | Hypothesis (changed X, expect eval N to flip because W) | Result | Cost note |
 |------|----------------------------------------------------------|--------|-----------|
+| 2026-09-03 | First real run of the iQube sample (part of "build the whole thing", not a per-change eval): expect G1 (registry has warranty + prices with citations) and G10 (Sarvam sample) to pass; G9 coverage ≥ 0.6 uncertain with images-only visuals | G1 ✅ 71 facts, warranty F027/F028, prices per variant · G10 ✅ Sarvam sample + 68 lines · G9 ❌ coverage 0.50 (gaps are genuine source gaps: on-road by city, replacement battery cost, boot litres, service cost; plus 1 must-refuse) · scorecard 17/20 | ~1 read (Claude ×1 big + Gemini ×1) + build (Claude author ×2, rehearsal ×13, scorecard ×1; Sarvam ×68) |

@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+### 2026-09-03 — Anthropic 400 "compiled grammar is too large" on the Plan schema (first real run)
+
+**Symptom:** Understand succeeded (71 facts) but Plan failed: `400 invalid_request_error: The compiled grammar is too large… Simplify your tool schemas`.
+**Why 1:** `messages.parse(output_format=Plan)` compiles the Pydantic schema into a constrained-decoding grammar; `Plan` (nested USPs, segments, CTAs, intake, state questions, several Literal enums) exceeds the grammar size limit. `ScriptOut` would too.
+**Why 2:** The schemas grew with the sales layer (roles, steps, USPs) and were only ever exercised in mock mode, which never touches the API.
+**Why 3:** No live check exists for "schema still fits the grammar" — the mock validates shape, not the provider's limits.
+**Deepest why type:** `design`
+**Action taken:** `claude.structured` catches that 400 and falls back to plain JSON: the JSON schema goes into the system prompt, the reply is parsed with Pydantic, and one repair pass sends the validation errors back. Plan and the 37-line script then succeeded on the same run. Also: a re-read no longer redoes a finished Understand (saves ~2 min and a Gemini call on every retry). Targets Why 1.
+**Preventive action:** Keep big stage schemas on the soft path by default if they hit the limit once (it's cached per process now only by retry — consider a `SOFT_SCHEMAS` set); add Loop eval: "Plan + ScriptOut parse on the real API".
+
 ### 2026-09-03 — Three live-API drifts on the first real-key check (Gemini model, Sarvam model, Sarvam speakers)
 
 **Symptom:** With real keys: Gemini returned 404 for `gemini-2.5-flash` ("no longer available to new users → gemini-3.6-flash"); Sarvam returned 400 for `bulbul:v2` ("deprecated → bulbul:v3"), then 400 for `pitch`/`loudness` on v3, then 400 for speaker `anushka` (v2-only).
