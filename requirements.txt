@@ -13,3 +13,4 @@ pillow>=11.0
 pillow-avif-plugin>=1.4
 pillow-heif>=0.16
 imageio-ffmpeg>=0.5
+boto3>=1.34

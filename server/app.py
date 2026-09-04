@@ -10,7 +10,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import config, events, graph, orchestrator, store, usage, runlog
+from . import cloud, config, events, graph, orchestrator, store, usage, runlog
 from .agents import align, faq, pitch, qa, rehearsal, voice
 from .llm import sarvam
 
@@ -18,6 +18,8 @@ app = FastAPI(title="Demo Studio", version="0.1.0")
 
 
 def _demo_or_404(demo_id: str) -> dict:
+    if not store.exists(demo_id) and cloud.enabled() and cloud.restore_demo(demo_id):
+        pass  # restored the JSON artefacts from S3; media loads on demand
     try:
         return store.load(demo_id)
     except KeyError:
@@ -37,6 +39,8 @@ def media(demo_id: str, rel: str):
         p = store.media_path(demo_id, rel)
     except KeyError:
         raise HTTPException(404)
+    if (not p.exists() or not p.is_file()) and cloud.enabled():
+        cloud.fetch_file(demo_id, rel)
     if not p.exists() or not p.is_file():
         raise HTTPException(404)
     return FileResponse(p)
@@ -46,12 +50,47 @@ def media(demo_id: str, rel: str):
 
 @app.get("/api/health")
 def health():
-    return config.health()
+    return {**config.health(), "cloud": cloud.status() if cloud.enabled() or True else {}}
+
+
+@app.get("/api/cloud")
+def cloud_status():
+    """Where the demos are mirrored: account, region, bucket, tables — never a key."""
+    cloud.enabled()
+    return cloud.status()
+
+
+@app.post("/api/cloud/setup")
+def cloud_setup():
+    """Create the private bucket and the two on-demand tables if missing (idempotent)."""
+    if not cloud.enabled():
+        raise HTTPException(400, cloud.status().get("why", "cloud not connected"))
+    notes = []
+    cloud.ensure_resources(notes.append)
+    return {"status": cloud.status(), "notes": notes}
+
+
+@app.post("/api/demos/{demo_id}/sync")
+def sync_demo(demo_id: str):
+    _demo_or_404(demo_id)
+    if not cloud.enabled():
+        raise HTTPException(400, cloud.status().get("why", "cloud not connected"))
+    notes = []
+    cloud.sync_demo(demo_id, notes.append)
+    return {"notes": notes, "events": cloud.list_events(demo_id, limit=10)}
 
 
 @app.get("/api/demos")
 def list_demos():
-    return store.list_demos()
+    local = store.list_demos()
+    seen = {d["id"] for d in local}
+    out = [{**d, "location": "local+cloud" if cloud.enabled() else "local"} for d in local]
+    for c in cloud.list_cloud_demos():
+        if c.get("demo_id") in seen:
+            continue
+        out.append({"id": c["demo_id"], "name": c.get("name"), "status": c.get("status"), "version": c.get("version", 0), "created_at": c.get("created_at"), "updated_at": c.get("updated_at"),
+                    "sources": len(c.get("sources", [])), "location": "cloud", "approvals": c.get("approvals", {})})
+    return out
 
 
 @app.post("/api/demos")
@@ -63,6 +102,7 @@ async def create_demo(req: Request):
     if url:
         store.update(demo["id"], lambda d: d["product"].__setitem__("url", url))
         store.add_url_source(demo["id"], url, role="product")
+    cloud.sync_demo_async(demo["id"])
     return store.load(demo["id"])
 
 
@@ -107,7 +147,9 @@ async def patch_demo(demo_id: str, req: Request):
             if "voice_name" in allowed:
                 d["settings"]["voice_locked"] = True
             runlog.settings_changed(demo_id, allowed)
-    return store.update(demo_id, fn)
+    out = store.update(demo_id, fn)
+    cloud.sync_demo_async(demo_id)
+    return out
 
 
 # ---------- sources ----------
@@ -128,6 +170,7 @@ async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), 
         except ValueError as e:
             raise HTTPException(400, str(e))
     runlog.sources_added(demo_id, added)
+    cloud.sync_demo_async(demo_id)
     if url.strip():
         u = url.strip()
         if not u.startswith("http"):
@@ -327,6 +370,7 @@ def approve(demo_id: str, card: str):
     if card not in store.CARDS:
         raise HTTPException(400, "unknown card")
     notes = orchestrator.apply_actions(demo_id, [{"type": "approve", "card": card}], [], "align")
+    cloud.sync_demo_async(demo_id)
     return {"approvals": store.load(demo_id)["approvals"], "notes": notes}
 
 
@@ -335,7 +379,9 @@ def unapprove(demo_id: str, card: str):
     _demo_or_404(demo_id)
     if card not in store.CARDS:
         raise HTTPException(400, "unknown card")
-    return store.update(demo_id, lambda d: d["approvals"].__setitem__(card, False))["approvals"]
+    out = store.update(demo_id, lambda d: d["approvals"].__setitem__(card, False))["approvals"]
+    cloud.sync_demo_async(demo_id)
+    return out
 
 
 @app.post("/api/demos/{demo_id}/ctas")
@@ -439,6 +485,8 @@ async def run_lead(demo_id: str, req: Request):
     if not phone:
         raise HTTPException(400, "no valid Indian mobile number found")
     lead = qa.save_lead(demo_id, phone, (body.get("question") or "").strip(), body.get("profile") or None, body.get("session_id"))
+    cloud.put_event(demo_id, "lead", {"phone": lead.get("phone"), "question": lead.get("question"), "profile": lead.get("profile")})
+    cloud.sync_demo_async(demo_id)
     return {"ok": True, "lead": lead}
 
 
@@ -515,6 +563,8 @@ async def save_session(demo_id: str, req: Request):
     body["id"] = sid
     body["saved_at"] = time.time()
     store.write_json(demo_id, f"sessions/{sid}.json", body)
+    cloud.put_event(demo_id, "session", {"session_id": sid, "profile": body.get("profile"), "cta": body.get("cta"), "intent": body.get("intent"), "questions": body.get("questions", []), "personalized": body.get("personalized"), "escalations": body.get("escalations", [])})
+    cloud.sync_demo_async(demo_id)
     return {"ok": True, "id": sid}
 
 

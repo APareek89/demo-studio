@@ -50,3 +50,21 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 - **No visible latency.** After the customer speaks, the planner writes 2–3 custom batches for their context and voices them server-side while the standard opening plays; recorded filler lines (acknowledgement, bridges, holds, nudges, small talk) cover every gap. The FAQ bank (20 generated + your FAQ document) is pre-voiced, so known questions answer instantly; new questions get a recorded "bear with me" then a live answer with server audio.
 - **The voice never changes.** Runtime lines use the same provider or captions; the browser voice is never used when a server voice exists.
 - **Pictures match words.** An information→image map is built at Configure and used by the script, the custom batches and the answers.
+
+## AWS (added 2026-09-04)
+Credentials come from `aws configure` (`~/.aws`), never from the repo. `server/cloud.py` mirrors every demo:
+- **DynamoDB** `demo-studio-demos` (one item per demo: name, status, version, settings, approvals, stages, sources) and `demo-studio-events` (sessions, leads, stage completions; key `demo_id` + `ts#kind`).
+- **S3** `demo-studio-<account>` — the whole demo folder under `demos/<id>/…` (sources, cleaned images, audio, JSON, `RUN.md`, traces). Private bucket; incremental sync after every stage in a background thread.
+- Local `data/demos/` stays the working copy. A demo that exists only in the cloud is listed with a "cloud only" pill and restored on first open; media is fetched on demand.
+- Routes: `GET /api/cloud` (status), `POST /api/cloud/setup` (create bucket + tables), `POST /api/demos/<id>/sync`. Disable with `CLOUD_SYNC=0`. Least-privilege policy for the IAM user: `docs/aws/iam-policy.json`.
+
+## Where the logs are
+| what | file per demo | written by | read by |
+|---|---|---|---|
+| the story of a run: inputs, every stage's INPUT / OUTPUT, every model call in full | `data/demos/<id>/RUN.md` | `server/runlog.py` (`stage_report`, `event`, `chat`, `runtime_qa`) | VS Code, `GET /api/demos/<id>/runlog` |
+| one row per model / speech call with prompt, response, latency, tokens, cost | `trace.jsonl` | `server/usage.py:trace` called from `server/llm/claude.py`, `gemini.py`, `sarvam.py` | Observability tab, `GET /api/demos/<id>/trace` |
+| cost accounting rows | `usage.jsonl` | `server/usage.py:record` | Playground › Cost, `GET /api/demos/<id>/usage` |
+| stage decisions (validator issues, picture choices, FAQ questions, errors) | `logs/<epoch>-<stage>.json` | `server/store.py:log` from the agents | RUN.md folds them in |
+| live progress lines shown in the overlay | in memory | `server/events.py:publish` via `orchestrator.emit_for` | `GET /api/demos/<id>/events` (SSE) |
+| sessions, leads, eval runs | `sessions/`, `leads/`, `evals/` | `server/app.py` routes | Rehearse panel, Playground, DynamoDB `demo-studio-events` |
+| server stdout (requests, uncaught errors) | terminal | uvicorn | the terminal that runs `uvicorn server.app:app --port 8877` |

@@ -17,7 +17,7 @@ function card(d, navigate, refresh) {
   const open = () => navigate(`#/studio/${d.id}/${d.status === "sources" ? "sources" : d.status === "ready" ? "rehearse" : "align"}`);
   return h("div", { class: "card" },
     h("div", { style: "display:flex;justify-content:space-between;gap:10px;align-items:flex-start" }, h("h3", {}, d.name), h("span", { class: "pill " + (STATUS_CLASS[d.status] || "") }, STATUS_LABEL[d.status] || d.status)),
-    h("div", { class: "meta" }, `${d.id} · v${d.version || 0}`, h("br"), `${d.sources} source${d.sources === 1 ? "" : "s"} · ${d.sessions} session${d.sessions === 1 ? "" : "s"} · updated ${fmtTime(d.updated_at)}`),
+    h("div", { class: "meta" }, d.location === "cloud" ? h("span", { class: "pill run", style: "margin-right:6px" }, "cloud only") : d.location === "local+cloud" ? h("span", { class: "pill ok", style: "margin-right:6px" }, "synced") : null, `${d.id} · v${d.version || 0}`, h("br"), `${d.sources} source${d.sources === 1 ? "" : "s"} · ${d.sessions} session${d.sessions === 1 ? "" : "s"} · updated ${fmtTime(d.updated_at)}`),
     h("div", { class: "row" },
       h("button", { class: "btn sm primary", onclick: open }, "Open"),
       h("button", { class: "btn sm ghost", onclick: async () => { const n = await api.post(`/api/demos/${d.id}/duplicate`); toast("Duplicated as " + n.id); refresh(); } }, "Duplicate"),

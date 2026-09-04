@@ -40,6 +40,8 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ✅ Paid QA drivers: `evals/qa_real.py images|video [--lang hi-IN]` → `docs/qa/<demo_id>.md` (stage seconds, calls, cost,
   runtime probes, opening script). Reports summarised in `docs/QA-2026-09-03.md`.
 - ⏹ Loop is OFF by user decision (2026-09-03); FMEA stays on per config.
+- ✅ AWS wired (`server/cloud.py`): account 511833557379, region ap-south-1, bucket `demo-studio-511833557379`, tables `demo-studio-demos` / `demo-studio-events`;
+  incremental S3 mirror after every stage, DynamoDB record + events; cloud-only demos restore on open. Credentials via `aws configure` only.
 - ✅ Workflow = `server/graph.py` (LangGraph): router → understand → plan → author → faq → align_enter → align_wait[interrupt] → voice → rehearsal → bundle → finish. `orchestrator.py` is now only the stage runner + action executor (`_run_stage`, `apply_actions`, `respond`).
 
 ## Pending points
@@ -47,6 +49,7 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
   recorded bridge → two custom batches about city + long trips; 0.0 s gaps at every boundary; one voice throughout; bank questions instant.
 - 🤖 AGENT: one Creta batch still 21.2 s spoken (word limit met, this voice is slower on that line) — lower the split tolerance from +4 words to 0 if you want a hard 20.
 - 🧑 USER: open Creta (`dm_201201c4`) → Align: check the Script card (Preview = second-by-second table) and the FAQ bank; then Rehearse: speak your context, ask a bank question and a new one — report any silence or voice change.
+- 🧑 USER: the IAM user lacks s3:PutEncryptionConfiguration / PutBucketVersioning (bucket still private; S3 encrypts by default) — attach docs/aws/iam-policy.json if you want versioning.
 - 🤖 AGENT: FAQ documents in PDF are not yet parsed for questions (text/markdown only); add the PDF text extractor hook in `faq.doc_questions`.
 - 🤖 AGENT: fillers and FAQ answers are voiced in the main language only; extend `translate` to cover them for extra languages.
 - 🧑 USER: pick one of the four Playground/tab-redesign prototypes (docs/design/README.md; artifacts published 2026-09-03 evening:
@@ -93,6 +96,7 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - 2026-09-03 — Voice providers have a circuit breaker: a 401/402/403/quota error trips the provider for 10 minutes so the chain
   moves on per line instead of retrying every line; the stage log and `/api/voices.unavailable` say which provider is out.
 - 2026-09-03 — Narration lines render in parallel (`VOICE_WORKERS`, default 4) with per-task contextvars so usage/trace rows keep the demo id.
+- 2026-09-04 — Persistence: local folder store stays the working copy; S3 mirrors files, DynamoDB holds the demo record and events; nothing in the pipeline reads from AWS on the hot path.
 - 2026-09-04 — Script and FAQ bank are produced at Configure and aligned on before Build; Build only records voice, scores and bundles.
 - 2026-09-04 — Runtime rule: nothing the customer hears is voiced live in a different voice — recorded fillers, server-voiced custom batches and answers in the same provider, captions otherwise; never the browser voice.
 - 2026-09-04 — Batches are ≤ 20 s (≤ 50 words) and every batch ends at a pause point.

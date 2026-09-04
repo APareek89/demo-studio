@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 
-from . import events, media, store, usage, runlog
+from . import cloud, events, media, store, usage, runlog
 from .agents import align, author, bundle, faq, plan, rehearsal, understand, voice
 from .store import STAGES
 
@@ -81,6 +81,8 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         invalidate(demo_id, stage)
         st = store.load(demo_id)["stages"].get(stage, {})
         runlog.stage_report(demo_id, stage, seconds=st.get("seconds"), started_at=st.get("started_at"), instruction=instruction)
+        cloud.put_event(demo_id, "stage_done", {"stage": stage, "seconds": st.get("seconds"), "cost_usd": usage.summary(demo_id).get("by_stage", {}).get(stage, {}).get("usd")})
+        cloud.sync_demo_async(demo_id)
         return out
     except Exception as e:
         store.log(demo_id, f"error-{stage}", {"error": str(e), "trace": traceback.format_exc()})

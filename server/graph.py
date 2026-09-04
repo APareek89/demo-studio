@@ -22,7 +22,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 
-from . import config, events, runlog, store
+from . import cloud, config, events, runlog, store
 from . import orchestrator as orch
 from .agents import align
 
@@ -149,6 +149,7 @@ def finish(state: DemoState) -> dict:
     d = state["demo_id"]
     orch._set_status(d, "ready")
     runlog.phase_done(d, "build")
+    cloud.sync_demo_async(d)
     events.publish(d, "phase_done", phase="build")
     return {}
 
