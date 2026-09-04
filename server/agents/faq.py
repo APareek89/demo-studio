@@ -93,9 +93,13 @@ def match(demo_id: str, question: str) -> dict | None:
         if not et:
             continue
         inter = len(qt & et)
+        if not inter:
+            continue
         jaccard = inter / len(qt | et)
-        containment = inter / min(len(qt), len(et))
-        score = max(jaccard, containment if min(len(qt), len(et)) >= 3 else 0)
-        if score > best_score:
+        cover_q = inter / len(qt)   # how much of what the customer said is in the bank question
+        cover_e = inter / len(et)   # how much of the bank question the customer covered
+        ok = jaccard >= 0.6 or (cover_q >= 0.75 and cover_e >= 0.2)
+        score = jaccard + cover_q
+        if ok and score > best_score:
             best, best_score = e, score
-    return best if best and best_score >= 0.6 else None
+    return best

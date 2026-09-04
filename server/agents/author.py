@@ -47,10 +47,10 @@ Hard rules:
 
 NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,})", re.I)
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
-LIMITS = {"intro": 50, "outcome": 50, "proof": 50, "features": 55, "establish": 45}  # ≤ 20 s per batch at ~150 wpm
-WPS = 2.5  # spoken words per second used for the estimated timeline; replaced by real audio durations after voicing
+LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 36}  # ≤ 20 s per batch at the measured ~1.9 words/s of the recorded voice
+WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
-ROUTE_LIMIT = 480  # ≈ 3 minutes at ~150 wpm: intro + outcome + best 3 proof + features + establish + closing
+ROUTE_LIMIT = 360  # ≈ 3 minutes at the measured ~1.9 words/s: intro + outcome + best 3 proof + features + establish + closing
 JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|IP6\d|TFT|RPM|ABS|CBS|Li-ion|BMS|regen)\b")
 
 
@@ -137,18 +137,50 @@ def timeline(script: dict, demo_id: str | None = None) -> dict:
             dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
             ln["start"], ln["duration"], ln["exact"] = round(t, 1), dur, bool(_audio_seconds(demo_id, ln.get("audio")))
             t += dur
+        spoken = round(t - b0, 1)  # the batch itself: what the guide says before the pause point
         if seg.get("checkin"):
             dur = _audio_seconds(demo_id, seg.get("checkin_audio")) or round(max(1.0, words(seg["checkin"]) / WPS), 1)
             seg["checkin_start"], seg["checkin_duration"] = round(t, 1), dur
             t += dur
-        seg["start"], seg["duration"] = round(b0, 1), round(t - b0, 1)
-        batches.append({"id": seg["id"], "title": seg.get("title"), "role": seg.get("role"), "start": round(b0, 1), "duration": round(t - b0, 1), "over_20s": (t - b0) > 20.5})
+        seg["start"], seg["duration"], seg["spoken"] = round(b0, 1), round(t - b0, 1), spoken
+        batches.append({"id": seg["id"], "title": seg.get("title"), "role": seg.get("role"), "start": round(b0, 1), "duration": round(t - b0, 1), "spoken": spoken, "checkin": round(t - b0 - spoken, 1), "over_20s": spoken > 20.5})
     for ln in script.get("closing", []):
         dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
         ln["start"], ln["duration"] = round(t, 1), dur
         t += dur
     script["timeline"] = {"total_seconds": round(t, 1), "batches": batches, "exact": any(l.get("exact") for s in script.get("segments", []) for l in s.get("lines", []))}
     return script["timeline"]
+
+
+def split_long_batches(script: dict) -> int:
+    """Hard guarantee for the 20-second rule: a segment whose spoken lines exceed its word budget is split at line
+    boundaries into '… (cont.)' batches; the check-in and deeper lines stay with the last piece. Returns the number of
+    new batches created."""
+    out, created = [], 0
+    for seg in script.get("segments", []):
+        limit = LIMITS.get(seg.get("role", "proof"), 50)
+        lines = [l for l in seg.get("lines", []) if not l.get("unverified")]
+        if sum(words(l.get("text", "")) for l in lines) <= limit + 4 or len(lines) < 2:
+            out.append(seg)
+            continue
+        chunks, cur, n = [], [], 0
+        for l in lines:
+            w = words(l.get("text", ""))
+            if cur and n + w > limit:
+                chunks.append(cur); cur, n = [], 0
+            cur.append(l); n += w
+        if cur:
+            chunks.append(cur)
+        held = [l for l in seg.get("lines", []) if l.get("unverified")]
+        for k, ch in enumerate(chunks):
+            last = k == len(chunks) - 1
+            piece = {**seg, "id": seg["id"] if k == 0 else f"{seg['id']}-{k + 1}", "title": seg["title"] if k == 0 else f"{seg['title']} (cont.)",
+                     "lines": ch + (held if last else []), "checkin": seg.get("checkin", "") if last else "", "checkin_audio": seg.get("checkin_audio") if last else None,
+                     "deeper": seg.get("deeper", []) if last else []}
+            out.append(piece)
+            created += 0 if k == 0 else 1
+    script["segments"] = out
+    return created
 
 
 def _assign_ids(script: dict) -> None:
@@ -218,6 +250,9 @@ IMAGES:
     script["intake_audio"] = {}
     schemas.Script.model_validate(script)
     script = visuals.align(demo_id, script, und, emit)
+    n_split = split_long_batches(script)
+    if n_split:
+        emit(f"{n_split} long batch(es) split at line boundaries so every batch stays under 20 seconds.")
     timeline(script)
     store.write_json(demo_id, "script.json", script)
     n_lines = sum(len(s["lines"]) for s in script["segments"])

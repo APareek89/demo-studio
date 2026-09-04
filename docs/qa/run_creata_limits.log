@@ -1,0 +1,30 @@
+author: limits calibrated
+faq: matcher covers short questions
+compile ok
+  'How many airbags does it have?' → Q10 How many airbags does it have, and are side airbags included
+  'what is the service interval and cost of a regular service' → Q17 What's the service interval, and how much does a regular ser
+  'Does it have a sunroof?' → live
+  'roadside assistance?' → Q18 Is there roadside assistance included, and for how long?
+=== smoke
+SMOKE OK dm_34926a05
+SMOKE OK (phase 2) dm_34926a05
+=== Creta re-author with calibrated limits
+  status → building (0s)
+      author | Writing the script…
+      author | Validator flagged 11 issues — asking for a grounded rewrite…
+      author | Pictures aligned to the words: 13 line(s) now show the part being described; 3 uploaded picture(s) rescued from never being shown.
+      author | Script: 9 segments, 18 lines, 0 held back as unverified; 6 note(s) on the Facts card.
+      voice | Recording narration with sarvam (fallbacks: gemini) — 35 lines…
+      voice | Recorded 8/35 lines…
+      voice | Recorded 16/35 lines…
+      voice | Recorded 24/35 lines…
+      voice | Recorded 32/35 lines…
+  status → ready (112s)
+      voice | Narration ready.
+      bundle | Assembling the demo bundle…
+      bundle | Bundle v4: 9 segments, 72 facts, 3 calls to action.
+      build | 
+bundle v 4 | timeline 224.6 exact True
+batches: [('Frame: what you are ', 19.0, 'ok'), ('Act: your Monday mor', 17.2, 'ok'), ('The engine, in the r', 22.6, 'OVER'), ('MT or DCT—what chang', 23.2, 'OVER'), ('What is standard whe', 23.3, 'OVER'), ('The cabin your famil', 27.2, 'OVER'), ('Screens, sound and c', 22.3, 'OVER'), ('The N Line stance, d', 28.6, 'OVER'), ('Terms, assumptions a', 22.7, 'OVER')]
+DONE
+exit 0
