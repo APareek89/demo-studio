@@ -43,6 +43,9 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ✅ Workflow = `server/graph.py` (LangGraph): router → understand → plan → author → faq → align_enter → align_wait[interrupt] → voice → rehearsal → bundle → finish. `orchestrator.py` is now only the stage runner + action executor (`_run_stage`, `apply_actions`, `respond`).
 
 ## Pending points
+- ✅ Runtime proof 2026-09-04 (docs/qa/runtime-2026-09-04.md): typed context → recorded acknowledgement → opening → server-voiced decision frame →
+  recorded bridge → two custom batches about city + long trips; 0.0 s gaps at every boundary; one voice throughout; bank questions instant.
+- 🤖 AGENT: one Creta batch still 21.2 s spoken (word limit met, this voice is slower on that line) — lower the split tolerance from +4 words to 0 if you want a hard 20.
 - 🧑 USER: open Creta (`dm_201201c4`) → Align: check the Script card (Preview = second-by-second table) and the FAQ bank; then Rehearse: speak your context, ask a bank question and a new one — report any silence or voice change.
 - 🤖 AGENT: FAQ documents in PDF are not yet parsed for questions (text/markdown only); add the PDF text extractor hook in `faq.doc_questions`.
 - 🤖 AGENT: fillers and FAQ answers are voiced in the main language only; extend `translate` to cover them for extra languages.
