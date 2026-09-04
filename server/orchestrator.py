@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 
-from . import events, store, usage
+from . import events, store, usage, runlog
 from .agents import align, author, bundle, plan, rehearsal, understand, voice
 from .store import STAGES
 
@@ -78,10 +78,13 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
             raise ValueError(stage)
         set_stage(demo_id, stage, "done")
         invalidate(demo_id, stage)
+        st = store.load(demo_id)["stages"].get(stage, {})
+        runlog.stage_report(demo_id, stage, seconds=st.get("seconds"), started_at=st.get("started_at"), instruction=instruction)
         return out
     except Exception as e:
         store.log(demo_id, f"error-{stage}", {"error": str(e), "trace": traceback.format_exc()})
         set_stage(demo_id, stage, "error", error=str(e)[:400])
+        runlog.stage_failed(demo_id, stage, str(e)[:2000])
         raise
 
 
@@ -112,6 +115,7 @@ def _spawn(demo_id: str, target, *args) -> None:
 def _read(demo_id: str, instruction: str = "") -> None:
     try:
         _set_status(demo_id, "reading")
+        runlog.event(demo_id, "READ started" + (f" · instruction: {instruction}" if instruction else ""), "Configure Demo: understand the sources, then plan the pitch.")
         st = store.load(demo_id)["stages"]
         if instruction or st["understand"]["status"] != "done" or not store.read_json(demo_id, "understanding.json"):
             _run_stage(demo_id, "understand", instruction)
@@ -122,6 +126,8 @@ def _read(demo_id: str, instruction: str = "") -> None:
         _set_status(demo_id, "align")
         text = align.opening_message(demo_id)
         _append_conversation(demo_id, "agent", text)
+        runlog.event(demo_id, "Agent opening message", text)
+        runlog.phase_done(demo_id, "read")
         events.publish(demo_id, "phase_done", phase="read")
     except Exception as e:
         _set_status(demo_id, "error")
@@ -148,6 +154,7 @@ def _persona_sample(demo_id: str) -> None:
 def _build(demo_id: str) -> None:
     try:
         _set_status(demo_id, "building")
+        runlog.event(demo_id, "BUILD started", "All five cards approved. Author → voice → rehearsal → bundle.")
         st = store.load(demo_id)["stages"]
         if st["author"]["status"] != "done":
             _run_stage(demo_id, "author", "")
@@ -155,6 +162,7 @@ def _build(demo_id: str) -> None:
         _run_stage(demo_id, "rehearsal", "")
         _run_stage(demo_id, "bundle", "")
         _set_status(demo_id, "ready")
+        runlog.phase_done(demo_id, "build")
         events.publish(demo_id, "phase_done", phase="build")
     except Exception as e:
         _set_status(demo_id, "error")
@@ -217,6 +225,7 @@ def handle_message(demo_id: str, message: str, attachments: list[dict], context:
     notes = apply_actions(demo_id, [a.model_dump() for a in out.actions], attachments, context)
     reply = out.reply.strip()
     agent_msg = _append_conversation(demo_id, "agent", reply, actions=[a.model_dump() for a in out.actions], notes=notes)
+    runlog.chat(demo_id, context, message, reply, [a.model_dump() for a in out.actions], attachments)
     return {"reply": reply, "actions": [a.model_dump() for a in out.actions], "notes": notes, "message": agent_msg}
 
 
@@ -229,6 +238,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
         if t == "approve" and a.get("card"):
             store.update(demo_id, lambda d, c=a["card"]: d["approvals"].__setitem__(c, True))
             notes.append(f"approved {a['card']}")
+            runlog.event(demo_id, f"Card approved: {a['card']}")
             nxt = align.current_card(store.load(demo_id))
             _append_conversation(demo_id, "agent", align.card_prompt(demo_id, nxt) if nxt else align.card_prompt(demo_id, "done"), system=True)
         elif t == "edit_fact" and a.get("fact_id"):

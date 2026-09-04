@@ -7,10 +7,10 @@ import time
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import config, events, orchestrator, store, usage
+from . import config, events, orchestrator, store, usage, runlog
 from .agents import align, pitch, qa, rehearsal, voice
 from .llm import sarvam
 
@@ -106,6 +106,7 @@ async def patch_demo(demo_id: str, req: Request):
             d["settings"].update(allowed)
             if "voice_name" in allowed:
                 d["settings"]["voice_locked"] = True
+            runlog.settings_changed(demo_id, allowed)
     return store.update(demo_id, fn)
 
 
@@ -126,6 +127,7 @@ async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), 
             added.append(store.add_file_source(demo_id, f.filename or "file", data, role))
         except ValueError as e:
             raise HTTPException(400, str(e))
+    runlog.sources_added(demo_id, added)
     if url.strip():
         u = url.strip()
         if not u.startswith("http"):
@@ -185,6 +187,16 @@ def faq_template(demo_id: str):
 def get_usage(demo_id: str):
     _demo_or_404(demo_id)
     return usage.summary(demo_id)
+
+
+@app.get("/api/demos/{demo_id}/runlog")
+def get_runlog(demo_id: str):
+    """The human-readable end-to-end log (data/demos/<id>/RUN.md). Backfilled from disk if it does not exist yet."""
+    _demo_or_404(demo_id)
+    p = store.path(demo_id, runlog.FILE)
+    if not p.exists():
+        runlog.backfill(demo_id)
+    return Response(p.read_text(encoding="utf-8"), media_type="text/markdown; charset=utf-8")
 
 
 @app.get("/api/demos/{demo_id}/trace")
@@ -326,6 +338,7 @@ async def set_ctas(demo_id: str, req: Request):
     body = await req.json()
     ctas = body.get("ctas") or []
     notes = orchestrator.apply_actions(demo_id, [{"type": "set_ctas", "ctas": ctas}], [], "align")
+    runlog.event(demo_id, "CTAs saved", "; ".join(f"{c.get('label')} ({c.get('kind')})" for c in ctas))
     return {"ctas": (store.read_json(demo_id, "plan.json") or {}).get("ctas", []), "notes": notes}
 
 
@@ -386,9 +399,11 @@ async def run_qa(demo_id: str, req: Request):
     if not q:
         raise HTTPException(400, "question required")
     try:
-        return qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None)
+        r = qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None)
     except RuntimeError as e:
         raise HTTPException(502, str(e))
+    runlog.runtime_qa(demo_id, q, r, body.get("profile") or None)
+    return r
 
 
 @app.post("/api/demos/{demo_id}/run/pitch")
