@@ -66,6 +66,7 @@ export function renderRehearse(ctx) {
       lead: (body) => api.post(`/api/demos/${demoId}/run/lead`, body),
       stt: (blob, lang) => { const fd = new FormData(); fd.append("file", blob, "speech.wav"); fd.append("language", lang || "en-IN"); return api.form(`/api/demos/${demoId}/run/stt`, fd).then((r) => r.transcript || ""); },
       saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s).then(() => refreshState()),
+      onFullscreenRoute: () => { document.documentElement.requestFullscreen?.().catch(() => {}); location.hash = `#/play/${demoId}`; },
     });
   }
   async function refreshState() { try { state = await api.get(`/api/demos/${demoId}`); demo = state.demo; renderCoverage(); renderScore(); renderLeads(); renderSessions(); } catch (e) {} }

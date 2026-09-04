@@ -78,7 +78,9 @@ def build(demo_id: str, emit) -> dict:
     price_facts = [f for f in facts.values() if f["kind"] in ("price", "offer")]
     spec_facts = [f for f in facts.values() if f["kind"] in ("spec", "feature", "policy")]
     all_images = [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "angle": i["angle"], "description": i["description"]} for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
-    videos = [{"id": s["id"], "url": media_url(demo_id, s.get("play") or s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video" and s.get("use_in_demo", True) is not False]
+    videos = [{"id": s["id"], "url": media_url(demo_id, s.get("play") or s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video" and s.get("use_in_demo", True) is not False and s.get("role") != "intro_video"]
+    intro_src = next((s for s in reversed(demo["sources"]) if s["kind"] == "video" and s.get("role") == "intro_video"), None)
+    intro_video = {"url": media_url(demo_id, intro_src.get("play") or intro_src["path"]), "name": intro_src["name"], "enabled": demo.get("settings", {}).get("intro_video", "on") != "off"} if intro_src else None
     b = {
         "id": demo_id, "name": demo["name"], "version": demo.get("version", 0) + 1, "built_at": time.time(),
         "product": und.get("product", {}), "customer_persona": plan.get("customer_persona", ""),
@@ -90,6 +92,7 @@ def build(demo_id: str, emit) -> dict:
         "pitch": {"decision_frame": plan.get("decision_frame", ""), "takeaway": plan.get("takeaway", ""), "primary_outcome": plan.get("primary_outcome", ""), "supporting_outcomes": plan.get("supporting_outcomes", []), "usps": plan.get("usps", []), "advance": plan.get("advance", ""), "do_not_recommend_if": plan.get("do_not_recommend_if", ""), "state_questions": plan.get("state_questions", [])},
         "language": main_lang, "languages": [main_lang] + list(alt.keys()), "alt_languages": alt,
         "mascot": media_url(demo_id, demo.get("mascot")) if demo.get("mascot") else None,
+        "intro_video": intro_video,
         "timeline": script.get("timeline"),
         "faq": [{**e, "audio": media_url(demo_id, e.get("audio")), "visual": visual({"ref": (e.get("visual") or {}).get("ref")}) if e.get("visual") else {"kind": "none"}} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])],
         "fillers": {k: {"text": v.get("text"), "audio": media_url(demo_id, v.get("audio"))} for k, v in (store.read_json(demo_id, "fillers.json") or {}).items()},

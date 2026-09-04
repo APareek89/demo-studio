@@ -35,7 +35,7 @@ export function mountPlayer(host, bundle, api) {
   const root = h("div", { class: "pl" },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
-      h("div", { class: "right" }, el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"))),
+      h("div", { class: "right" }, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
     el.stage = h("div", { class: "pl-stage" },
       el.media = h("div", { class: "pl-media" }, el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" })),
       el.card = h("div", { class: "pl-card" }),
@@ -354,12 +354,14 @@ export function mountPlayer(host, bundle, api) {
     el.intake.classList.remove("open"); S.intakeOpen = false;
     if (bundle.media?.hero) showVisual({ kind: "image", url: bundle.media.hero, cycle: false });  // neutral hero behind the acknowledgement — never a leftover detail image
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
+    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : null;
     const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
+    const okF = await playIntroFilm(run); if (!okF) return;
     await startAfterIntake(run, a1);
   }
   async function startAfterIntake(run = newRun(), a1 = S.profile.why) {
     // The planner (route + custom batches, all voiced server-side) runs while the standard opening plays.
-    const pitchP = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : Promise.resolve(null);
+    const pitchP = S.pitchPromise || (api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : Promise.resolve(null)); S.pitchPromise = null;
     const okO = await playOpening(run); if (!okO) return;
     let plan = await withTimeout(pitchP, 150); if (run !== S.run) return;
     if (!plan) { const okH = await speakF("still_working", "Almost there — one more moment.", run); if (!okH) return; plan = await withTimeout(pitchP, 15000); if (run !== S.run) return; }
@@ -395,7 +397,7 @@ export function mountPlayer(host, bundle, api) {
     }
     return run === S.run;
   }
-  function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; const run = newRun(); playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }
+  function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; const run = newRun(); playIntroFilm(run).then((okF) => { if (!okF) return; playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }); }
 
   // ---------- handoff ----------
   function intentScore() { let s = 20; s += Math.min(30, S.questions.length * 8); s += S.resolved.size * 8; s += S.seg >= S.plan.length - 1 ? 15 : 0; if (S.cta && S.cta !== "summary") s += 30; if (S.leads.length) s += 10; s -= S.unresolved.size * 5; return Math.max(5, Math.min(98, s)); }
@@ -415,6 +417,36 @@ export function mountPlayer(host, bundle, api) {
     el.handoff.classList.add("open"); api.saveSession(session).catch(() => {});
   }
 
+  function toggleFullscreen() {
+    if (api.onFullscreenRoute) { api.onFullscreenRoute(); return; }
+    const target = root;
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else (target.requestFullscreen ? target.requestFullscreen() : Promise.reject()).catch(() => {});
+  }
+
+  // ---------- intro film ----------
+  async function playIntroFilm(run) {
+    const iv = bundle.intro_video;
+    if (!iv || !iv.url || iv.enabled === false || S.introPlayed) return run === S.run;
+    S.introPlayed = true;
+    const ok = await speakF("before_video", "Before we begin, here's a short film to give you a feel for it. I'll pick things up right after.", run);
+    if (!ok) return false;
+    el.img.style.display = "none"; el.img.classList.remove("kb");
+    const v = el.video; v.src = iv.url; v.muted = false; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
+    setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
+    el.chips.replaceChildren(h("button", { class: "chip" , onclick: () => { S.skipFilm = true; } }, "Skip the film"));
+    const done = await new Promise((res) => {
+      let fin = false; const end = (x) => { if (!fin) { fin = true; res(x); } };
+      v.onended = () => end(true); v.onerror = () => end(true);
+      const guard = setInterval(() => { if (run !== S.run || S.paused) { clearInterval(guard); end(false); } if (S.skipFilm) { S.skipFilm = false; clearInterval(guard); end(true); } }, 200);
+      v.play().catch(() => end(true));
+      setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
+    });
+    try { v.pause(); } catch (e) {}
+    v.muted = true; setChips([]);
+    return done && run === S.run;
+  }
+
   // ---------- pause / stop ----------
   function togglePause() {
     if (S.paused) { S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); const r = S.resume; S.resume = null; if (r) r(); else if (S.plan.length) playFrom(S.seg, S.line); return; }
@@ -425,7 +457,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.customPlayed = false; S.latePlan = null; el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.customPlayed = false; S.latePlan = null; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   function destroy() { interruptAll(); root.remove(); }

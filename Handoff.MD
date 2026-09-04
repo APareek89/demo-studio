@@ -52,6 +52,11 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
   `pkill -f 'uvicorn server.app:app' ; .venv/bin/uvicorn server.app:app --port 8877`
   2) top up Sarvam credits (402 yesterday) 3) Creta (`dm_201201c4`) is parked at Align with the new-flow plan and author marked
   stale — press Build and the script is written by OPUS; or Configure Demo for a full fresh read. FMEA pre-QA report: docs/FMEA-2026-09-04.md.
+- ✅ Opening film (2026-09-04 evening): optional 10–20 s video (Sources → “Opening film” zone, role intro_video; toggle in settings,
+  default on when uploaded). Player: greeting → context → recorded lead-in (“here's a short film…”) → film plays unmuted with a Skip
+  chip — the personalisation planner runs DURING the film; Gemini never reads it; it stays out of the demo's media pool.
+- ✅ Full screen: `#/play/<id>` route mounts only the player (⛶, ⏸, ⏹, 💬, ↺, ✕ close → My Demos). My Demos → “▶ View” opens it
+  (requests browser fullscreen on the click); Studio → Rehearse ⛶ routes there too. Fixed a TDZ crash on direct #/play loads.
 - ✅ Models (user decision 2026-09-04): Opus = registry, plan, script, Q&A, runtime route; Haiku only for translation + picture
   matching (CLAUDE_LITE_MODEL); Gemini vision back to 3.6-flash; Sarvam already on bulbul:v3 / saarika:v2.5 (their newest). Loop stays OFF; FMEA on.
 - ✅ Pre-QA fixes: fact edit/remove now stales the FAQ bank and Build re-answers it before voicing; Creta's stopped Haiku rebuild cleaned up.

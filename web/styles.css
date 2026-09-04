@@ -345,3 +345,8 @@ main{flex:1;min-height:0;display:flex}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .pcard{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:6px}
 .pcard img,.pcard video{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--panel-2);border-radius:6px;cursor:zoom-in}
+
+/* full-screen play route (#/play/<id>) */
+.play-page{position:fixed;inset:0;z-index:60;background:var(--bg)}
+.play-page .pl{height:100%}
+.pl:fullscreen{background:var(--bg)}

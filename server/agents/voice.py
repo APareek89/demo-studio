@@ -127,6 +127,7 @@ FILLERS = {
     "focus_first": "Got it — let me show you the part that matters most for that first.",
     "how_i_go": "Here's how I'll go about it.",
     "no_guess": "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it.",
+    "before_video": "Before we begin, here's a short film to give you a feel for it. I'll pick things up right after.",
 }
 
 

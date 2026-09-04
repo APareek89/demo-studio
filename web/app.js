@@ -6,6 +6,7 @@ import { renderAlign } from "/web/studio/align.js";
 import { renderRehearse } from "/web/studio/rehearse.js";
 import { renderPlayground } from "/web/playground.js";
 import { renderObservability } from "/web/observability.js";
+import { mountPlayer } from "/web/player/player.js";
 
 const main = document.getElementById("main");
 let current = { unsub: null, demoId: null };
@@ -68,6 +69,11 @@ async function renderStudio(demoId, stage) {
 async function route() {
   const parts = (location.hash || "#/demos").slice(2).split("/");
   if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2]); }
+  if (parts[0] === "play" && parts[1]) {
+    setTab("");
+    if (current.unsub) { current.unsub(); current.unsub = null; }
+    return renderPlay(parts[1]);
+  }
   if (parts[0] === "observability") { setTab("observability"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderObservability({ main, navigate, demoId: parts[1] }); }
   if (parts[0] === "playground") { setTab("playground"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderPlayground({ main, navigate, demoId: parts[1] }); }
   setTab("demos");
@@ -75,5 +81,27 @@ async function route() {
   return renderDemos({ main, navigate });
 }
 
+let playInstance = null;
+async function renderPlay(demoId) {
+  const main = document.getElementById("main");
+  if (playInstance) { try { playInstance.destroy(); } catch (e) {} playInstance = null; }
+  let bundle;
+  try { bundle = await api.get(`/api/demos/${demoId}/bundle`); }
+  catch (e) { toast("This demo isn't built yet — open it in the studio and build it first.", true); navigate("#/demos"); return; }
+  const host = h("div", { class: "play-page" });
+  main.replaceChildren(host);
+  playInstance = mountPlayer(host, bundle, {
+    qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),
+    tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
+    tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),
+    pitch: (body) => api.post(`/api/demos/${demoId}/run/pitch`, body),
+    lead: (body) => api.post(`/api/demos/${demoId}/run/lead`, body),
+    stt: (blob, lang) => { const fd = new FormData(); fd.append("file", blob, "speech.wav"); fd.append("language", lang || "en-IN"); return api.form(`/api/demos/${demoId}/run/stt`, fd).then((r) => r.transcript || ""); },
+    saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s).catch(() => {}),
+    onClose: () => { try { playInstance.destroy(); } catch (e) {} playInstance = null; navigate("#/demos"); },
+  });
+}
+
 window.addEventListener("hashchange", route);
 health(); route();
+

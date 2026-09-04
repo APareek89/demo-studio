@@ -60,7 +60,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     n_shot = 0
 
     # ---- visuals (Gemini) ----
-    videos = [s for s in demo["sources"] if s["kind"] == "video"]
+    videos = [s for s in demo["sources"] if s["kind"] == "video" and s.get("role") != "intro_video"]
     imgs = [s for s in demo["sources"] if s["kind"] == "image"]
     for src in videos:
         emit(f"Watching {src['name']}…")
