@@ -52,6 +52,8 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - 🧑 USER: **Sarvam has no credits left** (HTTP 402 on 2026-09-03 17:58 during the Hindi lines of `dm_f79d9170`; 10 lines fell back
   to Gemini TTS, and the video QA run voiced entirely on Gemini). Top up at dashboard.sarvam.ai, then rebuild the two QA demos
   (Rehearse → Restart demo → rebuild) so every line is Sarvam again. Until then the player uses Gemini voice + browser listening.
+- ✅ Proof run 2026-09-04 13:22: Creta (`dm_201201c4`) re-authored and rebuilt through the graph on Haiku — 172 s, $0.31 (author 130 s incl.
+  repair + picture editor, voice 41 s for 38 Sarvam lines); every gearbox line now shows a gear-lever / paddle / manual-knob image (docs/qa/run_creata_graph.log).
 - 🧑 USER: the Gemini key has **no image-generation quota** (429 on every image model on 2026-09-04) — enable billing on the key to get AI background clean-up (`settings.enhance_images = "ai"`) and a generated mascot; until then clean-up is local (Pillow) and the mascot is the built-in SVG.
 - 🤖 AGENT: prices for Gemini / Sarvam in `usage.py` are assumptions — set PRICE_* in `.env` once known.
 - 🤖 AGENT: mock traces only Claude calls; Gemini/Sarvam mock branches are untraced (fine for UI QA).

@@ -1,3 +1,27 @@
 before: ready v 1
   status → building (0s)
     author | Writing the script…
+    author | Validator flagged 15 issues — asking for a grounded rewrite…
+    author | Pictures aligned to the words: 12 line(s) now show the part being described; 2 uploaded picture(s) rescued from never being shown.
+    author | Script: 10 segments, 21 lines, 0 held back as unverified; 5 note(s) on the Facts card.
+    voice | Recording narration with sarvam (fallbacks: gemini) — 38 lines…
+    voice | Recorded 8/38 lines…
+    voice | Recorded 16/38 lines…
+    voice | Recorded 24/38 lines…
+    voice | Recorded 32/38 lines…
+  status → ready (172s)
+    voice | Narration ready.
+    bundle | Assembling the demo bundle…
+    bundle | Bundle v2: 10 segments, 72 facts, 3 calls to action.
+    build | 
+after: ready v 2 {'understand': ('done', None), 'plan': ('done', None), 'author': ('done', 129.5), 'voice': ('done', 41.2), 'rehearsal': ('stale', None), 'bundle': ('done', 0.0)}
+GEAR LINE intro → im05 | Hi, I'm Ananya. You're deciding two things today: does the N10 suit your driving, and manu
+GEAR LINE intro → im04 | My takeaway: full pull from fifteen hundred r/min, six airbags standard, but drive modes a
+GEAR LINE outcome → im13 | One squeeze of the throttle instead of dropping two gears—that's the daily gain. You're do
+GEAR LINE engine → im08 | That plateau in your rev band lets you overtake without downshifting. The brochure claims 
+GEAR LINE gearbox → im07 | Both offered: six-speed manual or seven-speed DCT. Four things are DCT-only: drive modes, 
+GEAR LINE gearbox → im05 | If your day is bumper-to-bumper, DCT gives you Stop and Go and Sport. If you want your own
+GEAR LINE establish → im02 | If lowest running cost per kilometre is your first criterion, I'd pause here: the N10 is o
+GEAR LINE closing → im02 | The one thing we can't settle by talking: how the DCT feels in your traffic versus the man
+DONE
+exit 0
