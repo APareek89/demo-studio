@@ -186,4 +186,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
             d["name"] = out.product.name
     store.update(demo_id, upd)
     emit(f"Registry: {len(facts)} facts, {len(unknowns)} open questions, {len(shots)} shots, {len(images)} images.")
+    try:
+        media.enhance_images(demo_id, emit)
+    except Exception as e:
+        emit(f"Image clean-up skipped ({str(e)[:80]}).")
     return und

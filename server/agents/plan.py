@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from .. import schemas, store
+from .. import config, schemas, store
 from ..llm import claude
 from .principles import CUSTOMER_STATES, PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, audience_instruction, language_instruction
 
@@ -76,7 +76,7 @@ IMAGES ({len(und['images'])}):
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, shape=PITCH_SHAPE, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
     try:
-        plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000)
+        plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000, model=config.CLAUDE_PLAN_MODEL)
     except Exception as e:
         raise RuntimeError(f"Planning failed: {claude.describe_error(e)}") from e
 

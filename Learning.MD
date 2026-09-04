@@ -115,3 +115,23 @@
 **Deepest why type:** `design`
 **Action taken:** Every translated line must keep exactly the digit groups of its source (Indian-script numerals normalised, separators stripped); a line that changes a number is kept in the main language and counted ("N lines kept in the main language"). Also from the scan: PII redaction + `TRACE_CAPTURE=meta` for traces, hard/soft breaker classes (transient quota → 90 s, account failures → 10 min), an in-flight guard on the Playground eval buttons. Targets Why 2.
 **Preventive action:** Any stage that produces spoken text — author, translate, runtime bridges, Q&A — runs a figure check against its source before voice. Loop.MD eval 22 covers translation; the FMEA report `docs/FMEA-2026-09-03.md` carries the 14 P2 items.
+
+### 2026-09-04 — I defended my own code when the user asked why we had no agent framework
+
+**Symptom:** Asked "why not LangGraph or CrewAI?", I argued that plain code was better because frameworks lack deterministic checks and that a framework would replace only a small part of the code. The user rightly pushed back: Zod/Pydantic checks exist in every framework, and the thing they wanted — one structured place to see and reason about the workflow — is exactly what a graph framework provides.
+**Why 1:** I weighed the cost of migrating code I had just written above the user's stated need (structure over scattered function calls).
+**Why 2:** I framed "deterministic validation" as a differentiator when it is orthogonal: validators are plain functions in any framework.
+**Why 3:** The original decision (2026-09-03, no framework) was taken for speed on day one and was never revisited when the workflow grew loops, interrupts and revisions.
+**Deepest why type:** `process`
+**Action taken:** Conceded in writing, then moved the workflow to LangGraph the same day: `server/graph.py` is the single definition (router → understand → plan → align_enter → align_wait[interrupt] → author → voice → rehearsal → bundle → finish), SQLite checkpointer, `GET /api/workflow` returns the graph as Mermaid (docs/mermaid/00-workflow.mmd), `langgraph.json` for Studio. Nodes stay thin wrappers over the vendor-SDK stage functions; the API, the file store and the run log are unchanged.
+**Preventive action:** When a non-developer asks "why not X", answer the question they are asking (legibility and control), not the one that flatters the existing code; state the migration cost honestly and let them decide.
+
+### 2026-09-04 — The screen did not show the part the guide was talking about (Creta gearbox)
+
+**Symptom:** The Creta demo spoke about the gearbox in the intro and outcome while showing exterior beauty shots; the uploaded gear-lever, paddle-shifter and manual-knob images only appeared in the gearbox segment.
+**Why 1:** The author picked one visual per line from a long catalogue while also writing 30 lines; it defaulted to hero shots outside the segment "about" that part.
+**Why 2:** Nothing checked the script against the pictures afterwards; the plan assigned visuals per segment, not per line.
+**Why 3:** Gemini's image tags (parts visible) were stored but never used for matching.
+**Deepest why type:** `design`
+**Action taken:** `server/agents/visuals.py` — a picture-editor pass after authoring: conservative rules on distinctive part words, then one Haiku call that decides every line with a stated reason, then a coverage guardrail so an uploaded picture with a spoken subject is shown at least once. Decisions are logged (logs/*-visuals.json) and appear in RUN.md.
+**Preventive action:** Any content the guide shows (pictures, cards, video shots) is matched to the words by a pass that leaves a reason per decision; Loop.MD eval 23.

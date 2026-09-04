@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 
-from . import events, store, usage, runlog
+from . import events, media, store, usage, runlog
 from .agents import align, author, bundle, plan, rehearsal, understand, voice
 from .store import STAGES
 
@@ -20,12 +20,10 @@ DOWNSTREAM = {
     "rehearsal": ["bundle"],
     "bundle": [],
 }
-_threads: dict[str, threading.Thread] = {}
-
 
 def is_running(demo_id: str) -> bool:
-    t = _threads.get(demo_id)
-    return bool(t and t.is_alive())
+    from . import graph
+    return graph.is_running(demo_id)
 
 
 def emit_for(demo_id: str, stage: str | None = None):
@@ -102,37 +100,7 @@ def _append_conversation(demo_id: str, role: str, text: str, **extra) -> dict:
     return msg
 
 
-def _spawn(demo_id: str, target, *args) -> None:
-    if is_running(demo_id):
-        raise RuntimeError("This demo is already being processed — wait for it to finish")
-    t = threading.Thread(target=target, args=(demo_id, *args), daemon=True)
-    _threads[demo_id] = t
-    t.start()
-
-
 # ---------- phases ----------
-
-def _read(demo_id: str, instruction: str = "") -> None:
-    try:
-        _set_status(demo_id, "reading")
-        runlog.event(demo_id, "READ started" + (f" · instruction: {instruction}" if instruction else ""), "Configure Demo: understand the sources, then plan the pitch.")
-        st = store.load(demo_id)["stages"]
-        if instruction or st["understand"]["status"] != "done" or not store.read_json(demo_id, "understanding.json"):
-            _run_stage(demo_id, "understand", instruction)
-        else:
-            events.publish(demo_id, "progress", stage="understand", message="Sources already read — reusing the registry and visuals.")
-        _run_stage(demo_id, "plan", "")
-        _persona_sample(demo_id)
-        _set_status(demo_id, "align")
-        text = align.opening_message(demo_id)
-        _append_conversation(demo_id, "agent", text)
-        runlog.event(demo_id, "Agent opening message", text)
-        runlog.phase_done(demo_id, "read")
-        events.publish(demo_id, "phase_done", phase="read")
-    except Exception as e:
-        _set_status(demo_id, "error")
-        events.publish(demo_id, "phase_error", phase="read", error=str(e)[:400])
-
 
 def _persona_sample(demo_id: str) -> None:
     p = store.read_json(demo_id, "plan.json")
@@ -143,6 +111,12 @@ def _persona_sample(demo_id: str) -> None:
         demo = store.load(demo_id)
         if voice.provider_for(demo) == "gemini" and p["voice"].get("suggested_voice") in voice.GEMINI_VOICES and not demo["settings"].get("voice_locked"):
             store.update(demo_id, lambda d: d["settings"].__setitem__("voice_name", p["voice"]["suggested_voice"]))
+        try:
+            m = media.generate_mascot(demo_id, p.get("voice"), emit)
+            if m:
+                store.update(demo_id, lambda d: d.__setitem__("mascot", m))
+        except Exception as e:
+            emit(f"Mascot skipped ({str(e)[:60]}).")
         emit("Recording a voice sample…")
         rel = voice.sample(demo_id, p["voice"]["sample_line"])
         p["voice_sample_audio"] = rel
@@ -151,86 +125,14 @@ def _persona_sample(demo_id: str) -> None:
         emit(f"Voice sample skipped: {str(e)[:120]}")
 
 
-def _build(demo_id: str) -> None:
-    try:
-        _set_status(demo_id, "building")
-        runlog.event(demo_id, "BUILD started", "All five cards approved. Author → voice → rehearsal → bundle.")
-        st = store.load(demo_id)["stages"]
-        if st["author"]["status"] != "done":
-            _run_stage(demo_id, "author", "")
-        _run_stage(demo_id, "voice", "")
-        _run_stage(demo_id, "rehearsal", "")
-        _run_stage(demo_id, "bundle", "")
-        _set_status(demo_id, "ready")
-        runlog.phase_done(demo_id, "build")
-        events.publish(demo_id, "phase_done", phase="build")
-    except Exception as e:
-        _set_status(demo_id, "error")
-        events.publish(demo_id, "phase_error", phase="build", error=str(e)[:400])
-
-
-def _revise(demo_id: str, stage: str, instruction: str, rebuild: bool) -> None:
-    try:
-        prev_status = store.load(demo_id)["status"]
-        _set_status(demo_id, "reading" if stage in ("understand", "plan") else "building")
-        if stage == "understand":
-            _run_stage(demo_id, "understand", instruction)
-            _run_stage(demo_id, "plan", "")
-            store.update(demo_id, lambda d: d["approvals"].update({"visuals": False, "facts": False}))
-        elif stage == "plan":
-            _run_stage(demo_id, "plan", instruction)
-            _persona_sample(demo_id)
-        elif stage == "author":
-            _run_stage(demo_id, "author", instruction)
-        if rebuild or prev_status == "ready":
-            if store.load(demo_id)["stages"]["author"]["status"] != "done":
-                _run_stage(demo_id, "author", "")
-            _run_stage(demo_id, "voice", "")
-            _run_stage(demo_id, "bundle", "")
-            _set_status(demo_id, "ready")
-            events.publish(demo_id, "phase_done", phase="build")
-        else:
-            _set_status(demo_id, "align")
-            events.publish(demo_id, "phase_done", phase="revise")
-    except Exception as e:
-        _set_status(demo_id, "error")
-        events.publish(demo_id, "phase_error", phase="revise", error=str(e)[:400])
-
-
-def start_read(demo_id: str, instruction: str = "") -> None:
-    _spawn(demo_id, _read, instruction)
-
-
-def start_build(demo_id: str) -> None:
-    demo = store.load(demo_id)
-    if not all(demo["approvals"].values()):
-        raise RuntimeError("Approve all five cards before building")
-    _spawn(demo_id, _build)
-
-
-def start_revise(demo_id: str, stage: str, instruction: str, rebuild: bool = False) -> None:
-    _spawn(demo_id, _revise, stage, instruction, rebuild)
-
-
 # ---------- align: message → actions → effects ----------
 
-def handle_message(demo_id: str, message: str, attachments: list[dict], context: str = "align") -> dict:
-    usage.current_demo.set(demo_id)
-    usage.current_stage.set("align")
-    if is_running(demo_id):
-        raise RuntimeError("Still working on the last change — give me a moment")
-    history = store.read_json(demo_id, "conversation.json", []) or []
-    _append_conversation(demo_id, "user", message, attachments=[{"id": a["id"], "name": a["name"], "kind": a["kind"]} for a in attachments])
-    out = align.respond(demo_id, message, attachments, history, context)
-    notes = apply_actions(demo_id, [a.model_dump() for a in out.actions], attachments, context)
-    reply = out.reply.strip()
-    agent_msg = _append_conversation(demo_id, "agent", reply, actions=[a.model_dump() for a in out.actions], notes=notes)
-    runlog.chat(demo_id, context, message, reply, [a.model_dump() for a in out.actions], attachments)
-    return {"reply": reply, "actions": [a.model_dump() for a in out.actions], "notes": notes, "message": agent_msg}
-
-
-def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], context: str) -> list[str]:
+def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], context: str, requests: dict | None = None) -> list[str]:
+    """Execute the align agent's structured actions. Build / revise are *requests*: collected into `requests` when the
+    graph is driving (it routes them), or handed to the graph when called from a plain API route."""
     notes: list[str] = []
+    own = requests is None
+    requests = requests if requests is not None else {}
     demo = store.load(demo_id)
     revise_stage, revise_instr = None, []
     for a in actions:
@@ -303,19 +205,40 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
             revise_instr.append(a.get("instruction", ""))
         elif t == "build":
             if all(store.load(demo_id)["approvals"].values()):
-                try:
-                    start_build(demo_id)
-                    notes.append("build started")
-                except RuntimeError as e:
-                    notes.append(str(e))
+                requests["build"] = True
+                notes.append("build requested")
             else:
                 notes.append("build refused: cards not all approved")
     if attachments and revise_stage is None and context == "align":
         revise_stage, revise_instr = "understand", ["New sources were added: " + ", ".join(a["name"] for a in attachments) + ". Incorporate them into the registry and visuals."]
     if revise_stage:
+        requests["revise"] = (revise_stage, "\n".join(x for x in revise_instr if x))
+        notes.append(f"revising {revise_stage}")
+    if own and (requests.get("build") or requests.get("revise")):
+        from . import graph
         try:
-            start_revise(demo_id, revise_stage, "\n".join(x for x in revise_instr if x), rebuild=(context == "rehearse"))
-            notes.append(f"revising {revise_stage}")
+            if requests.get("revise"):
+                stage, instr = requests["revise"]
+                graph.start_revise(demo_id, stage, instr, rebuild=(context == "rehearse"))
+            elif requests.get("build"):
+                graph.start_build(demo_id)
         except RuntimeError as e:
             notes.append(str(e))
     return notes
+
+
+def respond(demo_id: str, message: str, attachments: list[dict], context: str = "align") -> tuple[str, list[dict], list[str], dict]:
+    """One alignment turn: record the user message, ask the align agent, execute its actions, record the reply.
+    Returns (reply, actions, notes, requests) — the graph routes on `requests`."""
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("align")
+    history = store.read_json(demo_id, "conversation.json", []) or []
+    _append_conversation(demo_id, "user", message, attachments=[{"id": a["id"], "name": a["name"], "kind": a["kind"]} for a in attachments])
+    out = align.respond(demo_id, message, attachments, history, context)
+    actions = [a.model_dump() for a in out.actions]
+    requests: dict = {}
+    notes = apply_actions(demo_id, actions, attachments, context, requests)
+    reply = out.reply.strip()
+    _append_conversation(demo_id, "agent", reply, actions=actions, notes=notes)
+    runlog.chat(demo_id, context, message, reply, actions, attachments)
+    return reply, actions, notes, requests

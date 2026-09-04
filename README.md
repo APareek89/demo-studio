@@ -37,3 +37,10 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 - **Observability** tab: every Claude / Gemini / Sarvam call with stage, latency, tokens, cost, system prompt, input and response (`data/demos/<id>/trace.jsonl`, `GET /api/demos/<id>/trace`).
 - Player: ⏸ / ⏹ controls, image motion for image-only demos, at most 3 fact rows per card. Align: Approve on every card + Approve all + lightbox. Light-blue theme. Voice picker with preview. Bundled ffmpeg (`imageio-ffmpeg`).
 - QA: `evals/smoke_mock.py` (free), `evals/qa_accept.py` (free, upload failure cases), `evals/qa_real.py images|video [--lang hi-IN] [--resume <id>]` (paid; writes `docs/qa/<id>.md`). Report: `docs/QA-2026-09-03.md`.
+
+## What changed on 2026-09-04
+- **Workflow is a LangGraph graph** (`server/graph.py`): router → understand → plan → align_enter → align_wait (interrupt: waits for your approvals / messages) → author → voice → rehearsal → bundle → finish. Checkpoints in `data/graph.sqlite`. `GET /api/workflow` returns the graph as Mermaid (also `docs/mermaid/00-workflow.mmd`). `pip install "langgraph-cli[inmem]"` then `langgraph dev` opens it in LangGraph Studio.
+- **Cheapest models for the MVP**: Haiku 4.5 everywhere, Sonnet 5 for the plan, Gemini 3.5 flash-lite for vision, Sarvam bulbul v3 / Gemini flash TTS. Override with `CLAUDE_MODEL`, `CLAUDE_PLAN_MODEL`, `GEMINI_MODEL`, `GEMINI_IMAGE_MODEL`.
+- **Picture editor** (`server/agents/visuals.py`): after authoring, every line's picture is chosen to show the part being described, with a reason per line in the run log.
+- **Image clean-up** (`server/media.py`): transparent cut-outs get a clean studio background and defringed edges locally; `settings.enhance_images = "ai"` uses the Gemini image model when the key has quota. **Mascot**: built-in SVG guide in the player (`web/player/mascot.js`); a generated PNG when the image model is available.
+- **Run log** `data/demos/<id>/RUN.md`: INPUT / OUTPUT / MODEL CALLS per stage with full prompts and responses; `GET /api/demos/<id>/runlog`.

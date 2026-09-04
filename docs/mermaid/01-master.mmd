@@ -1,5 +1,6 @@
 %% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
 flowchart TD
+  LG["Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py<br/>see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints"]:::data
   U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask
   ING["store.add_*_source<br/>[FUNCTION · server/store.py]<br/>in: uploads / URL<br/>out: sources[] in data/demos/id/demo.json"]:::fn
   READBTN["POST /api/demos/id/read<br/>[FUNCTION · server/app.py]<br/>gate: ≥1 source · keys present or MOCK_LLM=1"]:::fn

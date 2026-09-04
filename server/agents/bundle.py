@@ -35,7 +35,7 @@ def build(demo_id: str, emit) -> dict:
             src = src_by_id.get(i["source_id"], {})
             if src.get("use_in_demo", True) is False:
                 return {"kind": "none"}
-            return {"kind": "image", "ref": i["id"], "url": media_url(demo_id, src.get("path")), "focus": v.get("focus", ""), "description": i["description"]}
+            return {"kind": "image", "ref": i["id"], "url": media_url(demo_id, src.get("play") or src.get("path")), "focus": v.get("focus", ""), "description": i["description"]}
         return {"kind": "none"}
 
     def line(ln: dict) -> dict:
@@ -77,7 +77,7 @@ def build(demo_id: str, emit) -> dict:
         })
     price_facts = [f for f in facts.values() if f["kind"] in ("price", "offer")]
     spec_facts = [f for f in facts.values() if f["kind"] in ("spec", "feature", "policy")]
-    all_images = [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "angle": i["angle"], "description": i["description"]} for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
+    all_images = [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "angle": i["angle"], "description": i["description"]} for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
     videos = [{"id": s["id"], "url": media_url(demo_id, s.get("play") or s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video" and s.get("use_in_demo", True) is not False]
     b = {
         "id": demo_id, "name": demo["name"], "version": demo.get("version", 0) + 1, "built_at": time.time(),
@@ -89,6 +89,7 @@ def build(demo_id: str, emit) -> dict:
         "ctas": plan.get("ctas", []),
         "pitch": {"decision_frame": plan.get("decision_frame", ""), "takeaway": plan.get("takeaway", ""), "primary_outcome": plan.get("primary_outcome", ""), "supporting_outcomes": plan.get("supporting_outcomes", []), "usps": plan.get("usps", []), "advance": plan.get("advance", ""), "do_not_recommend_if": plan.get("do_not_recommend_if", ""), "state_questions": plan.get("state_questions", [])},
         "language": main_lang, "languages": [main_lang] + list(alt.keys()), "alt_languages": alt,
+        "mascot": media_url(demo_id, demo.get("mascot")) if demo.get("mascot") else None,
         "stt": {"provider": config.STT_PROVIDER},
         "facts": list(facts.values()),
         "cards": {"price": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in price_facts][:12],

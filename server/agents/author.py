@@ -7,6 +7,7 @@ import re
 
 from .. import schemas, store
 from ..llm import claude
+from . import visuals
 from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, language_instruction
 
 AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can
@@ -177,6 +178,7 @@ IMAGES:
     script["version"] = (prev.get("version", 0) + 1) if prev else 1
     script["intake_audio"] = {}
     schemas.Script.model_validate(script)
+    script = visuals.align(demo_id, script, und, emit)
     store.write_json(demo_id, "script.json", script)
     n_lines = sum(len(s["lines"]) for s in script["segments"])
     unverified = sum(1 for s in script["segments"] for l in s["lines"] if l.get("unverified"))

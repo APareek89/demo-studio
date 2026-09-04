@@ -16,6 +16,10 @@ current_stage: contextvars.ContextVar[str] = contextvars.ContextVar("current_sta
 # USD per 1M tokens unless noted. Override any of these in .env; they are assumptions, shown as such.
 PRICES = {
     "claude-opus-5": {"in": float(os.getenv("PRICE_CLAUDE_IN", "5.0")), "out": float(os.getenv("PRICE_CLAUDE_OUT", "25.0")), "note": "Anthropic list price"},
+    "claude-sonnet-5": {"in": float(os.getenv("PRICE_SONNET_IN", "3.0")), "out": float(os.getenv("PRICE_SONNET_OUT", "15.0")), "note": "assumed — set PRICE_SONNET_IN/OUT"},
+    "claude-haiku-4-5": {"in": float(os.getenv("PRICE_HAIKU_IN", "1.0")), "out": float(os.getenv("PRICE_HAIKU_OUT", "5.0")), "note": "Anthropic list price"},
+    "gemini-lite": {"in": float(os.getenv("PRICE_GEMINI_LITE_IN", "0.10")), "out": float(os.getenv("PRICE_GEMINI_LITE_OUT", "0.40")), "note": "assumed — set PRICE_GEMINI_LITE_IN/OUT"},
+    "gemini-image": {"per_image": float(os.getenv("PRICE_GEMINI_IMAGE", "0.02")), "note": "assumed $/generated image — set PRICE_GEMINI_IMAGE"},
     "gemini-3.6-flash": {"in": float(os.getenv("PRICE_GEMINI_IN", "0.30")), "out": float(os.getenv("PRICE_GEMINI_OUT", "2.50")), "note": "assumed — set PRICE_GEMINI_IN/OUT"},
     "gemini-tts": {"in": float(os.getenv("PRICE_GEMINI_TTS_IN", "0.50")), "out": float(os.getenv("PRICE_GEMINI_TTS_OUT", "10.0")), "note": "assumed — set PRICE_GEMINI_TTS_IN/OUT"},
     "sarvam-tts": {"per_1k_chars_inr": float(os.getenv("PRICE_SARVAM_TTS_INR_1K", "1.5")), "note": "assumed ₹/1k chars — set PRICE_SARVAM_TTS_INR_1K"},
@@ -23,11 +27,13 @@ PRICES = {
 }
 FX_INR = float(os.getenv("FX_INR", "84"))
 TRACE_CAPTURE = os.getenv("TRACE_CAPTURE", "full").strip().lower()  # full | meta (meta = lengths only, no prompt text)
+TRACE_MAX_CHARS = int(os.getenv("TRACE_MAX_CHARS", "400000"))  # full prompts and responses by default
 _PHONE = re.compile(r"(?<!\d)[6-9]\d(?:[\s-]?\d){8}(?!\d)")  # 10-digit Indian mobiles, with or without spaces/dashes
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 
 
-def _redact(text: str, limit: int = 6000) -> str:
+def _redact(text: str, limit: int | None = None) -> str:
+    limit = limit or TRACE_MAX_CHARS
     t = (text or "")[:limit]
     return _EMAIL.sub("[email]", _PHONE.sub("[phone]", t))
 
@@ -55,7 +61,7 @@ def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: s
         return
     row = {"t": time.time(), "stage": stage or current_stage.get(), "kind": kind, "model": model, "latency_ms": round(latency_ms),
            "in": int(input_tokens or 0), "out": int(output_tokens or 0), "chars": int(chars or 0),
-           "system": (system or "")[:6000] if TRACE_CAPTURE == "full" else f"[{len(system or '')} chars]",
+           "system": (system or "")[:TRACE_MAX_CHARS] if TRACE_CAPTURE == "full" else f"[{len(system or '')} chars]",
            "user": _redact(user) if TRACE_CAPTURE == "full" else f"[{len(user or '')} chars]",
            "response": _redact(response) if TRACE_CAPTURE == "full" else f"[{len(response or '')} chars]", "error": (error or "")[:400]}
     row["usd"] = round(_cost_usd({**row, "sec": 0}), 5)
@@ -82,13 +88,15 @@ def traces(demo_id: str, limit: int = 300) -> list[dict]:
 def _cost_usd(row: dict) -> float:
     m = row["model"]
     if m.startswith("claude"):
-        pr = PRICES["claude-opus-5"]
+        pr = PRICES["claude-haiku-4-5"] if "haiku" in m else PRICES["claude-sonnet-5"] if "sonnet" in m else PRICES["claude-opus-5"]
         return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
+    if row["kind"] == "gemini-image":
+        return PRICES["gemini-image"]["per_image"]
     if row["kind"] == "gemini-tts":
         pr = PRICES["gemini-tts"]
         return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
     if m.startswith("gemini"):
-        pr = PRICES["gemini-3.6-flash"]
+        pr = PRICES["gemini-lite"] if "lite" in m else PRICES["gemini-3.6-flash"]
         return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
     if row["kind"] == "sarvam-tts":
         return row["chars"] / 1000 * PRICES["sarvam-tts"]["per_1k_chars_inr"] / FX_INR

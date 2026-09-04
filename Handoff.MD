@@ -6,6 +6,12 @@
 > Keep this file ONE SCREEN: current state only; history lives in Learning.MD and git.
 
 ## Compact summary of previous session
+2026-09-04 — **Workflow moved to LangGraph** (`server/graph.py`, sqlite checkpointer, Align as an interrupt, `GET /api/workflow` → Mermaid,
+`langgraph.json` for Studio), **cheapest models for the MVP** (Haiku everywhere, Sonnet 5 for the plan, Gemini 3.5 flash-lite for vision,
+Sarvam bulbul v3 / Gemini flash TTS), a **picture-editor pass** so the screen shows the part being talked about (`agents/visuals.py`),
+**local image clean-up** for transparent cut-outs (`media.enhance_images`, Gemini image model when billing allows), a **mascot**
+(`web/player/mascot.js`, generated PNG when the Gemini image quota allows), and a **full-detail run log** per demo (`RUN.md`: INPUT / OUTPUT / MODEL CALLS per stage, full prompts).
+
 2026-09-03 — Built Demo Studio v1 (FastAPI + no-build web; Claude reasons/writes, Gemini looks, Sarvam speaks),
 folded in the evidence-based sales playbook (P01–P10, fixed opening + runtime pitch planner, scorecard, callback
 lead capture, Indian languages), then the second feedback batch: **3-minute pitch shape** (opening ≤60 s → main
@@ -28,6 +34,7 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ✅ Paid QA drivers: `evals/qa_real.py images|video [--lang hi-IN]` → `docs/qa/<demo_id>.md` (stage seconds, calls, cost,
   runtime probes, opening script). Reports summarised in `docs/QA-2026-09-03.md`.
 - ⏹ Loop is OFF by user decision (2026-09-03); FMEA stays on per config.
+- ✅ Workflow = `server/graph.py` (LangGraph). `orchestrator.py` is now only the stage runner + action executor (`_run_stage`, `apply_actions`, `respond`).
 
 ## Pending points
 - 🧑 USER: pick one of the four Playground/tab-redesign prototypes (docs/design/README.md; artifacts published 2026-09-03 evening:
@@ -45,6 +52,7 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - 🧑 USER: **Sarvam has no credits left** (HTTP 402 on 2026-09-03 17:58 during the Hindi lines of `dm_f79d9170`; 10 lines fell back
   to Gemini TTS, and the video QA run voiced entirely on Gemini). Top up at dashboard.sarvam.ai, then rebuild the two QA demos
   (Rehearse → Restart demo → rebuild) so every line is Sarvam again. Until then the player uses Gemini voice + browser listening.
+- 🧑 USER: the Gemini key has **no image-generation quota** (429 on every image model on 2026-09-04) — enable billing on the key to get AI background clean-up (`settings.enhance_images = "ai"`) and a generated mascot; until then clean-up is local (Pillow) and the mascot is the built-in SVG.
 - 🤖 AGENT: prices for Gemini / Sarvam in `usage.py` are assumptions — set PRICE_* in `.env` once known.
 - 🤖 AGENT: mock traces only Claude calls; Gemini/Sarvam mock branches are untraced (fine for UI QA).
 - 🤖 AGENT: `validate-mmd.mjs` needs Node (not installed) — diagrams checked by eye; viewer built with `docs/build_viewer.py`.
@@ -71,6 +79,10 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - 2026-09-03 — Voice providers have a circuit breaker: a 401/402/403/quota error trips the provider for 10 minutes so the chain
   moves on per line instead of retrying every line; the stage log and `/api/voices.unavailable` say which provider is out.
 - 2026-09-03 — Narration lines render in parallel (`VOICE_WORKERS`, default 4) with per-task contextvars so usage/trace rows keep the demo id.
+- 2026-09-04 — Workflow runs on LangGraph (reverses the 2026-09-03 plain-code decision at the user's request): one graph, sqlite checkpoints, Align = interrupt; nodes call vendor SDKs directly, no LangChain model wrappers.
+- 2026-09-04 — Models for the MVP: Claude Haiku 4.5 everywhere, Claude Sonnet 5 for the plan only, Gemini 3.5 flash-lite for video/images, cheapest TTS tiers; env-overridable (CLAUDE_MODEL, CLAUDE_PLAN_MODEL, GEMINI_MODEL).
+- 2026-09-04 — Every picture on screen is chosen per line by the picture-editor pass with a logged reason; uploaded pictures with a spoken subject are always shown at least once.
+- 2026-09-04 — Run log keeps full prompts and responses (TRACE_MAX_CHARS 400k) with PII masked; TRACE_CAPTURE=meta turns text off.
 - 2026-09-03 — Loop.MD stays `off` in this project (user decision); FMEA scans continue per `.power-coding/config.json`.
 - 2026-09-03 — Observability keeps the full system prompt / input / response per call (truncated at 6k chars) in `trace.jsonl`; it is local data, never sent anywhere.
 

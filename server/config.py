@@ -29,8 +29,10 @@ if STT_PROVIDER == "sarvam" and not SARVAM_API_KEY:
     STT_PROVIDER = "browser"
 MOCK_LLM = os.getenv("MOCK_LLM", "").strip() == "1"  # schema-shaped fake outputs, no keys, no spend
 
-CLAUDE_MODEL = "claude-opus-5"
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip() or "gemini-3.6-flash"  # 2.5-flash is closed to new keys
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001").strip() or "claude-haiku-4-5-20251001"  # everywhere except planning
+CLAUDE_PLAN_MODEL = os.getenv("CLAUDE_PLAN_MODEL", "claude-sonnet-5").strip() or "claude-sonnet-5"  # the pitch plan gets the stronger model
+GEMINI_IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image").strip() or "gemini-3.1-flash-lite-image"  # background clean-up + mascot
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite").strip() or "gemini-3.5-flash-lite"  # cheapest tier that tags images with a response schema (probed 2026-09-04); 3.6-flash for quality
 GEMINI_TTS_MODEL = "gemini-2.5-flash-preview-tts"
 GCLOUD_TTS_VOICE = "en-IN-Chirp3-HD-Aoede"
 GEMINI_TTS_VOICE = "Sulafat"
@@ -51,6 +53,6 @@ def health() -> dict:
         "tts_provider": TTS_PROVIDER,
         "stt_provider": STT_PROVIDER,
         "mock": MOCK_LLM,
-        "claude_model": CLAUDE_MODEL,
+        "claude_model": CLAUDE_MODEL, "claude_plan_model": CLAUDE_PLAN_MODEL, "gemini_image_model": GEMINI_IMAGE_MODEL,
         "gemini_model": GEMINI_MODEL,
     }

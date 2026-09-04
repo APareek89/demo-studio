@@ -11,9 +11,54 @@
 </style></head><body>
 <div class="hint">Tip: use Ctrl/Cmd + scroll or browser zoom to enlarge a diagram. Diagrams are authored by hand — check the .mmd mtime against the code.</div>
 <h1>Architecture Flow — Demo Studio</h1>
+<h2>00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py via graph.get_graph().draw_mermaid())</h2>
+<pre class="mermaid">%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py via graph.get_graph().draw_mermaid())
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([&lt;p&gt;__start__&lt;/p&gt;]):::first
+	router(router)
+	understand(understand)
+	plan(plan)
+	align_enter(align_enter)
+	align_wait(align_wait)
+	author(author)
+	voice(voice)
+	rehearsal(rehearsal)
+	bundle(bundle)
+	finish(finish)
+	__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last
+	__start__ --&gt; router;
+	align_enter --&gt; align_wait;
+	align_wait -.-&gt; author;
+	align_wait -.-&gt; plan;
+	align_wait -.-&gt; understand;
+	author -.-&gt; align_enter;
+	author -.-&gt; voice;
+	bundle --&gt; finish;
+	plan -.-&gt; align_enter;
+	plan -.-&gt; author;
+	rehearsal --&gt; bundle;
+	router -.-&gt; align_wait;
+	router -.-&gt; author;
+	router -.-&gt; plan;
+	router -.-&gt; understand;
+	understand --&gt; plan;
+	voice -.-&gt; bundle;
+	voice -.-&gt; rehearsal;
+	finish --&gt; __end__;
+	align_wait -.-&gt; align_wait;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+</pre>
 <h2>01 · Master flow — Demo Studio (Sources → Align → Rehearse)</h2>
 <pre class="mermaid">%% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
 flowchart TD
+  LG[&quot;Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py&lt;br/&gt;see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints&quot;]:::data
   U[&quot;USER adds sources&lt;br/&gt;[ask · Studio › Sources]&lt;br/&gt;in: video, images, PDF/DOCX/TXT, product URL, pasted brand text&quot;]:::ask
   ING[&quot;store.add_*_source&lt;br/&gt;[FUNCTION · server/store.py]&lt;br/&gt;in: uploads / URL&lt;br/&gt;out: sources[] in data/demos/id/demo.json&quot;]:::fn
   READBTN[&quot;POST /api/demos/id/read&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;gate: ≥1 source · keys present or MOCK_LLM=1&quot;]:::fn

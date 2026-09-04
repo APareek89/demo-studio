@@ -10,7 +10,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import config, events, orchestrator, store, usage, runlog
+from . import config, events, graph, orchestrator, store, usage, runlog
 from .agents import align, pitch, qa, rehearsal, voice
 from .llm import sarvam
 
@@ -71,7 +71,7 @@ def get_demo(demo_id: str):
     demo = _demo_or_404(demo_id)
     return {"demo": demo, "cards": align.cards(demo_id) if demo["status"] not in ("sources",) else None,
             "conversation": store.read_json(demo_id, "conversation.json", []), "rehearsal": store.read_json(demo_id, "rehearsal.json"),
-            "bundle_ready": store.path(demo_id, "bundle.json").exists(), "running": orchestrator.is_running(demo_id),
+            "bundle_ready": store.path(demo_id, "bundle.json").exists(), "running": graph.is_running(demo_id),
             "sessions": _sessions(demo_id), "leads": _leads(demo_id)}
 
 
@@ -99,7 +99,7 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images")}
             if "languages" in allowed:
                 allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
                 allowed["language"] = allowed["languages"][0]
@@ -199,6 +199,12 @@ def get_runlog(demo_id: str):
     return Response(p.read_text(encoding="utf-8"), media_type="text/markdown; charset=utf-8")
 
 
+@app.get("/api/workflow")
+def workflow():
+    """The LangGraph workflow as Mermaid, plus which demos are parked at the Align checkpoint."""
+    return {"mermaid": graph.mermaid(), "waiting": [d["id"] for d in store.list_demos() if graph.is_waiting(d["id"])], "running": [d["id"] for d in store.list_demos() if graph.is_running(d["id"])]}
+
+
 @app.get("/api/demos/{demo_id}/trace")
 def get_trace(demo_id: str, limit: int = 300):
     demo = _demo_or_404(demo_id)
@@ -264,7 +270,7 @@ def read_sources(demo_id: str):
     if any(s["kind"] in ("video", "image") for s in demo["sources"]) and not config.GEMINI_API_KEY and not config.MOCK_LLM:
         raise HTTPException(400, "GEMINI_API_KEY missing in .env (needed for video/images)")
     try:
-        orchestrator.start_read(demo_id)
+        graph.start_read(demo_id)
     except RuntimeError as e:
         raise HTTPException(409, str(e))
     return {"ok": True}
@@ -309,7 +315,7 @@ async def align_message(demo_id: str, message: str = Form(default=""), files: li
     if not message.strip() and not attachments:
         raise HTTPException(400, "Say something or attach a file")
     try:
-        out = orchestrator.handle_message(demo_id, message, attachments, context)
+        out = graph.handle_message(demo_id, message, attachments, context)
     except RuntimeError as e:
         raise HTTPException(409, str(e))
     return out
@@ -346,7 +352,7 @@ async def set_ctas(demo_id: str, req: Request):
 def build(demo_id: str):
     _demo_or_404(demo_id)
     try:
-        orchestrator.start_build(demo_id)
+        graph.start_build(demo_id)
     except RuntimeError as e:
         raise HTTPException(409, str(e))
     return {"ok": True}
@@ -360,7 +366,7 @@ async def revise(demo_id: str, req: Request):
     if stage not in ("understand", "plan", "author"):
         raise HTTPException(400, "stage must be understand | plan | author")
     try:
-        orchestrator.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
+        graph.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
     except RuntimeError as e:
         raise HTTPException(409, str(e))
     return {"ok": True}
@@ -539,7 +545,7 @@ async def feedback(demo_id: str, req: Request):
     if ctx:
         msg += f"\n\n(Player context: {json.dumps(ctx)[:1500]})"
     try:
-        return orchestrator.handle_message(demo_id, msg, [], "rehearse")
+        return graph.handle_message(demo_id, msg, [], "rehearse")
     except RuntimeError as e:
         raise HTTPException(409, str(e))
 

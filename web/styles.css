@@ -326,3 +326,11 @@ main{flex:1;min-height:0;display:flex}
   .src-grid{grid-template-columns:1fr}.pl-dock{grid-template-columns:1fr}.pl-controls{align-items:stretch}.pl-chips{justify-content:flex-start}
   .pg{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
 }
+
+/* mascot placements */
+.pl-top .avatar{display:none}
+.pl-top .mascot{flex:none;margin-right:2px}
+.pl-cap{position:relative;padding-left:88px;min-height:74px}
+.pl-cap .mascot{position:absolute;left:0;bottom:0}
+.orb-slot{display:flex;justify-content:center;margin:0 auto 22px}
+.pl-intake .mascot{filter:drop-shadow(0 14px 24px rgba(31,94,255,.22))}

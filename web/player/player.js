@@ -3,6 +3,7 @@
 // runtime pitch plan (decision frame · one follow-up · personalised route with grounded bridges) →
 // proof blocks with check-ins → establish → advance → CTA → handoff.
 // mountPlayer(host, bundle, {qa, tts, pitch, lead, saveSession}) → { destroy, restart, pause, context }
+import { mascot } from "/web/player/mascot.js";
 import { h } from "/web/api.js";
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -26,17 +27,17 @@ export function mountPlayer(host, bundle, api) {
   const el = {};
   const root = h("div", { class: "pl" },
     h("div", { class: "pl-top" },
-      h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
+      h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
       h("div", { class: "right" }, el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"))),
     el.stage = h("div", { class: "pl-stage" },
       el.media = h("div", { class: "pl-media" }, el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" })),
       el.card = h("div", { class: "pl-card" }),
       el.ctas = h("div", { class: "pl-ctas" }),
       h("div", { class: "pl-dock" },
-        h("div", { class: "pl-cap" }, h("div", { class: "who" }, guide), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
+        h("div", { class: "pl-cap" }, (el.mascotStage = mascot({ size: 72, image: bundle.mascot })).el, h("div", { class: "who" }, guide), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
         h("div", { class: "pl-controls" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }),
           h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Voice input needs Chrome or Safari — use 💬 to type."), el.mic = h("button", { class: "mic", onclick: () => micTap() }, "🎤")))),
-      el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb" }, h("div", { class: "r" })), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
+      el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
         el.inFallback = h("form", { class: "fallback", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t && S.intakeResolver) { el.inText.value = ""; S.intakeResolver(t); } } }, el.inText = h("input", { placeholder: "Type your answer…" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
         h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", onclick: () => intakeMic() }, "🎤"), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
       el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" }))),
@@ -45,7 +46,7 @@ export function mountPlayer(host, bundle, api) {
   host.replaceChildren(root);
 
   // ---------- helpers ----------
-  function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); el.orb.className = "orb" + (kind === "speaking" ? " speaking" : kind === "listening" ? " listening" : ""); }
+  function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role }, text); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
   function toggleDrawer(force) { const on = force === undefined ? !el.drawer.classList.contains("open") : force; el.drawer.classList.toggle("open", on); if (on) { el.chatBtn.classList.remove("unread"); setTimeout(() => el.q.focus(), 80); } }
   function setChips(list) { el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => resolveWait(c.value) }, c.label))); }
@@ -406,7 +407,7 @@ export function mountPlayer(host, bundle, api) {
 
   renderCtas(); showVisual({ kind: "image", url: bundle.media?.hero, focus: "" });
   if (bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 });
-  const startBtn = h("div", { class: "pl-intake open" }, h("div", { class: "inner" }, h("div", { class: "orb" }, h("div", { class: "r" })), h("div", { class: "state" }, guide), h("p", { class: "q" }, bundle.pitch?.takeaway || `A voice-led walkthrough of ${bundle.product?.name || bundle.name}. Just talk — interrupt anytime.`), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "▶ Start"), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Skip the intro"))));
+  const startBtn = h("div", { class: "pl-intake open" }, h("div", { class: "inner" }, mascot({ size: 132, image: bundle.mascot }).el, h("div", { class: "state" }, guide), h("p", { class: "q" }, bundle.pitch?.takeaway || `A voice-led walkthrough of ${bundle.product?.name || bundle.name}. Just talk — interrupt anytime.`), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "▶ Start"), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Skip the intro"))));
   el.stage.append(startBtn);
   // language chooser (multi-language bundles)
   const alts = bundle.alt_languages ? Object.keys(bundle.alt_languages) : [];

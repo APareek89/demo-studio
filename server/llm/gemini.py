@@ -175,3 +175,27 @@ def describe_error(e: Exception) -> str:
     if "429" in s or "RESOURCE_EXHAUSTED" in s or "quota" in s.lower():
         return "Gemini quota/rate limit hit — the free tier is small; wait or enable billing"
     return s[:300]
+
+
+def generate_image(parts: list, prompt: str, *, model: str | None = None) -> tuple[bytes, str] | None:
+    """One image from the Gemini image model (edit when `parts` carries a source image, generate when empty).
+    Returns (bytes, mime) or None when the response has no image. Quota/billing errors raise — callers fall back."""
+    import time as _time
+    model = model or config.GEMINI_IMAGE_MODEL
+    t = _types()
+    t0 = _time.time()
+    try:
+        resp = _retry(lambda: client().models.generate_content(model=model, contents=[*parts, prompt], config=t.GenerateContentConfig(response_modalities=["IMAGE"])), tries=2, waits=(5,))
+    except Exception as e:
+        usage.trace("gemini-image", model, latency_ms=(_time.time() - t0) * 1000, user=prompt, error=str(e)[:400])
+        raise
+    out = None
+    mime = "image/png"
+    for part in (resp.candidates[0].content.parts if resp.candidates else []):
+        data = getattr(getattr(part, "inline_data", None), "data", None)
+        if data:
+            out, mime = data, part.inline_data.mime_type or mime
+    um = getattr(resp, "usage_metadata", None)
+    usage.record("gemini-image", model, input_tokens=getattr(um, "prompt_token_count", 0) or 0, output_tokens=getattr(um, "candidates_token_count", 0) or 0)
+    usage.trace("gemini-image", model, latency_ms=(_time.time() - t0) * 1000, user=prompt, response=f"[image {len(out)} bytes {mime}]" if out else "[no image]")
+    return (out, mime) if out else None

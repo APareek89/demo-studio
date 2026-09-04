@@ -51,7 +51,7 @@ def cards(demo_id: str) -> dict:
     reh = store.read_json(demo_id, "rehearsal.json") or {}
     src_by_id = {s["id"]: s for s in demo["sources"]}
     shots = [{**s, "url": media_url(demo_id, src_by_id.get(s["source_id"], {}).get("path"))} for s in und.get("shots", [])]
-    images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path"))} for i in und.get("images", [])]
+    images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "original_url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "enhanced": src_by_id.get(i["source_id"], {}).get("enhanced")} for i in und.get("images", [])]
     voice = plan.get("voice", {})
     return {
         "product": und.get("product", {"name": demo["name"]}),
