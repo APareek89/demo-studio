@@ -18,6 +18,8 @@ export function mountPlayer(host, bundle, api) {
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
   // Recorded filler lines in the persona's voice (acknowledgements, bridges, holds). Rule: the voice never changes mid-demo —
   // a line is spoken with server audio or shown as captions, never with the browser's built-in voice.
+  // preload the first-response audio so the acknowledgement starts the instant the customer finishes
+  setTimeout(() => { try { for (const v of Object.values(bundle.fillers || {})) if (v.audio) { const a = new Audio(v.audio); a.preload = "auto"; } for (const u of Object.values(bundle.intake?.audio || {})) if (u) { const a = new Audio(u); a.preload = "auto"; } } catch (e) {} }, 300);
   const F = (key, fallback) => { const f = bundle.fillers?.[key]; return f?.audio ? { text: f.text, audio: f.audio } : { text: fallback || f?.text || "", audio: null }; };
   const speakF = (key, fallback, run) => { const f = F(key, fallback); return speak(f.text, run, f.audio); };
   function captionOnly(text, run) { return new Promise((res) => { const my = ++S.ttsToken; const ms = Math.max(1200, (text.split(/\s+/).length / 2.5) * 1000); const t = setTimeout(() => res(my === S.ttsToken && run === S.run), ms); S.captionTimer = t; }); }
@@ -350,6 +352,7 @@ export function mountPlayer(host, bundle, api) {
     const a1 = await intakeWait(run); if (run !== S.run) return;
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
+    if (bundle.media?.hero) showVisual({ kind: "image", url: bundle.media.hero, cycle: false });  // neutral hero behind the acknowledgement — never a leftover detail image
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
     const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     await startAfterIntake(run, a1);

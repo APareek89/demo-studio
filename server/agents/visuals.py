@@ -174,8 +174,8 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
             continue
         best = None
         for r in rows:
-            if r["deeper"]:
-                continue
+            if r["deeper"] or r["seg"].get("role") in ("intro", "outcome"):
+                continue  # the overview and USP map keep their neutral hero shots — never force a detail image there
             sc, hits = _score(_expand(_tokens(r["ln"].get("text", ""))), c)
             if sc >= 3.0 and (best is None or sc > best[0]):
                 best = (sc, r, hits)

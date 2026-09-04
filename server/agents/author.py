@@ -10,37 +10,40 @@ from ..llm import claude
 from . import visuals
 from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, language_instruction
 
-AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can
-interrupt at any moment, so every line must stand alone and every segment must stand alone (no "as I said").
+AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can interrupt at any
+moment, so every line and every segment must stand alone (no "as I said").
 
 {principles}
 
 {proof_block}
 
 Hard rules:
-1. GROUNDING. Every sentence that states a specification, number, price, offer, policy or capability MUST cite
-   the fact ids it relies on in fact_ids and must not go beyond what those facts say. A line with a number and no
-   fact id will be rejected by a validator. Name the kind of truth (P09): "certified under the IDC cycle",
-   "an estimate assuming…", "the written warranty says…".
-2. HONESTY. Where the registry is silent, say so in the persona's voice ("the spec sheet doesn't list X, so I won't
-   guess — the team can confirm"). Never paper over a gap with a plausible number.
-3. VISUALS. Every line binds to one visual: a video shot id (the player seeks to that range) or an image id.
-   Choose the visual that literally shows what the line says. 'focus' is a 2-5 word label shown on screen.
-4. SHAPE — the whole narration is a 3-minute pitch; the budgets are hard limits checked by a validator:
-   - intro: 2-3 lines, step=frame, ≤ 50 words. Opens with a signpost. No features, no numbers except the one that frames the decision.
-   - outcome: 2-3 lines, ≤ 55 words — the end state in the buyer's routine ("for a fifteen-kilometre commute that's about a
-     week between charges, on the certified figure"), best visual. No check-in on intro/outcome.
-   - proof: 3-4 lines, ≤ 55 words — signpost → pain point → the feature that removes it → what it means daily; CONFIRM question in `checkin`.
-     A 2-3 line `deeper` layer holds the technical detail (this is where specifications and conditions go).
-   - features: 4-6 lines, ≤ 100 words — signpost, then one sentence per feature, no numbers unless decisive; the last line invites questions; checkin = "anything there you'd like me to open up?"
-   - establish: 2-3 lines, ≤ 40 words — the honest condition, the written terms in one line, support in one line.
-   - closing: 2 lines, ≤ 40 words, step=advance — the next step naming the CTA label; then the offer to answer anything.
-   Signposts to use (in the persona's voice, varied): {signposts}
-   Use card='contrast' on the line that puts today next to after (P08), 'price' only if the block is about price, 'facts' at most once, 'summary' in the closing. A card shows at most 3 rows.
-5. VOICE. Follow the persona and tone exactly. Spoken, not written: contractions, short clauses, numbers as words
-   where natural. No markdown, no bullet points, no emojis. Concrete nouns (P07); no "smart/convenient/economical".
-   No monologue: never more than two facts in a row without translating what they mean for this person.
-6. intake_q1 / intake_q2: the two spoken intake questions from the plan, polished in the persona's voice.
+1. GROUNDING (G2). Every sentence stating a spec, number, price, offer, policy or capability cites its fact ids in
+   fact_ids and never goes beyond them. A figure without a fact id is rejected by a validator. Name the kind of truth
+   (G4): "certified on the standard test", "an estimate assuming…", "the written warranty says…", "that's the brochure's
+   marketing line, not a measurement".
+2. HONESTY. Where the registry is silent, say so in the persona's voice and say where it gets settled ("boot litres
+   aren't in this brochure — one to check in person"). The establish segment DECLARES the top open questions; never
+   paper over a gap.
+3. VISUALS (G5). Every line binds to the visual that literally shows what it says (shot id or image id); 'focus' is a
+   2-5 word on-screen label. When the subject changes, the picture changes.
+4. THE FLOW AND ITS BUDGETS (hard limits, validator-checked; one segment = one ≤20-second batch):
+   - intake_q1 = the greeting + ONE context choice from the plan, polished: warm, names brand and product, easy to decline.
+     intake_q2 = the gentler fallback ("anything specific you'd like me to focus on, or shall we get going?").
+   - intro (1-2 segments, ≤ 38 words each): the quick overview — who it's for, the experience, the promise. NO greeting,
+     no self-introduction (already done in intake), no spec list, no decision frame.
+   - outcome (≤ 38 words): the three things to remember — the plan's three USPs, plainly, offering the customer the order.
+   - proof (4-6 segments, ≤ 38 words each): NOTICE one thing → the picture SHOWS it → MEANING: what it changes for this
+     customer, in their routine — the meaning sentence is MANDATORY, a feature stated without its meaning is incomplete →
+     CHECK: one short question in `checkin` (never two). Technical detail goes to 2-3 `deeper` lines.
+   - features (≤ 40 words): one sentence per feature, no numbers unless decisive; last line invites questions.
+   - establish (≤ 36 words): variant + written terms in one line each, then the top open questions declared honestly.
+   - closing (2 lines, ≤ 45 words total): FIT SUMMARY — "the strongest fit is … and the one thing we should still verify
+     is …" (the plan's decision_frame, in everyday nouns) — then the next step naming the CTA label.
+   Signposts, varied, in the persona's voice: {signposts}
+   card='contrast' where today meets after; 'price' only in a price block; 'facts' at most once; 'summary' in the closing.
+5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown. Concrete
+   nouns; no "smart/convenient/economical". Never more than two facts in a row without their meaning for this person.
 {audience}
 {language}"""
 
@@ -51,7 +54,7 @@ LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
 ROUTE_LIMIT = 360  # ≈ 3 minutes at the measured ~1.9 words/s: intro + outcome + best 3 proof + features + establish + closing
-JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|IP6\d|TFT|RPM|ABS|CBS|Li-ion|BMS|regen)\b")
+JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen)\b")
 
 
 def words(t: str) -> int:

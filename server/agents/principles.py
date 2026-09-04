@@ -2,19 +2,21 @@
 Codex/2026-09-03/wh/outputs/evidence_based_sales_pitch_demo_playbook.json).
 These are injected into the plan, author, pitch and Q&A prompts, and drive the demo scorecard."""
 
-PRINCIPLES = """SALES PRINCIPLES — these are decisions, not suggestions:
-P01 Frame a decision, not a product. Open with what the buyer must decide and the criteria that make the decision good — never company history or a feature inventory.
-P02 Adapt to the strongest signal. Unknown buyer → discover the improvement sought. Stated want → clarify the conditions behind it. Stated need → recap it in their words and prove it first.
-P03 A want is a clue, not the diagnosis. A requested feature is a position; uncover the job, consequence and desired payoff before asserting fit ("do you need 100 km in one day, or to charge less often?").
-P04 Show the outcome before the machinery. The customer-relevant end state comes first; explain only the product actions needed to make it real. Never open with settings, menus, setup steps.
-P05 One takeaway through one journey. One primary outcome and at most two supporting outcomes. Not the whole product.
-P06 Short proof blocks, frequent checks. Every proof block is SAY (name the outcome tested) → SHOW (one observable result) → TRANSLATE (what it means for this customer) → CONFIRM (a question tied to what was shown). No uninterrupted explanation beyond ~60 seconds (~150 spoken words).
-P07 Speak concretely. Reuse the buyer's nouns and numbers — their route, kilometres, parking spot, hours available, tariff, current spend. Never "smart / convenient / economical" without an observable detail.
-P08 Make the contrast visible. Today's cost, friction or uncertainty next to the desired routine after purchase.
-P09 Sell confidence, not certainty. Keep four kinds of truth separate and name them: CERTIFIED (official test method, with its condition), MODELED (estimate under stated assumptions), OBSERVED (what happened in real or test use), CONTRACTUAL (what the written terms promise). State assumptions, exclusions and unresolved dependencies. Say when you would NOT recommend the product.
-P10 Close for an advance. End with the buyer action that resolves the largest remaining uncertainty — a test that produces evidence — with an owner and a date or trigger. Never "let me know what you think".
-REJECTED APPROACHES: fixed feature-by-feature walkthrough; interrogation before showing any value; a generic "revolution" opening any competitor could reuse; answering a stated want literally with a headline spec; a savings-only pitch; a hard close.
-FRAME SEQUENCE: Frame (decision + takeaway + permission + one open question) → Reveal (locate the buyer: unknown / stated want / stated need; one follow-up on their answer, not a questionnaire) → Act (the desired end state, in the buyer's numbers) → Map (1 primary + ≤2 supporting proof blocks) → Establish (assumptions, risks, written terms, when not to recommend) → Advance."""
+PRINCIPLES = """GUIDING PRINCIPLES — few and broad; they apply at every step, they are not a sequence:
+G1 SPEAK LIKE A PERSON. Contractions, short sentences, everyday words, one question at a time, never two stacked. Warm, not salesy.
+G2 NO CITATION, NO CLAIM. Only the fact registry may be spoken; every figure cites its fact ids. Where the registry is silent, say so
+   plainly and route it to the next step ("that's not in this brochure — it's exactly what the test drive settles"). Never invent.
+G3 TRANSLATE EVERY NUMBER into the customer's routine (days between charges, one squeeze instead of two downshifts, fewer irritations
+   on a hot commute). A spec without its meaning for this person is an unfinished sentence.
+G4 KEEP TRUTH KINDS SEPARATE and named: certified (with its test condition), estimate (with assumptions), observed, marketing copy
+   (name it as such), and the written terms. Never present marketing copy as a measurement.
+G5 SHOW WHAT YOU SAY. Every line names the picture that literally shows it; the picture changes when the subject changes.
+G6 ADAPT, DON'T INTERROGATE. Ask for context once, make declining easy, then mirror the customer's own words and let their answers
+   at each pause choose the depth. Follow-ups respond to what was just said.
+G7 END WITH THE NEXT SENSIBLE ACTION — the one that resolves the biggest remaining uncertainty, with a concrete owner and step.
+   Never "let me know what you think".
+REJECTED: opening with a decision frame or spec inventory before any greeting; feature-by-feature tours; questionnaire discovery;
+answering a stated want with a headline spec; a hard close."""
 
 CUSTOMER_STATES = """CUSTOMER STATES (route by the strongest signal in what they said):
 - unknown: nothing specific stated. Stance: hypothesis-led, transparent. Follow-up: "what would have to improve for the change to feel worthwhile?" then "walk me through a normal day". Route: short vision of the 2-3 fit dimensions, then one layer deeper on their reaction. Do not pretend to personalise; do not interrogate; do not give the full walkaround.
@@ -50,25 +52,33 @@ def language_instruction(code: str) -> str:
     return f"LANGUAGE: write every spoken line in {name}. Product names, prices, units and fact ids stay exactly as in the registry. Spoken register, short clauses."
 
 
-PITCH_SHAPE = """DEMO SHAPE — a 3-minute pitch, then questions (the customer decides what goes deeper):
-- OPENING (≤ 60 s, fixed): frame the decision in one breath, then the outcome in the customer's life — e.g. "for a
-  fifteen-kilometre commute that's about a week between charges, on the certified figure". Signpost it:
-  "Let's start with what matters most to you —".
-- MAIN PITCH (60–90 s): the top two or three things that make this product the right choice — pain point first, then the
-  one feature that removes it, then what it means day to day. Signpost: "Now — what sets this one apart —".
-- MORE FEATURES (60–90 s, two short blocks): three to five other things worth knowing, one sentence each, no numbers unless
-  they decide something. Signpost: "Quickly, a few more things you'll like —" and end with "ask me about any of these".
-- EVERY BLOCK IS A BATCH OF AT MOST 20 SECONDS (≤ 50 spoken words) and ends with a pause point (the check-in) where the
-  customer can speak; the demo never talks for longer than that without a pause.
-- CLOSE (≤ 30 s): the honest condition ("I wouldn't recommend it if…"), the written terms in one line, the next step.
-Technical detail lives in the `deeper` layers and in Q&A — never in the main narration unless the customer asks.
-Every number spoken is translated into the customer's routine (days between charges, monthly cost, minutes of charging)."""
+PITCH_SHAPE = """DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged). Every batch ≤ 20 seconds
+(≤ 38 spoken words) and ends at a pause point.
+STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
+  context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
+  The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
+STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: who the product is for, the primary experience it creates,
+  the performance promise. NO specification list, no decision frame — the customer hasn't told you anything yet.
+STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs — one experience, one performance, one
+  confidence/ownership. "The three things I'd pay attention to are…" Offer the customer the wheel ("unless you'd rather start
+  somewhere else").
+STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: explore in the order a person naturally meets the product — what they
+  first see or touch → what they live with daily (comfort) → practicality → the core performance moment → what builds trust
+  (safety/reliability). Each segment: NOTICE one thing → SHOW it (the picture) → MEANING for this customer → CHECK with one
+  short question. The runtime reorders these per buyer; each must stand alone.
+STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive, ends by
+  inviting questions.
+STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the
+  two or three things the sources do not answer, declared plainly with where they get settled (test drive / dealer).
+STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: "the strongest fit is X, and the one thing we should still verify is Y" —
+  the decision framed HERE, in the buyer's own words when known — then one concrete next step naming a CTA.
+Technical detail lives in `deeper` layers and Q&A, never in the main narration unless asked."""
 
-SIGNPOSTS = ["Let's start with what matters most to you —", "Now — what sets this one apart —", "Here's the part people ask about first —",
+SIGNPOSTS = ["One thing you'll notice first —", "Now the part you'd live with daily —", "Here's the part people ask about first —",
              "Quickly, a few more things you'll like —", "One honest caveat before you decide —", "So, where that leaves you —"]
 
 AUDIENCE = {
-    "everyday": """PLAIN LANGUAGE — the customer is not technical. NEVER say: IDC, kWh, kW, amp, 15A, torque, Nm, IP67, TFT, RPM, ABS, CBS,
+    "everyday": """PLAIN LANGUAGE — the customer is not technical. NEVER say: IDC, kWh, kW, amp, 15A, torque, Nm, newton metres, r/min, RPM, "Level 2", IP67, TFT, ABS, CBS,
 Li-ion, BMS, regen. Say instead: "certified on the standard test", "battery size", "the motor", "a normal household socket — the
 same plug point your geyser uses", "pulling power", "sealed against water and dust", "the screen", "the brakes". Keep only the
 numbers that decide (range, charging time, price, warranty) and translate each into daily life. Put technical detail in the

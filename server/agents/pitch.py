@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from .. import schemas, store
+from .. import config, schemas, store
 from ..llm import claude
 from .author import CLAIMISH, NUMBERISH
 from .principles import CUSTOMER_STATES, PRINCIPLES, audience_instruction, language_instruction
@@ -18,22 +18,23 @@ PITCH_SYSTEM = """You are {persona_name}, the voice guide in a live demo of {pro
 
 Your output:
 - customer_state: from what they said (their name/purpose answer, and the follow-up answer if present).
-- decision_frame: 1-2 spoken sentences recapping THIS buyer's decision in their own words and numbers (P01, P07). It is
-  spoken right after the standard opening. If they gave no signal, say honestly that you won't guess and will show the
-  2-3 fit dimensions briefly.
+- decision_frame: the ACKNOWLEDGEMENT, 1-2 spoken sentences that restate THIS buyer's need in their OWN words and promise
+  the order ("Got it, Anand: easy in city traffic, and comfortable on the long drives. Cabin first, then the drive, then
+  what's standard."). It plays right after the overview. Warm, specific, zero specs. If they gave no signal, say honestly
+  that you'll give the balanced tour and they can steer at any pause.
 - follow_up_question: ONE question (P03: for a stated want, what it must accomplish and under what conditions; for a
   stated need, confirm it and its stakes; for unknown, "walk me through a normal day"). Empty on a refine call.
-- route: from the LIBRARY below — the 2-3 proof blocks that matter to THIS buyer (primary first), then the single features
-  block, then establish last. Never more than 3 proof blocks: the whole demo must stay near three minutes; everything else
+- route: from the LIBRARY below — the buyer's strongest signal FIRST (a comfort need starts at the cabin, a performance
+  want at the drive), then 1-2 supporting blocks, then the single features block, then establish last. Never more than 3 proof blocks: the whole demo must stay near three minutes; everything else
   is for questions. Each step may carry ONE bridge sentence that ties the block to this buyer's situation using their nouns
   and numbers. A bridge that states a figure must cite fact ids from the REGISTRY; otherwise leave the bridge empty.
   Never put intro/outcome segments in the route (they already played).
 - skipped: segments left out, with the reason.
 - usp_order: which USPs get covered, in order (every route step's usps).
-- custom_batches: when the buyer said something specific, 2-3 batches of ≤ 50 words each that speak to exactly that, spoken
-  right after the standard opening and before the route ("now let me tell you why this suits your city commute…"). Each
-  batch names the picture that shows it (visual_ref from the VISUALS list) and cites fact ids for every figure. Empty when
-  the buyer gave nothing specific.
+- custom_batches: when the buyer said something specific, 2-3 batches of ≤ 38 words each, ONE idea per batch, each shaped
+  as: their words → one outcome → one cited proof → what it changes for them. ("For the long drives you mentioned, Smart
+  Cruise with Stop and Go holds your distance on the highway…"). Each names the picture that literally shows that idea
+  (visual_ref) and cites fact ids for every figure. Never a spec list. Empty when the buyer gave nothing specific.
 - advance: the closing advance for this buyer (P10), naming one CTA label; advance_cta = its id.
 {audience}
 {language}
@@ -72,7 +73,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
     try:
         # soft JSON + low effort + hard timeout: the plan must land while the ~2-minute standard opening plays
-        out = claude.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, soft=True, effort="low", timeout=50.0)
+        out = claude.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, soft=True, effort="low", timeout=50.0, model=config.CLAUDE_PLAN_MODEL)
     except Exception as e:
         raise RuntimeError(claude.describe_error(e)) from e
     p = out.model_dump()
