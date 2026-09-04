@@ -160,6 +160,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                     notes.append(f"edited {f['id']}")
             store.write_json(demo_id, "understanding.json", und)
             invalidate(demo_id, "understand")
+            set_stage(demo_id, "faq", "stale", message="fact edited — bank re-answers on the next build")
         elif t == "remove_fact" and a.get("fact_id"):
             und = store.read_json(demo_id, "understanding.json") or {}
             for f in und.get("facts", []):
@@ -168,6 +169,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                     notes.append(f"removed {f['id']}")
             store.write_json(demo_id, "understanding.json", und)
             invalidate(demo_id, "understand")
+            set_stage(demo_id, "faq", "stale", message="fact removed — bank re-answers on the next build")
         elif t == "resolve_unknown" and a.get("unknown_id"):
             und = store.read_json(demo_id, "understanding.json") or {}
             for u in und.get("unknowns", []):

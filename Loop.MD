@@ -62,6 +62,7 @@ rebuilds the demo.
 | 24 | Mock read → Align: `GET /api/demos/{id}` cards | `cards.script.segments` present with `timeline.total_seconds > 0` and every batch's spoken part ≤ 20.5 s (the check-in pause is counted separately); `cards.faq.total ≥ 1`; six approvals keys (visuals, facts, script, faq, persona, ctas) |
 | 25 | Mock build → bundle | `bundle.fillers` has audio for every filler key; every `bundle.faq` entry with an answer has audio; `bundle.timeline.exact` is true after voicing |
 | 26 | Player (pane): start with a spoken context, then ask a bank question, then a new question | recorded acknowledgement plays before the opening; custom batches play with their pictures after the opening; bank question answers with no model call (note "answered from the FAQ bank"); new question is preceded by the recorded "bear with me"; the voice never changes; no silent gap longer than 2 s |
+| 27 | Mock read → script.json | intake_q1 greets with brand + product and asks exactly one question; intro segments contain no greeting, no digits, no "deciding"; closing contains the fit-summary shape ("strongest fit… still verify"); establish mentions at least one open question |
 
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |

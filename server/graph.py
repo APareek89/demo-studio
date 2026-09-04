@@ -162,7 +162,8 @@ def after_plan(state: DemoState) -> str:
 
 def after_author(state: DemoState) -> str:
     if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))):
-        return "voice"
+        d = state["demo_id"]
+        return "voice" if store.load(d)["stages"]["faq"]["status"] == "done" else "faq"  # a stale bank re-answers before voicing
     return "faq"
 
 
@@ -196,7 +197,7 @@ def build_graph() -> StateGraph:
     g.add_conditional_edges("plan", after_plan, {"author": "author"})
     g.add_edge("align_enter", "align_wait")
     g.add_conditional_edges("author", after_author, {"voice": "voice", "faq": "faq"})
-    g.add_edge("faq", "align_enter")
+    g.add_conditional_edges("faq", lambda st: "voice" if st.get("entry") == "build" or (st.get("entry") == "revise" and (st.get("rebuild") or st.get("prev_ready"))) else "align_enter", {"voice": "voice", "align_enter": "align_enter"})
     g.add_conditional_edges("voice", after_voice, {"rehearsal": "rehearsal", "bundle": "bundle"})
     g.add_edge("rehearsal", "bundle")
     g.add_edge("bundle", "finish")

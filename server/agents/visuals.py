@@ -146,7 +146,7 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
             payload = {"catalogue": [{"ref": c["ref"], "kind": c["kind"], "shows": c["label"], "parts": c["parts"]} for c in cat],
                        "lines": [{"line_id": r["ln"]["id"], "segment": f"{r['seg'].get('title')} ({r['seg'].get('topic')})", "text": r["ln"].get("text", ""), "current": r["cur"],
                                   "proposal": r["proposal"], "proposal_matches": r["hits"] if r["proposal"] else []} for r in rows]}
-            out = claude.structured(MODEL_SYSTEM, json.dumps(payload, ensure_ascii=False), VisualsOut, max_tokens=6000, soft=True)
+            out = claude.structured(MODEL_SYSTEM, json.dumps(payload, ensure_ascii=False), VisualsOut, max_tokens=6000, soft=True, model=config.CLAUDE_LITE_MODEL)
             byid = {a.line_id: a for a in out.assignments}
             for r in rows:
                 a = byid.get(r["ln"]["id"])

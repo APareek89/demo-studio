@@ -48,6 +48,13 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ✅ Runtime proof 2026-09-04 (docs/qa/runtime-2026-09-04.md): typed context → recorded acknowledgement → opening → server-voiced decision frame →
   recorded bridge → two custom batches about city + long trips; 0.0 s gaps at every boundary; one voice throughout; bank questions instant.
 - 🤖 AGENT: one Creta batch still 21.2 s spoken (word limit met, this voice is slower on that line) — lower the split tolerance from +4 words to 0 if you want a hard 20.
+- 🧑 USER (QA hand-over, 2026-09-04 evening): 1) RESTART your server — it runs 16:02 code:
+  `pkill -f 'uvicorn server.app:app' ; .venv/bin/uvicorn server.app:app --port 8877`
+  2) top up Sarvam credits (402 yesterday) 3) Creta (`dm_201201c4`) is parked at Align with the new-flow plan and author marked
+  stale — press Build and the script is written by OPUS; or Configure Demo for a full fresh read. FMEA pre-QA report: docs/FMEA-2026-09-04.md.
+- ✅ Models (user decision 2026-09-04): Opus = registry, plan, script, Q&A, runtime route; Haiku only for translation + picture
+  matching (CLAUDE_LITE_MODEL); Gemini vision back to 3.6-flash; Sarvam already on bulbul:v3 / saarika:v2.5 (their newest). Loop stays OFF; FMEA on.
+- ✅ Pre-QA fixes: fact edit/remove now stales the FAQ bank and Build re-answers it before voicing; Creta's stopped Haiku rebuild cleaned up.
 - 🧑 USER: open Creta (`dm_201201c4`) → Align: check the Script card (Preview = second-by-second table) and the FAQ bank; then Rehearse: speak your context, ask a bank question and a new one — report any silence or voice change.
 - 🧑 USER: the IAM user lacks s3:PutEncryptionConfiguration / PutBucketVersioning (bucket still private; S3 encrypts by default) — attach docs/aws/iam-policy.json if you want versioning.
 - 🤖 AGENT: FAQ documents in PDF are not yet parsed for questions (text/markdown only); add the PDF text extractor hook in `faq.doc_questions`.

@@ -98,7 +98,7 @@ def translate(demo_id: str, lang: str, emit) -> dict:
     prev_stage = usage.current_stage.get()
     usage.current_stage.set("translate")
     try:
-        t = claude.structured(TRANSLATE_SYSTEM.format(product=product, language=language_instruction(lang)), json.dumps(payload, ensure_ascii=False), TScript, max_tokens=16000, soft=True, effort="low", timeout=240.0)
+        t = claude.structured(TRANSLATE_SYSTEM.format(product=product, language=language_instruction(lang)), json.dumps(payload, ensure_ascii=False), TScript, max_tokens=16000, soft=True, effort="low", timeout=240.0, model=config.CLAUDE_LITE_MODEL)
     finally:
         usage.current_stage.set(prev_stage)
     tmap = {}
