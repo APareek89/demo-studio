@@ -13,7 +13,7 @@ numbers, price and offers, ownership and support, setup/usage in their situation
 and 2-3 questions the given sources clearly cannot answer. Short, natural, first person. No duplicates."""
 
 
-def generate_questions(demo_id: str, n: int = 12) -> list[str]:
+def generate_questions(demo_id: str, n: int = 12, bias: str | None = None) -> list[str]:
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
     content = "PRODUCT: " + json.dumps(und.get("product", {})) + "\nCUSTOMER: " + str(plan.get("customer_persona", "")) + "\nCONCERNS: " + json.dumps(plan.get("concerns", [])) + "\nFACT CLAIMS AVAILABLE: " + str([f["claim"] for f in und.get("facts", [])][:80]) + "\nGenerate " + str(n) + " questions."

@@ -63,7 +63,7 @@ def run(demo_id: str, emit) -> dict:
     n = int(demo.get("settings", {}).get("faq_questions", 20) or 20)
     docs = doc_questions(demo_id)
     emit(f"FAQ bank: {len(docs)} question(s) from your FAQ document" + (f", generating {max(0, n - len(docs))} more" if n > len(docs) else "") + "…")
-    generated = rehearsal.generate_questions(demo_id, max(0, n - len(docs))) if n > len(docs) else []
+    generated = rehearsal.generate_questions(demo_id, max(0, n - len(docs)), bias="answerable") if n > len(docs) else []
     questions = [(q, "document") for q in docs] + [(q, "generated") for q in generated]
     entries = []
     for i, (q, origin) in enumerate(questions, 1):

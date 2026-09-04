@@ -15,3 +15,76 @@ before: ready approvals {'visuals': True, 'facts': True, 'script': True, 'faq': 
       faq | FAQ 12/20: “Will the adaptive cruise control work in Indian traffic, or does it ne”
       faq | FAQ 13/20: “How much boot space do I have with all five seats in use for a family ”
       faq | FAQ 14/20: “Can I fit a car seat safely, and where are the ISOFIX points located?”
+      faq | FAQ 15/20: “Does the rear seat recline, and will my kids have enough legroom?”
+      faq | FAQ 16/20: “Can you guarantee I get the exact color and trim combination I want, o”
+      faq | FAQ 17/20: “What's the service interval, and how much does a regular service cost?”
+      faq | FAQ 18/20: “Is there roadside assistance included, and for how long?”
+      faq | FAQ 19/20: “If I choose manual over DCT, how much cheaper is it, and will resale v”
+      faq | FAQ 20/20: “What happens if I want to upgrade or swap to a different fuel type or ”
+  [faq] status → align (60s)
+      faq | FAQ bank ready: 4/20 answered from the sources; the rest decline and offer a callback — all instant at runtime.
+      revise | 
+faq.json: {"answered": 4, "total": 20}
+    Q01 ❌ What's the ex-showroom price for the manual N10, and what's the on-road total in | []
+    Q02 ❌ How much will the EMI be if I finance 80% over 5 years at current interest rates | []
+    Q03 ❌ Are there any launch offers or corporate discounts available right now? | []
+    Q04 ❌ What kind of fuel economy should I expect in city traffic and on highways—do you | []
+    Q05 ❌ Does it run on regular petrol or premium fuel, and will that affect my running c | []
+    Q06 ❌ How does the 7-speed DCT handle bumper-to-bumper traffic without overheating or  | ['F008', 'F057']
+    Q07 ❌ What does the warranty actually cover on the dual-clutch transmission, and are c | ['F061', 'F063']
+    Q08 ❌ If the DCT develops issues after 3 years, what will a repair cost me out of pock | []
+    Q09 ❌ Has the CRETA N Line passed any global crash tests—what's the safety rating? | ['F049', 'F047', 'F051']
+    Q10 ✅ How many airbags does it have, and are side airbags included in the base N10? | ['F049']
+    Q11 ✅ You say Level 2 ADAS—does that mean it can drive itself, or what exactly won't i | ['F047', 'F048']
+    Q12 ❌ Will the adaptive cruise control work in Indian traffic, or does it need clear l | ['F023', 'F048']
+    Q13 ❌ How much boot space do I have with all five seats in use for a family road trip? | []
+    Q14 ❌ Can I fit a car seat safely, and where are the ISOFIX points located? | ['F054']
+    Q15 ✅ Does the rear seat recline, and will my kids have enough legroom? | ['F056', 'F012']
+    Q16 ❌ Can you guarantee I get the exact color and trim combination I want, or is there | ['F059', 'F060']
+    Q17 ❌ What's the service interval, and how much does a regular service cost? | []
+    Q18 ✅ Is there roadside assistance included, and for how long? | ['F062']
+    Q19 ❌ If I choose manual over DCT, how much cheaper is it, and will resale value diffe | []
+    Q20 ❌ What happens if I want to upgrade or swap to a different fuel type or engine var | []
+  [build] status → building (0s)
+      faq | FAQ bank: 0 question(s) from your FAQ document, generating 20 more…
+      faq | FAQ 1/20: “What's the ex-showroom price for the manual N10, and what's the on-roa”
+      faq | FAQ 2/20: “How much will the EMI be if I finance 80% over 5 years at current inte”
+      faq | FAQ 3/20: “Are there any launch offers or corporate discounts available right now”
+      faq | FAQ 4/20: “What kind of fuel economy should I expect in city traffic and on highw”
+      faq | FAQ 5/20: “Does it run on regular petrol or premium fuel, and will that affect my”
+      faq | FAQ 6/20: “How does the 7-speed DCT handle bumper-to-bumper traffic without overh”
+      faq | FAQ 7/20: “What does the warranty actually cover on the dual-clutch transmission,”
+      faq | FAQ 8/20: “If the DCT develops issues after 3 years, what will a repair cost me o”
+      faq | FAQ 9/20: “Has the CRETA N Line passed any global crash tests—what's the safety r”
+      faq | FAQ 10/20: “How many airbags does it have, and are side airbags included in the ba”
+      faq | FAQ 11/20: “You say Level 2 ADAS—does that mean it can drive itself, or what exact”
+      faq | FAQ 12/20: “Will the adaptive cruise control work in Indian traffic, or does it ne”
+      faq | FAQ 13/20: “How much boot space do I have with all five seats in use for a family ”
+      faq | FAQ 14/20: “Can I fit a car seat safely, and where are the ISOFIX points located?”
+      faq | FAQ 15/20: “Does the rear seat recline, and will my kids have enough legroom?”
+      faq | FAQ 16/20: “Can you guarantee I get the exact color and trim combination I want, o”
+      faq | FAQ 17/20: “What's the service interval, and how much does a regular service cost?”
+      faq | FAQ 18/20: “Is there roadside assistance included, and for how long?”
+      faq | FAQ 19/20: “If I choose manual over DCT, how much cheaper is it, and will resale v”
+      faq | FAQ 20/20: “What happens if I want to upgrade or swap to a different fuel type or ”
+      faq | FAQ bank ready: 4/20 answered from the sources; the rest decline and offer a callback — all instant at runtime.
+      revise | 
+      voice | Recording narration with sarvam (fallbacks: gemini) — 38 lines…
+      voice | Recorded 8/38 lines…
+      voice | Recorded 16/38 lines…
+      voice | Recorded 24/38 lines…
+      voice | Recorded 32/38 lines…
+      voice | Narration ready.
+      voice | Recording 37 FAQ answers and filler lines…
+      voice | FAQ bank and fillers recorded (37/37).
+      rehearsal | Rehearsal uses the FAQ bank: 4/20 answered from the sources — scoring the script…
+      rehearsal | Scoring the demo against the playbook…
+  [build] status → ready (58s)
+      rehearsal | Demo scorecard: 19/20 — weakest: Concrete language: Reuses the buyer's route, numbers, situat; Customer signal: Did the guide identify unknown / state
+      bundle | Assembling the demo bundle…
+      bundle | Bundle v3: 10 segments, 72 facts, 3 calls to action.
+      build | 
+bundle v 3 | faq entries with audio 20 / 20 | fillers with audio 17 / 17 | timeline 301.7 exact True
+batches: [('Frame: what you are ac', 18.0, False), ('Act: your Monday morni', 23.0, True), ('The engine, in the rev', 30.7, True), ('MT or DCT—what changes', 26.9, True), ('What is standard when ', 28.3, True), ('The cabin your family ', 29.7, True), ('Quickly, a few more th', 35.1, True), ('The N Line stance, det', 35.5, True), ('One honest caveat befo', 28.0, True), ('Where that leaves you', 23.2, True)]
+DONE
+exit 0
