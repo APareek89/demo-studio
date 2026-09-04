@@ -1,1 +1,21 @@
 enabled: True
+bucket demo-studio-511833557379 exists
+table demo-studio-demos created (on-demand)
+table demo-studio-events created (on-demand)
+{'enabled': True, 'why': 'connected', 'account': '511833557379', 'region': 'ap-south-1', 'bucket': 'demo-studio-511833557379', 'tables': {'demos': 'demo-studio-demos', 'events': 'demo-studio-events'}}
+cloud: 259 file(s) synced to s3://demo-studio-511833557379/demos/dm_201201c4/
+  dm_201201c4 Creata                   → 259 files in 233s
+cloud: 130 file(s) synced to s3://demo-studio-511833557379/demos/dm_0b514d15/
+  dm_0b514d15 Creata2                  → 130 files in 78s
+cloud: 101 file(s) synced to s3://demo-studio-511833557379/demos/dm_d5675e7f/
+  dm_d5675e7f TVS iQube                → 101 files in 99s
+cloud: 93 file(s) synced to s3://demo-studio-511833557379/demos/dm_78890026/
+  dm_78890026 QA video 18:15           → 93 files in 42s
+cloud: 132 file(s) synced to s3://demo-studio-511833557379/demos/dm_f79d9170/
+  dm_f79d9170 QA images +hi-IN 17:51   → 132 files in 77s
+cloud: 3 file(s) synced to s3://demo-studio-511833557379/demos/dm_ccaac634/
+  dm_ccaac634 Creta                    → 3 files in 1s
+all synced in 530s
+cloud demos: [('dm_ccaac634', 'Creta', 'sources'), ('dm_0b514d15', 'Creata2', 'ready'), ('dm_78890026', 'QA video 18:15', 'ready'), ('dm_f79d9170', 'QA images +hi-IN 17:51', 'ready'), ('dm_201201c4', 'Creata', 'ready'), ('dm_d5675e7f', 'TVS iQube', 'ready')]
+DONE
+exit 0

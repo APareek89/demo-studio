@@ -104,7 +104,7 @@ export function renderAlign(ctx) {
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
       const roleLabel = { intro: "opening · frame", outcome: "opening · outcome", proof: "proof block", features: "more features", establish: "establish" };
       return h("div", {},
-        h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · data/demos/${demoId}/script.json · demo v${pt.version}` : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Winning points · ${(pt.usps || []).length}`),
         h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", h("span", { class: "muted" }, u.why_it_matters)))),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, "Batches"),
@@ -239,6 +239,10 @@ export function renderAlign(ctx) {
 
   async function build() { try { await api.post(`/api/demos/${demoId}/build`); logEl.replaceChildren(); showOverlay("building"); } catch (e) { toast(e.message, true); } }
 
+  const onVis = () => { if (document.visibilityState === "visible") reload().catch(() => {}); };
+  document.addEventListener("visibilitychange", onVis);
+  const poll = setInterval(() => { if (document.visibilityState === "visible" && !document.querySelector(".overlay")) reload().catch(() => {}); }, 30000);
+  window.addEventListener("hashchange", () => { document.removeEventListener("visibilitychange", onVis); clearInterval(poll); }, { once: true });
   async function reload() {
     state = await api.get(`/api/demos/${demoId}`); demo = state.demo; cards = state.cards; conversation = state.conversation || [];
     renderCards(); conversation.forEach(addMsg); ctx.setRailStatus(demo.status);

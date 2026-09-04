@@ -87,6 +87,7 @@ def cards(demo_id: str) -> dict:
         "ctas": plan.get("ctas", []),
         "script": {k: plan.get(k) for k in ("decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "usps", "advance", "do_not_recommend_if", "state_questions", "customer_persona")} | {
             "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard"), "timeline": script.get("timeline"),
+            "written_at": (store.path(demo_id, "script.json").stat().st_mtime if store.path(demo_id, "script.json").exists() else None), "version": demo.get("version", 0),
             "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")},
             "segments": [{"id": s["id"], "title": s["title"], "role": s.get("role", "proof"), "topic": s.get("topic", ""), "outcome": s.get("outcome", ""), "usp_ids": s.get("usp_ids", []), "start": s.get("start"), "duration": s.get("duration"), "checkin": s.get("checkin", ""),
                           "lines": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "visual": (l.get("visual") or {}).get("ref"), "visual_url": _vis_url(demo_id, und, src_by_id, (l.get("visual") or {}).get("ref")), "card": l.get("card", "none"), "start": l.get("start"), "duration": l.get("duration"), "unverified": bool(l.get("unverified"))} for l in s.get("lines", [])],
