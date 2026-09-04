@@ -16,6 +16,11 @@ export function mountPlayer(host, bundle, api) {
     cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null }, awaitingPhone: null };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
+  // Recorded filler lines in the persona's voice (acknowledgements, bridges, holds). Rule: the voice never changes mid-demo —
+  // a line is spoken with server audio or shown as captions, never with the browser's built-in voice.
+  const F = (key, fallback) => { const f = bundle.fillers?.[key]; return f?.audio ? { text: f.text, audio: f.audio } : { text: fallback || f?.text || "", audio: null }; };
+  const speakF = (key, fallback, run) => { const f = F(key, fallback); return speak(f.text, run, f.audio); };
+  function captionOnly(text, run) { return new Promise((res) => { const my = ++S.ttsToken; const ms = Math.max(1200, (text.split(/\s+/).length / 2.5) * 1000); const t = setTimeout(() => res(my === S.ttsToken && run === S.run), ms); S.captionTimer = t; }); }
   let LANG = (bundle.language === "hinglish" ? "hi-IN" : bundle.language) || "en-IN";
   Object.defineProperty(S, "lang", { set(v) { LANG = v === "hinglish" ? "hi-IN" : v; }, get() { return LANG; } });
   let serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
@@ -114,11 +119,11 @@ export function mountPlayer(host, bundle, api) {
     if (run !== S.run) return false;
     let ok;
     if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); S.audio = a; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; a.onended = fin; a.onerror = () => { done = true; speakBrowser(text).then(res); }; a.play().catch(() => { done = true; speakBrowser(text).then(res); }); });
-    else ok = await speakBrowser(text);
+    else ok = useServerVoice ? await captionOnly(text, run) : await speakBrowser(text);
     if (ok && run === S.run) setStatus("idle", "Ready");
     return ok && run === S.run;
   }
-  function cancelSpeech() { S.ttsToken++; try { speechSynthesis.cancel(); } catch (e) {} if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; } }
+  function cancelSpeech() { S.ttsToken++; if (S.captionTimer) { clearTimeout(S.captionTimer); S.captionTimer = null; } try { speechSynthesis.cancel(); } catch (e) {} if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; } }
 
   // ---------- voice in ----------
   function encodeWav(chunks, inRate, outRate = 16000) {
@@ -187,13 +192,13 @@ export function mountPlayer(host, bundle, api) {
     });
   }
   function resolveWait(v) { clearTimer(); stopListening(); if (S.waiter) { const w = S.waiter; S.waiter = null; setChips([]); w(typeof v === "string" ? { value: v } : v); } }
-  async function askAndListen(question, run, secs = 10000) { const ok = await speak(question, run); if (!ok) return null; const t = await listen({ timeout: secs, onInterim: (x) => { el.live.textContent = x; } }); if (run !== S.run) return null; if (t) addMsg("user", t); return t; }
+  async function askAndListen(question, run, secs = 10000, preset = null) { const ok = await speak(question, run, preset); if (!ok) return null; const t = await listen({ timeout: secs, onInterim: (x) => { el.live.textContent = x; } }); if (run !== S.run) return null; if (t) addMsg("user", t); return t; }
 
   // ---------- route building ----------
   function buildRoute(plan) {
     const byId = Object.fromEntries(library.map((s) => [s.id, s]));
     let steps = [];
-    if (plan?.route?.length) steps = plan.route.filter((r) => byId[r.segment_id]).map((r) => ({ seg: byId[r.segment_id], bridge: r.bridge || "" }));
+    if (plan?.route?.length) steps = plan.route.filter((r) => byId[r.segment_id]).map((r) => ({ seg: byId[r.segment_id], bridge: r.bridge, bridge_audio: r.bridge_audio || "" }));
     if (!steps.length) { // fallback: focus topics first, then bundle order, establish last
       const focus = new Set(S.profile.focus); const proof = library.filter((s) => s.role !== "establish"); const est = library.filter((s) => s.role === "establish");
       steps = [...proof.filter((s) => focus.has(s.topic) || focus.has(s.id)), ...proof.filter((s) => !(focus.has(s.topic) || focus.has(s.id))), ...est].map((seg) => ({ seg, bridge: "" }));
@@ -215,19 +220,20 @@ export function mountPlayer(host, bundle, api) {
     for (let i = idx; i < S.plan.length; i++) {
       const step = S.plan[i], seg = step.seg; S.seg = i; S.atCheckin = false; renderProgress();
       prefetch([...seg.lines.slice(lineIdx), seg.checkin?.text ? { text: seg.checkin.text, audio: seg.checkin.audio } : null].filter(Boolean));
-      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); if (fv) showVisual(fv); el.cite.textContent = ""; const okb = await speak(step.bridge, run); if (!okb) return; }
+      if (S.latePlan && lineIdx === 0) { const late = await withTimeout(S.latePlan, 10); if (late) { S.latePlan = null; S.pitch = late; S.personalized = true; const okc = await playCustomBatches(late, run); if (!okc) return; const rest = S.plan.slice(i); buildRoute(late); if (S.plan.length) { playFrom(0, 0); return; } S.plan = rest; } }
+      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); if (fv) showVisual(fv); el.cite.textContent = ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
       for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; showVisual(ln.visual); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
       lineIdx = 0; if (run !== S.run) return;
       if (seg.checkin?.text) {
         S.atCheckin = true; const ok = await speak(seg.checkin.text, run, seg.checkin.audio); if (!ok) return;
         const conc = !!seg.priority || S.profile.focus.includes(seg.topic);
         const chips = conc ? [{ label: "That settles it", value: "yes", primary: true }, { label: "Still unsure", value: "deeper" }, { label: "I have a question", value: "question" }] : [{ label: "Continue", value: "continue", primary: true }, { label: "Tell me more", value: "deeper" }, { label: "I have a question", value: "question" }];
-        const r = await waitFor(chips, 15); if (run !== S.run) return;
-        if (r.value === "yes") { S.resolved.add(seg.topic); const ok2 = await speak(pick(["Good.", "Great — moving on.", "Glad that helps."]), run); if (!ok2) return; }
-        else if (r.value === "__timeout") { const ok2 = await speak(pick(["I'll keep going — interrupt me anytime.", "Carrying on. Stop me whenever."]), run); if (!ok2) return; }
+        const r = await waitFor(chips, 8); if (run !== S.run) return;
+        if (r.value === "yes") { S.resolved.add(seg.topic); const ok2 = await speakF("good", "Good — moving on.", run); if (!ok2) return; }
+        else if (r.value === "__timeout") { const ok2 = await speakF("nudge_continue", "I'll carry on — stop me whenever you like.", run); if (!ok2) return; }
         else if (r.value === "deeper") { S.raised.add(seg.topic); prefetch(seg.deeper || []); for (const ln of seg.deeper || []) { showVisual(ln.visual); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
           if (!(seg.deeper || []).length) { const ok3 = await speak("That's everything the material covers on this — ask me anything specific and I'll check.", run); if (!ok3) return; }
-          const ok3 = await speak(pick(["Does that help?", "Is that clearer?"]), run); if (!ok3) return;
+          const ok3 = await speakF("clearer", "Is that clearer?", run); if (!ok3) return;
           const r2 = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }], 15); if (run !== S.run) return;
           if (r2.value === "yes") S.resolved.add(seg.topic); else if (r2.value === "no") { S.unresolved.add(seg.topic); S.escalations.push(`${seg.topic} — still unsure after the deeper explanation`); const ok4 = await speak(`Then let's not paper over it — I've flagged ${seg.topic} for someone from the team to take up with you properly. Let me carry on for now.`, run); if (!ok4) return; }
           else if (r2.value === "question") { if (r2.text) handleQuestion(r2.text); else listenForQuestion(); return; } else if (r2.value === "__interrupted") return; }
@@ -241,7 +247,7 @@ export function mountPlayer(host, bundle, api) {
   async function closeFlow(run) {
     S.atCheckin = true; showCard("summary");
     const closing = bundle.closing || [];
-    if (S.pitch?.advance) { const ok = await speak(S.pitch.advance, run); if (!ok) return; for (const ln of closing.slice(1)) { showVisual(ln.visual); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
+    if (S.pitch?.advance) { const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; for (const ln of closing.slice(1)) { showVisual(ln.visual); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
     else for (const ln of closing) { showVisual(ln.visual); showCard(ln.card); const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
     const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
     const r = await waitFor(chips, 0); if (run !== S.run) return;
@@ -268,20 +274,22 @@ export function mountPlayer(host, bundle, api) {
     const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun(); S.awaitingPhone = null;
     addMsg("user", text); S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
     let r;
-    try { r = await api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer() }); }
+    const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer() });
+    try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me a couple of seconds while I check that for you.", run); if (!okH) return; r = await qaP; } }
     catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin); return; }
     if (run !== S.run) return;
     if (r.visual) showVisual({ ...r.visual, url: mediaUrlFor(r.visual), focus: "" });
     if (r.facts?.length) showCard("cite", r.facts); else showCard("none");
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : (r.answered ? "" : "not in the sources — flagged");
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
-    const ok = await speak(r.answer, run); if (!ok) return;
+    if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
+    const ok = await speak(r.answer, run, r.audio); if (!ok) return;
     if (r.cta) { await ctaFlow(r.cta, run); return; }
     if (r.offer_callback || !r.answered) { await offerCallback(text, run, wasAtCheckin); return; }
     if (r.clarifying_question) { const a = await askAndListen(r.clarifying_question, run, 10000); if (run !== S.run) return; if (a) { handleQuestion(a); return; } }
-    const ok2 = await speak(pick(["Did that answer it?", "Does that cover your concern?", "Is that what you needed?"]), run); if (!ok2) return;
+    const ok2 = await speakF("did_that_answer", "Did that answer it?", run); if (!ok2) return;
     const r2 = await waitFor([{ label: "Yes, that helps", value: "yes", primary: true }, { label: "Not quite", value: "no" }], 20); if (run !== S.run) return;
-    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); const ok3 = await speak(pick(["Good.", "Glad that helps.", "Okay."]), run); if (!ok3) return; resumeAfterQA(wasAtCheckin); }
+    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); const ok3 = await speakF("glad", "Glad that helps.", run); if (!ok3) return; resumeAfterQA(wasAtCheckin); }
     else if (r2.value === "no") { S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${text}"`); const ok3 = await speak("Then let me not leave it half-answered — a salesperson can call you about it. Tell me your number if you'd like that, or we can carry on.", run); if (!ok3) return; await offerCallback(text, run, wasAtCheckin, true); }
     else if (r2.value === "question" && r2.text) handleQuestion(r2.text);
     else resumeAfterQA(wasAtCheckin);
@@ -317,7 +325,7 @@ export function mountPlayer(host, bundle, api) {
   const _origTts = api.tts; api.tts = (text) => _origTts ? api.tts_lang ? api.tts_lang(text, bundle.language) : _origTts(text) : Promise.resolve(null);
   function contactCta() { const c = (bundle.ctas || []).find((x) => x.kind === "contact") || (bundle.ctas || [])[0]; return c ? c.id : "contact"; }
   function mediaUrlFor(v) { if (!v) return null; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && vid.url.includes(src)) return vid.url; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; return (bundle.media?.videos || [])[0]?.url || null; }
-  function resumeAfterQA(wasAtCheckin) { if (!S.plan.length) { const run = newRun(); speak("Let's get back to the demo.", run).then((ok) => { if (ok) startAfterIntake(); }); return; } if (S.seg >= S.plan.length) { closeFlow(newRun()); return; } if (wasAtCheckin) playFrom(S.seg + 1, 0); else { const run = newRun(); speak(pick(["Picking up where we left off.", "Back to where we were."]), run).then((ok) => { if (ok) playFrom(S.seg, S.line); }); } }
+  function resumeAfterQA(wasAtCheckin) { if (!S.plan.length) { const run = newRun(); speakF("back_to_demo", "Let's get back to where we were.", run).then((ok) => { if (ok) startAfterIntake(); }); return; } if (S.seg >= S.plan.length) { closeFlow(newRun()); return; } if (wasAtCheckin) playFrom(S.seg + 1, 0); else { const run = newRun(); speakF("back_to_demo", "Back to where we were.", run).then((ok) => { if (ok) playFrom(S.seg, S.line); }); } }
 
   // ---------- intake + standard opening + pitch plan ----------
   function intakeWait(run) {
@@ -343,32 +351,46 @@ export function mountPlayer(host, bundle, api) {
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
-    const ok2 = await speak(ack, run); if (!ok2) return;
+    const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     await startAfterIntake(run, a1);
   }
   async function startAfterIntake(run = newRun(), a1 = S.profile.why) {
-    // pitch plan runs while the standard opening plays
-    const pitchP = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 45000) : Promise.resolve(null);
+    // The planner (route + custom batches, all voiced server-side) runs while the standard opening plays.
+    const pitchP = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : Promise.resolve(null);
     const okO = await playOpening(run); if (!okO) return;
-    setStatus("thinking", "Planning your route"); el.cap.textContent = "Planning the rest of this around what you told me…";
-    let plan = await pitchP; if (run !== S.run) return;
+    let plan = await withTimeout(pitchP, 150); if (run !== S.run) return;
+    if (!plan) { const okH = await speakF("still_working", "Almost there — one more moment.", run); if (!okH) return; plan = await withTimeout(pitchP, 15000); if (run !== S.run) return; }
     S.personalized = !!plan;
-    if (!plan) addMsg("note", "planner unavailable — playing the standard route");
+    if (!plan) { addMsg("note", "planner not ready — standard route; custom batches will slot in when they arrive"); S.latePlan = pitchP; }
     if (plan) {
       S.pitch = plan; S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
-      if (plan.decision_frame) { const ok = await speak(plan.decision_frame, run); if (!ok) return; }
+      if (plan.decision_frame) { const ok = await speak(plan.decision_frame, run, plan.decision_frame_audio); if (!ok) return; }
+      const okC = await playCustomBatches(plan, run); if (!okC) return;
       if (plan.follow_up_question) {
-        const a2 = await askAndListen(plan.follow_up_question, run, 12000); if (run !== S.run) return;
-        if (a2) { S.profile.followup = a2; setStatus("thinking", "Planning"); const refined = await withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 30000); if (run !== S.run) return; if (refined) { S.pitch = { ...plan, ...refined, follow_up_question: "" }; S.profile.focus = [...new Set([...(refined.focus_topics || []), ...S.profile.focus])]; } }
+        const a2 = await askAndListen(plan.follow_up_question, run, 12000, plan.follow_up_audio); if (run !== S.run) return;
+        if (a2) { S.profile.followup = a2; setStatus("thinking", "Planning"); const refined = await withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 30000); if (run !== S.run) return; if (refined) { S.pitch = { ...plan, ...refined, custom_batches: plan.custom_batches }; S.profile.focus = [...new Set([...(refined.focus_topics || []), ...S.profile.focus])]; } }
       }
-      const ok = await speak(S.profile.followup ? pick(["Got it — let me show you the part that matters most for that first.", "That helps. Here's the proof for exactly that."]) : pick(["Here's how I'll go about it.", "Let me show you the part that matters most first."]), run); if (!ok) return;
+      const ok = S.profile.followup ? await speakF("focus_first", "Got it — let me show you the part that matters most for that first.", run) : await speakF("how_i_go", "Here's how I'll go about it.", run); if (!ok) return;
     } else {
       const q2 = bundle.intake?.q2 || "Is there anything specific you'd like me to focus on, or shall we get going?";
-      const a2 = await askAndListen(q2, run, 10000); if (run !== S.run) return;
+      const a2 = await askAndListen(q2, run, 10000, bundle.intake?.audio?.q2); if (run !== S.run) return;
       if (a2 && !isGetGoing(a2)) { S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(a2)])]; S.profile.followup = a2; }
-      const ok = await speak(S.profile.focus.length ? "Got it — I'll spend proper time on that. Here we go." : pick(["Let's go.", "Alright — here we go."]), run); if (!ok) return;
+      const ok = await speakF("lets_go", "Alright — here we go.", run); if (!ok) return;
     }
     buildRoute(S.pitch); playFrom(0, 0);
+  }
+  async function playCustomBatches(plan, run) {
+    const batches = plan?.custom_batches || [];
+    if (!batches.length || S.customPlayed) return run === S.run;
+    S.customPlayed = true;
+    const okB = await speakF("bridge_to_custom", "Now, let me get to what you asked about.", run); if (!okB) return false;
+    for (const b of batches) {
+      if (run !== S.run) return false;
+      if (b.visual) showVisual({ ...b.visual, url: mediaUrlFor(b.visual), focus: "" });
+      el.cite.textContent = b.fact_ids?.length ? "sources: " + b.fact_ids.join(", ") : "";
+      const ok = await speak(b.text, run, b.audio); if (!ok) return false;
+    }
+    return run === S.run;
   }
   function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; const run = newRun(); playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }
 
@@ -400,7 +422,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.customPlayed = false; S.latePlan = null; el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   function destroy() { interruptAll(); root.remove(); }

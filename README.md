@@ -44,3 +44,9 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 - **Picture editor** (`server/agents/visuals.py`): after authoring, every line's picture is chosen to show the part being described, with a reason per line in the run log.
 - **Image clean-up** (`server/media.py`): transparent cut-outs get a clean studio background and defringed edges locally; `settings.enhance_images = "ai"` uses the Gemini image model when the key has quota. **Mascot**: built-in SVG guide in the player (`web/player/mascot.js`); a generated PNG when the image model is available.
 - **Run log** `data/demos/<id>/RUN.md`: INPUT / OUTPUT / MODEL CALLS per stage with full prompts and responses; `GET /api/demos/<id>/runlog`.
+
+## What changed on 2026-09-04 (afternoon)
+- **Script at Align.** Configure runs plan → author → FAQ bank. Align has six cards — Visuals, Facts, Script, FAQ bank, Persona, CTAs — each with a **Preview** pop-up. The Script card lists every batch (≤ 20 s) mapped to seconds with the picture on screen per line; exact seconds appear after voicing.
+- **No visible latency.** After the customer speaks, the planner writes 2–3 custom batches for their context and voices them server-side while the standard opening plays; recorded filler lines (acknowledgement, bridges, holds, nudges, small talk) cover every gap. The FAQ bank (20 generated + your FAQ document) is pre-voiced, so known questions answer instantly; new questions get a recorded "bear with me" then a live answer with server audio.
+- **The voice never changes.** Runtime lines use the same provider or captions; the browser voice is never used when a server voice exists.
+- **Pictures match words.** An information→image map is built at Configure and used by the script, the custom batches and the answers.

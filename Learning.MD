@@ -135,3 +135,14 @@
 **Deepest why type:** `design`
 **Action taken:** `server/agents/visuals.py` — a picture-editor pass after authoring: conservative rules on distinctive part words, then one Haiku call that decides every line with a stated reason, then a coverage guardrail so an uploaded picture with a spoken subject is shown at least once. Decisions are logged (logs/*-visuals.json) and appear in RUN.md.
 **Preventive action:** Any content the guide shows (pictures, cards, video shots) is matched to the words by a pass that leaves a reason per decision; Loop.MD eval 23.
+
+### 2026-09-04 — "The demo is pathetic": everything personalised was generated and voiced live, on the customer's clock
+
+**Symptom:** In the Creta sessions the guide went silent after the intro, never focused on the stated need (city + long trips), showed an airbag image on unrelated lines, and switched from the female voice to a male one mid-demo.
+**Why 1:** The personalisation planner was a live Claude call started when the opening began; at 14–17 s it outran the opening, so the player waited in silence, then gave up and played the standard route (`personalized: false`).
+**Why 2:** Bridges, check-in replies, answers and small talk were all voiced live through `/run/tts`; when the request was late or the provider failed, the player fell back to the browser's built-in voice (male on this Mac).
+**Why 3:** Pictures were chosen by the author per line with no map from information to images, so live lines showed whatever the segment's first visual was.
+**Why 4:** Nothing at Align showed the actual script, so the user could not see any of this before pressing Build.
+**Deepest why type:** `design`
+**Action taken:** Configure now runs plan → author → FAQ bank, so Align shows the full Script (batch by batch, ≤ 20 s, mapped to seconds, picture per line) and the FAQ bank, each with a Preview pop-up. The planner returns custom batches for the buyer's context, voiced server-side while the standard opening plays; recorded filler lines (acknowledgement, bridge, holds, nudges, small talk) cover every gap; the rule at runtime is "same voice or captions, never the browser voice"; known questions answer from the pre-voiced bank instantly, new ones after a recorded "bear with me"; an information→image map is built at configure and used by the script, the batches and the answers.
+**Preventive action:** Anything the customer hears must exist as recorded audio before the demo starts, or be produced while recorded audio is playing. A silent wait longer than a breath is a bug. Loop.MD evals 24–26.

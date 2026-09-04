@@ -47,7 +47,8 @@ Hard rules:
 
 NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,})", re.I)
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
-LIMITS = {"intro": 55, "outcome": 60, "proof": 60, "features": 110, "establish": 45}
+LIMITS = {"intro": 50, "outcome": 50, "proof": 50, "features": 55, "establish": 45}  # ≤ 20 s per batch at ~150 wpm
+WPS = 2.5  # spoken words per second used for the estimated timeline; replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
 ROUTE_LIMIT = 480  # ≈ 3 minutes at ~150 wpm: intro + outcome + best 3 proof + features + establish + closing
 JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|IP6\d|TFT|RPM|ABS|CBS|Li-ion|BMS|regen)\b")
@@ -110,6 +111,44 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     if route > ROUTE_LIMIT:
         issues.append(f"a full route would run {route} words (~{route/150:.1f} min); keep it under {ROUTE_LIMIT} (3 minutes) — cut, don't compress")
     return issues
+
+
+def _audio_seconds(demo_id: str | None, rel: str | None) -> float | None:
+    if not demo_id or not rel:
+        return None
+    try:
+        import wave
+        with wave.open(str(store.path(demo_id, rel)), "rb") as w:
+            return round(w.getnframes() / float(w.getframerate() or 1), 2)
+    except Exception:
+        return None
+
+
+def timeline(script: dict, demo_id: str | None = None) -> dict:
+    """Per-line start/duration in seconds (estimated from words, exact from the audio when it exists) and per-batch totals.
+    Stored on the script so the Align page and the bundle can show 'at 0:42 the guide says … and shows im04'."""
+    t = 0.0
+    batches = []
+    for seg in script.get("segments", []):
+        b0 = t
+        for ln in seg.get("lines", []):
+            if ln.get("unverified"):
+                continue
+            dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
+            ln["start"], ln["duration"], ln["exact"] = round(t, 1), dur, bool(_audio_seconds(demo_id, ln.get("audio")))
+            t += dur
+        if seg.get("checkin"):
+            dur = _audio_seconds(demo_id, seg.get("checkin_audio")) or round(max(1.0, words(seg["checkin"]) / WPS), 1)
+            seg["checkin_start"], seg["checkin_duration"] = round(t, 1), dur
+            t += dur
+        seg["start"], seg["duration"] = round(b0, 1), round(t - b0, 1)
+        batches.append({"id": seg["id"], "title": seg.get("title"), "role": seg.get("role"), "start": round(b0, 1), "duration": round(t - b0, 1), "over_20s": (t - b0) > 20.5})
+    for ln in script.get("closing", []):
+        dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
+        ln["start"], ln["duration"] = round(t, 1), dur
+        t += dur
+    script["timeline"] = {"total_seconds": round(t, 1), "batches": batches, "exact": any(l.get("exact") for s in script.get("segments", []) for l in s.get("lines", []))}
+    return script["timeline"]
 
 
 def _assign_ids(script: dict) -> None:
@@ -179,6 +218,7 @@ IMAGES:
     script["intake_audio"] = {}
     schemas.Script.model_validate(script)
     script = visuals.align(demo_id, script, und, emit)
+    timeline(script)
     store.write_json(demo_id, "script.json", script)
     n_lines = sum(len(s["lines"]) for s in script["segments"])
     unverified = sum(1 for s in script["segments"] for l in s["lines"] if l.get("unverified"))

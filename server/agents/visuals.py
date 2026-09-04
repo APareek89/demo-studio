@@ -191,3 +191,26 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
     else:
         emit("Pictures already match what is said on every line.")
     return script
+
+
+
+def build_map(und: dict, demo: dict) -> dict:
+    """fact id → best picture refs (distinctive-subject match between the fact's claim/value and what each picture shows).
+    Built at configure; used by the author, the runtime batches and the answers so the screen matches the words."""
+    cat = catalogue("", und, demo)
+    out = {}
+    for f in und.get("facts", []):
+        lt = _expand(_tokens(f"{f.get('claim', '')} {f.get('value', '')} {f.get('kind', '')}"))
+        scored = sorted(((*_score(lt, c), c["ref"]) for c in cat), key=lambda x: -x[0])
+        refs = [r for sc, hits, r in scored if sc >= 3.0][:3]
+        if refs:
+            out[f["id"]] = refs
+    return out
+
+
+def for_facts(und: dict, fact_ids: list[str]) -> str | None:
+    m = und.get("image_map") or {}
+    for fid in fact_ids or []:
+        if m.get(fid):
+            return m[fid][0]
+    return None

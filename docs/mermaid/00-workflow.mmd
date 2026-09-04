@@ -1,4 +1,4 @@
-%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py via graph.get_graph().draw_mermaid())
+%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py)
 ---
 config:
   flowchart:
@@ -12,6 +12,7 @@ graph TD;
 	align_enter(align_enter)
 	align_wait(align_wait)
 	author(author)
+	faq(faq)
 	voice(voice)
 	rehearsal(rehearsal)
 	bundle(bundle)
@@ -20,16 +21,18 @@ graph TD;
 	__start__ --> router;
 	align_enter --> align_wait;
 	align_wait -.-> author;
+	align_wait -.-> faq;
 	align_wait -.-> plan;
 	align_wait -.-> understand;
-	author -.-> align_enter;
+	author -.-> faq;
 	author -.-> voice;
 	bundle --> finish;
-	plan -.-> align_enter;
+	faq --> align_enter;
 	plan -.-> author;
 	rehearsal --> bundle;
 	router -.-> align_wait;
 	router -.-> author;
+	router -.-> faq;
 	router -.-> plan;
 	router -.-> understand;
 	understand --> plan;

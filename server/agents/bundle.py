@@ -39,7 +39,7 @@ def build(demo_id: str, emit) -> dict:
         return {"kind": "none"}
 
     def line(ln: dict) -> dict:
-        return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": visual(ln.get("visual")),
+        return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": visual(ln.get("visual")), "start": ln.get("start"), "duration": ln.get("duration"),
                 "fact_ids": ln.get("fact_ids", []), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
 
     def assemble(sc: dict) -> dict:
@@ -90,6 +90,10 @@ def build(demo_id: str, emit) -> dict:
         "pitch": {"decision_frame": plan.get("decision_frame", ""), "takeaway": plan.get("takeaway", ""), "primary_outcome": plan.get("primary_outcome", ""), "supporting_outcomes": plan.get("supporting_outcomes", []), "usps": plan.get("usps", []), "advance": plan.get("advance", ""), "do_not_recommend_if": plan.get("do_not_recommend_if", ""), "state_questions": plan.get("state_questions", [])},
         "language": main_lang, "languages": [main_lang] + list(alt.keys()), "alt_languages": alt,
         "mascot": media_url(demo_id, demo.get("mascot")) if demo.get("mascot") else None,
+        "timeline": script.get("timeline"),
+        "faq": [{**e, "audio": media_url(demo_id, e.get("audio")), "visual": visual({"ref": (e.get("visual") or {}).get("ref")}) if e.get("visual") else {"kind": "none"}} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])],
+        "fillers": {k: {"text": v.get("text"), "audio": media_url(demo_id, v.get("audio"))} for k, v in (store.read_json(demo_id, "fillers.json") or {}).items()},
+        "image_map": und.get("image_map", {}),
         "stt": {"provider": config.STT_PROVIDER},
         "facts": list(facts.values()),
         "cards": {"price": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in price_facts][:12],

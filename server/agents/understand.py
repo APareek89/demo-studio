@@ -176,6 +176,12 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         "video_summaries": video_summaries, "competitors": competitors,
     }
     schemas.Understanding.model_validate(und)  # contract check
+    try:
+        from . import visuals as _vis
+        und["image_map"] = _vis.build_map(und, demo)
+        emit(f"Mapped {len(und['image_map'])} facts to the pictures that show them.")
+    except Exception as e:
+        emit(f"Picture map skipped ({str(e)[:60]}).")
     store.write_json(demo_id, "understanding.json", und)
     store.log(demo_id, "understand", {"facts": len(facts), "unknowns": len(unknowns), "shots": len(shots), "images": len(images)})
 

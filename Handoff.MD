@@ -6,6 +6,12 @@
 > Keep this file ONE SCREEN: current state only; history lives in Learning.MD and git.
 
 ## Compact summary of previous session
+2026-09-04 (afternoon) — **Script at Align**: Configure now runs plan → author → FAQ bank; Align has six cards (Visuals, Facts, Script, FAQ bank,
+Persona, CTAs) each with a **Preview pop-up**; the Script card is batch-by-batch (≤ 20 s), **mapped to seconds** with the picture per line.
+**No visible latency at runtime**: custom batches for the buyer's context are written and voiced server-side while the opening plays;
+recorded filler lines cover every gap; **the voice never changes** (same provider or captions); the **FAQ bank** (20 generated + FAQ doc)
+is pre-voiced so known questions are instant; an information→image map keeps pictures in sync with words.
+
 2026-09-04 — **Workflow moved to LangGraph** (`server/graph.py`, sqlite checkpointer, Align as an interrupt, `GET /api/workflow` → Mermaid,
 `langgraph.json` for Studio), **cheapest models for the MVP** (Haiku everywhere, Sonnet 5 for the plan, Gemini 3.5 flash-lite for vision,
 Sarvam bulbul v3 / Gemini flash TTS), a **picture-editor pass** so the screen shows the part being talked about (`agents/visuals.py`),
@@ -34,9 +40,12 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - ✅ Paid QA drivers: `evals/qa_real.py images|video [--lang hi-IN]` → `docs/qa/<demo_id>.md` (stage seconds, calls, cost,
   runtime probes, opening script). Reports summarised in `docs/QA-2026-09-03.md`.
 - ⏹ Loop is OFF by user decision (2026-09-03); FMEA stays on per config.
-- ✅ Workflow = `server/graph.py` (LangGraph). `orchestrator.py` is now only the stage runner + action executor (`_run_stage`, `apply_actions`, `respond`).
+- ✅ Workflow = `server/graph.py` (LangGraph): router → understand → plan → author → faq → align_enter → align_wait[interrupt] → voice → rehearsal → bundle → finish. `orchestrator.py` is now only the stage runner + action executor (`_run_stage`, `apply_actions`, `respond`).
 
 ## Pending points
+- 🧑 USER: open Creta (`dm_201201c4`) → Align: check the Script card (Preview = second-by-second table) and the FAQ bank; then Rehearse: speak your context, ask a bank question and a new one — report any silence or voice change.
+- 🤖 AGENT: FAQ documents in PDF are not yet parsed for questions (text/markdown only); add the PDF text extractor hook in `faq.doc_questions`.
+- 🤖 AGENT: fillers and FAQ answers are voiced in the main language only; extend `translate` to cover them for extra languages.
 - 🧑 USER: pick one of the four Playground/tab-redesign prototypes (docs/design/README.md; artifacts published 2026-09-03 evening:
   A Console · B Stage · C Worksheet · D Guided) and confirm the 8 "missing links" listed there — nothing in the app changes until then.
 - 🤖 AGENT: after the pick — build: tab rename/order, `#/play/<id>` full-screen route, Playground v2 (approved-only list → Test Now →
@@ -81,6 +90,9 @@ Approve-all + lightbox, "Configure Demo", voice picker with preview, bundled ffm
 - 2026-09-03 — Voice providers have a circuit breaker: a 401/402/403/quota error trips the provider for 10 minutes so the chain
   moves on per line instead of retrying every line; the stage log and `/api/voices.unavailable` say which provider is out.
 - 2026-09-03 — Narration lines render in parallel (`VOICE_WORKERS`, default 4) with per-task contextvars so usage/trace rows keep the demo id.
+- 2026-09-04 — Script and FAQ bank are produced at Configure and aligned on before Build; Build only records voice, scores and bundles.
+- 2026-09-04 — Runtime rule: nothing the customer hears is voiced live in a different voice — recorded fillers, server-voiced custom batches and answers in the same provider, captions otherwise; never the browser voice.
+- 2026-09-04 — Batches are ≤ 20 s (≤ 50 words) and every batch ends at a pause point.
 - 2026-09-04 — Workflow runs on LangGraph (reverses the 2026-09-03 plain-code decision at the user's request): one graph, sqlite checkpoints, Align = interrupt; nodes call vendor SDKs directly, no LangChain model wrappers.
 - 2026-09-04 — Models for the MVP: Claude Haiku 4.5 everywhere, Claude Sonnet 5 for the plan only, Gemini 3.5 flash-lite for video/images, cheapest TTS tiers; env-overridable (CLAUDE_MODEL, CLAUDE_PLAN_MODEL, GEMINI_MODEL).
 - 2026-09-04 — Every picture on screen is chosen per line by the picture-editor pass with a logged reason; uploaded pictures with a spoken subject are always shown at least once.

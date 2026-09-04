@@ -144,7 +144,9 @@ def _inputs(demo_id: str, stage: str, demo: dict) -> str:
         if store.path(demo_id, "script.json").exists():
             rows.append(["script.json (previous)", _size(demo_id, "script.json"), "revised in place, ids kept"])
     if stage == "voice":
-        rows += [["script.json", _size(demo_id, "script.json"), "every narration, deeper, check-in and closing line"]]
+        rows += [["script.json", _size(demo_id, "script.json"), "every narration, deeper, check-in and closing line"], ["faq.json + filler lines", _size(demo_id, "faq.json"), "FAQ answers and the persona's acknowledgement / bridge / hold lines, all pre-recorded"]]
+    if stage == "faq":
+        rows += [["understanding.json + plan.json", "", "questions generated from product, persona, concerns and facts; FAQ documents (role faq) add their own"], ["qa.answer", "", "every answer goes through the grounded runtime path"]]
     if stage == "rehearsal":
         rows += [["understanding.json + plan.json", "", "questions are generated from the product, persona, concerns and facts"], ["script.json", _size(demo_id, "script.json"), "scored against the playbook"]]
     if stage == "bundle":
@@ -232,6 +234,9 @@ def _author(demo_id: str) -> str:
     out = []
     if logs:
         out.append("**Validator (no citation, no claim; word budgets; jargon):** " + _json(logs))
+    tl = sc.get("timeline") or {}
+    if tl:
+        out.append(f"**Timeline:** {tl.get('total_seconds', 0):.0f} s total ({'exact from audio' if tl.get('exact') else 'estimated at 2.5 words/s'}) · " + _table(["batch", "role", "starts at", "seconds", "> 20 s?"], [[b.get("title"), b.get("role"), f"{int(b.get('start', 0)) // 60}:{int(b.get('start', 0)) % 60:02d}", b.get("duration"), "⚠ yes" if b.get("over_20s") else ""] for b in tl.get("batches", [])]))
     out.append(_script_md(sc, "full script as written"))
     vis = _visuals_log(demo_id)
     if vis:
@@ -306,7 +311,12 @@ def _last_log(demo_id: str, stage: str) -> dict | None:
         return None
 
 
-_REPORTS = {"understand": _understand, "plan": _plan, "author": _author, "voice": _voice, "rehearsal": _rehearsal, "bundle": _bundle}
+def _faq(demo_id: str) -> str:
+    b = store.read_json(demo_id, "faq.json") or {}
+    return f"**{b.get('answered', 0)} of {b.get('total', 0)} answered from the sources** (the rest decline and offer a callback — instant at runtime)\n\n" + _table(["id", "origin", "question", "answered", "facts", "answer (full)", "audio"], [[e.get("id"), e.get("origin"), e.get("question"), "yes" if e.get("answered") else "no", ",".join(e.get("fact_ids", []) or []), e.get("answer"), "yes" if e.get("audio") else "not yet"] for e in b.get("entries", [])])
+
+
+_REPORTS = {"understand": _understand, "plan": _plan, "author": _author, "faq": _faq, "voice": _voice, "rehearsal": _rehearsal, "bundle": _bundle}
 
 
 def stage_report(demo_id: str, stage: str, *, seconds: float | None = None, started_at: float | None = None, instruction: str = "") -> None:

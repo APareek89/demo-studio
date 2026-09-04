@@ -79,7 +79,7 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     return sys, und, plan
 
 
-def answer(demo_id: str, question: str, history: list[dict] | None = None, profile: dict | None = None) -> dict:
+def answer(demo_id: str, question: str, history: list[dict] | None = None, profile: dict | None = None, voice_it: bool = True) -> dict:
     sys, und, plan = _system(demo_id, profile)
     msgs: list[dict] = []
     for h in (history or [])[-8:]:
@@ -121,7 +121,20 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
             if i["id"] == out.visual_ref:
                 vis = {"kind": "image", "ref": i["id"], "source_id": i["source_id"]}
     facts = [f for f in und.get("facts", []) if f["id"] in valid] + [f for c in und.get("competitors", []) for f in c["facts"] if f["id"] in valid]
-    return {"answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
+    if vis is None and valid:
+        from . import visuals as _vis
+        ref = _vis.for_facts(und, valid)
+        if ref:
+            vis = {"kind": "image" if ref.startswith("im") else "shot", "ref": ref, "source_id": next((x.get("source_id") for x in und.get("images", []) + und.get("shots", []) if x["id"] == ref), None)}
+    audio = None
+    if voice_it and text:
+        try:
+            from . import voice as _voice
+            rel = _voice.render_line(demo_id, text, strict=True)
+            audio = f"/media/{demo_id}/{rel}" if rel else None
+        except Exception:
+            audio = None
+    return {"audio": audio, "answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
             "visual": vis, "escalate": escalate, "topic": out.topic, "cta": out.cta, "answered": answered,
             "clarifying_question": (out.clarifying_question or "").strip() if answered else "", "offer_callback": offer_callback}
 

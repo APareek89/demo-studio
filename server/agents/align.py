@@ -12,11 +12,11 @@ from ..llm import claude
 from .bundle import media_url
 from .qa import classify
 
-CARD_ORDER = ["visuals", "facts", "pitch", "persona", "ctas"]
-CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "pitch": "Pitch", "persona": "Persona & voice", "ctas": "Calls to action"}
+CARD_ORDER = ["visuals", "facts", "script", "faq", "persona", "ctas"]
+CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "script": "Script", "faq": "FAQ bank", "persona": "Persona & voice", "ctas": "Calls to action"}
 
 ALIGN_SYSTEM = """You are the alignment agent inside Demo Studio. A brand user is reviewing what the pipeline produced
-for their product demo, in five cards: Visuals (video shots + images the demo will use, and visual gaps),
+for their product demo, in six cards: Visuals (video shots + images the demo will use, and visual gaps),
 Facts (the fact registry with citations, and open unknowns), Pitch (decision frame, takeaway, primary outcome, USPs,
 standard opening + proof blocks, advance, when-not-to-recommend — edits here are revise('plan', …)), Persona & voice
 (who the guide is, how it sounds, a sample audio), Calls to action (buttons shown in the demo). They approve each card, or say what is wrong.
@@ -31,7 +31,8 @@ You return ONE reply for the user and a list of ACTIONS for the orchestrator. Ac
 - set_voice(voice_name, persona_description, tone) — voice_name one of Sulafat, Aoede, Leda, Despina, Kore, Achernar, Zephyr; fill only what changes.
 - request_upload(upload_kind, reason) — when the right fix is more material (a missing image, the spec sheet).
 - resolve_unknown(unknown_id) — when the user says an unknown is irrelevant or now answered (pair with edit_fact/revise as needed).
-- build() — only when all five cards are approved AND the user asks to build/proceed/finish.
+- build() — only when all six cards are approved AND the user asks to build/proceed/finish.
+- The SCRIPT card is the full demo script, batch by batch (≤ 20 s each) mapped to seconds with the picture on screen per line; revise stage 'author' to change it. The FAQ card is the bank of customer questions answered from the sources and voiced at build; revise stage 'faq' to regenerate it (after fact fixes).
 - answer — a question that changes nothing.
 Rules: never invent product facts yourself — route corrections through edit_fact/revise. If the user attached files,
 the orchestrator has ALREADY added them as sources; if they are meant to fix facts or visuals, emit revise('understand', …)
@@ -41,6 +42,28 @@ Current card under review: {current}. Approvals: {approvals}. Stage status: {sta
 CARDS:
 {cards}
 """
+
+
+def _vis_url(demo_id: str, und: dict, src_by_id: dict, ref: str | None) -> str | None:
+    if not ref:
+        return None
+    for i in und.get("images", []):
+        if i["id"] == ref:
+            src = src_by_id.get(i["source_id"], {})
+            return media_url(demo_id, src.get("play") or src.get("path"))
+    for sh in und.get("shots", []):
+        if sh["id"] == ref:
+            src = src_by_id.get(sh["source_id"], {})
+            return media_url(demo_id, src.get("play") or src.get("path")) + f"#t={sh.get('start', 0):.1f}"
+    return None
+
+
+def _last_visuals(demo_id: str) -> dict | None:
+    try:
+        files = sorted(store.path(demo_id, "logs").glob("*-visuals.json"))
+        return json.loads(files[-1].read_text()) if files else None
+    except Exception:
+        return None
 
 
 def cards(demo_id: str) -> dict:
@@ -62,7 +85,15 @@ def cards(demo_id: str) -> dict:
         "persona": {**voice, "sample_audio": media_url(demo_id, plan.get("voice_sample_audio")), "brand": und.get("brand", {}),
                     "provider": demo.get("settings", {}).get("tts_provider"), "voice_name": demo.get("settings", {}).get("voice_name")},
         "ctas": plan.get("ctas", []),
-        "pitch": {k: plan.get(k) for k in ("decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "usps", "advance", "do_not_recommend_if", "state_questions", "customer_persona")} | {"segments": [{"id": s["id"], "title": s["title"], "role": s.get("role", "proof"), "outcome": s.get("outcome", ""), "usp_ids": s.get("usp_ids", [])} for s in plan.get("segments", [])], "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard")},
+        "script": {k: plan.get(k) for k in ("decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "usps", "advance", "do_not_recommend_if", "state_questions", "customer_persona")} | {
+            "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard"), "timeline": script.get("timeline"),
+            "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")},
+            "segments": [{"id": s["id"], "title": s["title"], "role": s.get("role", "proof"), "topic": s.get("topic", ""), "outcome": s.get("outcome", ""), "usp_ids": s.get("usp_ids", []), "start": s.get("start"), "duration": s.get("duration"), "checkin": s.get("checkin", ""),
+                          "lines": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "visual": (l.get("visual") or {}).get("ref"), "visual_url": _vis_url(demo_id, und, src_by_id, (l.get("visual") or {}).get("ref")), "card": l.get("card", "none"), "start": l.get("start"), "duration": l.get("duration"), "unverified": bool(l.get("unverified"))} for l in s.get("lines", [])],
+                          "deeper": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", [])} for l in s.get("deeper", [])]} for s in script.get("segments", [])],
+            "closing": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "start": l.get("start"), "duration": l.get("duration")} for l in script.get("closing", [])],
+            "issues": script.get("issues", []), "visual_changes": (_last_visuals(demo_id) or {}).get("changes", [])},
+        "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "answered": (store.read_json(demo_id, "faq.json") or {}).get("answered", 0), "total": (store.read_json(demo_id, "faq.json") or {}).get("total", 0)},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),
         "stages": demo.get("stages", {}),
@@ -90,7 +121,8 @@ def _cards_text(c: dict) -> str:
         f"SOURCES: " + "; ".join(f"{s['id']} {s['kind']} {s['name']} role={s.get('role')}" for s in f["sources"]),
         f"PERSONA & VOICE: {json.dumps({k: p.get(k) for k in ('persona_name', 'persona_description', 'tone', 'suggested_voice', 'sample_line')})} provider={p.get('provider')} voice={p.get('voice_name')}",
         f"CTAS: {json.dumps(c['ctas'])}",
-        f"PITCH: {json.dumps({k: c['pitch'].get(k) for k in ('decision_frame','takeaway','primary_outcome','supporting_outcomes','advance','do_not_recommend_if')})} usps={[u['name'] for u in (c['pitch'].get('usps') or [])]} segments={[(s['id'], s['role']) for s in c['pitch']['segments']]} language={c['pitch'].get('language')}",
+        f"SCRIPT: {json.dumps({k: c['script'].get(k) for k in ('decision_frame','takeaway','primary_outcome','supporting_outcomes','advance','do_not_recommend_if')})} usps={[u['name'] for u in (c['script'].get('usps') or [])]} batches={[(s['id'], s['role'], s.get('duration')) for s in c['script']['segments']]} total_seconds={(c['script'].get('timeline') or {}).get('total_seconds')} language={c['script'].get('language')}",
+        f"FAQ: {c['faq'].get('answered')}/{c['faq'].get('total')} answered; questions={[e['question'][:60] for e in c['faq'].get('entries', [])][:20]}",
         f"PLAN: persona={c['plan']['customer_persona']} segments={[s['id'] for s in c['plan']['segments']]} concerns={[x['topic'] for x in c['plan']['concerns']]}",
     ]
     if f.get("gaps"):
@@ -152,12 +184,16 @@ def card_prompt(demo_id: str, card: str) -> str:
     if card == "facts":
         f = c["facts"]
         return f"Next, the Facts card: {len(f['facts'])} facts, each with a source. Check the ones that matter most — prices, warranty, headline specs. Tell me any that are wrong and I'll fix the registry; {len([u for u in f['unknowns'] if u['status']=='open'])} open questions are listed too — upload material for any you want covered."
-    if card == "pitch":
-        pt = c["pitch"]
-        return f"Next, the Pitch card — the sales logic. Decision frame: “{pt.get('decision_frame','')}” Takeaway: “{pt.get('takeaway','')}” It proves “{pt.get('primary_outcome','')}” first, with {len(pt.get('usps') or [])} USPs, and closes on: “{pt.get('advance','')}”. Approve, or tell me what the pitch should lead with, drop, or promise differently."
+    if card == "script":
+        pt = c["script"]
+        tl = pt.get("timeline") or {}
+        return f"Next, the Script card — every batch the guide will say, mapped to seconds ({tl.get('total_seconds', 0):.0f} s in {len(pt.get('segments', []))} batches) with the picture on screen for each line. Decision frame: “{pt.get('decision_frame','')}” Takeaway: “{pt.get('takeaway','')}” with {len(pt.get('usps') or [])} USPs, and closes on: “{pt.get('advance','')}”. Approve, or tell me what the pitch should lead with, drop, or promise differently."
     if card == "persona":
         p = c["persona"]
         return f"Next, Persona & voice: the guide is “{p.get('persona_name','')}” — {p.get('tone','')} There's a sample line to listen to. Approve, or tell me how it should sound (warmer, more formal, a different voice)."
     if card == "ctas":
         return "Last card: the calls to action shown during the demo — " + ", ".join(f"“{x['label']}”" for x in c["ctas"]) + ". Confirm these, or tell me the buttons and links you want."
-    return "All five cards are approved. Say “build the demo” and I'll write the script, record the narration, rehearse it against likely customer questions and open the playground."
+    if card == "faq":
+        f = c["faq"]
+        return f"Next, the FAQ bank: {f.get('total', 0)} questions customers ask, {f.get('answered', 0)} answered from your sources (the rest decline and offer a callback). At runtime these answer instantly in the guide's voice. Approve, or tell me questions to add or answers to fix."
+    return "All six cards are approved. Say “build the demo” and I'll record the narration, the FAQ answers and the filler lines, score the script and open the playground."

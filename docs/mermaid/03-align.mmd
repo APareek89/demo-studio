@@ -1,5 +1,6 @@
 %% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
+  N6["Since 2026-09-04: SIX cards — Visuals · Facts · Script (batches ≤ 20 s, mapped to seconds, picture per line) · FAQ bank · Persona · CTAs — each with a Preview pop-up; the script and the bank are written at Configure"]:::data
   MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
   ATT["attachments → sources<br/>[FUNCTION · app.align_message]<br/>files saved as role=product before the agent sees them"]:::fn
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec

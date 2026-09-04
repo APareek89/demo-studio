@@ -1,0 +1,17 @@
+before: ready approvals {'visuals': True, 'facts': True, 'script': True, 'faq': False, 'persona': True, 'ctas': True}
+  [faq] status → building (0s)
+      faq | FAQ bank: 0 question(s) from your FAQ document, generating 20 more…
+      faq | FAQ 1/20: “What's the ex-showroom price for the manual N10, and what's the on-roa”
+      faq | FAQ 2/20: “How much will the EMI be if I finance 80% over 5 years at current inte”
+      faq | FAQ 3/20: “Are there any launch offers or corporate discounts available right now”
+      faq | FAQ 4/20: “What kind of fuel economy should I expect in city traffic and on highw”
+      faq | FAQ 5/20: “Does it run on regular petrol or premium fuel, and will that affect my”
+      faq | FAQ 6/20: “How does the 7-speed DCT handle bumper-to-bumper traffic without overh”
+      faq | FAQ 7/20: “What does the warranty actually cover on the dual-clutch transmission,”
+      faq | FAQ 8/20: “If the DCT develops issues after 3 years, what will a repair cost me o”
+      faq | FAQ 9/20: “Has the CRETA N Line passed any global crash tests—what's the safety r”
+      faq | FAQ 10/20: “How many airbags does it have, and are side airbags included in the ba”
+      faq | FAQ 11/20: “You say Level 2 ADAS—does that mean it can drive itself, or what exact”
+      faq | FAQ 12/20: “Will the adaptive cruise control work in Indian traffic, or does it ne”
+      faq | FAQ 13/20: “How much boot space do I have with all five seats in use for a family ”
+      faq | FAQ 14/20: “Can I fit a car seat safely, and where are the ISOFIX points located?”

@@ -56,8 +56,10 @@ PITCH_SHAPE = """DEMO SHAPE — a 3-minute pitch, then questions (the customer d
   "Let's start with what matters most to you —".
 - MAIN PITCH (60–90 s): the top two or three things that make this product the right choice — pain point first, then the
   one feature that removes it, then what it means day to day. Signpost: "Now — what sets this one apart —".
-- MORE FEATURES (60–90 s, one block): three to five other things worth knowing, one sentence each, no numbers unless they
-  decide something. Signpost: "Quickly, a few more things you'll like —" and end with "ask me about any of these".
+- MORE FEATURES (60–90 s, two short blocks): three to five other things worth knowing, one sentence each, no numbers unless
+  they decide something. Signpost: "Quickly, a few more things you'll like —" and end with "ask me about any of these".
+- EVERY BLOCK IS A BATCH OF AT MOST 20 SECONDS (≤ 50 spoken words) and ends with a pause point (the check-in) where the
+  customer can speak; the demo never talks for longer than that without a pause.
 - CLOSE (≤ 30 s): the honest condition ("I wouldn't recommend it if…"), the written terms in one line, the next step.
 Technical detail lives in the `deeper` layers and in Q&A — never in the main narration unless the customer asks.
 Every number spoken is translated into the customer's routine (days between charges, monthly cost, minutes of charging)."""

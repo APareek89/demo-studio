@@ -30,6 +30,10 @@ Your output:
   Never put intro/outcome segments in the route (they already played).
 - skipped: segments left out, with the reason.
 - usp_order: which USPs get covered, in order (every route step's usps).
+- custom_batches: when the buyer said something specific, 2-3 batches of ≤ 50 words each that speak to exactly that, spoken
+  right after the standard opening and before the route ("now let me tell you why this suits your city commute…"). Each
+  batch names the picture that shows it (visual_ref from the VISUALS list) and cites fact ids for every figure. Empty when
+  the buyer gave nothing specific.
 - advance: the closing advance for this buyer (P10), naming one CTA label; advance_cta = its id.
 {audience}
 {language}
@@ -88,6 +92,43 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         route.append(st)
     establish = [s["id"] for s in segs if s["role"] == "establish"]
     features = [s["id"] for s in segs if s["role"] == "features"]
+    # custom batches: grounded, pictured, voiced server-side (same voice as the demo — never the browser's)
+    from . import visuals as _vis
+    from . import voice as _voice
+    vis_ids = {x["id"] for x in und.get("images", [])} | {x["id"] for x in und.get("shots", [])}
+    batches = []
+    for b in (p.get("custom_batches") or [])[:3]:
+        b["fact_ids"] = [x for x in b.get("fact_ids", []) if x in fact_ids]
+        txt = (b.get("text") or "").strip()
+        if not txt or (not b["fact_ids"] and (NUMBERISH.search(txt) or CLAIMISH.search(txt))):
+            continue
+        if b.get("visual_ref") not in vis_ids:
+            b["visual_ref"] = _vis.for_facts(und, b["fact_ids"]) or ""
+        b["words"] = len(txt.split())
+        batches.append(b)
+    to_voice = [(b, "audio", b["text"]) for b in batches] + [(st, "bridge_audio", st["bridge"]) for st in p["route"] if st.get("bridge")]
+    if p.get("decision_frame"):
+        to_voice.append((p, "decision_frame_audio", p["decision_frame"]))
+    if p.get("follow_up_question"):
+        to_voice.append((p, "follow_up_audio", p["follow_up_question"]))
+    if p.get("advance"):
+        to_voice.append((p, "advance_audio", p["advance"]))
+    if to_voice and _voice.provider_for(demo) != "browser":
+        import contextvars as _cv
+        from concurrent.futures import ThreadPoolExecutor as _TPE
+        with _TPE(max_workers=4) as pool:
+            futs = {pool.submit(_cv.copy_context().run, _voice.render_line, demo_id, text, strict=True): (obj, key) for obj, key, text in to_voice}
+            for fut in futs:
+                obj, key = futs[fut]
+                try:
+                    rel = fut.result()
+                    obj[key] = f"/media/{demo_id}/{rel}" if rel else None
+                except Exception:
+                    obj[key] = None
+    for b in batches:
+        v = next((x for x in und.get("images", []) + und.get("shots", []) if x["id"] == b.get("visual_ref")), None)
+        b["visual"] = {"kind": "image" if b.get("visual_ref", "").startswith("im") else "shot", "ref": b.get("visual_ref"), "source_id": v.get("source_id") if v else None, "start": v.get("start") if v else None, "end": v.get("end") if v else None} if v else None
+    p["custom_batches"] = batches
     proofs = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features][:3]
     feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": features[0], "bridge": "", "bridge_fact_ids": []}] if features else [])
     est = [r for r in route if r["segment_id"] in establish][:1] or ([{"segment_id": establish[0], "bridge": "", "bridge_fact_ids": []}] if establish else [])

@@ -109,7 +109,28 @@ def tripped_providers() -> dict[str, str]:
     return {k: v[1] for k, v in _TRIPPED.items() if _tripped(k)}
 
 
-def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str | None = None) -> str | None:
+FILLERS = {
+    "ack_with_context": "Thanks for sharing that — it helps me keep this focused on what you need. Bear with me for a quick introduction first, and then I'll come straight to your points.",
+    "ack_no_context": "No problem — let me give you a quick introduction, and you can steer me any time.",
+    "bridge_to_custom": "Now, let me get to what you asked about.",
+    "hold_on_question": "Good question — give me a couple of seconds while I check that for you.",
+    "hold_on_lookup": "One moment while I pull that up.",
+    "back_to_demo": "Let's get back to where we were.",
+    "nudge_continue": "I'll carry on — stop me whenever you like.",
+    "put_in_writing": "My voice dropped for a moment — I've put the answer on screen for you.",
+    "still_working": "Almost there — one more moment.",
+    "good": "Good — moving on.",
+    "glad": "Glad that helps.",
+    "did_that_answer": "Did that answer it?",
+    "clearer": "Is that clearer?",
+    "lets_go": "Alright — here we go.",
+    "focus_first": "Got it — let me show you the part that matters most for that first.",
+    "how_i_go": "Here's how I'll go about it.",
+    "no_guess": "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it.",
+}
+
+
+def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str | None = None, strict: bool = False) -> str | None:
     """Returns a media-relative path like 'audio/<hash>.wav', or None when only the browser voice is available.
     Tries the provider chain in order (Sarvam → Gemini → Cloud TTS); a failure on one falls through to the next."""
     demo = demo or store.load(demo_id)
@@ -118,6 +139,8 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
     chain = provider_chain(demo)
     if chain == ["browser"]:
         return None
+    if strict:
+        chain = chain[:1]  # runtime rule: never change voice mid-demo — same provider or no audio
     lang = lang or demo.get("settings", {}).get("language", "en-IN")
     last_err: Exception | None = None
     for provider in chain:
@@ -154,6 +177,13 @@ def render_script(demo_id: str, emit) -> dict:
     """Voice the main script, then translate + voice every extra language from settings.languages."""
     demo = store.load(demo_id)
     script = _render_one(demo_id, emit, demo, "script.json", None)
+    _render_bank_and_fillers(demo_id, emit, demo)
+    try:
+        from . import author as _author
+        _author.timeline(script, demo_id)
+        store.write_json(demo_id, "script.json", script)
+    except Exception as e:
+        emit(f"Timeline not updated ({str(e)[:60]}).")
     extra = [l for l in (demo.get("settings", {}).get("languages") or []) if l and l != demo.get("settings", {}).get("language", "en-IN")]
     for lang in extra:
         try:
@@ -162,6 +192,37 @@ def render_script(demo_id: str, emit) -> dict:
         except Exception as e:
             emit(f"{lang}: skipped ({str(e)[:120]}).")
     return script
+
+
+def _render_bank_and_fillers(demo_id: str, emit, demo: dict) -> None:
+    """Voice the FAQ bank answers and the persona's filler lines (acknowledgements, bridges, holds) so nothing at
+    runtime has to be voiced live except a genuinely new answer."""
+    if provider_for(demo) == "browser":
+        return
+    bank = store.read_json(demo_id, "faq.json") or {}
+    todo = [(e, "audio", e["answer"]) for e in bank.get("entries", []) if e.get("answer") and not e.get("audio")]
+    fill = store.read_json(demo_id, "fillers.json") or {}
+    for key, text in FILLERS.items():
+        if not (fill.get(key) or {}).get("audio"):
+            fill[key] = {"text": text, "audio": None}
+            todo.append((fill[key], "audio", text))
+    if not todo:
+        return
+    emit(f"Recording {len(todo)} FAQ answers and filler lines…")
+    done = 0
+    with ThreadPoolExecutor(max_workers=VOICE_WORKERS) as pool:
+        futs = {pool.submit(contextvars.copy_context().run, render_line, demo_id, text, demo=demo): (obj, key) for obj, key, text in todo}
+        for fut in as_completed(futs):
+            obj, key = futs[fut]
+            try:
+                obj[key] = fut.result()
+                done += 1
+            except Exception:
+                obj[key] = None
+    if bank:
+        store.write_json(demo_id, "faq.json", bank)
+    store.write_json(demo_id, "fillers.json", fill)
+    emit(f"FAQ bank and fillers recorded ({done}/{len(todo)}).")
 
 
 def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> dict:

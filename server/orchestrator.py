@@ -9,13 +9,14 @@ import time
 import traceback
 
 from . import events, media, store, usage, runlog
-from .agents import align, author, bundle, plan, rehearsal, understand, voice
+from .agents import align, author, bundle, faq, plan, rehearsal, understand, voice
 from .store import STAGES
 
 DOWNSTREAM = {
-    "understand": ["plan", "author", "voice", "rehearsal", "bundle"],
+    "understand": ["plan", "author", "faq", "voice", "rehearsal", "bundle"],
     "plan": ["author", "voice", "rehearsal", "bundle"],
     "author": ["voice", "rehearsal", "bundle"],
+    "faq": ["voice", "rehearsal", "bundle"],
     "voice": ["bundle"],
     "rehearsal": ["bundle"],
     "bundle": [],
@@ -66,6 +67,8 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
             out = plan.run(demo_id, emit, instruction)
         elif stage == "author":
             out = author.run(demo_id, emit, instruction)
+        elif stage == "faq":
+            out = faq.run(demo_id, emit)
         elif stage == "voice":
             out = voice.render_script(demo_id, emit)
         elif stage == "rehearsal":
@@ -199,7 +202,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
         elif t == "request_upload":
             notes.append(f"upload requested: {a.get('upload_kind')} — {a.get('reason')}")
         elif t == "revise" and a.get("stage"):
-            order = {"understand": 0, "plan": 1, "author": 2}
+            order = {"understand": 0, "plan": 1, "author": 2, "faq": 3}
             if revise_stage is None or order[a["stage"]] < order[revise_stage]:
                 revise_stage = a["stage"]
             revise_instr.append(a.get("instruction", ""))

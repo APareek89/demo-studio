@@ -33,6 +33,17 @@ def run(demo_id: str, emit) -> dict:
         out = {"questions": [], "coverage": None, "gaps": [], "skipped": True}
         store.write_json(demo_id, "rehearsal.json", out)
         return out
+    bank = store.read_json(demo_id, "faq.json") or {}
+    if bank.get("entries"):
+        results = [{"question": e["question"], "answered": e["answered"], "fact_ids": e["fact_ids"], "answer": e["answer"], "escalate": ""} for e in bank["entries"]]
+        answered = sum(1 for r in results if r["answered"])
+        gaps = [r["question"] for r in results if not r["answered"]]
+        out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False, "from_bank": True}
+        emit(f"Rehearsal uses the FAQ bank: {answered}/{len(results)} answered from the sources — scoring the script…")
+        out["scorecard"] = score_script(demo_id, emit)
+        store.write_json(demo_id, "rehearsal.json", out)
+        store.log(demo_id, "rehearsal", {"coverage": out["coverage"], "gaps": gaps, "from_bank": True})
+        return out
     emit(f"Rehearsing: generating {n} likely customer questions…")
     content = f"PRODUCT: {json.dumps(und.get('product', {}))}\nCUSTOMER: {plan.get('customer_persona','')}\nCONCERNS: {json.dumps(plan.get('concerns', []))}\nFACT CLAIMS AVAILABLE: {[f['claim'] for f in und.get('facts', [])][:80]}\nGenerate {n} questions."
     try:

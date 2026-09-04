@@ -29,10 +29,12 @@ r = c.post(f"/api/demos/{i}/read"); assert r.status_code == 200, r.text
 wait(i, "align"); print("read → align ok")
 st = c.get(f"/api/demos/{i}").json()
 assert st["cards"] and st["cards"]["facts"]["facts"], "no facts"
+assert st["cards"]["script"]["segments"] and st["cards"]["script"]["timeline"]["total_seconds"] > 0, "script missing at Align"
+assert "faq" in st["cards"], "faq card missing"
 assert any(m["role"] == "agent" for m in st["conversation"]), "no opening message"
-print("cards: images", len(st["cards"]["visuals"]["images"]), "facts", len(st["cards"]["facts"]["facts"]), "ctas", len(st["cards"]["ctas"]))
+print("cards: images", len(st["cards"]["visuals"]["images"]), "facts", len(st["cards"]["facts"]["facts"]), "ctas", len(st["cards"]["ctas"]), "script batches", len(st["cards"]["script"]["segments"]), "seconds", st["cards"]["script"]["timeline"]["total_seconds"], "faq", st["cards"]["faq"]["total"])
 r = c.post(f"/api/demos/{i}/align", data={"message": "looks fine", "context": "align"}); assert r.status_code == 200, r.text; print("align reply:", r.json()["reply"][:60])
-for card in ("visuals", "facts", "pitch", "persona", "ctas"):
+for card in c.get(f"/api/demos/{i}").json()["demo"]["approvals"].keys():
     r = c.post(f"/api/demos/{i}/approve/{card}"); assert r.status_code == 200, r.text
 assert all(c.get(f"/api/demos/{i}").json()["demo"]["approvals"].values()); print("approved all")
 r = c.post(f"/api/demos/{i}/ctas", json={"ctas": [{"id": "book", "label": "Book a test ride", "kind": "book", "url": "", "primary": True, "when": "always"}]}); assert r.status_code == 200, r.text
@@ -64,7 +66,7 @@ assert c.get(f"/api/demos/{i}/evals").json(), "evals not listed"
 r = c.post(f"/api/demos/{i}/run/session", json={"profile": {"name": "Anand"}, "questions": ["kerb weight"], "cta": "Book a test ride", "intent": 61}); assert r.status_code == 200
 r = c.post(f"/api/demos/{i}/feedback", json={"message": "say the warranty before the price", "context": {"segment": "x"}}); assert r.status_code == 200, r.text; print("feedback reply:", r.json()["reply"][:60])
 reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])), "scorecard", reh and reh.get("scorecard") and reh["scorecard"].get("total"))
-b2 = c.get(f"/api/demos/{i}/bundle").json(); assert b2.get("pitch") and "language" in b2, "bundle lacks pitch/language"; roles = [s["role"] for s in b2["segments"]]; print("roles", roles)
+b2 = c.get(f"/api/demos/{i}/bundle").json(); assert b2.get("pitch") and "language" in b2, "bundle lacks pitch/language"; assert "fillers" in b2 and "faq" in b2 and b2.get("timeline"), "bundle lacks fillers/faq/timeline"; print("fillers", len(b2["fillers"]), "faq", len(b2["faq"]), "timeline", b2["timeline"]["total_seconds"]); roles = [s["role"] for s in b2["segments"]]; print("roles", roles)
 print("SMOKE OK", i)
 # --- settings, multi-language, observability (added 2026-09-03) ---
 r = c.patch(f"/api/demos/{i}", json={"settings": {"audience": "everyday", "languages": ["en-IN", "hi-IN"], "pitch_minutes": 3}}); assert r.status_code == 200, r.text

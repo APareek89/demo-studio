@@ -290,6 +290,12 @@ class RouteStep(BaseModel):
     bridge_fact_ids: list[str] = Field(default_factory=list, description="facts the bridge relies on; a bridge with a number and no fact id will be dropped")
 
 
+class CustomBatch(BaseModel):
+    text: str = Field(description="one spoken batch for THIS buyer, ≤ 50 words (about 20 seconds), in their nouns; every figure cites fact ids")
+    fact_ids: list[str] = Field(default_factory=list)
+    visual_ref: str = Field(default="", description="the image or shot id that shows what this batch talks about")
+
+
 class PitchPlan(BaseModel):
     customer_state: Literal["unknown", "stated_want", "stated_need"]
     decision_frame: str = Field(description="1-2 sentences recapping THIS buyer's decision in their words — spoken right after the standard intro")
@@ -301,6 +307,7 @@ class PitchPlan(BaseModel):
     usp_order: list[str] = Field(default_factory=list, description="usp ids in the order they will be covered")
     advance: str = Field(description="the closing advance for this buyer (P10), naming the CTA label")
     advance_cta: str = Field(default="", description="cta id")
+    custom_batches: list[CustomBatch] = Field(default_factory=list, description="2-3 batches spoken right after the standard opening, tying the product to what THIS buyer said; empty when the buyer said nothing specific")
     do_not_recommend_if: str = Field(default="")
 
 
@@ -337,8 +344,8 @@ class Scorecard(BaseModel):
 
 class AlignAction(BaseModel):
     type: Literal["revise", "approve", "request_upload", "set_ctas", "set_voice", "edit_fact", "remove_fact", "build", "answer", "resolve_unknown"]
-    stage: Optional[Literal["understand", "plan", "author"]] = Field(default=None, description="for revise")
-    card: Optional[Literal["visuals", "facts", "pitch", "persona", "ctas"]] = Field(default=None, description="for approve")
+    stage: Optional[Literal["understand", "plan", "author", "faq"]] = Field(default=None, description="for revise")
+    card: Optional[Literal["visuals", "facts", "script", "faq", "persona", "ctas"]] = Field(default=None, description="for approve")
     instruction: str = Field(default="", description="for revise: precise instruction to the stage")
     ctas: list[CTA] = Field(default_factory=list, description="for set_ctas: the full new list")
     voice_name: str = Field(default="", description="for set_voice")

@@ -11,8 +11,8 @@
 </style></head><body>
 <div class="hint">Tip: use Ctrl/Cmd + scroll or browser zoom to enlarge a diagram. Diagrams are authored by hand — check the .mmd mtime against the code.</div>
 <h1>Architecture Flow — Demo Studio</h1>
-<h2>00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py via graph.get_graph().draw_mermaid())</h2>
-<pre class="mermaid">%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py via graph.get_graph().draw_mermaid())
+<h2>00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py)</h2>
+<pre class="mermaid">%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py)
 ---
 config:
   flowchart:
@@ -26,6 +26,7 @@ graph TD;
 	align_enter(align_enter)
 	align_wait(align_wait)
 	author(author)
+	faq(faq)
 	voice(voice)
 	rehearsal(rehearsal)
 	bundle(bundle)
@@ -34,16 +35,18 @@ graph TD;
 	__start__ --&gt; router;
 	align_enter --&gt; align_wait;
 	align_wait -.-&gt; author;
+	align_wait -.-&gt; faq;
 	align_wait -.-&gt; plan;
 	align_wait -.-&gt; understand;
-	author -.-&gt; align_enter;
+	author -.-&gt; faq;
 	author -.-&gt; voice;
 	bundle --&gt; finish;
-	plan -.-&gt; align_enter;
+	faq --&gt; align_enter;
 	plan -.-&gt; author;
 	rehearsal --&gt; bundle;
 	router -.-&gt; align_wait;
 	router -.-&gt; author;
+	router -.-&gt; faq;
 	router -.-&gt; plan;
 	router -.-&gt; understand;
 	understand --&gt; plan;
@@ -130,6 +133,7 @@ flowchart TD
 <h2>03 · Align loop — one prompt dock, one agent, structured actions</h2>
 <pre class="mermaid">%% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
+  N6[&quot;Since 2026-09-04: SIX cards — Visuals · Facts · Script (batches ≤ 20 s, mapped to seconds, picture per line) · FAQ bank · Persona · CTAs — each with a Preview pop-up; the script and the bank are written at Configure&quot;]:::data
   MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
   ATT[&quot;attachments → sources&lt;br/&gt;[FUNCTION · app.align_message]&lt;br/&gt;files saved as role=product before the agent sees them&quot;]:::fn
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
@@ -184,6 +188,7 @@ flowchart TD
 <h2>04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle</h2>
 <pre class="mermaid">%% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
+  N7[&quot;Since 2026-09-04: AUTHOR and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (timeline, fillers, faq, image map)&quot;]:::data
   GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 5 approvals true&quot;]:::fn
   AUTH[&quot;script draft (principles + PITCH_SHAPE + audience level)&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one &#x27;more features&#x27; block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance&quot;]:::agent
   VAL[&quot;grounding + pacing + plain-language validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue&quot;]:::fn

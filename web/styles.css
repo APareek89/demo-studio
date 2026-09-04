@@ -334,3 +334,14 @@ main{flex:1;min-height:0;display:flex}
 .pl-cap .mascot{position:absolute;left:0;bottom:0}
 .orb-slot{display:flex;justify-content:center;margin:0 auto 22px}
 .pl-intake .mascot{filter:drop-shadow(0 14px 24px rgba(31,94,255,.22))}
+
+/* preview pop-ups (Align) */
+.preview-bg{position:fixed;inset:0;background:rgba(18,33,58,.55);display:flex;align-items:center;justify-content:center;z-index:70;padding:22px}
+.preview{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:min(1180px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(18,33,58,.35)}
+.preview .phead{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
+.preview .phead h2{margin:0;font-size:18px}
+.preview .pbody{overflow:auto;padding:16px 20px}
+.preview .facts-table td{white-space:normal}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pcard{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:6px}
+.pcard img,.pcard video{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--panel-2);border-radius:6px;cursor:zoom-in}

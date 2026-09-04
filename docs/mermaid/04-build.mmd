@@ -1,5 +1,6 @@
 %% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
+  N7["Since 2026-09-04: AUTHOR and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (timeline, fillers, faq, image map)"]:::data
   GO["POST /api/demos/id/build<br/>[FUNCTION] gate: all 5 approvals true"]:::fn
   AUTH["script draft (principles + PITCH_SHAPE + audience level)<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)<br/>out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one 'more features' block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance"]:::agent
   VAL["grounding + pacing + plain-language validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue"]:::fn

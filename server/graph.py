@@ -119,9 +119,9 @@ def align_wait(state: DemoState) -> Command:
 
 def author(state: DemoState) -> dict:
     d = state["demo_id"]
-    orch._set_status(d, "building")
+    orch._set_status(d, "building" if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))) else "reading")
     if state.get("entry") == "build":
-        runlog.event(d, "BUILD started", "All five cards approved. Author → voice → rehearsal → bundle.")
+        runlog.event(d, "BUILD started", "All six cards approved. Voice (narration + FAQ answers + fillers) → rehearsal → bundle.")
         if store.load(d)["stages"]["author"]["status"] == "done":
             return {}
     instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "author" else ""
@@ -156,15 +156,21 @@ def finish(state: DemoState) -> dict:
 # ---------- routing ----------
 
 def after_plan(state: DemoState) -> str:
-    if state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready")):
-        return "author"
-    return "align_enter"
+    return "author"  # the script is part of Align now: plan → author → faq → align
 
 
 def after_author(state: DemoState) -> str:
-    if state.get("entry") == "revise" and not (state.get("rebuild") or state.get("prev_ready")):
-        return "align_enter"
-    return "voice"
+    if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))):
+        return "voice"
+    return "faq"
+
+
+def faq(state: DemoState) -> dict:
+    d = state["demo_id"]
+    if store.load(d)["stages"]["faq"]["status"] == "done":
+        return {}
+    orch._run_stage(d, "faq", "")
+    return {}
 
 
 def after_voice(state: DemoState) -> str:
@@ -173,21 +179,23 @@ def after_voice(state: DemoState) -> str:
 
 def build_graph() -> StateGraph:
     g = StateGraph(DemoState)
-    g.add_node("router", router, destinations=("understand", "author", "plan", "align_wait"))
+    g.add_node("router", router, destinations=("understand", "author", "plan", "faq", "align_wait"))
     g.add_node("understand", understand)
     g.add_node("plan", plan)
     g.add_node("align_enter", align_enter)
-    g.add_node("align_wait", align_wait, destinations=("align_wait", "understand", "plan", "author"))
+    g.add_node("align_wait", align_wait, destinations=("align_wait", "understand", "plan", "author", "faq"))
     g.add_node("author", author)
+    g.add_node("faq", faq)
     g.add_node("voice", voice)
     g.add_node("rehearsal", rehearsal)
     g.add_node("bundle", bundle)
     g.add_node("finish", finish)
     g.add_edge(START, "router")
     g.add_edge("understand", "plan")
-    g.add_conditional_edges("plan", after_plan, {"author": "author", "align_enter": "align_enter"})
+    g.add_conditional_edges("plan", after_plan, {"author": "author"})
     g.add_edge("align_enter", "align_wait")
-    g.add_conditional_edges("author", after_author, {"voice": "voice", "align_enter": "align_enter"})
+    g.add_conditional_edges("author", after_author, {"voice": "voice", "faq": "faq"})
+    g.add_edge("faq", "align_enter")
     g.add_conditional_edges("voice", after_voice, {"rehearsal": "rehearsal", "bundle": "bundle"})
     g.add_edge("rehearsal", "bundle")
     g.add_edge("bundle", "finish")

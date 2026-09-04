@@ -20,8 +20,8 @@ from . import config
 _locks: dict[str, threading.Lock] = {}
 _locks_guard = threading.Lock()
 
-STAGES = ["understand", "plan", "author", "voice", "rehearsal", "bundle"]
-CARDS = ["visuals", "facts", "pitch", "persona", "ctas"]
+STAGES = ["understand", "plan", "author", "faq", "voice", "rehearsal", "bundle"]
+CARDS = ["visuals", "facts", "script", "faq", "persona", "ctas"]  # what the user aligns on, in order
 
 KIND_BY_EXT = {
     ".mp4": "video", ".mov": "video", ".webm": "video", ".m4v": "video",
@@ -96,7 +96,21 @@ def load(demo_id: str) -> dict:
     p = path(demo_id, "demo.json")
     if not p.exists():
         raise KeyError(demo_id)
-    return json.loads(p.read_text())
+    return _migrate(json.loads(p.read_text()))
+
+
+def _migrate(demo: dict) -> dict:
+    """Older demos: add missing stages and cards (pitch → script; faq)."""
+    st = demo.setdefault("stages", {})
+    for k in STAGES:
+        st.setdefault(k, {"status": "idle", "updated_at": None, "error": None, "message": ""})
+    ap = demo.setdefault("approvals", {})
+    if "pitch" in ap and "script" not in ap:
+        ap["script"] = ap.pop("pitch")
+    for c in CARDS:
+        ap.setdefault(c, False)
+    demo["approvals"] = {c: ap.get(c, False) for c in CARDS}
+    return demo
 
 
 def save(demo_id: str, demo: dict) -> None:

@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response, StreamingRes
 from fastapi.staticfiles import StaticFiles
 
 from . import config, events, graph, orchestrator, store, usage, runlog
-from .agents import align, pitch, qa, rehearsal, voice
+from .agents import align, faq, pitch, qa, rehearsal, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -99,7 +99,7 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images", "faq_questions")}
             if "languages" in allowed:
                 allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
                 allowed["language"] = allowed["languages"][0]
@@ -404,10 +404,17 @@ async def run_qa(demo_id: str, req: Request):
     q = (body.get("question") or "").strip()
     if not q:
         raise HTTPException(400, "question required")
+    hit = faq.match(demo_id, q)
+    if hit and not body.get("skip_bank"):
+        r = {"from_bank": True, "bank_id": hit["id"], "audio": f"/media/{demo_id}/{hit['audio']}" if hit.get("audio") else None, "answer": hit["answer"], "fact_ids": hit["fact_ids"], "facts": [], "visual": hit.get("visual"),
+             "escalate": "", "topic": "", "cta": "", "answered": hit["answered"], "clarifying_question": hit.get("clarifying_question", ""), "offer_callback": hit.get("offer_callback", not hit["answered"])}
+        runlog.runtime_qa(demo_id, q, {**r, "answer": "[bank " + hit["id"] + "] " + r["answer"]}, body.get("profile") or None)
+        return r
     try:
         r = qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None)
     except RuntimeError as e:
         raise HTTPException(502, str(e))
+    r["from_bank"] = False
     runlog.runtime_qa(demo_id, q, r, body.get("profile") or None)
     return r
 
@@ -494,7 +501,7 @@ async def run_tts(demo_id: str, req: Request):
     if not text:
         raise HTTPException(400, "text required")
     try:
-        rel = voice.render_line(demo_id, text, lang=(body.get("language") or None))
+        rel = voice.render_line(demo_id, text, lang=(body.get("language") or None), strict=True)
     except Exception as e:
         raise HTTPException(502, str(e)[:300])
     return {"url": f"/media/{demo_id}/{rel}" if rel else None}
