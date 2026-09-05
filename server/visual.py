@@ -1,9 +1,11 @@
 """Optional Demo Visual workflow: source views/video → Runware multi-view 3D → approved reusable asset."""
 from __future__ import annotations
 
+import json
 import mimetypes
 import re
 import shutil
+import struct
 import threading
 import time
 from pathlib import Path
@@ -64,7 +66,7 @@ def schema_for(demo: dict) -> list[dict]:
 def _base_state(demo_id: str) -> dict:
     demo = store.load(demo_id)
     return {"category": _category(demo), "mode": "images", "status": "empty", "angles": {}, "video": None,
-            "attempts": [], "active_attempt": None, "approved_attempt": None, "progress": 0,
+            "attempts": [], "active_attempt": None, "approved_attempt": None, "views_approved": False, "view_feedback": "", "progress": 0,
             "message": "Add product views or a turntable video", "error": "", "updated_at": time.time()}
 
 
@@ -75,6 +77,10 @@ def _read(demo_id: str) -> dict:
         store.write_json(demo_id, STATE, state)
     state.setdefault("angles", {})
     state.setdefault("attempts", [])
+    # Existing approved projects pre-date the view-review gate. Preserve their ability
+    # to regenerate without making the user approve the same inputs retroactively.
+    state.setdefault("views_approved", bool(state.get("approved_attempt")))
+    state.setdefault("view_feedback", "")
     return state
 
 
@@ -90,7 +96,7 @@ def _url(demo_id: str, rel: str | None) -> str | None:
 def public_state(demo_id: str) -> dict:
     state = _read(demo_id)
     lock = _locks.get(demo_id)
-    if state.get("status") == "generating" and (lock is None or not lock.locked()):
+    if state.get("status") in ("generating", "preparing_views") and (lock is None or not lock.locked()):
         state.update({"status": "error", "progress": 0, "message": "The local worker stopped before completion",
                       "error": "Generation was interrupted by a server restart. Retry the build; the saved Runware task id remains in version history."})
         for attempt in state.get("attempts", []):
@@ -143,6 +149,7 @@ def add_image(demo_id: str, angle: str, filename: str, data: bytes) -> dict:
     label = next(x["label"] for x in schema_for(store.load(demo_id)) if x["key"] == angle)
     state["mode"] = "images"
     state["status"] = "collecting"
+    state["views_approved"] = False
     state["error"] = ""
     state["angles"][angle] = {"angle": angle, "label": label, "path": rel, "name": Path(filename).name,
                                "size": len(data), "width": width, "height": height, "origin": "real", "generated": False}
@@ -161,6 +168,7 @@ def remove_image(demo_id: str, angle: str) -> dict:
         store.path(demo_id, item["path"]).unlink(missing_ok=True)
         cloud.delete_file(demo_id, item["path"])
     state["status"] = "collecting" if state.get("angles") else "empty"
+    state["views_approved"] = False
     _write(demo_id, state)
     runlog.event(demo_id, f"Demo Visual · {angle} image removed")
     return public_state(demo_id)
@@ -184,9 +192,71 @@ def add_video(demo_id: str, filename: str, data: bytes) -> dict:
     old = (state.get("video") or {}).get("path")
     if old and old != rel:
         store.path(demo_id, old).unlink(missing_ok=True)
-    state.update({"mode": "video", "status": "collecting", "video": {"path": rel, "name": Path(filename).name, "size": len(data)}, "error": ""})
+    state.update({"mode": "video", "status": "collecting", "video": {"path": rel, "name": Path(filename).name, "size": len(data)}, "views_approved": False, "error": ""})
     _write(demo_id, state)
     runlog.event(demo_id, "Demo Visual · turntable video uploaded", f"`{Path(filename).name}` · {len(data) / 1e6:.1f} MB")
+    cloud.sync_demo_async(demo_id)
+    return public_state(demo_id)
+
+
+def add_glb(demo_id: str, filename: str, data: bytes) -> dict:
+    """Accept a self-contained GLB and put it through the same review/approval gate as generated assets."""
+    state = _read(demo_id)
+    if state.get("status") in ("generating", "preparing_views"):
+        raise ValueError("Wait for the current visual job to finish, or skip it, before uploading a 3D asset")
+    if Path(filename).suffix.lower() != ".glb":
+        raise ValueError("Upload a self-contained .glb file")
+    if not data:
+        raise ValueError("3D asset is empty")
+    if len(data) > 150 * 1024 * 1024:
+        raise ValueError("3D asset is larger than 150 MB")
+    if len(data) < 20 or data[:4] != b"glTF":
+        raise ValueError("file is not a readable binary glTF (.glb)")
+    version, declared_length = struct.unpack_from("<II", data, 4)
+    if version != 2 or declared_length != len(data):
+        raise ValueError("GLB header is invalid or the file is incomplete")
+    offset, scene = 12, None
+    while offset < len(data):
+        if offset + 8 > len(data):
+            raise ValueError("GLB contains an incomplete chunk header")
+        chunk_length, chunk_type = struct.unpack_from("<I4s", data, offset)
+        offset += 8
+        if chunk_length % 4 or offset + chunk_length > len(data):
+            raise ValueError("GLB contains an incomplete or unaligned chunk")
+        chunk = data[offset:offset + chunk_length]
+        if offset == 20 and chunk_type != b"JSON":
+            raise ValueError("GLB first chunk must contain the glTF JSON scene")
+        if chunk_type == b"JSON" and scene is None:
+            try:
+                scene = json.loads(chunk.rstrip(b" \t\r\n\0").decode("utf-8"))
+            except Exception:
+                raise ValueError("GLB contains unreadable glTF JSON")
+        offset += chunk_length
+    if not isinstance(scene, dict) or not str((scene.get("asset") or {}).get("version", "")).startswith("2"):
+        raise ValueError("GLB does not contain a glTF JSON scene")
+    external = [str(row.get("uri")) for key in ("buffers", "images") for row in scene.get(key, [])
+                if isinstance(row, dict) and row.get("uri") and not str(row.get("uri")).startswith("data:")]
+    if external:
+        raise ValueError("GLB references external files; upload a self-contained GLB")
+
+    attempt_no = max([a.get("number", 0) for a in state.get("attempts", [])] or [0]) + 1
+    rel = f"visual/attempts/{attempt_no:03d}/model.glb"
+    target = store.path(demo_id, rel)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+    attempt = {
+        "number": attempt_no, "status": "review", "started_at": time.time(), "completed_at": time.time(),
+        "model": "uploaded", "source_mode": "upload", "uploaded": True, "glb": rel, "preview": None,
+        "primary_angle": None, "angles": [], "submitted_angles": [], "real_count": 0, "generated_count": 0,
+        "cost_usd": 0, "size": len(data), "change": f"Uploaded {Path(filename).name}",
+    }
+    state["attempts"].append(attempt)
+    state.update({"status": "review", "active_attempt": attempt_no, "progress": 100,
+                  "message": "Rotate and inspect the uploaded asset before approval", "error": ""})
+    _write(demo_id, state)
+    runlog.event(demo_id, f"Demo Visual · uploaded GLB attempt {attempt_no} ready",
+                 f"`{Path(filename).name}` · {len(data) / 1e6:.1f} MB · validated GLB v2 · no Runware charge")
+    events.publish(demo_id, "phase_done", phase="visual", message="Uploaded 3D asset ready for review")
     cloud.sync_demo_async(demo_id)
     return public_state(demo_id)
 
@@ -198,6 +268,8 @@ def set_mode(demo_id: str, mode: str) -> dict:
     if state.get("status") == "generating":
         raise ValueError("Wait for the current build or skip it before switching input modes")
     state["mode"] = mode
+    state["views_approved"] = False
+    state["status"] = "collecting" if (state.get("angles") or state.get("video")) else "empty"
     _write(demo_id, state)
     return public_state(demo_id)
 
@@ -225,7 +297,7 @@ def _mock_generated(source: Path, target: Path, angle: str) -> None:
         im.save(target, "JPEG", quality=88)
 
 
-def _select_video_angles(demo_id: str, state: dict) -> None:
+def _select_video_angles(demo_id: str, state: dict, feedback: str = "") -> None:
     video = store.path(demo_id, state["video"]["path"])
     frames = media.extract_candidate_frames(video, store.path(demo_id, "visual/frames/candidates"))
     if not frames:
@@ -241,7 +313,8 @@ def _select_video_angles(demo_id: str, state: dict) -> None:
         labels = ", ".join(required)
         prompt = (f"These {len(frames)} images are ordered frames from one product turntable video. Select the sharpest frame for each visible required angle: {labels}. "
                   "frame_index is 1-based and must identify the supplied image. Never invent a visible angle; list it in missing_angles instead. "
-                  "Pick front_three_quarter as primary when it is clear; otherwise choose the strongest real product frame. Return distinct frames where possible.")
+                  "Pick front_three_quarter as primary when it is clear; otherwise choose the strongest real product frame. Return distinct frames where possible."
+                  + (f" The reviewer asked for this correction: {feedback[:500]}" if feedback else ""))
         selection = gemini.structured(prompt, parts, AngleSelection)
     valid: dict[str, AnglePick] = {}
     for pick in selection.picks:
@@ -272,7 +345,8 @@ def _select_video_angles(demo_id: str, state: dict) -> None:
             else:
                 reference_paths = [store.path(demo_id, item["path"]) for item in state["angles"].values() if item["origin"] == "real"][:3]
                 prompt = (f"Create the {schema[angle]['label']} view of this exact same product for multi-view 3D preparation. "
-                          "Preserve identity, shape, proportions, colour, trim, logos and every visible detail. Clean neutral studio background, full object, no text, no new design elements.")
+                          "Preserve identity, shape, proportions, colour, trim, logos and every visible detail. Clean neutral studio background, full object, no text, no new design elements."
+                          + (f" Apply this reviewer feedback without changing product identity: {feedback[:500]}" if feedback else ""))
                 result = gemini.generate_image([gemini.bytes_part(p) for p in reference_paths], prompt)
                 if not result:
                     raise RuntimeError("Gemini returned no image")
@@ -282,11 +356,87 @@ def _select_video_angles(demo_id: str, state: dict) -> None:
             state["angles"][angle] = {"angle": angle, "label": schema[angle]["label"], "path": rel,
                                       "name": f"AI-created {schema[angle]['label']}", "size": target.stat().st_size,
                                       "origin": "generated", "generated": True}
-            runlog.event(demo_id, f"Demo Visual · missing {schema[angle]['label']} created", "Gemini-generated and labelled for review only; Runware receives real source frames, never generated identity gap-fill.")
+            runlog.event(demo_id, f"Demo Visual · missing {schema[angle]['label']} created", "Gemini-generated, visibly labelled and held behind human approval before it may shape the Runware asset.")
         except Exception as exc:
             runlog.event(demo_id, f"Demo Visual · missing {schema[angle]['label']} not created", str(exc)[:300])
             state.setdefault("missing_angles", []).append(angle)
     _write(demo_id, state)
+
+
+def _prepare_worker(demo_id: str, cancel: threading.Event, feedback: str = "") -> None:
+    """Prepare the five reviewable views without starting a billable Runware job."""
+    usage.current_demo.set(demo_id)
+    usage.current_stage.set("visual")
+    try:
+        state = _read(demo_id)
+        if state.get("mode") == "video":
+            _set_progress(demo_id, 5, "Extracting product views from the video")
+            _select_video_angles(demo_id, state, feedback)
+        if cancel.is_set():
+            raise RuntimeError("View preparation skipped")
+        state = _read(demo_id)
+        missing = [angle for angle in _required(demo_id) if angle not in state.get("angles", {})]
+        if missing:
+            raise RuntimeError("Add or regenerate the required views: " + ", ".join(missing))
+        state.update({"status": "views_review", "views_approved": False, "view_feedback": feedback,
+                      "progress": 100, "message": "Review every view before the 3D build", "error": ""})
+        _write(demo_id, state)
+        runlog.event(demo_id, "Demo Visual · source views ready for approval",
+                     f"{len(state.get('angles', {}))} views · Nano Banana 2 Lite for generated gap-fill · Runware has not started and no 3D charge has been incurred.")
+        events.publish(demo_id, "phase_done", phase="visual_views", message="Product views ready for review")
+        cloud.sync_demo_async(demo_id)
+    except Exception as exc:
+        state = _read(demo_id)
+        skipped = cancel.is_set() or "skipped" in str(exc).lower()
+        state.update({"status": "skipped" if skipped else "error", "progress": 0,
+                      "message": "Visual step skipped" if skipped else "Product views need attention",
+                      "error": "" if skipped else str(exc)[:500]})
+        _write(demo_id, state)
+        runlog.event(demo_id, f"Demo Visual · source view preparation {'skipped' if skipped else 'failed'}", str(exc)[:500])
+        events.publish(demo_id, "phase_error", phase="visual_views", message=str(exc)[:300], skipped=skipped)
+
+
+def prepare_views(demo_id: str, feedback: str = "") -> dict:
+    """Create/select views, then stop for explicit human approval before Runware."""
+    with _guard:
+        lock = _locks.setdefault(demo_id, threading.Lock())
+    if not lock.acquire(blocking=False):
+        raise RuntimeError("Product views or a 3D asset are already being prepared")
+    state = _read(demo_id)
+    if state.get("mode") == "video" and not state.get("video"):
+        lock.release()
+        raise ValueError("Add a turntable video first")
+    if state.get("mode") == "images":
+        missing = [angle for angle in _required(demo_id) if angle not in state.get("angles", {})]
+        if missing:
+            lock.release()
+            raise ValueError("Add the required views first: " + ", ".join(missing))
+    state.update({"status": "preparing_views", "views_approved": False, "view_feedback": feedback[:500],
+                  "progress": 1, "message": "Preparing product views for your approval", "error": ""})
+    _write(demo_id, state)
+    cancel = threading.Event()
+    _cancels[demo_id] = cancel
+
+    def run():
+        try:
+            _prepare_worker(demo_id, cancel, feedback[:500])
+        finally:
+            lock.release()
+    threading.Thread(target=run, daemon=True, name=f"visual-views-{demo_id}").start()
+    return public_state(demo_id)
+
+
+def approve_views(demo_id: str) -> dict:
+    state = _read(demo_id)
+    if state.get("status") != "views_review":
+        raise ValueError("Prepare the product views before approving them")
+    missing = [angle for angle in _required(demo_id) if angle not in state.get("angles", {})]
+    if missing:
+        raise ValueError("Required views are still missing: " + ", ".join(missing))
+    state.update({"status": "views_approved", "views_approved": True, "message": "Views approved — ready to build the 3D asset", "error": ""})
+    _write(demo_id, state)
+    runlog.event(demo_id, "Demo Visual · source views approved", "The next action may submit a paid Runware 3D job.")
+    return public_state(demo_id)
 
 
 def _worker(demo_id: str, attempt_no: int, cancel: threading.Event) -> None:
@@ -295,10 +445,6 @@ def _worker(demo_id: str, attempt_no: int, cancel: threading.Event) -> None:
     started = time.time()
     try:
         state = _read(demo_id)
-        if state.get("mode") == "video":
-            _set_progress(demo_id, 5, "Extracting product views from video")
-            _select_video_angles(demo_id, state)
-            state = _read(demo_id)
         required = _required(demo_id)
         if state.get("mode") == "images" and any(angle not in state.get("angles", {}) for angle in required):
             missing = [angle for angle in required if angle not in state.get("angles", {})]
@@ -317,11 +463,14 @@ def _worker(demo_id: str, attempt_no: int, cancel: threading.Event) -> None:
             _write(demo_id, current)
         attempt = next(a for a in state.get("attempts", []) if a.get("number") == attempt_no)
         model = attempt.get("model") or config.RUNWARE_MODEL
-        # The first image controls material identity. Only user-uploaded/video-derived real views are
-        # conditioning evidence; generated gap-fill views never become identity inputs.
-        ordered = [primary] + [key for key in required if key != primary and key in real]
+        # The first image controls material identity and is always real. Once the human has
+        # approved the review gate, AI gap-fill views may supply missing geometry angles.
+        # Real views remain ahead of generated ones when a model accepts fewer than five images.
+        generated = [key for key in required if key in state.get("angles", {}) and key not in real]
+        ordered = [primary] + [key for key in required if key != primary and key in real] + generated
         max_images = int(config.RUNWARE_MODELS[model]["max_images"])
-        source_paths = [store.path(demo_id, state["angles"][key]["path"]) for key in ordered[:max_images]]
+        submitted_angles = ordered[:max_images]
+        source_paths = [store.path(demo_id, state["angles"][key]["path"]) for key in submitted_angles]
         result = runware.generate(source_paths, model=model,
                                   progress=lambda pct, msg: _set_progress(demo_id, max(45, pct), msg), cancelled=cancel.is_set,
                                   submitted=submitted)
@@ -334,16 +483,19 @@ def _worker(demo_id: str, attempt_no: int, cancel: threading.Event) -> None:
         state = _read(demo_id)
         previous = state.get("attempts", [])[-2] if len(state.get("attempts", [])) > 1 else None
         angles = [{"angle": key, "origin": value.get("origin"), "path": value.get("path")} for key, value in state.get("angles", {}).items()]
-        change = "First 3D build" if not previous else f"Regenerated from {len(source_paths)} real source view(s); previous attempt preserved"
+        submitted_real = sum(1 for key in submitted_angles if key in real)
+        submitted_generated = len(submitted_angles) - submitted_real
+        source_label = f"{submitted_real} real" + (f" + {submitted_generated} approved AI" if submitted_generated else "")
+        change = "First 3D build" if not previous else f"Regenerated from {source_label} view(s); previous attempt preserved"
         for attempt in state["attempts"]:
             if attempt["number"] == attempt_no:
                 attempt.update({"status": "review", "glb": rel, "preview": state["angles"][primary]["path"], "primary_angle": primary,
-                                "angles": angles, "real_count": sum(1 for a in angles if a["origin"] == "real"),
-                                "generated_count": sum(1 for a in angles if a["origin"] == "generated"), "task_uuid": result["task_uuid"],
+                                "angles": angles, "submitted_angles": submitted_angles, "real_count": submitted_real,
+                                "generated_count": submitted_generated, "task_uuid": result["task_uuid"],
                                 "cost_usd": result.get("cost", 0), "size": len(result["bytes"]), "change": change, "completed_at": time.time()})
         state.update({"status": "review", "active_attempt": attempt_no, "progress": 100, "message": "Rotate and inspect the asset before approval", "error": ""})
         _write(demo_id, state)
-        runlog.event(demo_id, f"Demo Visual · {config.RUNWARE_MODELS[model]['label']} attempt {attempt_no} ready", f"GLB {len(result['bytes']) / 1e6:.1f} MB · {len(source_paths)} real source views · primary `{primary}` · cost ${result.get('cost', 0):.4f} · task `{result['task_uuid']}`")
+        runlog.event(demo_id, f"Demo Visual · {config.RUNWARE_MODELS[model]['label']} attempt {attempt_no} ready", f"GLB {len(result['bytes']) / 1e6:.1f} MB · {source_label} approved views · primary real view `{primary}` · cost ${result.get('cost', 0):.4f} · task `{result['task_uuid']}`")
         events.publish(demo_id, "phase_done", phase="visual", message="3D asset ready for review")
         cloud.sync_demo_async(demo_id)
     except Exception as exc:
@@ -364,6 +516,9 @@ def start(demo_id: str, model: str | None = None) -> dict:
     if not lock.acquire(blocking=False):
         raise RuntimeError("A 3D build is already running for this demo")
     state = _read(demo_id)
+    if not state.get("views_approved"):
+        lock.release()
+        raise ValueError("Review and approve the product views before starting the paid 3D build")
     model = model or state.get("selected_model") or config.RUNWARE_MODEL
     if model not in config.RUNWARE_MODELS:
         lock.release()
@@ -419,7 +574,7 @@ def _asset_summary(demo_id: str, state: dict, attempt: dict) -> dict:
     angles = [{**value, "url": _url(demo_id, value.get("path"))} for value in state.get("angles", {}).values()]
     return {"demo_id": demo_id, "attempt": attempt["number"], "model": attempt.get("model") or config.RUNWARE_MODEL, "glb": attempt["glb"],
             "glb_url": _url(demo_id, attempt["glb"]), "preview": attempt.get("preview"), "preview_url": _url(demo_id, attempt.get("preview")),
-            "primary_angle": attempt.get("primary_angle"), "source_mode": state.get("mode"), "real_count": attempt.get("real_count", 0),
+            "primary_angle": attempt.get("primary_angle"), "source_mode": attempt.get("source_mode") or state.get("mode"), "real_count": attempt.get("real_count", 0),
             "generated_count": attempt.get("generated_count", 0), "angles": angles, "size": attempt.get("size", 0),
             "cost_usd": attempt.get("cost_usd", 0), "created_at": time.time(), "source_demo": None}
 

@@ -13,11 +13,6 @@
 <h1>Architecture Flow — Demo Studio</h1>
 <h2>00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py)</h2>
 <pre class="mermaid">%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py)
----
-config:
-  flowchart:
-    curve: linear
----
 graph TD;
 	__start__([&lt;p&gt;__start__&lt;/p&gt;]):::first
 	router(router)
@@ -62,12 +57,14 @@ graph TD;
 <pre class="mermaid">%% 01 · Master flow — Demo Studio (Demo Visual → Sources → Align → Rehearse)
 flowchart TD
   LG[&quot;Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py&lt;br/&gt;see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints&quot;]:::data
-  V[&quot;USER optionally creates Demo Visual&lt;br/&gt;[ask · Studio › Demo Visual]&lt;br/&gt;five real views OR turntable video&quot;]:::ask
+  V[&quot;USER optionally creates Demo Visual&lt;br/&gt;[ask · Studio › Demo Visual]&lt;br/&gt;five product views OR turntable video OR ready GLB&quot;]:::ask
   VP{&quot;input mode?&lt;br/&gt;[FUNCTION · visual.py]&quot;}:::dec
   FIVE[&quot;validate exactly five required real views&lt;br/&gt;[FUNCTION]&quot;]:::fn
   FRAMES[&quot;extract video frames&lt;br/&gt;[LIBRARY · ffmpeg]&quot;]:::fn
-  ANGLES[&quot;select real angles; create only missing review views&lt;br/&gt;[AGENT · Gemini 3.6 Flash + cheapest image model]&lt;br/&gt;recording/uploaded images define identity; generated views never condition 3D&quot;]:::agent
-  RW[&quot;real views → async image-to-3D&lt;br/&gt;[LIBRARY · Runware]&lt;br/&gt;Rodin Gen-2 ≤5 (default) · Tripo v3.1 ≤4 · TRELLIS.2 =1&lt;br/&gt;poll progress · trace exact cost · output GLB&quot;]:::data
+  ANGLES[&quot;select real angles; create only missing review views&lt;br/&gt;[AGENT · Gemini 3.6 Flash + Nano Banana 2 Lite]&lt;br/&gt;recording/uploaded images define identity&quot;]:::agent
+  VIEWS{&quot;USER approves every source view?&lt;br/&gt;[ask · before paid 3D call]&lt;br/&gt;real identity view must be first&quot;}:::dec
+  RW[&quot;approved views → async image-to-3D&lt;br/&gt;[LIBRARY · Runware]&lt;br/&gt;Rodin Gen-2 ≤5 (default) · Tripo v3.1 ≤4 · TRELLIS.2 =1&lt;br/&gt;real views first; approved AI gap-fill may add geometry&lt;br/&gt;poll progress · trace exact cost · output GLB&quot;]:::data
+  GLB[&quot;validate uploaded GLB v2&lt;br/&gt;[FUNCTION · visual.add_glb]&lt;br/&gt;magic + declared length + aligned JSON chunk · ≤150 MB&lt;br/&gt;out: zero-cost review attempt&quot;]:::fn
   VG{&quot;USER approves?&lt;br/&gt;[ask · rotate + inspect]&quot;}:::dec
   ASSET[&quot;visual_asset + My Assets&lt;br/&gt;[DATA · local + S3/DynamoDB]&lt;br/&gt;hero for broad visible-product narration&quot;]:::data
   U[&quot;USER adds sources&lt;br/&gt;[ask · Studio › Sources]&lt;br/&gt;in: video, images, PDF/DOCX/TXT, product URL, pasted brand text&quot;]:::ask
@@ -89,12 +86,15 @@ flowchart TD
   LIB[&quot;Demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&quot;]:::data
 
   V --&gt; VP
-  VP -- &quot;five images&quot; --&gt; FIVE --&gt; RW
-  VP -- &quot;video&quot; --&gt; FRAMES --&gt; ANGLES --&gt; RW
+  VP -- &quot;five images&quot; --&gt; FIVE --&gt; VIEWS
+  VP -- &quot;video&quot; --&gt; FRAMES --&gt; ANGLES --&gt; VIEWS
+  VIEWS -- &quot;approve&quot; --&gt; RW
+  VIEWS -- &quot;feedback / replace&quot; --&gt; ANGLES
+  VP -- &quot;ready GLB&quot; --&gt; GLB --&gt; VG
   RW --&gt; VG
   VG -- &quot;approve&quot; --&gt; ASSET --&gt; U
   VG -- &quot;regenerate&quot; --&gt; RW
-  V -.-&gt; &quot;skip&quot; --&gt; U
+  V -.-&gt;|&quot;skip&quot;| U
   U --&gt; ING --&gt; READBTN --&gt; READ --&gt; SSE --&gt; OVER1 --&gt; CARDS
   CARDS --&gt; DOCK --&gt; ALIGN --&gt; CARDS
   CARDS --&gt; APPR
@@ -116,8 +116,8 @@ flowchart TD
   SRC[&quot;sources[]&lt;br/&gt;[DATA · demo.json]&quot;]:::data
   ISV{&quot;kind?&lt;br/&gt;[FUNCTION · understand.run]&quot;}:::dec
   UPV[&quot;gemini.upload_file&lt;br/&gt;[LIBRARY · Gemini Files API]&lt;br/&gt;in: mp4/mov · out: file uri (poll until ACTIVE, ≤600 s)&quot;]:::data
-  SHOTS[&quot;shot list&lt;br/&gt;[AGENT · gemini-2.5-flash]&lt;br/&gt;in: whole video + VIDEO_PROMPT&lt;br/&gt;out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)&quot;]:::agent
-  IMGS[&quot;image tags&lt;br/&gt;[AGENT · gemini-2.5-flash]&lt;br/&gt;in: batches of ≤12 images&lt;br/&gt;out: ImagesOut · description, angle, parts, quality&quot;]:::agent
+  SHOTS[&quot;shot list&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: whole video + VIDEO_PROMPT&lt;br/&gt;out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)&quot;]:::agent
+  IMGS[&quot;image tags&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: batches of ≤12 images&lt;br/&gt;out: ImagesOut · description, angle, parts, quality&quot;]:::agent
   IDS[&quot;assign ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;sh01.., im01.. + source_id&quot;]:::fn
   DOCS[&quot;sources.source_text&lt;br/&gt;[LIBRARY · pypdf / python-docx / httpx+bs4]&lt;br/&gt;in: pdf/docx/txt/url&lt;br/&gt;out: text with [page n] markers; PDFs also attached natively&quot;]:::data
   FACTS[&quot;fact registry + brand + product&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: all documents + product hint (+ previous registry + revision instruction)&lt;br/&gt;out: FactsOut · facts with source ref/locator/quote, unknowns, brand&quot;]:::agent
@@ -126,7 +126,7 @@ flowchart TD
   PLAN[&quot;demo plan (sales principles P01-P10 in prompt)&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: registry, shots, images, brand, URL, language (+ previous plan)&lt;br/&gt;out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if&quot;]:::agent
   PVAL[&quot;drop refs that don&#x27;t exist&lt;br/&gt;[FUNCTION · plan.run]&lt;br/&gt;fact_ids ⊆ registry · visual_refs ⊆ shots∪images&quot;]:::fn
   PJ[&quot;plan.json&lt;br/&gt;[DATA]&quot;]:::data
-  SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Gemini TTS (or gcloud/browser)]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
+  SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
   OPEN[&quot;opening message&lt;br/&gt;[AGENT · claude-opus-5 · text]&lt;br/&gt;in: card summary · out: 3-5 sentences (template fallback on error)&quot;]:::agent
   CONV[&quot;conversation.json&lt;br/&gt;[DATA] + SSE &#x27;message&#x27;&quot;]:::data
 
@@ -148,7 +148,7 @@ flowchart TD
 <h2>03 · Align loop — one prompt dock, one agent, structured actions</h2>
 <pre class="mermaid">%% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6[&quot;Since 2026-09-04: SIX cards — Visuals · Facts · Script (batches ≤ 20 s, mapped to seconds, picture per line) · FAQ bank · Persona · CTAs — each with a Preview pop-up; the script and the bank are written at Configure&quot;]:::data
+  N6[&quot;SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;compact card column + detailed Preview; Script shows Gemini full/partial/missing visual proof per line&quot;]:::data
   MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
   ATT[&quot;attachments → sources&lt;br/&gt;[FUNCTION · app.align_message]&lt;br/&gt;files saved as role=product before the agent sees them&quot;]:::fn
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
@@ -163,6 +163,8 @@ flowchart TD
   A5[&quot;revise(stage, instruction)&lt;br/&gt;[FUNCTION] lowest stage wins if several&quot;]:::fn
   A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 6 approved&quot;]:::fn
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
+  EDIT[&quot;USER edits fact or script directly&lt;br/&gt;[ask · edit modal]&quot;]:::ask
+  SAVEEDIT[&quot;validate grounding → rerun Gemini visual-proof audit&lt;br/&gt;[FUNCTION + AGENT · author.validate + Gemini 3.6 Flash]&lt;br/&gt;save edit; reset affected approvals; voice/bundle stale&quot;]:::fn
   REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
   R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
   R2[&quot;plan(instr) → voice sample&quot;]:::fn
@@ -192,6 +194,7 @@ flowchart TD
   A3 --&gt; REPLY
   A7 --&gt; REPLY
   ATT -.-&gt;|&quot;files but no revise action → revise(&#x27;understand&#x27;)&quot;| A5
+  N6 --&gt; EDIT --&gt; SAVEEDIT --&gt; N6
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
@@ -210,7 +213,11 @@ flowchart TD
   ISS{&quot;issues &gt; 0?&quot;}:::dec
   FIX[&quot;one repair pass&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;in: draft + issue list · out: full script&quot;]:::agent
   VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining offenders stay unverified → excluded from voice &amp; bundle, listed on Facts card&quot;]:::fn
-  SJ[&quot;script.json&lt;br/&gt;[DATA] ids seg-L1.., version++&quot;]:::data
+  IDS[&quot;assign stable line ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;out: seg-L1.. plus closing ids&quot;]:::fn
+  VAUD[&quot;visual-proof audit&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: real uploaded pixels in batches ≤12 + every scripted line&lt;br/&gt;out: every image&#x27;s visible features/limits + every line full/partial/none/not_visual&quot;]:::agent
+  VGATE[&quot;accept audit only when complete&lt;br/&gt;[FUNCTION · visuals.py]&lt;br/&gt;all line ids + all image refs required; full coverage may bind image&lt;br/&gt;partial/missing visible feature → no image → 3D placeholder/card&lt;br/&gt;Gemini failure → conservative tag rules&quot;]:::fn
+  AUDIT[&quot;visual-audit.json&lt;br/&gt;[DATA]&lt;br/&gt;line reasons, image feature inventory, missing features, changes&quot;]:::data
+  SJ[&quot;script.json&lt;br/&gt;[DATA] visual refs + audit summary · version++&quot;]:::data
   PROV{&quot;tts provider chain?&lt;br/&gt;[FUNCTION · voice.provider_chain]&lt;br/&gt;sarvam → gemini → gcloud → browser (no key)&quot;}:::dec
   TTS[&quot;render every line (main language)&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3&lt;br/&gt;VOICE_WORKERS=4 parallel (contextvars copied per task) · stop after 4 failures · circuit breaker: 401/402/403/quota trips a provider for 10 min → next in chain · failures traced&quot;]:::data
   BROWSER[&quot;voice_provider=browser&lt;br/&gt;[term] player speaks with Web Speech&quot;]:::term
@@ -225,8 +232,9 @@ flowchart TD
   READY[&quot;status ready · SSE phase_done build · stage seconds recorded for Observability&lt;br/&gt;[term]&quot;]:::term
 
   GO --&gt; AUTH --&gt; VAL --&gt; ISS
-  ISS -- &quot;yes&quot; --&gt; FIX --&gt; VAL2 --&gt; SJ
-  ISS -- &quot;no&quot; --&gt; SJ
+  ISS -- &quot;yes&quot; --&gt; FIX --&gt; VAL2 --&gt; IDS
+  ISS -- &quot;no&quot; --&gt; IDS
+  IDS --&gt; VAUD --&gt; VGATE --&gt; AUDIT --&gt; SJ
   SJ --&gt; PROV
   PROV -- &quot;sarvam / gemini / gcloud&quot; --&gt; TTS --&gt; LANGS
   PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; QGEN
@@ -247,11 +255,12 @@ flowchart TD
   START[&quot;USER clicks Start&lt;br/&gt;[ask]&quot;]:::ask
   PRELOAD[&quot;preload all authored speech + opening film&lt;br/&gt;[FUNCTION · retained Audio/Video objects]&lt;br/&gt;intake, narration, deeper lines, check-ins, FAQ, fillers and closing&quot;]:::fn
   HERO[&quot;approved visual_asset starts centre stage&lt;br/&gt;[LIBRARY · model-viewer]&lt;br/&gt;recording/uploaded images define colour, trim and feature identity&quot;]:::data
-  Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;what are you buying it for, or shall we start?&#x27; (P02 open question)&quot;]:::data
+  MP4[&quot;USER clicks MP4 download&lt;br/&gt;[ask · player header]&quot;]:::ask
+  EXPORT[&quot;linear export&lt;br/&gt;[FUNCTION + LIBRARY · exporter.py + ffmpeg]&lt;br/&gt;in: bundle timeline, visuals, narration, opening film&lt;br/&gt;out: cached exports/demo-vN.mp4&quot;]:::fn
+  Q1[&quot;speak the ONE intake question&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;greeting + product + &#x27;what are you buying it for, or shall we start?&#x27; (P02)&quot;]:::data
   L1[&quot;listen ≤10 s&lt;br/&gt;[LIBRARY · Web Speech recognition]&lt;br/&gt;mic denied or silent → typed fallback input&quot;]:::data
   P1[&quot;parse name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
-  Q2[&quot;speak one focus question → listen ≤10 s&lt;br/&gt;[LIBRARY · pre-recorded audio + Sarvam/browser STT]&lt;br/&gt;early typed replies queue safely; &#x27;just start&#x27; skips it&quot;]:::data
-  FILM[&quot;tailored acknowledgement → opening film with audio → spoken return&lt;br/&gt;[FUNCTION · playIntroFilm]&lt;br/&gt;refined planner runs under recorded cover; film capped at 45 s; customer may skip&quot;]:::fn
+  FILM[&quot;polite acknowledgement → opening film with audio → spoken return&lt;br/&gt;[FUNCTION · playIntroFilm]&lt;br/&gt;planner runs under recorded cover; film capped at 45 s; customer may skip&quot;]:::fn
   OPEN[&quot;STANDARD OPENING · unchanged, 1-2 min&lt;br/&gt;[FUNCTION · playOpening]&lt;br/&gt;intro (frame) + outcome (end state first) · pre-rendered audio&quot;]:::fn
   PITCH[&quot;pitch plan (starts before the film)&lt;br/&gt;[AGENT · claude-opus-5 · POST /run/pitch refine=true]&lt;br/&gt;in: needs + focus, proof library, USPs, registry&lt;br/&gt;out: customer state, decision frame, route, custom batches, advance&quot;]:::agent
   PV[&quot;grounding + visual validators&lt;br/&gt;[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]&lt;br/&gt;segment ids exist · uncited claim dropped · multi-fact batch→card · establish last&quot;]:::fn
@@ -263,24 +272,27 @@ flowchart TD
   STAGE{&quot;what can prove this line?&lt;br/&gt;[FUNCTION · display_mode]&quot;}:::dec
   MODEL[&quot;3D model + relevant held camera&lt;br/&gt;visible exterior / broad performance only&quot;]:::data
   EVID[&quot;literal uploaded image or video shot&lt;br/&gt;full-stage; never rotate to a sibling&quot;]:::data
-  CARD[&quot;cited fact / roadmap card&lt;br/&gt;abstract, written or multi-claim language&quot;]:::data
+  CARD[&quot;keyword card over 3D placeholder&lt;br/&gt;[FUNCTION]&lt;br/&gt;≤3 short claim/value rows; no locator/caveat prose&lt;br/&gt;abstract, written, multi-claim or missing exact image&quot;]:::data
   CHK[&quot;check-in question&lt;br/&gt;[LIBRARY · audio] then chips&quot;]:::data
   WAIT[&quot;waitFor 15 s countdown + auto-listen 8 s&lt;br/&gt;[FUNCTION · interpretReply — regex, NO LLM]&lt;br/&gt;yes/continue · deeper · question · timeout&quot;]:::fn
   DEEP[&quot;deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]&quot;]:::fn
   QIN[&quot;question text&lt;br/&gt;[ask · voice or 💬 typed]&quot;]:::ask
   QA[&quot;POST /api/demos/id/run/qa&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: question, last 8 turns, profile, registry, visuals, CTAs&lt;br/&gt;out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered&quot;]:::agent
   QV{&quot;valid?&lt;br/&gt;[FUNCTION · qa.answer]&lt;br/&gt;fact_ids ⊆ registry AND (answered OR no number/claim words)&quot;}:::dec
-  SPEAK[&quot;speak answer · seek to visual · card &#x27;Sources for that answer&#x27;&lt;br/&gt;[FUNCTION]&quot;]:::fn
-  NOG[&quot;&#x27;I&#x27;m not sure from the material — I won&#x27;t guess; a salesperson can call you&#x27;&lt;br/&gt;[FUNCTION] question → understanding.unknowns (origin runtime) · offer_callback=true&quot;]:::term
+  SPEAK[&quot;speak answer · seek to literal visual or compact key-points card&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  NOG[&quot;say &#x27;I don&#x27;t know from the material&#x27; without a source card&lt;br/&gt;[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form&quot;]:::term
   LEAD{&quot;customer says call me / gives a number?&lt;br/&gt;[FUNCTION · offerCallback, regex [6-9]\\d{9}]&quot;}:::dec
   SAVE[&quot;POST /run/lead → leads/*.json&lt;br/&gt;[DATA] read back the number · continue&quot;]:::data
   CONF[&quot;&#x27;Did that answer it?&#x27; → chips yes / not quite (20 s)&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  LP{&quot;lead prompt due?&lt;br/&gt;[FUNCTION]&lt;br/&gt;≥60 percent of demo OR ≥2 customer questions OR unknown answer&quot;}:::dec
+  POP[&quot;test-drive / dealer-help form&lt;br/&gt;[ask]&lt;br/&gt;name + ten-digit phone; dismissible; demo continues&quot;]:::ask
   RES[&quot;resume: next segment if at check-in, else same line&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
   CLOSE[&quot;advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
   HAND[&quot;handoff summary&lt;br/&gt;[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json&quot;]:::data
 
-  START --&gt; PRELOAD --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; Q2 --&gt; FILM --&gt; OPEN
-  Q2 -.-&gt;|&quot;starts before film&quot;| PITCH --&gt; PV
+  START --&gt; PRELOAD --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; FILM --&gt; OPEN
+  HERO -.-&gt; MP4 --&gt; EXPORT
+  P1 -.-&gt;|&quot;starts before film&quot;| PITCH --&gt; PV
   OPEN --&gt; DF --&gt; CUSTOM --&gt; PLAN
   PV --&gt; DF
   PITCH -.-&gt;|&quot;timeout / error&quot;| FALL --&gt; PLAN
@@ -292,10 +304,13 @@ flowchart TD
   WAIT -- &quot;continue / timeout&quot; --&gt; LINE
   WAIT -- &quot;deeper&quot; --&gt; DEEP --&gt; WAIT
   WAIT -- &quot;question&quot; --&gt; QIN --&gt; QA --&gt; QV
-  QV -- &quot;yes&quot; --&gt; SPEAK --&gt; CONF --&gt; RES --&gt; LINE
-  QV -- &quot;no&quot; --&gt; NOG --&gt; LEAD
+  QV -- &quot;yes&quot; --&gt; SPEAK --&gt; CONF --&gt; LP
+  QV -- &quot;no&quot; --&gt; NOG --&gt; POP
+  LP -- &quot;yes&quot; --&gt; POP --&gt; RES
+  LP -- &quot;no&quot; --&gt; RES
   LEAD -- &quot;yes&quot; --&gt; SAVE --&gt; RES
   LEAD -- &quot;no / continue&quot; --&gt; RES
+  QIN -.-&gt;|&quot;explicit call request / phone&quot;| LEAD
   SPEAK -.-&gt;|&quot;clarifying_question (P03)&quot;| QIN
   LINE -- &quot;last segment&quot; --&gt; CLOSE --&gt; HAND
   QIN -.-&gt;|&quot;interrupt at any moment cancels speech (run token)&quot;| LINE

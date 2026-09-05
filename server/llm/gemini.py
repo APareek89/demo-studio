@@ -177,7 +177,17 @@ def generate_image(parts: list, prompt: str, *, model: str | None = None) -> tup
     t = _types()
     t0 = _time.time()
     try:
-        resp = _retry(lambda: client().models.generate_content(model=model, contents=[*parts, prompt], config=t.GenerateContentConfig(response_modalities=["IMAGE"])), tries=2, waits=(5,))
+        # Nano Banana 2 Lite supports minimal/high thinking. Minimal is explicit here:
+        # this path fills a missing product angle and should optimize for latency/cost,
+        # while the human review gate protects fidelity before the Runware spend.
+        resp = _retry(lambda: client().models.generate_content(
+            model=model,
+            contents=[*parts, prompt],
+            config=t.GenerateContentConfig(
+                response_modalities=["IMAGE"],
+                thinking_config=t.ThinkingConfig(thinking_level=t.ThinkingLevel.MINIMAL),
+            ),
+        ), tries=2, waits=(5,))
     except Exception as e:
         usage.trace("gemini-image", model, latency_ms=(_time.time() - t0) * 1000, user=prompt, error=str(e)[:400])
         raise

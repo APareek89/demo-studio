@@ -29,7 +29,7 @@ Hard rules:
    2-5 word on-screen label. When the subject changes, the picture changes.
 4. THE FLOW AND ITS BUDGETS (hard limits, validator-checked; one segment = one ≤20-second batch):
    - intake_q1 = the greeting + ONE context choice from the plan, polished: warm, names brand and product, easy to decline.
-     intake_q2 = the gentler fallback ("anything specific you'd like me to focus on, or shall we get going?").
+     This is the only intake question. Return intake_q2 as an empty string for schema compatibility.
    - intro (1-2 segments, ≤ 38 words each): the quick overview — who it's for, the experience, the promise. NO greeting,
      no self-introduction (already done in intake), no spec list, no decision frame.
    - outcome (≤ 38 words): the three things to remember — the plan's three USPs, plainly, offering the customer the order.
@@ -236,6 +236,7 @@ IMAGES:
     except Exception as e:
         raise RuntimeError(f"Script writing failed: {claude.describe_error(e)}") from e
     script = out.model_dump()
+    script["intake_q2"] = ""
     issues = validate(script, und, audience)
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
@@ -244,6 +245,7 @@ IMAGES:
         try:
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)
             script = out2.model_dump()
+            script["intake_q2"] = ""
             issues = validate(script, und, audience)
         except Exception:
             pass

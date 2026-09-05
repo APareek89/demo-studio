@@ -1,6 +1,6 @@
 %% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6["Since 2026-09-04: SIX cards — Visuals · Facts · Script (batches ≤ 20 s, mapped to seconds, picture per line) · FAQ bank · Persona · CTAs — each with a Preview pop-up; the script and the bank are written at Configure"]:::data
+  N6["SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs<br/>[DATA]<br/>compact card column + detailed Preview; Script shows Gemini full/partial/missing visual proof per line"]:::data
   MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
   ATT["attachments → sources<br/>[FUNCTION · app.align_message]<br/>files saved as role=product before the agent sees them"]:::fn
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec
@@ -15,6 +15,8 @@ flowchart TD
   A5["revise(stage, instruction)<br/>[FUNCTION] lowest stage wins if several"]:::fn
   A6["build<br/>[FUNCTION] only if all 6 approved"]:::fn
   A7["answer<br/>[term] nothing changes"]:::term
+  EDIT["USER edits fact or script directly<br/>[ask · edit modal]"]:::ask
+  SAVEEDIT["validate grounding → rerun Gemini visual-proof audit<br/>[FUNCTION + AGENT · author.validate + Gemini 3.6 Flash]<br/>save edit; reset affected approvals; voice/bundle stale"]:::fn
   REV{"which stage?<br/>[FUNCTION · _revise thread]"}:::dec
   R1["understand(instr) → plan<br/>approvals visuals+facts reset"]:::fn
   R2["plan(instr) → voice sample"]:::fn
@@ -44,6 +46,7 @@ flowchart TD
   A3 --> REPLY
   A7 --> REPLY
   ATT -.->|"files but no revise action → revise('understand')"| A5
+  N6 --> EDIT --> SAVEEDIT --> N6
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

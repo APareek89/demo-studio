@@ -6,6 +6,24 @@
 
 <!-- Newest first. -->
 
+### 2026-09-05 — Image tags were not strong enough to prove script-to-screen alignment
+
+**Symptom:** The existing post-author picture matcher could explain why “gearbox” mapped to a gear image, but its final Haiku pass only saw Gemini's earlier text tags, not the uploaded pixels. Multi-feature lines could therefore look related while still leaving one spoken feature invisible. Runtime fact cards also repeated long source/caveat prose and could overlap the topic badge.
+**Why 1:** Source understanding and final visual proof were treated as the same decision even though the script did not exist during initial image tagging.
+**Why 2:** The assignment schema recorded only a visual id and reason, not the spoken features, visible features, missing features or coverage level.
+**Why 3:** The player card was designed as a miniature citation panel instead of a glanceable visual aid.
+**Deepest why type:** `design`
+**Action taken:** Upgraded the existing post-author checkpoint: Gemini 3.6 Flash now inspects the real uploaded images in batches of twelve against every stable script line, returns a detailed audit for every image and line, and is accepted only when both sets are complete and internally consistent. Deterministic code binds an image only on `full` coverage; partial, missing and non-visual decisions all fall back to the neutral 3D/card stage, even when an older draft carried a picture. The audit is saved in `visual-audit.json` and shown in Align. Runtime cards now contain at most three short keyword/value rows, with no source locator or caveat prose, and the topic badge hides while a card is visible. Live CRETA audit: 13 images, 60 lines, 29 corrected assignments, 18 uncovered feature lines.
+**Preventive action:** A ready demo must expose per-image visible features and per-line full/partial/missing coverage after the script exists. Tag-only matching is a fallback, never the success criterion.
+
+### 2026-09-05 — A supplied 3D asset still needs the product-truth approval gate
+
+**Symptom:** Users with an existing GLB had to rebuild it through Runware even though the player already consumes GLB files.
+**Why 1:** Demo Visual modelled only image/video inputs, not the reusable asset contract at the gate boundary.
+**Deepest why type:** `design`
+**Action taken:** Added direct `.glb` upload with a 150 MB limit and binary glTF v2 header/chunk validation. It creates a zero-cost versioned review attempt, opens in the same rotatable viewer, and only enters the demo bundle/My Assets after explicit approval.
+**Preventive action:** Bypassing generation must never bypass structural validation, review, approval, version history or observability.
+
 ### 2026-09-05 — A good 3D asset still fails when the spoken claim and stage use different evidence
 
 **Symptom:** The 3D vehicle remained dominant while Ravi discussed hidden safety/cabin features, exact images were relegated to thumbnails, and one personalised safety sentence combined airbags, brakes and hill assist while showing only the airbag frame. A transition about the demo roadmap also inherited stale safety/warranty evidence and citations.

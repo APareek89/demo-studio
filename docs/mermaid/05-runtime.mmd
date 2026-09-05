@@ -3,11 +3,12 @@ flowchart TD
   START["USER clicks Start<br/>[ask]"]:::ask
   PRELOAD["preload all authored speech + opening film<br/>[FUNCTION · retained Audio/Video objects]<br/>intake, narration, deeper lines, check-ins, FAQ, fillers and closing"]:::fn
   HERO["approved visual_asset starts centre stage<br/>[LIBRARY · model-viewer]<br/>recording/uploaded images define colour, trim and feature identity"]:::data
-  Q1["speak intake q1<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>'what are you buying it for, or shall we start?' (P02 open question)"]:::data
+  MP4["USER clicks MP4 download<br/>[ask · player header]"]:::ask
+  EXPORT["linear export<br/>[FUNCTION + LIBRARY · exporter.py + ffmpeg]<br/>in: bundle timeline, visuals, narration, opening film<br/>out: cached exports/demo-vN.mp4"]:::fn
+  Q1["speak the ONE intake question<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>greeting + product + 'what are you buying it for, or shall we start?' (P02)"]:::data
   L1["listen ≤10 s<br/>[LIBRARY · Web Speech recognition]<br/>mic denied or silent → typed fallback input"]:::data
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
-  Q2["speak one focus question → listen ≤10 s<br/>[LIBRARY · pre-recorded audio + Sarvam/browser STT]<br/>early typed replies queue safely; 'just start' skips it"]:::data
-  FILM["tailored acknowledgement → opening film with audio → spoken return<br/>[FUNCTION · playIntroFilm]<br/>refined planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
+  FILM["polite acknowledgement → opening film with audio → spoken return<br/>[FUNCTION · playIntroFilm]<br/>planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
   OPEN["STANDARD OPENING · unchanged, 1-2 min<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
   PITCH["pitch plan (starts before the film)<br/>[AGENT · claude-opus-5 · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
   PV["grounding + visual validators<br/>[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]<br/>segment ids exist · uncited claim dropped · multi-fact batch→card · establish last"]:::fn
@@ -19,24 +20,27 @@ flowchart TD
   STAGE{"what can prove this line?<br/>[FUNCTION · display_mode]"}:::dec
   MODEL["3D model + relevant held camera<br/>visible exterior / broad performance only"]:::data
   EVID["literal uploaded image or video shot<br/>full-stage; never rotate to a sibling"]:::data
-  CARD["cited fact / roadmap card<br/>abstract, written or multi-claim language"]:::data
+  CARD["keyword card over 3D placeholder<br/>[FUNCTION]<br/>≤3 short claim/value rows; no locator/caveat prose<br/>abstract, written, multi-claim or missing exact image"]:::data
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]"]:::ask
   QA["POST /api/demos/id/run/qa<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: question, last 8 turns, profile, registry, visuals, CTAs<br/>out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
-  SPEAK["speak answer · seek to visual · card 'Sources for that answer'<br/>[FUNCTION]"]:::fn
-  NOG["'I'm not sure from the material — I won't guess; a salesperson can call you'<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · offer_callback=true"]:::term
+  SPEAK["speak answer · seek to literal visual or compact key-points card<br/>[FUNCTION]"]:::fn
+  NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form"]:::term
   LEAD{"customer says call me / gives a number?<br/>[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
   SAVE["POST /run/lead → leads/*.json<br/>[DATA] read back the number · continue"]:::data
   CONF["'Did that answer it?' → chips yes / not quite (20 s)<br/>[FUNCTION]"]:::fn
+  LP{"lead prompt due?<br/>[FUNCTION]<br/>≥60 percent of demo OR ≥2 customer questions OR unknown answer"}:::dec
+  POP["test-drive / dealer-help form<br/>[ask]<br/>name + ten-digit phone; dismissible; demo continues"]:::ask
   RES["resume: next segment if at check-in, else same line<br/>[FUNCTION · resumeAfterQA]"]:::fn
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
   HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
 
-  START --> PRELOAD --> HERO --> Q1 --> L1 --> P1 --> Q2 --> FILM --> OPEN
-  Q2 -.->|"starts before film"| PITCH --> PV
+  START --> PRELOAD --> HERO --> Q1 --> L1 --> P1 --> FILM --> OPEN
+  HERO -.-> MP4 --> EXPORT
+  P1 -.->|"starts before film"| PITCH --> PV
   OPEN --> DF --> CUSTOM --> PLAN
   PV --> DF
   PITCH -.->|"timeout / error"| FALL --> PLAN
@@ -48,10 +52,13 @@ flowchart TD
   WAIT -- "continue / timeout" --> LINE
   WAIT -- "deeper" --> DEEP --> WAIT
   WAIT -- "question" --> QIN --> QA --> QV
-  QV -- "yes" --> SPEAK --> CONF --> RES --> LINE
-  QV -- "no" --> NOG --> LEAD
+  QV -- "yes" --> SPEAK --> CONF --> LP
+  QV -- "no" --> NOG --> POP
+  LP -- "yes" --> POP --> RES
+  LP -- "no" --> RES
   LEAD -- "yes" --> SAVE --> RES
   LEAD -- "no / continue" --> RES
+  QIN -.->|"explicit call request / phone"| LEAD
   SPEAK -.->|"clarifying_question (P03)"| QIN
   LINE -- "last segment" --> CLOSE --> HAND
   QIN -.->|"interrupt at any moment cancels speech (run token)"| LINE

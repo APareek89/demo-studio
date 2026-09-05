@@ -46,15 +46,24 @@ if demo_bundle.exists():
     check("ready demo exercises all three stage modes", {mode for _, mode, _ in modes} == {"model", "evidence", "card"}, str(sorted({mode for _, mode, _ in modes})))
 
 player = (ROOT / "web" / "player" / "player.js").read_text()
+align_ui = (ROOT / "web" / "studio" / "align.js").read_text()
+visuals_source = (ROOT / "server" / "agents" / "visuals.py").read_text()
 pitch = (ROOT / "server" / "agents" / "pitch.py").read_text()
 styles = (ROOT / "web" / "styles.css").read_text()
 check("player never rotates repeated evidence to another image", "nextImageUrl" not in player)
 check("player has mutually exclusive evidence and card stages", "evidence-on" in player and "card-on" in player and ".pl-card.dominant" in styles)
-check("missing literal evidence falls back to a card, never 3D", 'mode = "card"' in player and "mode = showVisual" in player)
+check("missing literal evidence uses a card over the 3D placeholder", 'mode = "card"' in player and "mode = showVisual" in player and 'mode === "card" && !asset' in player)
 check("personalised roadmap gets its own card before speech", 'present(null, plan.decision_frame, "statement")' in player)
 check("typed intake replies queue instead of triggering Q&A", "pendingIntakeAnswer" in player and "if (S.intakeOpen)" in player)
 check("multi-claim runtime proof uses a cited card", 'len(set(b.get("fact_ids") or [])) > 1' in pitch and '"card"' in pitch)
 check("runtime bridges carry their own citations and stage decision", "bridge_fact_ids" in player and 'display_mode: ""' in player)
+check("typed confirmations resolve the active wait instead of starting Q&A", "if (S.waiter)" in player and "S.waitChips" in player)
+check("runtime asks only one intake question", "const q2 = bundle.intake?.q2" not in player and "refine: true" in player)
+check("unknown answers show the model and open lead capture without a source card", 'showLeadPrompt("unknown"' in player and 'showCard("none")' in player)
+check("runtime fact cards are keyword-sized and omit source locators", "function compactRow" in player and 'title = "Key points"' in player and 'title = "Sources for that answer"' not in player)
+check("post-script audit inspects real images with Gemini", "_vision_batches" in visuals_source and "gemini.structured" in visuals_source and 'store.write_json(demo_id, "visual-audit.json"' in visuals_source)
+check("alignment preview exposes feature coverage and gaps", "Gemini confirms:" in align_ui and '"visual check"' in align_ui and "missing_features" in align_ui)
+check("lead capture triggers at two questions or sixty percent", "S.questions.length >= 2 || progress >= 0.6" in player)
 
 failed = [item for item in results if not item[1]]
 for name, ok, detail in results:

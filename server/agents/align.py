@@ -71,14 +71,18 @@ def cards(demo_id: str) -> dict:
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
     script = store.read_json(demo_id, "script.json") or {}
+    visual_audit = store.read_json(demo_id, "visual-audit.json") or {}
     reh = store.read_json(demo_id, "rehearsal.json") or {}
     src_by_id = {s["id"]: s for s in demo["sources"]}
+    audit_images = {x.get("visual"): x for x in visual_audit.get("images", [])}
+    audit_lines = {x.get("line_id"): x for x in visual_audit.get("lines", [])}
     shots = [{**s, "url": media_url(demo_id, src_by_id.get(s["source_id"], {}).get("path"))} for s in und.get("shots", [])]
-    images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "original_url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "enhanced": src_by_id.get(i["source_id"], {}).get("enhanced")} for i in und.get("images", [])]
+    images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "original_url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "enhanced": src_by_id.get(i["source_id"], {}).get("enhanced"), "audit": audit_images.get(i["id"])} for i in und.get("images", [])]
     voice = plan.get("voice", {})
     return {
         "product": und.get("product", {"name": demo["name"]}),
         "visuals": {"shots": shots, "images": images, "gaps": plan.get("visual_gaps", []), "video_summaries": und.get("video_summaries", {}),
+                    "audit": {"method": visual_audit.get("method"), "model": visual_audit.get("model"), "line_count": len(visual_audit.get("lines", [])), "image_count": len(visual_audit.get("images", [])), "missing_line_count": sum(1 for x in visual_audit.get("lines", []) if x.get("missing_features"))},
                     "segments": [{"id": s["id"], "title": s["title"], "visual_refs": s["visual_refs"]} for s in plan.get("segments", [])]},
         "facts": {"facts": und.get("facts", []), "unknowns": [({**u, "category": classify(u["question"])[0], "suggested_document": classify(u["question"])[1]} if not u.get("category") or u.get("category") == "other" and not u.get("suggested_document") else u) for u in und.get("unknowns", [])], "sources": demo["sources"],
                   "gaps": reh.get("gaps", []), "script_issues": script.get("issues", [])},
@@ -90,10 +94,10 @@ def cards(demo_id: str) -> dict:
             "written_at": (store.path(demo_id, "script.json").stat().st_mtime if store.path(demo_id, "script.json").exists() else None), "version": demo.get("version", 0),
             "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")},
             "segments": [{"id": s["id"], "title": s["title"], "role": s.get("role", "proof"), "topic": s.get("topic", ""), "outcome": s.get("outcome", ""), "usp_ids": s.get("usp_ids", []), "start": s.get("start"), "duration": s.get("duration"), "checkin": s.get("checkin", ""),
-                          "lines": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "visual": (l.get("visual") or {}).get("ref"), "visual_url": _vis_url(demo_id, und, src_by_id, (l.get("visual") or {}).get("ref")), "card": l.get("card", "none"), "start": l.get("start"), "duration": l.get("duration"), "unverified": bool(l.get("unverified"))} for l in s.get("lines", [])],
+                          "lines": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "visual": (l.get("visual") or {}).get("ref"), "visual_url": _vis_url(demo_id, und, src_by_id, (l.get("visual") or {}).get("ref")), "card": l.get("card", "none"), "start": l.get("start"), "duration": l.get("duration"), "unverified": bool(l.get("unverified")), "visual_audit": audit_lines.get(l["id"])} for l in s.get("lines", [])],
                           "deeper": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", [])} for l in s.get("deeper", [])]} for s in script.get("segments", [])],
-            "closing": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "start": l.get("start"), "duration": l.get("duration")} for l in script.get("closing", [])],
-            "issues": script.get("issues", []), "visual_changes": (_last_visuals(demo_id) or {}).get("changes", [])},
+            "closing": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "visual": (l.get("visual") or {}).get("ref"), "visual_url": _vis_url(demo_id, und, src_by_id, (l.get("visual") or {}).get("ref")), "visual_audit": audit_lines.get(l["id"]), "start": l.get("start"), "duration": l.get("duration")} for l in script.get("closing", [])],
+            "issues": script.get("issues", []), "visual_audit": script.get("visual_audit", {}), "visual_changes": visual_audit.get("changes", (_last_visuals(demo_id) or {}).get("changes", []))},
         "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "answered": (store.read_json(demo_id, "faq.json") or {}).get("answered", 0), "total": (store.read_json(demo_id, "faq.json") or {}).get("total", 0)},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),
@@ -115,6 +119,7 @@ def _cards_text(c: dict) -> str:
     lines = [
         f"PRODUCT: {json.dumps(c['product'])}",
         f"VISUALS: {len(v['shots'])} shots, {len(v['images'])} images. Gaps: {json.dumps(v['gaps'])}",
+        f"VISUAL PROOF AUDIT: {json.dumps(v.get('audit', {}))}",
         "  shots: " + "; ".join(f"{s['id']} {s['start']:.0f}-{s['end']:.0f}s q{s['quality']} {s['part']}: {s['description'][:60]}" for s in v["shots"][:40]),
         "  images: " + "; ".join(f"{i['id']} q{i['quality']} {i['angle']}: {i['description'][:60]}" for i in v["images"][:30]),
         f"FACTS ({len(f['facts'])}): " + "; ".join(f"{x['id']} [{x['kind']}] {x['claim']}: {x['value']}" for x in f["facts"][:120]),

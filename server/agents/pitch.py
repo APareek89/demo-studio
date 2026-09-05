@@ -82,6 +82,10 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     except Exception as e:
         raise RuntimeError(claude.describe_error(e)) from e
     p = out.model_dump()
+    # The live demo asks exactly one intake question. Refine calls must not create
+    # or voice a second runtime question, even if a model returns one anyway.
+    if refine:
+        p["follow_up_question"] = ""
     if re.search(r"\b(can't|cannot|can’t|don't know|do not know|honestly can't|honestly cannot)\b", p.get("decision_frame", ""), re.I):
         first = re.split(r"(?<=[.!?])\s+", p["decision_frame"].strip(), maxsplit=1)[0]
         p["decision_frame"] = first + " I'll start with what matters most, then cover the everyday fit, what's standard, and what's in writing."
@@ -155,7 +159,5 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     if p.get("advance_cta") not in ctas:
         prim = next((c for c in ctas.values() if c.get("primary")), next(iter(ctas.values()), None))
         p["advance_cta"] = prim["id"] if prim else ""
-    if refine:
-        p["follow_up_question"] = ""
     store.log(demo_id, "pitch", {"state": p["customer_state"], "route": [r["segment_id"] for r in p["route"]], "profile": profile})
     return p

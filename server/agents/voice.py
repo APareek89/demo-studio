@@ -250,8 +250,8 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
             todo.append((seg, "checkin_audio"))
     for ln in script.get("closing", []):
         todo.append((ln, "audio"))
-    intake = {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")}
-    total = len(todo) + 2
+    intake = {"q1": script.get("intake_q1", "")}
+    total = len(todo) + 1
     done, failures = 0, 0
     emit(f"Recording narration with {provider}" + (f" in {lang}" if lang else "") + (f" (fallbacks: {', '.join(chain[1:])})" if len(chain) > 1 else "") + f" — {total} lines…")
     # Lines render in parallel (VOICE_WORKERS, default 4); contextvars are copied per task so usage/trace rows keep the demo id.

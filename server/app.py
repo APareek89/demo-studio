@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import time
 from pathlib import Path
 
@@ -10,8 +11,8 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import cloud, config, events, graph, orchestrator, store, usage, runlog, visual
-from .agents import align, faq, pitch, qa, rehearsal, voice
+from . import cloud, config, events, exporter, graph, orchestrator, store, usage, runlog, visual
+from .agents import align, author, faq, pitch, qa, rehearsal, visuals, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -115,6 +116,17 @@ def get_demo(demo_id: str):
             "sessions": _sessions(demo_id), "leads": _leads(demo_id), "visual": visual.public_state(demo_id)}
 
 
+@app.get("/api/demos/{demo_id}/export.mp4")
+def export_demo_mp4(demo_id: str):
+    demo = _demo_or_404(demo_id)
+    try:
+        path = exporter.render(demo_id)
+    except RuntimeError as exc:
+        raise HTTPException(409, str(exc))
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "-", demo.get("name") or demo_id).strip("-")
+    return FileResponse(path, media_type="video/mp4", filename=(safe or demo_id) + ".mp4")
+
+
 # ---------- optional Demo Visual ----------
 
 @app.get("/api/demos/{demo_id}/visual")
@@ -147,6 +159,15 @@ async def add_visual_video(demo_id: str, file: UploadFile = File(...)):
         raise HTTPException(400, str(e))
 
 
+@app.post("/api/demos/{demo_id}/visual/upload")
+async def upload_visual_asset(demo_id: str, file: UploadFile = File(...)):
+    _demo_or_404(demo_id)
+    try:
+        return visual.add_glb(demo_id, file.filename or "model.glb", await file.read())
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
 @app.post("/api/demos/{demo_id}/visual/mode")
 async def set_visual_mode(demo_id: str, req: Request):
     _demo_or_404(demo_id)
@@ -169,6 +190,30 @@ async def generate_visual(demo_id: str, req: Request):
         raise HTTPException(400, str(e))
     except RuntimeError as e:
         raise HTTPException(409, str(e))
+
+
+@app.post("/api/demos/{demo_id}/visual/views/prepare")
+async def prepare_visual_views(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    try:
+        try:
+            body = await req.json()
+        except Exception:
+            body = {}
+        return visual.prepare_views(demo_id, (body.get("feedback") or "").strip())
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+
+
+@app.post("/api/demos/{demo_id}/visual/views/approve")
+def approve_visual_views(demo_id: str):
+    _demo_or_404(demo_id)
+    try:
+        return visual.approve_views(demo_id)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
 
 
 @app.post("/api/demos/{demo_id}/visual/approve")
@@ -478,6 +523,76 @@ def unapprove(demo_id: str, card: str):
     out = store.update(demo_id, lambda d: d["approvals"].__setitem__(card, False))["approvals"]
     cloud.sync_demo_async(demo_id)
     return out
+
+
+@app.patch("/api/demos/{demo_id}/align/facts/{fact_id}")
+async def edit_aligned_fact(demo_id: str, fact_id: str, req: Request):
+    """Direct, human-authored correction. Downstream script/FAQ must be reviewed again."""
+    _demo_or_404(demo_id)
+    body = await req.json()
+    value = (body.get("value") or "").strip()
+    claim = (body.get("claim") or "").strip()
+    if not value:
+        raise HTTPException(400, "A fact value is required")
+    und = store.read_json(demo_id, "understanding.json") or {}
+    fact = next((f for f in und.get("facts", []) if f.get("id") == fact_id), None)
+    if not fact:
+        raise HTTPException(404, "fact not found")
+    fact["value"] = value[:1000]
+    if claim:
+        fact["claim"] = claim[:500]
+    if "conditions" in body:
+        fact["conditions"] = (body.get("conditions") or "").strip()[:1000]
+    fact["edited"] = True
+    fact["source"] = {**fact.get("source", {}), "locator": (fact.get("source", {}).get("locator", "") + " · edited by user").strip(" ·")}
+    store.write_json(demo_id, "understanding.json", und)
+    orchestrator.invalidate(demo_id, "understand")
+    store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+    runlog.event(demo_id, f"Fact {fact_id} edited directly", "Script, visuals and FAQ require re-approval before build.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+
+
+@app.patch("/api/demos/{demo_id}/align/script")
+async def edit_aligned_script(demo_id: str, req: Request):
+    """Save explicit line edits, validate grounding, then re-run visual alignment."""
+    demo = _demo_or_404(demo_id)
+    body = await req.json()
+    edits = body.get("lines") or []
+    if not isinstance(edits, list) or not edits or len(edits) > 200:
+        raise HTTPException(400, "Send between 1 and 200 script line edits")
+    requested = {str(x.get("id")): (x.get("text") or "").strip() for x in edits if isinstance(x, dict)}
+    if any(not text or len(text) > 1200 for text in requested.values()):
+        raise HTTPException(400, "Every edited line needs 1–1200 characters")
+    script = store.read_json(demo_id, "script.json") or {}
+    und = store.read_json(demo_id, "understanding.json") or {}
+    found = set()
+    for seg in script.get("segments", []):
+        for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])]:
+            if line.get("id") in requested:
+                line["text"] = requested[line["id"]]
+                line.pop("audio", None)
+                found.add(line["id"])
+    for line in script.get("closing", []):
+        if line.get("id") in requested:
+            line["text"] = requested[line["id"]]
+            line.pop("audio", None)
+            found.add(line["id"])
+    missing = set(requested) - found
+    if missing:
+        raise HTTPException(404, "script line not found: " + ", ".join(sorted(missing)))
+    issues = author.validate(script, und, demo.get("settings", {}).get("audience", "everyday"))
+    invalid = [line.get("id") for seg in script.get("segments", []) for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])] if line.get("id") in requested and line.get("unverified")]
+    invalid += [line.get("id") for line in script.get("closing", []) if line.get("id") in requested and line.get("unverified")]
+    if invalid:
+        raise HTTPException(400, "That edit introduces an uncited claim or figure. Add the information as a source/fact first: " + ", ".join(invalid))
+    script["issues"] = issues
+    script = visuals.align(demo_id, script, und)
+    author.timeline(script, demo_id)
+    store.write_json(demo_id, "script.json", script)
+    orchestrator.invalidate(demo_id, "author")
+    store.update(demo_id, lambda d: d["approvals"].update({"visuals": False, "script": False}))
+    runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s) saved; visual alignment refreshed; script and visuals require re-approval.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"], "issues": issues}
 
 
 @app.post("/api/demos/{demo_id}/ctas")

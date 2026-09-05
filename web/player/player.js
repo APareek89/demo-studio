@@ -1,5 +1,5 @@
 // The runtime player — voice-led, interruptible, grounded through the server.
-// Flow: intake (one needs question + one optional focus question) → opening film → STANDARD OPENING (intro + outcome, unchanged) →
+// Flow: one needs question → opening film → STANDARD OPENING (intro + outcome, unchanged) →
 // runtime pitch plan (decision frame · personalised route with grounded bridges) →
 // proof blocks with check-ins → establish → advance → CTA → handoff.
 // mountPlayer(host, bundle, {qa, tts, pitch, lead, saveSession}) → { destroy, restart, pause, context }
@@ -11,9 +11,10 @@ const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
 
 export function mountPlayer(host, bundle, api) {
-  const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
+  const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null }, awaitingPhone: null };
+    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
+    leadPromptShown: false, leadQuestion: "", leadReason: "" };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
   // Recorded filler lines in the persona's voice (acknowledgements, bridges, holds). Rule: the voice never changes mid-demo —
@@ -53,7 +54,7 @@ export function mountPlayer(host, bundle, api) {
   const root = h("div", { class: "pl" },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
-      h("div", { class: "right" }, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
+      h("div", { class: "right" }, api.downloadUrl ? h("a", { class: "icon-btn link-btn download-btn", href: api.downloadUrl, download: `${bundle.name || "demo"}.mp4`, title: "Download MP4" }, "MP4 ↓") : null, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
     el.stage = h("div", { class: "pl-stage" },
       el.media = h("div", { class: "pl-media" + (asset ? " has-3d" : "") },
         asset ? (el.model = h("model-viewer", { src: asset.glb_url, poster: asset.preview_url || "", "camera-controls": true, "auto-rotate": true, "shadow-intensity": "1", "environment-image": "neutral", "interaction-prompt": "none", alt: `Interactive 3D view of ${bundle.product?.name || bundle.name}` })) : null,
@@ -69,7 +70,8 @@ export function mountPlayer(host, bundle, api) {
       el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
         el.inFallback = h("form", { class: "fallback", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t) { el.inText.value = ""; acceptTypedAnswer(t); } } }, el.inText = h("input", { placeholder: "Type your answer…" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
         h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", onclick: () => intakeMic() }, "🎤"), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
-      el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" }))),
+      el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" })),
+      el.lead = h("div", { class: "pl-lead" }, h("div", { class: "lead-card" }, h("button", { class: "lead-close", title: "Not now", onclick: () => el.lead.classList.remove("open") }, "×"), h("div", { class: "eyebrow" }, "Optional · dealership follow-up"), h("h3", {}, "Would you like to try it in person?"), el.leadCopy = h("p", {}, "Share your details and the dealership can arrange a test drive."), el.leadForm = h("form", { onsubmit: (e) => { e.preventDefault(); saveLeadForm(); } }, el.leadName = h("input", { placeholder: "Your name", autocomplete: "name" }), el.leadPhone = h("input", { placeholder: "10-digit mobile number", inputmode: "tel", autocomplete: "tel" }), el.leadError = h("div", { class: "lead-error" }), h("button", { class: "btn primary", type: "submit" }, "Arrange a test drive")), h("button", { class: "btn ghost sm", onclick: () => el.lead.classList.remove("open") }, "Not now")))),
     el.drawer = h("div", { class: "pl-drawer" }, h("div", { class: "head" }, h("span", {}, "Conversation"), h("button", { class: "icon-btn", onclick: () => toggleDrawer(false) }, "✕")), el.thread = h("div", { class: "body" }),
       h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { placeholder: "Type a question…" }), h("button", { class: "btn primary sm", type: "submit" }, "↑"))));
   host.replaceChildren(root);
@@ -81,6 +83,11 @@ export function mountPlayer(host, bundle, api) {
     if (S.intakeOpen) {
       if (S.intakeResolver) S.intakeResolver(text);
       else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; }
+      return;
+    }
+    if (S.waiter) {
+      addMsg("user", text);
+      resolveWait(interpretReply(text, S.waitChips));
       return;
     }
     handleQuestion(text);
@@ -110,7 +117,7 @@ export function mountPlayer(host, bundle, api) {
   function setStageMode(mode) {
     el.media.classList.toggle("evidence-on", mode === "evidence");
     el.media.classList.toggle("card-on", mode === "card");
-    el.card.classList.toggle("dominant", mode === "card");
+    el.card.classList.toggle("dominant", mode === "card" && !asset);
   }
   function directModel(v) {
     if (!asset || !el.model) return;
@@ -133,7 +140,7 @@ export function mountPlayer(host, bundle, api) {
     if (el.support) { el.support.classList.remove("on"); el.supportVideo.pause(); }
     if (mode === "card") {
       el.img.style.opacity = 0; el.img.style.display = "none"; el.video.pause(); el.video.style.opacity = 0; el.video.style.display = "none";
-      el.focus.classList.remove("on");
+      if (asset) directModel(v || {}); else el.focus.classList.remove("on");
       return mode;
     }
     if (mode === "model" && asset) {
@@ -157,18 +164,32 @@ export function mountPlayer(host, bundle, api) {
     return mode;
   }
   function firstVisual(seg) { return (seg?.lines || []).map((l) => l.visual).find((v) => v && v.kind !== "none") || null; }
+  function compactText(value, limit) {
+    let text = String(value || "").replace(/\s+/g, " ").trim();
+    text = text.split(/[.!?;]\s+|\s[—–]\s/)[0].replace(/[.!?;]+$/, "");
+    if (text.length <= limit) return text;
+    const cut = text.slice(0, limit + 1).replace(/\s+\S*$/, "").trim();
+    return `${cut || text.slice(0, limit).trim()}…`;
+  }
+  function compactRow(row) {
+    const plainClaim = String(row?.claim || "Key feature").replace(/\b(listed in (?:the )?(?:catalogue|brochure)|in the (?:catalogue|brochure)|as standard)\b/gi, "").replace(/\s+/g, " ").trim();
+    const claim = compactText(plainClaim || row?.claim || "Key feature", 24);
+    let value = compactText(row?.value || "", 34);
+    if (value.toLowerCase().startsWith(claim.toLowerCase())) value = compactText(value.slice(claim.length).replace(/^\s*[:—–-]\s*/, ""), 34);
+    return { claim, value: value || "Confirmed" };
+  }
   function showCard(kind, extra) {
     if (!kind || kind === "none") { el.card.classList.remove("on"); return; }
-    let rows = [], title = "Key facts";
-    if (kind === "price") { rows = bundle.cards?.price || []; title = "Price & offers"; }
+    let rows = [], title = "Key points";
+    if (kind === "price") { rows = bundle.cards?.price || []; title = "Price"; }
     else if (kind === "facts") rows = bundle.cards?.facts || [];
     else if (kind === "summary") { rows = [...(bundle.cards?.facts || []).slice(0, 4), ...(bundle.cards?.price || []).slice(0, 2)]; title = "In short"; }
     else if (kind === "contrast") { rows = (bundle.cards?.price || []).slice(0, 3).concat((bundle.cards?.facts || []).slice(0, 3)); title = "Today vs. after"; }
-    else if (kind === "cite" && extra) { rows = extra.map((f) => ({ claim: f.claim, value: f.value, conditions: [f.truth && f.truth !== "stated" ? f.truth : "", f.source?.locator ? `source ${f.source.ref} ${f.source.locator}` : ""].filter(Boolean).join(" · ") })); title = "Sources for that answer"; }
-    else if (kind === "statement" && extra?.text) { rows = [{ claim: extra.text, value: extra.value || "SOURCE NOTE", conditions: extra.conditions || "" }]; title = extra.title || "What the sources say"; }
+    else if (kind === "cite" && extra) { rows = extra.map((f) => ({ claim: f.claim, value: f.value })); title = "Key points"; }
+    else if (kind === "statement" && extra?.text) { rows = [{ claim: extra.value || "Key point", value: extra.text }]; title = extra.title || "Key point"; }
     if (!rows.length) { el.card.classList.remove("on"); return; }
-    rows = rows.slice(0, 3);  // never more than three boxes at once
-    el.card.replaceChildren(h("h4", {}, title), ...rows.map((r) => h("div", { class: "row" }, h("span", {}, r.claim, r.conditions ? h("div", { class: "cond" }, r.conditions) : null), h("b", {}, r.value))));
+    rows = rows.slice(0, 3).map(compactRow);  // keywords only; narration carries the detail
+    el.card.replaceChildren(h("h4", {}, title), ...rows.map((r) => h("div", { class: "row" }, h("span", {}, r.claim), h("b", {}, r.value))));
     el.card.classList.add("on");
   }
   function present(v, text, card = "none", factIds = []) {
@@ -181,7 +202,7 @@ export function mountPlayer(host, bundle, api) {
       else if (cited.length) showCard("cite", cited);
       else showCard("statement", { text, value: "CHECK WITH THE DEALER" });
     } else showCard(card);
-    el.card.classList.toggle("dominant", mode === "card");
+    el.card.classList.toggle("dominant", mode === "card" && !asset);
     return mode;
   }
   function presentLine(line, text = line?.text || "") { return present(line?.visual, text, line?.card || "none", line?.fact_ids || []); }
@@ -258,7 +279,7 @@ export function mountPlayer(host, bundle, api) {
   function setMicUI(on) { el.mic.classList.toggle("on", on); el.inMic.classList.toggle("on", on); if (on) { setStatus("listening", "Listening"); el.hint.textContent = serverSTT ? "Listening (Sarvam)… just talk." : "Listening… just talk."; } else { el.live.textContent = ""; if (el.status.classList.contains("listening")) setStatus("idle", "Your turn"); el.hint.textContent = (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Use 💬 to type."; } }
 
   // ---------- flow primitives ----------
-  function interruptAll() { cancelSpeech(); stopListening(); newRun(); clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; w({ value: "__interrupted" }); } setChips([]); }
+  function interruptAll() { cancelSpeech(); stopListening(); newRun(); clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w({ value: "__interrupted" }); } setChips([]); }
   function interpretReply(t, chips) {
     const s = t.toLowerCase().trim(), has = (v) => chips.some((c) => c.value === v), short = s.split(/\s+/).length <= 7;
     if (has("callme") && PHONE.test(s.replace(/\s|-/g, ""))) return { value: "phone", text: t };
@@ -272,13 +293,13 @@ export function mountPlayer(host, bundle, api) {
   }
   function waitFor(chips, seconds, opts = {}) {
     return new Promise((res) => {
-      S.waiter = res; setChips(chips); setStatus("idle", "Your turn");
+      S.waiter = res; S.waitChips = chips; setChips(chips); setStatus("idle", "Your turn");
       if (seconds > 0) { const t0 = Date.now(), total = seconds * 1000; el.timer.replaceChildren(h("div", { class: "r" }), h("span", {}, "I'll carry on in ", h("b", { id: "plTleft" }, seconds), "s unless you stop me"));
         S.timer = setInterval(() => { if (document.activeElement === el.q || S.micOn) return; const e = Date.now() - t0; const r = el.timer.querySelector(".r"); if (r) r.style.setProperty("--p", Math.min(100, e / total * 100) + "%"); const tl = el.timer.querySelector("#plTleft"); if (tl) tl.textContent = Math.max(0, Math.ceil((total - e) / 1000)); if (e >= total) resolveWait("__timeout"); }, 200); }
       if (opts.listen !== false && canListen() && !S.micDenied) listen({ timeout: opts.listenSecs || 8000, onInterim: (t) => { el.live.textContent = t; } }).then((t) => { if (!S.waiter) return; if (t) { addMsg("user", t); resolveWait(interpretReply(t, chips)); } else el.hint.textContent = "Tap the mic to talk, or tap a chip."; });
     });
   }
-  function resolveWait(v) { clearTimer(); stopListening(); if (S.waiter) { const w = S.waiter; S.waiter = null; setChips([]); w(typeof v === "string" ? { value: v } : v); } }
+  function resolveWait(v) { clearTimer(); stopListening(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; setChips([]); w(typeof v === "string" ? { value: v } : v); } }
   async function askAndListen(question, run, secs = 10000, preset = null) { const ok = await speak(question, run, preset); if (!ok) return null; const t = await listen({ timeout: secs, onInterim: (x) => { el.live.textContent = x; } }); if (run !== S.run) return null; if (t) addMsg("user", t); return t; }
 
   // ---------- route building ----------
@@ -307,9 +328,8 @@ export function mountPlayer(host, bundle, api) {
     for (let i = idx; i < S.plan.length; i++) {
       const step = S.plan[i], seg = step.seg; S.seg = i; S.atCheckin = false; renderProgress();
       prefetch([...seg.lines.slice(lineIdx), seg.checkin?.text ? { text: seg.checkin.text, audio: seg.checkin.audio } : null].filter(Boolean));
-      if (S.latePlan && lineIdx === 0) { const late = await withTimeout(S.latePlan, 10); if (late) { S.latePlan = null; S.pitch = late; S.personalized = true; const okc = await playCustomBatches(late, run); if (!okc) return; const rest = S.plan.slice(i); buildRoute(late); if (S.plan.length) { playFrom(0, 0); return; } S.plan = rest; } }
       if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); present(fv ? { ...fv, display_mode: "" } : null, step.bridge, "none", step.bridge_fact_ids || []); el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
-      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
+      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; S.line = j + 1; }
       lineIdx = 0; if (run !== S.run) return;
       if (seg.checkin?.text) {
         S.atCheckin = true; const ok = await speak(seg.checkin.text, run, seg.checkin.audio); if (!ok) return;
@@ -327,6 +347,7 @@ export function mountPlayer(host, bundle, api) {
         else if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
         else if (r.value === "__interrupted") return;
       }
+      maybePromptLead("progress");
     }
     await closeFlow(run);
   }
@@ -357,14 +378,26 @@ export function mountPlayer(host, bundle, api) {
 
   // ---------- questions, don't-guess, lead capture ----------
   async function handleQuestion(text) {
-    if (S.awaitingPhone) { const m = text.replace(/[\s-]/g, "").match(PHONE); if (m) { const q = S.awaitingPhone; S.awaitingPhone = null; interruptAll(); saveLead(m[1], q, newRun()); return; } }
-    const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun(); S.awaitingPhone = null;
+    const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun();
     addMsg("user", text); S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
     let r;
     const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer() });
     try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me one moment, please, while I check that for you.", run); if (!okH) return; r = await qaP; } }
     catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin); return; }
     if (run !== S.run) return;
+    if (!r.answered) {
+      if (r.escalate) S.escalations.push(r.escalate);
+      if (r.topic && r.topic !== "other") S.raised.add(r.topic);
+      S.unresolved.add(r.topic || "question");
+      if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: text }, "model");
+      else showVisual({ kind: "image", url: bundle.media?.hero, scriptText: text }, bundle.media?.hero ? "evidence" : "card");
+      showCard("none"); el.cite.textContent = "";
+      const unknown = "I don't know from the information I have. Share your details here and someone from the dealership can help you with that.";
+      const okUnknown = await speak(unknown, run); if (!okUnknown) return;
+      showLeadPrompt("unknown", text);
+      resumeAfterQA(wasAtCheckin);
+      return;
+    }
     const answerVisual = r.visual ? { ...r.visual, url: mediaUrlFor(r.visual), focus: "" } : null;
     const answerMode = present(answerVisual, r.answer || text, r.facts?.length ? "cite" : "none", r.fact_ids || []);
     if (answerMode !== "card") { if (r.facts?.length) showCard("cite", r.facts); else showCard("none"); }
@@ -373,45 +406,39 @@ export function mountPlayer(host, bundle, api) {
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
     const ok = await speak(r.answer, run, r.audio); if (!ok) return;
     if (r.cta) { await ctaFlow(r.cta, run); return; }
-    if (r.offer_callback || !r.answered) { await offerCallback(text, run, wasAtCheckin); return; }
+    if (r.offer_callback) showLeadPrompt("question", text);
+    maybePromptLead("questions");
     if (r.clarifying_question) { const a = await askAndListen(r.clarifying_question, run, 10000); if (run !== S.run) return; if (a) { handleQuestion(a); return; } }
     const ok2 = await speakF("did_that_answer", "Did that answer it?", run); if (!ok2) return;
     const r2 = await waitFor([{ label: "Yes, that helps", value: "yes", primary: true }, { label: "Not quite", value: "no" }], 20); if (run !== S.run) return;
-    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); const ok3 = await speakF("glad", "Glad that helps.", run); if (!ok3) return; resumeAfterQA(wasAtCheckin); }
-    else if (r2.value === "no") { S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${text}"`); const ok3 = await speak("Then let me not leave it half-answered — a salesperson can call you about it. Tell me your number if you'd like that, or we can carry on.", run); if (!ok3) return; await offerCallback(text, run, wasAtCheckin, true); }
+    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); const ok3 = await speakF("glad", "Glad that helps.", run); if (!ok3) return; maybePromptLead("questions"); resumeAfterQA(wasAtCheckin); }
+    else if (r2.value === "no") { S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${text}"`); const ok3 = await speak("I don't want to leave that half-answered. I've opened a short form so someone from the dealership can help you properly.", run); if (!ok3) return; showLeadPrompt("question", text); resumeAfterQA(wasAtCheckin); }
     else if (r2.value === "question" && r2.text) handleQuestion(r2.text);
     else resumeAfterQA(wasAtCheckin);
   }
-  async function offerCallback(question, run, wasAtCheckin, silent = false) {
-    S.awaitingPhone = question;
-    const r = await waitFor([{ label: "Call me", value: "callme", primary: true }, { label: "No thanks, continue", value: "continue" }], 20, { listenSecs: 10000 }); if (run !== S.run) return;
-    if (r.value === "phone") { const m = r.text.replace(/[\s-]/g, "").match(PHONE); S.awaitingPhone = null; await saveLead(m[1], question, run); return; }
-    if (r.value === "callme" || (r.value === "question" && /call|number|phone/i.test(r.text || ""))) {
-      const a = await askAndListen("Sure — what number should the team call you on? Say it, or type it in the chat.", run, 12000); if (run !== S.run) return;
-      const m = (a || "").replace(/[\s-]/g, "").match(PHONE);
-      if (m) { S.awaitingPhone = null; await saveLead(m[1], question, run); return; }
-      toggleDrawer(true); const ok = await speak("I didn't catch a ten-digit number — type it in the chat and I'll pass it on. Meanwhile, shall I carry on?", run); if (!ok) return;
-      const r2 = await waitFor([{ label: "Continue", value: "continue", primary: true }], 20); if (run !== S.run) return;
-      if (r2.value === "question" && r2.text) { handleQuestion(r2.text); return; }
-      resumeAfterQA(wasAtCheckin); return;
-    }
-    S.awaitingPhone = null;
-    if (r.value === "question" && r.text) { handleQuestion(r.text); return; }
-    resumeAfterQA(wasAtCheckin);
+  function showLeadPrompt(reason, question = "") {
+    if (S.leads.length || (S.leadPromptShown && reason !== "unknown")) return;
+    S.leadPromptShown = true; S.leadReason = reason; S.leadQuestion = question || "test drive";
+    el.leadName.value = S.profile.name || ""; el.leadPhone.value = ""; el.leadError.textContent = "";
+    el.leadCopy.textContent = reason === "unknown" ? "I don't have that answer in the approved sources. Leave your details and the dealership can answer it directly." : "You have seen enough to make a drive useful. Share your details and the dealership can arrange it.";
+    el.lead.classList.add("open");
   }
-  async function saveLead(phone, question, run) {
-    let ok = true; try { await api.lead({ phone, question, profile: profileForServer() }); } catch (e) { ok = false; }
-    S.leads.push({ phone, question }); S.escalations.push(`callback requested on ${phone}: "${question}"`);
-    const spoken = phone.replace(/(\d{5})(\d{5})/, "$1 $2").split("").join(" ").replace(/\s{2,}/g, " ");
-    await speak(ok ? `Got it — ${spoken}. Someone from the team will call you about that. Shall we carry on?` : `I've noted ${spoken}, though I couldn't save it just now — I'll make sure it reaches the team. Shall we carry on?`, run);
-    if (run !== S.run) return;
-    const r = await waitFor([{ label: "Continue", value: "continue", primary: true }, { label: "One more question", value: "question" }], 15); if (run !== S.run) return;
-    if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
-    resumeAfterQA(S.atCheckin);
+  function maybePromptLead(reason) {
+    const progress = S.plan.length ? (S.seg + 1) / S.plan.length : 0;
+    if (S.questions.length >= 2 || progress >= 0.6) showLeadPrompt(reason, S.questions.at(-1) || "test drive");
+  }
+  async function saveLeadForm() {
+    const name = el.leadName.value.trim(); const raw = el.leadPhone.value.replace(/[\s-]/g, ""); const m = raw.match(PHONE);
+    if (!m) { el.leadError.textContent = "Enter a valid 10-digit Indian mobile number."; el.leadPhone.focus(); return; }
+    const btn = el.leadForm.querySelector("button[type=submit]"); btn.disabled = true; el.leadError.textContent = "Saving…";
+    let ok = true; try { await api.lead({ phone: m[1], question: S.leadQuestion || "test drive", profile: { ...profileForServer(), name: name || S.profile.name } }); } catch (e) { ok = false; }
+    btn.disabled = false;
+    if (!ok) { el.leadError.textContent = "Couldn't save that just now. Please try once more."; return; }
+    if (name) S.profile.name = name; S.leads.push({ phone: m[1], question: S.leadQuestion || "test drive" }); S.escalations.push(`callback requested on ${m[1]}: "${S.leadQuestion || "test drive"}"`);
+    el.lead.classList.remove("open"); addMsg("note", "Test-drive request saved for the dealership");
   }
   function profileForServer() { return { name: S.profile.name, why: S.profile.why, followup: S.profile.followup, focus: S.profile.focus, customer_state: S.pitch?.customer_state, language: bundle.language }; }
   const _origTts = api.tts; api.tts = (text) => _origTts ? api.tts_lang ? api.tts_lang(text, bundle.language) : _origTts(text) : Promise.resolve(null);
-  function contactCta() { const c = (bundle.ctas || []).find((x) => x.kind === "contact") || (bundle.ctas || [])[0]; return c ? c.id : "contact"; }
   function mediaUrlFor(v) { if (!v) return null; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && vid.url.includes(src)) return vid.url; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; return (bundle.media?.videos || [])[0]?.url || null; }
   function resumeAfterQA(wasAtCheckin) { if (!S.plan.length) { const run = newRun(); speakF("back_to_demo", "Let's get back to where we were.", run).then((ok) => { if (ok) startAfterIntake(); }); return; } if (S.seg >= S.plan.length) { closeFlow(newRun()); return; } if (wasAtCheckin) playFrom(S.seg + 1, 0); else { const run = newRun(); speakF("back_to_demo", "Back to where we were.", run).then((ok) => { if (ok) playFrom(S.seg, S.line); }); } }
 
@@ -428,7 +455,6 @@ export function mountPlayer(host, bundle, api) {
   function parseName(t) { let m = t.match(/(?:my name is|i am|i'm|this is|myself|name's|call me|mera naam|naam)\s+([A-Za-zऀ-ॿ][a-zऀ-ॿ]+)/i); if (m) return cap(m[1]); m = t.match(/^([A-Za-z][a-z]+)\s+(?:here|speaking|bol raha|bol rahi)\b/i); if (m) return cap(m[1]); const w = t.trim().split(/\s+/); if (w.length <= 2 && /^[A-Za-z]+$/.test(w[0]) && !/^(hi|hello|hey|yes|no|ok|okay|namaste)$/i.test(w[0])) return cap(w[0]); return ""; }
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   function parseFocus(t) { const out = []; const s = t.toLowerCase(); for (const c of bundle.intake?.chips || []) { const words = c.label.toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w)) || s.includes(c.key.toLowerCase())) out.push(c.key); } for (const seg of library) { const words = (seg.title + " " + seg.topic).toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w))) out.push(seg.topic); } return [...new Set(out)].slice(0, 4); }
-  const isGetGoing = (t) => /^(no|nope|nothing|not really|nah|that's it|thats it|all good|go ahead|get going|let's go|lets go|start|go on|carry on|continue|proceed|begin|just go|show me|chalo|shuru)/i.test(t.trim()) || /(get going|go ahead|let'?s (go|start|begin)|nothing (specific|else|in particular)|just (go|start|show))/i.test(t);
   function withTimeout(p, ms) { return Promise.race([p, new Promise((res) => setTimeout(() => res(null), ms))]); }
 
   async function runIntake() {
@@ -438,44 +464,30 @@ export function mountPlayer(host, bundle, api) {
     const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok) return;
     const a1 = await intakeWait(run); if (run !== S.run) return;
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
-    let a2 = "";
-    if (a1 && !isGetGoing(a1)) {
-      const q2 = bundle.intake?.q2 || "Anything specific you'd like me to focus on, or shall we get going?";
-      const okQ2 = await speak(q2, run, bundle.intake?.audio?.q2); if (!okQ2) return;
-      a2 = await intakeWait(run); if (run !== S.run) return;
-      if (a2) { addMsg("user", a2); if (!isGetGoing(a2)) { S.profile.followup = a2; S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(a2)])]; } }
-    }
     el.intake.classList.remove("open"); S.intakeOpen = false;
     if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model");
     else if (bundle.media?.hero) showVisual({ kind: "image", url: bundle.media.hero, cycle: false }, "evidence");
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
-    S.pitchPromise = ((a1 || a2) && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: !!S.profile.followup }).catch(() => null), 60000) : null;
+    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 60000) : null;
     const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     const okF = await playIntroFilm(run); if (!okF) return;
     await startAfterIntake(run, a1);
   }
   async function startAfterIntake(run = newRun(), a1 = S.profile.why) {
     // The planner starts before the film and continues under recorded audio until its route is needed.
-    const pitchP = S.pitchPromise || (api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : Promise.resolve(null)); S.pitchPromise = null;
+    const pitchP = S.pitchPromise || (api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 60000) : Promise.resolve(null)); S.pitchPromise = null;
     const okO = await playOpening(run); if (!okO) return;
     let plan = await withTimeout(pitchP, 150); if (run !== S.run) return;
-    if (!plan) { const okH = await speakF("still_working", "Give me one moment, please — I'm tailoring this to what you just told me.", run); if (!okH) return; plan = await withTimeout(pitchP, 15000); if (run !== S.run) return; }
+    if (!plan) { const okH = await speakF("still_working", "Give me one moment, please — I'm tailoring this to what you just told me.", run); if (!okH) return; plan = await withTimeout(pitchP, 2500); if (run !== S.run) return; }
     S.personalized = !!plan;
-    if (!plan) { addMsg("note", "planner not ready — standard route; custom batches will slot in when they arrive"); S.latePlan = pitchP; }
+    if (!plan) addMsg("note", "personalisation was not ready in the opening window — continuing on the stable approved route");
     if (plan) {
       S.pitch = plan; S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
       if (plan.decision_frame) { present(null, plan.decision_frame, "statement"); el.cite.textContent = ""; const ok = await speak(plan.decision_frame, run, plan.decision_frame_audio); if (!ok) return; }
       const okC = await playCustomBatches(plan, run); if (!okC) return;
-      if (plan.follow_up_question) {
-        const a2 = await askAndListen(plan.follow_up_question, run, 12000, plan.follow_up_audio); if (run !== S.run) return;
-        if (a2) { S.profile.followup = a2; setStatus("thinking", "Planning"); const refined = await withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 30000); if (run !== S.run) return; if (refined) { S.pitch = { ...plan, ...refined, custom_batches: plan.custom_batches }; S.profile.focus = [...new Set([...(refined.focus_topics || []), ...S.profile.focus])]; } }
-      }
       el.cite.textContent = "";
-      const ok = S.profile.followup ? await speakF("focus_first", "Got it — let me show you the part that matters most for that first.", run) : await speakF("how_i_go", "Here's how I'll go about it.", run); if (!ok) return;
+      const ok = await speakF("how_i_go", "Here's how I'll go about it.", run); if (!ok) return;
     } else if (!S.profile.followup) {
-      const q2 = bundle.intake?.q2 || "Is there anything specific you'd like me to focus on, or shall we get going?";
-      const a2 = await askAndListen(q2, run, 10000, bundle.intake?.audio?.q2); if (run !== S.run) return;
-      if (a2 && !isGetGoing(a2)) { S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(a2)])]; S.profile.followup = a2; }
       const ok = await speakF("lets_go", "Alright — here we go.", run); if (!ok) return;
     } else {
       const ok = await speakF("focus_first", "Got it — let me show you the part that matters most for that first.", run); if (!ok) return;
@@ -558,7 +570,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.customPlayed = false; S.latePlan = null; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   function destroy() { interruptAll(); if (S.modelTimer) clearTimeout(S.modelTimer); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }

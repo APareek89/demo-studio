@@ -61,7 +61,9 @@ def understand(state: DemoState) -> dict:
             return {}
     orch._run_stage(d, "understand", state.get("instruction", "") if state.get("entry") in ("read", "revise") else "")
     if state.get("entry") == "revise":
-        store.update(d, lambda x: x["approvals"].update({"visuals": False, "facts": False}))
+        # New source material can change any downstream card. Never leave a stale
+        # approval green and accidentally expose Build before the new alignment pass.
+        store.update(d, lambda x: x["approvals"].update({card: False for card in store.CARDS}))
     return {}
 
 

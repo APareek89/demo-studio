@@ -3,8 +3,8 @@ flowchart TD
   SRC["sources[]<br/>[DATA · demo.json]"]:::data
   ISV{"kind?<br/>[FUNCTION · understand.run]"}:::dec
   UPV["gemini.upload_file<br/>[LIBRARY · Gemini Files API]<br/>in: mp4/mov · out: file uri (poll until ACTIVE, ≤600 s)"]:::data
-  SHOTS["shot list<br/>[AGENT · gemini-2.5-flash]<br/>in: whole video + VIDEO_PROMPT<br/>out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)"]:::agent
-  IMGS["image tags<br/>[AGENT · gemini-2.5-flash]<br/>in: batches of ≤12 images<br/>out: ImagesOut · description, angle, parts, quality"]:::agent
+  SHOTS["shot list<br/>[AGENT · Gemini 3.6 Flash]<br/>in: whole video + VIDEO_PROMPT<br/>out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)"]:::agent
+  IMGS["image tags<br/>[AGENT · Gemini 3.6 Flash]<br/>in: batches of ≤12 images<br/>out: ImagesOut · description, angle, parts, quality"]:::agent
   IDS["assign ids<br/>[FUNCTION]<br/>sh01.., im01.. + source_id"]:::fn
   DOCS["sources.source_text<br/>[LIBRARY · pypdf / python-docx / httpx+bs4]<br/>in: pdf/docx/txt/url<br/>out: text with [page n] markers; PDFs also attached natively"]:::data
   FACTS["fact registry + brand + product<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: all documents + product hint (+ previous registry + revision instruction)<br/>out: FactsOut · facts with source ref/locator/quote, unknowns, brand"]:::agent
@@ -13,7 +13,7 @@ flowchart TD
   PLAN["demo plan (sales principles P01-P10 in prompt)<br/>[AGENT · claude-opus-5]<br/>in: registry, shots, images, brand, URL, language (+ previous plan)<br/>out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if"]:::agent
   PVAL["drop refs that don't exist<br/>[FUNCTION · plan.run]<br/>fact_ids ⊆ registry · visual_refs ⊆ shots∪images"]:::fn
   PJ["plan.json<br/>[DATA]"]:::data
-  SAMPLE["voice sample<br/>[LIBRARY · Gemini TTS (or gcloud/browser)]<br/>in: voice.sample_line · out: audio/hash.wav"]:::data
+  SAMPLE["voice sample<br/>[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]<br/>in: voice.sample_line · out: audio/hash.wav"]:::data
   OPEN["opening message<br/>[AGENT · claude-opus-5 · text]<br/>in: card summary · out: 3-5 sentences (template fallback on error)"]:::agent
   CONV["conversation.json<br/>[DATA] + SSE 'message'"]:::data
 

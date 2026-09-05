@@ -1,24 +1,18 @@
-"""Visual alignment — the picture on screen must show what the guide is talking about.
+"""Post-script visual audit: rules propose; Gemini verifies the real pixels; deterministic code enforces the result.
 
-Runs after the script is written. Three passes:
-1. Rules (conservative): each line is matched to the catalogue of tagged images/shots by DISTINCTIVE subject words —
-   the parts Gemini saw in an image (gear lever, airbag, panoramic roof) versus the words in the line. Words that
-   appear in many pictures (front, blue, view, drive) carry no weight. A proposal needs at least one distinctive hit.
-2. Model (one cheap Haiku call): sees every line with its current picture and the rules' proposal, and decides —
-   keep, take the proposal, or pick another — with a one-line reason. This is where "the line is about the
-   gearbox, show the gear close-up" judgement lives.
-3. Coverage guardrail: an uploaded picture with a distinctive subject that some line clearly mentions is shown at
-   least once.
-Every decision is written to logs/<ts>-visuals.json and the run log, so you can see why each picture was chosen."""
+Every uploaded image is inspected after the script exists. For each spoken line the audit records the concrete
+features being claimed, which of them the assigned image visibly proves, and what remains missing. Only full visual
+coverage can replace a feature line's current evidence. The audit is saved as visual-audit.json and in the run logs."""
 from __future__ import annotations
 
 import json
 import re
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from .. import config, store
-from ..llm import claude
+from .. import config, media, store
+from ..llm import gemini
 
 STOP = set("the a an and or of to in on at for with by from as is are was were be been it its this that these those you your we our they their he she i me my "
            "so if then than but not no yes can will would could should may might do does did done have has had into onto over under about across after before "
@@ -140,26 +134,103 @@ def _score(line_tokens: set[str], item: dict) -> tuple[float, list[str]]:
 
 class Assignment(BaseModel):
     line_id: str
-    visual: str = Field(description="a ref from the catalogue, 'keep' for the current picture, or 'none' if nothing fits")
-    reason: str = Field(description="one short sentence: why this picture matches what is being said")
+    visual: str = Field(description="an image ref supplied in this batch, 'keep' only for the current video shot, or 'none'")
+    coverage: Literal["full", "partial", "none", "not_visual"]
+    spoken_features: list[str] = Field(default_factory=list, description="concrete visible product features named in the line")
+    visible_features: list[str] = Field(default_factory=list, description="spoken features literally visible in the selected image")
+    missing_features: list[str] = Field(default_factory=list, description="spoken features not visibly proved by the selected image")
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    reason: str = Field(description="one short, literal explanation of the coverage decision")
+
+
+class ImageAudit(BaseModel):
+    visual: str
+    visible_features: list[str] = Field(default_factory=list, description="specific product parts/features literally visible")
+    script_line_ids: list[str] = Field(default_factory=list, description="lines this image fully covers")
+    limitations: list[str] = Field(default_factory=list, description="features a viewer could wrongly assume this image proves")
+    confidence: float = Field(default=0.5, ge=0, le=1)
 
 
 class VisualsOut(BaseModel):
     assignments: list[Assignment]
+    images: list[ImageAudit]
 
 
-MODEL_SYSTEM = """You are the picture editor for a spoken product demo. For every line you get the text, the segment it sits in,
-the picture currently assigned, and a rule-based proposal (with the words that matched). The catalogue lists every picture
-with what is visible in it. Decide, per line, which picture should be on screen while that line is spoken:
-- The thing being talked about wins: a line about the gearbox shows the gear lever, a line about airbags shows the airbag
-  cut-away, a line about the roof shows the roof. A generic beauty shot is right for generic lines (greeting, framing, closing).
-- If no catalogue image literally shows the claim, return 'none'. Never use a merely attractive exterior image for cabin,
-  safety, warranty, pricing, connectivity or availability language; the runtime will show a source fact card instead.
-- Take the proposal when it names the part in the line; keep the current picture when the proposal is weaker than it;
-  choose another catalogue picture when both miss. Never pick a picture that contradicts the line (interior shot for
-  exterior styling, and so on).
-- Variety: avoid more than two consecutive lines on the same picture when a fitting alternative exists.
-Return one assignment for EVERY line id you were given. Use only refs from the catalogue."""
+MODEL_SYSTEM = """You are the final visual-proof auditor for a spoken product demo. You receive the REAL uploaded images first,
+in the exact order listed in image_part_order, then a JSON manifest containing the complete script and earlier metadata.
+Inspect the pixels, not just the metadata.
+
+For EVERY line:
+- Extract each concrete, visible product feature the narration names. A colour, trim, wheel, screen, airbag, seat, control,
+  lamp, roof, boot, safety component or other physical detail is a separate feature.
+- Pick an image only when the pixels literally show ALL those visible features. "full" means every visible feature is
+  clearly shown; "partial" means at least one is shown and at least one is missing; "none" means no supplied image proves it.
+- Use "not_visual" for greetings, opinions, prices, warranty, performance figures, availability and other claims a photo
+  cannot prove. Never call a beauty shot proof of safety, cabin equipment, an engine specification or written terms.
+- "keep" is allowed only when current_kind is "shot" and the shot metadata literally covers all visible features.
+- Prefer the clearest close-up over a generic exterior. Do not optimize for variety at the cost of truth.
+
+Also return one image audit for EVERY ref in image_part_order: list only features visibly present, the line ids it fully
+covers, and important limitations. Return one assignment for EVERY supplied line id. Use only an image ref from
+image_part_order, "keep", or "none"."""
+
+
+def _vision_batches(demo_id: str, demo: dict, und: dict, cat: list[dict], rows: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Gemini-inspect every allowed image in batches, then retain the strongest full-coverage decision per line."""
+    if config.MOCK_LLM:
+        return [], []
+    src_by_id = {s.get("id"): s for s in demo.get("sources", [])}
+    info_by_ref = {i.get("id"): i for i in und.get("images", [])}
+    image_cat = [c for c in cat if c.get("kind") == "image"]
+    all_assignments: list[dict] = []
+    image_audit: list[dict] = []
+    for start in range(0, len(image_cat), 12):
+        batch = image_cat[start:start + 12]
+        refs: list[str] = []
+        parts = []
+        for item in batch:
+            src = src_by_id.get((info_by_ref.get(item["ref"]) or {}).get("source_id"))
+            if not src:
+                continue
+            try:
+                parts.append(gemini.bytes_part(media.model_image_path(demo_id, src)))
+                refs.append(item["ref"])
+            except Exception:
+                continue
+        if not refs:
+            continue
+        allowed = set(refs)
+        payload = {
+            "image_part_order": refs,
+            "image_metadata": [{"ref": c["ref"], "tagged_as": c["label"], "parts": c["parts"]} for c in batch if c["ref"] in allowed],
+            "lines": [{"line_id": r["ln"]["id"], "segment": f"{r['seg'].get('title')} ({r['seg'].get('topic')})",
+                       "text": r["ln"].get("text", ""), "current": r["cur"],
+                       "current_kind": (next((c["kind"] for c in cat if c["ref"] == r["cur"]), "none")),
+                       "rule_proposal": r["proposal"], "rule_matches": r["hits"] if r["proposal"] else []} for r in rows],
+        }
+        out = gemini.structured(MODEL_SYSTEM + "\n\nINPUT MANIFEST:\n" + json.dumps(payload, ensure_ascii=False), parts, VisualsOut, temperature=0.05)
+        expected_lines = {r["ln"]["id"] for r in rows}
+        row_by_id = {r["ln"]["id"]: r for r in rows}
+        if len(out.assignments) != len(expected_lines) or {a.line_id for a in out.assignments} != expected_lines:
+            raise RuntimeError("Gemini returned an incomplete line-by-line coverage audit")
+        if len(out.images) != len(allowed) or {item.visual for item in out.images} != allowed:
+            raise RuntimeError("Gemini returned an incomplete per-image coverage audit")
+        for a in out.assignments:
+            if a.visual not in allowed and a.visual not in ("keep", "none"):
+                continue
+            current_kind = next((c["kind"] for c in cat if c["ref"] == row_by_id[a.line_id]["cur"]), "none")
+            invalid = ((a.visual == "keep" and current_kind != "shot") or
+                       (a.coverage == "full" and (a.visual == "none" or bool(a.missing_features))) or
+                       (a.coverage == "partial" and (not a.visible_features or not a.missing_features)))
+            if invalid:
+                raise RuntimeError(f"Gemini returned an internally inconsistent audit for {a.line_id}")
+            all_assignments.append(a.model_dump())
+        for item in out.images:
+            if item.visual in allowed:
+                if not set(item.script_line_ids).issubset(expected_lines):
+                    raise RuntimeError(f"Gemini image audit cited an unknown line for {item.visual}")
+                image_audit.append(item.model_dump())
+    return all_assignments, image_audit
 
 
 def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
@@ -178,58 +249,90 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
             cur_score, cur_hits = _score(lt, by_ref[cur]) if cur in by_ref else (0.0, [])
             proposal = best_ref if best_score >= 3.0 and best_ref != cur and best_score >= cur_score + 3.0 else None
             rows.append({"seg": seg, "ln": ln, "cur": cur, "cur_hits": cur_hits, "proposal": proposal, "hits": best_hits, "score": best_score, "deeper": ln in seg.get("deeper", [])})
+    closing_seg = {"title": "Closing", "topic": "closing", "role": "outcome"}
+    for ln in script.get("closing", []):
+        lt = _expand(_tokens(ln.get("text", "")))
+        cur = (ln.get("visual") or {}).get("ref")
+        scored = sorted(((*_score(lt, c), c["ref"]) for c in cat), key=lambda x: -x[0])
+        best_score, best_hits, best_ref = scored[0]
+        cur_score, cur_hits = _score(lt, by_ref[cur]) if cur in by_ref else (0.0, [])
+        proposal = best_ref if best_score >= 3.0 and best_ref != cur and best_score >= cur_score + 3.0 else None
+        rows.append({"seg": closing_seg, "ln": ln, "cur": cur, "cur_hits": cur_hits, "proposal": proposal,
+                     "hits": best_hits, "score": best_score, "deeper": False})
     changes: list[dict] = []
     model_notes: list[dict] = []
+    image_audit: list[dict] = []
     decided = False
     if not config.MOCK_LLM:
         try:
-            payload = {"catalogue": [{"ref": c["ref"], "kind": c["kind"], "shows": c["label"], "parts": c["parts"]} for c in cat],
-                       "lines": [{"line_id": r["ln"]["id"], "segment": f"{r['seg'].get('title')} ({r['seg'].get('topic')})", "text": r["ln"].get("text", ""), "current": r["cur"],
-                                  "proposal": r["proposal"], "proposal_matches": r["hits"] if r["proposal"] else []} for r in rows]}
-            out = claude.structured(MODEL_SYSTEM, json.dumps(payload, ensure_ascii=False), VisualsOut, max_tokens=6000, soft=True, model=config.CLAUDE_LITE_MODEL)
-            byid = {a.line_id: a for a in out.assignments}
+            assignments, image_audit = _vision_batches(demo_id, demo, und, cat, rows)
+            byid: dict[str, list[dict]] = {}
+            for assignment in assignments:
+                byid.setdefault(assignment["line_id"], []).append(assignment)
+            coverage_rank = {"full": 4, "partial": 2, "none": 1, "not_visual": 0}
             for r in rows:
-                a = byid.get(r["ln"]["id"])
-                if not a:
+                candidates = byid.get(r["ln"]["id"], [])
+                if not candidates:
                     continue
-                choice = r["cur"] if a.visual in ("keep", "", None) else (None if a.visual == "none" else a.visual)
+                a = max(candidates, key=lambda x: (coverage_rank.get(x.get("coverage"), -1), x.get("confidence", 0)))
+                # Pixel audit is authoritative: an old assignment does not survive merely
+                # because Gemini found no better picture in this batch. Only literal full
+                # coverage may bind media; every other result returns to the neutral model/card.
+                choice = None
+                if a.get("coverage") == "full":
+                    choice = r["cur"] if a.get("visual") == "keep" else a.get("visual")
                 if choice and choice not in by_ref:
                     continue
-                model_notes.append({"line_id": r["ln"]["id"], "visual": choice or "none", "reason": a.reason[:180]})
+                note = {"line_id": r["ln"]["id"], "visual": choice or "none", "coverage": a.get("coverage", "none"),
+                        "spoken_features": a.get("spoken_features", [])[:12], "visible_features": a.get("visible_features", [])[:12],
+                        "missing_features": a.get("missing_features", [])[:12], "confidence": a.get("confidence", 0),
+                        "reason": str(a.get("reason", ""))[:240]}
+                model_notes.append(note)
                 if choice != r["cur"]:
-                    changes.append({"line_id": r["ln"]["id"], "from": r["cur"], "to": choice, "pass": "model", "why": a.reason[:180]})
+                    changes.append({"line_id": r["ln"]["id"], "from": r["cur"], "to": choice, "pass": "gemini_vision", "why": note["reason"]})
                     r["ln"]["visual"] = {"ref": choice, "focus": (r["ln"].get("visual") or {}).get("focus", "")} if choice else None
-            decided = True
+            decided = bool(model_notes)
         except Exception as e:
-            emit(f"Picture editor model skipped ({str(e)[:80]}) — rule proposals applied instead.")
+            emit(f"Gemini visual-proof audit skipped ({str(e)[:80]}) — conservative rule proposals applied instead.")
     if not decided:
         for r in rows:
             if r["proposal"] and not r["cur_hits"]:
                 changes.append({"line_id": r["ln"]["id"], "from": r["cur"], "to": r["proposal"], "pass": "rules", "why": f"line mentions {', '.join(r['hits'][:4])}; {by_ref[r['proposal']]['label'][:100]}"})
                 r["ln"]["visual"] = {"ref": r["proposal"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
-    # coverage guardrail — an uploaded picture with a distinctive subject some line clearly mentions is shown at least once
+    # Rules-only coverage guardrail. A successful Gemini audit is authoritative; do not override
+    # pixel-level rejection merely to make an unused image appear.
     used = {(r["ln"].get("visual") or {}).get("ref") for r in rows}
-    for c in cat:
-        if c["ref"] in used or (c.get("quality") or 3) < 3 or c["kind"] != "image" or not (c["strong"] & c["distinct"]):
-            continue
-        best = None
-        for r in rows:
-            if r["deeper"] or r["seg"].get("role") in ("intro", "outcome"):
-                continue  # the overview and USP map keep their neutral hero shots — never force a detail image there
-            sc, hits = _score(_expand(_tokens(r["ln"].get("text", ""))), c)
-            if sc >= 3.0 and (best is None or sc > best[0]):
-                best = (sc, r, hits)
-        if best:
-            sc, r, hits = best
-            changes.append({"line_id": r["ln"]["id"], "from": (r["ln"].get("visual") or {}).get("ref"), "to": c["ref"], "pass": "coverage", "why": f"uploaded picture of {', '.join(c['parts'][:3]) or c['ref']} was never shown; this line mentions {', '.join(hits[:3])}"})
-            r["ln"]["visual"] = {"ref": c["ref"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
-            used.add(c["ref"])
-    store.log(demo_id, "visuals", {"changes": changes, "model": model_notes, "catalogue": [c["label"] for c in cat], "unused_after": [c["ref"] for c in cat if c["ref"] not in used],
-                                   "proposals": [{"line_id": r["ln"]["id"], "proposal": r["proposal"], "hits": r["hits"]} for r in rows if r["proposal"]]})
+    if not decided:
+        for c in cat:
+            if c["ref"] in used or (c.get("quality") or 3) < 3 or c["kind"] != "image" or not (c["strong"] & c["distinct"]):
+                continue
+            best = None
+            for r in rows:
+                if r["deeper"] or r["seg"].get("role") in ("intro", "outcome"):
+                    continue
+                sc, hits = _score(_expand(_tokens(r["ln"].get("text", ""))), c)
+                if sc >= 3.0 and (best is None or sc > best[0]):
+                    best = (sc, r, hits)
+            if best:
+                _sc, r, hits = best
+                changes.append({"line_id": r["ln"]["id"], "from": (r["ln"].get("visual") or {}).get("ref"), "to": c["ref"], "pass": "coverage", "why": f"uploaded picture of {', '.join(c['parts'][:3]) or c['ref']} was never shown; this line mentions {', '.join(hits[:3])}"})
+                r["ln"]["visual"] = {"ref": c["ref"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
+                used.add(c["ref"])
+    used = {(r["ln"].get("visual") or {}).get("ref") for r in rows}
+    audit = {"method": "gemini_pixels" if decided else "rules_fallback", "model": config.GEMINI_MODEL if decided else None,
+             "lines": model_notes, "images": image_audit, "changes": changes, "catalogue": [c["label"] for c in cat],
+             "unused_after": [c["ref"] for c in cat if c["ref"] not in used],
+             "proposals": [{"line_id": r["ln"]["id"], "proposal": r["proposal"], "hits": r["hits"]} for r in rows if r["proposal"]]}
+    store.write_json(demo_id, "visual-audit.json", audit)
+    store.log(demo_id, "visuals", audit)
+    script["visual_audit"] = {"method": audit["method"], "model": audit["model"], "line_count": len(model_notes),
+                              "image_count": len(image_audit), "missing_line_count": sum(1 for x in model_notes if x.get("missing_features"))}
     if changes:
-        emit(f"Pictures aligned to the words: {len(changes)} line(s) now show the part being described" + (f"; {sum(1 for c in changes if c['pass'] == 'coverage')} uploaded picture(s) rescued from never being shown" if any(c["pass"] == "coverage" for c in changes) else "") + ".")
+        emit(f"Visual-proof audit complete: Gemini inspected {len(image_audit)} image(s); {len(changes)} line assignment(s) changed to match the words.")
+    elif decided:
+        emit(f"Visual-proof audit complete: Gemini inspected {len(image_audit)} image(s); every assigned picture matches its spoken line.")
     else:
-        emit("Pictures already match what is said on every line.")
+        emit("Pictures aligned with the conservative rules; Gemini pixel audit was unavailable.")
     return script
 
 

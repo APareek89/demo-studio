@@ -24,14 +24,14 @@ export function renderAlign(ctx) {
   const fileIn = h("input", { type: "file", multiple: true, accept: "video/*,image/*,.pdf,.docx,.txt,.md,.csv" });
   const attachRow = h("div", { class: "attach" });
   const sendBtn = h("button", { class: "btn primary", onclick: send }, "Send");
-  const buildBar = h("div", { class: "build-bar hidden" }, h("span", {}, "All five cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo →"));
+  const buildBar = h("div", { class: "build-bar hidden" }, h("span", {}, "All six cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo →"));
   let pending = [];
 
   area.replaceChildren(overlay, h("div", { class: "align" }, cardsCol,
     h("div", { class: "convo" }, thread, buildBar,
       h("div", { class: "dock" }, attachRow,
         h("div", { class: "box" }, h("button", { class: "btn ghost", title: "Attach files", onclick: () => fileIn.click() }, "📎"), dockTa, sendBtn, fileIn),
-        h("div", { class: "hint" }, "Enter to send · Shift+Enter for a new line · everything you say here goes to the alignment agent, which decides what to re-run")))));
+        h("div", { class: "hint" }, "Add a correction or attach missing material. New files are re-read and every affected card must be approved again.")))));
 
   fileIn.addEventListener("change", () => { pending.push(...fileIn.files); fileIn.value = ""; renderAttach(); });
   dockTa.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
@@ -59,10 +59,10 @@ export function renderAlign(ctx) {
     const current = CARD_DEFS.find((c) => !approvals[c.key])?.key;
     if (openCard === null) openCard = current || "visuals";
     const allDone = cards && CARD_DEFS.every((c) => approvals[c.key]);
-    const noteEl = h("div", { class: "align-note" }, "Approve each card as-is or tell the agent what to change. Nothing here has to be complete — ", h("b", {}, "anything you don't provide, the guide will not answer"), "; it says so and offers a callback. ", cards && !allDone ? h("button", { class: "btn sm", style: "margin-left:6px", onclick: approveAll }, "Approve all") : null);
+    const noteEl = h("div", { class: "align-note" }, "Review, edit or approve. ", h("b", {}, "Anything missing stays out of the demo"), ". New uploads trigger re-alignment. ", cards && !allDone ? h("button", { class: "btn sm", style: "margin-left:6px", onclick: approveAll }, "Approve all") : null);
     cardsCol.replaceChildren(noteEl, ...CARD_DEFS.map((c) => {
-      const el = h("div", { class: `acard${approvals[c.key] ? " approved" : ""}${current === c.key ? " current" : ""}${openCard === c.key ? " open" : ""}` },
-        h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); } }, h("span", { class: "n" }, approvals[c.key] ? "✓" : c.n), h("h3", {}, c.title), h("span", { class: "st" }, approvals[c.key] ? "approved" : current === c.key ? "review now" : "pending"),
+      const el = h("div", { class: `acard${approvals[c.key] ? " approved" : ""}${current === c.key ? " current" : ""}${openCard === c.key ? " open" : ""}`, "data-card": c.key },
+        h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); requestAnimationFrame(() => cardsCol.querySelector(`[data-card="${c.key}"]`)?.scrollIntoView({ block: "start" })); } }, h("span", { class: "n" }, approvals[c.key] ? "✓" : c.n), h("h3", {}, c.title), h("span", { class: "st" }, approvals[c.key] ? "approved" : current === c.key ? "review now" : "pending"),
           cards ? h("span", { class: "hact" }, h("button", { class: "btn sm ghost", onclick: () => openPreview(c.key) }, "Preview"), approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve")) : null),
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
@@ -89,7 +89,7 @@ export function renderAlign(ctx) {
       const rows = f.facts.map((x) => h("tr", { class: (x.edited ? "edited" : "") + (x.approved === false ? " removed" : "") },
         h("td", { class: "id" }, x.id), h("td", {}, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null),
         h("td", { class: "src" }, `${x.source?.ref || ""} ${x.source?.locator || ""}`, x.source?.quote ? h("div", { title: x.source.quote }, "“", x.source.quote.slice(0, 50), x.source.quote.length > 50 ? "…" : "", "”") : null),
-        h("td", {}, h("button", { class: "btn sm ghost", title: "Correct this fact", onclick: () => { dockTa.value = `${x.id} (${x.claim}) is wrong — the correct value is `; dockTa.focus(); } }, "fix"))));
+        h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"))));
       const open = f.unknowns.filter((u) => u.status === "open");
       return h("div", {},
         h("p", { class: "small muted", style: "margin:10px 0 0" }, `${f.facts.length} facts from ${f.sources.length} source${f.sources.length === 1 ? "" : "s"}. The guide can only say what's in this table.`),
@@ -104,9 +104,11 @@ export function renderAlign(ctx) {
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
       const roleLabel = { intro: "opening · frame", outcome: "opening · outcome", proof: "proof block", features: "more features", establish: "establish" };
       return h("div", {},
+        h("div", { style: "display:flex;justify-content:flex-end;margin-top:10px" }, h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit script")),
         h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · data/demos/${demoId}/script.json · demo v${pt.version}` : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Winning points · ${(pt.usps || []).length}`),
         h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", h("span", { class: "muted" }, u.why_it_matters)))),
+        pt.visual_audit?.method ? h("p", { class: `small ${pt.visual_audit.missing_line_count ? "gap" : "muted"}` }, `${pt.visual_audit.method === "gemini_pixels" ? "Gemini checked the real pixels" : "Rules checked the image tags"}: ${pt.visual_audit.image_count || 0} images against ${pt.visual_audit.line_count || 0} spoken lines${pt.visual_audit.missing_line_count ? ` · ${pt.visual_audit.missing_line_count} line(s) need the 3D placeholder/card because no image fully proves them` : " · full visual coverage"}.`) : null,
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, "Batches"),
         h("div", { class: "unknowns" }, ...(pt.segments || []).map((sg) => h("div", { class: "unk", style: "flex-direction:column;align-items:stretch;gap:4px" },
           h("div", { style: "display:flex;gap:8px;align-items:center" }, h("span", { class: "id" }, mmss(sg.start)), h("b", {}, sg.title), h("span", { class: "muted small" }, roleLabel[sg.role] || sg.role, sg.duration ? ` · ${Math.round(sg.duration)} s` : ""), sg.duration > 20.5 ? h("span", { class: "pill warn" }, "over 20 s") : null),
@@ -118,7 +120,7 @@ export function renderAlign(ctx) {
     if (key === "faq") {
       const f = cards.faq || { entries: [] };
       return h("div", {},
-        h("p", { class: "small muted", style: "margin:10px 0 0" }, `${f.answered} of ${f.total} answered from your sources. Known questions answer instantly in the guide's voice; the rest decline and offer a callback. New questions get a recorded "bear with me" and a live answer.`),
+        h("p", { class: "small muted", style: "margin:10px 0 0" }, `${f.answered} of ${f.total} answered from your sources. Known questions answer instantly in the guide's voice; unknowns are admitted plainly and open the dealership follow-up form.`),
         h("div", { class: "unknowns" }, ...f.entries.slice(0, 8).map((e) => h("div", { class: "unk" }, h("span", { class: "pill " + (e.answered ? "ok" : "warn") }, e.answered ? "answered" : "declines"), h("span", {}, h("b", {}, e.question), h("div", { class: "small muted" }, (e.answer || "").slice(0, 140), (e.answer || "").length > 140 ? "…" : "")), e.audio ? h("button", { class: "btn sm ghost", onclick: () => new Audio(e.audio).play() }, "▶") : null))),
         f.entries.length > 8 ? h("p", { class: "small muted" }, `+ ${f.entries.length - 8} more — open Preview`) : null,
         h("p", { class: "small muted", style: "margin:8px 0 0" }, "Upload an FAQ document (name it with “FAQ”) to add your own questions; say “add a question about …” or “fix the answer to Q03” in the dock."));
@@ -167,7 +169,7 @@ export function renderAlign(ctx) {
     if (key === "visuals") {
       const v = cards.visuals; const sc = cards.script || {}; const usedIn = {};
       for (const sg of sc.segments || []) for (const l of sg.lines || []) if (l.visual) (usedIn[l.visual] = usedIn[l.visual] || []).push(`${sg.title}: “${l.text.slice(0, 70)}…”`);
-      return h("div", { class: "pgrid" }, ...v.images.map((i) => h("div", { class: "pcard" }, h("img", { src: i.url, alt: i.description, onclick: () => lightbox(h("img", { src: i.url }), i.description) }), h("div", { class: "small" }, h("b", {}, i.id), " · ", i.angle, " · quality ", i.quality, i.enhanced?.how && i.enhanced.how !== "none" ? h("span", { class: "pill ok", style: "margin-left:6px" }, "cleaned") : null), h("div", { class: "small muted" }, i.description), i.parts?.length ? h("div", { class: "small" }, h("b", {}, "shows: "), i.parts.join(", ")) : null, h("div", { class: "small muted" }, usedIn[i.id]?.length ? h("span", {}, h("b", {}, `used in ${usedIn[i.id].length} line(s): `), usedIn[i.id].slice(0, 3).join(" · ")) : "not used by any line yet"))),
+      return h("div", { class: "pgrid" }, ...v.images.map((i) => h("div", { class: "pcard" }, h("img", { src: i.url, alt: i.description, onclick: () => lightbox(h("img", { src: i.url }), i.description) }), h("div", { class: "small" }, h("b", {}, i.id), " · ", i.angle, " · quality ", i.quality, i.enhanced?.how && i.enhanced.how !== "none" ? h("span", { class: "pill ok", style: "margin-left:6px" }, "cleaned") : null), h("div", { class: "small muted" }, i.description), i.audit?.visible_features?.length ? h("div", { class: "small" }, h("b", {}, "Gemini confirms: "), i.audit.visible_features.join(", ")) : i.parts?.length ? h("div", { class: "small" }, h("b", {}, "Tagged as: "), i.parts.join(", ")) : null, i.audit?.limitations?.length ? h("div", { class: "small muted" }, h("b", {}, "Does not prove: "), i.audit.limitations.join(", ")) : null, h("div", { class: "small muted" }, usedIn[i.id]?.length ? h("span", {}, h("b", {}, `used in ${usedIn[i.id].length} line(s): `), usedIn[i.id].slice(0, 3).join(" · ")) : "not used by any line yet"))),
         ...v.shots.map((sh) => h("div", { class: "pcard" }, h("video", { src: `${sh.url}#t=${(sh.start + 0.2).toFixed(1)}`, controls: true, preload: "metadata", muted: true }), h("div", { class: "small" }, h("b", {}, sh.id), ` · ${sh.start.toFixed(0)}–${sh.end.toFixed(0)} s · ${sh.part} · quality ${sh.quality}`), h("div", { class: "small muted" }, sh.description))));
     }
     if (key === "facts") {
@@ -179,16 +181,17 @@ export function renderAlign(ctx) {
     if (key === "script") {
       const pt = cards.script || {}; const tl = pt.timeline || {};
       const rows = [];
+      const auditCell = (va) => va ? h("div", { class: "small" }, h("span", { class: `pill ${va.coverage === "full" ? "ok" : va.coverage === "partial" || va.missing_features?.length ? "warn" : ""}` }, va.coverage.replaceAll("_", " ")), va.visible_features?.length ? h("div", {}, "shows: ", va.visible_features.join(", ")) : null, va.missing_features?.length ? h("div", { class: "muted" }, "missing: ", va.missing_features.join(", ")) : null) : h("span", { class: "small muted" }, "rules checked");
       for (const sg of pt.segments || []) {
-        for (const l of sg.lines || []) rows.push(h("tr", { class: l.unverified ? "removed" : "" }, h("td", { class: "id" }, mmss(l.start)), h("td", { class: "small muted" }, sg.title, h("br"), sg.role), h("td", {}, l.text), h("td", {}, l.visual_url ? h("img", { src: l.visual_url, style: "width:96px;height:72px;object-fit:cover;border-radius:6px;display:block" }) : null, h("div", { class: "mono small muted" }, l.visual || "—")), h("td", { class: "mono small" }, (l.fact_ids || []).join(", ") || "—"), h("td", { class: "small muted" }, l.card !== "none" ? l.card : "")));
-        if (sg.checkin) rows.push(h("tr", {}, h("td", { class: "id" }, ""), h("td", { class: "small muted" }, "pause point"), h("td", { class: "muted" }, h("i", {}, sg.checkin)), h("td", {}), h("td", {}), h("td", {})));
+        for (const l of sg.lines || []) rows.push(h("tr", { class: l.unverified ? "removed" : "" }, h("td", { class: "id" }, mmss(l.start)), h("td", { class: "small muted" }, sg.title, h("br"), sg.role), h("td", {}, l.text), h("td", {}, l.visual_url ? h("img", { src: l.visual_url, style: "width:96px;height:72px;object-fit:cover;border-radius:6px;display:block" }) : null, h("div", { class: "mono small muted" }, l.visual || "3D placeholder")), h("td", {}, auditCell(l.visual_audit)), h("td", { class: "mono small" }, (l.fact_ids || []).join(", ") || "—"), h("td", { class: "small muted" }, l.card !== "none" ? l.card : "")));
+        if (sg.checkin) rows.push(h("tr", {}, h("td", { class: "id" }, ""), h("td", { class: "small muted" }, "pause point"), h("td", { class: "muted" }, h("i", {}, sg.checkin)), h("td", {}), h("td", {}), h("td", {}), h("td", {})));
       }
-      for (const l of pt.closing || []) rows.push(h("tr", {}, h("td", { class: "id" }, mmss(l.start)), h("td", { class: "small muted" }, "closing"), h("td", {}, l.text), h("td", {}), h("td", { class: "mono small" }, (l.fact_ids || []).join(", ") || "—"), h("td", {})));
+      for (const l of pt.closing || []) rows.push(h("tr", {}, h("td", { class: "id" }, mmss(l.start)), h("td", { class: "small muted" }, "closing"), h("td", {}, l.text), h("td", {}, l.visual_url ? h("img", { src: l.visual_url, style: "width:96px;height:72px;object-fit:cover;border-radius:6px;display:block" }) : null, h("div", { class: "mono small muted" }, l.visual || "3D placeholder")), h("td", {}, auditCell(l.visual_audit)), h("td", { class: "mono small" }, (l.fact_ids || []).join(", ") || "—"), h("td", {})));
       return h("div", {},
         h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Primary outcome"), h("span", {}, pt.primary_outcome || "—"), h("span", { class: "k" }, "Supporting"), h("span", {}, (pt.supporting_outcomes || []).join("; ") || "—"), h("span", { class: "k" }, "Not for"), h("span", {}, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Intake"), h("span", {}, pt.intake?.q1 || "—", h("br"), pt.intake?.q2 || "")),
         h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `Winning points`), h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", u.why_it_matters, u.fact_ids?.length ? h("span", { class: "mono small muted" }, ` [${u.fact_ids.join(", ")}]`) : null))),
         h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `Second by second · ${mmss(tl.total_seconds || 0)} total${tl.exact ? "" : " (estimated until voiced)"}`),
-        h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "at"), h("th", {}, "batch"), h("th", {}, "the guide says"), h("th", {}, "on screen"), h("th", {}, "facts"), h("th", {}, "card"))), h("tbody", {}, ...rows)),
+        h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "at"), h("th", {}, "batch"), h("th", {}, "the guide says"), h("th", {}, "on screen"), h("th", {}, "visual check"), h("th", {}, "facts"), h("th", {}, "card"))), h("tbody", {}, ...rows)),
         (pt.visual_changes || []).length ? h("div", {}, h("h3", { style: "margin:16px 0 6px;font-size:14px" }, "Why these pictures"), h("ul", { class: "gaplist" }, ...pt.visual_changes.map((c) => h("li", {}, h("b", {}, c.line_id), `: ${c.from || "—"} → ${c.to} — ${c.why}`)))) : null,
         (pt.segments || []).some((sg) => sg.deeper?.length) ? h("div", {}, h("h3", { style: "margin:16px 0 6px;font-size:14px" }, "Only if asked (deeper lines)"), h("ul", { class: "gaplist" }, ...(pt.segments || []).flatMap((sg) => (sg.deeper || []).map((l) => h("li", {}, h("b", {}, sg.title), ": ", l.text))))) : null,
         pt.scorecard ? h("p", { class: "small muted", style: "margin:12px 0 0" }, `Scorecard ${pt.scorecard.total}/20 — weakest: ${(pt.scorecard.weakest || []).slice(0, 2).join("; ")}`) : null);
@@ -209,6 +212,23 @@ export function renderAlign(ctx) {
     const lb = h("div", { class: "lightbox", onclick: () => lb.remove() }, clone, h("div", { class: "cap" }, cap || ""));
     document.body.appendChild(lb);
   }
+  function editor(title, content, saveLabel = "Save changes") {
+    const bg = h("div", { class: "preview-bg" }, h("div", { class: "preview align-editor" }, h("div", { class: "phead" }, h("h2", {}, title), h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Close")), h("div", { class: "pbody" }, content.body), h("div", { class: "editor-actions" }, h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Cancel"), h("button", { class: "btn primary", onclick: async (e) => { e.currentTarget.disabled = true; try { await content.save(); bg.remove(); await reload(); } catch (err) { toast(err.message, true); e.currentTarget.disabled = false; } } }, saveLabel))));
+    document.body.appendChild(bg);
+  }
+  function editFact(fact) {
+    const claim = h("input", { value: fact.claim || "" }); const value = h("textarea", {}, fact.value || ""); const conditions = h("textarea", {}, fact.conditions || "");
+    const body = h("div", { class: "edit-form" }, h("label", {}, "Information", claim), h("label", {}, "Value", value), h("label", {}, "Conditions / caveat", conditions), h("p", { class: "small muted" }, "A direct correction makes every downstream card require approval again."));
+    editor(`Edit ${fact.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/facts/${fact.id}`, { claim: claim.value, value: value.value, conditions: conditions.value }) }, "Save & re-align");
+  }
+  function openScriptEditor() {
+    const all = [];
+    for (const seg of cards.script?.segments || []) for (const line of seg.lines || []) all.push({ ...line, section: seg.title });
+    for (const line of cards.script?.closing || []) all.push({ ...line, section: "Closing" });
+    const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text) }));
+    const body = h("div", { class: "script-editor" }, ...fields.map(({ line, input }) => h("label", {}, h("span", {}, h("b", {}, line.section), h("small", { class: "mono muted" }, line.id)), input)));
+    editor("Edit what the guide says", { body, save: () => { const lines = fields.filter(({ line, input }) => input.value.trim() !== line.text.trim()).map(({ line, input }) => ({ id: line.id, text: input.value.trim() })); if (!lines.length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/script`, { lines }); } }, "Save & re-align visuals");
+  }
   async function setApproval(card, on) {
     try { await api.post(`/api/demos/${demoId}/${on ? "approve" : "unapprove"}/${card}`); await reload(); if (on) { openCard = CARD_DEFS.find((c) => !demo.approvals[c.key])?.key || ""; renderCards(); } }
     catch (e) { toast(e.message, true); }
@@ -216,13 +236,31 @@ export function renderAlign(ctx) {
 
   // ---------- conversation ----------
   function addMsg(m) {
+    if (m.system) return;
     if (m.t && seen.has(m.t)) return; if (m.t) seen.add(m.t);
     const el = h("div", { class: "msg " + (m.role === "user" ? "user" : m.system ? "system" : "agent") }, m.text,
       m.attachments?.length ? h("div", { class: "att" }, "attached: " + m.attachments.map((a) => a.name).join(", ")) : null,
       m.notes?.length ? h("div", { class: "notes" }, m.notes.join(" · ")) : null);
     thread.append(el); thread.scrollTop = thread.scrollHeight;
   }
-  function renderThread() { thread.replaceChildren(); seen.clear(); conversation.forEach(addMsg); if (!conversation.length) thread.append(h("div", { class: "msg system" }, "The agent will start the conversation once your sources are read.")); }
+  function highlights() {
+    if (!cards) return ["The agent is still reading your sources."];
+    const out = [];
+    for (const gap of cards.visuals?.gaps || []) out.push(`No matching visual: ${gap.what}`);
+    const auditMissing = cards.visuals?.audit?.missing_line_count || 0;
+    if (auditMissing) out.push(`${auditMissing} spoken line${auditMissing === 1 ? "" : "s"} name features no image fully proves.`);
+    const open = (cards.facts?.unknowns || []).filter((u) => u.status === "open");
+    for (const u of open) out.push(`Missing ${String(u.category || "information").replaceAll("_", " ")}: ${u.question}`);
+    for (const issue of cards.facts?.script_issues || []) out.push(`Script held back: ${issue}`);
+    if (!out.length) out.push(`${cards.visuals?.images?.length || 0} images and ${cards.visuals?.shots?.length || 0} video shots are aligned.`);
+    if (out.length < 5) out.push(`${cards.faq?.answered || 0} of ${cards.faq?.total || 0} FAQ answers are grounded in the sources.`);
+    if (out.length < 5) out.push(`${cards.facts?.facts?.length || 0} sourced facts are available to the guide.`);
+    return out.slice(0, 5);
+  }
+  function renderThread() {
+    thread.replaceChildren(); seen.clear();
+    thread.append(h("div", { class: "readiness" }, h("div", { class: "eyebrow" }, "Needs your attention"), h("ul", {}, ...highlights().map((x) => h("li", {}, x)))));
+  }
 
   async function send() {
     const text = dockTa.value.trim();
@@ -232,7 +270,7 @@ export function renderAlign(ctx) {
     addMsg({ role: "user", text: text || "(files)", t: Date.now() / 1000, attachments: files.map((f) => ({ name: f.name })) });
     const thinking = h("div", { class: "msg agent thinking" }, "thinking…"); thread.append(thinking); thread.scrollTop = thread.scrollHeight;
     sendBtn.disabled = true;
-    try { const r = await api.form(`/api/demos/${demoId}/align`, fd); thinking.remove(); addMsg(r.message); await reload(); }
+    try { const r = await api.form(`/api/demos/${demoId}/align`, fd); thinking.remove(); if (r.reply) addMsg({ role: "agent", text: r.reply, t: Date.now() / 1000 }); await reload(); }
     catch (e) { thinking.remove(); toast(e.message, true); }
     sendBtn.disabled = false;
   }
@@ -245,7 +283,7 @@ export function renderAlign(ctx) {
   window.addEventListener("hashchange", () => { document.removeEventListener("visibilitychange", onVis); clearInterval(poll); }, { once: true });
   async function reload() {
     state = await api.get(`/api/demos/${demoId}`); demo = state.demo; cards = state.cards; conversation = state.conversation || [];
-    renderCards(); conversation.forEach(addMsg); ctx.setRailStatus(demo.status);
+    renderCards(); renderThread(); ctx.setRailStatus(demo.status);
     if (demo.status === "ready") buildBar.classList.add("hidden");
   }
 

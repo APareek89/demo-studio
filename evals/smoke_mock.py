@@ -35,6 +35,13 @@ for angle, name in angle_files.items():
     r = c.post(f"/api/demos/{i}/visual/images", files={"file": (name, raw, "image/webp")}, data={"angle": angle})
     assert r.status_code == 200, r.text
 v = c.get(f"/api/demos/{i}/visual").json(); assert not [x for x in v["schema"] if x["required"] and x["key"] not in v["angles"]], v; print("visual views ready", len(v["angles"]))
+r = c.post(f"/api/demos/{i}/visual/views/prepare", json={}); assert r.status_code == 200, r.text
+for _ in range(100):
+    v = c.get(f"/api/demos/{i}/visual").json()
+    if v["status"] == "views_review": break
+    time.sleep(.05)
+assert v["status"] == "views_review" and not v["views_approved"], v
+r = c.post(f"/api/demos/{i}/visual/views/approve", json={}); assert r.status_code == 200 and r.json()["views_approved"], r.text
 r = c.post(f"/api/demos/{i}/visual/generate", json={}); assert r.status_code == 200, r.text
 v = wait_visual(i, "review"); a = v["attempts"][-1]; assert a["glb_url"] and a["real_count"] == 5, a
 glb = c.get(a["glb_url"]); assert glb.status_code == 200 and glb.content[:4] == b"glTF", "mock GLB not served"
