@@ -28,6 +28,7 @@ GENERIC_ANGLES = [
     ("front", "Front", True, "Straight on, entire product visible"),
     ("front_three_quarter", "Front ¾", True, "Best hero view; show front and one side"),
     ("side", "Side", True, "Full side profile"),
+    ("rear_three_quarter", "Rear ¾", True, "Show rear and one side"),
     ("rear", "Rear", True, "Straight rear view"),
     ("top", "Top", False, "Optional overhead view"),
     ("detail", "Detail", False, "Optional signature feature"),
@@ -88,6 +89,14 @@ def _url(demo_id: str, rel: str | None) -> str | None:
 
 def public_state(demo_id: str) -> dict:
     state = _read(demo_id)
+    lock = _locks.get(demo_id)
+    if state.get("status") == "generating" and (lock is None or not lock.locked()):
+        state.update({"status": "error", "progress": 0, "message": "The local worker stopped before completion",
+                      "error": "Generation was interrupted by a server restart. Retry the build; the saved Runware task id remains in version history."})
+        for attempt in state.get("attempts", []):
+            if attempt.get("number") == state.get("active_attempt") and attempt.get("status") == "running":
+                attempt.update({"status": "error", "error": state["error"], "completed_at": time.time()})
+        _write(demo_id, state)
     out = {**state, "schema": schema_for(store.load(demo_id)), "runware_ready": bool(config.RUNWARE_API_KEY or config.MOCK_LLM), "model": config.RUNWARE_MODEL}
     out["angles"] = {key: {**value, "url": _url(demo_id, value.get("path"))} for key, value in state.get("angles", {}).items()}
     if state.get("video"):
@@ -102,6 +111,9 @@ def _safe_ext(filename: str, fallback: str) -> str:
 
 
 def add_image(demo_id: str, angle: str, filename: str, data: bytes) -> dict:
+    state = _read(demo_id)
+    if state.get("status") == "generating":
+        raise ValueError("Skip or finish the current 3D build before replacing inputs")
     allowed = {x["key"] for x in schema_for(store.load(demo_id))}
     if angle not in allowed:
         raise ValueError("unknown product angle")
@@ -115,6 +127,7 @@ def add_image(demo_id: str, angle: str, filename: str, data: bytes) -> dict:
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
     try:
+        media._codecs()
         with Image.open(target) as im:
             im.verify()
         with Image.open(target) as im:
@@ -122,7 +135,6 @@ def add_image(demo_id: str, angle: str, filename: str, data: bytes) -> dict:
     except Exception:
         target.unlink(missing_ok=True)
         raise ValueError("file is not a readable image")
-    state = _read(demo_id)
     old = state.get("angles", {}).get(angle, {}).get("path")
     if old and old != rel:
         store.path(demo_id, old).unlink(missing_ok=True)
@@ -140,6 +152,8 @@ def add_image(demo_id: str, angle: str, filename: str, data: bytes) -> dict:
 
 def remove_image(demo_id: str, angle: str) -> dict:
     state = _read(demo_id)
+    if state.get("status") == "generating":
+        raise ValueError("Skip or finish the current 3D build before replacing inputs")
     item = state.get("angles", {}).pop(angle, None)
     if item and item.get("path"):
         store.path(demo_id, item["path"]).unlink(missing_ok=True)
@@ -151,6 +165,9 @@ def remove_image(demo_id: str, angle: str) -> dict:
 
 
 def add_video(demo_id: str, filename: str, data: bytes) -> dict:
+    state = _read(demo_id)
+    if state.get("status") == "generating":
+        raise ValueError("Skip or finish the current 3D build before replacing inputs")
     if not data:
         raise ValueError("video is empty")
     if len(data) > config.MAX_UPLOAD_MB * 1024 * 1024:
@@ -162,7 +179,6 @@ def add_video(demo_id: str, filename: str, data: bytes) -> dict:
     target = store.path(demo_id, rel)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
-    state = _read(demo_id)
     old = (state.get("video") or {}).get("path")
     if old and old != rel:
         store.path(demo_id, old).unlink(missing_ok=True)
@@ -291,8 +307,15 @@ def _worker(demo_id: str, attempt_no: int, cancel: threading.Event) -> None:
         primary = "front_three_quarter" if "front_three_quarter" in real else "front" if "front" in real else real[0]
         state["primary_angle"] = primary
         _write(demo_id, state)
+        def submitted(task_uuid: str) -> None:
+            current = _read(demo_id)
+            for attempt in current.get("attempts", []):
+                if attempt.get("number") == attempt_no:
+                    attempt["task_uuid"] = task_uuid
+            _write(demo_id, current)
         result = runware.generate(store.path(demo_id, state["angles"][primary]["path"]),
-                                  progress=lambda pct, msg: _set_progress(demo_id, max(45, pct), msg), cancelled=cancel.is_set)
+                                  progress=lambda pct, msg: _set_progress(demo_id, max(45, pct), msg), cancelled=cancel.is_set,
+                                  submitted=submitted)
         if cancel.is_set():
             raise RuntimeError("3D generation skipped")
         rel = f"visual/attempts/{attempt_no:03d}/model.glb"
@@ -365,9 +388,12 @@ def skip(demo_id: str) -> dict:
     if cancel:
         cancel.set()
     state = _read(demo_id)
-    state.update({"status": "skipped", "message": "Visual step skipped — you can return any time", "progress": 0, "error": ""})
+    submitted = any(a.get("number") == state.get("active_attempt") and a.get("task_uuid") for a in state.get("attempts", []))
+    state.update({"status": "skipped", "message": "Visual step skipped — you can return any time", "progress": 0, "error": "",
+                  "remote_may_continue": bool(submitted)})
     _write(demo_id, state)
-    runlog.event(demo_id, "Demo Visual · skipped", "The demo content flow remains available; saved inputs and prior attempts are preserved.")
+    note = " The submitted Runware job may still finish and bill because the provider has no documented cancel operation." if submitted and not config.MOCK_LLM else ""
+    runlog.event(demo_id, "Demo Visual · skipped", "The demo content flow remains available; saved inputs and prior attempts are preserved." + note)
     return public_state(demo_id)
 
 
@@ -402,11 +428,21 @@ def approve(demo_id: str) -> dict:
 
 def assets() -> list[dict]:
     out = []
+    seen = set()
     for item in store.list_demos():
         asset = item.get("visual_asset")
         if not asset:
             continue
+        seen.add(item["id"])
         out.append({**asset, "demo_id": item["id"], "demo_name": item["name"], "product": item.get("product", {})})
+    for item in cloud.list_cloud_demos():
+        if item.get("demo_id") in seen or not item.get("visual_asset"):
+            continue
+        demo_id = item["demo_id"]
+        asset = item["visual_asset"]
+        out.append({**asset, "demo_id": demo_id, "demo_name": item.get("name", demo_id), "product": item.get("product", {}),
+                    "glb_url": _url(demo_id, asset.get("glb")), "preview_url": _url(demo_id, asset.get("preview")),
+                    "angles": [{**a, "url": _url(demo_id, a.get("path"))} for a in asset.get("angles", [])]})
     return out
 
 

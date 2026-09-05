@@ -111,8 +111,10 @@ def cube_glb() -> bytes:
     while len(bin_chunk) % 4:
         bin_chunk += b"\x00"
     doc = {"asset": {"version": "2.0", "generator": "Demo Studio mock"}, "scene": 0,
+           "extensionsUsed": ["KHR_materials_unlit"],
            "scenes": [{"nodes": [0]}], "nodes": [{"mesh": 0}],
-           "meshes": [{"primitives": [{"attributes": {"POSITION": 0}, "indices": 1}]}],
+           "meshes": [{"primitives": [{"attributes": {"POSITION": 0}, "indices": 1, "material": 0}]}],
+           "materials": [{"pbrMetallicRoughness": {"baseColorFactor": [0.08, 0.37, 1.0, 1.0], "metallicFactor": 0.0, "roughnessFactor": 0.7}, "extensions": {"KHR_materials_unlit": {}}}],
            "buffers": [{"byteLength": len(bin_chunk)}],
            "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": len(positions) * 4, "target": 34962},
                            {"buffer": 0, "byteOffset": len(positions) * 4, "byteLength": len(indices) * 2, "target": 34963}],

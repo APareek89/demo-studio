@@ -12,6 +12,10 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 
 | Gate | Enforcer | Threshold / rule | Where |
 |---|---|---|---|
+| 3D image input | FUNCTION | exactly five required real product views; front ¾ preferred | `server/visual.py` |
+| 3D video input | FUNCTION + AGENT | ≥1 readable extracted frame; Gemini selects real angles and creates only missing views; a generated image is never primary | `server/visual.py`, `server/media.py` |
+| 3D provider | LIBRARY | one real image → async `microsoft:trellis-2@4b`; GLB header validated; exact returned cost traced | `server/llm/runware.py` |
+| 3D approval | USER | review-ready attempt must be explicitly approved before it enters the player bundle / My Assets | `server/visual.py` |
 | Read allowed | FUNCTION | ≥1 source; keys present or `MOCK_LLM=1` | `server/app.py` `read_sources` |
 | One run per demo | FUNCTION | a second read/build/revise while a thread is alive → 409 | `orchestrator._spawn` |
 | Build allowed | FUNCTION | all 4 approvals true | `orchestrator.start_build` |
@@ -32,6 +36,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Stage | Files |
 |---|---|
 | Shell, routes, SSE | `server/app.py`, `server/events.py`, `web/app.js`, `web/api.js` |
+| Demo Visual / assets | `server/visual.py`, `server/llm/runware.py`, `web/studio/visual.js`, `web/assets.js` |
 | Store | `server/store.py` (`data/demos/<id>/…`) |
 | Understand | `server/agents/understand.py`, `server/sources.py`, `server/llm/gemini.py`, `server/llm/claude.py`, `server/schemas.py` |
 | Plan | `server/agents/plan.py` |
@@ -53,7 +58,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 ```mermaid
 %% see docs/mermaid/01-master.mmd
 flowchart TD
-  U["USER adds sources"]:::ask --> READ["Read phase: Understand → Plan (02)"]:::fn --> CARDS["Align: 4 cards"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
+  V["Optional Demo Visual: five views or video → TRELLIS.2 → approve"]:::ask --> U["USER adds sources"]:::ask --> READ["Read phase: Understand → Plan (02)"]:::fn --> CARDS["Align: 6 cards"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
   APPR -- "yes" --> BUILD["Build: Author → Voice → Rehearsal → Bundle (04)"]:::fn --> PLAY["Rehearse: player (05)"]:::fn --> FB["feedback → align agent → rebuild"]:::agent
   APPR -- "no" --> ALIGN
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;

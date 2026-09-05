@@ -18,8 +18,10 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
 RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY", "").strip()
-RUNWARE_MODEL = os.getenv("RUNWARE_MODEL", "microsoft:trellis-2@4b").strip() or "microsoft:trellis-2@4b"
+RUNWARE_MODEL = "microsoft:trellis-2@4b"
 RUNWARE_RESOLUTION = int(os.getenv("RUNWARE_RESOLUTION", "1024"))
+if RUNWARE_RESOLUTION not in (512, 1024, 1536):
+    raise ValueError("RUNWARE_RESOLUTION must be 512, 1024 or 1536")
 SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3").strip() or "bulbul:v3"  # v2 deprecated Sep 2026
 SARVAM_STT_MODEL = os.getenv("SARVAM_STT_MODEL", "saarika:v2.5").strip() or "saarika:v2.5"
 # Speech: Sarvam is primary for the Indian context when its key is present; Gemini / Cloud TTS / browser fall back.

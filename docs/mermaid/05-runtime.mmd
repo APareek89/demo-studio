@@ -1,6 +1,7 @@
 %% 05 · Runtime — the player (web/player/player.js) and grounded Q&A (server/agents/qa.py)
 flowchart TD
   START["USER clicks Start<br/>[ask]"]:::ask
+  HERO["approved visual_asset stays centre stage<br/>[LIBRARY · model-viewer]<br/>GLB camera controls + auto-rotate; angle views form a labelled thumbnail strip"]:::data
   Q1["speak intake q1<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>'your name + what should this change for you' (P02 open question)"]:::data
   L1["listen ≤10 s<br/>[LIBRARY · Web Speech recognition]<br/>mic denied or silent → typed fallback input"]:::data
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
@@ -28,12 +29,13 @@ flowchart TD
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
   HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
 
-  START --> Q1 --> L1 --> P1 --> OPEN
+  START --> HERO --> Q1 --> L1 --> P1 --> OPEN
   P1 -.->|"in parallel"| PITCH --> PV
   OPEN --> DF --> FU --> REF --> PLAN
   PV --> DF
   PITCH -.->|"timeout / error"| FALL --> PLAN
   PLAN --> LINE
+  HERO -.->|"persistent while lines change"| LINE
   LINE --> CHK --> WAIT
   WAIT -- "continue / timeout" --> LINE
   WAIT -- "deeper" --> DEEP --> WAIT

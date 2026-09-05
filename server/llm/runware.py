@@ -62,7 +62,7 @@ def _first_data(payload: dict) -> dict:
 
 
 def _find_glb_url(obj) -> str | None:
-    if isinstance(obj, str) and (obj.lower().split("?")[0].endswith(".glb") or obj.startswith("http")):
+    if isinstance(obj, str) and obj.lower().split("?")[0].endswith(".glb"):
         return obj
     if isinstance(obj, dict):
         for key in ("outputURL", "modelURL", "url", "outputUrl", "modelUrl"):
@@ -82,20 +82,23 @@ def _find_glb_url(obj) -> str | None:
 
 
 def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda _p, _m: None,
-             cancelled: Callable[[], bool] = lambda: False) -> dict:
+             cancelled: Callable[[], bool] = lambda: False, submitted: Callable[[str], None] = lambda _task: None) -> dict:
     """Return GLB bytes and job metadata. Stop local polling when skipped."""
     if config.MOCK_LLM:
+        task_uuid = str(uuid.uuid4())
+        submitted(task_uuid)
         for pct, message in ((12, "Submitting to TRELLIS.2"), (42, "Building geometry"), (76, "Texturing the asset"), (100, "3D asset ready")):
             if cancelled():
                 raise RuntimeError("3D generation skipped")
             time.sleep(0.08)
             progress(pct, message)
-        return {"bytes": mock.cube_glb(), "task_uuid": str(uuid.uuid4()), "cost": 0.0, "response": {"status": "success", "mock": True}}
+        return {"bytes": mock.cube_glb(), "task_uuid": task_uuid, "cost": 0.0, "response": {"status": "success", "mock": True}}
     if not config.RUNWARE_API_KEY:
         raise RuntimeError("RUNWARE_API_KEY is missing in .env")
 
     data_uri, image_bytes = _image_data_uri(image_path)
     task_uuid = str(uuid.uuid4())
+    submitted(task_uuid)
     request = {"taskType": "3dInference", "taskUUID": task_uuid, "model": config.RUNWARE_MODEL,
                "inputs": {"image": data_uri}, "deliveryMethod": "async", "outputFormat": "GLB",
                "outputType": "URL", "includeCost": True,
@@ -134,9 +137,17 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
             url = _find_glb_url(final)
             if not url:
                 raise RuntimeError("Runware completed but returned no GLB URL")
-            result = client.get(url, timeout=180)
-            result.raise_for_status()
-            glb = result.content
+            chunks = bytearray()
+            with client.stream("GET", url, timeout=180) as result:
+                result.raise_for_status()
+                declared = int(result.headers.get("content-length") or 0)
+                if declared > 250 * 1024 * 1024:
+                    raise RuntimeError("Runware GLB is larger than the 250 MB safety limit")
+                for chunk in result.iter_bytes():
+                    chunks.extend(chunk)
+                    if len(chunks) > 250 * 1024 * 1024:
+                        raise RuntimeError("Runware GLB exceeded the 250 MB safety limit")
+            glb = bytes(chunks)
             if len(glb) < 20 or glb[:4] != b"glTF":
                 raise RuntimeError("Runware returned an invalid GLB file")
         cost = float(final.get("cost") or final.get("totalCost") or 0)

@@ -6,6 +6,26 @@
 
 <!-- Newest first. -->
 
+### 2026-09-05 — TRELLIS.2 takes one image, not the five-view set the workflow collects
+
+**Symptom:** The approved design described sending five uploaded or video-derived angles into the image-to-3D model, but Runware's TRELLIS.2 schema requires one `inputs.image`.
+**Why 1:** The product flow (collect multi-view evidence) was mistaken for the provider contract (single conditioning image).
+**Why 2:** The initial brief named an outcome and a model but did not include its exact request schema.
+**Why 3:** Provider validation happened after the UX had already been described as multi-view inference.
+**Deepest why type:** `design`
+**Action taken:** The studio still collects exactly five real views because they catch identity/angle mistakes and are useful during the demo. The strongest real front-three-quarter view alone goes to `microsoft:trellis-2@4b`; other views remain labelled thumbnails. Video uses Gemini to select real frames and creates only missing views, but a generated view can never be the primary input. Runware request/poll/cost metadata is traced without storing the data URI or key.
+**Preventive action:** Before fixing an external-model UX, validate the live provider schema and distinguish “inputs the user supplies” from “inputs the provider accepts”.
+
+### 2026-09-05 — A pre-demo 3D asset must stay in the content flow, not become a disconnected generator
+
+**Symptom:** A standalone 3D tool would create an asset but leave the voice-led demo showing full-size script images, making the expensive asset decorative.
+**Why 1:** Asset generation and demo authoring were initially separate navigation concepts.
+**Why 2:** `bundle.json` had no stable visual-asset field, so playback could not give 3D persistent priority.
+**Why 3:** Reuse, approval, version history and deletion were not part of the demo state machine.
+**Deepest why type:** `design`
+**Action taken:** Added optional Demo Visual as studio step 1, an approval-gated `visual_asset` on the demo and bundle, persistent 3D playback with small supporting thumbnails, attempt history, `My Assets`, AWS mirroring, and mock-backed end-to-end tests.
+**Preventive action:** Any generated media feature must define its owner, approval gate, bundle contract and exact runtime prominence before its provider call is implemented.
+
 ### 2026-09-03 — A multi-file patch script silently applied nothing (Python quoting)
 
 **Symptom:** After "backend batch 2" the compile step said OK but none of the edits were present; the smoke test still passed on old code.

@@ -10,7 +10,7 @@ interruptible product demo** a prospective buyer can run on the brand's website 
 agentic pipeline with a human checkpoint at every place the agent could be wrong.
 
 ## Users & jobs
-- **Brand / product-marketing user (Anand, testing as the builder):** drop in sources → approve
+- **Brand / product-marketing user (Anand, testing as the builder):** optionally create a reusable 3D product visual → drop in sources → approve
   what the agent found (visuals, facts, persona & voice, calls to action) → rehearse the demo as the
   customer → give feedback → publish. Wants a demo for *any* product, not just the sample.
 - **Prospective buyer (the demo's audience):** watch a 4–5 minute walkthrough shaped around their
@@ -28,14 +28,14 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
-end-to-end **locally**: Sources → *Reading your sources…* → Align (4 cards approved through the
+end-to-end **locally**: Demo Visual (five real views or a turntable video → reviewable TRELLIS.2 GLB) → Sources → *Reading your sources…* → Align (six cards approved through the
 prompt dock) → *Building your demo…* → Rehearse (voice intake, segments with visuals, grounded Q&A,
-check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. `MOCK_LLM=1` exercises the
+check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. An approved GLB stays centre stage while images appear as labelled supporting evidence; approved assets can be reused across demos. `MOCK_LLM=1` exercises the
 same path without keys.
 
 ## Out of scope (for now)
-Database, auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
-measurement, video clipping/ffmpeg, mobile-specific player layout, payments.
+Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
+measurement, photogrammetric multi-image reconstruction, payments.
 
 ## Added 2026-09-03 (batch 2)
 - A demo is at most ~3 minutes of narration before Q&A: opening ≤ 60 s, main pitch 60–90 s, one "more features" block 60–90 s, close ≤ 30 s. The guide signposts, translates numbers into the customer's routine, and keeps technical detail for questions.

@@ -7,7 +7,7 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 # one-time
 python3 -m venv .venv
 .venv/bin/python -m pip install --prefer-binary --only-binary=cryptography -r requirements.txt
-cp .env.example .env   # add ANTHROPIC_API_KEY, GEMINI_API_KEY and (for Indian-language speech) SARVAM_API_KEY
+cp .env.example .env   # add ANTHROPIC_API_KEY, GEMINI_API_KEY, RUNWARE_API_KEY and (for Indian-language speech) SARVAM_API_KEY
 
 # run
 .venv/bin/uvicorn server.app:app --port 8877
@@ -17,10 +17,12 @@ cp .env.example .env   # add ANTHROPIC_API_KEY, GEMINI_API_KEY and (for Indian-l
 No keys yet? `MOCK_LLM=1 .venv/bin/uvicorn server.app:app --port 8877` runs the whole flow with
 schema-shaped fake outputs (plumbing only, no intelligence).
 
-**Flow:** Demos → New demo → **Sources** (video/images, catalogue, brand guide, product URL) →
+**Flow:** My Demos → New demo → **Demo Visual** (optional: five real views or a turntable video → Runware TRELLIS.2 → approve) → **Sources** (video/images, catalogue, brand guide, product URL) →
 *Reading your sources…* → **Align** (approve Visuals · Facts · Persona & voice · Calls to action
 through the prompt dock) → *Building your demo…* → **Rehearse** (run it as the customer, give
 feedback, it rebuilds).
+
+An approved 3D asset remains the main visual throughout the demo. Script images and video shots appear as smaller supporting evidence, and the reusable GLB is available under **My Assets**. TRELLIS.2 accepts one conditioning image, so Demo Studio sends the strongest real front-three-quarter view; the other angles support review and playback.
 
 Speech: Sarvam (Bulbul TTS + Saarika STT) is primary when its key is set, Gemini falls back, then the browser voice.
 
@@ -36,7 +38,7 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 - **Languages**: pick several; the first is the main script, the rest are translated and voiced at build; the player offers a chooser before Start; Q&A answers in the chosen language.
 - **Observability** tab: every Claude / Gemini / Sarvam call with stage, latency, tokens, cost, system prompt, input and response (`data/demos/<id>/trace.jsonl`, `GET /api/demos/<id>/trace`).
 - Player: ⏸ / ⏹ controls, image motion for image-only demos, at most 3 fact rows per card. Align: Approve on every card + Approve all + lightbox. Light-blue theme. Voice picker with preview. Bundled ffmpeg (`imageio-ffmpeg`).
-- QA: `evals/smoke_mock.py` (free), `evals/qa_accept.py` (free, upload failure cases), `evals/qa_real.py images|video [--lang hi-IN] [--resume <id>]` (paid; writes `docs/qa/<id>.md`). Report: `docs/QA-2026-09-03.md`.
+- QA: `evals/smoke_mock.py` (free), `evals/qa_visual.py` (free, 3D gates/failures), `evals/qa_accept.py` (free, upload failure cases), `evals/qa_real.py images|video [--lang hi-IN] [--resume <id>]` (paid; writes `docs/qa/<id>.md`). Report: `docs/QA-2026-09-03.md`.
 
 ## What changed on 2026-09-04
 - **Workflow is a LangGraph graph** (`server/graph.py`): router → understand → plan → align_enter → align_wait (interrupt: waits for your approvals / messages) → author → voice → rehearsal → bundle → finish. Checkpoints in `data/graph.sqlite`. `GET /api/workflow` returns the graph as Mermaid (also `docs/mermaid/00-workflow.mmd`). `pip install "langgraph-cli[inmem]"` then `langgraph dev` opens it in LangGraph Studio.

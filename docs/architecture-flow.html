@@ -58,10 +58,18 @@ graph TD;
 	classDef first fill-opacity:0
 	classDef last fill:#bfb6fc
 </pre>
-<h2>01 · Master flow — Demo Studio (Sources → Align → Rehearse)</h2>
-<pre class="mermaid">%% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
+<h2>01 · Master flow — Demo Studio (Demo Visual → Sources → Align → Rehearse)</h2>
+<pre class="mermaid">%% 01 · Master flow — Demo Studio (Demo Visual → Sources → Align → Rehearse)
 flowchart TD
   LG[&quot;Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py&lt;br/&gt;see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints&quot;]:::data
+  V[&quot;USER optionally creates Demo Visual&lt;br/&gt;[ask · Studio › Demo Visual]&lt;br/&gt;five real views OR turntable video&quot;]:::ask
+  VP{&quot;input mode?&lt;br/&gt;[FUNCTION · visual.py]&quot;}:::dec
+  FIVE[&quot;validate exactly five required real views&lt;br/&gt;[FUNCTION]&quot;]:::fn
+  FRAMES[&quot;extract video frames&lt;br/&gt;[LIBRARY · ffmpeg]&quot;]:::fn
+  ANGLES[&quot;select real angles; create only missing views&lt;br/&gt;[AGENT · Gemini 3.6 Flash + image model]&lt;br/&gt;generated views labelled; never primary&quot;]:::agent
+  RW[&quot;one strongest REAL front ¾ image → async 3D&lt;br/&gt;[LIBRARY · Runware TRELLIS.2 microsoft:trellis-2@4b]&lt;br/&gt;poll progress · trace exact cost · output GLB&quot;]:::data
+  VG{&quot;USER approves?&lt;br/&gt;[ask · rotate + inspect]&quot;}:::dec
+  ASSET[&quot;visual_asset + My Assets&lt;br/&gt;[DATA · local + S3/DynamoDB]&lt;br/&gt;persistent main player visual&quot;]:::data
   U[&quot;USER adds sources&lt;br/&gt;[ask · Studio › Sources]&lt;br/&gt;in: video, images, PDF/DOCX/TXT, product URL, pasted brand text&quot;]:::ask
   ING[&quot;store.add_*_source&lt;br/&gt;[FUNCTION · server/store.py]&lt;br/&gt;in: uploads / URL&lt;br/&gt;out: sources[] in data/demos/id/demo.json&quot;]:::fn
   READBTN[&quot;POST /api/demos/id/read&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;gate: ≥1 source · keys present or MOCK_LLM=1&quot;]:::fn
@@ -80,6 +88,13 @@ flowchart TD
   FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · claude-opus-5]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
   LIB[&quot;Demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&quot;]:::data
 
+  V --&gt; VP
+  VP -- &quot;five images&quot; --&gt; FIVE --&gt; RW
+  VP -- &quot;video&quot; --&gt; FRAMES --&gt; ANGLES --&gt; RW
+  RW --&gt; VG
+  VG -- &quot;approve&quot; --&gt; ASSET --&gt; U
+  VG -- &quot;regenerate&quot; --&gt; RW
+  V -.-&gt; &quot;skip&quot; --&gt; U
   U --&gt; ING --&gt; READBTN --&gt; READ --&gt; SSE --&gt; OVER1 --&gt; CARDS
   CARDS --&gt; DOCK --&gt; ALIGN --&gt; CARDS
   CARDS --&gt; APPR
@@ -230,6 +245,7 @@ flowchart TD
 <pre class="mermaid">%% 05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)
 flowchart TD
   START[&quot;USER clicks Start&lt;br/&gt;[ask]&quot;]:::ask
+  HERO[&quot;approved visual_asset stays centre stage&lt;br/&gt;[LIBRARY · model-viewer]&lt;br/&gt;GLB camera controls + auto-rotate; angle views form a labelled thumbnail strip&quot;]:::data
   Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;your name + what should this change for you&#x27; (P02 open question)&quot;]:::data
   L1[&quot;listen ≤10 s&lt;br/&gt;[LIBRARY · Web Speech recognition]&lt;br/&gt;mic denied or silent → typed fallback input&quot;]:::data
   P1[&quot;parse name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
@@ -257,12 +273,13 @@ flowchart TD
   CLOSE[&quot;advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
   HAND[&quot;handoff summary&lt;br/&gt;[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json&quot;]:::data
 
-  START --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; OPEN
+  START --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; OPEN
   P1 -.-&gt;|&quot;in parallel&quot;| PITCH --&gt; PV
   OPEN --&gt; DF --&gt; FU --&gt; REF --&gt; PLAN
   PV --&gt; DF
   PITCH -.-&gt;|&quot;timeout / error&quot;| FALL --&gt; PLAN
   PLAN --&gt; LINE
+  HERO -.-&gt;|&quot;persistent while lines change&quot;| LINE
   LINE --&gt; CHK --&gt; WAIT
   WAIT -- &quot;continue / timeout&quot; --&gt; LINE
   WAIT -- &quot;deeper&quot; --&gt; DEEP --&gt; WAIT
