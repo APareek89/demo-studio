@@ -13,7 +13,7 @@
 **Why 2:** The mock path never exercises HTTP status bodies, multi-row polling responses, or provider download URLs.
 **Why 3:** The integration tests covered the visual workflow but not the raw provider contract and its failure accounting.
 **Deepest why type:** `code`
-**Action taken:** Parse Runware errors before HTTP raising, translate known credit/key failures into actionable messages, preflight wallet balance before video analysis, prefer completed polling rows, handle malformed progress safely, record rejected jobs at $0, preserve exact returned cost when a later local step fails, require HTTPS asset URLs, and download through a separate unauthenticated client so the API key is never forwarded to a CDN. Added twelve free provider-contract cases in `evals/qa_runware.py`.
+**Action taken:** Parse Runware errors before HTTP raising, translate known credit/key failures into actionable messages, preflight both the documented balance-object and live balance-number shapes before video analysis, prefer completed polling rows, handle malformed progress safely, record rejected jobs at $0, preserve exact returned cost when a later local step fails, require HTTPS asset URLs, and download through a separate unauthenticated client so the API key is never forwarded to a CDN. Added thirteen free provider-contract cases in `evals/qa_runware.py`.
 **Preventive action:** Every external paid provider gets a no-network contract suite for 4xx bodies, transient retries, multi-result polling, cost accounting, output validation and credential isolation before its first live run.
 
 ### 2026-09-05 — TRELLIS.2 takes one image, not the five-view set the workflow collects

@@ -18,7 +18,7 @@ Demo Studio is a local FastAPI + no-build ES-module app. It turns product media 
 
 - ✅ `evals/smoke_mock.py`: image-to-3D → approve → complete demo build → bundle/player asset → reuse/delete, plus the previous pipeline, multi-language and grounding checks.
 - ✅ `evals/qa_visual.py`: 20/20 gates and failure paths (missing views/video, corrupt image, bad angle, duplicate build, locked inputs, skip/regenerate, GLB validation, one-time approval).
-- ✅ `evals/qa_runware.py`: 12/12 no-spend provider-contract cases (wallet preflight, actionable 4xx, retries, multi-row polling, HTTPS output, credential isolation and exact/rejected cost accounting).
+- ✅ `evals/qa_runware.py`: 13/13 no-spend provider-contract cases (both documented/live wallet shapes, actionable 4xx, retries, multi-row polling, HTTPS output, credential isolation and exact/rejected cost accounting).
 - ✅ video path: ffmpeg frame extraction → real-angle selection → mock TRELLIS.2 GLB.
 - ✅ `evals/qa_accept.py`: 24/24 upload and failure cases.
 - ✅ Browser QA: new upload screen, 3D review, My Assets, large viewer and 3D-led player at desktop, 820 px and 430 px widths. Free GitHub screenshot skill installed and run; OS capture is black for the in-app browser, so final page inspection used the browser-native captures.

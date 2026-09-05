@@ -85,6 +85,9 @@ try:
         "taskUUID": body[0]["taskUUID"], "balance": {"amount": 1.0, "freeBalance": 0, "currency": "USD"}
     }]}
     check("positive balance passes preflight", bool(runware.preflight().get("available")))
+
+    runware._post = lambda _client, body: {"data": [{"taskUUID": body[0]["taskUUID"], "balance": 1.0}]}
+    check("live scalar balance shape passes preflight", bool(runware.preflight().get("available")))
 finally:
     runware._post = original_post
     config.MOCK_LLM = original_mock

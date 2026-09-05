@@ -183,21 +183,26 @@ def preflight() -> dict | None:
     except Exception:
         return None
     row = _task_data(payload, task_uuid)
-    balance = row.get("balance") if isinstance(row.get("balance"), dict) else None
-    if not balance:
+    balance = row.get("balance")
+    if balance is None:
         return None
+    currency = "USD"
     try:
-        paid = float(balance.get("amount") or 0)
-        free = float(balance.get("freeBalance") or 0)
+        if isinstance(balance, dict):
+            available = max(0.0, float(balance.get("amount") or 0)) + max(0.0, float(balance.get("freeBalance") or 0))
+            currency = str(balance.get("currency") or currency)
+        else:
+            # The live REST API currently returns a scalar even though the docs show an object.
+            available = float(balance)
     except (TypeError, ValueError):
         return None
-    if max(0.0, paid) + max(0.0, free) <= 0:
+    if available <= 0:
         raise RunwareAPIError(
             "Runware: insufficientCredits: Insufficient credits. Top up the Runware wallet, then try again.",
             status_code=402,
             codes=("insufficientCredits",),
         )
-    return {"available": True, "currency": str(balance.get("currency") or "USD")}
+    return {"available": True, "currency": currency}
 
 
 def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda _p, _m: None,
