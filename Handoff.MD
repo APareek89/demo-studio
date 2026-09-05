@@ -28,7 +28,7 @@ Demo Studio is a local FastAPI + no-build ES-module app. It turns product media 
 
 ## Current blocker / next input
 
-- **Runware is connected, but the wallet needs credits.** The first real task `03eedd6b-26ac-40b8-9a9a-89ffc6504a95` was rejected as `insufficientCredits`. After topping up, retry the existing Demo Visual; the request matches the official TRELLIS.2 schema and rejected work is now shown as $0 with the provider's actionable message.
+- **Runware is connected and the funded wallet passes live preflight.** The first real task `03eedd6b-26ac-40b8-9a9a-89ffc6504a95` was rejected as `insufficientCredits`; that historical row is corrected to $0. Retry the existing Demo Visual when ready—the app now checks the wallet before video analysis and shows the provider's actionable error if anything blocks submission.
 - Gemini image generation previously returned quota 429; video still succeeds when all five real angles are visible, but missing-angle synthesis needs Gemini image quota/billing.
 - Existing product follow-ups remain: Sarvam credit top-up; FAQ PDF question extraction; translated filler/FAQ audio; optional publish/embed step.
 
