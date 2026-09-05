@@ -451,7 +451,7 @@ export function mountPlayer(host, bundle, api) {
     const iv = bundle.intro_video;
     if (!iv || !iv.url || iv.enabled === false || S.introPlayed) return run === S.run;
     S.introPlayed = true;
-    const ok = await speakF("before_video", "Before we begin, here's a short film to give you a feel for it. I'll pick things up right after.", run);
+    const ok = await speakF("before_video", "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.", run);
     if (!ok) return false;
     el.img.style.display = "none"; el.img.classList.remove("kb");
     const v = el.video; v.src = iv.url; v.muted = false; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
@@ -466,7 +466,8 @@ export function mountPlayer(host, bundle, api) {
     });
     try { v.pause(); } catch (e) {}
     v.muted = true; setChips([]);
-    return done && run === S.run;
+    if (!done || run !== S.run) return false;
+    return speakF("after_video", "Now, let's get into what matters to you.", run);
   }
 
   // ---------- pause / stop ----------

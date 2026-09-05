@@ -28,7 +28,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Bridge grounding | FUNCTION | a runtime bridge with a figure/claim and no fact id is dropped (`bridge_dropped`) | `agents/pitch.py` |
 | Decline categories | AGENT rule + FUNCTION | pricing, discounts, finance, insurance, features, availability, warranty/service, comparisons → decline when not in the registry; comparisons only from competitor URLs when `settings.competition=on`, always with a verify caveat | `agents/qa.py` |
 | Uploads | FUNCTION | 1 GB per file; AVIF/HEIC converted for the models, originals served; videos play from the original (ffmpeg optional) | `config.MAX_UPLOAD_MB`, `server/media.py` |
-| Intake listen | FUNCTION | 10 s per question; mic denied → typed fallback | `player.js` `intakeWait` |
+| Intake + opening film | FUNCTION | greet and ask one needs question; mic denied → typed fallback; then play the optional film with audio and an explicit spoken return before the interactive walkthrough | `player.js` `runIntake`, `playIntroFilm` |
 | Approvals reset | FUNCTION | revise(understand) resets visuals + facts; edits mark author stale | `orchestrator._revise`, `apply_actions` |
 
 ## File index

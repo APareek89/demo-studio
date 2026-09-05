@@ -110,8 +110,8 @@ def tripped_providers() -> dict[str, str]:
 
 
 FILLERS = {
-    "ack_with_context": "Thanks for sharing that — it helps me keep this focused on what you need. Bear with me for a quick introduction first, and then I'll come straight to your points.",
-    "ack_no_context": "No problem — let me give you a quick introduction, and you can steer me any time.",
+    "ack_with_context": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+    "ack_no_context": "No problem — you can steer me at any time.",
     "bridge_to_custom": "Now, let me get to what you asked about.",
     "hold_on_question": "Good question — give me a couple of seconds while I check that for you.",
     "hold_on_lookup": "One moment while I pull that up.",
@@ -127,7 +127,8 @@ FILLERS = {
     "focus_first": "Got it — let me show you the part that matters most for that first.",
     "how_i_go": "Here's how I'll go about it.",
     "no_guess": "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it.",
-    "before_video": "Before we begin, here's a short film to give you a feel for it. I'll pick things up right after.",
+    "before_video": "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.",
+    "after_video": "Now, let's get into what matters to you.",
 }
 
 
