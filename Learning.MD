@@ -6,6 +6,15 @@
 
 <!-- Newest first. -->
 
+### 2026-09-05 — QA playback needed a single quiet-mode control
+
+**Symptom:** End-to-end browser QA could play recorded narration, browser speech or the promotional film aloud, disturbing someone using the same machine even when the test conversation itself used typed chat.
+**Why 1:** The player had separate audio objects for narration, browser speech and film playback, with no shared mute state.
+**Why 2:** The film path explicitly unmuted its video element, so muting one narration object would not make the session quiet.
+**Deepest why type:** `design`
+**Action taken:** Added one accessible top-bar mute control backed by shared player state. `?mute=1` starts a QA session muted; the control updates current and future recorded narration, browser speech and film audio without pausing the visual flow. Added deterministic coverage and verified the control plus a typed intake in the real browser.
+**Preventive action:** Every new audible runtime path must subscribe to the player's shared mute state and be covered by the visual-sync regression.
+
 ### 2026-09-05 — Image tags were not strong enough to prove script-to-screen alignment
 
 **Symptom:** The existing post-author picture matcher could explain why “gearbox” mapped to a gear image, but its final Haiku pass only saw Gemini's earlier text tags, not the uploaded pixels. Multi-feature lines could therefore look related while still leaving one spoken feature invisible. Runtime fact cards also repeated long source/caveat prose and could overlap the topic badge.

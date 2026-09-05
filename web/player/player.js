@@ -11,9 +11,10 @@ const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
 
 export function mountPlayer(host, bundle, api) {
+  const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
+    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
     leadPromptShown: false, leadQuestion: "", leadReason: "" };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
@@ -54,7 +55,7 @@ export function mountPlayer(host, bundle, api) {
   const root = h("div", { class: "pl" },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
-      h("div", { class: "right" }, api.downloadUrl ? h("a", { class: "icon-btn link-btn download-btn", href: api.downloadUrl, download: `${bundle.name || "demo"}.mp4`, title: "Download MP4" }, "MP4 ↓") : null, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
+      h("div", { class: "right" }, api.downloadUrl ? h("a", { class: "icon-btn link-btn download-btn", href: api.downloadUrl, download: `${bundle.name || "demo"}.mp4`, title: "Download MP4" }, "MP4 ↓") : null, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.muteBtn = h("button", { class: "icon-btn", title: "Mute audio", "aria-label": "Mute audio", "aria-pressed": "false", onclick: () => toggleMute() }, "🔊"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
     el.stage = h("div", { class: "pl-stage" },
       el.media = h("div", { class: "pl-media" + (asset ? " has-3d" : "") },
         asset ? (el.model = h("model-viewer", { src: asset.glb_url, poster: asset.preview_url || "", "camera-controls": true, "auto-rotate": true, "shadow-intensity": "1", "environment-image": "neutral", "interaction-prompt": "none", alt: `Interactive 3D view of ${bundle.product?.name || bundle.name}` })) : null,
@@ -93,6 +94,20 @@ export function mountPlayer(host, bundle, api) {
     handleQuestion(text);
   }
   function toggleDrawer(force) { const on = force === undefined ? !el.drawer.classList.contains("open") : force; el.drawer.classList.toggle("open", on); if (on) { el.chatBtn.classList.remove("unread"); setTimeout(() => el.q.focus(), 80); } }
+  function updateMuteUi() {
+    el.muteBtn.textContent = S.muted ? "🔇" : "🔊";
+    el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio";
+    el.muteBtn.setAttribute("aria-label", el.muteBtn.title);
+    el.muteBtn.setAttribute("aria-pressed", String(S.muted));
+    el.muteBtn.classList.toggle("on", S.muted);
+  }
+  function toggleMute() {
+    S.muted = !S.muted;
+    if (S.audio) S.audio.muted = S.muted;
+    if (S.utterance) S.utterance.volume = S.muted ? 0 : 1;
+    el.video.muted = S.muted || !el.media.classList.contains("film-on");
+    updateMuteUi();
+  }
   function setChips(list) { el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => resolveWait(c.value) }, c.label))); }
   function clearTimer() { if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   function newRun() { return ++S.run; }
@@ -216,7 +231,7 @@ export function mountPlayer(host, bundle, api) {
     S.bt.voice = vs.sort((a, b) => score(b) - score(a))[0] || null; return S.bt.voice;
   }
   function speakBrowser(text) {
-    return new Promise((res) => { const my = ++S.ttsToken; const u = new SpeechSynthesisUtterance(text); const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; const t = setTimeout(fin, Math.max(1500, text.length * 75) + 4000); u.onend = () => { clearTimeout(t); fin(); }; u.onerror = () => { clearTimeout(t); fin(); }; try { speechSynthesis.speak(u); } catch (e) { fin(); } });
+    return new Promise((res) => { const my = ++S.ttsToken; const u = new SpeechSynthesisUtterance(text); S.utterance = u; const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1; let done = false; const fin = () => { if (done) return; done = true; if (S.utterance === u) S.utterance = null; res(my === S.ttsToken); }; const t = setTimeout(fin, Math.max(1500, text.length * 75) + 4000); u.onend = () => { clearTimeout(t); fin(); }; u.onerror = () => { clearTimeout(t); fin(); }; try { speechSynthesis.speak(u); } catch (e) { fin(); } });
   }
   async function audioUrlFor(text, preset) { if (preset) return preset; if (!useServerVoice) return null; if (S.ttsCache.has(text)) return S.ttsCache.get(text); const p = api.tts(text).catch(() => null); S.ttsCache.set(text, p); return p; }
   function prefetch(items) { if (!useServerVoice) return; for (const it of items) if (it && !it.audio && it.text) audioUrlFor(it.text); }
@@ -226,12 +241,12 @@ export function mountPlayer(host, bundle, api) {
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
     if (run !== S.run) return false;
     let ok;
-    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); S.audio = a; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; const safeFallback = () => { if (done) return; done = true; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
+    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); a.muted = S.muted; S.audio = a; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; const safeFallback = () => { if (done) return; done = true; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
     else ok = useServerVoice ? await captionOnly(text, run) : await speakBrowser(text);
     if (ok && run === S.run) setStatus("idle", "Ready");
     return ok && run === S.run;
   }
-  function cancelSpeech() { S.ttsToken++; if (S.captionTimer) { clearTimeout(S.captionTimer); S.captionTimer = null; } try { speechSynthesis.cancel(); } catch (e) {} if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; } }
+  function cancelSpeech() { S.ttsToken++; if (S.captionTimer) { clearTimeout(S.captionTimer); S.captionTimer = null; } try { speechSynthesis.cancel(); } catch (e) {} S.utterance = null; if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; } }
 
   // ---------- voice in ----------
   function encodeWav(chunks, inRate, outRate = 16000) {
@@ -544,7 +559,7 @@ export function mountPlayer(host, bundle, api) {
     if (!ok) return false;
     el.img.style.display = "none"; el.img.classList.remove("kb"); el.media.classList.remove("evidence-on", "card-on"); el.card.classList.remove("on", "dominant"); el.media.classList.add("film-on");
     if (el.support) el.support.classList.remove("on"); el.focus.classList.remove("on");
-    const v = el.video; v.src = iv.url; v.muted = false; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
+    const v = el.video; v.src = iv.url; v.muted = S.muted; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
     setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
     el.chips.replaceChildren(h("button", { class: "chip" , onclick: () => { S.skipFilm = true; } }, "Skip the film"));
     const done = await new Promise((res) => {
@@ -576,6 +591,7 @@ export function mountPlayer(host, bundle, api) {
   function destroy() { interruptAll(); if (S.modelTimer) clearTimeout(S.modelTimer); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }
 
   renderCtas();
+  updateMuteUi();
   if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model");
   else showVisual({ kind: "image", url: bundle.media?.hero, focus: "" }, "evidence");
   if (!asset && bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 }, "evidence");

@@ -64,6 +64,8 @@ check("runtime fact cards are keyword-sized and omit source locators", "function
 check("post-script audit inspects real images with Gemini", "_vision_batches" in visuals_source and "gemini.structured" in visuals_source and 'store.write_json(demo_id, "visual-audit.json"' in visuals_source)
 check("alignment preview exposes feature coverage and gaps", "Gemini confirms:" in align_ui and '"visual check"' in align_ui and "missing_features" in align_ui)
 check("lead capture triggers at two questions or sixty percent", "S.questions.length >= 2 || progress >= 0.6" in player)
+check("temporary mute covers narration, browser voice and the opening film", 'a.muted = S.muted' in player and 'u.volume = S.muted ? 0 : 1' in player and 'v.muted = S.muted' in player)
+check("mute control is keyboard and screen-reader accessible", 'aria-label": "Mute audio"' in player and 'aria-pressed' in player and 'onclick: () => toggleMute()' in player)
 
 failed = [item for item in results if not item[1]]
 for name, ok, detail in results:
