@@ -39,7 +39,7 @@ CLAUDE_PLAN_MODEL = os.getenv("CLAUDE_PLAN_MODEL", "claude-opus-5").strip() or "
 CLAUDE_LITE_MODEL = os.getenv("CLAUDE_LITE_MODEL", "claude-haiku-4-5-20251001").strip() or "claude-haiku-4-5-20251001"  # mechanical passes: translation, picture matching
 GEMINI_IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image").strip() or "gemini-3.1-flash-lite-image"  # background clean-up + mascot
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip() or "gemini-3.6-flash"  # the proven vision tier (video shots + image tags); lite was the MVP downgrade
-GEMINI_TTS_MODEL = "gemini-2.5-flash-preview-tts"
+GEMINI_TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview").strip() or "gemini-3.1-flash-tts-preview"
 GCLOUD_TTS_VOICE = "en-IN-Chirp3-HD-Aoede"
 GEMINI_TTS_VOICE = "Sulafat"
 
@@ -61,6 +61,6 @@ def health() -> dict:
         "stt_provider": STT_PROVIDER,
         "mock": MOCK_LLM,
         "claude_model": CLAUDE_MODEL, "claude_plan_model": CLAUDE_PLAN_MODEL, "claude_lite_model": CLAUDE_LITE_MODEL, "gemini_image_model": GEMINI_IMAGE_MODEL,
-        "gemini_model": GEMINI_MODEL,
+        "gemini_model": GEMINI_MODEL, "gemini_tts_model": GEMINI_TTS_MODEL,
         "runware_model": RUNWARE_MODEL,
     }

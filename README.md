@@ -24,7 +24,7 @@ feedback, it rebuilds).
 
 An approved 3D asset remains the main visual throughout the demo. Script images and video shots appear as smaller supporting evidence, and the reusable GLB is available under **My Assets**. TRELLIS.2 accepts one conditioning image, so Demo Studio sends the strongest real front-three-quarter view; the other angles support review and playback.
 
-Speech: Sarvam (Bulbul TTS + Saarika STT) is primary when its key is set, Gemini falls back, then the browser voice.
+Speech: Sarvam (Bulbul TTS + Saarika STT) is primary when its key is set, Gemini 3.1 Flash TTS falls back, then the browser voice.
 
 Everything a demo produces lives in `data/demos/<id>/` as JSON + media. Facts carry citations; the
 guide can only say what's in the registry ("no citation, no claim"), at authoring and at runtime.

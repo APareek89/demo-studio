@@ -122,50 +122,42 @@ def _pcm_to_wav(pcm: bytes, rate: int, channels: int = 1, bits: int = 16) -> byt
 
 
 def tts(text: str, voice_name: str, style: str = "") -> tuple[bytes, str]:
-    """Returns (audio_bytes, extension). Gemini returns raw PCM; we wrap it as WAV."""
+    """Returns (audio_bytes, extension) through Gemini's current Interactions audio contract."""
     if config.MOCK_LLM:
         return mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
-    t = _types()
     prompt = (f"{style.strip()} " if style else "") + text
     t0 = time.time()
-    resp = _retry(lambda: client().models.generate_content(
+    resp = _retry(lambda: client().interactions.create(
         model=config.GEMINI_TTS_MODEL,
-        contents=prompt,
-        config=t.GenerateContentConfig(
-            response_modalities=["AUDIO"],
-            speech_config=t.SpeechConfig(voice_config=t.VoiceConfig(prebuilt_voice_config=t.PrebuiltVoiceConfig(voice_name=voice_name))),
-        ),
+        input=prompt,
+        response_format={"type": "audio"},
+        generation_config={"speech_config": [{"voice": voice_name}]},
     ))
     try:
-        um = resp.usage_metadata
-        usage.record("gemini-tts", config.GEMINI_TTS_MODEL, input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0, chars=len(text))
-        usage.trace("gemini-tts", config.GEMINI_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=text, response="[audio]", input_tokens=um.prompt_token_count or 0, output_tokens=um.candidates_token_count or 0, chars=len(text))
+        um = getattr(resp, "usage", None)
+        inp = getattr(um, "input_tokens", 0) or getattr(um, "input_token_count", 0) or 0
+        out = getattr(um, "output_tokens", 0) or getattr(um, "output_token_count", 0) or 0
+        usage.record("gemini-tts", config.GEMINI_TTS_MODEL, input_tokens=inp, output_tokens=out, chars=len(text))
+        usage.trace("gemini-tts", config.GEMINI_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=text, response="[audio]", input_tokens=inp, output_tokens=out, chars=len(text))
     except Exception:
         pass
-    part = None
-    for cand in resp.candidates or []:
-        for p in (cand.content.parts if cand.content else []) or []:
-            if getattr(p, "inline_data", None) and p.inline_data.data:
-                part = p
-                break
-        if part:
-            break
-    if part is None:
+    audio = getattr(resp, "output_audio", None)
+    if audio is None or not getattr(audio, "data", None):
         raise RuntimeError("Gemini TTS returned no audio")
-    data = part.inline_data.data
+    data = audio.data
     if isinstance(data, str):
         import base64
         data = base64.b64decode(data)
-    mime = part.inline_data.mime_type or "audio/L16;codec=pcm;rate=24000"
-    if "pcm" in mime or "L16" in mime:
-        rate = 24000
-        for chunk in mime.split(";"):
-            if chunk.strip().startswith("rate="):
-                rate = int(chunk.strip()[5:])
-        return _pcm_to_wav(data, rate), "wav"
+    mime = str(getattr(audio, "mime_type", "") or "audio/l16").lower()
+    if "wav" in mime:
+        return data, "wav"
     if "mp3" in mime or "mpeg" in mime:
         return data, "mp3"
-    return data, "wav"
+    if "aac" in mime or "m4a" in mime:
+        return data, "m4a"
+    rate = int(getattr(audio, "sample_rate", 0) or 24000)
+    channels = int(getattr(audio, "channels", 0) or 1)
+    return _pcm_to_wav(data, rate, channels), "wav"
 
 
 def describe_error(e: Exception) -> str:

@@ -6,6 +6,23 @@
 
 <!-- Newest first. -->
 
+### 2026-09-05 — Gemini fallback passed configuration checks but returned no audio
+
+**Symptom:** Sarvam produced a valid WAV, but a forced Sarvam→Gemini fallback ended with “Gemini TTS returned no audio.”
+**Why 1:** The fallback still used the legacy `generate_content` audio response shape while Google's current speech contract uses the Interactions API and exposes `output_audio`.
+**Why 2:** Provider health only checked whether a key was present, and the existing probe called Gemini directly rather than forcing the actual fallback path through `voice.render_line`.
+**Deepest why type:** `code`
+**Action taken:** Moved Gemini speech to the current Interactions audio contract, upgraded the default to `gemini-3.1-flash-tts-preview`, kept the model environment-overridable, and verified a synthetic Sarvam failure produces a playable RIFF/WAV through the real fallback chain.
+**Preventive action:** Voice-chain QA must force the primary provider to fail and validate the fallback file header; a configured key or direct provider call does not prove fallback wiring.
+
+### 2026-09-05 — The opening film needed an explicit conversational handoff
+
+**Symptom:** Runtime order was already needs question → film → demo, but Sources copy incorrectly said the film played before the guide started, and the guide resumed after the film without an explicit return line.
+**Why 1:** The film was added as a latency-covering mechanism and its customer-facing transition was not represented in the flow diagram or bundle eval.
+**Deepest why type:** `design`
+**Action taken:** Tightened the acknowledgement, kept film audio unmuted, added a recorded post-film return line, corrected Sources copy, updated the runtime diagram, and made the smoke test require both film handoff clips.
+**Preventive action:** Any full-screen media interlude needs recorded entry and exit lines plus a flow-level test for its exact position.
+
 ### 2026-09-05 — Runware's useful credit error was hidden behind a generic HTTP 400
 
 **Symptom:** A real TRELLIS.2 build stopped with only `400 Bad Request`, while Runware's task audit contained `insufficientCredits`; Observability also showed the fallback asset price even though the rejected task cost nothing.
