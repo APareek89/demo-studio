@@ -366,6 +366,11 @@ def start(demo_id: str) -> dict:
     if not config.MOCK_LLM and not config.RUNWARE_API_KEY:
         lock.release()
         raise ValueError("RUNWARE_API_KEY is missing in .env")
+    try:
+        runware.preflight()
+    except Exception:
+        lock.release()
+        raise
     attempt_no = max([a.get("number", 0) for a in state.get("attempts", [])] or [0]) + 1
     state["attempts"].append({"number": attempt_no, "status": "running", "started_at": time.time(), "model": config.RUNWARE_MODEL})
     state.update({"status": "generating", "active_attempt": attempt_no, "progress": 1, "message": "Preparing the 3D build", "error": ""})

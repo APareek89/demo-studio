@@ -12,6 +12,7 @@ import time
 import uuid
 from pathlib import Path
 from typing import Callable
+from urllib.parse import urlparse
 
 import httpx
 from PIL import Image
@@ -21,6 +22,38 @@ from . import mock
 
 API = "https://api.runware.ai/v1"
 TRANSIENT = {429, 500, 502, 503, 504}
+TRANSIENT_CODES = {"timeoutProvider", "providerRateLimitExceeded", "rateLimit"}
+
+
+class RunwareAPIError(RuntimeError):
+    """A provider error safe to show in the studio and traces."""
+
+    def __init__(self, message: str, *, status_code: int | None = None, codes: tuple[str, ...] = ()):
+        super().__init__(message)
+        self.status_code = status_code
+        self.codes = codes
+
+
+def _error_message(errors: list, status_code: int | None = None) -> tuple[str, tuple[str, ...]]:
+    parts: list[str] = []
+    codes: list[str] = []
+    for error in errors:
+        if not isinstance(error, dict):
+            parts.append(str(error)[:300])
+            continue
+        code = str(error.get("code") or "providerError")
+        codes.append(code)
+        if code == "insufficientCredits":
+            message = "Insufficient credits. Top up the Runware wallet, then try again."
+        elif code == "invalidApiKey":
+            message = "The Runware API key is invalid or has been revoked."
+        else:
+            message = str(error.get("message") or "The provider rejected the request").strip()
+        parameter = error.get("parameter")
+        parts.append(f"{code}: {message}" + (f" (parameter: {parameter})" if parameter else ""))
+    if not parts:
+        parts.append(f"HTTP {status_code or 'request'} failed")
+    return "Runware: " + "; ".join(parts)[:700], tuple(codes)
 
 
 def _image_data_uri(path: Path) -> tuple[str, int]:
@@ -41,33 +74,69 @@ def _post(client: httpx.Client, body: list[dict]) -> dict:
             time.sleep(wait)
         try:
             response = client.post(API, json=body)
+            try:
+                payload = response.json()
+            except (ValueError, json.JSONDecodeError):
+                payload = {}
+            errors = payload.get("errors") or [] if isinstance(payload, dict) else []
+            message, codes = _error_message(errors, response.status_code)
             if response.status_code in TRANSIENT:
-                last = RuntimeError(f"Runware temporarily unavailable ({response.status_code})")
+                last = RunwareAPIError(message, status_code=response.status_code, codes=codes)
                 continue
-            response.raise_for_status()
-            payload = response.json()
-            errors = payload.get("errors") or []
             if errors:
-                message = "; ".join(str(e.get("message") or e) for e in errors)
-                raise RuntimeError("Runware: " + message[:500])
+                error = RunwareAPIError(message, status_code=response.status_code, codes=codes)
+                if any(code in TRANSIENT_CODES for code in codes):
+                    last = error
+                    continue
+                raise error
+            if not response.is_success:
+                detail = response.text.strip().replace("\n", " ")[:300]
+                raise RunwareAPIError(
+                    f"Runware: HTTP {response.status_code} failed" + (f" — {detail}" if detail else ""),
+                    status_code=response.status_code,
+                )
             return payload
         except (httpx.TimeoutException, httpx.NetworkError) as exc:
             last = exc
-    raise RuntimeError(str(last or "Runware request failed"))
+    if last:
+        raise last
+    raise RuntimeError("Runware request failed")
 
 
-def _first_data(payload: dict) -> dict:
+def _task_data(payload: dict, task_uuid: str) -> dict:
     data = payload.get("data") or []
-    return data[0] if isinstance(data, list) and data else (data if isinstance(data, dict) else {})
+    if isinstance(data, dict):
+        return data
+    rows = [row for row in data if isinstance(row, dict)] if isinstance(data, list) else []
+    matching = [row for row in rows if not row.get("taskUUID") or row.get("taskUUID") == task_uuid]
+    rows = matching or rows
+    for row in reversed(rows):
+        if _find_glb_url(row) or str(row.get("status") or "").lower() in {"success", "completed", "error", "failed", "cancelled"}:
+            return row
+    return max(rows, key=lambda row: _progress_value(row.get("progress")), default={})
+
+
+def _progress_value(value) -> int:
+    try:
+        return max(0, min(100, int(float(value or 0))))
+    except (TypeError, ValueError):
+        return 0
+
+
+def _safe_https_url(value) -> str | None:
+    if not isinstance(value, str):
+        return None
+    parsed = urlparse(value)
+    return value if parsed.scheme == "https" and bool(parsed.hostname) else None
 
 
 def _find_glb_url(obj) -> str | None:
     if isinstance(obj, str) and obj.lower().split("?")[0].endswith(".glb"):
-        return obj
+        return _safe_https_url(obj)
     if isinstance(obj, dict):
-        for key in ("outputURL", "modelURL", "url", "outputUrl", "modelUrl"):
-            val = obj.get(key)
-            if isinstance(val, str) and val.startswith("http"):
+        for key in ("outputURL", "modelURL", "model3DURL", "meshURL", "outputUrl", "modelUrl", "model3DUrl", "meshUrl"):
+            val = _safe_https_url(obj.get(key))
+            if val:
                 return val
         for value in obj.values():
             found = _find_glb_url(value)
@@ -79,6 +148,56 @@ def _find_glb_url(obj) -> str | None:
             if found:
                 return found
     return None
+
+
+def _cost_value(row: dict) -> float | None:
+    raw = row.get("cost") if row.get("cost") is not None else row.get("totalCost")
+    try:
+        return float(raw) if raw is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _row_error(row: dict) -> str:
+    nested = row.get("error") if isinstance(row.get("error"), dict) else {}
+    code = nested.get("code") or row.get("code") or "providerError"
+    message = nested.get("message") or row.get("message") or "The provider reported an error"
+    return f"Runware generation failed ({code}): {str(message)[:400]}"
+
+
+def preflight() -> dict | None:
+    """Check auth/balance before video analysis or a paid 3D submission; never retain account details."""
+    if config.MOCK_LLM:
+        return {"available": True, "mock": True}
+    if not config.RUNWARE_API_KEY:
+        raise RunwareAPIError("Runware: The API key is missing from .env", codes=("missingApiKey",))
+    headers = {"Authorization": f"Bearer {config.RUNWARE_API_KEY}", "Content-Type": "application/json"}
+    task_uuid = str(uuid.uuid4())
+    try:
+        with httpx.Client(headers=headers, timeout=httpx.Timeout(20, connect=10)) as client:
+            payload = _post(client, [{"taskType": "accountManagement", "taskUUID": task_uuid, "operation": "getDetails"}])
+    except RunwareAPIError as exc:
+        if set(exc.codes) & {"invalidApiKey", "insufficientCredits"}:
+            raise
+        return None  # Account telemetry must not become a new availability dependency.
+    except Exception:
+        return None
+    row = _task_data(payload, task_uuid)
+    balance = row.get("balance") if isinstance(row.get("balance"), dict) else None
+    if not balance:
+        return None
+    try:
+        paid = float(balance.get("amount") or 0)
+        free = float(balance.get("freeBalance") or 0)
+    except (TypeError, ValueError):
+        return None
+    if max(0.0, paid) + max(0.0, free) <= 0:
+        raise RunwareAPIError(
+            "Runware: insufficientCredits: Insufficient credits. Top up the Runware wallet, then try again.",
+            status_code=402,
+            codes=("insufficientCredits",),
+        )
+    return {"available": True, "currency": str(balance.get("currency") or "USD")}
 
 
 def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda _p, _m: None,
@@ -107,11 +226,14 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
     headers = {"Authorization": f"Bearer {config.RUNWARE_API_KEY}", "Content-Type": "application/json"}
     started = time.time()
     final: dict = {}
+    provider_cost: float | None = None
+    accepted = False
     try:
         with httpx.Client(headers=headers, timeout=httpx.Timeout(90, connect=20)) as client:
             progress(8, "Submitting to TRELLIS.2")
-            submitted = _post(client, [request])
-            first = _first_data(submitted)
+            submission = _post(client, [request])
+            accepted = True
+            first = _task_data(submission, task_uuid)
             if first.get("status") in ("success", "completed") and _find_glb_url(first):
                 final = first
             else:
@@ -122,25 +244,30 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
                         raise RuntimeError("3D generation skipped; remote processing may finish separately")
                     time.sleep(delay)
                     polled = _post(client, [{"taskType": "getResponse", "taskUUID": task_uuid}])
-                    row = _first_data(polled)
+                    row = _task_data(polled, task_uuid)
                     status = str(row.get("status") or "processing").lower()
-                    pct = int(float(row.get("progress") or 0))
+                    pct = _progress_value(row.get("progress"))
                     progress(max(10, min(96, pct or 20)), "TRELLIS.2 is building the 3D asset")
                     if status in ("success", "completed") or _find_glb_url(row):
                         final = row
                         break
                     if status in ("error", "failed", "cancelled"):
-                        raise RuntimeError("Runware generation failed: " + str(row.get("message") or row)[:400])
+                        raise RuntimeError(_row_error(row))
                     delay = min(10, delay * 1.6)
                 if not final:
                     raise RuntimeError("Runware generation timed out after 20 minutes")
             url = _find_glb_url(final)
             if not url:
                 raise RuntimeError("Runware completed but returned no GLB URL")
+            provider_cost = _cost_value(final)
             chunks = bytearray()
-            with client.stream("GET", url, timeout=180) as result:
+            # Never forward the Runware bearer token to a provider/CDN download URL.
+            with httpx.stream("GET", url, timeout=180, follow_redirects=True) as result:
                 result.raise_for_status()
-                declared = int(result.headers.get("content-length") or 0)
+                try:
+                    declared = int(result.headers.get("content-length") or 0)
+                except ValueError:
+                    declared = 0
                 if declared > 250 * 1024 * 1024:
                     raise RuntimeError("Runware GLB is larger than the 250 MB safety limit")
                 for chunk in result.iter_bytes():
@@ -150,14 +277,15 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
             glb = bytes(chunks)
             if len(glb) < 20 or glb[:4] != b"glTF":
                 raise RuntimeError("Runware returned an invalid GLB file")
-        cost = float(final.get("cost") or final.get("totalCost") or 0)
         elapsed = time.time() - started
-        usage.record("runware-3d", config.RUNWARE_MODEL, seconds=elapsed, usd=cost or None)
+        usage.record("runware-3d", config.RUNWARE_MODEL, seconds=elapsed, usd=provider_cost)
         usage.trace("runware-3d", config.RUNWARE_MODEL, latency_ms=elapsed * 1000,
-                    user=json.dumps(safe_request), response=json.dumps({"taskUUID": task_uuid, "status": final.get("status"), "cost": cost, "bytes": len(glb)}), usd=cost or None)
+                    user=json.dumps(safe_request), response=json.dumps({"taskUUID": task_uuid, "status": final.get("status"), "cost": provider_cost, "bytes": len(glb)}), usd=provider_cost)
         progress(100, "3D asset ready")
-        return {"bytes": glb, "task_uuid": task_uuid, "cost": cost, "response": final}
+        return {"bytes": glb, "task_uuid": task_uuid, "cost": provider_cost or 0.0, "response": final}
     except Exception as exc:
+        if accepted:
+            usage.record("runware-3d", config.RUNWARE_MODEL, seconds=time.time() - started, usd=provider_cost)
         usage.trace("runware-3d", config.RUNWARE_MODEL, latency_ms=(time.time() - started) * 1000,
-                    user=json.dumps(safe_request), error=str(exc)[:400])
+                    user=json.dumps(safe_request), error=str(exc)[:400], usd=provider_cost if accepted else 0.0)
         raise

@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+### 2026-09-05 — Runware's useful credit error was hidden behind a generic HTTP 400
+
+**Symptom:** A real TRELLIS.2 build stopped with only `400 Bad Request`, while Runware's task audit contained `insufficientCredits`; Observability also showed the fallback asset price even though the rejected task cost nothing.
+**Why 1:** The REST client called `raise_for_status()` before parsing Runware's JSON `errors` array.
+**Why 2:** The mock path never exercises HTTP status bodies, multi-row polling responses, or provider download URLs.
+**Why 3:** The integration tests covered the visual workflow but not the raw provider contract and its failure accounting.
+**Deepest why type:** `code`
+**Action taken:** Parse Runware errors before HTTP raising, translate known credit/key failures into actionable messages, preflight wallet balance before video analysis, prefer completed polling rows, handle malformed progress safely, record rejected jobs at $0, preserve exact returned cost when a later local step fails, require HTTPS asset URLs, and download through a separate unauthenticated client so the API key is never forwarded to a CDN. Added twelve free provider-contract cases in `evals/qa_runware.py`.
+**Preventive action:** Every external paid provider gets a no-network contract suite for 4xx bodies, transient retries, multi-result polling, cost accounting, output validation and credential isolation before its first live run.
+
 ### 2026-09-05 — TRELLIS.2 takes one image, not the five-view set the workflow collects
 
 **Symptom:** The approved design described sending five uploaded or video-derived angles into the image-to-3D model, but Runware's TRELLIS.2 schema requires one `inputs.image`.

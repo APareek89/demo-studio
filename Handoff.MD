@@ -18,16 +18,17 @@ Demo Studio is a local FastAPI + no-build ES-module app. It turns product media 
 
 - ✅ `evals/smoke_mock.py`: image-to-3D → approve → complete demo build → bundle/player asset → reuse/delete, plus the previous pipeline, multi-language and grounding checks.
 - ✅ `evals/qa_visual.py`: 20/20 gates and failure paths (missing views/video, corrupt image, bad angle, duplicate build, locked inputs, skip/regenerate, GLB validation, one-time approval).
+- ✅ `evals/qa_runware.py`: 12/12 no-spend provider-contract cases (wallet preflight, actionable 4xx, retries, multi-row polling, HTTPS output, credential isolation and exact/rejected cost accounting).
 - ✅ video path: ffmpeg frame extraction → real-angle selection → mock TRELLIS.2 GLB.
 - ✅ `evals/qa_accept.py`: 24/24 upload and failure cases.
 - ✅ Browser QA: new upload screen, 3D review, My Assets, large viewer and 3D-led player at desktop, 820 px and 430 px widths. Free GitHub screenshot skill installed and run; OS capture is black for the in-app browser, so final page inspection used the browser-native captures.
-- 📊 Pulse: ~65% feature · ~20% support · ~15% rework. Support was provider/schema and browser QA setup; rework was the nested UI render and responsive header found during QA.
+- 📊 Pulse: ~25% feature · ~30% support · ~45% rework. The main rework was replacing mock-only assumptions with the real Runware error, polling, cost and download contracts.
 - ✅ JavaScriptCore parse checks and Python compile checks.
 - ⏹ Loop stays OFF by user decision. Full FMEA remains opt-in per `.power-coding/config.json`; Sentinel/Pulse checks stay on.
 
 ## Current blocker / next input
 
-- **Live Runware generation is not testable yet.** `/Users/macbook/Documents/mysecrets` contains no `RUNWARE_API_KEY`; its `Render_Key` is a Render.com key and must not be sent to Runware. Add `RUNWARE_API_KEY=…` to `.env`, restart, then do one paid real-asset run. The UI and all non-paid paths are complete.
+- **Runware is connected, but the wallet needs credits.** The first real task `03eedd6b-26ac-40b8-9a9a-89ffc6504a95` was rejected as `insufficientCredits`. After topping up, retry the existing Demo Visual; the request matches the official TRELLIS.2 schema and rejected work is now shown as $0 with the provider's actionable message.
 - Gemini image generation previously returned quota 429; video still succeeds when all five real angles are visible, but missing-angle synthesis needs Gemini image quota/billing.
 - Existing product follow-ups remain: Sarvam credit top-up; FAQ PDF question extraction; translated filler/FAQ audio; optional publish/embed step.
 
