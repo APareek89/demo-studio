@@ -181,7 +181,15 @@ def duplicate_demo(demo_id: str) -> dict:
 def write_json(demo_id: str, name: str, obj: Any) -> None:
     p = path(demo_id, name)
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(obj, indent=2, ensure_ascii=False))
+    # Readers may poll stage artifacts while a worker is updating them. Publish
+    # the complete payload in one replace so a partial JSON document can never
+    # be mistaken for a missing artifact and reset live state.
+    tmp = p.with_name(f".{p.name}.{secrets.token_hex(6)}.tmp")
+    try:
+        tmp.write_text(json.dumps(obj, indent=2, ensure_ascii=False))
+        tmp.replace(p)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def read_json(demo_id: str, name: str, default: Any = None) -> Any:

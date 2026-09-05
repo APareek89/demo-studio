@@ -373,3 +373,13 @@
 **Deepest why type:** `code`
 **Action taken:** Build now fails unless every FAQ answer and filler has audio, while retaining completed files for a rate-limit-safe retry. Harrier v2 rebuilt with 88/88 referenced WAVs populated.
 **Preventive action:** Completeness gates must enumerate every runtime branch, not only the main narration path.
+
+### 2026-09-06 — Audi Q5 passed only after envelope, intent and concurrency failures were made explicit
+
+**Symptom:** The 34.8 MB brochure exceeded the primary reader envelope; early chat runs leaked a prior product name and overreached on cheapest/scope questions; a voice retry raised `dictionary changed size during iteration`; and the final mocked sweep caught a polled JSON artifact being read mid-write and reset.
+**Why 1:** The source pipeline treated provider capacity as fact quality, several compound intents reused generic lexical matching, shared provider state was unsynchronized, and stage JSON writes were not atomic.
+**Deepest why type:** `architecture`
+**Action taken:** Oversized reads can use only a source-validating reviewed manifest; Q5 price, performance, equipment, comparison, photo-proof, finance, ground-clearance and ADAS intents now have narrow fail-closed contracts; voice circuit state is locked; runtime gaps self-heal and deduplicate; JSON artifacts publish by atomic replacement; the async visual test uses a deterministic concurrency barrier.
+**Evidence:** Audi Q5 `dm_302ab4aa` is ready at v1 with 45 approved facts, 25/28 FAQ answers, complete 88-item playable audio coverage, three muted ten-question sessions, responsive checks at 320/390/768/1280 px, a fully decoded 157.54-second MP4, and free suites at 98/98, 32/32, 17/17 and 24/24 plus the full mocked pipeline.
+**Cost:** $0.5682 recorded total; the only paid visual was Rodin task `f68aff15-6e2f-4bdb-8594-ed430159ed16` at exactly $0.40.
+**Preventive action:** Treat provider envelopes, runtime registries and file-backed stage state as explicit system boundaries; every release gate must include adversarial intent tests and a polled background-worker path.

@@ -4,6 +4,7 @@ from __future__ import annotations
 import os
 import struct
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -16,6 +17,7 @@ sys.path.insert(0, str(ROOT))
 from fastapi.testclient import TestClient
 from server import config, store
 from server.app import app
+from server.llm import runware
 
 c = TestClient(app)
 results: list[tuple[str, bool, str]] = []
@@ -89,6 +91,21 @@ for _ in range(100):
 check("view review stops before Runware", state["status"] == "views_review" and not state["attempts"], str(state.get("status")))
 r = c.post(f"/api/demos/{demo_id}/visual/views/approve", json={})
 check("view approval recorded", r.status_code == 200 and r.json().get("views_approved"), r.text[:100])
+# Hold the first mock generation until the concurrency assertions complete.
+# Without this barrier, a fast machine can finish the 320 ms mock before the
+# next TestClient request and turn this into a scheduler-dependent test.
+real_generate = runware.generate
+release_first_generate = threading.Event()
+
+
+def held_generate(*args, **kwargs):
+    while not release_first_generate.wait(.01):
+        if kwargs.get("cancelled", lambda: False)():
+            raise RuntimeError("3D generation skipped")
+    return real_generate(*args, **kwargs)
+
+
+runware.generate = held_generate
 r1 = c.post(f"/api/demos/{demo_id}/visual/generate", json={})
 r2 = c.post(f"/api/demos/{demo_id}/visual/generate", json={})
 check("first async build accepted", r1.status_code == 200)
@@ -98,6 +115,8 @@ r = c.post(f"/api/demos/{demo_id}/visual/images", data={"angle": "front"}, files
 check("inputs cannot change during a build", r.status_code == 400, r.text[:100])
 r = c.post(f"/api/demos/{demo_id}/visual/skip", json={})
 check("skip remains available while building", r.status_code == 200 and r.json()["status"] == "skipped")
+release_first_generate.set()
+runware.generate = real_generate
 for _ in range(50):
     state = c.get(f"/api/demos/{demo_id}/visual").json()
     if state["status"] == "skipped":

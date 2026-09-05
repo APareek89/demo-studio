@@ -181,13 +181,18 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     try:
         out = claude.structured(FACTS_SYSTEM, blocks, schemas.FactsOut, max_tokens=32000)
     except Exception as e:
-        if claude._provider_unavailable(e):
+        # A visually rich brochure can exceed the provider's request envelope even
+        # though its human-reviewed fact manifest is small and complete. Treat that
+        # explicit manifest as the safe fallback; do not discard the whole read.
+        manifest = _verified_manifest(demo_id, demo)
+        request_too_large = any(marker in str(e).lower() for marker in ("request_too_large", "request too large", "maximum size"))
+        if claude._provider_unavailable(e) or (request_too_large and manifest):
             # Gemini cannot consume Anthropic's in-message PDF block, but the
             # source layer already has a guarded text extractor for every doc.
             # Preserve source boundaries and citations in a text-only retry.
-            manifest = _verified_manifest(demo_id, demo)
             if manifest:
-                emit("Primary document reader unavailable — using the explicit verified-fact manifest…")
+                reason = "request was too large" if request_too_large else "primary document reader was unavailable"
+                emit(f"The {reason} — using the explicit verified-fact manifest…")
                 out = manifest
             else:
                 emit("Primary document reader unavailable — retrying from extracted source text…")

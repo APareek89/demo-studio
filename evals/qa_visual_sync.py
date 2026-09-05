@@ -127,7 +127,7 @@ harrier_local = {"product": {"name": "Tata Harrier"}, "facts": [
     {"id": "F11", "approved": True, "claim": "Global NCAP applicability", "value": "Applies across diesel variants, excluding Fearless Ultra and above"},
 ]}
 seat_answer = qa._local_grounded_answer("How many people does the Harrier seat?", harrier_local, {"ctas": []})
-check("local fallback distinguishes seating capacity from powered-seat features", seat_answer.fact_ids == ["F1"])
+check("local fallback distinguishes seating capacity from powered-seat features", seat_answer.fact_ids == ["F1"] and "Tata Harrier" in seat_answer.answer)
 transmission_answer = qa._local_grounded_answer("Which transmissions are available with diesel?", harrier_local, {"ctas": []})
 check("local fallback answers fuel transmission questions from transmission facts", transmission_answer.fact_ids == ["F3", "F4"])
 emi_answer = qa._local_grounded_answer("Can you guarantee the EMI shown?", harrier_local, {"ctas": []})
@@ -149,6 +149,40 @@ finance = qa._local_grounded_answer("Show me synthetic EMI illustration A", {"fa
 ]}, {"ctas": []})
 check("a named synthetic finance illustration returns only that scenario with its caveat", finance.answered and finance.fact_ids == ["F1"] and "₹21,139" in finance.answer and "₹26,469" not in finance.answer and "Not a finance offer" in finance.answer)
 check("local QA fallback never substitutes ex-showroom for city on-road price", not qa._local_grounded_answer("What will the on-road price be in my city?", {"facts": [{"id": "F1", "approved": True, "claim": "Starting price", "value": "10 lakh", "conditions": "ex-showroom"}]}, {"ctas": []}).answered)
+audi_local = {"product": {"name": "Audi Q5"}, "facts": [
+    {"id": "A0", "approved": True, "claim": "Variant count", "value": "2 variants: Premium Plus and Technology"},
+    {"id": "A1", "approved": True, "claim": "Premium Plus ex-showroom price", "value": "₹65,55,000", "conditions": "subject to dealer confirmation"},
+    {"id": "A2", "approved": True, "claim": "Technology ex-showroom price", "value": "₹70,73,001", "conditions": "subject to dealer confirmation"},
+    {"id": "A3", "approved": True, "claim": "Seating capacity", "value": "Room for five"},
+    {"id": "A4", "approved": True, "claim": "Acceleration", "value": "0–100 km/h in 6.1 seconds"},
+    {"id": "A5", "approved": True, "claim": "Top speed", "value": "240 km/h"},
+    {"id": "A6", "approved": True, "claim": "MMI navigation plus with MMI touch", "value": "25.65 cm display", "conditions": "Technology variant only"},
+    {"id": "A7", "approved": True, "claim": "Audi Phone Box", "value": "Wireless charging", "conditions": "Technology variant only"},
+    {"id": "A8", "approved": True, "claim": "Representation disclaimer", "value": "Configurations shown may vary from vehicles supplied in India", "conditions": "Do not infer fitted equipment from a picture alone"},
+    {"id": "A9", "approved": True, "claim": "SYNTHETIC EMI illustration A", "value": "₹1,08,857", "conditions": "Not a finance offer"},
+    {"id": "A10", "approved": True, "claim": "Comparison — BMW X3 starting price", "value": "₹75,70,000", "conditions": "reviewed 2026-09-05"},
+    {"id": "A11", "approved": True, "claim": "Comparison response rule", "value": "Verify current prices"},
+]}
+audi_prices = qa._local_grounded_answer("What are the prices for Premium Plus and Technology?", audi_local, {"ctas": []})
+check("variant price questions cite both named variant rows without unrelated facts", audi_prices.fact_ids == ["A1", "A2"])
+audi_seats = qa._local_grounded_answer("How many people does the Q5 seat?", audi_local, {"ctas": []})
+check("seating answers use the current product name rather than a hard-coded model", audi_seats.fact_ids == ["A3"] and "Audi Q5" in audi_seats.answer and "Harrier" not in audi_seats.answer)
+audi_speed = qa._local_grounded_answer("How quickly does it accelerate and what top speed is listed?", audi_local, {"ctas": []})
+check("compound performance questions return acceleration and top speed", audi_speed.fact_ids == ["A4", "A5"])
+audi_mmi = qa._local_grounded_answer("Is MMI touch standard on every variant?", audi_local, {"ctas": []})
+check("variant-scoped feature answers state the Technology-only condition", audi_mmi.fact_ids == ["A6"] and "Technology variant only" in audi_mmi.answer)
+audi_phone = qa._local_grounded_answer("Which variant gets Audi Phone Box with wireless charging?", audi_local, {"ctas": []})
+check("named branded features do not collapse to generic connectivity", audi_phone.fact_ids == ["A7"] and "Technology variant only" in audi_phone.answer)
+audi_picture = qa._local_grounded_answer("Does the picture prove fitted equipment?", audi_local, {"ctas": []})
+check("pictures cannot be used as proof of fitted equipment", audi_picture.fact_ids == ["A8"] and audi_picture.answer.startswith("No."))
+audi_emi = qa._local_grounded_answer("Can you guarantee this synthetic EMI?", audi_local, {"ctas": []})
+check("synthetic EMI guarantee questions explicitly decline a guarantee", audi_emi.fact_ids == ["A9"] and audi_emi.answer.startswith("No."))
+audi_comp = qa._local_grounded_answer("How does its price compare with the BMW X3?", audi_local, {"ctas": []})
+check("comparison can use a named variant price without inventing a cheapest label", audi_comp.fact_ids == ["A1", "A10", "A11"] and "Premium Plus" in audi_comp.answer and "cheapest" not in audi_comp.answer.lower())
+audi_cheapest = qa._local_grounded_answer("How many variants are there and which is the cheapest?", audi_local, {"ctas": []})
+check("cheapest-variant questions state the line-up and reviewed prices without assigning the label", audi_cheapest.fact_ids == ["A0", "A1", "A2"] and "2 variants" in audi_cheapest.answer and "₹65,55,000" in audi_cheapest.answer and "permanent 'cheapest' label" in audi_cheapest.answer)
+check("official ground-clearance questions do not match unrelated official CTAs", not qa._local_grounded_answer("What is the official ground clearance?", {**audi_local, "facts": audi_local["facts"] + [{"id": "A12", "approved": True, "claim": "Official test-drive booking", "value": "Available online"}]}, {"ctas": []}).answered)
+check("variant-scoped ADAS questions do not collapse to a generic variant count", not qa._local_grounded_answer("Which active driver-assistance features are fitted to each variant?", audi_local, {"ctas": []}).answered)
 rejected_script = {"segments": [{"id": "s", "role": "intro", "lines": [{"id": "l", "text": "Six airbags.", "fact_ids": ["F1"], "visual": {"kind": "none", "ref": ""}}]}], "closing": []}
 author.validate(rejected_script, {"facts": [{"id": "F1", "approved": False}], "shots": [], "images": []})
 check("rejected facts are stripped from script citations", rejected_script["segments"][0]["lines"][0]["fact_ids"] == [] and rejected_script["segments"][0]["lines"][0]["unverified"])
@@ -157,6 +191,8 @@ check("direct script editor can clear a misleading visual binding", "Visual ref 
 check("minor direct wording edits can keep an already-reviewed visual map", 'body.get("realign_visuals", True)' in (ROOT / "server" / "app.py").read_text())
 check("direct pitch editor avoids a second model call", "Edit pitch brief" in align_ui and '/align/plan`' in align_ui and "async def edit_aligned_plan" in (ROOT / "server" / "app.py").read_text())
 app_py = (ROOT / "server" / "app.py").read_text()
+store_source = (ROOT / "server" / "store.py").read_text()
+check("polled JSON artifacts are published atomically", "tmp.replace(p)" in store_source and "secrets.token_hex(6)" in store_source)
 check("validated direct edits preserve completed model stages", all(marker in app_py for marker in (
     'set_stage(demo_id, "understand", "done", message="direct fact edit saved and validated")',
     'set_stage(demo_id, "understand", "done", message="fact approval reviewed directly")',
@@ -167,10 +203,15 @@ check("validated direct edits preserve completed model stages", all(marker in ap
 check("extracted product framing has a direct correction path", "Edit product summary" in align_ui and "async def edit_aligned_product" in (ROOT / "server" / "app.py").read_text())
 check("QA provider outage uses a cooldown instead of retrying per question", "_qa_reasoning_unavailable_until" in (ROOT / "server" / "agents" / "qa.py").read_text())
 check("local QA fallback records required trace latency", 'latency_ms=(time.monotonic() - started) * 1000' in (ROOT / "server" / "agents" / "qa.py").read_text())
+understand_source = (ROOT / "server" / "agents" / "understand.py").read_text()
+check("oversized catalogues can use only an explicit verified-fact manifest", "request_too_large" in understand_source and "_verified_manifest(demo_id, demo)" in understand_source)
+check("answerable runtime gaps are cleared instead of staying stale", "_clear_runtime_unknown(demo_id, question)" in (ROOT / "server" / "agents" / "qa.py").read_text())
+check("runtime gaps already covered by extraction are not duplicated", "len(qterms & uterms) / len(uterms) >= 0.75" in (ROOT / "server" / "agents" / "qa.py").read_text())
 check("runtime image map excludes non-visual capacities and hidden safety claims", "NON_VISUAL_FACT.search(cue)" in visuals_source)
 check("direct script correction refreshes the safe runtime image map", 'und["image_map"] = visuals.build_map(und, demo)' in (ROOT / "server" / "app.py").read_text())
 check("voice sample re-record updates the reviewed persona artifact", 'plan["voice_sample_audio"] = rel' in (ROOT / "server" / "app.py").read_text() and "voice_agent.voice_name_for" in (ROOT / "server" / "agents" / "align.py").read_text())
 check("a build cannot report ready with a partially voiced FAQ bank", "Voice bank incomplete" in (ROOT / "server" / "agents" / "voice.py").read_text() and "partial audio was checkpointed" in (ROOT / "server" / "agents" / "voice.py").read_text())
+check("voice-provider circuit state is locked across parallel render workers", "_TRIP_LOCK = threading.Lock()" in (ROOT / "server" / "agents" / "voice.py").read_text() and (ROOT / "server" / "agents" / "voice.py").read_text().count("with _TRIP_LOCK:") >= 3)
 styles = (ROOT / "web" / "styles.css").read_text()
 check("mobile studio and player tracks can shrink to the viewport", "grid-template-columns:minmax(0,1fr);min-width:0" in styles and ".player-host{min-width:0}" in styles)
 check("mobile player controls wrap instead of forcing horizontal scroll", ".pl-top .left,.pl-top .right{width:100%;max-width:100%}" in styles and ".pl{overflow:hidden;grid-template-rows:88px" in styles)

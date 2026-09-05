@@ -81,6 +81,7 @@ def _gcloud(text: str, voice: str) -> tuple[bytes, str]:
 # Circuit breaker: a provider that answers "no credits" / "unauthorized" is skipped for a while instead of
 # being retried on every line (it failed 10× in a row on 2026-09-03 when Sarvam ran out of credits).
 _TRIPPED: dict[str, tuple[float, str]] = {}
+_TRIP_LOCK = threading.Lock()
 _TRIP_SECONDS = 600
 _HARD_MARKERS = ("402", "insufficient_quota", "no credits", "invalid api key", "unauthorized", " 401", " 403")  # account-level: 10 min
 _SOFT_MARKERS = ("quota", "rate limit", "resource_exhausted")  # transient windows: 90 s
@@ -88,25 +89,32 @@ _SOFT_SECONDS = 90
 
 
 def _tripped(provider: str) -> bool:
-    t = _TRIPPED.get(provider)
-    if not t:
-        return False
-    if time.time() > t[0]:
-        _TRIPPED.pop(provider, None)
-        return False
-    return True
+    with _TRIP_LOCK:
+        t = _TRIPPED.get(provider)
+        if not t:
+            return False
+        if time.time() > t[0]:
+            _TRIPPED.pop(provider, None)
+            return False
+        return True
 
 
 def _maybe_trip(provider: str, err: Exception) -> None:
     msg = str(err).lower()
-    if any(m in msg for m in _HARD_MARKERS):
-        _TRIPPED[provider] = (time.time() + _TRIP_SECONDS, str(err)[:160])
-    elif any(m in msg for m in _SOFT_MARKERS):
-        _TRIPPED[provider] = (time.time() + _SOFT_SECONDS, str(err)[:160])
+    with _TRIP_LOCK:
+        if any(m in msg for m in _HARD_MARKERS):
+            _TRIPPED[provider] = (time.time() + _TRIP_SECONDS, str(err)[:160])
+        elif any(m in msg for m in _SOFT_MARKERS):
+            _TRIPPED[provider] = (time.time() + _SOFT_SECONDS, str(err)[:160])
 
 
 def tripped_providers() -> dict[str, str]:
-    return {k: v[1] for k, v in _TRIPPED.items() if _tripped(k)}
+    with _TRIP_LOCK:
+        now = time.time()
+        expired = [k for k, v in _TRIPPED.items() if now > v[0]]
+        for k in expired:
+            _TRIPPED.pop(k, None)
+        return {k: v[1] for k, v in _TRIPPED.items()}
 
 
 FILLERS = {

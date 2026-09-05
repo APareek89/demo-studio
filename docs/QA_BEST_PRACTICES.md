@@ -1,6 +1,6 @@
 # Demo Studio QA best practices
 
-Last reviewed: 2026-09-05
+Last reviewed: 2026-09-06
 
 ## Product calls
 
@@ -72,6 +72,17 @@ Sources:
 - https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12382&Mode=0
 - https://www.rbi.org.in/scripts/AnnualReportPublications.aspx?Id=1436
 - https://www.rbi.org.in/commonperson/images/FAME202426022024.pdf
+
+### Resilience, concurrency and gap hygiene
+
+Tests:
+
+- A visually rich PDF that exceeds a provider request envelope may fall back only to an explicit human-reviewed manifest whose citations resolve to included sources. A generic best-effort extraction is not an acceptable substitute.
+- Runtime unknowns are living state: clear one when the same question becomes answerable, and do not append a paraphrase of an existing extraction gap.
+- Shared provider circuit-breaker state is synchronized across voice workers; completeness still enumerates every playable branch after a retry.
+- Stage JSON is published atomically because browser polling and background workers operate concurrently. A partial read must never look like an absent artifact.
+- Async tests use explicit barriers for the state under test. Scheduler luck is not evidence of input locking, duplicate-job rejection or cancellation behaviour.
+- Exact compound intents derive their product name and required claims from the active registry. Product names, variants and response shapes are never hard-coded from an earlier demo.
 
 ## 100-point acceptance rubric
 
