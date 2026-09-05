@@ -1,20 +1,21 @@
 %% 05 · Runtime — the player (web/player/player.js) and grounded Q&A (server/agents/qa.py)
 flowchart TD
   START["USER clicks Start<br/>[ask]"]:::ask
-  HERO["approved visual_asset stays centre stage<br/>[LIBRARY · model-viewer]<br/>GLB camera controls + auto-rotate; angle views form a labelled thumbnail strip"]:::data
+  PRELOAD["preload all authored speech + opening film<br/>[FUNCTION · retained Audio/Video objects]<br/>intake, narration, deeper lines, check-ins, FAQ, fillers and closing"]:::fn
+  HERO["approved visual_asset stays centre stage<br/>[LIBRARY · model-viewer]<br/>script cue turns camera to front / side / rear / performance; supporting proof stays a labelled thumbnail"]:::data
   Q1["speak intake q1<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>'your name + what should this change for you' (P02 open question)"]:::data
   L1["listen ≤10 s<br/>[LIBRARY · Web Speech recognition]<br/>mic denied or silent → typed fallback input"]:::data
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
   FILM["tailored acknowledgement → opening film with audio → return line<br/>[FUNCTION · playIntroFilm]<br/>planner starts before film; film capped at 45 s; customer may skip"]:::fn
   OPEN["STANDARD OPENING · unchanged, 1-2 min<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
-  PITCH["pitch plan (runs while the opening plays)<br/>[AGENT · claude-opus-5 · POST /run/pitch]<br/>in: profile (name, why), library of proof blocks, USPs, registry<br/>out: customer_state, decision_frame, ONE follow-up question, route with bridges, advance"]:::agent
-  PV["bridge validator<br/>[FUNCTION · pitch.plan_pitch]<br/>segment ids exist · bridge with a figure and no fact id → dropped · establish last"]:::fn
+  PITCH["pitch plan (starts before the film)<br/>[AGENT · claude-opus-5 · POST /run/pitch]<br/>in: profile (name, why), library of proof blocks, USPs, registry<br/>out: customer_state, decision frame, ONE follow-up, route, pictured custom batches, advance"]:::agent
+  PV["grounding + visual validators<br/>[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]<br/>segment ids exist · uncited claim dropped · literal picture beats contradictory sibling · establish last"]:::fn
   DF["speak personalised decision frame<br/>[LIBRARY · /run/tts]"]:::data
   FU["ask the ONE follow-up (P03) → listen ≤12 s<br/>[LIBRARY · Web Speech]"]:::data
   REF["refine route with the answer<br/>[AGENT · POST /run/pitch refine=true]"]:::agent
   FALL["fallback: bundle q2 + keyword focus order<br/>[FUNCTION] if the planner times out (45 s)"]:::fn
   PLAN["route = ordered proof blocks + establish<br/>[FUNCTION · buildRoute]"]:::fn
-  LINE["play block: bridge (personalised, /run/tts) then lines<br/>[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite 'sources: F..'<br/>speak: server audio else browser TTS"]:::fn
+  LINE["play block: bridge then lines<br/>[FUNCTION] direct 3D camera from spoken feature · show supporting detail · card · cite 'sources: F..'<br/>speak: same-provider audio; captions if unavailable"]:::fn
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
@@ -30,7 +31,7 @@ flowchart TD
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
   HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
 
-  START --> HERO --> Q1 --> L1 --> P1 --> FILM --> OPEN
+  START --> PRELOAD --> HERO --> Q1 --> L1 --> P1 --> FILM --> OPEN
   P1 -.->|"starts before film"| PITCH --> PV
   OPEN --> DF --> FU --> REF --> PLAN
   PV --> DF

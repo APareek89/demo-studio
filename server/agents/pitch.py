@@ -9,8 +9,8 @@ from ..llm import claude
 from .author import CLAIMISH, NUMBERISH
 from .principles import CUSTOMER_STATES, PRINCIPLES, audience_instruction, language_instruction
 
-PITCH_SYSTEM = """You are {persona_name}, the voice guide in a live demo of {product_name}. The standard opening
-(decision frame + the outcome shown first) has just played. Now plan the rest of THIS buyer's demo.
+PITCH_SYSTEM = """You are {persona_name}, the voice guide in a live demo of {product_name}. An approved standard opening
+will play after the opening film. Plan the personalised route that follows it for THIS buyer.
 
 {principles}
 
@@ -105,6 +105,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
             continue
         if b.get("visual_ref") not in vis_ids:
             b["visual_ref"] = _vis.for_facts(und, b["fact_ids"]) or ""
+        b["visual_ref"] = _vis.for_text_and_facts(demo_id, und, txt, b["fact_ids"], b.get("visual_ref") or "") or ""
         b["words"] = len(txt.split())
         batches.append(b)
     to_voice = [(b, "audio", b["text"]) for b in batches] + [(st, "bridge_audio", st["bridge"]) for st in p["route"] if st.get("bridge")]
@@ -128,7 +129,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
                     obj[key] = None
     for b in batches:
         v = next((x for x in und.get("images", []) + und.get("shots", []) if x["id"] == b.get("visual_ref")), None)
-        b["visual"] = {"kind": "image" if b.get("visual_ref", "").startswith("im") else "shot", "ref": b.get("visual_ref"), "source_id": v.get("source_id") if v else None, "start": v.get("start") if v else None, "end": v.get("end") if v else None} if v else None
+        b["visual"] = {"kind": "image" if b.get("visual_ref", "").startswith("im") else "shot", "ref": b.get("visual_ref"), "source_id": v.get("source_id") if v else None, "start": v.get("start") if v else None, "end": v.get("end") if v else None, "description": v.get("description", "") if v else ""} if v else None
     p["custom_batches"] = batches
     proofs = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features][:3]
     feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": features[0], "bridge": "", "bridge_fact_ids": []}] if features else [])

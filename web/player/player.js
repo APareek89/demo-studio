@@ -1,5 +1,5 @@
 // The runtime player — voice-led, interruptible, grounded through the server.
-// Flow: intake (name + one open question) → STANDARD OPENING (intro + outcome, unchanged) →
+// Flow: intake (name + one open question) → opening film → STANDARD OPENING (intro + outcome, unchanged) →
 // runtime pitch plan (decision frame · one follow-up · personalised route with grounded bridges) →
 // proof blocks with check-ins → establish → advance → CTA → handoff.
 // mountPlayer(host, bundle, {qa, tts, pitch, lead, saveSession}) → { destroy, restart, pause, context }
@@ -13,13 +13,28 @@ const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
 export function mountPlayer(host, bundle, api) {
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, timer: null, intakeResolver: null, intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null }, awaitingPhone: null };
+    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null }, awaitingPhone: null };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
   // Recorded filler lines in the persona's voice (acknowledgements, bridges, holds). Rule: the voice never changes mid-demo —
   // a line is spoken with server audio or shown as captions, never with the browser's built-in voice.
-  // preload the first-response audio so the acknowledgement starts the instant the customer finishes
-  setTimeout(() => { try { for (const v of Object.values(bundle.fillers || {})) if (v.audio) { const a = new Audio(v.audio); a.preload = "auto"; } for (const u of Object.values(bundle.intake?.audio || {})) if (u) { const a = new Audio(u); a.preload = "auto"; } } catch (e) {} }, 300);
+  // Keep preload objects alive for the full session. This covers the complete authored route,
+  // not only intake, so moving between lines does not repeatedly pay a network-start pause.
+  setTimeout(() => {
+    try {
+      const urls = [];
+      for (const v of Object.values(bundle.fillers || {})) if (v.audio) urls.push(v.audio);
+      for (const u of Object.values(bundle.intake?.audio || {})) if (u) urls.push(u);
+      for (const seg of bundle.segments || []) {
+        for (const line of [...(seg.lines || []), ...(seg.deeper || [])]) if (line.audio) urls.push(line.audio);
+        if (seg.checkin?.audio) urls.push(seg.checkin.audio);
+      }
+      for (const line of bundle.closing || []) if (line.audio) urls.push(line.audio);
+      for (const item of bundle.faq || []) if (item.audio) urls.push(item.audio);
+      for (const url of [...new Set(urls)]) { const a = new Audio(url); a.preload = "auto"; a.load(); S.preloads.push(a); }
+      if (bundle.intro_video?.url) { const v = document.createElement("video"); v.preload = "auto"; v.src = bundle.intro_video.url; v.load(); S.preloads.push(v); }
+    } catch (e) {}
+  }, 150);
   const F = (key, fallback) => { const f = bundle.fillers?.[key]; return f?.audio ? { text: f.text, audio: f.audio } : { text: fallback || f?.text || "", audio: null }; };
   const speakF = (key, fallback, run) => { const f = F(key, fallback); return speak(f.text, run, f.audio); };
   function captionOnly(text, run) { return new Promise((res) => { const my = ++S.ttsToken; const ms = Math.max(1200, (text.split(/\s+/).length / 2.5) * 1000); const t = setTimeout(() => res(my === S.ttsToken && run === S.run), ms); S.captionTimer = t; }); }
@@ -69,9 +84,26 @@ export function mountPlayer(host, bundle, api) {
 
   // ---------- visuals ----------
   let videoStop = null;
+  function directModel(v) {
+    if (!asset || !el.model) return;
+    const cue = `${v?.scriptText || ""} ${v?.focus || ""} ${v?.description || ""}`.toLowerCase();
+    let orbit = "25deg 72deg 105%", label = "PRODUCT VIEW";
+    if (/rear|tail|boot|back/.test(cue)) { orbit = "175deg 74deg 105%"; label = "REAR DETAIL"; }
+    else if (/interior|cabin|seat|comfort|climate|space|door/.test(cue)) { orbit = "82deg 72deg 108%"; label = "CABIN / SIDE DETAIL"; }
+    else if (/engine|turbo|drive|performance|quick|accelerat|hundred|gear|paddle|transmission|power|torque/.test(cue)) { orbit = "38deg 68deg 100%"; label = "DRIVE / PERFORMANCE"; }
+    else if (/safety|airbag|adas|brake|cruise|sensor|camera/.test(cue)) { orbit = "18deg 70deg 100%"; label = "SAFETY VIEW"; }
+    else if (/front|grille|headlamp|headlight/.test(cue)) { orbit = "18deg 70deg 100%"; label = "FRONT DETAIL"; }
+    el.model.removeAttribute("auto-rotate");
+    el.model.setAttribute("camera-orbit", orbit);
+    if (S.modelTimer) clearTimeout(S.modelTimer);
+    S.modelTimer = setTimeout(() => { if (!el.media.classList.contains("film-on")) el.model.setAttribute("auto-rotate", ""); }, 4500);
+    el.focus.textContent = label;
+    el.focus.classList.add("on");
+  }
   function showVisual(v) {
     if (asset) {
-      if (!v || v.kind === "none" || !v.url) { if (el.support) el.support.classList.remove("on"); return; }
+      if (!v || v.kind === "none" || !v.url) { if (el.support) el.support.classList.remove("on"); el.focus.classList.remove("on"); return; }
+      directModel(v);
       const angle = (asset.angles || []).find((a) => a.url === v.url);
       el.supportBadge.textContent = angle ? (angle.generated ? "AI CREATED" : "REAL VIEW") : (v.kind === "shot" ? "VIDEO PROOF" : "DETAIL");
       el.supportBadge.className = "origin " + (angle?.generated ? "generated" : "real");
@@ -142,7 +174,7 @@ export function mountPlayer(host, bundle, api) {
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
     if (run !== S.run) return false;
     let ok;
-    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); S.audio = a; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; a.onended = fin; a.onerror = () => { done = true; speakBrowser(text).then(res); }; a.play().catch(() => { done = true; speakBrowser(text).then(res); }); });
+    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); S.audio = a; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; const safeFallback = () => { if (done) return; done = true; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
     else ok = useServerVoice ? await captionOnly(text, run) : await speakBrowser(text);
     if (ok && run === S.run) setStatus("idle", "Ready");
     return ok && run === S.run;
@@ -234,7 +266,7 @@ export function mountPlayer(host, bundle, api) {
   async function playOpening(run) {
     for (const seg of opening) {
       prefetch(seg.lines);
-      for (const ln of seg.lines) { if (run !== S.run) return false; showVisual(ln.visual); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; }
+      for (const ln of seg.lines) { if (run !== S.run) return false; showVisual({ ...ln.visual, scriptText: ln.text }); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; }
     }
     return run === S.run;
   }
@@ -245,8 +277,8 @@ export function mountPlayer(host, bundle, api) {
       const step = S.plan[i], seg = step.seg; S.seg = i; S.atCheckin = false; renderProgress();
       prefetch([...seg.lines.slice(lineIdx), seg.checkin?.text ? { text: seg.checkin.text, audio: seg.checkin.audio } : null].filter(Boolean));
       if (S.latePlan && lineIdx === 0) { const late = await withTimeout(S.latePlan, 10); if (late) { S.latePlan = null; S.pitch = late; S.personalized = true; const okc = await playCustomBatches(late, run); if (!okc) return; const rest = S.plan.slice(i); buildRoute(late); if (S.plan.length) { playFrom(0, 0); return; } S.plan = rest; } }
-      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); if (fv) showVisual(fv); el.cite.textContent = ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
-      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; showVisual(ln.visual); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
+      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); if (fv) showVisual({ ...fv, scriptText: step.bridge }); el.cite.textContent = ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
+      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; showVisual({ ...ln.visual, scriptText: ln.text }); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
       lineIdx = 0; if (run !== S.run) return;
       if (seg.checkin?.text) {
         S.atCheckin = true; const ok = await speak(seg.checkin.text, run, seg.checkin.audio); if (!ok) return;
@@ -255,7 +287,7 @@ export function mountPlayer(host, bundle, api) {
         const r = await waitFor(chips, 8); if (run !== S.run) return;
         if (r.value === "yes") { S.resolved.add(seg.topic); const ok2 = await speakF("good", "Good — moving on.", run); if (!ok2) return; }
         else if (r.value === "__timeout") { const ok2 = await speakF("nudge_continue", "I'll carry on — stop me whenever you like.", run); if (!ok2) return; }
-        else if (r.value === "deeper") { S.raised.add(seg.topic); prefetch(seg.deeper || []); for (const ln of seg.deeper || []) { showVisual(ln.visual); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
+        else if (r.value === "deeper") { S.raised.add(seg.topic); prefetch(seg.deeper || []); for (const ln of seg.deeper || []) { showVisual({ ...ln.visual, scriptText: ln.text }); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
           if (!(seg.deeper || []).length) { const ok3 = await speak("That's everything the material covers on this — ask me anything specific and I'll check.", run); if (!ok3) return; }
           const ok3 = await speakF("clearer", "Is that clearer?", run); if (!ok3) return;
           const r2 = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }], 15); if (run !== S.run) return;
@@ -271,8 +303,8 @@ export function mountPlayer(host, bundle, api) {
   async function closeFlow(run) {
     S.atCheckin = true; showCard("summary");
     const closing = bundle.closing || [];
-    if (S.pitch?.advance) { const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; for (const ln of closing.slice(1)) { showVisual(ln.visual); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
-    else for (const ln of closing) { showVisual(ln.visual); showCard(ln.card); const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
+    if (S.pitch?.advance) { const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; for (const ln of closing.slice(1)) { showVisual({ ...ln.visual, scriptText: ln.text }); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
+    else for (const ln of closing) { showVisual({ ...ln.visual, scriptText: ln.text }); showCard(ln.card); const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
     const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
     const r = await waitFor(chips, 0); if (run !== S.run) return;
     if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
@@ -299,10 +331,10 @@ export function mountPlayer(host, bundle, api) {
     addMsg("user", text); S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
     let r;
     const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer() });
-    try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me a couple of seconds while I check that for you.", run); if (!okH) return; r = await qaP; } }
+    try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me one moment, please, while I check that for you.", run); if (!okH) return; r = await qaP; } }
     catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin); return; }
     if (run !== S.run) return;
-    if (r.visual) showVisual({ ...r.visual, url: mediaUrlFor(r.visual), focus: "" });
+    if (r.visual) showVisual({ ...r.visual, url: mediaUrlFor(r.visual), focus: "", scriptText: r.answer || text });
     if (r.facts?.length) showCard("cite", r.facts); else showCard("none");
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : (r.answered ? "" : "not in the sources — flagged");
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
@@ -382,11 +414,11 @@ export function mountPlayer(host, bundle, api) {
     await startAfterIntake(run, a1);
   }
   async function startAfterIntake(run = newRun(), a1 = S.profile.why) {
-    // The planner (route + custom batches, all voiced server-side) runs while the standard opening plays.
+    // The planner starts before the film and continues under recorded audio until its route is needed.
     const pitchP = S.pitchPromise || (api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : Promise.resolve(null)); S.pitchPromise = null;
     const okO = await playOpening(run); if (!okO) return;
     let plan = await withTimeout(pitchP, 150); if (run !== S.run) return;
-    if (!plan) { const okH = await speakF("still_working", "Almost there — one more moment.", run); if (!okH) return; plan = await withTimeout(pitchP, 15000); if (run !== S.run) return; }
+    if (!plan) { const okH = await speakF("still_working", "Give me one moment, please — I'm tailoring this to what you just told me.", run); if (!okH) return; plan = await withTimeout(pitchP, 15000); if (run !== S.run) return; }
     S.personalized = !!plan;
     if (!plan) { addMsg("note", "planner not ready — standard route; custom batches will slot in when they arrive"); S.latePlan = pitchP; }
     if (plan) {
@@ -413,7 +445,7 @@ export function mountPlayer(host, bundle, api) {
     const okB = await speakF("bridge_to_custom", "Now, let me get to what you asked about.", run); if (!okB) return false;
     for (const b of batches) {
       if (run !== S.run) return false;
-      if (b.visual) showVisual({ ...b.visual, url: mediaUrlFor(b.visual), focus: "" });
+      if (b.visual) showVisual({ ...b.visual, url: mediaUrlFor(b.visual), focus: b.text });
       el.cite.textContent = b.fact_ids?.length ? "sources: " + b.fact_ids.join(", ") : "";
       const ok = await speak(b.text, run, b.audio); if (!ok) return false;
     }
@@ -453,19 +485,20 @@ export function mountPlayer(host, bundle, api) {
     S.introPlayed = true;
     const ok = await speakF("before_video", "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.", run);
     if (!ok) return false;
-    el.img.style.display = "none"; el.img.classList.remove("kb");
+    el.img.style.display = "none"; el.img.classList.remove("kb"); el.media.classList.add("film-on");
+    if (el.support) el.support.classList.remove("on"); el.focus.classList.remove("on");
     const v = el.video; v.src = iv.url; v.muted = false; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
     setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
     el.chips.replaceChildren(h("button", { class: "chip" , onclick: () => { S.skipFilm = true; } }, "Skip the film"));
     const done = await new Promise((res) => {
-      let fin = false; const end = (x) => { if (!fin) { fin = true; res(x); } };
+      let fin = false, guard = null, cap = null; const end = (x) => { if (!fin) { fin = true; if (guard) clearInterval(guard); if (cap) clearTimeout(cap); res(x); } };
       v.onended = () => end(true); v.onerror = () => end(true);
-      const guard = setInterval(() => { if (run !== S.run || S.paused) { clearInterval(guard); end(false); } if (S.skipFilm) { S.skipFilm = false; clearInterval(guard); end(true); } }, 200);
+      guard = setInterval(() => { if (run !== S.run || S.paused) end(false); if (S.skipFilm) { S.skipFilm = false; end(true); } }, 200);
       v.play().catch(() => end(true));
-      setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
+      cap = setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
     });
     try { v.pause(); } catch (e) {}
-    v.muted = true; setChips([]);
+    v.muted = true; v.style.display = "none"; v.style.opacity = 0; el.media.classList.remove("film-on"); setChips([]);
     if (!done || run !== S.run) return false;
     return speakF("after_video", "Now, let's get into what matters to you.", run);
   }
@@ -483,7 +516,7 @@ export function mountPlayer(host, bundle, api) {
   function restart() { interruptAll(); S.customPlayed = false; S.latePlan = null; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.awaitingPhone = null; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
-  function destroy() { interruptAll(); root.remove(); }
+  function destroy() { interruptAll(); if (S.modelTimer) clearTimeout(S.modelTimer); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }
 
   renderCtas(); showVisual({ kind: "image", url: bundle.media?.hero, focus: "" });
   if (bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 });

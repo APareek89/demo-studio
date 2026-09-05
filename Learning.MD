@@ -203,3 +203,47 @@
 **Deepest why type:** `design`
 **Action taken:** Prompts rebuilt on the human-demo playbook: PRINCIPLES trimmed to seven broad rules (G1–G7); PITCH_SHAPE replaced by a seven-step FLOW (greeting lives in the intake question; overview before detail; exactly three USPs; natural category discovery order; mandatory meaning step; establish declares the top open questions; fit summary + next step at the close). Runtime planner writes the acknowledgement in the buyer's own words and runs on Sonnet. Coverage guardrail can no longer force a detail image into the opening; ack audio preloads and a neutral hero backs it.
 **Preventive action:** Sequence and principles are separate blocks in every agent prompt; anything adaptive (decision framing, personalisation) is forbidden before the customer has spoken. Loop eval 27: the first spoken segment line contains no digits and no decision framing; the fit summary does.
+
+### 2026-09-05 — The opening film sat behind the persistent 3D stage
+
+**Symptom:** The runtime had the correct greeting → needs → film sequence, but a demo with an approved 3D asset could leave the model above the film in the stacking order.
+**Why 1:** The 3D model deliberately has its own positioned layer; the opening film reused the ordinary supporting-video element and never entered an explicit stage mode.
+**Why 2:** The film flow had been verified at the API/bundle level, not in the exact 3D-led player state.
+**Deepest why type:** `process`
+**Action taken:** `playIntroFilm` now enters `film-on`: model, reference strip and supporting detail fade away; the audio film takes the full stage; on finish/skip it is hidden and the 3D stage returns before Ravi's recorded return line. Browser QA exercised the exact state.
+**Preventive action:** Media-sequence acceptance requires a browser screenshot in every mutually exclusive stage state, not only a valid URL and audio track.
+
+### 2026-09-05 — Runtime personalisation chose the manual image for an automatic claim
+
+**Symptom:** A live family-route batch said “automatic” and cited the transmission facts but selected the manual gear-knob image.
+**Why 1:** One transmission fact legitimately maps to manual and automatic images; the runtime model picked the first valid sibling.
+**Why 2:** Runtime custom batches validated that a visual id existed, but did not re-run the literal word-to-picture check used by authored lines.
+**Deepest why type:** `design`
+**Action taken:** Runtime batches now score all cited candidate visuals against their spoken words and override only on a strong literal match. The player passes each narration line into its 3D director, holds the relevant front/side/rear/performance angle for 4.5 seconds, and keeps the exact supporting image as the detail proof.
+**Preventive action:** Any new path that creates spoken text plus a visual must pass both grounding and literal visual-alignment checks before playback.
+
+### 2026-09-05 — Preloading only intake left avoidable pauses between authored lines
+
+**Symptom:** Intake acknowledgements were fast, but the rest of the recorded route could still incur a first-fetch pause when each line began.
+**Why 1:** Preload objects were created only for intake and fillers, then immediately lost to garbage collection.
+**Why 2:** Narration, deeper lines, check-ins, FAQ, closing and the opening film were not covered.
+**Deepest why type:** `code`
+**Action taken:** The player now retains preload objects for every authored audio line and the opening film for the session lifetime, releasing them only when the player is destroyed. Real lookup gaps use recorded, polite “give me one moment, please” bridges.
+**Preventive action:** The no-silent-gap browser gate covers the entire bundled audio graph, not just first response.
+
+### 2026-09-05 — The player could still change voice if a recorded file failed in the browser
+
+**Symptom:** The authored audio path was all-Sarvam, but an individual browser playback/load error still called the built-in browser voice.
+**Why 1:** The earlier “same voice or captions” rule covered server generation failure, not client media playback failure.
+**Deepest why type:** `code`
+**Action taken:** A failed server-voice audio file now stays on-screen as timed captions; browser speech is used only for demos explicitly configured to use browser speech.
+**Preventive action:** Voice consistency is enforced at both generation and playback boundaries.
+
+### 2026-09-05 — Valid WAV files hid two severely malformed fallback durations
+
+**Symptom:** The final bundle had an audio URL for every line, but two short lines were 33 and 173 seconds long; five narration files had silently used the Gemini fallback inside an otherwise Sarvam build.
+**Why 1:** The build gate checked only that an audio URL and file existed.
+**Why 2:** Provider-level success did not verify duration against word count or assert one provider across the finished customer route.
+**Deepest why type:** `process`
+**Action taken:** All five fallback files were re-rendered with Sarvam and the exact timeline rebuilt (186.3 seconds). Final integrity QA checks every spoken item for a readable WAV, non-silent signal, plausible duration and provider hash; all 99 spoken entries now pass as Sarvam `aditya`.
+**Preventive action:** “Audio complete” requires content integrity and provider-consistency checks, not file existence.

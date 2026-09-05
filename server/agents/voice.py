@@ -113,12 +113,12 @@ FILLERS = {
     "ack_with_context": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
     "ack_no_context": "No problem — you can steer me at any time.",
     "bridge_to_custom": "Now, let me get to what you asked about.",
-    "hold_on_question": "Good question — give me a couple of seconds while I check that for you.",
-    "hold_on_lookup": "One moment while I pull that up.",
+    "hold_on_question": "Good question — give me one moment, please, while I check that for you.",
+    "hold_on_lookup": "Give me one moment, please, while I pull that up.",
     "back_to_demo": "Let's get back to where we were.",
     "nudge_continue": "I'll carry on — stop me whenever you like.",
     "put_in_writing": "My voice dropped for a moment — I've put the answer on screen for you.",
-    "still_working": "Almost there — one more moment.",
+    "still_working": "Give me one moment, please — I'm tailoring this to what you just told me.",
     "good": "Good — moving on.",
     "glad": "Glad that helps.",
     "did_that_answer": "Did that answer it?",
@@ -280,10 +280,10 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
                 if err:
                     failures += 1
                     if failures == 1:
-                        emit(f"Voice provider error: {err} — continuing; missing lines fall back to the browser voice.")
+                        emit(f"Voice provider error: {err} — continuing; any missing line will use timed captions.")
                     if failures >= 4 and not stop.is_set():
                         stop.set()
-                        emit("Too many voice errors — stopping narration rendering; the player will use the browser voice for the rest.")
+                        emit("Too many voice errors — stopping narration rendering; remaining lines will use timed captions.")
                 done += 1
                 if done % 8 == 0:
                     emit(f"Recorded {done}/{total} lines…")
@@ -301,7 +301,7 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
                 time.sleep(0.5)
             except Exception as e:
                 obj[key] = None
-                emit(f"Still no audio for one line ({str(e)[:100]}) — the player will use the browser voice for it.")
+                emit(f"Still no audio for one line ({str(e)[:100]}) — the player will show timed captions for it.")
         failures = max(0, failures - recovered)
     for k, text in intake.items():
         try:
@@ -318,7 +318,7 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
     script["voice_failures"] = failures
     store.write_json(demo_id, path, script)
     store.log(demo_id, "voice", {"provider": provider, "lines": total, "failures": failures, "language": lang})
-    emit("Narration ready." if not failures else f"Narration ready with {failures} line(s) on browser voice.")
+    emit("Narration ready." if not failures else f"Narration ready with {failures} line(s) on timed captions.")
     return script
 
 

@@ -214,3 +214,29 @@ def for_facts(und: dict, fact_ids: list[str]) -> str | None:
         if m.get(fid):
             return m[fid][0]
     return None
+
+
+def for_text_and_facts(demo_id: str, und: dict, text: str, fact_ids: list[str], current: str = "") -> str | None:
+    """Pick the most literal cited visual when a runtime model chose a contradictory sibling.
+
+    Example: a transmission fact can map to both manual and automatic gear images. The spoken
+    words decide between them; a generic or equally good current choice is left untouched.
+    """
+    mapped: list[str] = []
+    image_map = und.get("image_map") or {}
+    for fid in fact_ids or []:
+        for ref in image_map.get(fid, []):
+            if ref not in mapped:
+                mapped.append(ref)
+    if current and current not in mapped:
+        mapped.insert(0, current)
+    if not mapped:
+        return current or None
+    by_ref = {item["ref"]: item for item in catalogue(demo_id, und, store.load(demo_id))}
+    line_tokens = _expand(_tokens(text))
+    ranked = sorted(((_score(line_tokens, by_ref[ref])[0], -idx, ref) for idx, ref in enumerate(mapped) if ref in by_ref), reverse=True)
+    if not ranked:
+        return current or None
+    best_score, _, best_ref = ranked[0]
+    current_score = _score(line_tokens, by_ref[current])[0] if current in by_ref else -1
+    return best_ref if best_score >= 3.0 and best_score > current_score else (current or best_ref)

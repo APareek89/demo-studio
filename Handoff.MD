@@ -10,6 +10,7 @@ Demo Studio is a local FastAPI + no-build ES-module app. It turns product media 
 
 - **Demo Visual:** either exactly five real product views (front, front ¾, side, rear ¾, rear) or one turntable video. Video frames are extracted locally; Gemini selects real angles and generates only missing views. Every derived view is labelled. The strongest real front ¾ view drives Runware TRELLIS.2 (`microsoft:trellis-2@4b`) because that model accepts one input image. Generation is asynchronous, skip-safe, cost-traced, versioned and review-gated. Approval makes the GLB the persistent main player visual; evidence images remain small labelled thumbnails. `My Assets` supports view, download, attach to another demo and delete.
 - **Sources / Align / Rehearse:** Configure runs the LangGraph pipeline through script + FAQ before Align. Six approval cards expose the actual visual map, facts, script, FAQ, persona and CTAs. Build records one consistent voice, rehearses and bundles. Runtime personalisation is produced under recorded cover; grounded Q&A never guesses.
+- **Final CRETA QA:** `dm_af65dad8` is ready: 67 grounded facts, 20 pre-voiced FAQ entries, a 364-word human script, Sarvam `aditya` throughout, a 20 s audio opening film, and the approved TRELLIS.2 3D asset from `dm_a07d9306`. The full player is at `http://127.0.0.1:8877/?qa=final#/play/dm_af65dad8`.
 - **Persistence:** the folder-per-demo store is the hot path. S3 incrementally mirrors every file including GLBs; DynamoDB stores demo/asset metadata and events. AWS account `511833557379`, region `ap-south-1`, bucket `demo-studio-511833557379`, tables `demo-studio-demos` and `demo-studio-events`.
 - **Models:** Claude Opus 5 for fact registry, plan, script, Q&A and runtime route; Haiku for translation/picture matching; Gemini 3.6 Flash for vision; Gemini image model for derived views/cleanup when quota permits; Sarvam Bulbul v3 / Saarika v2.5 for Indian speech; Runware TRELLIS.2 for 3D.
 - **Observability:** every model/3D call records stage, latency, input metadata, output and cost in `trace.jsonl` / `usage.jsonl`; every visual action is added to `RUN.md`. API keys remain server-side.
@@ -22,20 +23,22 @@ Demo Studio is a local FastAPI + no-build ES-module app. It turns product media 
 - ✅ video path: ffmpeg frame extraction → real-angle selection → mock TRELLIS.2 GLB.
 - ✅ `evals/qa_accept.py`: 24/24 upload and failure cases.
 - ✅ Browser QA: new upload screen, 3D review, My Assets, large viewer and 3D-led player at desktop, 820 px and 430 px widths. Free GitHub screenshot skill installed and run; OS capture is black for the in-app browser, so final page inspection used the browser-native captures.
+- ✅ Final live flow QA: Ravi greets and asks needs → speaks a tailored acknowledgement → the audio film takes over the full 3D stage → Ravi returns verbally → approved opening → personalised route. All authored audio and film are retained/preloaded; real waits use recorded “give me one moment, please” bridges. Script cues hold a relevant 3D angle while the exact proof image remains a small detail.
 - 📊 Pulse: ~25% feature · ~30% support · ~45% rework. The main rework was replacing mock-only assumptions with the real Runware error, polling, cost and download contracts.
 - ✅ JavaScriptCore parse checks and Python compile checks.
 - ⏹ Loop stays OFF by user decision. Full FMEA remains opt-in per `.power-coding/config.json`; Sentinel/Pulse checks stay on.
 
 ## Current blocker / next input
 
-- **Runware is connected and the funded wallet passes live preflight.** The first real task `03eedd6b-26ac-40b8-9a9a-89ffc6504a95` was rejected as `insufficientCredits`; that historical row is corrected to $0. Retry the existing Demo Visual when ready—the app now checks the wallet before video analysis and shows the provider's actionable error if anything blocks submission.
-- Gemini image generation previously returned quota 429; video still succeeds when all five real angles are visible, but missing-angle synthesis needs Gemini image quota/billing.
-- Existing product follow-ups remain: Sarvam credit top-up; FAQ PDF question extraction; translated filler/FAQ audio; optional publish/embed step.
+- **No blocker for testing the CRETA demo.** The local server is running on port 8877.
+- Gemini image generation still returns quota 429 with a limit of 0; the current asset succeeded because all five usable angles were recovered and cleaned locally. Future missing-angle synthesis needs Gemini image billing/quota.
+- Existing product follow-ups remain: FAQ PDF question extraction; translated filler/FAQ audio; optional publish/embed step.
 
 ## Key decisions
 
 - TRELLIS.2 is deliberately single-image conditioned; multi-view inputs improve selection/QA and supply thumbnails, but are not misrepresented as inputs to Runware.
 - An AI-created angle is never the primary TRELLIS.2 conditioning image.
 - Approving a 3D asset updates an existing `bundle.json` immediately; new builds include it automatically.
+- The opening film owns the full stage, then the 3D model returns. Script words direct and briefly hold the model camera; supporting evidence stays a small thumbnail. Runtime text/visual pairs are rechecked for literal contradictions (for example automatic versus manual gear images).
 - Deleting an asset removes the GLB locally and from S3 when connected, while retaining source views for regeneration.
 - Git author: `Anand Pareek <anandp.pareek6@gmail.com>`.
