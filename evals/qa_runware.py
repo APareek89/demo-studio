@@ -65,6 +65,14 @@ check("completed row wins over earlier processing row", row.get("status") == "su
 check("insecure asset URL is rejected", runware._find_glb_url({"modelURL": "http://cdn.example/model.glb"}) is None)
 check("unrelated image URL is ignored", runware._find_glb_url({"imageURL": "https://cdn.example/image.jpg"}) is None)
 
+rodin, _ = runware._model_request("hyper3d:rodin@gen-2", ["a", "b", "c", "d", "e", "f"])
+check("Rodin uses five source images", rodin["inputs"]["images"] == ["a", "b", "c", "d", "e"], str(rodin))
+check("Rodin requests high-quality PBR texture", rodin["settings"].get("quality") == "high" and rodin["settings"].get("hdTexture") is True and rodin["settings"].get("material") == "PBR", str(rodin))
+tripo, _ = runware._model_request("tripo:v3.1@0", ["a", "b", "c", "d", "e"])
+check("Tripo uses four views and prioritises source texture", tripo["inputs"]["images"] == ["a", "b", "c", "d"] and tripo["settings"].get("textureAlignment") == "original_image", str(tripo))
+trellis, _ = runware._model_request("microsoft:trellis-2@4b", ["a", "b"])
+check("TRELLIS remains a one-image fallback", trellis["inputs"] == {"image": "a"}, str(trellis))
+
 original_post = runware._post
 original_mock = config.MOCK_LLM
 original_key = config.RUNWARE_API_KEY

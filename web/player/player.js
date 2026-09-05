@@ -1,6 +1,6 @@
 // The runtime player — voice-led, interruptible, grounded through the server.
-// Flow: intake (name + one open question) → opening film → STANDARD OPENING (intro + outcome, unchanged) →
-// runtime pitch plan (decision frame · one follow-up · personalised route with grounded bridges) →
+// Flow: intake (one needs question + one optional focus question) → opening film → STANDARD OPENING (intro + outcome, unchanged) →
+// runtime pitch plan (decision frame · personalised route with grounded bridges) →
 // proof blocks with check-ins → establish → advance → CTA → handoff.
 // mountPlayer(host, bundle, {qa, tts, pitch, lead, saveSession}) → { destroy, restart, pause, context }
 import { mascot } from "/web/player/mascot.js";
@@ -11,7 +11,7 @@ const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
 
 export function mountPlayer(host, bundle, api) {
-  const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, timer: null, intakeResolver: null, intakeOpen: false,
+  const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null }, awaitingPhone: null };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
@@ -32,6 +32,8 @@ export function mountPlayer(host, bundle, api) {
       for (const line of bundle.closing || []) if (line.audio) urls.push(line.audio);
       for (const item of bundle.faq || []) if (item.audio) urls.push(item.audio);
       for (const url of [...new Set(urls)]) { const a = new Audio(url); a.preload = "auto"; a.load(); S.preloads.push(a); }
+      for (const item of bundle.media?.images || []) { if (!item.url) continue; const image = new Image(); image.decoding = "async"; image.src = item.url; S.preloads.push(image); }
+      for (const item of asset?.angles || []) { if (!item.url) continue; const image = new Image(); image.decoding = "async"; image.src = item.url; S.preloads.push(image); }
       if (bundle.intro_video?.url) { const v = document.createElement("video"); v.preload = "auto"; v.src = bundle.intro_video.url; v.load(); S.preloads.push(v); }
     } catch (e) {}
   }, 150);
@@ -65,16 +67,24 @@ export function mountPlayer(host, bundle, api) {
         h("div", { class: "pl-controls" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }),
           h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Voice input needs Chrome or Safari — use 💬 to type."), el.mic = h("button", { class: "mic", onclick: () => micTap() }, "🎤")))),
       el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
-        el.inFallback = h("form", { class: "fallback", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t && S.intakeResolver) { el.inText.value = ""; S.intakeResolver(t); } } }, el.inText = h("input", { placeholder: "Type your answer…" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
+        el.inFallback = h("form", { class: "fallback", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t) { el.inText.value = ""; acceptTypedAnswer(t); } } }, el.inText = h("input", { placeholder: "Type your answer…" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
         h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", onclick: () => intakeMic() }, "🎤"), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
       el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" }))),
     el.drawer = h("div", { class: "pl-drawer" }, h("div", { class: "head" }, h("span", {}, "Conversation"), h("button", { class: "icon-btn", onclick: () => toggleDrawer(false) }, "✕")), el.thread = h("div", { class: "body" }),
-      h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; if (S.intakeResolver) S.intakeResolver(t); else handleQuestion(t); } } }, el.q = h("input", { placeholder: "Type a question…" }), h("button", { class: "btn primary sm", type: "submit" }, "↑"))));
+      h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { placeholder: "Type a question…" }), h("button", { class: "btn primary sm", type: "submit" }, "↑"))));
   host.replaceChildren(root);
 
   // ---------- helpers ----------
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role }, text); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  function acceptTypedAnswer(text) {
+    if (S.intakeOpen) {
+      if (S.intakeResolver) S.intakeResolver(text);
+      else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; }
+      return;
+    }
+    handleQuestion(text);
+  }
   function toggleDrawer(force) { const on = force === undefined ? !el.drawer.classList.contains("open") : force; el.drawer.classList.toggle("open", on); if (on) { el.chatBtn.classList.remove("unread"); setTimeout(() => el.q.focus(), 80); } }
   function setChips(list) { el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => resolveWait(c.value) }, c.label))); }
   function clearTimer() { if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
@@ -84,14 +94,30 @@ export function mountPlayer(host, bundle, api) {
 
   // ---------- visuals ----------
   let videoStop = null;
+  const DETAIL_CUE = /\b(interior|inside|cabin|seat|dashboard|screen|display|cluster|touchscreen|infotainment|airbags?|curtain|gear|gearbox|shifter|transmission|manual|automatic|paddles?|climate|sunroof|roof|calipers?|alloys?|wheels?|tyres?|muffler|exhaust|tailpipe|headlamps?|headlights?|grille|spoiler|bumper|sills?|brakes?|camera|sensors?|mirror|glovebox|charging|android auto|carplay|bose|speakers?|vents?|sunshade|armrest|smartsense|adas|cruise|lane|collision|blind spot|driver attention|child seat|isofix|tyre pressure)\b/i;
+  const ABSTRACT_CUE = /\b(warranty|roadside assistance|terms? (?:and )?conditions?|price|mileage|kilometres?|subscription|catalogue|brochure|not (?:printed|listed|stated)|availability|bookable|test conditions?|certified|marketing line|specifications? may change|cost extra|packages?|years?|PS\b|variant|N10\b|one-point-five litre|colou?r options?|colou?rs? listed|zero to hundred|nought to hundred|eight point nine)\b/i;
+  const MODEL_CUE = /\b(looks? and drives?|more character|stands? out|at a glance|daily suv|everyday suv|feels? quick|strongest fit|test drive|highway overtake|turbo petrol pulls|product overview|walkaround)\b/i;
+  function visualMode(v, text = "", card = "none") {
+    if (v?.display_mode) return v.display_mode;
+    if (["price", "summary", "contrast", "statement"].includes(card)) return "card";
+    const detail = DETAIL_CUE.test(text), abstract = ABSTRACT_CUE.test(text);
+    if (detail && abstract) return "card";
+    if (detail) return v?.url ? "evidence" : "card";
+    if (abstract) return "card";
+    if (MODEL_CUE.test(text)) return "model";
+    return v?.url ? "evidence" : (asset ? "model" : "card");
+  }
+  function setStageMode(mode) {
+    el.media.classList.toggle("evidence-on", mode === "evidence");
+    el.media.classList.toggle("card-on", mode === "card");
+    el.card.classList.toggle("dominant", mode === "card");
+  }
   function directModel(v) {
     if (!asset || !el.model) return;
     const cue = `${v?.scriptText || ""} ${v?.focus || ""} ${v?.description || ""}`.toLowerCase();
     let orbit = "25deg 72deg 105%", label = "PRODUCT VIEW";
     if (/rear|tail|boot|back/.test(cue)) { orbit = "175deg 74deg 105%"; label = "REAR DETAIL"; }
-    else if (/interior|cabin|seat|comfort|climate|space|door/.test(cue)) { orbit = "82deg 72deg 108%"; label = "CABIN / SIDE DETAIL"; }
-    else if (/engine|turbo|drive|performance|quick|accelerat|hundred|gear|paddle|transmission|power|torque/.test(cue)) { orbit = "38deg 68deg 100%"; label = "DRIVE / PERFORMANCE"; }
-    else if (/safety|airbag|adas|brake|cruise|sensor|camera/.test(cue)) { orbit = "18deg 70deg 100%"; label = "SAFETY VIEW"; }
+    else if (/engine|turbo|drive|performance|quick|accelerat|hundred|power|torque/.test(cue)) { orbit = "38deg 68deg 100%"; label = "DRIVE / PERFORMANCE"; }
     else if (/front|grille|headlamp|headlight/.test(cue)) { orbit = "18deg 70deg 100%"; label = "FRONT DETAIL"; }
     el.model.removeAttribute("auto-rotate");
     el.model.setAttribute("camera-orbit", orbit);
@@ -100,30 +126,26 @@ export function mountPlayer(host, bundle, api) {
     el.focus.textContent = label;
     el.focus.classList.add("on");
   }
-  function showVisual(v) {
-    if (asset) {
-      if (!v || v.kind === "none" || !v.url) { if (el.support) el.support.classList.remove("on"); el.focus.classList.remove("on"); return; }
-      directModel(v);
-      const angle = (asset.angles || []).find((a) => a.url === v.url);
-      el.supportBadge.textContent = angle ? (angle.generated ? "AI CREATED" : "REAL VIEW") : (v.kind === "shot" ? "VIDEO PROOF" : "DETAIL");
-      el.supportBadge.className = "origin " + (angle?.generated ? "generated" : "real");
-      el.supportText.textContent = v.focus || v.description || angle?.label || "Supporting view";
-      if (v.kind === "shot") {
-        el.supportImg.style.display = "none"; el.supportVideo.style.display = "block";
-        const vid = el.supportVideo;
-        const start = () => { vid.currentTime = Math.max(0, v.start || 0); vid.play().catch(() => {}); };
-        if (vid.getAttribute("src") !== v.url) { vid.src = v.url; vid.onloadedmetadata = start; } else start();
-      } else {
-        el.supportVideo.pause(); el.supportVideo.style.display = "none"; el.supportImg.style.display = "block"; el.supportImg.src = v.url;
-      }
-      el.support.classList.add("on");
-      return;
+  function showVisual(v, requestedMode = null) {
+    let mode = requestedMode || visualMode(v, v?.scriptText || "", v?.card || "none");
+    if (mode === "evidence" && (!v || v.kind === "none" || !v.url)) mode = "card";
+    setStageMode(mode);
+    if (el.support) { el.support.classList.remove("on"); el.supportVideo.pause(); }
+    if (mode === "card") {
+      el.img.style.opacity = 0; el.img.style.display = "none"; el.video.pause(); el.video.style.opacity = 0; el.video.style.display = "none";
+      el.focus.classList.remove("on");
+      return mode;
+    }
+    if (mode === "model" && asset) {
+      el.img.style.opacity = 0; el.img.style.display = "none"; el.video.pause(); el.video.style.opacity = 0; el.video.style.display = "none";
+      directModel(v || {});
+      return mode;
     }
     el.focus.classList.toggle("on", !!(v && v.focus)); el.focus.textContent = v?.focus || "";
-    if (!v || v.kind === "none" || !v.url) return;
+    if (!v || v.kind === "none" || !v.url) return mode;
     if (v.kind === "image") {
       el.video.pause(); el.video.style.display = "none"; el.video.style.opacity = 0;
-      const url = v.cycle === false ? v.url : nextImageUrl(v.url);
+      const url = v.url; // exact evidence is stable; never rotate to an unrelated image on repetition
       if (el.img.getAttribute("src") !== url) { el.img.style.opacity = 0; el.img.classList.remove("kb"); el.img.src = url; el.img.onload = () => { el.img.style.opacity = 1; el.img.style.setProperty("--ox", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.setProperty("--oy", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.animationDelay = (-Math.random() * 12).toFixed(1) + "s"; el.img.classList.add("kb"); }; } else { el.img.style.opacity = 1; el.img.classList.add("kb"); }
       el.img.style.display = "";
     } else if (v.kind === "shot") {
@@ -132,13 +154,7 @@ export function mountPlayer(host, bundle, api) {
       const start = () => { vid.currentTime = Math.max(0, v.start || 0); vid.style.opacity = 1; vid.play().catch(() => {}); videoStop = () => { if (vid.currentTime >= (v.end || 1e9)) vid.pause(); }; vid.addEventListener("timeupdate", videoStop); };
       if (vid.getAttribute("src") !== v.url) { vid.src = v.url; vid.onloadedmetadata = start; } else start();
     }
-  }
-  let lastImg = null;
-  function nextImageUrl(url) {
-    const imgs = (bundle.media?.images || []).map((i) => i.url).filter(Boolean);
-    if (imgs.length < 2) return url;
-    if (url !== lastImg) { lastImg = url; return url; }
-    const i = imgs.indexOf(url); const n = imgs[(i + 1) % imgs.length]; lastImg = n; return n;  // same image twice in a row → move on
+    return mode;
   }
   function firstVisual(seg) { return (seg?.lines || []).map((l) => l.visual).find((v) => v && v.kind !== "none") || null; }
   function showCard(kind, extra) {
@@ -149,11 +165,26 @@ export function mountPlayer(host, bundle, api) {
     else if (kind === "summary") { rows = [...(bundle.cards?.facts || []).slice(0, 4), ...(bundle.cards?.price || []).slice(0, 2)]; title = "In short"; }
     else if (kind === "contrast") { rows = (bundle.cards?.price || []).slice(0, 3).concat((bundle.cards?.facts || []).slice(0, 3)); title = "Today vs. after"; }
     else if (kind === "cite" && extra) { rows = extra.map((f) => ({ claim: f.claim, value: f.value, conditions: [f.truth && f.truth !== "stated" ? f.truth : "", f.source?.locator ? `source ${f.source.ref} ${f.source.locator}` : ""].filter(Boolean).join(" · ") })); title = "Sources for that answer"; }
+    else if (kind === "statement" && extra?.text) { rows = [{ claim: extra.text, value: extra.value || "SOURCE NOTE", conditions: extra.conditions || "" }]; title = extra.title || "What the sources say"; }
     if (!rows.length) { el.card.classList.remove("on"); return; }
     rows = rows.slice(0, 3);  // never more than three boxes at once
     el.card.replaceChildren(h("h4", {}, title), ...rows.map((r) => h("div", { class: "row" }, h("span", {}, r.claim, r.conditions ? h("div", { class: "cond" }, r.conditions) : null), h("b", {}, r.value))));
     el.card.classList.add("on");
   }
+  function present(v, text, card = "none", factIds = []) {
+    let mode = visualMode(v, text, card);
+    mode = showVisual({ ...(v || { kind: "none" }), scriptText: text, card }, mode);
+    if (mode === "card") {
+      const cited = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id));
+      if (card === "statement") showCard("statement", { text, value: "YOUR PRIORITIES", title: "Your demo, tailored" });
+      else if (card && !["none", "cite"].includes(card)) showCard(card);
+      else if (cited.length) showCard("cite", cited);
+      else showCard("statement", { text, value: "CHECK WITH THE DEALER" });
+    } else showCard(card);
+    el.card.classList.toggle("dominant", mode === "card");
+    return mode;
+  }
+  function presentLine(line, text = line?.text || "") { return present(line?.visual, text, line?.card || "none", line?.fact_ids || []); }
 
   // ---------- voice out ----------
   function browserVoice() {
@@ -254,10 +285,10 @@ export function mountPlayer(host, bundle, api) {
   function buildRoute(plan) {
     const byId = Object.fromEntries(library.map((s) => [s.id, s]));
     let steps = [];
-    if (plan?.route?.length) steps = plan.route.filter((r) => byId[r.segment_id]).map((r) => ({ seg: byId[r.segment_id], bridge: r.bridge, bridge_audio: r.bridge_audio || "" }));
+    if (plan?.route?.length) steps = plan.route.filter((r) => byId[r.segment_id]).map((r) => ({ seg: byId[r.segment_id], bridge: r.bridge, bridge_audio: r.bridge_audio || "", bridge_fact_ids: r.bridge_fact_ids || [] }));
     if (!steps.length) { // fallback: focus topics first, then bundle order, establish last
       const focus = new Set(S.profile.focus); const proof = library.filter((s) => s.role !== "establish"); const est = library.filter((s) => s.role === "establish");
-      steps = [...proof.filter((s) => focus.has(s.topic) || focus.has(s.id)), ...proof.filter((s) => !(focus.has(s.topic) || focus.has(s.id))), ...est].map((seg) => ({ seg, bridge: "" }));
+      steps = [...proof.filter((s) => focus.has(s.topic) || focus.has(s.id)), ...proof.filter((s) => !(focus.has(s.topic) || focus.has(s.id))), ...est].map((seg) => ({ seg, bridge: "", bridge_fact_ids: [] }));
     }
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
@@ -266,7 +297,7 @@ export function mountPlayer(host, bundle, api) {
   async function playOpening(run) {
     for (const seg of opening) {
       prefetch(seg.lines);
-      for (const ln of seg.lines) { if (run !== S.run) return false; showVisual({ ...ln.visual, scriptText: ln.text }); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; }
+      for (const ln of seg.lines) { if (run !== S.run) return false; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; }
     }
     return run === S.run;
   }
@@ -277,8 +308,8 @@ export function mountPlayer(host, bundle, api) {
       const step = S.plan[i], seg = step.seg; S.seg = i; S.atCheckin = false; renderProgress();
       prefetch([...seg.lines.slice(lineIdx), seg.checkin?.text ? { text: seg.checkin.text, audio: seg.checkin.audio } : null].filter(Boolean));
       if (S.latePlan && lineIdx === 0) { const late = await withTimeout(S.latePlan, 10); if (late) { S.latePlan = null; S.pitch = late; S.personalized = true; const okc = await playCustomBatches(late, run); if (!okc) return; const rest = S.plan.slice(i); buildRoute(late); if (S.plan.length) { playFrom(0, 0); return; } S.plan = rest; } }
-      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); if (fv) showVisual({ ...fv, scriptText: step.bridge }); el.cite.textContent = ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
-      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; showVisual({ ...ln.visual, scriptText: ln.text }); showCard(ln.card); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
+      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); present(fv ? { ...fv, display_mode: "" } : null, step.bridge, "none", step.bridge_fact_ids || []); el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
+      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
       lineIdx = 0; if (run !== S.run) return;
       if (seg.checkin?.text) {
         S.atCheckin = true; const ok = await speak(seg.checkin.text, run, seg.checkin.audio); if (!ok) return;
@@ -287,7 +318,7 @@ export function mountPlayer(host, bundle, api) {
         const r = await waitFor(chips, 8); if (run !== S.run) return;
         if (r.value === "yes") { S.resolved.add(seg.topic); const ok2 = await speakF("good", "Good — moving on.", run); if (!ok2) return; }
         else if (r.value === "__timeout") { const ok2 = await speakF("nudge_continue", "I'll carry on — stop me whenever you like.", run); if (!ok2) return; }
-        else if (r.value === "deeper") { S.raised.add(seg.topic); prefetch(seg.deeper || []); for (const ln of seg.deeper || []) { showVisual({ ...ln.visual, scriptText: ln.text }); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
+        else if (r.value === "deeper") { S.raised.add(seg.topic); prefetch(seg.deeper || []); for (const ln of seg.deeper || []) { presentLine(ln); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
           if (!(seg.deeper || []).length) { const ok3 = await speak("That's everything the material covers on this — ask me anything specific and I'll check.", run); if (!ok3) return; }
           const ok3 = await speakF("clearer", "Is that clearer?", run); if (!ok3) return;
           const r2 = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }], 15); if (run !== S.run) return;
@@ -303,8 +334,8 @@ export function mountPlayer(host, bundle, api) {
   async function closeFlow(run) {
     S.atCheckin = true; showCard("summary");
     const closing = bundle.closing || [];
-    if (S.pitch?.advance) { const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; for (const ln of closing.slice(1)) { showVisual({ ...ln.visual, scriptText: ln.text }); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
-    else for (const ln of closing) { showVisual({ ...ln.visual, scriptText: ln.text }); showCard(ln.card); const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
+    if (S.pitch?.advance) { present(null, S.pitch.advance, "summary"); const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; for (const ln of closing.slice(1)) { presentLine(ln); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
+    else for (const ln of closing) { presentLine(ln); const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
     const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
     const r = await waitFor(chips, 0); if (run !== S.run) return;
     if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
@@ -334,8 +365,9 @@ export function mountPlayer(host, bundle, api) {
     try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me one moment, please, while I check that for you.", run); if (!okH) return; r = await qaP; } }
     catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin); return; }
     if (run !== S.run) return;
-    if (r.visual) showVisual({ ...r.visual, url: mediaUrlFor(r.visual), focus: "", scriptText: r.answer || text });
-    if (r.facts?.length) showCard("cite", r.facts); else showCard("none");
+    const answerVisual = r.visual ? { ...r.visual, url: mediaUrlFor(r.visual), focus: "" } : null;
+    const answerMode = present(answerVisual, r.answer || text, r.facts?.length ? "cite" : "none", r.fact_ids || []);
+    if (answerMode !== "card") { if (r.facts?.length) showCard("cite", r.facts); else showCard("none"); }
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : (r.answered ? "" : "not in the sources — flagged");
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
@@ -387,6 +419,7 @@ export function mountPlayer(host, bundle, api) {
   function intakeWait(run) {
     return new Promise((res) => {
       let done = false; const fin = (t) => { if (done) return; done = true; S.intakeResolver = null; stopListening(); res(t); }; S.intakeResolver = fin; el.inHeard.textContent = "";
+      if (S.pendingIntakeAnswer) { const queued = S.pendingIntakeAnswer; S.pendingIntakeAnswer = ""; fin(queued); return; }
       if (canListen() && !S.micDenied) { el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; listen({ timeout: 10000, onInterim: (t) => { el.inHeard.textContent = t; } }).then((t) => { if (done || run !== S.run) return; if (t) fin(t); else { el.inState.textContent = "Tap the mic to try again, or type below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); } }); }
       else { el.inState.textContent = "Type your answer below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); }
     });
@@ -405,10 +438,18 @@ export function mountPlayer(host, bundle, api) {
     const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok) return;
     const a1 = await intakeWait(run); if (run !== S.run) return;
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
+    let a2 = "";
+    if (a1 && !isGetGoing(a1)) {
+      const q2 = bundle.intake?.q2 || "Anything specific you'd like me to focus on, or shall we get going?";
+      const okQ2 = await speak(q2, run, bundle.intake?.audio?.q2); if (!okQ2) return;
+      a2 = await intakeWait(run); if (run !== S.run) return;
+      if (a2) { addMsg("user", a2); if (!isGetGoing(a2)) { S.profile.followup = a2; S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(a2)])]; } }
+    }
     el.intake.classList.remove("open"); S.intakeOpen = false;
-    if (bundle.media?.hero) showVisual({ kind: "image", url: bundle.media.hero, cycle: false });  // neutral hero behind the acknowledgement — never a leftover detail image
+    if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model");
+    else if (bundle.media?.hero) showVisual({ kind: "image", url: bundle.media.hero, cycle: false }, "evidence");
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
-    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false }).catch(() => null), 60000) : null;
+    S.pitchPromise = ((a1 || a2) && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: !!S.profile.followup }).catch(() => null), 60000) : null;
     const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     const okF = await playIntroFilm(run); if (!okF) return;
     await startAfterIntake(run, a1);
@@ -423,18 +464,21 @@ export function mountPlayer(host, bundle, api) {
     if (!plan) { addMsg("note", "planner not ready — standard route; custom batches will slot in when they arrive"); S.latePlan = pitchP; }
     if (plan) {
       S.pitch = plan; S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
-      if (plan.decision_frame) { const ok = await speak(plan.decision_frame, run, plan.decision_frame_audio); if (!ok) return; }
+      if (plan.decision_frame) { present(null, plan.decision_frame, "statement"); el.cite.textContent = ""; const ok = await speak(plan.decision_frame, run, plan.decision_frame_audio); if (!ok) return; }
       const okC = await playCustomBatches(plan, run); if (!okC) return;
       if (plan.follow_up_question) {
         const a2 = await askAndListen(plan.follow_up_question, run, 12000, plan.follow_up_audio); if (run !== S.run) return;
         if (a2) { S.profile.followup = a2; setStatus("thinking", "Planning"); const refined = await withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 30000); if (run !== S.run) return; if (refined) { S.pitch = { ...plan, ...refined, custom_batches: plan.custom_batches }; S.profile.focus = [...new Set([...(refined.focus_topics || []), ...S.profile.focus])]; } }
       }
+      el.cite.textContent = "";
       const ok = S.profile.followup ? await speakF("focus_first", "Got it — let me show you the part that matters most for that first.", run) : await speakF("how_i_go", "Here's how I'll go about it.", run); if (!ok) return;
-    } else {
+    } else if (!S.profile.followup) {
       const q2 = bundle.intake?.q2 || "Is there anything specific you'd like me to focus on, or shall we get going?";
       const a2 = await askAndListen(q2, run, 10000, bundle.intake?.audio?.q2); if (run !== S.run) return;
       if (a2 && !isGetGoing(a2)) { S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(a2)])]; S.profile.followup = a2; }
       const ok = await speakF("lets_go", "Alright — here we go.", run); if (!ok) return;
+    } else {
+      const ok = await speakF("focus_first", "Got it — let me show you the part that matters most for that first.", run); if (!ok) return;
     }
     buildRoute(S.pitch); playFrom(0, 0);
   }
@@ -442,16 +486,17 @@ export function mountPlayer(host, bundle, api) {
     const batches = plan?.custom_batches || [];
     if (!batches.length || S.customPlayed) return run === S.run;
     S.customPlayed = true;
+    el.cite.textContent = "";
     const okB = await speakF("bridge_to_custom", "Now, let me get to what you asked about.", run); if (!okB) return false;
     for (const b of batches) {
       if (run !== S.run) return false;
-      if (b.visual) showVisual({ ...b.visual, url: mediaUrlFor(b.visual), focus: b.text });
+      present(b.visual ? { ...b.visual, url: mediaUrlFor(b.visual), focus: "" } : null, b.text, "none", b.fact_ids || []);
       el.cite.textContent = b.fact_ids?.length ? "sources: " + b.fact_ids.join(", ") : "";
       const ok = await speak(b.text, run, b.audio); if (!ok) return false;
     }
     return run === S.run;
   }
-  function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; const run = newRun(); playIntroFilm(run).then((okF) => { if (!okF) return; playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }); }
+  function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = ""; const run = newRun(); playIntroFilm(run).then((okF) => { if (!okF) return; playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }); }
 
   // ---------- handoff ----------
   function intentScore() { let s = 20; s += Math.min(30, S.questions.length * 8); s += S.resolved.size * 8; s += S.seg >= S.plan.length - 1 ? 15 : 0; if (S.cta && S.cta !== "summary") s += 30; if (S.leads.length) s += 10; s -= S.unresolved.size * 5; return Math.max(5, Math.min(98, s)); }
@@ -485,7 +530,7 @@ export function mountPlayer(host, bundle, api) {
     S.introPlayed = true;
     const ok = await speakF("before_video", "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.", run);
     if (!ok) return false;
-    el.img.style.display = "none"; el.img.classList.remove("kb"); el.media.classList.add("film-on");
+    el.img.style.display = "none"; el.img.classList.remove("kb"); el.media.classList.remove("evidence-on", "card-on"); el.card.classList.remove("on", "dominant"); el.media.classList.add("film-on");
     if (el.support) el.support.classList.remove("on"); el.focus.classList.remove("on");
     const v = el.video; v.src = iv.url; v.muted = false; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
     setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
@@ -498,7 +543,7 @@ export function mountPlayer(host, bundle, api) {
       cap = setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
     });
     try { v.pause(); } catch (e) {}
-    v.muted = true; v.style.display = "none"; v.style.opacity = 0; el.media.classList.remove("film-on"); setChips([]);
+    v.muted = true; v.style.display = "none"; v.style.opacity = 0; el.media.classList.remove("film-on"); if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model"); setChips([]);
     if (!done || run !== S.run) return false;
     return speakF("after_video", "Now, let's get into what matters to you.", run);
   }
@@ -518,8 +563,10 @@ export function mountPlayer(host, bundle, api) {
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   function destroy() { interruptAll(); if (S.modelTimer) clearTimeout(S.modelTimer); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }
 
-  renderCtas(); showVisual({ kind: "image", url: bundle.media?.hero, focus: "" });
-  if (bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 });
+  renderCtas();
+  if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model");
+  else showVisual({ kind: "image", url: bundle.media?.hero, focus: "" }, "evidence");
+  if (!asset && bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 }, "evidence");
   const startBtn = h("div", { class: "pl-intake open" }, h("div", { class: "inner" }, mascot({ size: 132, image: bundle.mascot }).el, h("div", { class: "state" }, guide), h("p", { class: "q" }, bundle.pitch?.takeaway || `A voice-led walkthrough of ${bundle.product?.name || bundle.name}. Just talk — interrupt anytime.`), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "▶ Start"), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Skip the intro"))));
   el.stage.append(startBtn);
   // language chooser (multi-language bundles)

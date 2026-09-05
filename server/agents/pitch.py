@@ -3,6 +3,7 @@ approved proof blocks for THIS buyer (P02/P03/P05/P07), with grounded one-line b
 from __future__ import annotations
 
 import json
+import re
 
 from .. import config, schemas, store
 from ..llm import claude
@@ -21,7 +22,8 @@ Your output:
 - decision_frame: the ACKNOWLEDGEMENT, 1-2 spoken sentences that restate THIS buyer's need in their OWN words and promise
   the order ("Got it, Anand: easy in city traffic, and comfortable on the long drives. Cabin first, then the drive, then
   what's standard."). It plays right after the overview. Warm, specific, zero specs. If they gave no signal, say honestly
-  that you'll give the balanced tour and they can steer at any pause.
+  that you'll give the balanced tour and they can steer at any pause. Keep this framing positive: never promise a section
+  about gaps, unknowns, or "what I can't tell you"; written terms and open questions belong in the establish block.
 - follow_up_question: ONE question (P03: for a stated want, what it must accomplish and under what conditions; for a
   stated need, confirm it and its stakes; for unknown, "walk me through a normal day"). Empty on a refine call.
 - route: from the LIBRARY below — the buyer's strongest signal FIRST (a comfort need starts at the cabin, a performance
@@ -34,7 +36,10 @@ Your output:
 - custom_batches: when the buyer said something specific, 2-3 batches of ≤ 38 words each, ONE idea per batch, each shaped
   as: their words → one outcome → one cited proof → what it changes for them. ("For the long drives you mentioned, Smart
   Cruise with Stop and Go holds your distance on the highway…"). Each names the picture that literally shows that idea
-  (visual_ref) and cites fact ids for every figure. Never a spec list. Empty when the buyer gave nothing specific.
+  (visual_ref) and cites fact ids for every figure. Prefer exactly ONE fact per batch; combine facts only when they are the
+  same visible feature. Never invent an operating consequence (for example, number of downshifts) that the registry does
+  not state. A reasonable inference must be introduced as "That suggests…". Never a spec list. Empty when the buyer gave
+  nothing specific.
 - advance: the closing advance for this buyer (P10), naming one CTA label; advance_cta = its id.
 {audience}
 {language}
@@ -77,6 +82,9 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     except Exception as e:
         raise RuntimeError(claude.describe_error(e)) from e
     p = out.model_dump()
+    if re.search(r"\b(can't|cannot|can’t|don't know|do not know|honestly can't|honestly cannot)\b", p.get("decision_frame", ""), re.I):
+        first = re.split(r"(?<=[.!?])\s+", p["decision_frame"].strip(), maxsplit=1)[0]
+        p["decision_frame"] = first + " I'll start with what matters most, then cover the everyday fit, what's standard, and what's in writing."
     # ---- validate: segment ids exist; bridges obey no-citation-no-claim; establish last
     seg_ids = {s["id"] for s in segs}
     fact_ids = {f["id"] for f in facts}
@@ -130,6 +138,11 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     for b in batches:
         v = next((x for x in und.get("images", []) + und.get("shots", []) if x["id"] == b.get("visual_ref")), None)
         b["visual"] = {"kind": "image" if b.get("visual_ref", "").startswith("im") else "shot", "ref": b.get("visual_ref"), "source_id": v.get("source_id") if v else None, "start": v.get("start") if v else None, "end": v.get("end") if v else None, "description": v.get("description", "") if v else ""} if v else None
+        # Runtime batches are personalised and can legitimately combine several cited claims.
+        # A single picture cannot prove airbags + brakes + hill assist at once, so show the
+        # cited fact card instead of implying that one evidence frame proves the whole line.
+        b["visual"] = b["visual"] or {"kind": "none"}
+        b["visual"]["display_mode"] = "card" if len(set(b.get("fact_ids") or [])) > 1 else _vis.display_mode(b.get("text", ""), b["visual"])
     p["custom_batches"] = batches
     proofs = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features][:3]
     feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": features[0], "bridge": "", "bridge_fact_ids": []}] if features else [])

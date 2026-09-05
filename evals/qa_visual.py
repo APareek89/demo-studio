@@ -13,6 +13,7 @@ os.environ.setdefault("DEMO_STUDIO_DATA", str(ROOT / "data" / "test-demos"))
 sys.path.insert(0, str(ROOT))
 
 from fastapi.testclient import TestClient
+from server import config
 from server.app import app
 
 c = TestClient(app)
@@ -28,7 +29,8 @@ demo_id = demo["id"]
 state = c.get(f"/api/demos/{demo_id}/visual").json()
 required = [x for x in state["schema"] if x["required"]]
 check("exactly five required views", len(required) == 5, ", ".join(x["key"] for x in required))
-check("TRELLIS.2 model is fixed", state["model"] == "microsoft:trellis-2@4b", state["model"])
+check("multi-view Rodin is the recommended model", state["model"] == "hyper3d:rodin@gen-2", state["model"])
+check("all supported 3D models are exposed", {m["id"] for m in state["models"]} == set(config.RUNWARE_MODELS), str(state["models"]))
 
 r = c.post(f"/api/demos/{demo_id}/visual/generate", json={})
 check("build blocked when required views missing", r.status_code == 400, r.text[:100])

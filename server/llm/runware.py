@@ -1,7 +1,7 @@
-"""Runware TRELLIS.2 image-to-3D client.
+"""Runware image-to-3D client for source-faithful product assets.
 
-The API is asynchronous: submit one conditioning image, then poll the same endpoint with
-getResponse. Only safe metadata is written to traces; the image data URI and API key never are.
+The API is asynchronous: submit source images, then poll the same endpoint with getResponse.
+Only safe metadata is written to traces; image data URIs and the API key never are.
 """
 from __future__ import annotations
 
@@ -205,13 +205,37 @@ def preflight() -> dict | None:
     return {"available": True, "currency": currency}
 
 
-def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda _p, _m: None,
+def _model_request(model: str, data_uris: list[str]) -> tuple[dict, str]:
+    """Build only documented parameters for the selected provider model."""
+    if model not in config.RUNWARE_MODELS:
+        raise ValueError("Unsupported Runware 3D model")
+    spec = config.RUNWARE_MODELS[model]
+    images = data_uris[: int(spec["max_images"])]
+    if model == "hyper3d:rodin@gen-2":
+        return ({"inputs": {"images": images}, "settings": {
+            "quality": "high", "hdTexture": True, "material": "PBR", "meshMode": "Quad",
+        }}, str(spec["label"]))
+    if model == "tripo:v3.1@0":
+        return ({"inputs": {"images": images}, "settings": {
+            "geometryQuality": "detailed", "textureQuality": "detailed", "textureAlignment": "original_image",
+            "texture": True, "pbr": True, "imageAutoFix": False,
+        }}, str(spec["label"]))
+    return ({"inputs": {"image": images[0]}, "settings": {"resolution": config.RUNWARE_RESOLUTION}}, str(spec["label"]))
+
+
+def generate(image_paths: Path | list[Path], *, model: str | None = None,
+             progress: Callable[[int, str], None] = lambda _p, _m: None,
              cancelled: Callable[[], bool] = lambda: False, submitted: Callable[[str], None] = lambda _task: None) -> dict:
     """Return GLB bytes and job metadata. Stop local polling when skipped."""
+    model = model or config.RUNWARE_MODEL
+    paths = [image_paths] if isinstance(image_paths, Path) else list(image_paths)
+    if not paths:
+        raise ValueError("At least one source image is required")
+    label = str(config.RUNWARE_MODELS.get(model, {}).get("label") or model)
     if config.MOCK_LLM:
         task_uuid = str(uuid.uuid4())
         submitted(task_uuid)
-        for pct, message in ((12, "Submitting to TRELLIS.2"), (42, "Building geometry"), (76, "Texturing the asset"), (100, "3D asset ready")):
+        for pct, message in ((12, f"Submitting to {label}"), (42, "Building geometry"), (76, "Texturing the asset"), (100, "3D asset ready")):
             if cancelled():
                 raise RuntimeError("3D generation skipped")
             time.sleep(0.08)
@@ -220,14 +244,18 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
     if not config.RUNWARE_API_KEY:
         raise RuntimeError("RUNWARE_API_KEY is missing in .env")
 
-    data_uri, image_bytes = _image_data_uri(image_path)
+    encoded = [_image_data_uri(path) for path in paths]
+    data_uris = [item[0] for item in encoded]
+    image_bytes = [item[1] for item in encoded]
     task_uuid = str(uuid.uuid4())
     submitted(task_uuid)
-    request = {"taskType": "3dInference", "taskUUID": task_uuid, "model": config.RUNWARE_MODEL,
-               "inputs": {"image": data_uri}, "deliveryMethod": "async", "outputFormat": "GLB",
-               "outputType": "URL", "includeCost": True,
-               "settings": {"resolution": config.RUNWARE_RESOLUTION}}
-    safe_request = {**request, "inputs": {"image": f"[data URI redacted; {image_bytes} bytes]"}}
+    model_fields, label = _model_request(model, data_uris)
+    request = {"taskType": "3dInference", "taskUUID": task_uuid, "model": model,
+               "deliveryMethod": "async", "outputFormat": "GLB", "outputType": "URL", "includeCost": True,
+               **model_fields}
+    redacted = [f"[data URI redacted; {size} bytes]" for size in image_bytes[: int(config.RUNWARE_MODELS[model]["max_images"])]]
+    safe_inputs = {"images": redacted} if "images" in request["inputs"] else {"image": redacted[0]}
+    safe_request = {**request, "inputs": safe_inputs}
     headers = {"Authorization": f"Bearer {config.RUNWARE_API_KEY}", "Content-Type": "application/json"}
     started = time.time()
     final: dict = {}
@@ -235,7 +263,7 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
     accepted = False
     try:
         with httpx.Client(headers=headers, timeout=httpx.Timeout(90, connect=20)) as client:
-            progress(8, "Submitting to TRELLIS.2")
+            progress(8, f"Submitting to {label}")
             submission = _post(client, [request])
             accepted = True
             first = _task_data(submission, task_uuid)
@@ -252,7 +280,7 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
                     row = _task_data(polled, task_uuid)
                     status = str(row.get("status") or "processing").lower()
                     pct = _progress_value(row.get("progress"))
-                    progress(max(10, min(96, pct or 20)), "TRELLIS.2 is building the 3D asset")
+                    progress(max(10, min(96, pct or 20)), f"{label} is building the 3D asset")
                     if status in ("success", "completed") or _find_glb_url(row):
                         final = row
                         break
@@ -283,14 +311,14 @@ def generate(image_path: Path, *, progress: Callable[[int, str], None] = lambda 
             if len(glb) < 20 or glb[:4] != b"glTF":
                 raise RuntimeError("Runware returned an invalid GLB file")
         elapsed = time.time() - started
-        usage.record("runware-3d", config.RUNWARE_MODEL, seconds=elapsed, usd=provider_cost)
-        usage.trace("runware-3d", config.RUNWARE_MODEL, latency_ms=elapsed * 1000,
+        usage.record("runware-3d", model, seconds=elapsed, usd=provider_cost)
+        usage.trace("runware-3d", model, latency_ms=elapsed * 1000,
                     user=json.dumps(safe_request), response=json.dumps({"taskUUID": task_uuid, "status": final.get("status"), "cost": provider_cost, "bytes": len(glb)}), usd=provider_cost)
         progress(100, "3D asset ready")
         return {"bytes": glb, "task_uuid": task_uuid, "cost": provider_cost or 0.0, "response": final}
     except Exception as exc:
         if accepted:
-            usage.record("runware-3d", config.RUNWARE_MODEL, seconds=time.time() - started, usd=provider_cost)
-        usage.trace("runware-3d", config.RUNWARE_MODEL, latency_ms=(time.time() - started) * 1000,
+            usage.record("runware-3d", model, seconds=time.time() - started, usd=provider_cost)
+        usage.trace("runware-3d", model, latency_ms=(time.time() - started) * 1000,
                     user=json.dumps(safe_request), error=str(exc)[:400], usd=provider_cost if accepted else 0.0)
         raise

@@ -41,6 +41,44 @@ SYNONYMS = {"gearbox": ["gear", "shifter", "transmission", "dct", "manual", "aut
             "engine": ["turbo", "motor"], "motor": ["engine", "hub"], "headlamp": ["headlight", "drl", "led"], "headlight": ["headlamp", "drl", "led"], "grille": ["bumper", "fascia"],
             "steering": ["wheel", "paddle"], "exhaust": ["muffler", "tailpipe"], "muffler": ["exhaust"], "mirror": ["orvm"]}
 
+# Runtime stage contract. 3D is intentionally reserved for claims that a faithful exterior mesh can
+# actually support. Hidden mechanisms, cabin/safety details and source terms switch to literal evidence
+# or a fact card before the narration begins.
+VISIBLE_DETAIL = re.compile(
+    r"\b(interior|inside|cabin|seat|dashboard|screen|display|cluster|touchscreen|infotainment|airbags?|curtain|"
+    r"gear|gearbox|shifter|transmission|manual|automatic|paddles?|climate|sunroof|roof|calipers?|alloys?|"
+    r"wheels?|tyres?|muffler|exhaust|tailpipe|headlamps?|headlights?|grille|spoiler|bumper|sills?|brakes?|"
+    r"camera|sensors?|mirror|glovebox|charging|android auto|carplay|bose|speakers?|vents?|sunshade|armrest|"
+    r"smartsense|adas|cruise|lane|collision|blind spot|driver attention|child seat|isofix|tyre pressure)\b", re.I)
+ABSTRACT_EVIDENCE = re.compile(
+    r"\b(warranty|roadside assistance|terms? (?:and )?conditions?|price|mileage|kilometres?|subscription|"
+    r"catalogue|brochure|not (?:printed|listed|stated)|availability|bookable|test conditions?|certified|"
+    r"marketing line|specifications? may change|cost extra|packages?|years?|PS\b|variant|N10 column|"
+    r"zero to hundred|nought to hundred|eight point nine|N10\b|one-point-five litre|colou?r options?|colou?rs? listed)\b", re.I)
+MODEL_OVERVIEW = re.compile(
+    r"\b(looks? and drives?|more character|stands? out|at a glance|daily suv|everyday suv|feels? quick|"
+    r"strongest fit|test drive|highway overtake|turbo petrol pulls|product overview|walkaround)\b", re.I)
+
+
+def display_mode(text: str, visual: dict | None = None, card: str = "none") -> str:
+    """Return model/evidence/card for one spoken line; deterministic and safe for old bundles."""
+    cue = text or ""
+    has_visual = bool(visual and visual.get("ref"))
+    if card in {"price", "summary", "contrast"}:
+        return "card"
+    detail = bool(VISIBLE_DETAIL.search(cue))
+    abstract = bool(ABSTRACT_EVIDENCE.search(cue))
+    # One image must never imply that it proves an adjacent written/abstract claim.
+    if detail and abstract:
+        return "card"
+    if detail:
+        return "evidence" if has_visual else "card"
+    if abstract:
+        return "card"
+    if MODEL_OVERVIEW.search(cue):
+        return "model"
+    return "evidence" if has_visual else "model"
+
 
 def _stem(w: str) -> str:
     return w[:-1] if w.endswith("s") and len(w) > 4 and not w.endswith("ss") else w
@@ -115,6 +153,8 @@ the picture currently assigned, and a rule-based proposal (with the words that m
 with what is visible in it. Decide, per line, which picture should be on screen while that line is spoken:
 - The thing being talked about wins: a line about the gearbox shows the gear lever, a line about airbags shows the airbag
   cut-away, a line about the roof shows the roof. A generic beauty shot is right for generic lines (greeting, framing, closing).
+- If no catalogue image literally shows the claim, return 'none'. Never use a merely attractive exterior image for cabin,
+  safety, warranty, pricing, connectivity or availability language; the runtime will show a source fact card instead.
 - Take the proposal when it names the part in the line; keep the current picture when the proposal is weaker than it;
   choose another catalogue picture when both miss. Never pick a picture that contradicts the line (interior shot for
   exterior styling, and so on).

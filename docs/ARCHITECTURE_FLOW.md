@@ -12,13 +12,13 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 
 | Gate | Enforcer | Threshold / rule | Where |
 |---|---|---|---|
-| 3D image input | FUNCTION | exactly five required real product views; front ¾ preferred | `server/visual.py` |
-| 3D video input | FUNCTION + AGENT | ≥1 readable extracted frame; Gemini selects real angles and creates only missing views; a generated image is never primary | `server/visual.py`, `server/media.py` |
-| 3D provider | LIBRARY | one real image → async `microsoft:trellis-2@4b`; GLB header validated; exact returned cost traced | `server/llm/runware.py` |
+| 3D image input | FUNCTION | exactly five required uploaded product views; front ¾ first when clear | `server/visual.py` |
+| 3D video input | FUNCTION + AGENT | ≥1 readable extracted frame; Gemini selects real angles; generated missing views are review-only and never conditioning inputs | `server/visual.py`, `server/media.py` |
+| 3D provider | LIBRARY | Rodin Gen-2: up to 5 real images (default); Tripo v3.1: up to 4; TRELLIS.2: 1; GLB validated and exact returned cost traced | `server/llm/runware.py` |
 | 3D approval | USER | review-ready attempt must be explicitly approved before it enters the player bundle / My Assets | `server/visual.py` |
 | Read allowed | FUNCTION | ≥1 source; keys present or `MOCK_LLM=1` | `server/app.py` `read_sources` |
 | One run per demo | FUNCTION | a second read/build/revise while a thread is alive → 409 | `orchestrator._spawn` |
-| Build allowed | FUNCTION | all 4 approvals true | `orchestrator.start_build` |
+| Build allowed | FUNCTION | all 6 approvals true | `orchestrator.start_build` |
 | Grounding (authoring) | FUNCTION | `fact_ids ⊆ registry`; visual ref exists; text matching `NUMBERISH`/`CLAIMISH` with no fact id → `unverified` (excluded from voice + bundle) | `agents/author.validate` |
 | Grounding (runtime) | FUNCTION | invalid/empty fact ids on a number/claim answer → don't-guess reply + escalate + unknown recorded | `agents/qa.answer` |
 | Voice failure budget | FUNCTION | stop rendering after 4 provider errors; player falls back to browser voice | `agents/voice.render_script` |
@@ -28,7 +28,8 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Bridge grounding | FUNCTION | a runtime bridge with a figure/claim and no fact id is dropped (`bridge_dropped`) | `agents/pitch.py` |
 | Decline categories | AGENT rule + FUNCTION | pricing, discounts, finance, insurance, features, availability, warranty/service, comparisons → decline when not in the registry; comparisons only from competitor URLs when `settings.competition=on`, always with a verify caveat | `agents/qa.py` |
 | Uploads | FUNCTION | 1 GB per file; AVIF/HEIC converted for the models, originals served; videos play from the original (ffmpeg optional) | `config.MAX_UPLOAD_MB`, `server/media.py` |
-| Intake + opening film | FUNCTION | greet and ask one needs question; mic denied → typed fallback; then play the optional film with audio and an explicit spoken return before the interactive walkthrough | `player.js` `runIntake`, `playIntroFilm` |
+| Intake + opening film | FUNCTION | greet, ask needs and one focus question; mic denied → typed fallback; then play the optional film with audio and an explicit spoken return before the interactive walkthrough | `player.js` `runIntake`, `playIntroFilm` |
+| Spoken visual stage | FUNCTION | exactly one per line: 3D model for visible exterior/performance; literal evidence for a matching detail; cited card for abstract/multi-claim language | `agents/visuals.display_mode`, `player.js` `present` |
 | Approvals reset | FUNCTION | revise(understand) resets visuals + facts; edits mark author stale | `orchestrator._revise`, `apply_actions` |
 
 ## File index
@@ -58,7 +59,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 ```mermaid
 %% see docs/mermaid/01-master.mmd
 flowchart TD
-  V["Optional Demo Visual: five views or video → TRELLIS.2 → approve"]:::ask --> U["USER adds sources"]:::ask --> READ["Read phase: Understand → Plan (02)"]:::fn --> CARDS["Align: 6 cards"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
+  V["Optional Demo Visual: five views or video → Rodin / Tripo / TRELLIS → approve"]:::ask --> U["USER adds sources"]:::ask --> READ["Read phase: Understand → Plan (02)"]:::fn --> CARDS["Align: 6 cards"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
   APPR -- "yes" --> BUILD["Build: Author → Voice → Rehearsal → Bundle (04)"]:::fn --> PLAY["Rehearse: player (05)"]:::fn --> FB["feedback → align agent → rebuild"]:::agent
   APPR -- "no" --> ALIGN
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;

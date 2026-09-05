@@ -18,7 +18,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
 RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY", "").strip()
-RUNWARE_MODEL = "microsoft:trellis-2@4b"
+# Multi-view identity preservation matters more than single-image speed for product demos.
+# Rodin accepts five source views; the environment override keeps controlled comparisons easy.
+RUNWARE_MODEL = os.getenv("RUNWARE_MODEL", "hyper3d:rodin@gen-2").strip() or "hyper3d:rodin@gen-2"
+RUNWARE_MODELS = {
+    "hyper3d:rodin@gen-2": {"label": "Rodin Gen-2", "max_images": 5, "recommended": True},
+    "tripo:v3.1@0": {"label": "Tripo 3D v3.1", "max_images": 4, "recommended": False},
+    "microsoft:trellis-2@4b": {"label": "TRELLIS.2", "max_images": 1, "recommended": False},
+}
+if RUNWARE_MODEL not in RUNWARE_MODELS:
+    raise ValueError("RUNWARE_MODEL must be one of: " + ", ".join(RUNWARE_MODELS))
 RUNWARE_RESOLUTION = int(os.getenv("RUNWARE_RESOLUTION", "1024"))
 if RUNWARE_RESOLUTION not in (512, 1024, 1536):
     raise ValueError("RUNWARE_RESOLUTION must be 512, 1024 or 1536")

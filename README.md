@@ -17,12 +17,12 @@ cp .env.example .env   # add ANTHROPIC_API_KEY, GEMINI_API_KEY, RUNWARE_API_KEY 
 No keys yet? `MOCK_LLM=1 .venv/bin/uvicorn server.app:app --port 8877` runs the whole flow with
 schema-shaped fake outputs (plumbing only, no intelligence).
 
-**Flow:** My Demos → New demo → **Demo Visual** (optional: five real views or a turntable video → Runware TRELLIS.2 → approve) → **Sources** (video/images, catalogue, brand guide, product URL) →
+**Flow:** My Demos → New demo → **Demo Visual** (optional: five real views or a turntable video → Runware Rodin Gen-2 → approve) → **Sources** (video/images, catalogue, brand guide, product URL) →
 *Reading your sources…* → **Align** (approve Visuals · Facts · Persona & voice · Calls to action
 through the prompt dock) → *Building your demo…* → **Rehearse** (run it as the customer, give
 feedback, it rebuilds).
 
-An approved 3D asset remains the main visual throughout the demo. Script images and video shots appear as smaller supporting evidence, and the reusable GLB is available under **My Assets**. TRELLIS.2 accepts one conditioning image, so Demo Studio sends the strongest real front-three-quarter view; the other angles support review and playback.
+An approved 3D asset is the hero for broad exterior and performance narration. The player replaces it full-stage with the exact uploaded image/video evidence for a visible detail, or a cited fact card for claims that no picture can prove. Rodin Gen-2 receives up to five real source views in identity order; generated gap-fill views are never sent as product truth. The reusable GLB is available under **My Assets**.
 
 Speech: Sarvam (Bulbul TTS + Saarika STT) is primary when its key is set, Gemini 3.1 Flash TTS falls back, then the browser voice.
 
@@ -42,7 +42,7 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 
 ## What changed on 2026-09-04
 - **Workflow is a LangGraph graph** (`server/graph.py`): router → understand → plan → align_enter → align_wait (interrupt: waits for your approvals / messages) → author → voice → rehearsal → bundle → finish. Checkpoints in `data/graph.sqlite`. `GET /api/workflow` returns the graph as Mermaid (also `docs/mermaid/00-workflow.mmd`). `pip install "langgraph-cli[inmem]"` then `langgraph dev` opens it in LangGraph Studio.
-- **Cheapest models for the MVP**: Haiku 4.5 everywhere, Sonnet 5 for the plan, Gemini 3.5 flash-lite for vision, Sarvam bulbul v3 / Gemini flash TTS. Override with `CLAUDE_MODEL`, `CLAUDE_PLAN_MODEL`, `GEMINI_MODEL`, `GEMINI_IMAGE_MODEL`.
+- **Model defaults**: Claude Opus 5 for customer-facing reasoning, Haiku 4.5 for mechanical passes, Gemini 3.6 Flash for vision, the cheaper Gemini 3.1 Flash Lite Image model for image generation/cleanup, Sarvam Bulbul v3 with Gemini speech fallback, and multi-view Runware Rodin Gen-2 for 3D. Override with the corresponding environment variables.
 - **Picture editor** (`server/agents/visuals.py`): after authoring, every line's picture is chosen to show the part being described, with a reason per line in the run log.
 - **Image clean-up** (`server/media.py`): transparent cut-outs get a clean studio background and defringed edges locally; `settings.enhance_images = "ai"` uses the Gemini image model when the key has quota. **Mascot**: built-in SVG guide in the player (`web/player/mascot.js`); a generated PNG when the image model is available.
 - **Run log** `data/demos/<id>/RUN.md`: INPUT / OUTPUT / MODEL CALLS per stage with full prompts and responses; `GET /api/demos/<id>/runlog`.

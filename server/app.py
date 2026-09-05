@@ -157,10 +157,14 @@ async def set_visual_mode(demo_id: str, req: Request):
 
 
 @app.post("/api/demos/{demo_id}/visual/generate")
-def generate_visual(demo_id: str):
+async def generate_visual(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     try:
-        return visual.start(demo_id)
+        try:
+            body = await req.json()
+        except Exception:
+            body = {}
+        return visual.start(demo_id, body.get("model"))
     except ValueError as e:
         raise HTTPException(400, str(e))
     except RuntimeError as e:

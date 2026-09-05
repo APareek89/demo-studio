@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+### 2026-09-05 — A good 3D asset still fails when the spoken claim and stage use different evidence
+
+**Symptom:** The 3D vehicle remained dominant while Ravi discussed hidden safety/cabin features, exact images were relegated to thumbnails, and one personalised safety sentence combined airbags, brakes and hill assist while showing only the airbag frame. A transition about the demo roadmap also inherited stale safety/warranty evidence and citations.
+**Why 1:** Playback treated the approved 3D asset as persistent decoration instead of making a per-line decision about what could actually prove the spoken words.
+**Why 2:** The script and runtime planner could put several visually distinct claims into one spoken batch; image selection then chose one related frame and silently implied that it covered the rest.
+**Why 3:** Transitions changed narration without resetting the preceding line's evidence/citation state, and a typed reply during the greeting could race into general Q&A before the intake listener existed.
+**Deepest why type:** `design`
+**Action taken:** Added a deterministic `model | evidence | card` contract to every bundled line. The player now uses mutually exclusive full-stage modes, never rotates an exact evidence image to a sibling, preloads all visual/audio media, gives personalised roadmaps their own card, routes multi-fact runtime batches to cited cards, clears stale citations on transitions, and queues early typed discovery answers. The CRETA narration was split into single-subject lines and rebuilt as `dm_c6a354fd`. Rodin Gen-2 replaced TRELLIS.2 after a five-real-view offline render comparison preserved the mixed black/silver/red source identity substantially better.
+**Preventive action:** Every ready demo must pass `evals/qa_visual_sync.py` plus three buyer-profile browser runs. A line may use 3D only for a visible exterior claim; hidden, abstract or multi-claim language must have literal evidence or a cited card before speech starts.
+
 ### 2026-09-05 — Gemini fallback passed configuration checks but returned no audio
 
 **Symptom:** Sarvam produced a valid WAV, but a forced Sarvam→Gemini fallback ended with “Gemini TTS returned no audio.”

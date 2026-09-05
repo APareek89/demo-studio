@@ -4,6 +4,7 @@ from __future__ import annotations
 import time
 
 from .. import config, store
+from . import visuals
 
 
 def media_url(demo_id: str, rel: str | None) -> str | None:
@@ -55,7 +56,9 @@ def build(demo_id: str, emit) -> dict:
         return {"kind": "none"}
 
     def line(ln: dict) -> dict:
-        return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": visual(ln.get("visual")), "start": ln.get("start"), "duration": ln.get("duration"),
+        v = visual(ln.get("visual"))
+        v["display_mode"] = visuals.display_mode(ln.get("text", ""), ln.get("visual"), ln.get("card", "none"))
+        return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": v, "start": ln.get("start"), "duration": ln.get("duration"),
                 "fact_ids": ln.get("fact_ids", []), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
 
     def assemble(sc: dict) -> dict:

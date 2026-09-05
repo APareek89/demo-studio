@@ -5,20 +5,20 @@ flowchart TD
   VP{"input mode?<br/>[FUNCTION · visual.py]"}:::dec
   FIVE["validate exactly five required real views<br/>[FUNCTION]"]:::fn
   FRAMES["extract video frames<br/>[LIBRARY · ffmpeg]"]:::fn
-  ANGLES["select real angles; create only missing views<br/>[AGENT · Gemini 3.6 Flash + image model]<br/>generated views labelled; never primary"]:::agent
-  RW["one strongest REAL front ¾ image → async 3D<br/>[LIBRARY · Runware TRELLIS.2 microsoft:trellis-2@4b]<br/>poll progress · trace exact cost · output GLB"]:::data
+  ANGLES["select real angles; create only missing review views<br/>[AGENT · Gemini 3.6 Flash + cheapest image model]<br/>recording/uploaded images define identity; generated views never condition 3D"]:::agent
+  RW["real views → async image-to-3D<br/>[LIBRARY · Runware]<br/>Rodin Gen-2 ≤5 (default) · Tripo v3.1 ≤4 · TRELLIS.2 =1<br/>poll progress · trace exact cost · output GLB"]:::data
   VG{"USER approves?<br/>[ask · rotate + inspect]"}:::dec
-  ASSET["visual_asset + My Assets<br/>[DATA · local + S3/DynamoDB]<br/>persistent main player visual"]:::data
+  ASSET["visual_asset + My Assets<br/>[DATA · local + S3/DynamoDB]<br/>hero for broad visible-product narration"]:::data
   U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask
   ING["store.add_*_source<br/>[FUNCTION · server/store.py]<br/>in: uploads / URL<br/>out: sources[] in data/demos/id/demo.json"]:::fn
   READBTN["POST /api/demos/id/read<br/>[FUNCTION · server/app.py]<br/>gate: ≥1 source · keys present or MOCK_LLM=1"]:::fn
   READ["READ phase (thread)<br/>[FUNCTION · orchestrator._read]<br/>Understand → Plan → voice sample → opening message<br/>see diagram 02"]:::fn
   SSE["GET /api/demos/id/events<br/>[FUNCTION · SSE, polls events.py every 0.35 s]<br/>out: progress / stage / status / message / phase_done"]:::fn
   OVER1["UI overlay<br/>'Reading your sources…'<br/>[FUNCTION · web/studio/align.js]"]:::term
-  CARDS["Align: 5 cards<br/>Visuals · Facts · Pitch · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json]"]:::data
+  CARDS["Align: 6 cards<br/>Visuals · Facts · Script · FAQ · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json + script.json + faq.json]"]:::data
   DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
   ALIGN["Align loop<br/>[AGENT · claude-opus-5 → actions]<br/>see diagram 03"]:::agent
-  APPR{"all 5 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
+  APPR{"all 6 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
   BUILD["BUILD phase (thread)<br/>[FUNCTION · orchestrator._build]<br/>Author → Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data

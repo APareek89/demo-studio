@@ -66,20 +66,20 @@ flowchart TD
   VP{&quot;input mode?&lt;br/&gt;[FUNCTION · visual.py]&quot;}:::dec
   FIVE[&quot;validate exactly five required real views&lt;br/&gt;[FUNCTION]&quot;]:::fn
   FRAMES[&quot;extract video frames&lt;br/&gt;[LIBRARY · ffmpeg]&quot;]:::fn
-  ANGLES[&quot;select real angles; create only missing views&lt;br/&gt;[AGENT · Gemini 3.6 Flash + image model]&lt;br/&gt;generated views labelled; never primary&quot;]:::agent
-  RW[&quot;one strongest REAL front ¾ image → async 3D&lt;br/&gt;[LIBRARY · Runware TRELLIS.2 microsoft:trellis-2@4b]&lt;br/&gt;poll progress · trace exact cost · output GLB&quot;]:::data
+  ANGLES[&quot;select real angles; create only missing review views&lt;br/&gt;[AGENT · Gemini 3.6 Flash + cheapest image model]&lt;br/&gt;recording/uploaded images define identity; generated views never condition 3D&quot;]:::agent
+  RW[&quot;real views → async image-to-3D&lt;br/&gt;[LIBRARY · Runware]&lt;br/&gt;Rodin Gen-2 ≤5 (default) · Tripo v3.1 ≤4 · TRELLIS.2 =1&lt;br/&gt;poll progress · trace exact cost · output GLB&quot;]:::data
   VG{&quot;USER approves?&lt;br/&gt;[ask · rotate + inspect]&quot;}:::dec
-  ASSET[&quot;visual_asset + My Assets&lt;br/&gt;[DATA · local + S3/DynamoDB]&lt;br/&gt;persistent main player visual&quot;]:::data
+  ASSET[&quot;visual_asset + My Assets&lt;br/&gt;[DATA · local + S3/DynamoDB]&lt;br/&gt;hero for broad visible-product narration&quot;]:::data
   U[&quot;USER adds sources&lt;br/&gt;[ask · Studio › Sources]&lt;br/&gt;in: video, images, PDF/DOCX/TXT, product URL, pasted brand text&quot;]:::ask
   ING[&quot;store.add_*_source&lt;br/&gt;[FUNCTION · server/store.py]&lt;br/&gt;in: uploads / URL&lt;br/&gt;out: sources[] in data/demos/id/demo.json&quot;]:::fn
   READBTN[&quot;POST /api/demos/id/read&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;gate: ≥1 source · keys present or MOCK_LLM=1&quot;]:::fn
   READ[&quot;READ phase (thread)&lt;br/&gt;[FUNCTION · orchestrator._read]&lt;br/&gt;Understand → Plan → voice sample → opening message&lt;br/&gt;see diagram 02&quot;]:::fn
   SSE[&quot;GET /api/demos/id/events&lt;br/&gt;[FUNCTION · SSE, polls events.py every 0.35 s]&lt;br/&gt;out: progress / stage / status / message / phase_done&quot;]:::fn
   OVER1[&quot;UI overlay&lt;br/&gt;&#x27;Reading your sources…&#x27;&lt;br/&gt;[FUNCTION · web/studio/align.js]&quot;]:::term
-  CARDS[&quot;Align: 5 cards&lt;br/&gt;Visuals · Facts · Pitch · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + plan.json]&quot;]:::data
+  CARDS[&quot;Align: 6 cards&lt;br/&gt;Visuals · Facts · Script · FAQ · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + plan.json + script.json + faq.json]&quot;]:::data
   DOCK[&quot;USER speaks to the prompt dock&lt;br/&gt;[ask · text + optional files]&quot;]:::ask
   ALIGN[&quot;Align loop&lt;br/&gt;[AGENT · claude-opus-5 → actions]&lt;br/&gt;see diagram 03&quot;]:::agent
-  APPR{&quot;all 5 cards approved?&lt;br/&gt;[FUNCTION · demo.approvals]&quot;}:::dec
+  APPR{&quot;all 6 cards approved?&lt;br/&gt;[FUNCTION · demo.approvals]&quot;}:::dec
   BUILD[&quot;BUILD phase (thread)&lt;br/&gt;[FUNCTION · orchestrator._build]&lt;br/&gt;Author → Voice → Rehearsal → Bundle&lt;br/&gt;see diagram 04&quot;]:::fn
   OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
@@ -154,14 +154,14 @@ flowchart TD
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
   WAIT[&quot;409 &#x27;Still working on the last change&#x27;&lt;br/&gt;[term]&quot;]:::term
   HIST[&quot;conversation.json&lt;br/&gt;[DATA · last 12 turns sent as history]&quot;]:::data
-  AGENT[&quot;align agent&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: 5 cards summary (Visuals, Facts, Pitch, Persona, CTAs), approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
+  AGENT[&quot;align agent&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
   APPLY{&quot;action type&lt;br/&gt;[FUNCTION · orchestrator.apply_actions]&quot;}:::dec
   A1[&quot;approve(card)&lt;br/&gt;[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)&quot;]:::fn
   A2[&quot;edit_fact / remove_fact / resolve_unknown&lt;br/&gt;[FUNCTION] direct registry edit · author marked stale&quot;]:::fn
   A3[&quot;set_ctas / set_voice&lt;br/&gt;[FUNCTION] plan.json patched · voice sample re-rendered&quot;]:::fn
   A4[&quot;request_upload&lt;br/&gt;[term] note only — user must add files&quot;]:::term
   A5[&quot;revise(stage, instruction)&lt;br/&gt;[FUNCTION] lowest stage wins if several&quot;]:::fn
-  A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 5 approved&quot;]:::fn
+  A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 6 approved&quot;]:::fn
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
   REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
   R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
@@ -204,7 +204,7 @@ flowchart TD
 <pre class="mermaid">%% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
   N7[&quot;Since 2026-09-04: AUTHOR and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (timeline, fillers, faq, image map)&quot;]:::data
-  GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 5 approvals true&quot;]:::fn
+  GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] gate: all 6 approvals true&quot;]:::fn
   AUTH[&quot;script draft (principles + PITCH_SHAPE + audience level)&lt;br/&gt;[AGENT · claude-opus-5 · messages.parse]&lt;br/&gt;in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)&lt;br/&gt;out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one &#x27;more features&#x27; block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance&quot;]:::agent
   VAL[&quot;grounding + pacing + plain-language validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue&quot;]:::fn
   ISS{&quot;issues &gt; 0?&quot;}:::dec
@@ -221,7 +221,7 @@ flowchart TD
   QA[&quot;answer each via qa.answer&lt;br/&gt;[AGENT · claude-opus-5 + FUNCTION validator]&lt;br/&gt;see diagram 05 · one paid call per question&quot;]:::agent
   COV[&quot;coverage = answered / N · gaps list&lt;br/&gt;[FUNCTION] → rehearsal.json&quot;]:::fn
   SCORE[&quot;demo scorecard&lt;br/&gt;[AGENT · claude-opus-5 · judge]&lt;br/&gt;in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes&quot;]:::agent
-  BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script (+ script.&amp;lt;lang&amp;gt;.json)&lt;br/&gt;out: bundle.json · segments with media URLs, audio, cards, CTAs, facts, unknowns, languages + alt_languages; version++&quot;]:::fn
+  BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py + visuals.display_mode]&lt;br/&gt;in: demo, understanding, plan, script (+ script.&amp;lt;lang&amp;gt;.json)&lt;br/&gt;out: bundle.json · every line has media URL + audio + model|evidence|card stage; CTAs, facts, unknowns, languages + alt_languages; version++&quot;]:::fn
   READY[&quot;status ready · SSE phase_done build · stage seconds recorded for Observability&lt;br/&gt;[term]&quot;]:::term
 
   GO --&gt; AUTH --&gt; VAL --&gt; ISS
@@ -245,19 +245,25 @@ flowchart TD
 <pre class="mermaid">%% 05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)
 flowchart TD
   START[&quot;USER clicks Start&lt;br/&gt;[ask]&quot;]:::ask
-  HERO[&quot;approved visual_asset stays centre stage&lt;br/&gt;[LIBRARY · model-viewer]&lt;br/&gt;GLB camera controls + auto-rotate; angle views form a labelled thumbnail strip&quot;]:::data
-  Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;your name + what should this change for you&#x27; (P02 open question)&quot;]:::data
+  PRELOAD[&quot;preload all authored speech + opening film&lt;br/&gt;[FUNCTION · retained Audio/Video objects]&lt;br/&gt;intake, narration, deeper lines, check-ins, FAQ, fillers and closing&quot;]:::fn
+  HERO[&quot;approved visual_asset starts centre stage&lt;br/&gt;[LIBRARY · model-viewer]&lt;br/&gt;recording/uploaded images define colour, trim and feature identity&quot;]:::data
+  Q1[&quot;speak intake q1&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;&#x27;what are you buying it for, or shall we start?&#x27; (P02 open question)&quot;]:::data
   L1[&quot;listen ≤10 s&lt;br/&gt;[LIBRARY · Web Speech recognition]&lt;br/&gt;mic denied or silent → typed fallback input&quot;]:::data
   P1[&quot;parse name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
+  Q2[&quot;speak one focus question → listen ≤10 s&lt;br/&gt;[LIBRARY · pre-recorded audio + Sarvam/browser STT]&lt;br/&gt;early typed replies queue safely; &#x27;just start&#x27; skips it&quot;]:::data
+  FILM[&quot;tailored acknowledgement → opening film with audio → spoken return&lt;br/&gt;[FUNCTION · playIntroFilm]&lt;br/&gt;refined planner runs under recorded cover; film capped at 45 s; customer may skip&quot;]:::fn
   OPEN[&quot;STANDARD OPENING · unchanged, 1-2 min&lt;br/&gt;[FUNCTION · playOpening]&lt;br/&gt;intro (frame) + outcome (end state first) · pre-rendered audio&quot;]:::fn
-  PITCH[&quot;pitch plan (runs while the opening plays)&lt;br/&gt;[AGENT · claude-opus-5 · POST /run/pitch]&lt;br/&gt;in: profile (name, why), library of proof blocks, USPs, registry&lt;br/&gt;out: customer_state, decision_frame, ONE follow-up question, route with bridges, advance&quot;]:::agent
-  PV[&quot;bridge validator&lt;br/&gt;[FUNCTION · pitch.plan_pitch]&lt;br/&gt;segment ids exist · bridge with a figure and no fact id → dropped · establish last&quot;]:::fn
-  DF[&quot;speak personalised decision frame&lt;br/&gt;[LIBRARY · /run/tts]&quot;]:::data
-  FU[&quot;ask the ONE follow-up (P03) → listen ≤12 s&lt;br/&gt;[LIBRARY · Web Speech]&quot;]:::data
-  REF[&quot;refine route with the answer&lt;br/&gt;[AGENT · POST /run/pitch refine=true]&quot;]:::agent
+  PITCH[&quot;pitch plan (starts before the film)&lt;br/&gt;[AGENT · claude-opus-5 · POST /run/pitch refine=true]&lt;br/&gt;in: needs + focus, proof library, USPs, registry&lt;br/&gt;out: customer state, decision frame, route, custom batches, advance&quot;]:::agent
+  PV[&quot;grounding + visual validators&lt;br/&gt;[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]&lt;br/&gt;segment ids exist · uncited claim dropped · multi-fact batch→card · establish last&quot;]:::fn
+  DF[&quot;personalised roadmap card + speech&lt;br/&gt;[LIBRARY · /run/tts]&quot;]:::data
+  CUSTOM[&quot;custom proof batches&lt;br/&gt;[FUNCTION]&lt;br/&gt;one literal evidence view or cited multi-fact card per spoken batch&quot;]:::fn
   FALL[&quot;fallback: bundle q2 + keyword focus order&lt;br/&gt;[FUNCTION] if the planner times out (45 s)&quot;]:::fn
   PLAN[&quot;route = ordered proof blocks + establish&lt;br/&gt;[FUNCTION · buildRoute]&quot;]:::fn
-  LINE[&quot;play block: bridge (personalised, /run/tts) then lines&lt;br/&gt;[FUNCTION] showVisual: seek video to start…end, or image Ken Burns · card · cite &#x27;sources: F..&#x27;&lt;br/&gt;speak: server audio else browser TTS&quot;]:::fn
+  LINE[&quot;play block: bridge then lines&lt;br/&gt;[FUNCTION] present exact stage before speech&lt;br/&gt;speak: same-provider audio; captions if unavailable&quot;]:::fn
+  STAGE{&quot;what can prove this line?&lt;br/&gt;[FUNCTION · display_mode]&quot;}:::dec
+  MODEL[&quot;3D model + relevant held camera&lt;br/&gt;visible exterior / broad performance only&quot;]:::data
+  EVID[&quot;literal uploaded image or video shot&lt;br/&gt;full-stage; never rotate to a sibling&quot;]:::data
+  CARD[&quot;cited fact / roadmap card&lt;br/&gt;abstract, written or multi-claim language&quot;]:::data
   CHK[&quot;check-in question&lt;br/&gt;[LIBRARY · audio] then chips&quot;]:::data
   WAIT[&quot;waitFor 15 s countdown + auto-listen 8 s&lt;br/&gt;[FUNCTION · interpretReply — regex, NO LLM]&lt;br/&gt;yes/continue · deeper · question · timeout&quot;]:::fn
   DEEP[&quot;deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]&quot;]:::fn
@@ -273,14 +279,16 @@ flowchart TD
   CLOSE[&quot;advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
   HAND[&quot;handoff summary&lt;br/&gt;[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json&quot;]:::data
 
-  START --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; OPEN
-  P1 -.-&gt;|&quot;in parallel&quot;| PITCH --&gt; PV
-  OPEN --&gt; DF --&gt; FU --&gt; REF --&gt; PLAN
+  START --&gt; PRELOAD --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; Q2 --&gt; FILM --&gt; OPEN
+  Q2 -.-&gt;|&quot;starts before film&quot;| PITCH --&gt; PV
+  OPEN --&gt; DF --&gt; CUSTOM --&gt; PLAN
   PV --&gt; DF
   PITCH -.-&gt;|&quot;timeout / error&quot;| FALL --&gt; PLAN
-  PLAN --&gt; LINE
-  HERO -.-&gt;|&quot;persistent while lines change&quot;| LINE
-  LINE --&gt; CHK --&gt; WAIT
+  PLAN --&gt; LINE --&gt; STAGE
+  STAGE -- &quot;visible exterior&quot; --&gt; MODEL --&gt; CHK
+  STAGE -- &quot;literal detail&quot; --&gt; EVID --&gt; CHK
+  STAGE -- &quot;abstract / several claims&quot; --&gt; CARD --&gt; CHK
+  CHK --&gt; WAIT
   WAIT -- &quot;continue / timeout&quot; --&gt; LINE
   WAIT -- &quot;deeper&quot; --&gt; DEEP --&gt; WAIT
   WAIT -- &quot;question&quot; --&gt; QIN --&gt; QA --&gt; QV

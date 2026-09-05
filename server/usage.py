@@ -24,7 +24,9 @@ PRICES = {
     "gemini-tts": {"in": float(os.getenv("PRICE_GEMINI_TTS_IN", "0.50")), "out": float(os.getenv("PRICE_GEMINI_TTS_OUT", "10.0")), "note": "assumed — set PRICE_GEMINI_TTS_IN/OUT"},
     "sarvam-tts": {"per_1k_chars_inr": float(os.getenv("PRICE_SARVAM_TTS_INR_1K", "1.5")), "note": "assumed ₹/1k chars — set PRICE_SARVAM_TTS_INR_1K"},
     "sarvam-stt": {"per_min_inr": float(os.getenv("PRICE_SARVAM_STT_INR_MIN", "0.5")), "note": "assumed ₹/min — set PRICE_SARVAM_STT_INR_MIN"},
-    "runware-trellis-2": {"per_asset": float(os.getenv("PRICE_RUNWARE_TRELLIS_2", "0.0256")), "note": "fallback $/asset estimate; exact API cost is recorded when returned"},
+    "runware-rodin-gen2": {"per_asset": float(os.getenv("PRICE_RUNWARE_RODIN_GEN2", "0.40")), "note": "standard-quality fallback $/asset; exact API cost is recorded when returned"},
+    "runware-tripo-v3.1": {"per_asset": float(os.getenv("PRICE_RUNWARE_TRIPO_V31", "0.40")), "note": "fallback $/asset; exact API cost is recorded when returned"},
+    "runware-trellis-2": {"per_asset": float(os.getenv("PRICE_RUNWARE_TRELLIS_2", "0.0256")), "note": "fallback $/asset; exact API cost is recorded when returned"},
 }
 FX_INR = float(os.getenv("FX_INR", "84"))
 TRACE_CAPTURE = os.getenv("TRACE_CAPTURE", "full").strip().lower()  # full | meta (meta = lengths only, no prompt text)
@@ -108,7 +110,8 @@ def _cost_usd(row: dict) -> float:
     if row["kind"] == "sarvam-stt":
         return row["sec"] / 60 * PRICES["sarvam-stt"]["per_min_inr"] / FX_INR
     if row["kind"] == "runware-3d":
-        return PRICES["runware-trellis-2"]["per_asset"]
+        key = "runware-rodin-gen2" if "rodin" in m else "runware-tripo-v3.1" if "tripo" in m else "runware-trellis-2"
+        return PRICES[key]["per_asset"]
     return 0.0
 
 
