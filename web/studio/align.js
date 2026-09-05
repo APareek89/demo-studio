@@ -89,10 +89,10 @@ export function renderAlign(ctx) {
       const rows = f.facts.map((x) => h("tr", { class: (x.edited ? "edited" : "") + (x.approved === false ? " removed" : "") },
         h("td", { class: "id" }, x.id), h("td", {}, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null),
         h("td", { class: "src" }, `${x.source?.ref || ""} ${x.source?.locator || ""}`, x.source?.quote ? h("div", { title: x.source.quote }, "“", x.source.quote.slice(0, 50), x.source.quote.length > 50 ? "…" : "", "”") : null),
-        h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"))));
+        h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"), " ", h("button", { class: "btn sm ghost", title: x.approved === false ? "Restore this information" : "Keep this information out of the demo", onclick: () => setFactApproval(x, x.approved === false) }, x.approved === false ? "Restore" : "Reject"))));
       const open = f.unknowns.filter((u) => u.status === "open");
       return h("div", {},
-        h("p", { class: "small muted", style: "margin:10px 0 0" }, `${f.facts.length} facts from ${f.sources.length} source${f.sources.length === 1 ? "" : "s"}. The guide can only say what's in this table.`),
+        h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px" }, h("p", { class: "small muted", style: "margin:0" }, `${f.facts.length} facts from ${f.sources.length} source${f.sources.length === 1 ? "" : "s"}. The guide can only say what's in this table.`), h("button", { class: "btn sm", onclick: openProductEditor }, "Edit product summary")),
         h("div", { style: "max-height:360px;overflow:auto" }, h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "id"), h("th", {}, "fact"), h("th", {}, "source"), h("th", {}, ""))), h("tbody", {}, ...rows))),
         open.length ? h("div", {}, h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px;gap:8px;flex-wrap:wrap" }, h("p", { class: "eyebrow", style: "margin:0" }, `${open.length} questions the sources don't answer`), h("a", { class: "btn sm", href: `/api/demos/${demoId}/faq-template`, download: `FAQ-${demoId}.md`, title: "A Markdown file with every open question grouped by category — fill the answers and upload it here" }, "Download FAQ template")),
           h("p", { class: "small muted", style: "margin:0 0 6px" }, "Grouped by what would answer them. Finance and insurance questions need their own documents — the guide declines these rather than guessing."),
@@ -104,7 +104,7 @@ export function renderAlign(ctx) {
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
       const roleLabel = { intro: "opening · frame", outcome: "opening · outcome", proof: "proof block", features: "more features", establish: "establish" };
       return h("div", {},
-        h("div", { style: "display:flex;justify-content:flex-end;margin-top:10px" }, h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit script")),
+        h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit script")),
         h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · data/demos/${demoId}/script.json · demo v${pt.version}` : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Winning points · ${(pt.usps || []).length}`),
         h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", h("span", { class: "muted" }, u.why_it_matters)))),
@@ -221,13 +221,30 @@ export function renderAlign(ctx) {
     const body = h("div", { class: "edit-form" }, h("label", {}, "Information", claim), h("label", {}, "Value", value), h("label", {}, "Conditions / caveat", conditions), h("p", { class: "small muted" }, "A direct correction makes every downstream card require approval again."));
     editor(`Edit ${fact.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/facts/${fact.id}`, { claim: claim.value, value: value.value, conditions: conditions.value }) }, "Save & re-align");
   }
+  function openProductEditor() {
+    const product = cards.product || {};
+    const fields = [["name", "Product name"], ["category", "Category"], ["summary", "Summary"], ["audience", "Audience"]].map(([key, label]) => ({ key, label, input: h("textarea", {}, product[key] || "") }));
+    const body = h("div", { class: "edit-form" }, ...fields.map(({ label, input }) => h("label", {}, label, input)), h("p", { class: "small muted" }, "Use this when the extracted framing says more than the sources support."));
+    editor("Edit product summary", { body, save: () => { const changed = {}; for (const { key, input } of fields) if (input.value.trim() !== String(product[key] || "").trim()) changed[key] = input.value.trim(); if (!Object.keys(changed).length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/product`, changed); } }, "Save product summary");
+  }
+  async function setFactApproval(fact, approved) {
+    try { await api.post(`/api/demos/${demoId}/align/facts/${fact.id}/approval`, { approved }); toast(`${fact.id} ${approved ? "restored" : "rejected"}`); await reload(); }
+    catch (e) { toast(e.message, true); }
+  }
   function openScriptEditor() {
     const all = [];
     for (const seg of cards.script?.segments || []) for (const line of seg.lines || []) all.push({ ...line, section: seg.title });
     for (const line of cards.script?.closing || []) all.push({ ...line, section: "Closing" });
-    const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text) }));
-    const body = h("div", { class: "script-editor" }, ...fields.map(({ line, input }) => h("label", {}, h("span", {}, h("b", {}, line.section), h("small", { class: "mono muted" }, line.id)), input)));
-    editor("Edit what the guide says", { body, save: () => { const lines = fields.filter(({ line, input }) => input.value.trim() !== line.text.trim()).map(({ line, input }) => ({ id: line.id, text: input.value.trim() })); if (!lines.length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/script`, { lines }); } }, "Save & re-align visuals");
+    const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text), facts: h("input", { value: (line.fact_ids || []).join(", "), placeholder: "F001, F002" }), visual: h("input", { value: line.visual || "", placeholder: "im01, or blank for 3D / a fact card" }) }));
+    const body = h("div", { class: "script-editor" }, ...fields.map(({ line, input, facts, visual }) => h("label", {}, h("span", {}, h("b", {}, line.section), h("small", { class: "mono muted" }, line.id)), input, h("small", { class: "muted" }, "Approved fact ids"), facts, h("small", { class: "muted" }, "Visual ref (blank keeps unsupported details on a fact card)"), visual)));
+    editor("Edit what the guide says", { body, save: () => { const lines = fields.map(({ line, input, facts, visual }) => ({ id: line.id, text: input.value.trim(), fact_ids: facts.value.split(",").map((x) => x.trim()).filter(Boolean), visual_ref: visual.value.trim() })).filter((x, i) => x.text !== fields[i].line.text.trim() || x.fact_ids.join(",") !== (fields[i].line.fact_ids || []).join(",") || x.visual_ref !== (fields[i].line.visual || "")); if (!lines.length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/script`, { lines }); } }, "Save & re-align visuals");
+  }
+  function openPitchEditor() {
+    const pt = cards.script || {};
+    const keys = [["customer_persona", "Customer and decision"], ["decision_frame", "Decision frame"], ["takeaway", "Takeaway"], ["primary_outcome", "Primary outcome"], ["do_not_recommend_if", "Do not recommend if"], ["advance", "Next action"]];
+    const fields = keys.map(([key, label]) => ({ key, label, input: h("textarea", {}, pt[key] || "") }));
+    const body = h("div", { class: "edit-form" }, ...fields.map(({ label, input }) => h("label", {}, label, input)), h("p", { class: "small muted" }, "A direct correction makes every card require approval again."));
+    editor("Edit pitch brief", { body, save: () => { const changed = {}; for (const { key, input } of fields) if (input.value.trim() !== String(pt[key] || "").trim()) changed[key] = input.value.trim(); if (!Object.keys(changed).length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/plan`, { fields: changed }); } }, "Save pitch brief");
   }
   async function setApproval(card, on) {
     try { await api.post(`/api/demos/${demoId}/${on ? "approve" : "unapprove"}/${card}`); await reload(); if (on) { openCard = CARD_DEFS.find((c) => !demo.approvals[c.key])?.key || ""; renderCards(); } }

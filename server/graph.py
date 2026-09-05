@@ -111,7 +111,7 @@ def align_wait(state: DemoState) -> Command:
     if kind == "build":
         if all(store.load(d)["approvals"].values()):
             return Command(goto="author", update={**update, "entry": "build"})
-        events.publish(d, "phase_error", phase="build", error="Approve all five cards before building")
+        events.publish(d, "phase_error", phase="build", error="Approve all six cards before building")
         return Command(goto="align_wait", update=update)
     if kind == "revise":
         stage = cmd.get("stage") or "author"
@@ -171,9 +171,11 @@ def after_author(state: DemoState) -> str:
 
 def faq(state: DemoState) -> dict:
     d = state["demo_id"]
-    if store.load(d)["stages"]["faq"]["status"] == "done":
+    explicit_retry = state.get("entry") == "revise" and state.get("revise_stage") == "faq"
+    if store.load(d)["stages"]["faq"]["status"] == "done" and not explicit_retry:
         return {}
-    orch._run_stage(d, "faq", "")
+    orch._set_status(d, "building" if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))) else "reading")
+    orch._run_stage(d, "faq", state.get("instruction", "") if explicit_retry else "")
     return {}
 
 
@@ -267,7 +269,7 @@ def start_read(demo_id: str, instruction: str = "") -> None:
 
 def start_build(demo_id: str) -> None:
     if not all(store.load(demo_id)["approvals"].values()):
-        raise RuntimeError("Approve all five cards before building")
+        raise RuntimeError("Approve all six cards before building")
     if is_running(demo_id):
         raise RuntimeError("This demo is already being processed — wait for it to finish")
     orch._set_status(demo_id, "building")
@@ -277,7 +279,7 @@ def start_build(demo_id: str) -> None:
 def start_revise(demo_id: str, stage: str, instruction: str, rebuild: bool = False) -> None:
     if is_running(demo_id):
         raise RuntimeError("This demo is already being processed — wait for it to finish")
-    orch._set_status(demo_id, "reading" if stage in ("understand", "plan") else "building")
+    orch._set_status(demo_id, "reading" if stage in ("understand", "plan", "faq") and not rebuild else "building")
     _submit(demo_id, {"type": "revise", "stage": stage, "instruction": instruction, "rebuild": rebuild},
             {"entry": "revise", "revise_stage": stage, "instruction": instruction, "rebuild": rebuild, "prev_ready": store.load(demo_id)["status"] == "ready", "pending": None}, "revise")
 

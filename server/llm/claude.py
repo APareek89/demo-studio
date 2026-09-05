@@ -67,6 +67,26 @@ def _supports_effort(model: str) -> bool:
     return "haiku" not in (model or "")
 
 
+def _provider_unavailable(e: Exception) -> bool:
+    msg = str(e).lower()
+    markers = ("credit balance", "billing", "rate limit", "overloaded", "high demand", "api key", "authentication", "connection error", "529", "503")
+    return isinstance(e, (anthropic.AuthenticationError, anthropic.RateLimitError, anthropic.APIConnectionError)) or any(m in msg for m in markers)
+
+
+def _text_only_messages(msgs: list[dict]) -> bool:
+    for msg in msgs:
+        content = msg.get("content", "")
+        if isinstance(content, str):
+            continue
+        if not isinstance(content, list) or any(not isinstance(b, dict) or b.get("type") != "text" for b in content):
+            return False
+    return True
+
+
+def _fallback_transcript(msgs: list[dict]) -> str:
+    return "\n\n".join(f"{str(m.get('role', 'user')).upper()}:\n{_blocks_text(m.get('content'))}" for m in msgs)
+
+
 def _record(resp, kind: str = "claude", *, t0: float | None = None, system: str = "", msgs: list | None = None, error: str = "", model: str | None = None) -> None:
     try:
         u = resp.usage if resp is not None else None
@@ -90,30 +110,36 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
         return out
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
-    if soft:
-        return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout, model=model)
-    t0 = time.time()
     try:
-        resp = client().messages.parse(
-            model=model or config.CLAUDE_MODEL,
-            max_tokens=max_tokens,
-            system=system,
-            messages=msgs,
-            output_format=schema,
-        )
-    except anthropic.BadRequestError as e:
-        # Large schemas (Plan, ScriptOut) can exceed the constrained-decoding grammar limit.
-        # Fall back to plain JSON + Pydantic validation with one repair pass.
-        if "grammar" in str(e).lower() or "too large" in str(e).lower() or "schema" in str(e).lower():
-            return _soft_structured(system, msgs, schema, max_tokens)
+        if soft:
+            return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout, model=model)
+        t0 = time.time()
+        try:
+            resp = client().messages.parse(
+                model=model or config.CLAUDE_MODEL,
+                max_tokens=max_tokens,
+                system=system,
+                messages=msgs,
+                output_format=schema,
+            )
+        except anthropic.BadRequestError as e:
+            # Large schemas (Plan, ScriptOut) can exceed the constrained-decoding grammar limit.
+            # Fall back to plain JSON + Pydantic validation with one repair pass.
+            if "grammar" in str(e).lower() or "too large" in str(e).lower() or "schema" in str(e).lower():
+                return _soft_structured(system, msgs, schema, max_tokens)
+            raise
+        _record(resp, "claude-structured", model=model, t0=t0, system=system, msgs=msgs)
+        if resp.stop_reason == "refusal":
+            raise RuntimeError("Claude declined this request")
+        parsed = resp.parsed_output
+        if parsed is None:
+            raise RuntimeError("Claude returned no structured output")
+        return parsed
+    except Exception as e:
+        if _provider_unavailable(e) and _text_only_messages(msgs) and config.GEMINI_API_KEY:
+            from . import gemini
+            return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens, fallback_reason=describe_error(e))
         raise
-    _record(resp, "claude-structured", model=model, t0=t0, system=system, msgs=msgs)
-    if resp.stop_reason == "refusal":
-        raise RuntimeError("Claude declined this request")
-    parsed = resp.parsed_output
-    if parsed is None:
-        raise RuntimeError("Claude returned no structured output")
-    return parsed
 
 
 def _extract_json(text: str) -> str:

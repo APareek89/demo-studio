@@ -48,7 +48,7 @@ Hard rules:
 {language}"""
 
 
-NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,})", re.I)
+NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,}|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)(?:\s+|-)(?:airbags?|stars?|seats?|seaters?|speakers?|colou?r options?|apps?|variants?|years?|months?)\b)", re.I)
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
 LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 36}  # ≤ 20 s per batch at the measured ~1.9 words/s of the recorded voice
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
@@ -62,7 +62,9 @@ def words(t: str) -> int:
 
 
 def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
-    fact_ids = {f["id"] for f in und["facts"]}
+    # A human rejection in Align is a hard boundary: rejected facts must not
+    # survive as citations merely because they still exist in the registry.
+    fact_ids = {f["id"] for f in und["facts"] if f.get("approved", True)}
     vis = {s["id"]: "shot" for s in und["shots"] if s.get("_allowed", True)} | {i["id"]: "image" for i in und["images"] if i.get("_allowed", True)}
     issues: list[str] = []
 

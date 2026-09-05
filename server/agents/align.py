@@ -11,6 +11,7 @@ from .. import schemas, store
 from ..llm import claude
 from .bundle import media_url
 from .qa import classify
+from . import voice as voice_agent
 
 CARD_ORDER = ["visuals", "facts", "script", "faq", "persona", "ctas"]
 CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "script": "Script", "faq": "FAQ bank", "persona": "Persona & voice", "ctas": "Calls to action"}
@@ -79,6 +80,7 @@ def cards(demo_id: str) -> dict:
     shots = [{**s, "url": media_url(demo_id, src_by_id.get(s["source_id"], {}).get("path"))} for s in und.get("shots", [])]
     images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "original_url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "enhanced": src_by_id.get(i["source_id"], {}).get("enhanced"), "audit": audit_images.get(i["id"])} for i in und.get("images", [])]
     voice = plan.get("voice", {})
+    actual_provider = voice_agent.provider_for(demo)
     return {
         "product": und.get("product", {"name": demo["name"]}),
         "visuals": {"shots": shots, "images": images, "gaps": plan.get("visual_gaps", []), "video_summaries": und.get("video_summaries", {}),
@@ -87,7 +89,7 @@ def cards(demo_id: str) -> dict:
         "facts": {"facts": und.get("facts", []), "unknowns": [({**u, "category": classify(u["question"])[0], "suggested_document": classify(u["question"])[1]} if not u.get("category") or u.get("category") == "other" and not u.get("suggested_document") else u) for u in und.get("unknowns", [])], "sources": demo["sources"],
                   "gaps": reh.get("gaps", []), "script_issues": script.get("issues", [])},
         "persona": {**voice, "sample_audio": media_url(demo_id, plan.get("voice_sample_audio")), "brand": und.get("brand", {}),
-                    "provider": demo.get("settings", {}).get("tts_provider"), "voice_name": demo.get("settings", {}).get("voice_name")},
+                    "provider": actual_provider, "voice_name": voice_agent.voice_name_for(demo, actual_provider)},
         "ctas": plan.get("ctas", []),
         "script": {k: plan.get(k) for k in ("decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "usps", "advance", "do_not_recommend_if", "state_questions", "customer_persona")} | {
             "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard"), "timeline": script.get("timeline"),

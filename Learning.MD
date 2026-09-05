@@ -284,3 +284,75 @@
 **Deepest why type:** `process`
 **Action taken:** All five fallback files were re-rendered with Sarvam and the exact timeline rebuilt (186.3 seconds). Final integrity QA checks every spoken item for a readable WAV, non-silent signal, plausible duration and provider hash; all 99 spoken entries now pass as Sarvam `aditya`.
 **Preventive action:** “Audio complete” requires content integrity and provider-consistency checks, not file existence.
+
+### 2026-09-05 — Catalogue accepted CSV while the upload guidance hid it
+
+**Symptom:** A synthetic price sheet could be uploaded as CSV, but the Catalogue panel only advertised PDF, DOCX, TXT and MD; the supported fallback looked unsupported.
+**Why 1:** The file-picker accept list was expanded without updating the adjacent human-readable copy.
+**Deepest why type:** `process`
+**Action taken:** The Catalogue guidance now names CSV, and the visual-sync regression compares the visible promise with the accepted extension.
+**Preventive action:** Any upload-format change must update both the picker contract and the copy in the same test.
+
+### 2026-09-05 — Build blockers still said five Align cards after FAQ made six
+
+**Symptom:** Align correctly showed six required cards, while two build errors and the Rehearse empty state still told the user to approve five.
+**Why 1:** FAQ became a first-class approval card, but scattered count-specific strings were not part of that migration.
+**Deepest why type:** `code`
+**Action taken:** All live build guidance now says six cards; the visual-sync regression rejects either stale five-card string.
+**Preventive action:** Keep workflow counts behind shared copy where practical, and make the cross-screen contract test fail when a count diverges.
+
+### 2026-09-05 — Provider exhaustion restarted expensive work instead of resuming it
+
+**Symptom:** A transient reasoning-provider failure left the FAQ bank partial, while a retry risked re-answering every completed question.
+**Why 1:** FAQ generation had no registry-version checkpoint and provider failover treated each question as an isolated call.
+**Deepest why type:** `architecture`
+**Action taken:** Text-only structured calls now fall back to the configured secondary provider; FAQ progress checkpoints after every answer, reuses same-registry results, and offers an explicit cache-bypassing retry. Runtime Q&A uses a traced, approved-fact-only fallback during an outage cooldown.
+**Preventive action:** Long multi-call stages need resumable checkpoints and circuit breaking before they are considered production-safe.
+
+### 2026-09-05 — Validated human corrections were marked stale and could be overwritten
+
+**Symptom:** A direct product, fact, pitch or script correction invalidated its own model-owned stage, so Build could regenerate over the reviewed edit.
+**Why 1:** Invalidation encoded dependency freshness but did not distinguish an unvalidated mutation from a replacement artifact that had already passed validation.
+**Deepest why type:** `architecture`
+**Action taken:** Direct editors now validate their artifact, invalidate only dependants, restore the edited stage to done, and require all affected Align approvals again.
+**Preventive action:** Human-authored replacements must have an explicit validated state transition; never route them through a model rerun implicitly.
+
+### 2026-09-05 — Attractive product images were being used as proof for invisible claims
+
+**Symptom:** Generic exterior photos could be attached to capacities, prices, written terms and hidden safety mechanisms they did not prove.
+**Why 1:** Keyword overlap rewarded product relevance without first asking whether the claim was visually observable.
+**Deepest why type:** `model`
+**Action taken:** Runtime image mapping now excludes non-visual facts and sends unsupported detail to a cited fact card; direct script edits rebuild this safe map.
+**Preventive action:** Visual relevance is not evidentiary coverage; gate observability before similarity scoring.
+
+### 2026-09-05 — Voice review showed the configured label, not the voice that would play
+
+**Symptom:** The Persona card could display a stale provider or speaker after re-recording, and partial builds could leave some FAQ or filler items silent.
+**Why 1:** Review copy read raw settings while rendering resolved fallbacks dynamically; sample audio was not persisted into the reviewed plan.
+**Deepest why type:** `code`
+**Action taken:** Align now shows the resolved provider and voice, sample re-recording persists and invalidates Persona approval, and final QA counts audio across script, FAQ, check-ins and fillers.
+**Preventive action:** Review surfaces must describe the resolved runtime artifact, and build completeness must cover every playable branch.
+
+### 2026-09-05 — Hyphen splitting turned “crash-test rating” into a test-drive answer
+
+**Symptom:** Asking for a current crash-test rating returned a dealership test-drive fact.
+**Why 1:** Naive token overlap treated “test” as the decisive shared term and had no hard-unknown guard for unsupported safety ratings.
+**Deepest why type:** `code`
+**Action taken:** Safety-rating intent is now a hard unknown unless an approved matching rating fact exists; regression coverage includes the hyphenated wording.
+**Preventive action:** High-risk intents need negative controls, not only positive keyword matching.
+
+### 2026-09-05 — Comparison and finance fallbacks lost the decision caveat
+
+**Symptom:** A named rival-price answer omitted the product's own price, and a request for one illustrative EMI scenario returned multiple scenarios without consistently repeating the non-offer caveat.
+**Why 1:** Generic top-fact selection optimized lexical overlap rather than the response contract for comparative and financial decisions.
+**Deepest why type:** `code`
+**Action taken:** Rival matching is now derived from uploaded comparison facts, price answers cite both products plus verification guidance, and named synthetic scenarios return only the requested illustration with its caveat.
+**Preventive action:** Decision-sensitive intents need explicit response shapes and mandatory caveats in tests.
+
+### 2026-09-05 — A closed responsive panel still widened the whole page
+
+**Symptom:** The player looked usable at phone width but the document still scrolled horizontally because nested grid tracks and a transformed closed panel retained intrinsic width.
+**Why 1:** Responsive rules changed visible layout without allowing grid children to shrink at every ancestor.
+**Deepest why type:** `code`
+**Action taken:** Studio/player tracks now use shrinkable columns, controls wrap on phones, and root overflow is contained; live checks pass at 320, 390, 768 and 1280 px.
+**Preventive action:** Responsive QA must assert document scroll width, not rely on screenshots alone.

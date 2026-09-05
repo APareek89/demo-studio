@@ -56,7 +56,7 @@ export function renderRehearse(ctx) {
   async function mount() {
     let bundle;
     try { bundle = await api.get(`/api/demos/${demoId}/bundle`); }
-    catch (e) { host.replaceChildren(h("div", { class: "empty", style: "margin:30px" }, demo.status === "building" ? "Building…" : "Not built yet — approve the five cards in Align and build the demo.")); return; }
+    catch (e) { host.replaceChildren(h("div", { class: "empty", style: "margin:30px" }, demo.status === "building" ? "Building…" : "Not built yet — approve the six cards in Align and build the demo.")); return; }
     if (player) player.destroy();
     player = mountPlayer(host, bundle, {
       qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),

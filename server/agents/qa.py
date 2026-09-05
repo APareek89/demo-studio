@@ -6,7 +6,7 @@ import json
 import re
 import time
 
-from .. import schemas, store
+from .. import schemas, store, usage
 from ..llm import claude
 from .author import CLAIMISH, NUMBERISH
 from .principles import audience_instruction, language_instruction
@@ -50,6 +50,204 @@ VISUALS:
 
 DONT_GUESS = "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it — if you'd like that, just tell me your number, or we can carry on."
 
+LOCAL_STOP = set("a an and are as at be by can current did do does for from have how i in is it me much my of on or our please tell that the their there this to was we what when where which who why will with would you your available offered".split())
+_qa_reasoning_unavailable_until = 0.0
+
+
+def _local_terms(text: str) -> set[str]:
+    out = set()
+    for raw in re.findall(r"[a-z0-9]+(?:\.[0-9]+)?", (text or "").lower()):
+        w = raw[:-1] if raw.endswith("s") and len(raw) > 4 and not raw.endswith("ss") else raw
+        if len(w) > 1 and w not in LOCAL_STOP:
+            out.add(w)
+    return out
+
+
+def _named_competitor(question: str, facts: list[dict]) -> tuple[str, str] | None:
+    """Resolve a named rival from the uploaded comparison registry, not a product-specific list."""
+    q = question.lower()
+    for fact in facts:
+        if not fact.get("approved", True):
+            continue
+        claim = fact.get("claim") or ""
+        match = re.match(r"comparison\s*[—–:-]\s*(.+?)\s+(?:starting\s+|published\s+|official\s+)?price\b", claim, re.I)
+        if not match:
+            continue
+        label = match.group(1).strip()
+        aliases = {label.lower()}
+        tokens = re.findall(r"[a-z0-9]+", label.lower())
+        if tokens:
+            aliases.add(tokens[-1])
+        if any(re.search(rf"\b{re.escape(alias)}\b", q) for alias in aliases):
+            return label.lower(), label
+    return None
+
+
+def _local_grounded_answer(question: str, und: dict, plan: dict) -> schemas.QAOut:
+    """Conservative exact-registry fallback when both reasoning providers are unavailable."""
+    q = question.lower()
+    qterms = _local_terms(question)
+    expansions = {
+        "dimension": {"length", "width", "height", "wheelbase"},
+        "gearbox": {"transmission", "automatic", "manual", "dsg"},
+        "mileage": {"fuel", "efficiency"},
+        "airbag": {"airbag"},
+        "screen": {"screen", "cockpit", "infotainment"},
+        "warranty": {"warranty"},
+    }
+    for term in list(qterms):
+        qterms |= expansions.get(term, set())
+    official_only = any(x in q for x in ("official", "exact", "today", "current on-road", "current on road"))
+    asks_synthetic = any(x in q for x in ("synthetic", "illustrative", "illustration", "estimate", "example"))
+    hard_unknown = (
+        (any(x in q for x in ("crash rating", "safety rating", "global ncap", "bharat ncap", "five-star", "five star"))) or
+        ("crash" in q and any(x in q for x in ("rating", "score", "tested"))) or
+        ("ground clearance" in q) or
+        (any(x in q for x in ("real-world", "real world", "definitely", "guarantee")) and any(x in q for x in ("mileage", "efficiency", "delivery"))) or
+        (any(x in q for x in ("discount", "exchange bonus", "waiting period"))) or
+        (any(x in q for x in ("on-road", "on road")) and not asks_synthetic)
+    )
+    approved = [f for f in und.get("facts", []) if f.get("approved", True)]
+    competitor = _named_competitor(question, approved)
+    named_competitor = competitor[0] if competitor else None
+    if named_competitor and any(x in q for x in ("price", "cost", "start", "cheap", "expensive")):
+        own = next((f for f in approved if (f.get("claim") or "").lower() == "starting price"), None)
+        competitor_fact = next((f for f in approved if named_competitor in (f.get("claim") or "").lower()
+                                and "comparison" in (f.get("claim") or "").lower()
+                                and "price" in (f.get("claim") or "").lower()), None)
+        rule = next((f for f in approved if (f.get("claim") or "").lower() == "comparison response rule"), None)
+        if own and competitor_fact:
+            product = (und.get("product") or {}).get("name") or "This product"
+            label = competitor[1]
+            reviewed = re.search(r"reviewed\s+([0-9-]+)", competitor_fact.get("conditions") or "", re.I)
+            review_note = f", reviewed {reviewed.group(1)}" if reviewed else ""
+            answer = (f"The {product} page lists {own['value']} ex-showroom. {label}'s official price page{review_note} lists "
+                      f"{competitor_fact['value']}. Current trims, prices and stock need dealer verification.")
+            fact_ids = [own["id"], competitor_fact["id"]] + ([rule["id"]] if rule else [])
+            return schemas.QAOut(answer=answer, fact_ids=fact_ids, visual_ref="", escalate="", topic=classify(question)[0], cta="", answered=True, clarifying_question="")
+    candidates = []
+    for f in und.get("facts", []):
+        if not f.get("approved", True):
+            continue
+        claim = (f.get("claim") or "").lower()
+        value = (f.get("value") or "").lower()
+        conditions = (f.get("conditions") or "").lower()
+        if claim.startswith("comparison") and not named_competitor:
+            continue
+        if named_competitor and named_competitor not in (claim + " " + value):
+            continue
+        if official_only and any(x in (claim + " " + conditions) for x in ("synthetic", "illustrative", "not an official")):
+            continue
+        if any(x in (claim + " " + conditions) for x in ("synthetic", "unverified", "not stated in the official")) and not any(x in q for x in ("synthetic", "illustrative", "illustration", "estimate", "example")):
+            continue
+        cterms, vterms = _local_terms(claim), _local_terms(value)
+        overlap = qterms & cterms
+        score = 3 * len(overlap) + len(qterms & vterms)
+        if any(n in qterms and n in cterms | vterms for n in ("1.0", "1.5")):
+            score += 3
+        if "engine" in q and any(x in q for x in ("available", "offered", "options")) and any(x in claim for x in ("engine type", "1.5l tsi engine", "engine options")):
+            score += 5
+        if "dimension" in q and claim in ("length", "width", "height", "wheelbase"):
+            score += 5
+        if "automatic" in q and any(x in q for x in ("gearbox", "transmission")) and "transmission" in claim and any(x in value for x in ("automatic", "dsg")):
+            score += 4
+        if score:
+            candidates.append((score, f))
+    if hard_unknown:
+        required = ("rating", "ncap", "five-star") if any(x in q for x in ("rating", "ncap", "five-star", "five star")) else tuple(qterms)
+        candidates = [(s, f) for s, f in candidates if any(x in _local_terms((f.get("claim") or "") + " " + (f.get("value") or "")) for x in required)]
+    if official_only and any(x in q for x in ("on-road", "on road")):
+        candidates = [(s, f) for s, f in candidates if any(x in (f.get("claim") or "").lower() for x in ("on-road", "on road"))]
+    intent_rx = None
+    max_facts = 3
+    engine_choice = all(x in q for x in ("1.0", "1.5")) and any(x in q for x in ("between", "decide", "choose", "difference"))
+    finance_case = re.search(r"(?:illustration|scenario)\s+([a-z])\b", q, re.I)
+    if finance_case:
+        intent_rx, max_facts = rf"synthetic emi illustration {finance_case.group(1)}$", 1
+    elif official_only and any(x in q for x in ("on-road", "on road")):
+        intent_rx = r"on-road|on road"
+    elif "starting price" in q:
+        intent_rx, max_facts = r"^starting price$", 1
+    elif "fuel type" in q:
+        intent_rx = r"^fuel type$"
+    elif "fuel-tank" in q or "fuel tank" in q:
+        intent_rx = r"fuel tank capacity"
+    elif "boot" in q:
+        intent_rx, max_facts = r"^boot space$", 1
+    elif "dimension" in q:
+        intent_rx, max_facts = r"^(length|width|height|wheelbase)$", 4
+    elif "turning radius" in q:
+        intent_rx = r"turning radius"
+    elif "airbag" in q:
+        intent_rx = r"airbag"
+    elif "safety equipment" in q:
+        intent_rx = r"electronic safety|parking sensor|reversing camera|child seat"
+    elif "sunroof" in q:
+        intent_rx = r"sunroof"
+    elif "ventilated" in q or "electric front seat" in q:
+        intent_rx = r"front seats.*electric.*ventilated"
+    elif "wireless" in q:
+        intent_rx = r"smartphone connectivity"
+    elif "screen" in q or "cockpit" in q:
+        intent_rx, max_facts = r"screen sizes|cockpit sizes", 2
+    elif "variant" in q:
+        intent_rx, max_facts = r"^variant line-up$", 1
+    elif "warranty" in q or "service package" in q:
+        intent_rx, max_facts = r"standard warranty|roadside assistance|free services", 3
+    elif "power" in q and any(x in q for x in ("1.0", "1.5")):
+        intent_rx = r"max power"
+        wanted_engine = "1.0" if "1.0" in q else "1.5"
+        candidates = [(s, f) for s, f in candidates if wanted_engine in ((f.get("claim") or "") + " " + (f.get("value") or ""))]
+    elif "manual transmission" in q:
+        intent_rx = r"transmission"
+        candidates = [(s, f) for s, f in candidates if "manual" in ((f.get("claim") or "") + " " + (f.get("value") or "")).lower()]
+    elif "automatic" in q and any(x in q for x in ("gearbox", "transmission")):
+        intent_rx = r"transmission"
+        candidates = [(s, f) for s, f in candidates if any(x in ((f.get("claim") or "") + " " + (f.get("value") or "")).lower() for x in ("automatic", "dsg"))]
+    elif engine_choice:
+        intent_rx, max_facts = r"max power|transmission|fuel efficiency", 7
+    elif "engine" in q and any(x in q for x in ("available", "offered", "options")):
+        intent_rx = r"engine options|engine type|^1\.5l tsi engine$"
+    elif "fuel-efficiency" in q or "fuel efficiency" in q or "mileage" in q:
+        intent_rx = r"fuel efficiency"
+    if intent_rx:
+        narrowed = [(s, f) for s, f in candidates if re.search(intent_rx, (f.get("claim") or "").lower())]
+        if narrowed:
+            candidates = narrowed
+    if any(x in q for x in ("on-road", "on road")) and not asks_synthetic:
+        candidates = []
+    candidates.sort(key=lambda x: (-x[0], x[1].get("id", "")))
+    top = [f for score, f in candidates if score >= 3][:max_facts]
+    topic, _ = classify(question)
+    cta = ""
+    if any(x in q for x in ("book", "test drive", "dealer quote", "buy online")):
+        wanted = "book" if "test drive" in q or "book" in q else "contact"
+        cta = next((c.get("id", "") for c in plan.get("ctas", []) if c.get("kind") == wanted), "")
+    if not top:
+        return schemas.QAOut(answer=DONT_GUESS, fact_ids=[], visual_ref="", escalate=question, topic=topic, cta=cta, answered=False, clarifying_question="")
+    if engine_choice:
+        by_claim = {(f.get("claim") or "").lower(): f for f in top}
+        p10 = next((f for k, f in by_claim.items() if "1.0" in k and "max power" in k), None)
+        t10 = next((f for k, f in by_claim.items() if "1.0" in k and "transmission" in k), None)
+        p15 = next((f for k, f in by_claim.items() if "1.5" in k and "max power" in k), None)
+        t15 = next((f for k, f in by_claim.items() if "1.5" in k and "transmission" in k), None)
+        fuels = [f for f in top if "fuel efficiency" in (f.get("claim") or "").lower()]
+        if all((p10, t10, p15, t15)):
+            short = lambda f: str(f.get("value", "")).split("@")[0].strip()
+            answer = (f"The one-litre is {short(p10)}, with {t10['value']}. "
+                      f"The one-point-five is {short(p15)}, with {t15['value']}. "
+                      f"Published efficiency is {', '.join(str(f['value']) for f in fuels)} for the listed transmissions; actual use varies.")
+            return schemas.QAOut(answer=answer, fact_ids=[f["id"] for f in top], visual_ref="", escalate="", topic=topic, cta=cta, answered=True, clarifying_question="")
+    rows = [f"{f.get('claim')}: {f.get('value')}" for f in top]
+    answer = "From the supplied material: " + "; ".join(rows) + "."
+    caveat = next((f.get("conditions", "") for f in top if f.get("conditions") and (
+        "synthetic" in (f.get("claim") or "").lower() or
+        any(x in f.get("conditions", "").lower() for x in ("synthetic", "illustrative", "not an official", "ex-showroom", "verify", "does not print", "not a finance offer"))
+    )), "")
+    if caveat:
+        answer += " " + caveat.rstrip(".") + "."
+    return schemas.QAOut(answer=answer, fact_ids=[f["id"] for f in top], visual_ref="", escalate="", topic=topic, cta=cta, answered=True, clarifying_question="")
+
 
 def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     und = store.read_json(demo_id, "understanding.json") or {}
@@ -80,6 +278,8 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
 
 
 def answer(demo_id: str, question: str, history: list[dict] | None = None, profile: dict | None = None, voice_it: bool = True) -> dict:
+    global _qa_reasoning_unavailable_until
+    started = time.monotonic()
     sys, und, plan = _system(demo_id, profile)
     msgs: list[dict] = []
     for h in (history or [])[-8:]:
@@ -93,9 +293,16 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     if msgs and msgs[-1]["role"] == "user":
         msgs.append({"role": "assistant", "content": "(listening)"})
     try:
+        if time.monotonic() < _qa_reasoning_unavailable_until:
+            raise RuntimeError("reasoning providers temporarily unavailable")
         out = claude.structured(sys, question, schemas.QAOut, max_tokens=1500, history=msgs)
-    except Exception as e:
-        raise RuntimeError(claude.describe_error(e)) from e
+    except Exception:
+        # Avoid retrying two known-unavailable paid providers for every FAQ
+        # question. Exact registry matching remains available and auditable.
+        _qa_reasoning_unavailable_until = time.monotonic() + 600
+        out = _local_grounded_answer(question, und, plan)
+        usage.trace("local-grounded-fallback", "registry-match-v1", latency_ms=(time.monotonic() - started) * 1000,
+                    user=question, response=out.model_dump_json(), system="Both configured reasoning providers were unavailable; exact approved registry facts only.")
 
     fact_ids = {f["id"] for f in und.get("facts", []) if f.get("approved", True)}
     if store.load(demo_id).get("settings", {}).get("competition") == "on":

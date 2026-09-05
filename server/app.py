@@ -11,7 +11,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import cloud, config, events, exporter, graph, orchestrator, store, usage, runlog, visual
+from . import cloud, config, events, exporter, graph, orchestrator, schemas, store, usage, runlog, visual
 from .agents import align, author, faq, pitch, qa, rehearsal, visuals, voice
 from .llm import sarvam
 
@@ -285,7 +285,7 @@ async def patch_demo(demo_id: str, req: Request):
                 allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
                 allowed["language"] = allowed["languages"][0]
             d["settings"].update(allowed)
-            if "voice_name" in allowed:
+            if "voice_name" in allowed or "sarvam_speaker" in allowed:
                 d["settings"]["voice_locked"] = True
             runlog.settings_changed(demo_id, allowed)
     out = store.update(demo_id, fn)
@@ -547,8 +547,52 @@ async def edit_aligned_fact(demo_id: str, fact_id: str, req: Request):
     fact["source"] = {**fact.get("source", {}), "locator": (fact.get("source", {}).get("locator", "") + " · edited by user").strip(" ·")}
     store.write_json(demo_id, "understanding.json", und)
     orchestrator.invalidate(demo_id, "understand")
+    orchestrator.set_stage(demo_id, "understand", "done", message="direct fact edit saved and validated")
     store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
     runlog.event(demo_id, f"Fact {fact_id} edited directly", "Script, visuals and FAQ require re-approval before build.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+
+
+@app.post("/api/demos/{demo_id}/align/facts/{fact_id}/approval")
+async def set_aligned_fact_approval(demo_id: str, fact_id: str, req: Request):
+    """Explicitly reject or restore a questionable extracted fact from the Align UI."""
+    _demo_or_404(demo_id)
+    approved = bool((await req.json()).get("approved"))
+    und = store.read_json(demo_id, "understanding.json") or {}
+    fact = next((f for f in und.get("facts", []) if f.get("id") == fact_id), None)
+    if not fact:
+        raise HTTPException(404, "fact not found")
+    fact["approved"] = approved
+    store.write_json(demo_id, "understanding.json", und)
+    orchestrator.invalidate(demo_id, "understand")
+    orchestrator.set_stage(demo_id, "understand", "done", message="fact approval reviewed directly")
+    orchestrator.set_stage(demo_id, "faq", "stale", message="fact approval changed — bank re-answers on the next build")
+    store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+    runlog.event(demo_id, f"Fact {fact_id} {'restored' if approved else 'rejected'} directly", "Script, visuals and FAQ require review again.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+
+
+@app.patch("/api/demos/{demo_id}/align/product")
+async def edit_aligned_product(demo_id: str, req: Request):
+    """Direct correction for the extracted product framing shown across the demo."""
+    _demo_or_404(demo_id)
+    body = await req.json()
+    allowed = {"name", "category", "summary", "audience"}
+    if not isinstance(body, dict) or not body or set(body) - allowed:
+        raise HTTPException(400, "Only name, category, summary and audience may be changed")
+    und = store.read_json(demo_id, "understanding.json") or {}
+    product = dict(und.get("product") or {})
+    for key, value in body.items():
+        text = str(value or "").strip()
+        if not text or len(text) > 2000:
+            raise HTTPException(400, f"{key} needs 1–2000 characters")
+        product[key] = text
+    und["product"] = product
+    store.write_json(demo_id, "understanding.json", und)
+    orchestrator.invalidate(demo_id, "understand")
+    orchestrator.set_stage(demo_id, "understand", "done", message="product framing edited directly")
+    store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+    runlog.event(demo_id, "Product framing edited directly", "Every downstream card requires review.")
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
 
 
@@ -560,22 +604,49 @@ async def edit_aligned_script(demo_id: str, req: Request):
     edits = body.get("lines") or []
     if not isinstance(edits, list) or not edits or len(edits) > 200:
         raise HTTPException(400, "Send between 1 and 200 script line edits")
-    requested = {str(x.get("id")): (x.get("text") or "").strip() for x in edits if isinstance(x, dict)}
-    if any(not text or len(text) > 1200 for text in requested.values()):
-        raise HTTPException(400, "Every edited line needs 1–1200 characters")
+    requested = {str(x.get("id")): x for x in edits if isinstance(x, dict) and x.get("id")}
+    if len(requested) != len(edits):
+        raise HTTPException(400, "Every script edit needs a line id")
+    for edit in requested.values():
+        if not any(key in edit for key in ("text", "fact_ids", "visual_ref")):
+            raise HTTPException(400, "Each script edit must change text, fact ids or the visual ref")
+        if "text" in edit and (not (edit.get("text") or "").strip() or len((edit.get("text") or "").strip()) > 1200):
+            raise HTTPException(400, "Every edited line needs 1–1200 characters")
+        if "fact_ids" in edit and (not isinstance(edit.get("fact_ids"), list) or len(edit["fact_ids"]) > 30):
+            raise HTTPException(400, "fact_ids must be a list of at most 30 fact ids")
     script = store.read_json(demo_id, "script.json") or {}
     und = store.read_json(demo_id, "understanding.json") or {}
+    approved_fact_ids = {f.get("id") for f in und.get("facts", []) if f.get("approved", True)}
+    cited = {str(fid) for edit in requested.values() for fid in edit.get("fact_ids", [])}
+    if cited - approved_fact_ids:
+        raise HTTPException(400, "Rejected or unknown fact ids cannot be attached: " + ", ".join(sorted(cited - approved_fact_ids)))
+    allowed_visual_refs = {x.get("id") for x in [*und.get("shots", []), *und.get("images", [])] if x.get("_allowed", True)}
+    visual_refs = {str(edit.get("visual_ref") or "") for edit in requested.values() if "visual_ref" in edit}
+    if (visual_refs - {""}) - allowed_visual_refs:
+        raise HTTPException(400, "Unknown or excluded visual refs cannot be attached: " + ", ".join(sorted((visual_refs - {""}) - allowed_visual_refs)))
     found = set()
     for seg in script.get("segments", []):
         for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])]:
             if line.get("id") in requested:
-                line["text"] = requested[line["id"]]
-                line.pop("audio", None)
+                edit = requested[line["id"]]
+                if "text" in edit:
+                    line["text"] = (edit.get("text") or "").strip()
+                    line.pop("audio", None)
+                if "fact_ids" in edit:
+                    line["fact_ids"] = [str(x) for x in edit["fact_ids"]]
+                if "visual_ref" in edit:
+                    line["visual"] = ({"kind": "image" if str(edit["visual_ref"]).startswith("im") else "shot", "ref": str(edit["visual_ref"]), "focus": (line.get("visual") or {}).get("focus", "")} if edit.get("visual_ref") else {"kind": "none", "ref": "", "focus": ""})
                 found.add(line["id"])
     for line in script.get("closing", []):
         if line.get("id") in requested:
-            line["text"] = requested[line["id"]]
-            line.pop("audio", None)
+            edit = requested[line["id"]]
+            if "text" in edit:
+                line["text"] = (edit.get("text") or "").strip()
+                line.pop("audio", None)
+            if "fact_ids" in edit:
+                line["fact_ids"] = [str(x) for x in edit["fact_ids"]]
+            if "visual_ref" in edit:
+                line["visual"] = ({"kind": "image" if str(edit["visual_ref"]).startswith("im") else "shot", "ref": str(edit["visual_ref"]), "focus": (line.get("visual") or {}).get("focus", "")} if edit.get("visual_ref") else {"kind": "none", "ref": "", "focus": ""})
             found.add(line["id"])
     missing = set(requested) - found
     if missing:
@@ -586,13 +657,67 @@ async def edit_aligned_script(demo_id: str, req: Request):
     if invalid:
         raise HTTPException(400, "That edit introduces an uncited claim or figure. Add the information as a source/fact first: " + ", ".join(invalid))
     script["issues"] = issues
-    script = visuals.align(demo_id, script, und)
+    und["image_map"] = visuals.build_map(und, demo)
+    store.write_json(demo_id, "understanding.json", und)
+    realigned = bool(body.get("realign_visuals", True))
+    if realigned:
+        script = visuals.align(demo_id, script, und)
     author.timeline(script, demo_id)
     store.write_json(demo_id, "script.json", script)
     orchestrator.invalidate(demo_id, "author")
+    orchestrator.set_stage(demo_id, "author", "done", message="direct script edits saved and validated")
     store.update(demo_id, lambda d: d["approvals"].update({"visuals": False, "script": False}))
-    runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s) saved; visual alignment refreshed; script and visuals require re-approval.")
+    runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s) saved; visual alignment {'refreshed' if realigned else 'kept'}; script and visuals require re-approval.")
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"], "issues": issues}
+
+
+@app.patch("/api/demos/{demo_id}/align/plan")
+async def edit_aligned_plan(demo_id: str, req: Request):
+    """Direct, human-authored pitch correction without another model call."""
+    _demo_or_404(demo_id)
+    body = await req.json()
+    plan = store.read_json(demo_id, "plan.json") or {}
+    fields = body.get("fields") or {}
+    allowed = {"customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "do_not_recommend_if", "advance", "notes"}
+    if not isinstance(fields, dict) or set(fields) - allowed:
+        raise HTTPException(400, "Only the editable pitch-brief fields may be changed")
+    proposed = dict(plan)
+    for key, value in fields.items():
+        proposed[key] = value.strip() if isinstance(value, str) else value
+
+    replacements = body.get("replacements") or []
+    if not isinstance(replacements, list) or len(replacements) > 30:
+        raise HTTPException(400, "replacements must be a list of at most 30 items")
+    pairs = []
+    for item in replacements:
+        if not isinstance(item, dict) or not item.get("from") or "to" not in item:
+            raise HTTPException(400, "Each replacement needs non-empty 'from' and a 'to' value")
+        pairs.append((str(item["from"]), str(item["to"])))
+
+    remove_ids = {str(x) for x in (body.get("remove_fact_ids") or [])}
+    def cleanse(value):
+        if isinstance(value, str):
+            for old, new in pairs:
+                value = value.replace(old, new)
+            return value
+        if isinstance(value, list):
+            return [cleanse(x) for x in value]
+        if isinstance(value, dict):
+            return {k: ([x for x in v if str(x) not in remove_ids] if k == "fact_ids" and isinstance(v, list) else cleanse(v)) for k, v in value.items()}
+        return value
+    proposed = cleanse(proposed)
+    try:
+        validated = schemas.Plan.model_validate(proposed).model_dump()
+    except Exception as e:
+        raise HTTPException(400, "The edited pitch brief is invalid: " + str(e)[:400])
+    if plan.get("voice_sample_audio"):
+        validated["voice_sample_audio"] = plan["voice_sample_audio"]
+    store.write_json(demo_id, "plan.json", validated)
+    orchestrator.invalidate(demo_id, "plan")
+    orchestrator.set_stage(demo_id, "plan", "done", message="direct pitch edits saved and validated")
+    store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+    runlog.event(demo_id, "Pitch brief edited directly", f"{len(fields)} field(s), {len(pairs)} replacement(s), {len(remove_ids)} fact id(s) removed; every card requires review.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
 
 
 @app.post("/api/demos/{demo_id}/ctas")
@@ -620,8 +745,8 @@ async def revise(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     body = await req.json()
     stage = body.get("stage")
-    if stage not in ("understand", "plan", "author"):
-        raise HTTPException(400, "stage must be understand | plan | author")
+    if stage not in ("understand", "plan", "author", "faq"):
+        raise HTTPException(400, "stage must be understand | plan | author | faq")
     try:
         graph.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
     except RuntimeError as e:
@@ -638,6 +763,11 @@ async def voice_sample(demo_id: str, req: Request):
         rel = voice.sample(demo_id, text)
     except Exception as e:
         raise HTTPException(502, str(e)[:300])
+    if rel:
+        plan = store.read_json(demo_id, "plan.json") or {}
+        plan["voice_sample_audio"] = rel
+        store.write_json(demo_id, "plan.json", plan)
+        store.update(demo_id, lambda d: d["approvals"].__setitem__("persona", False))
     return {"url": f"/media/{demo_id}/{rel}" if rel else None, "provider": voice.provider_for(store.load(demo_id))}
 
 

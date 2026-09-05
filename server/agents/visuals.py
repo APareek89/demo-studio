@@ -39,19 +39,24 @@ SYNONYMS = {"gearbox": ["gear", "shifter", "transmission", "dct", "manual", "aut
 # actually support. Hidden mechanisms, cabin/safety details and source terms switch to literal evidence
 # or a fact card before the narration begins.
 VISIBLE_DETAIL = re.compile(
-    r"\b(interior|inside|cabin|seat|dashboard|screen|display|cluster|touchscreen|infotainment|airbags?|curtain|"
+    r"\b(interior|inside|cabin|seat|boot|luggage|rear bench|folded bench|dashboard|screen|display|cluster|touchscreen|infotainment|airbags?|curtain|"
     r"gear|gearbox|shifter|transmission|manual|automatic|paddles?|climate|sunroof|roof|calipers?|alloys?|"
     r"wheels?|tyres?|muffler|exhaust|tailpipe|headlamps?|headlights?|grille|spoiler|bumper|sills?|brakes?|"
     r"camera|sensors?|mirror|glovebox|charging|android auto|carplay|bose|speakers?|vents?|sunshade|armrest|"
     r"smartsense|adas|cruise|lane|collision|blind spot|driver attention|child seat|isofix|tyre pressure)\b", re.I)
 ABSTRACT_EVIDENCE = re.compile(
-    r"\b(warranty|roadside assistance|terms? (?:and )?conditions?|price|mileage|kilometres?|subscription|"
+    r"\b(warranty|roadside assistance|terms? (?:and )?conditions?|price|ex-showroom|lakh|mileage|kilometres?|subscription|connected-car|"
     r"catalogue|brochure|not (?:printed|listed|stated)|availability|bookable|test conditions?|certified|"
-    r"marketing line|specifications? may change|cost extra|packages?|years?|PS\b|variant|N10 column|"
-    r"zero to hundred|nought to hundred|eight point nine|N10\b|one-point-five litre|colou?r options?|colou?rs? listed)\b", re.I)
+    r"marketing (?:line|copy)|specifications? may change|cost extra|packages?|years?|PS\b|variants?|N10 column|"
+    r"crash-test|crash rating|zero to hundred|nought to hundred|eight point nine|N10\b|one-point-five litre|"
+    r"colou?r options?|colou?rs? (?:are )?listed|tail-lamp (?:welcome )?animation)\b", re.I)
 MODEL_OVERVIEW = re.compile(
     r"\b(looks? and drives?|more character|stands? out|at a glance|daily suv|everyday suv|feels? quick|"
     r"strongest fit|test drive|highway overtake|turbo petrol pulls|product overview|walkaround)\b", re.I)
+NON_VISUAL_FACT = re.compile(
+    r"\b(price|cost|warranty|roadside|service|capacity|boot space|litres?|expandable|efficiency|power|torque|"
+    r"airbags?|isofix|anchorage|stability control|brakes?|brake assist|suspension|fuel type|transmissions?|"
+    r"standard on|all variants?|not offered|availability|colou?rs?|foldable|seat split|rear bench)\b", re.I)
 
 
 def display_mode(text: str, visual: dict | None = None, card: str = "none") -> str:
@@ -343,7 +348,12 @@ def build_map(und: dict, demo: dict) -> dict:
     cat = catalogue("", und, demo)
     out = {}
     for f in und.get("facts", []):
-        lt = _expand(_tokens(f"{f.get('claim', '')} {f.get('value', '')} {f.get('kind', '')}"))
+        cue = f"{f.get('claim', '')} {f.get('value', '')} {f.get('conditions', '')}"
+        # A product photo can illustrate a visible object; it cannot prove a
+        # price, capacity, count, written term or hidden safety mechanism.
+        if NON_VISUAL_FACT.search(cue):
+            continue
+        lt = _expand(_tokens(f"{cue} {f.get('kind', '')}"))
         scored = sorted(((*_score(lt, c), c["ref"]) for c in cat), key=lambda x: -x[0])
         refs = [r for sc, hits, r in scored if sc >= 3.0][:3]
         if refs:

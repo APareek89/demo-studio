@@ -3,7 +3,7 @@ import { api, h, toast, fmtSize } from "/web/api.js";
 const ZONES = [
   { role: "intro_video", title: "Opening film (optional)", desc: "A 10–20 second brand or product film with audio. The guide greets the customer and asks what they need, then plays this film before beginning the tailored walkthrough. MP4/MOV.", accept: "video/*", multiple: false },
   { role: "product", title: "Product video & images", desc: "MP4/MOV video (up to 1 GB — the demo plays your original; export with “fast start” so seeking is instant), JPG/PNG/WEBP/AVIF/HEIC images.", accept: "video/*,image/*,.avif,.heic,.heif", multiple: true },
-  { role: "catalogue", title: "Catalogue, spec sheet, price list", desc: "PDF, DOCX, TXT, MD. Every fact the guide will ever state comes from here — with a citation.", accept: ".pdf,.docx,.txt,.md,.csv", multiple: true },
+  { role: "catalogue", title: "Catalogue, spec sheet, price list", desc: "PDF, DOCX, TXT, MD, CSV. Every fact the guide will ever state comes from here — with a citation.", accept: ".pdf,.docx,.txt,.md,.csv", multiple: true },
   { role: "brand", title: "Brand guidelines", desc: "PDF/DOCX, or paste a few lines about tone and what never to say. Optional — the agent infers a restrained default.", accept: ".pdf,.docx,.txt,.md", multiple: true, text: true },
   { role: "competitor", title: "Competitor pages (optional)", desc: "Official product-page URLs only. Figures are extracted with citations and used for comparisons only if you switch comparisons on — every comparison ends with “as per their website when we checked — please verify”.", url: true },
 ];

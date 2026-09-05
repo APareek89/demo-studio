@@ -68,7 +68,7 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         elif stage == "author":
             out = author.run(demo_id, emit, instruction)
         elif stage == "faq":
-            out = faq.run(demo_id, emit)
+            out = faq.run(demo_id, emit, force=bool(instruction))
         elif stage == "voice":
             out = voice.render_script(demo_id, emit)
         elif stage == "rehearsal":

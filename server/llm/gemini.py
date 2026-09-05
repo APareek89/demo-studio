@@ -23,7 +23,7 @@ def client():
         if not config.GEMINI_API_KEY:
             raise RuntimeError("GEMINI_API_KEY is not set in .env")
         from google import genai
-        _client = genai.Client(api_key=config.GEMINI_API_KEY)
+        _client = genai.Client(api_key=config.GEMINI_API_KEY, http_options={"timeout": 90_000})
     return _client
 
 
@@ -91,6 +91,41 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
         return schema.model_validate_json(text)
     except Exception:
         # tolerate trailing text around the JSON
+        s, e = text.find("{"), text.rfind("}")
+        return schema.model_validate_json(text[s:e + 1])
+
+
+def text_structured(system: str, transcript: str, schema: type[BaseModel], *, max_tokens: int = 16000,
+                    temperature: float = 0.2, fallback_reason: str = "") -> Any:
+    """Text-only structured call used when the primary reasoning provider is unavailable."""
+    if config.MOCK_LLM:
+        return mock.fake(schema)
+    t = _types()
+    prompt = f"SYSTEM INSTRUCTIONS:\n{system}\n\nCONVERSATION / TASK:\n{transcript}"
+    t0 = time.time()
+    resp = _retry(lambda: client().models.generate_content(
+        model=config.GEMINI_MODEL,
+        contents=prompt,
+        config=t.GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=schema,
+            temperature=temperature,
+            max_output_tokens=min(max(256, max_tokens), 32768),
+        ),
+    ), tries=2, waits=(4,))
+    text = resp.text or ""
+    try:
+        um = resp.usage_metadata
+        inp, out = um.prompt_token_count or 0, um.candidates_token_count or 0
+        usage.record("gemini-fallback", config.GEMINI_MODEL, input_tokens=inp, output_tokens=out)
+        usage.trace("gemini-fallback", config.GEMINI_MODEL, latency_ms=(time.time() - t0) * 1000,
+                    system=f"Primary unavailable: {fallback_reason}" if fallback_reason else "",
+                    user=prompt, response=text, input_tokens=inp, output_tokens=out)
+    except Exception:
+        pass
+    try:
+        return schema.model_validate_json(text)
+    except Exception:
         s, e = text.find("{"), text.rfind("}")
         return schema.model_validate_json(text[s:e + 1])
 
