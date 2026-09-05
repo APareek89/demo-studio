@@ -17,10 +17,29 @@ def wait(i, want, secs=90):
         if s == "error": raise SystemExit(f"status error: {json.dumps(c.get(f'/api/demos/{i}').json()['demo']['stages'], indent=1)}")
         time.sleep(0.5)
     raise SystemExit(f"timeout waiting for {want}, status={status(i)}")
+def wait_visual(i, want, secs=20):
+    t0 = time.time()
+    while time.time() - t0 < secs:
+        v = c.get(f"/api/demos/{i}/visual").json()
+        if v["status"] == want: return v
+        if v["status"] == "error": raise SystemExit("visual error: " + v.get("error", ""))
+        time.sleep(0.1)
+    raise SystemExit(f"timeout waiting for visual {want}")
 
 d = c.post("/api/demos", json={"name": "Smoke iQube", "url": "https://www.tvsmotor.com/electric-scooters/tvs-iqube"}).json()
 i = d["id"]; print("created", i)
 imgs = sorted(os.listdir("samples/iqube"))
+angle_files = {"front": "front.webp", "front_three_quarter": "angle.webp", "side": "left.webp", "rear_three_quarter": "right.webp", "rear": "back.webp"}
+for angle, name in angle_files.items():
+    raw = open(f"samples/iqube/{name}", "rb").read()
+    r = c.post(f"/api/demos/{i}/visual/images", files={"file": (name, raw, "image/webp")}, data={"angle": angle})
+    assert r.status_code == 200, r.text
+v = c.get(f"/api/demos/{i}/visual").json(); assert not [x for x in v["schema"] if x["required"] and x["key"] not in v["angles"]], v; print("visual views ready", len(v["angles"]))
+r = c.post(f"/api/demos/{i}/visual/generate", json={}); assert r.status_code == 200, r.text
+v = wait_visual(i, "review"); a = v["attempts"][-1]; assert a["glb_url"] and a["real_count"] == 5, a
+glb = c.get(a["glb_url"]); assert glb.status_code == 200 and glb.content[:4] == b"glTF", "mock GLB not served"
+r = c.post(f"/api/demos/{i}/visual/approve", json={}); assert r.status_code == 200, r.text
+assert c.get(f"/api/demos/{i}").json()["demo"]["visual_asset"], "approved visual not attached"; print("visual generate → approve ok")
 files = [("files", (n, open(f"samples/iqube/{n}", "rb"), "image/webp")) for n in imgs]
 r = c.post(f"/api/demos/{i}/sources", files=files, data={"role": "product"}); assert r.status_code == 200, r.text
 r = c.post(f"/api/demos/{i}/sources", data={"role": "brand", "text": "Warm and direct. Never say cheapest."}); assert r.status_code == 200, r.text
@@ -43,7 +62,7 @@ r = c.post(f"/api/demos/{i}/ctas", json={"ctas": [{"id": "book", "label": "Book 
 r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready", 180); print("build → ready ok")
 b = c.get(f"/api/demos/{i}/bundle").json()
-assert b["segments"], "no segments"; print("bundle v", b["version"], "segments", len(b["segments"]), "closing", len(b["closing"]), "ctas", [x["label"] for x in b["ctas"]])
+assert b["segments"], "no segments"; assert b.get("visual_asset") and b["visual_asset"]["glb_url"], "3D asset missing from bundle"; print("bundle v", b["version"], "segments", len(b["segments"]), "closing", len(b["closing"]), "ctas", [x["label"] for x in b["ctas"]])
 audio = [l["audio"] for s in b["segments"] for l in s["lines"]]; print("lines with audio", sum(1 for a in audio if a), "/", len(audio))
 if audio and audio[0]:
     r = c.get(audio[0]); assert r.status_code == 200 and r.headers["content-type"].startswith("audio"), "audio not served"
@@ -83,3 +102,9 @@ from server.agents import author
 und = store.read_json(i, "understanding.json"); bad = {"segments": [{"id": "s1", "role": "intro", "title": "t", "topic": "t", "lines": [{"id": "l1", "text": "It has a 3.4 kWh battery and 15A charging with IDC range.", "fact_ids": [], "visual": None, "card": "none"}], "checkin": "", "deeper": []}], "closing": [], "intake_q1": "", "intake_q2": ""}
 iss = author.validate(bad, und, "everyday"); assert any("jargon" in x.lower() or "kwh" in x.lower() for x in iss), iss; print("jargon check ok:", iss[:2])
 print("SMOKE OK (phase 2)", i)
+assets = c.get("/api/assets").json(); assert any(x["demo_id"] == i for x in assets), assets
+target = c.post("/api/demos", json={"name": "Asset reuse target"}).json()["id"]
+r = c.post(f"/api/assets/{i}/use", json={"target_demo_id": target}); assert r.status_code == 200 and r.json().get("visual_asset"), r.text
+tb = c.get(f"/api/demos/{target}").json()["demo"]["visual_asset"]; assert c.get(tb["glb_url"]).content[:4] == b"glTF", tb
+r = c.delete(f"/api/assets/{target}"); assert r.status_code == 200 and not c.get(f"/api/demos/{target}").json()["demo"].get("visual_asset"), r.text
+print("asset library reuse + delete ok")

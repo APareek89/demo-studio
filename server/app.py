@@ -10,7 +10,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import cloud, config, events, graph, orchestrator, store, usage, runlog
+from . import cloud, config, events, graph, orchestrator, store, usage, runlog, visual
 from .agents import align, faq, pitch, qa, rehearsal, voice
 from .llm import sarvam
 
@@ -112,7 +112,99 @@ def get_demo(demo_id: str):
     return {"demo": demo, "cards": align.cards(demo_id) if demo["status"] not in ("sources",) else None,
             "conversation": store.read_json(demo_id, "conversation.json", []), "rehearsal": store.read_json(demo_id, "rehearsal.json"),
             "bundle_ready": store.path(demo_id, "bundle.json").exists(), "running": graph.is_running(demo_id),
-            "sessions": _sessions(demo_id), "leads": _leads(demo_id)}
+            "sessions": _sessions(demo_id), "leads": _leads(demo_id), "visual": visual.public_state(demo_id)}
+
+
+# ---------- optional Demo Visual ----------
+
+@app.get("/api/demos/{demo_id}/visual")
+def get_visual(demo_id: str):
+    _demo_or_404(demo_id)
+    return visual.public_state(demo_id)
+
+
+@app.post("/api/demos/{demo_id}/visual/images")
+async def add_visual_image(demo_id: str, angle: str = Form(...), file: UploadFile = File(...)):
+    _demo_or_404(demo_id)
+    try:
+        return visual.add_image(demo_id, angle, file.filename or f"{angle}.jpg", await file.read())
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@app.delete("/api/demos/{demo_id}/visual/images/{angle}")
+def remove_visual_image(demo_id: str, angle: str):
+    _demo_or_404(demo_id)
+    return visual.remove_image(demo_id, angle)
+
+
+@app.post("/api/demos/{demo_id}/visual/video")
+async def add_visual_video(demo_id: str, file: UploadFile = File(...)):
+    _demo_or_404(demo_id)
+    try:
+        return visual.add_video(demo_id, file.filename or "turntable.mp4", await file.read())
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@app.post("/api/demos/{demo_id}/visual/mode")
+async def set_visual_mode(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    try:
+        return visual.set_mode(demo_id, (await req.json()).get("mode", ""))
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@app.post("/api/demos/{demo_id}/visual/generate")
+def generate_visual(demo_id: str):
+    _demo_or_404(demo_id)
+    try:
+        return visual.start(demo_id)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except RuntimeError as e:
+        raise HTTPException(409, str(e))
+
+
+@app.post("/api/demos/{demo_id}/visual/approve")
+def approve_visual(demo_id: str):
+    _demo_or_404(demo_id)
+    try:
+        return visual.approve(demo_id)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@app.post("/api/demos/{demo_id}/visual/skip")
+def skip_visual(demo_id: str):
+    _demo_or_404(demo_id)
+    return visual.skip(demo_id)
+
+
+@app.get("/api/assets")
+def list_assets():
+    return visual.assets()
+
+
+@app.post("/api/assets/{demo_id}/use")
+async def use_asset(demo_id: str, req: Request):
+    _demo_or_404(demo_id)
+    target = (await req.json()).get("target_demo_id", "")
+    _demo_or_404(target)
+    try:
+        return visual.use_in_demo(demo_id, target)
+    except (ValueError, RuntimeError) as e:
+        raise HTTPException(400, str(e))
+
+
+@app.delete("/api/assets/{demo_id}")
+def delete_asset(demo_id: str):
+    _demo_or_404(demo_id)
+    try:
+        return visual.delete_asset(demo_id)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
 
 
 @app.delete("/api/demos/{demo_id}")

@@ -3,6 +3,7 @@ without API keys or spend. Not intelligence; plumbing verification only."""
 from __future__ import annotations
 
 import io
+import json
 import struct
 from typing import Any, Literal, Union, get_args, get_origin
 
@@ -96,3 +97,30 @@ def silent_wav(seconds: float = 1.0, rate: int = 16000) -> bytes:
     buf.write(b"fmt "); buf.write(struct.pack("<IHHIIHH", 16, 1, 1, rate, rate * 2, 2, 16))
     buf.write(b"data"); buf.write(struct.pack("<I", len(pcm))); buf.write(pcm)
     return buf.getvalue()
+
+
+def cube_glb() -> bytes:
+    """Small valid GLB used to exercise upload, storage and <model-viewer> without spend."""
+    positions = [
+        -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,  1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
+        -1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0, 1.0,  1.0, -1.0, 1.0,  1.0,
+    ]
+    indices = [0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6, 0, 4, 5, 0, 5, 1,
+               1, 5, 6, 1, 6, 2, 2, 6, 7, 2, 7, 3, 4, 0, 3, 4, 3, 7]
+    bin_chunk = struct.pack("<" + "f" * len(positions), *positions) + struct.pack("<" + "H" * len(indices), *indices)
+    while len(bin_chunk) % 4:
+        bin_chunk += b"\x00"
+    doc = {"asset": {"version": "2.0", "generator": "Demo Studio mock"}, "scene": 0,
+           "scenes": [{"nodes": [0]}], "nodes": [{"mesh": 0}],
+           "meshes": [{"primitives": [{"attributes": {"POSITION": 0}, "indices": 1}]}],
+           "buffers": [{"byteLength": len(bin_chunk)}],
+           "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": len(positions) * 4, "target": 34962},
+                           {"buffer": 0, "byteOffset": len(positions) * 4, "byteLength": len(indices) * 2, "target": 34963}],
+           "accessors": [{"bufferView": 0, "componentType": 5126, "count": 8, "type": "VEC3", "min": [-1, -1, -1], "max": [1, 1, 1]},
+                         {"bufferView": 1, "componentType": 5123, "count": len(indices), "type": "SCALAR"}]}
+    js = json.dumps(doc, separators=(",", ":")).encode()
+    while len(js) % 4:
+        js += b" "
+    total = 12 + 8 + len(js) + 8 + len(bin_chunk)
+    return (struct.pack("<4sII", b"glTF", 2, total) + struct.pack("<I4s", len(js), b"JSON") + js
+            + struct.pack("<I4s", len(bin_chunk), b"BIN\x00") + bin_chunk)

@@ -37,7 +37,7 @@ function newDemoModal(navigate) {
       h("div", { class: "field" }, h("label", {}, "Product"), name),
       h("div", { class: "field" }, h("label", {}, "Product URL"), url),
       h("div", { class: "actions" }, h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Cancel"),
-        h("button", { class: "btn primary", onclick: async () => { if (!name.value.trim()) { name.focus(); return; } try { const d = await api.post("/api/demos", { name: name.value.trim(), url: url.value.trim() }); bg.remove(); navigate(`#/studio/${d.id}/sources`); } catch (e) { toast(e.message, true); } } }, "Create")),
+        h("button", { class: "btn primary", onclick: async () => { if (!name.value.trim()) { name.focus(); return; } try { const d = await api.post("/api/demos", { name: name.value.trim(), url: url.value.trim() }); bg.remove(); navigate(`#/studio/${d.id}/visual`); } catch (e) { toast(e.message, true); } } }, "Create")),
     ));
   document.body.appendChild(bg); setTimeout(() => name.focus(), 30);
   name.addEventListener("keydown", (e) => { if (e.key === "Enter") bg.querySelector(".btn.primary").click(); });

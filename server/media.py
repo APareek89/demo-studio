@@ -112,6 +112,24 @@ def prepare_video(demo_id: str, src: dict, emit=lambda m: None) -> dict:
     return out
 
 
+def extract_candidate_frames(video: Path, out_dir: Path, *, every_seconds: int = 2, max_frames: int = 30) -> list[dict]:
+    """Extract evenly spaced JPEG candidates for visual-angle selection."""
+    ff = ffmpeg()
+    if not ff:
+        raise RuntimeError("ffmpeg is required to extract product views from video")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for old in out_dir.glob("candidate-*.jpg"):
+        old.unlink(missing_ok=True)
+    pattern = out_dir / "candidate-%03d.jpg"
+    subprocess.run([
+        ff, "-y", "-v", "error", "-i", str(video), "-vf",
+        f"fps=1/{max(1, every_seconds)},scale='min(1280,iw)':-2", "-frames:v", str(max_frames),
+        "-q:v", "3", str(pattern),
+    ], check=True, timeout=1800)
+    return [{"index": i, "timestamp": float((i - 1) * every_seconds), "path": p}
+            for i, p in enumerate(sorted(out_dir.glob("candidate-*.jpg")), start=1)]
+
+
 # ---------- image clean-up: local first (transparent cut-outs, fringes, small images), Gemini image model when allowed ----------
 CLEAN_BG_TOP = (246, 248, 252)
 CLEAN_BG_BOTTOM = (226, 232, 241)

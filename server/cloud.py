@@ -138,7 +138,7 @@ def put_demo_record(demo_id: str) -> None:
     item = {"demo_id": demo_id, "name": demo.get("name"), "status": demo.get("status"), "version": demo.get("version", 0), "created_at": demo.get("created_at"),
             "updated_at": time.time(), "product": demo.get("product", {}), "settings": demo.get("settings", {}), "approvals": demo.get("approvals", {}),
             "stages": demo.get("stages", {}), "sources": [{k: s.get(k) for k in ("id", "kind", "name", "role", "path", "play", "url", "use_in_demo", "size")} for s in demo.get("sources", [])],
-            "mascot": demo.get("mascot"), "s3_prefix": f"demos/{demo_id}/"}
+            "mascot": demo.get("mascot"), "visual_asset": demo.get("visual_asset"), "s3_prefix": f"demos/{demo_id}/"}
     _session().resource("dynamodb").Table(_state["tables"]["demos"]).put_item(Item=_ddb_item(item))
 
 
@@ -258,6 +258,20 @@ def fetch_file(demo_id: str, rel: str) -> Path | None:
         return p if p.exists() else None
     except Exception:
         return None
+
+
+def delete_file(demo_id: str, rel: str) -> None:
+    """Remove one mirrored object and its manifest entry. Best effort, like the rest of cloud sync."""
+    if not enabled():
+        return
+    try:
+        _session().client("s3").delete_object(Bucket=_state["bucket"], Key=f"demos/{demo_id}/{rel}")
+        man = _manifest(demo_id)
+        if rel in man:
+            man.pop(rel, None)
+            store.path(demo_id, MANIFEST).write_text(json.dumps(man))
+    except Exception as e:
+        store.log(demo_id, "cloud-error", {"op": "delete_file", "path": rel, "error": str(e)[:300]})
 
 
 def restore_demo(demo_id: str, log=lambda m: None) -> bool:

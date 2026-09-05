@@ -17,6 +17,9 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
+RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY", "").strip()
+RUNWARE_MODEL = os.getenv("RUNWARE_MODEL", "microsoft:trellis-2@4b").strip() or "microsoft:trellis-2@4b"
+RUNWARE_RESOLUTION = int(os.getenv("RUNWARE_RESOLUTION", "1024"))
 SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3").strip() or "bulbul:v3"  # v2 deprecated Sep 2026
 SARVAM_STT_MODEL = os.getenv("SARVAM_STT_MODEL", "saarika:v2.5").strip() or "saarika:v2.5"
 # Speech: Sarvam is primary for the Indian context when its key is present; Gemini / Cloud TTS / browser fall back.
@@ -51,9 +54,11 @@ def health() -> dict:
         "gemini": bool(GEMINI_API_KEY),
         "gcloud_tts": bool(GCLOUD_TTS_API_KEY),
         "sarvam": bool(SARVAM_API_KEY),
+        "runware": bool(RUNWARE_API_KEY),
         "tts_provider": TTS_PROVIDER,
         "stt_provider": STT_PROVIDER,
         "mock": MOCK_LLM,
         "claude_model": CLAUDE_MODEL, "claude_plan_model": CLAUDE_PLAN_MODEL, "claude_lite_model": CLAUDE_LITE_MODEL, "gemini_image_model": GEMINI_IMAGE_MODEL,
         "gemini_model": GEMINI_MODEL,
+        "runware_model": RUNWARE_MODEL,
     }

@@ -2,10 +2,12 @@
 import { api, h, toast } from "/web/api.js";
 import { renderDemos } from "/web/demos.js";
 import { renderSources } from "/web/studio/sources.js";
+import { renderVisual } from "/web/studio/visual.js";
 import { renderAlign } from "/web/studio/align.js";
 import { renderRehearse } from "/web/studio/rehearse.js";
 import { renderPlayground } from "/web/playground.js";
 import { renderObservability } from "/web/observability.js";
+import { renderAssets } from "/web/assets.js";
 import { mountPlayer } from "/web/player/player.js";
 
 const main = document.getElementById("main");
@@ -23,13 +25,15 @@ function setTab(name) { for (const a of document.querySelectorAll("#tabs a")) a.
 export function navigate(hash) { location.hash = hash; }
 
 const STEPS = [
-  { key: "sources", n: "1", label: "Sources", sub: "upload, then configure" },
-  { key: "align", n: "2", label: "Align", sub: "approve what the agent found" },
-  { key: "rehearse", n: "3", label: "Rehearse", sub: "run it, give feedback" },
+  { key: "visual", n: "1", label: "Demo Visual", sub: "optional 3D product stage" },
+  { key: "sources", n: "2", label: "Sources", sub: "upload, then configure" },
+  { key: "align", n: "3", label: "Align", sub: "approve what the agent found" },
+  { key: "rehearse", n: "4", label: "Rehearse", sub: "run it, give feedback" },
 ];
 
 function stepState(demo, key) {
   const st = demo.status;
+  if (key === "visual") return { done: ["approved", "skipped"].includes(demo.__visual), locked: false };
   if (key === "sources") return { done: st !== "sources", locked: false };
   if (key === "align") return { done: st === "ready", locked: st === "sources" };
   if (key === "rehearse") return { done: false, locked: !["ready", "building"].includes(st) && !demo.__bundle };
@@ -39,12 +43,12 @@ function stepState(demo, key) {
 async function renderStudio(demoId, stage) {
   if (!demoId) {
     const demos = await api.get("/api/demos");
-    if (demos.length) return navigate(`#/studio/${demos[0].id}/${demos[0].status === "sources" ? "sources" : demos[0].status === "ready" ? "rehearse" : "align"}`);
+    if (demos.length) return navigate(`#/studio/${demos[0].id}/visual`);
     return navigate("#/demos");
   }
   let state;
   try { state = await api.get(`/api/demos/${demoId}`); } catch (e) { toast("Demo not found", true); return navigate("#/demos"); }
-  const demo = state.demo; demo.__bundle = state.bundle_ready;
+  const demo = state.demo; demo.__bundle = state.bundle_ready; demo.__visual = state.visual?.status;
   if (!stage) stage = demo.status === "sources" ? "sources" : demo.status === "ready" ? "rehearse" : "align";
   const rail = h("aside", { class: "rail" },
     h("div", { class: "demo-name" }, demo.name, h("span", { class: "id" }, demo.id, " · v", String(demo.version || 0))),
@@ -61,7 +65,8 @@ async function renderStudio(demoId, stage) {
     setRailStatus: (t) => { const el = document.getElementById("railStatus"); if (el) el.textContent = t; },
     subscribe: (fn) => { current.unsub = api.subscribe(demoId, fn); return current.unsub; },
   };
-  if (stage === "sources") renderSources(ctx);
+  if (stage === "visual") renderVisual(ctx);
+  else if (stage === "sources") renderSources(ctx);
   else if (stage === "align") renderAlign(ctx);
   else if (stage === "rehearse") renderRehearse(ctx);
 }
@@ -69,6 +74,7 @@ async function renderStudio(demoId, stage) {
 async function route() {
   const parts = (location.hash || "#/demos").slice(2).split("/");
   if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2]); }
+  if (parts[0] === "assets") { setTab("assets"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderAssets({ main, navigate }); }
   if (parts[0] === "play" && parts[1]) {
     setTab("");
     if (current.unsub) { current.unsub(); current.unsub = null; }
@@ -104,4 +110,3 @@ async function renderPlay(demoId) {
 
 window.addEventListener("hashchange", route);
 health(); route();
-

@@ -24,6 +24,7 @@ PRICES = {
     "gemini-tts": {"in": float(os.getenv("PRICE_GEMINI_TTS_IN", "0.50")), "out": float(os.getenv("PRICE_GEMINI_TTS_OUT", "10.0")), "note": "assumed — set PRICE_GEMINI_TTS_IN/OUT"},
     "sarvam-tts": {"per_1k_chars_inr": float(os.getenv("PRICE_SARVAM_TTS_INR_1K", "1.5")), "note": "assumed ₹/1k chars — set PRICE_SARVAM_TTS_INR_1K"},
     "sarvam-stt": {"per_min_inr": float(os.getenv("PRICE_SARVAM_STT_INR_MIN", "0.5")), "note": "assumed ₹/min — set PRICE_SARVAM_STT_INR_MIN"},
+    "runware-trellis-2": {"per_asset": float(os.getenv("PRICE_RUNWARE_TRELLIS_2", "0.0256")), "note": "fallback $/asset estimate; exact API cost is recorded when returned"},
 }
 FX_INR = float(os.getenv("FX_INR", "84"))
 TRACE_CAPTURE = os.getenv("TRACE_CAPTURE", "full").strip().lower()  # full | meta (meta = lengths only, no prompt text)
@@ -39,12 +40,14 @@ def _redact(text: str, limit: int | None = None) -> str:
 
 
 
-def record(kind: str, model: str, *, input_tokens: int = 0, output_tokens: int = 0, chars: int = 0, seconds: float = 0.0, demo_id: str | None = None, stage: str | None = None) -> None:
+def record(kind: str, model: str, *, input_tokens: int = 0, output_tokens: int = 0, chars: int = 0, seconds: float = 0.0, usd: float | None = None, demo_id: str | None = None, stage: str | None = None) -> None:
     demo_id = demo_id or current_demo.get()
     if not demo_id or not store.exists(demo_id):
         return
     row = {"t": time.time(), "stage": stage or current_stage.get(), "kind": kind, "model": model,
            "in": int(input_tokens or 0), "out": int(output_tokens or 0), "chars": int(chars or 0), "sec": round(float(seconds or 0), 2)}
+    if usd is not None:
+        row["usd"] = round(float(usd), 6)
     p = store.path(demo_id, "usage.jsonl")
     try:
         with p.open("a") as f:
@@ -54,7 +57,7 @@ def record(kind: str, model: str, *, input_tokens: int = 0, output_tokens: int =
 
 
 def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: str = "", response: str = "", error: str = "",
-          input_tokens: int = 0, output_tokens: int = 0, chars: int = 0, demo_id: str | None = None, stage: str | None = None) -> None:
+          input_tokens: int = 0, output_tokens: int = 0, chars: int = 0, usd: float | None = None, demo_id: str | None = None, stage: str | None = None) -> None:
     """Observability row: what was sent, what came back, how long, what it cost."""
     demo_id = demo_id or current_demo.get()
     if not demo_id or not store.exists(demo_id):
@@ -64,7 +67,7 @@ def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: s
            "system": (system or "")[:TRACE_MAX_CHARS] if TRACE_CAPTURE == "full" else f"[{len(system or '')} chars]",
            "user": _redact(user) if TRACE_CAPTURE == "full" else f"[{len(user or '')} chars]",
            "response": _redact(response) if TRACE_CAPTURE == "full" else f"[{len(response or '')} chars]", "error": (error or "")[:400]}
-    row["usd"] = round(_cost_usd({**row, "sec": 0}), 5)
+    row["usd"] = round(float(usd), 5) if usd is not None else round(_cost_usd({**row, "sec": 0}), 5)
     try:
         with store.path(demo_id, "trace.jsonl").open("a") as f:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -86,6 +89,8 @@ def traces(demo_id: str, limit: int = 300) -> list[dict]:
 
 
 def _cost_usd(row: dict) -> float:
+    if row.get("usd") is not None:
+        return float(row["usd"])
     m = row["model"]
     if m.startswith("claude"):
         pr = PRICES["claude-haiku-4-5"] if "haiku" in m else PRICES["claude-sonnet-5"] if "sonnet" in m else PRICES["claude-opus-5"]
@@ -102,6 +107,8 @@ def _cost_usd(row: dict) -> float:
         return row["chars"] / 1000 * PRICES["sarvam-tts"]["per_1k_chars_inr"] / FX_INR
     if row["kind"] == "sarvam-stt":
         return row["sec"] / 60 * PRICES["sarvam-stt"]["per_min_inr"] / FX_INR
+    if row["kind"] == "runware-3d":
+        return PRICES["runware-trellis-2"]["per_asset"]
     return 0.0
 
 

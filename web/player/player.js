@@ -29,6 +29,7 @@ export function mountPlayer(host, bundle, api) {
   const canListen = () => (serverSTT && navigator.mediaDevices?.getUserMedia) || SR;
   const opening = (bundle.segments || []).filter((s) => s.role === "intro" || s.role === "outcome");
   const library = (bundle.segments || []).filter((s) => s.role !== "intro" && s.role !== "outcome");
+  const asset = bundle.visual_asset;
 
   // ---------- DOM ----------
   const el = {};
@@ -37,7 +38,11 @@ export function mountPlayer(host, bundle, api) {
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
       h("div", { class: "right" }, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
     el.stage = h("div", { class: "pl-stage" },
-      el.media = h("div", { class: "pl-media" }, el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" })),
+      el.media = h("div", { class: "pl-media" + (asset ? " has-3d" : "") },
+        asset ? (el.model = h("model-viewer", { src: asset.glb_url, poster: asset.preview_url || "", "camera-controls": true, "auto-rotate": true, "shadow-intensity": "1", "environment-image": "neutral", "interaction-prompt": "none", alt: `Interactive 3D view of ${bundle.product?.name || bundle.name}` })) : null,
+        el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" }),
+        asset ? (el.support = h("div", { class: "pl-support" }, el.supportImg = h("img", { alt: "Supporting product detail" }), el.supportVideo = h("video", { muted: true, playsinline: true, preload: "auto" }), h("div", { class: "pl-support-copy" }, el.supportBadge = h("span", { class: "origin real" }, "DETAIL"), el.supportText = h("span", {}, "Supporting view")))) : null,
+        asset ? h("div", { class: "pl-angle-strip", "aria-label": "Product reference views" }, ...(asset.angles || []).slice(0, 6).map((a) => h("figure", { title: `${a.label || a.angle} · ${a.generated ? "AI-created" : "real"}` }, h("img", { src: a.url, alt: a.label || a.angle }), h("figcaption", {}, a.label || a.angle, h("i", { class: a.generated ? "ai" : "" }, a.generated ? "AI" : "REAL"))))) : null),
       el.card = h("div", { class: "pl-card" }),
       el.ctas = h("div", { class: "pl-ctas" }),
       h("div", { class: "pl-dock" },
@@ -65,6 +70,23 @@ export function mountPlayer(host, bundle, api) {
   // ---------- visuals ----------
   let videoStop = null;
   function showVisual(v) {
+    if (asset) {
+      if (!v || v.kind === "none" || !v.url) { if (el.support) el.support.classList.remove("on"); return; }
+      const angle = (asset.angles || []).find((a) => a.url === v.url);
+      el.supportBadge.textContent = angle ? (angle.generated ? "AI CREATED" : "REAL VIEW") : (v.kind === "shot" ? "VIDEO PROOF" : "DETAIL");
+      el.supportBadge.className = "origin " + (angle?.generated ? "generated" : "real");
+      el.supportText.textContent = v.focus || v.description || angle?.label || "Supporting view";
+      if (v.kind === "shot") {
+        el.supportImg.style.display = "none"; el.supportVideo.style.display = "block";
+        const vid = el.supportVideo;
+        const start = () => { vid.currentTime = Math.max(0, v.start || 0); vid.play().catch(() => {}); };
+        if (vid.getAttribute("src") !== v.url) { vid.src = v.url; vid.onloadedmetadata = start; } else start();
+      } else {
+        el.supportVideo.pause(); el.supportVideo.style.display = "none"; el.supportImg.style.display = "block"; el.supportImg.src = v.url;
+      }
+      el.support.classList.add("on");
+      return;
+    }
     el.focus.classList.toggle("on", !!(v && v.focus)); el.focus.textContent = v?.focus || "";
     if (!v || v.kind === "none" || !v.url) return;
     if (v.kind === "image") {
