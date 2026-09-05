@@ -225,6 +225,13 @@ def _render_bank_and_fillers(demo_id: str, emit, demo: dict) -> None:
         store.write_json(demo_id, "faq.json", bank)
     store.write_json(demo_id, "fillers.json", fill)
     emit(f"FAQ bank and fillers recorded ({done}/{len(todo)}).")
+    missing_faq = [e.get("id", "?") for e in bank.get("entries", []) if e.get("answer") and not e.get("audio")]
+    missing_fillers = [key for key, item in fill.items() if item.get("text") and not item.get("audio")]
+    if missing_faq or missing_fillers:
+        raise RuntimeError(
+            f"Voice bank incomplete: {len(missing_faq)} FAQ answer(s) and {len(missing_fillers)} filler line(s) have no audio. "
+            "Wait for the provider window to reset, then rebuild; partial audio was checkpointed."
+        )
 
 
 def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> dict:

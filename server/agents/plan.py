@@ -49,6 +49,18 @@ Produce exactly this:
 Return exactly the schema."""
 
 
+def _verified_plan(demo_id: str, demo: dict) -> schemas.Plan | None:
+    """Load a human-reviewed plan bundle when both reasoning providers are unavailable."""
+    manifests = [s for s in demo.get("sources", []) if s.get("kind") == "text"
+                 and s.get("name", "").lower() == "verified-plan.json.md"]
+    if not manifests:
+        return None
+    raw = store.path(demo_id, manifests[-1]["path"]).read_text(encoding="utf-8").strip()
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+    return schemas.Plan.model_validate_json(raw)
+
+
 def run(demo_id: str, emit, instruction: str = "") -> dict:
     und = store.read_json(demo_id, "understanding.json")
     if not und:
@@ -86,7 +98,11 @@ IMAGES ({len(und['images'])}):
     try:
         plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000, model=config.CLAUDE_PLAN_MODEL)
     except Exception as e:
-        raise RuntimeError(f"Planning failed: {claude.describe_error(e)}") from e
+        manifest = _verified_plan(demo_id, demo) if claude._provider_unavailable(e) else None
+        if not manifest:
+            raise RuntimeError(f"Planning failed: {claude.describe_error(e)}") from e
+        emit("Reasoning providers unavailable — using the explicit verified plan…")
+        plan = manifest
 
     fact_ids = {f["id"] for f in und["facts"]}
     vis_ids = {s["id"] for s in vshots} | {i["id"] for i in vimgs}

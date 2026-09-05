@@ -245,10 +245,10 @@ main{flex:1;min-height:0;display:flex}
 .gaplist{margin:8px 0 0;padding-left:16px;font-size:13px;line-height:1.5;color:var(--muted)}
 .sess{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:6px 0;border-top:1px solid var(--line)}
 .sess:first-of-type{border-top:0}
-.player-host{position:relative;min-height:0;display:flex;flex-direction:column}
+.player-host{position:relative;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 
 /* ---------- Player ---------- */
-.pl{flex:1;display:grid;grid-template-rows:52px 1fr;min-height:0;background:var(--bg)}
+.pl{flex:1;display:grid;grid-template-rows:52px 1fr;min-height:0;background:var(--bg);overflow:hidden}
 .pl-top{display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 18px;border-bottom:1px solid var(--line);background:var(--panel)}
 .pl-top .left{display:flex;align-items:center;gap:14px;min-width:0}
 .avatar{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 200deg,var(--accent),#7FB0FF 60%,var(--accent));position:relative;flex:none}

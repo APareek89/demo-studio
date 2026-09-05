@@ -48,6 +48,7 @@ if demo_bundle.exists():
 
 player = (ROOT / "web" / "player" / "player.js").read_text()
 align_ui = (ROOT / "web" / "studio" / "align.js").read_text()
+align_source = (ROOT / "server" / "agents" / "align.py").read_text()
 visuals_source = (ROOT / "server" / "agents" / "visuals.py").read_text()
 pitch = (ROOT / "server" / "agents" / "pitch.py").read_text()
 styles = (ROOT / "web" / "styles.css").read_text()
@@ -67,6 +68,9 @@ check("unknown answers show the model and open lead capture without a source car
 check("runtime fact cards are keyword-sized and omit source locators", "function compactRow" in player and 'title = "Key points"' in player and 'title = "Sources for that answer"' not in player)
 check("post-script audit inspects real images with Gemini", "_vision_batches" in visuals_source and "gemini.structured" in visuals_source and 'store.write_json(demo_id, "visual-audit.json"' in visuals_source)
 check("alignment preview exposes feature coverage and gaps", "Gemini confirms:" in align_ui and '"visual check"' in align_ui and "missing_features" in align_ui)
+check("Align times narration separately from its pause-point question", "sg.spoken ?? sg.duration" in align_ui and "s spoken" in align_ui)
+check("a skipped pixel audit is never labelled full visual coverage", "Pixel audit unavailable" in align_ui and "Human visual approval is still required" in align_ui)
+check("Align card data carries the narration-only duration", '"spoken": s.get("spoken")' in align_source)
 check("lead capture triggers at two questions or sixty percent", "S.questions.length >= 2 || progress >= 0.6" in player)
 check("temporary mute covers narration, browser voice and the opening film", 'a.muted = S.muted' in player and 'u.volume = S.muted ? 0 : 1' in player and 'v.muted = S.muted' in player)
 check("mute control is keyboard and screen-reader accessible", 'aria-label": "Mute audio"' in player and 'aria-pressed' in player and 'onclick: () => toggleMute()' in player)
@@ -77,6 +81,14 @@ check("FAQ parser still reads a question-only line", faq.question_from_line("Q: 
 check("FAQ retries checkpoint progress against a registry hash", '"registry_hash": registry_hash' in (ROOT / "server" / "agents" / "faq.py").read_text() and '"partial": len(entries) < len(questions)' in (ROOT / "server" / "agents" / "faq.py").read_text())
 check("provider fallback recognizes exhausted primary credit", claude._provider_unavailable(RuntimeError("Your credit balance is too low")))
 check("provider fallback rejects unrelated validation errors", not claude._provider_unavailable(RuntimeError("JSON failed validation")))
+understand_source = (ROOT / "server" / "agents" / "understand.py").read_text()
+check("PDF registry extraction has a text-only secondary-provider path", "Primary document reader unavailable" in understand_source and "gemini.text_structured(FACTS_SYSTEM" in understand_source)
+check("competitor pages stay out of the product fact-registry prompt", 's.get("role") != "competitor"' in understand_source)
+check("a human-verified fact manifest is the no-guess dual-provider fallback", "def _verified_manifest" in understand_source and "using the explicit verified-fact manifest" in understand_source)
+check("reviewed plan and script bundles are available only as provider-outage fallbacks", "def _verified_plan" in (ROOT / "server" / "agents" / "plan.py").read_text() and "def _verified_script" in (ROOT / "server" / "agents" / "author.py").read_text())
+check("reviewed control bundles stay out of fact extraction", "verified-plan.json.md" in understand_source and "control_sources" in understand_source)
+gemini_source = (ROOT / "server" / "llm" / "gemini.py").read_text()
+check("hard Gemini quota exhaustion enters a cooldown instead of retrying every later stage", "def _is_hard_quota" in gemini_source and "_hard_quota_until" in gemini_source)
 check("FAQ retry clears a stale error status before doing work", 'def faq(state: DemoState)' in graph_source and 'orch._set_status(d, "building" if state.get("entry") == "build"' in graph_source)
 check("an explicit FAQ retry reruns even after a completed-but-bad bank", 'and not explicit_retry' in graph_source and 'state.get("instruction", "") if explicit_retry else ""' in graph_source)
 check("an instructed FAQ retry bypasses same-registry cached answers", "if not force and previous.get" in (ROOT / "server" / "agents" / "faq.py").read_text() and "force=bool(instruction)" in (ROOT / "server" / "orchestrator.py").read_text())
@@ -95,6 +107,42 @@ generic_comparison = qa._local_grounded_answer("Is it cheaper than the X3?", {"p
     {"id": "F2", "approved": True, "claim": "Comparison — BMW X3 starting price", "value": "₹75 lakh"},
 ]}, {"ctas": []})
 check("local competitor matching comes from the uploaded registry rather than a Taigun-only list", generic_comparison.answered and generic_comparison.fact_ids == ["F1", "F2"] and "BMW X3" in generic_comparison.answer)
+structured_comparison = qa._local_grounded_answer("How does it start against MG Hector?", {"product": {"name": "Harrier"}, "facts": [
+    {"id": "F1", "approved": True, "claim": "Starting price", "value": "₹12.99 lakh"},
+], "competitors": [{"name": "MG Hector", "facts": [
+    {"id": "C1-001", "approved": True, "claim": "Starting price", "value": "₹11.99 lakh"},
+]}]}, {"ctas": []})
+check("local comparison fallback also reads the structured competitor registry", structured_comparison.answered and structured_comparison.fact_ids == ["F1", "C1-001"] and "MG Hector" in structured_comparison.answer)
+harrier_local = {"product": {"name": "Tata Harrier"}, "facts": [
+    {"id": "F1", "approved": True, "claim": "Seating capacity", "value": "5 seater"},
+    {"id": "F2", "approved": True, "claim": "Powered driver seat", "value": "6-way powered"},
+    {"id": "F3", "approved": True, "claim": "Manual transmission", "value": "6-speed manual — all combinations"},
+    {"id": "F4", "approved": True, "claim": "Automatic transmission", "value": "6-speed automatic — Pure X onwards"},
+    {"id": "F5", "approved": True, "claim": "Official Flexi-scheme starting EMI", "value": "₹12,199", "conditions": "final EMI is at the financier's discretion"},
+    {"id": "F6", "approved": True, "claim": "Comparison — Mahindra XUV 7XO seating", "value": "7-seat entry range; selected higher variants offer 6-seat layouts"},
+    {"id": "F7", "approved": True, "claim": "Comparison response rule", "value": "verify current trims"},
+    {"id": "F8", "approved": True, "claim": "Powered tailgate", "value": "Gesture-controlled powered tailgate"},
+    {"id": "F9", "approved": True, "claim": "Variant count", "value": "55 variants available"},
+    {"id": "F10", "approved": True, "claim": "Vehicle warranty", "value": "3 years or 1 lakh km"},
+    {"id": "F11", "approved": True, "claim": "Global NCAP applicability", "value": "Applies across diesel variants, excluding Fearless Ultra and above"},
+]}
+seat_answer = qa._local_grounded_answer("How many people does the Harrier seat?", harrier_local, {"ctas": []})
+check("local fallback distinguishes seating capacity from powered-seat features", seat_answer.fact_ids == ["F1"])
+transmission_answer = qa._local_grounded_answer("Which transmissions are available with diesel?", harrier_local, {"ctas": []})
+check("local fallback answers fuel transmission questions from transmission facts", transmission_answer.fact_ids == ["F3", "F4"])
+emi_answer = qa._local_grounded_answer("Can you guarantee the EMI shown?", harrier_local, {"ctas": []})
+check("local fallback answers an EMI guarantee question with the lender caveat", emi_answer.fact_ids == ["F5"] and emi_answer.answer.startswith("No."))
+real_mileage = qa._local_grounded_answer("What real-world diesel mileage will I definitely get?", harrier_local, {"ctas": []})
+check("local fallback declines guaranteed real-world mileage", not real_mileage.answered and not real_mileage.fact_ids)
+xuv_answer = qa._local_grounded_answer("How does its seating differ from the XUV 7XO?", harrier_local, {"ctas": []})
+check("local fallback compares seating when a non-price rival is named", xuv_answer.fact_ids == ["F1", "F6", "F7"])
+check("local fallback declines universal feature scope without variant-level evidence", not qa._local_grounded_answer("Is the powered tailgate standard on every variant?", harrier_local, {"ctas": []}).answered)
+check("local fallback still answers a plain powered-tailgate availability question", qa._local_grounded_answer("Does it have a powered tailgate?", harrier_local, {"ctas": []}).fact_ids == ["F8"])
+check("local fallback declines a cheapest-variant question when only a variant count exists", not qa._local_grounded_answer("Which is the cheapest Harrier variant?", harrier_local, {"ctas": []}).answered)
+check("local fallback still answers the reviewed variant count", qa._local_grounded_answer("How many variants are currently listed?", harrier_local, {"ctas": []}).fact_ids == ["F9"])
+check("strict intent narrowing still recognizes a vehicle-warranty fact", qa._local_grounded_answer("What warranty does the Harrier include?", harrier_local, {"ctas": []}).fact_ids == ["F10"])
+global_scope = qa._local_grounded_answer("Does the Global NCAP result apply to every Harrier variant sold today?", harrier_local, {"ctas": []})
+check("Global NCAP scope beats a generic variant-count intent and states the exclusion", global_scope.fact_ids == ["F11"] and "not every current variant" in global_scope.answer)
 finance = qa._local_grounded_answer("Show me synthetic EMI illustration A", {"facts": [
     {"id": "F1", "approved": True, "claim": "SYNTHETIC EMI illustration A", "value": "₹21,139", "conditions": "Not a finance offer"},
     {"id": "F2", "approved": True, "claim": "SYNTHETIC EMI illustration B", "value": "₹26,469", "conditions": "Not a finance offer"},
@@ -122,9 +170,11 @@ check("local QA fallback records required trace latency", 'latency_ms=(time.mono
 check("runtime image map excludes non-visual capacities and hidden safety claims", "NON_VISUAL_FACT.search(cue)" in visuals_source)
 check("direct script correction refreshes the safe runtime image map", 'und["image_map"] = visuals.build_map(und, demo)' in (ROOT / "server" / "app.py").read_text())
 check("voice sample re-record updates the reviewed persona artifact", 'plan["voice_sample_audio"] = rel' in (ROOT / "server" / "app.py").read_text() and "voice_agent.voice_name_for" in (ROOT / "server" / "agents" / "align.py").read_text())
+check("a build cannot report ready with a partially voiced FAQ bank", "Voice bank incomplete" in (ROOT / "server" / "agents" / "voice.py").read_text() and "partial audio was checkpointed" in (ROOT / "server" / "agents" / "voice.py").read_text())
 styles = (ROOT / "web" / "styles.css").read_text()
 check("mobile studio and player tracks can shrink to the viewport", "grid-template-columns:minmax(0,1fr);min-width:0" in styles and ".player-host{min-width:0}" in styles)
 check("mobile player controls wrap instead of forcing horizontal scroll", ".pl-top .left,.pl-top .right{width:100%;max-width:100%}" in styles and ".pl{overflow:hidden;grid-template-rows:88px" in styles)
+check("the closed desktop conversation drawer cannot widen the document", ".player-host{position:relative;min-height:0;display:flex;flex-direction:column;overflow:hidden}" in styles and ".pl{flex:1;display:grid;grid-template-rows:52px 1fr;min-height:0;background:var(--bg);overflow:hidden}" in styles)
 
 failed = [item for item in results if not item[1]]
 for name, ok, detail in results:

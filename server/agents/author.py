@@ -48,6 +48,18 @@ Hard rules:
 {language}"""
 
 
+def _verified_script(demo_id: str, demo: dict) -> schemas.ScriptOut | None:
+    """Load a human-reviewed script bundle when both reasoning providers are unavailable."""
+    manifests = [s for s in demo.get("sources", []) if s.get("kind") == "text"
+                 and s.get("name", "").lower() == "verified-script.json.md"]
+    if not manifests:
+        return None
+    raw = store.path(demo_id, manifests[-1]["path"]).read_text(encoding="utf-8").strip()
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+    return schemas.ScriptOut.model_validate_json(raw)
+
+
 NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,}|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)(?:\s+|-)(?:airbags?|stars?|seats?|seaters?|speakers?|colou?r options?|apps?|variants?|years?|months?)\b)", re.I)
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
 LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 36}  # ≤ 20 s per batch at the measured ~1.9 words/s of the recorded voice
@@ -236,7 +248,11 @@ IMAGES:
     try:
         out = claude.structured(sys, content, schemas.ScriptOut, max_tokens=40000)
     except Exception as e:
-        raise RuntimeError(f"Script writing failed: {claude.describe_error(e)}") from e
+        manifest = _verified_script(demo_id, demo) if claude._provider_unavailable(e) else None
+        if not manifest:
+            raise RuntimeError(f"Script writing failed: {claude.describe_error(e)}") from e
+        emit("Reasoning providers unavailable — using the explicit verified script…")
+        out = manifest
     script = out.model_dump()
     script["intake_q2"] = ""
     issues = validate(script, und, audience)

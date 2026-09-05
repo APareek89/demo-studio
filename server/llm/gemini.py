@@ -15,6 +15,8 @@ from .. import config, usage
 from . import mock
 
 _client = None
+_hard_quota_until = 0.0
+_hard_quota_reason = ""
 
 
 def client():
@@ -32,14 +34,29 @@ def _types():
     return types
 
 
+def _is_hard_quota(message: str) -> bool:
+    low = message.lower()
+    return any(marker in low for marker in ("exceeded your current quota", "check your plan and billing", "limit: 0", "quota_value: 0"))
+
+
 def _retry(fn, tries: int = 4, waits=(4, 10, 25)):
     """Gemini returns 503 'high demand' and 429 transiently; the SDK's own retry is short. Back off and try again."""
+    global _hard_quota_until, _hard_quota_reason
+    if time.time() < _hard_quota_until:
+        raise RuntimeError(f"Gemini rate limit cooldown: {_hard_quota_reason}")
     last = None
     for i in range(tries):
         try:
             return fn()
         except Exception as e:  # noqa: BLE001
             s = str(e)
+            # A zero/current-quota response is not a burst limit. Retrying it
+            # for every later image, planning and FAQ call turns a clean
+            # fallback into minutes of dead time, so remember it briefly.
+            if _is_hard_quota(s):
+                _hard_quota_reason = "current quota exhausted; wait or enable billing"
+                _hard_quota_until = time.time() + 600
+                raise
             transient = any(k in s for k in ("503", "UNAVAILABLE", "429", "RESOURCE_EXHAUSTED", "500 INTERNAL", "502", "504", "overloaded", "high demand"))
             last = e
             if not transient or i == tries - 1:

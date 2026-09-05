@@ -356,3 +356,20 @@
 **Deepest why type:** `code`
 **Action taken:** Studio/player tracks now use shrinkable columns, controls wrap on phones, and root overflow is contained; live checks pass at 320, 390, 768 and 1280 px.
 **Preventive action:** Responsive QA must assert document scroll width, not rely on screenshots alone.
+
+### 2026-09-05 — A nearby true fact answered a different high-risk question
+
+**Symptom:** “Which is the cheapest Harrier variant?” returned “55 variants,” while “Is the powered tailgate standard on every variant?” returned only that a powered tailgate exists.
+**Why 1:** Intent-specific narrowing kept the original fuzzy candidates when no claim matched the required intent.
+**Why 2:** The matcher treated feature presence as equivalent to universal variant scope.
+**Deepest why type:** `design`
+**Action taken:** Intent narrowing is now fail-closed; cheapest/entry-variant questions require a named variant fact; universal-scope wording requires explicit scope evidence. Global NCAP applicability has its own scoped response contract.
+**Preventive action:** Every high-risk selector gets both a positive test and a near-miss negative test. An empty exact match must decline, never reopen the fuzzy candidate pool.
+
+### 2026-09-05 — Ready did not mean every customer branch had audio
+
+**Symptom:** A Harrier build briefly reached ready with only 8 of 28 FAQ answers voiced after Sarvam rate limiting.
+**Why 1:** The voice stage checkpointed partial work but the final build gate accepted the partial bank.
+**Deepest why type:** `code`
+**Action taken:** Build now fails unless every FAQ answer and filler has audio, while retaining completed files for a rate-limit-safe retry. Harrier v2 rebuilt with 88/88 referenced WAVs populated.
+**Preventive action:** Completeness gates must enumerate every runtime branch, not only the main narration path.

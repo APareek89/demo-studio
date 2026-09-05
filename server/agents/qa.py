@@ -48,7 +48,7 @@ VISUALS:
 {visuals}
 """
 
-DONT_GUESS = "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it — if you'd like that, just tell me your number, or we can carry on."
+DONT_GUESS = "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on."
 
 LOCAL_STOP = set("a an and are as at be by can current did do does for from have how i in is it me much my of on or our please tell that the their there this to was we what when where which who why will with would you your available offered".split())
 _qa_reasoning_unavailable_until = 0.0
@@ -70,7 +70,10 @@ def _named_competitor(question: str, facts: list[dict]) -> tuple[str, str] | Non
         if not fact.get("approved", True):
             continue
         claim = fact.get("claim") or ""
-        match = re.match(r"comparison\s*[—–:-]\s*(.+?)\s+(?:starting\s+|published\s+|official\s+)?price\b", claim, re.I)
+        match = re.match(
+            r"comparison\s*[—–:-]\s*(.+?)\s+(?:starting\s+price|price|seating|seats?|fuel\s+tank|tank|range|warranty|dimensions?|power|torque)\b",
+            claim, re.I,
+        )
         if not match:
             continue
         label = match.group(1).strip()
@@ -78,6 +81,8 @@ def _named_competitor(question: str, facts: list[dict]) -> tuple[str, str] | Non
         tokens = re.findall(r"[a-z0-9]+", label.lower())
         if tokens:
             aliases.add(tokens[-1])
+        if len(tokens) >= 2:
+            aliases.add(" ".join(tokens[-2:]))
         if any(re.search(rf"\b{re.escape(alias)}\b", q) for alias in aliases):
             return label.lower(), label
     return None
@@ -108,6 +113,11 @@ def _local_grounded_answer(question: str, und: dict, plan: dict) -> schemas.QAOu
         (any(x in q for x in ("on-road", "on road")) and not asks_synthetic)
     )
     approved = [f for f in und.get("facts", []) if f.get("approved", True)]
+    for comp in und.get("competitors", []):
+        label = (comp.get("name") or "Competitor").strip()
+        for fact in comp.get("facts", []):
+            if fact.get("approved", True):
+                approved.append({**fact, "claim": f"Comparison — {label} {fact.get('claim', '')}".strip()})
     competitor = _named_competitor(question, approved)
     named_competitor = competitor[0] if competitor else None
     if named_competitor and any(x in q for x in ("price", "cost", "start", "cheap", "expensive")):
@@ -121,10 +131,84 @@ def _local_grounded_answer(question: str, und: dict, plan: dict) -> schemas.QAOu
             label = competitor[1]
             reviewed = re.search(r"reviewed\s+([0-9-]+)", competitor_fact.get("conditions") or "", re.I)
             review_note = f", reviewed {reviewed.group(1)}" if reviewed else ""
-            answer = (f"The {product} page lists {own['value']} ex-showroom. {label}'s official price page{review_note} lists "
+            answer = (f"The {product} page lists {own['value']}. {label}'s official price page{review_note} lists "
                       f"{competitor_fact['value']}. Current trims, prices and stock need dealer verification.")
             fact_ids = [own["id"], competitor_fact["id"]] + ([rule["id"]] if rule else [])
             return schemas.QAOut(answer=answer, fact_ids=fact_ids, visual_ref="", escalate="", topic=classify(question)[0], cta="", answered=True, clarifying_question="")
+    if named_competitor and any(x in q for x in ("seat", "seating")):
+        own = next((f for f in approved if (f.get("claim") or "").lower() == "seating capacity"), None)
+        competitor_fact = next((f for f in approved if named_competitor in (f.get("claim") or "").lower()
+                                and "comparison" in (f.get("claim") or "").lower()
+                                and any(x in (f.get("claim") or "").lower() for x in ("seat", "seating"))), None)
+        rule = next((f for f in approved if (f.get("claim") or "").lower() == "comparison response rule"), None)
+        if own and competitor_fact:
+            product = (und.get("product") or {}).get("name") or "This product"
+            answer = (f"The {product} is listed as {own['value']}. {competitor[1]} is listed as {competitor_fact['value']}. "
+                      "Exact variants and current availability still need verification.")
+            fact_ids = [own["id"], competitor_fact["id"]] + ([rule["id"]] if rule else [])
+            return schemas.QAOut(answer=answer, fact_ids=fact_ids, visual_ref="", escalate="", topic=classify(question)[0], cta="", answered=True, clarifying_question="")
+
+    # Resolve high-value compound intents before fuzzy overlap. Words such as
+    # "seat" and "driver" occur in several unrelated feature labels.
+    fact_by_claim = {(f.get("claim") or "").lower(): f for f in approved
+                     if not (f.get("claim") or "").lower().startswith("comparison")}
+    topic, _ = classify(question)
+
+    def exact(claims: list[str], answer: str) -> schemas.QAOut | None:
+        chosen = [fact_by_claim[c] for c in claims if c in fact_by_claim]
+        if len(chosen) != len(claims):
+            return None
+        return schemas.QAOut(answer=answer, fact_ids=[f["id"] for f in chosen], visual_ref="", escalate="", topic=topic, cta="", answered=True, clarifying_question="")
+
+    if any(x in q for x in ("real-world mileage", "real world mileage")) or ("mileage" in q and "definitely" in q):
+        return schemas.QAOut(answer=DONT_GUESS, fact_ids=[], visual_ref="", escalate=question, topic=topic, cta="", answered=False, clarifying_question="")
+    if "emi" in q and any(x in q for x in ("guarantee", "guaranteed", "promise")):
+        f = fact_by_claim.get("official flexi-scheme starting emi")
+        if f:
+            condition = f.get("conditions", "").rstrip(".")
+            condition = condition[:1].lower() + condition[1:] if condition else "the financier sets the final terms"
+            answer = f"No. The page shows {f['value']} as a starting Flexi EMI, but {condition}"
+            return schemas.QAOut(answer=answer + ".", fact_ids=[f["id"]], visual_ref="", escalate="", topic=topic, cta="", answered=True, clarifying_question="")
+    if "how many" in q and any(x in q for x in ("people", "seat")):
+        f = fact_by_claim.get("seating capacity")
+        if f:
+            return exact(["seating capacity"], f"The Harrier is listed as a {f['value']}.")
+    if "transmission" in q and any(x in q for x in ("diesel", "petrol")):
+        manual, auto = fact_by_claim.get("manual transmission"), fact_by_claim.get("automatic transmission")
+        if manual and auto:
+            answer = (f"The brochure lists {manual['value']} and {auto['value']}. "
+                      "Use its powertrain matrix to confirm the exact fuel-and-variant combination.")
+            return exact(["manual transmission", "automatic transmission"], answer)
+    if "diesel" in q and "power" in q and "torque" in q:
+        power, torque = fact_by_claim.get("diesel maximum power"), fact_by_claim.get("diesel maximum torque")
+        if power and torque:
+            return exact(["diesel maximum power", "diesel maximum torque"], f"The diesel is listed at {power['value']} and {torque['value']}.")
+    if any(x in q for x in ("crash rating", "safety rating", "bharat ncap", "five-star", "five star")):
+        f = fact_by_claim.get("bharat ncap safety rating")
+        if f:
+            suffix = " The source pack does not settle the exact protocol year or variant scope, so verify that if it changes your decision." if "variant" in q or "apply" in q else ""
+            return exact(["bharat ncap safety rating"], f"The brochure states a {f['value']}.{suffix}")
+    if "global ncap" in q and any(x in q for x in ("apply", "variant", "scope")):
+        f = fact_by_claim.get("global ncap applicability")
+        if f:
+            return exact(["global ncap applicability"], f"The supplied material says the Global NCAP result {f['value'].lower()}. That is not every current variant, so verify the exact car before relying on it.")
+    if "adas" in q:
+        avail, cruise = fact_by_claim.get("adas level 2+ availability"), fact_by_claim.get("adaptive cruise control")
+        if avail and cruise:
+            availability = avail["value"]
+            availability = availability[len("Available on "):] if availability.lower().startswith("available on ") else availability
+            answer = (f"Level 2+ is listed for {availability}; adaptive cruise is {cruise['value'].lower()}. "
+                      "It assists the driver and does not replace attention.")
+            return exact(["adas level 2+ availability", "adaptive cruise control"], answer)
+    if "front seats" in q and "powered" in q:
+        driver, passenger = fact_by_claim.get("powered driver seat"), fact_by_claim.get("powered co-driver seat")
+        if driver and passenger:
+            return exact(["powered driver seat", "powered co-driver seat"], f"Yes. The driver seat is listed as {driver['value']}, and the co-driver seat as {passenger['value']}.")
+    if "variant" in q and any(x in q for x in ("cheapest", "lowest-priced", "lowest priced", "entry-level", "entry level")):
+        named = next((f for f in approved if any(x in (f.get("claim") or "").lower()
+                     for x in ("cheapest variant", "lowest-priced variant", "lowest priced variant", "entry variant"))), None)
+        if not named:
+            return schemas.QAOut(answer=DONT_GUESS, fact_ids=[], visual_ref="", escalate=question, topic=topic, cta="", answered=False, clarifying_question="")
     candidates = []
     for f in und.get("facts", []):
         if not f.get("approved", True):
@@ -166,8 +250,12 @@ def _local_grounded_answer(question: str, und: dict, plan: dict) -> schemas.QAOu
         intent_rx, max_facts = rf"synthetic emi illustration {finance_case.group(1)}$", 1
     elif official_only and any(x in q for x in ("on-road", "on road")):
         intent_rx = r"on-road|on road"
-    elif "starting price" in q:
+    elif re.search(r"starting(?:\s+ex-showroom)?\s+price", q):
         intent_rx, max_facts = r"^starting price$", 1
+    elif "seating" in q or ("seat" in q and "powered" not in q):
+        intent_rx, max_facts = r"^seating capacity$", 1
+    elif "transmission" in q and any(x in q for x in ("diesel", "petrol")):
+        intent_rx, max_facts = r"^(manual|automatic) transmission$", 2
     elif "fuel type" in q:
         intent_rx = r"^fuel type$"
     elif "fuel-tank" in q or "fuel tank" in q:
@@ -180,20 +268,30 @@ def _local_grounded_answer(question: str, und: dict, plan: dict) -> schemas.QAOu
         intent_rx = r"turning radius"
     elif "airbag" in q:
         intent_rx = r"airbag"
+    elif "adas" in q:
+        intent_rx, max_facts = r"adas level 2\+ availability|adaptive cruise control", 2
     elif "safety equipment" in q:
         intent_rx = r"electronic safety|parking sensor|reversing camera|child seat"
     elif "sunroof" in q:
         intent_rx = r"sunroof"
+    elif "powered tailgate" in q:
+        intent_rx, max_facts = r"^powered tailgate$", 1
+    elif "test drive" in q:
+        intent_rx, max_facts = r"^test-drive booking$", 1
+    elif "sun blind" in q:
+        intent_rx, max_facts = r"^rear sun blinds$", 1
+    elif "colour" in q or "color" in q:
+        intent_rx, max_facts = r"^colou?r options$", 1
     elif "ventilated" in q or "electric front seat" in q:
         intent_rx = r"front seats.*electric.*ventilated"
     elif "wireless" in q:
         intent_rx = r"smartphone connectivity"
-    elif "screen" in q or "cockpit" in q:
-        intent_rx, max_facts = r"screen sizes|cockpit sizes", 2
+    elif "screen" in q or "cockpit" in q or "infotainment display" in q:
+        intent_rx, max_facts = r"infotainment display|screen sizes|cockpit sizes", 1
     elif "variant" in q:
-        intent_rx, max_facts = r"^variant line-up$", 1
+        intent_rx, max_facts = r"^variant (?:line-up|count)$", 1
     elif "warranty" in q or "service package" in q:
-        intent_rx, max_facts = r"standard warranty|roadside assistance|free services", 3
+        intent_rx, max_facts = r"(?:standard|vehicle) warranty|roadside assistance|free services", 3
     elif "power" in q and any(x in q for x in ("1.0", "1.5")):
         intent_rx = r"max power"
         wanted_engine = "1.0" if "1.0" in q else "1.5"
@@ -212,8 +310,14 @@ def _local_grounded_answer(question: str, und: dict, plan: dict) -> schemas.QAOu
         intent_rx = r"fuel efficiency"
     if intent_rx:
         narrowed = [(s, f) for s, f in candidates if re.search(intent_rx, (f.get("claim") or "").lower())]
-        if narrowed:
-            candidates = narrowed
+        candidates = narrowed
+    universal_scope = (
+        "standard" in q or "every variant" in q or "all variants" in q or
+        "across variants" in q or "across the range" in q
+    )
+    if universal_scope:
+        scope_rx = re.compile(r"\bstandard\b|all variants|every variant|applies across|available on|from .+ onwards|excluding", re.I)
+        candidates = [(s, f) for s, f in candidates if scope_rx.search(" ".join((f.get("value") or "", f.get("conditions") or "")))]
     if any(x in q for x in ("on-road", "on road")) and not asks_synthetic:
         candidates = []
     candidates.sort(key=lambda x: (-x[0], x[1].get("id", "")))

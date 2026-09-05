@@ -23,6 +23,8 @@ Tests:
 - Each answer leads with a direct response, then the minimum evidence, condition and next move.
 - Follow-up prompts do not repeat information already supplied.
 - No-match and unsupported-answer turns are brief, name the gap, and offer a useful recovery path.
+- Intent-specific matching is fail-closed: if the required claim is absent, decline instead of falling back to the nearest lexical fact.
+- Scope words such as “standard”, “every variant” and “across the range” require explicit variant-scope evidence; feature availability alone is insufficient.
 - Three distinct customer conversations per demo exercise terse, detailed and adversarial/boundary-seeking behaviour.
 - Spoken lines are checked in both audio and chat form for length, rhythm, pronunciation and interruption recovery.
 
@@ -145,8 +147,8 @@ Sources:
 4. Review and explicitly approve every Align card. Do not bulk-approve unseen cards.
 5. Build, inspect Gemini visual audit, validate TTS provider/fallback and review the bundled timeline.
 6. Run three chat-first customer conversations, ten or more questions each, covering facts, finance, comparison, refusal and callback capture.
+   Complete or explicitly skip intake before counting the first customer question; chat entered during intake is profile context, not runtime Q&A.
 7. Check desktop/tablet/mobile, controls, focus, captions, restart/skip and MP4 export.
 8. Inspect `RUN.md`, trace, usage, visual-audit, script, FAQ, bundle and provider logs.
 9. Separate input gaps from reusable product defects. Fix reusable defects, add the narrowest regression, rerun the affected path, then run the free suite.
 10. Score only after evidence is stable. Commit a clean checkpoint before starting the next car.
-

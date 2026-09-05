@@ -5,6 +5,7 @@ unknowns, brand profile. Nothing downstream may state a fact that is not in here
 """
 from __future__ import annotations
 
+import csv
 import json
 
 from .. import media, schemas, sources, store
@@ -48,6 +49,49 @@ feature/availability; never infer or round; ignore marketing adjectives. Name th
 def _hint(demo: dict) -> str:
     p = demo.get("product", {})
     return f"{demo.get('name','')} — {p.get('category','')} {p.get('url','')}".strip(" —")
+
+
+def _verified_manifest(demo_id: str, demo: dict) -> schemas.FactsOut | None:
+    """Load an explicit human-reviewed fact manifest when reasoning providers are unavailable."""
+    manifests = [s for s in demo.get("sources", []) if s.get("kind") == "text" and s.get("name", "").lower() == "verified-facts.csv"]
+    if not manifests:
+        return None
+    source = manifests[-1]
+    rows = list(csv.DictReader(store.path(demo_id, source["path"]).read_text(encoding="utf-8").splitlines()))
+    by_name = {s.get("name"): s for s in demo.get("sources", [])}
+    by_name.update({s.get("url"): s for s in demo.get("sources", []) if s.get("url")})
+    product, brand = {}, {}
+    facts, unknowns = [], []
+    for row in rows:
+        record_type = (row.get("record_type") or "").strip().lower()
+        if record_type == "product":
+            product = {k: (row.get(k) or "").strip() for k in ("name", "category", "summary", "audience")}
+        elif record_type == "brand":
+            brand = {
+                "tone": (row.get("tone") or "").strip(), "voice_style": (row.get("voice_style") or "").strip(),
+                "dos": [x.strip() for x in (row.get("dos") or "").split("|") if x.strip()],
+                "donts": [x.strip() for x in (row.get("donts") or "").split("|") if x.strip()],
+                "persona_hint": (row.get("persona_hint") or "").strip(),
+            }
+        elif record_type == "unknown":
+            unknowns.append(schemas.UnknownOut(
+                question=(row.get("claim") or "").strip(), why_customers_ask=(row.get("why") or "").strip(),
+                category=(row.get("category") or "other").strip(), suggested_document=(row.get("suggested_document") or "").strip(),
+            ))
+        elif record_type == "fact":
+            cited = by_name.get((row.get("source_name") or "").strip())
+            if not cited or cited["id"] == source["id"]:
+                raise RuntimeError(f"Verified manifest cites an unknown source: {row.get('source_name', '')}")
+            facts.append(schemas.FactOut(
+                kind=(row.get("kind") or "other").strip(), claim=(row.get("claim") or "").strip(),
+                value=(row.get("value") or "").strip(),
+                source=schemas.FactSource(ref=cited["id"], locator=(row.get("locator") or "").strip(), quote=(row.get("quote") or "").strip()),
+                confidence=float(row.get("confidence") or 1.0), conditions=(row.get("conditions") or "").strip(),
+                truth=(row.get("truth") or "stated").strip(),
+            ))
+    if not facts or not product or not brand:
+        raise RuntimeError("Verified manifest needs product, brand and at least one fact row")
+    return schemas.FactsOut(product=schemas.Product(**product), facts=facts, unknowns=unknowns, brand=schemas.Brand(**brand))
 
 
 def run(demo_id: str, emit, instruction: str = "") -> dict:
@@ -107,7 +151,12 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 })
 
     # ---- facts + brand (Claude) ----
-    docs = [s for s in demo["sources"] if s["kind"] in ("pdf", "doc", "url", "text")]
+    # Rival pages have their own constrained extractor below. Feeding them into
+    # the product registry wastes context and risks attributing rival specs to
+    # the product under review.
+    control_sources = {"verified-plan.json.md", "verified-script.json.md"}
+    docs = [s for s in demo["sources"] if s["kind"] in ("pdf", "doc", "url", "text")
+            and s.get("role") != "competitor" and s.get("name", "").lower() not in control_sources]
     emit("Reading the catalogue, documents and product page…" if docs else "No documents given — the registry will be thin; the gap list will say what's missing.")
     blocks: list[dict] = []
     for s in docs:
@@ -132,7 +181,31 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     try:
         out = claude.structured(FACTS_SYSTEM, blocks, schemas.FactsOut, max_tokens=32000)
     except Exception as e:
-        raise RuntimeError(f"Fact extraction failed: {claude.describe_error(e)}") from e
+        if claude._provider_unavailable(e):
+            # Gemini cannot consume Anthropic's in-message PDF block, but the
+            # source layer already has a guarded text extractor for every doc.
+            # Preserve source boundaries and citations in a text-only retry.
+            manifest = _verified_manifest(demo_id, demo)
+            if manifest:
+                emit("Primary document reader unavailable — using the explicit verified-fact manifest…")
+                out = manifest
+            else:
+                emit("Primary document reader unavailable — retrying from extracted source text…")
+                plain = []
+                for s in docs:
+                    st = sources.source_text(demo_id, s)
+                    plain.append(f"=== SOURCE {s['id']} · {s['kind']} · role={s.get('role', 'product')} · {st['name']} ===\n{st['text'][:60000]}")
+                plain.append(
+                    f"PRODUCT HINT: {hint}\nVISUALS AVAILABLE (context only, never a fact source): {len(shots)} video shots, {len(images)} images."
+                    + (f"\n\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}" if instruction else "")
+                )
+                try:
+                    out = gemini.text_structured(FACTS_SYSTEM, "\n\n".join(plain), schemas.FactsOut, max_tokens=32000,
+                                                 fallback_reason=claude.describe_error(e))
+                except Exception as fallback_error:
+                    raise RuntimeError(f"Fact extraction failed: {gemini.describe_error(fallback_error)}") from fallback_error
+        else:
+            raise RuntimeError(f"Fact extraction failed: {claude.describe_error(e)}") from e
 
     facts = []
     for i, f in enumerate(out.facts, 1):

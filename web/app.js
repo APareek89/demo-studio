@@ -3,7 +3,7 @@ import { api, h, toast } from "/web/api.js";
 import { renderDemos } from "/web/demos.js";
 import { renderSources } from "/web/studio/sources.js";
 import { renderVisual } from "/web/studio/visual.js";
-import { renderAlign } from "/web/studio/align.js";
+import { renderAlign } from "/web/studio/align.js?v=3e0";
 import { renderRehearse } from "/web/studio/rehearse.js";
 import { renderPlayground } from "/web/playground.js";
 import { renderObservability } from "/web/observability.js";
