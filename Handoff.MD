@@ -39,8 +39,12 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
   secure origin — on plain HTTP the demo would load with no voice input. `sslip.io` provides the hostname until a domain is bought.
   **Verified live:** uploads of 6 / 12 / 40 MB all 200; 12 parallel requests all saw consistent state; idle usage 317 MB of 913 MB.
   Deployment scripts: `docs/aws/deploy-ec2.sh` (idempotent), `docs/aws/ec2-userdata.sh`, `docs/aws/ec2-deploy-policy.json`.
-  Open items there: **`CLOUD_SYNC=0`** (no AWS creds on the box yet, so no S3 mirror), **no demos copied up** (`data/` was excluded
-  from the rsync), and redeploys are a manual `rsync` + `sudo systemctl restart demo-studio`.
+  **All 12 demos copied up 2026-09-17** (821 MB at ~14 MB/s); Audi Q5 verified end to end over HTTPS — bundle 200, `demo.mp4`
+  streams 7.5 MB as video/mp4. Server: 847 MB of demos, 15 GB disk free, 273 MB of 913 MB RAM at idle.
+  Open items: **`CLOUD_SYNC=0`** (no AWS creds on the box, so no S3 mirror — an instance IAM role is the right fix, not keys
+  in a file), redeploys are a manual `rsync` + `sudo systemctl restart demo-studio`, and **SSH is locked to the laptop IP
+  49.36.114.210** — a home IP change locks you out until the security group rule is updated.
+  Note: macOS ships openrsync (protocol 29); `--info=progress2` is unsupported and fails the transfer. Use plain `-az`.
 - ⚠️ **Vercel (2026-09-17, superseded by AWS — keep only as a shop window):** https://demo-studio-phi.vercel.app loads, but
   uploads over ~4.5 MB are refused by the platform (`FUNCTION_PAYLOAD_TOO_LARGE`) and state is per-instance — of 12 parallel
   requests, 10 saw an empty app. Scaffolding is `api/index.py` + `vercel.json` (legacy `builds`+`routes`; the modern `rewrites`
