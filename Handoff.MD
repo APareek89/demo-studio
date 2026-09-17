@@ -48,6 +48,13 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
 - ✅ **Real bug found and fixed 2026-09-17:** `langgraph` and `langgraph-checkpoint-sqlite` were missing from
   `requirements.txt`, so any fresh install (Vercel, Render or a new machine) crashed on import. `config.GRAPH_DB` now makes
   the LangGraph checkpoint path overridable (`DEMO_STUDIO_GRAPH_DB`) instead of hardcoded under the project directory.
+- 🧹 **Disk cleanup 2026-09-17:** `data/` 1.1 GB → 804 MB. Removed `data/test-demos/` (eval fixtures) and the 115 MB
+  `turntable.mov` in `dm_a07d9306` Creta3 — its 17 candidate frames were already extracted and its visual is approved in
+  `images` mode, so nothing depended on the source file. All four finished demo films kept (Audi Q5, Taigun, Harrier,
+  CRETA N Line); every demo is mirrored to S3 so these are restorable. Note: `visual/state.json` in Creta3 still carries a
+  `video.path` pointing at the deleted file — harmless (the demo opens fine, no errors), but a re-extract would need it back.
+  **`data/test-demos/` grows unboundedly** — it had reached 165 MB across runs and rebuilt at 7.5 MB for a single pass;
+  worth deleting periodically, or adding a cleanup at eval teardown.
 - The sequential build-and-QA programme is otherwise finished. Local server is on port 8877.
 - Disclosed P2/environment limits: Gemini image/pixel audit unavailable, Audi GLB slightly high-gloss, deterministic runtime personalisation during intermittent pitch-provider 502s, and no acoustic listening score because the run stayed muted.
 
