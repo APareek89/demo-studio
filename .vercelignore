@@ -1,0 +1,8 @@
+.venv/
+data/
+docs/
+samples/
+evals/
+__pycache__/
+*.pyc
+.git/

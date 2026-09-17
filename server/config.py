@@ -11,7 +11,11 @@ load_dotenv(ROOT / ".env")
 
 DATA_DIR = Path(os.getenv("DEMO_STUDIO_DATA")).resolve() if os.getenv("DEMO_STUDIO_DATA") else ROOT / "data" / "demos"  # tests set DEMO_STUDIO_DATA=data/test-demos
 WEB_DIR = ROOT / "web"
+# The LangGraph checkpoint file. Overridable so the app can run where the project dir is read-only
+# (serverless hosts); those platforms must point it at writable storage.
+GRAPH_DB = Path(os.getenv("DEMO_STUDIO_GRAPH_DB")).resolve() if os.getenv("DEMO_STUDIO_GRAPH_DB") else ROOT / "data" / "graph.sqlite"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
+GRAPH_DB.parent.mkdir(parents=True, exist_ok=True)
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()

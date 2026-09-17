@@ -31,13 +31,23 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
 
 - ✅ **Code is on GitHub (2026-09-17):** https://github.com/APareek89/demo-studio — private, `master`, 44 commits, 115 files.
   Pre-publish safety check: no live key material in any tracked file; `.env` and `data/` (uploads, demos, audio) excluded by .gitignore and confirmed absent on the remote.
-- ⏹ **Hosting: staying local (user decision, 2026-09-17).** Runs on port 8877; GitHub is the backup and the way to share code.
-  When a hosted link is wanted, **Render** is the recommendation — a `Render_Key` is already in `~/Documents/mysecrets`, and it
-  runs this code unchanged on an always-on machine with a persistent disk (Dockerfile + mounted disk, no application changes).
-  **Vercel was ruled out, do not retry it:** 4.5 MB request cap vs the 1 GB uploads video demos need; read-only per-request
-  filesystem vs the folder-per-demo store and `data/graph.sqlite` checkpoints (Align would lose its interrupt state between
-  requests); 60 s function ceiling vs the measured 172 s build; background threads (personalisation, cloud sync, visuals)
-  killed the moment a response returns, which breaks the no-latency rule.
+- ⚠️ **Deployed to Vercel 2026-09-17 at the user's instruction — live but only partly functional.**
+  URL https://demo-studio-phi.vercel.app (project `anandpro26/demo-studio`). Scaffolding: `api/index.py` (ASGI entry,
+  points DATA_DIR/GRAPH_DB at /tmp, CLOUD_SYNC=0), `vercel.json` (legacy `builds`+`routes` — the modern `rewrites` form
+  passes the rewritten path and 404s every route), `.vercelignore`. **Measured on the live URL, not predicted:**
+  - ✅ App boots, UI serves, `/`, `/api/demos`, `/api/workflow` all 200. Uploads up to ~4.5 MB succeed.
+  - ❌ **Uploads over ~4.5 MB are rejected by the platform** (`FUNCTION_PAYLOAD_TOO_LARGE`): 1 MB and 4 MB → 200; 6 MB and
+    12 MB → 413. The app itself allows 1024 MB. Product video, the core input, cannot be uploaded at all.
+  - ❌ **State is per-instance and not shared.** A demo created on one instance was invisible to others: of 12 parallel
+    requests, 10 saw an empty app and 2 saw the demo. `/tmp` is per-Lambda and is lost when the instance recycles.
+  - ❓ Untested: no model API keys are set in the Vercel project, so nothing model-driven runs there. A real build would
+    also meet the 60 s function ceiling against the measured 172 s build, and background threads die when a response returns.
+  - Bundle is 272 MB, over Vercel's standard size; the build only passes because Vercel auto-optimises dependencies.
+  **Treat the Vercel URL as a shop window, not the product.** For a working hosted demo the recommendation is unchanged:
+  **Render** (a `Render_Key` is already in `~/Documents/mysecrets`) — always-on machine, persistent disk, code unchanged.
+- ✅ **Real bug found and fixed 2026-09-17:** `langgraph` and `langgraph-checkpoint-sqlite` were missing from
+  `requirements.txt`, so any fresh install (Vercel, Render or a new machine) crashed on import. `config.GRAPH_DB` now makes
+  the LangGraph checkpoint path overridable (`DEMO_STUDIO_GRAPH_DB`) instead of hardcoded under the project directory.
 - The sequential build-and-QA programme is otherwise finished. Local server is on port 8877.
 - Disclosed P2/environment limits: Gemini image/pixel audit unavailable, Audi GLB slightly high-gloss, deterministic runtime personalisation during intermittent pitch-provider 502s, and no acoustic listening score because the run stayed muted.
 

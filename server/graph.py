@@ -211,7 +211,7 @@ def build_graph() -> StateGraph:
 
 # ---------- runtime: one compiled graph, one sqlite checkpointer, one thread per running demo ----------
 
-_conn = sqlite3.connect(str(config.ROOT / "data" / "graph.sqlite"), check_same_thread=False)
+_conn = sqlite3.connect(str(config.GRAPH_DB), check_same_thread=False)
 checkpointer = SqliteSaver(_conn)
 graph = build_graph().compile(checkpointer=checkpointer)
 _threads: dict[str, threading.Thread] = {}
