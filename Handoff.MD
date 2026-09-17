@@ -31,12 +31,13 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
 
 - ✅ **Code is on GitHub (2026-09-17):** https://github.com/APareek89/demo-studio — private, `master`, 44 commits, 115 files.
   Pre-publish safety check: no live key material in any tracked file; `.env` and `data/` (uploads, demos, audio) excluded by .gitignore and confirmed absent on the remote.
-- 🧑 **USER DECISION — where to host.** Vercel was requested but cannot run this app: 4.5 MB request cap vs the 1 GB uploads
-  video demos need; read-only per-request filesystem vs the folder-per-demo store and `data/graph.sqlite` checkpoints (Align
-  would lose its interrupt state between requests); 60 s function ceiling vs the measured 172 s build; background threads
-  (personalisation, cloud sync, visuals) killed the moment a response returns, breaking the no-latency rule. **Recommended:
-  Render** — a `Render_Key` already sits in `~/Documents/mysecrets`; it runs this code unchanged on an always-on machine with a
-  persistent disk (needs a Dockerfile + mounted disk, no application changes). Nothing deployed until this is chosen.
+- ⏹ **Hosting: staying local (user decision, 2026-09-17).** Runs on port 8877; GitHub is the backup and the way to share code.
+  When a hosted link is wanted, **Render** is the recommendation — a `Render_Key` is already in `~/Documents/mysecrets`, and it
+  runs this code unchanged on an always-on machine with a persistent disk (Dockerfile + mounted disk, no application changes).
+  **Vercel was ruled out, do not retry it:** 4.5 MB request cap vs the 1 GB uploads video demos need; read-only per-request
+  filesystem vs the folder-per-demo store and `data/graph.sqlite` checkpoints (Align would lose its interrupt state between
+  requests); 60 s function ceiling vs the measured 172 s build; background threads (personalisation, cloud sync, visuals)
+  killed the moment a response returns, which breaks the no-latency rule.
 - The sequential build-and-QA programme is otherwise finished. Local server is on port 8877.
 - Disclosed P2/environment limits: Gemini image/pixel audit unavailable, Audi GLB slightly high-gloss, deterministic runtime personalisation during intermittent pitch-provider 502s, and no acoustic listening score because the run stayed muted.
 
