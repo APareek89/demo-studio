@@ -38,6 +38,7 @@ fi
 echo "    $SG  (SSH locked to $MYIP)"
 
 say "SSH key"
+mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
 KEY_PATH="$HOME/.ssh/${NAME}.pem"
 if [ ! -f "$KEY_PATH" ]; then
   $AWS ec2 create-key-pair --region "$REGION" --key-name "$NAME" \

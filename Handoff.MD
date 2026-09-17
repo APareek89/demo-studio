@@ -31,20 +31,20 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
 
 - ✅ **Code is on GitHub (2026-09-17):** https://github.com/APareek89/demo-studio — private, `master`, 44 commits, 115 files.
   Pre-publish safety check: no live key material in any tracked file; `.env` and `data/` (uploads, demos, audio) excluded by .gitignore and confirmed absent on the remote.
-- ⚠️ **Deployed to Vercel 2026-09-17 at the user's instruction — live but only partly functional.**
-  URL https://demo-studio-phi.vercel.app (project `anandpro26/demo-studio`). Scaffolding: `api/index.py` (ASGI entry,
-  points DATA_DIR/GRAPH_DB at /tmp, CLOUD_SYNC=0), `vercel.json` (legacy `builds`+`routes` — the modern `rewrites` form
-  passes the rewritten path and 404s every route), `.vercelignore`. **Measured on the live URL, not predicted:**
-  - ✅ App boots, UI serves, `/`, `/api/demos`, `/api/workflow` all 200. Uploads up to ~4.5 MB succeed.
-  - ❌ **Uploads over ~4.5 MB are rejected by the platform** (`FUNCTION_PAYLOAD_TOO_LARGE`): 1 MB and 4 MB → 200; 6 MB and
-    12 MB → 413. The app itself allows 1024 MB. Product video, the core input, cannot be uploaded at all.
-  - ❌ **State is per-instance and not shared.** A demo created on one instance was invisible to others: of 12 parallel
-    requests, 10 saw an empty app and 2 saw the demo. `/tmp` is per-Lambda and is lost when the instance recycles.
-  - ❓ Untested: no model API keys are set in the Vercel project, so nothing model-driven runs there. A real build would
-    also meet the 60 s function ceiling against the measured 172 s build, and background threads die when a response returns.
-  - Bundle is 272 MB, over Vercel's standard size; the build only passes because Vercel auto-optimises dependencies.
-  **Treat the Vercel URL as a shop window, not the product.** For a working hosted demo the recommendation is unchanged:
-  **Render** (a `Render_Key` is already in `~/Documents/mysecrets`) — always-on machine, persistent disk, code unchanged.
+- ✅ **LIVE ON AWS 2026-09-17 — https://13-202-0-79.sslip.io** (this is the working deployment).
+  Instance `i-0410e37b7ab0297e1`, t3.micro, ap-south-1, Elastic IP 13.202.0.79, SSH `ssh -i ~/.ssh/demo-studio.pem ec2-user@13.202.0.79`.
+  Caddy terminates HTTPS with a Let's Encrypt cert (auto-renews, expires 16 Dec 2026) and proxies to uvicorn on 127.0.0.1:8877;
+  both run as systemd units (`demo-studio`, `caddy`) with Restart=always, so they survive reboots. 2 GB swap covers the 913 MB RAM.
+  **HTTPS is mandatory, not cosmetic:** the player calls `getUserMedia` + `SpeechRecognition`, which browsers only allow on a
+  secure origin — on plain HTTP the demo would load with no voice input. `sslip.io` provides the hostname until a domain is bought.
+  **Verified live:** uploads of 6 / 12 / 40 MB all 200; 12 parallel requests all saw consistent state; idle usage 317 MB of 913 MB.
+  Deployment scripts: `docs/aws/deploy-ec2.sh` (idempotent), `docs/aws/ec2-userdata.sh`, `docs/aws/ec2-deploy-policy.json`.
+  Open items there: **`CLOUD_SYNC=0`** (no AWS creds on the box yet, so no S3 mirror), **no demos copied up** (`data/` was excluded
+  from the rsync), and redeploys are a manual `rsync` + `sudo systemctl restart demo-studio`.
+- ⚠️ **Vercel (2026-09-17, superseded by AWS — keep only as a shop window):** https://demo-studio-phi.vercel.app loads, but
+  uploads over ~4.5 MB are refused by the platform (`FUNCTION_PAYLOAD_TOO_LARGE`) and state is per-instance — of 12 parallel
+  requests, 10 saw an empty app. Scaffolding is `api/index.py` + `vercel.json` (legacy `builds`+`routes`; the modern `rewrites`
+  form passes the rewritten path and 404s every route). No model keys are set there. Do not treat it as the product.
 - ✅ **Real bug found and fixed 2026-09-17:** `langgraph` and `langgraph-checkpoint-sqlite` were missing from
   `requirements.txt`, so any fresh install (Vercel, Render or a new machine) crashed on import. `config.GRAPH_DB` now makes
   the LangGraph checkpoint path overridable (`DEMO_STUDIO_GRAPH_DB`) instead of hardcoded under the project directory.
