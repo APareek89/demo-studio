@@ -29,6 +29,24 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
 
 ## Current blocker / next input
 
+### ▶ PICK UP HERE (paused 2026-09-17 evening — resume tomorrow)
+
+The AWS deployment is live and working; the instance is **deliberately left running**. Four things are queued:
+
+1. 🧑 **USER — check AWS Console → Billing → Free tier.** Decides everything below. AWS's own flag says *both* `t3.micro`
+   and `t3.small` are free-tier eligible in ap-south-1 (`t2.micro` is not), which is unusual — eligible is not the same as
+   covered, so the billing page is the source of truth.
+2. 🤖 **AGENT — if the allowance covers `t3.small`, resize to it.** Doubles RAM 1 GB → 2 GB and removes the reliance on swap
+   for ffmpeg transcodes, which is the one real weak point in the current box. Needs one extra IAM permission the deploy
+   policy deliberately omits: **`ec2:ModifyInstanceAttribute`**. Stop → change type → start, ~2 min downtime; URL and demos unaffected.
+3. 🤖 **AGENT — turn S3 mirroring back on.** `CLOUD_SYNC=0` today because the box has no AWS credentials. Correct fix is an
+   instance IAM role (needs `iam:PassRole` + a role with the existing S3/DynamoDB policy), **not** access keys in a file.
+4. 🤖 **AGENT — one-command redeploy.** Today it is a manual `rsync` + `sudo systemctl restart demo-studio`.
+
+Also open: a **domain** (then swap the `sslip.io` name in `/etc/caddy/Caddyfile` — one line, cert re-issues automatically),
+and 🧑 **rotate the Vercel API token** that was pasted in chat on 2026-09-17.
+
+
 - ✅ **Code is on GitHub (2026-09-17):** https://github.com/APareek89/demo-studio — private, `master`, 44 commits, 115 files.
   Pre-publish safety check: no live key material in any tracked file; `.env` and `data/` (uploads, demos, audio) excluded by .gitignore and confirmed absent on the remote.
 - ✅ **LIVE ON AWS 2026-09-17 — https://13-202-0-79.sslip.io** (this is the working deployment).
