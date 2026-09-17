@@ -24,11 +24,20 @@ Demo Studio is a local FastAPI + no-build ES-module app that turns product media
 - ✅ Python compilation and player/Align/Rehearse JavaScript syntax checks.
 - ✅ Audi browser E2E: six card approvals; three muted ten-question sessions; strict variant, safety, comparison, finance and refusal paths; pause/resume, restart, chat, mute and responsive reflow.
 - ✅ Audi MP4 v1: 1280×720, 23.93 fps, 157.54 s, H.264 High video + stereo AAC-LC 48 kHz; full decode completed without errors.
+- ✅ 2026-09-17 re-verification before publishing: `py_compile` OK · `smoke_mock` OK · `qa_accept` 24/24 · `qa_visual_sync` 98/98 · `qa_visual` 32/32 · server boots and serves `/`, `/api/demos`, `/api/workflow`. `qa_runware` skipped (makes paid calls).
 - ⏹ Power-coding Loop stays OFF by user decision. Full FMEA remains opt-in; Sentinel/Pulse checks stay on.
 
 ## Current blocker / next input
 
-- **No blocker and no remaining car.** The requested sequential build-and-QA programme is finished. Local server is on port 8877.
+- ✅ **Code is on GitHub (2026-09-17):** https://github.com/APareek89/demo-studio — private, `master`, 44 commits, 115 files.
+  Pre-publish safety check: no live key material in any tracked file; `.env` and `data/` (uploads, demos, audio) excluded by .gitignore and confirmed absent on the remote.
+- 🧑 **USER DECISION — where to host.** Vercel was requested but cannot run this app: 4.5 MB request cap vs the 1 GB uploads
+  video demos need; read-only per-request filesystem vs the folder-per-demo store and `data/graph.sqlite` checkpoints (Align
+  would lose its interrupt state between requests); 60 s function ceiling vs the measured 172 s build; background threads
+  (personalisation, cloud sync, visuals) killed the moment a response returns, breaking the no-latency rule. **Recommended:
+  Render** — a `Render_Key` already sits in `~/Documents/mysecrets`; it runs this code unchanged on an always-on machine with a
+  persistent disk (needs a Dockerfile + mounted disk, no application changes). Nothing deployed until this is chosen.
+- The sequential build-and-QA programme is otherwise finished. Local server is on port 8877.
 - Disclosed P2/environment limits: Gemini image/pixel audit unavailable, Audi GLB slightly high-gloss, deterministic runtime personalisation during intermittent pitch-provider 502s, and no acoustic listening score because the run stayed muted.
 
 ## Key decisions
