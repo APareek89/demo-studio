@@ -155,5 +155,9 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     if p.get("advance_cta") not in ctas:
         prim = next((c for c in ctas.values() if c.get("primary")), next(iter(ctas.values()), None))
         p["advance_cta"] = prim["id"] if prim else ""
+    # the route orders slides: each step names its slide (the player falls back to the segment id for a deck-less bundle)
+    by_seg = {s["segment_id"]: s["id"] for s in (store.read_json(demo_id, "deck.json") or {}).get("slides", []) if s.get("segment_id")}
+    for st in p["route"]:
+        st["slide_id"] = by_seg.get(st["segment_id"])
     store.log(demo_id, "pitch", {"state": p["customer_state"], "route": [r["segment_id"] for r in p["route"]], "profile": profile})
     return p

@@ -740,10 +740,18 @@ async def run_qa(demo_id: str, req: Request):
     q = (body.get("question") or "").strip()
     if not q:
         raise HTTPException(400, "question required")
+    cur_slide = (body.get("slide_id") or "").strip() or None
+    slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
+
+    def routed(r: dict) -> dict:  # where the answer lives — plain code on fact ids and topics, no model call; a decline never moves the slide
+        r.update(deck.route_for(slides, cur_slide, r.get("fact_ids"), q) if r.get("answered") else {"slide_id": cur_slide, "route": "none", "callout_id": None, "by": ""})
+        return r
+
     hit = faq.match(demo_id, q)
     if hit and not body.get("skip_bank"):
         r = {"from_bank": True, "bank_id": hit["id"], "audio": f"/media/{demo_id}/{hit['audio']}" if hit.get("audio") else None, "answer": hit["answer"], "fact_ids": hit["fact_ids"], "facts": [], "visual": hit.get("visual"),
              "escalate": "", "topic": "", "cta": "", "answered": hit["answered"], "clarifying_question": hit.get("clarifying_question", ""), "offer_callback": hit.get("offer_callback", not hit["answered"])}
+        routed(r)
         runlog.runtime_qa(demo_id, q, {**r, "answer": "[bank " + hit["id"] + "] " + r["answer"]}, body.get("profile") or None)
         return r
     try:
@@ -751,6 +759,7 @@ async def run_qa(demo_id: str, req: Request):
     except RuntimeError as e:
         raise HTTPException(502, str(e))
     r["from_bank"] = False
+    routed(r)
     runlog.runtime_qa(demo_id, q, r, body.get("profile") or None)
     return r
 

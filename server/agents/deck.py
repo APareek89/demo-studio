@@ -319,3 +319,64 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                                 "callouts": {"model": n_model, "derived": n_derived, "overlay": overlay, "panel": panel}, "method": deck["method"]})
     emit(f"Deck: {len(slides)} slides · {overlay + panel} callouts ({overlay} on the picture, {panel} in the side panel)" + (f" · {n_derived} from cited facts" if n_derived and out else "") + ".")
     return deck
+
+
+# ---------- runtime routing: which slide answers a question (plain code on fact ids and topics — no model call) ----------
+ROUTE_STOP = set("a an and the of to in on for with is it its this that how what does do can i my your be are was has have any about".split())
+
+
+def _terms(text: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z0-9]+", (text or "").lower()) if len(w) > 2 and w not in ROUTE_STOP}
+
+
+def content_slides(slides: list[dict]) -> list[dict]:
+    return [s for s in slides if s.get("kind") not in ("hero_open", "hero_close") and s.get("lines")]
+
+
+def slide_facts(s: dict) -> set[str]:
+    """Every fact a slide carries: its lines, its callouts and its deeper lines."""
+    return set(s.get("fact_ids") or []) | {f for c in s.get("callouts", []) for f in c.get("fact_ids", [])} | {f for l in s.get("deeper", []) for f in l.get("fact_ids", [])}
+
+
+def slide_for(slides: list[dict], fact_ids: list[str] | None, text: str = "") -> tuple[str | None, str]:
+    """The slide sharing the most facts with an answer; else the slide whose topic / title words the question uses; else None.
+    Returns (slide_id, how) with how = 'facts' | 'topic' | ''."""
+    facts = set(fact_ids or [])
+    best, score = None, 0
+    for s in content_slides(slides):
+        n = len(slide_facts(s) & facts)
+        if n > score:
+            best, score = s, n
+    if best:
+        return best["id"], "facts"
+    qt = _terms(text)
+    if qt:
+        for s in content_slides(slides):
+            n = len(qt & _terms(" ".join(s.get("topics", [])) + " " + s.get("title", "")))
+            if n > score:
+                best, score = s, n
+        if best:
+            return best["id"], "topic"
+    return None, ""
+
+
+def _callout_for(s: dict | None, facts: set[str]) -> str | None:
+    for c in (s or {}).get("callouts", []):
+        if set(c.get("fact_ids", [])) & facts:
+            return c["id"]
+    return None
+
+
+def route_for(slides: list[dict], current_id: str | None, fact_ids: list[str] | None, text: str = "") -> dict:
+    """stay: the current slide carries one of the answer's facts (the customer asked about what they are looking at) ·
+    jump: another slide carries them, or the question names another slide's topic · none: nothing matches."""
+    cur = next((s for s in slides if s["id"] == current_id), None)
+    facts = set(fact_ids or [])
+    if cur and facts and (slide_facts(cur) & facts):
+        return {"slide_id": cur["id"], "route": "stay", "callout_id": _callout_for(cur, facts), "by": "facts"}
+    sid, by = slide_for(slides, fact_ids, text)
+    if not sid:
+        return {"slide_id": current_id, "route": "none", "callout_id": None, "by": ""}
+    if sid == current_id:
+        return {"slide_id": sid, "route": "stay", "callout_id": _callout_for(cur, facts), "by": by}
+    return {"slide_id": sid, "route": "jump", "callout_id": _callout_for(next(s for s in slides if s["id"] == sid), facts), "by": by}

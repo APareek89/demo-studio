@@ -4,7 +4,7 @@
 
 ## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
 Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched. Phases: 1 simplify ✅ · 2 sources + image parts ✅ · 3 deck ✅ ·
-4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing · 7 AWS storage + session summary · 8 measure.
+4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing ✅ · 7 AWS storage + session summary · 8 measure.
 - **Phase 1 done (committed):** 3D/Runware path removed (7 files deleted, 23 edited, net ≈ −900 lines); player stage = `video` | `slide`;
   `qa._local_grounded_answer` + the 10-minute cooldown deleted — every provider down → decline + callback; `server/llm/runtime.py`
   tries `RUNTIME_PROVIDERS` (default `gemini,claude`) with `RUNTIME_TIMEOUT` 15 s and one retry; `CLAUDE_RUNTIME_MODEL` /
@@ -44,6 +44,20 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   stays for the pitch planner and rehearsal; the runtime player no longer reads it. Browser-verified on the mock server (intake,
   cross-fade, callouts, an interrupted line, handoff, session saved). Answered questions play on a transient answer slide; in the
   browser only the decline path could be exercised (the mock FAQ bank declines), the answered path is covered by the eval's checks.
+- **Phase 6 done (committed):** questions route to slides with plain code — `deck.route_for(slides, current, fact_ids, text)`:
+  the current slide carries one of the answer's facts → `stay`; another slide carries them (else the question names another
+  slide's topic / title words) → `jump` to it with the callout that cites the fact; nothing → `none`; a decline never moves the
+  slide. `faq.run` gives every bank entry a `slide_id` (`deck.slide_for`, facts first, topic words second) and the bundle
+  carries it; `/run/qa` takes the customer's current `slide_id` and returns `slide_id`, `route`, `callout_id` for bank hits
+  and model answers alike; `/run/pitch` route steps name their `slide_id` (the player falls back to `segment_id`). Player:
+  stay → this slide, all callouts shown, the matching one lit; jump → cross-fade to the target (all callouts, the matching one
+  lit), answer, "Did that answer it?", the recorded "back to where we were", then the exact interrupted line — `S.seg` /
+  `S.line` are never touched by a jump, so the return stack is depth 1 by construction; the visited slide is `covered` and,
+  when the route reaches it, plays its title + first line with no check-in. The transient answer slide from Phase 5 is gone
+  (an answer plays on the current or the target slide). Session record adds `covered` and `jumps`. Browser-verified on the mock
+  server with seeded FAQ entries: jump from sl03 line 2 → sl04 lit → answer → return to exactly that line; sl04 later plays
+  one line, no check-in; same-slide question keeps the slide; session shows `covered` / `jumps`. Also fixed: a slide switch
+  waited for an animation frame, which a hidden tab never gets — it now forces a reflow.
 - 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
   `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
   (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.

@@ -14,7 +14,7 @@ import json
 import re
 
 from .. import store
-from . import qa, rehearsal
+from . import deck, qa, rehearsal
 
 STOP = set("the a an and or of to in on at for with by from as is are was were be been it its this that these those you your we our they their i me my "
            "do does did can will would could should may might have has had what which who how why when where much many any some there here about please tell "
@@ -103,6 +103,11 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
         except Exception as e:
             entries.append({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": "", "fact_ids": [], "answered": False, "visual": None, "offer_callback": True, "clarifying_question": "", "audio": None, "error": str(e)[:160]})
         store.write_json(demo_id, "faq.json", {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(questions), "registry_hash": registry_hash, "partial": len(entries) < len(questions)})
+    # every entry names the slide that carries its facts (else the slide whose topic / title the question uses) — the runtime
+    # re-derives the route against the customer's current slide, so a stale id only ever costs a "jump" that became a "stay"
+    slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
+    for e in entries:
+        e["slide_id"] = deck.slide_for(slides, e.get("fact_ids"), e["question"])[0] if slides else None
     out = {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(entries), "registry_hash": registry_hash, "partial": False}
     store.write_json(demo_id, "faq.json", out)
     store.log(demo_id, "faq", {"answered": out["answered"], "total": out["total"], "from_document": len(docs), "questions": [e["question"] for e in entries]})

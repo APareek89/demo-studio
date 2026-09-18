@@ -4,6 +4,10 @@
 // establish → closing (fit summary) → hero close + CTA → handoff.
 // Sync is event-driven: audio leads, the screen follows. A line starting reveals its callouts; the last line's audio
 // ending moves to the next slide. No timer decides what is on screen.
+// A question is routed by the server on fact ids and topics (stay on this slide · jump to the slide that carries the
+// facts, then return to the interrupted line · none): S.seg / S.line are never touched by a jump, so the return point is
+// always the interrupted line — a return stack of depth 1. A slide seen during a jump is covered: reached later, it plays
+// its title and first line only.
 // The transcript holds only what the customer actually heard (a cut-off line is logged as the words that played and
 // marked interrupted); only that transcript is sent as history to /run/qa.
 // mountPlayer(host, bundle, {qa, tts, pitch, lead, stt, saveSession}) → { destroy, restart, pause, context }
@@ -21,7 +25,7 @@ export function mountPlayer(host, bundle, api) {
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
-    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [] };
+    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [] };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
 
@@ -104,12 +108,12 @@ export function mountPlayer(host, bundle, api) {
   // ---------- stage: one slide at a time, cross-faded ----------
   let cur = null;  // { slide, view, enteredAt }
   function showSlideView(slide, { reveal = -1 } = {}) {
-    if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); return cur.view; }
+    if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); return cur.view; }
     if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
     const view = renderSlide(slide, { fit: true });
     view.setRevealed(reveal);
     el.stack.append(view.el);
-    requestAnimationFrame(() => { view.layout(); view.el.classList.add("on"); });
+    view.layout(); void view.el.offsetWidth; view.el.classList.add("on");  // a forced reflow starts the cross-fade; no animation frame needed (a hidden tab never gets one)
     cur = { slide, view, enteredAt: Date.now() };
     preloadAfter(slide);
     return view;
@@ -236,7 +240,7 @@ export function mountPlayer(host, bundle, api) {
   function buildRoute(plan) {
     const lib = library(); const bySeg = Object.fromEntries(lib.map((s) => [s.segment_id, s]));
     let steps = [];
-    if (plan?.route?.length) steps = plan.route.filter((r) => bySeg[r.segment_id]).map((r) => ({ slide: bySeg[r.segment_id], bridge: r.bridge, bridge_audio: r.bridge_audio || "", bridge_fact_ids: r.bridge_fact_ids || [] }));
+    if (plan?.route?.length) steps = plan.route.map((r) => ({ r, slide: (r.slide_id && lib.find((s) => s.id === r.slide_id)) || bySeg[r.segment_id] })).filter((x) => x.slide).map(({ r, slide }) => ({ slide, bridge: r.bridge, bridge_audio: r.bridge_audio || "", bridge_fact_ids: r.bridge_fact_ids || [] }));
     if (!steps.length) { // fallback: focus topics first, then deck order, establish last
       const focus = new Set(S.profile.focus); const hit = (s) => focus.has(topicOf(s)) || focus.has(s.segment_id); const proof = lib.filter((s) => s.kind !== "establish"); const est = lib.filter((s) => s.kind === "establish");
       steps = [...proof.filter(hit), ...proof.filter((s) => !hit(s)), ...est].map((slide) => ({ slide, bridge: "", bridge_fact_ids: [] }));
@@ -244,8 +248,8 @@ export function mountPlayer(host, bundle, api) {
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
   }
-  async function playLines(sl, run, view, from = 0) {  // reveal a line's callouts as it starts; the audio ending is the only clock
-    for (let j = from; j < sl.lines.length; j++) { S.line = j; if (run !== S.run) return false; const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; S.line = j + 1; }
+  async function playLines(sl, run, view, from = 0, upto = sl.lines.length) {  // reveal a line's callouts as it starts; the audio ending is the only clock
+    for (let j = from; j < upto; j++) { S.line = j; if (run !== S.run) return false; const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; S.line = j + 1; }
     return run === S.run;
   }
   async function playOpening(run) {
@@ -257,12 +261,13 @@ export function mountPlayer(host, bundle, api) {
     for (let i = idx; i < S.plan.length; i++) {
       const step = S.plan[i], sl = step.slide; S.seg = i; S.atCheckin = false; renderProgress();
       prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
-      const view = showSlideView(sl, { reveal: lineIdx - 1 });
+      const short = lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // seen during a question: title + first line, no check-in
+      const view = showSlideView(sl, { reveal: short ? 99 : lineIdx - 1 });
       if (lineIdx === 0 && step.bridge) { el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
-      if (!(await playLines(sl, run, view, lineIdx))) return;
+      if (!(await playLines(sl, run, view, lineIdx, short ? 1 : sl.lines.length))) return;
       lineIdx = 0; if (run !== S.run) return;
       const topic = topicOf(sl);
-      if (sl.checkin?.text) {
+      if (sl.checkin?.text && !short) {
         S.atCheckin = true; const ok = await speak(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
         const conc = !!sl.priority || S.profile.focus.includes(topic);
         const chips = conc ? [{ label: "That settles it", value: "yes", primary: true }, { label: "Still unsure", value: "deeper" }, { label: "I have a question", value: "question" }] : [{ label: "Continue", value: "continue", primary: true }, { label: "Tell me more", value: "deeper" }, { label: "I have a question", value: "question" }];
@@ -312,15 +317,14 @@ export function mountPlayer(host, bundle, api) {
   function micTap() { if (S.micOn) { stopListening(); return; } if (S.intakeOpen) { intakeMic(); return; } listenForQuestion(); }
 
   // ---------- questions, don't-guess, lead capture ----------
-  let answerN = 0;
   async function handleQuestion(text) {
-    const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun();
+    const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun(); let jumped = null;
     const last = S.transcript.at(-1); if (!(last?.role === "user" && last.text === text)) addMsg("user", text);  // a chip-wait reply is already logged
     S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
     let r;
-    const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer() });
+    const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null });
     try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me one moment, please, while I check that for you.", run); if (!okH) return; r = await qaP; } }
-    catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin); return; }
+    catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin, !!jumped); return; }
     if (run !== S.run) return;
     if (!r.answered) {
       if (r.escalate) S.escalations.push(r.escalate);
@@ -329,11 +333,15 @@ export function mountPlayer(host, bundle, api) {
       const unknown = "I don't know from the information I have. Share your details here and someone from the dealership can help you with that.";
       const okUnknown = await speak(unknown, run); if (!okUnknown) return;
       showLeadPrompt("unknown", text);
-      resumeAfterQA(wasAtCheckin);
+      resumeAfterQA(wasAtCheckin, !!jumped);
       return;
     }
-    const ans = transientSlide(`ans-${++answerN}`, "answer", r.answer || text, r.fact_ids || [], r.visual, "");
-    showSlideView(ans, { reveal: 0 });
+    // stay: this slide, every callout shown, the matching one lit · jump: cross-fade to the slide that carries the facts
+    // (marked covered) · none: answer here. The return point (S.seg / S.line) is untouched either way.
+    const from = cur?.slide?.id || null;
+    jumped = r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
+    if (jumped) { showSlideView(jumped, { reveal: 99 }); S.covered.add(jumped.id); S.jumps.push({ from, to: jumped.id, question: text }); } else cur?.view.setRevealed(99);
+    if (r.callout_id) cur?.view.highlight(r.callout_id);
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "";
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
@@ -344,10 +352,10 @@ export function mountPlayer(host, bundle, api) {
     if (r.clarifying_question) { const a = await askAndListen(r.clarifying_question, run, 10000); if (run !== S.run) return; if (a) { handleQuestion(a); return; } }
     const ok2 = await speakF("did_that_answer", "Did that answer it?", run); if (!ok2) return;
     const r2 = await waitFor([{ label: "Yes, that helps", value: "yes", primary: true }, { label: "Not quite", value: "no" }], 20); if (run !== S.run) return;
-    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); const ok3 = await speakF("glad", "Glad that helps.", run); if (!ok3) return; maybePromptLead("questions"); resumeAfterQA(wasAtCheckin); }
-    else if (r2.value === "no") { S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${text}"`); const ok3 = await speak("I don't want to leave that half-answered. I've opened a short form so someone from the dealership can help you properly.", run); if (!ok3) return; showLeadPrompt("question", text); resumeAfterQA(wasAtCheckin); }
+    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); const ok3 = await speakF("glad", "Glad that helps.", run); if (!ok3) return; maybePromptLead("questions"); resumeAfterQA(wasAtCheckin, !!jumped); }
+    else if (r2.value === "no") { S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${text}"`); const ok3 = await speak("I don't want to leave that half-answered. I've opened a short form so someone from the dealership can help you properly.", run); if (!ok3) return; showLeadPrompt("question", text); resumeAfterQA(wasAtCheckin, !!jumped); }
     else if (r2.value === "question" && r2.text) handleQuestion(r2.text);
-    else resumeAfterQA(wasAtCheckin);
+    else resumeAfterQA(wasAtCheckin, !!jumped);
   }
   function showLeadPrompt(reason, question = "") {
     if (S.leads.length || (S.leadPromptShown && reason !== "unknown")) return;
@@ -370,7 +378,13 @@ export function mountPlayer(host, bundle, api) {
   function profileForServer() { return { name: S.profile.name, why: S.profile.why, followup: S.profile.followup, focus: S.profile.focus, customer_state: S.pitch?.customer_state, language: bundle.language }; }
   const _origTts = api.tts; api.tts = (text) => _origTts ? api.tts_lang ? api.tts_lang(text, bundle.language) : _origTts(text) : Promise.resolve(null);
   function mediaUrlFor(v) { if (!v) return null; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && src && vid.url.includes(src)) return null; return null; }
-  function resumeAfterQA(wasAtCheckin) { if (!S.plan.length) { const run = newRun(); speakF("back_to_demo", "Let's get back to where we were.", run).then((ok) => { if (ok) startAfterIntake(); }); return; } if (S.seg >= S.plan.length) { closeFlow(newRun()); return; } if (wasAtCheckin) playFrom(S.seg + 1, 0); else { const run = newRun(); speakF("back_to_demo", "Back to where we were.", run).then((ok) => { if (ok) playFrom(S.seg, S.line); }); } }
+  function resumeAfterQA(wasAtCheckin, jumped = false) {
+    if (cur) cur.view.highlight(null);
+    if (!S.plan.length) { const run = newRun(); speakF("back_to_demo", "Let's get back to where we were.", run).then((ok) => { if (ok) startAfterIntake(); }); return; }
+    if (S.seg >= S.plan.length) { closeFlow(newRun()); return; }
+    if (wasAtCheckin && !jumped) { playFrom(S.seg + 1, 0); return; }
+    const run = newRun(); speakF("back_to_demo", "Back to where we were.", run).then((ok) => { if (ok) playFrom(wasAtCheckin ? S.seg + 1 : S.seg, wasAtCheckin ? 0 : S.line); });  // the exact interrupted line
+  }
 
   // ---------- intake + standard opening + pitch plan ----------
   function intakeWait(run) {
@@ -444,7 +458,7 @@ export function mountPlayer(host, bundle, api) {
   function sessionRecord() {
     const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((Date.now() - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((Date.now() - S.started) / 6000) / 10, transcript: S.transcript };
+    return { profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((Date.now() - S.started) / 6000) / 10, transcript: S.transcript };
   }
   function showHandoff(c) {
     const session = sessionRecord(); const mins = session.minutes; const topics = [...S.raised]; const uspsCovered = session.usps_covered;
@@ -500,7 +514,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   function destroy() { interruptAll(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }

@@ -20,16 +20,18 @@ flowchart TD
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]"]:::ask
-  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]<br/>in: question, last 8 turns, profile, registry, visuals, CTAs<br/>out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered"]:::agent
+  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
-  SPEAK["speak the answer on a transient slide (named picture, cited facts as panel callouts)<br/>[FUNCTION]"]:::fn
+  RT{"where does the answer live?<br/>[FUNCTION · deck.route_for — answer fact ids ∩ each slide's facts, else the question's words vs slide topics / titles · NO LLM]"}:::dec
+  JUMP["jump: cross-fade to the slide that carries the facts · all callouts shown, the matching one lit · slide marked covered (reached later: title + first line, no check-in)<br/>[FUNCTION · showSlideView + highlight]"]:::fn
+  SPEAK["speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)<br/>[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form"]:::term
   LEAD{"customer says call me / gives a number?<br/>[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
   SAVE["POST /run/lead → leads/*.json<br/>[DATA] read back the number · continue"]:::data
   CONF["'Did that answer it?' → chips yes / not quite (20 s)<br/>[FUNCTION]"]:::fn
   LP{"lead prompt due?<br/>[FUNCTION]<br/>≥60 percent of demo OR ≥2 customer questions OR unknown answer"}:::dec
   POP["test-drive / dealer-help form<br/>[ask]<br/>name + ten-digit phone; dismissible; demo continues"]:::ask
-  RES["resume: next segment if at check-in, else same line<br/>[FUNCTION · resumeAfterQA]"]:::fn
+  RES["resume: 'back to where we were' → the exact interrupted line (S.seg / S.line untouched by a jump — return stack depth 1); the next slide if the question came at a check-in<br/>[FUNCTION · resumeAfterQA]"]:::fn
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
   HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
 
@@ -44,7 +46,10 @@ flowchart TD
   WAIT -- "continue / timeout" --> LINE
   WAIT -- "deeper" --> DEEP --> WAIT
   WAIT -- "question" --> QIN --> QA --> QV
-  QV -- "yes" --> SPEAK --> CONF --> LP
+  QV -- "yes" --> RT
+  RT -- "stay / none" --> SPEAK
+  RT -- "jump" --> JUMP --> SPEAK
+  SPEAK --> CONF --> LP
   QV -- "no" --> NOG --> POP
   LP -- "yes" --> POP --> RES
   LP -- "no" --> RES

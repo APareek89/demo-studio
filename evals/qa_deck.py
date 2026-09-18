@@ -228,6 +228,55 @@ check("the renderer fits the picture box to the stage (player) and is shared wit
 check("an older bundle without slides still plays (one slide per segment)", "function slidesOf(" in pj and "b.segments" in _fn(pj, "slidesOf"))
 check("the session record carries slides visited and the route by slide id", "slides_visited" in pj and "slides: S.plan.map((st) => st.slide.id)" in pj)
 
+# ---- Phase 6: questions route to slides — plain code on fact ids and topics, no model call ----
+RS = [{"id": "r0", "kind": "hero_open", "lines": [], "callouts": []},
+      {"id": "r1", "kind": "proof", "title": "Range that covers the week", "topics": ["range"], "fact_ids": ["F001"], "lines": [{"text": "x", "fact_ids": ["F001"]}], "callouts": [{"id": "r1-c1", "fact_ids": ["F001"]}]},
+      {"id": "r2", "kind": "proof", "title": "Charging at home", "topics": ["charging"], "fact_ids": ["F002", "F003"], "lines": [{"text": "y", "fact_ids": ["F002"]}], "callouts": [{"id": "r2-c1", "fact_ids": ["F003"]}]},
+      {"id": "r3", "kind": "hero_close", "lines": [], "callouts": []}]
+rr = _deck.route_for(RS, "r1", ["F001"], "how far does it go")
+check("route: the current slide carries an answer fact → stay, its matching callout named", rr["route"] == "stay" and rr["slide_id"] == "r1" and rr["callout_id"] == "r1-c1")
+rr = _deck.route_for(RS, "r1", ["F003"], "charging time")
+check("route: another slide carries the facts → jump to it with its callout", rr["route"] == "jump" and rr["slide_id"] == "r2" and rr["callout_id"] == "r2-c1")
+rr = _deck.route_for(RS, "r1", [], "how long does charging take")
+check("route: no facts, the question names another slide's topic → jump by topic", rr["route"] == "jump" and rr["slide_id"] == "r2" and rr["by"] == "topic")
+rr = _deck.route_for(RS, "r1", [], "what colours are there")
+check("route: nothing matches → none, the slide is unchanged", rr["route"] == "none" and rr["slide_id"] == "r1")
+rr = _deck.route_for(RS, None, ["F002"], "")
+check("route: no current slide (opening, custom batch) → jump to the slide that carries the facts", rr["route"] == "jump" and rr["slide_id"] == "r2")
+check("route: hero slides are never a target", _deck.slide_for(RS, [], "hero")[0] is None)
+fq = store.read_json(i, "faq.json") or {"entries": []}; dk = store.read_json(i, "deck.json"); sids = {s["id"] for s in dk["slides"]}
+check("every FAQ bank entry carries a slide_id naming a deck slide (or None when nothing matches)", bool(fq["entries"]) and all("slide_id" in e and (e["slide_id"] is None or e["slide_id"] in sids) for e in fq["entries"]))
+check("bundle FAQ entries carry the slide id", all("slide_id" in e for e in b["faq"]))
+content = [s for s in dk["slides"] if s["kind"] not in ("hero_open", "hero_close") and s["fact_ids"]]
+tgt, other = content[0], content[1]
+import copy as _copy
+dk_orig = _copy.deepcopy(dk)
+tgt["fact_ids"] = tgt["fact_ids"] + ["FROUTE"]; tgt["callouts"][0]["fact_ids"] = tgt["callouts"][0]["fact_ids"] + ["FROUTE"]  # mock slides all cite F001: give one slide a fact only it carries
+store.write_json(i, "deck.json", dk)
+seed = {"id": "Q99", "question": "how many kilometres on one full charge", "origin": "test", "answer": "The registry answer.", "fact_ids": ["FROUTE"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None, "slide_id": tgt["id"]}
+store.write_json(i, "faq.json", {**fq, "entries": fq["entries"] + [seed]})
+try:
+    r = c.post(f"/api/demos/{i}/run/qa", json={"question": seed["question"], "slide_id": other["id"]}).json()
+    check("/run/qa: an answered bank hit asked from another slide → route jump to the slide that carries its fact", r.get("from_bank") and r["route"] == "jump" and r["slide_id"] == tgt["id"])
+    check("/run/qa: the jump names the callout that cites the fact (mock callouts come from cited facts)", r.get("callout_id") in {x["id"] for x in tgt["callouts"]})
+    r = c.post(f"/api/demos/{i}/run/qa", json={"question": seed["question"], "slide_id": tgt["id"]}).json()
+    check("/run/qa: the same question asked on that slide → route stay", r["route"] == "stay" and r["slide_id"] == tgt["id"])
+    r = c.post(f"/api/demos/{i}/run/qa", json={"question": fq["entries"][0]["question"], "slide_id": other["id"]}).json()
+    check("/run/qa: a declined bank answer never moves the slide (route none)", r["answered"] is False and r["route"] == "none" and r["slide_id"] == other["id"])
+    r = c.post(f"/api/demos/{i}/run/qa", json={"question": "what colours are there", "slide_id": other["id"], "skip_bank": True}).json()
+    check("/run/qa: the model path carries slide_id + route too (mock declines → none)", "route" in r and r["route"] == "none" and r["slide_id"] == other["id"])
+finally:
+    store.write_json(i, "faq.json", fq); store.write_json(i, "deck.json", dk_orig)
+r = c.post(f"/api/demos/{i}/run/pitch", json={"profile": {"name": "Test", "why": "daily commute", "focus": []}, "refine": True})
+check("/run/pitch: every route step names its slide (personalisation orders slides)", r.status_code == 200 and bool(r.json()["route"]) and all(st.get("slide_id") in sids for st in r.json()["route"]), r.text[:120])
+pj = c.get("/web/player/player.js").text
+check("player sends the current slide with every question", "slide_id: cur?.slide?.id" in pj)
+check("player: jump cross-fades to the target, lights the callout, marks it covered; stay reveals this slide's callouts", 'r.route === "jump"' in pj and "S.covered.add(jumped.id)" in pj and "highlight(r.callout_id)" in pj and "cur?.view.setRevealed(99)" in pj)
+check("player: after a jump the demo returns to the exact interrupted line (S.seg / S.line untouched, depth 1)", "wasAtCheckin ? 0 : S.line" in pj and "S.seg = " not in _fn(pj, "handleQuestion"))
+check("player: a covered slide plays its title + first line, no check-in", "short ? 1 : sl.lines.length" in pj and "sl.checkin?.text && !short" in pj)
+check("player: the pitch route is applied by slide id, segment id as fallback", "r.slide_id && lib.find" in pj)
+check("player: a decline stays on the current slide (no transient answer slide)", "transientSlide(`ans-" not in pj)
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)

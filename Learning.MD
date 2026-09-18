@@ -403,3 +403,12 @@
 **Deepest why type:** `wrong-source-of-truth`
 **Action taken:** `S.speaking` tracks the playing line; `logHeard(sp, complete)` logs on `ended` (full) or from `cancelSpeech` (heard prefix = `currentTime / duration × words`, elapsed-time estimate for captions and the browser voice) marked `interrupted`; `handleQuestion` skips a user line the chip wait already logged. Evals: the transcript cases in `qa_deck.py`; browser check on the mock server (Phase 5).
 **Preventive action:** Anything sent to a model as "what happened" is written by the event that proves it happened (audio ended, request returned), never by the event that started it.
+
+### 2026-09-18 — A slide switch waited for an animation frame that a hidden tab never gets
+
+**Symptom:** In the browser pane (a hidden document) a new slide stayed at opacity 0: `showSlideView` added the `on` class inside `requestAnimationFrame`, and hidden documents get no frames.
+**Why 1:** The cross-fade needed the element inserted first and the class added "next frame" so the CSS transition would run.
+**Why 2:** The visible-tab assumption was never stated; every manual check had the pane in front.
+**Deepest why type:** `hidden-assumption`
+**Action taken:** Insert → `layout()` → forced reflow (`void el.offsetWidth`) → add `on`, synchronously. Same transition, no frame dependency. Found by the Phase 6 scripted browser check (which itself had to move its polling into one call: model latency between calls let the demo run ahead).
+**Preventive action:** Nothing that decides what is on screen may depend on animation frames or on the tab being visible; only audio events and user actions drive the player.
