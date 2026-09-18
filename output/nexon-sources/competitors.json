@@ -1,0 +1,126 @@
+{
+  "checked_on": "2026-09-18",
+  "market": "India",
+  "purpose": "Official competitor-source discovery for the Nexon demo",
+  "ingestion_ready": false,
+  "source_policy": "No competitor material is approved for ingestion. Public discovery found explicit reuse restrictions. This file contains source metadata and our research decisions, not copied product material or claim evidence.",
+  "sources": [
+    {
+      "id": "brezza_official_candidate",
+      "role": "competitor",
+      "manufacturer": "Maruti Suzuki",
+      "model": "Brezza",
+      "market": "India",
+      "origin_url": "https://www.marutisuzuki.com/arena/brezza",
+      "discovered_brochure_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "discovered_price_url": "https://www.marutisuzuki.com/arena/brezza/price?city=goa",
+      "robots_url": "https://www.marutisuzuki.com/robots.txt",
+      "robots_result": "The public model path is not disallowed.",
+      "terms_url": "https://www.marutisuzuki.com/arena/brezza",
+      "terms_section": "Terms & Conditions, section 3",
+      "status": "blocked_by_reuse_terms",
+      "reason": "The site's terms require written consent for extracting or reusing site content. No such permission is established for this demo.",
+      "extracted_source_text": null,
+      "supported_facts": [],
+      "caveats": [
+        "The currently discovered page identifies a 2026 model. Older searchable brochures must not be silently substituted.",
+        "The discovered price URL is city-specific to Goa; it is not evidence of a Mumbai on-road price.",
+        "The brochure URL is recorded for provenance only; no further brochure extraction was performed after the restriction was found.",
+        "No price, variant, powertrain, safety, warranty, service-cost or equipment claims from this candidate may enter the demo."
+      ]
+    },
+    {
+      "id": "venue_official_candidate",
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "model": "Venue",
+      "market": "India",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "discovered_features_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "discovered_specification_url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "discovered_brochure_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/VenuedigitalBrochure.pdf",
+      "robots_url": "https://www.hyundai.com/robots.txt",
+      "robots_result": "The public model path is not disallowed for the listed search and AI user agents.",
+      "terms_url": "https://www.hyundai.com/in/en/utility/legal-disclaimer/terms-and-conditions-of-the-website",
+      "terms_section": "Restrictions on use",
+      "status": "blocked_by_reuse_terms",
+      "reason": "The terms restrict use to personal purposes, prohibit storage in information retrieval systems without written permission, and prohibit automated or manual copying. No such permission is established for this demo.",
+      "extracted_source_text": null,
+      "supported_facts": [],
+      "caveats": [
+        "Current and older model brochures both appear in search. Do not mix generations or treat Venue N Line as the ordinary Venue.",
+        "Brochure, specification and feature URLs are provenance candidates only; no further extraction was performed after the restriction was found.",
+        "No price, variant, powertrain, safety, warranty, service-cost or equipment claims from this candidate may enter the demo."
+      ]
+    }
+  ],
+  "comparison_rules": [
+    "Require approved evidence for each vehicle and each assertion before making a comparison.",
+    "Identify market, model generation, variant, powertrain, transmission, source date and price basis where relevant.",
+    "Do not infer crash safety from airbag count, equipment lists or marketing language.",
+    "Do not infer rear-seat comfort or suitcase fit from dimensions or boot litres alone.",
+    "If a comparison cannot be grounded, state that limit and offer a factual Nexon answer or dealer callback."
+  ],
+  "buyer_questions": [
+    {
+      "id": "same_slide_safety",
+      "question": "You mentioned safety just now. Which of those features does this exact Nexon variant include?",
+      "expected_behavior": "Stay on the safety topic, identify the selected variant and cite only its supported equipment."
+    },
+    {
+      "id": "same_slide_plain_language",
+      "question": "Can you explain that safety feature in plain language before moving on?",
+      "expected_behavior": "Resolve the current-slide referent, explain briefly, then offer to resume without repeating the introduction."
+    },
+    {
+      "id": "off_slide_warranty",
+      "question": "Before we continue, what is the warranty, and what would I have to pay for during servicing?",
+      "expected_behavior": "Answer supported warranty terms separately from service costs; decline unavailable cost details and return to the interrupted point."
+    },
+    {
+      "id": "unknown_on_road_price",
+      "question": "What is the exact on-road price in Mumbai today, including insurance and every charge?",
+      "expected_behavior": "Do not turn an ex-showroom amount into an on-road quote. State what is missing and offer a dealer quote."
+    },
+    {
+      "id": "unknown_emi",
+      "question": "If I put down two lakh rupees, what EMI will the bank guarantee me for five years?",
+      "expected_behavior": "Do not invent an interest rate, approval or guaranteed EMI; explain the missing lender terms and offer a finance callback."
+    },
+    {
+      "id": "competitor_brezza",
+      "question": "Why should I choose this over a Brezza automatic for short city trips?",
+      "expected_behavior": "Explain supported Nexon points relevant to short trips; acknowledge that an evidence-backed Brezza comparison is unavailable."
+    },
+    {
+      "id": "competitor_venue",
+      "question": "Is the Venue safer than this Nexon, or are you just showing me more features?",
+      "expected_behavior": "Do not rank safety without comparable approved evidence; distinguish a feature list from a crash-test result."
+    },
+    {
+      "id": "ambiguous_followup",
+      "question": "Does the cheaper one have that too?",
+      "expected_behavior": "Use recent context only if both the feature and comparison variant are clear; otherwise ask one short clarification."
+    },
+    {
+      "id": "family_fit",
+      "question": "We have a child seat and my elderly parents. Will three people fit comfortably across the back?",
+      "expected_behavior": "Give supported seating or child-seat mounting facts, avoid a comfort guarantee and suggest checking the actual seating arrangement."
+    },
+    {
+      "id": "boot_fit",
+      "question": "Will the boot take our stroller and two large suitcases without folding the rear seat?",
+      "expected_behavior": "Give the sourced boot figure if available, but do not equate litres with physical fit; ask about item sizes or offer a fit check."
+    },
+    {
+      "id": "personalization_correction",
+      "question": "I drive only five to ten kilometres a day. Please stop using a thirty-kilometre commute in the examples.",
+      "expected_behavior": "Acknowledge and retain the correction immediately; do not repeat the old assumption or invent savings."
+    },
+    {
+      "id": "question_then_resume",
+      "question": "One last question: is the automatic suitable for my stop-and-go traffic? Then carry on from where we stopped.",
+      "expected_behavior": "Answer for the selected transmission using supported facts, then resume the interrupted narrative without duplicate speech."
+    }
+  ]
+}

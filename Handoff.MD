@@ -4,6 +4,8 @@
 
 ## Codex Part 1 — 2026-09-18 — `codex/runware-fallback`
 
+Part 2 now authorized on `codex/real-demo-nexon` (from `slides-v1`, Part 1 commits cherry-picked as dependencies): one Tata Nexon demo, two iterations, find and fix the experience issues against ten agreed standards. First free browser rehearsal `dm_3d6448af` at port 8891; issue log `docs/issues/2026-09-18-nexon.md`. Gemini billing and manufacturer material reuse permission are pending user answers. No paid calls, restricted downloads, merge or deployment. The broader Part 3 list remains deferred.
+
 Anand approved Runware as the third text fallback and the exact two-tier model selection in chat. Build text now tries
 Claude → Gemini → Runware; runtime defaults Gemini → Claude → Runware. `MODEL_TIER=eval` defaults to Haiku 4.5,
 Gemini 3.5 Flash-Lite and Runware DeepSeek V4 Flash; `customer` selects Opus 5, Gemini 3.8 Flash and Runware GPT-5.5.

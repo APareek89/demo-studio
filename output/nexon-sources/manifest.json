@@ -1,0 +1,330 @@
+{
+  "product": "Tata Nexon ICE (India)",
+  "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+  "status": "reference_manifest_only_asset_reuse_restricted",
+  "ready_for_demo_upload": false,
+  "downloaded_asset_count": 0,
+  "official_redirect": {
+    "from": "https://cars.tatamotors.com/nexon/ice.html",
+    "to": "https://tata.cars/nexon/ice.html",
+    "verified": true
+  },
+  "robots": {
+    "url": "https://tata.cars/robots.txt",
+    "http_status": 200,
+    "allow": [
+      "/"
+    ],
+    "disallow": [
+      "/*?modelId",
+      "/*?sku",
+      "https://stage-tata.cars/"
+    ],
+    "note": "No disallowed query URLs visited. Scene7 robots.txt returned HTTP404."
+  },
+  "terms": {
+    "url": "https://tata.cars/terms-conditions.html",
+    "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+    "exact_short_excerpt": "This Website is for personal use only.",
+    "summary": "The terms restrict reproduction/use of site materials beyond accessing and using the site, and direct requests for permission to Tata Motors. No exception for this demo reuse was established.",
+    "action_taken": "No product images, brochure or video downloaded for application ingestion."
+  },
+  "alternate_official_media_check": {
+    "url": "https://www.tatamotors.com/newsroom/media-library/",
+    "result": "HTTP403; not bypassed. Older 2023 launch press material found but not substituted for current specification/imagery."
+  },
+  "sources": [
+    {
+      "id": "model",
+      "kind": "url",
+      "url": "https://tata.cars/nexon/ice.html",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "model"
+      ],
+      "title": "Tata Nexon ICE model page",
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "http_status": 200,
+      "downloaded": false,
+      "file": null,
+      "status": "reference_url_verified",
+      "caveats": [
+        "Current India Nexon ICE page; excludes Nexon.ev.",
+        "Page facts must retain variant/fuel/location and effective-date qualifications.",
+        "Reuse of site content is subject to the recorded site terms."
+      ]
+    },
+    {
+      "id": "specifications",
+      "kind": "url",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "origin_url": "https://tata.cars/nexon/ice/specifications.html",
+      "role": "product",
+      "topics": [
+        "specifications"
+      ],
+      "title": "Nexon Specifications & Dimensions",
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "http_status": 200,
+      "downloaded": false,
+      "file": null,
+      "status": "reference_url_verified",
+      "caveats": [
+        "Current India Nexon ICE page; excludes Nexon.ev.",
+        "Page facts must retain variant/fuel/location and effective-date qualifications.",
+        "Reuse of site content is subject to the recorded site terms."
+      ]
+    },
+    {
+      "id": "price",
+      "kind": "url",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "origin_url": "https://tata.cars/nexon/ice/price.html",
+      "role": "product",
+      "topics": [
+        "price"
+      ],
+      "title": "Tata Nexon Price & Variants in India",
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "http_status": 200,
+      "downloaded": false,
+      "file": null,
+      "status": "reference_url_verified",
+      "caveats": [
+        "Current India Nexon ICE page; excludes Nexon.ev.",
+        "Page facts must retain variant/fuel/location and effective-date qualifications.",
+        "Reuse of site content is subject to the recorded site terms."
+      ]
+    },
+    {
+      "id": "variants",
+      "kind": "url",
+      "url": "https://tata.cars/nexon/ice/compare.html",
+      "origin_url": "https://tata.cars/nexon/ice/compare.html",
+      "role": "product",
+      "topics": [
+        "variants"
+      ],
+      "title": "Nexon variant comparison",
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "http_status": 200,
+      "downloaded": false,
+      "file": null,
+      "status": "reference_url_verified",
+      "caveats": [
+        "Current India Nexon ICE page; excludes Nexon.ev.",
+        "Page facts must retain variant/fuel/location and effective-date qualifications.",
+        "Reuse of site content is subject to the recorded site terms."
+      ]
+    },
+    {
+      "id": "brochure",
+      "kind": "pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "specifications",
+        "features",
+        "variants"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "http_status": 200,
+      "verified_by": "Public HEAD request; link observed on current model page",
+      "content_type": "application/pdf",
+      "content_length": 15291642,
+      "last_modified": "Fri, 14 Aug 2026 11:24:26 GMT",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "caveats": [
+        "Path says May 2026; server Last-Modified is August 14, 2026.",
+        "PDF content was not reviewed or substituted with a 2023/2025 brochure."
+      ]
+    },
+    {
+      "id": "exterior-hero",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-0-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "hero",
+      "topics": [
+        "exterior",
+        "hero"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Grassland Beige dual-tone exterior; exact angle not visually checked",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "exterior-angle-2",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-9-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "exterior"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Second angle from official 360 asset list; angle requires visual review",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "exterior-angle-3",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-18-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "exterior"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Third angle from official 360 asset list; angle requires visual review",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "dashboard",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/three-tone-dashboard-1?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "interior",
+        "dashboard"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Dashboard asset identified by official DOM description",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "seating",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/premium-ventilated-leatherette-seats?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "interior",
+        "seating",
+        "comfort"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Seating asset; equipment is variant-dependent",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "boot",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bootspace-v2?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "boot",
+        "storage"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Boot asset; do not generalize petrol/diesel capacity to CNG",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "lighting",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bi-functional-led-lamp?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "exterior",
+        "headlamp",
+        "detail"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Headlamp detail; equipment is variant-dependent",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    },
+    {
+      "id": "infotainment",
+      "kind": "image",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/floating-infotainment-system?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "topics": [
+        "interior",
+        "infotainment",
+        "detail"
+      ],
+      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "downloaded": false,
+      "file": null,
+      "status": "not_downloaded_reuse_restriction",
+      "visually_reviewed": false,
+      "caveats": [
+        "Infotainment asset; equipment is variant-dependent",
+        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      ]
+    }
+  ],
+  "optional_video": {
+    "downloaded": false,
+    "file": null,
+    "status": "skipped_no_verified_permitted_direct_download"
+  },
+  "coverage_gaps": [
+    "No reusable image/brochure files collected because the explicit reuse restriction remains unresolved.",
+    "Exact 2026 per-variant equipment matrix and current brochure contents still need review.",
+    "Static specifications/price/compare pages have no HTML tables; dynamic selector content requires additional verification.",
+    "Current price page title advertises a starting value; no city/variant-specific transactional price, EMI or financing terms captured.",
+    "Front/side/rear angles of the three official exterior assets require visual inspection before labeling.",
+    "No real-world mileage, finance guarantees, delivery timing or dealer-specific offers supported."
+  ],
+  "recommendation": "Use owner-supplied official assets with permission, or obtain reuse permission from Tata Motors; preserve these verified URLs as the source checklist."
+}
