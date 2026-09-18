@@ -11,6 +11,8 @@ from pydantic import BaseModel
 
 
 def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
+    if name == "fact_ids":  # the mock registry always has F001-F003; grounded lines let the deck derive callouts
+        return ["F001", "F002"][: 1 + (depth % 2)]
     origin = get_origin(ann)
     if origin is Union or str(origin) == "types.UnionType":
         args = [a for a in get_args(ann) if a is not type(None)]

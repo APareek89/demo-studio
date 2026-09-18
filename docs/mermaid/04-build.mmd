@@ -1,6 +1,6 @@
 %% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
-  N7["Since 2026-09-04: AUTHOR and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (timeline, fillers, faq, image map)"]:::data
+  N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
   GO["POST /api/demos/id/build<br/>[FUNCTION] gate: all 6 approvals true"]:::fn
   AUTH["script draft (principles + PITCH_SHAPE + audience level)<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)<br/>out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one 'more features' block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance"]:::agent
   VAL["grounding + pacing + plain-language validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue"]:::fn
@@ -12,6 +12,12 @@ flowchart TD
   VGATE["accept audit only when complete<br/>[FUNCTION · visuals.py]<br/>all line ids + all image refs required; full coverage may bind image<br/>partial/missing visible feature → no image → hero + cited card<br/>Gemini failure → conservative tag rules"]:::fn
   AUDIT["visual-audit.json<br/>[DATA]<br/>line reasons, image feature inventory, missing features, changes"]:::data
   SJ["script.json<br/>[DATA] visual refs + audit summary · version++"]:::data
+  DPIC["one slide per segment · picture per slide<br/>[FUNCTION · deck.choose_image]<br/>tagged parts vs. the slide's words (+2 for the script's own pick); score ≥ 3 else the hero<br/>hero_open / intro / outcome / proof… / establish / closing / hero_close"]:::fn
+  DCALL["titles + callouts<br/>[AGENT · claude-opus-5 → gemini fallback · deck.DeckOut]<br/>in: per slide its lines, fact ids and the PARTS on its picture; the registry<br/>out: ≤ 6-word title, ≤ 3 callouts of ≤ 8 words each citing fact ids and naming a listed part"]:::agent
+  DVAL["the script-line rule on every callout<br/>[FUNCTION · author.ungrounded]<br/>uncited figure/claim, > 8 words, unlisted part → dropped; a slide left empty gets its own cited facts (claim: value)"]:::fn
+  DLAY["label layout<br/>[FUNCTION · deck.place_callouts]<br/>part confidence ≥ 0.6 → anchor = box centre, label at the first of 8 spots that is inside the frame, off the part box and clear of other labels; otherwise → side panel. Never a guessed position"]:::fn
+  DOVR["deck-overrides.json (from Align)<br/>[DATA] user-chosen picture / title / text / dragged label wins"]:::data
+  DJ["deck.json<br/>[DATA] slides · version++ · method model|derived"]:::data
   PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>sarvam → gemini → gcloud → browser (no key)"}:::dec
   TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>VOICE_WORKERS=4 parallel (contextvars copied per task) · stop after 4 failures · circuit breaker: 401/402/403/quota trips a provider for 10 min → next in chain · failures traced"]:::data
   BROWSER["voice_provider=browser<br/>[term] player speaks with Web Speech"]:::term
@@ -22,14 +28,16 @@ flowchart TD
   QA["answer each via qa.answer<br/>[AGENT · claude-opus-5 + FUNCTION validator]<br/>see diagram 05 · one paid call per question"]:::agent
   COV["coverage = answered / N · gaps list<br/>[FUNCTION] → rehearsal.json"]:::fn
   SCORE["demo scorecard<br/>[AGENT · claude-opus-5 · judge]<br/>in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes"]:::agent
-  BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script (+ script.&lt;lang&gt;.json)<br/>out: bundle.json · every line has media URL + audio; CTAs, facts, unknowns, languages + alt_languages; version++"]:::fn
+  BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script, deck (+ script.&lt;lang&gt;.json, deck.&lt;lang&gt;.json)<br/>out: bundle.json · slides with image URL, part boxes, callouts, and each line's audio joined by id; segments kept for the pre-slide player; CTAs, facts, languages + alt_languages; version++"]:::fn
   READY["status ready · SSE phase_done build · stage seconds recorded for Observability<br/>[term]"]:::term
 
   GO --> AUTH --> VAL --> ISS
   ISS -- "yes" --> FIX --> VAL2 --> IDS
   ISS -- "no" --> IDS
   IDS --> VAUD --> VGATE --> AUDIT --> SJ
-  SJ --> PROV
+  SJ --> DPIC --> DCALL --> DVAL --> DLAY --> DJ
+  DOVR -.-> DLAY
+  DJ --> PROV
   PROV -- "sarvam / gemini / gcloud" --> TTS --> LANGS
   PROV -- "browser" --> BROWSER --> QGEN
   LANGS -- "yes" --> TRANS --> TTS2 --> QGEN

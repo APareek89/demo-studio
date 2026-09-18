@@ -17,6 +17,9 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Build allowed | FUNCTION | all 6 approvals true | `orchestrator.start_build` |
 | Grounding (authoring) | FUNCTION | `fact_ids ⊆ registry`; visual ref exists; text matching `NUMBERISH`/`CLAIMISH` with no fact id → `unverified` (excluded from voice + bundle) | `agents/author.validate` |
 | Script-image proof | AGENT + FUNCTION | after stable line ids: Gemini inspects every real image (batches ≤12) against every spoken line; every line and image must return; only `full` coverage binds an image to a concrete feature line; otherwise the hero + cited card; model failure uses conservative rules | `agents/visuals.py`, `visual-audit.json` |
+| Deck: picture per slide | FUNCTION | tagged parts vs. the slide's words, +2 for the script's own pick, score ≥ 3 else the hero | `agents/deck.choose_image` |
+| Deck: callouts | AGENT + FUNCTION | model writes ≤ 3 per slide, ≤ 8 words, citing fact ids and a listed part; `author.ungrounded` drops an uncited figure/claim; an empty slide gets its own cited facts; Align overrides win | `agents/deck.py`, `deck-overrides.json` |
+| Deck: label position | FUNCTION | part confidence ≥ 0.6 → anchor at the box centre and a label spot inside the frame, off the part box, clear of other labels; else side panel — never guessed | `agents/deck.place_callouts` |
 | Grounding (runtime) | FUNCTION | invalid/empty fact ids on a number/claim answer → don't-guess reply + escalate + unknown recorded; every provider down → the same decline + callback, no cooldown, no local guessing | `agents/qa.answer` |
 | Runtime providers | CONFIG | `RUNTIME_PROVIDERS` (default `gemini,claude`), `RUNTIME_TIMEOUT` 15 s per try, the SDK retry is the one retry; models `GEMINI_RUNTIME_MODEL` / `CLAUDE_RUNTIME_MODEL` | `server/llm/runtime.py`, `config.py` |
 | Voice failure budget | FUNCTION | stop rendering after 4 provider errors; player falls back to browser voice | `agents/voice.render_script` |
@@ -42,6 +45,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Plan | `server/agents/plan.py` |
 | Align | `server/agents/align.py`, `server/orchestrator.py` (`handle_message`, `apply_actions`, `_revise`), `web/studio/align.js` |
 | Author / validator / pixel audit | `server/agents/author.py`, `server/agents/visuals.py`, `visual-audit.json` |
+| Deck (one slide per segment) | `server/agents/deck.py`, `deck.json`, `deck-overrides.json`, `deck.<lang>.json` |
 | Voice | `server/agents/voice.py` |
 | Rehearsal | `server/agents/rehearsal.py` |
 | Bundle | `server/agents/bundle.py` |
@@ -58,7 +62,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 ```mermaid
 %% see docs/mermaid/01-master.mmd
 flowchart TD
-  U["USER adds sources"]:::ask --> READ["Read: Understand → Plan → Author → Gemini visual audit → FAQ (02/04)"]:::fn --> CARDS["Align: 6 cards · editable script/facts · pixel coverage"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
+  U["USER adds sources"]:::ask --> READ["Read: Understand → Plan → Author → Deck → FAQ (02/04)"]:::fn --> CARDS["Align: 6 cards · editable script/facts · pixel coverage"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
   APPR -- "yes" --> BUILD["Build: Voice → Rehearsal → Bundle (04)"]:::fn --> PLAY["Rehearse: one question → film → interactive player (05)"]:::fn --> FB["feedback → align agent → rebuild"]:::agent
   APPR -- "no" --> ALIGN
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;

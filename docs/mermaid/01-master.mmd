@@ -4,10 +4,10 @@ flowchart TD
   U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask
   ING["store.add_*_source<br/>[FUNCTION · server/store.py]<br/>in: uploads / URL<br/>out: sources[] in data/demos/id/demo.json"]:::fn
   READBTN["POST /api/demos/id/read<br/>[FUNCTION · server/app.py]<br/>gate: ≥1 source · keys present or MOCK_LLM=1"]:::fn
-  READ["READ phase (thread)<br/>[FUNCTION · orchestrator._read]<br/>Understand → Plan → voice sample → opening message<br/>see diagram 02"]:::fn
+  READ["READ phase (thread)<br/>[FUNCTION · graph.py]<br/>Understand → Plan → Author → Deck → FAQ → opening message<br/>see diagrams 02 / 04"]:::fn
   SSE["GET /api/demos/id/events<br/>[FUNCTION · SSE, polls events.py every 0.35 s]<br/>out: progress / stage / status / message / phase_done"]:::fn
   OVER1["UI overlay<br/>'Reading your sources…'<br/>[FUNCTION · web/studio/align.js]"]:::term
-  CARDS["Align: 6 cards<br/>Visuals · Facts · Script · FAQ · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json + script.json + faq.json]"]:::data
+  CARDS["Align: 6 cards<br/>Visuals · Facts · Script (slides) · FAQ · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json + script.json + deck.json + faq.json]"]:::data
   DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
   ALIGN["Align loop<br/>[AGENT · claude-opus-5 → actions]<br/>see diagram 03"]:::agent
   APPR{"all 6 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec

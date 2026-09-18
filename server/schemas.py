@@ -290,6 +290,50 @@ class Script(BaseModel):
     version: int = 1
 
 
+# ---------- Deck (one script segment = one slide) ----------
+
+class Callout(BaseModel):
+    id: str
+    text: str
+    fact_ids: list[str] = []
+    part: str = ""
+    placement: Literal["overlay", "panel"] = "panel"
+    anchor: Optional[dict] = None      # {x, y} in 0-1: the part's centre
+    label_pos: Optional[dict] = None   # {x, y} in 0-1: the chip's top-left, outside the part box
+    part_box: Optional[dict] = None    # {x, y, w, h} in 0-1
+    reveal_on_line: int = 0
+    confidence: float = 0.0
+
+
+class Slide(BaseModel):
+    id: str
+    segment_id: Optional[str] = None
+    kind: Literal["hero_open", "intro", "outcome", "proof", "features", "establish", "closing", "hero_close"]
+    title: str
+    topics: list[str] = []
+    fact_ids: list[str] = []
+    image_id: Optional[str] = None
+    image_reason: str = ""
+    motion: Literal["zoom_in", "pan_left", "none"] = "zoom_in"
+    callouts: list[Callout] = []
+    lines: list[dict] = []       # {id, text, fact_ids}; audio joins at bundle time by id
+    checkin: str = ""
+    deeper: list[dict] = []
+    usp_ids: list[str] = []
+    priority: bool = False
+    role: str = "proof"
+
+
+class Deck(BaseModel):
+    hero_image: Optional[str] = None
+    intro_video: Optional[str] = None
+    slides: list[Slide]
+    version: int = 1
+    script_version: Optional[int] = None
+    method: str = ""
+    issues: list[str] = []
+
+
 # ---------- Runtime: pitch planner ----------
 
 class RouteStep(BaseModel):
@@ -352,7 +396,7 @@ class Scorecard(BaseModel):
 
 class AlignAction(BaseModel):
     type: Literal["revise", "approve", "request_upload", "set_ctas", "set_voice", "edit_fact", "remove_fact", "build", "answer", "resolve_unknown"]
-    stage: Optional[Literal["understand", "plan", "author", "faq"]] = Field(default=None, description="for revise")
+    stage: Optional[Literal["understand", "plan", "author", "deck", "faq"]] = Field(default=None, description="for revise")
     card: Optional[Literal["visuals", "facts", "script", "faq", "persona", "ctas"]] = Field(default=None, description="for approve")
     instruction: str = Field(default="", description="for revise: precise instruction to the stage")
     ctas: list[CTA] = Field(default_factory=list, description="for set_ctas: the full new list")

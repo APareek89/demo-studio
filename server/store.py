@@ -20,7 +20,7 @@ from . import config
 _locks: dict[str, threading.Lock] = {}
 _locks_guard = threading.Lock()
 
-STAGES = ["understand", "plan", "author", "faq", "voice", "rehearsal", "bundle"]
+STAGES = ["understand", "plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"]
 CARDS = ["visuals", "facts", "script", "faq", "persona", "ctas"]  # what the user aligns on, in order
 
 KIND_BY_EXT = {

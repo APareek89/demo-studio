@@ -12,6 +12,7 @@ from ..llm import claude
 from .bundle import media_url
 from .qa import classify
 from . import voice as voice_agent
+from .visuals import part_boxes as visual_parts
 
 CARD_ORDER = ["visuals", "facts", "script", "faq", "persona", "ctas"]
 CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "script": "Script", "faq": "FAQ bank", "persona": "Persona & voice", "ctas": "Calls to action"}
@@ -33,7 +34,7 @@ You return ONE reply for the user and a list of ACTIONS for the orchestrator. Ac
 - request_upload(upload_kind, reason) — when the right fix is more material (a missing image, the spec sheet).
 - resolve_unknown(unknown_id) — when the user says an unknown is irrelevant or now answered (pair with edit_fact/revise as needed).
 - build() — only when all six cards are approved AND the user asks to build/proceed/finish.
-- The SCRIPT card is the full demo script, batch by batch (≤ 20 s each) mapped to seconds with the picture on screen per line; revise stage 'author' to change it. The FAQ card is the bank of customer questions answered from the sources and voiced at build; revise stage 'faq' to regenerate it (after fact fixes).
+- The SCRIPT card is the full demo script, batch by batch (≤ 20 s each) mapped to seconds with the picture on screen per line; revise stage 'author' to change the words. Each batch is one SLIDE (deck.json: picture, ≤ 6-word title, ≤ 3 cited callouts); revise stage 'deck' to change pictures, titles or callouts without rewriting the script. The FAQ card is the bank of customer questions answered from the sources and voiced at build; revise stage 'faq' to regenerate it (after fact fixes).
 - answer — a question that changes nothing.
 Rules: never invent product facts yourself — route corrections through edit_fact/revise. If the user attached files,
 the orchestrator has ALREADY added them as sources; if they are meant to fix facts or visuals, emit revise('understand', …)
@@ -73,6 +74,7 @@ def cards(demo_id: str) -> dict:
     plan = store.read_json(demo_id, "plan.json") or {}
     script = store.read_json(demo_id, "script.json") or {}
     visual_audit = store.read_json(demo_id, "visual-audit.json") or {}
+    deck = store.read_json(demo_id, "deck.json") or {}
     reh = store.read_json(demo_id, "rehearsal.json") or {}
     src_by_id = {s["id"]: s for s in demo["sources"]}
     audit_images = {x.get("visual"): x for x in visual_audit.get("images", [])}
@@ -100,6 +102,10 @@ def cards(demo_id: str) -> dict:
                           "deeper": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", [])} for l in s.get("deeper", [])]} for s in script.get("segments", [])],
             "closing": [{"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "visual": (l.get("visual") or {}).get("ref"), "visual_url": _vis_url(demo_id, und, src_by_id, (l.get("visual") or {}).get("ref")), "visual_audit": audit_lines.get(l["id"]), "start": l.get("start"), "duration": l.get("duration")} for l in script.get("closing", [])],
             "issues": script.get("issues", []), "visual_audit": script.get("visual_audit", {}), "visual_changes": visual_audit.get("changes", (_last_visuals(demo_id) or {}).get("changes", []))},
+        "deck": {"version": deck.get("version"), "method": deck.get("method"), "hero_image": deck.get("hero_image"),
+                 "written_at": (store.path(demo_id, "deck.json").stat().st_mtime if store.path(demo_id, "deck.json").exists() else None),
+                 "images": [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "angle": i.get("angle", ""), "description": i.get("description", ""), "parts": visual_parts(i), "full_product": bool(i.get("full_product"))} for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])],
+                 "slides": [{**s, "image_url": _vis_url(demo_id, und, src_by_id, s.get("image_id"))} for s in deck.get("slides", [])]},
         "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "answered": (store.read_json(demo_id, "faq.json") or {}).get("answered", 0), "total": (store.read_json(demo_id, "faq.json") or {}).get("total", 0)},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),
@@ -130,6 +136,7 @@ def _cards_text(c: dict) -> str:
         f"PERSONA & VOICE: {json.dumps({k: p.get(k) for k in ('persona_name', 'persona_description', 'tone', 'suggested_voice', 'sample_line')})} provider={p.get('provider')} voice={p.get('voice_name')}",
         f"CTAS: {json.dumps(c['ctas'])}",
         f"SCRIPT: {json.dumps({k: c['script'].get(k) for k in ('decision_frame','takeaway','primary_outcome','supporting_outcomes','advance','do_not_recommend_if')})} usps={[u['name'] for u in (c['script'].get('usps') or [])]} batches={[(s['id'], s['role'], s.get('duration')) for s in c['script']['segments']]} total_seconds={(c['script'].get('timeline') or {}).get('total_seconds')} language={c['script'].get('language')}",
+        f"DECK: v{c['deck'].get('version')} · {len(c['deck'].get('slides', []))} slides · callouts by {c['deck'].get('method')} · " + "; ".join(f"{s['id']} {s['kind']} '{s.get('title', '')}' pic {s.get('image_id') or '—'} callouts {len(s.get('callouts', []))}" for s in c['deck'].get('slides', [])[:20]),
         f"FAQ: {c['faq'].get('answered')}/{c['faq'].get('total')} answered; questions={[e['question'][:60] for e in c['faq'].get('entries', [])][:20]}",
         f"PLAN: persona={c['plan']['customer_persona']} segments={[s['id'] for s in c['plan']['segments']]} concerns={[x['topic'] for x in c['plan']['concerns']]}",
     ]

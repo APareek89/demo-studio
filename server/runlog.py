@@ -143,6 +143,10 @@ def _inputs(demo_id: str, stage: str, demo: dict) -> str:
         rows += [["plan.json", _size(demo_id, "plan.json"), "decision frame, segments, USPs, CTAs, voice"], ["understanding.json", _size(demo_id, "understanding.json"), "fact registry (only these ids may be cited)"]]
         if store.path(demo_id, "script.json").exists():
             rows.append(["script.json (previous)", _size(demo_id, "script.json"), "revised in place, ids kept"])
+    if stage == "deck":
+        rows += [["script.json", _size(demo_id, "script.json"), "one slide per segment; lines and check-ins carried over by id"], ["understanding.json", _size(demo_id, "understanding.json"), "tagged parts with boxes for the pictures; the registry for the callouts"]]
+        if store.path(demo_id, "deck-overrides.json").exists():
+            rows.append(["deck-overrides.json", _size(demo_id, "deck-overrides.json"), "positions, pictures and text the user fixed in Align — kept over anything computed"])
     if stage == "voice":
         rows += [["script.json", _size(demo_id, "script.json"), "every narration, deeper, check-in and closing line"], ["faq.json + filler lines", _size(demo_id, "faq.json"), "FAQ answers and the persona's acknowledgement / bridge / hold lines, all pre-recorded"]]
     if stage == "faq":
@@ -151,7 +155,7 @@ def _inputs(demo_id: str, stage: str, demo: dict) -> str:
         rows += [["understanding.json + plan.json", "", "questions are generated from the product, persona, concerns and facts"], ["script.json", _size(demo_id, "script.json"), "scored against the playbook"]]
     if stage == "bundle":
         rows += [["understanding.json · plan.json · script.json" + (" · script.<lang>.json" if len(st.get("languages") or []) > 1 else ""), "", "assembled into bundle.json"]]
-    if stage in ("plan", "author", "voice", "rehearsal"):
+    if stage in ("plan", "author", "deck", "voice", "rehearsal"):
         rows.append(["settings", "", f"audience {st.get('audience')} · language {st.get('language')} · languages {st.get('languages')} · pitch minutes {st.get('pitch_minutes')} · voice {st.get('sarvam_speaker') or st.get('voice_name') or 'default'} · competition {st.get('competition')} · rehearsal questions {st.get('rehearsal_questions', 12)}"])
     return _table(["read", "size", "what for"], rows)
 
@@ -316,7 +320,16 @@ def _faq(demo_id: str) -> str:
     return f"**{b.get('answered', 0)} of {b.get('total', 0)} answered from the sources** (the rest decline and offer a callback — instant at runtime)\n\n" + _table(["id", "origin", "question", "answered", "facts", "answer (full)", "audio"], [[e.get("id"), e.get("origin"), e.get("question"), "yes" if e.get("answered") else "no", ",".join(e.get("fact_ids", []) or []), e.get("answer"), "yes" if e.get("audio") else "not yet"] for e in b.get("entries", [])])
 
 
-_REPORTS = {"understand": _understand, "plan": _plan, "author": _author, "faq": _faq, "voice": _voice, "rehearsal": _rehearsal, "bundle": _bundle}
+def _deck(demo_id: str) -> str:
+    d = store.read_json(demo_id, "deck.json") or {}
+    logs = _last_log(demo_id, "deck") or {}
+    rows = [[s.get("id"), s.get("kind"), s.get("title"), s.get("image_id") or "—", s.get("image_reason"), len(s.get("lines", [])),
+             "; ".join(f"{c.get('text')} [{','.join(c.get('fact_ids') or [])}] → {c.get('part') or '—'} · {c.get('placement')}" for c in s.get("callouts", [])) or "—"] for s in d.get("slides", [])]
+    head = f"**{len(d.get('slides', []))} slides · v{d.get('version')} · callouts by {d.get('method')}**" + (f" · {_json(logs.get('callouts'))}" if logs.get("callouts") else "")
+    return head + "\n\n" + _table(["slide", "kind", "title", "picture", "why this picture", "lines", "callouts (text [facts] → part · placement)"], rows)
+
+
+_REPORTS = {"understand": _understand, "plan": _plan, "author": _author, "deck": _deck, "faq": _faq, "voice": _voice, "rehearsal": _rehearsal, "bundle": _bundle}
 
 
 def stage_report(demo_id: str, stage: str, *, seconds: float | None = None, started_at: float | None = None, instruction: str = "") -> None:

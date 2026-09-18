@@ -614,8 +614,8 @@ async def revise(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     body = await req.json()
     stage = body.get("stage")
-    if stage not in ("understand", "plan", "author", "faq"):
-        raise HTTPException(400, "stage must be understand | plan | author | faq")
+    if stage not in ("understand", "plan", "author", "deck", "faq"):
+        raise HTTPException(400, "stage must be understand | plan | author | deck | faq")
     try:
         graph.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
     except RuntimeError as e:

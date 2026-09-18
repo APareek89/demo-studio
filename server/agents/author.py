@@ -73,6 +73,13 @@ def words(t: str) -> int:
     return len(re.findall(r"\S+", t or ""))
 
 
+def ungrounded(text: str, fact_ids: list[str] | None, allowed: set[str]) -> tuple[list[str], bool]:
+    """The one rule every spoken or shown line obeys — script lines, runtime bridges, custom batches, slide callouts:
+    keep only the fact ids that exist; if none are left and the text states a figure or claim, it is ungrounded."""
+    valid = [x for x in (fact_ids or []) if x in allowed]
+    return valid, bool(not valid and (NUMBERISH.search(text or "") or CLAIMISH.search(text or "")))
+
+
 def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     # A human rejection in Align is a hard boundary: rejected facts must not
     # survive as citations merely because they still exist in the registry.
@@ -81,7 +88,7 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     issues: list[str] = []
 
     def check(line: dict, where: str):
-        line["fact_ids"] = [x for x in line.get("fact_ids", []) if x in fact_ids]
+        line["fact_ids"], bad = ungrounded(line.get("text", ""), line.get("fact_ids"), fact_ids)
         v = line.get("visual") or {"kind": "none", "ref": "", "focus": ""}
         if v.get("ref") and v["ref"] not in vis:
             issues.append(f"{where}: visual '{v['ref']}' does not exist")
@@ -89,9 +96,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
         elif v.get("ref"):
             v["kind"] = vis[v["ref"]]
         line["visual"] = v
-        t = line.get("text", "")
-        if not line["fact_ids"] and (NUMBERISH.search(t) or CLAIMISH.search(t)):
-            issues.append(f"{where}: states a figure or claim without a fact id — “{t[:90]}”")
+        if bad:
+            issues.append(f"{where}: states a figure or claim without a fact id — “{line.get('text', '')[:90]}”")
             line["unverified"] = True
         else:
             line["unverified"] = False

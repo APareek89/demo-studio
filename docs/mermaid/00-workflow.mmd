@@ -1,4 +1,9 @@
-%% 00 · The demo workflow as a LangGraph graph (auto-exported from server/graph.py)
+%% 00 · Workflow — auto-exported from server/graph.py (LangGraph)
+---
+config:
+  flowchart:
+    curve: linear
+---
 graph TD;
 	__start__([<p>__start__</p>]):::first
 	router(router)
@@ -7,6 +12,7 @@ graph TD;
 	align_enter(align_enter)
 	align_wait(align_wait)
 	author(author)
+	deck(deck)
 	faq(faq)
 	voice(voice)
 	rehearsal(rehearsal)
@@ -16,17 +22,21 @@ graph TD;
 	__start__ --> router;
 	align_enter --> align_wait;
 	align_wait -.-> author;
+	align_wait -.-> deck;
 	align_wait -.-> faq;
 	align_wait -.-> plan;
 	align_wait -.-> understand;
-	author -.-> faq;
-	author -.-> voice;
+	author --> deck;
 	bundle --> finish;
-	faq --> align_enter;
+	deck -.-> faq;
+	deck -.-> voice;
+	faq -.-> align_enter;
+	faq -.-> voice;
 	plan -.-> author;
 	rehearsal --> bundle;
 	router -.-> align_wait;
 	router -.-> author;
+	router -.-> deck;
 	router -.-> faq;
 	router -.-> plan;
 	router -.-> understand;

@@ -201,6 +201,11 @@ def render_script(demo_id: str, emit) -> dict:
             _render_one(demo_id, emit, demo, translate.script_path(lang), lang)
         except Exception as e:
             emit(f"{lang}: skipped ({str(e)[:120]}).")
+            continue
+        try:
+            translate.translate_deck(demo_id, lang, emit)
+        except Exception as e:  # noqa: BLE001 — titles/callouts fall back to the main language; narration is already voiced
+            emit(f"{lang}: slide text kept in the main language ({str(e)[:80]}).")
     return script
 
 

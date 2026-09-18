@@ -77,6 +77,17 @@ def part_boxes(img: dict) -> list[dict]:
     return [p for p in (img.get("parts") or []) if isinstance(p, dict) and isinstance(p.get("box"), dict)]
 
 
+def pick_hero(demo: dict, images: list[dict]) -> dict | None:
+    """The hero-role upload, else the best-quality full-product view, else the first image. First and last slide."""
+    for s in reversed(demo.get("sources", [])):
+        if s.get("role") == "hero":
+            hit = next((i for i in images if i["source_id"] == s["id"]), None)
+            if hit:
+                return hit
+    pool = [i for i in images if i.get("full_product")] or images
+    return max(pool, key=lambda i: i.get("quality", 0)) if pool else None
+
+
 def catalogue(demo_id: str, und: dict, demo: dict) -> list[dict]:
     items = []
     for i in und.get("images", []):

@@ -109,6 +109,68 @@ if _media.ffmpeg():
 else:
     check("video-only demo gets stills", False, "ffmpeg unavailable on this machine")
 
+# ---- Phase 3: the deck — one slide per segment, grounded callouts, positions never guessed ----
+from server.agents import deck as _deck
+dk = store.read_json(i, "deck.json") or {}
+sc = store.read_json(i, "script.json") or {}
+st_all = c.get(f"/api/demos/{i}").json()["demo"]["stages"]
+segs_with_lines = [s for s in sc.get("segments", []) if any(not l.get("unverified") for l in s["lines"])]
+check("deck.json written at Configure: one slide per segment + hero open, closing, hero close", bool(dk) and len(dk["slides"]) == len(segs_with_lines) + 3)
+check("first and last slides are the hero", dk["slides"][0]["kind"] == "hero_open" and dk["slides"][-1]["kind"] == "hero_close" and dk["slides"][0]["image_id"] == dk["hero_image"] == b.get("hero_image"))
+check("every content slide has a picture and lines", all(s["image_id"] and s["lines"] for s in dk["slides"][1:-1]))
+check("deck stage done; author stayed done", st_all["deck"]["status"] == "done" and st_all["author"]["status"] == "done")
+cos = [x for s in dk["slides"] for x in s["callouts"]]
+check("callouts exist (mock: derived from each slide's cited facts)", bool(cos) and dk["method"].startswith("derived"))
+check("≤ 3 callouts per slide, ≤ 8 words each, ≤ 6-word titles", all(len(s["callouts"]) <= 3 and len(s["title"].split()) <= 6 for s in dk["slides"]) and all(len(x["text"].split()) <= 8 for x in cos))
+reg = {f["id"] for f in und["facts"]}
+check("every callout cites only registry facts", all(x["fact_ids"] and set(x["fact_ids"]) <= reg for x in cos))
+check("every callout has a placement; panel ones carry no position", all(x["placement"] in ("overlay", "panel") and (x["placement"] == "overlay" or (x["anchor"] is None and x["label_pos"] is None)) for x in cos))
+check("bundle.slides present, every line's audio joined by id", bool(b.get("slides")) and all(l["audio"] for s in b["slides"] for l in s["lines"]))
+check("bundle slides carry image urls and part boxes", all(s["image_url"] and isinstance(s["image_parts"], list) for s in b["slides"] if s["image_id"]))
+check("bundle keeps segments for the pre-slide player (until Phase 5)", bool(b.get("segments")))
+
+# label layout, tested on its own geometry
+img = {"parts": [{"name": "headlamp", "box": {"x": 0.1, "y": 0.2, "w": 0.2, "h": 0.15}, "confidence": 0.9},
+                 {"name": "wheel", "box": {"x": 0.6, "y": 0.6, "w": 0.25, "h": 0.25}, "confidence": 0.95},
+                 {"name": "badge", "box": {"x": 0.45, "y": 0.45, "w": 0.05, "h": 0.05}, "confidence": 0.3}]}
+sl = {"id": "t", "lines": [{"id": "l0", "text": "x", "fact_ids": ["F001"]}], "callouts": [
+    {"id": "c1", "text": "LED headlamps see further", "fact_ids": ["F001"], "part": "headlamp", "reveal_on_line": 0},
+    {"id": "c2", "text": "Alloy wheels, 17 inch", "fact_ids": ["F002"], "part": "wheel", "reveal_on_line": 0},
+    {"id": "c3", "text": "Chrome badge", "fact_ids": ["F003"], "part": "badge", "reveal_on_line": 0},
+    {"id": "c4", "text": "No part named", "fact_ids": ["F001"], "part": "", "reveal_on_line": 0}]}
+_deck.place_callouts(sl, img); cc = {x["id"]: x for x in sl["callouts"]}
+rect = lambda lp: {"x": lp["x"], "y": lp["y"], "w": _deck.LABEL_W, "h": _deck.LABEL_H}
+check("layout: confident part → overlay, anchor at the box centre", cc["c1"]["placement"] == "overlay" and abs(cc["c1"]["anchor"]["x"] - 0.2) < 1e-6 and abs(cc["c1"]["anchor"]["y"] - 0.275) < 1e-6)
+check("layout: label outside its part box", all(not _deck._overlaps(rect(cc[k]["label_pos"]), cc[k]["part_box"]) for k in ("c1", "c2")))
+check("layout: label inside the frame", all(_deck._inside(rect(cc[k]["label_pos"])) for k in ("c1", "c2")))
+check("layout: two overlay labels on one slide do not overlap", not _deck._overlaps(rect(cc["c1"]["label_pos"]), rect(cc["c2"]["label_pos"])))
+check("layout: low-confidence part → panel, no position", cc["c3"]["placement"] == "panel" and cc["c3"]["label_pos"] is None and cc["c3"]["anchor"] is None)
+check("layout: no part → panel, no position", cc["c4"]["placement"] == "panel" and cc["c4"]["label_pos"] is None)
+raw = [{"text": "Two-year warranty in writing", "fact_ids": ["F001"], "part": "headlamp"},
+       {"text": "Best in class mileage", "fact_ids": [], "part": ""},
+       {"text": "Warranty for five years", "fact_ids": ["F999"], "part": ""},
+       {"text": "one two three four five six seven eight nine", "fact_ids": ["F001"], "part": ""},
+       {"text": "Points at nothing listed", "fact_ids": ["F001"], "part": "spoiler"}]
+out = _deck.clean_callouts(raw, sl, {"F001"}, img)
+check("callout validator: cited kept · uncited claim dropped · unknown-fact claim dropped · 9 words dropped", [x["text"] for x in out] == ["Two-year warranty in writing", "Points at nothing listed"])
+check("callout validator clears a part the picture does not list", out[1]["part"] == "")
+old_shape_img = {"parts": ["headlamp", "wheel"]}
+check("older demos (parts as plain names) still derive callouts, in the panel", all(x["part"] == "" for x in _deck.derive_callouts({"id": "o", "lines": [{"id": "l", "text": "x", "fact_ids": ["F001"]}], "callouts": []}, {"F001": {"claim": "Headlamp", "value": "LED"}}, old_shape_img)))
+
+# revise the deck alone: version bumps, author untouched; what the user fixed in Align wins
+first = dk["slides"][1]
+store.write_json(i, "deck-overrides.json", {"slides": [{"slide_id": first["id"], "title": "A title the user chose", "callouts": ([{"id": first["callouts"][0]["id"], "label_pos": {"x": 0.5, "y": 0.5}}] if first["callouts"] else [])}]})
+r = c.post(f"/api/demos/{i}/revise", json={"stage": "deck", "instruction": "shorter titles"}); assert r.status_code == 200, r.text
+wait(i, "ready")
+dk2 = store.read_json(i, "deck.json"); st2 = c.get(f"/api/demos/{i}").json()["demo"]["stages"]
+check("revise deck bumps the deck version without re-authoring", dk2["version"] == dk["version"] + 1 and st2["author"]["status"] == "done" and st2["deck"]["status"] == "done")
+check("Align override: the user's title wins", dk2["slides"][1]["title"] == "A title the user chose")
+if first["callouts"]:
+    check("Align override: the dragged label position wins", dk2["slides"][1]["callouts"][0]["label_pos"] == {"x": 0.5, "y": 0.5})
+store.path(i, "deck-overrides.json").unlink(missing_ok=True)
+b = c.get(f"/api/demos/{i}/bundle").json()
+check("the rebuilt bundle carries the override", b["slides"][1]["title"] == "A title the user chose")
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)

@@ -383,3 +383,14 @@
 **Evidence:** Audi Q5 `dm_302ab4aa` is ready at v1 with 45 approved facts, 25/28 FAQ answers, complete 88-item playable audio coverage, three muted ten-question sessions, responsive checks at 320/390/768/1280 px, a fully decoded 157.54-second MP4, and free suites at 98/98, 32/32, 17/17 and 24/24 plus the full mocked pipeline.
 **Cost:** $0.5682 recorded total; the only paid visual was Rodin task `f68aff15-6e2f-4bdb-8594-ed430159ed16` at exactly $0.40.
 **Preventive action:** Treat provider envelopes, runtime registries and file-backed stage state as explicit system boundaries; every release gate must include adversarial intent tests and a polled background-worker path.
+
+### 2026-09-18 — A revise on a ready demo never rebuilt through the API
+
+**Symptom:** `POST /revise {stage: "deck"}` on a ready demo re-ran the deck and then parked at Align instead of re-bundling; `evals/qa_deck.py` timed out waiting for `ready`.
+**Why 1:** The `faq` edge routes to `voice` only when `rebuild` or `prev_ready` is true in the graph state; both were false.
+**Why 2:** `graph.start_revise` computed `prev_ready = status == "ready"` *after* `_set_status("reading")`, so it was always False.
+**Why 3:** The Align-chat path (`align_wait` → `requests["revise"]`) reads the status before anything changes it, so the only path anyone had exercised worked; no eval covered `POST /revise` on a ready demo.
+**Deepest why type:** `order-of-operations`
+**Action taken:** `start_revise` reads `prev_ready` first and keeps the status at `building` when a rebuild will follow. `qa_deck.py` now waits for `ready` after a deck revise.
+**Preventive action:** Any state read that feeds a routing decision happens before that function's side effects; every entry point of a graph command gets an eval, not just the chat one.
+

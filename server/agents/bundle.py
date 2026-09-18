@@ -22,6 +22,10 @@ def build(demo_id: str, emit) -> dict:
     images = {i["id"]: i for i in und.get("images", [])}
     facts = {f["id"]: f for f in und.get("facts", []) if f.get("approved", True)}
 
+    def img_url(i: dict) -> str | None:
+        src = src_by_id.get(i["source_id"], {})
+        return media_url(demo_id, src.get("play") or src.get("path"))
+
     def visual(v: dict | None) -> dict:
         if not v or not v.get("ref"):
             return {"kind": "none"}
@@ -59,6 +63,32 @@ def build(demo_id: str, emit) -> dict:
                 "intake": {"q1": sc.get("intake_q1", ""), "q2": sc.get("intake_q2", ""), "audio": {k: media_url(demo_id, v) for k, v in (sc.get("intake_audio") or {}).items()}, "chips": plan.get("intake", {}).get("chips", [])},
                 "voice_provider": sc.get("voice_provider", "browser")}
 
+    deck = store.read_json(demo_id, "deck.json") or {}
+
+    def assemble_slides(sc: dict, overlay: dict | None) -> list[dict]:
+        """deck.json is the structure; the script (main or translated) supplies each line's text, audio and timing by id;
+        deck.<lang>.json supplies titles and callout text in that language."""
+        by_id = {l["id"]: l for seg in sc.get("segments", []) for l in seg["lines"] + seg.get("deeper", [])} | {l["id"]: l for l in sc.get("closing", [])}
+        seg_by_id = {s["id"]: s for s in sc.get("segments", [])}
+        ov = {s["id"]: s for s in (overlay or {}).get("slides", [])}
+
+        def sl_line(l: dict) -> dict:
+            src = by_id.get(l["id"], {})
+            return {"id": l["id"], "text": src.get("text") or l["text"], "fact_ids": l.get("fact_ids", []), "audio": media_url(demo_id, src.get("audio")),
+                    "start": src.get("start"), "duration": src.get("duration")}
+        out = []
+        for s in deck.get("slides", []):
+            seg = seg_by_id.get(s.get("segment_id") or "", {})
+            im = images.get(s.get("image_id") or "")
+            o = ov.get(s["id"], {})
+            ctext = {c["id"]: c["text"] for c in o.get("callouts", [])}
+            out.append({**{k: s.get(k) for k in ("id", "segment_id", "kind", "topics", "fact_ids", "image_id", "image_reason", "motion", "usp_ids", "priority", "role")},
+                        "title": o.get("title") or s.get("title", ""), "image_url": img_url(im) if im else None, "image_parts": visuals.part_boxes(im) if im else [],
+                        "callouts": [{**c, "text": ctext.get(c["id"], c["text"])} for c in s.get("callouts", [])],
+                        "lines": [sl_line(l) for l in s.get("lines", [])], "deeper": [sl_line(l) for l in s.get("deeper", [])],
+                        "checkin": {"text": seg.get("checkin") or s.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))}})
+        return out
+
     main_lang = demo.get("settings", {}).get("language", "en-IN")
     alt = {}
     for lang in (demo.get("settings", {}).get("languages") or []):
@@ -67,6 +97,7 @@ def build(demo_id: str, emit) -> dict:
         sc = store.read_json(demo_id, f"script.{lang}.json")
         if sc:
             alt[lang] = assemble(sc)
+            alt[lang]["slides"] = assemble_slides(sc, store.read_json(demo_id, f"deck.{lang}.json"))
     segments = []
     for seg in script.get("segments", []):
         splan = next((s for s in plan.get("segments", []) if s["id"] == seg["id"]), {})
@@ -79,18 +110,11 @@ def build(demo_id: str, emit) -> dict:
         })
     price_facts = [f for f in facts.values() if f["kind"] in ("price", "offer")]
     spec_facts = [f for f in facts.values() if f["kind"] in ("spec", "feature", "policy")]
-    def img_url(i: dict) -> str | None:
-        src = src_by_id.get(i["source_id"], {})
-        return media_url(demo_id, src.get("play") or src.get("path"))
     usable_images = [i for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
     all_images = [{"id": i["id"], "url": img_url(i), "angle": i["angle"], "description": i["description"], "parts": visuals.part_boxes(i),
                    "full_product": bool(i.get("full_product")), "role": src_by_id.get(i["source_id"], {}).get("role", "product"),
                    "derived_from": src_by_id.get(i["source_id"], {}).get("derived_from")} for i in usable_images]
-    # Hero: the hero-role upload, else the best-quality full-product view, else the first image. First and last slide.
-    hero = next((i for s in reversed(demo["sources"]) if s.get("role") == "hero" for i in usable_images if i["source_id"] == s["id"]), None)
-    if hero is None and usable_images:
-        pool = [i for i in usable_images if i.get("full_product")] or usable_images
-        hero = max(pool, key=lambda i: i.get("quality", 0))
+    hero = visuals.pick_hero(demo, usable_images)
     videos = [{"id": s["id"], "url": media_url(demo_id, s.get("play") or s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video" and s.get("use_in_demo", True) is not False and s.get("role") != "intro_video"]
     intro_src = next((s for s in reversed(demo["sources"]) if s["kind"] == "video" and s.get("role") == "intro_video"), None)
     intro_video = {"url": media_url(demo_id, intro_src.get("play") or intro_src["path"]), "name": intro_src["name"], "enabled": demo.get("settings", {}).get("intro_video", "on") != "off"} if intro_src else None
@@ -116,6 +140,7 @@ def build(demo_id: str, emit) -> dict:
                   "facts": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in spec_facts][:12]},
         "unknowns": [u for u in und.get("unknowns", []) if u.get("status") == "open"],
         "hero_image": hero["id"] if hero else None,
+        "slides": assemble_slides(script, None), "deck_version": deck.get("version"), "deck_method": deck.get("method"),
         "media": {"images": all_images, "videos": videos, "hero": (img_url(hero) if hero else (videos[0]["url"] if videos else None))},
         "brand": und.get("brand", {}),
         "guardrails": {"no_citation_no_claim": True, "escalate_on_unknown": True, "no_price_negotiation": True},
@@ -125,5 +150,5 @@ def build(demo_id: str, emit) -> dict:
     def upd(d):
         d["version"] = b["version"]
     store.update(demo_id, upd)
-    emit(f"Bundle v{b['version']}: {len(segments)} segments, {len(facts)} facts, {len(b['ctas'])} calls to action" + (f", {len(alt)} extra language(s)" if alt else "") + ".")
+    emit(f"Bundle v{b['version']}: {len(b['slides'])} slides ({len(segments)} segments), {len(facts)} facts, {len(b['ctas'])} calls to action" + (f", {len(alt)} extra language(s)" if alt else "") + ".")
     return b

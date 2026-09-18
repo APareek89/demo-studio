@@ -1,10 +1,10 @@
 """The demo-building workflow as ONE LangGraph graph.
 
-    START ─▶ router ─▶ understand ─▶ plan ─▶ align_enter ─▶ align_wait ◀─┐ (interrupt: waits for you)
-                 │                                             │  message / approve / revise ─┘
-                 │                                             └─ build ─▶ author ─▶ voice ─▶ rehearsal ─▶ bundle ─▶ finish ─▶ END
-                 ├─ build  ─▶ author …
-                 └─ revise ─▶ understand | plan | author (then back to align_wait, or on to the build chain when rebuilding)
+    START ─▶ router ─▶ understand ─▶ plan ─▶ author ─▶ deck ─▶ faq ─▶ align_enter ─▶ align_wait ◀─┐ (interrupt: waits for you)
+                 │                                                                   │  message / approve / revise ─┘
+                 │                                                                   └─ build ─▶ voice ─▶ rehearsal ─▶ bundle ─▶ finish ─▶ END
+                 ├─ build  ─▶ author (skips when done) ─▶ deck (skips when done) ─▶ faq …
+                 └─ revise ─▶ understand | plan | author | deck | faq (then back to align_wait, or on to the build chain when rebuilding)
 
 Every node is one of the existing stage functions (server/agents/*) wrapped by orchestrator._run_stage, which keeps
 the stage bookkeeping, tracing and the run log. State is checkpointed in data/graph.sqlite after every node, so a
@@ -131,6 +131,16 @@ def author(state: DemoState) -> dict:
     return {}
 
 
+def deck(state: DemoState) -> dict:
+    d = state["demo_id"]
+    if state.get("entry") == "build" and store.load(d)["stages"]["deck"]["status"] == "done":
+        return {}
+    orch._set_status(d, "building" if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))) else "reading")
+    instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "deck" else ""
+    orch._run_stage(d, "deck", instr)
+    return {}
+
+
 def voice(state: DemoState) -> dict:
     orch._set_status(state["demo_id"], "building")
     orch._run_stage(state["demo_id"], "voice", "")
@@ -185,12 +195,13 @@ def after_voice(state: DemoState) -> str:
 
 def build_graph() -> StateGraph:
     g = StateGraph(DemoState)
-    g.add_node("router", router, destinations=("understand", "author", "plan", "faq", "align_wait"))
+    g.add_node("router", router, destinations=("understand", "author", "plan", "deck", "faq", "align_wait"))
     g.add_node("understand", understand)
     g.add_node("plan", plan)
     g.add_node("align_enter", align_enter)
-    g.add_node("align_wait", align_wait, destinations=("align_wait", "understand", "plan", "author", "faq"))
+    g.add_node("align_wait", align_wait, destinations=("align_wait", "understand", "plan", "author", "deck", "faq"))
     g.add_node("author", author)
+    g.add_node("deck", deck)
     g.add_node("faq", faq)
     g.add_node("voice", voice)
     g.add_node("rehearsal", rehearsal)
@@ -200,7 +211,8 @@ def build_graph() -> StateGraph:
     g.add_edge("understand", "plan")
     g.add_conditional_edges("plan", after_plan, {"author": "author"})
     g.add_edge("align_enter", "align_wait")
-    g.add_conditional_edges("author", after_author, {"voice": "voice", "faq": "faq"})
+    g.add_edge("author", "deck")
+    g.add_conditional_edges("deck", after_author, {"voice": "voice", "faq": "faq"})
     g.add_conditional_edges("faq", lambda st: "voice" if st.get("entry") == "build" or (st.get("entry") == "revise" and (st.get("rebuild") or st.get("prev_ready"))) else "align_enter", {"voice": "voice", "align_enter": "align_enter"})
     g.add_conditional_edges("voice", after_voice, {"rehearsal": "rehearsal", "bundle": "bundle"})
     g.add_edge("rehearsal", "bundle")
@@ -279,9 +291,10 @@ def start_build(demo_id: str) -> None:
 def start_revise(demo_id: str, stage: str, instruction: str, rebuild: bool = False) -> None:
     if is_running(demo_id):
         raise RuntimeError("This demo is already being processed — wait for it to finish")
-    orch._set_status(demo_id, "reading" if stage in ("understand", "plan", "faq") and not rebuild else "building")
+    prev_ready = store.load(demo_id)["status"] == "ready"  # read BEFORE the status flips, or a ready demo never rebuilds
+    orch._set_status(demo_id, "reading" if stage in ("understand", "plan", "deck", "faq") and not rebuild and not prev_ready else "building")
     _submit(demo_id, {"type": "revise", "stage": stage, "instruction": instruction, "rebuild": rebuild},
-            {"entry": "revise", "revise_stage": stage, "instruction": instruction, "rebuild": rebuild, "prev_ready": store.load(demo_id)["status"] == "ready", "pending": None}, "revise")
+            {"entry": "revise", "revise_stage": stage, "instruction": instruction, "rebuild": rebuild, "prev_ready": prev_ready, "pending": None}, "revise")
 
 
 def handle_message(demo_id: str, message: str, attachments: list[dict], context: str = "align", wait: float = 150.0) -> dict:

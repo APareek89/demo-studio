@@ -15,6 +15,15 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   `visuals.part_names()` / `part_boxes()` read both the new and the old shape; `bundle.hero_image` = hero upload, else best full-product
   image, else first; a demo with video and no images gets one ffmpeg still per good shot (`media.extract_still`, `derived_from` on the
   source) and those stills are tagged like uploads. Diagram 02 updated; `qa_deck.py` covers it.
+- **Phase 3 done (committed):** new LangGraph node `deck` between `author` and `faq` (`server/agents/deck.py`): one slide per script
+  segment plus hero_open / closing / hero_close; picture per slide by tagged parts vs. the words (+2 for the script's own pick, ≥ 3 else
+  hero); titles ≤ 6 words + ≤ 3 callouts ≤ 8 words written by the build model (Claude → Gemini fallback), every one through
+  `author.ungrounded()` — the same rule as script lines — with the slide's own cited facts as the no-model / mock / failure path;
+  `place_callouts` anchors only on parts with confidence ≥ 0.6 and puts the label at the first of 8 spots inside the frame, off the box
+  and clear of other labels, else the side panel. `deck-overrides.json` (Phase 4 writes it) wins over anything computed. Bundle gains
+  `slides` (audio joined by line id) and keeps `segments` until the Phase 5 player; `translate_deck` gives titles/callouts per extra
+  language. `POST /revise {stage: "deck"}`. RUN.md has a DECK section; diagrams 00/01/04 + ARCHITECTURE_FLOW updated. Mock script
+  lines now cite F001/F002 so mock decks carry callouts.
 - 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
   `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
   (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.

@@ -140,3 +140,71 @@ def translate(demo_id: str, lang: str, emit) -> dict:
     store.write_json(demo_id, script_path(lang), out)
     store.log(demo_id, "translate", {"language": lang, "missing": missing, "kept_source": kept})
     return out
+
+
+# ---------- the deck's on-screen text (titles, callouts) per extra language ----------
+
+class TCallout(BaseModel):
+    id: str
+    text: str
+
+
+class TSlide(BaseModel):
+    id: str
+    title: str
+    callouts: list[TCallout] = Field(default_factory=list)
+
+
+class TDeck(BaseModel):
+    slides: list[TSlide]
+
+
+def deck_path(lang: str) -> str:
+    return f"deck.{lang}.json"
+
+
+def translate_deck(demo_id: str, lang: str, emit) -> dict | None:
+    """Slide titles and callout text in the extra language → deck.<lang>.json (an overlay by id; positions and pictures
+    never change with language). A callout whose translation changes a figure keeps the source text."""
+    deck = store.read_json(demo_id, "deck.json") or {}
+    if not deck.get("slides"):
+        return None
+    payload = {"slides": [{"id": s["id"], "title": s.get("title", ""), "callouts": [{"id": c["id"], "text": c["text"]} for c in s.get("callouts", [])]} for s in deck["slides"]]}
+    key = store.digest(json.dumps(payload, sort_keys=True))
+    prev = store.read_json(demo_id, deck_path(lang))
+    if prev and prev.get("source_digest") == key:
+        return prev
+    if config.MOCK_LLM:
+        out = {"source_digest": key, "slides": [{"id": s["id"], "title": f"[{lang}] " + s["title"], "callouts": [{"id": c["id"], "text": f"[{lang}] " + c["text"]} for c in s["callouts"]]} for s in payload["slides"]]}
+        store.write_json(demo_id, deck_path(lang), out)
+        return out
+    demo = store.load(demo_id)
+    product = (store.read_json(demo_id, "understanding.json") or {}).get("product", {}).get("name") or demo["name"]
+    emit(f"Translating slide titles and callouts into {LANGUAGES.get(lang, lang)}…")
+    prev_stage = usage.current_stage.get()
+    usage.current_stage.set("translate")
+    try:
+        t = claude.structured(TRANSLATE_SYSTEM.format(product=product, language=language_instruction(lang)) + " Titles stay ≤ 6 words and callouts ≤ 8 words.",
+                              json.dumps(payload, ensure_ascii=False), TDeck, max_tokens=8000, soft=True, effort="low", timeout=180.0, model=config.CLAUDE_LITE_MODEL)
+    finally:
+        usage.current_stage.set(prev_stage)
+    tmap = {s.id: s for s in t.slides}
+    kept = 0
+    slides = []
+    for s in payload["slides"]:
+        ts = tmap.get(s["id"])
+        cmap = {c.id: c.text for c in (ts.callouts if ts else [])}
+        cs = []
+        for c in s["callouts"]:
+            tt = cmap.get(c["id"], "")
+            if tt and _keeps_numbers(c["text"], tt):
+                cs.append({"id": c["id"], "text": tt})
+            else:
+                kept += bool(tt)
+                cs.append({"id": c["id"], "text": c["text"]})
+        slides.append({"id": s["id"], "title": (ts.title if ts and ts.title.strip() else s["title"]), "callouts": cs})
+    if kept:
+        emit(f"{kept} callout(s) kept in the main language: the translation changed a number.")
+    out = {"source_digest": key, "slides": slides}
+    store.write_json(demo_id, deck_path(lang), out)
+    return out

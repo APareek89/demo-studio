@@ -42,7 +42,7 @@ r = c.post(f"/api/demos/{i}/ctas", json={"ctas": [{"id": "book", "label": "Book 
 r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready", 180); print("build → ready ok")
 b = c.get(f"/api/demos/{i}/bundle").json()
-assert b["segments"], "no segments"; assert "visual_asset" not in b, "3D field should be gone"; print("bundle v", b["version"], "segments", len(b["segments"]), "closing", len(b["closing"]), "ctas", [x["label"] for x in b["ctas"]])
+assert b["segments"], "no segments"; assert "visual_asset" not in b, "3D field should be gone"; assert b.get("slides") and b["slides"][0]["kind"] == "hero_open" and b["slides"][-1]["kind"] == "hero_close", "deck slides missing from bundle"; print("bundle v", b["version"], "segments", len(b["segments"]), "closing", len(b["closing"]), "ctas", [x["label"] for x in b["ctas"]])
 audio = [l["audio"] for s in b["segments"] for l in s["lines"]]; print("lines with audio", sum(1 for a in audio if a), "/", len(audio))
 if audio and audio[0]:
     r = c.get(audio[0]); assert r.status_code == 200 and r.headers["content-type"].startswith("audio"), "audio not served"
@@ -75,7 +75,7 @@ st = c.get(f"/api/demos/{i}").json()["demo"]["settings"]; assert st["languages"]
 r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready", 180)
 b3 = c.get(f"/api/demos/{i}/bundle").json(); assert b3.get("languages") == ["en-IN", "hi-IN"] and "hi-IN" in b3.get("alt_languages", {}), b3.get("languages"); alt = b3["alt_languages"]["hi-IN"]
-assert len(alt["segments"]) == len(b3["segments"]) and alt["segments"][0]["lines"][0]["text"].startswith("[hi-IN]"), alt["segments"][0]["lines"][0]; assert alt["segments"][0]["lines"][0]["audio"], "no hi-IN audio"; print("multi-language bundle ok: hi-IN", len(alt["segments"]), "segments, audio", bool(alt["segments"][0]["lines"][0]["audio"]))
+assert len(alt["segments"]) == len(b3["segments"]) and alt["segments"][0]["lines"][0]["text"].startswith("[hi-IN]"), alt["segments"][0]["lines"][0]; assert alt["segments"][0]["lines"][0]["audio"], "no hi-IN audio"; assert alt.get("slides") and alt["slides"][1]["title"].startswith("[hi-IN]") and alt["slides"][1]["lines"][0]["text"].startswith("[hi-IN]") and alt["slides"][1]["lines"][0]["audio"], "hi-IN slides missing title/text/audio"; print("multi-language bundle ok: hi-IN", len(alt["segments"]), "segments, audio", bool(alt["segments"][0]["lines"][0]["audio"]))
 r = c.post(f"/api/demos/{i}/run/tts", json={"text": "नमस्ते", "language": "hi-IN"}); assert r.status_code == 200 and r.json()["url"], r.text; print("tts with language ok")
 tr = c.get(f"/api/demos/{i}/trace").json(); assert "stages" in tr and "rows" in tr and "usage" in tr, tr.keys(); assert any(v.get("seconds") is not None for v in tr["stages"].values()), tr["stages"]; print("trace ok: stages", {k: v.get("seconds") for k, v in tr["stages"].items()}, "rows", len(tr["rows"]))
 from server.agents import author
