@@ -1,0 +1,44 @@
+- main:
+  - heading "Player browser contract" [level=1]
+  - paragraph: Real player UI. Synthetic bundle, speech events, audio and API replies. No paid calls or external connections. Virtual time preserves timer order and flushes promise continuations.
+  - button "Run checks"
+  - status: 36/36 passed; 0 failed
+  - list:
+    - listitem: PASS — Typing keeps later question waits closed to ambient speech until an explicit mic tap
+    - listitem: PASS — Typing preference survives Restart and intake microphone explicitly restores voice mode
+    - listitem: PASS — Question mode holds its place after 30 seconds of silence
+    - listitem: PASS — A yes-prefixed question reaches QA instead of the next slide
+    - listitem: PASS — A typed clarification is accepted once with conversation history
+    - listitem: PASS — A direct customer statement survives later QA and the recap once, without inferring a preference
+    - listitem: PASS — An unknown answer holds the callback form without narration behind it
+    - listitem: PASS — A model-suggested CTA is not a customer selection or an automatic recap
+    - listitem: PASS — An explicitly chosen proposed CTA records the choice without claiming an unsent handoff
+    - listitem: PASS — A negated CTA mention at closing remains a question while an exact selection still works
+    - listitem: PASS — A late speech result cannot answer the wait after a slide skip
+    - listitem: PASS — A late speech result after restart leaves the new intake untouched
+    - listitem: PASS — Opening Q&A resumes the interrupted line without replaying completed lines
+    - listitem: PASS — A superseded QA response cannot speak over the current answer
+    - listitem: PASS — Off-slide Q&A returns to the exact interrupted proof line
+    - listitem: PASS — A cached jump transition completes before the view and answer-latency stamp change
+    - listitem: PASS — Interrupting a jump announcement cancels its pending view change and answer
+    - listitem: PASS — Stop, Done and pagehide preserve the same ended session duration
+    - listitem: PASS — Back resumes active session time without counting recap idle, and restart resets it
+    - listitem: PASS — An intentional new typed question after Done reopens timing without the idle gap
+    - listitem: PASS — Declining callback still permits completion and saves the finished session
+    - listitem: PASS — Deeper narration owns its citations across Q&A return and clears them for question prompts
+    - listitem: PASS — A legacy deeper question waits until the customer explicitly skips it
+    - listitem: PASS — Stopping with a callback open shows a buyer recap while retaining internal session detail
+    - listitem: PASS — Personalized boot evidence reuses its complete reviewed label and image, not the current cabin
+    - listitem: PASS — Personalized evidence omits an overlong fact and cannot borrow a differently scoped callout
+    - listitem: PASS — Personalized fallback retains complete conditions and truth, and excludes rejected facts
+    - listitem: PASS — Revealing an overlay connects its leader to the visible chip centre
+    - listitem: PASS — Wide and narrow slides keep the native image ratio inside the stage
+    - listitem: PASS — Resizing keeps the exact native-image anchor without changing saved callout coordinates
+    - listitem: PASS — A narrow slide exposes numbered evidence without cropping the image or covering it with labels
+    - listitem: PASS — Narrow evidence hides leaders with their labels and restores them on a wide slide
+    - listitem: PASS — Phone evidence wraps complete trim qualifiers inside each card without shrinking the type
+    - listitem: PASS — Opening and closing hero images retain their native ratio within wide and narrow stages
+    - listitem: PASS — Crowded overlay labels settle in one pass without colliding with their fallback evidence
+    - listitem: PASS — A tall native image stays above wrapped mobile evidence
+  - generic "Evidence and test boundaries"
+  - generic "Real player under test"

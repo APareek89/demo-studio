@@ -1,6 +1,8 @@
-// Shell + hash router.  #/demos · #/studio/<id>/sources|align|rehearse · #/play/<id>
+// Shell + hash router.  #/home · #/demos · #/studio/<id>/sources|align|rehearse · #/play/<id>
 import { api, h, toast } from "/web/api.js";
 import { renderDemos } from "/web/demos.js";
+import { renderHome } from "/web/home.js";
+import { icon } from "/web/icons.js";
 import { renderSources } from "/web/studio/sources.js";
 import { renderAlign } from "/web/studio/align.js?v=3e0";
 import { renderRehearse } from "/web/studio/rehearse.js";
@@ -19,7 +21,7 @@ async function health() {
   } catch (e) {}
 }
 
-function setTab(name) { for (const a of document.querySelectorAll("#tabs a")) a.classList.toggle("active", a.dataset.tab === name); }
+function setTab(name) { for (const a of document.querySelectorAll("#tabs a")) { const active = a.dataset.tab === name; a.classList.toggle("active", active); if (active) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); } }
 
 export function navigate(hash) { location.hash = hash; }
 
@@ -50,7 +52,9 @@ async function renderStudio(demoId, stage) {
   const demo = state.demo; demo.__bundle = state.bundle_ready;
   if (!stage) stage = demo.status === "sources" ? "sources" : demo.status === "ready" ? "rehearse" : "align";
   const rail = h("aside", { class: "rail" },
+    h("a", { class: "rail-back", href: "#/demos" }, icon("arrow-left", { size: 13 }), "All demos"),
     h("div", { class: "demo-name" }, demo.name, h("span", { class: "id" }, demo.id, " · v", String(demo.version || 0))),
+    h("div", { class: "rail-label" }, "BUILD YOUR EXPERIENCE"),
     ...STEPS.map((s) => { const ss = stepState(demo, s.key); return h("a", { class: `step${stage === s.key ? " active" : ""}${ss.done ? " done" : ""}${ss.locked ? " locked" : ""}`, href: `#/studio/${demo.id}/${s.key}` }, h("span", { class: "n" }, s.n), h("span", {}, s.label, h("span", { class: "sub" }, s.sub))); }),
     h("div", { class: "spacer" }),
     h("div", { class: "status", id: "railStatus" }, demo.status === "sources" ? "waiting for sources" : demo.status),
@@ -71,7 +75,8 @@ async function renderStudio(demoId, stage) {
 }
 
 async function route() {
-  const parts = (location.hash || "#/demos").slice(2).split("/");
+  const parts = (location.hash || "#/home").slice(2).split("/");
+  if (parts[0] === "home") { setTab("home"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderHome({ main, navigate }); }
   if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2]); }
   if (parts[0] === "share" && parts[1] && parts[2]) { setTab(""); if (current.unsub) { current.unsub(); current.unsub = null; } return renderShare({ main, demoId: parts[1], sid: parts[2], key: parts[3] || "" }); }
   if (parts[0] === "play" && parts[1]) {
@@ -109,5 +114,6 @@ async function renderPlay(demoId) {
   });
 }
 
+document.querySelector(".skip-link")?.addEventListener("click", e => { e.preventDefault(); main.focus(); });
 window.addEventListener("hashchange", route);
 health(); route();

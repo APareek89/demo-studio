@@ -1,0 +1,57 @@
+[
+  {
+    "gate": "qa_deck",
+    "exit_code": 0,
+    "seconds": 4.77,
+    "isolated_store": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-qa_deck-falfn837",
+    "mode": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-qa_deck-falfn837/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-qa_deck-falfn837/graph.sqlite"
+    },
+    "expected_markers": [
+      "307/307 deck cases pass"
+    ],
+    "all_markers_present": true,
+    "log": "/Users/macbook/Documents/demo-studio/output/professional-ui/final/qa_deck.log"
+  },
+  {
+    "gate": "qa_accept",
+    "exit_code": 0,
+    "seconds": 2.77,
+    "isolated_store": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-qa_accept-32m7y8jr",
+    "mode": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-qa_accept-32m7y8jr/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-qa_accept-32m7y8jr/graph.sqlite"
+    },
+    "expected_markers": [
+      "24/24 cases behave as required"
+    ],
+    "all_markers_present": true,
+    "log": "/Users/macbook/Documents/demo-studio/output/professional-ui/final/qa_accept.log"
+  },
+  {
+    "gate": "smoke_mock",
+    "exit_code": 0,
+    "seconds": 4.12,
+    "isolated_store": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-smoke_mock-pm2uru7i",
+    "mode": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-smoke_mock-pm2uru7i/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-final-smoke_mock-pm2uru7i/graph.sqlite"
+    },
+    "expected_markers": [
+      "SMOKE OK ",
+      "SMOKE OK (phase 2)"
+    ],
+    "all_markers_present": true,
+    "log": "/Users/macbook/Documents/demo-studio/output/professional-ui/final/smoke_mock.log"
+  }
+]

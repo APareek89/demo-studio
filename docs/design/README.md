@@ -1,5 +1,7 @@
 # Playground redesign — four prototypes (2026-09-03)
 
+The shipped whole-app design is now documented in [Professional UI — 2026-09-18](professional-ui.md). The four prototypes below are historical references.
+
 Clickable dummy flows, no app code touched. Each covers the same requirements from the 2026-09-03 feedback:
 tabs renamed and reordered (Demo Studio · My Demos · Playground · Observability), My Demos opens a demo
 full screen, Demo Studio › Rehearse gets a Full screen button, and the Playground becomes: pick an approved

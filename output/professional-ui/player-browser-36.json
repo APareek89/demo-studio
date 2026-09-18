@@ -1,0 +1,5264 @@
+{
+  "passed": 36,
+  "total": 36,
+  "cases": [
+    {
+      "name": "Typing keeps later question waits closed to ambient speech until an explicit mic tap",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-two",
+          "segment": "proof-two",
+          "segment_title": "proof-two",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "What is the warranty?",
+            "Does it have rear air vents?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "I need room for our family.",
+            "followup": "What is the warranty?\nDoes it have rear air vents?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "What is the warranty?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "What matters to you?"
+              },
+              {
+                "role": "user",
+                "text": "I need room for our family."
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+              },
+              {
+                "role": "agent",
+                "text": "One moment — I'm tailoring this to what you told me."
+              },
+              {
+                "role": "agent",
+                "text": "Let's take a closer look."
+              },
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "What is the warranty?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I need room for our family.",
+              "followup": "What is the warranty?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          },
+          {
+            "question": "Does it have rear air vents?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "What is the warranty?"
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this."
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?"
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused."
+              },
+              {
+                "role": "agent",
+                "text": "Second proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?"
+              },
+              {
+                "role": "user",
+                "text": "Does it have rear air vents?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I need room for our family.",
+              "followup": "What is the warranty?\nDoes it have rear air vents?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-two"
+          }
+        ],
+        "audioStarted": [
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "One moment — I'm tailoring this to what you told me.",
+          "Let's take a closer look.",
+          "First proof.",
+          "Any questions about the first proof?",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "Second proof.",
+          "Any questions about the second proof?",
+          "The approved source answers this.",
+          "Did that answer it?"
+        ],
+        "ttsRequests": [
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "One moment — I'm tailoring this to what you told me.",
+          "Let's take a closer look.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Typing preference survives Restart and intake microphone explicitly restores voice mode",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "I want an automatic.",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "What is the warranty?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "What is the warranty?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "What is the warranty?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "One moment — I'm tailoring this to what you told me.",
+          "Let's take a closer look.",
+          "First proof.",
+          "Any questions about the first proof?"
+        ],
+        "ttsRequests": [
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "One moment — I'm tailoring this to what you told me.",
+          "Let's take a closer look."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Question mode holds its place after 30 seconds of silence",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?"
+        ],
+        "ttsRequests": [],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A yes-prefixed question reaches QA instead of the next slide",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Yes, but what is the warranty?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Yes, but what is the warranty?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Yes, but what is the warranty?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Yes, but what is the warranty?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Yes, but what is the warranty?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "The approved source answers this.",
+          "Did that answer it?"
+        ],
+        "ttsRequests": [
+          "The approved source answers this.",
+          "Did that answer it?"
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A typed clarification is accepted once with conversation history",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Which transmission is that?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Which transmission is that?\nDo you mean the manual or automatic? The automatic, please.",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Which transmission is that?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Which transmission is that?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Which transmission is that?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          },
+          {
+            "question": "Which transmission is that?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Which transmission is that?"
+              },
+              {
+                "role": "agent",
+                "text": "Do you mean the manual or automatic?"
+              },
+              {
+                "role": "user",
+                "text": "The automatic, please."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Which transmission is that?\nDo you mean the manual or automatic? The automatic, please.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one",
+            "skip_bank": true
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Do you mean the manual or automatic?",
+          "The approved source answers this.",
+          "Did that answer it?"
+        ],
+        "ttsRequests": [
+          "Do you mean the manual or automatic?",
+          "The approved source answers this.",
+          "Did that answer it?"
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A direct customer statement survives later QA and the recap once, without inferring a preference",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 0,
+          "line_text": "First proof.",
+          "bridge": "",
+          "questions": [
+            "I am unsure about sitting in traffic every day.",
+            "What does the approved material say about the cabin?",
+            "I drive five to ten kilometres a day.",
+            "I am unsure about sitting in traffic every day."
+          ],
+          "profile": {
+            "name": "",
+            "why": "I drive five to ten kilometres a day.",
+            "followup": "I am unsure about sitting in traffic every day.\nWhat does the approved material say about the cabin?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: f1",
+        "qa": [
+          {
+            "question": "I am unsure about sitting in traffic every day.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "What matters to you?"
+              },
+              {
+                "role": "user",
+                "text": "I drive five to ten kilometres a day."
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+              },
+              {
+                "role": "agent",
+                "text": "One moment — I'm tailoring this to what you told me."
+              },
+              {
+                "role": "agent",
+                "text": "Let's take a closer look."
+              },
+              {
+                "role": "user",
+                "text": "I am unsure about sitting in traffic every day."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I drive five to ten kilometres a day.",
+              "followup": "I am unsure about sitting in traffic every day.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          },
+          {
+            "question": "What does the approved material say about the cabin?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+              },
+              {
+                "role": "agent",
+                "text": "One moment — I'm tailoring this to what you told me."
+              },
+              {
+                "role": "agent",
+                "text": "Let's take a closer look."
+              },
+              {
+                "role": "user",
+                "text": "I am unsure about sitting in traffic every day."
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this."
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?"
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused."
+              },
+              {
+                "role": "user",
+                "text": "What does the approved material say about the cabin?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I drive five to ten kilometres a day.",
+              "followup": "I am unsure about sitting in traffic every day.\nWhat does the approved material say about the cabin?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          },
+          {
+            "question": "I drive five to ten kilometres a day.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "The approved source answers this."
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?"
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused."
+              },
+              {
+                "role": "user",
+                "text": "What does the approved material say about the cabin?"
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this."
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?"
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused."
+              },
+              {
+                "role": "user",
+                "text": "I drive five to ten kilometres a day."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I drive five to ten kilometres a day.",
+              "followup": "I am unsure about sitting in traffic every day.\nWhat does the approved material say about the cabin?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          },
+          {
+            "question": "I am unsure about sitting in traffic every day.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "The approved source answers this."
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?"
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused."
+              },
+              {
+                "role": "user",
+                "text": "I drive five to ten kilometres a day."
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this."
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?"
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused."
+              },
+              {
+                "role": "user",
+                "text": "I am unsure about sitting in traffic every day."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I drive five to ten kilometres a day.",
+              "followup": "I am unsure about sitting in traffic every day.\nWhat does the approved material say about the cabin?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "One moment — I'm tailoring this to what you told me.",
+          "Let's take a closer look.",
+          "First proof.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "First proof.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "First proof.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "First proof.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "First proof."
+        ],
+        "ttsRequests": [
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "One moment — I'm tailoring this to what you told me.",
+          "Let's take a closer look.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0fj8b",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "I drive five to ten kilometres a day.",
+              "followup": "I am unsure about sitting in traffic every day.\nWhat does the approved material say about the cabin?",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "I am unsure about sitting in traffic every day.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              },
+              {
+                "question": "What does the approved material say about the cabin?",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              },
+              {
+                "question": "I drive five to ten kilometres a day.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              },
+              {
+                "question": "I am unsure about sitting in traffic every day.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "I am unsure about sitting in traffic every day.",
+              "What does the approved material say about the cabin?",
+              "I drive five to ten kilometres a day.",
+              "I am unsure about sitting in traffic every day."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [
+              "safety"
+            ],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 58,
+            "drop_point": "proof-one",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "What matters to you?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I drive five to ten kilometres a day.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "One moment — I'm tailoring this to what you told me.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's take a closer look.",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I am unsure about sitting in traffic every day.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "What does the approved material say about the cabin?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I drive five to ten kilometres a day.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I am unsure about sitting in traffic every day.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "An unknown answer holds the callback form without narration behind it",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "What exact EMI will the bank guarantee?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "What exact EMI will the bank guarantee?",
+            "focus": []
+          },
+          "escalations": [
+            "Dealer quote needed"
+          ],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "What exact EMI will the bank guarantee?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "What exact EMI will the bank guarantee?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "What exact EMI will the bank guarantee?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership."
+        ],
+        "ttsRequests": [
+          "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A model-suggested CTA is not a customer selection or an automatic recap",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-two",
+          "segment": "proof-two",
+          "segment_title": "proof-two",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "Second proof.",
+          "Any questions about the second proof?"
+        ],
+        "ttsRequests": [
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [
+          {
+            "id": "s_mywpiww0cate",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 30
+              },
+              {
+                "slide_id": "proof-two",
+                "kind": "proof",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?"
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [
+              "safety"
+            ],
+            "unresolved": [],
+            "cta": null,
+            "intent": 36,
+            "drop_point": "proof-two",
+            "minutes": 0.5,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I mainly want help with stop-and-go traffic. How should I assess this selected automatic?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000030000
+              },
+              {
+                "role": "agent",
+                "text": "Second proof.",
+                "t": 1800000030000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?",
+                "t": 1800000030000
+              }
+            ]
+          }
+        ],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "An explicitly chosen proposed CTA records the choice without claiming an unsent handoff",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "I would like to book a test drive."
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "I would like to book a test drive.",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "I would like to book a test drive.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "I would like to book a test drive."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "I would like to book a test drive.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "You can choose a test drive if you would like.",
+          "Did that answer it?",
+          "You chose “Book a test drive”. You can leave your details if you would like the dealership to follow up."
+        ],
+        "ttsRequests": [
+          "You can choose a test drive if you would like.",
+          "Did that answer it?",
+          "You chose “Book a test drive”. You can leave your details if you would like the dealership to follow up."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0qncr",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "I would like to book a test drive.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "I would like to book a test drive.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "I would like to book a test drive."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "Book a test drive",
+            "intent": 58,
+            "drop_point": "proof-one",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I would like to book a test drive.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "You can choose a test drive if you would like.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "You chose “Book a test drive”. You can leave your details if you would like the dealership to follow up.",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A negated CTA mention at closing remains a question while an exact selection still works",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "hero-end",
+          "segment": "proof-three",
+          "segment_title": "proof-three",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Do not book a test drive; I still have a question."
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Do not book a test drive; I still have a question.",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Do not book a test drive; I still have a question.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "agent",
+                "text": "Second proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?"
+              },
+              {
+                "role": "agent",
+                "text": "Third proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the third proof?"
+              },
+              {
+                "role": "user",
+                "text": "Do not book a test drive; I still have a question."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Do not book a test drive; I still have a question.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "hero-end"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Second proof.",
+          "Any questions about the second proof?",
+          "Third proof.",
+          "Any questions about the third proof?",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "You chose “Book a test drive”. You can leave your details if you would like the dealership to follow up."
+        ],
+        "ttsRequests": [
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "You chose “Book a test drive”. You can leave your details if you would like the dealership to follow up."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0o3fh",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Do not book a test drive; I still have a question.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-two",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-three",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "hero-end",
+                "kind": "hero_close",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "Do not book a test drive; I still have a question.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "Do not book a test drive; I still have a question."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [
+              "safety"
+            ],
+            "unresolved": [],
+            "cta": "Book a test drive",
+            "intent": 81,
+            "drop_point": "proof-three",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Second proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Third proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the third proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Do not book a test drive; I still have a question.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Book a test drive",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "You chose “Book a test drive”. You can leave your details if you would like the dealership to follow up.",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A late speech result cannot answer the wait after a slide skip",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-two",
+          "segment": "proof-two",
+          "segment_title": "proof-two",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Second proof.",
+          "Any questions about the second proof?"
+        ],
+        "ttsRequests": [],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A late speech result after restart leaves the new intake untouched",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [],
+          "slide": "hero",
+          "line_index": 0,
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [],
+        "audioStarted": [
+          "What matters to you?",
+          "What matters to you?"
+        ],
+        "ttsRequests": [],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Opening Q&A resumes the interrupted line without replaying completed lines",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [],
+          "slide": "opening",
+          "line_index": 1,
+          "questions": [
+            "What about safety?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "What about safety?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: f1",
+        "qa": [
+          {
+            "question": "What about safety?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "Opening first complete."
+              },
+              {
+                "role": "user",
+                "text": "What about safety?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "What about safety?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "opening"
+          }
+        ],
+        "audioStarted": [
+          "Opening first complete.",
+          "Opening second detail.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "Opening second detail."
+        ],
+        "ttsRequests": [
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Let's return to where we paused."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A superseded QA response cannot speak over the current answer",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Old question",
+            "New question"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Old question\nNew question",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: f1",
+        "qa": [
+          {
+            "question": "Old question",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Old question"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Old question",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          },
+          {
+            "question": "New question",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Old question"
+              },
+              {
+                "role": "user",
+                "text": "New question"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Old question\nNew question",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Current answer."
+        ],
+        "ttsRequests": [
+          "Current answer."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Off-slide Q&A returns to the exact interrupted proof line",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "line_text": "First proof interrupted detail.",
+          "bridge": "",
+          "questions": [
+            "Can you show the evidence on the other slide?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Can you show the evidence on the other slide?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: f1",
+        "qa": [
+          {
+            "question": "Can you show the evidence on the other slide?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "user",
+                "text": "Can you show the evidence on the other slide?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Can you show the evidence on the other slide?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "First proof interrupted detail.",
+          "Let me show you where that is.",
+          "The target slide carries that evidence.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "First proof interrupted detail."
+        ],
+        "ttsRequests": [
+          "Let me show you where that is.",
+          "The target slide carries that evidence.",
+          "Did that answer it?",
+          "Let's return to where we paused."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A cached jump transition completes before the view and answer-latency stamp change",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-three",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Show the third proof."
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Show the third proof.",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Show the third proof.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Show the third proof."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Show the third proof.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Now, let me get to what you asked about.",
+          "Answer on the third proof.",
+          "Did that answer it?"
+        ],
+        "ttsRequests": [
+          "Answer on the third proof.",
+          "Did that answer it?"
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [
+          {
+            "id": "s_mywpiww02cgn",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Show the third proof.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 3
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "Show the third proof.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": null,
+                "from_bank": true,
+                "route": "jump",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "Show the third proof."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": null,
+            "intent": 28,
+            "drop_point": "proof-one",
+            "minutes": 0.1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Show the third proof.",
+                "t": 1800000000000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww02cgn",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Show the third proof.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 3
+              },
+              {
+                "slide_id": "proof-three",
+                "kind": "proof",
+                "seconds": 0
+              }
+            ],
+            "covered": [
+              "proof-three"
+            ],
+            "jumps": [
+              {
+                "from": "proof-one",
+                "to": "proof-three",
+                "question": "Show the third proof."
+              }
+            ],
+            "turns": [
+              {
+                "question": "Show the third proof.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000003000,
+                "from_bank": true,
+                "route": "jump",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "Show the third proof."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": null,
+            "intent": 28,
+            "drop_point": "proof-one",
+            "minutes": 0.1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Show the third proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Now, let me get to what you asked about.",
+                "t": 1800000003000
+              },
+              {
+                "role": "agent",
+                "text": "Answer on the third proof.",
+                "t": 1800000003000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000003000
+              }
+            ]
+          }
+        ],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Interrupting a jump announcement cancels its pending view change and answer",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-two",
+          "segment": "proof-two",
+          "segment_title": "proof-two",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Show the third proof."
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Show the third proof.",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Show the third proof.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Show the third proof."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Show the third proof.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Let me show you where that is.",
+          "Second proof.",
+          "Any questions about the second proof?"
+        ],
+        "ttsRequests": [
+          "Let me show you where that is."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [
+          {
+            "id": "s_mywpiww0rd73",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Show the third proof.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-two",
+                "kind": "proof",
+                "seconds": 1
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "Show the third proof.",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": null,
+                "from_bank": true,
+                "route": "jump",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "Show the third proof."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": null,
+            "intent": 28,
+            "drop_point": "proof-two",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Show the third proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Second proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Stop, Done and pagehide preserve the same ended session duration",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Thanks for your time. You can ask anything else whenever you are ready."
+        ],
+        "ttsRequests": [
+          "Thanks for your time. You can ask anything else whenever you are ready."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0y7a3",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 60
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0y7a3",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 60
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [
+          {
+            "id": "s_mywpiww0y7a3",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 60
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+                "t": 1800000240000
+              }
+            ]
+          }
+        ],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Back resumes active session time without counting recap idle, and restart resets it",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [],
+          "slide": "hero",
+          "line_index": 1,
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "What else would you like to explore?",
+          "Second proof.",
+          "Any questions about the second proof?",
+          "What matters to you?"
+        ],
+        "ttsRequests": [
+          "What else would you like to explore?"
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0i4hs",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 60
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0i4hs",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 90
+              },
+              {
+                "slide_id": "proof-two",
+                "kind": "proof",
+                "seconds": 30
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-two",
+            "minutes": 2,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "What else would you like to explore?",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "Second proof.",
+                "t": 1800000270000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?",
+                "t": 1800000270000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [
+          {
+            "id": "s_mywpiww0i4hs",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 90
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1.5,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "What else would you like to explore?",
+                "t": 1800000240000
+              }
+            ]
+          },
+          {
+            "id": "s_mywppcdcod3r",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [],
+            "slides": [],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 30
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": null,
+            "intent": 35,
+            "minutes": 0.5,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "What matters to you?",
+                "t": 1800000300000
+              }
+            ]
+          }
+        ],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "An intentional new typed question after Done reopens timing without the idle gap",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "One more question."
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "One more question.",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "One more question.",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready."
+              },
+              {
+                "role": "user",
+                "text": "One more question."
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "One more question.",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Thanks for your time. You can ask anything else whenever you are ready.",
+          "The approved source answers this.",
+          "Did that answer it?",
+          "Thanks for your time. You can ask anything else whenever you are ready."
+        ],
+        "ttsRequests": [
+          "Thanks for your time. You can ask anything else whenever you are ready.",
+          "The approved source answers this.",
+          "Did that answer it?"
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0y72b",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 60
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0y72b",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 60
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [],
+            "usps_covered": [],
+            "questions": [],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 20,
+            "drop_point": "proof-one",
+            "minutes": 1,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0y72b",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "One more question.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 90
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "One more question.",
+                "voice_ended": 1800000240000,
+                "stt_done": 1800000240000,
+                "via": "typed",
+                "qa_done": 1800000240000,
+                "answer_audio": 1800000240000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "One more question."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 28,
+            "drop_point": "proof-one",
+            "minutes": 1.5,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+                "t": 1800000060000
+              },
+              {
+                "role": "user",
+                "text": "One more question.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000240000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0y72b",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "One more question.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 90
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "One more question.",
+                "voice_ended": 1800000240000,
+                "stt_done": 1800000240000,
+                "via": "typed",
+                "qa_done": 1800000240000,
+                "answer_audio": 1800000240000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "One more question."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 28,
+            "drop_point": "proof-one",
+            "minutes": 1.5,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+                "t": 1800000060000
+              },
+              {
+                "role": "user",
+                "text": "One more question.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000240000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [
+          {
+            "id": "s_mywpiww0y72b",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "One more question.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 90
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "One more question.",
+                "voice_ended": 1800000240000,
+                "stt_done": 1800000240000,
+                "via": "typed",
+                "qa_done": 1800000240000,
+                "answer_audio": 1800000240000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "One more question."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 28,
+            "drop_point": "proof-one",
+            "minutes": 1.5,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+                "t": 1800000060000
+              },
+              {
+                "role": "user",
+                "text": "One more question.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000240000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0y72b",
+            "ended": false,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "One more question.",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 120
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "One more question.",
+                "voice_ended": 1800000240000,
+                "stt_done": 1800000240000,
+                "via": "typed",
+                "qa_done": 1800000240000,
+                "answer_audio": 1800000240000,
+                "from_bank": true,
+                "route": "stay",
+                "answered": true
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "One more question."
+            ],
+            "escalations": [],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [],
+            "cta": "summary",
+            "intent": 28,
+            "drop_point": "proof-one",
+            "minutes": 2,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+                "t": 1800000060000
+              },
+              {
+                "role": "user",
+                "text": "One more question.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "The approved source answers this.",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "Did that answer it?",
+                "t": 1800000240000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+                "t": 1800000270000
+              }
+            ]
+          }
+        ],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Declining callback still permits completion and saves the finished session",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "hero-end",
+          "segment": "proof-three",
+          "segment_title": "proof-three",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "Can you guarantee my exact monthly payment?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "Can you guarantee my exact monthly payment?",
+            "focus": []
+          },
+          "escalations": [
+            "Dealer quote needed"
+          ],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Can you guarantee my exact monthly payment?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Can you guarantee my exact monthly payment?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Can you guarantee my exact monthly payment?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+          "Let's return to where we paused.",
+          "Second proof.",
+          "Any questions about the second proof?",
+          "Third proof.",
+          "Any questions about the third proof?",
+          "Fair enough. Here's a summary of what we covered so you have it when you decide.",
+          "Thanks for your time. You can ask anything else whenever you are ready."
+        ],
+        "ttsRequests": [
+          "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+          "Let's return to where we paused.",
+          "Fair enough. Here's a summary of what we covered so you have it when you decide.",
+          "Thanks for your time. You can ask anything else whenever you are ready."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0fxqm",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Can you guarantee my exact monthly payment?",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-two",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-three",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "hero-end",
+                "kind": "hero_close",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "Can you guarantee my exact monthly payment?",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": false,
+                "route": null,
+                "answered": false
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "Can you guarantee my exact monthly payment?"
+            ],
+            "escalations": [
+              "Dealer quote needed"
+            ],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [
+              "finance"
+            ],
+            "cta": "summary",
+            "intent": 38,
+            "drop_point": "proof-three",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Can you guarantee my exact monthly payment?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Second proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Third proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the third proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Fair enough. Here's a summary of what we covered so you have it when you decide.",
+                "t": 1800000000000
+              }
+            ]
+          },
+          {
+            "id": "s_mywpiww0fxqm",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "Can you guarantee my exact monthly payment?",
+              "focus": []
+            },
+            "personalized": false,
+            "route": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides": [
+              "proof-one",
+              "proof-two",
+              "proof-three"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-two",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-three",
+                "kind": "proof",
+                "seconds": 0
+              },
+              {
+                "slide_id": "hero-end",
+                "kind": "hero_close",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "Can you guarantee my exact monthly payment?",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": false,
+                "route": null,
+                "answered": false
+              }
+            ],
+            "usps_covered": [],
+            "questions": [
+              "Can you guarantee my exact monthly payment?"
+            ],
+            "escalations": [
+              "Dealer quote needed"
+            ],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [
+              "finance"
+            ],
+            "cta": "summary",
+            "intent": 38,
+            "drop_point": "proof-three",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Can you guarantee my exact monthly payment?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's return to where we paused.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Second proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the second proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Third proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the third proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Fair enough. Here's a summary of what we covered so you have it when you decide.",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Deeper narration owns its citations across Q&A return and clears them for question prompts",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [
+            "What are the cabin features?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "What are the cabin features?",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "What are the cabin features?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "What are the cabin features?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "",
+              "followup": "What are the cabin features?",
+              "focus": [],
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "CNG boot volume is 321 litres, measured to ISO V215.",
+          "The cabin answer uses two other reviewed facts.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "CNG boot volume is 321 litres, measured to ISO V215.",
+          "The reviewed second detail has a different source.",
+          "Is that clearer?"
+        ],
+        "ttsRequests": [
+          "The cabin answer uses two other reviewed facts.",
+          "Did that answer it?",
+          "Let's return to where we paused.",
+          "Is that clearer?"
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "A legacy deeper question waits until the customer explicitly skips it",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "route": [
+            "proof-one",
+            "proof-two",
+            "proof-three"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "proof-one",
+          "line_index": 1,
+          "bridge": "",
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: f1",
+        "qa": [],
+        "audioStarted": [
+          "First proof.",
+          "Any questions about the first proof?",
+          "Which seat would you use most?",
+          "Next deeper detail."
+        ],
+        "ttsRequests": [],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Stopping with a callback open shows a buyer recap while retaining internal session detail",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "customer_state": "stated_need",
+          "route": [
+            "proof-one"
+          ],
+          "slide": "proof-one",
+          "segment": "proof-one",
+          "segment_title": "Everyday practicality",
+          "line_index": 1,
+          "questions": [
+            "Will the boot take my stroller?"
+          ],
+          "profile": {
+            "name": "",
+            "why": "I need space for a stroller.",
+            "followup": "Will the boot take my stroller?",
+            "focus": []
+          },
+          "escalations": [
+            "Will the boot take my stroller?"
+          ],
+          "leads": []
+        },
+        "currentCitations": "",
+        "qa": [
+          {
+            "question": "Will the boot take my stroller?",
+            "history": [
+              {
+                "role": "agent",
+                "text": "What matters to you?"
+              },
+              {
+                "role": "user",
+                "text": "I need space for a stroller."
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+              },
+              {
+                "role": "agent",
+                "text": "Let's look at the parts that matter to you."
+              },
+              {
+                "role": "agent",
+                "text": "First proof."
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?"
+              },
+              {
+                "role": "user",
+                "text": "Will the boot take my stroller?"
+              }
+            ],
+            "profile": {
+              "name": "",
+              "why": "I need space for a stroller.",
+              "followup": "Will the boot take my stroller?",
+              "focus": [],
+              "customer_state": "stated_need",
+              "language": "en-IN"
+            },
+            "slide_id": "proof-one"
+          }
+        ],
+        "audioStarted": [
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "Let's look at the parts that matter to you.",
+          "First proof.",
+          "Any questions about the first proof?",
+          "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership."
+        ],
+        "ttsRequests": [
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "Let's look at the parts that matter to you.",
+          "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 0,
+        "savedSessions": [
+          {
+            "id": "s_mywpiww0322z",
+            "ended": true,
+            "profile": {
+              "name": "",
+              "why": "I need space for a stroller.",
+              "followup": "Will the boot take my stroller?",
+              "focus": []
+            },
+            "customer_state": "stated_need",
+            "personalized": true,
+            "route": [
+              "proof-one"
+            ],
+            "slides": [
+              "proof-one"
+            ],
+            "slides_visited": [
+              {
+                "slide_id": "hero",
+                "kind": "hero_open",
+                "seconds": 0
+              },
+              {
+                "slide_id": "proof-one",
+                "kind": "proof",
+                "seconds": 0
+              }
+            ],
+            "covered": [],
+            "jumps": [],
+            "turns": [
+              {
+                "question": "Will the boot take my stroller?",
+                "voice_ended": 1800000000000,
+                "stt_done": 1800000000000,
+                "via": "typed",
+                "qa_done": 1800000000000,
+                "answer_audio": 1800000000000,
+                "from_bank": false,
+                "route": null,
+                "answered": false
+              }
+            ],
+            "usps_covered": [
+              "INTERNAL-USP-TEST"
+            ],
+            "questions": [
+              "Will the boot take my stroller?"
+            ],
+            "escalations": [
+              "Will the boot take my stroller?"
+            ],
+            "leads": [],
+            "resolved": [],
+            "unresolved": [
+              "practicality"
+            ],
+            "cta": "summary",
+            "intent": 38,
+            "drop_point": "Everyday practicality",
+            "minutes": 0,
+            "transcript": [
+              {
+                "role": "agent",
+                "text": "What matters to you?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "I need space for a stroller.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Let's look at the parts that matter to you.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "First proof.",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "Any questions about the first proof?",
+                "t": 1800000000000
+              },
+              {
+                "role": "user",
+                "text": "Will the boot take my stroller?",
+                "t": 1800000000000
+              },
+              {
+                "role": "agent",
+                "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+                "t": 1800000000000
+              }
+            ]
+          }
+        ],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Personalized boot evidence reuses its complete reviewed label and image, not the current cabin",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "customer_state": "stated_need",
+          "route": [],
+          "slide": "custom-1",
+          "line_index": 2,
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "I need room for family luggage.",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: boot",
+        "qa": [],
+        "audioStarted": [
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "Opening first complete.",
+          "Opening second detail.",
+          "Let us look at the evidence for your needs."
+        ],
+        "ttsRequests": [
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Personalized evidence omits an overlong fact and cannot borrow a differently scoped callout",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "customer_state": "stated_need",
+          "route": [],
+          "slide": "custom-1",
+          "line_index": 2,
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "I need room for family luggage.",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: boot",
+        "qa": [],
+        "audioStarted": [
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "Opening first complete.",
+          "Opening second detail.",
+          "Let us look at the evidence for your needs."
+        ],
+        "ttsRequests": [
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Personalized fallback retains complete conditions and truth, and excludes rejected facts",
+      "pass": true,
+      "evidence": {
+        "context": {
+          "customer_state": "stated_need",
+          "route": [],
+          "slide": "custom-1",
+          "line_index": 2,
+          "questions": [],
+          "profile": {
+            "name": "",
+            "why": "I need room for family luggage.",
+            "followup": "",
+            "focus": []
+          },
+          "escalations": [],
+          "leads": []
+        },
+        "currentCitations": "sources: range, held, long-scope",
+        "qa": [],
+        "audioStarted": [
+          "What matters to you?",
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first.",
+          "Opening first complete.",
+          "Opening second detail.",
+          "Let us look at the evidence for your needs."
+        ],
+        "ttsRequests": [
+          "Thanks for that. Let me set up what we're deciding, then I'll show you the result first."
+        ],
+        "maximumSimultaneousAudio": 1,
+        "activeAudio": 1,
+        "savedSessions": [],
+        "beaconSessions": [],
+        "leadRequests": []
+      }
+    },
+    {
+      "name": "Revealing an overlay connects its leader to the visible chip centre",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "picture": {
+              "x": 151,
+              "y": 336.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 876.5
+            },
+            "chip": {
+              "x": 763,
+              "y": 412.09375,
+              "width": 140.4609375,
+              "height": 45,
+              "right": 903.4609375,
+              "bottom": 457.09375
+            },
+            "expectedLeaderOrigin": {
+              "x": 682.23046875,
+              "y": 98.09375
+            },
+            "actualLeaderOrigin": {
+              "x": 681.9999999999999,
+              "y": 98.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Wide and narrow slides keep the native image ratio inside the stage",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "requestedWidth": 1000,
+            "stage": {
+              "x": 51,
+              "y": 362,
+              "width": 1000,
+              "height": 540,
+              "right": 1051,
+              "bottom": 902
+            },
+            "picture": {
+              "x": 151,
+              "y": 362,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 902
+            },
+            "image": {
+              "x": 151,
+              "y": 362,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 902
+            },
+            "nativeRatio": 1.6666666666666667
+          },
+          {
+            "requestedWidth": 390,
+            "stage": {
+              "x": 51,
+              "y": 362,
+              "width": 390,
+              "height": 540,
+              "right": 441,
+              "bottom": 902
+            },
+            "picture": {
+              "x": 51,
+              "y": 515,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 749
+            },
+            "image": {
+              "x": 51,
+              "y": 515,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 749
+            },
+            "nativeRatio": 1.6666666666666667
+          }
+        ]
+      }
+    },
+    {
+      "name": "Resizing keeps the exact native-image anchor without changing saved callout coordinates",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "requestedWidth": 1000,
+            "image": {
+              "x": 151,
+              "y": 387.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 927.5
+            },
+            "picture": {
+              "x": 151,
+              "y": 387.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 927.5
+            },
+            "expectedAnchor": {
+              "x": 727,
+              "y": 641.3
+            },
+            "actualAnchor": {
+              "x": 727,
+              "y": 641.2999877929688
+            }
+          },
+          {
+            "requestedWidth": 780,
+            "image": {
+              "x": 51,
+              "y": 423.5,
+              "width": 780,
+              "height": 468,
+              "right": 831,
+              "bottom": 891.5
+            },
+            "picture": {
+              "x": 51,
+              "y": 423.5,
+              "width": 780,
+              "height": 468,
+              "right": 831,
+              "bottom": 891.5
+            },
+            "expectedAnchor": {
+              "x": 550.2,
+              "y": 643.46
+            },
+            "actualAnchor": {
+              "x": 550.2000122070312,
+              "y": 643.4600219726562
+            }
+          },
+          {
+            "requestedWidth": 390,
+            "image": {
+              "x": 51,
+              "y": 540.5,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 774.5
+            },
+            "picture": {
+              "x": 51,
+              "y": 540.5,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 774.5
+            },
+            "expectedAnchor": {
+              "x": 300.6,
+              "y": 650.48
+            },
+            "actualAnchor": {
+              "x": 300.6000061035156,
+              "y": 650.47998046875
+            }
+          },
+          {
+            "requestedWidth": 1000,
+            "image": {
+              "x": 151,
+              "y": 387.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 927.5
+            },
+            "picture": {
+              "x": 151,
+              "y": 387.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 927.5
+            },
+            "expectedAnchor": {
+              "x": 727,
+              "y": 641.3
+            },
+            "actualAnchor": {
+              "x": 727,
+              "y": 641.2999877929688
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "A narrow slide exposes numbered evidence without cropping the image or covering it with labels",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "stage": {
+              "x": 51,
+              "y": 413,
+              "width": 390,
+              "height": 540,
+              "right": 441,
+              "bottom": 953
+            },
+            "image": {
+              "x": 51,
+              "y": 566,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 800
+            },
+            "evidenceStrip": {
+              "x": 74.3984375,
+              "y": 890.015625,
+              "width": 343.203125,
+              "height": 41.390625,
+              "right": 417.6015625,
+              "bottom": 931.40625
+            },
+            "railLayout": {
+              "panel": {
+                "className": "slide-panel",
+                "box": {
+                  "x": 74.3984375,
+                  "y": 890.015625,
+                  "width": 343.203125,
+                  "height": 41.390625,
+                  "right": 417.6015625,
+                  "bottom": 931.40625
+                },
+                "clientHeight": 41,
+                "scrollHeight": 41,
+                "display": "flex",
+                "position": "absolute",
+                "inset": "477.016px 23.3984px 21.5938px",
+                "flexDirection": "row",
+                "flex": "0 1 auto",
+                "height": "41.3906px",
+                "maxHeight": "19%",
+                "overflow": "auto"
+              },
+              "items": [
+                {
+                  "className": "item overlay",
+                  "box": {
+                    "x": 74.3984375,
+                    "y": 890.015625,
+                    "width": 163.6015625,
+                    "height": 41.390625,
+                    "right": 238,
+                    "bottom": 931.40625
+                  },
+                  "clientHeight": 40,
+                  "scrollHeight": 40,
+                  "display": "flex",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "1 0 44%",
+                  "height": "41.3906px",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                },
+                {
+                  "className": "item overlay",
+                  "box": {
+                    "x": 254,
+                    "y": 890.015625,
+                    "width": 163.6015625,
+                    "height": 41.390625,
+                    "right": 417.6015625,
+                    "bottom": 931.40625
+                  },
+                  "clientHeight": 40,
+                  "scrollHeight": 40,
+                  "display": "flex",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "1 0 44%",
+                  "height": "41.3906px",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Narrow evidence hides leaders with their labels and restores them on a wide slide",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "width": 1000,
+            "leaderVisibility": "visible",
+            "chip": {
+              "x": 763,
+              "y": 514.09375,
+              "width": 140.4609375,
+              "height": 45,
+              "right": 903.4609375,
+              "bottom": 559.09375
+            },
+            "dot": {
+              "x": 718,
+              "y": 683.296875,
+              "width": 18,
+              "height": 18,
+              "right": 736,
+              "bottom": 701.296875
+            },
+            "evidence": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "right": 0,
+              "bottom": 0
+            }
+          },
+          {
+            "width": 390,
+            "leaderVisibility": "hidden",
+            "chip": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "right": 0,
+              "bottom": 0
+            },
+            "dot": {
+              "x": 291.59375,
+              "y": 692.4765625,
+              "width": 18,
+              "height": 18,
+              "right": 309.59375,
+              "bottom": 710.4765625
+            },
+            "evidence": {
+              "x": 74.3984375,
+              "y": 929.90625,
+              "width": 343.203125,
+              "height": 27,
+              "right": 417.6015625,
+              "bottom": 956.90625
+            }
+          },
+          {
+            "width": 304,
+            "leaderVisibility": "hidden",
+            "chip": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "right": 0,
+              "bottom": 0
+            },
+            "dot": {
+              "x": 236.5546875,
+              "y": 694.0390625,
+              "width": 18,
+              "height": 18,
+              "right": 254.5546875,
+              "bottom": 712.0390625
+            },
+            "evidence": {
+              "x": 69.234375,
+              "y": 929.90625,
+              "width": 267.53125,
+              "height": 27,
+              "right": 336.765625,
+              "bottom": 956.90625
+            }
+          },
+          {
+            "width": 1000,
+            "leaderVisibility": "visible",
+            "chip": {
+              "x": 763,
+              "y": 514.09375,
+              "width": 140.4609375,
+              "height": 45,
+              "right": 903.4609375,
+              "bottom": 559.09375
+            },
+            "dot": {
+              "x": 718,
+              "y": 683.296875,
+              "width": 18,
+              "height": 18,
+              "right": 736,
+              "bottom": 701.296875
+            },
+            "evidence": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "right": 0,
+              "bottom": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Phone evidence wraps complete trim qualifiers inside each card without shrinking the type",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "requestedWidth": 390,
+            "rail": {
+              "x": 74.3984375,
+              "y": 924.8203125,
+              "width": 343.203125,
+              "height": 57.5859375,
+              "right": 417.6015625,
+              "bottom": 982.40625
+            },
+            "railClientWidth": 343,
+            "railScrollWidth": 343,
+            "items": [
+              {
+                "box": {
+                  "x": 74.3984375,
+                  "y": 924.8203125,
+                  "width": 163.6015625,
+                  "height": 57.5859375,
+                  "right": 238,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 164,
+                "scrollWidth": 164,
+                "textBox": {
+                  "x": 102.3984375,
+                  "y": 933.8203125,
+                  "width": 135.6015625,
+                  "height": 48.5859375,
+                  "right": 238,
+                  "bottom": 982.40625
+                },
+                "fragments": 3
+              },
+              {
+                "box": {
+                  "x": 254,
+                  "y": 924.8203125,
+                  "width": 163.6015625,
+                  "height": 57.5859375,
+                  "right": 417.6015625,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 164,
+                "scrollWidth": 164,
+                "textBox": {
+                  "x": 282,
+                  "y": 933.8203125,
+                  "width": 135.6015625,
+                  "height": 48.5859375,
+                  "right": 417.6015625,
+                  "bottom": 982.40625
+                },
+                "fragments": 3
+              }
+            ]
+          },
+          {
+            "requestedWidth": 320,
+            "rail": {
+              "x": 70.1953125,
+              "y": 908.625,
+              "width": 281.609375,
+              "height": 73.78125,
+              "right": 351.8046875,
+              "bottom": 982.40625
+            },
+            "railClientWidth": 282,
+            "railScrollWidth": 282,
+            "items": [
+              {
+                "box": {
+                  "x": 70.1953125,
+                  "y": 908.625,
+                  "width": 132.8046875,
+                  "height": 73.78125,
+                  "right": 203,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 133,
+                "scrollWidth": 133,
+                "textBox": {
+                  "x": 98.1953125,
+                  "y": 917.625,
+                  "width": 104.8046875,
+                  "height": 64.78125,
+                  "right": 203,
+                  "bottom": 982.40625
+                },
+                "fragments": 4
+              },
+              {
+                "box": {
+                  "x": 219,
+                  "y": 908.625,
+                  "width": 132.8046875,
+                  "height": 73.78125,
+                  "right": 351.8046875,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 133,
+                "scrollWidth": 133,
+                "textBox": {
+                  "x": 247,
+                  "y": 917.625,
+                  "width": 104.8046875,
+                  "height": 64.78125,
+                  "right": 351.8046875,
+                  "bottom": 982.40625
+                },
+                "fragments": 4
+              }
+            ]
+          },
+          {
+            "requestedWidth": 304,
+            "rail": {
+              "x": 69.234375,
+              "y": 908.625,
+              "width": 267.53125,
+              "height": 73.78125,
+              "right": 336.765625,
+              "bottom": 982.40625
+            },
+            "railClientWidth": 268,
+            "railScrollWidth": 268,
+            "items": [
+              {
+                "box": {
+                  "x": 69.234375,
+                  "y": 908.625,
+                  "width": 125.765625,
+                  "height": 73.78125,
+                  "right": 195,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 126,
+                "scrollWidth": 126,
+                "textBox": {
+                  "x": 97.234375,
+                  "y": 917.625,
+                  "width": 97.765625,
+                  "height": 64.78125,
+                  "right": 195,
+                  "bottom": 982.40625
+                },
+                "fragments": 4
+              },
+              {
+                "box": {
+                  "x": 211,
+                  "y": 908.625,
+                  "width": 125.765625,
+                  "height": 73.78125,
+                  "right": 336.765625,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 126,
+                "scrollWidth": 126,
+                "textBox": {
+                  "x": 239,
+                  "y": 917.625,
+                  "width": 97.765625,
+                  "height": 64.78125,
+                  "right": 336.765625,
+                  "bottom": 982.40625
+                },
+                "fragments": 4
+              }
+            ]
+          },
+          {
+            "requestedWidth": 390,
+            "rail": {
+              "x": 74.3984375,
+              "y": 924.8203125,
+              "width": 343.203125,
+              "height": 57.5859375,
+              "right": 417.6015625,
+              "bottom": 982.40625
+            },
+            "railClientWidth": 343,
+            "railScrollWidth": 343,
+            "items": [
+              {
+                "box": {
+                  "x": 74.3984375,
+                  "y": 924.8203125,
+                  "width": 163.6015625,
+                  "height": 57.5859375,
+                  "right": 238,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 164,
+                "scrollWidth": 164,
+                "textBox": {
+                  "x": 102.3984375,
+                  "y": 933.8203125,
+                  "width": 135.6015625,
+                  "height": 48.5859375,
+                  "right": 238,
+                  "bottom": 982.40625
+                },
+                "fragments": 3
+              },
+              {
+                "box": {
+                  "x": 254,
+                  "y": 924.8203125,
+                  "width": 163.6015625,
+                  "height": 57.5859375,
+                  "right": 417.6015625,
+                  "bottom": 982.40625
+                },
+                "clientWidth": 164,
+                "scrollWidth": 164,
+                "textBox": {
+                  "x": 282,
+                  "y": 933.8203125,
+                  "width": 135.6015625,
+                  "height": 48.5859375,
+                  "right": 417.6015625,
+                  "bottom": 982.40625
+                },
+                "fragments": 3
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Opening and closing hero images retain their native ratio within wide and narrow stages",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "kind": "hero_open",
+            "requestedWidth": 1000,
+            "stage": {
+              "x": 51,
+              "y": 489.5,
+              "width": 1000,
+              "height": 540,
+              "right": 1051,
+              "bottom": 1029.5
+            },
+            "image": {
+              "x": 151,
+              "y": 489.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 1029.5
+            },
+            "title": {
+              "x": 102,
+              "y": 646.2890625,
+              "width": 430,
+              "height": 115.53125,
+              "right": 532,
+              "bottom": 761.8203125
+            }
+          },
+          {
+            "kind": "hero_open",
+            "requestedWidth": 390,
+            "stage": {
+              "x": 51,
+              "y": 489.5,
+              "width": 390,
+              "height": 540,
+              "right": 441,
+              "bottom": 1029.5
+            },
+            "image": {
+              "x": 51,
+              "y": 642.5,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 876.5
+            },
+            "title": {
+              "x": 74.3984375,
+              "y": 544.4921875,
+              "width": 343.1953125,
+              "height": 29.890625,
+              "right": 417.59375,
+              "bottom": 574.3828125
+            }
+          },
+          {
+            "kind": "hero_close",
+            "requestedWidth": 1000,
+            "stage": {
+              "x": 51,
+              "y": 489.5,
+              "width": 1000,
+              "height": 540,
+              "right": 1051,
+              "bottom": 1029.5
+            },
+            "image": {
+              "x": 151,
+              "y": 489.5,
+              "width": 900,
+              "height": 540,
+              "right": 1051,
+              "bottom": 1029.5
+            },
+            "title": {
+              "x": 102,
+              "y": 646.2890625,
+              "width": 430,
+              "height": 115.53125,
+              "right": 532,
+              "bottom": 761.8203125
+            }
+          },
+          {
+            "kind": "hero_close",
+            "requestedWidth": 390,
+            "stage": {
+              "x": 51,
+              "y": 489.5,
+              "width": 390,
+              "height": 540,
+              "right": 441,
+              "bottom": 1029.5
+            },
+            "image": {
+              "x": 51,
+              "y": 642.5,
+              "width": 390,
+              "height": 234,
+              "right": 441,
+              "bottom": 876.5
+            },
+            "title": {
+              "x": 74.3984375,
+              "y": 544.4921875,
+              "width": 343.1953125,
+              "height": 29.890625,
+              "right": 417.59375,
+              "bottom": 574.3828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Crowded overlay labels settle in one pass without colliding with their fallback evidence",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "firstPass": [
+              {
+                "id": "crowded-0",
+                "chip": {
+                  "x": 763,
+                  "y": 590.59375,
+                  "width": 270,
+                  "height": 74.8359375,
+                  "right": 1033,
+                  "bottom": 665.4296875
+                },
+                "chipVisible": true,
+                "evidenceVisible": false
+              },
+              {
+                "id": "crowded-1",
+                "chip": {
+                  "x": 763,
+                  "y": 747.1953125,
+                  "width": 270,
+                  "height": 74.8359375,
+                  "right": 1033,
+                  "bottom": 822.03125
+                },
+                "chipVisible": true,
+                "evidenceVisible": false
+              },
+              {
+                "id": "crowded-2",
+                "chip": {
+                  "x": 763,
+                  "y": 590.59375,
+                  "width": 270,
+                  "height": 74.8359375,
+                  "right": 1033,
+                  "bottom": 665.4296875
+                },
+                "chipVisible": false,
+                "evidenceVisible": true
+              },
+              {
+                "id": "crowded-3",
+                "chip": {
+                  "x": 763,
+                  "y": 590.59375,
+                  "width": 270,
+                  "height": 74.8359375,
+                  "right": 1033,
+                  "bottom": 665.4296875
+                },
+                "chipVisible": false,
+                "evidenceVisible": true
+              }
+            ],
+            "evidenceStrip": {
+              "x": 102,
+              "y": 910.328125,
+              "width": 898,
+              "height": 106.875,
+              "right": 1000,
+              "bottom": 1017.203125
+            },
+            "heading": {
+              "x": 102,
+              "y": 617.59375,
+              "width": 360,
+              "height": 119.5,
+              "right": 462,
+              "bottom": 737.09375
+            },
+            "railLayout": {
+              "panel": {
+                "className": "slide-panel",
+                "box": {
+                  "x": 102,
+                  "y": 910.328125,
+                  "width": 898,
+                  "height": 106.875,
+                  "right": 1000,
+                  "bottom": 1017.203125
+                },
+                "clientHeight": 107,
+                "scrollHeight": 107,
+                "display": "flex",
+                "position": "absolute",
+                "inset": "395.328px 51px 37.7969px",
+                "flexDirection": "row",
+                "flex": "0 1 auto",
+                "height": "106.875px",
+                "maxHeight": "28%",
+                "overflow": "auto"
+              },
+              "items": [
+                {
+                  "className": "item overlay",
+                  "box": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0,
+                    "right": 0,
+                    "bottom": 0
+                  },
+                  "clientHeight": 0,
+                  "scrollHeight": 0,
+                  "display": "none",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "0 1 27%",
+                  "height": "auto",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                },
+                {
+                  "className": "item overlay",
+                  "box": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0,
+                    "right": 0,
+                    "bottom": 0
+                  },
+                  "clientHeight": 0,
+                  "scrollHeight": 0,
+                  "display": "none",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "0 1 27%",
+                  "height": "auto",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                },
+                {
+                  "className": "item overlay rail-fallback",
+                  "box": {
+                    "x": 102,
+                    "y": 910.328125,
+                    "width": 242.453125,
+                    "height": 106.875,
+                    "right": 344.453125,
+                    "bottom": 1017.203125
+                  },
+                  "clientHeight": 106,
+                  "scrollHeight": 106,
+                  "display": "flex",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "0 1 27%",
+                  "height": "106.875px",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                },
+                {
+                  "className": "item overlay rail-fallback",
+                  "box": {
+                    "x": 368.453125,
+                    "y": 910.328125,
+                    "width": 242.453125,
+                    "height": 106.875,
+                    "right": 610.90625,
+                    "bottom": 1017.203125
+                  },
+                  "clientHeight": 106,
+                  "scrollHeight": 106,
+                  "display": "flex",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "0 1 27%",
+                  "height": "106.875px",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "A tall native image stays above wrapped mobile evidence",
+      "pass": true,
+      "evidence": {
+        "qa": [],
+        "audioStarted": [],
+        "maximumSimultaneousAudio": 0,
+        "activeAudio": 0,
+        "geometry": [
+          {
+            "stage": {
+              "x": 51,
+              "y": 540.5,
+              "width": 390,
+              "height": 540,
+              "right": 441,
+              "bottom": 1080.5
+            },
+            "image": {
+              "x": 165,
+              "y": 675.5,
+              "width": 162,
+              "height": 270,
+              "right": 327,
+              "bottom": 945.5
+            },
+            "wrappedEvidence": {
+              "x": 74.3984375,
+              "y": 956.3125,
+              "width": 343.203125,
+              "height": 102.59375,
+              "right": 417.6015625,
+              "bottom": 1058.90625
+            },
+            "railLayout": {
+              "panel": {
+                "className": "slide-panel",
+                "box": {
+                  "x": 74.3984375,
+                  "y": 956.3125,
+                  "width": 343.203125,
+                  "height": 102.59375,
+                  "right": 417.6015625,
+                  "bottom": 1058.90625
+                },
+                "clientHeight": 103,
+                "scrollHeight": 106,
+                "display": "flex",
+                "position": "absolute",
+                "inset": "415.812px 23.3984px 21.5938px",
+                "flexDirection": "row",
+                "flex": "0 1 auto",
+                "height": "102.594px",
+                "maxHeight": "19%",
+                "overflow": "auto"
+              },
+              "items": [
+                {
+                  "className": "item overlay",
+                  "box": {
+                    "x": 74.3984375,
+                    "y": 956.3125,
+                    "width": 163.6015625,
+                    "height": 102.59375,
+                    "right": 238,
+                    "bottom": 1058.90625
+                  },
+                  "clientHeight": 102,
+                  "scrollHeight": 105,
+                  "display": "flex",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "1 0 44%",
+                  "height": "102.594px",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                },
+                {
+                  "className": "item overlay",
+                  "box": {
+                    "x": 254,
+                    "y": 956.3125,
+                    "width": 163.6015625,
+                    "height": 102.59375,
+                    "right": 417.6015625,
+                    "bottom": 1058.90625
+                  },
+                  "clientHeight": 102,
+                  "scrollHeight": 105,
+                  "display": "flex",
+                  "position": "static",
+                  "inset": "auto",
+                  "flexDirection": "row",
+                  "flex": "1 0 44%",
+                  "height": "102.594px",
+                  "maxHeight": "none",
+                  "overflow": "visible"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "boundaries": "Real DOM/events and mountPlayer; synthetic audio/SpeechRecognition/API; virtual timers. Not an acoustic or native microphone check."
+}

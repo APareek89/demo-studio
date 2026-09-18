@@ -4,6 +4,14 @@
 
 ## Current checkpoint — 2026-09-18
 
+Professional UI is complete on `codex/professional-ui`, based on the completed Nexon branch at `e89aa29`. [Open home](http://127.0.0.1:8893/?mute=1#/home). Shared blue/white design system and Inter typography now cover home, library, all Studio screens, player/recap/contact, Playground, Observability and share pages. Original SVG brand/agent/icon set, real bundle thumbnails, search/filter, keyboard-friendly create dialog and phone layouts. [Design/file guide](docs/design/professional-ui.md) · [Evidence](output/professional-ui/README.md).
+
+**Decisions:** Anand explicitly authorized UI across the whole app, using Salesforce-like blue and white, with no core workflow changes. Keep plain ES modules, existing APIs and the cinematic slide structure. Runtime web/calculator tooling, provider/model changes and conversation redesign remain deferred. Only new entry navigation is Home; new-demo creation now reaches the existing Sources step (the old `/visual` path was invalid). No deployment, merge, third Build or paid calls.
+
+Verification: before/after deck307/307, accept24/24, both smoke; actual browser player36/36 and new workspace5/5; desktop and390px mobile screenshots. Sources/Align/slide editor/Sessions/share remain reachable; data tables scroll locally. Real Nexon data is read-only on8893; all mock session/create checks used isolated8894. An interactive intake attempt stayed at Opening microphone; synthetic typed/intake contracts pass, but native microphone behavior was not established. All playback stays muted. See the guide for complete test boundaries.
+
+## Completed Nexon checkpoint — 2026-09-18
+
 The requested two-build Nexon exercise is complete and ready for Anand's review. Runtime `a99f699`; `dm_36d47b86`, bundle v1; [muted welcome](http://127.0.0.1:8893/?mute=1#/play/dm_36d47b86). No third Build, merge or deployment. Preserve both failed first-Build artifacts and every failed customer attempt. [Current review](output/nexon-real-evidence/iteration-2/final-review.md) · [Run index](output/nexon-real-evidence/iteration-2/run.json).
 
 Build 1 failed at voice. Build 2 succeeded in 210.635 seconds with 84/84 references and 80 exact Sarvam/Priya/en-IN WAVs; reviewed source/script/deck/FAQ/Align artifacts remain unchanged. The Cinematic first reference is applied to slides within the existing workflow. Actual intro and complete phone evidence rail, exact proof/deeper returns and approximately 3m13s of earlier A narration now have evidence.

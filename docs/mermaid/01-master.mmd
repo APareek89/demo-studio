@@ -20,8 +20,11 @@ flowchart TD
   PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>cinematic slides · owned voice/typed turns · explicit Q&A return<br/>see diagram 05"]:::fn
   FB["USER gives feedback<br/>[ask · Rehearse panel]"]:::ask
   FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'understand') → rebuild"]:::agent
-  LIB["Demos tab<br/>[DATA · list of data/demos/*/demo.json]"]:::data
+  HOME["Home workspace<br/>[FUNCTION · web/home.js · #/home default]<br/>real demo/session counts · recent demos · existing create/open actions"]:::fn
+  LIB["My demos tab<br/>[DATA · list of data/demos/*/demo.json]<br/>search/filter · approved bundle thumbnails"]:::data
 
+  HOME --> LIB
+  HOME -.->|"create → Sources"| U
   U --> ING --> READBTN --> READ --> SSE --> OVER1 --> CARDS
   CARDS --> DOCK --> ALIGN --> CARDS
   CARDS --> APPR

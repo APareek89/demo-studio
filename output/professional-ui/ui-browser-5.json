@@ -1,0 +1,74 @@
+{
+  "passed": 5,
+  "total": 5,
+  "cases": [
+    {
+      "name": "Concurrent and completed preview requests reuse one actual bundle lookup",
+      "pass": true,
+      "evidence": {
+        "requests": [
+          "/api/demos/ui_1_reuse/bundle"
+        ],
+        "sharedPromise": true,
+        "resolvedImage": "/fixture/approved-hero.png"
+      }
+    },
+    {
+      "name": "A failed preview lookup can recover on the next navigation request",
+      "pass": true,
+      "evidence": {
+        "requests": [
+          "/api/demos/ui_1_retry/bundle",
+          "/api/demos/ui_1_retry/bundle"
+        ],
+        "recoveredImage": "/fixture/recovered-slide.png"
+      }
+    },
+    {
+      "name": "A rebuilt or updated demo refreshes its cached preview",
+      "pass": true,
+      "evidence": {
+        "requests": [
+          "/api/demos/ui_1_revision/bundle",
+          "/api/demos/ui_1_revision/bundle",
+          "/api/demos/ui_1_revision/bundle"
+        ],
+        "images": [
+          "/fixture/revision-1.png",
+          "/fixture/revision-2.png",
+          "/fixture/revision-3.png"
+        ]
+      }
+    },
+    {
+      "name": "The real new-demo modal submits once and opens the Sources step",
+      "pass": true,
+      "evidence": {
+        "requests": [
+          {
+            "path": "/api/demos",
+            "body": {
+              "name": "Fixture product",
+              "url": "https://example.invalid/product"
+            }
+          }
+        ],
+        "navigation": [
+          "#/studio/ui_created_fixture/sources"
+        ],
+        "removedAfterSuccess": true
+      }
+    },
+    {
+      "name": "View demo requests fullscreen and preserves its playback route",
+      "pass": true,
+      "evidence": {
+        "actions": [
+          "fullscreen",
+          "#/play/ui_1_view"
+        ]
+      }
+    }
+  ],
+  "boundaries": "Actual demoImage, demoCard and newDemoModal modules; real DOM and click events; fake API and fullscreen. No backend writes, paid calls or external connections. Not a visual quality or native fullscreen capability test."
+}

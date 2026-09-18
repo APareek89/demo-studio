@@ -1,13 +1,14 @@
 import { api, h, toast, esc } from "/web/api.js";
 import { renderSlide } from "/web/slide.js";
+import { icon } from "/web/icons.js";
 
 const CARD_DEFS = [
-  { key: "visuals", n: "1", title: "Visuals" },
-  { key: "facts", n: "2", title: "Facts" },
-  { key: "script", n: "3", title: "Script" },
-  { key: "faq", n: "4", title: "FAQ bank" },
-  { key: "persona", n: "5", title: "Persona & voice" },
-  { key: "ctas", n: "6", title: "Calls to action" },
+  { key: "visuals", n: "1", title: "Visuals", icon: "image" },
+  { key: "facts", n: "2", title: "Facts", icon: "shield" },
+  { key: "script", n: "3", title: "Script", icon: "layers" },
+  { key: "faq", n: "4", title: "FAQ bank", icon: "message" },
+  { key: "persona", n: "5", title: "Persona & voice", icon: "agent" },
+  { key: "ctas", n: "6", title: "Calls to action", icon: "arrow-right" },
 ];
 const PHASE_TITLES = { reading: ["Reading your sources…", "Gemini is watching the footage; Claude is building the fact registry."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
 
@@ -21,22 +22,22 @@ export function renderAlign(ctx) {
   const logEl = h("div", { class: "progress-log" });
   const cardsCol = h("div", { class: "cards" });
   const thread = h("div", { class: "thread" });
-  const dockTa = h("textarea", { placeholder: "Say what's wrong, or what to change. Attach images or documents if that's the fix." });
+  const dockTa = h("textarea", { "aria-label": "Message your demo agent", placeholder: "Ask for a change or add missing information…" });
   const fileIn = h("input", { type: "file", multiple: true, accept: "video/*,image/*,.pdf,.docx,.txt,.md,.csv" });
   const attachRow = h("div", { class: "attach" });
-  const sendBtn = h("button", { class: "btn primary", onclick: send }, "Send");
-  const buildBar = h("div", { class: "build-bar hidden" }, h("span", {}, "All six cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo →"));
+  const sendBtn = h("button", { class: "btn primary", onclick: send }, icon("send", { size: 16 }), "Send");
+  const buildBar = h("div", { class: "build-bar hidden" }, h("span", { class: "build-ready" }, icon("check-circle", { size: 19 }), "All six cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo", icon("arrow-right", { size: 16 })));
   let pending = [];
 
   area.replaceChildren(overlay, h("div", { class: "align" }, cardsCol,
-    h("div", { class: "convo" }, thread, buildBar,
+    h("div", { class: "convo" }, h("div", { class: "align-agent-header" }, h("span", { class: "studio-agent-mark" }, icon("agent", { size: 24 })), h("div", {}, h("h2", {}, "Your demo agent"), h("p", {}, "Refine the details together"))), thread, buildBar,
       h("div", { class: "dock" }, attachRow,
-        h("div", { class: "box" }, h("button", { class: "btn ghost", title: "Attach files", onclick: () => fileIn.click() }, "📎"), dockTa, sendBtn, fileIn),
+        h("div", { class: "box" }, h("button", { class: "btn ghost", title: "Attach files", "aria-label": "Attach files", onclick: () => fileIn.click() }, icon("plus", { size: 19 })), dockTa, sendBtn, fileIn),
         h("div", { class: "hint" }, "Add a correction or attach missing material. New files are re-read and every affected card must be approved again.")))));
 
   fileIn.addEventListener("change", () => { pending.push(...fileIn.files); fileIn.value = ""; renderAttach(); });
   dockTa.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
-  function renderAttach() { attachRow.replaceChildren(...pending.map((f, i) => h("span", {}, f.name, " ", h("a", { href: "#", onclick: (e) => { e.preventDefault(); pending.splice(i, 1); renderAttach(); } }, "✕")))); }
+  function renderAttach() { attachRow.replaceChildren(...pending.map((f, i) => h("span", {}, icon("file", { size: 13 }), f.name, " ", h("a", { href: "#", "aria-label": `Remove ${f.name}`, onclick: (e) => { e.preventDefault(); pending.splice(i, 1); renderAttach(); } }, icon("close", { size: 13 }))))); }
 
   // ---------- overlay ----------
   function showOverlay(kind, error) {
@@ -60,10 +61,10 @@ export function renderAlign(ctx) {
     const current = CARD_DEFS.find((c) => !approvals[c.key])?.key;
     if (openCard === null) openCard = current || "visuals";
     const allDone = cards && CARD_DEFS.every((c) => approvals[c.key]);
-    const noteEl = h("div", { class: "align-note" }, "Review, edit or approve. ", h("b", {}, "Anything missing stays out of the demo"), ". New uploads trigger re-alignment. ", cards && !allDone ? h("button", { class: "btn sm", style: "margin-left:6px", onclick: approveAll }, "Approve all") : null);
-    cardsCol.replaceChildren(noteEl, ...CARD_DEFS.map((c) => {
+    const noteEl = h("div", { class: "align-note" }, h("span", {}, "Review each card before building. ", h("b", {}, "Only approved material goes into your demo.")), cards && !allDone ? h("button", { class: "btn sm", onclick: approveAll }, "Approve all") : null);
+    cardsCol.replaceChildren(h("header", { class: "studio-page-head align-page-head" }, h("div", { class: "eyebrow" }, "Demo workspace / Align"), h("div", { class: "align-title-row" }, h("h1", {}, "Make it ready for customers"), h("span", { class: "pill" + (allDone ? " ok" : "") }, `${CARD_DEFS.filter((c) => approvals[c.key]).length} of 6 approved`)), h("p", { class: "lede" }, "Review the knowledge, story and experience your guide will deliver.")), noteEl, ...CARD_DEFS.map((c) => {
       const el = h("div", { class: `acard${approvals[c.key] ? " approved" : ""}${current === c.key ? " current" : ""}${openCard === c.key ? " open" : ""}`, "data-card": c.key },
-        h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); requestAnimationFrame(() => cardsCol.querySelector(`[data-card="${c.key}"]`)?.scrollIntoView({ block: "start" })); } }, h("span", { class: "n" }, approvals[c.key] ? "✓" : c.n), h("h3", {}, c.title), h("span", { class: "st" }, approvals[c.key] ? "approved" : current === c.key ? "review now" : "pending"),
+        h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); requestAnimationFrame(() => cardsCol.querySelector(`[data-card="${c.key}"]`)?.scrollIntoView({ block: "start" })); } }, h("span", { class: "n", title: `Step ${c.n}` }, approvals[c.key] ? icon("check", { size: 15 }) : c.n), h("h3", {}, icon(c.icon, { size: 18 }), c.title), h("span", { class: "st" }, approvals[c.key] ? "Approved" : current === c.key ? "Review now" : "Pending"),
           cards ? h("span", { class: "hact" }, h("button", { class: "btn sm ghost", onclick: () => openPreview(c.key) }, "Preview"), approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve")) : null),
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
@@ -120,7 +121,7 @@ export function renderAlign(ctx) {
       const f = cards.faq || { entries: [] };
       return h("div", {},
         h("p", { class: "small muted", style: "margin:10px 0 0" }, `${f.answered} of ${f.total} answered from your sources. Known questions answer instantly in the guide's voice; unknowns are admitted plainly and open the dealership follow-up form.`),
-        h("div", { class: "unknowns" }, ...f.entries.slice(0, 8).map((e) => h("div", { class: "unk" }, h("span", { class: "pill " + (e.answered ? "ok" : "warn") }, e.answered ? "answered" : "declines"), h("span", {}, h("b", {}, e.question), h("div", { class: "small muted" }, (e.answer || "").slice(0, 140), (e.answer || "").length > 140 ? "…" : "")), h("button", { class: "btn sm ghost", onclick: () => editFaq(e) }, "Edit answer"), e.audio ? h("button", { class: "btn sm ghost", onclick: () => new Audio(e.audio).play() }, "▶") : null))),
+        h("div", { class: "unknowns" }, ...f.entries.slice(0, 8).map((e) => h("div", { class: "unk" }, h("span", { class: "pill " + (e.answered ? "ok" : "warn") }, e.answered ? "answered" : "declines"), h("span", {}, h("b", {}, e.question), h("div", { class: "small muted" }, (e.answer || "").slice(0, 140), (e.answer || "").length > 140 ? "…" : "")), h("button", { class: "btn sm ghost", onclick: () => editFaq(e) }, "Edit answer"), e.audio ? h("button", { class: "btn sm ghost", title: "Play answer", "aria-label": "Play answer", onclick: () => new Audio(e.audio).play() }, icon("play", { size: 16 })) : null))),
         f.entries.length > 8 ? h("p", { class: "small muted" }, `+ ${f.entries.length - 8} more — open Preview`) : null,
         h("p", { class: "small muted", style: "margin:8px 0 0" }, "Edit an answer using approved facts, then approve the FAQ card again. Upload an FAQ document (name it with “FAQ”) to add your own questions."));
     }
@@ -144,10 +145,10 @@ export function renderAlign(ctx) {
         h("input", { value: c.label, placeholder: "Label", oninput: (e) => (c.label = e.target.value) }),
         h("select", { onchange: (e) => (c.kind = e.target.value) }, ...["book", "reserve", "buy", "contact", "trial", "link", "custom"].map((k) => h("option", { value: k, selected: k === c.kind }, k))),
         h("input", { value: c.url || "", placeholder: "https://… (optional)", oninput: (e) => (c.url = e.target.value) }),
-        h("span", {}, h("label", { class: "primary" }, h("input", { type: "radio", name: "primary", checked: !!c.primary, onchange: () => { list.forEach((x, j) => (x.primary = j === i)); } }), " primary"), " ", h("button", { class: "btn sm ghost", onclick: () => { list.splice(i, 1); draw(); } }, "✕")))));
+        h("span", {}, h("label", { class: "primary" }, h("input", { type: "radio", name: "primary", checked: !!c.primary, onchange: () => { list.forEach((x, j) => (x.primary = j === i)); } }), " primary"), " ", h("button", { class: "btn sm ghost", title: "Remove action", "aria-label": "Remove action", onclick: () => { list.splice(i, 1); draw(); } }, icon("trash", { size: 16 }))))));
       draw();
       return h("div", {}, h("p", { class: "small muted", style: "margin:10px 0 0" }, "Buttons the customer sees during the demo. The guide names the primary one at the end."), wrap,
-        h("div", { style: "display:flex;gap:8px;margin-top:10px" }, h("button", { class: "btn sm ghost", onclick: () => { list.push({ id: "cta" + (list.length + 1), label: "", kind: "link", url: "", primary: false, when: "always" }); draw(); } }, "+ Add"),
+        h("div", { style: "display:flex;gap:8px;margin-top:10px" }, h("button", { class: "btn sm ghost", onclick: () => { list.push({ id: "cta" + (list.length + 1), label: "", kind: "link", url: "", primary: false, when: "always" }); draw(); } }, icon("plus", { size: 15 }), "Add"),
           h("button", { class: "btn sm", onclick: async () => { const clean = list.filter((c) => c.label.trim()).map((c, i) => ({ ...c, id: c.id || "cta" + (i + 1), when: c.when || "always" })); try { await api.post(`/api/demos/${demoId}/ctas`, { ctas: clean }); toast("CTAs saved"); await reload(); } catch (e) { toast(e.message, true); } } }, "Save CTAs")));
     }
   }
@@ -192,7 +193,7 @@ export function renderAlign(ctx) {
     }
     if (key === "faq") {
       const f = cards.faq || { entries: [] };
-      return h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "id"), h("th", {}, "question"), h("th", {}, "answer"), h("th", {}, "facts"), h("th", {}, ""))), h("tbody", {}, ...f.entries.map((e) => h("tr", { class: e.answered ? "" : "removed" }, h("td", { class: "id" }, e.id), h("td", {}, h("b", {}, e.question), h("div", { class: "small muted" }, e.origin)), h("td", {}, e.answer), h("td", { class: "mono small" }, (e.fact_ids || []).join(", ") || "—"), h("td", {}, h("button", { class: "btn sm ghost", onclick: (event) => { event.currentTarget.closest(".preview-bg")?.remove(); editFaq(e); } }, "Edit answer"), e.audio ? h("button", { class: "btn sm ghost", onclick: () => new Audio(e.audio).play() }, "▶") : h("span", { class: "small muted" }, "voiced at build"))))));
+      return h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "id"), h("th", {}, "question"), h("th", {}, "answer"), h("th", {}, "facts"), h("th", {}, ""))), h("tbody", {}, ...f.entries.map((e) => h("tr", { class: e.answered ? "" : "removed" }, h("td", { class: "id" }, e.id), h("td", {}, h("b", {}, e.question), h("div", { class: "small muted" }, e.origin)), h("td", {}, e.answer), h("td", { class: "mono small" }, (e.fact_ids || []).join(", ") || "—"), h("td", {}, h("button", { class: "btn sm ghost", onclick: (event) => { event.currentTarget.closest(".preview-bg")?.remove(); editFaq(e); } }, "Edit answer"), e.audio ? h("button", { class: "btn sm ghost", title: "Play answer", "aria-label": "Play answer", onclick: () => new Audio(e.audio).play() }, icon("play", { size: 16 })) : h("span", { class: "small muted" }, "voiced at build"))))));
     }
     if (key === "persona") {
       const p = cards.persona;
@@ -284,7 +285,7 @@ export function renderAlign(ctx) {
         if (approveAfter) { await setApproval("script", true); bg.remove(); } else draw();
       };
       box.replaceChildren(
-        h("div", { class: "phead" }, h("h2", {}, `Slide ${i + 1} of ${dk.slides.length}`, h("span", { class: "muted small", style: "margin-left:10px" }, orig.kind.replaceAll("_", " "))), h("div", { style: "display:flex;gap:6px" }, h("button", { class: "btn sm ghost", disabled: i === 0, onclick: () => { i--; draw(); } }, "◀ Prev"), h("button", { class: "btn sm ghost", disabled: i === dk.slides.length - 1, onclick: () => { i++; draw(); } }, "Next ▶"), h("button", { class: "btn sm", onclick: () => bg.remove() }, "Close"))),
+        h("div", { class: "phead" }, h("h2", {}, `Slide ${i + 1} of ${dk.slides.length}`, h("span", { class: "muted small", style: "margin-left:10px" }, orig.kind.replaceAll("_", " "))), h("div", { style: "display:flex;gap:6px" }, h("button", { class: "btn sm ghost", disabled: i === 0, onclick: () => { i--; draw(); } }, icon("arrow-left", { size: 15 }), "Prev"), h("button", { class: "btn sm ghost", disabled: i === dk.slides.length - 1, onclick: () => { i++; draw(); } }, "Next", icon("arrow-right", { size: 15 })), h("button", { class: "btn sm", onclick: () => bg.remove() }, "Close"))),
         h("div", { class: "pbody slide-editor" }, h("div", {}, view.el), form),
         h("div", { class: "editor-actions" }, h("span", { class: "small muted", style: "margin-right:auto" }, "Drag a callout to move it. Saving keeps your positions over any rebuild; an uncited figure or claim is refused."), h("button", { class: "btn", onclick: () => save(false).catch((e) => toast(e.message, true)) }, "Save"), h("button", { class: "btn primary", onclick: () => save(true).catch((e) => toast(e.message, true)) }, "Save & approve")));
       requestAnimationFrame(view.layout);
@@ -329,7 +330,7 @@ export function renderAlign(ctx) {
   }
   function renderThread() {
     thread.replaceChildren(); seen.clear();
-    thread.append(h("div", { class: "readiness" }, h("div", { class: "eyebrow" }, "Needs your attention"), h("ul", {}, ...highlights().map((x) => h("li", {}, x)))));
+    thread.append(h("div", { class: "readiness" }, h("div", { class: "readiness-heading" }, icon("shield", { size: 17 }), "Review notes"), h("ul", {}, ...highlights().map((x) => h("li", {}, x)))));
   }
 
   async function send() {
@@ -338,7 +339,7 @@ export function renderAlign(ctx) {
     const fd = new FormData(); fd.append("message", text); fd.append("context", "align"); pending.forEach((f) => fd.append("files", f));
     dockTa.value = ""; const files = pending; pending = []; renderAttach();
     addMsg({ role: "user", text: text || "(files)", t: Date.now() / 1000, attachments: files.map((f) => ({ name: f.name })) });
-    const thinking = h("div", { class: "msg agent thinking" }, "thinking…"); thread.append(thinking); thread.scrollTop = thread.scrollHeight;
+    const thinking = h("div", { class: "msg agent thinking", role: "status" }, icon("sparkles", { size: 16 }), "Reviewing your request…"); thread.append(thinking); thread.scrollTop = thread.scrollHeight;
     sendBtn.disabled = true;
     try { const r = await api.form(`/api/demos/${demoId}/align`, fd); thinking.remove(); if (r.reply) addMsg({ role: "agent", text: r.reply, t: Date.now() / 1000 }); await reload(); }
     catch (e) { thinking.remove(); toast(e.message, true); }

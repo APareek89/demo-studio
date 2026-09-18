@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free workspace UI contract</title>
+<link rel="stylesheet" href="/web/styles.css">
+<link rel="stylesheet" href="/web/design-system.css">
+<style>
+  body { display:block; margin:0; padding:28px; background:#f5f8fc; color:#032d60; font:14px system-ui; }
+  main { display:block; max-width:960px; margin:auto; }
+  h1 { font-size:25px; margin:0 0 10px; }
+  p { line-height:1.7; color:#58708a; }
+  #run { padding:11px 18px; border:0; border-radius:8px; background:#0176d3; color:#fff; cursor:pointer; }
+  #summary { margin:20px 0; font-weight:700; }
+  #results { padding-left:24px; line-height:1.9; }
+  .pass { color:#23724f; } .fail { color:#b12d3a; }
+  #fixture { min-height:40px; margin-top:20px; }
+  details { margin-top:20px; } pre { white-space:pre-wrap; font-size:11px; line-height:1.7; }
+</style>
+<main>
+  <h1>Workspace UI contract</h1>
+  <p>Real workspace modules and DOM events. Fake API and fullscreen implementations. No backend, data writes, external connections or paid calls.</p>
+  <button id="run" disabled>Loading workspace…</button>
+  <div id="summary" role="status" aria-live="polite">Loading</div>
+  <ol id="results"></ol>
+  <details><summary>Evidence and test boundaries</summary><pre id="evidence"></pre></details>
+  <div id="fixture" aria-label="Workspace UI under test"></div>
+</main>
+<div id="toasts"></div>
+<script type="module">
+window.fetch = () => Promise.reject(new Error('Network is disabled in this harness'));
+const { api } = await import('/web/api.js');
+const { demoImage, demoCard, newDemoModal } = await import('/web/demos.js');
+const host = document.querySelector('#fixture');
+const results = document.querySelector('#results');
+const summary = document.querySelector('#summary');
+const evidence = document.querySelector('#evidence');
+const runButton = document.querySelector('#run');
+const originalApi = { get: api.get, post: api.post, patch: api.patch, del: api.del, form: api.form };
+const assert = (ok, message) => { if (!ok) throw new Error(message); };
+const flush = async () => { for (let i = 0; i < 40; i++) await Promise.resolve(); };
+const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
+let run = 0, detail = {};
+const fixtureDemo = (name) => ({ id: `ui_${run}_${name}`, name: 'Synthetic UI demo', status: 'ready', version: 1, updated_at: 1, sources: 3, sessions: 0 });
+const cases = [];
+const test = (name, fn) => cases.push({ name, fn });
+
+test('Concurrent and completed preview requests reuse one actual bundle lookup', async () => {
+  const demo = fixtureDemo('reuse'), pending = deferred(), requests = [];
+  api.get = path => { requests.push(path); return pending.promise; };
+  const first = demoImage(demo), second = demoImage({ ...demo });
+  assert(first === second, 'Concurrent callers did not receive the same in-flight promise');
+  assert(requests.length === 1 && requests[0] === `/api/demos/${demo.id}/bundle`, 'Preview made an unexpected request');
+  pending.resolve({ media: { hero: '/fixture/approved-hero.png' } });
+  assert(await first === '/fixture/approved-hero.png' && await second === '/fixture/approved-hero.png', 'Approved hero was not returned');
+  assert(await demoImage({ ...demo }) === '/fixture/approved-hero.png' && requests.length === 1, 'Completed preview was fetched again');
+  detail = { requests, sharedPromise: first === second, resolvedImage: await first };
+});
+
+test('A failed preview lookup can recover on the next navigation request', async () => {
+  const demo = fixtureDemo('retry'), requests = [];
+  api.get = path => { requests.push(path); return requests.length === 1 ? Promise.reject(new Error('Synthetic transient failure')) : Promise.resolve({ slides: [{ image_url: '/fixture/recovered-slide.png' }] }); };
+  assert(await demoImage(demo) === '', 'Failed lookup did not return the neutral empty preview');
+  const recovered = await demoImage({ ...demo });
+  assert(requests.length === 2 && recovered === '/fixture/recovered-slide.png', 'A rejected preview remained cached and prevented recovery');
+  assert(await demoImage(demo) === recovered && requests.length === 2, 'Recovered success was not reused');
+  detail = { requests, recoveredImage: recovered };
+});
+
+test('A rebuilt or updated demo refreshes its cached preview', async () => {
+  const demo = fixtureDemo('revision'), requests = [];
+  api.get = path => { requests.push(path); return Promise.resolve({ media: { hero: `/fixture/revision-${requests.length}.png` } }); };
+  const first = await demoImage(demo);
+  const rebuilt = await demoImage({ ...demo, version: 2 });
+  const updated = await demoImage({ ...demo, version: 2, updated_at: 2 });
+  assert(first !== rebuilt && rebuilt !== updated && requests.length === 3, 'Version or update changes retained the old preview');
+  assert(await demoImage({ ...demo, version: 2, updated_at: 2 }) === updated && requests.length === 3, 'Current revision was fetched again');
+  detail = { requests, images: [first, rebuilt, updated] };
+});
+
+test('The real new-demo modal submits once and opens the Sources step', async () => {
+  const requests = [], navigation = [], pending = deferred();
+  api.post = (path, body) => { requests.push({ path, body }); return pending.promise; };
+  newDemoModal(path => navigation.push(path));
+  const modal = document.querySelector('.create-modal');
+  assert(modal, 'The real new-demo modal did not mount');
+  modal.querySelector('#new-demo-name').value = '  Fixture product  ';
+  modal.querySelector('#new-demo-url').value = 'https://example.invalid/product';
+  const create = modal.querySelector('.btn.primary'); create.click(); create.click();
+  assert(create.disabled && requests.length === 1, 'Submission is not protected against duplicate clicks');
+  assert(requests[0].path === '/api/demos' && requests[0].body.name === 'Fixture product' && requests[0].body.url === 'https://example.invalid/product', 'The existing create payload changed');
+  pending.resolve({ id: 'ui_created_fixture' }); await flush();
+  assert(navigation.length === 1 && navigation[0] === '#/studio/ui_created_fixture/sources', 'Create routed to an obsolete or incorrect Studio step');
+  assert(!document.querySelector('.create-modal'), 'Completed modal was not removed');
+  detail = { requests, navigation, removedAfterSuccess: true };
+});
+
+test('View demo requests fullscreen and preserves its playback route', async () => {
+  const demo = fixtureDemo('view'), actions = [];
+  api.get = () => Promise.resolve({});
+  const priorDescriptor = Object.getOwnPropertyDescriptor(document.documentElement, 'requestFullscreen');
+  Object.defineProperty(document.documentElement, 'requestFullscreen', { configurable: true, value: () => { actions.push('fullscreen'); return Promise.resolve(); } });
+  try {
+    const card = demoCard(demo, path => actions.push(path), () => {}); host.append(card);
+    const view = card.querySelector('.demo-card-foot .btn');
+    assert(view && view.textContent.includes('View demo'), 'The ready demo has no View action');
+    view.click(); await flush();
+    assert(actions.length === 2 && actions[0] === 'fullscreen' && actions[1] === `#/play/${demo.id}`, 'The View action changed fullscreen or playback navigation');
+    detail = { actions };
+  } finally {
+    if (priorDescriptor) Object.defineProperty(document.documentElement, 'requestFullscreen', priorDescriptor);
+    else delete document.documentElement.requestFullscreen;
+  }
+});
+
+runButton.textContent = 'Run checks'; runButton.disabled = false;
+summary.textContent = `Ready — ${cases.length} browser checks`;
+runButton.addEventListener('click', async () => {
+  run++; runButton.disabled = true; results.replaceChildren(); evidence.textContent = '';
+  const report = []; let passed = 0;
+  for (const c of cases) {
+    detail = {}; summary.textContent = 'Running: ' + c.name;
+    const li = document.createElement('li'); results.append(li);
+    for (const method of Object.keys(originalApi)) api[method] = () => Promise.reject(new Error('Unexpected fake API call: ' + method));
+    try { await c.fn(); passed++; li.className = 'pass'; li.textContent = 'PASS — ' + c.name; report.push({ name: c.name, pass: true, evidence: detail }); }
+    catch (error) { li.className = 'fail'; li.textContent = 'FAIL — ' + c.name + ': ' + error.message; report.push({ name: c.name, pass: false, error: error.message, evidence: detail }); }
+    finally { Object.assign(api, originalApi); document.querySelectorAll('.modal-bg').forEach(n => n.remove()); host.replaceChildren(); document.querySelector('#toasts').replaceChildren(); await flush(); }
+  }
+  window.uiContractReport = { passed, total: cases.length, cases: report, boundaries: 'Actual demoImage, demoCard and newDemoModal modules; real DOM and click events; fake API and fullscreen. No backend writes, paid calls or external connections. Not a visual quality or native fullscreen capability test.' };
+  summary.textContent = `${passed}/${cases.length} passed; ${cases.length - passed} failed`;
+  summary.className = passed === cases.length ? 'pass' : 'fail'; evidence.textContent = JSON.stringify(window.uiContractReport, null, 2); runButton.disabled = false;
+});
+</script>
+</html>

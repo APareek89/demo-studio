@@ -42,6 +42,8 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 
 ## File index
 
+The professional UI adds `#/home` as the default entry, with real workspace counts and links to existing demo actions. `web/home.js`, `web/demos.js`, `web/icons.js` and `web/{design-system,studio-ui,insights-ui,player-ui}.css` own the presentation system. Sources → Align → Rehearse and runtime tool capabilities are unchanged. See [the UI design and file guide](design/professional-ui.md).
+
 | Stage | Files |
 |---|---|
 | Shell, routes, SSE | `server/app.py`, `server/events.py`, `web/app.js`, `web/api.js` |
@@ -67,6 +69,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 ```mermaid
 %% see docs/mermaid/01-master.mmd
 flowchart TD
+  HOME["Home: workspace overview and existing demo actions"]:::fn --> U
   U["USER adds sources"]:::ask --> READ["Read: Understand → Plan → Author → Deck → FAQ (02/04)"]:::fn --> CARDS["Align: 6 cards · editable script/facts · pixel coverage"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
   APPR -- "yes" --> BUILD["Build: Voice → Rehearsal → Bundle (04)"]:::fn --> PLAY["Rehearse: one question → film → interactive player (05)"]:::fn --> FB["feedback → align agent → rebuild"]:::agent
   APPR -- "no" --> ALIGN

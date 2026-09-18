@@ -86,8 +86,11 @@ flowchart TD
   PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;cinematic slides · owned voice/typed turns · explicit Q&amp;A return&lt;br/&gt;see diagram 05&quot;]:::fn
   FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
   FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
-  LIB[&quot;Demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&quot;]:::data
+  HOME[&quot;Home workspace&lt;br/&gt;[FUNCTION · web/home.js · #/home default]&lt;br/&gt;real demo/session counts · recent demos · existing create/open actions&quot;]:::fn
+  LIB[&quot;My demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&lt;br/&gt;search/filter · approved bundle thumbnails&quot;]:::data
 
+  HOME --&gt; LIB
+  HOME -.-&gt;|&quot;create → Sources&quot;| U
   U --&gt; ING --&gt; READBTN --&gt; READ --&gt; SSE --&gt; OVER1 --&gt; CARDS
   CARDS --&gt; DOCK --&gt; ALIGN --&gt; CARDS
   CARDS --&gt; APPR

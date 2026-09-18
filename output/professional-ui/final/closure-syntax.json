@@ -1,0 +1,8 @@
+{
+  "javascript_modules": 14,
+  "python_files": 63,
+  "inline_harness_modules": 2,
+  "diagram_mirrors": 8,
+  "passed": true,
+  "python_scope": "api, docs, evals, scripts, server"
+}

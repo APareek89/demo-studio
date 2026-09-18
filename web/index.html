@@ -6,23 +6,30 @@
 <title>Demo Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/web/styles.css?v=3d7">
+<link rel="stylesheet" href="/web/design-system.css">
+<link rel="stylesheet" href="/web/studio-ui.css">
+<link rel="stylesheet" href="/web/insights-ui.css">
+<link rel="stylesheet" href="/web/player-ui.css">
+<link rel="icon" type="image/svg+xml" href="/web/brand.svg">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="top">
-  <div class="brand"><span class="mark"></span>Demo <b>Studio</b></div>
-  <nav class="tabs" id="tabs">
-    <a href="#/studio" data-tab="studio">Demo Studio</a>
-    <a href="#/demos" data-tab="demos">My Demos</a>
+  <a class="brand" href="#/home" aria-label="Demo Studio home"><img src="/web/brand.svg" alt="" width="34" height="34"><span>Demo<span class="brand-accent">Studio</span><small>PRODUCT EXPERIENCES</small></span></a>
+  <nav class="tabs" id="tabs" aria-label="Main navigation">
+    <a href="#/home" data-tab="home">Home</a>
+    <a href="#/demos" data-tab="demos">My demos</a>
+    <a href="#/studio" data-tab="studio">Studio</a>
     <a href="#/playground" data-tab="playground">Playground</a>
     <a href="#/observability" data-tab="observability">Observability</a>
   </nav>
-  <div class="health" id="health" title="API keys">
-    <span class="k" data-k="anthropic">Claude</span><span class="k" data-k="gemini">Gemini</span><span class="k" data-k="sarvam">Sarvam</span>
-  </div>
+  <details class="connection-menu"><summary aria-label="Provider configuration"><span class="connection-dot"></span><span>Workspace</span><span class="workspace-avatar">DS</span></summary>
+    <div class="connection-panel"><strong>Provider configuration</strong><p>Key presence only. Live availability may vary.</p><div class="health" id="health"><span class="k" data-k="anthropic">Claude</span><span class="k" data-k="gemini">Gemini</span><span class="k" data-k="runware">Runware</span><span class="k" data-k="sarvam">Sarvam</span></div></div>
+  </details>
 </header>
-<main id="main"></main>
+<main id="main" tabindex="-1"></main>
 <div id="toasts" class="toasts"></div>
 <script type="module" src="/web/app.js?v=3e0"></script>
 </body>

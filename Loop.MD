@@ -3,6 +3,20 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Professional UI acceptance — 2026-09-18
+
+Authorized bounded checks for the UI delivery; Loop remains off. `evals/player_browser.py` serves the following free browser suites with CSP blocking external connections.
+
+| Input | Expected and actual |
+|---|---|
+| `/ui_contract.html` → Run checks | 5/5: repeated/concurrent preview calls share one result; transient failure can recover; version/update refreshes preview; actual create dialog submits once then routes to Sources; View preserves fullscreen then playback. Real modules/DOM with fake APIs and fake fullscreen; no backend or provider calls. |
+| `/` → Run checks at a wide browser viewport | 36/36 with shipped design-system/player CSS. Includes typed question ownership, interruptions, clarification, exact returns, CTA consent, recap and wide/narrow slide geometry. A retained 390px whole-page attempt failed two wide-only fixtures; rerun at1280 passed all36. |
+| Actual UI at1440 desktop and390×844 phone | Home/library/search, Sources, all six Align cards, editor, Sessions/detail/share, Observability and Playground fit. Phone page widths stay390; wide tables scroll in their own containers. Shared mobile logo remains visible. Evidence PNGs are in `output/professional-ui/`. |
+| Isolated8894 Home → Create; Escape; Create again | Escape restores trigger focus; creation of UI acceptance fixture lands at `/studio/dm_740f03ae/sources`. No Read/Build. |
+| Isolated8894 muted welcome → browse → pause → stop → Done | Cinematic stage and customer recap remain usable at390px; no lead submitted. Interactive intake remained at Opening microphone, so native microphone/typed recovery in that state is not established by this review. |
+
+Before/after broad gates:307/307 deck,24/24 acceptance,both smoke. Syntax:63 Python,14 web JS. All model-facing checks use mock providers and isolated storage. Design guide: `docs/design/professional-ui.md`. Zero paid calls; real Nexon bundle untouched.
+
 > AGENT INSTRUCTION — read every session and obey:
 > - While `status: waiting_for_first_draft`: the moment the first working draft exists
 >   (core path runs end-to-end once — demo-able, not just compiling), ASK the user:

@@ -1,0 +1,80 @@
+[
+  {
+    "kind": "python",
+    "files": 63,
+    "scope": "All repository Python files excluding artifacts, data and dependency folders",
+    "exit_code": 0,
+    "log": "python-syntax.log",
+    "pycache": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-syntax-all-xs1lf0vs"
+  },
+  {
+    "kind": "javascript",
+    "file": "web/api.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/app.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/demos.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/home.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/icons.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/observability.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/player/mascot.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/player/player.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/playground.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/slide.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/studio/align.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/studio/rehearse.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/studio/sessions.js",
+    "exit_code": 0
+  },
+  {
+    "kind": "javascript",
+    "file": "web/studio/sources.js",
+    "exit_code": 0
+  }
+]

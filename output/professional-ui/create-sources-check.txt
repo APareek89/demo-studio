@@ -1,0 +1,184 @@
+- link "Skip to content":
+  - /url: "#main"
+- banner:
+  - link "Demo Studio home":
+    - /url: "#/home"
+    - text: DemoStudio
+    - generic: PRODUCT EXPERIENCES
+  - navigation "Main navigation":
+    - link "Home":
+      - /url: "#/home"
+    - link "My demos":
+      - /url: "#/demos"
+    - link "Studio":
+      - /url: "#/studio"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+  - generic "Provider configuration":
+    - generic: Workspace
+    - generic: DS
+- main:
+  - complementary:
+    - link "All demos":
+      - /url: "#/demos"
+      - text: All demos
+    - text: UI acceptance fixture
+    - generic: dm_740f03ae · v0
+    - generic: BUILD YOUR EXPERIENCE
+    - link "1 Sources upload, then configure":
+      - /url: "#/studio/dm_740f03ae/sources"
+      - generic: "1"
+      - text: Sources
+      - generic: upload, then configure
+    - link "2 Align approve what the agent found":
+      - /url: "#/studio/dm_740f03ae/align"
+      - generic: "2"
+      - text: Align
+      - generic: approve what the agent found
+    - link "3 Rehearse run it, give feedback":
+      - /url: "#/studio/dm_740f03ae/rehearse"
+      - generic: "3"
+      - text: Rehearse
+      - generic: run it, give feedback
+    - link "• Sessions who watched, what they asked":
+      - /url: "#/studio/dm_740f03ae/sessions"
+      - generic: •
+      - text: Sessions
+      - generic: who watched, what they asked
+    - generic: waiting for sources
+  - generic: Demo workspace / Sources
+  - heading "Give your demo a strong foundation" [level=1]
+  - paragraph: Add the product knowledge, visuals and brand direction your guide needs. Review what it learns before building your demo.
+  - heading "Product details" [level=2]
+  - generic: Product name
+  - textbox "Product name": UI acceptance fixture
+  - generic: Product page URL
+  - textbox "Product page URL":
+    - /placeholder: https://example.com/product
+  - heading "Demo preferences" [level=2]
+  - generic: Who is the demo for
+  - combobox "Who is the demo for":
+    - option "Everyday buyer — plain language, no jargon" [selected]
+    - option "Informed — light technical terms, explained"
+    - option "Expert — full technical detail"
+  - generic: Match the level of detail to your audience. Everyday buyers hear plain language, with technical detail available when asked.
+  - generic: Languages
+  - checkbox "Indian English" [checked]
+  - text: Indian English
+  - checkbox "Hinglish"
+  - text: Hinglish
+  - checkbox "Hindi"
+  - text: Hindi
+  - checkbox "Tamil"
+  - text: Tamil
+  - checkbox "Telugu"
+  - text: Telugu
+  - checkbox "Kannada"
+  - text: Kannada
+  - checkbox "Marathi"
+  - text: Marathi
+  - checkbox "Bengali"
+  - text: Bengali
+  - checkbox "Gujarati"
+  - text: Gujarati
+  - checkbox "Malayalam"
+  - text: Malayalam
+  - checkbox "Punjabi"
+  - text: Punjabi
+  - generic: First one is the main script; each extra language is translated and voiced at build (more narration lines = more cost).
+  - generic: Voice
+  - combobox "Voice":
+    - option "Aditya"
+    - option "Ritu"
+    - option "Priya" [selected]
+    - option "Neha"
+    - option "Rahul"
+    - option "Pooja"
+    - option "Rohan"
+    - option "Simran"
+    - option "Kavya"
+    - option "Amit"
+    - option "Dev"
+    - option "Ishita"
+    - option "Shreya"
+    - option "Ratan"
+    - option "Varun"
+    - option "Manan"
+    - option "Sumit"
+    - option "Roopa"
+    - option "Kabir"
+    - option "Aayan"
+    - option "Shubh"
+    - option "Ashutosh"
+    - option "Advait"
+    - option "Anand"
+    - option "Tanya"
+    - option "Tarun"
+    - option "Sunny"
+    - option "Mani"
+    - option "Gokul"
+    - option "Vijay"
+    - option "Shruti"
+    - option "Suhani"
+    - option "Mohit"
+    - option "Kavitha"
+    - option "Rehan"
+    - option "Soham"
+    - option "Rupali"
+  - button "Preview":
+    - text: Preview
+  - generic: "sarvam → gemini · listening: sarvam"
+  - generic: Opening film
+  - checkbox "Upload a film in the “Opening film” box first" [disabled]
+  - text: Upload a film in the “Opening film” box first
+  - generic: 10–20 s with audio. Greeting → needs question → film → tailored walkthrough. The agent plans during the film, so there’s no visible wait.
+  - heading "Source material" [level=2]
+  - generic: Files, visuals and official pages
+  - heading "Opening film (optional)" [level=3]
+  - paragraph: A 10–20 second brand or product film with audio. The guide greets the customer and asks what they need, then plays this film before beginning the tailored walkthrough. MP4/MOV.
+  - button "Choose files":
+    - text: Choose files
+  - generic: or drag and drop
+  - heading "Hero image (optional)" [level=3]
+  - paragraph: One picture of the whole product for the first and last slide. Without it, the best full-product image is used. JPG/PNG/WEBP/AVIF/HEIC.
+  - button "Choose files":
+    - text: Choose files
+  - generic: or drag and drop
+  - heading "Product video & images" [level=3]
+  - paragraph: MP4/MOV video (up to 1 GB — the demo plays your original; export with “fast start” so seeking is instant), JPG/PNG/WEBP/AVIF/HEIC images.
+  - button "Choose files":
+    - text: Choose files
+  - generic: or drag and drop
+  - heading "Catalogue, spec sheet, price list" [level=3]
+  - paragraph: PDF, DOCX, TXT, MD, CSV. Every fact the guide will ever state comes from here — with a citation.
+  - button "Choose files":
+    - text: Choose files
+  - generic: or drag and drop
+  - heading "Brand guidelines" [level=3]
+  - paragraph: PDF/DOCX, or paste a few lines about tone and what never to say. Optional — the agent infers a restrained default.
+  - button "Choose files":
+    - text: Choose files
+  - generic: or drag and drop
+  - textbox "Brand guidelines":
+    - /placeholder: e.g. Warm and direct. Never say “cheapest”. Always call it a “scooter”, not a “bike”.
+  - button "Add as brand guideline"
+  - heading "Competitor pages (optional)" [level=3]
+  - paragraph: Official product-page URLs only. Figures are extracted with citations and used for comparisons only if you switch comparisons on — every comparison ends with “as per their website when we checked — please verify”.
+  - textbox "Competitor product page URL":
+    - /placeholder: https://example.com/competitor
+  - button "Add page":
+    - text: Add page
+  - combobox "Competitor comparisons":
+    - 'option "Comparisons: off (guide declines to compare)" [selected]'
+    - 'option "Comparisons: on — only from these pages, always with a verify caveat"'
+  - heading "Source library" [level=2]
+  - generic: 0 added
+  - heading "Your source library starts here" [level=3]
+  - paragraph: Add product material above. Everything you add will appear here for review.
+  - strong: "Next: review and align"
+  - text: Your guide reads the sources and prepares the facts, visuals and pitch for your approval. Allow 1–3 minutes. Questions outside the sources are left open.
+  - status
+  - button "Configure Demo" [disabled]:
+    - text: Configure Demo

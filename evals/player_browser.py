@@ -2,7 +2,8 @@
 """Serve the free browser contract at http://127.0.0.1:8892/.
 
 Open it in the in-app browser and press Run checks. The page exercises the real
-player with local fakes; this server exposes only the harness and /web files.
+player with local fakes. /ui_contract.html tests the shared workspace UI with
+fake API replies. This server exposes only the harnesses and /web files.
 """
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import argparse
@@ -15,6 +16,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 WEB = (ROOT / "web").resolve()
 HARNESS = Path(__file__).with_name("player_contract.html")
+UI_HARNESS = Path(__file__).with_name("ui_contract.html")
 PLAYER_OVERRIDE = None
 
 
@@ -23,6 +25,8 @@ class Handler(BaseHTTPRequestHandler):
         path = unquote(urlsplit(self.path).path)
         if path in ("/", "/player_contract.html"):
             target = HARNESS
+        elif path == "/ui_contract.html":
+            target = UI_HARNESS
         elif path.startswith("/web/"):
             target = (WEB / path.removeprefix("/web/")).resolve()
             if not target.is_relative_to(WEB):

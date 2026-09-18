@@ -1,0 +1,47 @@
+[
+  {
+    "gate": "qa_deck",
+    "exit_code": 0,
+    "seconds": 4.71,
+    "isolated_store": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-qa_deck-9o406dfz",
+    "log": "/Users/macbook/Documents/demo-studio/output/professional-ui/baseline/qa_deck.log",
+    "mode": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-qa_deck-9o406dfz/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-qa_deck-9o406dfz/graph.sqlite"
+    },
+    "result": "307/307 deck cases pass"
+  },
+  {
+    "gate": "qa_accept",
+    "exit_code": 0,
+    "seconds": 2.84,
+    "isolated_store": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-qa_accept-0v62efna",
+    "log": "/Users/macbook/Documents/demo-studio/output/professional-ui/baseline/qa_accept.log",
+    "mode": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-qa_accept-0v62efna/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-qa_accept-0v62efna/graph.sqlite"
+    },
+    "result": "24/24 cases behave as required"
+  },
+  {
+    "gate": "smoke_mock",
+    "exit_code": 0,
+    "seconds": 4.04,
+    "isolated_store": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-smoke_mock-kk_2dsb0",
+    "log": "/Users/macbook/Documents/demo-studio/output/professional-ui/baseline/smoke_mock.log",
+    "mode": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-smoke_mock-kk_2dsb0/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-ui-baseline-smoke_mock-kk_2dsb0/graph.sqlite"
+    },
+    "result": "SMOKE OK and SMOKE OK (phase 2)"
+  }
+]

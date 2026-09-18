@@ -6,6 +6,26 @@
 
 <!-- Newest first. -->
 
+## 2026-09-18 — New library navigation and thumbnail reuse needed regression coverage
+
+**Why 1:** The legacy create handler navigated to a nonexistent `/visual` stage; the first card redesign also omitted View's fullscreen request and repeatedly loaded bundles as search text changed.
+**Why 2:** Creation had retained an old stage name, while the new card component recreated work previously done by a simpler list.
+**Why 3:** Navigation and network behavior were coupled to each card render rather than explicitly preserved at the UI boundary.
+**Why 4:** A first cache correction retained failed lookups as an empty result, so transient errors could not recover on later navigation.
+**Why 5:** The existing player contract did not exercise library actions or preview request lifetimes.
+**Fix:** Create opens the existing Sources stage; View retains its fullscreen request; Home and My demos share a per-demo/version/update preview promise. Rejected requests delete their key so a later visit can retry. No new endpoint or auto-retry loop.
+**Prevention:** `evals/ui_contract.html` exercises the actual modules and modal DOM with fake APIs:5/5 in the browser. The real isolated HTTP create also landed in Sources. This is navigation/cache coverage, not backend or fullscreen-browser permission proof.
+
+## 2026-09-18 — Desktop shell rules hid mobile content during the redesign
+
+**Why 1:** Mobile Align left review cards inaccessible, and an older header rule hid the new brand.
+**Why 2:** The desktop split pane kept its nested height/overflow rules on a narrow screen; the legacy `.top > .brand` selector was more specific than the new generic brand rules.
+**Why 3:** The new shared skin intentionally layered over existing CSS to preserve slide geometry, so old responsive rules still participated in the cascade.
+**Why 4:** Desktop screenshots could not reveal these breakpoint-specific interactions.
+**Why 5:** The player geometry suite covered slides, not the workspace rail, review panels or logo.
+**Fix:** Mobile Align uses a single scroll column with review cards followed by the assistant. The shared shell explicitly keeps its brand visible; checkbox/radio sizing is separated from text fields.
+**Prevention:** Actual390px review checks all six cards, source upload roles, slide editor controls, assistant/build controls, Sessions/share and the shared header. Whole-page widths remain390; the wide session table has contained horizontal scrolling. See `output/professional-ui/studio-*-mobile.png` and `home-mobile.png`. No core action or approval gate changed.
+
 ## 2026-09-18 — NX42 concurrency: a later duplicate overwrote a successful summary
 **Why 1:** Runware summary trace460 succeeded but duplicate failures461/462 replaced it with ERROR.
 **Why 2:** Each ended save started another worker before a result existed.
