@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
-from . import config
+from . import config, schemas
 
 _locks: dict[str, threading.Lock] = {}
 _locks_guard = threading.Lock()
@@ -188,6 +188,81 @@ def write_json(demo_id: str, name: str, obj: Any) -> None:
         tmp.replace(p)
     finally:
         tmp.unlink(missing_ok=True)
+
+
+def fact_entries(understanding: dict):
+    """Review both registries without copying competitor facts into product facts."""
+    for fact in understanding.get("facts", []):
+        yield fact, None
+    for competitor in understanding.get("competitors", []):
+        for fact in competitor.get("facts", []):
+            yield fact, competitor
+
+
+def _fact_entry(understanding: dict, fact_id: str):
+    matches = [(fact, owner) for fact, owner in fact_entries(understanding) if fact.get("id") == fact_id]
+    if not matches:
+        raise KeyError("fact not found")
+    if len(matches) != 1:
+        raise ValueError("Fact id is ambiguous in the registry")
+    return matches[0]
+
+
+def edit_fact(demo_id: str, fact_id: str, edits: dict) -> dict:
+    """Validate a human correction completely before saving either fact registry."""
+    allowed = {"value", "claim", "conditions", "truth", "source"}
+    if not isinstance(edits, dict) or not edits or set(edits) - allowed:
+        raise ValueError("Send value, claim, conditions, truth or source fields only")
+    und = read_json(demo_id, "understanding.json") or {}
+    fact, owner = _fact_entry(und, fact_id)
+    candidate = {**fact, "source": dict(fact.get("source") or {})}
+    for field, limit in (("value", 1000), ("claim", 500), ("conditions", 1000), ("truth", 30)):
+        if field not in edits:
+            continue
+        value = edits[field]
+        if not isinstance(value, str) or len(value.strip()) > limit or (field != "conditions" and not value.strip()):
+            raise ValueError(f"{field} must be text of {'0' if field == 'conditions' else '1'}–{limit} characters")
+        candidate[field] = value.strip()
+    if "source" in edits:
+        source = edits["source"]
+        if not isinstance(source, dict) or not source or set(source) - {"ref", "locator", "quote"}:
+            raise ValueError("source must contain ref, locator or quote only")
+        for field, value in source.items():
+            if not isinstance(value, str) or len(value.strip()) > (10000 if field == "quote" else 2000):
+                raise ValueError(f"source.{field} must be text within the source field limit")
+        candidate["source"].update({key: value.strip() for key, value in source.items()})
+        if candidate["source"].get("ref") != (fact.get("source") or {}).get("ref"):
+            if not all(isinstance(source.get(key), str) and source[key].strip() for key in ("locator", "quote")) or "conditions" not in edits:
+                raise ValueError("Changing source.ref requires its locator, exact quote and explicit conditions")
+    try:
+        schemas.Fact.model_validate(candidate, strict=True)
+    except ValueError as exc:
+        raise ValueError("Fact correction does not match the existing fact schema") from exc
+    sources = {source["id"]: source for source in load(demo_id)["sources"]}
+    ref = candidate["source"].get("ref")
+    source = sources.get(ref)
+    if not source:
+        raise ValueError("source.ref must name an existing source in this demo")
+    if owner is not None:
+        owner_ref = owner.get("source_id") or (fact.get("source") or {}).get("ref")
+        if source.get("role") != "competitor" or ref != owner_ref:
+            raise ValueError("A competitor fact must keep its owning competitor source; review the fact from the other source instead")
+    elif source.get("role") == "competitor":
+        raise ValueError("A product fact cannot cite a competitor source")
+    candidate["edited"] = True
+    fact.update(candidate)
+    write_json(demo_id, "understanding.json", und)
+    return fact
+
+
+def set_fact_approval(demo_id: str, fact_id: str, approved: bool) -> dict:
+    if not isinstance(approved, bool):
+        raise ValueError("approved must be true or false")
+    und = read_json(demo_id, "understanding.json") or {}
+    fact, _owner = _fact_entry(und, fact_id)
+    fact["approved"] = approved
+    write_json(demo_id, "understanding.json", und)
+    return fact
 
 
 def read_json(demo_id: str, name: str, default: Any = None) -> Any:

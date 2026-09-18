@@ -12,6 +12,7 @@ from ..llm import claude
 from .bundle import media_url
 from .qa import classify
 from . import voice as voice_agent
+from . import deck as deck_agent
 from .visuals import part_boxes as visual_parts
 
 CARD_ORDER = ["visuals", "facts", "script", "faq", "persona", "ctas"]
@@ -28,7 +29,7 @@ You return ONE reply for the user and a list of ACTIONS for the orchestrator. Ac
 - revise(stage, instruction) — stage is 'understand' (re-read sources: wrong/missing facts, brand tone, visual tagging),
   'plan' (segments, concerns, gaps, persona, intake, CTA proposals) or 'author' (script wording). Write the instruction as a precise
   brief for that stage — include the user's exact words and what must change. Prefer edit_fact for a single wrong value.
-- edit_fact(fact_id, fact_value[, fact_claim]) / remove_fact(fact_id) — direct registry edits when the user states the correct value.
+- edit_fact(fact_id, fact_value[, fact_claim, fact_conditions, fact_truth, fact_source]) / remove_fact(fact_id) — direct corrections or rejection in either product F facts or competitor C facts. Optional fields change only when the user explicitly provides a correction. fact_source is the citation {{ref, locator, quote}}; ref must name an existing source. Keep competitor facts under their own competitor source. Never turn manufacturer-stated figures into certified test results without explicit evidence.
 - set_ctas(ctas) — the FULL new list when the user adds/changes/removes buttons (ids: short slugs; kinds: book|reserve|buy|contact|trial|link|custom).
 - set_voice(voice_name, persona_description, tone) — voice_name one of Sulafat, Aoede, Leda, Despina, Kore, Achernar, Zephyr; fill only what changes.
 - request_upload(upload_kind, reason) — when the right fix is more material (a missing image, the spec sheet).
@@ -88,7 +89,10 @@ def cards(demo_id: str) -> dict:
         "visuals": {"shots": shots, "images": images, "gaps": plan.get("visual_gaps", []), "video_summaries": und.get("video_summaries", {}),
                     "audit": {"method": visual_audit.get("method"), "model": visual_audit.get("model"), "line_count": len(visual_audit.get("lines", [])), "image_count": len(visual_audit.get("images", [])), "missing_line_count": sum(1 for x in visual_audit.get("lines", []) if x.get("missing_features"))},
                     "segments": [{"id": s["id"], "title": s["title"], "visual_refs": s["visual_refs"]} for s in plan.get("segments", [])]},
-        "facts": {"facts": und.get("facts", []), "unknowns": [({**u, "category": classify(u["question"])[0], "suggested_document": classify(u["question"])[1]} if not u.get("category") or u.get("category") == "other" and not u.get("suggested_document") else u) for u in und.get("unknowns", [])], "sources": demo["sources"],
+        "facts": {"facts": [{**fact, "scope": "competitor" if owner is not None else "product",
+                              "competitor_name": owner.get("name", "") if owner is not None else "",
+                              "competitor_source_id": owner.get("source_id", "") if owner is not None else ""}
+                             for fact, owner in store.fact_entries(und)], "unknowns": [({**u, "category": classify(u["question"])[0], "suggested_document": classify(u["question"])[1]} if not u.get("category") or u.get("category") == "other" and not u.get("suggested_document") else u) for u in und.get("unknowns", [])], "sources": demo["sources"],
                   "gaps": reh.get("gaps", []), "script_issues": script.get("issues", [])},
         "persona": {**voice, "sample_audio": media_url(demo_id, plan.get("voice_sample_audio")), "brand": und.get("brand", {}),
                     "provider": actual_provider, "voice_name": voice_agent.voice_name_for(demo, actual_provider)},
@@ -105,7 +109,7 @@ def cards(demo_id: str) -> dict:
         "deck": {"version": deck.get("version"), "method": deck.get("method"), "hero_image": deck.get("hero_image"),
                  "written_at": (store.path(demo_id, "deck.json").stat().st_mtime if store.path(demo_id, "deck.json").exists() else None),
                  "images": [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "angle": i.get("angle", ""), "description": i.get("description", ""), "parts": visual_parts(i), "full_product": bool(i.get("full_product"))} for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])],
-                 "slides": [{**s, "image_url": _vis_url(demo_id, und, src_by_id, s.get("image_id"))} for s in deck.get("slides", [])]},
+                 "slides": [{**s, "image_url": _vis_url(demo_id, und, src_by_id, s.get("image_id"))} for s in deck_agent.slides_with_script(deck.get("slides", []), script)]},
         "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "answered": (store.read_json(demo_id, "faq.json") or {}).get("answered", 0), "total": (store.read_json(demo_id, "faq.json") or {}).get("total", 0)},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),
@@ -130,7 +134,7 @@ def _cards_text(c: dict) -> str:
         f"VISUAL PROOF AUDIT: {json.dumps(v.get('audit', {}))}",
         "  shots: " + "; ".join(f"{s['id']} {s['start']:.0f}-{s['end']:.0f}s q{s['quality']} {s['part']}: {s['description'][:60]}" for s in v["shots"][:40]),
         "  images: " + "; ".join(f"{i['id']} q{i['quality']} {i['angle']}: {i['description'][:60]}" for i in v["images"][:30]),
-        f"FACTS ({len(f['facts'])}): " + "; ".join(f"{x['id']} [{x['kind']}] {x['claim']}: {x['value']}" for x in f["facts"][:120]),
+        f"FACTS ({len(f['facts'])}): " + "; ".join(json.dumps({key: x.get(key) for key in ("id", "scope", "competitor_name", "kind", "claim", "value", "conditions", "truth", "approved", "source")}, ensure_ascii=False) for x in f["facts"]),
         f"UNKNOWNS: " + "; ".join(f"{u['id']} {u['question']} ({u['status']})" for u in f["unknowns"][:40]),
         f"SOURCES: " + "; ".join(f"{s['id']} {s['kind']} {s['name']} role={s.get('role')}" for s in f["sources"]),
         f"PERSONA & VOICE: {json.dumps({k: p.get(k) for k in ('persona_name', 'persona_description', 'tone', 'suggested_voice', 'sample_line')})} provider={p.get('provider')} voice={p.get('voice_name')}",

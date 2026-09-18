@@ -1,0 +1,52 @@
+{
+  "status": "free_validation_passed_not_applied",
+  "plan_schema": true,
+  "matched_replacements": 44,
+  "script_issues": [],
+  "line_ids": 38,
+  "deck_labels_valid": true,
+  "no_paid_calls": true,
+  "sl04_c1_geometry_omitted": true,
+  "addendum_checks": [
+    {
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/nexon-product-addendum.txt",
+      "quote_count": 11,
+      "quotes_matching_text": 9,
+      "visual_only_quote_checks": [
+        "3 years | 100 000 km",
+        "WARRANTY"
+      ],
+      "visual_evidence": [
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brochure-11.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brochure-18.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brochure-38.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/nexon-variants-39.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/nexon-specs-40.png"
+      ],
+      "matrix_method": "Selected printed row/column labels and cells visually reviewed; no flattened-header inference."
+    },
+    {
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "quote_count": 7,
+      "quotes_matching_text": 7,
+      "visual_only_quote_checks": [],
+      "visual_evidence": [
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brezza-10.png"
+      ],
+      "matrix_method": "Selected printed row/column labels and cells visually reviewed; no flattened-header inference."
+    },
+    {
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "quote_count": 5,
+      "quotes_matching_text": 5,
+      "visual_only_quote_checks": [],
+      "visual_evidence": [
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/venue-18.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/venue-19.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/venue-20.png"
+      ],
+      "matrix_method": "Selected printed row/column labels and cells visually reviewed; no flattened-header inference."
+    }
+  ],
+  "all_addendum_roles_separate": true
+}

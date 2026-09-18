@@ -37,6 +37,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Lead capture | FUNCTION | open dismissible form after ≥60% of route, ≥2 questions, or any unknown answer; valid phone is ten digits starting 6–9 | `player.js`, `POST /run/lead` |
 | MP4 export | FUNCTION | parked: `GET /export.mp4` → 409 until the exporter is rebuilt for slides with HTML callouts | `server/exporter.py` |
 | Approvals reset | FUNCTION | new uploads and source/fact/script edits reset affected approvals and re-run the relevant alignment path | `server/app.py`, `orchestrator.py` |
+| Align review completeness | FUNCTION | F and C facts are shown together for review but stored separately; API/chat edit/reject share schema and source-ownership validation. Optional truth/source corrections require existing sources; changing a product source requires fresh locator/quote/conditions, while C facts stay with their source group. Script review supports lines, one intake, check-ins and title/outcome metadata; question claims reject, changed question audio clears and downstream work becomes stale | `store.edit_fact`, `store.set_fact_approval`, `agents/align.py`, `PATCH /align/script` |
 
 ## File index
 

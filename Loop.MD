@@ -78,6 +78,10 @@ rebuilds the demo.
 
 ### Cinematic/source supplement — 2026-09-18
 
+| # | Input | Expected |
+|---|---|---|
+| 39 | `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/align_review_contract.py` | 42 free contracts: both F/C facts are reviewable without merging storage; truth and source corrections validate against the existing schema and source records; invalid/blended/cross-role provenance and non-boolean approvals reject atomically; chat edit/reject uses the same boundaries; approved C facts remain gated by competition; one intake/check-in/title/outcome edits preserve line behavior, clear stale question audio, invalidate downstream work and cannot introduce uncited claims or a second intake. Provider/network calls are blocked. |
+
 `evals/player_browser.py` now serves19 browser cases. All original14 behavior cases remain; five new cases cover exact anchors through resize without saved edits changing, readable narrow evidence, opening/closing native ratios, stable crowded fallback and tall-image/wrapped-evidence separation. Last actual browser result19/19; synthetic media is not a real voice test.
 
 `MOCK_LLM=1 .venv/bin/python evals/source_contract.py` covers rival PDF/text isolation, official source metadata validation, retained applicability/provenance and rejected-citation handling. Run it with the other required gates before accepting the real comparison pipeline.

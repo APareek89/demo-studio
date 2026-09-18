@@ -1,0 +1,42 @@
+REVIEWED TRANSCRIPTION OF OFFICIAL SOURCE — Hyundai Venue
+Prepared 18 September 2026 for local demo dm_36d47b86, iteration 2.
+This is a reviewer-prepared source addendum, not a new manufacturer publication.
+Official source URL: https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf
+Original uploaded source ID in iteration 1: src_43582f
+Original PDF SHA256: e08b9c95c3bac2603fe8f1051d519a8a26f7a348ad21b1f1ebf034f1b75fff9d
+Role for ingestion: competitor
+Method: visually checked original PDF labels, matrix headers/cells and footnotes. Quoted labels are source wording. Matrix transcriptions explicitly pair the printed row with its printed column; they are not represented as continuous prose quotations. Whitespace and typographic spacing are normalized. No new customer-facing fact IDs are assigned here.
+
+V1 — Selected Venue petrol automatic pairing
+Locator: PDF page 19, Engine & trim plan; PDF page 18, Technical specifications, turbo-petrol transmission column.
+Matrix transcription: engine row Kappa 1.0 l Turbo GDi petrol; regular HX 10 column; cell DCT. HX 10 Knight is a separate column.
+Exact page-18 transmission label: "7 - speed DCT".
+Supported selected combination: regular Venue HX10, Kappa 1.0L Turbo GDi petrol, seven-speed DCT. Do not substitute the 1.2L manual or the diesel six-speed automatic. The rendered matrix, not flattened PDF header order, establishes the trim pairing.
+
+V2 — Front-seat ventilation
+Locator: PDF page 20, Comfort & Convenience.
+Exact label: "Front row ventilated seats".
+Matrix transcription: HX 8, HX 8 Knight, HX 10 and HX 10 Knight columns marked S; the other columns are unavailable.
+Applicability: selected regular HX10 has front-seat ventilation. This is not exclusive to that trim or to Venue.
+
+V3 — Rear AC vents
+Locator: PDF page 20, Comfort & Convenience.
+Exact label: "Rear AC vents".
+Matrix transcription: all thirteen named HX trim columns are marked S, including regular HX 10.
+Applicability: selected HX10 has rear AC vents. No comparative cooling-performance claim is supplied.
+
+V4 — ISOFIX
+Locator: PDF page 19, Safety.
+Exact label: "ISOFIX".
+Matrix transcription: all thirteen named HX trim columns are marked S, including regular HX 10.
+Applicability: selected HX10 has ISOFIX. Attachment-point count, every child-seat fit and installation rules are not established here.
+
+V5 — Rear-seat flexibility
+Locator: PDF page 20, Interior.
+Exact label: "60:40 split rear seat".
+Matrix transcription: regular HX 10 column marked S.
+Applicability: selected regular HX10 has the split rear seat. This does not establish a particular luggage or child-seat fit.
+
+Verification note: official HTML feature tables at https://www.hyundai.com/in/en/find-a-car/venue/features independently preserve the same selected-trim cells (table 1 row 2; table 6 rows 5 and 20; table 2 row 14; table 4 row 18). The primary source for this addendum is the visually checked PDF identified above. No ambiguous Leather Pack rows are transcribed.
+
+Scope: current India-market brochure captured 18 September 2026. Features and specifications can vary by trim and may change; the manufacturer directs buyers to confirm the selected variant. No price, financing approval, real-world mileage, delivery promise, practical luggage-fit guarantee or cross-brand safety ranking is supplied by this addendum.

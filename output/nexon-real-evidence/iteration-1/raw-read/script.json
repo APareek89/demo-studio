@@ -1,0 +1,794 @@
+{
+  "segments": [
+    {
+      "id": "overview-intro",
+      "title": "Welcome to Tata Nexon",
+      "role": "intro",
+      "topic": "overview",
+      "outcome": "A compact SUV built for family safety and confident commuting",
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "lines": [
+        {
+          "text": "The Tata Nexon is built for everyday city commuting and weekend highway trips with your family.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F005"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "overview-intro-L1",
+          "start": 0.0,
+          "duration": 8.4,
+          "exact": false
+        },
+        {
+          "text": "Under four metres long, it combines easy urban parking with certified five-star crash protection.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F003",
+            "F005"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "overview-intro-L2",
+          "start": 8.4,
+          "duration": 7.4,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "Its compact length fits neatly into tight street parking without sacrificing passenger space.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F005"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "overview-intro-D1"
+        },
+        {
+          "text": "Both global and Indian crash agencies tested the platform and certified it at five stars.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F003",
+            "F004"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "overview-intro-D2"
+        }
+      ],
+      "start": 0.0,
+      "duration": 15.8,
+      "spoken": 15.8
+    },
+    {
+      "id": "three-reminders",
+      "title": "Three Things to Remember",
+      "role": "outcome",
+      "topic": "pillars",
+      "outcome": "Three key strengths of the Nexon",
+      "usp_ids": [
+        "usp-safety",
+        "usp-clearance",
+        "usp-cabin-tech"
+      ],
+      "lines": [
+        {
+          "text": "The three things I would pay attention to are certified five-star safety and tall road clearance.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F003",
+            "F009"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-L1",
+          "start": 15.8,
+          "duration": 8.4,
+          "exact": false
+        },
+        {
+          "text": "Along with twin digital screens, feel free to steer which of these three you explore first.",
+          "step": "advance",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "cabin cockpit"
+          },
+          "fact_ids": [
+            "F027"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-L2",
+          "start": 24.2,
+          "duration": 8.4,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "Every trim includes six airbags and stability control as standard equipment.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-D1"
+        },
+        {
+          "text": "The high stance gives you two hundred and eight millimetres of clearance over rough spots.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F009"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "three-reminders-D2"
+        }
+      ],
+      "start": 15.8,
+      "duration": 16.8,
+      "spoken": 16.8
+    },
+    {
+      "id": "stance-design",
+      "title": "Exterior Stance & Road Clearance",
+      "role": "proof",
+      "topic": "clearance",
+      "outcome": "Pothole confidence with 208 mm clearance",
+      "usp_ids": [
+        "usp-clearance"
+      ],
+      "lines": [
+        {
+          "text": "One thing you will notice first is the tall stance.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im02",
+            "focus": "raised profile"
+          },
+          "fact_ids": [
+            "F009"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "stance-design-L1",
+          "start": 32.6,
+          "duration": 5.3,
+          "exact": false
+        },
+        {
+          "text": "Certified two hundred and eight millimetres of clearance lets you clear monsoon water and broken roads without underbody scrapes.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F009"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "stance-design-L2",
+          "start": 37.9,
+          "duration": 10.0,
+          "exact": false
+        }
+      ],
+      "checkin": "Do your regular routes involve broken patches or tall speed breakers?",
+      "deeper": [
+        {
+          "text": "Wheel sizes measure sixteen inches across all trims, with wider tyres on upper personas.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F023"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "stance-design-D1"
+        },
+        {
+          "text": "Front disc brakes paired with rear drums handle everyday stopping power.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F024"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "stance-design-D2"
+        }
+      ],
+      "checkin_start": 47.9,
+      "checkin_duration": 5.8,
+      "start": 32.6,
+      "duration": 21.1,
+      "spoken": 15.3
+    },
+    {
+      "id": "cockpit-experience",
+      "title": "Connected Cockpit & Screens",
+      "role": "proof",
+      "topic": "technology",
+      "outcome": "Effortless control with twin 10.25-inch screens",
+      "usp_ids": [
+        "usp-cabin-tech"
+      ],
+      "lines": [
+        {
+          "text": "Now the part you would live with daily inside the cabin.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "dual screens"
+          },
+          "fact_ids": [
+            "F027",
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-L1",
+          "start": 53.7,
+          "duration": 5.8,
+          "exact": false
+        },
+        {
+          "text": "Dual ten-point-two-five-inch screens put navigation right in your line of sight so you stay focused on traffic.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F027",
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-L2",
+          "start": 59.5,
+          "duration": 8.9,
+          "exact": false
+        }
+      ],
+      "checkin": "Would built-in navigation right on your instrument cluster be helpful on your daily commute?",
+      "deeper": [
+        {
+          "text": "The centre touchscreen is powered by Harman audio software starting from the Pure plus trim.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F027"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-D1"
+        },
+        {
+          "text": "The full digital driver screen is equipped on the top Fearless plus persona.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "digital driver cluster"
+          },
+          "fact_ids": [
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-D2"
+        }
+      ],
+      "checkin_start": 68.4,
+      "checkin_duration": 7.4,
+      "start": 53.7,
+      "duration": 22.1,
+      "spoken": 14.7
+    },
+    {
+      "id": "luggage-practicality",
+      "title": "Boot Space & Practicality",
+      "role": "proof",
+      "topic": "practicality",
+      "outcome": "Generous luggage capacity up to 382 litres",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Here is how it handles luggage on family trips.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im06",
+            "focus": "open luggage area"
+          },
+          "fact_ids": [
+            "F010"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "luggage-practicality-L1",
+          "start": 75.8,
+          "duration": 4.7,
+          "exact": false
+        },
+        {
+          "text": "With three hundred and eighty-two litres of boot space, petrol and diesel models fit multiple suitcases easily for airport runs.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F010"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "luggage-practicality-L2",
+          "start": 80.5,
+          "duration": 10.5,
+          "exact": false
+        }
+      ],
+      "checkin": "Are you planning mostly weekend family getaways, or everyday city errands?",
+      "deeper": [
+        {
+          "text": "If you choose the gas variant, twin underfloor cylinders preserve three hundred and twenty-one litres of usable cargo room.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F011",
+            "F013"
+          ],
+          "card": "contrast",
+          "unverified": false,
+          "id": "luggage-practicality-D1"
+        },
+        {
+          "text": "The conventional petrol fuel tank holds forty-four litres for extended highway driving.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F012"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "luggage-practicality-D2"
+        }
+      ],
+      "checkin_start": 91.0,
+      "checkin_duration": 5.8,
+      "start": 75.8,
+      "duration": 21.0,
+      "spoken": 15.2
+    },
+    {
+      "id": "performance-engines",
+      "title": "Powertrain & Driving Confidence",
+      "role": "proof",
+      "topic": "performance",
+      "outcome": "Turbocharged pulling power across multiple fuel choices",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Under the hood, you get turbocharged engines across petrol, diesel, and factory-fitted gas.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F014",
+            "F017"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "performance-engines-L1",
+          "start": 96.8,
+          "duration": 6.8,
+          "exact": false
+        },
+        {
+          "text": "Available transmissions include a seven-speed dual-clutch automatic, giving you smooth acceleration without shifting stress in bumper-to-bumper jams.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F022"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "performance-engines-L2",
+          "start": 103.6,
+          "duration": 8.9,
+          "exact": false
+        }
+      ],
+      "checkin": "Do you prefer the convenience of an automatic, or the control of a manual gearbox?",
+      "deeper": [
+        {
+          "text": "The 1.2-litre turbo petrol produces one hundred and twenty horsepower for lively overtaking on the open highway.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F014",
+            "F015"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "performance-engines-D1"
+        },
+        {
+          "text": "The 1.5-litre turbo diesel delivers strong pulling power lower down, ideal for heavy loads and long-distance touring.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F017",
+            "F018",
+            "F019"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "performance-engines-D2"
+        }
+      ],
+      "checkin_start": 112.5,
+      "checkin_duration": 7.9,
+      "start": 96.8,
+      "duration": 23.6,
+      "spoken": 15.7
+    },
+    {
+      "id": "structural-safety",
+      "title": "Five-Star Safety & Driver Assistance",
+      "role": "proof",
+      "topic": "safety",
+      "outcome": "Verified five-star safety for all occupants",
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "lines": [
+        {
+          "text": "Here is the part people ask about first.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [
+            "F003"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "structural-safety-L1",
+          "start": 120.4,
+          "duration": 4.2,
+          "exact": false
+        },
+        {
+          "text": "Both Global and Bharat NCAP certified five stars, backed by standard six airbags and electronic stability control on every trim.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F003",
+            "F004",
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "structural-safety-L2",
+          "start": 124.6,
+          "duration": 10.5,
+          "exact": false
+        }
+      ],
+      "checkin": "Is standard safety gear your top priority when choosing a family car?",
+      "deeper": [
+        {
+          "text": "Every seat gets a three-point emergency locking seatbelt, keeping all passengers securely restrained.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "three point belts"
+          },
+          "fact_ids": [
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "structural-safety-D1"
+        },
+        {
+          "text": "On the top automatic petrol model, advanced driver assistance adds autonomous braking and lane keeping assist.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F026"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "structural-safety-D2"
+        }
+      ],
+      "checkin_start": 135.1,
+      "checkin_duration": 6.3,
+      "start": 120.4,
+      "duration": 21.0,
+      "spoken": 14.7
+    },
+    {
+      "id": "extra-features",
+      "title": "A Few More Things",
+      "role": "features",
+      "topic": "features",
+      "outcome": "Premium convenience and surround parking visibility",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Quickly, a few more things you will like.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "extra-features-L1",
+          "start": 141.4,
+          "duration": 4.2,
+          "exact": false
+        },
+        {
+          "text": "Upper trims add ventilated front seats, nine JBL speakers, and a 360-degree camera with blind-view monitor for effortless parking.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F029",
+            "F030"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "extra-features-L2",
+          "start": 145.6,
+          "duration": 10.0,
+          "exact": false
+        }
+      ],
+      "checkin": "Would you like to explore any of these premium features in more detail?",
+      "deeper": [
+        {
+          "text": "Connected car technology with over seventy features is included, with the first year subscription free.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F031"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "extra-features-D1"
+        },
+        {
+          "text": "Keep in mind that the premium JBL audio and advanced driver aids are not offered on gas models.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F026",
+            "F029"
+          ],
+          "card": "contrast",
+          "unverified": false,
+          "id": "extra-features-D2"
+        }
+      ],
+      "checkin_start": 155.6,
+      "checkin_duration": 6.8,
+      "start": 141.4,
+      "duration": 21.0,
+      "spoken": 14.2
+    },
+    {
+      "id": "ownership-terms",
+      "title": "Ownership, Pricing & Open Questions",
+      "role": "establish",
+      "topic": "ownership",
+      "outcome": "Clear view of pricing and dealer checkpoints",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Ex-showroom pricing starts at seven point three nine lakh rupees, with introductory finance around sixty-five hundred rupees monthly.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F001",
+            "F002"
+          ],
+          "card": "price",
+          "unverified": false,
+          "id": "ownership-terms-L1",
+          "start": 162.4,
+          "duration": 9.5,
+          "exact": false
+        },
+        {
+          "text": "Tested fuel mileage and seat comfort are not in the brochure; an in-person test drive settles both.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "ownership-terms-L2",
+          "start": 171.9,
+          "duration": 8.9,
+          "exact": false
+        }
+      ],
+      "checkin": "Shall we review the starting variants, or schedule an in-person test drive?",
+      "deeper": [
+        {
+          "text": "Initial financing instalments depend on lender approval and may increase after the promotional period.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F002"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "ownership-terms-D1"
+        },
+        {
+          "text": "Tata Motors provides round-the-clock roadside assistance via their toll-free helpline.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F032"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "ownership-terms-D2"
+        }
+      ],
+      "checkin_start": 180.8,
+      "checkin_duration": 6.3,
+      "start": 162.4,
+      "duration": 24.7,
+      "spoken": 18.4
+    }
+  ],
+  "closing": [
+    {
+      "text": "The strongest fit is a family seeking five-star safety and high road clearance, while real-world mileage and engine responsiveness remain to verify.",
+      "step": "translate",
+      "visual": null,
+      "fact_ids": [
+        "F003",
+        "F009"
+      ],
+      "card": "summary",
+      "unverified": false,
+      "id": "close-L1",
+      "start": 187.1,
+      "duration": 11.6
+    },
+    {
+      "text": "To experience the turbo pulling power and high driving position firsthand, click Book Test Drive.",
+      "step": "advance",
+      "visual": null,
+      "fact_ids": [],
+      "card": "none",
+      "unverified": false,
+      "id": "close-L2",
+      "start": 198.7,
+      "duration": 7.9
+    }
+  ],
+  "intake_q1": "Hello and welcome to Tata Motors! Would you like to share what kind of driving you have planned for your next SUV, or shall we simply jump straight into the tour?",
+  "intake_q2": "",
+  "issues": [],
+  "version": 1,
+  "intake_audio": {},
+  "visual_audit": {
+    "method": "gemini_pixels",
+    "model": "gemini-3.6-flash",
+    "line_count": 38,
+    "image_count": 8,
+    "missing_line_count": 24
+  },
+  "timeline": {
+    "total_seconds": 206.6,
+    "batches": [
+      {
+        "id": "overview-intro",
+        "title": "Welcome to Tata Nexon",
+        "role": "intro",
+        "start": 0.0,
+        "duration": 15.8,
+        "spoken": 15.8,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "three-reminders",
+        "title": "Three Things to Remember",
+        "role": "outcome",
+        "start": 15.8,
+        "duration": 16.8,
+        "spoken": 16.8,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "stance-design",
+        "title": "Exterior Stance & Road Clearance",
+        "role": "proof",
+        "start": 32.6,
+        "duration": 21.1,
+        "spoken": 15.3,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "cockpit-experience",
+        "title": "Connected Cockpit & Screens",
+        "role": "proof",
+        "start": 53.7,
+        "duration": 22.1,
+        "spoken": 14.7,
+        "checkin": 7.4,
+        "over_20s": false
+      },
+      {
+        "id": "luggage-practicality",
+        "title": "Boot Space & Practicality",
+        "role": "proof",
+        "start": 75.8,
+        "duration": 21.0,
+        "spoken": 15.2,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "performance-engines",
+        "title": "Powertrain & Driving Confidence",
+        "role": "proof",
+        "start": 96.8,
+        "duration": 23.6,
+        "spoken": 15.7,
+        "checkin": 7.9,
+        "over_20s": false
+      },
+      {
+        "id": "structural-safety",
+        "title": "Five-Star Safety & Driver Assistance",
+        "role": "proof",
+        "start": 120.4,
+        "duration": 21.0,
+        "spoken": 14.7,
+        "checkin": 6.3,
+        "over_20s": false
+      },
+      {
+        "id": "extra-features",
+        "title": "A Few More Things",
+        "role": "features",
+        "start": 141.4,
+        "duration": 21.0,
+        "spoken": 14.2,
+        "checkin": 6.8,
+        "over_20s": false
+      },
+      {
+        "id": "ownership-terms",
+        "title": "Ownership, Pricing & Open Questions",
+        "role": "establish",
+        "start": 162.4,
+        "duration": 24.7,
+        "spoken": 18.4,
+        "checkin": 6.3,
+        "over_20s": false
+      }
+    ],
+    "exact": false
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "fields": {},
+  "replacements": [
+    {
+      "from": "A Few More Things",
+      "to": "Details worth comparing"
+    },
+    {
+      "from": "Highlight thoughtful convenience upgrades available on upper trims.",
+      "to": "Name useful camera and audio features with their exact trim conditions."
+    },
+    {
+      "from": "Premium convenience and surround parking visibility",
+      "to": "Camera and audio equipment with precise trim conditions"
+    },
+    {
+      "from": "Ownership, Pricing & Open Questions",
+      "to": "Start with a clear quote"
+    },
+    {
+      "from": "Review starting costs, finance options, and transparently acknowledge points to verify at the dealership.",
+      "to": "State the starting price and conditional nature of finance, then identify what needs a current dealer quote."
+    },
+    {
+      "from": "Clear view of pricing and dealer checkpoints",
+      "to": "Published starting price, conditional finance and dealer checks"
+    },
+    {
+      "from": "Hello and welcome to Tata Motors! Would you like to share what kind of driving you have planned for your next SUV, or shall we simply jump straight into the tour?",
+      "to": "Welcome to Tata Nexon. What's the main thing you'd like your next car to do for you? You can skip this and browse."
+    },
+    {
+      "from": "Would you prefer to focus first on passenger safety and daily comfort, or explore the different engine and gearbox options?",
+      "to": ""
+    },
+    {
+      "from": "To help pinpoint the right transmission and trim, will this car spend most of its time in stop-and-go city traffic or out on open highways?",
+      "to": ""
+    },
+    {
+      "from": "Since daily running cost and family comfort are top priorities, would you like to compare the boot space and pulling power between the petrol and dual-cylinder gas options?",
+      "to": ""
+    },
+    {
+      "from": "F011 references 321 litres with twin cylinder technology, but im06 shows the standard deep boot.",
+      "to": "The CNG boot figure needs a source-identified CNG image; the current general boot image does not prove the cylinder layout."
+    },
+    {
+      "from": "Upload a detailed photo of the Nexon iCNG rear boot showing the flat luggage floor over the twin gas tanks.",
+      "to": "Add an official Nexon iCNG boot image that clearly identifies the fuel variant before pointing to its cylinder packaging."
+    },
+    {
+      "from": "F026 outlines camera and radar driver assistance features on Fearless+ PS DCA.",
+      "to": "The current material lists driver-assistance functions for Fearless + PS petrol DCA; it does not establish a particular sensor architecture."
+    },
+    {
+      "from": "Upload a close-up photo of the front upper windshield camera housing for driver assistance.",
+      "to": "Use an official image explicitly identifying the relevant Nexon driver-assistance hardware before pointing to a physical sensor."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "ctas": [
+    {
+      "id": "book-test-drive",
+      "label": "Book Test Drive",
+      "kind": "book",
+      "url": "https://tata.cars/book-test-drive/landing.html",
+      "primary": true,
+      "when": "always"
+    },
+    {
+      "id": "view-pricing",
+      "label": "View Variant Prices",
+      "kind": "link",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "primary": false,
+      "when": "after_price"
+    },
+    {
+      "id": "contact-dealer",
+      "label": "Find a Dealer",
+      "kind": "contact",
+      "url": "https://tata.cars/dealer-locator.html",
+      "primary": false,
+      "when": "end"
+    }
+  ]
+}

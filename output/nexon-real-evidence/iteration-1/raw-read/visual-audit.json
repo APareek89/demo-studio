@@ -1,0 +1,933 @@
+{
+  "method": "gemini_pixels",
+  "model": "gemini-3.6-flash",
+  "lines": [
+    {
+      "line_id": "overview-intro-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "General introductory marketing claim about usage is non-visual."
+    },
+    {
+      "line_id": "overview-intro-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "under four metres length",
+        "certified five-star crash protection"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "under four metres length",
+        "certified five-star crash protection"
+      ],
+      "confidence": 0.9,
+      "reason": "Crash safety ratings and exact dimensional specifications cannot be proven by photos alone."
+    },
+    {
+      "line_id": "overview-intro-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "compact length"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "compact length"
+      ],
+      "confidence": 0.9,
+      "reason": "Parking maneuverability and compact length claims are non-visual statements."
+    },
+    {
+      "line_id": "overview-intro-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "five-star crash certification"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "five-star crash certification"
+      ],
+      "confidence": 0.95,
+      "reason": "Crash test certifications cannot be visually verified by vehicle body shots."
+    },
+    {
+      "line_id": "three-reminders-L1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "five-star safety",
+        "tall road clearance"
+      ],
+      "visible_features": [
+        "tall road clearance"
+      ],
+      "missing_features": [
+        "five-star safety"
+      ],
+      "confidence": 0.85,
+      "reason": "Side view shows tall ground clearance, but crash safety rating is not visual."
+    },
+    {
+      "line_id": "three-reminders-L2",
+      "visual": "im04",
+      "coverage": "full",
+      "spoken_features": [
+        "twin digital screens"
+      ],
+      "visible_features": [
+        "twin digital screens"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "The dashboard image clearly shows both the infotainment touchscreen and digital driver instrument screen."
+    },
+    {
+      "line_id": "three-reminders-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "six airbags",
+        "stability control"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "six airbags",
+        "stability control"
+      ],
+      "confidence": 0.9,
+      "reason": "Internal safety electronics and airbag deployments are not visually verified."
+    },
+    {
+      "line_id": "three-reminders-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "high stance",
+        "208 mm ground clearance"
+      ],
+      "visible_features": [
+        "high stance"
+      ],
+      "missing_features": [
+        "208 mm ground clearance"
+      ],
+      "confidence": 0.85,
+      "reason": "High ride height is visibly shown in side profile, but exact 208 mm measurement metric is non-visual."
+    },
+    {
+      "line_id": "stance-design-L1",
+      "visual": "im02",
+      "coverage": "full",
+      "spoken_features": [
+        "tall stance"
+      ],
+      "visible_features": [
+        "tall stance"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Side profile view clearly demonstrates the tall stance of the vehicle."
+    },
+    {
+      "line_id": "stance-design-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "208 mm ground clearance",
+        "underbody clearance"
+      ],
+      "visible_features": [
+        "underbody clearance"
+      ],
+      "missing_features": [
+        "208 mm ground clearance"
+      ],
+      "confidence": 0.85,
+      "reason": "Ground clearance is visible under the vehicle, but exact 208 mm figure is non-visual."
+    },
+    {
+      "line_id": "stance-design-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "sixteen inch alloy wheels",
+        "tyres"
+      ],
+      "visible_features": [
+        "alloy wheels",
+        "tyres"
+      ],
+      "missing_features": [
+        "sixteen inch alloy wheels"
+      ],
+      "confidence": 0.85,
+      "reason": "Alloy wheels and tyres are visible, but the exact 16-inch sizing mark cannot be verified from image."
+    },
+    {
+      "line_id": "stance-design-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "front disc brakes",
+        "rear drum brakes"
+      ],
+      "visible_features": [
+        "front disc brakes"
+      ],
+      "missing_features": [
+        "rear drum brakes"
+      ],
+      "confidence": 0.75,
+      "reason": "Front brake assembly is visible through the front wheel spokes, but rear brakes are obstructed."
+    },
+    {
+      "line_id": "cockpit-experience-L1",
+      "visual": "im04",
+      "coverage": "full",
+      "spoken_features": [
+        "cabin interior"
+      ],
+      "visible_features": [
+        "cabin interior"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Full dashboard view displays the cabin interior overview."
+    },
+    {
+      "line_id": "cockpit-experience-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "dual 10.25-inch screens",
+        "navigation in line of sight"
+      ],
+      "visible_features": [
+        "dual screens"
+      ],
+      "missing_features": [
+        "10.25-inch screen size metric"
+      ],
+      "confidence": 0.9,
+      "reason": "Dual screens are clearly visible on the dashboard, but exact screen diagonal dimension is non-visual."
+    },
+    {
+      "line_id": "cockpit-experience-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "centre touchscreen",
+        "Harman audio software"
+      ],
+      "visible_features": [
+        "centre touchscreen"
+      ],
+      "missing_features": [
+        "Harman audio software"
+      ],
+      "confidence": 0.85,
+      "reason": "Touchscreen unit is shown in close-up, but Harman software branding is not visible on the UI."
+    },
+    {
+      "line_id": "cockpit-experience-D2",
+      "visual": "im04",
+      "coverage": "full",
+      "spoken_features": [
+        "full digital driver screen"
+      ],
+      "visible_features": [
+        "full digital driver screen"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Digital instrument screen behind the steering wheel is fully visible."
+    },
+    {
+      "line_id": "luggage-practicality-L1",
+      "visual": "im06",
+      "coverage": "full",
+      "spoken_features": [
+        "boot luggage capacity"
+      ],
+      "visible_features": [
+        "boot luggage capacity"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Open boot image shows the space loaded with bags and luggage."
+    },
+    {
+      "line_id": "luggage-practicality-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "382 litres boot space",
+        "multiple suitcases"
+      ],
+      "visible_features": [
+        "multiple suitcases"
+      ],
+      "missing_features": [
+        "382 litres boot space"
+      ],
+      "confidence": 0.9,
+      "reason": "Multiple suitcases loaded into boot are visible, but 382 litres volumetric measure is non-visual."
+    },
+    {
+      "line_id": "luggage-practicality-D1",
+      "visual": "none",
+      "coverage": "none",
+      "spoken_features": [
+        "twin underfloor gas cylinders",
+        "321 litres cargo room"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "twin underfloor gas cylinders",
+        "321 litres cargo room"
+      ],
+      "confidence": 0.9,
+      "reason": "No image reveals underfloor gas cylinders beneath the boot floor."
+    },
+    {
+      "line_id": "luggage-practicality-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "44 litres fuel tank"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "44 litres fuel tank"
+      ],
+      "confidence": 0.95,
+      "reason": "Fuel tank volume capacity cannot be visually proven."
+    },
+    {
+      "line_id": "performance-engines-L1",
+      "visual": "none",
+      "coverage": "none",
+      "spoken_features": [
+        "turbocharged engine under hood"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "turbocharged engine under hood"
+      ],
+      "confidence": 0.9,
+      "reason": "No engine bay photo is provided."
+    },
+    {
+      "line_id": "performance-engines-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "seven-speed dual-clutch automatic transmission"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "seven-speed dual-clutch automatic transmission"
+      ],
+      "confidence": 0.9,
+      "reason": "Gearbox mechanical specifications and gear count are non-visual."
+    },
+    {
+      "line_id": "performance-engines-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "1.2-litre turbo petrol engine",
+        "120 horsepower"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "1.2-litre turbo petrol engine",
+        "120 horsepower"
+      ],
+      "confidence": 0.95,
+      "reason": "Engine displacement and horsepower figures are non-visual specs."
+    },
+    {
+      "line_id": "performance-engines-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "1.5-litre turbo diesel engine"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "1.5-litre turbo diesel engine"
+      ],
+      "confidence": 0.95,
+      "reason": "Diesel engine specifications cannot be proven visually."
+    },
+    {
+      "line_id": "structural-safety-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Conversational introductory line contains no visible feature."
+    },
+    {
+      "line_id": "structural-safety-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "Global and Bharat NCAP five stars",
+        "six airbags",
+        "electronic stability control"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "Global and Bharat NCAP five stars",
+        "six airbags",
+        "electronic stability control"
+      ],
+      "confidence": 0.95,
+      "reason": "Safety ratings, airbag counts and electronic stability control are non-visual."
+    },
+    {
+      "line_id": "structural-safety-D1",
+      "visual": "im05",
+      "coverage": "full",
+      "spoken_features": [
+        "three-point seatbelt"
+      ],
+      "visible_features": [
+        "three-point seatbelt"
+      ],
+      "missing_features": [],
+      "confidence": 0.9,
+      "reason": "Three-point seatbelt hardware and strap anchor points are visible on the pillar in im05."
+    },
+    {
+      "line_id": "structural-safety-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "autonomous braking",
+        "lane keeping assist"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "autonomous braking",
+        "lane keeping assist"
+      ],
+      "confidence": 0.9,
+      "reason": "Active driver assistance electronic features cannot be proven by static exterior photos."
+    },
+    {
+      "line_id": "extra-features-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Introductory transition text contains no visual claims."
+    },
+    {
+      "line_id": "extra-features-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "ventilated front seats",
+        "nine JBL speakers",
+        "360-degree camera with blind-view monitor"
+      ],
+      "visible_features": [
+        "ventilated front seats"
+      ],
+      "missing_features": [
+        "nine JBL speakers",
+        "360-degree camera with blind-view monitor"
+      ],
+      "confidence": 0.85,
+      "reason": "Front ventilated seats with ventilation graphic are shown in im05, but speakers and camera monitors are missing."
+    },
+    {
+      "line_id": "extra-features-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "connected car technology"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "connected car technology"
+      ],
+      "confidence": 0.95,
+      "reason": "Connected car subscription features are non-visual."
+    },
+    {
+      "line_id": "extra-features-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Trim availability limitations are written business terms and non-visual."
+    },
+    {
+      "line_id": "ownership-terms-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "pricing",
+        "finance terms"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "pricing",
+        "finance terms"
+      ],
+      "confidence": 0.95,
+      "reason": "Pricing and monthly finance installment terms are non-visual."
+    },
+    {
+      "line_id": "ownership-terms-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Advice on taking a test drive is non-visual."
+    },
+    {
+      "line_id": "ownership-terms-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Financing conditions are non-visual."
+    },
+    {
+      "line_id": "ownership-terms-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [
+        "roadside assistance helpline"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "roadside assistance helpline"
+      ],
+      "confidence": 0.95,
+      "reason": "Roadside assistance service offering is non-visual."
+    },
+    {
+      "line_id": "close-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Closing summary opinion is non-visual."
+    },
+    {
+      "line_id": "close-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Call to action prompt is non-visual."
+    }
+  ],
+  "images": [
+    {
+      "visual": "im01",
+      "visible_features": [
+        "front three-quarter view",
+        "dual-tone black roof",
+        "alloy wheels",
+        "LED daytime running lights",
+        "Tata emblem"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "Does not prove crash safety test rating or engine specs"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im02",
+      "visible_features": [
+        "side profile view",
+        "tall stance",
+        "ground clearance",
+        "alloy wheels",
+        "roof rails"
+      ],
+      "script_line_ids": [
+        "stance-design-L1"
+      ],
+      "limitations": [
+        "Does not verify exact 208 mm measurement figure"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im03",
+      "visible_features": [
+        "rear three-quarter view",
+        "connected LED tail lamps",
+        "Nexon emblem"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "Boot is closed so interior luggage capacity cannot be seen"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im04",
+      "visible_features": [
+        "full dashboard",
+        "floating touchscreen",
+        "digital driver instrument screen",
+        "steering wheel with emblem"
+      ],
+      "script_line_ids": [
+        "three-reminders-L2",
+        "cockpit-experience-L1",
+        "cockpit-experience-D2"
+      ],
+      "limitations": [
+        "Does not prove 6 airbags or stability control electronics"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im05",
+      "visible_features": [
+        "ventilated front seats",
+        "three-point seatbelt strap"
+      ],
+      "script_line_ids": [
+        "structural-safety-D1"
+      ],
+      "limitations": [
+        "Does not show 360 camera view or JBL speakers"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im06",
+      "visible_features": [
+        "open tailgate",
+        "boot space",
+        "multiple loaded suitcases and bags"
+      ],
+      "script_line_ids": [
+        "luggage-practicality-L1"
+      ],
+      "limitations": [
+        "Does not prove exact 382 litre volumetric figure or underfloor gas tanks"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im07",
+      "visible_features": [
+        "front headlamp unit",
+        "LED DRL",
+        "front grille detail",
+        "Tata emblem"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "Close-up crop does not show full stance or active ADAS features"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im08",
+      "visible_features": [
+        "floating touchscreen infotainment display",
+        "touch screen user interface"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "Does not confirm Harman audio licensing visually"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "changes": [
+    {
+      "line_id": "overview-intro-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "General introductory marketing claim about usage is non-visual."
+    },
+    {
+      "line_id": "overview-intro-L2",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Crash safety ratings and exact dimensional specifications cannot be proven by photos alone."
+    },
+    {
+      "line_id": "overview-intro-D1",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Parking maneuverability and compact length claims are non-visual statements."
+    },
+    {
+      "line_id": "overview-intro-D2",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Crash test certifications cannot be visually verified by vehicle body shots."
+    },
+    {
+      "line_id": "three-reminders-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Side view shows tall ground clearance, but crash safety rating is not visual."
+    },
+    {
+      "line_id": "three-reminders-D1",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Internal safety electronics and airbag deployments are not visually verified."
+    },
+    {
+      "line_id": "three-reminders-D2",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "High ride height is visibly shown in side profile, but exact 208 mm measurement metric is non-visual."
+    },
+    {
+      "line_id": "stance-design-L2",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Ground clearance is visible under the vehicle, but exact 208 mm figure is non-visual."
+    },
+    {
+      "line_id": "stance-design-D1",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Alloy wheels and tyres are visible, but the exact 16-inch sizing mark cannot be verified from image."
+    },
+    {
+      "line_id": "stance-design-D2",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Front brake assembly is visible through the front wheel spokes, but rear brakes are obstructed."
+    },
+    {
+      "line_id": "cockpit-experience-L2",
+      "from": "im08",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Dual screens are clearly visible on the dashboard, but exact screen diagonal dimension is non-visual."
+    },
+    {
+      "line_id": "cockpit-experience-D1",
+      "from": "im08",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Touchscreen unit is shown in close-up, but Harman software branding is not visible on the UI."
+    },
+    {
+      "line_id": "luggage-practicality-L2",
+      "from": "im03",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Multiple suitcases loaded into boot are visible, but 382 litres volumetric measure is non-visual."
+    },
+    {
+      "line_id": "luggage-practicality-D1",
+      "from": "im06",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "No image reveals underfloor gas cylinders beneath the boot floor."
+    },
+    {
+      "line_id": "luggage-practicality-D2",
+      "from": "im03",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Fuel tank volume capacity cannot be visually proven."
+    },
+    {
+      "line_id": "performance-engines-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "No engine bay photo is provided."
+    },
+    {
+      "line_id": "performance-engines-L2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Gearbox mechanical specifications and gear count are non-visual."
+    },
+    {
+      "line_id": "performance-engines-D1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Engine displacement and horsepower figures are non-visual specs."
+    },
+    {
+      "line_id": "performance-engines-D2",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Diesel engine specifications cannot be proven visually."
+    },
+    {
+      "line_id": "structural-safety-L1",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Conversational introductory line contains no visible feature."
+    },
+    {
+      "line_id": "structural-safety-L2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Safety ratings, airbag counts and electronic stability control are non-visual."
+    },
+    {
+      "line_id": "structural-safety-D2",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Active driver assistance electronic features cannot be proven by static exterior photos."
+    },
+    {
+      "line_id": "extra-features-L1",
+      "from": "im05",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Introductory transition text contains no visual claims."
+    },
+    {
+      "line_id": "extra-features-L2",
+      "from": "im08",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Front ventilated seats with ventilation graphic are shown in im05, but speakers and camera monitors are missing."
+    },
+    {
+      "line_id": "extra-features-D1",
+      "from": "im08",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Connected car subscription features are non-visual."
+    },
+    {
+      "line_id": "extra-features-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Trim availability limitations are written business terms and non-visual."
+    },
+    {
+      "line_id": "ownership-terms-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Pricing and monthly finance installment terms are non-visual."
+    },
+    {
+      "line_id": "ownership-terms-L2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Advice on taking a test drive is non-visual."
+    },
+    {
+      "line_id": "ownership-terms-D1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Financing conditions are non-visual."
+    },
+    {
+      "line_id": "ownership-terms-D2",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Roadside assistance service offering is non-visual."
+    },
+    {
+      "line_id": "close-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Closing summary opinion is non-visual."
+    },
+    {
+      "line_id": "close-L2",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Call to action prompt is non-visual."
+    }
+  ],
+  "catalogue": [
+    "im01 · three-quarter · Front three-quarter view of Tata Nexon in khaki color with dual-tone black roof",
+    "im02 · side · Left side profile view of Tata Nexon SUV",
+    "im03 · three-quarter · Rear three-quarter view of Tata Nexon showing connected LED tail lamps and rear design",
+    "im04 · interior · Full dashboard view of Tata Nexon interior highlighting the floating touchscreen and digital steering wheel",
+    "im05 · interior · Interior shot showing front ventilated seats with airflow visualization",
+    "im06 · three-quarter · Rear view with open boot showing generous luggage capacity loaded with suitcases and bags",
+    "im07 · detail · Close-up detail of front grille, Tata emblem, LED daytime running lights, and headlamp unit",
+    "im08 · detail · Close-up detail of the floating touchscreen infotainment system screen"
+  ],
+  "unused_after": [
+    "im01",
+    "im03",
+    "im07",
+    "im08"
+  ],
+  "proposals": [
+    {
+      "line_id": "extra-features-L2",
+      "proposal": "im05",
+      "hits": [
+        "interior",
+        "seat",
+        "ventilated"
+      ]
+    },
+    {
+      "line_id": "ownership-terms-L2",
+      "proposal": "im05",
+      "hits": [
+        "interior",
+        "seat"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2205 @@
+{
+  "product": {
+    "name": "Tata Nexon",
+    "category": "Compact SUV",
+    "summary": "The Tata Nexon is a sub-4-meter compact SUV offered with turbocharged petrol, turbocharged diesel, and turbo iCNG powertrain options. It features a 5-star crash safety rating, advanced driver assistance systems (ADAS), dual 10.25-inch screens, and transmission choices ranging from manual to dual-clutch automatic.",
+    "audience": "Individual buyers and families seeking a feature-rich, high-safety compact SUV for daily urban commuting and highway travel."
+  },
+  "shots": [],
+  "images": [
+    {
+      "id": "im01",
+      "source_id": "src_a958c6",
+      "description": "Front three-quarter view of Tata Nexon in khaki color with dual-tone black roof",
+      "angle": "three-quarter",
+      "parts": [
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.471,
+            "y": 0.55,
+            "w": 0.106,
+            "h": 0.231
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.718,
+            "y": 0.514,
+            "w": 0.089,
+            "h": 0.197
+          },
+          "confidence": 0.97
+        },
+        {
+          "name": "badge",
+          "box": {
+            "x": 0.251,
+            "y": 0.465,
+            "w": 0.026,
+            "h": 0.035
+          },
+          "confidence": 0.95
+        },
+        {
+          "name": "headlamp",
+          "box": {
+            "x": 0.362,
+            "y": 0.439,
+            "w": 0.12,
+            "h": 0.038
+          },
+          "confidence": 0.92
+        },
+        {
+          "name": "mirror",
+          "box": {
+            "x": 0.575,
+            "y": 0.348,
+            "w": 0.071,
+            "h": 0.06
+          },
+          "confidence": 0.95
+        }
+      ],
+      "quality": 5,
+      "full_product": true
+    },
+    {
+      "id": "im02",
+      "source_id": "src_77c02b",
+      "description": "Left side profile view of Tata Nexon SUV",
+      "angle": "side",
+      "parts": [
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.23,
+            "y": 0.575,
+            "w": 0.152,
+            "h": 0.217
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.747,
+            "y": 0.542,
+            "w": 0.139,
+            "h": 0.208
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "mirror",
+          "box": {
+            "x": 0.416,
+            "y": 0.375,
+            "w": 0.062,
+            "h": 0.051
+          },
+          "confidence": 0.95
+        }
+      ],
+      "quality": 5,
+      "full_product": true
+    },
+    {
+      "id": "im03",
+      "source_id": "src_18b690",
+      "description": "Rear three-quarter view of Tata Nexon showing connected LED tail lamps and rear design",
+      "angle": "three-quarter",
+      "parts": [
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.456,
+            "y": 0.627,
+            "w": 0.112,
+            "h": 0.229
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.71,
+            "y": 0.501,
+            "w": 0.084,
+            "h": 0.197
+          },
+          "confidence": 0.97
+        },
+        {
+          "name": "taillight",
+          "box": {
+            "x": 0.143,
+            "y": 0.462,
+            "w": 0.326,
+            "h": 0.07
+          },
+          "confidence": 0.95
+        },
+        {
+          "name": "badge",
+          "box": {
+            "x": 0.25,
+            "y": 0.487,
+            "w": 0.027,
+            "h": 0.042
+          },
+          "confidence": 0.95
+        },
+        {
+          "name": "boot",
+          "box": {
+            "x": 0.144,
+            "y": 0.481,
+            "w": 0.3,
+            "h": 0.248
+          },
+          "confidence": 0.92
+        }
+      ],
+      "quality": 5,
+      "full_product": true
+    },
+    {
+      "id": "im04",
+      "source_id": "src_1db8e5",
+      "description": "Full dashboard view of Tata Nexon interior highlighting the floating touchscreen and digital steering wheel",
+      "angle": "interior",
+      "parts": [
+        {
+          "name": "touchscreen",
+          "box": {
+            "x": 0.42,
+            "y": 0.398,
+            "w": 0.172,
+            "h": 0.115
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "steering wheel",
+          "box": {
+            "x": 0.602,
+            "y": 0.359,
+            "w": 0.251,
+            "h": 0.347
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "badge",
+          "box": {
+            "x": 0.702,
+            "y": 0.51,
+            "w": 0.037,
+            "h": 0.036
+          },
+          "confidence": 0.95
+        }
+      ],
+      "quality": 5,
+      "full_product": false
+    },
+    {
+      "id": "im05",
+      "source_id": "src_dd0ccf",
+      "description": "Interior shot showing front ventilated seats with airflow visualization",
+      "angle": "interior",
+      "parts": [
+        {
+          "name": "seat",
+          "box": {
+            "x": 0.277,
+            "y": 0.172,
+            "w": 0.701,
+            "h": 0.826
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "seat",
+          "box": {
+            "x": 0.203,
+            "y": 0.042,
+            "w": 0.292,
+            "h": 0.644
+          },
+          "confidence": 0.95
+        }
+      ],
+      "quality": 5,
+      "full_product": false
+    },
+    {
+      "id": "im06",
+      "source_id": "src_e12f23",
+      "description": "Rear view with open boot showing generous luggage capacity loaded with suitcases and bags",
+      "angle": "three-quarter",
+      "parts": [
+        {
+          "name": "boot",
+          "box": {
+            "x": 0.16,
+            "y": 0.299,
+            "w": 0.292,
+            "h": 0.399
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.498,
+            "y": 0.664,
+            "w": 0.14,
+            "h": 0.317
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "alloy wheel",
+          "box": {
+            "x": 0.814,
+            "y": 0.448,
+            "w": 0.101,
+            "h": 0.243
+          },
+          "confidence": 0.97
+        },
+        {
+          "name": "taillight",
+          "box": {
+            "x": 0.428,
+            "y": 0.452,
+            "w": 0.089,
+            "h": 0.1
+          },
+          "confidence": 0.95
+        }
+      ],
+      "quality": 5,
+      "full_product": true
+    },
+    {
+      "id": "im07",
+      "source_id": "src_6a2af2",
+      "description": "Close-up detail of front grille, Tata emblem, LED daytime running lights, and headlamp unit",
+      "angle": "detail",
+      "parts": [
+        {
+          "name": "badge",
+          "box": {
+            "x": 0.192,
+            "y": 0.403,
+            "w": 0.09,
+            "h": 0.096
+          },
+          "confidence": 0.98
+        },
+        {
+          "name": "headlamp",
+          "box": {
+            "x": 0.725,
+            "y": 0.549,
+            "w": 0.103,
+            "h": 0.198
+          },
+          "confidence": 0.95
+        },
+        {
+          "name": "mirror",
+          "box": {
+            "x": 0.723,
+            "y": 0.129,
+            "w": 0.153,
+            "h": 0.152
+          },
+          "confidence": 0.95
+        }
+      ],
+      "quality": 5,
+      "full_product": false
+    },
+    {
+      "id": "im08",
+      "source_id": "src_03bb45",
+      "description": "Close-up detail of the floating touchscreen infotainment system screen",
+      "angle": "detail",
+      "parts": [
+        {
+          "name": "touchscreen",
+          "box": {
+            "x": 0.071,
+            "y": 0.175,
+            "w": 0.867,
+            "h": 0.598
+          },
+          "confidence": 0.99
+        }
+      ],
+      "quality": 5,
+      "full_product": false
+    }
+  ],
+  "facts": [
+    {
+      "kind": "price",
+      "claim": "Starting ex-showroom price",
+      "value": "Rs 7.39 Lakhs*",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Overview banner",
+        "quote": "Starts at Rs 7.39 Lakhs*"
+      },
+      "confidence": 1.0,
+      "conditions": "Ex-showroom price; subject to change without prior information",
+      "truth": "stated",
+      "id": "F001",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "offer",
+      "claim": "Starting monthly EMI",
+      "value": "₹6,499",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Pricing / EMI section",
+        "quote": "Starting EMI of ₹6,499 #"
+      },
+      "confidence": 0.95,
+      "conditions": "Based on Flexi scheme of Rs. 809 per lac instalment for first 6 months; subsequent EMI higher; final EMI at sole discretion of financier",
+      "truth": "contractual",
+      "id": "F002",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "claim",
+      "claim": "GNCAP safety rating",
+      "value": "5 Star Rating",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "360° Safety section",
+        "quote": "GNCAP 5 Star Rating The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores"
+      },
+      "confidence": 0.95,
+      "conditions": "Global NCAP crash test rating",
+      "truth": "certified",
+      "id": "F003",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "claim",
+      "claim": "BNCAP safety rating",
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "Frequently Asked Questions",
+        "quote": "The Tata Nexon has a 5-star BNCAP safety rating with features including 6 airbags, ADAS, ABS with EBD, ESP, hill assist, TPMS"
+      },
+      "confidence": 0.95,
+      "conditions": "Applicable for Petrol & Diesel trims active as on May'26",
+      "truth": "certified",
+      "id": "F004",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Overall vehicle length",
+      "value": "3,995 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "L *W*H (mm) 3995*1804*1620"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard dimensions",
+      "truth": "certified",
+      "id": "F005",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Overall vehicle width",
+      "value": "1,804 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "L *W*H (mm) 3995*1804*1620"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard dimensions",
+      "truth": "certified",
+      "id": "F006",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Overall vehicle height",
+      "value": "1,620 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "L *W*H (mm) 3995*1804*1620"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard dimensions",
+      "truth": "certified",
+      "id": "F007",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Wheelbase",
+      "value": "2,498 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Wheelbase (mm) 2498"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard dimensions",
+      "truth": "certified",
+      "id": "F008",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Ground clearance",
+      "value": "208 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 19 & page 40",
+        "quote": "208 mm GROUND CLEARANCE"
+      },
+      "confidence": 1.0,
+      "conditions": "Varies by variant/unladen condition",
+      "truth": "certified",
+      "id": "F009",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Petrol & Diesel boot space",
+      "value": "382 L",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "Frequently Asked Questions",
+        "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+      },
+      "confidence": 1.0,
+      "conditions": "Measured as per ISO V215",
+      "truth": "certified",
+      "id": "F010",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "CNG boot space",
+      "value": "321 L",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "Frequently Asked Questions",
+        "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+      },
+      "confidence": 1.0,
+      "conditions": "Measured as per ISO V215 with twin cylinder technology",
+      "truth": "certified",
+      "id": "F011",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Petrol fuel tank capacity",
+      "value": "44 L",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Fuel Tank Capacity (L) 44"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard fuel tank",
+      "truth": "certified",
+      "id": "F012",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "CNG cylinder capacity",
+      "value": "60 (30+30) litres",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 28, INNOVATIVE TWIN-CYLINDER TECHNOLOGY",
+        "quote": "fuel capacity of 60* (30+30) litres."
+      },
+      "confidence": 1.0,
+      "conditions": "Water capacity across dual cylinders",
+      "truth": "certified",
+      "id": "F013",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Petrol engine displacement and cylinders",
+      "value": "1199 cc, 3-cylinder",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder"
+      },
+      "confidence": 1.0,
+      "conditions": "1.2L Turbocharged Revotron",
+      "truth": "certified",
+      "id": "F014",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Petrol engine maximum power",
+      "value": "120 PS (88.2 kW) @ 5500 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Power (kW) 88.2 @5500 rpm"
+      },
+      "confidence": 1.0,
+      "conditions": "Petrol mode",
+      "truth": "certified",
+      "id": "F015",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Petrol engine maximum torque",
+      "value": "170 Nm @ 1750-4000 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Torque (Nm) 170 @1750-4000 rpm"
+      },
+      "confidence": 1.0,
+      "conditions": "Petrol mode",
+      "truth": "certified",
+      "id": "F016",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Diesel engine displacement and cylinders",
+      "value": "1497 cc, 4-cylinder",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "1.5L Turbocharged Revotorq Engine, 1497 cc, 4-cylinder"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5L Turbocharged Revotorq",
+      "truth": "certified",
+      "id": "F017",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Diesel engine maximum power",
+      "value": "84.5 kW (115 PS / 113 PS) @ 3750 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Power (kW) 84.5 @3750 rpm"
+      },
+      "confidence": 0.95,
+      "conditions": "Listed as 115 PS on landing page overview and 113 PS in FAQ; both cite 84.5 kW",
+      "truth": "certified",
+      "id": "F018",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Diesel engine maximum torque",
+      "value": "260 Nm @ 1500-2750 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Torque (Nm) 260 @1500-2750 rpm"
+      },
+      "confidence": 1.0,
+      "conditions": "Diesel engine",
+      "truth": "certified",
+      "id": "F019",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "CNG mode power output",
+      "value": "73.5 kW (73.52 kW / 98 PS) @ 5000 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "CNG Mode - 73.52 @5000 rpm"
+      },
+      "confidence": 1.0,
+      "conditions": "Operating in CNG mode",
+      "truth": "certified",
+      "id": "F020",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "CNG mode torque output",
+      "value": "170 Nm @ 2000 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "CNG Mode - 170 @2000 rpm"
+      },
+      "confidence": 1.0,
+      "conditions": "Operating in CNG mode",
+      "truth": "certified",
+      "id": "F021",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Available transmissions",
+      "value": "5-Speed manual, 6-speed manual, 6-speed AMT, and 7-speed DCT (DCA)",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "Frequently Asked Questions",
+        "quote": "5-Speed manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox."
+      },
+      "confidence": 1.0,
+      "conditions": "Availability varies by engine and trim",
+      "truth": "stated",
+      "id": "F022",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Tyre sizes",
+      "value": "195/60 R16 (Smart & Pure) and 215/60 R16 (Creative & Fearless)",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Tyre Size (mm) 195/60 R16 (Smart & Pure Persona) 215/60 R16 (Creative & Fearless Persona)"
+      },
+      "confidence": 1.0,
+      "conditions": "Varies according to persona/trim level",
+      "truth": "certified",
+      "id": "F023",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Braking setup",
+      "value": "Front Disc, Rear Drum",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION",
+        "quote": "Brakes Front Disc, Rear Drum"
+      },
+      "confidence": 1.0,
+      "conditions": "All trims",
+      "truth": "certified",
+      "id": "F024",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section",
+        "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across all variants",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS functions list",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, FEARLESS + PS",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only available in Fearless + PS DCA; not available in CNG & Diesel",
+      "truth": "stated",
+      "id": "F026",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Infotainment display size",
+      "value": "26.03 cm (10.25”) Floating Infotainment System by Harman™",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Futuristic Technology section",
+        "quote": "26.03 cm Floating Infotainment System by Harman™"
+      },
+      "confidence": 1.0,
+      "conditions": "Available in Pure + trim and above",
+      "truth": "stated",
+      "id": "F027",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Digital instrument cluster size",
+      "value": "26.03 cm (10.25”) Digital Instrument Cluster",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Futuristic Technology section",
+        "quote": "26.03 cm Digital Instrument Cluster"
+      },
+      "confidence": 1.0,
+      "conditions": "Equipped on Fearless + PS persona; Pure+ gets 10.16 cm cluster",
+      "truth": "stated",
+      "id": "F028",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Premium sound system",
+      "value": "JBL-Branded 9-Speaker and Subwoofer",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Futuristic Technology section",
+        "quote": "JBL-Branded 9-Speaker and Subwoofer"
+      },
+      "confidence": 0.95,
+      "conditions": "Available on top variant Fearless + PS DCA; not available on CNG trims",
+      "truth": "stated",
+      "id": "F029",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Camera system",
+      "value": "HD 360-Degree Surround View System with Blind View Monitor and Front Parking Sensor",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "360° Safety section",
+        "quote": "HD 360-Degree Surround View System with Front Parking Sensor"
+      },
+      "confidence": 1.0,
+      "conditions": "Available on Creative and higher personas",
+      "truth": "stated",
+      "id": "F030",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Connected car app",
+      "value": "iRA Connected Vehicle Technology with 70+ features",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "Frequently Asked Questions",
+        "quote": "iRA connected car technology with 70+ features"
+      },
+      "confidence": 1.0,
+      "conditions": "First year subscription free, renewal charges apply; not available on CNG",
+      "truth": "contractual",
+      "id": "F031",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "policy",
+      "claim": "Roadside assistance phone contact",
+      "value": "18002098282",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Footer",
+        "quote": "For Roadside Assistance, call on - 18002098282"
+      },
+      "confidence": 1.0,
+      "conditions": "24/7 assistance",
+      "truth": "stated",
+      "id": "F032",
+      "approved": true,
+      "edited": false
+    }
+  ],
+  "unknowns": [
+    {
+      "question": "What is the official ARAI certified fuel efficiency (km/l or km/kg) for each engine and transmission combination?",
+      "why_customers_ask": "Mileage is one of the primary decision criteria for compact SUV buyers in India.",
+      "category": "usage",
+      "suggested_document": "spec sheet PDF",
+      "id": "U01",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What is the standard warranty period (years and kilometres) included with the Tata Nexon?",
+      "why_customers_ask": "Buyers want clarity on coverage duration before considering extended warranty packages.",
+      "category": "warranty_service",
+      "suggested_document": "Information on warranty policy document",
+      "id": "U02",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What are the routine maintenance intervals and estimated annual service costs?",
+      "why_customers_ask": "Total cost of ownership heavily depends on recurring scheduled service bills.",
+      "category": "warranty_service",
+      "suggested_document": "Estimate Service Cost schedule",
+      "id": "U03",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What is the kerb weight and gross vehicle weight of the vehicle across petrol, diesel, and CNG variants?",
+      "why_customers_ask": "Weight directly affects power-to-weight ratio, stability, and tyre wear.",
+      "category": "features",
+      "suggested_document": "spec sheet PDF",
+      "id": "U04",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What are the ex-showroom and on-road prices for individual trims above the base Rs 7.39 Lakh price?",
+      "why_customers_ask": "Buyers need specific prices for mid and top variants like Creative and Fearless to match their budget.",
+      "category": "pricing",
+      "suggested_document": "dealer price list for the state",
+      "id": "U05",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What is the typical waiting period or delivery timeline after placing a booking?",
+      "why_customers_ask": "Customers plan vehicle purchases around specific dates, festivals, or urgent travel needs.",
+      "category": "availability",
+      "suggested_document": "dealer inventory and allotment update",
+      "id": "U06",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What downstream interest rate and bank tie-up options exist beyond the illustrative 9% calculation?",
+      "why_customers_ask": "Prospective buyers compare monthly installments across partner commercial banks.",
+      "category": "finance",
+      "suggested_document": "EMI schedule / bank tie-up sheet",
+      "id": "U07",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What are the terms and annual renewal fees for the iRA connected car platform after the complimentary first year expires?",
+      "why_customers_ask": "Users want to know recurring software subscription costs for remote controls and telemetry.",
+      "category": "warranty_service",
+      "suggested_document": "iRA subscription terms and fee chart",
+      "id": "U08",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What is the turning radius of the Tata Nexon?",
+      "why_customers_ask": "City drivers and tight-parking parkers need to know tight maneuverability metrics.",
+      "category": "features",
+      "suggested_document": "spec sheet PDF",
+      "id": "U09",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "Which insurance providers are preferred partners and what are the zero-depreciation insurance quotes?",
+      "why_customers_ask": "Insurance constitutes a major part of the on-road price calculation.",
+      "category": "insurance",
+      "suggested_document": "insurance partner terms and premium rate card",
+      "id": "U10",
+      "status": "open",
+      "origin": "extraction"
+    }
+  ],
+  "brand": {
+    "tone": "Confident, safety-centric, and technologically forward yet approachable and grounded.",
+    "voice_style": "Speak with clear authority on safety and specifications while remaining warm, helpful, and transparent.",
+    "dos": [
+      "Highlight 5-star crash safety ratings and standard safety gear prominently.",
+      "Specify exact trim and fuel constraints when quoting features like ADAS or DCA.",
+      "Clarify when prices are ex-showroom and when figures are subject to financier or dealer confirmation."
+    ],
+    "donts": [
+      "Do not invent mileage figures or variant prices not explicitly stated in the source.",
+      "Do not claim ADAS or premium audio is available on CNG or diesel models without mentioning limitations.",
+      "Avoid empty marketing fluff; anchor every statement in measurable specs."
+    ],
+    "persona_hint": "A knowledgeable Tata Motors automotive specialist who guides customers with factual technical precision, emphasizing passenger safety, smart tech, and transparent ownership details."
+  },
+  "video_summaries": {},
+  "competitors": [
+    {
+      "name": "New Brezza 2026",
+      "url": "https://www.marutisuzuki.com/arena/brezza",
+      "source_id": "src_07ea50",
+      "facts": [
+        {
+          "kind": "feature",
+          "claim": "Airbags count and coverage",
+          "value": "6 Airbags",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#safety-tab-block",
+            "quote": "6 Airbags Front, side and curtain airbags protect every seat in the cabin, standard across the range."
+          },
+          "confidence": 1.0,
+          "conditions": "standard across the range",
+          "truth": "stated",
+          "id": "C1-001",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Ambient lighting color options",
+          "value": "64-colour",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#car-detail-interior",
+            "quote": "64-colour Ambient Lighting lets you pick your vibe on an interactive wheel"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-002",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Front seat cooling levels",
+          "value": "three levels of seat cooling",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#car-detail-interior",
+            "quote": "Ventilated Front Seats keep you comfortable with three levels of seat cooling"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-003",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "SmartPlay Pro+ display size",
+          "value": "10.1\"",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#technology-block",
+            "quote": "Brezza 10.1\" SmartPlay Pro+"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-004",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "360 view camera views",
+          "value": "8-point 3D views and auto activation during parking",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#technology-block",
+            "quote": "See every angle around the car with 8-point 3D views and auto activation during parking"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-005",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "App launcher apps support",
+          "value": "35+ apps",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#technology-block",
+            "quote": "Access 35+ apps including YouTube, Spotify and JioSaavn directly from the screen"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-006",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Safety assistance systems",
+          "value": "Electronic Stability Program (ESP®)",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#safety-tab-block",
+            "quote": "Electronic Stability Program (ESP®) Enables the car to sense any loss of grip and adjust braking and power instantly"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-007",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Hill hold support",
+          "value": "Hill Hold Assist",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#safety-tab-block",
+            "quote": "Hill Hold Assist It holds the brakes on an incline while you move from brake to accelerator, so there's no rollback and no second-guessing."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-008",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Parking sensors",
+          "value": "Front and Rear Parking Assist Sensors",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#safety-tab-block",
+            "quote": "Front and Rear Parking Assist Sensors work in sync"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-009",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Wireless charger cooling feature",
+          "value": "Wireless Charger with Active Cooling",
+          "source": {
+            "ref": "src_07ea50",
+            "locator": "#car-detail-interior",
+            "quote": "Wireless Charger with Active Cooling place your phone on the Qi-compatible pad and it charges quickly, with built-in cooling"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C1-010",
+          "approved": true,
+          "edited": false
+        }
+      ],
+      "fetched_at": 1789739740.0498261
+    },
+    {
+      "name": "The all-new Hyundai VENUE",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "source_id": "src_acce5c",
+      "facts": [
+        {
+          "kind": "spec",
+          "claim": "Length",
+          "value": "3,995 mm",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-001",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Width",
+          "value": "1,800 mm",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-002",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Height",
+          "value": "1,665 mm",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-003",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Wheelbase",
+          "value": "2520 mm",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Key Exterior highlights",
+            "quote": "Dimensions (mm): 3995 (Length) * 1800 (Width) * 1665 (Height) * 2520 (Wheelbase)"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-004",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "45 L",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Fuel tank capacity - 45 L"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-005",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Body style",
+          "value": "Sub-compact SUV",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Body style - Sub-compact SUV"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-006",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Engine cylinder configuration",
+          "value": "Straight engine (4-cylinder)",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Engine cylinder configuration – Straight engine (4-cylinder)"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-007",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Number of doors",
+          "value": "5",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Number of doors - 5"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-008",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Driveline",
+          "value": "Front-wheel drive",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Driveline - Front-wheel drive"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-009",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "availability",
+          "claim": "Configurations",
+          "value": "HX 2, HX 4, HX 5, HX 5 Knight, HX 5+, HX 6T, HX 6T Knight, HX 6, HX 7, HX 8, HX 8 Knight, HX 10, HX 10 Knight",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "The all-new Hyundai VENUE",
+            "quote": "Configurations - HX 2, HX 4, HX 5, HX 5 Knight, HX 5+, HX 6T, HX 6T Knight, HX 6, HX 7, HX 8, HX 8 Knight, HX 10, HX 10 Knight"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-010",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "ADAS specification",
+          "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Where Confidence Meets Cutting-Edge Safety",
+            "quote": "featuring Hyundai SmartSense Level 2 ADAS with 16 intelligent features and a high-strength steel body"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-011",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Standard safety features",
+          "value": "33 safety features as standard across all variants",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Where Confidence Meets Cutting-Edge Safety",
+            "quote": "Setting a new benchmark, the all-new Hyundai VENUE offers more than 65 advanced safety features including 33 safety features as standard across all variants."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-012",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Airbags",
+          "value": "6 airbags",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Key Safety features",
+            "quote": "6 airbags"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-013",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Sound system",
+          "value": "Bose premium sound 8 speaker system",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Key Technology Highlights",
+            "quote": "Bose premium sound 8 speaker system"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-014",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Navigation touchscreen size",
+          "value": "31.24 cm (12.3”)",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Key Technology Highlights",
+            "quote": "31.24 cm (12.3”) ccNC Navigation system, Accelerated by NVIDIA"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-015",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Wheel size and type",
+          "value": "R16 (D= 405.6 mm) diamond cut alloy wheels",
+          "source": {
+            "ref": "src_acce5c",
+            "locator": "Key Highlights",
+            "quote": "R16 (D= 405.6 mm) diamond cut alloy wheels"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C2-016",
+          "approved": true,
+          "edited": false
+        }
+      ],
+      "fetched_at": 1789739748.3353379
+    },
+    {
+      "name": "THE NEW BREZZA",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "source_id": "src_b28460",
+      "facts": [
+        {
+          "kind": "spec",
+          "claim": "Length",
+          "value": "3995 mm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Length (mm) 3995"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-001",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Width",
+          "value": "1790 mm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Width (mm) 1790"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-002",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Height (unladen)",
+          "value": "1685 mm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Height (unladen) (mm) 1685"
+          },
+          "confidence": 1.0,
+          "conditions": "unladen",
+          "truth": "stated",
+          "id": "C3-003",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Wheelbase",
+          "value": "2500 mm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Wheelbase (mm) 2500"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-004",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Seating Capacity",
+          "value": "5",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Seating Capacity 5"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-005",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Engine Capacity, K10C DiTC Smart Hybrid",
+          "value": "998 cc",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Capacity (cc) 998"
+          },
+          "confidence": 1.0,
+          "conditions": "K10C DiTC Smart Hybrid Petrol",
+          "truth": "stated",
+          "id": "C3-006",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Max Power Output, K10C DiTC Smart Hybrid",
+          "value": "81 kW (110.12 PS) @ 5500 rpm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "81 kW (110.12 PS) @ 5500 rpm"
+          },
+          "confidence": 1.0,
+          "conditions": "K10C DiTC Smart Hybrid Petrol",
+          "truth": "stated",
+          "id": "C3-007",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Max Torque, K10C DiTC Smart Hybrid",
+          "value": "170 Nm @ 2000-3500 rpm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "170 Nm @ 2000-3500 rpm"
+          },
+          "confidence": 1.0,
+          "conditions": "K10C DiTC Smart Hybrid Petrol",
+          "truth": "stated",
+          "id": "C3-008",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Engine Capacity, K15C Smart Hybrid",
+          "value": "1462 cc",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Capacity (cc) 1462"
+          },
+          "confidence": 1.0,
+          "conditions": "K15C Smart Hybrid Petrol",
+          "truth": "stated",
+          "id": "C3-009",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Max Power Output, K15C Smart Hybrid",
+          "value": "75.8 kW (103.05 PS) @ 6000 rpm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "75.8 kW (103.05 PS) @ 6000 rpm"
+          },
+          "confidence": 1.0,
+          "conditions": "K15C Smart Hybrid Petrol",
+          "truth": "stated",
+          "id": "C3-010",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Max Torque, K15C Smart Hybrid",
+          "value": "139.0 Nm @ 4400 rpm",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "139.0 Nm @ 4400 rpm"
+          },
+          "confidence": 1.0,
+          "conditions": "K15C Smart Hybrid Petrol",
+          "truth": "stated",
+          "id": "C3-011",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Emission Type",
+          "value": "BS VI",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Emission Type BS VI"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "certified",
+          "id": "C3-012",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Fuel Tank Capacity, Petrol",
+          "value": "48L",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Fuel Tank Capacity (L) 48L"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-013",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Tyre Size",
+          "value": "215/60 R16",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, SPECIFICATION SHEET",
+            "quote": "Tyre Size## 215/60 R16"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-014",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "6 Airbags (Front, Side and Curtain)",
+          "value": "Available across LXi, VXi, ZXi, ZXi+",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, FEATURES LIST, Safety",
+            "quote": "6 Airbags (Front, Side and Curtain)^^"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-015",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Electronic Stability Program (ESP)",
+          "value": "Available across LXi, VXi, ZXi, ZXi+",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, FEATURES LIST, Safety",
+            "quote": "Electronic Stability Program (ESP)"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-016",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "ISOFIX Child Seat Restraint System",
+          "value": "Available across LXi, VXi, ZXi, ZXi+",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, FEATURES LIST, Safety",
+            "quote": "ISOFIX Child Seat Restraint System"
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "truth": "stated",
+          "id": "C3-017",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "policy",
+          "claim": "Standard Warranty",
+          "value": "3 years or 1 00 000 km whichever is earlier",
+          "source": {
+            "ref": "src_b28460",
+            "locator": "page 10, WARRANTY",
+            "quote": "*3 years or 1 00 000 km whichever is earlier."
+          },
+          "confidence": 1.0,
+          "conditions": "whichever is earlier, extendable upto 6 years",
+          "truth": "contractual",
+          "id": "C3-018",
+          "approved": true,
+          "edited": false
+        }
+      ],
+      "fetched_at": 1789739757.943439
+    },
+    {
+      "name": "Hyundai VENUE",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "source_id": "src_43582f",
+      "facts": [
+        {
+          "kind": "spec",
+          "claim": "Length",
+          "value": "3 995 mm",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Length (mm)  3 995"
+          },
+          "confidence": 1.0,
+          "conditions": "All variants",
+          "truth": "stated",
+          "id": "C4-001",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Width",
+          "value": "1 800 mm",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Width (mm)  1 800"
+          },
+          "confidence": 1.0,
+          "conditions": "All variants",
+          "truth": "stated",
+          "id": "C4-002",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Height",
+          "value": "1 665 mm",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Height (mm)  1 665^"
+          },
+          "confidence": 1.0,
+          "conditions": "With R16 wheel size and roof rails",
+          "truth": "stated",
+          "id": "C4-003",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Height with R15 wheel size and roof rails",
+          "value": "1 650 mm",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "1 650 mm with R15 wheel size and roof rails."
+          },
+          "confidence": 1.0,
+          "conditions": "With R15 wheel size and roof rails",
+          "truth": "stated",
+          "id": "C4-004",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Wheelbase",
+          "value": "2 520 mm",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Wheelbase (mm)  2 520"
+          },
+          "confidence": 1.0,
+          "conditions": "All variants",
+          "truth": "stated",
+          "id": "C4-005",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "45 l",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Fuel tank capacity (l)  45"
+          },
+          "confidence": 1.0,
+          "conditions": "All variants",
+          "truth": "stated",
+          "id": "C4-006",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Boot capacity",
+          "value": "375 litres",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 8",
+            "quote": "Spacious boot (375 litres)*"
+          },
+          "confidence": 1.0,
+          "conditions": "As per VDA 215 method",
+          "truth": "certified",
+          "id": "C4-007",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Displacement - Kappa 1.2 l MPi petrol",
+          "value": "1 197 cm3",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Displacement (cm3) 1 197"
+          },
+          "confidence": 1.0,
+          "conditions": "Kappa 1.2 l MPi petrol",
+          "truth": "stated",
+          "id": "C4-008",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Maximum power - Kappa 1.2 l MPi petrol",
+          "value": "61 kW (83 PS) @ 6 000 r/min",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "61 kW (83 PS) @ 6 000 r/min"
+          },
+          "confidence": 1.0,
+          "conditions": "Kappa 1.2 l MPi petrol",
+          "truth": "stated",
+          "id": "C4-009",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Maximum torque - Kappa 1.2 l MPi petrol",
+          "value": "114.7 Nm (11.7 kgm) @ 4 200 r/min",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "114.7 Nm (11.7 kgm)  @ 4 200 r/min"
+          },
+          "confidence": 1.0,
+          "conditions": "Kappa 1.2 l MPi petrol",
+          "truth": "stated",
+          "id": "C4-010",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Displacement - Kappa 1.0 l Turbo GDi petrol",
+          "value": "998 cm3",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Displacement (cm3) 1 197 998 1 493"
+          },
+          "confidence": 1.0,
+          "conditions": "Kappa 1.0 l Turbo GDi petrol",
+          "truth": "stated",
+          "id": "C4-011",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Maximum power - Kappa 1.0 l Turbo GDi petrol",
+          "value": "88.3 kW (120 PS) @ 6 000 r/min",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "88.3 kW (120 PS)  @ 6 000 r/min"
+          },
+          "confidence": 1.0,
+          "conditions": "Kappa 1.0 l Turbo GDi petrol",
+          "truth": "stated",
+          "id": "C4-012",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Maximum torque - Kappa 1.0 l Turbo GDi petrol",
+          "value": "172 Nm (17.5 kgm) @ 1 500-4 000 r/min",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "172 Nm (17.5 kgm)  @ 1 500-4 000 r/min"
+          },
+          "confidence": 1.0,
+          "conditions": "Kappa 1.0 l Turbo GDi petrol",
+          "truth": "stated",
+          "id": "C4-013",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Displacement - U2 1.5 l CRDi diesel",
+          "value": "1 493 cm3",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "Displacement (cm3) 1 197 998 1 493"
+          },
+          "confidence": 1.0,
+          "conditions": "U2 1.5 l CRDi diesel",
+          "truth": "stated",
+          "id": "C4-014",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Maximum power - U2 1.5 l CRDi diesel",
+          "value": "85 kW (116 PS) @ 4 000 r/min",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "85 kW (116 PS)   @ 4 000 r/min"
+          },
+          "confidence": 1.0,
+          "conditions": "U2 1.5 l CRDi diesel",
+          "truth": "stated",
+          "id": "C4-015",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Maximum torque - U2 1.5 l CRDi diesel",
+          "value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 18",
+            "quote": "250 Nm (25.5 kgm)   @ 1 500-2 750 r/min"
+          },
+          "confidence": 1.0,
+          "conditions": "U2 1.5 l CRDi diesel",
+          "truth": "stated",
+          "id": "C4-016",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Standard airbags",
+          "value": "6 Airbags standard",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 14",
+            "quote": "6 Airbags standard"
+          },
+          "confidence": 1.0,
+          "conditions": "Standard across range",
+          "truth": "stated",
+          "id": "C4-017",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "policy",
+          "claim": "Extended warranty coverage",
+          "value": "upto 7 years or 1 40 000 kms whichsoever earlier",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 21",
+            "quote": "##Upto 7 years extended warranty is applicable for all variants. It is applicable for upto 7 years or 1 40 000 kms whichsoever earlier"
+          },
+          "confidence": 1.0,
+          "conditions": "Applicable for all variants",
+          "truth": "contractual",
+          "id": "C4-018",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "offer",
+          "claim": "Bluelink subscription duration",
+          "value": "3 Years",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 21",
+            "quote": "3 Years Bluelink subscription"
+          },
+          "confidence": 1.0,
+          "conditions": "Included with vehicle",
+          "truth": "contractual",
+          "id": "C4-019",
+          "approved": true,
+          "edited": false
+        }
+      ],
+      "fetched_at": 1789739768.773856
+    },
+    {
+      "name": "Hyundai Venue",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "source_id": "src_73036b",
+      "facts": [
+        {
+          "kind": "feature",
+          "claim": "Driver & passenger airbag availability on HX2",
+          "value": "S",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 2, data row 1",
+            "quote": "Airbag Driver & passenger S"
+          },
+          "confidence": 1.0,
+          "conditions": "HX2 trim",
+          "truth": "stated",
+          "id": "C5-001",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Side & Curtain airbag availability on HX2",
+          "value": "S",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 2, data row 2",
+            "quote": "Airbag Side & Curtain S"
+          },
+          "confidence": 1.0,
+          "conditions": "HX2 trim",
+          "truth": "stated",
+          "id": "C5-002",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "3 point seat belt (all seats) availability across all trims",
+          "value": "S",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 2, data row 12",
+            "quote": "3 point seat belt (all seats) 3 point seat belt (all seats) S"
+          },
+          "confidence": 1.0,
+          "conditions": "All trims (HX2 to HX10 Knight)",
+          "truth": "stated",
+          "id": "C5-003",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Tyre pressure monitoring system (TPMS) highline availability on HX2",
+          "value": "Not available (-)",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 2, data row 8",
+            "quote": "Tyre pressure monitoring system (TPMS) highline Tyre pressure monitoring system (TPMS) highline -"
+          },
+          "confidence": 1.0,
+          "conditions": "HX2 trim",
+          "truth": "stated",
+          "id": "C5-004",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Tyre pressure monitoring system (TPMS) highline availability on HX4",
+          "value": "S",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 2, data row 8",
+            "quote": "Tyre pressure monitoring system (TPMS) highline Tyre pressure monitoring system (TPMS) highline - S"
+          },
+          "confidence": 1.0,
+          "conditions": "HX4 trim",
+          "truth": "stated",
+          "id": "C5-005",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Kappa 1.2 l MPi petrol transmission on HX2",
+          "value": "MT",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 1, data row 1",
+            "quote": "Kappa 1.2 l MPi petrol MT"
+          },
+          "confidence": 1.0,
+          "conditions": "HX2 trim, Kappa 1.2 l MPi petrol engine",
+          "truth": "stated",
+          "id": "C5-006",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Kappa 1.0 l Turbo GDi petrol transmission on HX10",
+          "value": "DCT",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 1, data row 2",
+            "quote": "Kappa 1.0 l Turbo GDi petrol MT - MT/DCT - - DCT - - - MT/DCT - DCT DCT"
+          },
+          "confidence": 1.0,
+          "conditions": "HX10 trim, Kappa 1.0 l Turbo GDi petrol engine",
+          "truth": "stated",
+          "id": "C5-007",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "spec",
+          "claim": "U2 1.5 l CRDi diesel transmission on HX8",
+          "value": "AT",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 1, data row 3",
+            "quote": "U2 1.5 l CRDi diesel MT - MT/AT - MT - - - MT AT AT AT -"
+          },
+          "confidence": 1.0,
+          "conditions": "HX8 trim, U2 1.5 l CRDi diesel engine",
+          "truth": "stated",
+          "id": "C5-008",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Infotainment display screen size on HX2",
+          "value": "26.03 cm (10.25”)",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 5, data row 1",
+            "quote": "Infotainment system 26.03 cm (10.25”) ccNC infotainment system S"
+          },
+          "confidence": 1.0,
+          "conditions": "HX2 trim",
+          "truth": "stated",
+          "id": "C5-009",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Infotainment display screen size on HX10",
+          "value": "31.24 cm (12.3”)",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 5, data row 2",
+            "quote": "Infotainment system 31.24 cm (12.3”) ccNC navigation system - - - - - - - - - - - S S"
+          },
+          "confidence": 1.0,
+          "conditions": "HX10 trim",
+          "truth": "stated",
+          "id": "C5-010",
+          "approved": true,
+          "edited": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Front row ventilated seats availability on HX8",
+          "value": "S",
+          "source": {
+            "ref": "src_73036b",
+            "locator": "HTML table 6, data row 5",
+            "quote": "Front row ventilated seats Front row ventilated seats - - - - - - - - - S S S S"
+          },
+          "confidence": 1.0,
+          "conditions": "HX8 trim",
+          "truth": "stated",
+          "id": "C5-011",
+          "approved": true,
+          "edited": false
+        }
+      ],
+      "fetched_at": 1789739776.771661
+    }
+  ],
+  "image_map": {
+    "F027": [
+      "im08",
+      "im04"
+    ]
+  }
+}

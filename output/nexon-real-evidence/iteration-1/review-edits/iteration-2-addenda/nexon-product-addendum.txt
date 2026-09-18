@@ -1,0 +1,46 @@
+REVIEWED TRANSCRIPTION OF OFFICIAL SOURCE — Tata Nexon ICE
+Prepared 18 September 2026 for local demo dm_36d47b86, iteration 2.
+This is a reviewer-prepared source addendum, not a new manufacturer publication.
+Official source URL: https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf
+Original uploaded source ID in iteration 1: src_706e38
+Original PDF SHA256: d590ff0c550a3de3ae7f77683a474cc7400fb319c16bf0e10a5e0e6cd70f738f
+Role for ingestion: product
+Method: visually checked original PDF labels, matrix headers/cells and footnotes. Quoted labels are source wording. Matrix transcriptions explicitly pair the printed row with its printed column; they are not represented as continuous prose quotations. Whitespace and typographic spacing are normalized. No new customer-facing fact IDs are assigned here.
+
+N1 — Advertised basic warranty
+Locator: PDF page 40, warranty badge.
+Visible badge wording: "3 years | 100 000 km" and "WARRANTY".
+Supported claim: the manufacturer advertises a 3-year / 100,000-km warranty headline. Classification: contractual policy headline. The supplied badge does not state whichever occurs first, exclusions, transferability, service conditions or detailed applicability; those remain unknown. This does not establish free service or maintenance.
+
+N2 — Front-seat ventilation on the chosen petrol trim
+Locator: PDF page 39, FEARLESS + PS feature panel.
+Exact label: "Ventilated Driver & Co-Driver Seat".
+Applicability: Fearless + PS in the documented petrol/diesel persona feature list, including the selected Fearless + PS petrol DCA. The page directs iCNG equipment to a separate iCNG brochure. This does not describe ventilated rear seats or all Nexon trims.
+
+N3 — Rear AC vents
+Locator: PDF page 38, PURE + panel; pages 38–39, additional-equipment hierarchy.
+Exact label: "Rear AC Vents".
+Applicability: Pure + and higher in the documented petrol/diesel persona hierarchy, including the selected Fearless + PS petrol DCA. The separate iCNG equipment list is not supplied here. This feature is not asserted to be exclusive to Nexon.
+
+N4 — ISOFIX
+Locator: PDF page 11, standard-equipment labels and footnote; page 38, SMART list.
+Exact source labels: "ISOFIX*"; footnote "* As standard". Page 38 also lists "ISOFIX" under SMART.
+Supported claim: manufacturer-stated standard ISOFIX equipment. The source supplies no attachment-point count, universal child-seat compatibility, installation instructions or guaranteed safety outcome.
+
+N5 — Selected Nexon petrol automatic pairing
+Locator: PDF page 40, POWER TRAIN & TRANSMISSION matrix; PDF page 18, DCA feature label.
+Matrix transcription: row Fearless + PS; engine/fuel header Petrol 1.2 Turbocharged Engine; transmission column DCA; cell ticked.
+Exact page-18 label: "7-SPEED DUAL CLUTCH AUTOMATIC".
+Supported selected combination: Nexon Fearless + PS, 1.2L turbocharged petrol, seven-speed DCA. Do not assign this DCA to the diesel or iCNG columns. This evidence does not establish comparative smoothness, durability or efficiency.
+
+N6 — Separate front parking sensor fact
+Locator: PDF page 39, CREATIVE + PS panel and higher FEARLESS + PS inheritance.
+Exact label: "Front Parking Sensor".
+Applicability: Creative + PS and Fearless + PS in the documented petrol/diesel feature hierarchy. The separate CREATIVE panel lists the surround-view camera and blind-view monitor; it does not establish a front parking sensor on base Creative. Consult the separate iCNG feature list for iCNG.
+
+N7 — Rear-seat flexibility
+Locator: PDF page 39, CREATIVE + PS panel, inherited by FEARLESS + PS.
+Exact labels: "60:40 Flip & Fold Seats"; "Rear Seat Armrest with Cup Holder".
+Applicability: Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. These features do not establish that a particular stroller, suitcase or child seat fits.
+
+Scope: current India-market brochure captured 18 September 2026. Features and specifications can vary by trim and may change; the manufacturer directs buyers to confirm the selected variant. No price, financing approval, real-world mileage, delivery promise, practical luggage-fit guarantee or cross-brand safety ranking is supplied by this addendum.

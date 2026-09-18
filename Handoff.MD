@@ -10,7 +10,9 @@ The first Cinematic variant of the supplied M4 HTML now informs **only the slide
 
 The real draft `dm_36d47b86` has18 sources uploaded through product APIs:8 unchanged official images, Nexon brochure,2 rival brochures, trim-qualified Venue text and6 URLs. `output/nexon-sources/manifest.json`, `uploaded-sources.json` and `comparison-audit.md` retain URLs, hashes and applicability. Image enhancement and opening film are off. Local customer-tier server8893 uses `data/demos` and `data/nexon-customer/graph.sqlite`, cloud off. Rival PDF/text extraction and runtime/FAQ approval/provenance safeguards are fixed and tested, including uncited/rejected claims with CTAs and numeric equipment counts.
 
-Next: real Read → source/fact/variant and six-card Align review → Build → actual customer validation → preserve iteration1 → fix → iteration2. Both real iterations remain incomplete. No deployment. Browser unlocked and ready. Mock preview8891 and free harness8892 also remain available.
+The first real Read completed: 32 Nexon facts, 74 rival facts, 9 script segments, 12 slides and 20 FAQ entries. Independent original-source audits found incorrect qualifications and unsupported generated benefits; the untouched Read is preserved in `output/nexon-real-evidence/iteration-1/raw-read`. Reviewed corrections have been applied through Align APIs, including 43 facts and 3 held/rejected rival entries. The real UI picture/text/drag exercise is saved on sl04. FAQ refresh is complete; no voiced Build has completed yet. Next: review refreshed answers, approve six cards, Build and test customer paths, preserve iteration1, then fix and validate iteration2. Both real iterations remain incomplete. No deployment.
+
+All F/C evidence is now reviewable in Align; separate competitor storage and competition gating remain. Fact provenance and single-intake/check-in/title/outcome corrections use validated existing routes. Focused review47/47, deck203/203, source39/39, acceptance24/24 and both smoke phases pass. No new provider or service.
 
 ## Codex Part 2 — 2026-09-18 — `codex/real-demo-nexon`
 

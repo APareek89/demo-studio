@@ -1,0 +1,336 @@
+{
+  "entries": [
+    {
+      "id": "Q01",
+      "question": "What is the starting ex-showroom price and what would my monthly EMI look like?",
+      "origin": "generated",
+      "answer": "The Tata Nexon starts at a stated ex-showroom price of 7.39 Lakh rupees. Under the written terms of the special flexi finance scheme, monthly payments start at 6,499 rupees for the first six months, after which installments are higher.",
+      "fact_ids": [
+        "F001",
+        "F002"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q02",
+      "question": "What official crash test safety ratings has the Nexon earned from GNCAP and BNCAP?",
+      "origin": "generated",
+      "answer": "The Tata Nexon has earned a certified 5-star safety rating in Global NCAP crash testing. It also holds a certified 5-star Bharat NCAP rating, applicable to the petrol and diesel trims active as of May 2026.",
+      "fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl01"
+    },
+    {
+      "id": "Q03",
+      "question": "What standard safety features are included across every single trim level?",
+      "origin": "generated",
+      "answer": "Every single trim of the Nexon comes standard with six airbags, three-point seatbelts for all passengers, and an electronic stability program to help keep you secure on every drive.",
+      "fact_ids": [
+        "F025"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q04",
+      "question": "Which active ADAS features are equipped on the higher variants?",
+      "origin": "generated",
+      "answer": "On the Fearless + PS DCA variant, you get helpful driver aids like Front Collision Warning, Autonomous Emergency Braking, and Lane Keep Assist. It also comes equipped with Lane Centering, Lane Departure Warning, Traffic Sign Recognition, and High Beam Assist to keep your drives secure. Please note that these are not available on diesel or CNG options.",
+      "fact_ids": [
+        "F026"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q05",
+      "question": "What is the exact ground clearance, and will it handle tall speed breakers without bottoming out?",
+      "origin": "generated",
+      "answer": "The Nexon’s ground clearance is certified at 208 mm under standard dimensions, and it can vary by variant or unladen condition. For tall speed breakers, I’m not sure from the material I have that it will never bottom out, so I won’t guess or promise that.",
+      "fact_ids": [
+        "F009"
+      ],
+      "answered": false,
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "source_id": "src_77c02b"
+      },
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q06",
+      "question": "How much luggage space is available in the boot for the petrol model versus the CNG version?",
+      "origin": "generated",
+      "answer": "On the petrol model, you get a certified 382 litres of boot space measured as per the ISO V215 standard. Thanks to the twin-cylinder setup, the CNG version still gives you a certified 321 litres under the same test, leaving plenty of room for everyday family luggage.",
+      "fact_ids": [
+        "F010",
+        "F011"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "source_id": "src_e12f23"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q07",
+      "question": "What is the capacity of the dual-cylinder setup on the CNG variant?",
+      "origin": "generated",
+      "answer": "The dual-cylinder setup on the Nexon CNG has a certified total water capacity of 60 litres, split equally between two 30-litre tanks. This innovative design tucks neatly under the luggage area, so you still have plenty of usable boot space for your daily needs.",
+      "fact_ids": [
+        "F013"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "source_id": "src_e12f23"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q08",
+      "question": "What are the peak power and torque outputs of the turbo-petrol engine?",
+      "origin": "generated",
+      "answer": "For the turbo-petrol, the certified peak power is 120 PS in petrol mode. Its certified peak pulling power is rated at 170 in petrol mode; I can share the technical unit if you want.",
+      "fact_ids": [
+        "F015",
+        "F016"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q09",
+      "question": "What power figures can I expect from the diesel engine on highway trips?",
+      "origin": "generated",
+      "answer": "For the diesel, the certified power figure is listed as 115 PS on the overview, while the FAQ lists 113 PS for the same engine. I’d read that as the official material’s diesel power figure, not as a promise of highway acceleration or fuel economy.",
+      "fact_ids": [
+        "F018"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q10",
+      "question": "How much power and torque drop occurs when switching to CNG mode?",
+      "origin": "generated",
+      "answer": "On the certified figures, switching to CNG mode drops power by 22 PS, from 120 PS in petrol mode to 98 PS in CNG mode. The pulling-power figure shows no drop, with 170 listed in both modes, so everyday pickup should feel reassuringly consistent on paper.",
+      "fact_ids": [
+        "F015",
+        "F016",
+        "F020",
+        "F021"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q11",
+      "question": "What transmission options are available if I want an automatic petrol?",
+      "origin": "generated",
+      "answer": "For an automatic petrol Nexon, the stated automatic options in the material are a 6-speed AMT and a 7-speed DCT, called DCA by Tata. Availability depends on the exact trim, so I’d confirm the variant before you shortlist.",
+      "fact_ids": [
+        "F022"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q12",
+      "question": "What are the exact screen sizes for the infotainment display and digital instrument cluster?",
+      "origin": "generated",
+      "answer": "As stated in the official features, the floating infotainment screen measures 26.03 cm, or 10.25 inches, starting from the Pure+ trim. The digital instrument cluster is also 26.03 cm on the Fearless+ PS trim, while Pure+ includes a 10.16 cm display.",
+      "fact_ids": [
+        "F027",
+        "F028"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl04"
+    },
+    {
+      "id": "Q13",
+      "question": "Does the vehicle feature a 360-degree camera setup for parking in tight basement spots?",
+      "origin": "generated",
+      "answer": "Yes, it comes with an HD 360-degree surround view system, along with a blind view monitor and front parking sensors, on the Creative trim and higher. It is designed to give you complete confidence when manoeuvring through tight basement spaces.",
+      "fact_ids": [
+        "F030"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl08"
+    },
+    {
+      "id": "Q14",
+      "question": "Which brand provides the premium sound system in the top-end variant?",
+      "origin": "generated",
+      "answer": "The top-end variant comes with a premium sound system by JBL, featuring nine speakers and a subwoofer.",
+      "fact_ids": [
+        "F029"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl08"
+    },
+    {
+      "id": "Q15",
+      "question": "What tyre size and wheel dimensions come fitted on this trim?",
+      "origin": "generated",
+      "answer": "Which Nexon trim or persona are you looking at?",
+      "fact_ids": [],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "Which Nexon trim or persona are you looking at?",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q16",
+      "question": "What contact number do I call if I need emergency roadside assistance?",
+      "origin": "generated",
+      "answer": "You can reach 24/7 roadside assistance anytime by calling 1800 209 8282. It is always available to help keep your journeys smooth and worry-free.",
+      "fact_ids": [
+        "F032"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q17",
+      "question": "Does this model have rear disc brakes or drum brakes at the back?",
+      "origin": "generated",
+      "answer": "Across all trims, the Tata Nexon is equipped with drum brakes at the rear and disc brakes at the front, as per certified specifications. They offer dependable stopping power to keep your everyday drives safe and reassuring.",
+      "fact_ids": [
+        "F024"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "source_id": "src_77c02b"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl03"
+    },
+    {
+      "id": "Q18",
+      "question": "What is the certified ARAI fuel economy and expected real-world city mileage for the petrol DCA?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q19",
+      "question": "What is the current delivery waiting period if I book the diesel variant today?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl10"
+    },
+    {
+      "id": "Q20",
+      "question": "What is the estimated routine service and maintenance cost over the first three years?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    }
+  ],
+  "answered": 16,
+  "total": 20,
+  "registry_hash": "15ce0895e923eabe5924",
+  "partial": false
+}

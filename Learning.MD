@@ -6,6 +6,17 @@
 
 <!-- Newest first. -->
 
+### 2026-09-18 — Align could not correct competitor citations or spoken questions
+
+**Symptom:** Real Nexon source review found competitor facts outside the review card and edit/reject lookup. Incorrect truth labels and blended citations could not be repaired directly; intake questions, check-ins and segment outcomes also remained outside script editing.
+**Why 1:** The fact card and handlers traversed only the product `facts` list, while competitors were stored separately.
+**Why 2:** The original correction API accepted value/claim/conditions but not the existing truth/source fields.
+**Why 3:** Chat actions duplicated the product-only lookup instead of sharing validated review operations.
+**Why 4:** Script editing identified spoken lines only; questions and segment metadata are sibling fields with separate audio.
+**Why 5:** Free review checks exercised line edits and product facts, without testing the full set of source-backed material a reviewer must correct before approving a build.
+**Action taken:** Review cards show both registries with explicit ownership, while storage remains separate. API and chat corrections share schema/source validation; foreign, blended and cross-role source references reject before saving. Competitor facts remain bound to their source group. Review can change one intake, check-ins and title/outcome metadata, with grounding checks, stale question audio cleared and downstream approvals invalidated. The full smoke gate also caught unescaped citation-example braces in the expanded Align prompt; a focused prompt-format regression now covers it.
+**Preventive action:** `evals/align_review_contract.py` exercises successful and rejected edits through real routes, source/approval isolation, chat parity, no partial writes, no second intake and zero provider/network calls. Review truth and variant applicability against the source: valid ids and field types do not prove that a quoted source supports every word of an edited claim.
+
 ### 2026-09-18 — Claude's grammar repair lost the selected model and timeout
 
 **Symptom:** Code inspection for text tiers found that a constrained-schema error could silently retry with the general model and default timeout instead of the caller's selected model/budget.
@@ -536,3 +547,10 @@
 **Why 5:** The prior contract tested happy-path citations without rejected evidence combined with cached audio or action fields.
 **Fix:** Read rival documents into separate C-facts; preserve conditions, truth, locator, quote and source URL/date; validate URL metadata before mutation; share approval guards between model and bank paths; invalidate FAQ reuse when approvals/competition change; reject unsafe claim text before speech regardless of CTA.
 **Prevention:** `evals/source_contract.py` exercises isolated PDF/text ingestion, provenance validation through the real API, rejected/mixed citations, bank hits with revoked facts/disabled comparisons, and the actual text passed to speech. Live semantic claim-to-source review remains required; token/citation checks alone do not prove entailment.
+
+## 2026-09-18 — Reviewed script must control the slide preview and bundle
+- Why did old questions reappear? The deck held a previous copy of script text and check-ins.
+- Why did direct review not remove it? Script edits invalidated the deck; saving a slide override marked it done without refreshing that copy.
+- Why could the bundle retain it? Fallback joins treated an explicitly empty check-in as missing and kept deck citations.
+- Why was this missed? Prior checks verified saved visual overrides, without exercising a script correction followed by a slide edit.
+- Root cause and fix: the script is the authority for spoken text, citations, metadata and explicit empty questions. A shared deterministic join supplies Align and bundle without changing saved visual design. Five regressions cover preview/bundle parity, cleared questions, changed citations and held lines; Align review now47/47.

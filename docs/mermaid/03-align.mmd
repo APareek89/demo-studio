@@ -9,14 +9,14 @@ flowchart TD
   AGENT["align agent<br/>[AGENT · Claude text tier · messages.parse]<br/>in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
   APPLY{"action type<br/>[FUNCTION · orchestrator.apply_actions]"}:::dec
   A1["approve(card)<br/>[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)"]:::fn
-  A2["edit_fact / remove_fact / resolve_unknown<br/>[FUNCTION] direct registry edit · author marked stale"]:::fn
+  A2["edit_fact / remove_fact / resolve_unknown<br/>[FUNCTION] F/C lookup; validate truth and source ownership before save<br/>registries stay separate; downstream work and approvals stale"]:::fn
   A3["set_ctas / set_voice<br/>[FUNCTION] plan.json patched · voice sample re-rendered"]:::fn
   A4["request_upload<br/>[term] note only — user must add files"]:::term
   A5["revise(stage, instruction)<br/>[FUNCTION] lowest stage wins if several"]:::fn
   A6["build<br/>[FUNCTION] only if all 6 approved"]:::fn
   A7["answer<br/>[term] nothing changes"]:::term
-  EDIT["USER edits fact or script directly<br/>[ask · edit modal]"]:::ask
-  SAVEEDIT["validate grounding → rerun Gemini visual-proof audit<br/>[FUNCTION + AGENT · author.validate + Gemini 3.6 Flash]<br/>save edit; reset affected approvals; voice/bundle stale"]:::fn
+  EDIT["USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome<br/>[ask · edit modal]"]:::ask
+  SAVEEDIT["validate schema, source ownership and grounding before save<br/>[FUNCTION · store.edit_fact / author.ungrounded / author.validate]<br/>question audio cleared; affected approvals and downstream work stale<br/>script visual audit only when requested (Gemini vision)"]:::fn
   REV{"which stage?<br/>[FUNCTION · _revise thread]"}:::dec
   R1["understand(instr) → plan<br/>approvals visuals+facts reset"]:::fn
   R2["plan(instr) → voice sample"]:::fn

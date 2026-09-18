@@ -88,7 +88,7 @@ export function renderAlign(ctx) {
     if (key === "facts") {
       const f = cards.facts;
       const rows = f.facts.map((x) => h("tr", { class: (x.edited ? "edited" : "") + (x.approved === false ? " removed" : "") },
-        h("td", { class: "id" }, x.id), h("td", {}, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null),
+        h("td", { class: "id" }, x.id), h("td", {}, x.scope === "competitor" ? h("div", { class: "small muted" }, x.competitor_name || "Competitor") : null, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null),
         h("td", { class: "src" }, `${x.source?.ref || ""} ${x.source?.locator || ""}`, x.source?.quote ? h("div", { title: x.source.quote }, "“", x.source.quote.slice(0, 50), x.source.quote.length > 50 ? "…" : "", "”") : null),
         h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"), " ", h("button", { class: "btn sm ghost", title: x.approved === false ? "Restore this information" : "Keep this information out of the demo", onclick: () => setFactApproval(x, x.approved === false) }, x.approved === false ? "Restore" : "Reject"))));
       const open = f.unknowns.filter((u) => u.status === "open");
@@ -212,8 +212,11 @@ export function renderAlign(ctx) {
   }
   function editFact(fact) {
     const claim = h("input", { value: fact.claim || "" }); const value = h("textarea", {}, fact.value || ""); const conditions = h("textarea", {}, fact.conditions || "");
-    const body = h("div", { class: "edit-form" }, h("label", {}, "Information", claim), h("label", {}, "Value", value), h("label", {}, "Conditions / caveat", conditions), h("p", { class: "small muted" }, "A direct correction makes every downstream card require approval again."));
-    editor(`Edit ${fact.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/facts/${fact.id}`, { claim: claim.value, value: value.value, conditions: conditions.value }) }, "Save & re-align");
+    const truth = h("select", {}, ...["stated", "certified", "modeled", "observed", "contractual"].map((t) => h("option", { value: t, selected: t === (fact.truth || "stated") }, t)));
+    const source = h("select", {}, ...(cards.facts.sources || []).filter((s) => fact.scope === "competitor" ? s.id === fact.competitor_source_id : s.role !== "competitor").map((s) => h("option", { value: s.id, selected: s.id === fact.source?.ref }, `${s.id} · ${s.name || s.url || s.kind}`)));
+    const locator = h("input", { value: fact.source?.locator || "" }); const quote = h("textarea", {}, fact.source?.quote || "");
+    const body = h("div", { class: "edit-form" }, h("label", {}, "Information", claim), h("label", {}, "Value", value), h("label", {}, "Conditions / caveat", conditions), h("label", {}, "Evidence type", truth), h("label", {}, "Source", source), h("label", {}, "Page or section", locator), h("label", {}, "Exact supporting quote", quote), h("p", { class: "small muted" }, "Use the source's exact scope and wording. A direct correction makes every downstream card require approval again."));
+    editor(`Edit ${fact.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/facts/${fact.id}`, { claim: claim.value, value: value.value, conditions: conditions.value, truth: truth.value, source: { ref: source.value, locator: locator.value, quote: quote.value } }) }, "Save & re-align");
   }
   function openProductEditor() {
     const product = cards.product || {};
@@ -229,9 +232,18 @@ export function renderAlign(ctx) {
     const all = [];
     for (const seg of cards.script?.segments || []) for (const line of seg.lines || []) all.push({ ...line, section: seg.title });
     for (const line of cards.script?.closing || []) all.push({ ...line, section: "Closing" });
-    const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text), facts: h("input", { value: (line.fact_ids || []).join(", "), placeholder: "F001, F002" }), visual: h("input", { value: line.visual || "", placeholder: "im01, or blank for 3D / a fact card" }) }));
-    const body = h("div", { class: "script-editor" }, ...fields.map(({ line, input, facts, visual }) => h("label", {}, h("span", {}, h("b", {}, line.section), h("small", { class: "mono muted" }, line.id)), input, h("small", { class: "muted" }, "Approved fact ids"), facts, h("small", { class: "muted" }, "Visual ref (blank keeps unsupported details on a fact card)"), visual)));
-    editor("Edit what the guide says", { body, save: () => { const lines = fields.map(({ line, input, facts, visual }) => ({ id: line.id, text: input.value.trim(), fact_ids: facts.value.split(",").map((x) => x.trim()).filter(Boolean), visual_ref: visual.value.trim() })).filter((x, i) => x.text !== fields[i].line.text.trim() || x.fact_ids.join(",") !== (fields[i].line.fact_ids || []).join(",") || x.visual_ref !== (fields[i].line.visual || "")); if (!lines.length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/script`, { lines }); } }, "Save & re-align visuals");
+    const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text), facts: h("input", { value: (line.fact_ids || []).join(", "), placeholder: "F001, F002" }), visual: h("input", { value: line.visual || "", placeholder: "im01, or blank for a fact card" }) }));
+    const intake = h("textarea", {}, cards.script?.intake?.q1 || "");
+    const questions = (cards.script?.segments || []).filter((s) => s.checkin || ["proof", "features"].includes(s.role)).map((s) => ({ segment: s, input: h("textarea", {}, s.checkin || "") }));
+    const body = h("div", { class: "script-editor" }, h("label", {}, "Opening question", intake), ...questions.map(({ segment, input }) => h("label", {}, `${segment.title} — question`, input)), ...fields.map(({ line, input, facts, visual }) => h("label", {}, h("span", {}, h("b", {}, line.section), h("small", { class: "mono muted" }, line.id)), input, h("small", { class: "muted" }, "Approved fact ids"), facts, h("small", { class: "muted" }, "Visual ref (blank keeps unsupported details on a fact card)"), visual)));
+    editor("Edit what the guide says", { body, save: () => {
+      const lines = fields.map(({ line, input, facts, visual }) => ({ id: line.id, text: input.value.trim(), fact_ids: facts.value.split(",").map((x) => x.trim()).filter(Boolean), visual_ref: visual.value.trim() })).filter((x, i) => x.text !== fields[i].line.text.trim() || x.fact_ids.join(",") !== (fields[i].line.fact_ids || []).join(",") || x.visual_ref !== (fields[i].line.visual || ""));
+      const checkins = questions.filter(({ segment, input }) => input.value.trim() !== (segment.checkin || "").trim()).map(({ segment, input }) => ({ segment_id: segment.id, text: input.value.trim() }));
+      const payload = { lines, checkins };
+      if (intake.value.trim() !== (cards.script?.intake?.q1 || "").trim()) payload.intake_q1 = intake.value.trim();
+      if (!lines.length && !checkins.length && payload.intake_q1 === undefined) return Promise.resolve();
+      return api.patch(`/api/demos/${demoId}/align/script`, payload);
+    } }, "Save & re-align visuals");
   }
   function openSlideEditor(idx) {
     let dk = cards.deck || { slides: [], images: [] }; if (!dk.slides.length) return;

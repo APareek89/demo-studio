@@ -1,0 +1,105 @@
+{
+  "demo_id": "dm_36d47b86",
+  "status": "applied_via_align_api",
+  "baseline": "../raw-read",
+  "baseline_sha256": {
+    "understanding.json": "0d81c79e20e240aa51ce2183e8705a4ad054ecd13fda833954993408467dadf8",
+    "plan.json": "bcf5d568b7a46ed6017720e698d65f7bd7cab601da51e5e19857f123fb422d7a",
+    "script.json": "0db3ac686194d84594a84438d1700399314fae1af5efbaf1907f7e687e4aedca",
+    "deck.json": "3b60eae43da67150f1d256762c0b515bd12dce5b4422a50afef7368c03bfc042"
+  },
+  "application_order": [
+    "review and apply product/competitor fact corrections via Align APIs",
+    "PATCH /align/plan using plan-patch files in numbered order",
+    "PATCH /align/script using script-patch.json after intake/checkin/segment metadata support exists",
+    "PATCH /align/deck using deck-patch.json; retain current sl04-c1 drag coordinates",
+    "verify deck lines/checkins match reviewed script; rebuild/approve using normal product workflow"
+  ],
+  "paid_calls": false,
+  "preserved": {
+    "segment_ids": [
+      "overview-intro",
+      "three-reminders",
+      "stance-design",
+      "cockpit-experience",
+      "luggage-practicality",
+      "performance-engines",
+      "structural-safety",
+      "extra-features",
+      "ownership-terms"
+    ],
+    "line_ids": [
+      "overview-intro-L1",
+      "overview-intro-L2",
+      "overview-intro-D1",
+      "overview-intro-D2",
+      "three-reminders-L1",
+      "three-reminders-L2",
+      "three-reminders-D1",
+      "three-reminders-D2",
+      "stance-design-L1",
+      "stance-design-L2",
+      "stance-design-D1",
+      "stance-design-D2",
+      "cockpit-experience-L1",
+      "cockpit-experience-L2",
+      "cockpit-experience-D1",
+      "cockpit-experience-D2",
+      "luggage-practicality-L1",
+      "luggage-practicality-L2",
+      "luggage-practicality-D1",
+      "luggage-practicality-D2",
+      "performance-engines-L1",
+      "performance-engines-L2",
+      "performance-engines-D1",
+      "performance-engines-D2",
+      "structural-safety-L1",
+      "structural-safety-L2",
+      "structural-safety-D1",
+      "structural-safety-D2",
+      "extra-features-L1",
+      "extra-features-L2",
+      "extra-features-D1",
+      "extra-features-D2",
+      "ownership-terms-L1",
+      "ownership-terms-L2",
+      "ownership-terms-D1",
+      "ownership-terms-D2",
+      "close-L1",
+      "close-L2"
+    ],
+    "slide_ids": [
+      "sl00",
+      "sl01",
+      "sl02",
+      "sl03",
+      "sl04",
+      "sl05",
+      "sl06",
+      "sl07",
+      "sl08",
+      "sl09",
+      "sl10",
+      "sl11"
+    ],
+    "sl04_image_id": "im08",
+    "sl04_c1_position": "not included in payload; preserve reviewed UI drag"
+  },
+  "requires_api_support": [
+    "PATCH align/script intake_q1",
+    "PATCH align/script checkins [{segment_id,text}]",
+    "PATCH align/script segments [{id,title,outcome}]"
+  ],
+  "pending_new_fact_ids": [
+    "ventilated front seats",
+    "rear AC vents",
+    "ISOFIX",
+    "basic warranty badge"
+  ],
+  "application_evidence": "applied.json",
+  "root_adjustments": [
+    "F022 engine-level seven-speed option only; named trim pairing deferred to second-iteration source addendum",
+    "F031 speech no longer states omitted 70+ feature count",
+    "Official CTA destinations replace generated page fragments"
+  ]
+}

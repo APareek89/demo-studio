@@ -1,0 +1,137 @@
+{
+  "fields": {
+    "customer_persona": "A broad starting audience for the Nexon: people comparing a compact SUV for daily use, family travel or a preferred driving setup. This is not evidence about the current buyer.",
+    "decision_frame": "We'll take a balanced look at the published equipment and trim choices, and you can steer us toward what matters to you.",
+    "takeaway": "The Nexon has standard safety equipment, different fuel and gearbox choices, and cabin features that depend on the selected trim.",
+    "primary_outcome": "A clear shortlist based on standard safety equipment and the cabin and driving setup of the selected trim.",
+    "supporting_outcomes": [
+      "Published boot volumes separated by fuel type, with a personal luggage-fit check still to do",
+      "Cabin display and convenience choices tied to the documented trim"
+    ],
+    "do_not_recommend_if": "If a must-have requirement is not covered by the supplied material, verify it before recommending a trim.",
+    "advance": "Choose Book Test Drive when you're ready to try the seats, visibility and gearbox for yourself.",
+    "notes": "Use manufacturer-stated specifications and preserve exact engine/trim conditions. Ground clearance is not a water-depth or obstacle-clearance guarantee. Exterior dimensions and boot litres do not prove passenger comfort or luggage fit. A test drive can help assess personal comfort and driving feel; it does not establish representative fuel economy. Confirm the selected variant, current on-road quote, finance approval and detailed ownership terms. Source-specific engine figures must not be converted or blended. Only the current approved registry may supply facts."
+  },
+  "replacements": [
+    {
+      "from": "Buyers need assurance that their family is protected against unpredictable highway hazards and city traffic.",
+      "to": "Buyers may want to examine published crash ratings and the safety equipment on their selected trim."
+    },
+    {
+      "from": "Waterlogged city streets, high speed breakers, and broken rural roads risk underbody scrapes.",
+      "to": "Buyers may want the published ground-clearance figure, without treating it as a guarantee about road obstacles or water."
+    },
+    {
+      "from": "Compact SUVs often compromise boot space, especially when opting for dual-cylinder gas configurations.",
+      "to": "Buyers may want to compare petrol/diesel and CNG boot figures, then check the fit of their own luggage."
+    },
+    {
+      "from": "Buyers want to understand official fuel efficiency figures across petrol, diesel, and CNG engines before deciding.",
+      "to": "Buyers may want verified fuel-efficiency and ownership-cost information before choosing an engine."
+    },
+    {
+      "from": "Standard certified five-star crash protection",
+      "to": "Standard safety equipment"
+    },
+    {
+      "from": "Every passenger gets six airbags, stability control, and proven five-star impact protection without having to buy the top model.",
+      "to": "Six airbags and electronic stability control are standard; manufacturer-reported crash ratings retain their published test and powertrain scope."
+    },
+    {
+      "from": "Class-commanding rough road clearance",
+      "to": "Published ground clearance"
+    },
+    {
+      "from": "A 208 mm stance lets you glide over deep potholes and flooded monsoon roads without worrying about underbody impacts.",
+      "to": "The brochure lists 208 mm, varying by variant. This does not establish wading depth or guarantee clearance over obstacles."
+    },
+    {
+      "from": "High-definition connected twin displays",
+      "to": "Cabin displays by trim"
+    },
+    {
+      "from": "A pair of crisp 10.25-inch screens brings turn-by-turn navigation, media, and 360-degree cameras directly into your line of sight.",
+      "to": "The 26.03 cm Harman touchscreen begins at Pure +; the 26.03 cm driver display is listed on Fearless + PS. Check the selected version."
+    },
+    {
+      "from": "Welcome to Tata Nexon",
+      "to": "Tata Nexon, up close"
+    },
+    {
+      "from": "Understand the core purpose and audience of the Nexon without technical overload.",
+      "to": "Invite the buyer into a brief visual tour without assuming their needs."
+    },
+    {
+      "from": "Three Things to Remember",
+      "to": "Three things to explore"
+    },
+    {
+      "from": "Anchor the three core differentiators before diving deeper.",
+      "to": "Introduce standard safety equipment, fuel-specific boot space and trim-specific cabin choices."
+    },
+    {
+      "from": "Three key strengths of the Nexon",
+      "to": "Standard safety equipment, fuel-specific boot space and trim-specific cabin features"
+    },
+    {
+      "from": "Exterior Stance & Road Clearance",
+      "to": "Meet the stance"
+    },
+    {
+      "from": "See how the elevated ground clearance protects the vehicle over broken surfaces.",
+      "to": "Show the side profile and the published ground-clearance figure with its limitation."
+    },
+    {
+      "from": "Pothole confidence with 208 mm clearance",
+      "to": "Published ground clearance with its variant qualification"
+    },
+    {
+      "from": "Connected Cockpit & Screens",
+      "to": "Your cockpit, closer"
+    },
+    {
+      "from": "Appreciate the modern infotainment and digital cluster layout for daily driving ease.",
+      "to": "Show the centre touchscreen and distinguish its availability from the larger driver display."
+    },
+    {
+      "from": "Effortless control with twin 10.25-inch screens",
+      "to": "A closer look at the touchscreen and the trim-specific driver display"
+    },
+    {
+      "from": "Boot Space & Practicality",
+      "to": "Room for your plans"
+    },
+    {
+      "from": "Verify luggage capacity for weekend family getaways and airport runs.",
+      "to": "State the documented boot figures and leave individual luggage fit for a physical check."
+    },
+    {
+      "from": "Generous luggage capacity up to 382 litres",
+      "to": "Published boot volumes, with a practical fit check still to do"
+    },
+    {
+      "from": "Powertrain & Driving Confidence",
+      "to": "Choose your driving setup"
+    },
+    {
+      "from": "Evaluate engine options across petrol, diesel, and factory-fitted dual-cylinder gas.",
+      "to": "Explain engine and gearbox choices without promising smoothness, efficiency or overtaking performance."
+    },
+    {
+      "from": "Turbocharged pulling power across multiple fuel choices",
+      "to": "Engine and gearbox choices scoped to the selected trim"
+    },
+    {
+      "from": "Five-Star Safety & Driver Assistance",
+      "to": "Safety, with the detail"
+    },
+    {
+      "from": "Gain trust from standard safety engineering and advanced active assistance.",
+      "to": "Distinguish manufacturer-reported crash ratings, standard equipment and trim-specific driver assistance."
+    },
+    {
+      "from": "Verified five-star safety for all occupants",
+      "to": "Manufacturer-reported crash ratings and standard safety equipment"
+    }
+  ]
+}

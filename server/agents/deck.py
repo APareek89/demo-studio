@@ -9,6 +9,7 @@ without a citation. Positions are never guessed: no confident part, no anchor â†
 Output: deck.json. Audio joins at bundle time by line id, so the deck stays a pure function of script + understanding."""
 from __future__ import annotations
 
+import copy
 import json
 import re
 
@@ -242,6 +243,36 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
                 c["placement"] = "overlay" if c.get("anchor") else "panel"
             if c and oc.get("placement") in ("overlay", "panel"):
                 c["placement"] = oc["placement"] if (oc["placement"] == "panel" or c.get("anchor")) else "panel"
+
+
+def slides_with_script(slides: list[dict], script: dict) -> list[dict]:
+    """Join current approved narration onto saved slide design, without rebuilding it."""
+    out = copy.deepcopy(slides)
+    if "segments" not in script:
+        return out
+    segments = {segment["id"]: segment for segment in script.get("segments", [])}
+    def lines(rows):
+        return [{key: copy.deepcopy(line[key]) for key in ("id", "text", "fact_ids", "step", "start", "duration") if key in line}
+                for line in rows if not line.get("unverified")]
+    for slide in out:
+        segment_id = slide.get("segment_id")
+        if segment_id:
+            segment = segments.get(segment_id, {})
+            slide["lines"] = lines(segment.get("lines", []))
+            slide["deeper"] = lines(segment.get("deeper", []))
+            slide["checkin"] = segment.get("checkin", "")
+            for field in ("role", "usp_ids", "outcome"):
+                if field in segment:
+                    slide[field] = copy.deepcopy(segment[field])
+            if "topic" in segment:
+                slide["topics"] = [segment["topic"]] if segment["topic"] else []
+        elif slide.get("kind") == "closing":
+            slide["lines"] = lines(script.get("closing", []))
+            slide["deeper"], slide["checkin"] = [], ""
+        else:
+            continue
+        slide["fact_ids"] = sorted({fid for line in slide["lines"] for fid in line.get("fact_ids", [])})
+    return out
 
 
 # ---------- the stage ----------

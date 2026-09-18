@@ -1,0 +1,80 @@
+{
+  "demo_id": "dm_36d47b86",
+  "prepared_at": "2026-09-18T14:10:34.480294+00:00",
+  "status": "prepared_not_ingested",
+  "purpose": "Targeted source evidence omitted by iteration 1; not direct fact creation or a manufacturer-authored document.",
+  "upload_rule": "Upload the Nexon file as product. Upload each rival file as competitor. Set the exact original manufacturer PDF URL as source.url metadata. Preserve the transcription/provenance preamble. Do not combine rival and product text in one product source.",
+  "records": [
+    {
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/nexon-product-addendum.txt",
+      "title": "Tata Nexon ICE — reviewed official-source addendum",
+      "kind": "text",
+      "role": "product",
+      "origin_url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "source_id_in_iteration_1": "src_706e38",
+      "original_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/brochures/nexon-brochure-may-2026.pdf",
+      "original_sha256": "d590ff0c550a3de3ae7f77683a474cc7400fb319c16bf0e10a5e0e6cd70f738f",
+      "sha256": "7ad2c7a70dd5f97722e7bedbb744b3d2436cc4405a1259af4040c7e8e06e44e3",
+      "bytes": 4255,
+      "locators": [
+        "PDF pages 11,18,38,39,40"
+      ],
+      "review_evidence": [
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brochure-11.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brochure-18.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brochure-38.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/nexon-variants-39.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/nexon-specs-40.png"
+      ],
+      "derivation": "Human-visible PDF review plus deterministic text transcription; selected cells retain headers and conditions. This addendum is authored by the reviewer, with the linked manufacturer original as evidence.",
+      "permission": "User-confirmed manufacturer-material permission for this local demo, relayed by parent task on 2026-09-18."
+    },
+    {
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "title": "Maruti Suzuki Brezza — reviewed official-source addendum",
+      "kind": "text",
+      "role": "competitor",
+      "origin_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "source_id_in_iteration_1": "src_b28460",
+      "original_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-brochure.pdf",
+      "original_sha256": "bdaa4654b016ad0e83c610de09d722d2381a8251a4f4630515e6fc7e81f4b591",
+      "sha256": "3ef244ff1cd983d98d4cdfc61958f9b4918bcfee57be213c95ec54937d6dae2b",
+      "bytes": 3086,
+      "locators": [
+        "PDF page 10"
+      ],
+      "review_evidence": [
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/brezza-10.png"
+      ],
+      "derivation": "Human-visible PDF review plus deterministic text transcription; selected cells retain headers and conditions. This addendum is authored by the reviewer, with the linked manufacturer original as evidence.",
+      "permission": "User-confirmed manufacturer-material permission for this local demo, relayed by parent task on 2026-09-18."
+    },
+    {
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "title": "Hyundai Venue — reviewed official-source addendum",
+      "kind": "text",
+      "role": "competitor",
+      "origin_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "source_id_in_iteration_1": "src_43582f",
+      "original_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-brochure.pdf",
+      "original_sha256": "e08b9c95c3bac2603fe8f1051d519a8a26f7a348ad21b1f1ebf034f1b75fff9d",
+      "sha256": "94a45ad0d11501bda0d31a003d724e66150a97860ebf6e9b139472d5638c98be",
+      "bytes": 3361,
+      "locators": [
+        "PDF pages 18,19,20"
+      ],
+      "review_evidence": [
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/venue-18.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/venue-19.png",
+        "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/venue-20.png"
+      ],
+      "derivation": "Human-visible PDF review plus deterministic text transcription; selected cells retain headers and conditions. This addendum is authored by the reviewer, with the linked manufacturer original as evidence.",
+      "permission": "User-confirmed manufacturer-material permission for this local demo, relayed by parent task on 2026-09-18."
+    }
+  ],
+  "paid_calls": 0,
+  "product_api_writes": 0
+}

@@ -77,7 +77,8 @@ def build(demo_id: str, emit) -> dict:
             return {"id": l["id"], "text": src.get("text") or l["text"], "fact_ids": l.get("fact_ids", []), "audio": media_url(demo_id, src.get("audio")),
                     "start": src.get("start"), "duration": src.get("duration"), "step": src.get("step") or l.get("step", "other")}
         out = []
-        for s in deck.get("slides", []):
+        from .deck import slides_with_script
+        for s in slides_with_script(deck.get("slides", []), sc):
             seg = seg_by_id.get(s.get("segment_id") or "", {})
             im = images.get(s.get("image_id") or "")
             o = ov.get(s["id"], {})
@@ -86,7 +87,7 @@ def build(demo_id: str, emit) -> dict:
                         "title": o.get("title") or s.get("title", ""), "image_url": img_url(im) if im else None, "image_parts": visuals.part_boxes(im) if im else [],
                         "callouts": [{**c, "text": ctext.get(c["id"], c["text"])} for c in s.get("callouts", [])],
                         "lines": [sl_line(l) for l in s.get("lines", [])], "deeper": [sl_line(l) for l in s.get("deeper", [])],
-                        "checkin": {"text": seg.get("checkin") or s.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))}})
+                        "checkin": {"text": seg.get("checkin", s.get("checkin", "")), "audio": media_url(demo_id, seg.get("checkin_audio"))}})
         return out
 
     main_lang = demo.get("settings", {}).get("language", "en-IN")

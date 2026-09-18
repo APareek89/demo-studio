@@ -1,0 +1,1297 @@
+{
+  "demo_id": "dm_36d47b86",
+  "prepared_at": "2026-09-18T14:08:58.201800+00:00",
+  "status": "prepared_not_applied",
+  "registry_sha256": "0d10e1ab6b97081bddac1405037d554b589e5f0cd7cbacc6d2577779af3a57e5",
+  "fact_patch_endpoint": "PATCH /api/demos/dm_36d47b86/align/facts/{id}",
+  "approval_endpoint": "POST /api/demos/dm_36d47b86/align/facts/{id}/approval",
+  "execution_note": "Send each record.patch as the request body. Do not send this provenance sidecar to the API. Apply only after the reviewed API support is available. Recheck expected before records if the registry has changed.",
+  "edits": [
+    {
+      "id": "F001",
+      "reason": "Retain checked starting ex-showroom scope; not a selected-trim or on-road quote.",
+      "before": {
+        "kind": "price",
+        "claim": "Starting ex-showroom price",
+        "value": "Rs 7.39 Lakhs*",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "Overview banner",
+          "quote": "Starts at Rs 7.39 Lakhs*"
+        },
+        "confidence": 1.0,
+        "conditions": "Ex-showroom price; subject to change without prior information",
+        "truth": "stated",
+        "id": "F001",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Rs 7.39 Lakhs*",
+        "conditions": "Starting ex-showroom price stated on the official model page, checked 18 September 2026; subject to change without prior information; obtain an exact selected-variant dealer quote."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F002",
+      "reason": "Preserve the full source offer conditions without assigning a calculator rate or tenure.",
+      "before": {
+        "kind": "offer",
+        "claim": "Starting monthly EMI",
+        "value": "₹6,499",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "Pricing / EMI section",
+          "quote": "Starting EMI of ₹6,499 #"
+        },
+        "confidence": 0.95,
+        "conditions": "Based on Flexi scheme of Rs. 809 per lac instalment for first 6 months; subsequent EMI higher; final EMI at sole discretion of financier",
+        "truth": "contractual",
+        "id": "F002",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "₹6,499",
+        "conditions": "Advertised starting EMI under the Flexi scheme: Rs. 809 per lakh instalment for the first 6 months; subsequent EMI is higher. Offers apply to selected variants and may change; final EMI and finance are at the financier's sole discretion. Not a customer-approved EMI."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F003",
+      "reason": "Quote only the named rating; remove comparative marketing superlatives and flag unspecified test scope.",
+      "before": {
+        "kind": "claim",
+        "claim": "GNCAP safety rating",
+        "value": "5 Star Rating",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "360° Safety section",
+          "quote": "GNCAP 5 Star Rating The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores"
+        },
+        "confidence": 0.95,
+        "conditions": "Global NCAP crash test rating",
+        "truth": "certified",
+        "id": "F003",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "5 Star Rating",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "360° Safety section; GNCAP rating label",
+          "quote": "GNCAP 5 Star Rating"
+        },
+        "conditions": "Global NCAP five-star rating as reported by Tata Motors. The extracted statement does not identify the test date, generation or tested variant scope; it does not establish superiority over rivals."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F004",
+      "reason": "Use the brochure rating graphic and footnote as one source for the rating plus its scope.",
+      "before": {
+        "kind": "claim",
+        "claim": "BNCAP safety rating",
+        "value": "5-star BNCAP safety rating",
+        "source": {
+          "ref": "src_e64b3e",
+          "locator": "Frequently Asked Questions",
+          "quote": "The Tata Nexon has a 5-star BNCAP safety rating with features including 6 airbags, ADAS, ABS with EBD, ESP, hill assist, TPMS"
+        },
+        "confidence": 0.95,
+        "conditions": "Applicable for Petrol & Diesel trims active as on May'26",
+        "truth": "certified",
+        "id": "F004",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "5-star BNCAP safety rating",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+          "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+        },
+        "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F005",
+      "reason": "Manufacturer-published dimensions have no separate certification basis in this source.",
+      "before": {
+        "kind": "spec",
+        "claim": "Overall vehicle length",
+        "value": "3,995 mm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "L *W*H (mm) 3995*1804*1620"
+        },
+        "confidence": 1.0,
+        "conditions": "Standard dimensions",
+        "truth": "certified",
+        "id": "F005",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "3,995 mm",
+        "truth": "stated",
+        "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F006",
+      "reason": "Manufacturer-published dimensions have no separate certification basis in this source.",
+      "before": {
+        "kind": "spec",
+        "claim": "Overall vehicle width",
+        "value": "1,804 mm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "L *W*H (mm) 3995*1804*1620"
+        },
+        "confidence": 1.0,
+        "conditions": "Standard dimensions",
+        "truth": "certified",
+        "id": "F006",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "1,804 mm",
+        "truth": "stated",
+        "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F007",
+      "reason": "Manufacturer-published dimensions have no separate certification basis in this source.",
+      "before": {
+        "kind": "spec",
+        "claim": "Overall vehicle height",
+        "value": "1,620 mm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "L *W*H (mm) 3995*1804*1620"
+        },
+        "confidence": 1.0,
+        "conditions": "Standard dimensions",
+        "truth": "certified",
+        "id": "F007",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "1,620 mm",
+        "truth": "stated",
+        "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F008",
+      "reason": "Manufacturer-published dimensions have no separate certification basis in this source.",
+      "before": {
+        "kind": "spec",
+        "claim": "Wheelbase",
+        "value": "2,498 mm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Wheelbase (mm) 2498"
+        },
+        "confidence": 1.0,
+        "conditions": "Standard dimensions",
+        "truth": "certified",
+        "id": "F008",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "2,498 mm",
+        "truth": "stated",
+        "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F009",
+      "reason": "Remove unsupported unladen wording; retain printed variant qualification.",
+      "before": {
+        "kind": "spec",
+        "claim": "Ground clearance",
+        "value": "208 mm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 19 & page 40",
+          "quote": "208 mm GROUND CLEARANCE"
+        },
+        "confidence": 1.0,
+        "conditions": "Varies by variant/unladen condition",
+        "truth": "certified",
+        "id": "F009",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "208 mm",
+        "truth": "stated",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: ground-clearance row and variant footnote",
+          "quote": "Ground Clearance (mm) 208*"
+        },
+        "conditions": "Varies as per variant (brochure footnote). No loading/unladen condition is stated in the supplied source."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F010",
+      "reason": "Keep fuel-specific volume and the method in one brochure source; do not claim independent certification.",
+      "before": {
+        "kind": "spec",
+        "claim": "Petrol & Diesel boot space",
+        "value": "382 L",
+        "source": {
+          "ref": "src_e64b3e",
+          "locator": "Frequently Asked Questions",
+          "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+        },
+        "confidence": 1.0,
+        "conditions": "Measured as per ISO V215",
+        "truth": "certified",
+        "id": "F010",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "382 L",
+        "truth": "stated",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Boot Space row, fuel-column headings, and ISO V215 footnote",
+          "quote": "Boot Space (L) 382** 321**"
+        },
+        "conditions": "Petrol and diesel column of the May 2026 brochure; manufacturer-stated bootspace as per ISO V215. No practical luggage-fit guarantee or cross-method comparison is established."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F011",
+      "reason": "Keep fuel-specific volume and the method in one brochure source; do not claim independent certification.",
+      "before": {
+        "kind": "spec",
+        "claim": "CNG boot space",
+        "value": "321 L",
+        "source": {
+          "ref": "src_e64b3e",
+          "locator": "Frequently Asked Questions",
+          "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+        },
+        "confidence": 1.0,
+        "conditions": "Measured as per ISO V215 with twin cylinder technology",
+        "truth": "certified",
+        "id": "F011",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "321 L",
+        "truth": "stated",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Boot Space row, fuel-column headings, and ISO V215 footnote",
+          "quote": "Boot Space (L) 382** 321**"
+        },
+        "conditions": "Petrol + CNG column of the May 2026 brochure; manufacturer-stated bootspace as per ISO V215. No practical luggage-fit guarantee or cross-method comparison is established."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F012",
+      "reason": "Manufacturer-stated fuel-tank figure, with the existing petrol scope.",
+      "before": {
+        "kind": "spec",
+        "claim": "Petrol fuel tank capacity",
+        "value": "44 L",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Fuel Tank Capacity (L) 44"
+        },
+        "confidence": 1.0,
+        "conditions": "Standard fuel tank",
+        "truth": "certified",
+        "id": "F012",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "44 L",
+        "truth": "stated",
+        "conditions": "Petrol fuel-tank capacity as listed in the May 2026 brochure."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F013",
+      "reason": "Remove water-capacity interpretation absent from this source.",
+      "before": {
+        "kind": "spec",
+        "claim": "CNG cylinder capacity",
+        "value": "60 (30+30) litres",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 28, INNOVATIVE TWIN-CYLINDER TECHNOLOGY",
+          "quote": "fuel capacity of 60* (30+30) litres."
+        },
+        "confidence": 1.0,
+        "conditions": "Water capacity across dual cylinders",
+        "truth": "certified",
+        "id": "F013",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "60 (30+30) litres",
+        "truth": "stated",
+        "conditions": "Manufacturer-described combined twin-cylinder fuel capacity for iCNG. The source does not specify water capacity, usable gas quantity or an equivalent mass."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F014",
+      "reason": "Retain the exact petrol engine identity and mark published specification stated.",
+      "before": {
+        "kind": "spec",
+        "claim": "Petrol engine displacement and cylinders",
+        "value": "1199 cc, 3-cylinder",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder"
+        },
+        "confidence": 1.0,
+        "conditions": "1.2L Turbocharged Revotron",
+        "truth": "certified",
+        "id": "F014",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "1199 cc, 3-cylinder",
+        "truth": "stated",
+        "conditions": "Petrol 1.2L Turbocharged Revotron engine."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F015",
+      "reason": "Use only the power expression printed in the cited brochure.",
+      "before": {
+        "kind": "spec",
+        "claim": "Petrol engine maximum power",
+        "value": "120 PS (88.2 kW) @ 5500 rpm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Power (kW) 88.2 @5500 rpm"
+        },
+        "confidence": 1.0,
+        "conditions": "Petrol mode",
+        "truth": "certified",
+        "id": "F015",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "88.2 kW @ 5500 rpm",
+        "truth": "stated",
+        "conditions": "Petrol 1.2L Turbocharged Revotron engine."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F016",
+      "reason": "Distinguish the petrol-only engine from the bi-fuel petrol-mode column.",
+      "before": {
+        "kind": "spec",
+        "claim": "Petrol engine maximum torque",
+        "value": "170 Nm @ 1750-4000 rpm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Torque (Nm) 170 @1750-4000 rpm"
+        },
+        "confidence": 1.0,
+        "conditions": "Petrol mode",
+        "truth": "certified",
+        "id": "F016",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "170 Nm @ 1750-4000 rpm",
+        "truth": "stated",
+        "conditions": "Petrol 1.2L Turbocharged Revotron engine; not the petrol-mode column of the bi-fuel engine."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F017",
+      "reason": "Retain the diesel engine identity; published specification is stated.",
+      "before": {
+        "kind": "spec",
+        "claim": "Diesel engine displacement and cylinders",
+        "value": "1497 cc, 4-cylinder",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "1.5L Turbocharged Revotorq Engine, 1497 cc, 4-cylinder"
+        },
+        "confidence": 1.0,
+        "conditions": "1.5L Turbocharged Revotorq",
+        "truth": "certified",
+        "id": "F017",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "1497 cc, 4-cylinder",
+        "truth": "stated",
+        "conditions": "Diesel 1.5L Turbocharged Revotorq engine."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F018",
+      "reason": "Remove blended PS expressions; keep the source-specific brochure kW/RPM figure.",
+      "before": {
+        "kind": "spec",
+        "claim": "Diesel engine maximum power",
+        "value": "84.5 kW (115 PS / 113 PS) @ 3750 rpm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Power (kW) 84.5 @3750 rpm"
+        },
+        "confidence": 0.95,
+        "conditions": "Listed as 115 PS on landing page overview and 113 PS in FAQ; both cite 84.5 kW",
+        "truth": "certified",
+        "id": "F018",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "84.5 kW @ 3750 rpm",
+        "truth": "stated",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Power (kW), diesel 1.5L Turbocharged Revotorq column",
+          "quote": "84.5 @3750 rpm"
+        },
+        "conditions": "Diesel 1.5L Turbocharged Revotorq engine. This fact uses only the brochure kW expression; conflicting web-page PS expressions are not combined or converted here."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F019",
+      "reason": "Retain brochure diesel torque as a manufacturer statement.",
+      "before": {
+        "kind": "spec",
+        "claim": "Diesel engine maximum torque",
+        "value": "260 Nm @ 1500-2750 rpm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Torque (Nm) 260 @1500-2750 rpm"
+        },
+        "confidence": 1.0,
+        "conditions": "Diesel engine",
+        "truth": "certified",
+        "id": "F019",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "260 Nm @ 1500-2750 rpm",
+        "truth": "stated",
+        "conditions": "Diesel 1.5L Turbocharged Revotorq engine."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F020",
+      "reason": "Remove blended CNG power expressions; use only the page-40 statement.",
+      "before": {
+        "kind": "spec",
+        "claim": "CNG mode power output",
+        "value": "73.5 kW (73.52 kW / 98 PS) @ 5000 rpm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "CNG Mode - 73.52 @5000 rpm"
+        },
+        "confidence": 1.0,
+        "conditions": "Operating in CNG mode",
+        "truth": "certified",
+        "id": "F020",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "73.52 kW @ 5000 rpm",
+        "truth": "stated",
+        "conditions": "1.2L Turbocharged Revotron bi-fuel engine operating in CNG mode; page-40 expression only."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F021",
+      "reason": "Keep CNG-mode scope and manufacturer-stated classification.",
+      "before": {
+        "kind": "spec",
+        "claim": "CNG mode torque output",
+        "value": "170 Nm @ 2000 rpm",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "CNG Mode - 170 @2000 rpm"
+        },
+        "confidence": 1.0,
+        "conditions": "Operating in CNG mode",
+        "truth": "certified",
+        "id": "F021",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "170 Nm @ 2000 rpm",
+        "truth": "stated",
+        "conditions": "1.2L Turbocharged Revotron bi-fuel engine operating in CNG mode."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F022",
+      "reason": "Preserve the FAQ mapping from each engine/fuel to its transmission choices.",
+      "before": {
+        "kind": "spec",
+        "claim": "Available transmissions",
+        "value": "5-Speed manual, 6-speed manual, 6-speed AMT, and 7-speed DCT (DCA)",
+        "source": {
+          "ref": "src_e64b3e",
+          "locator": "Frequently Asked Questions",
+          "quote": "5-Speed manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox."
+        },
+        "confidence": 1.0,
+        "conditions": "Availability varies by engine and trim",
+        "truth": "stated",
+        "id": "F022",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Petrol: 5-speed manual, 6-speed manual, 6-speed AMT, or 7-speed DCT; diesel: 6-speed manual or 6-speed AMT; iCNG: 6-speed manual only.",
+        "conditions": "Official specifications FAQ engine-level choices; availability also varies by trim. Use the brochure powertrain matrix before assigning a transmission to a named variant."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F023",
+      "reason": "Keep persona split; do not imply independent certification or append mm to the tyre code.",
+      "before": {
+        "kind": "spec",
+        "claim": "Tyre sizes",
+        "value": "195/60 R16 (Smart & Pure) and 215/60 R16 (Creative & Fearless)",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Tyre Size (mm) 195/60 R16 (Smart & Pure Persona) 215/60 R16 (Creative & Fearless Persona)"
+        },
+        "confidence": 1.0,
+        "conditions": "Varies according to persona/trim level",
+        "truth": "certified",
+        "id": "F023",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "195/60 R16 (Smart & Pure) and 215/60 R16 (Creative & Fearless)",
+        "truth": "stated",
+        "conditions": "195/60 R16 for Smart and Pure personas; 215/60 R16 for Creative and Fearless personas, as listed in the May 2026 brochure."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F024",
+      "reason": "Replace unbounded all-trims wording with the actual table scope.",
+      "before": {
+        "kind": "spec",
+        "claim": "Braking setup",
+        "value": "Front Disc, Rear Drum",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 40, TECHNICAL SPECIFICATION",
+          "quote": "Brakes Front Disc, Rear Drum"
+        },
+        "confidence": 1.0,
+        "conditions": "All trims",
+        "truth": "certified",
+        "id": "F024",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Front Disc, Rear Drum",
+        "truth": "stated",
+        "conditions": "As listed in the May 2026 technical specification table; confirm the selected variant."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F026",
+      "reason": "Make the restrictive availability footnote traceable alongside the feature list.",
+      "before": {
+        "kind": "feature",
+        "claim": "ADAS functions list",
+        "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "page 39, FEARLESS + PS",
+          "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+        },
+        "confidence": 1.0,
+        "conditions": "Only available in Fearless + PS DCA; not available in CNG & Diesel",
+        "truth": "stated",
+        "id": "F026",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+          "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+        },
+        "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F027",
+      "reason": "Use a self-contained brochure fact for size plus persona hierarchy; omit the separately sourced inch expression.",
+      "before": {
+        "kind": "feature",
+        "claim": "Infotainment display size",
+        "value": "26.03 cm (10.25”) Floating Infotainment System by Harman™",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "Futuristic Technology section",
+          "quote": "26.03 cm Floating Infotainment System by Harman™"
+        },
+        "confidence": 1.0,
+        "conditions": "Available in Pure + trim and above",
+        "truth": "stated",
+        "id": "F027",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "26.03 cm touchscreen infotainment by HARMAN",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+          "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+        },
+        "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F028",
+      "reason": "Keep only the top-trim cluster fact; do not mix the separate Pure + cluster into it.",
+      "before": {
+        "kind": "feature",
+        "claim": "Digital instrument cluster size",
+        "value": "26.03 cm (10.25”) Digital Instrument Cluster",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "Futuristic Technology section",
+          "quote": "26.03 cm Digital Instrument Cluster"
+        },
+        "confidence": 1.0,
+        "conditions": "Equipped on Fearless + PS persona; Pure+ gets 10.16 cm cluster",
+        "truth": "stated",
+        "id": "F028",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "26.03 cm digital instrument cluster",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Fearless + PS feature panel",
+          "quote": "26.03 cm Digital Instrument Cluster"
+        },
+        "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F029",
+      "reason": "Use the brochure for both sound-system wording and restrictive trim footnotes.",
+      "before": {
+        "kind": "feature",
+        "claim": "Premium sound system",
+        "value": "JBL-Branded 9-Speaker and Subwoofer",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "Futuristic Technology section",
+          "quote": "JBL-Branded 9-Speaker and Subwoofer"
+        },
+        "confidence": 0.95,
+        "conditions": "Available on top variant Fearless + PS DCA; not available on CNG trims",
+        "truth": "stated",
+        "id": "F029",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "JBL-branded 9 speakers with subwoofer",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+          "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+        },
+        "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F030",
+      "reason": "Retain camera/BVM only; front sensor is a separate higher-trim fact for the next iteration.",
+      "before": {
+        "kind": "feature",
+        "claim": "Camera system",
+        "value": "HD 360-Degree Surround View System with Blind View Monitor and Front Parking Sensor",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "360° Safety section",
+          "quote": "HD 360-Degree Surround View System with Front Parking Sensor"
+        },
+        "confidence": 1.0,
+        "conditions": "Available on Creative and higher personas",
+        "truth": "stated",
+        "id": "F030",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "360° HD Surround View System with Blind View Monitor",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+          "quote": "HD Surround View System with Blind View Monitor"
+        },
+        "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F031",
+      "reason": "Use the brochure for a self-contained iRA feature/trim/subscription fact; omit the separately sourced 70+ count.",
+      "before": {
+        "kind": "feature",
+        "claim": "Connected car app",
+        "value": "iRA Connected Vehicle Technology with 70+ features",
+        "source": {
+          "ref": "src_e64b3e",
+          "locator": "Frequently Asked Questions",
+          "quote": "iRA connected car technology with 70+ features"
+        },
+        "confidence": 1.0,
+        "conditions": "First year subscription free, renewal charges apply; not available on CNG",
+        "truth": "contractual",
+        "id": "F031",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "iRA Connected Vehicle Features",
+        "truth": "contractual",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Fearless + PS feature panel; page 40: subscription and fuel restrictions",
+          "quote": "iRA Connected Vehicle Features"
+        },
+        "conditions": "Fearless + PS in the documented petrol/diesel feature list; not available in CNG. First-year iRA app subscription is free; renewal charges apply. No renewal price is supplied."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "F032",
+      "reason": "Remove general 24/7 wording; the footer supports the phone contact, not service hours.",
+      "before": {
+        "kind": "policy",
+        "claim": "Roadside assistance phone contact",
+        "value": "18002098282",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "Footer",
+          "quote": "For Roadside Assistance, call on - 18002098282"
+        },
+        "confidence": 1.0,
+        "conditions": "24/7 assistance",
+        "truth": "stated",
+        "id": "F032",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "18002098282",
+        "conditions": "Official roadside-assistance contact as printed in the model-page footer. The footer does not establish service hours; connected E-Call/B-Call is a separate qualified feature."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-002",
+      "reason": "Original highlight quote retained; add independently reviewed trim applicability without moving the source group.",
+      "before": {
+        "kind": "feature",
+        "claim": "Ambient lighting color options",
+        "value": "64-colour",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#car-detail-interior",
+          "quote": "64-colour Ambient Lighting lets you pick your vibe on an interactive wheel"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-002",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "64-colour",
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: ZXi+ column, corresponding ambient-lighting / ventilation / display / camera / app-store row",
+          "evidence": "The relevant feature is shown for ZXi+. For the cooling-level, 3D-view and app-count details, the original model-page quote remains the primary evidence; the brochure supplies trim scope only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-003",
+      "reason": "Original highlight quote retained; add independently reviewed trim applicability without moving the source group.",
+      "before": {
+        "kind": "feature",
+        "claim": "Front seat cooling levels",
+        "value": "three levels of seat cooling",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#car-detail-interior",
+          "quote": "Ventilated Front Seats keep you comfortable with three levels of seat cooling"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-003",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "three levels of seat cooling",
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: ZXi+ column, corresponding ambient-lighting / ventilation / display / camera / app-store row",
+          "evidence": "The relevant feature is shown for ZXi+. For the cooling-level, 3D-view and app-count details, the original model-page quote remains the primary evidence; the brochure supplies trim scope only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-004",
+      "reason": "Original highlight quote retained; add independently reviewed trim applicability without moving the source group.",
+      "before": {
+        "kind": "spec",
+        "claim": "SmartPlay Pro+ display size",
+        "value": "10.1\"",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#technology-block",
+          "quote": "Brezza 10.1\" SmartPlay Pro+"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-004",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "10.1\"",
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: ZXi+ column, corresponding ambient-lighting / ventilation / display / camera / app-store row",
+          "evidence": "The relevant feature is shown for ZXi+. For the cooling-level, 3D-view and app-count details, the original model-page quote remains the primary evidence; the brochure supplies trim scope only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-005",
+      "reason": "Original highlight quote retained; add independently reviewed trim applicability without moving the source group.",
+      "before": {
+        "kind": "feature",
+        "claim": "360 view camera views",
+        "value": "8-point 3D views and auto activation during parking",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#technology-block",
+          "quote": "See every angle around the car with 8-point 3D views and auto activation during parking"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-005",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "8-point 3D views and auto activation during parking",
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: ZXi+ column, corresponding ambient-lighting / ventilation / display / camera / app-store row",
+          "evidence": "The relevant feature is shown for ZXi+. For the cooling-level, 3D-view and app-count details, the original model-page quote remains the primary evidence; the brochure supplies trim scope only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-006",
+      "reason": "Original highlight quote retained; add independently reviewed trim applicability without moving the source group.",
+      "before": {
+        "kind": "feature",
+        "claim": "App launcher apps support",
+        "value": "35+ apps",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#technology-block",
+          "quote": "Access 35+ apps including YouTube, Spotify and JioSaavn directly from the screen"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-006",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "35+ apps",
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: ZXi+ column, corresponding ambient-lighting / ventilation / display / camera / app-store row",
+          "evidence": "The relevant feature is shown for ZXi+. For the cooling-level, 3D-view and app-count details, the original model-page quote remains the primary evidence; the brochure supplies trim scope only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-009",
+      "reason": "Retain original highlight quote; distinguish front and rear sensor applicability.",
+      "before": {
+        "kind": "feature",
+        "claim": "Parking sensors",
+        "value": "Front and Rear Parking Assist Sensors",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#safety-tab-block",
+          "quote": "Front and Rear Parking Assist Sensors work in sync"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-009",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Front and Rear Parking Assist Sensors",
+        "conditions": "Combined front and rear parking sensors supported for ZXi+. Front parking sensors are also listed for ZXi Turbo; the rear-sensor row covers the full LXi/VXi/ZXi/ZXi+ matrix."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: Front Parking Sensors and Reverse Parking Sensor with Infographic Display rows",
+          "evidence": "Front: ZXi Turbo and ZXi+; rear: all four listed trim columns."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C1-010",
+      "reason": "Retain original highlight quote and add exact trim applicability.",
+      "before": {
+        "kind": "feature",
+        "claim": "Wireless charger cooling feature",
+        "value": "Wireless Charger with Active Cooling",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "#car-detail-interior",
+          "quote": "Wireless Charger with Active Cooling place your phone on the Qi-compatible pad and it charges quickly, with built-in cooling"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C1-010",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Wireless Charger with Active Cooling",
+        "conditions": "ZXi and ZXi+ trims; not stated as standard across the full Brezza range."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_b28460",
+          "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+          "locator": "PDF page 10: Wireless Charging Dock with Active Cooling row",
+          "evidence": "Availability marks in ZXi and ZXi+ only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C2-011",
+      "reason": "Retain source-group identity and original highlight quote; audit table supplies the added scope.",
+      "before": {
+        "kind": "feature",
+        "claim": "ADAS specification",
+        "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "Where Confidence Meets Cutting-Edge Safety",
+          "quote": "featuring Hyundai SmartSense Level 2 ADAS with 16 intelligent features and a high-strength steel body"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C2-011",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+        "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_73036b",
+          "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+          "locator": "HTML table 2, data rows 33–48",
+          "evidence": "Every listed SmartSense row is marked S for HX10 and HX10 Knight only."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C2-014",
+      "reason": "Retain source-group identity and original highlight quote; audit table supplies the added scope.",
+      "before": {
+        "kind": "feature",
+        "claim": "Sound system",
+        "value": "Bose premium sound 8 speaker system",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "Key Technology Highlights",
+          "quote": "Bose premium sound 8 speaker system"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C2-014",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Bose premium sound 8 speaker system",
+        "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_73036b",
+          "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+          "locator": "HTML table 5, data row 6",
+          "evidence": "Bose premium sound eight-speaker row: HX10 and HX10 Knight are S; other columns are unavailable."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C2-016",
+      "reason": "Distinguish regular trims from Knight wheel treatment while retaining original source.",
+      "before": {
+        "kind": "feature",
+        "claim": "Wheel size and type",
+        "value": "R16 (D= 405.6 mm) diamond cut alloy wheels",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "Key Highlights",
+          "quote": "R16 (D= 405.6 mm) diamond cut alloy wheels"
+        },
+        "confidence": 1.0,
+        "conditions": "",
+        "truth": "stated",
+        "id": "C2-016",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "R16 (D= 405.6 mm) diamond cut alloy wheels",
+        "conditions": "R16 diamond-cut alloy wheels on regular HX7, HX8 and HX10 in the official matrix; Knight variants have a separate wheel treatment."
+      },
+      "additional_evidence": [
+        {
+          "ref": "src_73036b",
+          "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+          "locator": "HTML table 3, data rows 4–5",
+          "evidence": "Diamond-cut row: HX7, HX8, HX10. Black-painted alloy row identifies separate Knight availability."
+        }
+      ],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C3-009",
+      "reason": "Use the complete exact capacity row; retain K15C scope to select the correct column.",
+      "before": {
+        "kind": "spec",
+        "claim": "Engine Capacity, K15C Smart Hybrid",
+        "value": "1462 cc",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, SPECIFICATION SHEET",
+          "quote": "Capacity (cc) 1462"
+        },
+        "confidence": 1.0,
+        "conditions": "K15C Smart Hybrid Petrol",
+        "truth": "stated",
+        "id": "C3-009",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "1462 cc",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "PDF page 10: SPECIFICATION SHEET; Capacity row under K15C Smart Hybrid petrol column",
+          "quote": "Capacity (cc) 998 1462 1462"
+        }
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    },
+    {
+      "id": "C4-019",
+      "reason": "The same brochure supplies subscription expiry, equipped variants and network qualifications.",
+      "before": {
+        "kind": "offer",
+        "claim": "Bluelink subscription duration",
+        "value": "3 Years",
+        "source": {
+          "ref": "src_43582f",
+          "locator": "page 21",
+          "quote": "3 Years Bluelink subscription"
+        },
+        "confidence": 1.0,
+        "conditions": "Included with vehicle",
+        "truth": "contractual",
+        "id": "C4-019",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "3 Years",
+        "source": {
+          "ref": "src_43582f",
+          "locator": "PDF page 20: Bluelink equipment rows; page 21: three-year subscription badge and paid-renewal/network terms",
+          "quote": "Bluelink will be available on paid basis post the 3 year period."
+        },
+        "conditions": "On Bluelink-equipped trims: HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10 and HX10 Knight in the reviewed matrix. Three-year subscription period; paid service afterward. Functionality depends on adequate power and uninterrupted network connectivity."
+      },
+      "additional_evidence": [],
+      "note": "Only keys in patch are intended for the API. Audit evidence outside patch is not a claim that the original quote contains the added applicability."
+    }
+  ],
+  "approval_reasons": {
+    "C2-003": "Reject generic height duplicate; use C4-003 (R16 + roof rails) or C4-004 (R15 + roof rails).",
+    "C2-015": "Reject generic navigation-screen duplicate; C5-010 supports the selected HX10 with an exact matrix citation.",
+    "C2-007": "Hold unscoped cylinder configuration; source does not establish applicability to selected HX10 1.0L turbo."
+  },
+  "unchanged_product_facts": [
+    "F025"
+  ],
+  "quote_policy": "Quotes are retained from actual sources or use exact text/normalized whitespace from the cited source. Matrix evidence in additional_evidence is audit provenance, not falsely attributed to an original highlight quote."
+}

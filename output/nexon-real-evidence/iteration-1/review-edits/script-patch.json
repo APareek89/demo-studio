@@ -1,0 +1,398 @@
+{
+  "lines": [
+    {
+      "id": "overview-intro-L1",
+      "text": "Let's take a closer look at the Nexon.",
+      "fact_ids": [],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "overview-intro-L2",
+      "text": "We'll explore its safety equipment, cabin and luggage space. You can pause or ask about another detail at any point.",
+      "fact_ids": [
+        "F025",
+        "F010",
+        "F027"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "overview-intro-D1",
+      "text": "The brochure lists the Nexon's length as 3,995 millimetres. Exterior dimensions alone don't establish passenger comfort.",
+      "fact_ids": [
+        "F005"
+      ],
+      "visual_ref": "im02"
+    },
+    {
+      "id": "overview-intro-D2",
+      "text": "Tata reports five-star Global NCAP and Bharat NCAP ratings. Its Bharat NCAP scope covers petrol and diesel trims active in May 2026.",
+      "fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "three-reminders-L1",
+      "text": "Keep three areas in mind: standard safety equipment, boot space by fuel type, and cabin features by trim.",
+      "fact_ids": [
+        "F025",
+        "F010",
+        "F011",
+        "F027",
+        "F028"
+      ],
+      "visual_ref": "im04"
+    },
+    {
+      "id": "three-reminders-L2",
+      "text": "I'm happy to stay with the part that interests you.",
+      "fact_ids": [],
+      "visual_ref": "im04"
+    },
+    {
+      "id": "three-reminders-D1",
+      "text": "Six airbags and electronic stability control are standard equipment.",
+      "fact_ids": [
+        "F025"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "three-reminders-D2",
+      "text": "For ground clearance, Tata lists 208 millimetres, with variation by variant.",
+      "fact_ids": [
+        "F009"
+      ],
+      "visual_ref": "im02"
+    },
+    {
+      "id": "stance-design-L1",
+      "text": "Notice the side profile.",
+      "fact_ids": [],
+      "visual_ref": "im02"
+    },
+    {
+      "id": "stance-design-L2",
+      "text": "Tata lists 208 millimetres of ground clearance, which varies by variant. It isn't a promise about water depth or clearing every obstacle.",
+      "fact_ids": [
+        "F009"
+      ],
+      "visual_ref": "im02"
+    },
+    {
+      "id": "stance-design-D1",
+      "text": "Smart and Pure use 195/60 R16 tyres; Creative and Fearless use 215/60 R16.",
+      "fact_ids": [
+        "F023"
+      ],
+      "visual_ref": "im02"
+    },
+    {
+      "id": "stance-design-D2",
+      "text": "The brochure lists front disc and rear drum brakes.",
+      "fact_ids": [
+        "F024"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "cockpit-experience-L1",
+      "text": "Here is the centre touchscreen.",
+      "fact_ids": [],
+      "visual_ref": "im08"
+    },
+    {
+      "id": "cockpit-experience-L2",
+      "text": "Pure plus begins with the 26.03-centimetre Harman touchscreen; Fearless plus P S adds a matching-size driver display.",
+      "fact_ids": [
+        "F027",
+        "F028"
+      ],
+      "visual_ref": "im08"
+    },
+    {
+      "id": "cockpit-experience-D1",
+      "text": "The 26.03-centimetre Harman touchscreen starts at Pure plus in this brochure's trim list.",
+      "fact_ids": [
+        "F027"
+      ],
+      "visual_ref": "im08"
+    },
+    {
+      "id": "cockpit-experience-D2",
+      "text": "The larger driver display is listed on Fearless plus P S. Check the exact trim when comparing cabins.",
+      "fact_ids": [
+        "F028"
+      ],
+      "visual_ref": "im04"
+    },
+    {
+      "id": "luggage-practicality-L1",
+      "text": "Here is the luggage area.",
+      "fact_ids": [],
+      "visual_ref": "im06"
+    },
+    {
+      "id": "luggage-practicality-L2",
+      "text": "Petrol and diesel list 382 litres; CNG lists 321, both measured to ISO V215. Your bags still deserve a physical fit check.",
+      "fact_ids": [
+        "F010",
+        "F011"
+      ],
+      "visual_ref": "im06"
+    },
+    {
+      "id": "luggage-practicality-D1",
+      "text": "Both boot figures use ISO V215. A number alone cannot tell us whether your stroller will fit.",
+      "fact_ids": [
+        "F010",
+        "F011"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "luggage-practicality-D2",
+      "text": "The petrol fuel tank is listed at 44 litres. We don't have a verified real-world range figure here.",
+      "fact_ids": [
+        "F012"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "performance-engines-L1",
+      "text": "Nexon has petrol, diesel and CNG choices, with different gearbox options.",
+      "fact_ids": [
+        "F022"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "performance-engines-L2",
+      "text": "If you prefer an automatic, petrol options include a seven-speed dual-clutch gearbox. Availability depends on the trim.",
+      "fact_ids": [
+        "F022"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "performance-engines-D1",
+      "text": "The 1.2-litre turbo petrol is listed at 88.2 kilowatts at 5,500 rpm in the brochure.",
+      "fact_ids": [
+        "F014",
+        "F015"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "performance-engines-D2",
+      "text": "The 1.5-litre turbo diesel is listed at 84.5 kilowatts at 3,750 rpm, with 260 newton-metres at 1,500 to 2,750 rpm.",
+      "fact_ids": [
+        "F017",
+        "F018",
+        "F019"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "structural-safety-L1",
+      "text": "Tata reports a five-star Bharat NCAP rating for petrol and diesel trims active in May 2026.",
+      "fact_ids": [
+        "F004"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "structural-safety-L2",
+      "text": "Six airbags and electronic stability control are standard.",
+      "fact_ids": [
+        "F025"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "structural-safety-D1",
+      "text": "Tata lists three-point emergency-locking seatbelts for all occupants.",
+      "fact_ids": [
+        "F025"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "structural-safety-D2",
+      "text": "ADAS, including autonomous emergency braking and lane keep assist, is listed only for Fearless plus P S petrol DCA.",
+      "fact_ids": [
+        "F026"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "extra-features-L1",
+      "text": "Here are a few details worth comparing by trim.",
+      "fact_ids": [],
+      "visual_ref": "im04"
+    },
+    {
+      "id": "extra-features-L2",
+      "text": "Creative adds a 360-degree camera with blind-view monitor; JBL audio with a subwoofer is limited to Fearless plus P S petrol DCA.",
+      "fact_ids": [
+        "F030",
+        "F029"
+      ],
+      "visual_ref": "im04"
+    },
+    {
+      "id": "extra-features-D1",
+      "text": "Fearless plus P S petrol and diesel list iRA connectivity. The first year is free; renewal charges apply.",
+      "fact_ids": [
+        "F031"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "extra-features-D2",
+      "text": "Driver-assistance features are limited to Fearless plus P S petrol DCA. CNG and diesel aren't listed with them.",
+      "fact_ids": [
+        "F026"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "ownership-terms-L1",
+      "text": "Prices start at seven point three nine lakh rupees ex-showroom, subject to change.",
+      "fact_ids": [
+        "F001"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "ownership-terms-L2",
+      "text": "Your chosen trim and on-road quote need a dealer check; finance depends on the lender.",
+      "fact_ids": [
+        "F001",
+        "F002"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "ownership-terms-D1",
+      "text": "The advertised starting EMI is six thousand four hundred and ninety-nine rupees. It covers a Flexi scheme's first six months; later instalments are higher, and the financier decides approval.",
+      "fact_ids": [
+        "F002"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "ownership-terms-D2",
+      "text": "Tata publishes a roadside-assistance contact. The supplied footer doesn't specify the helpline's opening hours.",
+      "fact_ids": [
+        "F032"
+      ],
+      "visual_ref": ""
+    },
+    {
+      "id": "close-L1",
+      "text": "The Nexon brings standard safety equipment, distinct fuel choices and cabin upgrades to compare by trim.",
+      "fact_ids": [
+        "F025",
+        "F022",
+        "F027"
+      ],
+      "visual_ref": "im01"
+    },
+    {
+      "id": "close-L2",
+      "text": "Choose Book Test Drive when you're ready to try the seats, visibility and gearbox for yourself.",
+      "fact_ids": [],
+      "visual_ref": "im01"
+    }
+  ],
+  "intake_q1": "Welcome to Tata Nexon. What's the main thing you'd like your next car to do for you? You can skip this and browse.",
+  "checkins": [
+    {
+      "segment_id": "overview-intro",
+      "text": ""
+    },
+    {
+      "segment_id": "three-reminders",
+      "text": ""
+    },
+    {
+      "segment_id": "stance-design",
+      "text": "Would you like a closer look at the side profile?"
+    },
+    {
+      "segment_id": "cockpit-experience",
+      "text": "Would you like to stay with the cabin, or move on?"
+    },
+    {
+      "segment_id": "luggage-practicality",
+      "text": "What would you usually need to carry?"
+    },
+    {
+      "segment_id": "performance-engines",
+      "text": "Is there a gearbox option you'd like to explore?"
+    },
+    {
+      "segment_id": "structural-safety",
+      "text": "Would you like to go into any of the safety details?"
+    },
+    {
+      "segment_id": "extra-features",
+      "text": "Anything here you'd like to see more closely?"
+    },
+    {
+      "segment_id": "ownership-terms",
+      "text": "Would you like help checking a particular variant?"
+    }
+  ],
+  "segments": [
+    {
+      "id": "overview-intro",
+      "title": "Tata Nexon, up close",
+      "outcome": "A guided look at the equipment and choices that matter to you"
+    },
+    {
+      "id": "three-reminders",
+      "title": "Three things to explore",
+      "outcome": "Standard safety equipment, fuel-specific boot space and trim-specific cabin features"
+    },
+    {
+      "id": "stance-design",
+      "title": "Meet the stance",
+      "outcome": "Published ground clearance with its variant qualification"
+    },
+    {
+      "id": "cockpit-experience",
+      "title": "Your cockpit, closer",
+      "outcome": "A closer look at the touchscreen and the trim-specific driver display"
+    },
+    {
+      "id": "luggage-practicality",
+      "title": "Room for your plans",
+      "outcome": "Published boot volumes, with a practical fit check still to do"
+    },
+    {
+      "id": "performance-engines",
+      "title": "Choose your driving setup",
+      "outcome": "Engine and gearbox choices scoped to the selected trim"
+    },
+    {
+      "id": "structural-safety",
+      "title": "Safety, with the detail",
+      "outcome": "Manufacturer-reported crash ratings and standard safety equipment"
+    },
+    {
+      "id": "extra-features",
+      "title": "Details worth comparing",
+      "outcome": "Camera and audio equipment with precise trim conditions"
+    },
+    {
+      "id": "ownership-terms",
+      "title": "Start with a clear quote",
+      "outcome": "Published starting price, conditional finance and dealer checks"
+    }
+  ],
+  "realign_visuals": false
+}

@@ -1,0 +1,392 @@
+[
+  {
+    "id": "F001",
+    "patch": {
+      "value": "Rs 7.39 Lakhs*",
+      "conditions": "Starting ex-showroom price stated on the official model page, checked 18 September 2026; subject to change without prior information; obtain an exact selected-variant dealer quote."
+    }
+  },
+  {
+    "id": "F002",
+    "patch": {
+      "value": "₹6,499",
+      "conditions": "Advertised starting EMI under the Flexi scheme: Rs. 809 per lakh instalment for the first 6 months; subsequent EMI is higher. Offers apply to selected variants and may change; final EMI and finance are at the financier's sole discretion. Not a customer-approved EMI."
+    }
+  },
+  {
+    "id": "F003",
+    "patch": {
+      "value": "5 Star Rating",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "360° Safety section; GNCAP rating label",
+        "quote": "GNCAP 5 Star Rating"
+      },
+      "conditions": "Global NCAP five-star rating as reported by Tata Motors. The extracted statement does not identify the test date, generation or tested variant scope; it does not establish superiority over rivals."
+    }
+  },
+  {
+    "id": "F004",
+    "patch": {
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+        "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+      },
+      "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking."
+    }
+  },
+  {
+    "id": "F005",
+    "patch": {
+      "value": "3,995 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    }
+  },
+  {
+    "id": "F006",
+    "patch": {
+      "value": "1,804 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    }
+  },
+  {
+    "id": "F007",
+    "patch": {
+      "value": "1,620 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    }
+  },
+  {
+    "id": "F008",
+    "patch": {
+      "value": "2,498 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    }
+  },
+  {
+    "id": "F009",
+    "patch": {
+      "value": "208 mm",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: ground-clearance row and variant footnote",
+        "quote": "Ground Clearance (mm) 208*"
+      },
+      "conditions": "Varies as per variant (brochure footnote). No loading/unladen condition is stated in the supplied source."
+    }
+  },
+  {
+    "id": "F010",
+    "patch": {
+      "value": "382 L",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, fuel-column headings, and ISO V215 footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "conditions": "Petrol and diesel column of the May 2026 brochure; manufacturer-stated bootspace as per ISO V215. No practical luggage-fit guarantee or cross-method comparison is established."
+    }
+  },
+  {
+    "id": "F011",
+    "patch": {
+      "value": "321 L",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, fuel-column headings, and ISO V215 footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "conditions": "Petrol + CNG column of the May 2026 brochure; manufacturer-stated bootspace as per ISO V215. No practical luggage-fit guarantee or cross-method comparison is established."
+    }
+  },
+  {
+    "id": "F012",
+    "patch": {
+      "value": "44 L",
+      "truth": "stated",
+      "conditions": "Petrol fuel-tank capacity as listed in the May 2026 brochure."
+    }
+  },
+  {
+    "id": "F013",
+    "patch": {
+      "value": "60 (30+30) litres",
+      "truth": "stated",
+      "conditions": "Manufacturer-described combined twin-cylinder fuel capacity for iCNG. The source does not specify water capacity, usable gas quantity or an equivalent mass."
+    }
+  },
+  {
+    "id": "F014",
+    "patch": {
+      "value": "1199 cc, 3-cylinder",
+      "truth": "stated",
+      "conditions": "Petrol 1.2L Turbocharged Revotron engine."
+    }
+  },
+  {
+    "id": "F015",
+    "patch": {
+      "value": "88.2 kW @ 5500 rpm",
+      "truth": "stated",
+      "conditions": "Petrol 1.2L Turbocharged Revotron engine."
+    }
+  },
+  {
+    "id": "F016",
+    "patch": {
+      "value": "170 Nm @ 1750-4000 rpm",
+      "truth": "stated",
+      "conditions": "Petrol 1.2L Turbocharged Revotron engine; not the petrol-mode column of the bi-fuel engine."
+    }
+  },
+  {
+    "id": "F017",
+    "patch": {
+      "value": "1497 cc, 4-cylinder",
+      "truth": "stated",
+      "conditions": "Diesel 1.5L Turbocharged Revotorq engine."
+    }
+  },
+  {
+    "id": "F018",
+    "patch": {
+      "value": "84.5 kW @ 3750 rpm",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Power (kW), diesel 1.5L Turbocharged Revotorq column",
+        "quote": "84.5 @3750 rpm"
+      },
+      "conditions": "Diesel 1.5L Turbocharged Revotorq engine. This fact uses only the brochure kW expression; conflicting web-page PS expressions are not combined or converted here."
+    }
+  },
+  {
+    "id": "F019",
+    "patch": {
+      "value": "260 Nm @ 1500-2750 rpm",
+      "truth": "stated",
+      "conditions": "Diesel 1.5L Turbocharged Revotorq engine."
+    }
+  },
+  {
+    "id": "F020",
+    "patch": {
+      "value": "73.52 kW @ 5000 rpm",
+      "truth": "stated",
+      "conditions": "1.2L Turbocharged Revotron bi-fuel engine operating in CNG mode; page-40 expression only."
+    }
+  },
+  {
+    "id": "F021",
+    "patch": {
+      "value": "170 Nm @ 2000 rpm",
+      "truth": "stated",
+      "conditions": "1.2L Turbocharged Revotron bi-fuel engine operating in CNG mode."
+    }
+  },
+  {
+    "id": "F022",
+    "patch": {
+      "value": "Petrol: 5-speed manual, 6-speed manual, 6-speed AMT, or 7-speed DCT; diesel: 6-speed manual or 6-speed AMT; iCNG: 6-speed manual only.",
+      "conditions": "Official specifications FAQ engine-level choices; availability also varies by trim. Use the brochure powertrain matrix before assigning a transmission to a named variant."
+    }
+  },
+  {
+    "id": "F023",
+    "patch": {
+      "value": "195/60 R16 (Smart & Pure) and 215/60 R16 (Creative & Fearless)",
+      "truth": "stated",
+      "conditions": "195/60 R16 for Smart and Pure personas; 215/60 R16 for Creative and Fearless personas, as listed in the May 2026 brochure."
+    }
+  },
+  {
+    "id": "F024",
+    "patch": {
+      "value": "Front Disc, Rear Drum",
+      "truth": "stated",
+      "conditions": "As listed in the May 2026 technical specification table; confirm the selected variant."
+    }
+  },
+  {
+    "id": "F026",
+    "patch": {
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote."
+    }
+  },
+  {
+    "id": "F027",
+    "patch": {
+      "value": "26.03 cm touchscreen infotainment by HARMAN",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+        "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+      },
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list."
+    }
+  },
+  {
+    "id": "F028",
+    "patch": {
+      "value": "26.03 cm digital instrument cluster",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel",
+        "quote": "26.03 cm Digital Instrument Cluster"
+      },
+      "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG."
+    }
+  },
+  {
+    "id": "F029",
+    "patch": {
+      "value": "JBL-branded 9 speakers with subwoofer",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+        "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+      },
+      "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker."
+    }
+  },
+  {
+    "id": "F030",
+    "patch": {
+      "value": "360° HD Surround View System with Blind View Monitor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+        "quote": "HD Surround View System with Blind View Monitor"
+      },
+      "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG."
+    }
+  },
+  {
+    "id": "F031",
+    "patch": {
+      "value": "iRA Connected Vehicle Features",
+      "truth": "contractual",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel; page 40: subscription and fuel restrictions",
+        "quote": "iRA Connected Vehicle Features"
+      },
+      "conditions": "Fearless + PS in the documented petrol/diesel feature list; not available in CNG. First-year iRA app subscription is free; renewal charges apply. No renewal price is supplied."
+    }
+  },
+  {
+    "id": "F032",
+    "patch": {
+      "value": "18002098282",
+      "conditions": "Official roadside-assistance contact as printed in the model-page footer. The footer does not establish service hours; connected E-Call/B-Call is a separate qualified feature."
+    }
+  },
+  {
+    "id": "C1-002",
+    "patch": {
+      "value": "64-colour",
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-003",
+    "patch": {
+      "value": "three levels of seat cooling",
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-004",
+    "patch": {
+      "value": "10.1\"",
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-005",
+    "patch": {
+      "value": "8-point 3D views and auto activation during parking",
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-006",
+    "patch": {
+      "value": "35+ apps",
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-009",
+    "patch": {
+      "value": "Front and Rear Parking Assist Sensors",
+      "conditions": "Combined front and rear parking sensors supported for ZXi+. Front parking sensors are also listed for ZXi Turbo; the rear-sensor row covers the full LXi/VXi/ZXi/ZXi+ matrix."
+    }
+  },
+  {
+    "id": "C1-010",
+    "patch": {
+      "value": "Wireless Charger with Active Cooling",
+      "conditions": "ZXi and ZXi+ trims; not stated as standard across the full Brezza range."
+    }
+  },
+  {
+    "id": "C2-011",
+    "patch": {
+      "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+      "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+    }
+  },
+  {
+    "id": "C2-014",
+    "patch": {
+      "value": "Bose premium sound 8 speaker system",
+      "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+    }
+  },
+  {
+    "id": "C2-016",
+    "patch": {
+      "value": "R16 (D= 405.6 mm) diamond cut alloy wheels",
+      "conditions": "R16 diamond-cut alloy wheels on regular HX7, HX8 and HX10 in the official matrix; Knight variants have a separate wheel treatment."
+    }
+  },
+  {
+    "id": "C3-009",
+    "patch": {
+      "value": "1462 cc",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "PDF page 10: SPECIFICATION SHEET; Capacity row under K15C Smart Hybrid petrol column",
+        "quote": "Capacity (cc) 998 1462 1462"
+      }
+    }
+  },
+  {
+    "id": "C4-019",
+    "patch": {
+      "value": "3 Years",
+      "source": {
+        "ref": "src_43582f",
+        "locator": "PDF page 20: Bluelink equipment rows; page 21: three-year subscription badge and paid-renewal/network terms",
+        "quote": "Bluelink will be available on paid basis post the 3 year period."
+      },
+      "conditions": "On Bluelink-equipped trims: HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10 and HX10 Knight in the reviewed matrix. Three-year subscription period; paid service afterward. Functionality depends on adequate power and uninterrupted network connectivity."
+    }
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "status": "align_reviewed_faq_refresh",
+  "created_at": "2026-09-18T13:50:01.623335+00:00",
+  "demo_id": "dm_36d47b86",
+  "model_tier": "customer",
+  "hypothesis": "With paid providers verified, manufacturer originals and separate trim-qualified rival facts should produce a grounded Nexon draft suitable for Align review; gaps must remain explicit.",
+  "source_manifest": "../../nexon-sources/manifest.json",
+  "upload_map": "../../nexon-sources/uploaded-sources.json",
+  "base_commit": "e66bc7327936fe97efaceca45393deb36e10344c",
+  "source_patch_pending_server_restart": false,
+  "customer_profiles": [
+    "A short-distance family practicality",
+    "B Brezza and Venue automatic comparisons",
+    "C skip intake then traffic need"
+  ],
+  "real_customer_cases": {
+    "Q01": "NOT RUN",
+    "Q02": "NOT RUN",
+    "Q03": "NOT RUN",
+    "Q04": "NOT RUN",
+    "Q05": "NOT RUN",
+    "Q06": "NOT RUN",
+    "Q07": "NOT RUN",
+    "Q08": "NOT RUN",
+    "Q09": "NOT RUN",
+    "Q10": "NOT RUN",
+    "Q11": "NOT RUN",
+    "Q12": "NOT RUN"
+  },
+  "ten_standards": {
+    "1": "NOT RUN",
+    "2": "NOT RUN",
+    "3": "NOT RUN",
+    "4": "NOT RUN",
+    "5": "NOT RUN",
+    "6": "NOT RUN",
+    "7": "NOT RUN",
+    "8": "NOT RUN",
+    "9": "NOT RUN",
+    "10": "NOT RUN"
+  },
+  "read_started_at": "2026-09-18T13:55:04.062811+00:00",
+  "build_commit": "233b6a6e08c63e1787c41e0591b33fe3490d193d",
+  "read_completed": true,
+  "voiced_build_completed": false,
+  "review_edits": "review-edits/applied.json",
+  "ui_edit_evidence": "align-cockpit-edit.png",
+  "updated_at": "2026-09-18T14:13:01.677461+00:00"
+}

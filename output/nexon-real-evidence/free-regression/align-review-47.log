@@ -1,0 +1,48 @@
+PASS align review: F and C facts appear with competitor identity even when competition is off
+PASS align review: chat sees competitor truth, conditions, approval and exact provenance
+PASS align review: the expanded fact prompt formats and returns a valid mock Align response
+PASS align review: C truth and citation can be corrected without resending its value
+PASS align review: C edits preserve separate storage, source owner and all product facts
+PASS align review: fact edit invalidates downstream work and all approvals, keeping corrected understanding done
+PASS align review: unknown fact is rejected without any mutation
+PASS align review: invalid truth is rejected without any mutation
+PASS align review: non-text value is rejected without any mutation
+PASS align review: empty value is rejected without any mutation
+PASS align review: unknown source is rejected without any mutation
+PASS align review: blended source ids is rejected without any mutation
+PASS align review: product citing competitor is rejected without any mutation
+PASS align review: competitor citing product is rejected without any mutation
+PASS align review: competitor source reassignment is rejected without any mutation
+PASS align review: source change retaining old evidence is rejected without any mutation
+PASS align review: unsupported citation field is rejected without any mutation
+PASS align review: structural fact mutation is rejected without any mutation
+PASS align review: product citation replacement requires and saves its own exact evidence
+PASS align review: rejecting a C fact removes its QA eligibility while keeping it reviewable
+PASS align review: restoring a C fact still respects competition-off at runtime
+PASS align review: approval requires a literal boolean and is atomic
+PASS align review: approval requires a literal boolean and is atomic
+PASS align review: approval requires a literal boolean and is atomic
+PASS align review: structured chat corrections use the same C lookup, provenance and approval invalidation
+PASS align review: an invalid chat correction reports failure without writing
+PASS align review: chat rejection targets C storage and removes runtime eligibility
+PASS align review: intake, checkin and metadata save without line edits or a paid call
+PASS align review: question edits clear only their stale audio and disable the old second intake
+PASS align review: question review invalidates downstream audio/deck and requires script/visual approval
+PASS align review: uncited intake equipment count rejects atomically
+PASS align review: uncited checkin claim rejects atomically
+PASS align review: unknown checkin segment rejects atomically
+PASS align review: duplicate checkin segment rejects atomically
+PASS align review: second intake rejects atomically
+PASS align review: empty intake rejects atomically
+PASS align review: uncited metadata rejects atomically
+PASS align review: structural segment edit rejects atomically
+PASS align review: unknown metadata segment rejects atomically
+PASS align review: mixed valid question and invalid line rejects atomically
+PASS align review: existing cited line edits combine with cited metadata and explicit checkin removal
+PASS align preview: script-edit response uses reviewed narration, citations, deeper text and explicit empty checkin
+PASS align preview: segment metadata refresh preserves reviewed slide title, image, motion and dragged label
+PASS align preview: a later deck edit cannot resurrect the raw script in the review response
+PASS align preview: reading current narration drops unverified lines without rewriting design artifacts
+PASS align preview: bundle and review agree on current text, citations, empty questions and rejected-line filtering
+PASS align review: no model, speech or outbound network calls
+Align review contracts: 47/47

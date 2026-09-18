@@ -409,22 +409,12 @@ async def edit_aligned_fact(demo_id: str, fact_id: str, req: Request):
     """Direct, human-authored correction. Downstream script/FAQ must be reviewed again."""
     _demo_or_404(demo_id)
     body = await req.json()
-    value = (body.get("value") or "").strip()
-    claim = (body.get("claim") or "").strip()
-    if not value:
-        raise HTTPException(400, "A fact value is required")
-    und = store.read_json(demo_id, "understanding.json") or {}
-    fact = next((f for f in und.get("facts", []) if f.get("id") == fact_id), None)
-    if not fact:
+    try:
+        store.edit_fact(demo_id, fact_id, body)
+    except KeyError:
         raise HTTPException(404, "fact not found")
-    fact["value"] = value[:1000]
-    if claim:
-        fact["claim"] = claim[:500]
-    if "conditions" in body:
-        fact["conditions"] = (body.get("conditions") or "").strip()[:1000]
-    fact["edited"] = True
-    fact["source"] = {**fact.get("source", {}), "locator": (fact.get("source", {}).get("locator", "") + " · edited by user").strip(" ·")}
-    store.write_json(demo_id, "understanding.json", und)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
     orchestrator.invalidate(demo_id, "understand")
     orchestrator.set_stage(demo_id, "understand", "done", message="direct fact edit saved and validated")
     store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
@@ -436,13 +426,14 @@ async def edit_aligned_fact(demo_id: str, fact_id: str, req: Request):
 async def set_aligned_fact_approval(demo_id: str, fact_id: str, req: Request):
     """Explicitly reject or restore a questionable extracted fact from the Align UI."""
     _demo_or_404(demo_id)
-    approved = bool((await req.json()).get("approved"))
-    und = store.read_json(demo_id, "understanding.json") or {}
-    fact = next((f for f in und.get("facts", []) if f.get("id") == fact_id), None)
-    if not fact:
+    body = await req.json()
+    approved = body.get("approved") if isinstance(body, dict) else None
+    try:
+        store.set_fact_approval(demo_id, fact_id, approved)
+    except KeyError:
         raise HTTPException(404, "fact not found")
-    fact["approved"] = approved
-    store.write_json(demo_id, "understanding.json", und)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
     orchestrator.invalidate(demo_id, "understand")
     orchestrator.set_stage(demo_id, "understand", "done", message="fact approval reviewed directly")
     orchestrator.set_stage(demo_id, "faq", "stale", message="fact approval changed — bank re-answers on the next build")
@@ -477,12 +468,43 @@ async def edit_aligned_product(demo_id: str, req: Request):
 
 @app.patch("/api/demos/{demo_id}/align/script")
 async def edit_aligned_script(demo_id: str, req: Request):
-    """Save explicit line edits, validate grounding, then re-run visual alignment."""
+    """Save explicit line/question edits, validate grounding, then re-run visual alignment."""
     demo = _demo_or_404(demo_id)
     body = await req.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Send a script edit object")
     edits = body.get("lines") or []
-    if not isinstance(edits, list) or not edits or len(edits) > 200:
-        raise HTTPException(400, "Send between 1 and 200 script line edits")
+    checkins = body.get("checkins") or []
+    segments = body.get("segments") or []
+    if not isinstance(edits, list) or len(edits) > 200:
+        raise HTTPException(400, "Send at most 200 script line edits")
+    if not isinstance(checkins, list) or len(checkins) > 200:
+        raise HTTPException(400, "Send at most 200 check-in edits")
+    if not isinstance(segments, list) or len(segments) > 200:
+        raise HTTPException(400, "Send at most 200 segment metadata edits")
+    if not edits and not checkins and not segments and "intake_q1" not in body:
+        raise HTTPException(400, "Send a line, intake_q1, checkins or segments edit")
+    if body.get("intake_q2"):
+        raise HTTPException(400, "A second intake question is not supported")
+    question_edits = {str(x.get("segment_id")): x for x in checkins if isinstance(x, dict) and x.get("segment_id")}
+    if len(question_edits) != len(checkins):
+        raise HTTPException(400, "Every check-in edit needs a unique segment_id")
+    segment_edits = {str(x.get("id")): x for x in segments if isinstance(x, dict) and x.get("id")}
+    if len(segment_edits) != len(segments):
+        raise HTTPException(400, "Every segment metadata edit needs a unique id")
+    for edit in segment_edits.values():
+        if set(edit) - {"id", "title", "outcome"} or not {"title", "outcome"}.intersection(edit):
+            raise HTTPException(400, "Segment metadata edits may change title or outcome only")
+        for field, limit in (("title", 200), ("outcome", 500)):
+            if field in edit and (not isinstance(edit[field], str) or len(edit[field].strip()) > limit or (field == "title" and not edit[field].strip())):
+                raise HTTPException(400, "Segment title needs 1–200 characters; outcome needs 0–500 characters")
+    questions = [("intake_q1", body["intake_q1"])] if "intake_q1" in body else []
+    questions += [(segment_id, edit.get("text")) for segment_id, edit in question_edits.items()]
+    for field, text in questions:
+        if not isinstance(text, str) or len(text.strip()) > 1200 or (field == "intake_q1" and not text.strip()):
+            raise HTTPException(400, "Questions must be text of at most 1200 characters; intake_q1 cannot be empty")
+        if author.ungrounded(text, [], set())[1]:
+            raise HTTPException(400, "Questions cannot introduce an uncited claim or figure; keep cited facts in narration")
     requested = {str(x.get("id")): x for x in edits if isinstance(x, dict) and x.get("id")}
     if len(requested) != len(edits):
         raise HTTPException(400, "Every script edit needs a line id")
@@ -495,6 +517,17 @@ async def edit_aligned_script(demo_id: str, req: Request):
             raise HTTPException(400, "fact_ids must be a list of at most 30 fact ids")
     script = store.read_json(demo_id, "script.json") or {}
     und = store.read_json(demo_id, "understanding.json") or {}
+    missing_segments = (set(question_edits) | set(segment_edits)) - {seg.get("id") for seg in script.get("segments", [])}
+    if missing_segments:
+        raise HTTPException(404, "check-in segment not found: " + ", ".join(sorted(missing_segments)))
+    if "intake_q1" in body:
+        script["intake_q1"] = body["intake_q1"].strip()
+        script["intake_q2"] = ""
+        script["intake_audio"] = {}
+    for seg in script.get("segments", []):
+        if seg.get("id") in question_edits:
+            seg["checkin"] = question_edits[seg["id"]]["text"].strip()
+            seg["checkin_audio"] = None
     approved_fact_ids = {f.get("id") for f in und.get("facts", []) if f.get("approved", True)}
     cited = {str(fid) for edit in requested.values() for fid in edit.get("fact_ids", [])}
     if cited - approved_fact_ids:
@@ -530,6 +563,16 @@ async def edit_aligned_script(demo_id: str, req: Request):
     missing = set(requested) - found
     if missing:
         raise HTTPException(404, "script line not found: " + ", ".join(sorted(missing)))
+    for seg in script.get("segments", []):
+        if seg.get("id") not in segment_edits:
+            continue
+        ids = [fid for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])] for fid in line.get("fact_ids", [])]
+        for field in ("title", "outcome"):
+            if field in segment_edits[seg["id"]]:
+                text = segment_edits[seg["id"]][field].strip()
+                if author.ungrounded(text, ids, approved_fact_ids)[1]:
+                    raise HTTPException(400, "Segment metadata cannot introduce an uncited claim or figure")
+                seg[field] = text
     issues = author.validate(script, und, demo.get("settings", {}).get("audience", "everyday"))
     invalid = [line.get("id") for seg in script.get("segments", []) for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])] if line.get("id") in requested and line.get("unverified")]
     invalid += [line.get("id") for line in script.get("closing", []) if line.get("id") in requested and line.get("unverified")]
@@ -546,7 +589,7 @@ async def edit_aligned_script(demo_id: str, req: Request):
     orchestrator.invalidate(demo_id, "author")
     orchestrator.set_stage(demo_id, "author", "done", message="direct script edits saved and validated")
     store.update(demo_id, lambda d: d["approvals"].update({"visuals": False, "script": False}))
-    runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s) saved; visual alignment {'refreshed' if realigned else 'kept'}; script and visuals require re-approval.")
+    runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s), {len(questions)} question(s), {len(segment_edits)} segment label(s) saved; visual alignment {'refreshed' if realigned else 'kept'}; script and visuals require re-approval.")
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"], "issues": issues}
 
 

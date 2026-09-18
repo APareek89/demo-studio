@@ -152,27 +152,29 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
             nxt = align.current_card(store.load(demo_id))
             _append_conversation(demo_id, "agent", align.card_prompt(demo_id, nxt) if nxt else align.card_prompt(demo_id, "done"), system=True)
         elif t == "edit_fact" and a.get("fact_id"):
-            und = store.read_json(demo_id, "understanding.json") or {}
-            for f in und.get("facts", []):
-                if f["id"] == a["fact_id"]:
-                    f["value"] = a.get("fact_value") or f["value"]
-                    if a.get("fact_claim"):
-                        f["claim"] = a["fact_claim"]
-                    f["edited"] = True
-                    f["source"] = {**f.get("source", {}), "locator": (f.get("source", {}).get("locator", "") + " · edited by user").strip(" ·")}
-                    notes.append(f"edited {f['id']}")
-            store.write_json(demo_id, "understanding.json", und)
+            edits = {field: a["fact_" + field] for field in ("value", "claim") if a.get("fact_" + field)}
+            edits.update({field: a["fact_" + field] for field in ("conditions", "truth", "source") if a.get("fact_" + field) is not None})
+            try:
+                store.edit_fact(demo_id, a["fact_id"], edits)
+            except (KeyError, ValueError) as exc:
+                notes.append(f"Could not edit {a['fact_id']}: {str(exc)}")
+                continue
+            notes.append(f"edited {a['fact_id']}")
             invalidate(demo_id, "understand")
+            set_stage(demo_id, "understand", "done", message="fact correction saved and validated")
             set_stage(demo_id, "faq", "stale", message="fact edited — bank re-answers on the next build")
+            store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
         elif t == "remove_fact" and a.get("fact_id"):
-            und = store.read_json(demo_id, "understanding.json") or {}
-            for f in und.get("facts", []):
-                if f["id"] == a["fact_id"]:
-                    f["approved"] = False
-                    notes.append(f"removed {f['id']}")
-            store.write_json(demo_id, "understanding.json", und)
+            try:
+                store.set_fact_approval(demo_id, a["fact_id"], False)
+            except (KeyError, ValueError) as exc:
+                notes.append(f"Could not remove {a['fact_id']}: {str(exc)}")
+                continue
+            notes.append(f"removed {a['fact_id']}")
             invalidate(demo_id, "understand")
+            set_stage(demo_id, "understand", "done", message="fact approval reviewed")
             set_stage(demo_id, "faq", "stale", message="fact removed — bank re-answers on the next build")
+            store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
         elif t == "resolve_unknown" and a.get("unknown_id"):
             und = store.read_json(demo_id, "understanding.json") or {}
             for u in und.get("unknowns", []):

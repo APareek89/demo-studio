@@ -1,6 +1,6 @@
 # Nexon — two real iterations and acceptance evidence
 
-Prepared 2026-09-18. **Real iteration 1: NOT RUN. Real iteration 2: NOT RUN.** This protocol applies the ten agreed standards from [the issue log](../issues/2026-09-18-nexon.md). It establishes no vehicle facts, variants, prices or comparison results.
+Prepared 2026-09-18. **Real iteration 1: Read complete, Align review in progress; voiced Build pending. Real iteration 2: NOT RUN.** This protocol applies the ten agreed standards from [the issue log](../issues/2026-09-18-nexon.md). It establishes no vehicle facts, variants, prices or comparison results.
 
 ## Starting point and required inputs
 

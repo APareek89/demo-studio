@@ -154,14 +154,14 @@ flowchart TD
   AGENT[&quot;align agent&lt;br/&gt;[AGENT · Claude text tier · messages.parse]&lt;br/&gt;in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
   APPLY{&quot;action type&lt;br/&gt;[FUNCTION · orchestrator.apply_actions]&quot;}:::dec
   A1[&quot;approve(card)&lt;br/&gt;[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)&quot;]:::fn
-  A2[&quot;edit_fact / remove_fact / resolve_unknown&lt;br/&gt;[FUNCTION] direct registry edit · author marked stale&quot;]:::fn
+  A2[&quot;edit_fact / remove_fact / resolve_unknown&lt;br/&gt;[FUNCTION] F/C lookup; validate truth and source ownership before save&lt;br/&gt;registries stay separate; downstream work and approvals stale&quot;]:::fn
   A3[&quot;set_ctas / set_voice&lt;br/&gt;[FUNCTION] plan.json patched · voice sample re-rendered&quot;]:::fn
   A4[&quot;request_upload&lt;br/&gt;[term] note only — user must add files&quot;]:::term
   A5[&quot;revise(stage, instruction)&lt;br/&gt;[FUNCTION] lowest stage wins if several&quot;]:::fn
   A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 6 approved&quot;]:::fn
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
-  EDIT[&quot;USER edits fact or script directly&lt;br/&gt;[ask · edit modal]&quot;]:::ask
-  SAVEEDIT[&quot;validate grounding → rerun Gemini visual-proof audit&lt;br/&gt;[FUNCTION + AGENT · author.validate + Gemini 3.6 Flash]&lt;br/&gt;save edit; reset affected approvals; voice/bundle stale&quot;]:::fn
+  EDIT[&quot;USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome&lt;br/&gt;[ask · edit modal]&quot;]:::ask
+  SAVEEDIT[&quot;validate schema, source ownership and grounding before save&lt;br/&gt;[FUNCTION · store.edit_fact / author.ungrounded / author.validate]&lt;br/&gt;question audio cleared; affected approvals and downstream work stale&lt;br/&gt;script visual audit only when requested (Gemini vision)&quot;]:::fn
   REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
   R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
   R2[&quot;plan(instr) → voice sample&quot;]:::fn
