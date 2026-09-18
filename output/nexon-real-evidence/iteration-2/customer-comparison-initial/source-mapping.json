@@ -1,0 +1,429 @@
+{
+  "reviewed_at": "2026-09-18T15:31:40.237660+00:00",
+  "session_id": "s_mu73pdkozfj6",
+  "classification": "initial B comparison; not final acceptance",
+  "registry_sha256": "ffb88658bafce055cad9dc1a8537a6649b2d666ac9e8ff092d29ca8ab3100273",
+  "cases": [
+    {
+      "case": "Q07_Brezza_initial",
+      "trace_line": 348,
+      "result": "fails_pacing_and_material_rating_scope",
+      "qualifier_missing": "F006 petrol/diesel trims active as of May 2026",
+      "word_count": 88
+    },
+    {
+      "case": "Q08_Venue_initial",
+      "trace_lines": [
+        350,
+        351,
+        352,
+        353,
+        354,
+        355
+      ],
+      "result": "provider_failure_no_completed_comparison",
+      "heard": "standardized player decline; no complete answer delivered"
+    },
+    {
+      "case": "Q06_ISOFIX",
+      "trace_line": 364,
+      "fact_ids": [
+        "F004",
+        "C6-004"
+      ],
+      "result": "supported_positive_comparison",
+      "word_count": 56,
+      "limits": "availability only; no price ranking or universal child-seat compatibility"
+    },
+    {
+      "case": "Q09_safety_ranking",
+      "trace_line": 366,
+      "fact_ids": [],
+      "result": "appropriate_decline",
+      "heard": "standardized player decline, not raw model prose"
+    },
+    {
+      "case": "Q01_first_attempt",
+      "trace_line": 367,
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F019",
+        "F020"
+      ],
+      "result": "supported_answer_jump_from_df_to_sl02_not_same_slide_pass"
+    },
+    {
+      "case": "Q01_final_safety",
+      "trace_line": 372,
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F025"
+      ],
+      "result": "supported_answer_stay",
+      "word_count": 54,
+      "slide_evidence": "stored route=stay; sl07 supplied by root direct UI observation"
+    },
+    {
+      "case": "tailored_pitch",
+      "trace_line": 335,
+      "fact_ids": [
+        "F003",
+        "F019",
+        "F025"
+      ],
+      "result": "product_claims_supported_priority_ranking_not_user_stated",
+      "profile_issue": "safety is your main priority was generated before later safety questions; intake did not rank safety"
+    }
+  ],
+  "facts": [
+    {
+      "kind": "feature",
+      "claim": "6 Airbags (Front, Side and Curtain)",
+      "value": "Available",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Safety",
+        "quote": "6 Airbags (Front, Side and Curtain)^^    "
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "truth": "stated",
+      "id": "C3-031",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Electronic Stability Program (ESP)",
+      "value": "Available",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Safety",
+        "quote": "Electronic Stability Program (ESP)    "
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "truth": "stated",
+      "id": "C3-032",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Hill Hold Assist",
+      "value": "Available",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Safety",
+        "quote": "Hill Hold Assist    "
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "truth": "stated",
+      "id": "C3-033",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Touch Screen Audio size (ZXi+)",
+      "value": "25.65 cm (10.1\")",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Infotainment",
+        "quote": "Touch Screen Audio - 17.78 cm (7\") 17.78 cm (7\") 25.65 cm (10.1\")"
+      },
+      "confidence": 1.0,
+      "conditions": "ZXi+ variant",
+      "truth": "stated",
+      "id": "C3-034",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "availability",
+      "claim": "6-speed Automatic transmission availability (1.5L K15C Petrol ISG)",
+      "value": "6-speed automatic available on VXi, ZXi and ZXi+; unavailable on LXi",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, FEATURES LIST, Powertrain matrix",
+        "quote": "columns LXi, VXi, ZXi, ZXi+; the automatic row is unavailable, ticked, ticked, ticked respectively."
+      },
+      "confidence": 1.0,
+      "conditions": "1.5L K15C Petrol ISG engine, India market. Selected comparison: Brezza ZXi+ with 6AT. The 1.0L Turbo Boosterjet row is manual; do not attach its output figures to this automatic.",
+      "truth": "stated",
+      "id": "C6-001",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front Ventilated Seats availability",
+      "value": "Ticked on ZXi+; unavailable on LXi, VXi, ZXi",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, Comfort and Convenience",
+        "quote": "Front Ventilated Seats"
+      },
+      "confidence": 1.0,
+      "conditions": "Trim ZXi+ only (unavailable on LXi, VXi, ZXi), India market",
+      "truth": "stated",
+      "id": "C6-002",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Rear AC Vents availability",
+      "value": "Available on LXi, VXi, ZXi and ZXi+",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, Comfort and Convenience",
+        "quote": "Rear AC Vents"
+      },
+      "confidence": 1.0,
+      "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+      "truth": "stated",
+      "id": "C6-003",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ISOFIX Child Seat Restraint System availability",
+      "value": "Available on LXi, VXi, ZXi and ZXi+",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, Safety",
+        "quote": "ISOFIX Child Seat Restraint System"
+      },
+      "confidence": 1.0,
+      "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+      "truth": "stated",
+      "id": "C6-004",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "60:40 Split Seat (Rear) availability",
+      "value": "Ticked on ZXi, ZXi+; unavailable on LXi, VXi",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, Comfort and Convenience",
+        "quote": "60:40 Split Seat (Rear)"
+      },
+      "confidence": 1.0,
+      "conditions": "Trims ZXi, ZXi+ (unavailable on LXi, VXi), India market",
+      "truth": "stated",
+      "id": "C6-005",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section",
+        "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer states six airbags and electronic stability program as standard; three-point ELR belts are stated for all occupants. Do not infer child-seat compatibility or a crash-outcome guarantee.",
+      "truth": "stated",
+      "id": "F003",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard ISOFIX child seat mounts",
+      "value": "ISOFIX standard",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 11, standard-equipment labels and footnote",
+        "quote": "ISOFIX*"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across variants; footnoted '* As standard'; attachment-point count and universal compatibility not stated.",
+      "truth": "stated",
+      "id": "F004",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "BNCAP safety rating",
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+        "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking.",
+      "truth": "certified",
+      "id": "F006",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "confidence": 1.0,
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date.",
+      "truth": "stated",
+      "id": "F019",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front-seat ventilation",
+      "value": "Ventilated Driver & Co-Driver Seat",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, FEARLESS + PS persona walk",
+        "quote": "Ventilated Driver & Co-Driver Seat"
+      },
+      "confidence": 1.0,
+      "conditions": "Available on Fearless + PS petrol/diesel persona; does not apply to rear seats or lower trims.",
+      "truth": "stated",
+      "id": "F020",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Rear AC vents availability",
+      "value": "Rear AC Vents",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39 persona hierarchy and separate-iCNG disclaimer",
+        "quote": "Rear AC Vents"
+      },
+      "confidence": 1.0,
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. The brochure directs iCNG equipment to its separate feature list; no iCNG availability is established here.",
+      "truth": "stated",
+      "id": "F021",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "360-degree surround view and Blind View Monitor",
+      "value": "360° HD Surround View System with Blind View Monitor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+        "quote": "HD Surround View System with Blind View Monitor"
+      },
+      "confidence": 1.0,
+      "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG.",
+      "truth": "stated",
+      "id": "F022",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front parking sensors",
+      "value": "Front Parking Sensor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS additional-equipment hierarchy; iCNG disclaimer",
+        "quote": "Front Parking Sensor"
+      },
+      "confidence": 1.0,
+      "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. This fact does not establish the sensor on base Creative or on iCNG.",
+      "truth": "stated",
+      "id": "F023",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Rear seat flexibility",
+      "value": "60:40 Flip & Fold Seats and Rear Seat Armrest with Cup Holder",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS hierarchy; iCNG disclaimer",
+        "quote": "60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder"
+      },
+      "confidence": 1.0,
+      "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. Separate iCNG feature list required. No flat-floor claim, child-seat compatibility, or fit for a particular stroller/luggage set is established.",
+      "truth": "stated",
+      "id": "F024",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote.",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": true
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_b28460",
+      "kind": "pdf",
+      "name": "Maruti Suzuki Brezza — brochure",
+      "path": "sources/src_b28460_brezza-brochure.pdf",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "role": "competitor",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_87ab79",
+      "kind": "text",
+      "name": "Maruti Suzuki Brezza — reviewed official-source addendum.md",
+      "path": "sources/src_87ab79_Maruti_Suzuki_Brezza_reviewed_official-source_addendum.md",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "role": "competitor",
+      "use_in_demo": true
+    }
+  ],
+  "limits": [
+    "Transcript is player-reported heard text, not an independent acoustic recording.",
+    "Current source records and reviewed registry were checked; no new paid model calls or product writes.",
+    "The 35.5-second clarification hold and stable sl07 view are root UI observations."
+  ]
+}

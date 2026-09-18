@@ -762,3 +762,15 @@
 **Deepest why type:** `code`
 **Fix:** Raise only live QA's existing max_tokens argument to 3,000. The QA prompt still requests at most 60 spoken words; build-time QA and unrelated runtime defaults remain 1,500. No provider, timeout, retry, thinking configuration or speech change; no additional Build.
 **Prevention and limit:** Five free provider checks exercise the real QA/dispatcher/Gemini/installed-SDK path with a fake transport, synthetic keys and blocked sockets: 3,000 in the request, complete approved answer/citation validation without fallback, combined thought/candidate accounting, build-time 1,500 and unrelated-runtime 1,500. A complete fake response proves the configured envelope, not future provider compliance or an actual comparison pass. The preserved Q08 failure remains failed until the root's authorized live rerun is reviewed.
+
+
+## 2026-09-18 — Concurrent cold Gemini callers closed an in-flight client (NX31)
+
+**Why 1:** Fresh B Q08 declined after all reasoning providers failed: Gemini reported a closed client immediately, Claude lacked credits, and Runware timed out.
+**Why 2:** Q&A and pitch could enter the lazy Gemini client initializer concurrently after runtime calls were moved onto workers.
+**Why 3:** The initializer tested a shared None value and constructed/assigned the client without a lock, allowing two SDK clients to replace each other.
+**Why 4:** The installed SDK Client destructor calls close(), while its Models object retains the API transport rather than the parent Client. Replacing the global can therefore close an already-running request.
+**Why 5:** The media-concurrency regression exercised fake provider functions, not concurrent first initialization of their shared SDK resource.
+**Deepest why type:** `code`
+**Fix:** Protect only cold initialization with a standard-library Lock and a second None check. The already-created client remains shared; provider order, model selection, request settings, retries and timeouts are unchanged. No response is fabricated or reclassified as a fact gap.
+**Prevention:** `evals/gemini_client_contract.py` holds the first fake SDK constructor while another thread calls the same real initializer, then holds both model calls and mimics the installed SDK destructor. Before the fix it constructs two clients and closes an in-flight transport (3/7); after the fix both use the same open transport (7/7). Missing-key and constructor-error recovery behavior remain covered. No live provider or network call is made. The observed trace proves the closed-client failure; the deterministic race establishes a code path that explains it, not a post-fix live success. The concurrent pitch also returned incomplete JSON separately; its cause is not resolved by this lock.

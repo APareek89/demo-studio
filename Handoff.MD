@@ -18,6 +18,8 @@ Build2 usage before customer testing is estimated **$0.293438** (voice $0.149161
 
 Raw generation still overstates benefits/scope despite valid citations, and Re-Read can reassign fact meaning beneath retained IDs. Reviewed cockpit/rating references were reconciled manually; durable identity preservation is not implemented (NX20). Do not replay old patches by ID or claim prompt-level semantic correctness. The first Cinematic template changes only slides; native image coordinates, Align edits and the existing intake/dock/workflow remain.
 
+Gemini cold initialization now uses a lock and a second cache check (NX31): simultaneous pitch/QA cannot replace and destroy an in-flight SDK client. The free baseline reproduces the closed transport; fixed race checks7/7 and final free gates211/24/35 pass.
+
 **Next:** root finishes the scoped commit/server checkpoint and reruns actual customer paths against the same Build2 bundle. Require successful off-slide return, both positive supported Brezza and Venue comparisons, clarification, quote/EMI unknowns, safety boundary, silence/context retention, consent/completion, phone layout and post-fix session/latency evidence; the initial Studio detail/share/Observability navigation already works. Validate acoustic intelligibility separately. Initial session failures remain preserved even after later passes; continue the already authorized runtime validation without another Build.
 
 ## Codex Part 2 — 2026-09-18 — `codex/real-demo-nexon`

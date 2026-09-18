@@ -1,0 +1,8 @@
+PASS concurrent cold callers construct exactly one SDK client
+PASS both in-flight model calls retain an open transport
+PASS both callers use the same transport
+PASS the cached client remains alive after both calls
+PASS client initialization preserves configured timeout and key
+PASS missing key fails before SDK construction
+PASS a failed constructor releases initialization for a later caller
+Gemini client contracts: 7/7 (no network or paid calls)

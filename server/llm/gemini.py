@@ -6,6 +6,7 @@ import json
 import mimetypes
 import struct
 import re
+import threading
 import time
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,7 @@ from . import mock
 
 TRACE_SYS = 20000  # chars of the system prompt kept in a runtime trace row
 _client = None
+_client_lock = threading.Lock()
 _hard_quota_until = 0.0
 _hard_quota_reason = ""
 
@@ -24,10 +26,14 @@ _hard_quota_reason = ""
 def client():
     global _client
     if _client is None:
-        if not config.GEMINI_API_KEY:
-            raise RuntimeError("GEMINI_API_KEY is not set in .env")
-        from google import genai
-        _client = genai.Client(api_key=config.GEMINI_API_KEY, http_options={"timeout": 90_000})
+        # Runtime pitch and QA can arrive on different workers at cold start.
+        # Replacing a live Client closes its SDK transport via Client.__del__.
+        with _client_lock:
+            if _client is None:
+                if not config.GEMINI_API_KEY:
+                    raise RuntimeError("GEMINI_API_KEY is not set in .env")
+                from google import genai
+                _client = genai.Client(api_key=config.GEMINI_API_KEY, http_options={"timeout": 90_000})
     return _client
 
 

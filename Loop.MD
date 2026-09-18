@@ -189,3 +189,8 @@ These add five cases to the browser contract (the prior off-slide case also gain
 ## Live Q&A response allowance — 2026-09-18 (NX30)
 
 `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/qa_deck.py` includes five budget regressions in `evals/provider_contract.py`. The actual live QA→runtime→Gemini→installed SDK path receives max_output_tokens 3,000 with the existing model/timeout and no explicit thinking configuration; a complete fake approved answer retains its citation and prevents later fallback. Billing includes candidate plus thought tokens. Build-time QA and unrelated runtime calls retain 1,500. All transport is fake and sockets are blocked. The 60-word spoken prompt is separate from this structured-response allowance. This free test does not prove a live provider will finish within 3,000 tokens; actual B Q08's malformed response and declined comparison are retained for a focused customer rerun.
+
+
+## Shared Gemini cold initialization — 2026-09-18 (NX31)
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/gemini_client_contract.py` passes 7/7 in isolated storage. Two concurrent callers use exactly one fake SDK client, preserve its transport during both in-flight calls and retain the original 90-second client initialization setting; missing-key and constructor failure paths release correctly. The real initializer failed four race checks before the lock (3/7). No real SDK constructor, provider or socket is used. Logs are in iteration-2 `free-regression/gemini-client-before.log` and `gemini-client-after.log`. This repairs shared-resource initialization under runtime worker concurrency; it does not promise provider availability, latency or complete JSON.

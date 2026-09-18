@@ -1,0 +1,535 @@
+{
+  "id": "s_mu73pdkozfj6",
+  "ended": true,
+  "profile": {
+    "name": "",
+    "why": "I am comparing the Nexon Fearless+PS petrol 7DCA with the Brezza ZXi+ petrol 6AT and the regular Venue HX10 turbo petrol 7DCT. I want an automatic family car and care about what these exact variants include.",
+    "followup": "Which feature and which car do you mean by “cheaper one”? I mean ISOFIX child-seat mounts on the selected Brezza ZXi+ automatic, compared with this Nexon. I do not have a confirmed price comparison.",
+    "focus": [
+      "safety",
+      "automatic family car",
+      "Fearless+PS petrol 7DCA variant equipment"
+    ]
+  },
+  "customer_state": "stated_want",
+  "personalized": true,
+  "route": [
+    "safety-standards",
+    "powertrain-choices",
+    "cabin-comfort",
+    "tech-convenience",
+    "ownership-details"
+  ],
+  "slides": [
+    "sl07",
+    "sl06",
+    "sl04",
+    "sl08",
+    "sl09"
+  ],
+  "slides_visited": [
+    {
+      "slide_id": "sl00",
+      "kind": "hero_open",
+      "seconds": 12
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 285.1
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 87.7
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 7.2
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 11
+    },
+    {
+      "slide_id": "df",
+      "kind": "custom",
+      "seconds": 14.1
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 43.7
+    },
+    {
+      "slide_id": "df",
+      "kind": "custom",
+      "seconds": 15.6
+    },
+    {
+      "slide_id": "custom-1",
+      "kind": "custom",
+      "seconds": 13.8
+    },
+    {
+      "slide_id": "custom-2",
+      "kind": "custom",
+      "seconds": 11.5
+    },
+    {
+      "slide_id": "custom-3",
+      "kind": "custom",
+      "seconds": 15.2
+    },
+    {
+      "slide_id": "sl07",
+      "kind": "proof",
+      "seconds": 131.6
+    }
+  ],
+  "covered": [
+    "sl02"
+  ],
+  "jumps": [
+    {
+      "from": "sl01",
+      "to": "sl02",
+      "question": "I mean ISOFIX child-seat mounts on the selected Brezza ZXi+ automatic, compared with this Nexon. I do not have a confirmed price comparison."
+    },
+    {
+      "from": "df",
+      "to": "sl02",
+      "question": "Which of those features does this exact Nexon variant include?"
+    }
+  ],
+  "turns": [
+    {
+      "question": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "voice_ended": 1789744586468,
+      "stt_done": 1789744586468,
+      "via": "typed",
+      "qa_done": 1789744611352,
+      "answer_audio": 1789744611369,
+      "from_bank": false,
+      "route": "stay",
+      "answered": true
+    },
+    {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789744679470,
+      "stt_done": 1789744679470,
+      "via": "typed",
+      "qa_done": 1789744701547,
+      "answer_audio": 1789744701566,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    },
+    {
+      "question": "Does the cheaper one have that too?",
+      "voice_ended": 1789744774967,
+      "stt_done": 1789744774967,
+      "via": "typed",
+      "qa_done": 1789744787511,
+      "answer_audio": 1789744787526,
+      "from_bank": false,
+      "route": "none",
+      "answered": true
+    },
+    {
+      "question": "Does the cheaper one have that too?",
+      "voice_ended": 1789744841535,
+      "stt_done": 1789744841535,
+      "via": "typed",
+      "qa_done": 1789744860585,
+      "answer_audio": 1789744863449,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "Do those features mean this car is safer than the Venue?",
+      "voice_ended": 1789744898635,
+      "stt_done": 1789744898635,
+      "via": "typed",
+      "qa_done": 1789744922395,
+      "answer_audio": 1789744922406,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    },
+    {
+      "question": "Which of those features does this exact Nexon variant include?",
+      "voice_ended": 1789744970700,
+      "stt_done": 1789744970700,
+      "via": "typed",
+      "qa_done": 1789744980607,
+      "answer_audio": 1789744983478,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "Which of those safety features does this exact Nexon Fearless+PS petrol DCA include?",
+      "voice_ended": 1789745128051,
+      "stt_done": 1789745128051,
+      "via": "typed",
+      "qa_done": 1789745164455,
+      "answer_audio": 1789745164470,
+      "from_bank": false,
+      "route": "stay",
+      "answered": true
+    }
+  ],
+  "usps_covered": [
+    "usp-safety"
+  ],
+  "questions": [
+    "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+    "What can you show me that differs from the selected Venue variant?",
+    "Does the cheaper one have that too?",
+    "Do those features mean this car is safer than the Venue?",
+    "Which of those features does this exact Nexon variant include?",
+    "Which of those safety features does this exact Nexon Fearless+PS petrol DCA include?"
+  ],
+  "escalations": [
+    "What can you show me that differs from the selected Venue variant?",
+    "Comparative safety evaluation between Tata Nexon and Hyundai Venue"
+  ],
+  "leads": [],
+  "resolved": [
+    "overview"
+  ],
+  "unresolved": [
+    "other",
+    "safety"
+  ],
+  "cta": "summary",
+  "intent": 48,
+  "drop_point": "Safety starts with the details",
+  "minutes": 10.8,
+  "transcript": [
+    {
+      "role": "agent",
+      "text": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+      "t": 1789744573426
+    },
+    {
+      "role": "user",
+      "text": "I am comparing the Nexon Fearless+PS petrol 7DCA with the Brezza ZXi+ petrol 6AT and the regular Venue HX10 turbo petrol 7DCT. I want an automatic family car and care about what these exact variants include.",
+      "t": 1789744573428
+    },
+    {
+      "role": "agent",
+      "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+      "t": 1789744578311
+    },
+    {
+      "role": "agent",
+      "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+      "t": 1789744583368
+    },
+    {
+      "role": "agent",
+      "text": "We'll look at the cabin, family details and driving",
+      "t": 1789744586468,
+      "interrupted": true,
+      "full": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+      "heard_fraction": 0.43
+    },
+    {
+      "role": "user",
+      "text": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "t": 1789744586469
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744591601
+    },
+    {
+      "role": "agent",
+      "text": "For your exact automatic picks, Nexon Fearless+PS petrol gets the 1.2L turbo petrol with 7-speed DCA, 6 airbags, ESP, ISOFIX, 5-star BNCAP for petrol and diesel trims, ADAS, ventilated front seats, rear AC vents, 360° camera with blind-view monitor, front parking sensors and 60:40 rear seats; Brezza ZXi+ petrol 6AT is listed with 6-speed automatic, 6 airbags, ESP, hill-hold, ISOFIX, rear AC vents, front ventilated seats, 60:40 rear seat and a 10.1-inch touchscreen, that is as per their website when we checked — please verify on their site.",
+      "t": 1789744660956
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789744661894
+    },
+    {
+      "role": "user",
+      "text": "What can you show me that differs from the selected Venue variant?",
+      "t": 1789744679471
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744684594
+    },
+    {
+      "role": "agent",
+      "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+      "t": 1789744713416
+    },
+    {
+      "role": "user",
+      "text": "Does the cheaper one have that too?",
+      "t": 1789744774967
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744780102
+    },
+    {
+      "role": "agent",
+      "text": "Which feature and which car do you mean by “cheaper one”?",
+      "t": 1789744790855
+    },
+    {
+      "role": "user",
+      "text": "I mean ISOFIX child-seat mounts on the selected Brezza ZXi+ automatic, compared with this Nexon. I do not have a confirmed price comparison.",
+      "t": 1789744841536
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744846663
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789744863422
+    },
+    {
+      "role": "agent",
+      "text": "I won’t call either one cheaper without a confirmed price comparison. On ISOFIX child-seat mounts, both this Nexon and the selected Brezza ZXi+ automatic have them: Nexon lists ISOFIX as standard, and Brezza lists ISOFIX Child Seat Restraint System on ZXi+; that is as per their website when we checked — please verify on their site.",
+      "t": 1789744889640
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789744890579
+    },
+    {
+      "role": "user",
+      "text": "Do those features mean this car is safer than the Venue?",
+      "t": 1789744898635
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744903763
+    },
+    {
+      "role": "agent",
+      "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+      "t": 1789744934278
+    },
+    {
+      "role": "agent",
+      "text": "Let's get back to where we were.",
+      "t": 1789744951123
+    },
+    {
+      "role": "agent",
+      "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+      "t": 1789744958312
+    },
+    {
+      "role": "agent",
+      "text": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+      "t": 1789744965822
+    },
+    {
+      "role": "agent",
+      "text": "We'll put each alongside what you need from your next car.",
+      "t": 1789744969342
+    },
+    {
+      "role": "agent",
+      "text": "Since you are",
+      "t": 1789744970700,
+      "interrupted": true,
+      "full": "Since you are comparing automatic family cars and looking specifically at what the Fearless+PS petrol 7DCA includes, we will look first at safety, then the automatic drive and cabin equipment, before covering ownership details.",
+      "heard_fraction": 0.08
+    },
+    {
+      "role": "user",
+      "text": "Which of those features does this exact Nexon variant include?",
+      "t": 1789744970701
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744975796
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789744983454
+    },
+    {
+      "role": "agent",
+      "text": "This Nexon Fearless+PS petrol DCA includes all three: ventilated driver and co-driver seats, the seven-speed dual-clutch automatic transmission, and standard safety equipment including six airbags, electronic stability program, three-point seatbelts for all occupants, and ISOFIX mounts.",
+      "t": 1789745005983
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789745006921
+    },
+    {
+      "role": "agent",
+      "text": "Let's get back to where we were.",
+      "t": 1789745027193
+    },
+    {
+      "role": "agent",
+      "text": "Since you are comparing automatic family cars and looking specifically at what the Fearless+PS petrol 7DCA includes, we will look first at safety, then the automatic drive and cabin equipment, before covering ownership details.",
+      "t": 1789745042745
+    },
+    {
+      "role": "agent",
+      "text": "You are comparing automatic family cars with a focus on safety. On the Nexon, six airbags, electronic stability control, and three-point seatbelts for all occupants come standard across every trim.",
+      "t": 1789745056569
+    },
+    {
+      "role": "agent",
+      "text": "For your automatic shortlist, this exact Fearless+PS petrol pairs a 1.2-litre turbocharged petrol engine with a seven-speed dual-clutch automatic transmission.",
+      "t": 1789745068088
+    },
+    {
+      "role": "agent",
+      "text": "Looking at what this exact trim includes, the Fearless+PS petrol automatic adds driver assistance features such as forward collision warning and autonomous emergency braking.",
+      "t": 1789745081295
+    },
+    {
+      "role": "agent",
+      "text": "Here's how I'll go about it.",
+      "t": 1789745083257
+    },
+    {
+      "role": "agent",
+      "text": "Since safety is your main priority for a family car, here is what comes standard and what this trim adds.",
+      "t": 1789745090787
+    },
+    {
+      "role": "agent",
+      "text": "Six airbags, electronic stability control and ISOFIX are standard equipment.",
+      "t": 1789745096825
+    },
+    {
+      "role": "agent",
+      "text": "Tata reports a five-star Bharat NCAP rating for petrol and diesel trims active in May 2026. Extra driver-assistance features depend on the trim.",
+      "t": 1789745109775
+    },
+    {
+      "role": "agent",
+      "text": "Does that cover your main safety concerns?",
+      "t": 1789745112675
+    },
+    {
+      "role": "user",
+      "text": "Which of those safety features does this exact Nexon Fearless+PS petrol DCA include?",
+      "t": 1789745128052
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789745133238
+    },
+    {
+      "role": "agent",
+      "text": "This exact Nexon Fearless+PS petrol DCA includes the standard safety kit: 6 airbags, 3-point seatbelts for all occupants, electronic stability program, and ISOFIX child-seat mounts. On this trim, it also includes driver-assistance features: front collision warning, autonomous emergency braking, lane centering, traffic sign recognition, lane departure warning, high beam assist, and lane keep assist.",
+      "t": 1789745198565
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789745199503
+    },
+    {
+      "role": "agent",
+      "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+      "t": 1789745219612
+    }
+  ],
+  "saved_at": 1789745228.6555169,
+  "summary": {
+    "customer_name": "",
+    "context": "The customer is looking for an automatic family car and is deciding between the Nexon Fearless+PS petrol 7DCA, the Brezza ZXi+ petrol 6AT, and the regular Venue HX10 turbo petrol 7DCT, focusing on exact variant equipment.",
+    "cared_about": [
+      "Safety features and ratings",
+      "Automatic transmission options for a family car",
+      "Exact variant equipment for the Nexon Fearless+PS petrol 7DCA",
+      "ISOFIX child-seat mounts across compared models"
+    ],
+    "objections": [],
+    "unanswered": [
+      "What features differ from the selected Hyundai Venue HX10 variant?",
+      "Whether Nexon's features make it safer than the Hyundai Venue"
+    ],
+    "opening_line": "I understand you are comparing the Nexon Fearless+PS petrol 7DCA with the Brezza ZXi+ and Venue HX10 for an automatic family car—I can walk you through the exact differences and safety features.",
+    "questions_asked": [
+      "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "What can you show me that differs from the selected Venue variant?",
+      "Does the cheaper one have that too?",
+      "Do those features mean this car is safer than the Venue?",
+      "Which of those features does this exact Nexon variant include?",
+      "Which of those safety features does this exact Nexon Fearless+PS petrol DCA include?"
+    ],
+    "slides_visited": [
+      {
+        "slide_id": "sl00",
+        "title": "Tata Nexon",
+        "seconds": 12.0
+      },
+      {
+        "slide_id": "sl01",
+        "title": "Tata Nexon, up close",
+        "seconds": 292.3
+      },
+      {
+        "slide_id": "sl02",
+        "title": "Your shortlist starts here",
+        "seconds": 142.4
+      },
+      {
+        "slide_id": "df",
+        "title": "df",
+        "seconds": 29.7
+      },
+      {
+        "slide_id": "custom-1",
+        "title": "custom-1",
+        "seconds": 13.8
+      },
+      {
+        "slide_id": "custom-2",
+        "title": "custom-2",
+        "seconds": 11.5
+      },
+      {
+        "slide_id": "custom-3",
+        "title": "custom-3",
+        "seconds": 15.2
+      },
+      {
+        "slide_id": "sl07",
+        "title": "Safety starts with the details",
+        "seconds": 131.6
+      }
+    ],
+    "cta_result": "summary",
+    "leads": [],
+    "minutes": 10.8,
+    "model": "runtime",
+    "generated_at": 1789745230.8774889,
+    "transcript_lines": 48
+  },
+  "share_key": "[REDACTED]"
+}

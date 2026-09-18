@@ -1,0 +1,64 @@
+[
+  {
+    "gate": "deck",
+    "exit": 0,
+    "tail": [
+      "| runtime provider order defaults Gemini \u2192 Claude \u2192 Runware | \u2705 |",
+      "| runtime timeout is short | \u2705 |",
+      "",
+      "211/211 deck cases pass"
+    ],
+    "log": "output/nexon-real-evidence/iteration-2/free-regression/deck-final-nx31.log"
+  },
+  {
+    "gate": "acceptance",
+    "exit": 0,
+    "tail": [
+      "| READ STAGE with everything accepted above | align | no error | \u2705 |",
+      "| Path traversal stayed inside data/demos/<id> | checked | escaped files: none | \u2705 |",
+      "",
+      "24/24 cases behave as required"
+    ],
+    "log": "output/nexon-real-evidence/iteration-2/free-regression/acceptance-final-nx31.log"
+  },
+  {
+    "gate": "smoke",
+    "exit": 0,
+    "tail": [
+      "tts with language ok",
+      "trace ok: stages {'understand': 1.0, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': 0.0, 'bundle': 0.0} rows 16",
+      "jargon check ok: ['s1 line 1: states a figure or claim without a fact id \u2014 \u201cIt has a 3.4 kWh battery and 15A charging with IDC range.\u201d', \"s1: jargon 'kWh' in the main narration \u2014 move the complete technical quantity to deeper; never keep a number while dropping its unit\"]",
+      "SMOKE OK (phase 2) dm_aeed35b9"
+    ],
+    "log": "output/nexon-real-evidence/iteration-2/free-regression/smoke-final-nx31.log"
+  },
+  {
+    "gate": "generation",
+    "exit": 0,
+    "tail": [
+      "PASS generation: build FAQ comparison envelope carries focus, scope and full caveat",
+      "PASS generation: runtime comparison envelope carries focus, scope and full caveat",
+      "PASS generation: all contracts avoid actual provider and network calls",
+      "Generation input/approval contracts: 35/35 (model entailment not evaluated)"
+    ],
+    "log": "output/nexon-real-evidence/iteration-2/free-regression/generation-final-nx31.log"
+  },
+  {
+    "gate": "gemini-client",
+    "exit": 0,
+    "tail": [
+      "PASS client initialization preserves configured timeout and key",
+      "PASS missing key fails before SDK construction",
+      "PASS a failed constructor releases initialization for a later caller",
+      "Gemini client contracts: 7/7 (no network or paid calls)"
+    ],
+    "log": "output/nexon-real-evidence/iteration-2/free-regression/gemini-client-final-nx31.log"
+  },
+  {
+    "gate": "syntax",
+    "exit": 0,
+    "python_files": 54,
+    "js_files": 12,
+    "browser_harness": true
+  }
+]

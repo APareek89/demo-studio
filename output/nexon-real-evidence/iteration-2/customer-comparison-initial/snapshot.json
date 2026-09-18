@@ -1,0 +1,12 @@
+{
+  "session_id": "s_mu73pdkozfj6",
+  "demo_id": "dm_36d47b86",
+  "origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu73pdkozfj6",
+  "retrieved_at": "2026-09-18T15:28:19.588469+00:00",
+  "sha256": "d2c2f6a5b167cbd90425d00f6693f28372553a24758b989322d941930439e441",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "classification": "Initial B comparison run; not final acceptance",
+  "runtime_reported_by_root": "64d2afd + pre-b78 frontend / QA question ownership; live ceiling 1500; before new 3000-token and 60-word revision"
+}
