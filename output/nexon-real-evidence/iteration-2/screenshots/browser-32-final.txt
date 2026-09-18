@@ -1,0 +1,39 @@
+Player browser contract
+
+Real player UI. Synthetic bundle, speech events, audio and API replies. No paid calls or external connections. Virtual time preserves timer order and flushes promise continuations.
+
+Run checks
+32/32 passed; 0 failed
+PASS — Typing keeps later question waits closed to ambient speech until an explicit mic tap
+PASS — Typing preference survives Restart and intake microphone explicitly restores voice mode
+PASS — Question mode holds its place after 30 seconds of silence
+PASS — A yes-prefixed question reaches QA instead of the next slide
+PASS — A typed clarification is accepted once with conversation history
+PASS — A direct customer statement survives later QA and the recap once, without inferring a preference
+PASS — An unknown answer holds the callback form without narration behind it
+PASS — A late speech result cannot answer the wait after a slide skip
+PASS — A late speech result after restart leaves the new intake untouched
+PASS — Opening Q&A resumes the interrupted line without replaying completed lines
+PASS — A superseded QA response cannot speak over the current answer
+PASS — Off-slide Q&A returns to the exact interrupted proof line
+PASS — A cached jump transition completes before the view and answer-latency stamp change
+PASS — Interrupting a jump announcement cancels its pending view change and answer
+PASS — Stop, Done and pagehide preserve the same ended session duration
+PASS — Back resumes active session time without counting recap idle, and restart resets it
+PASS — An intentional new typed question after Done reopens timing without the idle gap
+PASS — Declining callback still permits completion and saves the finished session
+PASS — A legacy deeper question waits until the customer explicitly skips it
+PASS — Stopping with a callback open shows a buyer recap while retaining internal session detail
+PASS — Personalized boot evidence reuses its complete reviewed label and image, not the current cabin
+PASS — Personalized evidence omits an overlong fact and cannot borrow a differently scoped callout
+PASS — Personalized fallback retains complete conditions and truth, and excludes rejected facts
+PASS — Revealing an overlay connects its leader to the visible chip centre
+PASS — Wide and narrow slides keep the native image ratio inside the stage
+PASS — Resizing keeps the exact native-image anchor without changing saved callout coordinates
+PASS — A narrow slide exposes numbered evidence without cropping the image or covering it with labels
+PASS — Narrow evidence hides leaders with their labels and restores them on a wide slide
+PASS — Phone evidence wraps complete trim qualifiers inside each card without shrinking the type
+PASS — Opening and closing hero images retain their native ratio within wide and narrow stages
+PASS — Crowded overlay labels settle in one pass without colliding with their fallback evidence
+PASS — A tall native image stays above wrapped mobile evidence
+Evidence and test boundaries

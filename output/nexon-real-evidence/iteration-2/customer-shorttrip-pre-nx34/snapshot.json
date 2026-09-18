@@ -1,0 +1,13 @@
+{
+  "session_id": "s_mu74mrok5jgd",
+  "demo_id": "dm_36d47b86",
+  "origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu74mrok5jgd",
+  "retrieved_at": "2026-09-18T15:48:19.814362+00:00",
+  "sha256": "fd71476ece5de6863f9cf2b7f6f372db07f1ecd9604a299d0ad5d7ee7b84810b",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "classification": "A short-trip repeat before NX34; source failures heard; not final acceptance",
+  "runtime_reported_by_root": "d8fc422; before NX33/NX34 source corrections",
+  "filename_caveat": "A-final-* screenshots identify this attempt, not an acceptance verdict"
+}

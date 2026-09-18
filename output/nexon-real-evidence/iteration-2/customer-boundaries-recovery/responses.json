@@ -1,0 +1,65 @@
+[
+  {
+    "trace_line": 412,
+    "t": 1789746718.985214,
+    "kind": "runtime",
+    "model": "gemini-3.8-flash",
+    "latency_ms": 11813,
+    "in": 20023,
+    "out": 2986,
+    "response": "{\n  \"answer\": \"For stop-and-go traffic, the Nexon provides automatic options to ease driving. Petrol models offer a 6-speed AMT and a 7-speed dual-clutch transmission, while the diesel engine is available with a 6-speed AMT.\",\n  \"fact_ids\": [\n    \"F018\"\n  ],\n  \"visual_ref\": \"\",\n  \"escalate\": \"\",\n  \"topic\": \"performance\",\n  \"cta\": \"\",\n  \""
+  },
+  {
+    "trace_line": 413,
+    "t": 1789746719.031661,
+    "kind": "runtime-gemini",
+    "model": "gemini",
+    "latency_ms": 12027,
+    "in": 0,
+    "out": 0,
+    "response": "",
+    "failure_category": "invalid_JSON"
+  },
+  {
+    "trace_line": 414,
+    "t": 1789746719.678427,
+    "kind": "runtime-claude",
+    "model": "claude",
+    "latency_ms": 646,
+    "in": 0,
+    "out": 0,
+    "response": "",
+    "failure_category": "provider_credit"
+  },
+  {
+    "trace_line": 415,
+    "t": 1789746729.5860422,
+    "kind": "runware-structured",
+    "model": "openai:gpt@5.5",
+    "latency_ms": 9905,
+    "in": 17902,
+    "out": 638,
+    "response": "{\"answer\":\"For stop-and-go traffic, the supported fit-check is the automatic gearbox choice: petrol has 6-speed AMT and 7-speed DCT options, diesel has 6-speed AMT, while iCNG is manual only. The ADAS list on Fearless + PS petrol DCA doesn’t state stop-and-go cruise, so I won’t promise that.\",\"fact_ids\":[\"F018\",\"F025\"],\"visual_ref\":\"im04\",\"escalate\":\"\",\"topic\":\"performance\",\"cta\":\"\",\"answered\":true,\"clarifying_question\":\"\"}"
+  },
+  {
+    "trace_line": 416,
+    "t": 1789746733.711757,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 4105,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] For stop-and-go traffic, the supported fit-check is the automatic gearbox choice: petrol has 6-speed AMT and 7-speed DCT options, diesel has 6-speed AMT, while iCNG is manual only. The ADAS list on Fearless + PS petrol DCA doesn’t state stop-and-go cruise, so I won’t promise that."
+  },
+  {
+    "trace_line": 417,
+    "t": 1789746773.6118069,
+    "kind": "runtime",
+    "model": "gemini-3.8-flash",
+    "latency_ms": 4727,
+    "in": 20078,
+    "out": 893,
+    "response": "{\n  \"answer\": \"I am not sure from the material I have, and I will not guess local on-road prices or charges. Our team can follow up with the exact on-road quotation for Mumbai.\",\n  \"fact_ids\": [],\n  \"visual_ref\": \"\",\n  \"escalate\": \"Provide exact on-road price breakdown for Mumbai\",\n  \"topic\": \"ownership\",\n  \"cta\": \"\",\n  \"answered\": false,\n  \"clarifying_question\": \"\"\n}"
+  }
+]

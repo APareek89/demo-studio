@@ -1,0 +1,276 @@
+{
+  "id": "s_mu744a0l0l8o",
+  "ended": true,
+  "profile": {
+    "name": "",
+    "why": "I am comparing the Nexon Fearless+PS petrol 7DCA with the Brezza ZXi+ petrol 6AT and the regular Venue HX10 turbo petrol 7DCT. I want an automatic family car and care about what these exact variants include.",
+    "followup": "",
+    "focus": [
+      "safety"
+    ]
+  },
+  "personalized": false,
+  "route": [],
+  "slides": [],
+  "slides_visited": [
+    {
+      "slide_id": "sl00",
+      "kind": "hero_open",
+      "seconds": 367.2
+    },
+    {
+      "slide_id": "sl08",
+      "kind": "features",
+      "seconds": 91.5
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 66.1
+    },
+    {
+      "slide_id": "sl09",
+      "kind": "establish",
+      "seconds": 166.2
+    }
+  ],
+  "covered": [
+    "sl08",
+    "sl01",
+    "sl09"
+  ],
+  "jumps": [
+    {
+      "from": "sl00",
+      "to": "sl08",
+      "question": "What can you show me that differs from the selected Venue variant?"
+    },
+    {
+      "from": "sl08",
+      "to": "sl01",
+      "question": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?"
+    },
+    {
+      "from": "sl01",
+      "to": "sl09",
+      "question": "Yes, but what is the warranty?"
+    }
+  ],
+  "turns": [
+    {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789745268618,
+      "stt_done": 1789745268618,
+      "via": "typed",
+      "qa_done": 1789745284472,
+      "answer_audio": 1789745284496,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    },
+    {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789745610955,
+      "stt_done": 1789745610955,
+      "via": "typed",
+      "qa_done": 1789745625814,
+      "answer_audio": 1789745628746,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "voice_ended": 1789745673501,
+      "stt_done": 1789745673501,
+      "via": "typed",
+      "qa_done": 1789745717379,
+      "answer_audio": 1789745720246,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "Yes, but what is the warranty?",
+      "voice_ended": 1789745772334,
+      "stt_done": 1789745772334,
+      "via": "typed",
+      "qa_done": 1789745783452,
+      "answer_audio": 1789745786328,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    }
+  ],
+  "usps_covered": [],
+  "questions": [
+    "What can you show me that differs from the selected Venue variant?",
+    "What can you show me that differs from the selected Venue variant?",
+    "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+    "Yes, but what is the warranty?"
+  ],
+  "escalations": [
+    "What can you show me that differs from the selected Venue variant?"
+  ],
+  "leads": [],
+  "resolved": [],
+  "unresolved": [
+    "other"
+  ],
+  "cta": "summary",
+  "intent": 60,
+  "minutes": 11.5,
+  "transcript": [
+    {
+      "role": "agent",
+      "text": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+      "t": 1789745268527
+    },
+    {
+      "role": "user",
+      "text": "I am comparing the Nexon Fearless+PS petrol 7DCA with the Brezza ZXi+ petrol 6AT and the regular Venue HX10 turbo petrol 7DCT. I want an automatic family car and care about what these exact variants include.",
+      "t": 1789745268529
+    },
+    {
+      "role": "user",
+      "text": "What can you show me that differs from the selected Venue variant?",
+      "t": 1789745268619
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789745273732
+    },
+    {
+      "role": "agent",
+      "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+      "t": 1789745296402
+    },
+    {
+      "role": "user",
+      "text": "What can you show me that differs from the selected Venue variant?",
+      "t": 1789745610956
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789745616789
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789745628715
+    },
+    {
+      "role": "agent",
+      "text": "The Nexon Fearless+PS petrol DCA features a 26.03 cm touchscreen and a 9-speaker JBL audio system with a subwoofer. In comparison, the Venue HX10 lists a 31.24 cm navigation screen and an 8-speaker Bose system; that is as per their website when we checked — please verify on their site.",
+      "t": 1789745657920
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789745658857
+    },
+    {
+      "role": "user",
+      "text": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "t": 1789745673502
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789745679415
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789745720233
+    },
+    {
+      "role": "agent",
+      "text": "For your exact automatics, Nexon Fearless+PS petrol has a 7-Speed DCA, while Brezza ZXi+ petrol has a 6-speed automatic available. On safety, Nexon also lists ADAS features, while Brezza lists 6 airbags, ESP, Hill Hold and ISOFIX; that is as per their website when we checked — please verify on their site.",
+      "t": 1789745749844
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789745750761
+    },
+    {
+      "role": "user",
+      "text": "Yes, but what is the warranty?",
+      "t": 1789745772335
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789745778263
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789745786301
+    },
+    {
+      "role": "agent",
+      "text": "Tata lists an advertised basic warranty of 3 years | 100 000 km, though the relationship between the duration and distance is not supplied. The New Brezza states a standard warranty of 3 years or 1 00 000 km whichever is earlier; that is as per their website when we checked — please verify on their site.",
+      "t": 1789745807741
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789745808769
+    }
+  ],
+  "saved_at": 1789745952.5491111,
+  "summary": {
+    "customer_name": "",
+    "context": "The customer is choosing an automatic family car, comparing the Nexon Fearless+PS petrol 7DCA against the Brezza ZXi+ petrol 6AT and the regular Venue HX10 turbo petrol 7DCT. They specifically want to know what these exact variants include and how they differ.",
+    "cared_about": [
+      "Differences in exact variant features across Nexon, Venue, and Brezza",
+      "Automatic transmission options for a family car",
+      "Safety features",
+      "Warranty details"
+    ],
+    "objections": [],
+    "unanswered": [
+      "Whether the Tata warranty of 3 years | 100 000 km is whichever comes earlier"
+    ],
+    "opening_line": "You mentioned you are comparing the Nexon Fearless+PS petrol 7DCA with the Brezza ZXi+ and Venue HX10 for an automatic family car—would it help if we walked through the exact variant inclusions together?",
+    "questions_asked": [
+      "What can you show me that differs from the selected Venue variant?",
+      "What can you show me that differs from the selected Venue variant?",
+      "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "Yes, but what is the warranty?"
+    ],
+    "slides_visited": [
+      {
+        "slide_id": "sl00",
+        "title": "Tata Nexon",
+        "seconds": 367.2
+      },
+      {
+        "slide_id": "sl08",
+        "title": "Your cockpit, closer",
+        "seconds": 91.5
+      },
+      {
+        "slide_id": "sl01",
+        "title": "Tata Nexon, up close",
+        "seconds": 66.1
+      },
+      {
+        "slide_id": "sl09",
+        "title": "Make the next step count",
+        "seconds": 166.2
+      }
+    ],
+    "cta_result": "summary",
+    "leads": [],
+    "minutes": 11.5,
+    "model": "runtime",
+    "generated_at": 1789745965.807295,
+    "transcript_lines": 20
+  },
+  "share_key": "[REDACTED]"
+}

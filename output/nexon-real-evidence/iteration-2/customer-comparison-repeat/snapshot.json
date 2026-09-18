@@ -1,0 +1,16 @@
+{
+  "session_id": "s_mu744a0l0l8o",
+  "demo_id": "dm_36d47b86",
+  "origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu744a0l0l8o",
+  "retrieved_at": "2026-09-18T15:39:37.872996+00:00",
+  "sha256": "a0f44258eddf63240d706992493cefdb7430b7d0cd53cc4a9e35dff0834fbbb9",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "classification": "B2 comparison repeat; same session spans server restart; initial failed Q08 retained",
+  "runtime_reported_by_root": {
+    "initial_Q08": "b78c4d9 before NX31 restart",
+    "successful_Q08_Q07_Q02": "d8fc422 after NX31 restart"
+  },
+  "not_a_whole_demo_acceptance": true
+}

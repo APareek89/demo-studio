@@ -1,0 +1,85 @@
+{
+  "session_id": "s_mu74vi17dltu",
+  "reviewed_at": "2026-09-18T15:55:00.696171+00:00",
+  "registry_sha256": "a41e0f40da9272355d0f300f7a6c0da0f326e142b3c9e94f33c4b37d23d91d0b",
+  "facts": [
+    {
+      "kind": "price",
+      "claim": "Starting ex-showroom price",
+      "value": "Rs 7.39 Lakhs*",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Overview banner",
+        "quote": "Starts at Rs 7.39 Lakhs*"
+      },
+      "confidence": 1.0,
+      "conditions": "Starting ex-showroom price on the official model page, checked 18 September 2026. Prices may change without prior information; obtain an exact selected-variant dealer quote.",
+      "truth": "stated",
+      "id": "F001",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Transmission options available",
+      "value": "5-Speed manual, 6-speed manual, 6-speed AMT, and 7-speed DCT (Dual Clutch Transmission) for petrol; 6-speed manual or 6-speed AMT for diesel; 6-speed manual exclusively for iCNG",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "FAQ section",
+        "quote": "The Tata Nexon offers multiple transmission choices: 5-Speed manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox."
+      },
+      "confidence": 1.0,
+      "conditions": "Official specifications FAQ, checked 18 September 2026. Choices depend on fuel/engine and variant; use the brochure powertrain matrix for a specific trim. The listed iCNG option is manual only.",
+      "truth": "stated",
+      "id": "F018",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote.",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": true
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_e64b3e",
+      "kind": "url",
+      "name": "Nexon Specifications & Dimensions",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "role": "product",
+      "use_in_demo": true
+    }
+  ],
+  "evidence_limit": "Root observed UI while playback ran unmuted; no independent acoustic listening."
+}

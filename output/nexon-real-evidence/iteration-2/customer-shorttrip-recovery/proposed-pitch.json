@@ -1,0 +1,71 @@
+{
+  "evidence_type": "raw model proposal, not captured returned plan",
+  "trace_line": 418,
+  "proposal": {
+    "customer_state": "stated_need",
+    "decision_frame": "You mentioned driving five to ten kilometres a day in city traffic with a child seat and stroller, focusing on practicality and running costs. We'll start with boot capacity and child safety, look at cabin technology, and finish with written ownership terms.",
+    "follow_up_question": "",
+    "primary_outcome": "Verify boot capacity for your stroller, child seat mounting, and ownership economics for short city commutes.",
+    "focus_topics": [
+      "practicality",
+      "running costs",
+      "city driving"
+    ],
+    "route": [
+      {
+        "segment_id": "boot-practicality",
+        "bridge": "Let's begin with the cargo space to see how it fits your stroller.",
+        "bridge_fact_ids": []
+      },
+      {
+        "segment_id": "safety-standards",
+        "bridge": "Next, let's look at the standard safety features relevant to your child seat.",
+        "bridge_fact_ids": []
+      },
+      {
+        "segment_id": "tech-convenience",
+        "bridge": "Now let's check the cabin display and controls for your daily city driving.",
+        "bridge_fact_ids": []
+      },
+      {
+        "segment_id": "ownership-details",
+        "bridge": "Finally, let's look at warranty coverage and quote details for running costs.",
+        "bridge_fact_ids": []
+      }
+    ],
+    "skipped": [
+      "exterior-stance: Buyer prioritised cargo practicality, child safety, and running costs over exterior stance.",
+      "cabin-comfort: Limited proof steps to boot space and safety standards to stay within the three-minute tour.",
+      "powertrain-choices: Prioritised everyday practicality and safety over an extended powertrain comparison for short city runs."
+    ],
+    "usp_order": [
+      "usp-safety"
+    ],
+    "advance": "Choose Book Test Drive to check how your stroller and child seat fit in person, and get an exact written quote.",
+    "advance_cta": "book-test-drive",
+    "custom_batches": [
+      {
+        "text": "For your stroller, the Nexon provides 382 litres of boot space on petrol and diesel models under ISO V215 measurement, offering dedicated cargo space for your family outings.",
+        "fact_ids": [
+          "F014"
+        ],
+        "visual_ref": "boot-cargo-area"
+      },
+      {
+        "text": "For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin.",
+        "fact_ids": [
+          "F004"
+        ],
+        "visual_ref": "rear-isofix-mounts"
+      },
+      {
+        "text": "For your daily five to ten kilometres in city traffic, six airbags and an electronic stability program come standard across every variant.",
+        "fact_ids": [
+          "F003"
+        ],
+        "visual_ref": "safety-overview"
+      }
+    ],
+    "do_not_recommend_if": "A must-have requirement remains unsupported or fails the buyer's own fit check; verify it before recommending a trim."
+  }
+}

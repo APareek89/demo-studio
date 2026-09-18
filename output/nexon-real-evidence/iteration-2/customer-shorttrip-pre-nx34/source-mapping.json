@@ -1,0 +1,178 @@
+{
+  "session_id": "s_mu74mrok5jgd",
+  "reviewed_at": "2026-09-18T15:49:13.322262+00:00",
+  "registry_sha256": "77aa26785cc4d30241c0d901db6460234e6752e26b9bd83b8403430fa5cd1a46",
+  "facts": [
+    {
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section",
+        "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer states six airbags and electronic stability program as standard; three-point ELR belts are stated for all occupants. Do not infer child-seat compatibility or a crash-outcome guarantee.",
+      "truth": "stated",
+      "id": "F003",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard ISOFIX child seat mounts",
+      "value": "ISOFIX standard",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 11, standard-equipment labels and footnote",
+        "quote": "ISOFIX*"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across variants; footnoted '* As standard'; attachment-point count and universal compatibility not stated.",
+      "truth": "stated",
+      "id": "F004",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "BNCAP safety rating",
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+        "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking.",
+      "truth": "certified",
+      "id": "F006",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "spec",
+      "claim": "Boot space capacity",
+      "value": "382 L for Petrol & Diesel; 321 L for CNG",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, Petrol/Diesel versus Petrol + CNG columns; ** measurement footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "confidence": 1.0,
+      "conditions": "382 L in the petrol/diesel columns and 321 L in the Petrol + CNG column. Brochure measurement basis: ISO V215. Litres do not establish that a particular stroller or luggage set fits.",
+      "truth": "stated",
+      "id": "F014",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote.",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "policy",
+      "claim": "Advertised basic warranty",
+      "value": "3 years | 100 000 km",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, warranty badge",
+        "quote": "3 years | 100 000 km"
+      },
+      "confidence": 1.0,
+      "conditions": "Advertised basic warranty headline; specific terms, exclusions, transferability, or 'whichever occurs first' qualification not detailed in source badge.",
+      "truth": "contractual",
+      "id": "F027",
+      "approved": true,
+      "edited": false
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "role": "product",
+      "use_in_demo": true
+    }
+  ],
+  "findings": [
+    {
+      "case": "Q03",
+      "trace": 401,
+      "fact_ids": [
+        "F014"
+      ],
+      "result": "supported_capacity_method_fit_check"
+    },
+    {
+      "case": "custom_boot",
+      "trace": 395,
+      "fact_ids": [
+        "F014"
+      ],
+      "result": "capacity_correct_measurement_basis_omitted_in_this_batch"
+    },
+    {
+      "case": "custom_ISOFIX",
+      "trace": 395,
+      "fact_ids": [
+        "F004"
+      ],
+      "result": "availability_supported_personal_installation_assurance_unsupported"
+    },
+    {
+      "case": "custom_warranty",
+      "trace": 395,
+      "fact_ids": [
+        "F027"
+      ],
+      "result": "unsupported_OR_relationship_and_predictability_claim"
+    },
+    {
+      "case": "safety_bridge",
+      "trace": 395,
+      "fact_ids": [],
+      "result": "unsupported_uncited_installation_ease_claim"
+    },
+    {
+      "case": "Q11",
+      "trace": 409,
+      "fact_ids": [
+        "F004",
+        "F014"
+      ],
+      "result": "customer_correction_preserved_with_supported_scope_and_method"
+    },
+    {
+      "case": "Q10",
+      "trace": 411,
+      "fact_ids": [],
+      "result": "correct_no_fit_guarantee_decline"
+    }
+  ]
+}

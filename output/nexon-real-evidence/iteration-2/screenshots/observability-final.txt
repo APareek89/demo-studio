@@ -1,0 +1,1301 @@
+Demo
+Studio
+Demo Studio
+My Demos
+Playground
+Observability
+CLAUDE
+GEMINI
+SARVAM
+Observability
+DEMO
+Tata Nexon · dm_36d47b86 · ready
+TVS iQube · dm_d5675e7f · ready
+Audi Q5 · dm_302ab4aa · ready
+Tata Harrier · dm_7fe9d434 · ready
+Volkswagen Taigun · dm_5afb6dc5 · ready
+Hyundai CRETA N Line — Source-Synced · dm_c6a354fd · ready
+Hyundai CRETA N Line — Final QA · dm_af65dad8 · ready
+Creata · dm_201201c4 · align
+Creata2 · dm_0b514d15 · ready
+QA video 18:15 · dm_78890026 · ready
+QA images +hi-IN 17:51 · dm_f79d9170 · ready
+all stages
+faq
+voice
+understand
+plan
+author
+deck
+rehearsal
+runtime
+Refresh
+Stages
+UNDERSTAND
+476.5s
+done
+PLAN
+490.9s
+done
+AUTHOR
+470.9s
+done
+DECK
+918.1s
+done
+FAQ
+649.4s
+done
+VOICE
+163.3s
+done
+REHEARSAL
+47.1s
+done
+BUNDLE
+0s
+done
+Totals
+COST
+$3.987
+≈ ₹335 · 361 calls
+GEMINI-3.6-FLASH
+$0.050
+4 calls · 43,137 in / 14,979 out
+GEMINI-3.8-FLASH
+$2.303
+135 calls · 1,964,841 in / 221,021 out
+BULBUL:V3
+$0.382
+179 calls · 0 in / 0 out · 21,375 chars
+OPENAI:GPT@5.5
+$1.250
+26 calls · 383,379 in / 12,544 out
+GEMINI-3.1-FLASH-TTS-PREVIEW
+$0.000
+10 calls · 0 in / 0 out · 1,399 chars
+SAARIKA:V2.5
+$0.004
+7 calls · 0 in / 0 out
+Answer latency 26 customer turns · 7 sessions · 2 from the FAQ bank, 24 from the model
+SPEECH → TEXT
+p50 0ms
+p95 479ms · 26 turns
+voice ended → STT done
+ANSWER
+p50 12.5s
+p95 36.4s · 25 turns
+STT done → QA done
+FIRST AUDIO
+p50 15ms
+p95 2.9s · 25 turns
+QA done → answer audio playing
+CUSTOMER WAITS
+p50 13.6s
+p95 36.4s · 25 turns
+voice ended → answer audio playing
+Calls (400)
+
+Click a row for the system prompt, the input and the raw response. Latency is wall-clock per call; cost uses the price table in Playground › Cost.
+
+WHEN	STAGE	CALL · MODEL	LATENCY	TOKENS IN / OUT	COST	
+18 Sept, 09:29 pm	runtime	sarvam-tts
+bulbul:v3
+	1.1s	0 / 0 · 80c	$0.0014	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	16.9s	0 / 0 · 138c	$0.0025	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	11.0s	0 / 0 · 75c	$0.0013	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	4.9s	0 / 0 · 111c	$0.0020	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	6.7s	0 / 0 · 258c	$0.0046	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	7.4s	0 / 0 · 66c	$0.0012	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	1.3s	0 / 0 · 77c	$0.0014	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	4.0s	0 / 0 · 134c	$0.0024	OK
+18 Sept, 09:24 pm	runtime	sarvam-tts
+bulbul:v3
+	2.8s	0 / 0 · 174c	$0.0031	OK
+18 Sept, 09:24 pm	runtime	runtime
+gemini-3.8-flash
+	11.2s	7,265 / 2,912	$0.0164	OK
+18 Sept, 09:22 pm	runtime	runtime
+gemini-3.8-flash
+	4.7s	20,078 / 893	$0.0184	OK
+18 Sept, 09:22 pm	runtime	sarvam-tts
+bulbul:v3
+	4.1s	0 / 0 · 281c	$0.0050	OK
+18 Sept, 09:22 pm	runtime	runware-structured
+openai:gpt@5.5
+	9.9s	17,902 / 638	$0.1086	OK
+18 Sept, 09:21 pm	runtime	runtime-claude
+claude
+	0.6s	0 / 0	$0.0000	ERROR
+18 Sept, 09:21 pm	runtime	runtime-gemini
+gemini
+	12.0s	0 / 0	$0.0000	ERROR
+18 Sept, 09:21 pm	runtime	runtime
+gemini-3.8-flash
+	11.8s	20,023 / 2,986	$0.0262	OK
+18 Sept, 09:17 pm	runtime	runtime
+gemini-3.8-flash
+	8.2s	20,028 / 1,992	$0.0225	OK
+18 Sept, 09:16 pm	runtime	sarvam-tts
+bulbul:v3
+	3.1s	0 / 0 · 230c	$0.0041	OK
+18 Sept, 09:16 pm	runtime	runware-structured
+openai:gpt@5.5
+	6.2s	17,882 / 299	$0.0442	OK
+18 Sept, 09:16 pm	runtime	runtime-claude
+claude
+	0.6s	0 / 0	$0.0000	ERROR
+18 Sept, 09:16 pm	runtime	runtime-gemini
+gemini
+	10.1s	0 / 0	$0.0000	ERROR
+18 Sept, 09:16 pm	runtime	runtime
+gemini-3.8-flash
+	10.1s	19,993 / 2,986	$0.0262	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	15.8s	0 / 0 · 80c	$0.0014	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	6.1s	0 / 0 · 188c	$0.0034	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	5.2s	0 / 0 · 116c	$0.0021	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	7.8s	0 / 0 · 200c	$0.0036	OK
+18 Sept, 09:12 pm	runtime	runtime
+gemini-3.8-flash
+	4.5s	19,933 / 586	$0.0171	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	6.2s	0 / 0 · 122c	$0.0022	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	8.9s	0 / 0 · 140c	$0.0025	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	5.6s	0 / 0 · 85c	$0.0015	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	4.1s	0 / 0 · 114c	$0.0020	OK
+18 Sept, 09:12 pm	runtime	sarvam-tts
+bulbul:v3
+	2.2s	0 / 0 · 135c	$0.0024	OK
+18 Sept, 09:12 pm	runtime	runtime
+gemini-3.8-flash
+	7.3s	5,013 / 1,623	$0.0098	OK
+18 Sept, 09:11 pm	runtime	runtime
+gemini-3.8-flash
+	7.6s	19,969 / 722	$0.0177	OK
+18 Sept, 09:10 pm	runtime	runtime
+gemini-3.8-flash
+	4.4s	19,884 / 777	$0.0178	OK
+18 Sept, 09:09 pm	runtime	runtime
+gemini-3.8-flash
+	9.8s	19,795 / 2,623	$0.0247	OK
+18 Sept, 09:06 pm	runtime	sarvam-tts
+bulbul:v3
+	2.7s	0 / 0 · 305c	$0.0054	OK
+18 Sept, 09:06 pm	runtime	runtime
+gemini-3.8-flash
+	8.3s	20,055 / 2,027	$0.0226	OK
+18 Sept, 09:05 pm	runtime	sarvam-tts
+bulbul:v3
+	3.7s	0 / 0 · 306c	$0.0055	OK
+18 Sept, 09:05 pm	runtime	runware-structured
+openai:gpt@5.5
+	8.5s	17,945 / 622	$0.0312	OK
+18 Sept, 09:05 pm	runtime	runtime-claude
+claude
+	0.7s	0 / 0	$0.0000	ERROR
+18 Sept, 09:05 pm	runtime	runtime-gemini
+gemini
+	30.9s	0 / 0	$0.0000	ERROR
+18 Sept, 09:03 pm	runtime	sarvam-tts
+bulbul:v3
+	3.5s	0 / 0 · 286c	$0.0051	OK
+18 Sept, 09:03 pm	runtime	runtime
+gemini-3.8-flash
+	11.1s	20,002 / 2,939	$0.0260	OK
+18 Sept, 08:58 pm	runtime	runtime-runware
+runware
+	15.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	runware-structured
+openai:gpt@5.5
+	15.0s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	qa-providers-failed
+none
+	15.7s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	runtime-runware
+runware
+	15.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	runware-structured
+openai:gpt@5.5
+	15.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	runtime-claude
+claude
+	0.4s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	runtime-gemini
+gemini
+	11.6s	0 / 0	$0.0000	ERROR
+18 Sept, 08:58 pm	runtime	runtime
+gemini-3.8-flash
+	11.4s	5,033 / 2,985	$0.0150	OK
+18 Sept, 08:57 pm	runtime	runtime-claude
+claude
+	0.5s	0 / 0	$0.0000	ERROR
+18 Sept, 08:57 pm	runtime	runtime-gemini
+gemini
+	0.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:56 pm	runtime	sarvam-tts
+bulbul:v3
+	4.0s	0 / 0 · 401c	$0.0072	OK
+18 Sept, 08:56 pm	runtime	runware-structured
+openai:gpt@5.5
+	7.7s	17,900 / 393	$0.0471	OK
+18 Sept, 08:55 pm	runtime	runtime-claude
+claude
+	0.7s	0 / 0	$0.0000	ERROR
+18 Sept, 08:55 pm	runtime	runtime-gemini
+gemini
+	23.9s	0 / 0	$0.0000	ERROR
+18 Sept, 08:55 pm	runtime	runtime
+gemini-3.8-flash
+	23.9s	20,002 / 1,486	$0.0206	OK
+18 Sept, 08:53 pm	runtime	sarvam-tts
+bulbul:v3
+	5.0s	0 / 0 · 287c	$0.0051	OK
+18 Sept, 08:52 pm	runtime	runtime
+gemini-3.8-flash
+	4.8s	19,969 / 888	$0.0183	OK
+18 Sept, 08:52 pm	runtime	runtime
+gemini-3.8-flash
+	23.7s	19,992 / 1,402	$0.0203	OK
+18 Sept, 08:51 pm	runtime	sarvam-tts
+bulbul:v3
+	4.8s	0 / 0 · 333c	$0.0060	OK
+18 Sept, 08:50 pm	runtime	runware-structured
+openai:gpt@5.5
+	7.2s	17,860 / 400	$0.0472	OK
+18 Sept, 08:50 pm	runtime	runtime-claude
+claude
+	0.5s	0 / 0	$0.0000	ERROR
+18 Sept, 08:50 pm	runtime	runtime-gemini
+gemini
+	6.6s	0 / 0	$0.0000	ERROR
+18 Sept, 08:50 pm	runtime	runtime
+gemini-3.8-flash
+	6.5s	19,959 / 1,484	$0.0205	OK
+18 Sept, 08:49 pm	runtime	sarvam-tts
+bulbul:v3
+	1.0s	0 / 0 · 57c	$0.0010	OK
+18 Sept, 08:49 pm	runtime	runware-structured
+openai:gpt@5.5
+	4.8s	17,917 / 179	$0.0178	OK
+18 Sept, 08:49 pm	runtime	runtime-claude
+claude
+	0.5s	0 / 0	$0.0000	ERROR
+18 Sept, 08:49 pm	runtime	runtime-gemini
+gemini
+	6.2s	0 / 0	$0.0000	ERROR
+18 Sept, 08:49 pm	runtime	runtime
+gemini-3.8-flash
+	6.2s	20,019 / 1,486	$0.0206	OK
+18 Sept, 08:48 pm	runtime	qa-providers-failed
+none
+	22.0s	0 / 0	$0.0000	ERROR
+18 Sept, 08:48 pm	runtime	runtime-runware
+runware
+	15.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:48 pm	runtime	runware-structured
+openai:gpt@5.5
+	15.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:48 pm	runtime	runtime-claude
+claude
+	0.6s	0 / 0	$0.0000	ERROR
+18 Sept, 08:48 pm	runtime	runtime-gemini
+gemini
+	6.3s	0 / 0	$0.0000	ERROR
+18 Sept, 08:48 pm	runtime	runtime
+gemini-3.8-flash
+	6.3s	20,008 / 1,486	$0.0206	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	4.7s	0 / 0 · 545c	$0.0097	OK
+18 Sept, 08:46 pm	runtime	runware-structured
+openai:gpt@5.5
+	13.6s	17,800 / 786	$0.1126	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	19.8s	0 / 0 · 174c	$0.0031	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	6.6s	0 / 0 · 126c	$0.0022	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	8.4s	0 / 0 · 227c	$0.0040	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	7.1s	0 / 0 · 74c	$0.0013	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	7.6s	0 / 0 · 113c	$0.0020	OK
+18 Sept, 08:46 pm	runtime	runtime-claude
+claude
+	0.6s	0 / 0	$0.0000	ERROR
+18 Sept, 08:46 pm	runtime	runtime-gemini
+gemini
+	5.9s	0 / 0	$0.0000	ERROR
+18 Sept, 08:46 pm	runtime	runtime
+gemini-3.8-flash
+	5.9s	19,891 / 1,486	$0.0205	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	1.8s	0 / 0 · 79c	$0.0014	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	6.0s	0 / 0 · 105c	$0.0019	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	5.1s	0 / 0 · 197c	$0.0035	OK
+18 Sept, 08:46 pm	runtime	sarvam-tts
+bulbul:v3
+	2.8s	0 / 0 · 159c	$0.0028	OK
+18 Sept, 08:46 pm	runtime	runtime
+gemini-3.8-flash
+	10.0s	5,033 / 2,798	$0.0143	OK
+18 Sept, 08:43 pm	runtime	sarvam-tts
+bulbul:v3
+	0.8s	0 / 0 · 58c	$0.0010	OK
+18 Sept, 08:42 pm	runtime	runware-structured
+openai:gpt@5.5
+	4.3s	17,741 / 131	$0.0385	OK
+18 Sept, 08:42 pm	runtime	runtime-claude
+claude
+	0.4s	0 / 0	$0.0000	ERROR
+18 Sept, 08:42 pm	runtime	runtime-gemini
+gemini
+	23.5s	0 / 0	$0.0000	ERROR
+18 Sept, 08:42 pm	runtime	runtime
+gemini-3.8-flash
+	23.5s	19,834 / 1,486	$0.0204	OK
+18 Sept, 08:42 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.6s	0 / 0	$0.0000	OK
+18 Sept, 08:42 pm	runtime	sarvam-tts
+bulbul:v3
+	0.7s	0 / 0 · 42c	$0.0008	OK
+18 Sept, 08:42 pm	runtime	runware-structured
+openai:gpt@5.5
+	4.6s	17,698 / 134	$0.0925	OK
+18 Sept, 08:42 pm	runtime	runtime-claude
+claude
+	0.5s	0 / 0	$0.0000	ERROR
+18 Sept, 08:42 pm	runtime	runtime-gemini
+gemini
+	7.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:42 pm	runtime	runtime
+gemini-3.8-flash
+	7.1s	19,795 / 1,486	$0.0204	OK
+18 Sept, 08:42 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.5s	0 / 0	$0.0000	OK
+18 Sept, 08:41 pm	runtime	runtime-runware
+runware
+	16.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:41 pm	runtime	runware-structured
+openai:gpt@5.5
+	16.1s	0 / 0	$0.0000	ERROR
+18 Sept, 08:41 pm	runtime	runtime-claude
+claude
+	0.7s	0 / 0	$0.0000	ERROR
+18 Sept, 08:41 pm	runtime	runtime-gemini
+gemini
+	14.3s	0 / 0	$0.0000	ERROR
+18 Sept, 08:41 pm	runtime	runtime
+gemini-3.8-flash
+	14.1s	5,013 / 2,985	$0.0149	OK
+18 Sept, 08:34 pm	runtime	sarvam-tts
+bulbul:v3
+	1.2s	0 / 0 · 71c	$0.0013	OK
+18 Sept, 08:32 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.4s	0 / 0	$0.0000	OK
+18 Sept, 08:32 pm	runtime	sarvam-tts
+bulbul:v3
+	1.7s	0 / 0 · 81c	$0.0014	OK
+18 Sept, 08:32 pm	runtime	runtime
+gemini-3.8-flash
+	4.2s	19,661 / 369	$0.0161	OK
+18 Sept, 08:32 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.3s	0 / 0	$0.0000	OK
+18 Sept, 08:31 pm	runtime	sarvam-tts
+bulbul:v3
+	2.2s	0 / 0 · 144c	$0.0026	OK
+18 Sept, 08:31 pm	runtime	runtime
+gemini-3.8-flash
+	4.7s	19,706 / 702	$0.0174	OK
+18 Sept, 08:31 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.3s	0 / 0	$0.0000	OK
+18 Sept, 08:30 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.7s	0 / 0	$0.0000	OK
+18 Sept, 08:29 pm	runtime	sarvam-tts
+bulbul:v3
+	2.7s	0 / 0 · 181c	$0.0032	OK
+18 Sept, 08:29 pm	runtime	runware-structured
+openai:gpt@5.5
+	7.1s	17,610 / 326	$0.0437	OK
+18 Sept, 08:29 pm	runtime	runtime-claude
+claude
+	0.6s	0 / 0	$0.0000	ERROR
+18 Sept, 08:29 pm	runtime	runtime-gemini
+gemini
+	6.6s	0 / 0	$0.0000	ERROR
+18 Sept, 08:29 pm	runtime	runtime
+gemini-3.8-flash
+	6.6s	19,707 / 1,486	$0.0204	OK
+18 Sept, 08:27 pm	runtime	sarvam-stt
+saarika:v2.5
+	0.3s	0 / 0	$0.0000	OK
+18 Sept, 08:27 pm	runtime	sarvam-tts
+bulbul:v3
+	11.6s	0 / 0 · 253c	$0.0045	OK
+18 Sept, 08:27 pm	runtime	sarvam-tts
+bulbul:v3
+	5.3s	0 / 0 · 113c	$0.0020	OK
+18 Sept, 08:27 pm	runtime	sarvam-tts
+bulbul:v3
+	7.9s	0 / 0 · 111c	$0.0020	OK
+18 Sept, 08:27 pm	runtime	sarvam-tts
+bulbul:v3
+	5.8s	0 / 0 · 84c	$0.0015	OK
+18 Sept, 08:27 pm	runtime	sarvam-tts
+bulbul:v3
+	4.8s	0 / 0 · 161c	$0.0029	OK
+18 Sept, 08:27 pm	runtime	sarvam-tts
+bulbul:v3
+	2.7s	0 / 0 · 152c	$0.0027	OK
+18 Sept, 08:26 pm	runtime	runtime
+gemini-3.8-flash
+	5.8s	5,013 / 1,287	$0.0086	OK
+18 Sept, 08:25 pm	rehearsal	runware-structured
+openai:gpt@5.5
+	35.6s	7,418 / 3,000	$0.1271	ERROR
+18 Sept, 08:25 pm	rehearsal	gemini-fallback
+gemini-3.8-flash
+	10.6s	7,991 / 2,985	$0.0172	OK
+18 Sept, 08:25 pm	voice	sarvam-tts
+bulbul:v3
+	5.3s	0 / 0 · 40c	$0.0007	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	7.2s	0 / 0 · 107c	$0.0019	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	12.9s	0 / 0 · 21c	$0.0004	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	4.9s	0 / 0 · 120c	$0.0021	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	4.2s	0 / 0 · 28c	$0.0005	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	4.7s	0 / 0 · 67c	$0.0012	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	10.6s	0 / 0 · 16c	$0.0003	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	3.6s	0 / 0 · 16c	$0.0003	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	3.2s	0 / 0 · 19c	$0.0003	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	10.8s	0 / 0 · 70c	$0.0013	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	6.6s	0 / 0 · 73c	$0.0013	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	2.0s	0 / 0 · 17c	$0.0003	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	7.8s	0 / 0 · 32c	$0.0006	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	10.5s	0 / 0 · 71c	$0.0013	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	2.2s	0 / 0 · 42c	$0.0008	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	4.3s	0 / 0 · 49c	$0.0009	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	11.2s	0 / 0 · 76c	$0.0014	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	1.9s	0 / 0 · 40c	$0.0007	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	14.5s	0 / 0 · 154c	$0.0027	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	1.0s	0 / 0 · 42c	$0.0008	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	5.9s	0 / 0 · 359c	$0.0064	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	1.5s	0 / 0 · 30c	$0.0005	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	3.7s	0 / 0 · 159c	$0.0028	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	5.0s	0 / 0 · 189c	$0.0034	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	8.9s	0 / 0 · 198c	$0.0035	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	3.6s	0 / 0 · 133c	$0.0024	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	8.5s	0 / 0 · 191c	$0.0034	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	3.6s	0 / 0 · 278c	$0.0050	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	3.8s	0 / 0 · 83c	$0.0015	OK
+18 Sept, 08:24 pm	voice	sarvam-tts
+bulbul:v3
+	7.1s	0 / 0 · 187c	$0.0033	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	6.5s	0 / 0 · 211c	$0.0038	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	8.6s	0 / 0 · 227c	$0.0040	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	7.5s	0 / 0 · 190c	$0.0034	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	5.6s	0 / 0 · 279c	$0.0050	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	3.1s	0 / 0 · 177c	$0.0032	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	1.7s	0 / 0 · 103c	$0.0018	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	12.7s	0 / 0 · 136c	$0.0024	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	3.0s	0 / 0 · 80c	$0.0014	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	2.8s	0 / 0 · 141c	$0.0025	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	10.0s	0 / 0 · 129c	$0.0023	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	4.4s	0 / 0 · 181c	$0.0032	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	5.3s	0 / 0 · 76c	$0.0014	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	8.4s	0 / 0 · 143c	$0.0026	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	2.8s	0 / 0 · 55c	$0.0010	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	15.0s	0 / 0 · 128c	$0.0023	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	7.9s	0 / 0 · 128c	$0.0023	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	3.0s	0 / 0 · 145c	$0.0026	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	2.7s	0 / 0 · 77c	$0.0014	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	1.9s	0 / 0 · 42c	$0.0008	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	8.1s	0 / 0 · 144c	$0.0026	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	11.1s	0 / 0 · 175c	$0.0031	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	2.6s	0 / 0 · 135c	$0.0024	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	8.0s	0 / 0 · 114c	$0.0020	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	3.6s	0 / 0 · 53c	$0.0009	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	5.3s	0 / 0 · 86c	$0.0015	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	11.6s	0 / 0 · 145c	$0.0026	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	5.2s	0 / 0 · 94c	$0.0017	OK
+18 Sept, 08:23 pm	voice	sarvam-tts
+bulbul:v3
+	10.1s	0 / 0 · 132c	$0.0024	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 56c	$0.0010	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	8.4s	0 / 0 · 91c	$0.0016	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	4.1s	0 / 0 · 87c	$0.0015	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	6.6s	0 / 0 · 47c	$0.0008	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	5.7s	0 / 0 · 90c	$0.0016	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	9.8s	0 / 0 · 122c	$0.0022	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	5.2s	0 / 0 · 29c	$0.0005	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	3.3s	0 / 0 · 122c	$0.0022	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	4.9s	0 / 0 · 59c	$0.0010	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	18.3s	0 / 0 · 104c	$0.0019	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	6.0s	0 / 0 · 131c	$0.0023	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	5.0s	0 / 0 · 136c	$0.0024	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	2.9s	0 / 0 · 25c	$0.0004	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	4.5s	0 / 0 · 76c	$0.0014	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	5.1s	0 / 0 · 133c	$0.0024	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	4.0s	0 / 0 · 58c	$0.0010	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	7.6s	0 / 0 · 59c	$0.0010	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	3.7s	0 / 0 · 98c	$0.0018	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	4.6s	0 / 0 · 86c	$0.0015	OK
+18 Sept, 08:22 pm	voice	sarvam-tts
+bulbul:v3
+	1.8s	0 / 0 · 111c	$0.0020	OK
+18 Sept, 08:09 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.2s	19,458 / 859	$0.0178	OK
+18 Sept, 08:09 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.3s	19,457 / 585	$0.0168	OK
+18 Sept, 08:09 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.2s	19,454 / 847	$0.0178	OK
+18 Sept, 08:09 pm	faq	runware-structured
+openai:gpt@5.5
+	7.9s	17,372 / 359	$0.0204	OK
+18 Sept, 08:09 pm	faq	gemini-fallback
+gemini-3.8-flash
+	8.5s	19,460 / 1,482	$0.0202	OK
+18 Sept, 08:09 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.0s	19,450 / 808	$0.0176	OK
+18 Sept, 08:09 pm	faq	runware-structured
+openai:gpt@5.5
+	3.0s	17,365 / 98	$0.0126	OK
+18 Sept, 08:08 pm	faq	gemini-fallback
+gemini-3.8-flash
+	8.6s	19,449 / 1,486	$0.0202	OK
+18 Sept, 08:08 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.7s	19,457 / 405	$0.0161	OK
+18 Sept, 08:08 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.0s	19,457 / 761	$0.0175	OK
+18 Sept, 08:08 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.8s	19,451 / 677	$0.0171	OK
+18 Sept, 08:08 pm	faq	gemini-fallback
+gemini-3.8-flash
+	20.9s	19,453 / 455	$0.0163	OK
+18 Sept, 08:08 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.3s	19,449 / 667	$0.0171	OK
+18 Sept, 08:08 pm	faq	runware-structured
+openai:gpt@5.5
+	8.3s	17,371 / 412	$0.0220	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.9s	19,456 / 1,486	$0.0202	OK
+18 Sept, 08:07 pm	faq	runware-structured
+openai:gpt@5.5
+	9.4s	17,373 / 625	$0.1056	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.8s	19,460 / 1,486	$0.0202	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.1s	19,449 / 438	$0.0162	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.9s	19,453 / 595	$0.0168	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.8s	19,453 / 784	$0.0175	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.5s	19,459 / 750	$0.0174	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.6s	19,453 / 962	$0.0182	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.6s	19,452 / 720	$0.0173	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.4s	19,448 / 588	$0.0168	OK
+18 Sept, 08:07 pm	faq	gemini-fallback
+gemini-3.8-flash
+	7.7s	720 / 1,606	$0.0066	OK
+18 Sept, 08:03 pm	faq	gemini-fallback
+gemini-3.8-flash
+	13.3s	18,365 / 916	$0.0172	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.3s	18,363 / 752	$0.0166	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	2.9s	18,362 / 555	$0.0158	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.0s	18,362 / 499	$0.0156	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.8s	18,360 / 506	$0.0157	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.9s	18,361 / 761	$0.0166	OK
+18 Sept, 08:02 pm	faq	runware-structured
+openai:gpt@5.5
+	7.6s	16,349 / 360	$0.0200	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.2s	18,370 / 1,486	$0.0193	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.3s	18,361 / 831	$0.0169	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.8s	18,370 / 400	$0.0153	OK
+18 Sept, 08:02 pm	faq	runware-structured
+openai:gpt@5.5
+	7.3s	16,349 / 343	$0.0920	OK
+18 Sept, 08:02 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.9s	18,366 / 1,486	$0.0193	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	8.2s	18,368 / 660	$0.0163	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.4s	18,365 / 676	$0.0163	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.8s	18,362 / 728	$0.0165	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.5s	18,365 / 650	$0.0162	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.2s	18,369 / 973	$0.0174	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.1s	18,369 / 495	$0.0156	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.3s	18,367 / 624	$0.0161	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.3s	18,365 / 574	$0.0159	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.3s	18,363 / 724	$0.0165	OK
+18 Sept, 08:01 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.9s	18,363 / 678	$0.0163	OK
+18 Sept, 08:00 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.1s	779 / 1,488	$0.0062	OK
+18 Sept, 08:00 pm	deck	gemini-fallback
+gemini-3.8-flash
+	15.6s	3,204 / 3,893	$0.0170	OK
+18 Sept, 08:00 pm	author	gemini
+gemini-3.6-flash
+	54.3s	12,701 / 5,575	$0.0177	OK
+18 Sept, 07:59 pm	author	gemini-fallback
+gemini-3.8-flash
+	17.4s	12,797 / 7,260	$0.0368	OK
+18 Sept, 07:59 pm	author	gemini-fallback
+gemini-3.8-flash
+	21.9s	8,848 / 8,588	$0.0388	OK
+18 Sept, 07:59 pm	plan	sarvam-tts
+bulbul:v3
+	2.2s	0 / 0 · 143c	$0.0026	OK
+18 Sept, 07:58 pm	plan	gemini-fallback
+gemini-3.8-flash
+	17.3s	9,274 / 5,747	$0.0285	OK
+18 Sept, 07:58 pm	understand	gemini-fallback
+gemini-3.8-flash
+	4.9s	1,457 / 1,272	$0.0059	OK
+18 Sept, 07:58 pm	understand	gemini-fallback
+gemini-3.8-flash
+	8.0s	1,425 / 2,527	$0.0106	OK
+18 Sept, 07:58 pm	understand	gemini-fallback
+gemini-3.8-flash
+	7.3s	8,905 / 1,921	$0.0139	OK
+18 Sept, 07:58 pm	understand	gemini-fallback
+gemini-3.8-flash
+	9.5s	7,648 / 3,394	$0.0185	OK
+18 Sept, 07:58 pm	understand	gemini-fallback
+gemini-3.8-flash
+	17.4s	5,160 / 5,630	$0.0250	OK
+18 Sept, 07:57 pm	understand	gemini-fallback
+gemini-3.8-flash
+	7.7s	7,679 / 2,375	$0.0147	OK
+18 Sept, 07:57 pm	understand	gemini-fallback
+gemini-3.8-flash
+	6.8s	20,786 / 2,237	$0.0240	OK
+18 Sept, 07:57 pm	understand	gemini-fallback
+gemini-3.8-flash
+	16.7s	44,504 / 5,858	$0.0554	OK
+18 Sept, 07:57 pm	understand	gemini
+gemini-3.6-flash
+	18.7s	8,945 / 2,057	$0.0078	OK
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	25.9s	0 / 0 · 67c	$0.0000	OK
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 40c	$0.0000	ERROR
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	9.1s	0 / 0 · 120c	$0.0000	OK
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 107c	$0.0000	ERROR
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	22.3s	0 / 0 · 49c	$0.0000	OK
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 28c	$0.0000	ERROR
+18 Sept, 07:48 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	6.1s	0 / 0 · 19c	$0.0000	OK
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 21c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 16c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 16c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 17c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 73c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 70c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 42c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 32c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	31.2s	0 / 0 · 153c	$0.0000	OK
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	6.1s	0 / 0 · 40c	$0.0000	OK
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 71c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	16.2s	0 / 0 · 207c	$0.0000	OK
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 42c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 76c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	37.8s	0 / 0 · 209c	$0.0000	OK
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 132c	$0.0000	ERROR
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	22.8s	0 / 0 · 193c	$0.0000	OK
+18 Sept, 07:47 pm	voice	gemini-tts
+gemini-3.1-flash-tts-preview
+	22.3s	0 / 0 · 342c	$0.0000	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	11.2s	0 / 0 · 193c	$0.0034	ERROR
+18 Sept, 07:46 pm	voice	gemini-tts
+gemini
+	0.0s	0 / 0 · 238c	$0.0000	ERROR
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	10.9s	0 / 0 · 209c	$0.0037	ERROR
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	10.9s	0 / 0 · 238c	$0.0043	ERROR
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.6s	0 / 0 · 210c	$0.0037	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.8s	0 / 0 · 218c	$0.0039	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.7s	0 / 0 · 249c	$0.0044	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.1s	0 / 0 · 132c	$0.0024	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.5s	0 / 0 · 114c	$0.0020	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.4s	0 / 0 · 95c	$0.0017	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.6s	0 / 0 · 104c	$0.0019	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.1s	0 / 0 · 191c	$0.0034	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.7s	0 / 0 · 111c	$0.0020	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.8s	0 / 0 · 50c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.6s	0 / 0 · 86c	$0.0015	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.4s	0 / 0 · 82c	$0.0015	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.0s	0 / 0 · 45c	$0.0008	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.0s	0 / 0 · 129c	$0.0023	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.1s	0 / 0 · 111c	$0.0020	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.0s	0 / 0 · 105c	$0.0019	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.4s	0 / 0 · 115c	$0.0021	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 47c	$0.0008	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 52c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.8s	0 / 0 · 114c	$0.0020	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.3s	0 / 0 · 69c	$0.0012	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.1s	0 / 0 · 91c	$0.0016	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 58c	$0.0010	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 48c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.0s	0 / 0 · 119c	$0.0021	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.9s	0 / 0 · 84c	$0.0015	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.0s	0 / 0 · 73c	$0.0013	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.1s	0 / 0 · 122c	$0.0022	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.7s	0 / 0 · 37c	$0.0007	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.0s	0 / 0 · 93c	$0.0017	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.8s	0 / 0 · 99c	$0.0018	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 50c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.5s	0 / 0 · 25c	$0.0004	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.1s	0 / 0 · 101c	$0.0018	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.5s	0 / 0 · 117c	$0.0021	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.9s	0 / 0 · 89c	$0.0016	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.8s	0 / 0 · 74c	$0.0013	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.6s	0 / 0 · 31c	$0.0006	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.4s	0 / 0 · 137c	$0.0024	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.8s	0 / 0 · 49c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 51c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.6s	0 / 0 · 76c	$0.0014	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.4s	0 / 0 · 68c	$0.0012	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.6s	0 / 0 · 24c	$0.0004	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	1.9s	0 / 0 · 105c	$0.0019	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	3.0s	0 / 0 · 132c	$0.0024	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.9s	0 / 0 · 51c	$0.0009	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.7s	0 / 0 · 116c	$0.0021	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	2.5s	0 / 0 · 120c	$0.0021	OK
+18 Sept, 07:46 pm	voice	sarvam-tts
+bulbul:v3
+	0.8s	0 / 0 · 38c	$0.0007	OK
+18 Sept, 07:44 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.5s	12,312 / 972	$0.0129	OK
+18 Sept, 07:44 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.9s	12,310 / 1,038	$0.0131	OK
+18 Sept, 07:44 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.3s	12,312 / 752	$0.0120	OK
+18 Sept, 07:44 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.5s	12,310 / 983	$0.0129	OK
+18 Sept, 07:44 pm	faq	gemini-fallback
+gemini-3.8-flash
+	7.0s	12,303 / 1,392	$0.0144	OK
+18 Sept, 07:44 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.2s	12,305 / 800	$0.0122	OK
+18 Sept, 07:44 pm	faq	runware-structured
+openai:gpt@5.5
+	4.7s	11,019 / 197	$0.0161	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.5s	12,306 / 1,485	$0.0148	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.2s	12,311 / 1,147	$0.0135	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.4s	12,308 / 820	$0.0123	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.5s	12,309 / 657	$0.0117	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.5s	12,310 / 880	$0.0125	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.4s	12,307 / 937	$0.0127	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.6s	12,308 / 735	$0.0120	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.5s	12,304 / 608	$0.0115	OK
+18 Sept, 07:43 pm	faq	runware-structured
+openai:gpt@5.5
+	10.2s	11,017 / 619	$0.0287	OK
+18 Sept, 07:43 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.3s	12,304 / 1,486	$0.0148	OK
+18 Sept, 07:42 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.2s	12,303 / 575	$0.0114	OK
+18 Sept, 07:42 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.7s	12,313 / 783	$0.0122	OK
+18 Sept, 07:42 pm	faq	runware-structured
+openai:gpt@5.5
+	10.6s	11,022 / 548	$0.0716	OK
+18 Sept, 07:42 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.5s	12,309 / 1,486	$0.0148	OK
+18 Sept, 07:42 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.8s	12,310 / 778	$0.0121	OK
+18 Sept, 07:42 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.6s	12,306 / 1,444	$0.0146	OK
+18 Sept, 07:42 pm	faq	gemini-fallback
+gemini-3.8-flash
+	6.8s	612 / 1,063	$0.0044	OK
+18 Sept, 07:31 pm	faq	gemini-fallback
+gemini-3.8-flash
+	4.0s	11,713 / 770	$0.0117	OK
+18 Sept, 07:31 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.7s	11,713 / 687	$0.0114	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.1s	11,718 / 874	$0.0121	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.2s	11,712 / 634	$0.0112	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.3s	11,711 / 450	$0.0105	OK
+18 Sept, 07:30 pm	faq	runware-structured
+openai:gpt@5.5
+	6.3s	10,409 / 106	$0.0103	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.9s	11,710 / 1,486	$0.0143	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	3.5s	11,712 / 384	$0.0102	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	8.2s	11,718 / 853	$0.0120	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	5.7s	11,713 / 964	$0.0124	OK
+18 Sept, 07:30 pm	faq	runware-structured
+openai:gpt@5.5
+	6.0s	10,409 / 301	$0.0162	OK
+18 Sept, 07:30 pm	faq	gemini-fallback
+gemini-3.8-flash
+	7.2s	11,710 / 1,486	$0.0143	OK
+18 Sept, 07:30 pm	faq	runware-structured
+openai:gpt@5.5
+	6.9s	10,411 / 411	$0.0195	OK

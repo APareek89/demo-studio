@@ -1,0 +1,100 @@
+[
+  {
+    "trace_line": 418,
+    "t": 1789746874.743953,
+    "kind": "runtime",
+    "model": "gemini-3.8-flash",
+    "latency_ms": 11225,
+    "in": 7265,
+    "out": 2912,
+    "response": "{\n  \"customer_state\": \"stated_need\",\n  \"decision_frame\": \"You mentioned driving five to ten kilometres a day in city traffic with a child seat and stroller, focusing on practicality and running costs. We'll start with boot capacity and child safety, look at cabin technology, and finish with written ownership terms.\",\n  \"follow_up_question\": \"\",\n  \"primary_outcome\": \"Verify boot capacity for your stroller, child seat mounting, and ownership economics for short city commutes.\",\n  \"focus_topics\": [\"practicality\", \"running costs\", \"city driving\"],\n  \"route\": [\n    {\n      \"segment_id\": \"boot-practicality\",\n      \"bridge\": \"Let's begin with the cargo space to see how it fits your stroller.\",\n      \"bridge_fact_ids\": []\n    },\n    {\n      \"segment_id\": \"safety-standards\",\n      \"bridge\": \"Next, let's look at the standard safety features relevant to your child seat.\",\n      \"bridge_fact_ids\": []\n    },\n    {\n      \"segment_id\": \"tech-convenience\",\n      \"bridge\": \"Now let's check the cabin display and controls for your daily city driving.\",\n      \"bridge_fact_ids\": []\n    },\n    {\n      \"segment_id\": \"ownership-details\",\n      \"bridge\": \"Finally, let's look at warranty coverage and quote details for running costs.\",\n      \"bridge_fact_ids\": []\n    }\n  ],\n  \"skipped\": [\n    \"exterior-stance: Buyer prioritised cargo practicality, child safety, and running costs over exterior stance.\",\n    \"cabin-comfort: Limited proof steps to boot space and safety standards to stay within the three-minute tour.\",\n    \"powertrain-choices: Prioritised everyday practicality and safety over an extended powertrain comparison for short city runs.\"\n  ],\n  \"usp_order\": [\n    \"usp-safety\"\n  ],\n  \"advance\": \"Choose Book Test Drive to check how your stroller and child seat fit in person, and get an exact written quote.\",\n  \"advance_cta\": \"book-test-drive\",\n  \"custom_batches\": [\n    {\n      \"text\": \"For your stroller, the Nexon provides 382 litres of boot space on petrol and diesel models under ISO V215 measurement, offering dedicated cargo space for your family outings.\",\n      \"fact_ids\": [\"F014\"],\n      \"visual_ref\": \"boot-cargo-area\"\n    },\n    {\n      \"text\": \"For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin.\",\n      \"fact_ids\": [\"F004\"],\n      \"visual_ref\": \"rear-isofix-mounts\"\n    },\n    {\n      \"text\": \"For your daily five to ten kilometres in city traffic, six airbags and an electronic stability program come standard across every variant.\",\n      \"fact_ids\": [\"F003\"],\n      \"visual_ref\": \"safety-overview\"\n    }\n  ],\n  \"do_not_recommend_if\": \"A must-have requirement remains unsupported or fails the buyer's own fit check; verify it before recommending a trim.\"\n}"
+  },
+  {
+    "trace_line": 419,
+    "t": 1789746877.632465,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 2842,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] For your stroller, the Nexon provides 382 litres of boot space on petrol and diesel models under ISO V215 measurement, offering dedicated cargo space for your family outings."
+  },
+  {
+    "trace_line": 420,
+    "t": 1789746878.840329,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 4049,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin."
+  },
+  {
+    "trace_line": 421,
+    "t": 1789746880.177832,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 1322,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] Finally, let's look at warranty coverage and quote details for running costs."
+  },
+  {
+    "trace_line": 422,
+    "t": 1789746882.160382,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 7369,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] Let's begin with the cargo space to see how it fits your stroller."
+  },
+  {
+    "trace_line": 423,
+    "t": 1789746886.897126,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 6708,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] You mentioned driving five to ten kilometres a day in city traffic with a child seat and stroller, focusing on practicality and running costs. We'll start with boot capacity and child safety, look at cabin technology, and finish with written ownership terms."
+  },
+  {
+    "trace_line": 424,
+    "t": 1789746887.07927,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 4904,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] Choose Book Test Drive to check how your stroller and child seat fit in person, and get an exact written quote."
+  },
+  {
+    "trace_line": 425,
+    "t": 1789746888.6504471,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 11005,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] Now let's check the cabin display and controls for your daily city driving."
+  },
+  {
+    "trace_line": 426,
+    "t": 1789746891.64607,
+    "kind": "sarvam-tts",
+    "model": "bulbul:v3",
+    "latency_ms": 16855,
+    "in": 0,
+    "out": 0,
+    "response": "[audio]",
+    "speech_input": "[priya · en-IN] For your daily five to ten kilometres in city traffic, six airbags and an electronic stability program come standard across every variant."
+  }
+]

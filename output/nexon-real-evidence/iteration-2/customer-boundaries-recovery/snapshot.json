@@ -1,0 +1,13 @@
+{
+  "session_id": "s_mu74vi17dltu",
+  "demo_id": "dm_36d47b86",
+  "origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu74vi17dltu",
+  "retrieved_at": "2026-09-18T15:54:06.986554+00:00",
+  "sha256": "48dba86f009a54ec4a13e78c3eecbe9891a260106611239bf07a35328dfd9b13",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "classification": "C2 recovered traffic-context and unresolved-summary path; initial C failure preserved separately",
+  "runtime_reported_by_root": "frozen backend with NX32/NX33 and QA prompt fixes; before final quote-only pitch-basis seam; Browse did not call pitch",
+  "evidence_limit": "Root observed UI while playback ran unmuted; no independent acoustic listening."
+}

@@ -1,0 +1,16 @@
+{
+  "session_id": "s_mu74j6zw4ubr",
+  "demo_id": "dm_36d47b86",
+  "origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu74j6zw4ubr",
+  "retrieved_at": "2026-09-18T15:42:43.458909+00:00",
+  "sha256": "709f3b8dcf8b249f22f78bbce8986571faca59167278c7d5fb88442d275b878b",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "classification": "C final snapshot after Stop, delayed Done and reload; no Back occurred; Q11 moved to later A run",
+  "runtime_reported_by_root": "d8fc422",
+  "operator_times_ms": {
+    "Stop": 1789746099401,
+    "Done": 1789746124072
+  }
+}

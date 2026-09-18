@@ -1,0 +1,11 @@
+FAIL summary: actual C readiness promise becomes a neutral invitation
+PASS summary: context, interests and objections survive the opener guard
+PASS summary: unanswered questions and input status are preserved
+FAIL summary: provider gets explicit open-question limits and the real unresolved record
+FAIL summary: recorded unresolved alone prevents a readiness promise
+FAIL summary: recorded escalations alone prevents a readiness promise
+FAIL summary: model unanswered alone prevents a readiness promise
+PASS summary: a resolved session retains its specific supported opener
+PASS summary: callback bookkeeping alone does not invent an unanswered question
+FAIL summary: mock path applies the guard without a provider call
+Summary contracts: 4/10 (no network or paid calls)

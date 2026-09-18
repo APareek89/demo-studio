@@ -1,0 +1,300 @@
+{
+  "session_id": "s_mu744a0l0l8o",
+  "reviewed_at": "2026-09-18T15:40:56.300177+00:00",
+  "registry_sha256": "d9f74bc71dfa686028d62a8e056bb5e66a8bde279c3b2692a81d901dddeae88a",
+  "cases": [
+    {
+      "case": "Q08_retry",
+      "trace_line": 384,
+      "answer": "The Nexon Fearless+PS petrol DCA features a 26.03 cm touchscreen and a 9-speaker JBL audio system with a subwoofer. In comparison, the Venue HX10 lists a 31.24 cm navigation screen and an 8-speaker Bose system; that is as per their website when we checked — please verify on their site.",
+      "word_count_whitespace": 50,
+      "fact_ids": [
+        "F007",
+        "F026",
+        "C5-007",
+        "C5-008"
+      ],
+      "result": "supported_two_attribute_comparison"
+    },
+    {
+      "case": "Q07_retry",
+      "trace_line": 388,
+      "answer": "For your exact automatics, Nexon Fearless+PS petrol has a 7-Speed DCA, while Brezza ZXi+ petrol has a 6-speed automatic available. On safety, Nexon also lists ADAS features, while Brezza lists 6 airbags, ESP, Hill Hold and ISOFIX; that is as per their website when we checked — please verify on their site.",
+      "word_count_whitespace": 52,
+      "fact_ids": [
+        "F019",
+        "F025",
+        "C6-001",
+        "C3-031",
+        "C3-032",
+        "C3-033",
+        "C6-004"
+      ],
+      "result": "supported_gearbox_difference_safety_presentation_asymmetric"
+    },
+    {
+      "case": "Q02_warranty",
+      "trace_line": 390,
+      "answer": "Tata lists an advertised basic warranty of 3 years | 100 000 km, though the relationship between the duration and distance is not supplied. The New Brezza states a standard warranty of 3 years or 1 00 000 km whichever is earlier; that is as per their website when we checked — please verify on their site.",
+      "word_count_whitespace": 57,
+      "fact_ids": [
+        "F027",
+        "C3-029"
+      ],
+      "result": "unknown_relationship_preserved_unsolicited_sourced_rival_comparison"
+    }
+  ],
+  "facts": [
+    {
+      "kind": "policy",
+      "claim": "Standard warranty",
+      "value": "3 years or 1 00 000 km whichever is earlier",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, WARRANTY",
+        "quote": "*3 years or 1 00 000 km whichever is earlier."
+      },
+      "confidence": 1.0,
+      "conditions": "Standard warranty",
+      "truth": "contractual",
+      "id": "C3-029",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "6 Airbags (Front, Side and Curtain)",
+      "value": "Available",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Safety",
+        "quote": "6 Airbags (Front, Side and Curtain)^^    "
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "truth": "stated",
+      "id": "C3-031",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Electronic Stability Program (ESP)",
+      "value": "Available",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Safety",
+        "quote": "Electronic Stability Program (ESP)    "
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "truth": "stated",
+      "id": "C3-032",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Hill Hold Assist",
+      "value": "Available",
+      "source": {
+        "ref": "src_b28460",
+        "locator": "page 10, FEATURES LIST, Safety",
+        "quote": "Hill Hold Assist    "
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "truth": "stated",
+      "id": "C3-033",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Infotainment system 31.24 cm (12.3”) ccNC navigation system",
+      "value": "S",
+      "source": {
+        "ref": "src_73036b",
+        "locator": "SECTION: Infotainment & Connectivity (official HTML table 5), HTML table 5, data row 2",
+        "quote": "Infotainment system\t31.24 cm (12.3”) ccNC navigation system\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+      },
+      "confidence": 1.0,
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "truth": "stated",
+      "id": "C5-007",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Bose premium sound 8 speaker system",
+      "value": "S",
+      "source": {
+        "ref": "src_73036b",
+        "locator": "SECTION: Infotainment & Connectivity (official HTML table 5), HTML table 5, data row 6",
+        "quote": "Bose premium sound 8 speaker system\tBose premium sound 8 speaker system\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+      },
+      "confidence": 1.0,
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "truth": "stated",
+      "id": "C5-008",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "availability",
+      "claim": "6-speed Automatic transmission availability (1.5L K15C Petrol ISG)",
+      "value": "6-speed automatic available on VXi, ZXi and ZXi+; unavailable on LXi",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, FEATURES LIST, Powertrain matrix",
+        "quote": "columns LXi, VXi, ZXi, ZXi+; the automatic row is unavailable, ticked, ticked, ticked respectively."
+      },
+      "confidence": 1.0,
+      "conditions": "1.5L K15C Petrol ISG engine, India market. Selected comparison: Brezza ZXi+ with 6AT. The 1.0L Turbo Boosterjet row is manual; do not attach its output figures to this automatic.",
+      "truth": "stated",
+      "id": "C6-001",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ISOFIX Child Seat Restraint System availability",
+      "value": "Available on LXi, VXi, ZXi and ZXi+",
+      "source": {
+        "ref": "src_87ab79",
+        "locator": "PDF page 10, Safety",
+        "quote": "ISOFIX Child Seat Restraint System"
+      },
+      "confidence": 1.0,
+      "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+      "truth": "stated",
+      "id": "C6-004",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "spec",
+      "claim": "Infotainment touchscreen size",
+      "value": "26.03 cm touchscreen infotainment by HARMAN",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+        "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+      },
+      "confidence": 1.0,
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list.",
+      "truth": "stated",
+      "id": "F007",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "confidence": 1.0,
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date.",
+      "truth": "stated",
+      "id": "F019",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote.",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "JBL sound system with subwoofer",
+      "value": "JBL-branded 9 speakers with subwoofer",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+        "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+      },
+      "confidence": 1.0,
+      "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker.",
+      "truth": "stated",
+      "id": "F026",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "policy",
+      "claim": "Advertised basic warranty",
+      "value": "3 years | 100 000 km",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, warranty badge",
+        "quote": "3 years | 100 000 km"
+      },
+      "confidence": 1.0,
+      "conditions": "Advertised basic warranty headline; specific terms, exclusions, transferability, or 'whichever occurs first' qualification not detailed in source badge.",
+      "truth": "contractual",
+      "id": "F027",
+      "approved": true,
+      "edited": false
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_b28460",
+      "kind": "pdf",
+      "name": "Maruti Suzuki Brezza — brochure",
+      "path": "sources/src_b28460_brezza-brochure.pdf",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "role": "competitor",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_73036b",
+      "kind": "text",
+      "name": "Hyundai Venue — official trim-qualified feature tables",
+      "path": "sources/src_73036b_Hyundai_Venue_official_trim-qualified_feature_tables.md",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "role": "competitor",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_87ab79",
+      "kind": "text",
+      "name": "Maruti Suzuki Brezza — reviewed official-source addendum.md",
+      "path": "sources/src_87ab79_Maruti_Suzuki_Brezza_reviewed_official-source_addendum.md",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "role": "competitor",
+      "use_in_demo": true
+    }
+  ],
+  "limits": [
+    "Read-only source audit; no new model/provider calls.",
+    "Transcript is player-reported heard text; root observed the actual UI and audible playback.",
+    "Initial Q08 before restart failed and remains part of the same session."
+  ]
+}

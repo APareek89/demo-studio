@@ -1,0 +1,26 @@
+{
+  "session_id": "s_mu752gpf8em1",
+  "demo_id": "dm_36d47b86",
+  "origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu752gpf8em1",
+  "retrieved_at": "2026-09-18T16:00:37.719433+00:00",
+  "sha256": "c96dece98b63ad9dbbb70fa1a9794f8640f9634fdaeca49ec274b8cca7670844",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "classification": "A recovery natural full route and closing; targeted NX34 rerun; no new question cases",
+  "runtime_reported_by_root": "3412b11",
+  "mute_boundary_reported_by_root": "User requested muted video; mute confirmed at boot check-in before continuing Safety. All later review used captions/transcript.",
+  "evidence_limit": "Root observed UI while early playback ran unmuted; no independent acoustic listening at any stage.",
+  "returned_pitch_capture": false,
+  "later_operator_annotation": {
+    "recorded_at": "2026-09-18T16:01:48.221038+00:00",
+    "source": "root direct UI report, supported by later same-session API snapshot",
+    "event": "After natural-end Done, navigation to a hidden Observability link hit an overlaid cockpit progress control and briefly resumed the demo. Root immediately Stop/Done then navigated via the route.",
+    "supplementary_file": "operator-resume-session.json",
+    "supplementary_sha256": "43e0752c752f73306d8f113a1f40703875fbb53e174f24359b55d0955260a54a",
+    "original_natural_end_minutes": 5.6,
+    "later_ended_minutes": 5.9,
+    "original_session_file_unchanged": true,
+    "interpretation": "operator navigation/resume, not an automatic answer-return replay defect"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "minutes": {
+    "at_Stop": 2.4,
+    "after_Done_reload": 2.4,
+    "equal": true
+  },
+  "slides_visited": {
+    "at_Stop": [
+      {
+        "slide_id": "sl00",
+        "kind": "hero_open",
+        "seconds": 15.6
+      },
+      {
+        "slide_id": "sl01",
+        "kind": "intro",
+        "seconds": 126.1
+      }
+    ],
+    "after_Done_reload": [
+      {
+        "slide_id": "sl00",
+        "kind": "hero_open",
+        "seconds": 15.6
+      },
+      {
+        "slide_id": "sl01",
+        "kind": "intro",
+        "seconds": 126.1
+      }
+    ],
+    "equal": true
+  },
+  "leads": {
+    "at_Stop": [],
+    "after_Done_reload": [],
+    "equal": true
+  },
+  "ended": {
+    "at_Stop": true,
+    "after_Done_reload": true,
+    "equal": true
+  }
+}

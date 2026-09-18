@@ -1,0 +1,291 @@
+{
+  "id": "s_mu74vi17dltu",
+  "ended": true,
+  "profile": {
+    "name": "",
+    "why": "",
+    "followup": "I mainly want help with stop-and-go traffic.\nWhat is the exact on-road price in Mumbai today, including every charge?",
+    "focus": []
+  },
+  "personalized": false,
+  "route": [
+    "exterior-stance",
+    "cabin-comfort",
+    "boot-practicality",
+    "powertrain-choices",
+    "safety-standards",
+    "tech-convenience",
+    "ownership-details"
+  ],
+  "slides": [
+    "sl03",
+    "sl04",
+    "sl05",
+    "sl06",
+    "sl07",
+    "sl08",
+    "sl09"
+  ],
+  "slides_visited": [
+    {
+      "slide_id": "sl00",
+      "kind": "hero_open",
+      "seconds": 16
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 12.3
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 11
+    },
+    {
+      "slide_id": "sl03",
+      "kind": "proof",
+      "seconds": 29.6
+    },
+    {
+      "slide_id": "sl06",
+      "kind": "proof",
+      "seconds": 54.4
+    },
+    {
+      "slide_id": "sl05",
+      "kind": "proof",
+      "seconds": 51.8
+    },
+    {
+      "slide_id": "sl06",
+      "kind": "proof",
+      "seconds": 110.7
+    }
+  ],
+  "covered": [],
+  "jumps": [],
+  "turns": [
+    {
+      "question": "I mainly want help with stop-and-go traffic.",
+      "voice_ended": 1789746706940,
+      "stt_done": 1789746706940,
+      "via": "typed",
+      "qa_done": 1789746733730,
+      "answer_audio": 1789746733743,
+      "from_bank": false,
+      "route": "stay",
+      "answered": true
+    },
+    {
+      "question": "What is the exact on-road price in Mumbai today, including every charge?",
+      "voice_ended": 1789746768876,
+      "stt_done": 1789746768876,
+      "via": "typed",
+      "qa_done": 1789746774000,
+      "answer_audio": 1789746774032,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    }
+  ],
+  "usps_covered": [
+    "usp-comfort",
+    "usp-powertrains"
+  ],
+  "questions": [
+    "I mainly want help with stop-and-go traffic.",
+    "What is the exact on-road price in Mumbai today, including every charge?"
+  ],
+  "escalations": [
+    "Provide exact on-road price breakdown for Mumbai"
+  ],
+  "leads": [],
+  "resolved": [
+    "performance"
+  ],
+  "unresolved": [
+    "ownership"
+  ],
+  "cta": "summary",
+  "intent": 39,
+  "drop_point": "Find your driving rhythm",
+  "minutes": 4.8,
+  "transcript": [
+    {
+      "role": "agent",
+      "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+      "t": 1789746552711
+    },
+    {
+      "role": "agent",
+      "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+      "t": 1789746559857
+    },
+    {
+      "role": "agent",
+      "text": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+      "t": 1789746567367
+    },
+    {
+      "role": "agent",
+      "text": "We'll put each alongside what you need from your next car.",
+      "t": 1789746570864
+    },
+    {
+      "role": "agent",
+      "text": "Take in the side profile.",
+      "t": 1789746572742
+    },
+    {
+      "role": "agent",
+      "text": "Tata lists 208 millimetres of ground clearance, with variation by trim. Keep that figure alongside the roads and parking spaces you use.",
+      "t": 1789746582193
+    },
+    {
+      "role": "agent",
+      "text": "Does that cover what you wanted to know about the exterior?",
+      "t": 1789746585265
+    },
+    {
+      "role": "agent",
+      "text": "This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.",
+      "t": 1789746606229
+    },
+    {
+      "role": "agent",
+      "text": "For stop-and-go driving, try its response on a test drive and see how it feels to you.",
+      "t": 1789746612714
+    },
+    {
+      "role": "agent",
+      "text": "Is an automatic the direction you're leaning towards?",
+      "t": 1789746616127
+    },
+    {
+      "role": "agent",
+      "text": "Here's the boot. Petrol and diesel versions are listed at 382 litres, measured to ISO V215.",
+      "t": 1789746662998
+    },
+    {
+      "role": "agent",
+      "text": "For a stroller or weekend bags, bring your own and check the fit with the seats in use.",
+      "t": 1789746668375
+    },
+    {
+      "role": "agent",
+      "text": "Does that help with the luggage checks you want to make?",
+      "t": 1789746671446
+    },
+    {
+      "role": "user",
+      "text": "I mainly want help with stop-and-go traffic.",
+      "t": 1789746706942
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789746712064
+    },
+    {
+      "role": "agent",
+      "text": "For stop-and-go traffic, the supported fit-check is the automatic gearbox choice: petrol has 6-speed AMT and 7-speed DCT options, diesel has 6-speed AMT, while iCNG is manual only. The ADAS list on Fearless + PS petrol DCA doesn’t state stop-and-go cruise, so I won’t promise that.",
+      "t": 1789746758879
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789746759817
+    },
+    {
+      "role": "agent",
+      "text": "Let's",
+      "t": 1789746768877,
+      "interrupted": true,
+      "full": "Let's get back to where we were.",
+      "heard_fraction": 0.09
+    },
+    {
+      "role": "user",
+      "text": "What is the exact on-road price in Mumbai today, including every charge?",
+      "t": 1789746768877
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789746773999
+    },
+    {
+      "role": "agent",
+      "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+      "t": 1789746785882
+    }
+  ],
+  "saved_at": 1789746817.68068,
+  "summary": {
+    "customer_name": "",
+    "context": "They are looking at the Tata Nexon Fearless Plus P S petrol automatic and are deciding whether it suits their day-to-day driving, especially stop-and-go traffic. They also want the exact on-road price in Mumbai today, including every charge.",
+    "cared_about": [
+      "Help with stop-and-go traffic",
+      "Automatic gearbox choice",
+      "Exact on-road price in Mumbai including every charge"
+    ],
+    "objections": [
+      {
+        "text": "They mainly want help with stop-and-go traffic. The guide explained that the supported fit-check is the automatic gearbox choice: petrol has 6-speed AMT and 7-speed DCT options, diesel has 6-speed AMT, and iCNG is manual only. It also said the ADAS list on Fearless + PS petrol DCA does not state stop-and-go cruise, so it was not promised.",
+        "resolved": true
+      },
+      {
+        "text": "They asked for the exact on-road price in Mumbai today, including every charge. The guide did not have that in the approved information and kept it open.",
+        "resolved": false
+      }
+    ],
+    "unanswered": [
+      "Exact on-road price in Mumbai today, including every charge"
+    ],
+    "opening_line": "I'd like to discuss the questions left open in your demo.",
+    "questions_asked": [
+      "I mainly want help with stop-and-go traffic.",
+      "What is the exact on-road price in Mumbai today, including every charge?"
+    ],
+    "slides_visited": [
+      {
+        "slide_id": "sl00",
+        "title": "Tata Nexon",
+        "seconds": 16.0
+      },
+      {
+        "slide_id": "sl01",
+        "title": "Tata Nexon, up close",
+        "seconds": 12.3
+      },
+      {
+        "slide_id": "sl02",
+        "title": "Your shortlist starts here",
+        "seconds": 11.0
+      },
+      {
+        "slide_id": "sl03",
+        "title": "Take in the stance",
+        "seconds": 29.6
+      },
+      {
+        "slide_id": "sl06",
+        "title": "Find your driving rhythm",
+        "seconds": 165.1
+      },
+      {
+        "slide_id": "sl05",
+        "title": "Room for your plans",
+        "seconds": 51.8
+      }
+    ],
+    "cta_result": "summary",
+    "leads": [],
+    "minutes": 4.8,
+    "model": "runtime",
+    "generated_at": 1789746830.9013572,
+    "transcript_lines": 21
+  },
+  "share_key": "[REDACTED]"
+}

@@ -1,0 +1,28 @@
+PASS runtime delivery: fixture reproduces old raw-deck stay versus reviewed-script jump
+PASS runtime delivery: actual bank route jumps from stale cabin copy to current boot slide
+PASS runtime delivery: bank stays only when current reviewed slide carries the answer
+PASS runtime delivery: actual model route uses the same reviewed-script hydration
+PASS runtime delivery: unknown answer retains the current slide
+PASS runtime delivery: routing reads current script without mutating saved slide design
+PASS runtime delivery: pitch allows cached media and health on the same ASGI loop while provider waits
+PASS runtime delivery: pitch offloads provider and preserves tracing context
+PASS runtime delivery: pitch response remains successful
+PASS runtime delivery: pitch retains profile and refinement
+PASS runtime delivery: pitch preserves explicit HTTP502 on provider failure
+PASS runtime delivery: qa allows cached media and health on the same ASGI loop while provider waits
+PASS runtime delivery: qa offloads provider and preserves tracing context
+PASS runtime delivery: qa response remains successful
+PASS runtime delivery: QA retains live-provider behavior
+PASS runtime delivery: qa preserves explicit HTTP502 on provider failure
+PASS runtime delivery: tts allows cached media and health on the same ASGI loop while provider waits
+PASS runtime delivery: tts offloads provider and preserves tracing context
+PASS runtime delivery: tts response remains successful
+PASS runtime delivery: TTS retains chosen-voice strictness and language
+PASS runtime delivery: tts preserves explicit HTTP502 on provider failure
+PASS runtime delivery: stt allows cached media and health on the same ASGI loop while provider waits
+PASS runtime delivery: stt offloads provider and preserves tracing context
+PASS runtime delivery: stt response remains successful
+PASS runtime delivery: STT retains uploaded content and language
+PASS runtime delivery: stt preserves explicit HTTP502 on provider failure
+PASS runtime delivery: all checks used fake providers and no outbound connection
+Runtime delivery: 27/27 passed

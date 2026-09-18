@@ -1,0 +1,1 @@
+{"now":1789746365453,"status":"YOUR TURN","caption":"Does that cover your main safety concerns?","chips":"That settles it\nStill unsure\nI have a question"}

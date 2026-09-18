@@ -1,0 +1,113 @@
+{
+  "session_id": "s_mu74j6zw4ubr",
+  "reviewed_at": "2026-09-18T15:43:27.287149+00:00",
+  "registry_sha256": "77aa26785cc4d30241c0d901db6460234e6752e26b9bd83b8403430fa5cd1a46",
+  "no_answer_claim_citations": true,
+  "relevant_boundary_facts": [
+    {
+      "kind": "price",
+      "claim": "Starting ex-showroom price",
+      "value": "Rs 7.39 Lakhs*",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Overview banner",
+        "quote": "Starts at Rs 7.39 Lakhs*"
+      },
+      "confidence": 1.0,
+      "conditions": "Starting ex-showroom price on the official model page, checked 18 September 2026. Prices may change without prior information; obtain an exact selected-variant dealer quote.",
+      "truth": "stated",
+      "id": "F001",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "offer",
+      "claim": "Starting flexi scheme EMI",
+      "value": "₹6,499",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Finance banner and footnote #",
+        "quote": "Starting EMI of ₹6,499 #"
+      },
+      "confidence": 1.0,
+      "conditions": "Advertised starting EMI under the Flexi scheme: Rs. 809 per lakh instalment for the first 6 months; subsequent EMI is higher. Offers apply to selected variants and may change; final EMI and finance are at the financier's sole discretion. Not a customer-approved EMI.",
+      "truth": "contractual",
+      "id": "F002",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "confidence": 1.0,
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date.",
+      "truth": "stated",
+      "id": "F019",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote.",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": true
+    }
+  ],
+  "relevant_unknowns": [
+    {
+      "question": "What is the detailed on-road price breakdown (RTO registration fees, road tax, and handling charges) for my specific city?",
+      "why_customers_ask": "The sources only provide a starting ex-showroom price and disclaim local pricing variations.",
+      "category": "pricing",
+      "suggested_document": "dealer price list for the state",
+      "id": "U01",
+      "status": "open",
+      "origin": "extraction"
+    },
+    {
+      "question": "What are the standard finance interest rates, processing fees, and full amortization schedules beyond the 6-month flexi promotional period?",
+      "why_customers_ask": "The source notes an initial flexi EMI of ₹809 per lakh for 6 months but notes subsequent EMIs will be higher.",
+      "category": "finance",
+      "suggested_document": "EMI schedule / bank tie-up sheet",
+      "id": "U09",
+      "status": "open",
+      "origin": "extraction"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "role": "product",
+      "use_in_demo": true
+    }
+  ],
+  "summary_opening_line_status": "unsupported assertion of already having details; not customer-heard audio"
+}

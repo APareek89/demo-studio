@@ -103,6 +103,8 @@ def error_kind(error):
         return "timeout"
     if "validation" in text or "invalid json" in text or "json_invalid" in text:
         return "schema_or_json"
+    if "closed" in text and "client" in text:
+        return "closed_client"
     if "refus" in text or "blocked" in text or "sensitive" in text:
         return "refusal"
     return "other"
@@ -159,9 +161,25 @@ def main():
                                                                       and summary.get("transcript_lines") == transcript_n)},
                          "groups": latency_groups(turns), "turns": turns})
 
-    trace = [row for row in read(demo_dir / "trace.jsonl", True) if args.after < row.get("t", 0) <= cutoff]
-    usage = [row for row in read(demo_dir / "usage.jsonl", True) if args.after < row.get("t", 0) <= cutoff]
+    all_trace = [row for row in read(demo_dir / "trace.jsonl", True) if row.get("t", 0) <= cutoff]
+    all_usage = [row for row in read(demo_dir / "usage.jsonl", True) if row.get("t", 0) <= cutoff]
+    trace = [row for row in all_trace if args.after < row.get("t", 0)]
+    usage = [row for row in all_usage if args.after < row.get("t", 0)]
     cost, assumptions = pricing(repo)
+    evidence_dir = Path(__file__).resolve().parent
+    i1 = read(evidence_dir.parent / "iteration-1/run.json")
+    i2 = read(evidence_dir / "run.json")
+    i1_start = datetime.fromisoformat(i1["read_started_at"]).timestamp()
+    i2_start = datetime.fromisoformat(i2["read_started_at"]).timestamp()
+    periods = {"before_iteration1": [row for row in all_usage if row["t"] < i1_start],
+               "iteration1_before_second_read": [row for row in all_usage if i1_start <= row["t"] < i2_start],
+               "iteration2_before_customers": [row for row in all_usage if i2_start <= row["t"] <= args.after],
+               "customer_validation_recorded_usage": usage,
+               "whole_demo_through_cutoff": all_usage}
+    costs_by_period = {name: {"recorded_rows": len(rows), "estimated_usd": round(sum(cost(row) for row in rows), 6)}
+                       for name, rows in periods.items()}
+    zero_tts = [row for row in all_usage if row.get("kind") == "gemini-tts"
+                and not row.get("in") and not row.get("out") and row.get("usd") is None]
     usage_groups = defaultdict(list)
     for row in usage:
         usage_groups[(row.get("stage"), row.get("kind"), row.get("model"))].append(row)
@@ -184,7 +202,10 @@ def main():
               "sessions": sessions, "combined_latency": latency_groups(all_turns),
               "cost": {"basis": "Usage records at configured rates, not an invoice; never sum duplicated trace wrappers.",
                        "estimated_usd": round(sum(cost(row) for row in usage), 6), "recorded_rows": len(usage),
-                       "by_stage_kind_model": costs, "assumptions": assumptions},
+                       "by_stage_kind_model": costs, "assumptions": assumptions,
+                       "periods": costs_by_period, "iteration1_read_started": i1_start, "iteration2_read_started": i2_start,
+                       "gemini_tts_rows_with_zero_reported_tokens_and_no_native_cost": len(zero_tts),
+                       "zero_usage_gemini_tts_source_rows": [row["_row"] for row in zero_tts]},
               "provider_trace_events": events,
               "all_providers_failed_events": sum(row.get("kind") == "qa-providers-failed" for row in trace),
               "source_files": sources, "malformed_jsonl_rows": parse_issues,
@@ -195,6 +216,7 @@ def main():
                          "Trace wrapper and transport events can describe the same request; event counts are not paid-attempt counts.",
                          "Trace/usage rows have no session ID; costs and provider events are for the stated customer window, not assigned to individual sessions.",
                          "A matching summary transcript count establishes freshness only; summary content accuracy requires separate review.",
+                         "Background session-summary requests are absent from per-demo trace/usage: _summarize_session starts a plain thread without restoring usage.current_demo. Their actual charges are not included.",
                          "Rows without reported usage, including failed calls, may have unrecorded actual costs. Acoustic intelligibility is not measured."]}
     print(json.dumps(result, indent=2, ensure_ascii=False))
 

@@ -1,0 +1,259 @@
+{
+  "session_id": "s_mu752gpf8em1",
+  "reviewed_at": "2026-09-18T16:01:29.204464+00:00",
+  "registry_sha256": "a41e0f40da9272355d0f300f7a6c0da0f326e142b3c9e94f33c4b37d23d91d0b",
+  "proposal_delivery_comparison": [
+    {
+      "component": "custom-1",
+      "text": "For your stroller, the Nexon provides 382 litres of boot space on petrol and diesel models under ISO V215 measurement, offering dedicated cargo space for your family outings.",
+      "proposed_fact_ids": [
+        "F014"
+      ],
+      "delivered_in_transcript": true
+    },
+    {
+      "component": "custom-2",
+      "text": "For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin.",
+      "proposed_fact_ids": [
+        "F004"
+      ],
+      "delivered_in_transcript": true
+    },
+    {
+      "component": "custom-3",
+      "text": "For your daily five to ten kilometres in city traffic, six airbags and an electronic stability program come standard across every variant.",
+      "proposed_fact_ids": [
+        "F003"
+      ],
+      "delivered_in_transcript": true
+    },
+    {
+      "component": "bridge:boot-practicality",
+      "text": "Let's begin with the cargo space to see how it fits your stroller.",
+      "proposed_fact_ids": [],
+      "delivered_in_transcript": true
+    },
+    {
+      "component": "bridge:safety-standards",
+      "text": "Next, let's look at the standard safety features relevant to your child seat.",
+      "proposed_fact_ids": [],
+      "delivered_in_transcript": false
+    },
+    {
+      "component": "bridge:tech-convenience",
+      "text": "Now let's check the cabin display and controls for your daily city driving.",
+      "proposed_fact_ids": [],
+      "delivered_in_transcript": true
+    },
+    {
+      "component": "bridge:ownership-details",
+      "text": "Finally, let's look at warranty coverage and quote details for running costs.",
+      "proposed_fact_ids": [],
+      "delivered_in_transcript": true
+    }
+  ],
+  "facts": [
+    {
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section",
+        "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer states six airbags and electronic stability program as standard; three-point ELR belts are stated for all occupants. Do not infer child-seat compatibility or a crash-outcome guarantee.",
+      "truth": "stated",
+      "id": "F003",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard ISOFIX child seat mounts",
+      "value": "ISOFIX standard",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 11, standard-equipment labels and footnote",
+        "quote": "ISOFIX*"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across variants; footnoted '* As standard'; attachment-point count and universal compatibility not stated.",
+      "truth": "stated",
+      "id": "F004",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "BNCAP safety rating",
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+        "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking.",
+      "truth": "certified",
+      "id": "F006",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "spec",
+      "claim": "Infotainment touchscreen size",
+      "value": "26.03 cm touchscreen infotainment by HARMAN",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+        "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+      },
+      "confidence": 1.0,
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list.",
+      "truth": "stated",
+      "id": "F007",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "spec",
+      "claim": "Digital instrument cluster size",
+      "value": "26.03 cm digital instrument cluster",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel",
+        "quote": "26.03 cm Digital Instrument Cluster"
+      },
+      "confidence": 1.0,
+      "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG.",
+      "truth": "stated",
+      "id": "F009",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "spec",
+      "claim": "Boot space capacity",
+      "value": "382 L for Petrol & Diesel; 321 L for CNG",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, Petrol/Diesel versus Petrol + CNG columns; ** measurement footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "confidence": 1.0,
+      "conditions": "382 L in the petrol/diesel columns and 321 L in the Petrol + CNG column. Brochure measurement basis: ISO V215. Litres do not establish that a particular stroller or luggage set fits.",
+      "truth": "stated",
+      "id": "F014",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "confidence": 1.0,
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date.",
+      "truth": "stated",
+      "id": "F019",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front-seat ventilation",
+      "value": "Ventilated Driver & Co-Driver Seat",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, FEARLESS + PS persona walk",
+        "quote": "Ventilated Driver & Co-Driver Seat"
+      },
+      "confidence": 1.0,
+      "conditions": "Available on Fearless + PS petrol/diesel persona; does not apply to rear seats or lower trims.",
+      "truth": "stated",
+      "id": "F020",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "confidence": 1.0,
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote.",
+      "truth": "stated",
+      "id": "F025",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "JBL sound system with subwoofer",
+      "value": "JBL-branded 9 speakers with subwoofer",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+        "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+      },
+      "confidence": 1.0,
+      "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker.",
+      "truth": "stated",
+      "id": "F026",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "policy",
+      "claim": "Advertised basic warranty",
+      "value": "3 years | 100 000 km",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, warranty badge",
+        "quote": "3 years | 100 000 km"
+      },
+      "confidence": 1.0,
+      "conditions": "Advertised basic warranty headline; specific terms, exclusions, transferability, or 'whichever occurs first' qualification not detailed in source badge.",
+      "truth": "contractual",
+      "id": "F027",
+      "approved": true,
+      "edited": false
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "role": "product",
+      "use_in_demo": true
+    }
+  ],
+  "residual": "F004 establishes standard ISOFIX, but its quote/conditions and page11 do not explicitly establish exact rear-cabin anchor location.",
+  "evidence_limits": [
+    "No returned pitch JSON capture.",
+    "Root observed UI while early playback ran unmuted; no independent acoustic listening.",
+    "User requested mute at boot check-in; subsequent delivery evidence is captions/transcript only."
+  ]
+}
