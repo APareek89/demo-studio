@@ -1,63 +1,75 @@
 // The runtime player — voice-led, interruptible, grounded through the server.
-// Flow: one needs question → opening film → STANDARD OPENING (intro + outcome, unchanged) →
-// runtime pitch plan (decision frame · personalised route with grounded bridges) →
-// proof blocks with check-ins → establish → advance → CTA → handoff.
-// mountPlayer(host, bundle, {qa, tts, pitch, lead, saveSession}) → { destroy, restart, pause, context }
+// Order: intake question (over the hero slide) → opening film (skippable) → the standard opening slides (unchanged) →
+// runtime pitch plan (decision frame · custom batches as slides · personalised order) → proof slides with check-ins →
+// establish → closing (fit summary) → hero close + CTA → handoff.
+// Sync is event-driven: audio leads, the screen follows. A line starting reveals its callouts; the last line's audio
+// ending moves to the next slide. No timer decides what is on screen.
+// The transcript holds only what the customer actually heard (a cut-off line is logged as the words that played and
+// marked interrupted); only that transcript is sent as history to /run/qa.
+// mountPlayer(host, bundle, {qa, tts, pitch, lead, stt, saveSession}) → { destroy, restart, pause, context }
 import { mascot } from "/web/player/mascot.js";
+import { renderSlide } from "/web/slide.js";
 import { h } from "/web/api.js";
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
+const compact = (t, n) => String(t || "").split(/\s+/).slice(0, n).join(" ");
 
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
-    leadPromptShown: false, leadQuestion: "", leadReason: "" };
+    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [] };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
-  // Recorded filler lines in the persona's voice (acknowledgements, bridges, holds). Rule: the voice never changes mid-demo —
-  // a line is spoken with server audio or shown as captions, never with the browser's built-in voice.
-  // Keep preload objects alive for the full session. This covers the complete authored route,
-  // not only intake, so moving between lines does not repeatedly pay a network-start pause.
+
+  // ---------- slides ----------
+  // The deck is the structure. A bundle built before the deck existed gets one slide per segment (its line's own
+  // picture, no callouts) so older demos keep playing until they are rebuilt.
+  function slidesOf(b) {
+    if (b.slides?.length) return b.slides;
+    const hero = b.media?.hero || null; const kindOf = (r) => ({ intro: "intro", outcome: "outcome", proof: "proof", features: "features", establish: "establish" })[r] || "proof";
+    const mk = (id, kind, title, seg, lines) => ({ id, segment_id: seg?.id || null, kind, title, topics: seg?.topic ? [seg.topic] : [], image_url: (lines.map((l) => l.visual).find((v) => v?.kind === "image" && v.url) || {}).url || hero, image_parts: [], callouts: [], lines, checkin: seg?.checkin || { text: "" }, deeper: seg?.deeper || [], usp_ids: seg?.usp_ids || [], priority: !!seg?.priority, role: seg?.role || kind, motion: "zoom_in" });
+    const segs = (b.segments || []).map((s, i) => mk(`sl${i + 1}`, kindOf(s.role), s.title, s, s.lines || []));
+    return [mk("sl00", "hero_open", b.product?.name || b.name, null, []), ...segs, mk("sl-close", "closing", "Where that leaves you", null, b.closing || []), mk("sl-end", "hero_close", b.product?.name || b.name, null, [])];
+  }
+  let slides = slidesOf(bundle);
+  const byKind = (...k) => slides.filter((s) => k.includes(s.kind));
+  const opening = () => byKind("intro", "outcome"), library = () => byKind("proof", "features", "establish");
+  const heroOpen = () => byKind("hero_open")[0] || slides[0], heroClose = () => byKind("hero_close")[0] || heroOpen(), closingSlide = () => byKind("closing")[0] || null;
+  const topicOf = (sl) => sl.topics?.[0] || sl.segment_id || sl.id;
+
+  // Keep preload objects alive for the full session: every recorded line, filler, FAQ answer and picture, plus the film.
   setTimeout(() => {
     try {
       const urls = [];
       for (const v of Object.values(bundle.fillers || {})) if (v.audio) urls.push(v.audio);
       for (const u of Object.values(bundle.intake?.audio || {})) if (u) urls.push(u);
-      for (const seg of bundle.segments || []) {
-        for (const line of [...(seg.lines || []), ...(seg.deeper || [])]) if (line.audio) urls.push(line.audio);
-        if (seg.checkin?.audio) urls.push(seg.checkin.audio);
-      }
-      for (const line of bundle.closing || []) if (line.audio) urls.push(line.audio);
+      for (const sl of slides) { for (const line of [...(sl.lines || []), ...(sl.deeper || [])]) if (line.audio) urls.push(line.audio); if (sl.checkin?.audio) urls.push(sl.checkin.audio); }
       for (const item of bundle.faq || []) if (item.audio) urls.push(item.audio);
       for (const url of [...new Set(urls)]) { const a = new Audio(url); a.preload = "auto"; a.load(); S.preloads.push(a); }
-      for (const item of bundle.media?.images || []) { if (!item.url) continue; const image = new Image(); image.decoding = "async"; image.src = item.url; S.preloads.push(image); }
+      for (const url of [...new Set(slides.map((s) => s.image_url).filter(Boolean))]) { const image = new Image(); image.decoding = "async"; image.src = url; S.preloads.push(image); }
       if (bundle.intro_video?.url) { const v = document.createElement("video"); v.preload = "auto"; v.src = bundle.intro_video.url; v.load(); S.preloads.push(v); }
     } catch (e) {}
   }, 150);
   const F = (key, fallback) => { const f = bundle.fillers?.[key]; return f?.audio ? { text: f.text, audio: f.audio } : { text: fallback || f?.text || "", audio: null }; };
   const speakF = (key, fallback, run) => { const f = F(key, fallback); return speak(f.text, run, f.audio); };
-  function captionOnly(text, run) { return new Promise((res) => { const my = ++S.ttsToken; const ms = Math.max(1200, (text.split(/\s+/).length / 2.5) * 1000); const t = setTimeout(() => res(my === S.ttsToken && run === S.run), ms); S.captionTimer = t; }); }
   let LANG = (bundle.language === "hinglish" ? "hi-IN" : bundle.language) || "en-IN";
   Object.defineProperty(S, "lang", { set(v) { LANG = v === "hinglish" ? "hi-IN" : v; }, get() { return LANG; } });
   let serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
   const canListen = () => (serverSTT && navigator.mediaDevices?.getUserMedia) || SR;
-  const opening = (bundle.segments || []).filter((s) => s.role === "intro" || s.role === "outcome");
-  const library = (bundle.segments || []).filter((s) => s.role !== "intro" && s.role !== "outcome");
 
   // ---------- DOM ----------
   const el = {};
   const root = h("div", { class: "pl" },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
-      h("div", { class: "right" }, api.downloadUrl ? h("a", { class: "icon-btn link-btn download-btn", href: api.downloadUrl, download: `${bundle.name || "demo"}.mp4`, title: "Download MP4" }, "MP4 ↓") : null, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.muteBtn = h("button", { class: "icon-btn", title: "Mute audio", "aria-label": "Mute audio", "aria-pressed": "false", onclick: () => toggleMute() }, "🔊"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
+      h("div", { class: "right" }, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.muteBtn = h("button", { class: "icon-btn", title: "Mute audio", "aria-label": "Mute audio", "aria-pressed": "false", onclick: () => toggleMute() }, "🔊"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
     el.stage = h("div", { class: "pl-stage" },
-      el.media = h("div", { class: "pl-media" },
-        el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" })),
-      el.card = h("div", { class: "pl-card" }),
+      el.stack = h("div", { class: "slide-stack" }),
+      el.film = h("video", { class: "pl-film", muted: true, playsinline: true, preload: "auto" }),
       el.ctas = h("div", { class: "pl-ctas" }),
       h("div", { class: "pl-dock" },
         h("div", { class: "pl-cap" }, (el.mascotStage = mascot({ size: 72, image: bundle.mascot })).el, h("div", { class: "who" }, guide), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
@@ -74,106 +86,48 @@ export function mountPlayer(host, bundle, api) {
 
   // ---------- helpers ----------
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
-  function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role }, text); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
   function acceptTypedAnswer(text) {
-    if (S.intakeOpen) {
-      if (S.intakeResolver) S.intakeResolver(text);
-      else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; }
-      return;
-    }
-    if (S.waiter) {
-      addMsg("user", text);
-      resolveWait(interpretReply(text, S.waitChips));
-      return;
-    }
+    if (S.intakeOpen) { if (S.intakeResolver) S.intakeResolver(text); else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; } return; }
+    if (S.waiter) { addMsg("user", text); resolveWait(interpretReply(text, S.waitChips)); return; }
     handleQuestion(text);
   }
   function toggleDrawer(force) { const on = force === undefined ? !el.drawer.classList.contains("open") : force; el.drawer.classList.toggle("open", on); if (on) { el.chatBtn.classList.remove("unread"); setTimeout(() => el.q.focus(), 80); } }
-  function updateMuteUi() {
-    el.muteBtn.textContent = S.muted ? "🔇" : "🔊";
-    el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio";
-    el.muteBtn.setAttribute("aria-label", el.muteBtn.title);
-    el.muteBtn.setAttribute("aria-pressed", String(S.muted));
-    el.muteBtn.classList.toggle("on", S.muted);
-  }
-  function toggleMute() {
-    S.muted = !S.muted;
-    if (S.audio) S.audio.muted = S.muted;
-    if (S.utterance) S.utterance.volume = S.muted ? 0 : 1;
-    el.video.muted = S.muted || !el.media.classList.contains("film-on");
-    updateMuteUi();
-  }
+  function updateMuteUi() { el.muteBtn.textContent = S.muted ? "🔇" : "🔊"; el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio"; el.muteBtn.setAttribute("aria-label", el.muteBtn.title); el.muteBtn.setAttribute("aria-pressed", String(S.muted)); el.muteBtn.classList.toggle("on", S.muted); }
+  function toggleMute() { S.muted = !S.muted; if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !el.stage.classList.contains("film-on"); updateMuteUi(); }
   function setChips(list) { el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => resolveWait(c.value) }, c.label))); }
   function clearTimer() { if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   function newRun() { return ++S.run; }
-  function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.seg.outcome || "", onclick: () => { interruptAll(); playFrom(i, 0); } }, st.seg.title))); }
+  function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.slide.kind, onclick: () => { interruptAll(); playFrom(i, 0); } }, st.slide.title))); }
   function renderCtas() { const ctas = (bundle.ctas || []).filter((c) => c.when === "always" || !c.when); el.ctas.replaceChildren(...ctas.map((c) => h("button", { class: "chip cta" + (c.primary ? " primary" : ""), onclick: () => { interruptAll(); ctaFlow(c.id, newRun()); } }, c.label))); }
 
-  // ---------- stage: video | slide ----------
-  // `video` = the opening film, or a timecoded shot of the product video. `slide` = a still (the line's image, else
-  // the hero) with an optional keyword card over it. The deck (Phase 3) gives every slide its own image and callouts;
-  // the two modes stay.
-  let videoStop = null;
-  const heroIsVideo = () => /\.(mp4|mov|webm|m4v)(\?|$)/i.test(bundle.media?.hero || "");
-  function showVideo(url, start = 0, end = 1e9) {
-    el.img.style.opacity = 0; el.img.style.display = "none"; el.img.classList.remove("kb"); el.focus.classList.remove("on");
-    const vid = el.video; vid.style.display = ""; vid.style.opacity = 1;
-    if (videoStop) { vid.removeEventListener("timeupdate", videoStop); videoStop = null; }
-    const go = () => { vid.currentTime = Math.max(0, start); vid.play().catch(() => {}); videoStop = () => { if (vid.currentTime >= end) vid.pause(); }; vid.addEventListener("timeupdate", videoStop); };
-    if (vid.getAttribute("src") !== url) { vid.src = url; vid.onloadedmetadata = go; } else go();
+  // ---------- stage: one slide at a time, cross-faded ----------
+  let cur = null;  // { slide, view, enteredAt }
+  function showSlideView(slide, { reveal = -1 } = {}) {
+    if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); return cur.view; }
+    if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
+    const view = renderSlide(slide, { fit: true });
+    view.setRevealed(reveal);
+    el.stack.append(view.el);
+    requestAnimationFrame(() => { view.layout(); view.el.classList.add("on"); });
+    cur = { slide, view, enteredAt: Date.now() };
+    preloadAfter(slide);
+    return view;
   }
-  function showSlide(url, focus = "") {
-    el.video.pause(); el.video.style.display = "none"; el.video.style.opacity = 0;
-    el.focus.classList.toggle("on", !!focus); el.focus.textContent = focus || "";
-    if (!url) { el.img.style.opacity = 0; el.img.style.display = "none"; return; }
-    if (el.img.getAttribute("src") !== url) { el.img.style.opacity = 0; el.img.classList.remove("kb"); el.img.src = url; el.img.onload = () => { el.img.style.opacity = 1; el.img.style.setProperty("--ox", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.setProperty("--oy", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.animationDelay = (-Math.random() * 12).toFixed(1) + "s"; el.img.classList.add("kb"); }; }
-    else { el.img.style.opacity = 1; el.img.classList.add("kb"); }
-    el.img.style.display = "";
+  function noteVisit(c) { if (!c) return; S.visited.push({ slide_id: c.slide.id, kind: c.slide.kind, seconds: Math.round((Date.now() - c.enteredAt) / 100) / 10 }); }
+  function preloadAfter(slide) {  // the next slide's picture and audio are fetched while this one plays
+    const i = S.plan.findIndex((st) => st.slide.id === slide.id); const next = i >= 0 ? S.plan[i + 1]?.slide : null; if (!next) return;
+    if (next.image_url) { const im = new Image(); im.decoding = "async"; im.src = next.image_url; S.preloads.push(im); }
+    for (const l of [...(next.lines || []), next.checkin?.audio ? { audio: next.checkin.audio } : null].filter(Boolean)) if (l.audio) { const a = new Audio(l.audio); a.preload = "auto"; a.load(); S.preloads.push(a); }
   }
-  function showHero() { if (!bundle.media?.hero) return showSlide(null); if (heroIsVideo()) showVideo(bundle.media.hero, 0, 4); else showSlide(bundle.media.hero); }
-  function showVisual(v) {
-    if (v && v.kind === "shot" && v.url) return showVideo(v.url, v.start || 0, v.end || 1e9);
-    if (v && v.kind === "image" && v.url) return showSlide(v.url, v.focus || "");
-    showHero();
+  // A line spoken outside the deck (decision frame, custom batch, an answer) gets a transient slide: the picture it names,
+  // else the current one, with its cited facts as panel callouts.
+  function transientSlide(id, kind, text, factIds, visual, title = "") {
+    const facts = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id));
+    return { id, kind, title, topics: [], image_url: (visual && mediaUrlFor(visual)) || cur?.slide?.image_url || heroOpen().image_url || null, image_parts: [], motion: "none",
+      callouts: facts.slice(0, 3).map((f, k) => ({ id: `${id}-c${k + 1}`, text: compact(`${f.claim}: ${f.value}`, 8), fact_ids: [f.id], placement: "panel", anchor: null, label_pos: null, reveal_on_line: 0 })),
+      lines: [{ id, text, fact_ids: factIds || [] }], checkin: { text: "" }, deeper: [], usp_ids: [], priority: false, role: kind };
   }
-  function firstVisual(seg) { return (seg?.lines || []).map((l) => l.visual).find((v) => v && v.kind !== "none") || null; }
-  function compactText(value, limit) {
-    let text = String(value || "").replace(/\s+/g, " ").trim();
-    text = text.split(/[.!?;]\s+|\s[—–]\s/)[0].replace(/[.!?;]+$/, "");
-    if (text.length <= limit) return text;
-    const cut = text.slice(0, limit + 1).replace(/\s+\S*$/, "").trim();
-    return `${cut || text.slice(0, limit).trim()}…`;
-  }
-  function compactRow(row) {
-    const plainClaim = String(row?.claim || "Key feature").replace(/\b(listed in (?:the )?(?:catalogue|brochure)|in the (?:catalogue|brochure)|as standard)\b/gi, "").replace(/\s+/g, " ").trim();
-    const claim = compactText(plainClaim || row?.claim || "Key feature", 24);
-    let value = compactText(row?.value || "", 34);
-    if (value.toLowerCase().startsWith(claim.toLowerCase())) value = compactText(value.slice(claim.length).replace(/^\s*[:—–-]\s*/, ""), 34);
-    return { claim, value: value || "Confirmed" };
-  }
-  function showCard(kind, extra) {
-    if (!kind || kind === "none") { el.card.classList.remove("on"); return; }
-    let rows = [], title = "Key points";
-    if (kind === "price") { rows = bundle.cards?.price || []; title = "Price"; }
-    else if (kind === "facts") rows = bundle.cards?.facts || [];
-    else if (kind === "summary") { rows = [...(bundle.cards?.facts || []).slice(0, 4), ...(bundle.cards?.price || []).slice(0, 2)]; title = "In short"; }
-    else if (kind === "contrast") { rows = (bundle.cards?.price || []).slice(0, 3).concat((bundle.cards?.facts || []).slice(0, 3)); title = "Today vs. after"; }
-    else if (kind === "cite" && extra) { rows = extra.map((f) => ({ claim: f.claim, value: f.value })); title = "Key points"; }
-    else if (kind === "statement" && extra?.text) { rows = [{ claim: extra.value || "Key point", value: extra.text }]; title = extra.title || "Key point"; }
-    if (!rows.length) { el.card.classList.remove("on"); return; }
-    rows = rows.slice(0, 3).map(compactRow);  // keywords only; narration carries the detail
-    el.card.replaceChildren(h("h4", {}, title), ...rows.map((r) => h("div", { class: "row" }, h("span", {}, r.claim), h("b", {}, r.value))));
-    el.card.classList.add("on");
-  }
-  function present(v, text, card = "none", factIds = []) {
-    showVisual(v);
-    const cited = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id));
-    if (card === "statement") showCard("statement", { text, value: "YOUR PRIORITIES", title: "Your demo, tailored" });
-    else if (card && !["none", "cite"].includes(card)) showCard(card);
-    else if (cited.length) showCard("cite", cited);  // the sources behind this line, always visible
-    else showCard("none");
-  }
-  function presentLine(line, text = line?.text || "") { return present(line?.visual, text, line?.card || "none", line?.fact_ids || []); }
 
   // ---------- voice out ----------
   function browserVoice() {
@@ -183,23 +137,34 @@ export function mountPlayer(host, bundle, api) {
     const score = (v) => { let s = 0; const n = v.name; if (v.lang.replace("_", "-").toLowerCase() === LANG.toLowerCase()) s += 25; if (/neerja|veena|heera|swara|kalpana|lekha/i.test(n)) s += 60; if (/google uk english female|google us english$|google हिन्दी|google hindi/i.test(n)) s += 45; if (/samantha|kate\b|serena|karen|moira|zira|jenny|aria|sonia|libby|emma|olivia|amy\b|joanna|salli|natasha/i.test(n)) s += 30; if (/natural|premium|enhanced|neural|online/i.test(n)) s += 8; if (/rishi|daniel|alex\b|fred|arthur|gordon|oliver|reed|tom\b|david|mark\b|james|guy\b|ryan|ravi|male|eddy|flo\b|grandma|grandpa|sandy|shelley|bahh|bells|boing|bubbles|cellos|wobble|zarvox|trinoids|whisper|jester|organ|superstar|good news|bad news|albert|junior|ralph|kathy/i.test(n)) s -= 70; return s; };
     S.bt.voice = vs.sort((a, b) => score(b) - score(a))[0] || null; return S.bt.voice;
   }
+  const wordsOf = (t) => String(t || "").trim().split(/\s+/).filter(Boolean).length;
+  // The transcript is what the customer heard. A line is logged when its audio ends; a line cut short is logged as the
+  // words that played (elapsed / duration × words) and marked interrupted. captions and the browser voice use elapsed time.
+  function logHeard(sp, complete) {
+    if (!sp || sp.logged) return; sp.logged = true;
+    if (complete) { addMsg("agent", sp.text); return; }
+    const a = sp.audio; const frac = a && isFinite(a.duration) && a.duration > 0 ? a.currentTime / a.duration : Math.min(1, (Date.now() - sp.startedAt) / Math.max(1, sp.estMs));
+    const n = Math.min(sp.words, Math.round(frac * sp.words)); if (n <= 0) return;
+    addMsg("agent", sp.text.split(/\s+/).slice(0, n).join(" "), { interrupted: true, full: sp.text, heard_fraction: +frac.toFixed(2) });
+  }
+  function captionOnly(text, run) { return new Promise((res) => { const my = ++S.ttsToken; const words = wordsOf(text); const ms = Math.max(1200, words / 2.5 * 1000); const sp = { text, words, audio: null, startedAt: Date.now(), estMs: ms }; S.speaking = sp; const t = setTimeout(() => { if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken && run === S.run); }, ms); S.captionTimer = t; }); }
   function speakBrowser(text) {
-    return new Promise((res) => { const my = ++S.ttsToken; const u = new SpeechSynthesisUtterance(text); S.utterance = u; const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1; let done = false; const fin = () => { if (done) return; done = true; if (S.utterance === u) S.utterance = null; res(my === S.ttsToken); }; const t = setTimeout(fin, Math.max(1500, text.length * 75) + 4000); u.onend = () => { clearTimeout(t); fin(); }; u.onerror = () => { clearTimeout(t); fin(); }; try { speechSynthesis.speak(u); } catch (e) { fin(); } });
+    return new Promise((res) => { const my = ++S.ttsToken; const u = new SpeechSynthesisUtterance(text); S.utterance = u; const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1; const sp = { text, words: wordsOf(text), audio: null, startedAt: Date.now(), estMs: Math.max(1500, text.length * 75) }; S.speaking = sp; let done = false; const fin = () => { if (done) return; done = true; if (S.utterance === u) S.utterance = null; if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken); }; const t = setTimeout(fin, sp.estMs + 4000); u.onend = () => { clearTimeout(t); fin(); }; u.onerror = () => { clearTimeout(t); fin(); }; try { speechSynthesis.speak(u); } catch (e) { fin(); } });
   }
   async function audioUrlFor(text, preset) { if (preset) return preset; if (!useServerVoice) return null; if (S.ttsCache.has(text)) return S.ttsCache.get(text); const p = api.tts(text).catch(() => null); S.ttsCache.set(text, p); return p; }
   function prefetch(items) { if (!useServerVoice) return; for (const it of items) if (it && !it.audio && it.text) audioUrlFor(it.text); }
   async function speak(text, run, preset) {
     if (run !== S.run || !text) return run === S.run;
-    el.cap.textContent = text; if (S.intakeOpen) el.inQ.textContent = text; setStatus("speaking", "Speaking"); addMsg("agent", text);
+    el.cap.textContent = text; if (S.intakeOpen) el.inQ.textContent = text; setStatus("speaking", "Speaking");
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
     if (run !== S.run) return false;
     let ok;
-    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); a.muted = S.muted; S.audio = a; let done = false; const fin = () => { if (done) return; done = true; res(my === S.ttsToken); }; const safeFallback = () => { if (done) return; done = true; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
+    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); a.muted = S.muted; S.audio = a; const sp = { text, words: wordsOf(text), audio: a, startedAt: Date.now(), estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp; let done = false; const fin = () => { if (done) return; done = true; if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken); }; const safeFallback = () => { if (done) return; done = true; if (S.speaking === sp) S.speaking = null; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
     else ok = useServerVoice ? await captionOnly(text, run) : await speakBrowser(text);
     if (ok && run === S.run) setStatus("idle", "Ready");
     return ok && run === S.run;
   }
-  function cancelSpeech() { S.ttsToken++; if (S.captionTimer) { clearTimeout(S.captionTimer); S.captionTimer = null; } try { speechSynthesis.cancel(); } catch (e) {} S.utterance = null; if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; } }
+  function cancelSpeech() { S.ttsToken++; if (S.speaking) { logHeard(S.speaking, false); S.speaking = null; } if (S.captionTimer) { clearTimeout(S.captionTimer); S.captionTimer = null; } try { speechSynthesis.cancel(); } catch (e) {} S.utterance = null; if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; } }
 
   // ---------- voice in ----------
   function encodeWav(chunks, inRate, outRate = 16000) {
@@ -226,10 +191,7 @@ export function mountPlayer(host, bundle, api) {
       src.connect(proc); proc.connect(ctx.destination);
     });
   }
-  function listen(opts = {}) {
-    if (serverSTT && !S.micDenied && navigator.mediaDevices?.getUserMedia) return listenServer(opts).then((t) => (t || !SR || S.micDenied) ? t : t);
-    return listenBrowser(opts);
-  }
+  function listen(opts = {}) { if (serverSTT && !S.micDenied && navigator.mediaDevices?.getUserMedia) return listenServer(opts); return listenBrowser(opts); }
   function listenBrowser({ timeout = 9000, onInterim = () => {} } = {}) {
     return new Promise((res) => {
       if (!SR || S.micDenied) { res(""); return; }
@@ -270,47 +232,48 @@ export function mountPlayer(host, bundle, api) {
   function resolveWait(v) { clearTimer(); stopListening(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; setChips([]); w(typeof v === "string" ? { value: v } : v); } }
   async function askAndListen(question, run, secs = 10000, preset = null) { const ok = await speak(question, run, preset); if (!ok) return null; const t = await listen({ timeout: secs, onInterim: (x) => { el.live.textContent = x; } }); if (run !== S.run) return null; if (t) addMsg("user", t); return t; }
 
-  // ---------- route building ----------
+  // ---------- route building: the pitch plan orders slides ----------
   function buildRoute(plan) {
-    const byId = Object.fromEntries(library.map((s) => [s.id, s]));
+    const lib = library(); const bySeg = Object.fromEntries(lib.map((s) => [s.segment_id, s]));
     let steps = [];
-    if (plan?.route?.length) steps = plan.route.filter((r) => byId[r.segment_id]).map((r) => ({ seg: byId[r.segment_id], bridge: r.bridge, bridge_audio: r.bridge_audio || "", bridge_fact_ids: r.bridge_fact_ids || [] }));
-    if (!steps.length) { // fallback: focus topics first, then bundle order, establish last
-      const focus = new Set(S.profile.focus); const proof = library.filter((s) => s.role !== "establish"); const est = library.filter((s) => s.role === "establish");
-      steps = [...proof.filter((s) => focus.has(s.topic) || focus.has(s.id)), ...proof.filter((s) => !(focus.has(s.topic) || focus.has(s.id))), ...est].map((seg) => ({ seg, bridge: "", bridge_fact_ids: [] }));
+    if (plan?.route?.length) steps = plan.route.filter((r) => bySeg[r.segment_id]).map((r) => ({ slide: bySeg[r.segment_id], bridge: r.bridge, bridge_audio: r.bridge_audio || "", bridge_fact_ids: r.bridge_fact_ids || [] }));
+    if (!steps.length) { // fallback: focus topics first, then deck order, establish last
+      const focus = new Set(S.profile.focus); const hit = (s) => focus.has(topicOf(s)) || focus.has(s.segment_id); const proof = lib.filter((s) => s.kind !== "establish"); const est = lib.filter((s) => s.kind === "establish");
+      steps = [...proof.filter(hit), ...proof.filter((s) => !hit(s)), ...est].map((slide) => ({ slide, bridge: "", bridge_fact_ids: [] }));
     }
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
   }
-
-  async function playOpening(run) {
-    for (const seg of opening) {
-      prefetch(seg.lines);
-      for (const ln of seg.lines) { if (run !== S.run) return false; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; }
-    }
+  async function playLines(sl, run, view, from = 0) {  // reveal a line's callouts as it starts; the audio ending is the only clock
+    for (let j = from; j < sl.lines.length; j++) { S.line = j; if (run !== S.run) return false; const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return false; S.line = j + 1; }
     return run === S.run;
   }
-
+  async function playOpening(run) {
+    for (const sl of opening()) { prefetch(sl.lines); const view = showSlideView(sl, { reveal: -1 }); if (!(await playLines(sl, run, view))) return false; }
+    return run === S.run;
+  }
   async function playFrom(idx, lineIdx = 0) {
     const run = newRun();
     for (let i = idx; i < S.plan.length; i++) {
-      const step = S.plan[i], seg = step.seg; S.seg = i; S.atCheckin = false; renderProgress();
-      prefetch([...seg.lines.slice(lineIdx), seg.checkin?.text ? { text: seg.checkin.text, audio: seg.checkin.audio } : null].filter(Boolean));
-      if (lineIdx === 0 && step.bridge) { present(firstVisual(seg), step.bridge, "none", step.bridge_fact_ids || []); el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
-      for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; S.line = j + 1; }
+      const step = S.plan[i], sl = step.slide; S.seg = i; S.atCheckin = false; renderProgress();
+      prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
+      const view = showSlideView(sl, { reveal: lineIdx - 1 });
+      if (lineIdx === 0 && step.bridge) { el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
+      if (!(await playLines(sl, run, view, lineIdx))) return;
       lineIdx = 0; if (run !== S.run) return;
-      if (seg.checkin?.text) {
-        S.atCheckin = true; const ok = await speak(seg.checkin.text, run, seg.checkin.audio); if (!ok) return;
-        const conc = !!seg.priority || S.profile.focus.includes(seg.topic);
+      const topic = topicOf(sl);
+      if (sl.checkin?.text) {
+        S.atCheckin = true; const ok = await speak(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
+        const conc = !!sl.priority || S.profile.focus.includes(topic);
         const chips = conc ? [{ label: "That settles it", value: "yes", primary: true }, { label: "Still unsure", value: "deeper" }, { label: "I have a question", value: "question" }] : [{ label: "Continue", value: "continue", primary: true }, { label: "Tell me more", value: "deeper" }, { label: "I have a question", value: "question" }];
         const r = await waitFor(chips, 8); if (run !== S.run) return;
-        if (r.value === "yes") { S.resolved.add(seg.topic); const ok2 = await speakF("good", "Good — moving on.", run); if (!ok2) return; }
+        if (r.value === "yes") { S.resolved.add(topic); const ok2 = await speakF("good", "Good — moving on.", run); if (!ok2) return; }
         else if (r.value === "__timeout") { const ok2 = await speakF("nudge_continue", "I'll carry on — stop me whenever you like.", run); if (!ok2) return; }
-        else if (r.value === "deeper") { S.raised.add(seg.topic); prefetch(seg.deeper || []); for (const ln of seg.deeper || []) { presentLine(ln); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
-          if (!(seg.deeper || []).length) { const ok3 = await speak("That's everything the material covers on this — ask me anything specific and I'll check.", run); if (!ok3) return; }
+        else if (r.value === "deeper") { S.raised.add(topic); prefetch(sl.deeper || []); view.setRevealed(99); for (const ln of sl.deeper || []) { const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; }
+          if (!(sl.deeper || []).length) { const ok3 = await speak("That's everything the material covers on this — ask me anything specific and I'll check.", run); if (!ok3) return; }
           const ok3 = await speakF("clearer", "Is that clearer?", run); if (!ok3) return;
           const r2 = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }], 15); if (run !== S.run) return;
-          if (r2.value === "yes") S.resolved.add(seg.topic); else if (r2.value === "no") { S.unresolved.add(seg.topic); S.escalations.push(`${seg.topic} — still unsure after the deeper explanation`); const ok4 = await speak(`Then let's not paper over it — I've flagged ${seg.topic} for someone from the team to take up with you properly. Let me carry on for now.`, run); if (!ok4) return; }
+          if (r2.value === "yes") S.resolved.add(topic); else if (r2.value === "no") { S.unresolved.add(topic); S.escalations.push(`${topic} — still unsure after the deeper explanation`); const ok4 = await speak(`Then let's not paper over it — I've flagged ${topic} for someone from the team to take up with you properly. Let me carry on for now.`, run); if (!ok4) return; }
           else if (r2.value === "question") { if (r2.text) handleQuestion(r2.text); else listenForQuestion(); return; } else if (r2.value === "__interrupted") return; }
         else if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
         else if (r.value === "__interrupted") return;
@@ -321,10 +284,14 @@ export function mountPlayer(host, bundle, api) {
   }
 
   async function closeFlow(run) {
-    S.atCheckin = true; showCard("summary");
-    const closing = bundle.closing || [];
-    if (S.pitch?.advance) { present(null, S.pitch.advance, "summary"); const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; for (const ln of closing.slice(1)) { presentLine(ln); const ok2 = await speak(ln.text, run, ln.audio); if (!ok2) return; } }
-    else for (const ln of closing) { presentLine(ln); const ok = await speak(ln.text, run, ln.audio); if (!ok) return; }
+    S.atCheckin = true;
+    const cs = closingSlide();
+    if (cs) {
+      const view = showSlideView(cs, { reveal: -1 }); const lines = cs.lines || [];
+      if (S.pitch?.advance) { view.setRevealed(0); const ok = await speak(S.pitch.advance, run, S.pitch.advance_audio); if (!ok) return; if (!(await playLines(cs, run, view, 1))) return; }
+      else if (!(await playLines(cs, run, view))) return;
+    }
+    showSlideView(heroClose(), { reveal: 99 });
     const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
     const r = await waitFor(chips, 0); if (run !== S.run) return;
     if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
@@ -345,9 +312,11 @@ export function mountPlayer(host, bundle, api) {
   function micTap() { if (S.micOn) { stopListening(); return; } if (S.intakeOpen) { intakeMic(); return; } listenForQuestion(); }
 
   // ---------- questions, don't-guess, lead capture ----------
+  let answerN = 0;
   async function handleQuestion(text) {
     const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun();
-    addMsg("user", text); S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
+    const last = S.transcript.at(-1); if (!(last?.role === "user" && last.text === text)) addMsg("user", text);  // a chip-wait reply is already logged
+    S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
     let r;
     const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer() });
     try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me one moment, please, while I check that for you.", run); if (!okH) return; r = await qaP; } }
@@ -356,17 +325,16 @@ export function mountPlayer(host, bundle, api) {
     if (!r.answered) {
       if (r.escalate) S.escalations.push(r.escalate);
       if (r.topic && r.topic !== "other") S.raised.add(r.topic);
-      S.unresolved.add(r.topic || "question");
-      showHero(); showCard("none"); el.cite.textContent = "";
+      S.unresolved.add(r.topic || "question"); el.cite.textContent = "";
       const unknown = "I don't know from the information I have. Share your details here and someone from the dealership can help you with that.";
       const okUnknown = await speak(unknown, run); if (!okUnknown) return;
       showLeadPrompt("unknown", text);
       resumeAfterQA(wasAtCheckin);
       return;
     }
-    const answerVisual = r.visual ? { ...r.visual, url: mediaUrlFor(r.visual), focus: "" } : null;
-    present(answerVisual, r.answer || text, "none", r.fact_ids || []);
-    el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : (r.answered ? "" : "not in the sources — flagged");
+    const ans = transientSlide(`ans-${++answerN}`, "answer", r.answer || text, r.fact_ids || [], r.visual, "");
+    showSlideView(ans, { reveal: 0 });
+    el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "";
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
     const ok = await speak(r.answer, run, r.audio); if (!ok) return;
@@ -388,10 +356,7 @@ export function mountPlayer(host, bundle, api) {
     el.leadCopy.textContent = reason === "unknown" ? "I don't have that answer in the approved sources. Leave your details and the dealership can answer it directly." : "You have seen enough to make a drive useful. Share your details and the dealership can arrange it.";
     el.lead.classList.add("open");
   }
-  function maybePromptLead(reason) {
-    const progress = S.plan.length ? (S.seg + 1) / S.plan.length : 0;
-    if (S.questions.length >= 2 || progress >= 0.6) showLeadPrompt(reason, S.questions.at(-1) || "test drive");
-  }
+  function maybePromptLead(reason) { const progress = S.plan.length ? (S.seg + 1) / S.plan.length : 0; if (S.questions.length >= 2 || progress >= 0.6) showLeadPrompt(reason, S.questions.at(-1) || "test drive"); }
   async function saveLeadForm() {
     const name = el.leadName.value.trim(); const raw = el.leadPhone.value.replace(/[\s-]/g, ""); const m = raw.match(PHONE);
     if (!m) { el.leadError.textContent = "Enter a valid 10-digit Indian mobile number."; el.leadPhone.focus(); return; }
@@ -404,7 +369,7 @@ export function mountPlayer(host, bundle, api) {
   }
   function profileForServer() { return { name: S.profile.name, why: S.profile.why, followup: S.profile.followup, focus: S.profile.focus, customer_state: S.pitch?.customer_state, language: bundle.language }; }
   const _origTts = api.tts; api.tts = (text) => _origTts ? api.tts_lang ? api.tts_lang(text, bundle.language) : _origTts(text) : Promise.resolve(null);
-  function mediaUrlFor(v) { if (!v) return null; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && vid.url.includes(src)) return vid.url; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; return (bundle.media?.videos || [])[0]?.url || null; }
+  function mediaUrlFor(v) { if (!v) return null; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && src && vid.url.includes(src)) return null; return null; }
   function resumeAfterQA(wasAtCheckin) { if (!S.plan.length) { const run = newRun(); speakF("back_to_demo", "Let's get back to where we were.", run).then((ok) => { if (ok) startAfterIntake(); }); return; } if (S.seg >= S.plan.length) { closeFlow(newRun()); return; } if (wasAtCheckin) playFrom(S.seg + 1, 0); else { const run = newRun(); speakF("back_to_demo", "Back to where we were.", run).then((ok) => { if (ok) playFrom(S.seg, S.line); }); } }
 
   // ---------- intake + standard opening + pitch plan ----------
@@ -419,18 +384,18 @@ export function mountPlayer(host, bundle, api) {
   async function intakeMic() { if (S.micOn) { stopListening(); return; } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
   function parseName(t) { let m = t.match(/(?:my name is|i am|i'm|this is|myself|name's|call me|mera naam|naam)\s+([A-Za-zऀ-ॿ][a-zऀ-ॿ]+)/i); if (m) return cap(m[1]); m = t.match(/^([A-Za-z][a-z]+)\s+(?:here|speaking|bol raha|bol rahi)\b/i); if (m) return cap(m[1]); const w = t.trim().split(/\s+/); if (w.length <= 2 && /^[A-Za-z]+$/.test(w[0]) && !/^(hi|hello|hey|yes|no|ok|okay|namaste)$/i.test(w[0])) return cap(w[0]); return ""; }
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  function parseFocus(t) { const out = []; const s = t.toLowerCase(); for (const c of bundle.intake?.chips || []) { const words = c.label.toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w)) || s.includes(c.key.toLowerCase())) out.push(c.key); } for (const seg of library) { const words = (seg.title + " " + seg.topic).toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w))) out.push(seg.topic); } return [...new Set(out)].slice(0, 4); }
+  function parseFocus(t) { const out = []; const s = t.toLowerCase(); for (const c of bundle.intake?.chips || []) { const words = c.label.toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w)) || s.includes(c.key.toLowerCase())) out.push(c.key); } for (const sl of library()) { const words = (sl.title + " " + topicOf(sl)).toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w))) out.push(topicOf(sl)); } return [...new Set(out)].slice(0, 4); }
   function withTimeout(p, ms) { return Promise.race([p, new Promise((res) => setTimeout(() => res(null), ms))]); }
 
   async function runIntake() {
     const run = newRun(); S.intakeOpen = true; el.intake.classList.add("open"); el.inFallback.classList.remove("open");
+    showSlideView(heroOpen(), { reveal: 99 });
     const q1 = bundle.intake?.q1 || `Hi, I'm ${guide}. Before we begin — could I get your name, and what you're hoping ${bundle.product?.name || "this"} would change for you?`;
     el.inState.textContent = guide;
     const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok) return;
     const a1 = await intakeWait(run); if (run !== S.run) return;
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
-    showHero();
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
     S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 60000) : null;
     const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
@@ -447,7 +412,7 @@ export function mountPlayer(host, bundle, api) {
     if (!plan) addMsg("note", "personalisation was not ready in the opening window — continuing on the stable approved route");
     if (plan) {
       S.pitch = plan; S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
-      if (plan.decision_frame) { present(null, plan.decision_frame, "statement"); el.cite.textContent = ""; const ok = await speak(plan.decision_frame, run, plan.decision_frame_audio); if (!ok) return; }
+      if (plan.decision_frame) { showSlideView(transientSlide("df", "custom", plan.decision_frame, [], null, "Your demo, tailored"), { reveal: 0 }); el.cite.textContent = ""; const ok = await speak(plan.decision_frame, run, plan.decision_frame_audio); if (!ok) return; }
       const okC = await playCustomBatches(plan, run); if (!okC) return;
       el.cite.textContent = "";
       const ok = await speakF("how_i_go", "Here's how I'll go about it.", run); if (!ok) return;
@@ -464,22 +429,25 @@ export function mountPlayer(host, bundle, api) {
     S.customPlayed = true;
     el.cite.textContent = "";
     const okB = await speakF("bridge_to_custom", "Now, let me get to what you asked about.", run); if (!okB) return false;
-    for (const b of batches) {
+    for (const [k, b] of batches.entries()) {
       if (run !== S.run) return false;
-      present(b.visual ? { ...b.visual, url: mediaUrlFor(b.visual), focus: "" } : null, b.text, "none", b.fact_ids || []);
+      showSlideView(transientSlide(`custom-${k + 1}`, "custom", b.text, b.fact_ids || [], b.visual, "For you"), { reveal: 0 });
       el.cite.textContent = b.fact_ids?.length ? "sources: " + b.fact_ids.join(", ") : "";
       const ok = await speak(b.text, run, b.audio); if (!ok) return false;
     }
     return run === S.run;
   }
-  function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = ""; const run = newRun(); playIntroFilm(run).then((okF) => { if (!okF) return; playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }); }
+  function skipIntake() { interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = ""; const run = newRun(); showSlideView(heroOpen(), { reveal: 99 }); playIntroFilm(run).then((okF) => { if (!okF) return; playOpening(run).then((ok) => { if (!ok) return; buildRoute(null); playFrom(0, 0); }); }); }
 
   // ---------- handoff ----------
   function intentScore() { let s = 20; s += Math.min(30, S.questions.length * 8); s += S.resolved.size * 8; s += S.seg >= S.plan.length - 1 ? 15 : 0; if (S.cta && S.cta !== "summary") s += 30; if (S.leads.length) s += 10; s -= S.unresolved.size * 5; return Math.max(5, Math.min(98, s)); }
+  function sessionRecord() {
+    const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((Date.now() - cur.enteredAt) / 100) / 10 }] : [])];
+    const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
+    return { profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((Date.now() - S.started) / 6000) / 10, transcript: S.transcript };
+  }
   function showHandoff(c) {
-    const mins = Math.round((Date.now() - S.started) / 6000) / 10; const topics = [...S.raised];
-    const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.seg.usp_ids || []))];
-    const session = { profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.seg.id), usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.seg.title, minutes: mins, transcript: S.transcript };
+    const session = sessionRecord(); const mins = session.minutes; const topics = [...S.raised]; const uspsCovered = session.usps_covered;
     el.handoffBox.replaceChildren(h("h2", {}, c ? c.label : "Your summary"), h("div", { class: "sub" }, `what the guide passes to the team · ${mins} min · ${S.pitch?.customer_state || "no state"}${S.personalized ? "" : " · standard route (not personalised)"}`),
       h("div", { class: "grid2" },
         h("div", { class: "kvbox" }, h("h5", {}, "Intent"), h("div", { class: "score" }, intentScore(), h("small", {}, " / 100"))),
@@ -487,8 +455,8 @@ export function mountPlayer(host, bundle, api) {
         h("div", { class: "kvbox" }, h("h5", {}, "Concerns raised → resolved"), h("ul", {}, topics.length ? topics.map((t) => h("li", {}, t, ": ", h("b", { style: `color:${S.resolved.has(t) ? "var(--accent)" : S.unresolved.has(t) ? "var(--warn)" : "var(--muted)"}` }, S.resolved.has(t) ? "resolved" : S.unresolved.has(t) ? "still unsure" : "discussed"))) : h("li", {}, "none raised explicitly"))),
         h("div", { class: "kvbox" }, h("h5", {}, `Questions asked (${S.questions.length})`), h("ul", {}, S.questions.length ? S.questions.map((q) => h("li", {}, "“", q, "”")) : h("li", {}, "none — listened through"))),
         h("div", { class: "kvbox", style: "grid-column:1/-1" }, h("h5", {}, "For a human to follow up"), h("ul", {}, S.leads.map((l) => h("li", {}, h("b", {}, "Call ", l.phone), " about “", l.question, "”")), S.escalations.length ? S.escalations.filter((e) => !e.startsWith("callback requested")).map((e) => h("li", {}, e)) : (S.leads.length ? null : h("li", {}, "nothing outstanding")))),
-        h("div", { class: "kvbox", style: "grid-column:1/-1" }, h("h5", {}, "Route & drop point"), h("ul", {}, h("li", {}, "Route: ", S.plan.map((st) => st.seg.title).join(" → ") || "—"), h("li", {}, `Reached: ${S.plan[S.seg]?.seg.title || "—"} (${Math.min(S.seg + 1, S.plan.length)} of ${S.plan.length} blocks) · USPs covered: ${uspsCovered.join(", ") || "—"}`)))),
-      h("div", { style: "display:flex;gap:10px;margin-top:14px" }, h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); api.saveSession(session).catch(() => {}); addMsg("note", "session saved"); const run = newRun(); speak(c ? "Done — everything we discussed goes with it. Thanks for your time." : "Thanks for your time. Ask me anything else whenever you're ready.", run); } }, c ? "Confirm (mock)" : "Done"), h("button", { class: "btn ghost", onclick: () => { el.handoff.classList.remove("open"); const run = newRun(); speak("Sure — what else would you like to know?", run).then((ok) => { if (ok) listenForQuestion(); }); } }, "Back to the demo")));
+        h("div", { class: "kvbox", style: "grid-column:1/-1" }, h("h5", {}, "Route & drop point"), h("ul", {}, h("li", {}, "Route: ", S.plan.map((st) => st.slide.title).join(" → ") || "—"), h("li", {}, `Reached: ${S.plan[S.seg]?.slide.title || "—"} (${Math.min(S.seg + 1, S.plan.length)} of ${S.plan.length} slides) · USPs covered: ${uspsCovered.join(", ") || "—"}`)))),
+      h("div", { style: "display:flex;gap:10px;margin-top:14px" }, h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); api.saveSession(sessionRecord()).catch(() => {}); addMsg("note", "session saved"); const run = newRun(); speak(c ? "Done — everything we discussed goes with it. Thanks for your time." : "Thanks for your time. Ask me anything else whenever you're ready.", run); } }, c ? "Confirm (mock)" : "Done"), h("button", { class: "btn ghost", onclick: () => { el.handoff.classList.remove("open"); const run = newRun(); speak("Sure — what else would you like to know?", run).then((ok) => { if (ok) listenForQuestion(); }); } }, "Back to the demo")));
     el.handoff.classList.add("open"); api.saveSession(session).catch(() => {});
   }
 
@@ -499,26 +467,25 @@ export function mountPlayer(host, bundle, api) {
     else (target.requestFullscreen ? target.requestFullscreen() : Promise.reject()).catch(() => {});
   }
 
-  // ---------- intro film ----------
+  // ---------- intro film (skippable; the hero slide stays underneath) ----------
   async function playIntroFilm(run) {
     const iv = bundle.intro_video;
     if (!iv || !iv.url || iv.enabled === false || S.introPlayed) return run === S.run;
     S.introPlayed = true;
     const ok = await speakF("before_video", "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.", run);
     if (!ok) return false;
-    el.img.style.display = "none"; el.img.classList.remove("kb"); el.card.classList.remove("on"); el.media.classList.add("film-on"); el.focus.classList.remove("on");
-    const v = el.video; v.src = iv.url; v.muted = S.muted; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
+    const v = el.film; v.src = iv.url; v.muted = S.muted; v.currentTime = 0; el.stage.classList.add("film-on");
     setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
-    el.chips.replaceChildren(h("button", { class: "chip" , onclick: () => { S.skipFilm = true; } }, "Skip the film"));
+    el.chips.replaceChildren(h("button", { class: "chip", onclick: () => { S.skipFilm = true; } }, "Skip the film"));
     const done = await new Promise((res) => {
-      let fin = false, guard = null, cap = null; const end = (x) => { if (!fin) { fin = true; if (guard) clearInterval(guard); if (cap) clearTimeout(cap); res(x); } };
+      let fin = false, guard = null, capT = null; const end = (x) => { if (!fin) { fin = true; if (guard) clearInterval(guard); if (capT) clearTimeout(capT); res(x); } };
       v.onended = () => end(true); v.onerror = () => end(true);
       guard = setInterval(() => { if (run !== S.run || S.paused) end(false); if (S.skipFilm) { S.skipFilm = false; end(true); } }, 200);
       v.play().catch(() => end(true));
-      cap = setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
+      capT = setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
     });
     try { v.pause(); } catch (e) {}
-    v.muted = true; v.style.display = "none"; v.style.opacity = 0; el.media.classList.remove("film-on"); showHero(); setChips([]);
+    v.muted = true; el.stage.classList.remove("film-on"); setChips([]);
     if (!done || run !== S.run) return false;
     return speakF("after_video", "Now, let's get into what matters to you.", run);
   }
@@ -533,14 +500,14 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
-  function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
-  function destroy() { interruptAll(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }
+  function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
+  function destroy() { interruptAll(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   renderCtas();
   updateMuteUi();
-  showHero();
+  showSlideView(heroOpen(), { reveal: 99 });
   const startBtn = h("div", { class: "pl-intake open" }, h("div", { class: "inner" }, mascot({ size: 132, image: bundle.mascot }).el, h("div", { class: "state" }, guide), h("p", { class: "q" }, bundle.pitch?.takeaway || `A voice-led walkthrough of ${bundle.product?.name || bundle.name}. Just talk — interrupt anytime.`), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "▶ Start"), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Skip the intro"))));
   el.stage.append(startBtn);
   // language chooser (multi-language bundles)
@@ -552,9 +519,9 @@ export function mountPlayer(host, bundle, api) {
   }
   function applyLanguage(code) {
     const alt = bundle.alt_languages?.[code]; if (!alt) return;
-    bundle.segments = alt.segments; bundle.closing = alt.closing; bundle.intake = alt.intake; bundle.language = code; bundle.voice = { ...bundle.voice, provider: alt.voice_provider || bundle.voice.provider };
-    opening.length = 0; opening.push(...bundle.segments.filter((s) => s.role === "intro" || s.role === "outcome")); library.length = 0; library.push(...bundle.segments.filter((s) => s.role !== "intro" && s.role !== "outcome"));
-    S.lang = code;
+    bundle.segments = alt.segments; bundle.closing = alt.closing; bundle.intake = alt.intake; bundle.language = code; bundle.voice = { ...bundle.voice, provider: alt.voice_provider || bundle.voice.provider }; bundle.slides = alt.slides || bundle.slides;
+    slides = slidesOf(bundle); S.lang = code;
+    if (cur) { cur.view.destroy(); cur = null; } showSlideView(heroOpen(), { reveal: 99 });
   }
   return { destroy, restart, pause, context };
 }

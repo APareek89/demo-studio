@@ -394,3 +394,12 @@
 **Action taken:** `start_revise` reads `prev_ready` first and keeps the status at `building` when a rebuild will follow. `qa_deck.py` now waits for `ready` after a deck revise.
 **Preventive action:** Any state read that feeds a routing decision happens before that function's side effects; every entry point of a graph command gets an eval, not just the chat one.
 
+### 2026-09-18 — The transcript said what the guide *started* saying, not what the customer heard
+
+**Symptom:** `addMsg("agent", text)` ran when `speak()` began, so a line cut off by a question reached `/run/qa` as if fully heard, and a typed reply during a chip wait was logged twice (once by the wait, once by `handleQuestion`).
+**Why 1:** Logging lived at the start of `speak()` because that was the one place every line passed through.
+**Why 2:** Nothing measured how much audio had played; an interruption only bumped the run token.
+**Why 3:** The transcript was treated as a drawer display, not as the model's memory of the conversation.
+**Deepest why type:** `wrong-source-of-truth`
+**Action taken:** `S.speaking` tracks the playing line; `logHeard(sp, complete)` logs on `ended` (full) or from `cancelSpeech` (heard prefix = `currentTime / duration × words`, elapsed-time estimate for captions and the browser voice) marked `interrupted`; `handleQuestion` skips a user line the chip wait already logged. Evals: the transcript cases in `qa_deck.py`; browser check on the mock server (Phase 5).
+**Preventive action:** Anything sent to a model as "what happened" is written by the event that proves it happened (audio ended, request returned), never by the event that started it.

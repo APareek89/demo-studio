@@ -30,6 +30,11 @@ export function renderSlide(slide, opts = {}) {
   el.append(pic, panel);
 
   function layout() {  // leader lines run from each chip's centre to its anchor; chip size is only known after layout
+    if (opts.fit && img.naturalWidth && img.naturalHeight) {  // player: the picture box is the largest one of the image's ratio that fits the stage
+      const SW = el.clientWidth || 1, SH = el.clientHeight || 1, R = img.naturalWidth / img.naturalHeight;
+      let w = SW, hh = SW / R; if (hh > SH) { hh = SH; w = SH * R; }
+      pic.style.width = Math.round(w) + "px"; pic.style.height = Math.round(hh) + "px";
+    }
     const W = pic.clientWidth || 1, H = pic.clientHeight || 1;
     for (const [id, chip] of chips) { const ln = lines.get(id); if (!ln) continue; ln.setAttribute("x1", String((chip.offsetLeft + chip.offsetWidth / 2) / W * 100)); ln.setAttribute("y1", String((chip.offsetTop + chip.offsetHeight / 2) / H * 100)); }
   }
@@ -45,7 +50,7 @@ export function renderSlide(slide, opts = {}) {
   }
   function highlight(id) { for (const [cid, chip] of chips) chip.classList.toggle("hot", cid === id); for (const it of panel.children) it.classList.toggle("hot", it.dataset.id === id); }
   function setImage(url, parts) { pic.classList.toggle("noimg", !url); img.src = url || ""; slide.image_parts = parts || []; }
-  const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(layout) : null; ro?.observe(pic);
+  const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(layout) : null; ro?.observe(pic); if (opts.fit) ro?.observe(el);
   img.addEventListener("load", layout);
   requestAnimationFrame(layout);
   return { el, pic, img, layout, setRevealed, highlight, setImage, destroy: () => { ro?.disconnect(); el.remove(); } };

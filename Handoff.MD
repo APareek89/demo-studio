@@ -3,8 +3,8 @@
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
 ## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
-Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched. Phases: 1 simplify ✅ · 2 sources + image parts · 3 deck ·
-4 Align slide review · 5 player · 6 questions + slide routing · 7 AWS storage + session summary · 8 measure.
+Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched. Phases: 1 simplify ✅ · 2 sources + image parts ✅ · 3 deck ✅ ·
+4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing · 7 AWS storage + session summary · 8 measure.
 - **Phase 1 done (committed):** 3D/Runware path removed (7 files deleted, 23 edited, net ≈ −900 lines); player stage = `video` | `slide`;
   `qa._local_grounded_answer` + the 10-minute cooldown deleted — every provider down → decline + callback; `server/llm/runtime.py`
   tries `RUNTIME_PROVIDERS` (default `gemini,claude`) with `RUNTIME_TIMEOUT` 15 s and one retry; `CLAUDE_RUNTIME_MODEL` /
@@ -31,6 +31,19 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   `author.ungrounded` (an uncited claim, > 8 words, an off-picture position → 400), un-approves the Script card and marks only
   `bundle` stale (`DOWNSTREAM["deck"] = ["bundle"]`). A swapped picture re-places its callouts (unlisted parts → panel). Preview
   shows every slide rendered with its words and seconds. Voice still renders only at Build, after approval.
+- **Phase 5 done (committed):** `web/player/player.js` rewritten on the deck (526 lines, was 560): intro film → hero open →
+  opening slides → decision frame / custom batches (transient slides: the named picture else the current one, cited facts as panel
+  callouts) → routed content slides with check-ins → closing → hero close + CTAs → handoff. One `.slide-stack` cross-fades slides
+  rendered by `web/slide.js` in `fit` mode (picture box = the image's ratio inside the stage); sync is event-driven — `setRevealed(j)`
+  before line j's audio, the last line's `ended` moves the slide, no timer decides what is on screen; the next slide's picture and
+  audio preload while the current one plays; motion is CSS-only (`motion-zoom_in` / `motion-pan_left`, off under
+  `prefers-reduced-motion`). Transcript fixed: an agent line is logged when its audio ends; a cut-off line logs the heard prefix
+  (`currentTime / duration × words`, elapsed-time estimate for captions) marked `interrupted` (the drawer shows a "—"); a chip-wait
+  reply is no longer logged twice; only this transcript goes to `/run/qa`. Session record adds `slides` (route by slide id) and
+  `slides_visited` (seconds per slide). Bundles built before Phase 3 (no `slides`) play one slide per segment. `bundle.segments`
+  stays for the pitch planner and rehearsal; the runtime player no longer reads it. Browser-verified on the mock server (intake,
+  cross-fade, callouts, an interrupted line, handoff, session saved). Answered questions play on a transient answer slide; in the
+  browser only the decline path could be exercised (the mock FAQ bank declines), the answered path is covered by the eval's checks.
 - 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
   `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
   (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.

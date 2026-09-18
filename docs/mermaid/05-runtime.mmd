@@ -2,29 +2,27 @@
 flowchart TD
   START["USER clicks Start<br/>[ask]"]:::ask
   PRELOAD["preload all authored speech + opening film<br/>[FUNCTION · retained Audio/Video objects]<br/>intake, narration, deeper lines, check-ins, FAQ, fillers and closing"]:::fn
-  HERO["hero image on stage<br/>[FUNCTION · showHero]<br/>first image, else first video frame"]:::data
+  HERO["hero slide on stage<br/>[FUNCTION · showSlideView(hero_open)]<br/>web/slide.js renderSlide in fit mode · one .slide-stack, slides cross-fade"]:::data
   Q1["speak the ONE intake question<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>greeting + product + 'what are you buying it for, or shall we start?' (P02)"]:::data
   L1["listen ≤10 s<br/>[LIBRARY · Web Speech recognition]<br/>mic denied or silent → typed fallback input"]:::data
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
-  FILM["polite acknowledgement → opening film with audio → spoken return<br/>[FUNCTION · playIntroFilm]<br/>planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
+  FILM["polite acknowledgement → opening film (overlay on the hero slide) → spoken return<br/>[FUNCTION · playIntroFilm]<br/>planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
   OPEN["STANDARD OPENING · unchanged, 1-2 min<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
   PITCH["pitch plan (starts before the film)<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
   PV["grounding + visual validators<br/>[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]<br/>segment ids exist · uncited claim dropped · multi-fact batch→card · establish last"]:::fn
-  DF["personalised roadmap card + speech<br/>[LIBRARY · /run/tts]"]:::data
-  CUSTOM["custom proof batches<br/>[FUNCTION]<br/>one literal evidence view or cited multi-fact card per spoken batch"]:::fn
+  DF["decision frame on a transient slide + speech<br/>[LIBRARY · /run/tts]"]:::data
+  CUSTOM["custom proof batches as transient slides<br/>[FUNCTION · transientSlide]<br/>the named picture else the current one · cited facts as panel callouts"]:::fn
   FALL["fallback: bundle q2 + keyword focus order<br/>[FUNCTION] if the planner times out (45 s)"]:::fn
-  PLAN["route = ordered proof blocks + establish<br/>[FUNCTION · buildRoute]"]:::fn
-  LINE["play block: bridge then lines<br/>[FUNCTION] present exact stage before speech<br/>speak: same-provider audio; captions if unavailable"]:::fn
-  STAGE{"line visual?<br/>[FUNCTION · showVisual]"}:::dec
-  VID["video: timecoded shot of the product video<br/>[FUNCTION · showVideo]"]:::data
-  SLIDE["slide: the line's image, else the hero<br/>+ keyword card of the cited facts<br/>[FUNCTION · showSlide + showCard]"]:::data
+  PLAN["route = ordered content slides + establish<br/>[FUNCTION · buildRoute — pitch route by segment_id → slide]"]:::fn
+  LINE["play slide: bridge, then lines<br/>[FUNCTION · playFrom / playLines]<br/>showSlideView cross-fades the slide · setRevealed(j) BEFORE line j's audio · last line's ended → next slide · no timer · next slide preloaded"]:::fn
+  TRX["true transcript<br/>[FUNCTION · logHeard]<br/>an agent line is logged when its audio ENDS; cut off → heard prefix (currentTime / duration × words) marked interrupted; only this history goes to /run/qa"]:::fn
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]"]:::ask
   QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]<br/>in: question, last 8 turns, profile, registry, visuals, CTAs<br/>out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
-  SPEAK["speak answer · seek to literal visual or compact key-points card<br/>[FUNCTION]"]:::fn
+  SPEAK["speak the answer on a transient slide (named picture, cited facts as panel callouts)<br/>[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form"]:::term
   LEAD{"customer says call me / gives a number?<br/>[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
   SAVE["POST /run/lead → leads/*.json<br/>[DATA] read back the number · continue"]:::data
@@ -40,9 +38,8 @@ flowchart TD
   OPEN --> DF --> CUSTOM --> PLAN
   PV --> DF
   PITCH -.->|"timeout / error"| FALL --> PLAN
-  PLAN --> LINE --> STAGE
-  STAGE -- "shot" --> VID --> CHK
-  STAGE -- "image / none" --> SLIDE --> CHK
+  PLAN --> LINE --> CHK
+  LINE -.->|"every spoken line"| TRX
   CHK --> WAIT
   WAIT -- "continue / timeout" --> LINE
   WAIT -- "deeper" --> DEEP --> WAIT
@@ -56,7 +53,7 @@ flowchart TD
   QIN -.->|"explicit call request / phone"| LEAD
   SPEAK -.->|"clarifying_question (P03)"| QIN
   LINE -- "last segment" --> CLOSE --> HAND
-  QIN -.->|"interrupt at any moment cancels speech (run token)"| LINE
+  QIN -.->|"interrupt at any moment cancels speech (run token) → logHeard partial"| LINE
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

@@ -204,6 +204,30 @@ cd = c.get(f"/api/demos/{i}").json()["cards"]["deck"]
 check("cards.deck gives the editor its slides and pictures with parts", bool(cd["slides"]) and bool(cd["images"]) and all("parts" in im for im in cd["images"]) and all("image_url" in s for s in cd["slides"]))
 store.path(i, "deck-overrides.json").unlink(missing_ok=True)
 
+# ---- Phase 5: the player plays the deck — slides in order, event-driven sync, a true transcript ----
+import re as _re
+pj = c.get("/web/player/player.js").text; css = c.get("/web/styles.css").text; sj = c.get("/web/slide.js").text
+kinds = [s["kind"] for s in b["slides"]]
+check("bundle.slides is the player's structure: hero open → content → closing → hero close", kinds[0] == "hero_open" and kinds[-1] == "hero_close" and "closing" in kinds and kinds.index("closing") == len(kinds) - 2)
+check("every content slide carries a picture, lines and callouts with placement and reveal line", all(s["image_url"] and s["lines"] and all(x["placement"] in ("overlay", "panel") and isinstance(x.get("reveal_on_line"), int) for x in s["callouts"]) for s in b["slides"] if s["kind"] not in ("hero_open", "hero_close")))
+check("the player renders slides through web/slide.js; the segment stage and 3D/media card are gone", 'from "/web/slide.js"' in pj and "renderSlide(" in pj and "showVisual(" not in pj and "pl-media" not in pj and "pl-card" not in pj and "pl-media" not in css)
+def _fn(src, name):
+    i = src.find(f"function {name}("); j = src.find("\n  }\n", i); return src[i:j] if i >= 0 else ""
+loop = _fn(pj, "playLines") + _fn(pj, "showSlideView") + _fn(pj, "playOpening")
+check("sync is event-driven: no timer in the line loop or the slide switch (audio ended → next)", bool(loop) and "setTimeout" not in loop.replace("setTimeout(() => old.view.destroy()", "") and "setInterval" not in loop and "setRevealed(j)" in loop and "await speak(" in _fn(pj, "playLines"))
+check("a line's callouts reveal when its audio starts (setRevealed before speak)", _fn(pj, "playLines").find("setRevealed(j)") < _fn(pj, "playLines").find("await speak("))
+agent_logs = [m.start() for m in _re.finditer(r'addMsg\("agent"', pj)]
+lh = pj.find("function logHeard("); lh_end = pj.find("\n  }\n", lh)
+check("transcript: an agent line is logged only by logHeard — when its audio ends, never when it starts", bool(agent_logs) and all(lh < a < lh_end for a in agent_logs))
+check("transcript: a cut-off line logs the heard prefix (elapsed/duration × words) and marks it interrupted", "interrupted: true" in pj and "currentTime / a.duration" in pj and "heard_fraction" in pj)
+check("cancelSpeech logs the partial before stopping the audio", _fn(pj, "cancelSpeech").find("logHeard(S.speaking, false)") < _fn(pj, "cancelSpeech").find("S.audio.pause()"))
+check("only the true transcript goes to /run/qa as history", "history: S.transcript.slice(-8)" in pj)
+check("next slide is preloaded (picture + audio) while the current one plays", "function preloadAfter(" in pj and "preloadAfter(slide)" in _fn(pj, "showSlideView"))
+check("motion is CSS-only and respects prefers-reduced-motion", "@keyframes slZoom" in css and "prefers-reduced-motion" in css and "animation:none!important" in css and "motion-" in sj)
+check("the renderer fits the picture box to the stage (player) and is shared with Align", "opts.fit" in sj and 'from "/web/slide.js"' in c.get("/web/studio/align.js").text)
+check("an older bundle without slides still plays (one slide per segment)", "function slidesOf(" in pj and "b.segments" in _fn(pj, "slidesOf"))
+check("the session record carries slides visited and the route by slide id", "slides_visited" in pj and "slides: S.plan.map((st) => st.slide.id)" in pj)
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
