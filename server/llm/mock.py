@@ -36,6 +36,12 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
                     o["role"] = ["intro", "outcome", "proof", "features", "establish"][i % 5]
                 if "segment_id" in o:
                     o["segment_id"] = f"mock{3 + (i % 2)}"
+                if "box_2d" in o:  # an image part: a tight-looking box on the 0-1000 grid and a real part name
+                    o["box_2d"] = [[120, 80, 420, 560], [520, 60, 940, 420], [300, 500, 700, 950]][i % 3]
+                    o["name"] = ["headlamp", "alloy wheel", "touchscreen", "seat", "boot"][i % 5]
+                    o["confidence"] = [0.92, 0.81, 0.55][i % 3]
+                if "full_product" in o:
+                    o["full_product"] = i == 0
         return out
     if origin is dict:
         return {"k1": "v1 (mock)"}

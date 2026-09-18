@@ -170,7 +170,7 @@ def _understand(demo_id: str) -> str:
         out.append(_details(f"{len(u['shots'])} video shots", _table(["id", "source", "start–end", "part", "quality", "description"], [[s.get("id"), s.get("source_id"), f"{s.get('start', 0):.0f}–{s.get('end', 0):.0f}s", s.get("part"), s.get("quality"), s.get("description")] for s in u["shots"]])))
     if u.get("images"):
         src_by = {s["id"]: s for s in demo.get("sources", [])}
-        out.append(_details(f"{len(u['images'])} images as the model saw them", _table(["id", "file", "angle", "parts visible", "quality", "description", "clean-up"], [[i.get("id"), src_by.get(i.get("source_id"), {}).get("name"), i.get("angle"), ", ".join(i.get("parts", []) or []), i.get("quality"), i.get("description"), (src_by.get(i.get("source_id"), {}).get("enhanced") or {}).get("why", "")] for i in u["images"]])))
+        out.append(_details(f"{len(u['images'])} images as the model saw them", _table(["id", "file", "angle", "parts visible", "quality", "description", "clean-up"], [[i.get("id"), src_by.get(i.get("source_id"), {}).get("name"), i.get("angle"), ", ".join((pp.get("name") if isinstance(pp, dict) else str(pp)) for pp in (i.get("parts") or [])), i.get("quality"), i.get("description"), (src_by.get(i.get("source_id"), {}).get("enhanced") or {}).get("why", "")] for i in u["images"]])))
     if u.get("video_summaries"):
         out.append(_details("video summaries", _json(u["video_summaries"])))
     if u.get("brand"):

@@ -29,6 +29,8 @@ def wait(i, want, secs=180):
 # ---- build one mock demo from the sample images ----
 i = c.post("/api/demos", json={"name": "Deck QA iQube"}).json()["id"]
 imgs = sorted(os.listdir("samples/iqube"))
+r = c.post(f"/api/demos/{i}/sources", files=[("files", ("hero-front.webp", open("samples/iqube/front.webp", "rb").read(), "image/webp"))], data={"role": "hero"}); assert r.status_code == 200, r.text
+hero_src = r.json()["added"][0]["id"]
 r = c.post(f"/api/demos/{i}/sources", files=[("files", (n, open(f"samples/iqube/{n}", "rb"), "image/webp")) for n in imgs], data={"role": "product"}); assert r.status_code == 200, r.text
 r = c.post(f"/api/demos/{i}/sources", data={"role": "catalogue", "text": "Battery warranty: 3 years / 50,000 km. Ex-showroom price Rs 1,24,990.", "text_name": "spec"}); assert r.status_code == 200, r.text
 c.post(f"/api/demos/{i}/read"); wait(i, "align")
@@ -74,6 +76,38 @@ if faq:
     check("bank question answers from the bank", r.get("from_bank") is True and r.get("bank_id") == faq[0]["id"])
 else:
     check("bank question answers from the bank", False, "no FAQ entries in the mock bundle")
+
+# ---- Phase 2: parts carry boxes; hero selection; stills from a video-only upload ----
+und = store.read_json(i, "understanding.json"); imgs_u = und.get("images", [])
+parts = [p for im in imgs_u for p in im.get("parts", [])]
+check("every tagged image lists parts as {name, box, confidence}", bool(parts) and all(isinstance(p, dict) and {"name", "box", "confidence"} <= set(p) for p in parts))
+check("every part box is normalised 0-1 with positive size", all(0 <= p["box"]["x"] <= 1 and 0 <= p["box"]["y"] <= 1 and 0 < p["box"]["w"] <= 1 and 0 < p["box"]["h"] <= 1 for p in parts))
+check("every part confidence is 0-1", all(0 <= p["confidence"] <= 1 for p in parts))
+check("images carry full_product", all("full_product" in im for im in imgs_u))
+check("bundle media images carry parts, full_product and role", all({"parts", "full_product", "role"} <= set(im) for im in b["media"]["images"]))
+hero_im = next((im for im in imgs_u if im["source_id"] == hero_src), None)
+check("the hero upload is bundle.hero_image", hero_im is not None and b.get("hero_image") == hero_im["id"])
+check("media.hero is the hero image's url", b["media"]["hero"] == next((x["url"] for x in b["media"]["images"] if x["id"] == b.get("hero_image")), None))
+r = c.post(f"/api/demos/{i}/sources", files=[("files", ("hero-2.webp", open("samples/iqube/angle.webp", "rb").read(), "image/webp"))], data={"role": "hero"}).json()
+h2 = r["added"][0]["id"]; srcs = c.get(f"/api/demos/{i}").json()["demo"]["sources"]
+check("a second hero upload replaces the first (old one becomes a product image)", next(s["role"] for s in srcs if s["id"] == hero_src) == "product" and next(s["role"] for s in srcs if s["id"] == h2) == "hero")
+
+# video only, no hero: stills become images; the best full-product still becomes the hero
+v = c.post("/api/demos", json={"name": "Deck QA video-only"}).json()["id"]
+r = c.post(f"/api/demos/{v}/sources", files=[("files", ("walkaround.mp4", open("samples/iqube_dummy.mp4", "rb").read(), "video/mp4"))], data={"role": "product"}); assert r.status_code == 200, r.text
+c.post(f"/api/demos/{v}/read"); wait(v, "align")
+vd = c.get(f"/api/demos/{v}").json()["demo"]; vund = store.read_json(v, "understanding.json")
+stills = [s for s in vd["sources"] if s["kind"] == "image" and s.get("derived_from")]
+from server import media as _media
+if _media.ffmpeg():
+    check("video-only demo gets one still per good shot, tagged with its shot id", bool(stills) and all(s["derived_from"].startswith("sh") for s in stills))
+    check("stills are tagged like uploaded images", bool(vund.get("images")) and all(im["source_id"] in {s["id"] for s in stills} for im in vund["images"]))
+    from server.agents import bundle as _bundle
+    vb = _bundle.build(v, lambda m: None)
+    full = [im for im in vund["images"] if im.get("full_product")]
+    check("without a hero upload, hero_image is the best full-product still", bool(vb.get("hero_image")) and (not full or vb["hero_image"] == max(full, key=lambda x: x["quality"])["id"]))
+else:
+    check("video-only demo gets stills", False, "ffmpeg unavailable on this machine")
 
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)

@@ -259,7 +259,7 @@ def remove_source(demo_id: str, source_id: str) -> None:
 
 
 def patch_source(demo_id: str, source_id: str, fields: dict) -> dict:
-    allowed = {k: v for k, v in fields.items() if k in ("use_in_demo", "role", "name", "play", "proxy")}
+    allowed = {k: v for k, v in fields.items() if k in ("use_in_demo", "role", "name", "play", "proxy", "derived_from")}
     def fn(d):
         for s in d["sources"]:
             if s["id"] == source_id:

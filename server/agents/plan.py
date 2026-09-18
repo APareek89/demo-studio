@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 from .. import config, schemas, store
+from . import visuals
 from ..llm import claude
 from .principles import CUSTOMER_STATES, PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, audience_instruction, language_instruction
 
@@ -72,7 +73,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     vshots = [s for s in und["shots"] if store.visual_allowed(demo, s["source_id"])]
     vimgs = [i for i in und["images"] if store.visual_allowed(demo, i["source_id"])]
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in vshots)
-    imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(i['parts'])} · {i['description']}" for i in vimgs)
+    imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in vimgs)
     unk_txt = "\n".join(f"{u['id']} {u['question']}" for u in und["unknowns"] if u.get("status") == "open")
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND PROFILE: {json.dumps(und['brand'])}

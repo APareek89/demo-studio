@@ -20,8 +20,10 @@ Product hint: {hint}
 Cap at 60 shots; merge very short cuts of the same subject."""
 
 IMAGES_PROMPT = """These are product images in the order given (index 0 first). For each image describe what is visible,
-the camera angle, the product parts visible, and a quality score 1-5 for use as a demo visual.
-Be literal — never infer specifications. Product hint: {hint}"""
+the camera angle, and a quality score 1-5 for use as a demo visual. List EVERY distinct product part you can actually see
+(headlamp, grille, alloy wheel, touchscreen, seat, boot, charging port, badge, mirror…), each with a TIGHT bounding box
+[ymin, xmin, ymax, xmax] on a 0-1000 grid of that image and your confidence 0-1 that the part is visible and the box is tight.
+Set full_product true only when the whole product is in frame. Be literal — never infer specifications. Product hint: {hint}"""
 
 FACTS_SYSTEM = """You build the FACT REGISTRY for a spoken product demo. The registry is the ONLY thing the demo
 agent will be allowed to say. Rules:
@@ -44,6 +46,44 @@ Return only what the schema asks for."""
 COMP_SYSTEM = """You extract ONLY stated figures from a competitor's official product page, for a strictly-cited comparison.
 Rules: one fact per row, value exactly as stated with units, a locator and a short exact quote; kinds spec/price/offer/policy/
 feature/availability; never infer or round; ignore marketing adjectives. Name the product as the page names it."""
+
+
+def _part(p) -> dict:
+    """Gemini's [ymin, xmin, ymax, xmax] on a 0-1000 grid → {x, y, w, h} in 0-1, clamped and ordered."""
+    b = [v for v in (p.box_2d or [])][:4] + [0, 0, 0, 0]
+    y0, x0, y1, x1 = [min(1000, max(0, int(v))) / 1000.0 for v in b[:4]]
+    if x1 < x0:
+        x0, x1 = x1, x0
+    if y1 < y0:
+        y0, y1 = y1, y0
+    return {"name": (p.name or "").strip().lower(), "box": {"x": round(x0, 4), "y": round(y0, 4), "w": round(x1 - x0, 4), "h": round(y1 - y0, 4)},
+            "confidence": round(min(1.0, max(0.0, float(p.confidence or 0.0))), 3)}
+
+
+def _stills_from_shots(demo_id: str, demo: dict, shots: list[dict], emit, max_stills: int = 12) -> int:
+    """A demo with video but no images gets one still per good shot, added as ordinary image sources
+    (role product, derived_from = the shot) so tagging, the deck and the player treat them like uploads."""
+    src_by_id = {s["id"]: s for s in demo["sources"]}
+    good = sorted((s for s in shots if s.get("quality", 0) >= 3 and (s["end"] - s["start"]) >= 0.8), key=lambda s: (-s["quality"], s["start"]))[:max_stills]
+    n = 0
+    for sh in good:
+        src = src_by_id.get(sh["source_id"])
+        if not src:
+            continue
+        video = store.path(demo_id, src.get("play") or src["path"])
+        tmp = store.path(demo_id, "derived", f"still_{sh['id']}.jpg")
+        try:
+            if not media.extract_still(video, (sh["start"] + sh["end"]) / 2, tmp):
+                continue
+            added = store.add_file_source(demo_id, f"{sh['id']}-{sources.slug(sh.get('part') or 'still')}.jpg", tmp.read_bytes(), role="product")
+            store.patch_source(demo_id, added["id"], {"derived_from": sh["id"]})
+            tmp.unlink(missing_ok=True)
+            n += 1
+        except Exception as e:  # noqa: BLE001 — a still is best effort; the shot itself stays usable
+            emit(f"Still for {sh['id']} skipped ({str(e)[:60]}).")
+    if n:
+        emit(f"No images were uploaded — took {n} still(s) from the video's best shots to use as pictures.")
+    return n
 
 
 def _hint(demo: dict) -> str:
@@ -124,6 +164,9 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
             d.update({"id": f"sh{n_shot:02d}", "source_id": src["id"]})
             shots.append(d)
         store.log(demo_id, "understand-video", {"source": src["id"], "shots": len(out.shots)})
+    if not imgs and shots and _stills_from_shots(demo_id, demo, shots, emit):
+        demo = store.load(demo_id)
+        imgs = [s for s in demo["sources"] if s["kind"] == "image"]
     if imgs:
         emit(f"Looking at {len(imgs)} image{'s' if len(imgs) != 1 else ''}…")
         for i in range(0, len(imgs), 12):
@@ -147,7 +190,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 images.append({
                     "id": f"im{len(images)+1:02d}", "source_id": s["id"],
                     "description": im.description if im else f"{s['name']} (untagged — image tagging was unavailable)", "angle": im.angle if im else "",
-                    "parts": im.parts if im else [], "quality": im.quality if im else 3,
+                    "parts": [_part(pp) for pp in (im.parts if im else [])], "quality": im.quality if im else 3,
+                    "full_product": bool(im.full_product) if im else False,
                 })
 
     # ---- facts + brand (Claude) ----

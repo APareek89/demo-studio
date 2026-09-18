@@ -62,12 +62,27 @@ def _expand(tokens: set[str]) -> set[str]:
     return out
 
 
+def part_names(img: dict) -> list[str]:
+    """Part names of an image — tagged as {name, box, confidence} (slides-v1) or as plain strings (older demos)."""
+    out = []
+    for p in img.get("parts") or []:
+        n = p.get("name") if isinstance(p, dict) else p
+        if isinstance(n, str) and n.strip():
+            out.append(n.strip())
+    return out
+
+
+def part_boxes(img: dict) -> list[dict]:
+    """Only the parts that carry a box: [{name, box:{x,y,w,h} in 0-1, confidence}]."""
+    return [p for p in (img.get("parts") or []) if isinstance(p, dict) and isinstance(p.get("box"), dict)]
+
+
 def catalogue(demo_id: str, und: dict, demo: dict) -> list[dict]:
     items = []
     for i in und.get("images", []):
         if not store.visual_allowed(demo, i.get("source_id", "")):
             continue
-        parts = [p for p in (i.get("parts") or []) if isinstance(p, str)]
+        parts = part_names(i)
         items.append({"ref": i["id"], "kind": "image", "strong": _tokens(" ".join(parts)), "weak": _tokens(i.get("description", "")), "quality": i.get("quality", 3),
                       "label": f"{i['id']} · {i.get('angle', '')} · {i.get('description', '')}", "parts": parts})
     for s in und.get("shots", []):

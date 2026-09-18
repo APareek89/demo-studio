@@ -4,6 +4,7 @@ from __future__ import annotations
 import time
 
 from .. import config, store
+from . import visuals
 
 
 def media_url(demo_id: str, rel: str | None) -> str | None:
@@ -78,7 +79,18 @@ def build(demo_id: str, emit) -> dict:
         })
     price_facts = [f for f in facts.values() if f["kind"] in ("price", "offer")]
     spec_facts = [f for f in facts.values() if f["kind"] in ("spec", "feature", "policy")]
-    all_images = [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "angle": i["angle"], "description": i["description"]} for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
+    def img_url(i: dict) -> str | None:
+        src = src_by_id.get(i["source_id"], {})
+        return media_url(demo_id, src.get("play") or src.get("path"))
+    usable_images = [i for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
+    all_images = [{"id": i["id"], "url": img_url(i), "angle": i["angle"], "description": i["description"], "parts": visuals.part_boxes(i),
+                   "full_product": bool(i.get("full_product")), "role": src_by_id.get(i["source_id"], {}).get("role", "product"),
+                   "derived_from": src_by_id.get(i["source_id"], {}).get("derived_from")} for i in usable_images]
+    # Hero: the hero-role upload, else the best-quality full-product view, else the first image. First and last slide.
+    hero = next((i for s in reversed(demo["sources"]) if s.get("role") == "hero" for i in usable_images if i["source_id"] == s["id"]), None)
+    if hero is None and usable_images:
+        pool = [i for i in usable_images if i.get("full_product")] or usable_images
+        hero = max(pool, key=lambda i: i.get("quality", 0))
     videos = [{"id": s["id"], "url": media_url(demo_id, s.get("play") or s["path"]), "name": s["name"]} for s in demo["sources"] if s["kind"] == "video" and s.get("use_in_demo", True) is not False and s.get("role") != "intro_video"]
     intro_src = next((s for s in reversed(demo["sources"]) if s["kind"] == "video" and s.get("role") == "intro_video"), None)
     intro_video = {"url": media_url(demo_id, intro_src.get("play") or intro_src["path"]), "name": intro_src["name"], "enabled": demo.get("settings", {}).get("intro_video", "on") != "off"} if intro_src else None
@@ -103,7 +115,8 @@ def build(demo_id: str, emit) -> dict:
         "cards": {"price": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in price_facts][:12],
                   "facts": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in spec_facts][:12]},
         "unknowns": [u for u in und.get("unknowns", []) if u.get("status") == "open"],
-        "media": {"images": all_images, "videos": videos, "hero": (all_images[0]["url"] if all_images else (videos[0]["url"] if videos else None))},
+        "hero_image": hero["id"] if hero else None,
+        "media": {"images": all_images, "videos": videos, "hero": (img_url(hero) if hero else (videos[0]["url"] if videos else None))},
         "brand": und.get("brand", {}),
         "guardrails": {"no_citation_no_claim": True, "escalate_on_unknown": True, "no_price_negotiation": True},
     }

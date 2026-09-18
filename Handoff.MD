@@ -10,6 +10,11 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   tries `RUNTIME_PROVIDERS` (default `gemini,claude`) with `RUNTIME_TIMEOUT` 15 s and one retry; `CLAUDE_RUNTIME_MODEL` /
   `GEMINI_RUNTIME_MODEL`; MP4 export parked (409); `evals/qa_deck.py` replaces the three retired evals. Gates: compile ·
   smoke ✅ · qa_accept 24/24 · qa_deck 20/20 · JS syntax ✅. Docs, mermaid 01/04/05, Loop.MD, PRD, README updated.
+- **Phase 2 done (committed):** `hero` drop zone in Sources (one image; a new hero demotes the previous to `product`); the Gemini image
+  pass returns every visible part with a box (`[ymin,xmin,ymax,xmax]` 0-1000 → `{x,y,w,h}` 0-1) and a confidence, plus `full_product`;
+  `visuals.part_names()` / `part_boxes()` read both the new and the old shape; `bundle.hero_image` = hero upload, else best full-product
+  image, else first; a demo with video and no images gets one ffmpeg still per good shot (`media.extract_still`, `derived_from` on the
+  source) and those stills are tagged like uploads. Diagram 02 updated; `qa_deck.py` covers it.
 - 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
   `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
   (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.

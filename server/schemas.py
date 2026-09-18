@@ -2,7 +2,7 @@
 every stage's output is data the next stage consumes, so they are strict on purpose."""
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -24,12 +24,19 @@ class ShotsOut(BaseModel):
     summary: str = Field(description="one paragraph: what the video shows overall and its style")
 
 
+class PartG(BaseModel):
+    name: str = Field(description="one distinct product part that is visible, e.g. 'headlamp', 'touchscreen', 'boot', 'alloy wheel', 'charging port'")
+    box_2d: list[int] = Field(description="tight bounding box [ymin, xmin, ymax, xmax] on a 0-1000 grid of this image")
+    confidence: float = Field(description="0-1: how sure you are that this part is visible and the box is tight around it")
+
+
 class ImageG(BaseModel):
     index: int = Field(description="0-based index of the image in the order given")
     description: str
     angle: str = Field(description="e.g. front, rear, left side, three-quarter, detail, lifestyle, screenshot")
-    parts: list[str] = Field(description="product parts visible")
+    parts: list[PartG] = Field(description="every distinct product part visible, each with its box; empty for lifestyle or abstract images")
     quality: int = Field(description="1-5 usability as demo visual")
+    full_product: bool = Field(default=False, description="true only when the whole product is in frame (a hero-style view); false for a detail, crop or interior")
 
 
 class ImagesOut(BaseModel):
@@ -104,8 +111,9 @@ class ImageInfo(BaseModel):
     source_id: str
     description: str
     angle: str
-    parts: list[str]
+    parts: list[Any]  # slides-v1: [{name, box:{x,y,w,h} in 0-1, confidence}]; older demos: plain names
     quality: int
+    full_product: bool = False
 
 
 class Fact(FactOut):

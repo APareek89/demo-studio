@@ -4,7 +4,8 @@ flowchart TD
   ISV{"kind?<br/>[FUNCTION · understand.run]"}:::dec
   UPV["gemini.upload_file<br/>[LIBRARY · Gemini Files API]<br/>in: mp4/mov · out: file uri (poll until ACTIVE, ≤600 s)"]:::data
   SHOTS["shot list<br/>[AGENT · Gemini 3.6 Flash]<br/>in: whole video + VIDEO_PROMPT<br/>out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)"]:::agent
-  IMGS["image tags<br/>[AGENT · Gemini 3.6 Flash]<br/>in: batches of ≤12 images<br/>out: ImagesOut · description, angle, parts, quality"]:::agent
+  STILLS["one still per good shot<br/>[LIBRARY · ffmpeg]<br/>only when the demo has video and no images · midpoint of shots with quality ≥ 3 · ≤12 · added as image sources (derived_from = shot)"]:::fn
+  IMGS["image tags<br/>[AGENT · Gemini 3.6 Flash]<br/>in: batches of ≤12 images<br/>out: ImagesOut · description, angle, quality, full_product, parts — each {name, box_2d 0-1000 → {x,y,w,h} 0-1, confidence}"]:::agent
   IDS["assign ids<br/>[FUNCTION]<br/>sh01.., im01.. + source_id"]:::fn
   DOCS["sources.source_text<br/>[LIBRARY · pypdf / python-docx / httpx+bs4]<br/>in: pdf/docx/txt/url<br/>out: text with [page n] markers; PDFs also attached natively"]:::data
   FACTS["fact registry + brand + product<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: all documents + product hint (+ previous registry + revision instruction)<br/>out: FactsOut · facts with source ref/locator/quote, unknowns, brand"]:::agent
@@ -19,6 +20,7 @@ flowchart TD
 
   SRC --> ISV
   ISV -- "video" --> UPV --> SHOTS --> IDS
+  SHOTS -- "no images uploaded" --> STILLS --> IMGS
   ISV -- "image" --> IMGS --> IDS
   ISV -- "pdf / doc / url / text" --> DOCS --> FACTS --> FIDS
   IDS --> UND

@@ -130,6 +130,17 @@ def extract_candidate_frames(video: Path, out_dir: Path, *, every_seconds: int =
             for i, p in enumerate(sorted(out_dir.glob("candidate-*.jpg")), start=1)]
 
 
+def extract_still(video: Path, at_seconds: float, out: Path) -> bool:
+    """One JPEG frame at a timestamp (fast seek). Used when a demo has video but no images."""
+    ff = ffmpeg()
+    if not ff:
+        return False
+    out.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([ff, "-y", "-v", "error", "-ss", f"{max(0.0, at_seconds):.2f}", "-i", str(video), "-frames:v", "1",
+                    "-vf", "scale='min(1600,iw)':-2", "-q:v", "2", str(out)], check=True, timeout=120)
+    return out.exists() and out.stat().st_size > 0
+
+
 # ---------- image clean-up: local first (transparent cut-outs, fringes, small images), Gemini image model when allowed ----------
 CLEAN_BG_TOP = (246, 248, 252)
 CLEAN_BG_BOTTOM = (226, 232, 241)

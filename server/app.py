@@ -176,6 +176,9 @@ async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), 
             added.append(store.add_file_source(demo_id, f.filename or "file", data, role))
         except ValueError as e:
             raise HTTPException(400, str(e))
+    if role == "hero" and added:  # one hero at a time: the previous hero stays a normal product image
+        keep = added[-1]["id"]
+        store.update(demo_id, lambda d: [s.__setitem__("role", "product") for s in d["sources"] if s.get("role") == "hero" and s["id"] != keep])
     runlog.sources_added(demo_id, added)
     cloud.sync_demo_async(demo_id)
     if url.strip():
