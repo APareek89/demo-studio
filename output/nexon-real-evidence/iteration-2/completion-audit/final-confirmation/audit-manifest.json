@@ -1,0 +1,37 @@
+{
+  "files": {
+    "session.json": {
+      "sha256": "6c6355c33cc1f47f5a3955db6b7c77ff5c5cbf1d605ce6172a01b869de0889a8",
+      "bytes": 17082
+    },
+    "trace-events.json": {
+      "sha256": "4370008484f59eb893a70d9168aefc85eea38a6b8374996b184b3742abf6a4bf",
+      "bytes": 12438
+    },
+    "usage-rows.json": {
+      "sha256": "bfd79c1100f6b0a58d4c410a2aef44965bf6c7dd18c8ba33ed1adf996e4bc734",
+      "bytes": 2803
+    },
+    "metrics-cost.json": {
+      "sha256": "6beb3fee9417446a2f63631a5f08bc4f3562e350f68e6b083248b3cd3bf0f6ec",
+      "bytes": 48095
+    },
+    "cited-evidence.json": {
+      "sha256": "7ad81e23756d213b89056f46b01062c519e8d62c57617dc4841a165b0e27cc57",
+      "bytes": 11379
+    },
+    "answer-audit.json": {
+      "sha256": "e6243a832c62ab61e735ed18079ad491c45e56df4104326e249157a6c3af1e7b",
+      "bytes": 7186
+    },
+    "pitch-audit.json": {
+      "sha256": "10c486104403e42a5d81d69ddd22b6b1456da05d4c51f18e01d20ce5220e5127",
+      "bytes": 11463
+    },
+    "report.md": {
+      "sha256": "4bdb15b38727500193315652519eb0a7348e5c96cfe60899c929acca86f2c1d7",
+      "bytes": 7612
+    }
+  },
+  "scope": "Sanitized read-only evidence; source demo data and prior snapshots unchanged."
+}

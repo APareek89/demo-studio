@@ -1,0 +1,174 @@
+[
+  {
+    "path": "L2",
+    "turn": {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789749833999,
+      "stt_done": 1789749833999,
+      "via": "typed",
+      "qa_done": 1789749841573,
+      "answer_audio": 1789749844457,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    "model_candidate": {
+      "answer": "For sound, this Nexon Fearless Plus P S DCA includes a JBL-branded nine-speaker system with a subwoofer, whereas the Venue HX 10 lists an eight-speaker Bose system — that is as per their website when we checked — please verify on their site.",
+      "fact_ids": [
+        "F026",
+        "C2-012",
+        "C5-008"
+      ],
+      "visual_ref": "im04",
+      "escalate": "",
+      "topic": "technology",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "trace_row": 469,
+    "tts_trace_row": 470,
+    "actual_delivered_text": "For sound, this Nexon Fearless Plus P S DCA includes a JBL-branded nine-speaker system with a subwoofer, whereas the Venue HX 10 lists an eight-speaker Bose system — that is as per their website when we checked — please verify on their site.",
+    "delivered_matches_tts": true,
+    "audio": {
+      "path": "data/demos/dm_36d47b86/audio/508211959506a893e054.wav",
+      "sha256": "c8b3fe8ec656532511d98815e340b1d2929f0f6e30d7b6ddc12bfc0f3b1e6487",
+      "duration_seconds": 15.701315192743763,
+      "provider": "sarvam",
+      "speaker": "priya",
+      "language": "en-IN",
+      "cache_key_matches_exact_text": true
+    },
+    "assessment": "PASS: one matched sound-system dimension, selected Nexon Fearless+PS DCA and VenueHX10, checked-website caveat; no claimed sound-quality superiority or tenth speaker.",
+    "evidence": [
+      "L2-held.txt",
+      "session.json"
+    ]
+  },
+  {
+    "path": "L4",
+    "turn": {
+      "question": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+      "voice_ended": 1789749878719,
+      "stt_done": 1789749878719,
+      "via": "typed",
+      "qa_done": 1789749884937,
+      "answer_audio": 1789749887748,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    "model_candidate": {
+      "answer": "The Nexon Fearless Plus PS pairs the 1.2-litre turbo petrol engine with a seven-speed dual-clutch automatic. Since everyday low-speed traffic response comes down to driving feel, taking it on a test drive is the best way to evaluate how it behaves in stop-and-go conditions.",
+      "fact_ids": [
+        "F019"
+      ],
+      "visual_ref": "im04",
+      "escalate": "",
+      "topic": "performance",
+      "cta": "book-test-drive",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "trace_row": 471,
+    "tts_trace_row": 472,
+    "actual_delivered_text": "The Nexon Fearless Plus PS pairs the 1.2-litre turbo petrol engine with a seven-speed dual-clutch automatic. Since everyday low-speed traffic response comes down to driving feel, taking it on a test drive is the best way to evaluate how it behaves in stop-and-go conditions.",
+    "delivered_matches_tts": true,
+    "audio": {
+      "path": "data/demos/dm_36d47b86/audio/eede73be3d477ee0ad57.wav",
+      "sha256": "63c5465ea4ee63d7a4aae9c74a70822535bef6e8f197ea2c8b9c68c8b279ff21",
+      "duration_seconds": 17.92,
+      "provider": "sarvam",
+      "speaker": "priya",
+      "language": "en-IN",
+      "cache_key_matches_exact_text": true
+    },
+    "assessment": "Factual answer PASS; actual consent guard PASS. Raw model still proposed book-test-drive, but no action was selected automatically.",
+    "evidence": [
+      "L4-held-choice-required.txt",
+      "session.json"
+    ]
+  },
+  {
+    "path": "L5",
+    "turn": {
+      "question": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+      "voice_ended": 1789749941505,
+      "stt_done": 1789749941505,
+      "via": "typed",
+      "qa_done": 1789749946623,
+      "answer_audio": 1789749946644,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    },
+    "trace_row": 473,
+    "model_candidate": {
+      "answer": "The advertised basic warranty is 3 years or 100 000 km. However, the source shows them separated by a vertical bar without specifying whether it is whichever comes first, and full policy terms or exclusions are not detailed.",
+      "fact_ids": [
+        "F027"
+      ],
+      "visual_ref": "",
+      "escalate": "",
+      "topic": "ownership",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "actual_delivered_text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+    "candidate_spoken": false,
+    "candidate_tts_requested": false,
+    "assessment": "Raw model FAIL: unsupported warranty OR conflicts with its own unknown-relation caveat. Deterministic guard PASS: rejects before voice and offers safe decline. Informative partial warranty answer NOT DEMONSTRATED. Later reviewed ownership line delivers the headline without resolving policy limits.",
+    "evidence": [
+      "L5-policy-guard-decline.txt",
+      "session.json"
+    ]
+  },
+  {
+    "path": "NX38",
+    "turn": {
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "voice_ended": 1789750075599,
+      "stt_done": 1789750075599,
+      "via": "typed",
+      "qa_done": 1789750075619,
+      "answer_audio": 1789750078440,
+      "from_bank": true,
+      "route": "jump",
+      "answered": true
+    },
+    "bank_entry": {
+      "id": "Q05",
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "origin": "generated",
+      "answer": "Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.",
+      "fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/d1a4e859cd4781ce0a2a.wav",
+      "slide_id": "sl07"
+    },
+    "assessment": "Grounded cached safety answer PASS. Actual deeper origin F020→bankF003/F004→explicitYes→exact interrupted D1F020→D2F021→uncited question clears speech sources. Historical boot return is separate, not rerun here.",
+    "audio": {
+      "path": "data/demos/dm_36d47b86/audio/d1a4e859cd4781ce0a2a.wav",
+      "sha256": "e7bbd0fc9c852502f81a5d480a6e9df731bac4d8a4e970470a55aeb51d710983",
+      "duration_seconds": 14.506666666666666,
+      "provider": "sarvam",
+      "speaker": "priya",
+      "language": "en-IN",
+      "cache_key_matches_exact_text": true
+    },
+    "evidence": [
+      "deeper-origin-F020.txt",
+      "deeper-QA-held-sources-cleared.txt",
+      "deeper-return-F020.txt",
+      "deeper-next-F021.txt",
+      "deeper-checkin-sources-cleared.txt"
+    ]
+  }
+]

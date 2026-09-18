@@ -1,0 +1,283 @@
+{
+  "trace_row": 464,
+  "candidate": {
+    "customer_state": "stated_want",
+    "decision_frame": "You're comparing with the Brezza and Venue, looking specifically for an automatic and wanting to see what the chosen variant includes. Let's look at how the petrol automatic is set up, walk through the variant equipment, and check safety and ownership details.",
+    "follow_up_question": "",
+    "primary_outcome": "Evaluate the selected petrol automatic setup and the specific equipment included on this variant.",
+    "focus_topics": [
+      "automatic",
+      "variant equipment",
+      "comparison"
+    ],
+    "route": [
+      {
+        "segment_id": "powertrain-choices",
+        "bridge": "Next: Find your driving rhythm.",
+        "bridge_fact_ids": []
+      },
+      {
+        "segment_id": "tech-convenience",
+        "bridge": "The 26.03-centimetre touchscreen begins at Pure Plus. The same-size driver display is listed on Fearless Plus P S in the petrol and diesel range.",
+        "bridge_fact_ids": [
+          "F007",
+          "F009"
+        ]
+      },
+      {
+        "segment_id": "cabin-comfort",
+        "bridge": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+        "bridge_fact_ids": [
+          "F020"
+        ]
+      },
+      {
+        "segment_id": "ownership-details",
+        "bridge": "Next: Make the next step count.",
+        "bridge_fact_ids": []
+      }
+    ],
+    "skipped": [
+      "exterior-stance: secondary aesthetic details omitted to focus on automatic transmission and trim equipment",
+      "boot-practicality: cargo measurements omitted to keep demo focused on requested automatic and cockpit features",
+      "safety-standards: safety equipment omitted to prioritise powertrain and variant features within the 3-proof-block limit"
+    ],
+    "usp_order": [
+      "usp-powertrains",
+      "usp-comfort"
+    ],
+    "advance": "Choose Book Test Drive to evaluate the automatic gearbox in stop-and-go conditions, then obtain an exact written quote for your chosen variant.",
+    "advance_cta": "book-test-drive",
+    "custom_batches": [
+      {
+        "text": "The diesel has manual and automated-manual options. CNG uses a six-speed manual; the seven-speed dual-clutch automatic is a petrol option, with availability depending on trim.",
+        "fact_ids": [
+          "F018",
+          "F019"
+        ],
+        "visual_ref": "powertrain-dca-shifter"
+      },
+      {
+        "text": "Creative adds the surround-view camera and blind-view monitor; front parking sensors start at Creative Plus P S in the petrol and diesel range.",
+        "fact_ids": [
+          "F022",
+          "F023"
+        ],
+        "visual_ref": "infotainment-camera-display"
+      }
+    ],
+    "do_not_recommend_if": "The buyer requires a conventional torque-converter automatic or specific variant inclusions unavailable on this trim."
+  },
+  "model_latency_ms": 4341,
+  "input_tokens": 9070,
+  "output_tokens_including_thoughts": 726,
+  "valid_complete_plan": true,
+  "provider_fallback": false,
+  "exact_raw_customer_profile": {
+    "name": "",
+    "why": "I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.",
+    "followup": "What can you show me that differs from the selected Venue variant?\nI mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?\nYes, but what is the warranty for this Nexon, and what is still unknown about its limits?\nDoes the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+    "focus": [
+      "automatic",
+      "variant equipment",
+      "comparison",
+      "performance"
+    ]
+  },
+  "decision_frame_delivered_exactly": true,
+  "frame_assessment": "Mirrors explicit shortlist/automatic/variant equipment. No invented customer priority in delivered frame. Topic hints are not treated as quoted preferences.",
+  "proof_items": [
+    {
+      "text": "The diesel has manual and automated-manual options. CNG uses a six-speed manual; the seven-speed dual-clutch automatic is a petrol option, with availability depending on trim.",
+      "fact_ids": [
+        "F018",
+        "F019"
+      ],
+      "exact_reviewed_script_ids": [
+        "powertrain-choices-D2"
+      ],
+      "actually_delivered": true,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/958b47a76655d75491d2.wav",
+        "sha256": "9faae227179e168ccced40c99d7d6378bc34e1e80fa63a3694c57d3b7ba22c3c",
+        "duration_seconds": 13.312018140589569,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "text": "Creative adds the surround-view camera and blind-view monitor; front parking sensors start at Creative Plus P S in the petrol and diesel range.",
+      "fact_ids": [
+        "F022",
+        "F023"
+      ],
+      "exact_reviewed_script_ids": [
+        "tech-convenience-D2"
+      ],
+      "actually_delivered": true,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/8563c0898a4b85cc8fbe.wav",
+        "sha256": "114c7b59ec717827c520cfc17ee4acc75770ec11f2bafcb2fc1a0351313a3392",
+        "duration_seconds": 10.75201814058957,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "text": "The 26.03-centimetre touchscreen begins at Pure Plus. The same-size driver display is listed on Fearless Plus P S in the petrol and diesel range.",
+      "fact_ids": [
+        "F007",
+        "F009"
+      ],
+      "exact_reviewed_script_ids": [
+        "tech-convenience-D1"
+      ],
+      "actually_delivered": true,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/92068000b1abd802da8d.wav",
+        "sha256": "dc1d016f65af509e8ea71474090dfbd659f5817da6aaf9be2622b26debbd5423",
+        "duration_seconds": 10.581315192743764,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "text": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+      "fact_ids": [
+        "F020"
+      ],
+      "exact_reviewed_script_ids": [
+        "cabin-comfort-D1"
+      ],
+      "actually_delivered": true,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/24ced63931c34d50a457.wav",
+        "sha256": "cb92778a8e6d7dbff7e76860d2baff74cb37b5c267f828933506a3fdc380dad8",
+        "duration_seconds": 9.130657596371883,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    }
+  ],
+  "neutral_bridges": [
+    {
+      "text": "Next: Find your driving rhythm.",
+      "actually_delivered": true
+    },
+    {
+      "text": "Next: Make the next step count.",
+      "actually_delivered": true
+    }
+  ],
+  "advance_delivered_exactly": true,
+  "actual_route": [
+    "powertrain-choices",
+    "cabin-comfort",
+    "tech-convenience",
+    "ownership-details"
+  ],
+  "speech_settings": {
+    "voice_locked": true,
+    "tts_provider": "sarvam",
+    "sarvam_speaker": "priya",
+    "language": "en-IN"
+  },
+  "new_tts_clips": [
+    {
+      "trace_row": 465,
+      "input": "[priya · en-IN] Next: Find your driving rhythm.",
+      "latency_ms": 1884,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/4e8a39461bf627db1a2d.wav",
+        "sha256": "24189c7b241eb4af3a23cd2648da66c45f4fa56feb0894a266dd0f3e1dc73a61",
+        "duration_seconds": 2.389342403628118,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "trace_row": 466,
+      "input": "[priya · en-IN] Next: Make the next step count.",
+      "latency_ms": 2922,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/46d541b44f3793e1c30a.wav",
+        "sha256": "d3f529e96fec10a9caf0980f4620e54d42ec3aea0eb83962c7e83660f039e5bb",
+        "duration_seconds": 2.2186848072562357,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "trace_row": 467,
+      "input": "[priya · en-IN] Choose Book Test Drive to evaluate the automatic gearbox in stop-and-go conditions, then obtain an exact written quote for your chosen variant.",
+      "latency_ms": 6175,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/680acc10e5b5f55f435b.wav",
+        "sha256": "d71283fa8491a7485abecf792a440f77f0857184ba947e9b92332173706cb167",
+        "duration_seconds": 8.362675736961451,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "trace_row": 468,
+      "input": "[priya · en-IN] You're comparing with the Brezza and Venue, looking specifically for an automatic and wanting to see what the chosen variant includes. Let's look at how the petrol automatic is set up, walk through the variant equipment, and check safety and ownership details.",
+      "latency_ms": 9759,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/46a4441f0cba5ce7d54f.wav",
+        "sha256": "af790d88457746a8ea9df691d02a76cb232d270e2ae754a621705d8687a916ad",
+        "duration_seconds": 15.616009070294785,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "trace_row": 470,
+      "input": "[priya · en-IN] For sound, this Nexon Fearless Plus P S DCA includes a JBL-branded nine-speaker system with a subwoofer, whereas the Venue HX 10 lists an eight-speaker Bose system — that is as per their website when we checked — please verify on their site.",
+      "latency_ms": 3617,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/508211959506a893e054.wav",
+        "sha256": "c8b3fe8ec656532511d98815e340b1d2929f0f6e30d7b6ddc12bfc0f3b1e6487",
+        "duration_seconds": 15.701315192743763,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    },
+    {
+      "trace_row": 472,
+      "input": "[priya · en-IN] The Nexon Fearless Plus PS pairs the 1.2-litre turbo petrol engine with a seven-speed dual-clutch automatic. Since everyday low-speed traffic response comes down to driving feel, taking it on a test drive is the best way to evaluate how it behaves in stop-and-go conditions.",
+      "latency_ms": 4030,
+      "audio": {
+        "path": "data/demos/dm_36d47b86/audio/eede73be3d477ee0ad57.wav",
+        "sha256": "63c5465ea4ee63d7a4aae9c74a70822535bef6e8f197ea2c8b9c68c8b279ff21",
+        "duration_seconds": 17.92,
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "cache_key_matches_exact_text": true
+      }
+    }
+  ],
+  "limits": [
+    "File identity and strict provider inputs verified; playback was muted, so acoustic intelligibility/naturalness is not verified.",
+    "Exact proof reuse bounds claims but does not establish optimal conversational pacing; some relevant features repeat across optional bridges, custom proof and later main narration."
+  ]
+}

@@ -1,0 +1,572 @@
+{
+  "id": "s_mu76rgnliuig",
+  "ended": true,
+  "profile": {
+    "name": "",
+    "why": "I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.",
+    "followup": "What can you show me that differs from the selected Venue variant?\nI mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?\nYes, but what is the warranty for this Nexon, and what is still unknown about its limits?\nDoes the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+    "focus": [
+      "automatic",
+      "variant equipment",
+      "comparison",
+      "performance"
+    ]
+  },
+  "customer_state": "stated_want",
+  "personalized": true,
+  "route": [
+    "powertrain-choices",
+    "cabin-comfort",
+    "tech-convenience",
+    "ownership-details"
+  ],
+  "slides": [
+    "sl06",
+    "sl04",
+    "sl08",
+    "sl09"
+  ],
+  "slides_visited": [
+    {
+      "slide_id": "sl00",
+      "kind": "hero_open",
+      "seconds": 18.9
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 12.2
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 11
+    },
+    {
+      "slide_id": "df",
+      "kind": "custom",
+      "seconds": 15.7
+    },
+    {
+      "slide_id": "custom-1",
+      "kind": "custom",
+      "seconds": 13.4
+    },
+    {
+      "slide_id": "custom-2",
+      "kind": "custom",
+      "seconds": 12.8
+    },
+    {
+      "slide_id": "sl06",
+      "kind": "proof",
+      "seconds": 58
+    },
+    {
+      "slide_id": "sl08",
+      "kind": "features",
+      "seconds": 43.4
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 135.2
+    },
+    {
+      "slide_id": "sl04",
+      "kind": "proof",
+      "seconds": 55.5
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 58.8
+    },
+    {
+      "slide_id": "sl04",
+      "kind": "proof",
+      "seconds": 27.3
+    },
+    {
+      "slide_id": "sl08",
+      "kind": "features",
+      "seconds": 20.4
+    },
+    {
+      "slide_id": "sl09",
+      "kind": "establish",
+      "seconds": 17.7
+    },
+    {
+      "slide_id": "sl10",
+      "kind": "closing",
+      "seconds": 13.6
+    },
+    {
+      "slide_id": "sl11",
+      "kind": "hero_close",
+      "seconds": 32.3
+    }
+  ],
+  "covered": [
+    "sl08",
+    "sl01",
+    "sl02"
+  ],
+  "jumps": [
+    {
+      "from": "sl06",
+      "to": "sl08",
+      "question": "What can you show me that differs from the selected Venue variant?"
+    },
+    {
+      "from": "sl08",
+      "to": "sl01",
+      "question": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?"
+    },
+    {
+      "from": "sl04",
+      "to": "sl02",
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?"
+    }
+  ],
+  "turns": [
+    {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789749833999,
+      "stt_done": 1789749833999,
+      "via": "typed",
+      "qa_done": 1789749841573,
+      "answer_audio": 1789749844457,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+      "voice_ended": 1789749878719,
+      "stt_done": 1789749878719,
+      "via": "typed",
+      "qa_done": 1789749884937,
+      "answer_audio": 1789749887748,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+      "voice_ended": 1789749941505,
+      "stt_done": 1789749941505,
+      "via": "typed",
+      "qa_done": 1789749946623,
+      "answer_audio": 1789749946644,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    },
+    {
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "voice_ended": 1789750075599,
+      "stt_done": 1789750075599,
+      "via": "typed",
+      "qa_done": 1789750075619,
+      "answer_audio": 1789750078440,
+      "from_bank": true,
+      "route": "jump",
+      "answered": true
+    }
+  ],
+  "usps_covered": [
+    "usp-powertrains",
+    "usp-comfort"
+  ],
+  "questions": [
+    "What can you show me that differs from the selected Venue variant?",
+    "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+    "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+    "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?"
+  ],
+  "escalations": [
+    "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?"
+  ],
+  "leads": [],
+  "resolved": [
+    "technology",
+    "performance",
+    "question",
+    "comfort"
+  ],
+  "unresolved": [
+    "ownership"
+  ],
+  "cta": "summary",
+  "intent": 92,
+  "drop_point": "Make the next step count",
+  "minutes": 9.1,
+  "transcript": [
+    {
+      "role": "agent",
+      "text": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+      "t": 1789749716493
+    },
+    {
+      "role": "user",
+      "text": "I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.",
+      "t": 1789749716494
+    },
+    {
+      "role": "agent",
+      "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+      "t": 1789749721360
+    },
+    {
+      "role": "agent",
+      "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+      "t": 1789749726386
+    },
+    {
+      "role": "agent",
+      "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+      "t": 1789749733556
+    },
+    {
+      "role": "agent",
+      "text": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+      "t": 1789749741061
+    },
+    {
+      "role": "agent",
+      "text": "We'll put each alongside what you need from your next car.",
+      "t": 1789749744541
+    },
+    {
+      "role": "agent",
+      "text": "You're comparing with the Brezza and Venue, looking specifically for an automatic and wanting to see what the chosen variant includes. Let's look at how the petrol automatic is set up, walk through the variant equipment, and check safety and ownership details.",
+      "t": 1789749760223
+    },
+    {
+      "role": "agent",
+      "text": "The diesel has manual and automated-manual options. CNG uses a six-speed manual; the seven-speed dual-clutch automatic is a petrol option, with availability depending on trim.",
+      "t": 1789749773607
+    },
+    {
+      "role": "agent",
+      "text": "Creative adds the surround-view camera and blind-view monitor; front parking sensors start at Creative Plus P S in the petrol and diesel range.",
+      "t": 1789749784431
+    },
+    {
+      "role": "agent",
+      "text": "Here's how I'll go about it.",
+      "t": 1789749786367
+    },
+    {
+      "role": "agent",
+      "text": "Next: Find your driving rhythm.",
+      "t": 1789749788905
+    },
+    {
+      "role": "agent",
+      "text": "This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.",
+      "t": 1789749794604
+    },
+    {
+      "role": "agent",
+      "text": "For stop-and-go driving, try its response on a test drive and see how it feels to you.",
+      "t": 1789749801064
+    },
+    {
+      "role": "agent",
+      "text": "Is an automatic the direction you're leaning towards?",
+      "t": 1789749804459
+    },
+    {
+      "role": "user",
+      "text": "What can you show me that differs from the selected Venue variant?",
+      "t": 1789749833999
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749839120
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789749844367
+    },
+    {
+      "role": "agent",
+      "text": "For sound, this Nexon Fearless Plus P S DCA includes a JBL-branded nine-speaker system with a subwoofer, whereas the Venue HX 10 lists an eight-speaker Bose system — that is as per their website when we checked — please verify on their site.",
+      "t": 1789749860223
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789749861145
+    },
+    {
+      "role": "agent",
+      "text": "Let's",
+      "t": 1789749878720,
+      "interrupted": true,
+      "full": "Let's get back to where we were.",
+      "heard_fraction": 0.14
+    },
+    {
+      "role": "user",
+      "text": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+      "t": 1789749878721
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749883837
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789749887726
+    },
+    {
+      "role": "agent",
+      "text": "The Nexon Fearless Plus PS pairs the 1.2-litre turbo petrol engine with a seven-speed dual-clutch automatic. Since everyday low-speed traffic response comes down to driving feel, taking it on a test drive is the best way to evaluate how it behaves in stop-and-go conditions.",
+      "t": 1789749905713
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789749906632
+    },
+    {
+      "role": "agent",
+      "text": "Let's",
+      "t": 1789749941506,
+      "interrupted": true,
+      "full": "Let's get back to where we were.",
+      "heard_fraction": 0.14
+    },
+    {
+      "role": "user",
+      "text": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+      "t": 1789749941507
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749946623
+    },
+    {
+      "role": "agent",
+      "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+      "t": 1789749958470
+    },
+    {
+      "role": "agent",
+      "text": "Let's get back to where we were.",
+      "t": 1789750022944
+    },
+    {
+      "role": "agent",
+      "text": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+      "t": 1789750032171
+    },
+    {
+      "role": "agent",
+      "text": "In this Fearless Plus P S petrol automatic, both front seats are ventilated, and rear passengers have their own air vents.",
+      "t": 1789750040421
+    },
+    {
+      "role": "agent",
+      "text": "Try both rows when you visit.",
+      "t": 1789750042694
+    },
+    {
+      "role": "agent",
+      "text": "How does that fit what you want from the cabin?",
+      "t": 1789750045743
+    },
+    {
+      "role": "agent",
+      "text": "Front-seat ventilation is listed for Fearless Plus P S in",
+      "t": 1789750075600,
+      "interrupted": true,
+      "full": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+      "heard_fraction": 0.48
+    },
+    {
+      "role": "user",
+      "text": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "t": 1789750075601
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789750078407
+    },
+    {
+      "role": "agent",
+      "text": "Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.",
+      "t": 1789750093009
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789750093925
+    },
+    {
+      "role": "agent",
+      "text": "Let's get back to where we were.",
+      "t": 1789750137176
+    },
+    {
+      "role": "agent",
+      "text": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+      "t": 1789750146446
+    },
+    {
+      "role": "agent",
+      "text": "Rear air vents begin at Pure Plus and continue through the higher petrol and diesel trims.",
+      "t": 1789750151991
+    },
+    {
+      "role": "agent",
+      "text": "Is that clearer?",
+      "t": 1789750154107
+    },
+    {
+      "role": "agent",
+      "text": "The 26.03-centimetre touchscreen begins at Pure Plus. The same-size driver display is listed on Fearless Plus P S in the petrol and diesel range.",
+      "t": 1789750175166
+    },
+    {
+      "role": "agent",
+      "text": "Take a closer look at the cockpit: this Fearless Plus P S has a 26.03-centimetre touchscreen and a matching-size driver display.",
+      "t": 1789750184889
+    },
+    {
+      "role": "agent",
+      "text": "Next: Make the next step count.",
+      "t": 1789750187170
+    },
+    {
+      "role": "agent",
+      "text": "For the buying decision, get a current on-road quote for your exact variant.",
+      "t": 1789750192179
+    },
+    {
+      "role": "agent",
+      "text": "Tata advertises a three-year, 100,000-kilometre warranty headline. Read the full written coverage and exclusions before deciding.",
+      "t": 1789750202576
+    },
+    {
+      "role": "agent",
+      "text": "Choose Book Test Drive to evaluate the automatic gearbox in stop-and-go conditions, then obtain an exact written quote for your chosen variant.",
+      "t": 1789750211055
+    },
+    {
+      "role": "agent",
+      "text": "Choose Book Test Drive when you're ready, or stay here and ask another question.",
+      "t": 1789750216149
+    },
+    {
+      "role": "agent",
+      "text": "Fair enough. Here's a summary of what we covered so you have it when you decide.",
+      "t": 1789750248493
+    },
+    {
+      "role": "agent",
+      "text": "Thanks for your time. You can ask anything else whenever you are ready.",
+      "t": 1789750261209
+    }
+  ],
+  "saved_at": 1789750278.7544582,
+  "summary": {
+    "customer_name": "",
+    "context": "The customer is comparing the Tata Nexon against the Brezza and Venue, focusing on an automatic variant and the specific equipment included.",
+    "cared_about": [
+      "Automatic transmission performance in stop-and-go traffic",
+      "Differences compared to the Venue variant",
+      "Included variant equipment and cabin features",
+      "Standard safety features such as six airbags and ISOFIX mounts"
+    ],
+    "objections": [],
+    "unanswered": [
+      "What is the warranty for this Nexon, and what is still unknown about its limits?"
+    ],
+    "opening_line": "I'd like to discuss the questions left open in your demo.",
+    "questions_asked": [
+      "What can you show me that differs from the selected Venue variant?",
+      "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+      "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+      "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?"
+    ],
+    "slides_visited": [
+      {
+        "slide_id": "sl00",
+        "title": "Tata Nexon",
+        "seconds": 18.9
+      },
+      {
+        "slide_id": "sl01",
+        "title": "Tata Nexon, up close",
+        "seconds": 147.4
+      },
+      {
+        "slide_id": "sl02",
+        "title": "Your shortlist starts here",
+        "seconds": 69.8
+      },
+      {
+        "slide_id": "df",
+        "title": "df",
+        "seconds": 15.7
+      },
+      {
+        "slide_id": "custom-1",
+        "title": "custom-1",
+        "seconds": 13.4
+      },
+      {
+        "slide_id": "custom-2",
+        "title": "custom-2",
+        "seconds": 12.8
+      },
+      {
+        "slide_id": "sl06",
+        "title": "Find your driving rhythm",
+        "seconds": 58.0
+      },
+      {
+        "slide_id": "sl08",
+        "title": "Your cockpit, closer",
+        "seconds": 63.8
+      },
+      {
+        "slide_id": "sl04",
+        "title": "Settle into the cabin",
+        "seconds": 82.8
+      },
+      {
+        "slide_id": "sl09",
+        "title": "Make the next step count",
+        "seconds": 17.7
+      },
+      {
+        "slide_id": "sl10",
+        "title": "Your next step",
+        "seconds": 13.6
+      },
+      {
+        "slide_id": "sl11",
+        "title": "Tata Nexon",
+        "seconds": 32.3
+      }
+    ],
+    "cta_result": "summary",
+    "leads": [],
+    "minutes": 9.1,
+    "model": "runtime",
+    "generated_at": 1789750283.7728078,
+    "transcript_lines": 53
+  }
+}

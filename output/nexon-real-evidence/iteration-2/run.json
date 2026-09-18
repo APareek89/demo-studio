@@ -1,24 +1,24 @@
 {
   "iteration": 2,
   "demo_id": "dm_36d47b86",
-  "status": "DELIVERABLE_READY_FOR_REVIEW_WITH_LIMITATIONS; ALL_AUTHORIZED_ACTUAL_RUNS_ENDED",
+  "status": "TWO_BUILD_EXERCISE_VALIDATED; READY_FOR_USER_REVIEW_WITH_EXPLICIT_LIMITS",
   "read_started_at": "2026-09-18T14:26:49.561797+00:00",
   "model_tier": "customer",
   "build_attempts": 1,
   "source_count": 21,
   "real_customer_cases": {
     "Q01": "PASS_OBSERVED: exact-variant safety answer stayed on sl07 at the B Safety check-in; the earlier decision-frame jump is not counted as this pass.",
-    "Q02": "PASS_OBSERVED: qualified yes reached Q&A; B2 answer preserved Tata 3 years | 100 000 km with the limit relationship unknown. Earlier unsupported or is retained; unsolicited Brezza scope remains a focus weakness.",
+    "Q02": "PASS_OBSERVED: qualified yes reached Q&A; B2 answer preserved Tata 3 years | 100 000 km with the limit relationship unknown. Earlier unsupported or is retained; unsolicited Brezza scope remains a focus weakness. Current a99f699 L5 separately proves prevention: the unsafe model relation is blocked before speech; the customer gets an honest decline. Useful partial warranty answering remains limited; this does not replace the earlier positive headline case.",
     "Q03": "PASS_OBSERVED: A boot question jumped sl01 to sl05 with announcement; explicit Yes returned to the exact interrupted second intro line without replaying the completed first. Earlier wrong-slide response remains failed.",
     "Q04": "PASS_OBSERVED: C and C2 exact Mumbai all-charges on-road quote declined without invented figures; callback optional and narration held.",
     "Q05": "PASS_OBSERVED: C guaranteed five-year EMI with two lakh down declined without figures, approval or a guarantee. Loose wording in an unspoken model draft is preserved separately.",
     "Q06": "PASS_TYPED_OBSERVED: one clarifier held 35.5 seconds, exact typed reply retained once, supported Nexon/Brezza ISOFIX parity with verify caveat and no cheaper assertion. ACTUAL_MICROPHONE_STT_NOT_VALIDATED; remaining validation is muted per user.",
-    "Q07": "POSITIVE_SOURCE_COVERAGE_WITH_LIMITATIONS: selected Nexon seven-speed DCA versus Brezza six-speed automatic plus caveat; prior Q06 gives matched ISOFIX parity. B2 safety framing is asymmetric; 46.7-second wait. Initial 88-word comparison lost a rating qualification and remains failed.",
-    "Q08": "POSITIVE_SOURCE_COVERAGE_WITH_LIMITATIONS: selected Nexon/Venue screen and speaker comparison, both sides cited and caveat delivered; cockpit jump, 17.8-second wait. Initial truncated JSON and later closed-client/fallback failure remain failed attempts.",
+    "Q07": "PASS_OBSERVED_MATCHED_COMPARISON: cde49fe L3 compares front ventilation on selected Nexon/Brezza automatic variants, both sides cited with caveat; old uneven safety/slow attempts remain preserved.",
+    "Q08": "PASS_OBSERVED_CURRENT: a99f699 L2 uses reviewed Venue HX10 context without re-asking and compares JBL nine-speaker/subwoofer with Bose eight-speaker equipment, both sides cited/full caveat, no quality winner.",
     "Q09": "PASS_OBSERVED_BOUNDARY: no unsupported safer-than-Venue ranking was heard; standard decline was less informative than the valid model explanation.",
     "Q10": "PASS_OBSERVED_BOUNDARY: stroller plus two suitcases fit was not guaranteed; standard decline and optional physical check, zero lead. This does not validate the separate failed A personalized pitch.",
     "Q11": "PASS_TYPED_OBSERVED: same Safety question held 43.341 seconds; exact five-to-ten-kilometre/no-long-commute correction retained in transcript and answer alongside original intake. No invented savings. Real microphone correction remains untested.",
-    "Q12": "PASS_OBSERVED_PATHS: C Stop/Done froze 2.4 minutes and slide dwell after a 24.671-second recap gap, callback closed, zero leads; C2 ended 4.8 minutes with zero leads, raw traffic context once in profile/recap and a neutral unresolved-summary opener. Earlier clock/context/summary failures remain preserved. Final A also completed natural closing → Not yet → recap → Done with zero leads; its later operator resume is separately preserved."
+    "Q12": "PASS_OBSERVED_PATHS: C Stop/Done froze 2.4 minutes and slide dwell after a 24.671-second recap gap, callback closed, zero leads; C2 ended 4.8 minutes with zero leads, raw traffic context once in profile/recap and a neutral unresolved-summary opener. Earlier clock/context/summary failures remain preserved. Final A also completed natural closing → Not yet → recap → Done with zero leads; its later operator resume is separately preserved. Current a99f699: model CTA remains a proposal, Yes-that-helps does not book; Not yet→recap→Done, no lead/booking. Current 53-line summary preserves warranty question and neutral opener; 52-line and 53-line summaries are distinct revisions."
   },
   "acoustic_validation": "NOT INDEPENDENTLY VALIDATED; PCM files are non-silent, which is not intelligibility evidence",
   "read_commit": "bfbda1f657252b9add648575541f1882fccccf8e",
@@ -75,7 +75,7 @@
     "iteration2_trace_all_estimate_before_customers_usd": 1.58251,
     "scope": "Build voice/rehearsal/bundle from actual voice-stage start through 1789743348; iteration2 from recorded second Read start through same cutoff. Customer runtime after cutoff excluded."
   },
-  "customer_test_status": "ACTUAL_RUNS_COMPLETE; OBSERVED_TYPED_PATHS_AND_TARGETED_RECOVERIES_REVIEWED_WITH_LIMITATIONS; NOT_UNCONDITIONAL_CUSTOMER_ACCEPTANCE",
+  "customer_test_status": "MUTED_TYPED_VALIDATION_AND_TARGETED_RECOVERIES_COMPLETE; ACOUSTICS_AND_MICROPHONE_NOT_VALIDATED",
   "initial_customer_session": {
     "id": "s_mu72zmm82u16",
     "evidence": "customer-initial/s_mu72zmm82u16.json",
@@ -103,8 +103,8 @@
       "align_access": "LIMITATION: both direct Align hash and visible Align link redirect the ready demo to Rehearse; observed only, unchanged"
     }
   },
-  "postfix_browser_gate": "32/32 actual CUA with synthetic Audio/input; not real microphone or acoustic/customer acceptance",
-  "last_updated_at": "2026-09-18T16:08:08.915350+00:00",
+  "postfix_browser_gate": "36/36 actual CUA, synthetic Audio/input; not microphone/acoustic validation",
+  "last_updated_at": "2026-09-18T16:53:05.186882+00:00",
   "build_attempts_scope": "This iteration contains one Build; total_actual_build_attempts includes the failed first iteration.",
   "ready_demo_align_access": "OBSERVED_LIMITATION: direct hash and visible link both redirect READY demo to Rehearse; no change made",
   "initial_customer_case_statuses": {
@@ -126,7 +126,8 @@
       "customer-comparison-initial/source-review.md"
     ],
     "Q02": [
-      "customer-comparison-repeat/source-review.md"
+      "customer-comparison-repeat/source-review.md",
+      "completion-audit/final-confirmation/report.md"
     ],
     "Q03": [
       "customer-shorttrip-pre-nx34/source-review.md"
@@ -143,10 +144,12 @@
     ],
     "Q07": [
       "customer-comparison-repeat/source-review.md",
-      "customer-comparison-initial/source-review.md"
+      "customer-comparison-initial/source-review.md",
+      "completion-audit/live-sample/report.md"
     ],
     "Q08": [
-      "customer-comparison-repeat/source-review.md"
+      "customer-comparison-repeat/source-review.md",
+      "completion-audit/final-confirmation/report.md"
     ],
     "Q09": [
       "customer-comparison-initial/source-review.md"
@@ -160,7 +163,8 @@
     "Q12": [
       "customer-boundaries-final/source-review.md",
       "customer-boundaries-recovery/source-review.md",
-      "customer-shorttrip-recovery/source-review.md"
+      "customer-shorttrip-recovery/source-review.md",
+      "completion-audit/final-confirmation/report.md"
     ]
   },
   "customer_sessions": [
@@ -211,6 +215,24 @@
       "id": "s_mu752gpf8em1",
       "result": "TARGETED_NX34_RECOVERY_AND_NATURAL_CLOSING_OBSERVED; residual ISOFIX location source gap; operator resume snapshot separate",
       "review": "customer-shorttrip-recovery/source-review.md"
+    },
+    {
+      "profile": "proof/deeper visual diagnostic",
+      "id": "s_mu75bjmvm5pw",
+      "result": "Exact main/deeper returns observed; old stale citation failure preserved, later fixed",
+      "review": "completion-audit/visual-return-session/source-review.md"
+    },
+    {
+      "profile": "predeclared final live sample on cde49fe",
+      "id": "s_mu765nbzlv8f",
+      "result": "7 model turns; context/CTA/policy/summary failures preserved with faster observed latency",
+      "review": "completion-audit/live-sample/report.md"
+    },
+    {
+      "profile": "final targeted B confirmation on a99f699",
+      "id": "s_mu76rgnliuig",
+      "result": "Successful reviewed personalization; Venue comparison and explicit CTA boundary; unsafe policy relation prevented; exact deeper citation return; natural closing, zero leads and current summary",
+      "review": "completion-audit/final-confirmation/report.md"
     }
   ],
   "final_A_recovery": {
@@ -242,92 +264,96 @@
     {
       "id": 1,
       "name": "First impression",
-      "status": "FUNCTIONAL_VISUAL_EVIDENCE; USER_JUDGMENT_PENDING",
-      "evidence": "Real Nexon wide/phone welcome and cinematic slide captures; no whole-experience desirability claim."
+      "status": "VISUAL_IMPLEMENTATION_VERIFIED; USER_JUDGMENT_REMAINS",
+      "evidence": "Cinematic first reference implemented on existing slide workflow. Actual welcome/intro/desktop/phone captures; subjective excitement is user judgment."
     },
     {
       "id": 2,
       "name": "Discovery and context",
-      "status": "OBSERVED_RECOVERY_WITH_LIMITS",
-      "evidence": "Optional typed intake/neutral Browse; exact A short trip and B shortlist; C2 raw traffic wording once in profile/recap. Initial C loss and B inferred main priority remain recorded; conversation context is not inferred preference ranking."
+      "status": "OBSERVED_RECOVERY",
+      "evidence": "Final B frame restates actual automatic/chosen-equipment request without invented main safety priority. Current reviewed demo variant notes are distinct from buyer preference; explicit buyer variant wins."
     },
     {
       "id": 3,
       "name": "Question holds and listening",
-      "status": "TYPED_FUNCTIONAL_PASS; ACTUAL_MIC_STT_NOT_VALIDATED",
-      "evidence": "Q02 qualified yes, Q06 35.5-second clarification hold, Q11 43.341-second hold; owned-turn synthetic regressions. No acoustic or real microphone claim."
+      "status": "TYPED_FUNCTIONAL_PASS; MIC_NOT_VALIDATED",
+      "evidence": "Actual long question/clarification holds and full qualified-yes/correction paths; synthetic stale-capture ownership. User requested muted caption/transcript review."
     },
     {
       "id": 4,
       "name": "Natural speech",
-      "status": "FILE_IDENTITY_AND_DURATION_PASS; ACOUSTICS_NOT_VALIDATED_PER_MUTED_TEST_MODE",
-      "evidence": "84/84 references, 80 valid non-silent exact Sarvam/Priya/en-IN WAVs; main batches 10.411–18.859 seconds. Independent intelligibility, naturalness and audible overlap not assessed."
+      "status": "FILE_IDENTITY_AND_DURATION_PASS; ACOUSTICS_NOT_VALIDATED",
+      "evidence": "84/84 required clips,80 exact Priya cache identities. Earlier full A narration maps to192.853s of audio; operator session duration is not uninterrupted tour length."
     },
     {
       "id": 5,
       "name": "Need-led relevance",
-      "status": "TARGETED_RECOVERY_OBSERVED_WITH_RESIDUAL_LIMITS",
-      "evidence": "B source coverage, C2 grounded traffic discussion and retained A correction; final A completed the reviewed family route without prior warranty/installation benefit/missing-ISO failures. Exact ISOFIX rear-cabin location remains unproven; earlier failed speech is preserved."
+      "status": "REVIEWED_ROUTE_AND_PROOF_OBSERVED; EDITORIAL_LIMITS",
+      "evidence": "Final frame and reviewed proof delivered with supported scope. Some authored check-ins repeat known context and optional proof covers other powertrains; no claim of fully human conversational judgment."
     },
     {
       "id": 6,
       "name": "Grounded answers",
-      "status": "TESTED_QA_PATHS_SUPPORTED_WITH_LIMITS; NOT_GENERAL_SEMANTIC_PASS",
-      "evidence": "Q01/Q02/Q03 and both positive rival comparisons source-audited; Q04/Q05/Q09/Q10 boundaries held. Final A targeted NX34 omissions recovered, but exact ISOFIX rear-cabin location remains a source gap. Brezza safety asymmetry and prior failures remain; no general semantic pass."
+      "status": "OBSERVED_SUPPORTED_ANSWERS_AND_SAFE_BOUNDARIES; NOT_GENERAL_ENTAILMENT",
+      "evidence": "Both positive comparisons, direct facts and unknown boundaries audited. Current policy guard blocks unsupported or before speech; live model still proposed it and helpful partial warranty answering remains limited."
     },
     {
       "id": 7,
       "name": "Useful visuals",
-      "status": "OBSERVED_LAYOUT_AND_REGRESSION_PASS; AESTHETIC_ACCEPTANCE_PENDING",
-      "evidence": "Reviewed imagery/title/drag retained; phone qualifiers and leader fix captured; 32/32 synthetic browser cases. Comparative destination slide can be fact-bearing without being the best explanation. Official images repeat and some are soft on desktop; dedicated visual capture coverage is incomplete."
+      "status": "ACTUAL_LAYOUT_AND_PHONE_REACHABILITY_VERIFIED; AESTHETIC_LIMITS",
+      "evidence": "Intro capture and complete third phone safety label reached; native image geometry and saved Align edits retained. Manufacturer image softness/repetition and best destination choice remain limits."
     },
     {
       "id": 8,
       "name": "Continuous conversation",
-      "status": "OBSERVED_TYPED_PATHS_PASS; ACOUSTIC_OVERLAP_UNASSESSED",
-      "evidence": "Q03 announced jump and exact intro-line return; clarification/unknown holds and explicit actions, C Stop/Done clock. Deeper/closing ownership and stale events additionally covered synthetically, not all repeated with live speech. Final A completed the route and natural closing. Dedicated actual deeper/proof-return coverage remains incomplete."
+      "status": "ACTUAL_PROOF_AND_DEEPER_RETURNS_PASS",
+      "evidence": "Actual proof/deeper exact return, current F020→bank F003/F004→F020→F021→empty question source label, explicit resolution required; synthetic browser36/36."
     },
     {
       "id": 9,
       "name": "Responsiveness",
-      "status": "FUNCTIONAL_RECOVERY; LATENCY_WEAKNESS_OPEN",
-      "evidence": "All 8 saved sessions ended; 26 turns, 25 complete timing records. Mixed diagnostic/recovery submit-to-first-answer p50 13.552s, p95 36.419s, worst 46.745s. One incomplete turn excluded from timing but retained. Not a clean final-version benchmark or accepted SLA."
+      "status": "MEASURED_SMALL_SAMPLES; NO_SLA",
+      "evidence": "Predeclared7 model turns median7.971s/worst10.225s; final3 model turns median9.029s/worst10.458s (includes safe decline); bank2.841s. All failures retained; no production or acoustic guarantee."
     },
     {
       "id": 10,
       "name": "Recap and consensual next step",
-      "status": "OBSERVED_C2_RECOVERY; USER_ACCEPTANCE_PENDING",
-      "evidence": "C/C2 zero leads, callback Not now/Stop behavior and ended clock; C2 exact context and neutral unresolved opener, earlier false internal promise preserved. Initial Studio detail/keyed share/Observability opened successfully."
+      "status": "OBSERVED_CURRENT_RECOVERY",
+      "evidence": "Final model booking suggestion held for explicit choice; Not yet/Done submits no leads. Current summary matches53 transcript lines and retains unresolved warranty; process-local concurrency regression14/14."
     }
   ],
   "final_free_gates": {
-    "deck": "242/242",
+    "deck": "307/307",
     "acceptance": "24/24",
     "smoke": "both phases pass",
-    "generation": "35/35",
-    "pitch_grounding": "21/21",
-    "gemini_client_race": "7/7",
+    "generation": "44/44",
+    "pitch_grounding": "47/47",
+    "policy_conflict": "12/12",
+    "summary": "11/11",
+    "summary_usage": "8/8",
+    "summary_race": "14/14",
     "runtime_delivery": "27/27",
-    "python_files": 56,
+    "focus": "12/12",
+    "python_files": 52,
     "javascript_files": 12,
     "browser_harness_syntax": "PASS",
     "diagram_mirrors": "8/8",
-    "diff_check": "PASS for code/docs gate at test freeze; not an overall raw-evidence claim. observability-final.txt retains one original trailing-tab header.",
-    "browser_evidence": "screenshots/browser-32-final.txt",
-    "summary_contract": "10/10",
-    "report": "free-regression/final-nx34-summary.json"
+    "browser": "36/36 actual CUA synthetic",
+    "report": "completion-audit/gates-closure.json",
+    "syntax": "completion-audit/syntax-closure.json",
+    "browser_evidence": "completion-audit/browser-cta-after.txt",
+    "diff_check": "Code/docs pass; raw historic evidence is retained verbatim."
   },
-  "final_cost_status": "FROZEN_RECORDED_ESTIMATE_ONLY; UNTRACKED_SUMMARY_AND_EARLY_GEMINI_TTS_CHARGES_EXCLUDED",
+  "final_cost_status": "RECORDED_ESTIMATE_ONLY; HISTORICAL_UNRECORDED_CHARGES_ADDITIONAL",
   "acceptance_limits": [
-    "No independent acoustic listening/intelligibility evaluation.",
-    "Actual customer microphone/STT question or clarification NOT VALIDATED; no such test requested for the remaining muted run.",
-    "Positive comparison coverage is not a balanced whole-demo or general factual-correctness pass.",
-    "Long provider waits remain a customer-experience weakness.",
-    "Final A targeted recurrence fixed in delivered text, but exact ISOFIX rear-cabin location remains unsupported by its cited row.",
-    "Visual captures and synthetic geometry checks do not establish the user's premium-design acceptance.",
-    "No merge, deployment, Part 3 or third Build performed.",
-    "Dedicated visual capture and actual deeper/proof-return coverage are incomplete.",
-    "Cost excludes untracked background summaries and ten early Gemini speech clips (NX35)."
+    "Muted review does not validate actual microphone/STT, pronunciation, voice naturalness or acoustic overlap.",
+    "Safety guard still declines the final live warranty question; model compliance and informative partial answering are not proven.",
+    "Some authored check-ins repeat known context; optional reviewed proof can cover other powertrains.",
+    "Small latency samples still involve several seconds of wait; no production SLA or user acceptance of pace.",
+    "Manufacturer images repeat and can be soft; subjective premium feel requires user review.",
+    "Grounding guards are bounded English checks/reviewed-proof reuse, not general entailment. Mixed policy comparisons can conservatively decline.",
+    "Summary coordination is per-process for the current one-worker local server; distributed deployment is outside scope.",
+    "NX20: Re-Read can change meaning beneath fact IDs; do not replay edits by ID alone."
   ],
   "test_mode": {
     "user_instruction": "Keep the video muted and use captions or the transcript for the spoken content.",
@@ -338,65 +364,224 @@
     "microphone_acoustic_status": "NOT_VALIDATED; no actual microphone or independent acoustic test requested in the remaining run."
   },
   "final_session_summary": {
-    "saved_sessions": 8,
-    "ended_sessions": 8,
-    "turn_bearing_sessions": 7,
+    "session_id": "s_mu76rgnliuig",
+    "ended": true,
+    "transcript_lines": 53,
+    "summary_lines": 53,
     "leads": 0,
-    "saved_summaries_present_and_current": 8,
-    "evidence": "customer-latency-cost-final.json"
+    "cta": "summary (Not yet; no booking)",
+    "summary_status": "current success; unresolved warranty retained; neutral follow-up opener",
+    "summary_revisions": "Two successes for distinct52-line and53-line inputs after completed thank-you; not duplicate identical work.",
+    "all_sessions": {
+      "count": 11,
+      "ended": 11,
+      "latest_transcript_matched_summaries": 11,
+      "qa_turns": 39,
+      "leads": 0
+    }
   },
   "final_cost": {
-    "report": "customer-latency-cost-final.md",
-    "data": "customer-latency-cost-final.json",
-    "cutoff_utc": "2026-09-18T16:01:50.303246+00:00",
-    "recorded_estimate_usd": 3.987538,
-    "iteration1_usd": 1.140407,
-    "iteration2_before_customers_usd": 1.582453,
-    "customer_window_usd": 1.264677,
-    "recorded_rows_total": 361,
-    "recorded_rows_customer_window": 94,
-    "build2_usd_already_included": 0.293438,
-    "basis": "Configured usage rates and returned provider costs when available; not an invoice or full actual paid total. No double-counting trace wrappers.",
-    "unknown_additional_charges": [
-      "All 8 background session-summary calls lack per-demo usage/trace context.",
-      "10 Build1 Gemini TTS clips reported zero tokens with no native cost.",
-      "Other failed/missing-usage calls may incur unrecorded charges."
-    ],
-    "issue": "NX35"
+    "recorded_total_usd": 4.293471,
+    "recorded_rows": 399,
+    "cutoff_utc": "2026-09-18T16:51:38.406Z",
+    "preserved_checkpoint_usd": 3.987538,
+    "additional_since_checkpoint_usd": 0.305933,
+    "final_confirmation_window_usd": 0.079706,
+    "final_confirmation_rows": 12,
+    "basis": "Configured usage estimates; historical unrecorded summaries, ten zero-usage Build1 Gemini TTS clips and other unreported charges are additional. Not an invoice.",
+    "report": "completion-audit/final-confirmation/metrics-cost.json"
   },
   "final_latency": {
-    "report": "customer-latency-cost-final.md",
-    "turns": 26,
-    "complete_timing_records": 25,
-    "incomplete_retained": 1,
-    "total_p50_seconds": 13.552,
-    "total_p95_seconds": 36.419,
-    "total_worst_seconds": 46.745,
-    "scope": "Mixed initial diagnostic and recovery sessions, not a clean final-version benchmark. Stamps measure submit/voice-end to first-answer event, not acoustic quality. Typed STT zero by construction.",
-    "typed_bank": {
-      "n": 2,
-      "p50_seconds": 0.019,
-      "p95_seconds": 0.037
-    },
-    "typed_model": {
-      "n": 21,
-      "p50_seconds": 15.878,
-      "p95_seconds": 36.419
-    },
-    "server_input_model": {
-      "n": 2,
-      "p50_seconds": 11.775,
-      "p95_seconds": 13.366
-    },
-    "actual_observability_evidence": "screenshots/observability-final.png"
+    "final_confirmation_model_turns": 3,
+    "model_p50_seconds": 9.029,
+    "model_worst_seconds": 10.458,
+    "bank_turns": 1,
+    "bank_first_answer_seconds": 2.841,
+    "scope": "Typed submit to actual media-start; includes rejected model answer→safe decline. No acoustic test.",
+    "predeclared_sample": "completion-audit/live-sample/metrics-cost.json",
+    "final_sample": "completion-audit/final-confirmation/metrics-cost.json",
+    "historical_mixed": "customer-latency-cost-final.json"
   },
   "deliverable": {
-    "state": "READY_WELCOME_MUTED",
     "url": "http://127.0.0.1:8893/?mute=1#/play/dm_36d47b86",
-    "runtime_commit": "3412b11",
+    "state": "READY welcome, muted",
+    "runtime_commit": "a99f699",
+    "review": "final-review.md",
+    "deployed": false,
+    "third_build": false
+  },
+  "checkpoint_d2ccd52": {
+    "status": "DELIVERABLE_READY_FOR_REVIEW_WITH_LIMITATIONS; ALL_AUTHORIZED_ACTUAL_RUNS_ENDED",
+    "customer_test_status": "ACTUAL_RUNS_COMPLETE; OBSERVED_TYPED_PATHS_AND_TARGETED_RECOVERIES_REVIEWED_WITH_LIMITATIONS; NOT_UNCONDITIONAL_CUSTOMER_ACCEPTANCE",
+    "ten_standards": [
+      {
+        "id": 1,
+        "name": "First impression",
+        "status": "FUNCTIONAL_VISUAL_EVIDENCE; USER_JUDGMENT_PENDING",
+        "evidence": "Real Nexon wide/phone welcome and cinematic slide captures; no whole-experience desirability claim."
+      },
+      {
+        "id": 2,
+        "name": "Discovery and context",
+        "status": "OBSERVED_RECOVERY_WITH_LIMITS",
+        "evidence": "Optional typed intake/neutral Browse; exact A short trip and B shortlist; C2 raw traffic wording once in profile/recap. Initial C loss and B inferred main priority remain recorded; conversation context is not inferred preference ranking."
+      },
+      {
+        "id": 3,
+        "name": "Question holds and listening",
+        "status": "TYPED_FUNCTIONAL_PASS; ACTUAL_MIC_STT_NOT_VALIDATED",
+        "evidence": "Q02 qualified yes, Q06 35.5-second clarification hold, Q11 43.341-second hold; owned-turn synthetic regressions. No acoustic or real microphone claim."
+      },
+      {
+        "id": 4,
+        "name": "Natural speech",
+        "status": "FILE_IDENTITY_AND_DURATION_PASS; ACOUSTICS_NOT_VALIDATED_PER_MUTED_TEST_MODE",
+        "evidence": "84/84 references, 80 valid non-silent exact Sarvam/Priya/en-IN WAVs; main batches 10.411–18.859 seconds. Independent intelligibility, naturalness and audible overlap not assessed."
+      },
+      {
+        "id": 5,
+        "name": "Need-led relevance",
+        "status": "TARGETED_RECOVERY_OBSERVED_WITH_RESIDUAL_LIMITS",
+        "evidence": "B source coverage, C2 grounded traffic discussion and retained A correction; final A completed the reviewed family route without prior warranty/installation benefit/missing-ISO failures. Exact ISOFIX rear-cabin location remains unproven; earlier failed speech is preserved."
+      },
+      {
+        "id": 6,
+        "name": "Grounded answers",
+        "status": "TESTED_QA_PATHS_SUPPORTED_WITH_LIMITS; NOT_GENERAL_SEMANTIC_PASS",
+        "evidence": "Q01/Q02/Q03 and both positive rival comparisons source-audited; Q04/Q05/Q09/Q10 boundaries held. Final A targeted NX34 omissions recovered, but exact ISOFIX rear-cabin location remains a source gap. Brezza safety asymmetry and prior failures remain; no general semantic pass."
+      },
+      {
+        "id": 7,
+        "name": "Useful visuals",
+        "status": "OBSERVED_LAYOUT_AND_REGRESSION_PASS; AESTHETIC_ACCEPTANCE_PENDING",
+        "evidence": "Reviewed imagery/title/drag retained; phone qualifiers and leader fix captured; 32/32 synthetic browser cases. Comparative destination slide can be fact-bearing without being the best explanation. Official images repeat and some are soft on desktop; dedicated visual capture coverage is incomplete."
+      },
+      {
+        "id": 8,
+        "name": "Continuous conversation",
+        "status": "OBSERVED_TYPED_PATHS_PASS; ACOUSTIC_OVERLAP_UNASSESSED",
+        "evidence": "Q03 announced jump and exact intro-line return; clarification/unknown holds and explicit actions, C Stop/Done clock. Deeper/closing ownership and stale events additionally covered synthetically, not all repeated with live speech. Final A completed the route and natural closing. Dedicated actual deeper/proof-return coverage remains incomplete."
+      },
+      {
+        "id": 9,
+        "name": "Responsiveness",
+        "status": "FUNCTIONAL_RECOVERY; LATENCY_WEAKNESS_OPEN",
+        "evidence": "All 8 saved sessions ended; 26 turns, 25 complete timing records. Mixed diagnostic/recovery submit-to-first-answer p50 13.552s, p95 36.419s, worst 46.745s. One incomplete turn excluded from timing but retained. Not a clean final-version benchmark or accepted SLA."
+      },
+      {
+        "id": 10,
+        "name": "Recap and consensual next step",
+        "status": "OBSERVED_C2_RECOVERY; USER_ACCEPTANCE_PENDING",
+        "evidence": "C/C2 zero leads, callback Not now/Stop behavior and ended clock; C2 exact context and neutral unresolved opener, earlier false internal promise preserved. Initial Studio detail/keyed share/Observability opened successfully."
+      }
+    ],
+    "final_free_gates": {
+      "deck": "242/242",
+      "acceptance": "24/24",
+      "smoke": "both phases pass",
+      "generation": "35/35",
+      "pitch_grounding": "21/21",
+      "gemini_client_race": "7/7",
+      "runtime_delivery": "27/27",
+      "python_files": 56,
+      "javascript_files": 12,
+      "browser_harness_syntax": "PASS",
+      "diagram_mirrors": "8/8",
+      "diff_check": "PASS for code/docs gate at test freeze; not an overall raw-evidence claim. observability-final.txt retains one original trailing-tab header.",
+      "browser_evidence": "screenshots/browser-32-final.txt",
+      "summary_contract": "10/10",
+      "report": "free-regression/final-nx34-summary.json"
+    },
+    "final_cost_status": "FROZEN_RECORDED_ESTIMATE_ONLY; UNTRACKED_SUMMARY_AND_EARLY_GEMINI_TTS_CHARGES_EXCLUDED",
+    "acceptance_limits": [
+      "No independent acoustic listening/intelligibility evaluation.",
+      "Actual customer microphone/STT question or clarification NOT VALIDATED; no such test requested for the remaining muted run.",
+      "Positive comparison coverage is not a balanced whole-demo or general factual-correctness pass.",
+      "Long provider waits remain a customer-experience weakness.",
+      "Final A targeted recurrence fixed in delivered text, but exact ISOFIX rear-cabin location remains unsupported by its cited row.",
+      "Visual captures and synthetic geometry checks do not establish the user's premium-design acceptance.",
+      "No merge, deployment, Part 3 or third Build performed.",
+      "Dedicated visual capture and actual deeper/proof-return coverage are incomplete.",
+      "Cost excludes untracked background summaries and ten early Gemini speech clips (NX35)."
+    ],
+    "final_session_summary": {
+      "saved_sessions": 8,
+      "ended_sessions": 8,
+      "turn_bearing_sessions": 7,
+      "leads": 0,
+      "saved_summaries_present_and_current": 8,
+      "evidence": "customer-latency-cost-final.json"
+    },
+    "final_cost": {
+      "report": "customer-latency-cost-final.md",
+      "data": "customer-latency-cost-final.json",
+      "cutoff_utc": "2026-09-18T16:01:50.303246+00:00",
+      "recorded_estimate_usd": 3.987538,
+      "iteration1_usd": 1.140407,
+      "iteration2_before_customers_usd": 1.582453,
+      "customer_window_usd": 1.264677,
+      "recorded_rows_total": 361,
+      "recorded_rows_customer_window": 94,
+      "build2_usd_already_included": 0.293438,
+      "basis": "Configured usage rates and returned provider costs when available; not an invoice or full actual paid total. No double-counting trace wrappers.",
+      "unknown_additional_charges": [
+        "All 8 background session-summary calls lack per-demo usage/trace context.",
+        "10 Build1 Gemini TTS clips reported zero tokens with no native cost.",
+        "Other failed/missing-usage calls may incur unrecorded charges."
+      ],
+      "issue": "NX35"
+    },
+    "final_latency": {
+      "report": "customer-latency-cost-final.md",
+      "turns": 26,
+      "complete_timing_records": 25,
+      "incomplete_retained": 1,
+      "total_p50_seconds": 13.552,
+      "total_p95_seconds": 36.419,
+      "total_worst_seconds": 46.745,
+      "scope": "Mixed initial diagnostic and recovery sessions, not a clean final-version benchmark. Stamps measure submit/voice-end to first-answer event, not acoustic quality. Typed STT zero by construction.",
+      "typed_bank": {
+        "n": 2,
+        "p50_seconds": 0.019,
+        "p95_seconds": 0.037
+      },
+      "typed_model": {
+        "n": 21,
+        "p50_seconds": 15.878,
+        "p95_seconds": 36.419
+      },
+      "server_input_model": {
+        "n": 2,
+        "p50_seconds": 11.775,
+        "p95_seconds": 13.366
+      },
+      "actual_observability_evidence": "screenshots/observability-final.png"
+    },
+    "deliverable": {
+      "state": "READY_WELCOME_MUTED",
+      "url": "http://127.0.0.1:8893/?mute=1#/play/dm_36d47b86",
+      "runtime_commit": "3412b11",
+      "bundle_version": 1,
+      "all_authorized_actual_runs_complete": true,
+      "no_further_paid_runs_or_builds": true,
+      "overall_acceptance": "Ready for user review with documented limits; not an unconditional customer-ready or best-in-class pass."
+    }
+  },
+  "final_runtime_commit": "a99f699",
+  "completion_audit": {
+    "code_commits": [
+      "cde49fe",
+      "a99f699"
+    ],
+    "actual_build_count": 2,
     "bundle_version": 1,
-    "all_authorized_actual_runs_complete": true,
-    "no_further_paid_runs_or_builds": true,
-    "overall_acceptance": "Ready for user review with documented limits; not an unconditional customer-ready or best-in-class pass."
+    "reports": [
+      "completion-audit/plan.md",
+      "completion-audit/visual-return-session/source-review.md",
+      "completion-audit/narration-duration.md",
+      "completion-audit/live-sample/report.md",
+      "completion-audit/final-confirmation/report.md"
+    ],
+    "muted_ready_evidence": "completion-audit/final-confirmation/ready-muted.txt"
   }
 }

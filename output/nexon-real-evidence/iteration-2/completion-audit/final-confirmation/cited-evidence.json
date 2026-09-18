@@ -1,0 +1,292 @@
+{
+  "registry_sha256": "6564034b6d369e20d58de7be69ce314492e41d70c12e158bcc8a29414767eb37",
+  "facts": [
+    {
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section",
+        "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+      },
+      "confidence": 1.0,
+      "conditions": "Manufacturer states six airbags and electronic stability program as standard; three-point ELR belts are stated for all occupants. Do not infer child-seat compatibility or a crash-outcome guarantee.",
+      "truth": "stated",
+      "id": "F003",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard ISOFIX child seat mounts",
+      "value": "ISOFIX standard",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 11, standard-equipment labels and footnote",
+        "quote": "ISOFIX*"
+      },
+      "confidence": 1.0,
+      "conditions": "Standard across variants; footnoted '* As standard'; attachment-point count and universal compatibility not stated.",
+      "truth": "stated",
+      "id": "F004",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "spec",
+      "claim": "Infotainment touchscreen size",
+      "value": "26.03 cm touchscreen infotainment by HARMAN",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+        "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+      },
+      "confidence": 1.0,
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list.",
+      "truth": "stated",
+      "id": "F007",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "spec",
+      "claim": "Digital instrument cluster size",
+      "value": "26.03 cm digital instrument cluster",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel",
+        "quote": "26.03 cm Digital Instrument Cluster"
+      },
+      "confidence": 1.0,
+      "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG.",
+      "truth": "stated",
+      "id": "F009",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Transmission options available",
+      "value": "5-Speed manual, 6-speed manual, 6-speed AMT, and 7-speed DCT (Dual Clutch Transmission) for petrol; 6-speed manual or 6-speed AMT for diesel; 6-speed manual exclusively for iCNG",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "FAQ section",
+        "quote": "The Tata Nexon offers multiple transmission choices: 5-Speed manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox."
+      },
+      "confidence": 1.0,
+      "conditions": "Official specifications FAQ, checked 18 September 2026. Choices depend on fuel/engine and variant; use the brochure powertrain matrix for a specific trim. The listed iCNG option is manual only.",
+      "truth": "stated",
+      "id": "F018",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "confidence": 1.0,
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date.",
+      "truth": "stated",
+      "id": "F019",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front-seat ventilation",
+      "value": "Ventilated Driver & Co-Driver Seat",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, FEARLESS + PS persona walk",
+        "quote": "Ventilated Driver & Co-Driver Seat"
+      },
+      "confidence": 1.0,
+      "conditions": "Available on Fearless + PS petrol/diesel persona; does not apply to rear seats or lower trims.",
+      "truth": "stated",
+      "id": "F020",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Rear AC vents availability",
+      "value": "Rear AC Vents",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39 persona hierarchy and separate-iCNG disclaimer",
+        "quote": "Rear AC Vents"
+      },
+      "confidence": 1.0,
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. The brochure directs iCNG equipment to its separate feature list; no iCNG availability is established here.",
+      "truth": "stated",
+      "id": "F021",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "360-degree surround view and Blind View Monitor",
+      "value": "360° HD Surround View System with Blind View Monitor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+        "quote": "HD Surround View System with Blind View Monitor"
+      },
+      "confidence": 1.0,
+      "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG.",
+      "truth": "stated",
+      "id": "F022",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front parking sensors",
+      "value": "Front Parking Sensor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS additional-equipment hierarchy; iCNG disclaimer",
+        "quote": "Front Parking Sensor"
+      },
+      "confidence": 1.0,
+      "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. This fact does not establish the sensor on base Creative or on iCNG.",
+      "truth": "stated",
+      "id": "F023",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "JBL sound system with subwoofer",
+      "value": "JBL-branded 9 speakers with subwoofer",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+        "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+      },
+      "confidence": 1.0,
+      "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker.",
+      "truth": "stated",
+      "id": "F026",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "policy",
+      "claim": "Advertised basic warranty",
+      "value": "3 years | 100 000 km",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, warranty badge",
+        "quote": "3 years | 100 000 km"
+      },
+      "confidence": 1.0,
+      "conditions": "Advertised basic warranty headline; specific terms, exclusions, transferability, or 'whichever occurs first' qualification not detailed in source badge.",
+      "truth": "contractual",
+      "id": "F027",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "feature",
+      "claim": "Audio speaker setup",
+      "value": "Bose 8-speaker setup",
+      "source": {
+        "ref": "src_acce5c",
+        "locator": "Elevating Every Drive with Smart Connectivity and Immersive Tech",
+        "quote": "immersive Bose 8-speaker setup"
+      },
+      "confidence": 1.0,
+      "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix.",
+      "truth": "stated",
+      "id": "C2-012",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Bose premium sound 8 speaker system",
+      "value": "S",
+      "source": {
+        "ref": "src_73036b",
+        "locator": "SECTION: Infotainment & Connectivity (official HTML table 5), HTML table 5, data row 6",
+        "quote": "Bose premium sound 8 speaker system\tBose premium sound 8 speaker system\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+      },
+      "confidence": 1.0,
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "truth": "stated",
+      "id": "C5-008",
+      "approved": true,
+      "edited": false
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9643729,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_e64b3e",
+      "kind": "url",
+      "name": "Nexon Specifications & Dimensions",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9683552,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_acce5c",
+      "kind": "url",
+      "name": "Venue official model page",
+      "path": "",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "mime": "text/html",
+      "size": 0,
+      "role": "competitor",
+      "added_at": 1789736013.9832551,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "mime": "application/pdf",
+      "size": 15291642,
+      "role": "product",
+      "added_at": 1789739230.9918551,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_73036b",
+      "kind": "text",
+      "name": "Hyundai Venue — official trim-qualified feature tables",
+      "path": "sources/src_73036b_Hyundai_Venue_official_trim-qualified_feature_tables.md",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "mime": "application/octet-stream",
+      "size": 18372,
+      "role": "competitor",
+      "added_at": 1789739231.059977,
+      "use_in_demo": true
+    }
+  ],
+  "interpretation": "Reviewed manufacturer evidence, with source quotation/locator and trim/truth conditions retained. No dealer stock, driving superiority or full warranty-policy inference."
+}

@@ -1,0 +1,43 @@
+- banner:
+  - text: Demo
+  - generic: Studio
+  - navigation:
+    - link "Demo Studio":
+      - /url: "#/studio"
+    - link "My Demos":
+      - /url: "#/demos"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+- main:
+  - generic "Your guide":
+    - img "Your guide"
+  - generic: Sulafat · Tata Nexon
+  - generic: Ready
+  - button "⛶"
+  - button "Unmute audio" [pressed]: 🔇
+  - button "⏸"
+  - button "⏹"
+  - button "💬"
+  - button "↺"
+  - button "✕"
+  - img "Tata Nexon"
+  - button "×"
+  - generic: Optional · dealership follow-up
+  - heading "Would you like to try it in person?" [level=3]
+  - paragraph: Share your details and the dealership can arrange a test drive.
+  - textbox "Your name"
+  - textbox "10-digit mobile number"
+  - paragraph: By sharing your number you agree the dealership may call you about this product. Nothing else is shared.
+  - button "Arrange a test drive"
+  - button "Not now"
+  - generic: YOUR VIRTUAL SHOWROOM
+  - heading "Tata Nexon" [level=1]
+  - paragraph: Take a closer look. Ask what matters to you.
+  - button "Explore with me"
+  - button "Browse at my pace"
+  - generic: Conversation
+  - button "✕"
+  - textbox "Type a question…"
+  - button "↑"
