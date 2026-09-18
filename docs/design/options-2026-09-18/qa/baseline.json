@@ -1,0 +1,17 @@
+[
+  {
+    "gate": "qa_deck",
+    "returncode": 0,
+    "isolated": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-options-qa_deck-hf2aphkf"
+  },
+  {
+    "gate": "qa_accept",
+    "returncode": 0,
+    "isolated": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-options-qa_accept-e4rnm2hr"
+  },
+  {
+    "gate": "smoke_mock",
+    "returncode": 0,
+    "isolated": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-options-smoke_mock-9tpfy89c"
+  }
+]

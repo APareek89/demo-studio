@@ -3,6 +3,20 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Isolated HTML design review — 2026-09-19
+
+Authorized prototype-only delivery; Loop remains off. No production behaviour was changed.
+
+| Manual input / check | Expected and observed |
+|---|---|
+| Each of A/B/C/D at1440×1000; Workspace, Studio, customer and Insights at390×844 | Four distinct visual directions. All16 phone views have document width390 and no broken product images. Saved screenshots and measurements: `docs/design/options-2026-09-18/previews/` and `qa/browser-review.json`. |
+| Studio review/approval and suggested customer question in each prototype | Local approval controls respond; sample questions update the caption/product view. B/C expose explicit return controls; D's local Build blocks before all six approvals. No provider, backend, audio or microphone call. |
+| Gallery preview modes, compare, shortlist, notes and reload | All16 screen previews resolve. Two live prototype panes display. Shortlist and note text survive reopening; export control responds. QA text/selections cleared before handoff. |
+| Product identity review with `assets/provenance.json` | Audi Q5 picture is labelled Q5 in all four directions; initial A4/Q4 placeholder names in A/C corrected before delivery. |
+| `git diff f4863fa -- web server api`; free gate logs | Empty main-code diff. Before/after deck307/307, acceptance24/24, both smoke. All five inline scripts parse and local asset references exist. |
+
+Direct file:// browser testing was blocked by browser URL policy; no bypass attempted. Optional fonts may fall back offline. Scripted prototypes do not establish actual runtime capability, model quality, KPIs or acoustic behavior.
+
 ## Professional UI acceptance — 2026-09-18
 
 Authorized bounded checks for the UI delivery; Loop remains off. `evals/player_browser.py` serves the following free browser suites with CSP blocking external connections.

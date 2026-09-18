@@ -2,6 +2,14 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
+## Design review checkpoint — 2026-09-19
+
+Four isolated HTML options are complete on `codex/design-options`, based on `f4863fa`. [Review gallery](http://127.0.0.1:8895/) · [Files and test boundaries](docs/design/options-2026-09-18/README.md). Bluebird, Atelier, Control Room and Panorama each cover workspace, Studio, customer and reporting treatments. Gallery has screenshot modes, live two-pane comparison, private shortlist/notes and download. Main `web/`, `server/`, `api/` code and real demos are unchanged.
+
+**Decision:** Anand requested dummy HTML options for morning review, explicitly without changing the main code. Do not apply any direction until he chooses. Current recommendation is Atelier workspace + Panorama customer view; this is a recommendation, not approval. All interactions and metrics are sample-only; no agent, microphone or audio calls. No paid calls, merge or deployment.
+
+Verification: before/after deck307/307, acceptance24/24, both smoke; all prototype scripts parse; desktop and390px phone review with no whole-page overflow or broken images across16 main views. Gallery persistence/preview modes/comparison checked. Direct-file browser review was blocked by URL policy, so HTTP verification is the evidence; downloadable HTML/assets remain available. Optional Google Fonts on gallery/Panorama fall back to system fonts. Latest app implementation remains the professional UI checkpoint below.
+
 ## Current checkpoint — 2026-09-18
 
 Professional UI is complete on `codex/professional-ui`, based on the completed Nexon branch at `e89aa29`. [Open home](http://127.0.0.1:8893/?mute=1#/home). Shared blue/white design system and Inter typography now cover home, library, all Studio screens, player/recap/contact, Playground, Observability and share pages. Original SVG brand/agent/icon set, real bundle thumbnails, search/filter, keyboard-friendly create dialog and phone layouts. [Design/file guide](docs/design/professional-ui.md) · [Evidence](output/professional-ui/README.md).

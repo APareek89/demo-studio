@@ -1,0 +1,13 @@
+{
+  "note": "Existing customer-approved project product imagery copied for isolated visual prototypes. No new product imagery generated.",
+  "files": {
+    "nexon.avif": "dm_36d47b86/sources/src_a958c6_exterior-hero.avif",
+    "side.avif": "dm_36d47b86/sources/src_77c02b_exterior-side.avif",
+    "cabin.avif": "dm_36d47b86/sources/src_1db8e5_dashboard.avif",
+    "seats.avif": "dm_36d47b86/sources/src_dd0ccf_seating.avif",
+    "boot.avif": "dm_36d47b86/sources/src_e12f23_boot.avif",
+    "lighting.avif": "dm_36d47b86/sources/src_6a2af2_lighting.avif",
+    "iqube.jpg": "dm_d5675e7f/derived/src_53246e_angle_clean.jpg",
+    "audi.jpg": "dm_302ab4aa/sources/src_0dbfd5_q5-2145.jpg"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "date": "2026-09-19",
+  "browser": "Codex in-app browser",
+  "desktop": {
+    "width": 1440,
+    "height": 1000
+  },
+  "mobile": {
+    "width": 390,
+    "height": 844
+  },
+  "phoneResults": {
+    "bluebird": [
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "A great demo changes everything.",
+        "width": 390
+      },
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "Tata Nexon",
+        "width": 390
+      },
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "Tata Nexon showroom",
+        "width": 390
+      },
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "More than a view count.",
+        "width": 390
+      }
+    ],
+    "atelier": [
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "Customer",
+        "width": 390
+      },
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "Studio",
+        "width": 390
+      },
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "Insights",
+        "width": 390
+      },
+      {
+        "broken": 0,
+        "scroll": 390,
+        "view": "Workspace",
+        "width": 390
+      }
+    ],
+    "controlRoom": [
+      {
+        "view": "Workspace",
+        "broken": [],
+        "scroll": 390,
+        "width": 390
+      },
+      {
+        "view": "Studio",
+        "broken": [],
+        "scroll": 390,
+        "width": 390
+      },
+      {
+        "view": "Customer",
+        "broken": [],
+        "scroll": 390,
+        "width": 390
+      },
+      {
+        "view": "Insights",
+        "broken": [],
+        "scroll": 390,
+        "width": 390
+      }
+    ],
+    "panorama": [
+      {
+        "view": "Workspace",
+        "brokenImages": [],
+        "scroll": 390,
+        "width": 390
+      },
+      {
+        "view": "Studio",
+        "brokenImages": [],
+        "scroll": 390,
+        "width": 390
+      },
+      {
+        "view": "Customer view",
+        "brokenImages": [],
+        "scroll": 390,
+        "width": 390
+      },
+      {
+        "view": "Insights",
+        "brokenImages": [],
+        "scroll": 390,
+        "width": 390
+      }
+    ]
+  },
+  "observedInteractions": [
+    "A: Sources to Align; approval; customer cabin question changes caption and image",
+    "B: Sources to Align; approval; customer question and return to prior topic",
+    "C: approval count; customer cabin question and return control",
+    "D: six-approval build guard; approvals to rehearsal; customer cabin question",
+    "Gallery: all four screenshot modes; live B/D iframe comparison visibly loaded; notes and shortlist persisted across reload; notes export clicked; QA choices and notes cleared"
+  ],
+  "gallery": {
+    "desktopWidth": 1440,
+    "mobileWidth": 390,
+    "horizontalOverflow": false,
+    "brokenImages": 0
+  },
+  "limitations": [
+    "Prototype interactions are scripted sample behavior, not actual runtime evidence.",
+    "file:// browser visit was blocked by browser URL policy; no attempt to bypass it. Direct-file opening is not browser-verified.",
+    "Optional Google Fonts are used by the gallery and Panorama; system font fallbacks remain available."
+  ],
+  "cost": {
+    "paidCalls": 0
+  }
+}

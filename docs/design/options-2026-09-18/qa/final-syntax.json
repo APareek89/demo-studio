@@ -1,0 +1,104 @@
+{
+  "prototype_html": [
+    {
+      "file": "atelier.html",
+      "inline_scripts": 1,
+      "exit_codes": [
+        0
+      ]
+    },
+    {
+      "file": "bluebird.html",
+      "inline_scripts": 1,
+      "exit_codes": [
+        0
+      ]
+    },
+    {
+      "file": "control-room.html",
+      "inline_scripts": 1,
+      "exit_codes": [
+        0
+      ]
+    },
+    {
+      "file": "index.html",
+      "inline_scripts": 1,
+      "exit_codes": [
+        0
+      ]
+    },
+    {
+      "file": "panorama.html",
+      "inline_scripts": 1,
+      "exit_codes": [
+        0
+      ]
+    }
+  ],
+  "main_app_javascript": [
+    {
+      "file": "web/api.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/app.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/demos.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/home.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/icons.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/observability.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/player/mascot.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/player/player.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/playground.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/slide.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/studio/align.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/studio/rehearse.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/studio/sessions.js",
+      "exit_code": 0
+    },
+    {
+      "file": "web/studio/sources.js",
+      "exit_code": 0
+    }
+  ],
+  "python": {
+    "files": 40,
+    "scope": "server/**/*.py + api/index.py + evals/player_browser.py",
+    "exit_code": 0,
+    "pycache": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-options-syntax-v2dq4kas/pycache"
+  },
+  "all_pass": true
+}

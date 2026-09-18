@@ -1,0 +1,20 @@
+atelier.html inline script 1: exit 0
+bluebird.html inline script 1: exit 0
+control-room.html inline script 1: exit 0
+index.html inline script 1: exit 0
+panorama.html inline script 1: exit 0
+web/api.js: exit 0
+web/app.js: exit 0
+web/demos.js: exit 0
+web/home.js: exit 0
+web/icons.js: exit 0
+web/observability.js: exit 0
+web/player/mascot.js: exit 0
+web/player/player.js: exit 0
+web/playground.js: exit 0
+web/slide.js: exit 0
+web/studio/align.js: exit 0
+web/studio/rehearse.js: exit 0
+web/studio/sessions.js: exit 0
+web/studio/sources.js: exit 0
+Python compilation (40 files): exit 0

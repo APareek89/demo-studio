@@ -1,0 +1,32 @@
+{
+  "checked_at_utc": "2026-09-18T18:32:19.559840+00:00",
+  "gates": {
+    "deck": "307/307",
+    "acceptance": "24/24",
+    "smoke": "Both phases passed",
+    "all_exit_codes_zero": true
+  },
+  "syntax": {
+    "prototype_html_files": 5,
+    "inline_scripts": 5,
+    "main_app_js_files": 14,
+    "python_files": 40,
+    "all_pass": true
+  },
+  "local_links_and_assets": {
+    "all_exist": true,
+    "missing": []
+  },
+  "main_app": {
+    "reference": "f4863fa",
+    "scope": [
+      "web/",
+      "server/",
+      "api/"
+    ],
+    "unchanged": true,
+    "head": "f4863fa"
+  },
+  "network_static_scan": "No fetch/XHR/backend API/audio/video/microphone surfaces found. index.html and panorama.html link Google Fonts CSS; the other prototypes are self-contained.",
+  "boundaries": "Free gates use separate throwaway data folders and graph databases with MOCK_LLM=1, CLOUD_SYNC=0 and local storage. No CUA, paid calls, main-app edits or commits in this verification. Static checks do not prove visual layout; root owns browser QA."
+}

@@ -1,0 +1,274 @@
+{
+  "files": [
+    {
+      "file": "atelier.html",
+      "direct_local_links": [
+        {
+          "ref": "./index.html",
+          "exists": true
+        }
+      ],
+      "literal_and_dynamic_data_assets": [
+        {
+          "ref": "assets/audi.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/boot.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/cabin.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/iqube.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/lighting.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/seats.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/side.avif",
+          "exists": true
+        }
+      ],
+      "dynamic_templates_not_executed": [],
+      "external_links": []
+    },
+    {
+      "file": "bluebird.html",
+      "direct_local_links": [
+        {
+          "ref": "./index.html",
+          "exists": true
+        }
+      ],
+      "literal_and_dynamic_data_assets": [
+        {
+          "ref": "assets/audi.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/boot.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/cabin.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/iqube.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/side.avif",
+          "exists": true
+        }
+      ],
+      "dynamic_templates_not_executed": [],
+      "external_links": []
+    },
+    {
+      "file": "control-room.html",
+      "direct_local_links": [
+        {
+          "ref": "index.html",
+          "exists": true
+        }
+      ],
+      "literal_and_dynamic_data_assets": [
+        {
+          "ref": "assets/audi.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/boot.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/cabin.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/iqube.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/seats.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/side.avif",
+          "exists": true
+        }
+      ],
+      "dynamic_templates_not_executed": [],
+      "external_links": []
+    },
+    {
+      "file": "index.html",
+      "direct_local_links": [
+        {
+          "ref": "bluebird.html",
+          "exists": true
+        },
+        {
+          "ref": "previews/bluebird.png",
+          "exists": true
+        },
+        {
+          "ref": "bluebird.html",
+          "exists": true
+        },
+        {
+          "ref": "atelier.html",
+          "exists": true
+        },
+        {
+          "ref": "previews/atelier.png",
+          "exists": true
+        },
+        {
+          "ref": "atelier.html",
+          "exists": true
+        },
+        {
+          "ref": "control-room.html",
+          "exists": true
+        },
+        {
+          "ref": "previews/control-room.png",
+          "exists": true
+        },
+        {
+          "ref": "control-room.html",
+          "exists": true
+        },
+        {
+          "ref": "panorama.html",
+          "exists": true
+        },
+        {
+          "ref": "previews/panorama.png",
+          "exists": true
+        },
+        {
+          "ref": "panorama.html",
+          "exists": true
+        },
+        {
+          "ref": "atelier.html",
+          "exists": true
+        },
+        {
+          "ref": "panorama.html",
+          "exists": true
+        }
+      ],
+      "literal_and_dynamic_data_assets": [
+        {
+          "ref": "previews/atelier.png",
+          "exists": true
+        },
+        {
+          "ref": "previews/bluebird.png",
+          "exists": true
+        },
+        {
+          "ref": "previews/control-room.png",
+          "exists": true
+        },
+        {
+          "ref": "previews/panorama.png",
+          "exists": true
+        }
+      ],
+      "dynamic_templates_not_executed": [],
+      "external_links": [
+        "https://fonts.googleapis.com",
+        "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+      ]
+    },
+    {
+      "file": "panorama.html",
+      "direct_local_links": [
+        {
+          "ref": "index.html",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/iqube.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/audi.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        }
+      ],
+      "literal_and_dynamic_data_assets": [
+        {
+          "ref": "assets/audi.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/boot.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/cabin.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/iqube.jpg",
+          "exists": true
+        },
+        {
+          "ref": "assets/lighting.avif",
+          "exists": true
+        },
+        {
+          "ref": "assets/nexon.avif",
+          "exists": true
+        }
+      ],
+      "dynamic_templates_not_executed": [],
+      "external_links": [
+        "https://fonts.googleapis.com",
+        "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&display=swap"
+      ]
+    }
+  ],
+  "missing": [],
+  "all_local_links_exist": true,
+  "scope": "Literal local HTML links plus inline sample-data image basenames. Dynamically generated UI is separately browser-checked by root."
+}

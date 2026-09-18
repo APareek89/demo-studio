@@ -1,0 +1,54 @@
+[
+  {
+    "gate": "qa_deck",
+    "exit_code": 0,
+    "seconds": 4.63,
+    "isolation": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-review-close-qa_deck-_gvifkkf/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-review-close-qa_deck-_gvifkkf/graph.sqlite"
+    },
+    "expected_markers": [
+      "307/307 deck cases pass"
+    ],
+    "all_markers_present": true,
+    "log": "final-qa_deck.log"
+  },
+  {
+    "gate": "qa_accept",
+    "exit_code": 0,
+    "seconds": 2.59,
+    "isolation": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-review-close-qa_accept-fuhy7dng/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-review-close-qa_accept-fuhy7dng/graph.sqlite"
+    },
+    "expected_markers": [
+      "24/24 cases behave as required"
+    ],
+    "all_markers_present": true,
+    "log": "final-qa_accept.log"
+  },
+  {
+    "gate": "smoke_mock",
+    "exit_code": 0,
+    "seconds": 3.94,
+    "isolation": {
+      "MOCK_LLM": "1",
+      "CLOUD_SYNC": "0",
+      "STORAGE_BACKEND": "local",
+      "DEMO_STUDIO_DATA": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-review-close-smoke_mock-xihv99to/demos",
+      "DEMO_STUDIO_GRAPH_DB": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/design-review-close-smoke_mock-xihv99to/graph.sqlite"
+    },
+    "expected_markers": [
+      "SMOKE OK ",
+      "SMOKE OK (phase 2)"
+    ],
+    "all_markers_present": true,
+    "log": "final-smoke_mock.log"
+  }
+]

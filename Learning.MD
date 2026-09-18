@@ -945,3 +945,14 @@
 
 
 **NX34 independent-review follow-up:** A standard present only in the exact source quote was initially missed, while its numeric code was rejected when correctly repeated. Two actual-path cases reproduced19/21; the detector now reads conditions and quote, and numeric validation admits only the recognized quoted standard's code, not every unrelated number in the quote. Final focused coverage is21/21. Honest negated relation wording and buyer-only benefit adjectives can be conservatively omitted by these lexical guards; no general entailment or complete safe-phrase coverage is claimed.
+
+
+## 2026-09-19 — Prototype product labels must follow the supplied image
+
+**Symptom:** Bluebird initially called the supplied Audi Q5 picture an A4; Control Room initially called it a Q4/e-tron. These were isolated mockups; no real demo metadata changed.
+
+**Five whys:** (1) The card name did not match its image. (2) A plausible placeholder name survived after the approved photo was connected. (3) The prototype data and asset list were authored separately. (4) Syntax/asset-existence checks proved the image loaded, not what vehicle it showed. (5) Product identity was missing from the visual review checklist.
+
+**Fix:** Name the Audi Q5 consistently in sample data and dynamic labels. Compare every product card against the local asset provenance during browser review.
+
+**Eval:** Open all four workspace concepts, inspect the Audi card and its accessible image name, and compare with `docs/design/options-2026-09-18/assets/provenance.json`. Final Bluebird snapshot shows Audi Q5 and Control Room shows Audi Q5 / SUV. No A4/Q4/e-tron placeholder remains in the prototypes.
