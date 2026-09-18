@@ -192,9 +192,30 @@ test('A typed clarification is accepted once with conversation history', async (
   assert(env.calls[1].skip_bank === true, 'Clarification reply may be intercepted by an unrelated cached FAQ');
   assert(env.calls[1].history.some((x) => x.text === 'Do you mean the manual or automatic?'), 'QA did not receive the actual clarification prompt');
   assert(env.calls[1].history.filter((x) => x.role === 'user' && x.text === 'The automatic, please.').length === 1, 'Typed clarification was duplicated in history');
-  assert(env.calls[1].profile.followup === 'Do you mean the manual or automatic? The automatic, please.', 'Clarification context was not retained verbatim for the next response');
+  assert(env.calls[1].profile.followup === 'Which transmission is that?\nDo you mean the manual or automatic? The automatic, please.', 'Original question and clarification context were not retained verbatim exactly once');
   clarificationRecognition.deliver('The manual, stale speech'); await flush();
   assert(env.calls.length === 2, 'A stale recognition result reopened the settled typed clarification');
+});
+test('A direct customer statement survives later QA and the recap once, without inferring a preference', async () => {
+  const intake = 'I drive five to ten kilometres a day.', statement = 'I am unsure about sitting in traffic every day.';
+  await setup({ hold: (text) => text === 'First proof.' });
+  await click('▶ Start');
+  const input = host.querySelector('.pl-intake.open .fallback input');
+  input.value = intake; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  assert(env.played.at(-1) === 'First proof.' && env.active.size === 1, 'Fixture did not stop during narration');
+  const originalFocus = snapshot(player.context().profile.focus);
+  await type(statement);
+  assert(env.calls[0].question === statement && env.calls[0].profile.followup === statement, 'Direct customer statement was not dispatched and retained verbatim');
+  await click('Yes, that helps'); await type('What does the approved material say about the cabin?');
+  assert(env.calls[1].profile.followup.split('\n').filter(text => text === statement).length === 1, 'Next QA lost or duplicated the direct statement');
+  await click('Yes, that helps'); await type(intake);
+  assert(!env.calls[2].profile.followup.includes(intake) && env.calls[2].profile.why === intake, 'Intake wording was duplicated into followup');
+  await click('Yes, that helps'); await type(statement);
+  assert(env.calls[3].profile.followup.split('\n').filter(text => text === statement).length === 1, 'Repeating a customer turn duplicated stored context');
+  assert(JSON.stringify(player.context().profile.focus) === JSON.stringify(originalFocus), 'Raw context storage inferred new customer preferences');
+  await click('Yes, that helps'); host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
+  const recap = host.querySelector('.pl-handoff.open')?.textContent || '', saved = env.saved.at(-1);
+  assert(recap.split(statement).length - 1 === 1 && saved.profile.followup.split('\n').filter(text => text === statement).length === 1, 'Buyer recap or saved session lost/duplicated the actual statement');
 });
 test('An unknown answer holds the callback form without narration behind it', async () => {
   await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
@@ -558,6 +579,32 @@ test('Narrow evidence hides leaders with their labels and restores them on a wid
       } else {
         assert(rect(chip).width > 0 && getComputedStyle(leader).visibility === 'visible', 'Wide slide did not restore its overlay label and leader');
       }
+    }
+  } finally { view.destroy(); frame.remove(); }
+});
+test('Phone evidence wraps complete trim qualifiers inside each card without shrinking the type', async () => {
+  const callouts = [
+    { id: 'boot-volume', text: 'Petrol/diesel: 382L boot, measured to ISO V215', fact_ids: ['f1'], placement: 'panel', reveal_on_line: 0 },
+    { id: 'boot-seats', text: 'Creative+PS/Fearless+PS petrol/diesel: 60:40 rear seats', fact_ids: ['f2'], placement: 'panel', reveal_on_line: 0 },
+  ];
+  const saved = snapshot(callouts), { frame, view, slide: sl } = await renderFixture(390, { callouts });
+  try {
+    for (const width of [390, 320, 304, 390]) {
+      frame.style.width = width + 'px'; view.setRevealed(0); view.layout();
+      const panel = view.el.querySelector('.slide-panel');
+      const measured = [...panel.children].map((item, i) => {
+        const text = item.lastElementChild, range = document.createRange(); range.selectNodeContents(text);
+        const fragments = [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0);
+        const box = rect(item);
+        assert(text.textContent.includes(saved[i].text), 'Phone label lost part of its reviewed trim qualifier');
+        assert(box.height > 0 && item.scrollWidth <= item.clientWidth + 1, 'A trim qualifier overflows its own evidence card');
+        assert(fragments.length > 0 && fragments.every(r => r.left >= box.x - 1 && r.right <= box.right + 1), 'Painted label text extends beyond its evidence card');
+        assert(parseFloat(getComputedStyle(text).fontSize) >= 12, 'Phone labels were made smaller to hide overflow');
+        return { box, clientWidth: item.clientWidth, scrollWidth: item.scrollWidth, textBox: rect(text), fragments: fragments.length };
+      });
+      env.geometry.push({ requestedWidth: width, rail: rect(panel), railClientWidth: panel.clientWidth, railScrollWidth: panel.scrollWidth, items: measured });
+      assert(panel.scrollWidth <= panel.clientWidth + 1 && frame.scrollWidth <= frame.clientWidth + 1, 'Two phone evidence cards create horizontal overflow');
+      assert(JSON.stringify(sl.callouts) === JSON.stringify(saved), 'Wrapping changed the saved evidence text or coordinates');
     }
   } finally { view.destroy(); frame.remove(); }
 });

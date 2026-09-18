@@ -16,7 +16,9 @@ SUMMARY_SYSTEM = """You summarise a finished voice-led product demo of {product}
 Use ONLY the transcript and record given — never invent a detail, a number or a name; leave a field empty when the material does not say.
 Plain words, no markdown. Lines marked interrupted were cut off by the customer: only the words shown were heard.
 Write for a busy salesperson: what this person is deciding, what they cared about, what worried them and whether the guide settled it,
-what could not be answered from the sources, and ONE natural opening line for the call — in the customer's own words where possible."""
+what could not be answered from the sources, and ONE natural opening line for the call — in the customer's own words where possible.
+Keep unresolved requests unanswered. Do not imply that the salesperson already has missing answers, quotes, approvals or finance terms;
+when questions remain open, invite a discussion of those questions without promising that their details are ready."""
 
 
 class Objection(BaseModel):
@@ -54,13 +56,18 @@ def summarize(demo_id: str, session: dict) -> dict:
     else:
         out = runtime.structured(SUMMARY_SYSTEM.format(product=product), json.dumps(payload, ensure_ascii=False), SessionSummary, max_tokens=1200)
         model = "runtime"
+    escalations = [e for e in session.get("escalations", []) if not str(e).startswith("callback requested")]
+    # A proposed sales opener is not evidence that missing answers were obtained.
+    # Preserve the summary's other fields and never rewrite the session's status.
+    if session.get("unresolved") or escalations or out.unanswered:
+        out.opening_line = "I'd like to discuss the questions left open in your demo."
     profile = session.get("profile") or {}
     seconds = {}
     for v in session.get("slides_visited", []):
         seconds[v.get("slide_id")] = round(seconds.get(v.get("slide_id"), 0) + float(v.get("seconds") or 0), 1)
     titles = {s["id"]: s.get("title", "") for s in (store.read_json(demo_id, "deck.json") or {}).get("slides", [])}
     return {**out.model_dump(), "customer_name": out.customer_name or profile.get("name", ""), "questions_asked": list(session.get("questions", [])),
-            "unanswered": out.unanswered or [e for e in session.get("escalations", []) if not str(e).startswith("callback requested")],
+            "unanswered": out.unanswered or escalations,
             "slides_visited": [{"slide_id": k, "title": titles.get(k, k), "seconds": v} for k, v in seconds.items()],
             "cta_result": session.get("cta") or "", "leads": [{"phone": l.get("phone"), "question": l.get("question")} for l in session.get("leads", [])],
             "minutes": session.get("minutes"), "model": model, "generated_at": time.time(), "transcript_lines": len(session.get("transcript", []))}

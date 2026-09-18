@@ -498,6 +498,7 @@ main{flex:1;min-height:0;display:flex}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-title,.pl-stage:not(:has(.pl-intake.open)) .cinematic.slide-hero_open .slide-title,.pl-stage:not(:has(.pl-intake.open)) .cinematic.slide-hero_close .slide-title{font-size:clamp(24px,7.3cqw,38px);line-height:1.05;max-width:22ch}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-panel{left:6%;right:6%;bottom:4%;max-height:19%;gap:16px;padding:0}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-panel .item{flex:1 0 44%;padding-top:8px;font-size:12px;line-height:1.35}
+  .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-panel .item>span:last-child{min-width:0;overflow-wrap:anywhere}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-panel .cite{display:none}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .callout{display:none}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .leaders{visibility:hidden}

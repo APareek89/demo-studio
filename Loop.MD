@@ -194,3 +194,25 @@ These add five cases to the browser contract (the prior off-slide case also gain
 ## Shared Gemini cold initialization — 2026-09-18 (NX31)
 
 `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/gemini_client_contract.py` passes 7/7 in isolated storage. Two concurrent callers use exactly one fake SDK client, preserve its transport during both in-flight calls and retain the original 90-second client initialization setting; missing-key and constructor failure paths release correctly. The real initializer failed four race checks before the lock (3/7). No real SDK constructor, provider or socket is used. Logs are in iteration-2 `free-regression/gemini-client-before.log` and `gemini-client-after.log`. This repairs shared-resource initialization under runtime worker concurrency; it does not promise provider availability, latency or complete JSON.
+
+
+## Complete phone qualifiers — 2026-09-18 (NX25 follow-up)
+
+The browser contract adds one case (31 total) using the exact reviewed “Creative+PS/Fearless+PS petrol/diesel: 60:40 rear seats” label alongside the boot-capacity label. At390→320→304→390px, full text stays unchanged, painted text fragments and scroll width stay within their own cards, type remains at least 12px, and neither the two-card rail nor page overflows horizontally. This catches a real overflow hidden by prior space-separated synthetic labels. The root must run the browser harness and inspect the actual phone result; no provider call or extra Build is required.
+
+
+## Follow-up opener preserves unresolved status — 2026-09-18 (NX33)
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/summary_contract.py` passes10/10. The exact actual-C readiness promise is supplied as a fake model response to the real `summary.summarize` function; unresolved topics, non-callback escalations and model unanswered questions independently force a neutral invitation. Tests retain context/interests/objections/unanswered fields and untouched input status; resolved sessions keep their specific opener; callback bookkeeping alone does not imply a missing answer; mock uses the same safeguard without a runtime call. A captured provider envelope checks the explicit prompt prohibition and unchanged1200-token setting. Before-fix4/10 and after-fix10/10 logs are in iteration-2 `free-regression/summary-{before,after}.log`.
+
+No network/provider calls or saved-session writes occur. The failed C snapshot remains evidence, not retroactively corrected history. The deterministic check covers only the proposed opener; other summary semantics and a live post-fix session still require review. Root owns the coordinated broad gates.
+
+
+## Direct customer wording retention — 2026-09-18 (NX32)
+
+The player browser harness now has 32 cases. The added case submits a direct statement during held narration, confirms normal QA dispatch and exact followup in the next request, repeats intake/statement without duplicating retained context, verifies no inferred focus change and checks the saved recap. The existing clarification case requires the original question plus the exact clarifying question/reply once, with skip_bank and transcript preservation unchanged. Root separately added a prompt-level need/context-correction rule; the browser test proves storage/delivery only, not model consultation quality. Real failed-session evidence remains unchanged; actual recovery and refreshed CUA acceptance are separate checks.
+
+
+## Pitch additions and material qualifiers — 2026-09-18 (NX34)
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/pitch_grounding_contract.py` exercises the actual pitch assembly, filtering and fake speech path:19/19, versus9/19 before. Cases reproduce the observed warranty relation/predictability, installation bridge and properly-secured child-seat additions; test missing ISO basis; preserve documented relations, qualified quantities, plain equipment, neutral bridges and a proposed personal fit-check. Rejected optional content never reaches voice and the reviewed route remains. Provider/network calls and source/script writes are blocked. Logs: iteration-2 `free-regression/pitch-nx34-before.log` and `pitch-nx34-after.log`. `qa_deck.py` also runs these19 cases and the10 summary cases. Independent review added two quote-only measurement-basis cases:19/21 before the follow-up,21/21 after. The deck gate now includes21 pitch cases plus10 summary cases. Conditions and source quotes both supply named standards; numeric evidence admits their exact codes. These are bounded lexical omission checks plus prompt-input tests, not proof that all paraphrases, conditions or language variants are entailed by their citations.

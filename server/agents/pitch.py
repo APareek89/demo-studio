@@ -8,7 +8,7 @@ import re
 from .. import schemas, store
 from ..llm import runtime
 from .author import CLAIMISH, NUMBERISH
-from .principles import CUSTOMER_STATES, PRINCIPLES, audience_instruction, language_instruction
+from .principles import CUSTOMER_STATES, PRINCIPLES, audience_instruction, fact_context, language_instruction
 
 PITCH_SYSTEM = """You are {persona_name}, the voice guide in a live demo of {product_name}. An approved standard opening
 will play after the opening film. Plan the personalised route that follows it for THIS buyer.
@@ -29,7 +29,8 @@ Your output:
 - route: from the LIBRARY below — the buyer's strongest signal FIRST (a comfort need starts at the cabin, a performance
   want at the drive), then 1-2 supporting blocks, then the single features block, then establish last. Never more than 3 proof blocks: the whole demo must stay near three minutes; everything else
   is for questions. Each step may carry ONE bridge sentence that ties the block to this buyer's situation using their nouns
-  and numbers from CUSTOMER. A bridge that states a figure must cite fact ids from the REGISTRY; otherwise leave the bridge empty.
+  and numbers from CUSTOMER. Every product claim or benefit in a bridge must cite supporting REGISTRY facts, even without
+  figures. Without citations, only restate the buyer's context and name the next topic; otherwise leave the bridge empty.
   Bridges are statements, not questions.
   Never put intro/outcome segments in the route (they already played).
 - skipped: segments left out, with the reason.
@@ -39,7 +40,13 @@ Your output:
   roughly ten to twenty seconds, not lists or questions. Each names the picture that literally shows that idea
   (visual_ref) and cites fact ids for every figure. Prefer exactly ONE fact per batch; combine facts only when they are the
   same visible feature. Never invent an operating consequence (for example, number of downshifts) that the registry does
-  not state. A reasonable inference must be introduced as "That suggests…". Never a spec list. Empty when the buyer gave
+  not state. Preserve all material conditions: trim, powertrain, test/measurement basis and policy limitations. A policy
+  headline is not a complete contract: when the relationship between limits is unknown, never supply "or" or "whichever
+  comes first". Report the unknown relationship, or omit that batch and let the reviewed ownership segment explain it.
+  Do not infer convenience, easier installation, secure attachment, fit, comfort or predictable ownership from equipment
+  alone. A citation and "That suggests" are not evidence of a benefit; state only demonstrated outcomes, or propose a
+  personal fit-check without promising its result. If conditions cannot fit, omit the optional batch rather than shorten
+  away its scope. Never a spec list. Empty when the buyer gave
   nothing specific. A generic customer persona, PLAN DEFAULTS and prior script wording are not evidence of this buyer's life.
 - advance: the closing advance for this buyer (P10), naming one CTA label; advance_cta = its id.
 {audience}
@@ -99,6 +106,41 @@ def _numbers(text: str) -> set[str]:
     return found
 
 
+# Conservative, pitch-local omission guards for observed additions. These are
+# lexical checks, not general semantic entailment; reviewed proof remains the fallback.
+_UNCITED_CLAIM = re.compile(r"\b(?:standard|equipped|included|offers?|provides?|includes?|ensures?|improves?|reduces?|simplif(?:y|ies)|enables?|keeps?|makes?|compatible)\b", re.I)
+_BENEFIT = re.compile(r"\b(?:straightforward|easier|effortless|predictable|properly|securely|hassle[- ]free)\b", re.I)
+_NEGATIVE = re.compile(r"\b(?:no|not|never|unknown|unstated|unspecified|unverified|unproven)\b|\b(?:doesn't|doesn’t|isn't|isn’t)\b", re.I)
+_RELATION_TOPIC = re.compile(r"\b(?:relationship|which(?:ever)?[^.;]{0,35}(?:first|earlier)|(?:duration|time)[^.;]{0,35}(?:distance|usage)|limits?[^.;]{0,35}(?:appl|first|earlier))\b", re.I)
+_RELATION_UNKNOWN = re.compile(r"\b(?:unknown|unstated|unspecified|undetermined)\b|\bnot\s+(?:provided|supplied|stated|specified|detailed|established|known|clear)\b|\b(?:does|do)\s+not\s+(?:state|specify|detail|explain|provide)\b", re.I)
+_ASSERTED_RELATION = re.compile(r"\bwhichever\s+(?:(?:occurs|comes|happens|is|applies)\s+)?(?:first|earlier)\b|\b(?:years?|months?|days?|hours?)\b[^.!?;]{0,35}\bor\b[^.!?;]{0,45}\b(?:km|kilometres?|kilometers?|miles?|cycles?)\b|\b(?:km|kilometres?|kilometers?|miles?|cycles?)\b[^.!?;]{0,35}\bor\b[^.!?;]{0,45}\b(?:years?|months?|days?|hours?)\b", re.I)
+_MEASUREMENT_BASIS = re.compile(r"\b(?:ISO|VDA|SAE|DIN)\s*[A-Z]?\s*\d+(?:[-:]\d+)*\b", re.I)
+
+
+def _unsupported_addition(text: str, facts: list[dict]) -> bool:
+    for fact in facts:
+        source = fact.get("source") or {}
+        conditions = fact.get("conditions") or ""
+        if fact.get("kind") == "policy" or fact.get("truth") == "contractual":
+            clauses = re.split(r"[.;\n]", conditions + ";" + str(source.get("quote") or ""))
+            if any(_RELATION_TOPIC.search(c) and _RELATION_UNKNOWN.search(c) for c in clauses) and _ASSERTED_RELATION.search(text):
+                return True
+        # A quantity carrying an explicit standard cannot silently lose that basis.
+        if _numbers(text) & _numbers(str(fact.get("value") or "")):
+            normalized = re.sub(r"\s+", "", text).lower()
+            measurement_context = conditions + ";" + str(source.get("quote") or "")
+            if any(re.sub(r"\s+", "", basis).lower() not in normalized for basis in _MEASUREMENT_BASIS.findall(measurement_context)):
+                return True
+    benefits = _BENEFIT.findall(text)
+    if benefits:
+        evidence = ";".join(str(f.get(key) or "") for f in facts for key in ("claim", "value", "conditions"))
+        evidence += ";" + ";".join(str((f.get("source") or {}).get("quote") or "") for f in facts)
+        affirmative = " ".join(c for c in re.split(r"[.;\n]", evidence) if not _NEGATIVE.search(c)).lower()
+        if any(not re.search(r"\b" + re.escape(word.lower()) + r"\b", affirmative) for word in benefits):
+            return True
+    return False
+
+
 def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
@@ -109,7 +151,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     plan_by_id = {s["id"]: s for s in plan.get("segments", [])}
     library = "\n".join(f"{s['id']} [{s['role']}] {s['title']} — outcome: {s.get('outcome') or plan_by_id.get(s['id'], {}).get('outcome','')} — topic {s['topic']} — usps {s.get('usp_ids') or plan_by_id.get(s['id'], {}).get('usp_ids', [])} — facts {sorted({f for l in s['lines'] for f in l.get('fact_ids', [])})}" for s in segs) or "(no proof blocks)"
     facts = [f for f in und.get("facts", []) if f.get("approved", True)]
-    facts_txt = "\n".join(f"{f['id']} [{f['kind']}·{f.get('truth','stated')}] {f['claim']}: {f['value']}" + (f" ({f['conditions']})" if f.get("conditions") else "") for f in facts) or "(empty)"
+    facts_txt = "\n".join(fact_context(f) for f in facts) or "(empty)"
     sys = PITCH_SYSTEM.format(
         persona_name=voice.get("persona_name", "the guide"), product_name=und.get("product", {}).get("name", "the product"),
         principles=PRINCIPLES, states=CUSTOMER_STATES, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction((profile or {}).get("language") or demo.get("settings", {}).get("language", "en-IN")),
@@ -154,6 +196,8 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         for fid in citations:
             f = by_fact[fid]
             supported |= _numbers(" ".join(str(f.get(key) or "") for key in ("claim", "value", "conditions")))
+            # The exact measurement code can live only in the quoted footnote.
+            supported |= _numbers(" ".join(_MEASUREMENT_BASIS.findall(str((f.get("source") or {}).get("quote") or ""))))
         return bool(_numbers(text) - supported)
 
     route, seen = [], set()
@@ -164,7 +208,8 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         st["bridge_fact_ids"] = [x for x in st.get("bridge_fact_ids", []) if x in fact_ids]
         b = (st.get("bridge") or "").strip()
         if b and (not has_context or re.search(r"[?？]", b) or invented_number(b, st["bridge_fact_ids"])
-                  or (not st["bridge_fact_ids"] and (NUMBERISH.search(b) or CLAIMISH.search(b)))):
+                  or _unsupported_addition(b, [by_fact[fid] for fid in st["bridge_fact_ids"]])
+                  or (not st["bridge_fact_ids"] and (NUMBERISH.search(b) or CLAIMISH.search(b) or _UNCITED_CLAIM.search(b)))):
             st["bridge"] = ""  # no invented personal detail, ungrounded figure or hidden question
             st["bridge_dropped"] = b
         route.append(st)
@@ -179,6 +224,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         b["fact_ids"] = [x for x in b.get("fact_ids", []) if x in fact_ids]
         txt = (b.get("text") or "").strip()
         if (not txt or len(txt.split()) > 38 or re.search(r"[?？]", txt) or invented_number(txt, b["fact_ids"])
+                or _unsupported_addition(txt, [by_fact[fid] for fid in b["fact_ids"]])
                 or (not b["fact_ids"] and (NUMBERISH.search(txt) or CLAIMISH.search(txt)))):
             continue
         if b.get("visual_ref") not in vis_ids:

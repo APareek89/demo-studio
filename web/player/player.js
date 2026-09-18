@@ -527,6 +527,11 @@ export function mountPlayer(host, bundle, api) {
     captureOrigin(); interruptAll(); const run = newRun(); let jumped = null;
     const customerQuestion = options.question || text;
     const last = S.transcript.at(-1); if (!(last?.role === "user" && last.text === text)) addMsg("user", text);
+    // Keep raw customer wording beyond the short transcript window, without inferring a preference.
+    // Clarification replay already retained its question/reply; intake and explicit-answer paths may also own it.
+    if (!options.question && text !== S.profile.why && !(S.profile.followup || "").split("\n").includes(text)) {
+      S.profile.followup = [S.profile.followup, text].filter(Boolean).join("\n");
+    }
     if (!options.question) S.questions.push(text);
     S.openQuestions.add(customerQuestion);
     const turn = { question: customerQuestion, ...(S.lastListen || { voice_ended: Date.now(), stt_done: Date.now(), via: "unknown" }), qa_done: null, answer_audio: null }; S.lastListen = null; S.turns.push(turn); el.live.textContent = ""; setStatus("thinking", "Checking your question"); el.cap.textContent = "Checking the approved information…";

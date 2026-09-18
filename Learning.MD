@@ -774,3 +774,55 @@
 **Deepest why type:** `code`
 **Fix:** Protect only cold initialization with a standard-library Lock and a second None check. The already-created client remains shared; provider order, model selection, request settings, retries and timeouts are unchanged. No response is fabricated or reclassified as a fact gap.
 **Prevention:** `evals/gemini_client_contract.py` holds the first fake SDK constructor while another thread calls the same real initializer, then holds both model calls and mimics the installed SDK destructor. Before the fix it constructs two clients and closes an in-flight transport (3/7); after the fix both use the same open transport (7/7). Missing-key and constructor-error recovery behavior remain covered. No live provider or network call is made. The observed trace proves the closed-client failure; the deterministic race establishes a code path that explains it, not a post-fix live success. The concurrent pitch also returned incomplete JSON separately; its cause is not resolved by this lock.
+
+
+## 2026-09-18 — A complete qualifier was still clipped on a phone (NX25 follow-up)
+
+**Why 1:** The actual final A boot slide clipped “Creative+PS/Fearless+PS” at the right edge, although the saved label was complete.
+**Why 2:** The evidence item measured 164px wide but its content scrolled to 171px; the rail was 343px wide with 350px of content.
+**Why 3:** Its flex text child retained its automatic minimum width, and a long trim token had no permitted wrap within that width.
+**Why 4:** Whole-label preservation fixed semantic truncation but did not ensure every retained token could fit a phone card.
+**Why 5:** Existing geometry fixtures used ordinary words with convenient spaces and checked rail/image bounds, not each painted text fragment.
+**Deepest why type:** `code`
+**Fix:** Only within the existing narrow Cinematic rule, let the evidence text child shrink and wrap anywhere. Preserve exact label text, font size, card/rail layout, image geometry and saved coordinates.
+**Prevention:** A real-DOM regression uses the actual reviewed boot and split-seat labels at 390, 320, 304 and390px. It checks text preservation, each card's scroll width, painted text fragment bounds, the unchanged 12px minimum and no two-card rail/page overflow. Baseline screenshot: iteration-2/screenshots/A-final-boot-phone.png. Browser execution remains the root's responsibility; syntax or mock gates alone do not establish visual correction. No Build, provider or production-data change.
+
+
+## 2026-09-18 — Open questions became a false promise in the follow-up opener (NX33)
+
+**Symptom:** Actual C safely declined exact Mumbai price and guaranteed EMI, but its saved summary proposed “I have those details ready”. The same summary still listed those questions as unanswered. This was an internal suggested opener, not customer-heard narration.
+**Why 1:** The model turned a proposed follow-up into a statement of completed research.
+**Why 2:** The summary prompt allowed a natural sales opener without explicitly preserving unavailable-answer status.
+**Why 3:** The code copied unresolved record fields but trusted the generated opener independently of them.
+**Why 4:** Existing tests checked summary shape and record copying rather than a contradiction between unknowns and the suggested next sentence.
+**Why 5:** A valid structured response was treated as sufficient evidence for a future operational claim.
+**Fix:** When the session has unresolved topics, non-callback escalations, or the generated summary has unanswered questions, code replaces only the opener with a neutral invitation to discuss the open questions. The prompt also prohibits claiming missing answers/quotes/approvals/finance terms already exist. Context, interests, objections, unanswered fields and session status keep their existing behavior; the original C snapshots are not rewritten.
+**Prevention:** `evals/summary_contract.py` exercises the actual summary function with the exact C bad opener, each independent open-question signal, model-field preservation, no mutation of input status, a resolved-session opener, callback-only bookkeeping and mock behavior. Before:4/10; after:10/10, fake providers and blocked sockets.
+**Limit:** This is a deterministic opener safeguard, not semantic validation of all summary fields or proof that a salesperson has obtained anything. Retained historical non-callback escalations conservatively keep the invitation neutral. No paid call, session migration or provider/schema change.
+
+
+## 2026-09-18 — A direct customer statement did not reach retained context (NX32)
+
+**Why 1:** Real C said “I mainly want help with stop-and-go traffic.” The stopped recap omitted that actual need.
+**Why 2:** The statement reached Q&A, transcript and question history, but profile.why/followup stayed empty.
+**Why 3:** Intake and explicit line/clarification answers stored context; a direct turn during narration bypassed those paths.
+**Why 4:** The recap reads the retained profile, while runtime history is limited to the latest eight messages.
+**Why 5:** Earlier context tests covered intake and clarification, not a new statement entered while narration was active.
+**Deepest why type:** `code`
+**Fix:** Before the existing QA dispatch, retain each exact new customer turn once in followup. Skip exact intake wording, an already-retained line and the clarification replay whose question/reply was already stored. This does not infer or modify focus, classify intent or change the QA workflow. Root also adds a QA prompt instruction distinguishing a buying need/context correction from an unsupported specification: acknowledge the actual need without a promised benefit, use applicable approved evidence or the existing one-question clarification, and keep genuine unknown/guarantee declines.
+**Prevention and limit:** One new real-player browser case enters a statement during held narration, checks the next API profile, repeats the intake and statement to reject duplicates, verifies unchanged focus, and confirms exact wording once in the saved session/recap. The clarification case now verifies its original question and existing clarification pair exactly once. The prompt improves consultation guidance but does not enforce semantic correctness; the actual failed C run is preserved and live recovery is still required.
+
+
+## 2026-09-18 — Personalized pitch adds unsupported relations and installation benefits (NX34)
+
+**Why 1:** Actual A trace395 produced and spoke a warranty “or” relation and predictable-ownership benefit, a properly-secured child-seat outcome and an uncited installation-ease bridge; its boot batch omitted ISO V215.
+**Why 2:** Valid fact IDs and matching numbers passed validation even when the additional meaning or a material qualifier was absent.
+**Why 3:** The pitch prompt still allowed a “reasonable inference,” despite the shared evidence rules, and its local fact formatter omitted original source quotes/locators.
+**Why 4:** The custom/bridge path used numeric and a short claim-word list rather than checking the observed explicit unknowns, measurement basis and added benefit wording before synthesis.
+**Why 5:** Prior tests guarded invented customer numbers and hidden questions, but not these real cited-yet-unsupported additions.
+**Deepest why type:** `code`
+**Fix:** The existing pitch path receives full fact_context and a stronger scope-before-benefit prompt. Before speech, optional custom lines/bridges are omitted if they assert a policy relation while cited evidence explicitly leaves it unknown, drop a cited quantity's explicit ISO/VDA/SAE/DIN measurement basis, or add the narrow observed benefit vocabulary absent from affirmative cited evidence. Uncited assertion bridges are rejected. Reviewed route entries remain; no replacement product claims are synthesized.
+**Prevention and limits:** Real plan_pitch fixtures fail9/19 before and pass19/19 after, including actual failed text, no rejected text reaching fake speech, intact reviewed route and positive documented relation/basis/equipment/fit-check controls. Both this suite and the10-case summary contract run in qa_deck. These conservative English lexical checks can omit useful optional phrasing and do not establish general semantic entailment, complete condition preservation, variant association, or multilingual coverage. Affirmative occurrence of a benefit word in a citation is necessary for this guard but is not sufficient proof of an arbitrary claim using that word. Prompt compliance and actual post-fix spoken output still require review. The pre-fix A session remains a failed grounding example; no third Build occurred.
+
+
+**NX34 independent-review follow-up:** A standard present only in the exact source quote was initially missed, while its numeric code was rejected when correctly repeated. Two actual-path cases reproduced19/21; the detector now reads conditions and quote, and numeric validation admits only the recognized quoted standard's code, not every unrelated number in the quote. Final focused coverage is21/21. Honest negated relation wording and buyer-only benefit adjectives can be conservatively omitted by these lexical guards; no general entailment or complete safe-phrase coverage is claimed.
