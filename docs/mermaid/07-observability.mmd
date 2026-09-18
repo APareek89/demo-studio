@@ -1,7 +1,7 @@
 %% 07 · Observability — every model / speech call → trace.jsonl → Observability tab (web/observability.js)
 flowchart TD
   CTX["contextvars current_demo · current_stage<br/>[FUNCTION · usage.py] set by orchestrator._run_stage (build stages) and by runtime routes (stage 'runtime'), translate sets 'translate'"]:::fn
-  CALL["one call<br/>[LIBRARY · claude.py structured/_soft_structured/text · gemini.py structured/tts · sarvam.py tts/stt]<br/>t0 → response → latency_ms"]:::fn
+  CALL["one call<br/>[LIBRARY · claude.py structured/_soft_structured/text · gemini.py structured/tts · runware.py structured (success + failure) · sarvam.py tts/stt]<br/>t0 → response → latency_ms"]:::fn
   REC["usage.record (tokens / chars / seconds)<br/>[DATA · usage.jsonl] → cost estimate (Playground › Cost)"]:::data
   TR["usage.trace<br/>[DATA · trace.jsonl] {t, stage, kind, model, latency_ms, in, out, chars, usd, system[:6000], user[:6000], response[:6000], error}"]:::data
   STG["stage timings<br/>[DATA · demo.stages[stage] {status, started_at, seconds, error}] written by orchestrator._run_stage"]:::data

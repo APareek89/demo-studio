@@ -1,6 +1,9 @@
 %% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
 flowchart TD
   LG["Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py<br/>see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints"]:::data
+  PROV["TEXT providers · MODEL_TIER=eval default, customer opt-in<br/>[FUNCTION · server/config.py: health + llm/*]<br/>build: Claude → Gemini → Runware · runtime: Gemini → Claude → Runware<br/>Runware: native JSON + Pydantic + one repair · usage + failure traces<br/>vision/speech keep their own models"]:::data
+  PROV -.-> READ
+  PROV -.-> ALIGN
   U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask
   ING["store.add_*_source<br/>[FUNCTION · server/store.py]<br/>in: uploads / URL<br/>out: sources[] in data/demos/id/demo.json"]:::fn
   READBTN["POST /api/demos/id/read<br/>[FUNCTION · server/app.py]<br/>gate: ≥1 source · keys present or MOCK_LLM=1"]:::fn
@@ -9,14 +12,14 @@ flowchart TD
   OVER1["UI overlay<br/>'Reading your sources…'<br/>[FUNCTION · web/studio/align.js]"]:::term
   CARDS["Align: 6 cards<br/>Visuals · Facts · Script (slides) · FAQ · Persona & voice · CTAs<br/>[DATA · understanding.json + plan.json + script.json + deck.json + faq.json]"]:::data
   DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
-  ALIGN["Align loop<br/>[AGENT · claude-opus-5 → actions]<br/>see diagram 03"]:::agent
+  ALIGN["Align loop<br/>[AGENT · Claude text tier → actions]<br/>see diagram 03"]:::agent
   APPR{"all 6 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
   BUILD["BUILD phase (thread)<br/>[FUNCTION · graph.py]<br/>Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data
   PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>see diagram 05"]:::fn
   FB["USER gives feedback<br/>[ask · Rehearse panel]"]:::ask
-  FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · claude-opus-5]<br/>revise('author'|'plan'|'understand') → rebuild"]:::agent
+  FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'understand') → rebuild"]:::agent
   LIB["Demos tab<br/>[DATA · list of data/demos/*/demo.json]"]:::data
 
   U --> ING --> READBTN --> READ --> SSE --> OVER1 --> CARDS

@@ -19,6 +19,10 @@ T = TypeVar("T", bound=BaseModel)
 _client: anthropic.Anthropic | None = None
 
 
+class TextFallbackError(RuntimeError):
+    """Every secondary text provider failed; callers must not restart the same chain."""
+
+
 def client() -> anthropic.Anthropic:
     global _client
     if _client is None:
@@ -87,6 +91,33 @@ def _fallback_transcript(msgs: list[dict]) -> str:
     return "\n\n".join(f"{str(m.get('role', 'user')).upper()}:\n{_blocks_text(m.get('content'))}" for m in msgs)
 
 
+def text_fallback(system: str, msgs: list[dict], schema: type[T], *, max_tokens: int = 16000,
+                  fallback_reason: str = "", timeout: float | None = None) -> T:
+    """Build-time secondary chain, also used after PDFs are explicitly extracted to text.
+
+    Never flatten media into placeholders. Runtime orders providers itself and does not use this chain.
+    """
+    if not msgs or not _text_only_messages(msgs):
+        raise ValueError("Text fallback requires text-only messages; extract source text before retrying")
+    if config.MOCK_LLM:
+        return mock.fake(schema)
+    from . import gemini, runware
+    errors = []
+    try:
+        return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens,
+                                      fallback_reason=fallback_reason, timeout_s=timeout)
+    except Exception as e:
+        # Keep the chain's diagnostic without copying provider payloads or credentials into a new error.
+        errors.append(f"gemini: {type(e).__name__}")
+    try:
+        history = [{"role": m["role"], "content": _blocks_text(m["content"])} for m in msgs[:-1]]
+        return runware.structured(system, _blocks_text(msgs[-1]["content"]), schema,
+                                  history=history, max_tokens=max_tokens, timeout=timeout)
+    except Exception as e:
+        errors.append(f"runware: {type(e).__name__}")
+        raise TextFallbackError("All build text fallbacks failed — " + " | ".join(errors)) from e
+
+
 def _record(resp, kind: str = "claude", *, t0: float | None = None, system: str = "", msgs: list | None = None, error: str = "", model: str | None = None) -> None:
     try:
         u = resp.usage if resp is not None else None
@@ -114,7 +145,7 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
                model: str | None = None, fallback: bool = True, max_retries: int | None = None) -> T:
     """One call, validated output. `content` is the user turn (blocks or plain text).
     soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit.
-    fallback=False disables the built-in Gemini fallback (the runtime layer orders providers itself)."""
+    fallback=False disables the built-in Gemini → Runware fallback (runtime orders providers itself)."""
     if config.MOCK_LLM:
         out = mock.fake(schema)
         usage.trace("claude", "mock", latency_ms=5, system=system, user=(content if isinstance(content, str) else json.dumps(content)[:4000]), response=out.model_dump_json()[:4000])
@@ -137,7 +168,8 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
             # Large schemas (Plan, ScriptOut) can exceed the constrained-decoding grammar limit.
             # Fall back to plain JSON + Pydantic validation with one repair pass.
             if "grammar" in str(e).lower() or "too large" in str(e).lower() or "schema" in str(e).lower():
-                return _soft_structured(system, msgs, schema, max_tokens)
+                return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout,
+                                        model=model, max_retries=max_retries)
             raise
         _record(resp, "claude-structured", model=model, t0=t0, system=system, msgs=msgs)
         if resp.stop_reason == "refusal":
@@ -147,9 +179,9 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
             raise RuntimeError("Claude returned no structured output")
         return parsed
     except Exception as e:
-        if fallback and _provider_unavailable(e) and _text_only_messages(msgs) and config.GEMINI_API_KEY:
-            from . import gemini
-            return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens, fallback_reason=describe_error(e))
+        if fallback and (not config.ANTHROPIC_API_KEY or _provider_unavailable(e)) and _text_only_messages(msgs):
+            return text_fallback(system, msgs, schema, max_tokens=max_tokens,
+                                 fallback_reason=describe_error(e), timeout=timeout)
         raise
 
 

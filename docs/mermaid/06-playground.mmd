@@ -2,14 +2,14 @@
 flowchart TD
   SEL["USER picks a demo<br/>[ask · Playground tab]"]:::ask
   ASK["Ask the guide<br/>[FUNCTION · POST /run/qa]<br/>in: question, profile 'Playground'<br/>out: answer, answered?, cited facts table, callback / clarifier flags"]:::fn
-  QA["grounded Q&A + validator<br/>[AGENT · claude-opus-5 + FUNCTION]<br/>see diagram 05"]:::agent
+  QA["grounded Q&A + validator<br/>[AGENT · Claude text tier + FUNCTION]<br/>see diagram 05"]:::agent
   EV["Evals<br/>[FUNCTION · POST /evals]<br/>in: questions (typed) or generate=true (N=12)<br/>out: per-question ✓/✗, facts, coverage · saved to evals/ev_*.json"]:::fn
-  QGEN["question generation<br/>[AGENT · claude-opus-5 · rehearsal.generate_questions]"]:::agent
+  QGEN["question generation<br/>[AGENT · Claude text tier · rehearsal.generate_questions]"]:::agent
   LOOP["for each question → qa.answer<br/>[FUNCTION] one paid call each"]:::fn
   COST["Cost so far<br/>[FUNCTION · GET /usage]<br/>in: usage.jsonl rows (tokens / chars / seconds per call, by stage)<br/>out: USD + INR totals, by stage, by model, per session; price assumptions shown"]:::fn
   USE["usage.jsonl<br/>[DATA · appended by claude.py, gemini.py, sarvam.py via contextvars]"]:::data
   FB["Refine<br/>[FUNCTION · POST /feedback context=rehearse]"]:::fn
-  ALIGN["align agent → actions → rebuild<br/>[AGENT · claude-opus-5] see diagram 03"]:::agent
+  ALIGN["align agent → actions → rebuild<br/>[AGENT · Claude text tier] see diagram 03"]:::agent
 
   SEL --> ASK --> QA
   SEL --> EV

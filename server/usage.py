@@ -7,6 +7,7 @@ import json
 import os
 import re
 import time
+from datetime import datetime, timezone
 
 from . import store
 
@@ -21,10 +22,19 @@ PRICES = {
     "gemini-lite": {"in": float(os.getenv("PRICE_GEMINI_LITE_IN", "0.10")), "out": float(os.getenv("PRICE_GEMINI_LITE_OUT", "0.40")), "note": "assumed — set PRICE_GEMINI_LITE_IN/OUT"},
     "gemini-image": {"per_image": float(os.getenv("PRICE_GEMINI_IMAGE", "0.02")), "note": "assumed $/generated image — set PRICE_GEMINI_IMAGE"},
     "gemini-3.6-flash": {"in": float(os.getenv("PRICE_GEMINI_IN", "0.30")), "out": float(os.getenv("PRICE_GEMINI_OUT", "2.50")), "note": "assumed — set PRICE_GEMINI_IN/OUT"},
+    "gemini-3.5-flash-lite": {"in": float(os.getenv("PRICE_GEMINI_TEXT_EVAL_IN", "0.30")), "out": float(os.getenv("PRICE_GEMINI_TEXT_EVAL_OUT", "2.50")), "note": "Google standard paid text price; output includes thinking"},
+    "gemini-3.8-flash": {"in": float(os.getenv("PRICE_GEMINI_TEXT_CUSTOMER_IN", "0.75")), "out": float(os.getenv("PRICE_GEMINI_TEXT_CUSTOMER_OUT", "3.75")),
+                         "standard_in": float(os.getenv("PRICE_GEMINI_TEXT_CUSTOMER_STANDARD_IN", "1.50")), "standard_out": float(os.getenv("PRICE_GEMINI_TEXT_CUSTOMER_STANDARD_OUT", "7.50")),
+                         "note": "Google introductory price through 2026-12-31 UTC; standard rates from 2027-01-01; selected by call timestamp, output includes thinking"},
+    "deepseek:v4@flash": {"in": float(os.getenv("PRICE_RUNWARE_DEEPSEEK_IN", "0.076")), "out": float(os.getenv("PRICE_RUNWARE_DEEPSEEK_OUT", "0.153")), "note": "Runware uncached list price; returned USD cost takes precedence"},
+    "openai:gpt@5.5": {"in": float(os.getenv("PRICE_RUNWARE_GPT55_IN", "5.0")), "out": float(os.getenv("PRICE_RUNWARE_GPT55_OUT", "30.0")), "note": "Runware uncached list price; returned USD cost takes precedence"},
     "gemini-tts": {"in": float(os.getenv("PRICE_GEMINI_TTS_IN", "0.50")), "out": float(os.getenv("PRICE_GEMINI_TTS_OUT", "10.0")), "note": "assumed — set PRICE_GEMINI_TTS_IN/OUT"},
     "sarvam-tts": {"per_1k_chars_inr": float(os.getenv("PRICE_SARVAM_TTS_INR_1K", "1.5")), "note": "assumed ₹/1k chars — set PRICE_SARVAM_TTS_INR_1K"},
     "sarvam-stt": {"per_min_inr": float(os.getenv("PRICE_SARVAM_STT_INR_MIN", "0.5")), "note": "assumed ₹/min — set PRICE_SARVAM_STT_INR_MIN"},
 }
+_RUNWARE_MODELS = {"deepseek:v4@flash": "deepseek:v4@flash", "deepseek-v4-flash": "deepseek:v4@flash",
+                   "openai:gpt@5.5": "openai:gpt@5.5", "openai-gpt-5-5": "openai:gpt@5.5"}
+_GEMINI_38_STANDARD_FROM = datetime(2027, 1, 1, tzinfo=timezone.utc).timestamp()
 FX_INR = float(os.getenv("FX_INR", "84"))
 TRACE_CAPTURE = os.getenv("TRACE_CAPTURE", "full").strip().lower()  # full | meta (meta = lengths only, no prompt text)
 TRACE_MAX_CHARS = int(os.getenv("TRACE_MAX_CHARS", "400000"))  # full prompts and responses by default
@@ -47,6 +57,8 @@ def record(kind: str, model: str, *, input_tokens: int = 0, output_tokens: int =
            "in": int(input_tokens or 0), "out": int(output_tokens or 0), "chars": int(chars or 0), "sec": round(float(seconds or 0), 2)}
     if usd is not None:
         row["usd"] = round(float(usd), 6)
+    elif _unpriced_runware(row):
+        row["cost_note"] = "Runware cost unavailable: model has no configured price and response supplied no USD cost"
     p = store.path(demo_id, "usage.jsonl")
     try:
         with p.open("a") as f:
@@ -67,6 +79,10 @@ def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: s
            "user": _redact(user) if TRACE_CAPTURE == "full" else f"[{len(user or '')} chars]",
            "response": _redact(response) if TRACE_CAPTURE == "full" else f"[{len(response or '')} chars]", "error": (error or "")[:400]}
     row["usd"] = round(float(usd), 5) if usd is not None else round(_cost_usd({**row, "sec": 0}), 5)
+    if usd is None and _unpriced_runware(row):
+        # Existing trace consumers expect numeric USD; make an unavailable estimate an explicit error,
+        # rather than presenting an unknown override as a successful free call.
+        row["error"] = (row["error"] + "; " if row["error"] else "") + "Runware cost unavailable: no configured model price or returned USD cost"
     try:
         with store.path(demo_id, "trace.jsonl").open("a") as f:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -87,10 +103,17 @@ def traces(demo_id: str, limit: int = 300) -> list[dict]:
     return rows
 
 
+def _unpriced_runware(row: dict) -> bool:
+    return row.get("kind", "").startswith("runware") and row.get("model") != "mock" and row.get("model") not in _RUNWARE_MODELS
+
+
 def _cost_usd(row: dict) -> float:
     if row.get("usd") is not None:
         return float(row["usd"])
     m = row["model"]
+    if m in _RUNWARE_MODELS:
+        pr = PRICES[_RUNWARE_MODELS[m]]
+        return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
     if m.startswith("claude"):
         pr = PRICES["claude-haiku-4-5"] if "haiku" in m else PRICES["claude-sonnet-5"] if "sonnet" in m else PRICES["claude-opus-5"]
         return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
@@ -100,6 +123,13 @@ def _cost_usd(row: dict) -> float:
         pr = PRICES["gemini-tts"]
         return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
     if m.startswith("gemini"):
+        if m == "gemini-3.8-flash":
+            pr = PRICES[m]
+            prefix = "standard_" if row.get("t", time.time()) >= _GEMINI_38_STANDARD_FROM else ""
+            return row["in"] / 1e6 * pr[prefix + "in"] + row["out"] / 1e6 * pr[prefix + "out"]
+        if m == "gemini-3.5-flash-lite":
+            pr = PRICES[m]
+            return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
         pr = PRICES["gemini-lite"] if "lite" in m else PRICES["gemini-3.6-flash"]
         return row["in"] / 1e6 * pr["in"] + row["out"] / 1e6 * pr["out"]
     if row["kind"] == "sarvam-tts":

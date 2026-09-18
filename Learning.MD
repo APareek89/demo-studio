@@ -6,6 +6,17 @@
 
 <!-- Newest first. -->
 
+### 2026-09-18 — Claude's grammar repair lost the selected model and timeout
+
+**Symptom:** Code inspection for text tiers found that a constrained-schema error could silently retry with the general model and default timeout instead of the caller's selected model/budget.
+**Why 1:** The grammar-error branch called `_soft_structured` without forwarding `model`, `timeout`, `effort` or `max_retries`.
+**Why 2:** The recovery path was written before callers selected separate runtime/plan/lite models.
+**Why 3:** Existing mock gates never enter Anthropic's schema-rejection branch.
+**Why 4:** Provider repair was treated as a new request rather than the continuation of the same configured operation.
+**Why 5:** The provider contract lacked a regression for preserving call options across recovery.
+**Action taken:** Forward all four options into the existing soft-JSON recovery. The fake Anthropic grammar-rejection regression in `evals/provider_contract.py` proves that the selected model, timeout, effort and retry count survive the recovery path.
+**Preventive action:** Every repair/fallback test asserts model selection, retry budget and history as well as output validity; free fakes must exercise provider error branches.
+
 ### 2026-09-05 — QA playback needed a single quiet-mode control
 
 **Symptom:** End-to-end browser QA could play recorded narration, browser speech or the promotional film aloud, disturbing someone using the same machine even when the test conversation itself used typed chat.

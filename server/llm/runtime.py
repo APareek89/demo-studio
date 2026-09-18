@@ -1,6 +1,6 @@
 """Runtime model calls — the customer is waiting.
 
-Providers are tried in RUNTIME_PROVIDERS order (default gemini, claude), each under RUNTIME_TIMEOUT with one retry.
+Providers are tried in RUNTIME_PROVIDERS order (default gemini, claude, runware), with bounded attempts.
 When every provider fails the caller declines and offers a callback: never a guess, never a silent wait.
 Build-time stages keep their own path (claude.structured with its full retries and fallback)."""
 from __future__ import annotations
@@ -11,7 +11,7 @@ from typing import TypeVar
 from pydantic import BaseModel
 
 from .. import config, usage
-from . import claude, gemini, mock
+from . import claude, gemini, mock, runware
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -32,6 +32,9 @@ def structured(system: str, content: str, schema: type[T], *, history: list[dict
                 msgs = list(history or []) + [{"role": "user", "content": content}]
                 return gemini.text_structured(system, claude._fallback_transcript(msgs), schema, max_tokens=max_tokens,
                                               timeout_s=config.RUNTIME_TIMEOUT, model=config.GEMINI_RUNTIME_MODEL, tries=2, kind="runtime")
+            if provider == "runware":
+                return runware.structured(system, content, schema, history=history, max_tokens=max_tokens,
+                                          timeout=config.RUNTIME_TIMEOUT, model=config.RUNWARE_TEXT_MODEL)
             errors.append(f"{provider}: unknown provider")
         except Exception as e:  # noqa: BLE001 — the next provider gets its turn; the caller declines when all fail
             errors.append(f"{provider}: {str(e)[:120]}")

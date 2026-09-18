@@ -6,7 +6,7 @@ flowchart TD
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec
   WAIT["409 'Still working on the last change'<br/>[term]"]:::term
   HIST["conversation.json<br/>[DATA · last 12 turns sent as history]"]:::data
-  AGENT["align agent<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
+  AGENT["align agent<br/>[AGENT · Claude text tier · messages.parse]<br/>in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
   APPLY{"action type<br/>[FUNCTION · orchestrator.apply_actions]"}:::dec
   A1["approve(card)<br/>[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)"]:::fn
   A2["edit_fact / remove_fact / resolve_unknown<br/>[FUNCTION] direct registry edit · author marked stale"]:::fn

@@ -2,6 +2,17 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
+## Codex Part 1 — 2026-09-18 — `codex/runware-fallback`
+
+Anand approved Runware as the third text fallback and the exact two-tier model selection in chat. Build text now tries
+Claude → Gemini → Runware; runtime defaults Gemini → Claude → Runware. `MODEL_TIER=eval` defaults to Haiku 4.5,
+Gemini 3.5 Flash-Lite and Runware DeepSeek V4 Flash; `customer` selects Opus 5, Gemini 3.8 Flash and Runware GPT-5.5.
+Text tiers leave vision/speech configuration alone. Runware uses JSON mode, local validation, one repair, per-attempt
+traces and cost accounting. Extracted PDFs use the same secondary text chain. No-citation and all-down callback rules stay.
+Details, exact prices, overrides and limitations: `docs/runware-fallback.md`. `/api/health` reports configuration, not account health.
+Baseline: deck 135/135. First working checkpoint: deck 157/157, accept 24/24, smoke OK, Python and all required JS syntax checks; all 8 diagram copies match. No paid calls or real demo changes.
+Part 2 (car choice, mock walkthrough, billing confirmation and a paid run) and Part 3 remain separate; no merge/deploy authorized.
+
 ## 🤝 Codex handover — 2026-09-18 evening
 From here Anand works with Codex. Codex's standing rules are in `AGENTS.md` (Codex reads that file automatically) and
 the orientation, working protocol and first task prompt are in `CODEX_INSTRUCTIONS.MD` (§8 is the copy-paste prompt:
@@ -194,6 +205,7 @@ and 🧑 **rotate the Vercel API token** that was pasted in chat on 2026-09-17.
 
 ## Key decisions
 
+- 2026-09-18 — Runware is the third text fallback; MODEL_TIER=eval by default (Anand approved). Native textInference JSON mode + Pydantic preserves the consumer contract; Gemini text selection is separate from vision. Models/prices and rejected alternatives are in `docs/runware-fallback.md`.
 - Uploaded media defines identity; generated derivatives may preserve it but never redefine colour, trim or feature detail.
 - Approving 3D requires rotated-view inspection; paid generation is one reviewed attempt at a time.
 - The opening film owns the stage. Afterwards, each line selects the model, exact evidence or a compact cited card.

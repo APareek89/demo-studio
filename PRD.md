@@ -46,6 +46,6 @@ measurement, payments, 3D product visuals (removed 2026-09-18), voice barge-in, 
 ## Slides v1 (branch `slides-v1`, from 2026-09-18)
 - One script segment = one slide: a still image chosen for the topic, ≤3 grounded callouts anchored on the tagged product part, revealed as the matching line plays. Callouts pass the same validator as script lines.
 - The player has two stage modes, video and slide; sync is event-driven (audio leads, screen follows).
-- Runtime model calls try providers in a configurable order (default Gemini, then Claude) with a short timeout; when every provider fails the guide declines and offers a callback — it never guesses and never waits.
+- Runtime model calls try providers in a configurable order (default Gemini → Claude → Runware) with a short per-provider timeout; when every provider fails the guide declines and offers a callback. `MODEL_TIER=eval` selects cheaper text defaults; `customer` opts into premium text models. Only `MOCK_LLM=1` avoids paid calls.
 - The transcript sent to Q&A holds only the words the customer actually heard.
 - Sessions, leads and a per-session summary live in DynamoDB; assets and audio in S3 via the instance role.

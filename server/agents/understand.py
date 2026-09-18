@@ -8,7 +8,7 @@ from __future__ import annotations
 import csv
 import json
 
-from .. import media, schemas, sources, store
+from .. import config, media, schemas, sources, store
 from ..llm import claude, gemini
 
 VIDEO_PROMPT = """You are indexing product footage so a demo can seek to the exact moment that shows a feature.
@@ -230,7 +230,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         # explicit manifest as the safe fallback; do not discard the whole read.
         manifest = _verified_manifest(demo_id, demo)
         request_too_large = any(marker in str(e).lower() for marker in ("request_too_large", "request too large", "maximum size"))
-        if claude._provider_unavailable(e) or (request_too_large and manifest):
+        if not config.ANTHROPIC_API_KEY or claude._provider_unavailable(e) or isinstance(e, claude.TextFallbackError) or (request_too_large and manifest):
             # Gemini cannot consume Anthropic's in-message PDF block, but the
             # source layer already has a guarded text extractor for every doc.
             # Preserve source boundaries and citations in a text-only retry.
@@ -238,6 +238,9 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 reason = "request was too large" if request_too_large else "primary document reader was unavailable"
                 emit(f"The {reason} — using the explicit verified-fact manifest…")
                 out = manifest
+            elif isinstance(e, claude.TextFallbackError):
+                # Text sources already traversed the full chain inside claude.structured.
+                raise RuntimeError(f"Fact extraction failed: {e}") from e
             else:
                 emit("Primary document reader unavailable — retrying from extracted source text…")
                 plain = []
@@ -249,8 +252,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                     + (f"\n\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}" if instruction else "")
                 )
                 try:
-                    out = gemini.text_structured(FACTS_SYSTEM, "\n\n".join(plain), schemas.FactsOut, max_tokens=32000,
-                                                 fallback_reason=claude.describe_error(e))
+                    out = claude.text_fallback(FACTS_SYSTEM, [{"role": "user", "content": "\n\n".join(plain)}],
+                                              schemas.FactsOut, max_tokens=32000, fallback_reason=claude.describe_error(e))
                 except Exception as fallback_error:
                     raise RuntimeError(f"Fact extraction failed: {gemini.describe_error(fallback_error)}") from fallback_error
         else:

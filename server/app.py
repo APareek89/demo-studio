@@ -325,8 +325,8 @@ def read_sources(demo_id: str):
     demo = _demo_or_404(demo_id)
     if not demo["sources"]:
         raise HTTPException(400, "Add at least one source first")
-    if not config.ANTHROPIC_API_KEY and not config.MOCK_LLM:
-        raise HTTPException(400, "ANTHROPIC_API_KEY missing in .env")
+    if not (config.ANTHROPIC_API_KEY or config.GEMINI_API_KEY or config.RUNWARE_API_KEY or config.MOCK_LLM):
+        raise HTTPException(400, "Add a text-provider key in .env (Anthropic, Gemini or Runware)")
     if any(s["kind"] in ("video", "image") for s in demo["sources"]) and not config.GEMINI_API_KEY and not config.MOCK_LLM:
         raise HTTPException(400, "GEMINI_API_KEY missing in .env (needed for video/images)")
     try:

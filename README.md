@@ -42,7 +42,7 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 
 ## What changed on 2026-09-04
 - **Workflow is a LangGraph graph** (`server/graph.py`): router → understand → plan → align_enter → align_wait (interrupt: waits for your approvals / messages) → author → voice → rehearsal → bundle → finish. Checkpoints in `data/graph.sqlite`. `GET /api/workflow` returns the graph as Mermaid (also `docs/mermaid/00-workflow.mmd`). `pip install "langgraph-cli[inmem]"` then `langgraph dev` opens it in LangGraph Studio.
-- **Model defaults**: Claude Opus 5 for customer-facing reasoning, Haiku 4.5 for mechanical passes, Gemini 3.6 Flash for vision, the cheaper Gemini 3.1 Flash Lite Image model for image generation/cleanup, Sarvam Bulbul v3 with Gemini speech fallback. **Runtime** calls (`/run/qa`, `/run/pitch`) try `RUNTIME_PROVIDERS` in order — default `gemini,claude` — with `RUNTIME_TIMEOUT` (15 s) each and one retry. Override with the corresponding environment variables.
+- **Text model tiers**: `MODEL_TIER=eval` defaults to Claude Haiku 4.5, Gemini 3.5 Flash-Lite and Runware DeepSeek V4 Flash; `customer` selects Opus 5, Gemini 3.8 Flash and Runware GPT-5.5. Build text tries Claude → Gemini → Runware; runtime defaults to `RUNTIME_PROVIDERS=gemini,claude,runware` with `RUNTIME_TIMEOUT` (15 s) per provider. Only `MOCK_LLM=1` is free. Vision remains Gemini 3.6 Flash, image generation/cleanup Gemini 3.1 Flash Lite Image, and speech Sarvam Bulbul v3 with Gemini fallback. See [prices, overrides and timeout limits](docs/runware-fallback.md).
 - **Picture editor** (`server/agents/visuals.py`): after authoring, every line's picture is chosen to show the part being described, with a reason per line in the run log.
 - **Image clean-up** (`server/media.py`): transparent cut-outs get a clean studio background and defringed edges locally; `settings.enhance_images = "ai"` uses the Gemini image model when the key has quota. **Mascot**: built-in SVG guide in the player (`web/player/mascot.js`); a generated PNG when the image model is available.
 - **Run log** `data/demos/<id>/RUN.md`: INPUT / OUTPUT / MODEL CALLS per stage with full prompts and responses; `GET /api/demos/<id>/runlog`.
@@ -54,7 +54,7 @@ Docs: `PRD.md` · `docs/ARCHITECTURE_FLOW.md` · `docs/architecture-flow.html` �
 - **Pictures match words.** An information→image map is built at Configure and used by the script, the custom batches and the answers.
 
 ## What changed on 2026-09-18 (branch `slides-v1`, Phase 1)
-- **3D / Runware path removed** (`server/visual.py`, `llm/runware.py`, Demo Visual step, My Assets tab, `model-viewer`). Existing GLB files on disk are untouched; nothing reads them.
+- **3D path removed** (`server/visual.py`, the old Runware 3D adapter, Demo Visual step, My Assets tab, `model-viewer`). Existing GLB files on disk are untouched; nothing reads them. Runware now serves only the third text fallback.
 - **Player stage modes are `video` | `slide`.** No stage-mode classifier; a line shows its image (else the hero) and the card of its cited facts.
 - **Runtime Q&A never guesses and never waits on a dead provider:** providers in `RUNTIME_PROVIDERS` order, 15 s each, one retry; when all fail the guide declines and offers a callback. The hardcoded product-specific fallback and the 10-minute global cooldown are gone.
 - **MP4 export parked** (`GET /export.mp4` → 409) until the exporter is rebuilt for slides with HTML callouts.

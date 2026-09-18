@@ -19,6 +19,7 @@ GRAPH_DB.parent.mkdir(parents=True, exist_ok=True)
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
 SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3").strip() or "bulbul:v3"  # v2 deprecated Sep 2026
@@ -33,15 +34,27 @@ if STT_PROVIDER == "sarvam" and not SARVAM_API_KEY:
     STT_PROVIDER = "browser"
 MOCK_LLM = os.getenv("MOCK_LLM", "").strip() == "1"  # schema-shaped fake outputs, no keys, no spend
 
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-5").strip() or "claude-opus-5"  # script, registry, Q&A — the customer-facing words
-CLAUDE_PLAN_MODEL = os.getenv("CLAUDE_PLAN_MODEL", "claude-opus-5").strip() or "claude-opus-5"  # demo plan + runtime route
-CLAUDE_LITE_MODEL = os.getenv("CLAUDE_LITE_MODEL", "claude-haiku-4-5-20251001").strip() or "claude-haiku-4-5-20251001"  # mechanical passes: translation, picture matching
+# The tier chooses text-model defaults only. Explicit role overrides win; media/speech stay independent.
+MODEL_TIER = os.getenv("MODEL_TIER", "eval").strip() or "eval"
+if MODEL_TIER not in {"eval", "customer"}:
+    raise ValueError("MODEL_TIER must be 'eval' or 'customer'")
+_claude_default = "claude-opus-5" if MODEL_TIER == "customer" else "claude-haiku-4-5-20251001"
+_gemini_text_default = "gemini-3.8-flash" if MODEL_TIER == "customer" else "gemini-3.5-flash-lite"
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "").strip() or _claude_default
+CLAUDE_PLAN_MODEL = os.getenv("CLAUDE_PLAN_MODEL", "").strip() or _claude_default
+CLAUDE_LITE_MODEL = os.getenv("CLAUDE_LITE_MODEL", "").strip() or _claude_default
+GEMINI_TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "").strip() or _gemini_text_default
+# RUNWARE_TEXT_MODEL is the eval override; the adapter receives the selected effective value.
+# In customer tier, RUNWARE_TEXT_MODEL_PREMIUM wins even if the eval override is also set.
+_runware_eval_model = os.getenv("RUNWARE_TEXT_MODEL", "").strip() or "deepseek:v4@flash"
+RUNWARE_TEXT_MODEL_PREMIUM = os.getenv("RUNWARE_TEXT_MODEL_PREMIUM", "").strip() or "openai:gpt@5.5"
+RUNWARE_TEXT_MODEL = RUNWARE_TEXT_MODEL_PREMIUM if MODEL_TIER == "customer" else _runware_eval_model
 # Runtime (the live demo — the customer is waiting): a provider order the user can flip and a short timeout per try.
-# Default Gemini first (no Claude credits on this account), Claude as the fallback; the SDK retry is the "retry once".
-RUNTIME_PROVIDERS = [p.strip() for p in os.getenv("RUNTIME_PROVIDERS", "gemini,claude").split(",") if p.strip()]
+# Default Gemini first, then Claude, then Runware; the adapter owns each provider's bounded retry.
+RUNTIME_PROVIDERS = [p.strip() for p in os.getenv("RUNTIME_PROVIDERS", "gemini,claude,runware").split(",") if p.strip()]
 RUNTIME_TIMEOUT = float(os.getenv("RUNTIME_TIMEOUT", "15"))
 CLAUDE_RUNTIME_MODEL = os.getenv("CLAUDE_RUNTIME_MODEL", "").strip() or CLAUDE_MODEL
-GEMINI_RUNTIME_MODEL = os.getenv("GEMINI_RUNTIME_MODEL", "").strip() or os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip()
+GEMINI_RUNTIME_MODEL = os.getenv("GEMINI_RUNTIME_MODEL", "").strip() or GEMINI_TEXT_MODEL
 STORAGE_BACKEND = (os.getenv("STORAGE_BACKEND", "local").strip().lower() or "local")  # local | aws — aws falls back to local without credentials
 DDB_TABLE_SESSIONS = os.getenv("DDB_TABLE_SESSIONS", "demo-studio-sessions").strip() or "demo-studio-sessions"
 SESSION_TTL_DAYS = int(os.getenv("SESSION_TTL_DAYS", "180") or 180)  # customer data does not live forever
@@ -64,13 +77,16 @@ def health() -> dict:
     return {
         "anthropic": bool(ANTHROPIC_API_KEY),
         "gemini": bool(GEMINI_API_KEY),
+        "runware": bool(RUNWARE_API_KEY),
         "gcloud_tts": bool(GCLOUD_TTS_API_KEY),
         "storage": STORAGE_BACKEND,
         "sarvam": bool(SARVAM_API_KEY),
         "tts_provider": TTS_PROVIDER,
         "stt_provider": STT_PROVIDER,
         "mock": MOCK_LLM,
+        "model_tier": MODEL_TIER,
         "claude_model": CLAUDE_MODEL, "claude_plan_model": CLAUDE_PLAN_MODEL, "claude_lite_model": CLAUDE_LITE_MODEL, "gemini_image_model": GEMINI_IMAGE_MODEL,
-        "gemini_model": GEMINI_MODEL, "gemini_tts_model": GEMINI_TTS_MODEL,
+        "gemini_model": GEMINI_MODEL, "gemini_text_model": GEMINI_TEXT_MODEL, "gemini_tts_model": GEMINI_TTS_MODEL,
+        "runware_text_model": RUNWARE_TEXT_MODEL, "runware_text_model_premium": RUNWARE_TEXT_MODEL_PREMIUM,
         "runtime_providers": RUNTIME_PROVIDERS, "runtime_timeout": RUNTIME_TIMEOUT, "claude_runtime_model": CLAUDE_RUNTIME_MODEL, "gemini_runtime_model": GEMINI_RUNTIME_MODEL,
     }

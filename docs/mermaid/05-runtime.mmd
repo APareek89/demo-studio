@@ -8,7 +8,7 @@ flowchart TD
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
   FILM["polite acknowledgement → opening film (overlay on the hero slide) → spoken return<br/>[FUNCTION · playIntroFilm]<br/>planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
   OPEN["STANDARD OPENING · unchanged, 1-2 min<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
-  PITCH["pitch plan (starts before the film)<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
+  PITCH["pitch plan (starts before the film)<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
   PV["grounding + visual validators<br/>[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]<br/>segment ids exist · uncited claim dropped · multi-fact batch→card · establish last"]:::fn
   DF["decision frame on a transient slide + speech<br/>[LIBRARY · /run/tts]"]:::data
   CUSTOM["custom proof batches as transient slides<br/>[FUNCTION · transientSlide]<br/>the named picture else the current one · cited facts as panel callouts"]:::fn
@@ -20,7 +20,7 @@ flowchart TD
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]<br/>stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns"]:::ask
-  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
+  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each, one retry; all fail → decline + callback]<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
   RT{"where does the answer live?<br/>[FUNCTION · deck.route_for — answer fact ids ∩ each slide's facts, else the question's words vs slide topics / titles · NO LLM]"}:::dec
   JUMP["jump: cross-fade to the slide that carries the facts · all callouts shown, the matching one lit · slide marked covered (reached later: title + first line, no check-in)<br/>[FUNCTION · showSlideView + highlight]"]:::fn

@@ -135,7 +135,7 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
     if config.MOCK_LLM:
         return mock.fake(schema)
     t = _types()
-    model = model or config.GEMINI_MODEL
+    model = model or config.GEMINI_TEXT_MODEL
     prompt = f"SYSTEM INSTRUCTIONS:\n{system}\n\nCONVERSATION / TASK:\n{transcript}"
     cfg: dict = dict(response_mime_type="application/json", response_schema=schema, temperature=temperature,
                      max_output_tokens=min(max(256, max_tokens), 32768))
@@ -147,7 +147,8 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
     text = resp.text or ""
     try:
         um = resp.usage_metadata
-        inp, out = um.prompt_token_count or 0, um.candidates_token_count or 0
+        inp = um.prompt_token_count or 0
+        out = (um.candidates_token_count or 0) + (getattr(um, "thoughts_token_count", 0) or 0)
         usage.record(kind, model, input_tokens=inp, output_tokens=out)
         usage.trace(kind, model, latency_ms=(time.time() - t0) * 1000,
                     system=f"Primary unavailable: {fallback_reason}" if fallback_reason else system[:TRACE_SYS],

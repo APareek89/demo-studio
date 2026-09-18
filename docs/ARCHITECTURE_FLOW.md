@@ -21,11 +21,12 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Deck: callouts | AGENT + FUNCTION | model writes ≤ 3 per slide, ≤ 8 words, citing fact ids and a listed part; `author.ungrounded` drops an uncited figure/claim; an empty slide gets its own cited facts; Align overrides win | `agents/deck.py`, `deck-overrides.json` |
 | Deck: label position | FUNCTION | part confidence ≥ 0.6 → anchor at the box centre and a label spot inside the frame, off the part box, clear of other labels; else side panel — never guessed | `agents/deck.place_callouts` |
 | Grounding (runtime) | FUNCTION | invalid/empty fact ids on a number/claim answer → don't-guess reply + escalate + unknown recorded; every provider down → the same decline + callback, no cooldown, no local guessing | `agents/qa.answer` |
-| Runtime providers | CONFIG | `RUNTIME_PROVIDERS` (default `gemini,claude`), `RUNTIME_TIMEOUT` 15 s per try, the SDK retry is the one retry; models `GEMINI_RUNTIME_MODEL` / `CLAUDE_RUNTIME_MODEL` | `server/llm/runtime.py`, `config.py` |
+| Runtime providers | CONFIG | `RUNTIME_PROVIDERS` (default `gemini,claude,runware`); `MODEL_TIER=eval|customer` selects text defaults; explicit role overrides win. `RUNTIME_TIMEOUT` 15 s per provider request; Runware repair gets remaining budget (network-phase timeouts, not a strict wall timer); models `GEMINI_RUNTIME_MODEL` / `CLAUDE_RUNTIME_MODEL` / `RUNWARE_TEXT_MODEL` | `server/llm/runtime.py`, `config.py` |
+| Build text fallback | FUNCTION | Claude → Gemini → Runware; Runware JSON + Pydantic, at most one repair; extracted PDFs retain source labels; media blocks never flattened; mock never calls out; vision/speech independent of text tier | `server/llm/claude.py`, `gemini.py`, `runware.py`, `agents/understand.py` |
 | Voice failure budget | FUNCTION | stop rendering after 4 provider errors; player falls back to browser voice | `agents/voice.render_script` |
 | Rehearsal size | CONFIG | `settings.rehearsal_questions` (default 12, each a paid Claude call) | `config.REHEARSAL_QUESTIONS` |
 | Player check-in | FUNCTION | 15 s countdown, 8 s auto-listen, 20 s after an answer | `web/player/player.js` `waitFor` |
-| Pitch time budget | FUNCTION | runtime providers in order, 15 s each; player waits ≤2.65 s after the opening then falls back to the standard route (`personalized:false` in the session) | `agents/pitch.py`, `player.js` `startAfterIntake` |
+| Pitch time budget | FUNCTION | runtime providers in order (Gemini → Claude → Runware), 15 s request budgets; player waits ≤2.65 s after the opening then falls back to the standard route (`personalized:false` in the session) | `agents/pitch.py`, `player.js` `startAfterIntake` |
 | Bridge grounding | FUNCTION | a runtime bridge with a figure/claim and no fact id is dropped (`bridge_dropped`) | `agents/pitch.py` |
 | Decline categories | AGENT rule + FUNCTION | pricing, discounts, finance, insurance, features, availability, warranty/service, comparisons → decline when not in the registry; comparisons only from competitor URLs when `settings.competition=on`, always with a verify caveat | `agents/qa.py` |
 | Uploads | FUNCTION | 1 GB per file; AVIF/HEIC converted for the models, originals served; videos play from the original (ffmpeg optional) | `config.MAX_UPLOAD_MB`, `server/media.py` |
@@ -55,7 +56,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Player | `web/player/player.js`, `web/studio/rehearse.js` (`server/exporter.py` parked) |
 | Mock mode | `server/llm/mock.py` (`MOCK_LLM=1`) |
 | Playground | `web/playground.js`, `POST /evals`, `GET /usage`, `GET /faq-template` in `server/app.py` |
-| Usage / cost | `server/usage.py` (contextvars; `usage.jsonl` per demo; price table overridable in `.env`) |
+| Usage / cost | `server/usage.py` (contextvars; `usage.jsonl` per demo; price table overridable in `.env`; Runware returned USD wins, Gemini text includes thinking tokens and uses the call-date promotional rate) |
 | Media | `server/media.py` (AVIF/HEIC → JPEG for the models; optional ffmpeg 720p proxy + fast-start) |
 | Sales layer | `server/agents/principles.py`, `pitch.py`, scorecard in `rehearsal.py`, `llm/sarvam.py` |
 

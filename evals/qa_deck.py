@@ -49,7 +49,7 @@ check("/visual routes are gone", c.get(f"/api/demos/{i}/visual").status_code == 
 check("/assets routes are gone", c.get("/api/assets").status_code == 404)
 check("MP4 export is parked with 409", c.get(f"/api/demos/{i}/export.mp4").status_code == 409)
 h = c.get("/api/health").json()
-check("health lists runtime providers, not runware", "runtime_providers" in h and "runware" not in h and "runware_model" not in h)
+check("health lists Runware text fallback and tier, with no retired 3D model setting", "runtime_providers" in h and isinstance(h.get("runware"), bool) and h.get("model_tier") in ("eval", "customer") and h.get("runware_text_model") and "runware_model" not in h)
 check("index.html loads no model-viewer", "model-viewer" not in c.get("/").text)
 check("player has no 3D branch", "model-viewer" not in c.get("/web/player/player.js").text)
 
@@ -361,7 +361,9 @@ check("a burst-limit 429 with a retry hint cools down for that long (+1 s)", _ge
 check("a burst-limit 429 without a hint cools down 30 s, a zero quota 600 s, a 503 not at all", _gem._quota_cooldown("429 You exceeded your current quota")[0] == 30 and _gem._quota_cooldown("limit: 0 quota_value: 0")[0] == 600 and _gem._quota_cooldown("503 UNAVAILABLE high demand")[0] == 0)
 
 # ---- runtime config ----
-check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
+from provider_contract import run as provider_contract
+provider_contract(check, i)
+check("runtime provider order defaults Gemini → Claude → Runware", config.RUNTIME_PROVIDERS == ["gemini", "claude", "runware"])
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
 
 print("| Case | OK |"); print("|---|---|")
