@@ -422,3 +422,13 @@
 **Deepest why type:** `missing-policy`
 **Action taken:** A middleware sets `Cache-Control: no-cache` on `/`, `/web/*` and any `.html/.js/.css` — every load revalidates, a 304 when unchanged. APIs untouched.
 **Preventive action:** Every static asset the app serves has an explicit cache policy; version queries on imports are not the mechanism.
+
+### 2026-09-18 — A deck-only rebuild died on a model the deck never needed
+
+**Symptom:** `POST /revise {stage: deck}` on the real TVS iQube demo ended in `error` at the FAQ stage — "Question generation failed: 503 high demand" (Gemini) — although nothing about the sources or the registry had changed; the bundle stayed stale and the player kept the old slides.
+**Why 1:** The graph re-runs every node after `deck` (faq → voice → bundle), and `faq.run` regenerated its question list with a model call before checking whether the registry had changed.
+**Why 2:** The reuse logic only covered the answers (by registry hash), because the question list was written first and the hash check came second.
+**Why 3:** Rebuilds had only been exercised in mock mode, where every model is always up.
+**Deepest why type:** `unnecessary-dependency`
+**Action taken:** When the registry hash is unchanged the previously generated questions stand (no call); `force` regenerates. Proven by a counting test in `qa_deck.py`.
+**Preventive action:** A rebuild of one stage may only call a model for that stage; every downstream node reuses by content hash, and the eval counts model calls on a second run.

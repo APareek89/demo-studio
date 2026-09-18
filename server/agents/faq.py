@@ -85,11 +85,18 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
     n = int(demo.get("settings", {}).get("faq_questions", 20) or 20)
     docs = doc_questions(demo_id)
     emit(f"FAQ bank: {len(docs)} question(s) from your FAQ document" + (f", generating {max(0, n - len(docs))} more" if n > len(docs) else "") + "…")
-    generated = rehearsal.generate_questions(demo_id, max(0, n - len(docs)), bias="answerable") if n > len(docs) else []
-    questions = [(q, "document") for q in docs] + [(q, "generated") for q in generated]
     registry_hash = _registry_hash(demo_id)
     previous = store.read_json(demo_id, "faq.json") or {}
-    reusable = {e.get("question"): e for e in previous.get("entries", [])} if not force and previous.get("registry_hash") == registry_hash else {}
+    same_registry = not force and previous.get("registry_hash") == registry_hash
+    kept = [e["question"] for e in previous.get("entries", []) if e.get("origin") == "generated" and not e.get("error")] if same_registry else []
+    want = max(0, n - len(docs))
+    if same_registry and kept:  # the registry has not changed: the questions stand, no model call
+        generated = kept[:want]
+        emit("FAQ bank: the sources have not changed — keeping the generated questions.")
+    else:
+        generated = rehearsal.generate_questions(demo_id, want, bias="answerable") if want else []
+    questions = [(q, "document") for q in docs] + [(q, "generated") for q in generated]
+    reusable = {e.get("question"): e for e in previous.get("entries", [])} if same_registry else {}
     entries = []
     for i, (q, origin) in enumerate(questions, 1):
         emit(f"FAQ {i}/{len(questions)}: “{q[:70]}”")

@@ -342,6 +342,19 @@ check("Observability shows the percentiles", "p50" in c.get("/web/observability.
 _r = c.get("/web/observability.js")
 check("front-end files are served with Cache-Control: no-cache and revalidate to a 304; APIs untouched", _r.headers.get("cache-control") == "no-cache" and c.get("/web/observability.js", headers={"If-None-Match": _r.headers.get("etag", "")}).status_code == 304 and c.get("/").headers.get("cache-control") == "no-cache" and c.get("/api/health").headers.get("cache-control") is None)
 
+# ---- the FAQ bank on a rebuild: an unchanged registry means no model call for questions ----
+from server.agents import faq as _faq, rehearsal as _reh
+_calls = {"n": 0}; _orig_gen = _reh.generate_questions
+_reh.generate_questions = lambda *a, **k: (_calls.__setitem__("n", _calls["n"] + 1), _orig_gen(*a, **k))[1]
+try:
+    _f1 = _faq.run(i, lambda m: None); _n1 = _calls["n"]
+    _f2 = _faq.run(i, lambda m: None); _n2 = _calls["n"]
+    check("FAQ bank: a rebuild with the same registry keeps its questions and makes no question call (a deck-only revise must not depend on a model)", _n2 == _n1 and [e["question"] for e in _f2["entries"]] == [e["question"] for e in _f1["entries"]])
+    _f3 = _faq.run(i, lambda m: None, force=True)
+    check("FAQ bank: force regenerates the questions", _calls["n"] == _n2 + 1)
+finally:
+    _reh.generate_questions = _orig_gen
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
