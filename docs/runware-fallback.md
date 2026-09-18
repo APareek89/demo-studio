@@ -27,6 +27,27 @@ Set the tier and any overrides in the environment, then restart the local server
 
 Run the free gates with isolated test data, `MOCK_LLM=1`, `CLOUD_SYNC=0`, `STORAGE_BACKEND=local` and a separate `DEMO_STUDIO_GRAPH_DB`. `evals/qa_deck.py` includes `evals/provider_contract.py`, whose fake transport exercises provider dispatch and failures without sending requests. The acceptance and smoke gates and Python/JavaScript syntax checks remain required.
 
+From the repository root:
+
+```bash
+(
+  set -e
+  gate_dir="$(mktemp -d /tmp/demo-studio-eval.XXXXXX)"
+  export MOCK_LLM=1 CLOUD_SYNC=0 STORAGE_BACKEND=local SHARE_SECRET=mock-gate-secret
+  for gate in qa_deck qa_accept smoke_mock; do
+    DEMO_STUDIO_DATA="$gate_dir/$gate/demos" \
+    DEMO_STUDIO_GRAPH_DB="$gate_dir/$gate/graph.sqlite" \
+      .venv/bin/python "evals/$gate.py"
+  done
+  .venv/bin/python -m py_compile server/*.py server/agents/*.py server/llm/*.py evals/provider_contract.py
+  for file in web/app.js web/slide.js web/player/player.js web/studio/*.js web/observability.js; do
+    ~/.local/node/bin/node --check "$file"
+  done
+)
+```
+
 Runware's default build timeout is 120 seconds. Runtime passes `RUNTIME_TIMEOUT` (15 seconds by default); the optional repair gets only the remaining budget. HTTP timeouts bound individual network phases/inactivity, not a strict whole-call wall timer. Adding a third provider increases the possible total wait; the player may fall back to its approved route before a late personalization answer arrives. Player timing is unchanged.
 
 No paid call, account balance, live schema compatibility, narration quality or real latency is proven by these free checks. The real demo and provider preflight remain separate approved-run work. Never deploy or merge this branch without Anand's instruction.
+
+Verified 2026-09-18: deck 174/174 including 39 provider contracts, acceptance 24/24, both smoke phases, Python compilation, syntax checks for all 8 required JavaScript files, and all 8 Mermaid/HTML copies. Independent code review found no additional issues. Core checkpoint: `cdedb28`; the follow-up commit contains the extended contracts and verification record.

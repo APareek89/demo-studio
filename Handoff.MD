@@ -10,8 +10,10 @@ Gemini 3.5 Flash-Lite and Runware DeepSeek V4 Flash; `customer` selects Opus 5, 
 Text tiers leave vision/speech configuration alone. Runware uses JSON mode, local validation, one repair, per-attempt
 traces and cost accounting. Extracted PDFs use the same secondary text chain. No-citation and all-down callback rules stay.
 Details, exact prices, overrides and limitations: `docs/runware-fallback.md`. `/api/health` reports configuration, not account health.
-Baseline: deck 135/135. First working checkpoint: deck 157/157, accept 24/24, smoke OK, Python and all required JS syntax checks; all 8 diagram copies match. No paid calls or real demo changes.
+Baseline: deck 135/135. Core checkpoint `cdedb28`: deck 157/157. Completed Part 1: deck 174/174 (39 provider contracts), accept 24/24, smoke OK; Python compilation and all 8 required JS files pass; all 8 diagram copies match. Mock/fake transports only, no paid calls or real demo changes. Independent code review found no additional issues. Live account access, nested-schema compatibility and real latency remain unverified.
 Part 2 (car choice, mock walkthrough, billing confirmation and a paid run) and Part 3 remain separate; no merge/deploy authorized.
+Effort: feature — text fallback and tiers; support — isolated evals, independent review and documentation.
+Rework: the existing Claude schema-recovery path now preserves its selected model, timeout, effort and retries.
 
 ## 🤝 Codex handover — 2026-09-18 evening
 From here Anand works with Codex. Codex's standing rules are in `AGENTS.md` (Codex reads that file automatically) and

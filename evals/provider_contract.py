@@ -7,7 +7,12 @@ from __future__ import annotations
 
 import copy
 import json
+import math
+import os
+import runpy
+import tempfile
 from contextlib import ExitStack
+from datetime import datetime, timezone
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -15,8 +20,9 @@ import httpx
 
 
 def run(check, demo_id: str) -> None:
-    from server import config, schemas, usage
-    from server.agents import author, deck, qa
+    from server import app as app_module
+    from server import config, schemas, store, usage
+    from server.agents import author, deck, qa, understand
     from server.llm import claude, gemini, runware, runtime
 
     answer = schemas.QAOut(answer="The approved material can help.", fact_ids=[], answered=True)
@@ -196,4 +202,167 @@ def run(check, demo_id: str) -> None:
                 patch.object(runware, "_post", side_effect=lambda task, timeout: response(task, uncited.model_dump_json())):
             out = qa.answer(demo_id, "Contract test unsupported range", voice_it=False, live=True)
         check("providers: runtime drops Runware's uncited figure and offers callback", not out["answered"] and not out["fact_ids"] and out["offer_callback"] and "999" not in out["answer"])
+
+        # Resolve config in independent namespaces: never reload the live config module or read .env.
+        with tempfile.TemporaryDirectory(prefix="provider-contract-") as temp:
+            isolated_env = {"MOCK_LLM": "1", "CLOUD_SYNC": "0", "DEMO_STUDIO_DATA": temp + "/demos",
+                            "DEMO_STUDIO_GRAPH_DB": temp + "/graph.sqlite"}
+
+            def isolated(path, values=None):
+                with patch.dict(os.environ, {**isolated_env, **(values or {})}, clear=True), \
+                        patch("dotenv.load_dotenv", return_value=False):
+                    return runpy.run_path(path, run_name="server._provider_contract_isolated")
+
+            eval_config = isolated(config.__file__)
+            customer_config = isolated(config.__file__, {"MODEL_TIER": "customer"})
+            for tier, resolved, cm, gm, rm in (
+                ("eval", eval_config, "claude-haiku-4-5-20251001", "gemini-3.5-flash-lite", "deepseek:v4@flash"),
+                ("customer", customer_config, "claude-opus-5", "gemini-3.8-flash", "openai:gpt@5.5"),
+            ):
+                check(f"providers: {tier} tier resolves every approved text-model role",
+                      resolved["MODEL_TIER"] == tier
+                      and all(resolved[key] == cm for key in ("CLAUDE_MODEL", "CLAUDE_PLAN_MODEL", "CLAUDE_LITE_MODEL", "CLAUDE_RUNTIME_MODEL"))
+                      and resolved["GEMINI_TEXT_MODEL"] == resolved["GEMINI_RUNTIME_MODEL"] == gm
+                      and resolved["RUNWARE_TEXT_MODEL"] == rm
+                      and resolved["RUNTIME_PROVIDERS"] == ["gemini", "claude", "runware"])
+            media_models = {"GEMINI_MODEL": "gemini-3.6-flash", "GEMINI_IMAGE_MODEL": "gemini-3.1-flash-lite-image",
+                            "GEMINI_TTS_MODEL": "gemini-3.1-flash-tts-preview"}
+            check("providers: changing text tier leaves vision, image and speech defaults unchanged",
+                  all(resolved[key] == value for resolved in (eval_config, customer_config) for key, value in media_models.items()))
+            overrides = {key: "override-" + key.lower() for key in ("CLAUDE_MODEL", "CLAUDE_PLAN_MODEL", "CLAUDE_LITE_MODEL",
+                         "CLAUDE_RUNTIME_MODEL", "GEMINI_TEXT_MODEL", "GEMINI_RUNTIME_MODEL", "GEMINI_MODEL")}
+            overridden = isolated(config.__file__, {"MODEL_TIER": "customer", **overrides})
+            check("providers: explicit role and media overrides survive customer tier", all(overridden[key] == value for key, value in overrides.items()))
+            runware_overrides = {"RUNWARE_TEXT_MODEL": "eval-override", "RUNWARE_TEXT_MODEL_PREMIUM": "customer-override"}
+            er = isolated(config.__file__, runware_overrides)
+            cr = isolated(config.__file__, {"MODEL_TIER": "customer", **runware_overrides})
+            check("providers: Runware eval and premium overrides stay in their own tier",
+                  er["RUNWARE_TEXT_MODEL"] == "eval-override" and cr["RUNWARE_TEXT_MODEL"] == "customer-override")
+            blanks = isolated(config.__file__, {"CLAUDE_MODEL": " ", "GEMINI_TEXT_MODEL": "", "RUNWARE_TEXT_MODEL": " "})
+            check("providers: blank overrides use eval defaults and invalid tier is refused",
+                  all(blanks[key] == eval_config[key] for key in ("CLAUDE_MODEL", "GEMINI_TEXT_MODEL", "RUNWARE_TEXT_MODEL"))
+                  and bool(failure(lambda: isolated(config.__file__, {"MODEL_TIER": "custmer"}), ValueError)))
+
+            pricing = isolated(usage.__file__)
+            cost = pricing["_cost_usd"]
+            row = {"kind": "runware-structured", "in": 1000000, "out": 1000000, "chars": 0, "sec": 0,
+                   "t": datetime(2026, 9, 18, tzinfo=timezone.utc).timestamp()}
+            expected_prices = {"claude-haiku-4-5-20251001": (1.0, 5.0), "claude-opus-5": (5.0, 25.0),
+                               "gemini-3.5-flash-lite": (0.30, 2.50), "gemini-3.8-flash": (0.75, 3.75),
+                               "deepseek:v4@flash": (0.076, 0.153), "openai:gpt@5.5": (5.0, 30.0),
+                               "deepseek-v4-flash": (0.076, 0.153), "openai-gpt-5-5": (5.0, 30.0)}
+            check("providers: approved model IDs and Runware aliases use exact token prices",
+                  all(math.isclose(cost({**row, "model": model, "out": 0}), expected[0])
+                      and math.isclose(cost({**row, "model": model, "in": 0}), expected[1])
+                      for model, expected in expected_prices.items()))
+            check("providers: native Runware cost overrides estimates including exact zero",
+                  cost({**row, "model": "openai:gpt@5.5", "usd": 0}) == 0
+                  and cost({**row, "model": "deepseek:v4@flash", "usd": 0.123}) == 0.123)
+            cutoff = datetime(2027, 1, 1, tzinfo=timezone.utc).timestamp()
+            check("providers: Gemini customer promotional price ends at the UTC boundary",
+                  cost({**row, "model": "gemini-3.8-flash", "t": cutoff - 1}) == 4.5
+                  and cost({**row, "model": "gemini-3.8-flash", "t": cutoff}) == 9.0)
+
+        # Real Gemini text adapter must account for thought tokens as billed output.
+        recorded.reset_mock()
+        traced.reset_mock()
+        gemini_reply = SimpleNamespace(text=answer.model_dump_json(), usage_metadata=SimpleNamespace(
+            prompt_token_count=100, candidates_token_count=20, thoughts_token_count=30))
+        types = SimpleNamespace(GenerateContentConfig=lambda **kwargs: kwargs, HttpOptions=lambda **kwargs: kwargs)
+        with patch.object(gemini, "_types", return_value=types), \
+                patch.object(gemini, "_retry", side_effect=lambda fn, **kwargs: fn()), \
+                patch.object(gemini, "client", return_value=SimpleNamespace(models=SimpleNamespace(generate_content=lambda **kwargs: gemini_reply))):
+            out = gemini.text_structured("System", "Question", schemas.QAOut)
+        check("providers: Gemini text billing includes hidden thought tokens",
+              out == answer and recorded.call_args.kwargs.get("output_tokens") == 50
+              and traced.call_args.kwargs.get("output_tokens") == 50
+              and recorded.call_args.args[1] == config.GEMINI_TEXT_MODEL)
+
+        # PDFs reach the secondary text chain only after source-labelled extraction.
+        source = {"id": "src_contract", "kind": "pdf", "role": "product", "name": "official-brochure.pdf", "path": "sources/contract.pdf"}
+        document_demo = {"name": "Contract vehicle", "product": {}, "sources": [source]}
+        facts = schemas.FactsOut(
+            product=schemas.Product(name="Contract vehicle", category="car", summary="A sourced vehicle.", audience="Buyers"),
+            facts=[schemas.FactOut(kind="policy", claim="Warranty", value="3 years", confidence=1,
+                                  source=schemas.FactSource(ref="src_contract", locator="page 1", quote="Warranty: 3 years"))],
+            unknowns=[], brand=schemas.Brand(tone="Direct", voice_style="Warm", dos=[], donts=[], persona_hint="Guide"))
+        document_calls, document_tasks = [], []
+
+        def no_claude(**kwargs):
+            document_calls.append("claude")
+            raise RuntimeError("Claude credit balance is too low")
+
+        def no_gemini(*args, **kwargs):
+            document_calls.append("gemini")
+            raise RuntimeError("503 Gemini unavailable")
+
+        def document_response(task, timeout):
+            document_calls.append("runware")
+            document_tasks.append(copy.deepcopy(task))
+            return response(task, facts.model_dump_json())
+
+        with patch.object(store, "load", return_value=document_demo), patch.object(store, "read_json", return_value=None), \
+                patch.object(store, "write_json"), patch.object(store, "log"), patch.object(store, "update"), \
+                patch.object(understand.media, "enhance_images"), patch.object(claude, "pdf_block", return_value=media), \
+                patch.object(understand.sources, "source_text", return_value={"name": source["name"], "text": "Warranty: 3 years"}), \
+                patch.object(claude, "_client_opts", return_value=SimpleNamespace(messages=SimpleNamespace(parse=no_claude))), \
+                patch.object(gemini, "text_structured", side_effect=no_gemini), \
+                patch.object(runware, "_post", side_effect=document_response):
+            understanding = understand.run(demo_id, lambda message: None)
+            sent_text = json.dumps(document_tasks[-1]["messages"])
+            check("providers: unavailable PDF reader falls back once with source-labelled extracted text",
+                  document_calls == ["claude", "gemini", "runware"] and understanding["facts"][0]["source"]["ref"] == "src_contract"
+                  and all(text in sent_text for text in ("SOURCE src_contract", source["name"], "Warranty: 3 years"))
+                  and all(text not in sent_text for text in ("DO-NOT-SEND-MEDIA", "base64", "[pdf document]")))
+            document_demo["sources"] = [{**source, "kind": "text", "name": "facts.txt"}]
+            document_calls.clear()
+
+            def no_runware(task, timeout):
+                document_calls.append("runware")
+                raise httpx.ConnectError("synthetic unavailable")
+
+            with patch.object(runware, "_post", side_effect=no_runware):
+                error = failure(lambda: understand.run(demo_id, lambda message: None))
+            check("providers: exhausted source-text chain is not restarted by document recovery",
+                  bool(error) and document_calls == ["claude", "gemini", "runware"])
+
+        # Exercise route guards directly; the graph is stubbed so no background work starts.
+        with patch.multiple(config, ANTHROPIC_API_KEY="", GEMINI_API_KEY=""), \
+                patch.object(app_module, "_demo_or_404", return_value={"sources": [{"kind": "text"}]}) as get_demo, \
+                patch.object(app_module.graph, "start_read") as start_read:
+            result = app_module.read_sources(demo_id)
+            check("providers: Runware key alone permits a text-only source read", result == {"ok": True} and start_read.call_count == 1)
+            get_demo.return_value = {"sources": [{"kind": "image"}]}
+            error = failure(lambda: app_module.read_sources(demo_id), app_module.HTTPException)
+            check("providers: image sources still require Gemini before a read starts",
+                  error is not None and error.status_code == 400 and "GEMINI_API_KEY" in error.detail and start_read.call_count == 1)
+            get_demo.return_value = {"sources": [{"kind": "text"}]}
+            with patch.object(config, "RUNWARE_API_KEY", ""):
+                error = failure(lambda: app_module.read_sources(demo_id), app_module.HTTPException)
+            check("providers: no model key refuses a real source read before the graph starts",
+                  error is not None and error.status_code == 400 and start_read.call_count == 1)
+
+        clock = {"now": 100.0}
+        budgets = []
+
+        def timed_repair(task, timeout):
+            budgets.append(timeout)
+            clock["now"] += 6 if len(budgets) == 1 else 1
+            return response(task, "{}" if len(budgets) == 1 else None)
+
+        with patch.object(runware.time, "monotonic", side_effect=lambda: clock["now"]), \
+                patch.object(runware, "_post", side_effect=timed_repair):
+            out = runware.structured("System", "Question", schemas.QAOut, timeout=10)
+        check("providers: JSON repair shares the original timeout budget", out == answer and budgets == [10, 4])
+
+        def duplicated(task, timeout):
+            body = response(task).json()
+            body["data"].append(copy.deepcopy(body["data"][0]))
+            return httpx.Response(200, json=body)
+
+        recorded.reset_mock()
+        with patch.object(runware, "_post", side_effect=duplicated) as post:
+            error = failure(lambda: runware.structured("System", "Question", schemas.QAOut))
+        check("providers: duplicate task results are refused and returned costs remain recorded",
+              bool(error) and post.call_count == 1 and recorded.call_count == 2)
         check("providers: no fake-provider contract opened a network socket", not any(guard.called for guard in network))
