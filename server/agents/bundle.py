@@ -4,27 +4,10 @@ from __future__ import annotations
 import time
 
 from .. import config, store
-from . import visuals
 
 
 def media_url(demo_id: str, rel: str | None) -> str | None:
     return f"/media/{demo_id}/{rel}" if rel else None
-
-
-def visual_asset(demo_id: str, asset: dict | None) -> dict | None:
-    if not asset or not asset.get("glb"):
-        return None
-    return {**asset, "glb_url": media_url(demo_id, asset.get("glb")), "preview_url": media_url(demo_id, asset.get("preview")),
-            "angles": [{**a, "url": media_url(demo_id, a.get("path"))} for a in asset.get("angles", [])]}
-
-
-def attach_visual_asset(demo_id: str) -> None:
-    """Keep an already-built player bundle current when the optional asset changes."""
-    b = store.read_json(demo_id, "bundle.json")
-    if not b:
-        return
-    b["visual_asset"] = visual_asset(demo_id, store.load(demo_id).get("visual_asset"))
-    store.write_json(demo_id, "bundle.json", b)
 
 
 def build(demo_id: str, emit) -> dict:
@@ -57,7 +40,6 @@ def build(demo_id: str, emit) -> dict:
 
     def line(ln: dict) -> dict:
         v = visual(ln.get("visual"))
-        v["display_mode"] = visuals.display_mode(ln.get("text", ""), ln.get("visual"), ln.get("card", "none"))
         return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": v, "start": ln.get("start"), "duration": ln.get("duration"),
                 "fact_ids": ln.get("fact_ids", []), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
 
@@ -111,7 +93,6 @@ def build(demo_id: str, emit) -> dict:
         "pitch": {"decision_frame": plan.get("decision_frame", ""), "takeaway": plan.get("takeaway", ""), "primary_outcome": plan.get("primary_outcome", ""), "supporting_outcomes": plan.get("supporting_outcomes", []), "usps": plan.get("usps", []), "advance": plan.get("advance", ""), "do_not_recommend_if": plan.get("do_not_recommend_if", ""), "state_questions": plan.get("state_questions", [])},
         "language": main_lang, "languages": [main_lang] + list(alt.keys()), "alt_languages": alt,
         "mascot": media_url(demo_id, demo.get("mascot")) if demo.get("mascot") else None,
-        "visual_asset": visual_asset(demo_id, demo.get("visual_asset")),
         "intro_video": intro_video,
         "timeline": script.get("timeline"),
         "faq": [{**e, "audio": media_url(demo_id, e.get("audio")), "visual": visual({"ref": (e.get("visual") or {}).get("ref")}) if e.get("visual") else {"kind": "none"}} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])],

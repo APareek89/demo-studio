@@ -138,7 +138,7 @@ def put_demo_record(demo_id: str) -> None:
     item = {"demo_id": demo_id, "name": demo.get("name"), "status": demo.get("status"), "version": demo.get("version", 0), "created_at": demo.get("created_at"),
             "updated_at": time.time(), "product": demo.get("product", {}), "settings": demo.get("settings", {}), "approvals": demo.get("approvals", {}),
             "stages": demo.get("stages", {}), "sources": [{k: s.get(k) for k in ("id", "kind", "name", "role", "path", "play", "url", "use_in_demo", "size")} for s in demo.get("sources", [])],
-            "mascot": demo.get("mascot"), "visual_asset": demo.get("visual_asset"), "s3_prefix": f"demos/{demo_id}/"}
+            "mascot": demo.get("mascot"), "s3_prefix": f"demos/{demo_id}/"}
     _session().resource("dynamodb").Table(_state["tables"]["demos"]).put_item(Item=_ddb_item(item))
 
 

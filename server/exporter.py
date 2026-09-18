@@ -1,4 +1,4 @@
-"""Render the approved, non-interactive demo route as a downloadable MP4.
+"""PARKED (slides-v1): render the demo route as an MP4. The route returns 409 until the renderer is rebuilt for slides + HTML callouts.
 
 The live player stays richer (3D, questions and lead capture). The export deliberately
 uses the same bundled narration and per-line visual contract so it cannot invent a
@@ -61,8 +61,6 @@ def _source_image(demo_id: str, bundle: dict, line: dict) -> Path | None:
     # Literal evidence is the only time the exported frame uses a script image.
     # Model/card lines use the approved product preview as the visual placeholder.
     rel = _rel(demo_id, visual.get("url")) if mode == "evidence" and visual.get("kind") == "image" else None
-    if not rel:
-        rel = (bundle.get("visual_asset") or {}).get("preview")
     if not rel:
         rel = _rel(demo_id, (bundle.get("media") or {}).get("hero"))
     path = store.path(demo_id, rel) if rel else None

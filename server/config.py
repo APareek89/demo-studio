@@ -21,20 +21,6 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
-RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY", "").strip()
-# Multi-view identity preservation matters more than single-image speed for product demos.
-# Rodin accepts five source views; the environment override keeps controlled comparisons easy.
-RUNWARE_MODEL = os.getenv("RUNWARE_MODEL", "hyper3d:rodin@gen-2").strip() or "hyper3d:rodin@gen-2"
-RUNWARE_MODELS = {
-    "hyper3d:rodin@gen-2": {"label": "Rodin Gen-2", "max_images": 5, "recommended": True},
-    "tripo:v3.1@0": {"label": "Tripo 3D v3.1", "max_images": 4, "recommended": False},
-    "microsoft:trellis-2@4b": {"label": "TRELLIS.2", "max_images": 1, "recommended": False},
-}
-if RUNWARE_MODEL not in RUNWARE_MODELS:
-    raise ValueError("RUNWARE_MODEL must be one of: " + ", ".join(RUNWARE_MODELS))
-RUNWARE_RESOLUTION = int(os.getenv("RUNWARE_RESOLUTION", "1024"))
-if RUNWARE_RESOLUTION not in (512, 1024, 1536):
-    raise ValueError("RUNWARE_RESOLUTION must be 512, 1024 or 1536")
 SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3").strip() or "bulbul:v3"  # v2 deprecated Sep 2026
 SARVAM_STT_MODEL = os.getenv("SARVAM_STT_MODEL", "saarika:v2.5").strip() or "saarika:v2.5"
 # Speech: Sarvam is primary for the Indian context when its key is present; Gemini / Cloud TTS / browser fall back.
@@ -50,6 +36,12 @@ MOCK_LLM = os.getenv("MOCK_LLM", "").strip() == "1"  # schema-shaped fake output
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-5").strip() or "claude-opus-5"  # script, registry, Q&A — the customer-facing words
 CLAUDE_PLAN_MODEL = os.getenv("CLAUDE_PLAN_MODEL", "claude-opus-5").strip() or "claude-opus-5"  # demo plan + runtime route
 CLAUDE_LITE_MODEL = os.getenv("CLAUDE_LITE_MODEL", "claude-haiku-4-5-20251001").strip() or "claude-haiku-4-5-20251001"  # mechanical passes: translation, picture matching
+# Runtime (the live demo — the customer is waiting): a provider order the user can flip and a short timeout per try.
+# Default Gemini first (no Claude credits on this account), Claude as the fallback; the SDK retry is the "retry once".
+RUNTIME_PROVIDERS = [p.strip() for p in os.getenv("RUNTIME_PROVIDERS", "gemini,claude").split(",") if p.strip()]
+RUNTIME_TIMEOUT = float(os.getenv("RUNTIME_TIMEOUT", "15"))
+CLAUDE_RUNTIME_MODEL = os.getenv("CLAUDE_RUNTIME_MODEL", "").strip() or CLAUDE_MODEL
+GEMINI_RUNTIME_MODEL = os.getenv("GEMINI_RUNTIME_MODEL", "").strip() or os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip()
 GEMINI_IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image").strip() or "gemini-3.1-flash-lite-image"  # background clean-up + mascot
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip() or "gemini-3.6-flash"  # the proven vision tier (video shots + image tags); lite was the MVP downgrade
 GEMINI_TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview").strip() or "gemini-3.1-flash-tts-preview"
@@ -69,11 +61,10 @@ def health() -> dict:
         "gemini": bool(GEMINI_API_KEY),
         "gcloud_tts": bool(GCLOUD_TTS_API_KEY),
         "sarvam": bool(SARVAM_API_KEY),
-        "runware": bool(RUNWARE_API_KEY),
         "tts_provider": TTS_PROVIDER,
         "stt_provider": STT_PROVIDER,
         "mock": MOCK_LLM,
         "claude_model": CLAUDE_MODEL, "claude_plan_model": CLAUDE_PLAN_MODEL, "claude_lite_model": CLAUDE_LITE_MODEL, "gemini_image_model": GEMINI_IMAGE_MODEL,
         "gemini_model": GEMINI_MODEL, "gemini_tts_model": GEMINI_TTS_MODEL,
-        "runware_model": RUNWARE_MODEL,
+        "runtime_providers": RUNTIME_PROVIDERS, "runtime_timeout": RUNTIME_TIMEOUT, "claude_runtime_model": CLAUDE_RUNTIME_MODEL, "gemini_runtime_model": GEMINI_RUNTIME_MODEL,
     }

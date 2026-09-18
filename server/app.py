@@ -11,7 +11,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import cloud, config, events, exporter, graph, orchestrator, schemas, store, usage, runlog, visual
+from . import cloud, config, events, graph, orchestrator, schemas, store, usage, runlog
 from .agents import align, author, faq, pitch, qa, rehearsal, visuals, voice
 from .llm import sarvam
 
@@ -113,147 +113,13 @@ def get_demo(demo_id: str):
     return {"demo": demo, "cards": align.cards(demo_id) if demo["status"] not in ("sources",) else None,
             "conversation": store.read_json(demo_id, "conversation.json", []), "rehearsal": store.read_json(demo_id, "rehearsal.json"),
             "bundle_ready": store.path(demo_id, "bundle.json").exists(), "running": graph.is_running(demo_id),
-            "sessions": _sessions(demo_id), "leads": _leads(demo_id), "visual": visual.public_state(demo_id)}
+            "sessions": _sessions(demo_id), "leads": _leads(demo_id)}
 
 
 @app.get("/api/demos/{demo_id}/export.mp4")
 def export_demo_mp4(demo_id: str):
-    demo = _demo_or_404(demo_id)
-    try:
-        path = exporter.render(demo_id)
-    except RuntimeError as exc:
-        raise HTTPException(409, str(exc))
-    safe = re.sub(r"[^A-Za-z0-9._-]+", "-", demo.get("name") or demo_id).strip("-")
-    return FileResponse(path, media_type="video/mp4", filename=(safe or demo_id) + ".mp4")
-
-
-# ---------- optional Demo Visual ----------
-
-@app.get("/api/demos/{demo_id}/visual")
-def get_visual(demo_id: str):
     _demo_or_404(demo_id)
-    return visual.public_state(demo_id)
-
-
-@app.post("/api/demos/{demo_id}/visual/images")
-async def add_visual_image(demo_id: str, angle: str = Form(...), file: UploadFile = File(...)):
-    _demo_or_404(demo_id)
-    try:
-        return visual.add_image(demo_id, angle, file.filename or f"{angle}.jpg", await file.read())
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-
-@app.delete("/api/demos/{demo_id}/visual/images/{angle}")
-def remove_visual_image(demo_id: str, angle: str):
-    _demo_or_404(demo_id)
-    return visual.remove_image(demo_id, angle)
-
-
-@app.post("/api/demos/{demo_id}/visual/video")
-async def add_visual_video(demo_id: str, file: UploadFile = File(...)):
-    _demo_or_404(demo_id)
-    try:
-        return visual.add_video(demo_id, file.filename or "turntable.mp4", await file.read())
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/upload")
-async def upload_visual_asset(demo_id: str, file: UploadFile = File(...)):
-    _demo_or_404(demo_id)
-    try:
-        return visual.add_glb(demo_id, file.filename or "model.glb", await file.read())
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/mode")
-async def set_visual_mode(demo_id: str, req: Request):
-    _demo_or_404(demo_id)
-    try:
-        return visual.set_mode(demo_id, (await req.json()).get("mode", ""))
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/generate")
-async def generate_visual(demo_id: str, req: Request):
-    _demo_or_404(demo_id)
-    try:
-        try:
-            body = await req.json()
-        except Exception:
-            body = {}
-        return visual.start(demo_id, body.get("model"))
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    except RuntimeError as e:
-        raise HTTPException(409, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/views/prepare")
-async def prepare_visual_views(demo_id: str, req: Request):
-    _demo_or_404(demo_id)
-    try:
-        try:
-            body = await req.json()
-        except Exception:
-            body = {}
-        return visual.prepare_views(demo_id, (body.get("feedback") or "").strip())
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    except RuntimeError as e:
-        raise HTTPException(409, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/views/approve")
-def approve_visual_views(demo_id: str):
-    _demo_or_404(demo_id)
-    try:
-        return visual.approve_views(demo_id)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/approve")
-def approve_visual(demo_id: str):
-    _demo_or_404(demo_id)
-    try:
-        return visual.approve(demo_id)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-
-@app.post("/api/demos/{demo_id}/visual/skip")
-def skip_visual(demo_id: str):
-    _demo_or_404(demo_id)
-    return visual.skip(demo_id)
-
-
-@app.get("/api/assets")
-def list_assets():
-    return visual.assets()
-
-
-@app.post("/api/assets/{demo_id}/use")
-async def use_asset(demo_id: str, req: Request):
-    _demo_or_404(demo_id)
-    target = (await req.json()).get("target_demo_id", "")
-    _demo_or_404(target)
-    try:
-        return visual.use_in_demo(demo_id, target)
-    except (ValueError, RuntimeError) as e:
-        raise HTTPException(400, str(e))
-
-
-@app.delete("/api/assets/{demo_id}")
-def delete_asset(demo_id: str):
-    _demo_or_404(demo_id)
-    try:
-        return visual.delete_asset(demo_id)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
+    raise HTTPException(409, "MP4 export is parked while the player moves to slides with HTML callouts; the exporter will be rebuilt for the deck")
 
 
 @app.delete("/api/demos/{demo_id}")
@@ -427,7 +293,7 @@ async def run_evals(demo_id: str, req: Request):
     results = []
     for q in questions:
         try:
-            r = qa.answer(demo_id, q, [], body.get("profile") or None)
+            r = qa.answer(demo_id, q, [], body.get("profile") or None, live=True)
             results.append({"question": q, "answered": r["answered"], "fact_ids": r["fact_ids"], "answer": r["answer"], "escalate": r["escalate"], "clarifying_question": r.get("clarifying_question", "")})
         except Exception as e:
             results.append({"question": q, "answered": False, "fact_ids": [], "answer": "", "escalate": "error: " + str(e)[:120]})
@@ -798,7 +664,7 @@ async def run_qa(demo_id: str, req: Request):
         runlog.runtime_qa(demo_id, q, {**r, "answer": "[bank " + hit["id"] + "] " + r["answer"]}, body.get("profile") or None)
         return r
     try:
-        r = qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None)
+        r = qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None, live=True)
     except RuntimeError as e:
         raise HTTPException(502, str(e))
     r["from_bank"] = False

@@ -62,7 +62,7 @@ def exists(demo_id: str) -> bool:
 def new_demo(name: str) -> dict:
     demo_id = "dm_" + secrets.token_hex(4)
     d = demo_dir(demo_id)
-    for sub in ("sources", "audio", "sessions", "logs", "leads", "visual/inputs", "visual/frames", "visual/generated", "visual/attempts"):
+    for sub in ("sources", "audio", "sessions", "logs", "leads"):
         (d / sub).mkdir(parents=True, exist_ok=True)
     demo = {
         "id": demo_id,
@@ -86,7 +86,6 @@ def new_demo(name: str) -> dict:
             "rehearsal_questions": config.REHEARSAL_QUESTIONS,
         },
         "running": None,
-        "visual_asset": None,
     }
     save(demo_id, demo)
     write_json(demo_id, "conversation.json", [])
@@ -111,7 +110,6 @@ def _migrate(demo: dict) -> dict:
     for c in CARDS:
         ap.setdefault(c, False)
     demo["approvals"] = {c: ap.get(c, False) for c in CARDS}
-    demo.setdefault("visual_asset", None)
     return demo
 
 
@@ -149,7 +147,6 @@ def list_demos() -> list[dict]:
                 "sources": len(demo.get("sources", [])),
                 "approvals": demo.get("approvals", {}),
                 "sessions": len(list((d / "sessions").glob("*.json"))) if (d / "sessions").exists() else 0,
-                "visual_asset": demo.get("visual_asset"),
             })
     out.sort(key=lambda x: x["updated_at"], reverse=True)
     return out

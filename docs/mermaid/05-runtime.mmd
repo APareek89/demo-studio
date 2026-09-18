@@ -2,30 +2,27 @@
 flowchart TD
   START["USER clicks Start<br/>[ask]"]:::ask
   PRELOAD["preload all authored speech + opening film<br/>[FUNCTION · retained Audio/Video objects]<br/>intake, narration, deeper lines, check-ins, FAQ, fillers and closing"]:::fn
-  HERO["approved visual_asset starts centre stage<br/>[LIBRARY · model-viewer]<br/>recording/uploaded images define colour, trim and feature identity"]:::data
-  MP4["USER clicks MP4 download<br/>[ask · player header]"]:::ask
-  EXPORT["linear export<br/>[FUNCTION + LIBRARY · exporter.py + ffmpeg]<br/>in: bundle timeline, visuals, narration, opening film<br/>out: cached exports/demo-vN.mp4"]:::fn
+  HERO["hero image on stage<br/>[FUNCTION · showHero]<br/>first image, else first video frame"]:::data
   Q1["speak the ONE intake question<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>greeting + product + 'what are you buying it for, or shall we start?' (P02)"]:::data
   L1["listen ≤10 s<br/>[LIBRARY · Web Speech recognition]<br/>mic denied or silent → typed fallback input"]:::data
   P1["parse name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
   FILM["polite acknowledgement → opening film with audio → spoken return<br/>[FUNCTION · playIntroFilm]<br/>planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
   OPEN["STANDARD OPENING · unchanged, 1-2 min<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
-  PITCH["pitch plan (starts before the film)<br/>[AGENT · claude-opus-5 · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
+  PITCH["pitch plan (starts before the film)<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
   PV["grounding + visual validators<br/>[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]<br/>segment ids exist · uncited claim dropped · multi-fact batch→card · establish last"]:::fn
   DF["personalised roadmap card + speech<br/>[LIBRARY · /run/tts]"]:::data
   CUSTOM["custom proof batches<br/>[FUNCTION]<br/>one literal evidence view or cited multi-fact card per spoken batch"]:::fn
   FALL["fallback: bundle q2 + keyword focus order<br/>[FUNCTION] if the planner times out (45 s)"]:::fn
   PLAN["route = ordered proof blocks + establish<br/>[FUNCTION · buildRoute]"]:::fn
   LINE["play block: bridge then lines<br/>[FUNCTION] present exact stage before speech<br/>speak: same-provider audio; captions if unavailable"]:::fn
-  STAGE{"what can prove this line?<br/>[FUNCTION · display_mode]"}:::dec
-  MODEL["3D model + relevant held camera<br/>visible exterior / broad performance only"]:::data
-  EVID["literal uploaded image or video shot<br/>full-stage; never rotate to a sibling"]:::data
-  CARD["keyword card over 3D placeholder<br/>[FUNCTION]<br/>≤3 short claim/value rows; no locator/caveat prose<br/>abstract, written, multi-claim or missing exact image"]:::data
+  STAGE{"line visual?<br/>[FUNCTION · showVisual]"}:::dec
+  VID["video: timecoded shot of the product video<br/>[FUNCTION · showVideo]"]:::data
+  SLIDE["slide: the line's image, else the hero<br/>+ keyword card of the cited facts<br/>[FUNCTION · showSlide + showCard]"]:::data
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]"]:::ask
-  QA["POST /api/demos/id/run/qa<br/>[AGENT · claude-opus-5 · messages.parse]<br/>in: question, last 8 turns, profile, registry, visuals, CTAs<br/>out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered"]:::agent
+  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]<br/>in: question, last 8 turns, profile, registry, visuals, CTAs<br/>out: QAOut · answer, fact_ids, visual_ref, escalate, cta, answered"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
   SPEAK["speak answer · seek to literal visual or compact key-points card<br/>[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form"]:::term
@@ -39,15 +36,13 @@ flowchart TD
   HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
 
   START --> PRELOAD --> HERO --> Q1 --> L1 --> P1 --> FILM --> OPEN
-  HERO -.-> MP4 --> EXPORT
   P1 -.->|"starts before film"| PITCH --> PV
   OPEN --> DF --> CUSTOM --> PLAN
   PV --> DF
   PITCH -.->|"timeout / error"| FALL --> PLAN
   PLAN --> LINE --> STAGE
-  STAGE -- "visible exterior" --> MODEL --> CHK
-  STAGE -- "literal detail" --> EVID --> CHK
-  STAGE -- "abstract / several claims" --> CARD --> CHK
+  STAGE -- "shot" --> VID --> CHK
+  STAGE -- "image / none" --> SLIDE --> CHK
   CHK --> WAIT
   WAIT -- "continue / timeout" --> LINE
   WAIT -- "deeper" --> DEEP --> WAIT

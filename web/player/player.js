@@ -14,7 +14,7 @@ export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], modelTimer: null, ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
+    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
     leadPromptShown: false, leadQuestion: "", leadReason: "" };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
@@ -35,7 +35,6 @@ export function mountPlayer(host, bundle, api) {
       for (const item of bundle.faq || []) if (item.audio) urls.push(item.audio);
       for (const url of [...new Set(urls)]) { const a = new Audio(url); a.preload = "auto"; a.load(); S.preloads.push(a); }
       for (const item of bundle.media?.images || []) { if (!item.url) continue; const image = new Image(); image.decoding = "async"; image.src = item.url; S.preloads.push(image); }
-      for (const item of asset?.angles || []) { if (!item.url) continue; const image = new Image(); image.decoding = "async"; image.src = item.url; S.preloads.push(image); }
       if (bundle.intro_video?.url) { const v = document.createElement("video"); v.preload = "auto"; v.src = bundle.intro_video.url; v.load(); S.preloads.push(v); }
     } catch (e) {}
   }, 150);
@@ -48,7 +47,6 @@ export function mountPlayer(host, bundle, api) {
   const canListen = () => (serverSTT && navigator.mediaDevices?.getUserMedia) || SR;
   const opening = (bundle.segments || []).filter((s) => s.role === "intro" || s.role === "outcome");
   const library = (bundle.segments || []).filter((s) => s.role !== "intro" && s.role !== "outcome");
-  const asset = bundle.visual_asset;
 
   // ---------- DOM ----------
   const el = {};
@@ -57,11 +55,8 @@ export function mountPlayer(host, bundle, api) {
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
       h("div", { class: "right" }, api.downloadUrl ? h("a", { class: "icon-btn link-btn download-btn", href: api.downloadUrl, download: `${bundle.name || "demo"}.mp4`, title: "Download MP4" }, "MP4 ↓") : null, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", onclick: () => toggleFullscreen() }, "⛶"), el.muteBtn = h("button", { class: "icon-btn", title: "Mute audio", "aria-label": "Mute audio", "aria-pressed": "false", onclick: () => toggleMute() }, "🔊"), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", onclick: () => togglePause() }, "⏸"), h("button", { class: "icon-btn", title: "Stop and see the summary", onclick: () => stopDemo() }, "⏹"), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", onclick: () => toggleDrawer() }, "💬", h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", onclick: () => restart() }, "↺"), api.onClose ? h("button", { class: "icon-btn", title: "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, "✕") : null)),
     el.stage = h("div", { class: "pl-stage" },
-      el.media = h("div", { class: "pl-media" + (asset ? " has-3d" : "") },
-        asset ? (el.model = h("model-viewer", { src: asset.glb_url, poster: asset.preview_url || "", "camera-controls": true, "auto-rotate": true, "shadow-intensity": "1", "environment-image": "neutral", "interaction-prompt": "none", alt: `Interactive 3D view of ${bundle.product?.name || bundle.name}` })) : null,
-        el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" }),
-        asset ? (el.support = h("div", { class: "pl-support" }, el.supportImg = h("img", { alt: "Supporting product detail" }), el.supportVideo = h("video", { muted: true, playsinline: true, preload: "auto" }), h("div", { class: "pl-support-copy" }, el.supportBadge = h("span", { class: "origin real" }, "DETAIL"), el.supportText = h("span", {}, "Supporting view")))) : null,
-        asset ? h("div", { class: "pl-angle-strip", "aria-label": "Product reference views" }, ...(asset.angles || []).slice(0, 6).map((a) => h("figure", { title: `${a.label || a.angle} · ${a.generated ? "AI-created" : "real"}` }, h("img", { src: a.url, alt: a.label || a.angle }), h("figcaption", {}, a.label || a.angle, h("i", { class: a.generated ? "ai" : "" }, a.generated ? "AI" : "REAL"))))) : null),
+      el.media = h("div", { class: "pl-media" },
+        el.img = h("img", { alt: "", style: "opacity:0" }), el.video = h("video", { muted: true, playsinline: true, preload: "auto", style: "opacity:0;display:none" }), el.focus = h("div", { class: "focus" })),
       el.card = h("div", { class: "pl-card" }),
       el.ctas = h("div", { class: "pl-ctas" }),
       h("div", { class: "pl-dock" },
@@ -114,69 +109,32 @@ export function mountPlayer(host, bundle, api) {
   function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.seg.outcome || "", onclick: () => { interruptAll(); playFrom(i, 0); } }, st.seg.title))); }
   function renderCtas() { const ctas = (bundle.ctas || []).filter((c) => c.when === "always" || !c.when); el.ctas.replaceChildren(...ctas.map((c) => h("button", { class: "chip cta" + (c.primary ? " primary" : ""), onclick: () => { interruptAll(); ctaFlow(c.id, newRun()); } }, c.label))); }
 
-  // ---------- visuals ----------
+  // ---------- stage: video | slide ----------
+  // `video` = the opening film, or a timecoded shot of the product video. `slide` = a still (the line's image, else
+  // the hero) with an optional keyword card over it. The deck (Phase 3) gives every slide its own image and callouts;
+  // the two modes stay.
   let videoStop = null;
-  const DETAIL_CUE = /\b(interior|inside|cabin|seat|dashboard|screen|display|cluster|touchscreen|infotainment|airbags?|curtain|gear|gearbox|shifter|transmission|manual|automatic|paddles?|climate|sunroof|roof|calipers?|alloys?|wheels?|tyres?|muffler|exhaust|tailpipe|headlamps?|headlights?|grille|spoiler|bumper|sills?|brakes?|camera|sensors?|mirror|glovebox|charging|android auto|carplay|bose|speakers?|vents?|sunshade|armrest|smartsense|adas|cruise|lane|collision|blind spot|driver attention|child seat|isofix|tyre pressure)\b/i;
-  const ABSTRACT_CUE = /\b(warranty|roadside assistance|terms? (?:and )?conditions?|price|mileage|kilometres?|subscription|catalogue|brochure|not (?:printed|listed|stated)|availability|bookable|test conditions?|certified|marketing line|specifications? may change|cost extra|packages?|years?|PS\b|variant|N10\b|one-point-five litre|colou?r options?|colou?rs? listed|zero to hundred|nought to hundred|eight point nine)\b/i;
-  const MODEL_CUE = /\b(looks? and drives?|more character|stands? out|at a glance|daily suv|everyday suv|feels? quick|strongest fit|test drive|highway overtake|turbo petrol pulls|product overview|walkaround)\b/i;
-  function visualMode(v, text = "", card = "none") {
-    if (v?.display_mode) return v.display_mode;
-    if (["price", "summary", "contrast", "statement"].includes(card)) return "card";
-    const detail = DETAIL_CUE.test(text), abstract = ABSTRACT_CUE.test(text);
-    if (detail && abstract) return "card";
-    if (detail) return v?.url ? "evidence" : "card";
-    if (abstract) return "card";
-    if (MODEL_CUE.test(text)) return "model";
-    return v?.url ? "evidence" : (asset ? "model" : "card");
+  const heroIsVideo = () => /\.(mp4|mov|webm|m4v)(\?|$)/i.test(bundle.media?.hero || "");
+  function showVideo(url, start = 0, end = 1e9) {
+    el.img.style.opacity = 0; el.img.style.display = "none"; el.img.classList.remove("kb"); el.focus.classList.remove("on");
+    const vid = el.video; vid.style.display = ""; vid.style.opacity = 1;
+    if (videoStop) { vid.removeEventListener("timeupdate", videoStop); videoStop = null; }
+    const go = () => { vid.currentTime = Math.max(0, start); vid.play().catch(() => {}); videoStop = () => { if (vid.currentTime >= end) vid.pause(); }; vid.addEventListener("timeupdate", videoStop); };
+    if (vid.getAttribute("src") !== url) { vid.src = url; vid.onloadedmetadata = go; } else go();
   }
-  function setStageMode(mode) {
-    el.media.classList.toggle("evidence-on", mode === "evidence");
-    el.media.classList.toggle("card-on", mode === "card");
-    el.card.classList.toggle("dominant", mode === "card" && !asset);
+  function showSlide(url, focus = "") {
+    el.video.pause(); el.video.style.display = "none"; el.video.style.opacity = 0;
+    el.focus.classList.toggle("on", !!focus); el.focus.textContent = focus || "";
+    if (!url) { el.img.style.opacity = 0; el.img.style.display = "none"; return; }
+    if (el.img.getAttribute("src") !== url) { el.img.style.opacity = 0; el.img.classList.remove("kb"); el.img.src = url; el.img.onload = () => { el.img.style.opacity = 1; el.img.style.setProperty("--ox", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.setProperty("--oy", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.animationDelay = (-Math.random() * 12).toFixed(1) + "s"; el.img.classList.add("kb"); }; }
+    else { el.img.style.opacity = 1; el.img.classList.add("kb"); }
+    el.img.style.display = "";
   }
-  function directModel(v) {
-    if (!asset || !el.model) return;
-    const cue = `${v?.scriptText || ""} ${v?.focus || ""} ${v?.description || ""}`.toLowerCase();
-    let orbit = "25deg 72deg 105%", label = "PRODUCT VIEW";
-    if (/rear|tail|boot|back/.test(cue)) { orbit = "175deg 74deg 105%"; label = "REAR DETAIL"; }
-    else if (/engine|turbo|drive|performance|quick|accelerat|hundred|power|torque/.test(cue)) { orbit = "38deg 68deg 100%"; label = "DRIVE / PERFORMANCE"; }
-    else if (/front|grille|headlamp|headlight/.test(cue)) { orbit = "18deg 70deg 100%"; label = "FRONT DETAIL"; }
-    el.model.removeAttribute("auto-rotate");
-    el.model.setAttribute("camera-orbit", orbit);
-    if (S.modelTimer) clearTimeout(S.modelTimer);
-    S.modelTimer = setTimeout(() => { if (!el.media.classList.contains("film-on")) el.model.setAttribute("auto-rotate", ""); }, 4500);
-    el.focus.textContent = label;
-    el.focus.classList.add("on");
-  }
-  function showVisual(v, requestedMode = null) {
-    let mode = requestedMode || visualMode(v, v?.scriptText || "", v?.card || "none");
-    if (mode === "evidence" && (!v || v.kind === "none" || !v.url)) mode = "card";
-    setStageMode(mode);
-    if (el.support) { el.support.classList.remove("on"); el.supportVideo.pause(); }
-    if (mode === "card") {
-      el.img.style.opacity = 0; el.img.style.display = "none"; el.video.pause(); el.video.style.opacity = 0; el.video.style.display = "none";
-      if (asset) directModel(v || {}); else el.focus.classList.remove("on");
-      return mode;
-    }
-    if (mode === "model" && asset) {
-      el.img.style.opacity = 0; el.img.style.display = "none"; el.video.pause(); el.video.style.opacity = 0; el.video.style.display = "none";
-      directModel(v || {});
-      return mode;
-    }
-    el.focus.classList.toggle("on", !!(v && v.focus)); el.focus.textContent = v?.focus || "";
-    if (!v || v.kind === "none" || !v.url) return mode;
-    if (v.kind === "image") {
-      el.video.pause(); el.video.style.display = "none"; el.video.style.opacity = 0;
-      const url = v.url; // exact evidence is stable; never rotate to an unrelated image on repetition
-      if (el.img.getAttribute("src") !== url) { el.img.style.opacity = 0; el.img.classList.remove("kb"); el.img.src = url; el.img.onload = () => { el.img.style.opacity = 1; el.img.style.setProperty("--ox", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.setProperty("--oy", (35 + Math.random() * 30).toFixed(0) + "%"); el.img.style.animationDelay = (-Math.random() * 12).toFixed(1) + "s"; el.img.classList.add("kb"); }; } else { el.img.style.opacity = 1; el.img.classList.add("kb"); }
-      el.img.style.display = "";
-    } else if (v.kind === "shot") {
-      el.img.style.opacity = 0; el.img.style.display = "none"; el.video.style.display = ""; el.video.style.setProperty("--z", "1");
-      const vid = el.video; if (videoStop) { vid.removeEventListener("timeupdate", videoStop); videoStop = null; }
-      const start = () => { vid.currentTime = Math.max(0, v.start || 0); vid.style.opacity = 1; vid.play().catch(() => {}); videoStop = () => { if (vid.currentTime >= (v.end || 1e9)) vid.pause(); }; vid.addEventListener("timeupdate", videoStop); };
-      if (vid.getAttribute("src") !== v.url) { vid.src = v.url; vid.onloadedmetadata = start; } else start();
-    }
-    return mode;
+  function showHero() { if (!bundle.media?.hero) return showSlide(null); if (heroIsVideo()) showVideo(bundle.media.hero, 0, 4); else showSlide(bundle.media.hero); }
+  function showVisual(v) {
+    if (v && v.kind === "shot" && v.url) return showVideo(v.url, v.start || 0, v.end || 1e9);
+    if (v && v.kind === "image" && v.url) return showSlide(v.url, v.focus || "");
+    showHero();
   }
   function firstVisual(seg) { return (seg?.lines || []).map((l) => l.visual).find((v) => v && v.kind !== "none") || null; }
   function compactText(value, limit) {
@@ -208,17 +166,12 @@ export function mountPlayer(host, bundle, api) {
     el.card.classList.add("on");
   }
   function present(v, text, card = "none", factIds = []) {
-    let mode = visualMode(v, text, card);
-    mode = showVisual({ ...(v || { kind: "none" }), scriptText: text, card }, mode);
-    if (mode === "card") {
-      const cited = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id));
-      if (card === "statement") showCard("statement", { text, value: "YOUR PRIORITIES", title: "Your demo, tailored" });
-      else if (card && !["none", "cite"].includes(card)) showCard(card);
-      else if (cited.length) showCard("cite", cited);
-      else showCard("statement", { text, value: "CHECK WITH THE DEALER" });
-    } else showCard(card);
-    el.card.classList.toggle("dominant", mode === "card" && !asset);
-    return mode;
+    showVisual(v);
+    const cited = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id));
+    if (card === "statement") showCard("statement", { text, value: "YOUR PRIORITIES", title: "Your demo, tailored" });
+    else if (card && !["none", "cite"].includes(card)) showCard(card);
+    else if (cited.length) showCard("cite", cited);  // the sources behind this line, always visible
+    else showCard("none");
   }
   function presentLine(line, text = line?.text || "") { return present(line?.visual, text, line?.card || "none", line?.fact_ids || []); }
 
@@ -343,7 +296,7 @@ export function mountPlayer(host, bundle, api) {
     for (let i = idx; i < S.plan.length; i++) {
       const step = S.plan[i], seg = step.seg; S.seg = i; S.atCheckin = false; renderProgress();
       prefetch([...seg.lines.slice(lineIdx), seg.checkin?.text ? { text: seg.checkin.text, audio: seg.checkin.audio } : null].filter(Boolean));
-      if (lineIdx === 0 && step.bridge) { const fv = firstVisual(seg); present(fv ? { ...fv, display_mode: "" } : null, step.bridge, "none", step.bridge_fact_ids || []); el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
+      if (lineIdx === 0 && step.bridge) { present(firstVisual(seg), step.bridge, "none", step.bridge_fact_ids || []); el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; const okb = await speak(step.bridge, run, step.bridge_audio); if (!okb) return; }
       for (let j = lineIdx; j < seg.lines.length; j++) { S.line = j; if (run !== S.run) return; const ln = seg.lines[j]; presentLine(ln); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : ""; const ok = await speak(ln.text, run, ln.audio); if (!ok) return; S.line = j + 1; }
       lineIdx = 0; if (run !== S.run) return;
       if (seg.checkin?.text) {
@@ -404,9 +357,7 @@ export function mountPlayer(host, bundle, api) {
       if (r.escalate) S.escalations.push(r.escalate);
       if (r.topic && r.topic !== "other") S.raised.add(r.topic);
       S.unresolved.add(r.topic || "question");
-      if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: text }, "model");
-      else showVisual({ kind: "image", url: bundle.media?.hero, scriptText: text }, bundle.media?.hero ? "evidence" : "card");
-      showCard("none"); el.cite.textContent = "";
+      showHero(); showCard("none"); el.cite.textContent = "";
       const unknown = "I don't know from the information I have. Share your details here and someone from the dealership can help you with that.";
       const okUnknown = await speak(unknown, run); if (!okUnknown) return;
       showLeadPrompt("unknown", text);
@@ -414,8 +365,7 @@ export function mountPlayer(host, bundle, api) {
       return;
     }
     const answerVisual = r.visual ? { ...r.visual, url: mediaUrlFor(r.visual), focus: "" } : null;
-    const answerMode = present(answerVisual, r.answer || text, r.facts?.length ? "cite" : "none", r.fact_ids || []);
-    if (answerMode !== "card") { if (r.facts?.length) showCard("cite", r.facts); else showCard("none"); }
+    present(answerVisual, r.answer || text, "none", r.fact_ids || []);
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : (r.answered ? "" : "not in the sources — flagged");
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
@@ -480,8 +430,7 @@ export function mountPlayer(host, bundle, api) {
     const a1 = await intakeWait(run); if (run !== S.run) return;
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
-    if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model");
-    else if (bundle.media?.hero) showVisual({ kind: "image", url: bundle.media.hero, cycle: false }, "evidence");
+    showHero();
     const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
     S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 60000) : null;
     const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
@@ -557,8 +506,7 @@ export function mountPlayer(host, bundle, api) {
     S.introPlayed = true;
     const ok = await speakF("before_video", "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.", run);
     if (!ok) return false;
-    el.img.style.display = "none"; el.img.classList.remove("kb"); el.media.classList.remove("evidence-on", "card-on"); el.card.classList.remove("on", "dominant"); el.media.classList.add("film-on");
-    if (el.support) el.support.classList.remove("on"); el.focus.classList.remove("on");
+    el.img.style.display = "none"; el.img.classList.remove("kb"); el.card.classList.remove("on"); el.media.classList.add("film-on"); el.focus.classList.remove("on");
     const v = el.video; v.src = iv.url; v.muted = S.muted; v.style.display = ""; v.style.opacity = 1; v.currentTime = 0;
     setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
     el.chips.replaceChildren(h("button", { class: "chip" , onclick: () => { S.skipFilm = true; } }, "Skip the film"));
@@ -570,7 +518,7 @@ export function mountPlayer(host, bundle, api) {
       cap = setTimeout(() => end(true), 45000);  // hard cap — an opening film is 10–20 s
     });
     try { v.pause(); } catch (e) {}
-    v.muted = true; v.style.display = "none"; v.style.opacity = 0; el.media.classList.remove("film-on"); if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model"); setChips([]);
+    v.muted = true; v.style.display = "none"; v.style.opacity = 0; el.media.classList.remove("film-on"); showHero(); setChips([]);
     if (!done || run !== S.run) return false;
     return speakF("after_video", "Now, let's get into what matters to you.", run);
   }
@@ -588,13 +536,11 @@ export function mountPlayer(host, bundle, api) {
   function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); showCard("none"); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.seg.id), segment: st?.seg.id, segment_title: st?.seg.title, line_index: S.line, line_text: st?.seg.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
-  function destroy() { interruptAll(); if (S.modelTimer) clearTimeout(S.modelTimer); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }
+  function destroy() { interruptAll(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; root.remove(); }
 
   renderCtas();
   updateMuteUi();
-  if (asset) showVisual({ kind: "none", display_mode: "model", scriptText: "product overview" }, "model");
-  else showVisual({ kind: "image", url: bundle.media?.hero, focus: "" }, "evidence");
-  if (!asset && bundle.media?.hero && /\.(mp4|mov|webm|m4v)$/i.test(bundle.media.hero)) showVisual({ kind: "shot", url: bundle.media.hero, start: 0, end: 4 }, "evidence");
+  showHero();
   const startBtn = h("div", { class: "pl-intake open" }, h("div", { class: "inner" }, mascot({ size: 132, image: bundle.mascot }).el, h("div", { class: "state" }, guide), h("p", { class: "q" }, bundle.pitch?.takeaway || `A voice-led walkthrough of ${bundle.product?.name || bundle.name}. Just talk — interrupt anytime.`), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "▶ Start"), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Skip the intro"))));
   el.stage.append(startBtn);
   // language chooser (multi-language bundles)

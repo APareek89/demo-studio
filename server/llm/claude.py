@@ -100,10 +100,21 @@ def _record(resp, kind: str = "claude", *, t0: float | None = None, system: str 
         pass
 
 
+def _client_opts(timeout: float | None = None, max_retries: int | None = None) -> anthropic.Anthropic:
+    kw: dict = {}
+    if timeout:
+        kw["timeout"] = timeout
+    if max_retries is not None:
+        kw["max_retries"] = max_retries
+    return client().with_options(**kw) if kw else client()
+
+
 def structured(system: str, content: list[dict] | str, schema: type[T], *, max_tokens: int = 16000,
-               history: list[dict] | None = None, soft: bool = False, effort: str | None = None, timeout: float | None = None, model: str | None = None) -> T:
+               history: list[dict] | None = None, soft: bool = False, effort: str | None = None, timeout: float | None = None,
+               model: str | None = None, fallback: bool = True, max_retries: int | None = None) -> T:
     """One call, validated output. `content` is the user turn (blocks or plain text).
-    soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit."""
+    soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit.
+    fallback=False disables the built-in Gemini fallback (the runtime layer orders providers itself)."""
     if config.MOCK_LLM:
         out = mock.fake(schema)
         usage.trace("claude", "mock", latency_ms=5, system=system, user=(content if isinstance(content, str) else json.dumps(content)[:4000]), response=out.model_dump_json()[:4000])
@@ -112,10 +123,10 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
     try:
         if soft:
-            return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout, model=model)
+            return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout, model=model, max_retries=max_retries)
         t0 = time.time()
         try:
-            resp = client().messages.parse(
+            resp = _client_opts(timeout, max_retries).messages.parse(
                 model=model or config.CLAUDE_MODEL,
                 max_tokens=max_tokens,
                 system=system,
@@ -136,7 +147,7 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
             raise RuntimeError("Claude returned no structured output")
         return parsed
     except Exception as e:
-        if _provider_unavailable(e) and _text_only_messages(msgs) and config.GEMINI_API_KEY:
+        if fallback and _provider_unavailable(e) and _text_only_messages(msgs) and config.GEMINI_API_KEY:
             from . import gemini
             return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens, fallback_reason=describe_error(e))
         raise
@@ -149,11 +160,11 @@ def _extract_json(text: str) -> str:
     return t[s:e + 1] if s >= 0 and e > s else t
 
 
-def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens: int, effort: str | None = None, timeout: float | None = None, model: str | None = None) -> T:
+def _soft_structured(system: str, msgs: list[dict], schema: type[T], max_tokens: int, effort: str | None = None, timeout: float | None = None, model: str | None = None, max_retries: int | None = None) -> T:
     model = model or config.CLAUDE_MODEL
     sys2 = system + "\n\nOUTPUT FORMAT: return ONLY one JSON object — no markdown fences, no prose before or after — that validates against this JSON schema:\n" + json.dumps(schema.model_json_schema())
     kw = {"output_config": {"effort": effort}} if effort and _supports_effort(model) else {}
-    c = client().with_options(timeout=timeout) if timeout else client()
+    c = _client_opts(timeout, max_retries)
     t0 = time.time()
     resp = c.messages.create(model=model, max_tokens=max_tokens, system=sys2, messages=msgs, **kw)
     _record(resp, "claude-soft", model=model, t0=t0, system=system, msgs=msgs)

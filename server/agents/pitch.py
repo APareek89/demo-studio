@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import re
 
-from .. import config, schemas, store
-from ..llm import claude
+from .. import schemas, store
+from ..llm import runtime
 from .author import CLAIMISH, NUMBERISH
 from .principles import CUSTOMER_STATES, PRINCIPLES, audience_instruction, language_instruction
 
@@ -77,10 +77,10 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     )
     ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
     try:
-        # soft JSON + low effort + hard timeout: the plan must land while the ~2-minute standard opening plays
-        out = claude.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, soft=True, effort="low", timeout=50.0, model=config.CLAUDE_PLAN_MODEL)
+        # runtime providers in order, short timeout each: the plan must land while the standard opening plays
+        out = runtime.structured(sys, ask, schemas.PitchPlan, max_tokens=3000)
     except Exception as e:
-        raise RuntimeError(claude.describe_error(e)) from e
+        raise RuntimeError(str(e)[:300]) from e
     p = out.model_dump()
     # The live demo asks exactly one intake question. Refine calls must not create
     # or voice a second runtime question, even if a model returns one anyway.
@@ -142,11 +142,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     for b in batches:
         v = next((x for x in und.get("images", []) + und.get("shots", []) if x["id"] == b.get("visual_ref")), None)
         b["visual"] = {"kind": "image" if b.get("visual_ref", "").startswith("im") else "shot", "ref": b.get("visual_ref"), "source_id": v.get("source_id") if v else None, "start": v.get("start") if v else None, "end": v.get("end") if v else None, "description": v.get("description", "") if v else ""} if v else None
-        # Runtime batches are personalised and can legitimately combine several cited claims.
-        # A single picture cannot prove airbags + brakes + hill assist at once, so show the
-        # cited fact card instead of implying that one evidence frame proves the whole line.
         b["visual"] = b["visual"] or {"kind": "none"}
-        b["visual"]["display_mode"] = "card" if len(set(b.get("fact_ids") or [])) > 1 else _vis.display_mode(b.get("text", ""), b["visual"])
     p["custom_batches"] = batches
     proofs = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features][:3]
     feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": features[0], "bridge": "", "bridge_fact_ids": []}] if features else [])

@@ -14,6 +14,7 @@ from pydantic import BaseModel
 from .. import config, usage
 from . import mock
 
+TRACE_SYS = 20000  # chars of the system prompt kept in a runtime trace row
 _client = None
 _hard_quota_until = 0.0
 _hard_quota_reason = ""
@@ -113,30 +114,28 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
 
 
 def text_structured(system: str, transcript: str, schema: type[BaseModel], *, max_tokens: int = 16000,
-                    temperature: float = 0.2, fallback_reason: str = "") -> Any:
-    """Text-only structured call used when the primary reasoning provider is unavailable."""
+                    temperature: float = 0.2, fallback_reason: str = "", timeout_s: float | None = None,
+                    model: str | None = None, tries: int = 2, kind: str = "gemini-fallback") -> Any:
+    """Text-only structured call: the fallback when Claude is unavailable, and the primary at runtime."""
     if config.MOCK_LLM:
         return mock.fake(schema)
     t = _types()
+    model = model or config.GEMINI_MODEL
     prompt = f"SYSTEM INSTRUCTIONS:\n{system}\n\nCONVERSATION / TASK:\n{transcript}"
+    cfg: dict = dict(response_mime_type="application/json", response_schema=schema, temperature=temperature,
+                     max_output_tokens=min(max(256, max_tokens), 32768))
+    if timeout_s:
+        cfg["http_options"] = t.HttpOptions(timeout=int(timeout_s * 1000))
     t0 = time.time()
-    resp = _retry(lambda: client().models.generate_content(
-        model=config.GEMINI_MODEL,
-        contents=prompt,
-        config=t.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=schema,
-            temperature=temperature,
-            max_output_tokens=min(max(256, max_tokens), 32768),
-        ),
-    ), tries=2, waits=(4,))
+    resp = _retry(lambda: client().models.generate_content(model=model, contents=prompt, config=t.GenerateContentConfig(**cfg)),
+                  tries=tries, waits=(2,))
     text = resp.text or ""
     try:
         um = resp.usage_metadata
         inp, out = um.prompt_token_count or 0, um.candidates_token_count or 0
-        usage.record("gemini-fallback", config.GEMINI_MODEL, input_tokens=inp, output_tokens=out)
-        usage.trace("gemini-fallback", config.GEMINI_MODEL, latency_ms=(time.time() - t0) * 1000,
-                    system=f"Primary unavailable: {fallback_reason}" if fallback_reason else "",
+        usage.record(kind, model, input_tokens=inp, output_tokens=out)
+        usage.trace(kind, model, latency_ms=(time.time() - t0) * 1000,
+                    system=f"Primary unavailable: {fallback_reason}" if fallback_reason else system[:TRACE_SYS],
                     user=prompt, response=text, input_tokens=inp, output_tokens=out)
     except Exception:
         pass

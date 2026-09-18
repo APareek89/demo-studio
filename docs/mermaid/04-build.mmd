@@ -9,7 +9,7 @@ flowchart TD
   VAL2["re-validate<br/>[FUNCTION] remaining offenders stay unverified → excluded from voice & bundle, listed on Facts card"]:::fn
   IDS["assign stable line ids<br/>[FUNCTION]<br/>out: seg-L1.. plus closing ids"]:::fn
   VAUD["visual-proof audit<br/>[AGENT · Gemini 3.6 Flash]<br/>in: real uploaded pixels in batches ≤12 + every scripted line<br/>out: every image's visible features/limits + every line full/partial/none/not_visual"]:::agent
-  VGATE["accept audit only when complete<br/>[FUNCTION · visuals.py]<br/>all line ids + all image refs required; full coverage may bind image<br/>partial/missing visible feature → no image → 3D placeholder/card<br/>Gemini failure → conservative tag rules"]:::fn
+  VGATE["accept audit only when complete<br/>[FUNCTION · visuals.py]<br/>all line ids + all image refs required; full coverage may bind image<br/>partial/missing visible feature → no image → hero + cited card<br/>Gemini failure → conservative tag rules"]:::fn
   AUDIT["visual-audit.json<br/>[DATA]<br/>line reasons, image feature inventory, missing features, changes"]:::data
   SJ["script.json<br/>[DATA] visual refs + audit summary · version++"]:::data
   PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>sarvam → gemini → gcloud → browser (no key)"}:::dec
@@ -22,7 +22,7 @@ flowchart TD
   QA["answer each via qa.answer<br/>[AGENT · claude-opus-5 + FUNCTION validator]<br/>see diagram 05 · one paid call per question"]:::agent
   COV["coverage = answered / N · gaps list<br/>[FUNCTION] → rehearsal.json"]:::fn
   SCORE["demo scorecard<br/>[AGENT · claude-opus-5 · judge]<br/>in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes"]:::agent
-  BUN["bundle.build<br/>[FUNCTION · bundle.py + visuals.display_mode]<br/>in: demo, understanding, plan, script (+ script.&lt;lang&gt;.json)<br/>out: bundle.json · every line has media URL + audio + model|evidence|card stage; CTAs, facts, unknowns, languages + alt_languages; version++"]:::fn
+  BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script (+ script.&lt;lang&gt;.json)<br/>out: bundle.json · every line has media URL + audio; CTAs, facts, unknowns, languages + alt_languages; version++"]:::fn
   READY["status ready · SSE phase_done build · stage seconds recorded for Observability<br/>[term]"]:::term
 
   GO --> AUTH --> VAL --> ISS

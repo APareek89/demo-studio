@@ -1,16 +1,6 @@
-%% 01 · Master flow — Demo Studio (Demo Visual → Sources → Align → Rehearse)
+%% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
 flowchart TD
   LG["Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py<br/>see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints"]:::data
-  V["USER optionally creates Demo Visual<br/>[ask · Studio › Demo Visual]<br/>five product views OR turntable video OR ready GLB"]:::ask
-  VP{"input mode?<br/>[FUNCTION · visual.py]"}:::dec
-  FIVE["validate exactly five required real views<br/>[FUNCTION]"]:::fn
-  FRAMES["extract video frames<br/>[LIBRARY · ffmpeg]"]:::fn
-  ANGLES["select real angles; create only missing review views<br/>[AGENT · Gemini 3.6 Flash + Nano Banana 2 Lite]<br/>recording/uploaded images define identity"]:::agent
-  VIEWS{"USER approves every source view?<br/>[ask · before paid 3D call]<br/>real identity view must be first"}:::dec
-  RW["approved views → async image-to-3D<br/>[LIBRARY · Runware]<br/>Rodin Gen-2 ≤5 (default) · Tripo v3.1 ≤4 · TRELLIS.2 =1<br/>real views first; approved AI gap-fill may add geometry<br/>poll progress · trace exact cost · output GLB"]:::data
-  GLB["validate uploaded GLB v2<br/>[FUNCTION · visual.add_glb]<br/>magic + declared length + aligned JSON chunk · ≤150 MB<br/>out: zero-cost review attempt"]:::fn
-  VG{"USER approves?<br/>[ask · rotate + inspect]"}:::dec
-  ASSET["visual_asset + My Assets<br/>[DATA · local + S3/DynamoDB]<br/>hero for broad visible-product narration"]:::data
   U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask
   ING["store.add_*_source<br/>[FUNCTION · server/store.py]<br/>in: uploads / URL<br/>out: sources[] in data/demos/id/demo.json"]:::fn
   READBTN["POST /api/demos/id/read<br/>[FUNCTION · server/app.py]<br/>gate: ≥1 source · keys present or MOCK_LLM=1"]:::fn
@@ -21,7 +11,7 @@ flowchart TD
   DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
   ALIGN["Align loop<br/>[AGENT · claude-opus-5 → actions]<br/>see diagram 03"]:::agent
   APPR{"all 6 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
-  BUILD["BUILD phase (thread)<br/>[FUNCTION · orchestrator._build]<br/>Author → Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
+  BUILD["BUILD phase (thread)<br/>[FUNCTION · graph.py]<br/>Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data
   PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>see diagram 05"]:::fn
@@ -29,16 +19,6 @@ flowchart TD
   FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · claude-opus-5]<br/>revise('author'|'plan'|'understand') → rebuild"]:::agent
   LIB["Demos tab<br/>[DATA · list of data/demos/*/demo.json]"]:::data
 
-  V --> VP
-  VP -- "five images" --> FIVE --> VIEWS
-  VP -- "video" --> FRAMES --> ANGLES --> VIEWS
-  VIEWS -- "approve" --> RW
-  VIEWS -- "feedback / replace" --> ANGLES
-  VP -- "ready GLB" --> GLB --> VG
-  RW --> VG
-  VG -- "approve" --> ASSET --> U
-  VG -- "regenerate" --> RW
-  V -.->|"skip"| U
   U --> ING --> READBTN --> READ --> SSE --> OVER1 --> CARDS
   CARDS --> DOCK --> ALIGN --> CARDS
   CARDS --> APPR

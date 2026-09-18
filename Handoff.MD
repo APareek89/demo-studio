@@ -2,6 +2,18 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
+## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
+Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched. Phases: 1 simplify ✅ · 2 sources + image parts · 3 deck ·
+4 Align slide review · 5 player · 6 questions + slide routing · 7 AWS storage + session summary · 8 measure.
+- **Phase 1 done (committed):** 3D/Runware path removed (7 files deleted, 23 edited, net ≈ −900 lines); player stage = `video` | `slide`;
+  `qa._local_grounded_answer` + the 10-minute cooldown deleted — every provider down → decline + callback; `server/llm/runtime.py`
+  tries `RUNTIME_PROVIDERS` (default `gemini,claude`) with `RUNTIME_TIMEOUT` 15 s and one retry; `CLAUDE_RUNTIME_MODEL` /
+  `GEMINI_RUNTIME_MODEL`; MP4 export parked (409); `evals/qa_deck.py` replaces the three retired evals. Gates: compile ·
+  smoke ✅ · qa_accept 24/24 · qa_deck 20/20 · JS syntax ✅. Docs, mermaid 01/04/05, Loop.MD, PRD, README updated.
+- 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
+  `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
+  (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.
+
 ## Current state — 2026-09-06
 
 Demo Studio is a local FastAPI + no-build ES-module app that turns product media and documents into a voice-led, interruptible, citation-grounded demo. The committed workflow is **Demo Visual (optional) → Sources → Align → Rehearse**.
@@ -87,4 +99,8 @@ and 🧑 **rotate the Vercel API token** that was pasted in chat on 2026-09-17.
 - The opening film owns the stage. Afterwards, each line selects the model, exact evidence or a compact cited card.
 - All six Align cards are opened, reviewed and approved individually. Human-corrected artifacts keep a validated state and are never silently regenerated.
 - Comparisons use uploaded official rival facts, include both sides and require live-price/stock verification. Illustrative finance is always synthetic and not an offer.
+- 2026-09-18 — slides-v1 removes the 3D / Runware path at the user's instruction (reverses the 2026-09-06 3D decisions below). Player stage modes are `video` | `slide`; existing GLB files on disk are untouched.
+- 2026-09-18 — Runtime model calls (`/run/qa`, `/run/pitch`) go through `llm/runtime.py`: `RUNTIME_PROVIDERS` in order (default Gemini then Claude — no Claude credits), 15 s each, one retry; all fail → decline + callback. No local guessing, no cooldown. Build stages keep Claude-first with the existing Gemini fallback.
+- 2026-09-18 — MP4 export is parked until a renderer exists for slides with HTML callouts.
+- 2026-09-18 — `evals/qa_visual_sync.py` (source-grep assertions) is retired; `evals/qa_deck.py` tests the player contract end to end through the mock server.
 - Git author: `Anand Pareek <anandp.pareek6@gmail.com>`.

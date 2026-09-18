@@ -1,6 +1,7 @@
 # Loop.MD — Demo Studio
 status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
+> slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
 > AGENT INSTRUCTION — read every session and obey:
 > - While `status: waiting_for_first_draft`: the moment the first working draft exists
@@ -63,8 +64,8 @@ rebuilds the demo.
 | 25 | Mock build → bundle | `bundle.fillers` has audio for every filler key; every `bundle.faq` entry with an answer has audio; `bundle.timeline.exact` is true after voicing |
 | 26 | Player (pane): start with a spoken context, then ask a bank question, then a new question | recorded acknowledgement plays before the opening; custom batches play with their pictures after the opening; bank question answers with no model call (note "answered from the FAQ bank"); new question is preceded by the recorded "bear with me"; the voice never changes; no silent gap longer than 2 s |
 | 27 | Mock read → script.json | `intake_q1` greets with brand + product and asks the only intake question; `intake_q2 == ""`; intro segments contain no second greeting, no digits, no "deciding"; closing contains the fit-summary shape; establish mentions an open question |
-| 28 | `evals/qa_visual.py` direct upload cases | non-GLB and malformed header/chunks reject 400; valid GLB v2 enters `review` with `$0`; only explicit approval attaches `visual_asset.source_mode=upload` |
-| 29 | Post-author visual audit with real Gemini (paid only when approved) | every allowed image ref and every script line id appears exactly once in the batch audit; image rows list visible features/limitations; concrete feature lines bind an image only on `coverage=full`; partial/missing lines have no image and fall back to 3D/card |
+| 28 | `MOCK_LLM=1 .venv/bin/python evals/qa_deck.py` (slides-v1 player contract, end to end through the mock server) | every case ✅: no 3D anywhere (bundle, demo record, routes, index.html, player), line visuals are none/image/shot, runtime Q&A with every provider down declines + offers a callback with no cooldown, the FAQ bank still answers with no model call, MP4 export is 409, runtime providers default gemini → claude with a ≤ 30 s timeout |
+| 29 | Post-author visual audit with real Gemini (paid only when approved) | every allowed image ref and every script line id appears exactly once in the batch audit; image rows list visible features/limitations; concrete feature lines bind an image only on `coverage=full`; partial/missing lines have no image and fall back to the hero + cited card |
 
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |
