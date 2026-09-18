@@ -183,6 +183,51 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                       and model.call_args.args[2] is schemas.QAOut)
         files["understanding.json"] = und
 
+        # A greeting or ordinary answer must not invite a second model-owned
+        # question before the player's satisfaction check. This verifies prompt
+        # delivery for each response mode, not a provider's future compliance.
+        turn_cases = [
+            ("greeting", "Hello", schemas.QAOut(answer="I'm here with you.", fact_ids=[], answered=True)),
+            ("ordinary answer", "What is its torque?", schemas.QAOut(answer="Peak torque is 250 Nm.", fact_ids=["F001"], answered=True)),
+            ("clarification", "Does the cheaper one have that?", schemas.QAOut(answer="Which version do you mean?", fact_ids=[], answered=True, clarifying_question="Which version do you mean?")),
+        ]
+        for label, question, proposed in turn_cases:
+            for live in (False, True):
+                with patch.object(qa.runtime if live else qa.claude, "structured", return_value=proposed) as model:
+                    qa.answer(demo_id, question, live=live, voice_it=False)
+                envelope = model.call_args.args[0]
+                check(f"generation: {'runtime' if live else 'build FAQ'} {label} envelope assigns questions to one owner",
+                      model.call_args.args[1] == question and model.call_args.args[2] is schemas.QAOut
+                      and all(rule in envelope for rule in ("The player owns the satisfaction check", "Use statements for ordinary answers",
+                          "Only clarifying_question may ask a question", "answer must be that identical single question",
+                          "mention available technical detail as a statement"))
+                      and "offer the technical detail rather than volunteering it" not in envelope)
+
+        # A crowded comparison must receive a brevity budget together with both
+        # sides' scope and the mandatory caveat; the fixture does not score prose.
+        comparison_fact = {**copy.deepcopy(fact), "id": "F007", "claim": "Automatic transmission",
+                           "value": "7-speed dual-clutch", "conditions": "Premium petrol trim only; not the diesel variant."}
+        rival_fact = {**copy.deepcopy(fact), "id": "C1-001", "claim": "Automatic transmission",
+                      "value": "6-speed automatic", "conditions": "GX 1.5 petrol trim only; no relative smoothness claim.",
+                      "source": {"ref": "src-rival", "locator": "variant table / GX petrol column", "quote": "6-speed automatic"}}
+        files["understanding.json"] = {**copy.deepcopy(und), "facts": [comparison_fact],
+            "competitors": [{"name": "Fixture rival", "source_id": "src-rival", "fetched_at": 1704067200,
+                             "facts": [rival_fact]}]}
+        demo["settings"]["competition"] = "on"
+        profile = {"why": "I want an automatic and child-seat practicality."}
+        for live in (False, True):
+            proposed = schemas.QAOut(answer="These are the two listed automatic choices.", fact_ids=["F007", "C1-001"], answered=True)
+            with patch.object(qa.runtime if live else qa.claude, "structured", return_value=proposed) as model:
+                qa.answer(demo_id, "How do my selected trims compare?", profile=profile, live=live, voice_it=False)
+            envelope = model.call_args.args[0]
+            check(f"generation: {'runtime' if live else 'build FAQ'} comparison envelope carries focus, scope and full caveat",
+                  all(piece in envelope for piece in ("within 60 words, including required caveats", "A direct single-fact answer can use one sentence",
+                      "choose at most two attributes relevant to this buyer", "omit that attribute; never shorten away its scope",
+                      comparison_fact["conditions"], rival_fact["conditions"], rival_fact["source"]["locator"], profile["why"],
+                      "that is as per their website when we checked — please verify on their site")))
+        files["understanding.json"] = und
+        demo["settings"]["competition"] = "off"
+
         check("generation: all contracts avoid actual provider and network calls",
               not any(call.called for call in providers + network))
 

@@ -1,0 +1,2 @@
+Prior 1500 budget fails: ['providers: live QA reserves 3000 output tokens in the real Gemini SDK envelope']
+Negative control: 43/44 pass, exactly the new live budget contract fails

@@ -14,6 +14,7 @@ from .principles import EVIDENCE_RULES, audience_instruction, fact_context, lang
 
 QA_SYSTEM = """You are {persona_name}, the voice guide in a live product demo of {product_name} ({category}).
 Reply in 1-3 short spoken sentences in the persona's voice ({tone}). No markdown.
+Keep the entire answer within 60 words, including required caveats. A direct single-fact answer can use one sentence.
 
 HARD RULES
 - You have NO web search and NO tools. Only the FACT REGISTRY below may be stated as fact. Cite every fact id you
@@ -29,8 +30,14 @@ HARD RULES
   empty. Wait for their reply before offering an answer. The question contains no product claims, figures or assumed
   customer details. Do not clarify a clear factual question, and never use clarification to avoid declaring a missing fact.
   When history contains the customer's clarification reply, answer the original question using it; do not restart discovery.
+- The player owns the satisfaction check after an ordinary answer. Use statements for ordinary answers and brief
+  acknowledgments for greetings; do not restart intake or append an offer, discovery or satisfaction question.
+  Only clarifying_question may ask a question; when needed, answer must be that identical single question.
 - P07: reuse only the customer's actual nouns and numbers from CUSTOMER or their messages. Do not infer a commute,
   budget, location or household from a persona, a prior script or an example. Unknown context remains unknown.
+- For comparisons, choose at most two attributes relevant to this buyer and state both sides for each in two or three
+  short sentences, never a semicolon-packed catalogue. If an attribute and its material conditions do not fit,
+  omit that attribute; never shorten away its scope. Stop after the focused answer; the player owns the next question.
 - Prefer a visual: pick the shot or image id that literally shows what you are talking about.
 - If the customer asks to take an action (book, buy, reserve, talk to someone), set cta to the matching id.
 - topic: one of {topics}.
@@ -45,7 +52,8 @@ HARD RULES
 {competitors}
 {audience}
 {language}
-- Answer in plain words first, in one or two sentences; offer the technical detail rather than volunteering it.
+- Answer in plain words first; mention available technical detail as a statement rather than
+  volunteering it or asking another question.
   When the customer asks for a technical quantity, the direct answer includes its value AND unit, with a short gloss.
 {evidence}
 
@@ -143,7 +151,8 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     provider_failed = False
     try:
         if live:
-            out = runtime.structured(sys, question, schemas.QAOut, history=msgs, max_tokens=1500)
+            # Room for reasoning and the complete JSON envelope; spoken answers stay brief.
+            out = runtime.structured(sys, question, schemas.QAOut, history=msgs, max_tokens=3000)
         else:
             out = claude.structured(sys, question, schemas.QAOut, max_tokens=1500, history=msgs)
     except Exception as e:  # noqa: BLE001

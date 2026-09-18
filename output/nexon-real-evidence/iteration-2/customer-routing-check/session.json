@@ -1,0 +1,215 @@
+{
+  "id": "s_mu73j2rpe8ug",
+  "ended": true,
+  "profile": {
+    "name": "",
+    "why": "I drive only five to ten kilometres a day, mostly in city traffic. We have a child seat and a stroller. I care about practicality and running costs.",
+    "followup": "Could you say that again in a simpler way? Secret downtown mom and juice. These are strong, you should slurp. I'll just take one last sip.",
+    "focus": [
+      "practicality",
+      "exterior"
+    ]
+  },
+  "personalized": false,
+  "route": [],
+  "slides": [],
+  "slides_visited": [
+    {
+      "slide_id": "sl00",
+      "kind": "hero_open",
+      "seconds": 18.7
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 12.2
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 2.1
+    },
+    {
+      "slide_id": "sl05",
+      "kind": "proof",
+      "seconds": 66.1
+    }
+  ],
+  "covered": [
+    "sl05"
+  ],
+  "jumps": [
+    {
+      "from": "sl02",
+      "to": "sl05",
+      "question": "How much boot space do I get in litres on this petrol model?"
+    }
+  ],
+  "turns": [
+    {
+      "question": "How much boot space do I get in litres on this petrol model?",
+      "voice_ended": 1789744305271,
+      "stt_done": 1789744305271,
+      "via": "typed",
+      "qa_done": 1789744305284,
+      "answer_audio": 1789744305290,
+      "from_bank": true,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big",
+      "voice_ended": 1789744324836,
+      "stt_done": 1789744325315,
+      "via": "server",
+      "qa_done": 1789744338192,
+      "answer_audio": 1789744338202,
+      "from_bank": false,
+      "route": "none",
+      "answered": true
+    },
+    {
+      "question": "And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big",
+      "voice_ended": 1789744350437,
+      "stt_done": 1789744351040,
+      "via": "server",
+      "qa_done": null,
+      "answer_audio": null
+    }
+  ],
+  "usps_covered": [],
+  "questions": [
+    "How much boot space do I get in litres on this petrol model?",
+    "And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big"
+  ],
+  "escalations": [],
+  "leads": [],
+  "resolved": [],
+  "unresolved": [],
+  "cta": "summary",
+  "intent": 51,
+  "minutes": 1.7,
+  "transcript": [
+    {
+      "role": "agent",
+      "text": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+      "t": 1789744283358
+    },
+    {
+      "role": "user",
+      "text": "I drive only five to ten kilometres a day, mostly in city traffic. We have a child seat and a stroller. I care about practicality and running costs.",
+      "t": 1789744286136
+    },
+    {
+      "role": "agent",
+      "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+      "t": 1789744290995
+    },
+    {
+      "role": "agent",
+      "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+      "t": 1789744296045
+    },
+    {
+      "role": "agent",
+      "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+      "t": 1789744303215
+    },
+    {
+      "role": "agent",
+      "text": "Three things to",
+      "t": 1789744305271,
+      "interrupted": true,
+      "full": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+      "heard_fraction": 0.27
+    },
+    {
+      "role": "user",
+      "text": "How much boot space do I get in litres on this petrol model?",
+      "t": 1789744305272
+    },
+    {
+      "role": "agent",
+      "text": "The petrol Nexon has a published boot capacity of 382 litres, measured to ISO V215.",
+      "t": 1789744313736
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789744314676
+    },
+    {
+      "role": "user",
+      "text": "And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big",
+      "t": 1789744325317
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744330438
+    },
+    {
+      "role": "agent",
+      "text": "Could you say that again in a simpler way?",
+      "t": 1789744340287
+    },
+    {
+      "role": "user",
+      "text": "Secret downtown mom and juice. These are strong, you should slurp. I'll just take one last sip.",
+      "t": 1789744351041
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789744356163
+    }
+  ],
+  "saved_at": 1789744371.372166,
+  "summary": {
+    "customer_name": "",
+    "context": "The customer drives five to ten kilometres a day in city traffic with a child seat and stroller, and is considering the Nexon based on practicality and running costs.",
+    "cared_about": [
+      "Practicality",
+      "Running costs",
+      "Boot space for a child seat and stroller"
+    ],
+    "objections": [],
+    "unanswered": [
+      "And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big"
+    ],
+    "opening_line": "You mentioned you drive five to ten kilometres a day with a child seat and a stroller—how did that 382 litres of boot space sound for your everyday use?",
+    "questions_asked": [
+      "How much boot space do I get in litres on this petrol model?",
+      "And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big"
+    ],
+    "slides_visited": [
+      {
+        "slide_id": "sl00",
+        "title": "Tata Nexon",
+        "seconds": 18.7
+      },
+      {
+        "slide_id": "sl01",
+        "title": "Tata Nexon, up close",
+        "seconds": 12.2
+      },
+      {
+        "slide_id": "sl02",
+        "title": "Your shortlist starts here",
+        "seconds": 2.1
+      },
+      {
+        "slide_id": "sl05",
+        "title": "Room for your plans",
+        "seconds": 66.1
+      }
+    ],
+    "cta_result": "summary",
+    "leads": [],
+    "minutes": 1.7,
+    "model": "runtime",
+    "generated_at": 1789744376.483816,
+    "transcript_lines": 14
+  },
+  "share_key": "[REDACTED]"
+}

@@ -1,0 +1,23 @@
+{
+  "session_id": "s_mu73j2rpe8ug",
+  "typed_question": "How much boot space do I get in litres on this petrol model?",
+  "mapping_basis": "Session from_bank=true and exact question/answer cross-checked with reviewed FAQ Q07; fact IDs are not stored in the session turn",
+  "faq_id": "Q07",
+  "fact": {
+    "kind": "spec",
+    "claim": "Boot space capacity",
+    "value": "382 L for Petrol & Diesel; 321 L for CNG",
+    "source": {
+      "ref": "src_706e38",
+      "locator": "PDF page 40: Boot Space row, Petrol/Diesel versus Petrol + CNG columns; ** measurement footnote",
+      "quote": "Boot Space (L) 382** 321**"
+    },
+    "confidence": 1.0,
+    "conditions": "382 L in the petrol/diesel columns and 321 L in the Petrol + CNG column. Brochure measurement basis: ISO V215. Litres do not establish that a particular stroller or luggage set fits.",
+    "truth": "stated",
+    "id": "F014",
+    "approved": true,
+    "edited": true
+  },
+  "assessment": "Supported boot figure and basis; route jump observed; unintended microphone captures not attributable to intended buyer"
+}

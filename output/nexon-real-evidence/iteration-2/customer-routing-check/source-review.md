@@ -1,0 +1,13 @@
+# Diagnostic A2 routing check — not voice-input acceptance
+
+Session `s_mu73j2rpe8ug`, demo `dm_36d47b86`, runtime commit reported by root `64d2afd`. Retrieved via the read-only Sessions API; `session.json` retains the complete response except the share key, and `snapshot.json` records its hash. The earlier `customer-initial` evidence was not touched.
+
+The intentional typed input was “How much boot space do I get in litres on this petrol model?” The session records `via=typed`, `from_bank=true`, `answered=true`, `route=jump`, with an actual `sl02` → `sl05` jump. The heard transcript records: “The petrol Nexon has a published boot capacity of 382 litres, measured to ISO V215.” This matches reviewed FAQ Q07 and its F014 mapping. F014 is the official brochure's petrol/diesel 382 L capacity with ISO V215 basis; it does not establish a stroller/luggage fit or a boot-space advantage. The session itself does not retain response fact IDs, so the F014 association is cross-checked from the reviewed bank, not fabricated as a stored session field.
+
+This is a successful routing/answer-text observation for the typed question. It does not prove acoustic intelligibility, microphone attribution, subsequent explicit return, or the full customer path.
+
+After the satisfaction question, automatic microphone handling captured two unrelated strings. First: “And keep a small portion of their hands dry. Any chance of raising this kid? I think neither. But the big”. The next response was the clarification “Could you say that again in a simpler way?” Second: “Secret downtown mom and juice. These are strong, you should slurp. I'll just take one last sip.” Both are stored as user messages; both turns show `via=server`, but no evidence establishes that either came from the intended customer. Root reports the microphone opened without an explicit voice choice during this typed rerun and stopped the session through the UI. Do not attribute these strings to the test buyer or count them as valid deliberate voice/STT tests.
+
+The second unrelated capture also entered `profile.followup` alongside the clarification. Its subsequent QA turn has no `qa_done` or `answer_audio` timestamp and no heard answer before Stop. The session is ended; that incomplete turn must remain incomplete in timing/answer counts. The saved profile is contaminated diagnostic evidence, not a trusted input for later personalized tests. Start a fresh session after the typed/microphone preference correction.
+
+No warranty answer or positive Brezza/Venue comparison occurred in this diagnostic session. Those acceptance cases remain separate. No source, code, demo/session record or paid-provider state was changed by this review.

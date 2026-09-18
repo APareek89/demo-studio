@@ -278,6 +278,54 @@ def run(check, demo_id: str) -> None:
               and traced.call_args.kwargs.get("output_tokens") == 50
               and recorded.call_args.args[1] == config.GEMINI_TEXT_MODEL)
 
+        # Exercise live QA through the dispatcher, adapter and installed SDK config.
+        # The response stays short; its envelope and hidden thoughts need their own room.
+        budget_answer = schemas.QAOut(answer="The documented capacity is 382 litres.",
+                                     fact_ids=["F-contract"], answered=True)
+        budget_registry = {"facts": [{"id": "F-contract", "claim": "Capacity", "value": "382 litres",
+                                      "approved": True, "source": {"ref": "src-contract"}}]}
+        budget_reply = SimpleNamespace(text=budget_answer.model_dump_json(), usage_metadata=SimpleNamespace(
+            prompt_token_count=20008, candidates_token_count=180, thoughts_token_count=1600))
+        budget_requests = []
+
+        def budget_generate(**kwargs):
+            budget_requests.append(kwargs)
+            return budget_reply
+
+        recorded.reset_mock()
+        traced.reset_mock()
+        with patch.object(qa, "_system", return_value=("Approved facts", budget_registry, {})), \
+                patch.object(store, "load", return_value={"settings": {}}), \
+                patch.object(store, "read_json", return_value={}), \
+                patch.object(store, "write_json", side_effect=AssertionError("Budget contract wrote data")), \
+                patch.object(gemini, "_hard_quota_until", 0), \
+                patch.object(gemini, "client", return_value=SimpleNamespace(models=SimpleNamespace(generate_content=budget_generate))), \
+                patch.object(claude, "structured", return_value=budget_answer) as build_call, \
+                patch.object(runware, "structured", side_effect=AssertionError("Successful QA fell through")) as later_call:
+            live_answer = qa.answer(demo_id, "What is the documented capacity?", voice_it=False, live=True)
+            request = budget_requests[0]
+            sdk_config = request["config"]
+            check("providers: live QA reserves 3000 output tokens in the real Gemini SDK envelope",
+                  sdk_config.max_output_tokens == 3000 and sdk_config.response_schema is schemas.QAOut
+                  and sdk_config.response_mime_type == "application/json" and sdk_config.thinking_config is None)
+            check("providers: complete live QA keeps its approved citation and stops after Gemini",
+                  live_answer["answered"] and live_answer["answer"] == budget_answer.answer
+                  and live_answer["fact_ids"] == ["F-contract"] and not live_answer["provider_failed"]
+                  and len(budget_requests) == 1 and not build_call.called and not later_call.called
+                  and request["model"] == config.GEMINI_RUNTIME_MODEL
+                  and sdk_config.http_options.timeout == int(config.RUNTIME_TIMEOUT * 1000))
+            check("providers: enlarged live envelope still bills candidate and thought tokens",
+                  recorded.call_count == 1 and recorded.call_args.args == ("runtime", config.GEMINI_RUNTIME_MODEL)
+                  and recorded.call_args.kwargs == {"input_tokens": 20008, "output_tokens": 1780}
+                  and traced.call_args.kwargs["output_tokens"] == 1780)
+            built_answer = qa.answer(demo_id, "Build-time capacity?", voice_it=False, live=False)
+            check("providers: build-time QA keeps its existing 1500-token budget",
+                  built_answer["answered"] and build_call.call_count == 1
+                  and build_call.call_args.kwargs["max_tokens"] == 1500 and len(budget_requests) == 1)
+            runtime.structured("System", "Non-QA runtime caller", schemas.QAOut)
+            check("providers: unrelated runtime callers retain the 1500-token default",
+                  len(budget_requests) == 2 and budget_requests[1]["config"].max_output_tokens == 1500)
+
         # PDFs reach the secondary text chain only after source-labelled extraction.
         source = {"id": "src_contract", "kind": "pdf", "role": "product", "name": "official-brochure.pdf", "path": "sources/contract.pdf"}
         document_demo = {"name": "Contract vehicle", "product": {}, "sources": [source]}

@@ -690,3 +690,75 @@
 **Deepest why type:** `prompt`
 **Fix:** One generic QA_SYSTEM bullet preserves explicit unknown terms, forbids deriving a limit relationship from a slash/bar, and retains relationships or coverage rules when explicitly supplied. The missing term belongs only in the relevant answer. No car facts, matcher changes, new service, schema field, provider or speech behavior were added.
 **Prevention and limit:** Four input-envelope cases cover unknown relationships and explicit relationships/exclusions through both actual build-FAQ and runtime QA assembly, with providers and sockets blocked. Baseline was 23/27; the prompt change passes 27/27 plus compilation. These checks establish delivery of the rule and exact evidence, **not model compliance or semantic entailment**. A fresh live Q02 result remains necessary; the original failing session is retained. FAQ matching remains unchanged because a stop-word/threshold shortcut was not shown to preserve scope.
+
+
+## 2026-09-18 — A greeting answer asks a question before the player's check
+
+**Why 1:** Actual initial session `s_mu72zmm82u16` answered “Hello” with “Would you like to continue exploring cargo practicality, or look into running costs…?”, immediately followed by the player's “Did that answer it?”.
+**Why 2:** Runtime trace 311 put the offer question in ordinary `answer`, with `answered=true` and empty `clarifying_question`.
+**Why 3:** The player correctly handled the designated clarification field separately but treated ordinary answer text as a completed response.
+**Why 4:** QA instructions did not assign ownership of the following question and also invited the model to “offer” technical detail.
+**Why 5:** Input-envelope cases covered evidence and clarification structure, not greetings/ordinary answers against the player-owned satisfaction check.
+**Deepest why type:** `prompt`
+**Fix:** QA_SYSTEM now asks for ordinary answers as statements and brief greeting acknowledgments without restarting intake. Only the existing `clarifying_question` field may ask a question, with an identical question-only answer. Technical detail may be mentioned as a statement. Schema, matcher, provider/outage, policy and voice behavior are unchanged.
+**Prevention and limit:** Six free real-envelope cases cover greeting, ordinary answer and clarification on build/runtime paths; restoring the old prompt in memory yields 27/33, the new prompt 33/33. Providers and sockets are blocked. These verify instruction delivery, not model obedience; the actual failing heard transcript remains evidence and a live rerun is still required.
+
+
+### 2026-09-18 — Typed customers were returned to automatic microphone capture
+
+**Symptom:** In the second real customer validation, the customer typed intake and a boot question. After the correct cached answer, follow-up waits automatically opened the microphone and sent unrelated ambient media as two customer questions. This run cannot establish voice recognition quality.
+**Why 1:** Every owned `waitFor` attempted listening whenever a microphone was available.
+**Why 2:** The player retained turn ownership but no preference for how that customer chose to reply.
+**Why 3:** Submitting typed text stopped only the current capture; the next wait opened a new one.
+**Why 4:** Browser regressions fenced stale results, but did not require a typed interaction to keep later microphone captures closed.
+**Why 5:** Input modality was treated as a per-turn fallback rather than an explicit customer choice.
+**Deepest why type:** `design`
+**Action taken:** Start with the existing voice behavior. An actual input event or typed submit chooses typing and cancels current capture. Later waits, including a restarted intake, remain typed until an explicit microphone tap restores voice mode. Focus alone does not change preference. Mic controls stay visible and microphone permission policy is unchanged.
+**Preventive action:** Two real-DOM browser regressions cover typed intake/check-in/QA without new listening, discarded late ambient output, explicit microphone speech and resumed voice waits, plus preference through Restart and explicit intake-mic activation. The main player owner integrates the narrow patch alongside independent session-clock and jump-announcement fixes; actual refreshed browser acceptance is recorded separately.
+
+
+## 2026-09-18 — A stopped session continued accumulating time (NX27)
+
+**Why 1:** The real initial session was saved ended but grew from the observed8.3 to11.3minutes, and its final slide kept accumulating dwell.
+**Why 2:** Stop marked only an ended boolean; each later Done/pagehide snapshot subtracted the original start from the current wall clock.
+**Why 3:** The still-open slide used the same moving clock even after narration had stopped.
+**Why 4:** Playback cancellation and engagement accounting had no shared end boundary.
+**Why 5:** Completion tests checked the ended flag and saved transcript, but never advanced time after ending.
+**Deepest why type:** `code`
+**Fix:** An in-memory cutoff freezes total elapsed and current-slide dwell at the first handoff. Repeated Stop, Done and pagehide preserve that boundary. Explicit Back, new typed/mic input, slide selection or CTA reopens the same session and shifts its active start/current-slide start past the inactive interval. Restart creates a fresh clock and session. Saved schema, transcript timestamps, intent scoring and QA latency stamps are unchanged. Historical records are preserved, not rewritten.
+**Prevention:** Real-player browser fixtures advance five minutes after Stop/Done, verify identical elapsed/dwell across saves and pagehide, then exercise Back, another slide, Restart and an intentional new question after Done. Synthetic time tests prove accounting behavior; they do not establish acoustic quality.
+
+## 2026-09-18 — A grounded Q&A jump lacked a spoken transition (NX28)
+
+**Why 1:** The actual boot answer routed to the correct slide after the citation fix but changed the picture abruptly, with no announcement in the heard transcript.
+**Why 2:** The player called showSlideView immediately on a jump response, then spoke the answer.
+**Why 3:** The return path already had a spoken bridge, but the outward jump did not use the existing transition filler.
+**Why 4:** Routing was tested as target correctness and return-point preservation without checking the customer's transition cue.
+**Why 5:** Visual correctness and conversational continuity had been treated as separate success checks.
+**Deepest why type:** `code`
+**Fix:** Await the existing bridge_to_custom cached clip before changing slides, with one short generic speak fallback if that clip is unavailable. Only a completed, still-owned run can change the view and speak its answer. The actual answer re-arms first-answer-audio timing after the bridge; the bridge is heard transcript, not answer latency. Stay/none paths remain unchanged and no build is needed.
+**Prevention:** Browser fixtures hold the cached bridge for three seconds to prove the current view and null answer timestamp persist until completion, then verify answer timing and heard transcript. Another fixture cancels it by navigating and verifies no late jump or answer. The existing off-slide return case also verifies the generic fallback precedes the answer and the exact interrupted line is retained.
+
+
+## 2026-09-18 — A comparison becomes a catalogue and loses rating applicability
+
+**Why 1:** Actual B Q07 returned 88 whitespace-separated words in one sentence, with 19 citations and many equipment items (runtime trace348, Runware GPT-5.5).
+**Why 2:** “1–3 short sentences” constrained nominal sentence count without a word budget or an attribute-selection rule.
+**Why 3:** A broad selected-automatic comparison encouraged listing the registry instead of choosing the buyer's most relevant differences or shared features.
+**Why 4:** The long catalogue compressed “five-star BNCAP for petrol and diesel trims” and omitted F006's material May-2026 applicability condition.
+**Why 5:** Prior free checks established evidence delivery, not whether the provider prioritized useful attributes while retaining scope in speech.
+**Deepest why type:** `prompt`
+**Fix:** The existing QA prompt now requests at most60 words including caveats. A direct single fact can use one sentence; a comparison chooses at most two buyer-relevant attributes, states both sides in two or three short sentences, and drops an extra attribute before shortening its material conditions. It stops before the player-owned follow-up. No schema, matcher, provider, bundle or voice change.
+**Prevention and limit:** Two added real input-envelope fixtures deliver the focus rule, buyer context, both variant qualifications and full website-verification caveat through build-FAQ/runtime calls. The prior prompt scored33/35; the changed prompt35/35 with all provider/network calls blocked. This does not enforce a word cap or prove model entailment. Original Q07 remains a pacing/scope failure; positive comparison acceptance is pending a fresh focused live answer.
+
+
+## 2026-09-18 — A sourced comparison ended inside its JSON answer (NX30)
+
+**Why 1:** Actual customer B Q08 declined even though approved Venue comparison facts were present in the request.
+**Why 2:** Gemini returned a 170-character unfinished JSON answer; local schema validation correctly rejected it. Claude then failed for missing credits and Runware timed out, so the guide declined.
+**Why 3:** The live caller allowed only 1,500 output tokens; the trace recorded 1,486 combined candidate and thought tokens with very little visible text. Budget exhaustion is strongly consistent with this evidence, but not proven because the existing trace does not retain finish_reason.
+**Why 4:** A short spoken-answer target had also become a tight allowance for the complete structured response and model reasoning.
+**Why 5:** Provider contracts checked dispatch/schema/cost behavior, but did not exercise the live QA caller's budget through the actual SDK request envelope.
+**Deepest why type:** `code`
+**Fix:** Raise only live QA's existing max_tokens argument to 3,000. The QA prompt still requests at most 60 spoken words; build-time QA and unrelated runtime defaults remain 1,500. No provider, timeout, retry, thinking configuration or speech change; no additional Build.
+**Prevention and limit:** Five free provider checks exercise the real QA/dispatcher/Gemini/installed-SDK path with a fake transport, synthetic keys and blocked sockets: 3,000 in the request, complete approved answer/citation validation without fallback, combined thought/candidate accounting, build-time 1,500 and unrelated-runtime 1,500. A complete fake response proves the configured envelope, not future provider compliance or an actual comparison pass. The preserved Q08 failure remains failed until the root's authorized live rerun is reviewed.

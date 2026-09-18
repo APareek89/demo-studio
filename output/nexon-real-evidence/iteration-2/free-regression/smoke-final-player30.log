@@ -1,0 +1,29 @@
+created dm_4e45d501
+sources 8
+read → align ok
+cards: images 5 facts 3 ctas 3 script batches 5 seconds 19.8 faq 3
+align reply: reply (mock)
+approved all
+build → ready ok
+bundle v 1 segments 5 closing 3 ctas ['Book a test ride']
+lines with audio 10 / 10
+qa don't-guess ok: I'm not sure about that from the material I've bee
+pitch route ['mock3', 'mock4', 'mock5'] state unknown
+lead saved
+stt ok: (mock transcript)
+voices: sarvam 37
+source toggle ok
+faq template ok: 585 chars
+usage rows 0 usd 0.0
+evals ok coverage 0.0
+feedback reply: reply (mock)
+rehearsal coverage 0.0 gaps 3 scorecard 6
+fillers 19 faq 3 timeline 10.8
+roles ['intro', 'outcome', 'proof', 'features', 'establish']
+SMOKE OK dm_4e45d501
+settings ok ['en-IN', 'hi-IN'] everyday
+multi-language bundle ok: hi-IN 5 segments, audio True
+tts with language ok
+trace ok: stages {'understand': 0.9, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': 0.0, 'bundle': 0.0} rows 16
+jargon check ok: ['s1 line 1: states a figure or claim without a fact id — “It has a 3.4 kWh battery and 15A charging with IDC range.”', "s1: jargon 'kWh' in the main narration — move the complete technical quantity to deeper; never keep a number while dropping its unit"]
+SMOKE OK (phase 2) dm_4e45d501

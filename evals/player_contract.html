@@ -109,15 +109,16 @@ function bundle(opening = false) {
 const answered = (extra = {}) => ({ answered: true, answer: 'The approved source answers this.', fact_ids: ['f1'], topic: 'safety', route: 'stay', from_bank: true, ...extra });
 async function setup({ opening = false, hold = () => false, qa = async () => answered(), pitch = async () => null, configure = (b) => b } = {}) {
   player?.destroy(); await flush();
-  env = { calls: [], saved: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold };
+  env = { calls: [], saved: [], beacons: [], ttsCalls: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold };
   clock = new Clock(); clock.install();
   const owner = env;
   player = mountPlayer(host, configure(bundle(opening)), {
     qa: async (request) => { owner.calls.push(snapshot(request)); return qa(request, owner.calls.length); },
-    tts: async (text) => audioURL(text),
+    tts: async (text) => { owner.ttsCalls.push(text); return audioURL(text); },
     pitch,
     lead: async (request) => { owner.leadCalls.push(snapshot(request)); return {}; },
     saveSession: async (record) => { owner.saved.push(snapshot(record)); },
+    beacon: (record) => { owner.beacons.push(snapshot(record)); },
   });
   await flush();
 }
@@ -129,9 +130,47 @@ async function click(text, selector) { const b = button(text, selector); assert(
 async function type(text) { const input = host.querySelector('.composer input'); input.value = text; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); input.blur(); await flush(); }
 async function atProof() { await click('Skip the intro'); assert(player.context().slide === 'proof-one', 'Fixture did not reach first proof'); assert(button('I have a question'), 'Fixture did not reach the first check-in'); }
 const recentRecognizer = () => env.recognizers.at(-1);
-const detail = () => ({ context: player?.context(), qa: env?.calls, audioStarted: env?.played, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, leadRequests: env?.leadCalls });
+const detail = () => ({ context: player?.context(), qa: env?.calls, audioStarted: env?.played, ttsRequests: env?.ttsCalls, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, beaconSessions: env?.beacons, leadRequests: env?.leadCalls });
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
+
+test('Typing keeps later question waits closed to ambient speech until an explicit mic tap', async () => {
+  await setup(); await click('▶ Start');
+  const first = recentRecognizer();
+  assert(first?.started, 'Initial spoken flow stopped opening its microphone');
+  const intake = host.querySelector('.pl-intake.open .fallback input');
+  intake.value = 'I need room for our family.';
+  intake.dispatchEvent(new Event('input', { bubbles: true })); await flush();
+  assert(first.aborted && !host.querySelector('.pl-mic-row .mic.on'), 'Starting to type left the existing microphone capture active');
+  first.deliver('Unrelated ambient media'); await flush();
+  assert(env.calls.length === 0, 'Cancelled ambient speech became a customer question');
+  intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  assert(player.context().slide === 'proof-one' && button('I have a question'), 'Typed intake did not reach its check-in');
+  assert(env.recognizers.length === 1, 'Typed intake automatically reopened the microphone at the check-in');
+  await type('What is the warranty?');
+  assert(env.calls.length === 1 && env.calls[0].question === 'What is the warranty?' && env.recognizers.length === 1, 'Typed Q&A or its confirmation reopened ambient capture');
+  await click('Yes, that helps');
+  assert(player.context().slide === 'proof-two' && env.recognizers.length === 1, 'Advancing after typed Q&A discarded the input preference');
+  const mic = host.querySelector('.pl-mic-row .mic');
+  assert(mic && !mic.disabled, 'Typing hid or disabled the explicit microphone control');
+  mic.click(); await flush(); const explicit = recentRecognizer();
+  assert(explicit !== first && explicit.started, 'Explicit mic tap did not resume voice mode');
+  explicit.deliver('Does it have rear air vents?'); await flush();
+  assert(env.calls.length === 2 && env.calls[1].question === 'Does it have rear air vents?', 'Explicit microphone speech did not reach QA');
+  assert(recentRecognizer() !== explicit && recentRecognizer().started, 'Voice mode did not resume automatic listening for the next wait');
+});
+test('Typing preference survives Restart and intake microphone explicitly restores voice mode', async () => {
+  await setup(); await atProof(); await type('What is the warranty?');
+  const before = env.recognizers.length;
+  host.querySelector('button[title="Restart"]').click(); await flush();
+  assert(host.querySelector('.pl-intake.open .fallback input') && env.recognizers.length === before, 'Restart reopened the mic despite the typed input preference');
+  const mic = host.querySelector('.pl-intake.open .mic');
+  assert(mic && !mic.disabled, 'Restarted typed intake has no available microphone control');
+  mic.click(); await flush(); const rec = recentRecognizer();
+  assert(env.recognizers.length === before + 1 && rec.started, 'Intake mic tap did not explicitly resume listening');
+  rec.deliver('I want an automatic.'); await flush();
+  assert(player.context().profile.why === 'I want an automatic.' && recentRecognizer() !== rec, 'Explicit intake speech did not restore the normal voice-led flow');
+});
 
 test('Question mode holds its place after 30 seconds of silence', async () => {
   await setup(); await atProof(); await click('I have a question'); await clock.tick(30000);
@@ -213,12 +252,76 @@ test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
   await click('Skip the intro');
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1, 'Fixture did not stop on the second proof line');
   await type('Can you show the evidence on the other slide?');
+  assert(env.played.indexOf('Let me show you where that is.') < env.played.indexOf('The target slide carries that evidence.') && env.ttsCalls.includes('Let me show you where that is.'), 'An uncached jump did not speak its transition before the answer');
   assert(env.calls[0].slide_id === 'proof-one' && player.context().slide === 'proof-three', 'Routed question did not jump from its original slide to the answer slide');
   assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Routed answer did not highlight its cited detail');
   await click('Yes, that helps');
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1 && player.context().line_text === 'First proof interrupted detail.', 'Return point changed during the off-slide answer');
   assert(env.played.filter((t) => t === 'First proof.').length === 1 && env.played.filter((t) => t === 'First proof interrupted detail.').length === 2, 'Return replayed a completed line or skipped the interrupted one');
   assert(env.maxActive === 1, 'Off-slide answer overlapped narration');
+});
+test('A cached jump transition completes before the view and answer-latency stamp change', async () => {
+  const bridge = 'Now, let me get to what you asked about.';
+  await setup({
+    hold: (text) => text === bridge,
+    qa: async () => answered({ route: 'jump', slide_id: 'proof-three', answer: 'Answer on the third proof.' }),
+    configure: (b) => { b.fillers.bridge_to_custom = { text: bridge, audio: audioURL(bridge) }; return b; },
+  });
+  await atProof(); await type('Show the third proof.');
+  assert(player.context().slide === 'proof-one' && env.played.at(-1) === bridge, 'The view jumped before its spoken transition completed');
+  assert(!env.ttsCalls.includes(bridge), 'The existing transition clip was synthesized again');
+  await clock.tick(3000); window.dispatchEvent(new Event('pagehide'));
+  assert(env.beacons.at(-1).turns[0].answer_audio === null, 'The transition was counted as the first answer audio');
+  [...env.active][0].finish(); await flush();
+  window.dispatchEvent(new Event('pagehide')); const record = env.beacons.at(-1);
+  assert(player.context().slide === 'proof-three' && record.turns[0].answer_audio === clock.now, 'The actual answer did not stamp first audio after the transition');
+  assert(record.transcript.some((m) => m.role === 'agent' && m.text === bridge), 'The heard jump announcement is absent from the transcript');
+  assert(env.maxActive === 1, 'Transition and answer audio overlapped');
+});
+test('Interrupting a jump announcement cancels its pending view change and answer', async () => {
+  const bridge = 'Let me show you where that is.';
+  await setup({ hold: (text) => text === bridge, qa: async () => answered({ route: 'jump', slide_id: 'proof-three', answer: 'Superseded routed answer.' }) });
+  await atProof(); await type('Show the third proof.');
+  assert(env.played.at(-1) === bridge, 'Fixture did not hold the jump announcement');
+  const oldAudio = [...env.active][0];
+  await click('proof-two', '.pl-progress button'); oldAudio.finish(); await flush(); await clock.tick(1000);
+  assert(player.context().slide === 'proof-two' && !env.played.includes('Superseded routed answer.'), 'Canceled announcement later changed the view or spoke its answer');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(env.beacons.at(-1).jumps.length === 0 && env.maxActive === 1, 'Canceled transition recorded a jump or overlapped the new narration');
+});
+test('Stop, Done and pagehide preserve the same ended session duration', async () => {
+  await setup(); await atProof(); await clock.tick(60000);
+  host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
+  const first = env.saved.at(-1); assert(first.ended && first.minutes === 1, 'Fixture did not save a one-minute stopped session');
+  await clock.tick(180000); await click('Done', '.pl-handoff button'); await clock.tick(120000);
+  window.dispatchEvent(new Event('pagehide'));
+  const last = env.beacons.at(-1);
+  assert([...env.saved, last].every((r) => r.id === first.id && r.ended && r.minutes === first.minutes && JSON.stringify(r.slides_visited) === JSON.stringify(first.slides_visited)), 'Stopped idle time changed elapsed minutes or final-slide dwell');
+  assert(last.transcript.some((m) => m.text.startsWith('Thanks for your time.')), 'The frozen duration prevented the heard farewell from being retained');
+});
+test('Back resumes active session time without counting recap idle, and restart resets it', async () => {
+  await setup(); await atProof(); await clock.tick(60000);
+  host.querySelector('button[title="Stop and see the summary"]').click(); await flush(); const first = env.saved.at(-1);
+  await clock.tick(180000); await click('Back to the demo', '.pl-handoff button'); await clock.tick(30000);
+  window.dispatchEvent(new Event('pagehide')); const resumed = env.beacons.at(-1);
+  assert(!resumed.ended && resumed.id === first.id && resumed.minutes === 1.5 && resumed.slides_visited.at(-1).seconds === 90, 'Back counted recap idle or lost earlier active time');
+  await click('proof-two', '.pl-progress button'); await clock.tick(30000);
+  host.querySelector('button[title="Stop and see the summary"]').click(); await flush(); const second = env.saved.at(-1);
+  assert(second.ended && second.minutes === 2 && second.slides_visited.find((s) => s.slide_id === 'proof-one').seconds === 90 && second.slides_visited.at(-1).seconds === 30, 'A resumed slide transition double-counted or omitted dwell');
+  host.querySelector('button[title="Restart"]').click(); await flush(); await clock.tick(30000);
+  window.dispatchEvent(new Event('pagehide')); const restarted = env.beacons.at(-1);
+  assert(restarted.id !== first.id && !restarted.ended && restarted.minutes === .5, 'Restart retained the previous session timing cutoff');
+});
+test('An intentional new typed question after Done reopens timing without the idle gap', async () => {
+  await setup(); await atProof(); await clock.tick(60000);
+  host.querySelector('button[title="Stop and see the summary"]').click(); await flush(); const first = env.saved.at(-1);
+  await click('Done', '.pl-handoff button'); await clock.tick(180000); await type('One more question.'); await clock.tick(30000);
+  window.dispatchEvent(new Event('pagehide')); const resumed = env.beacons.at(-1);
+  assert(env.calls.length === 1 && resumed.id === first.id && !resumed.ended && resumed.minutes === 1.5 && resumed.slides_visited.at(-1).seconds === 90, 'New input kept an ended flag or included stopped idle in engagement');
+  host.querySelector('button[title="Stop and see the summary"]').click(); await flush(); await click('Done', '.pl-handoff button'); await clock.tick(180000);
+  const pause = host.querySelector('button[title="Pause / resume"]'); pause.click(); await flush(); pause.click(); await flush(); await clock.tick(30000);
+  window.dispatchEvent(new Event('pagehide')); const viaPause = env.beacons.at(-1);
+  assert(!viaPause.ended && viaPause.minutes === 2, 'Explicit playback resume after Done left session timing frozen or included stopped idle');
 });
 test('Declining callback still permits completion and saves the finished session', async () => {
   const question = 'Can you guarantee my exact monthly payment?';

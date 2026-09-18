@@ -1,0 +1,34 @@
+PASS generation: FactsOut receives the same truth and scope instructions
+PASS generation: CompetitorsOut receives the same truth and scope instructions
+PASS generation: source applicability stays attached and product/rival extraction stays separate
+PASS generation: old fact rows still default to stated without a schema migration
+PASS generation: planner receives exact quote, locator, units, truth and applicability
+PASS generation: planner excludes rejected product evidence from current registry input
+PASS generation: proposed usps cannot restore rejected or unknown citations
+PASS generation: proposed segments cannot restore rejected or unknown citations
+PASS generation: proposed concerns cannot restore rejected or unknown citations
+PASS generation: legacy rows with no quote or locator remain usable without invented evidence
+PASS generation: author receives original source evidence alongside the plan
+PASS generation: planner and author both receive the evidence-to-relevance rules
+PASS generation: complete technical quantities survive in deeper detail without a jargon repair
+PASS generation: a jargon repair requests moving the whole quantity, never deleting its unit
+PASS generation: deck receives current quote, locator, units, truth and applicability
+PASS generation: deck receives shared evidence rules and permits omission when scope cannot fit
+PASS generation: build FAQ receives the full product evidence and rules
+PASS generation: build FAQ excludes rejected product evidence
+PASS generation: build FAQ delivers a complete unit-bearing answer unchanged to speech
+PASS generation: runtime receives the full product evidence and rules
+PASS generation: runtime excludes rejected product evidence
+PASS generation: runtime delivers a complete unit-bearing answer unchanged to speech
+PASS generation: build FAQ policy envelope retains unknown relationship and headline rule
+PASS generation: runtime policy envelope retains unknown relationship and headline rule
+PASS generation: build FAQ policy envelope retains explicit relationship and exclusion and headline rule
+PASS generation: runtime policy envelope retains explicit relationship and exclusion and headline rule
+PASS generation: build FAQ greeting envelope assigns questions to one owner
+PASS generation: runtime greeting envelope assigns questions to one owner
+PASS generation: build FAQ ordinary answer envelope assigns questions to one owner
+PASS generation: runtime ordinary answer envelope assigns questions to one owner
+PASS generation: build FAQ clarification envelope assigns questions to one owner
+PASS generation: runtime clarification envelope assigns questions to one owner
+PASS generation: all contracts avoid actual provider and network calls
+Generation input/approval contracts: 33/33 (model entailment not evaluated)

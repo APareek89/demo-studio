@@ -159,3 +159,33 @@ The conservative Sarvam start interval is 2.1 seconds, based on the published Bu
 ## Headline policy terms supplement — 2026-09-18
 
 `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/generation_contract.py` now passes27/27. Four added free input-envelope cases exercise real QA assembly for build FAQ and runtime, pairing a synthetic unknown duration/distance relationship with explicitly supplied “whichever occurs first” and an exclusion. Exact values, quotes, locator, contractual classification and conditions must reach each provider envelope together with the generic headline-policy rule. The new cases failed before the prompt change (23/27); no provider or network call occurs. This is not a model-following or semantic-accuracy test; actual live warranty wording must still be reviewed.
+
+
+## QA question ownership supplement — 2026-09-18
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/generation_contract.py` passes33/33. Six added input-envelope checks invoke real QA assembly for greeting/ordinary/clarification replies through build and runtime, verifying the player owns the satisfaction check, ordinary answers are statements, and only the existing clarification field asks one identical question. The ambiguous technical-detail offer instruction is replaced with a statement instruction. With the previous ownership wording restored in memory, the six new cases fail (27/33). This does not prove future model compliance or fix the player by itself; no schema/provider/voice/matcher change or paid call is part of this patch.
+
+
+### NX29 typed input preference — 2026-09-18
+
+Two `evals/player_contract.html` cases exercise the actual player with fake speech events: the initial spoken flow still opens listening; beginning to type cancels that capture; typed intake, check-in and Q&A do not reopen it; late ambient output is ignored; the visible explicit mic sends speech and restores voice waits. Restart retains typed preference until the intake mic is explicitly tapped. These regressions passed the final coordinated 30/30 CUA run; the actual B typed intake, Q&A and 35.5-second clarification hold also kept the mic closed. They prove input ownership, not real-device recognition quality. No paid call or third Build is part of this fix.
+
+
+## Ended-session timing and announced Q&A jumps — 2026-09-18
+
+| Input | Expected |
+|---|---|
+| Free browser harness `evals/player_browser.py`, NX27 virtual-clock cases | Stop→180s→Done→120s→pagehide retains one ended session's elapsed and final-slide dwell. Back adds only active time, subsequent slides retain correct dwell, Restart clears the cutoff, and an intentional new question after Done reopens the same session without idle inflation. |
+| Free browser harness `evals/player_browser.py`, NX28 jump cases | Existing cached transition is heard before the view changes; no TTS request for that clip; held bridge does not stamp first answer audio. Actual answer does; cancellation prevents a late jump/answer. Missing cache uses the normal selected-voice speak path; return remains the exact interrupted line. |
+
+These add five cases to the browser contract (the prior off-slide case also gains its transition assertion). Browser execution is required; syntax checks alone are not behavioral proof. No real provider call or Build is part of this harness.
+
+
+## Focused comparison envelope supplement — 2026-09-18
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/generation_contract.py` passes35/35. Two new build/runtime comparison cases inspect the actual provider envelope for the60-word total budget, direct-one-sentence allowance, at-most-two relevant attributes, scope-before-brevity priority, both synthetic variants' conditions, buyer context and full verification caveat. New cases fail under the previous prompt (33/35). No generated prose is scored as semantically correct by these mocks; live B Q07's88-word catalogue and omitted BNCAP date remain recorded failures until a focused rerun is reviewed.
+
+
+## Live Q&A response allowance — 2026-09-18 (NX30)
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/qa_deck.py` includes five budget regressions in `evals/provider_contract.py`. The actual live QA→runtime→Gemini→installed SDK path receives max_output_tokens 3,000 with the existing model/timeout and no explicit thinking configuration; a complete fake approved answer retains its citation and prevents later fallback. Billing includes candidate plus thought tokens. Build-time QA and unrelated runtime calls retain 1,500. All transport is fake and sockets are blocked. The 60-word spoken prompt is separate from this structured-response allowance. This free test does not prove a live provider will finish within 3,000 tokens; actual B Q08's malformed response and declined comparison are retained for a focused customer rerun.

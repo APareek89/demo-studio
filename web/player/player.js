@@ -28,8 +28,8 @@ export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
-    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, turns: [], lastListen: null, onFirstAudio: null,
+    cta: null, started: Date.now(), micOn: false, micDenied: false, inputMode: "voice", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
+    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
     listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set() };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
@@ -83,15 +83,15 @@ export function mountPlayer(host, bundle, api) {
       h("div", { class: "pl-dock" },
         h("div", { class: "pl-cap" }, (el.mascotStage = mascot({ size: 72, image: bundle.mascot })).el, h("div", { class: "who" }, guide), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
         h("div", { class: "pl-controls" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }),
-          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { placeholder: "Ask a question or type your answer…", "aria-label": "Your question or answer" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
+          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: "Ask a question or type your answer…", "aria-label": "Your question or answer" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
           h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Voice input needs Chrome or Safari — use 💬 to type."), el.mic = h("button", { class: "mic", onclick: () => micTap() }, "🎤")))),
       el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
-        el.inFallback = h("form", { class: "fallback open", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t) { el.inText.value = ""; acceptTypedAnswer(t); } } }, el.inText = h("input", { placeholder: "Type your answer…", "aria-label": "Your answer" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
+        el.inFallback = h("form", { class: "fallback open", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t) { el.inText.value = ""; acceptTypedAnswer(t); } } }, el.inText = h("input", { oninput: preferTyping, placeholder: "Type your answer…", "aria-label": "Your answer" }), h("button", { class: "btn primary sm", type: "submit" }, "Send")),
         h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", onclick: () => intakeMic() }, "🎤"), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
       el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" })),
       el.lead = h("div", { class: "pl-lead" }, h("div", { class: "lead-card" }, h("button", { class: "lead-close", title: "Not now", onclick: () => el.lead.classList.remove("open") }, "×"), h("div", { class: "eyebrow" }, "Optional · dealership follow-up"), h("h3", {}, "Would you like to try it in person?"), el.leadCopy = h("p", {}, "Share your details and the dealership can arrange a test drive."), el.leadForm = h("form", { onsubmit: (e) => { e.preventDefault(); saveLeadForm(); } }, el.leadName = h("input", { placeholder: "Your name", autocomplete: "name" }), el.leadPhone = h("input", { placeholder: "10-digit mobile number", inputmode: "tel", autocomplete: "tel" }), el.leadError = h("div", { class: "lead-error" }), h("p", { class: "consent" }, CONSENT), h("button", { class: "btn primary", type: "submit" }, "Arrange a test drive")), h("button", { class: "btn ghost sm", onclick: () => el.lead.classList.remove("open") }, "Not now")))),
     el.drawer = h("div", { class: "pl-drawer" }, h("div", { class: "head" }, h("span", {}, "Conversation"), h("button", { class: "icon-btn", onclick: () => toggleDrawer(false) }, "✕")), el.thread = h("div", { class: "body" }),
-      h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { placeholder: "Type a question…" }), h("button", { class: "btn primary sm", type: "submit" }, "↑"))));
+      h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { oninput: preferTyping, placeholder: "Type a question…" }), h("button", { class: "btn primary sm", type: "submit" }, "↑"))));
   host.replaceChildren(root);
   const dockObserver = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
     root.style.setProperty("--player-dock-height", Math.ceil(root.querySelector(".pl-dock").getBoundingClientRect().height) + "px");
@@ -101,7 +101,10 @@ export function mountPlayer(host, bundle, api) {
   // ---------- helpers ----------
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  function preferTyping() { S.inputMode = "typed"; stopListening(); }
   function acceptTypedAnswer(text) {
+    preferTyping();
+    resumeSession();
     S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "typed" };
     if (S.intakeOpen) { if (S.intakeResolver) S.intakeResolver(text); else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; } return; }
     if (S.waiter) { addMsg("user", text); resolveWait(replyForTurn(text, S.waiter)); return; }
@@ -113,8 +116,8 @@ export function mountPlayer(host, bundle, api) {
   function setChips(list) { const owner = S.waiter; el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => { if (S.waiter === owner) resolveWait(c.value); } }, c.label))); }
   function clearTimer() { if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   function newRun() { return ++S.run; }
-  function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.slide.kind, onclick: () => { interruptAll(); S.conversationOrigin = null; playFrom(i, 0); } }, st.slide.title))); }
-  function renderCtas() { const ctas = (bundle.ctas || []).filter((c) => c.when === "always" || !c.when); el.ctas.replaceChildren(...ctas.map((c) => h("button", { class: "chip cta" + (c.primary ? " primary" : ""), onclick: () => { interruptAll(); ctaFlow(c.id, newRun()); } }, c.label))); }
+  function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.slide.kind, onclick: () => { resumeSession(); interruptAll(); S.conversationOrigin = null; playFrom(i, 0); } }, st.slide.title))); }
+  function renderCtas() { const ctas = (bundle.ctas || []).filter((c) => c.when === "always" || !c.when); el.ctas.replaceChildren(...ctas.map((c) => h("button", { class: "chip cta" + (c.primary ? " primary" : ""), onclick: () => { resumeSession(); interruptAll(); ctaFlow(c.id, newRun()); } }, c.label))); }
 
   // ---------- stage: one slide at a time, cross-faded ----------
   let cur = null;  // { slide, view, enteredAt }
@@ -129,7 +132,8 @@ export function mountPlayer(host, bundle, api) {
     preloadAfter(slide);
     return view;
   }
-  function noteVisit(c) { if (!c) return; S.visited.push({ slide_id: c.slide.id, kind: c.slide.kind, seconds: Math.round((Date.now() - c.enteredAt) / 100) / 10 }); }
+  function sessionNow() { return S.endedAt ?? Date.now(); }
+  function noteVisit(c) { if (!c) return; S.visited.push({ slide_id: c.slide.id, kind: c.slide.kind, seconds: Math.round((sessionNow() - c.enteredAt) / 100) / 10 }); }
   function preloadAfter(slide) {  // the next slide's picture and audio are fetched while this one plays
     const i = S.plan.findIndex((st) => st.slide.id === slide.id); const next = i >= 0 ? S.plan[i + 1]?.slide : null; if (!next) return;
     if (next.image_url) { const im = new Image(); im.decoding = "async"; im.src = next.image_url; S.preloads.push(im); }
@@ -350,7 +354,7 @@ export function mountPlayer(host, bundle, api) {
     return { value: "answer", text };
   }
   function listenForTurn(turn) {
-    if (S.waiter !== turn || turn.run !== S.run || !canListen() || S.micDenied) return;
+    if (S.inputMode !== "voice" || S.waiter !== turn || turn.run !== S.run || !canListen() || S.micDenied) return;
     listen({ timeout: turn.listenSecs, onInterim: (t) => { if (S.waiter === turn) el.live.textContent = t; } }).then((t) => {
       if (S.waiter !== turn || turn.run !== S.run) return;
       if (t) { addMsg("user", t); resolveWait(replyForTurn(t, turn)); }
@@ -503,6 +507,8 @@ export function mountPlayer(host, bundle, api) {
     if (r.text) handleQuestion(r.text); else if (r.value === "continue") resumeAfterQA();
   }
   function micTap() {
+    S.inputMode = "voice";
+    resumeSession();
     if (S.micOn) { stopListening(false); return; }
     if (S.intakeOpen) { intakeMic(); return; }
     if (S.waiter) { listenForTurn(S.waiter); return; }
@@ -557,7 +563,13 @@ export function mountPlayer(host, bundle, api) {
     }
     const from = cur?.slide?.id || null;
     jumped = r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
-    if (jumped) { showSlideView(jumped, { reveal: 99 }); S.covered.add(jumped.id); S.jumps.push({ from, to: jumped.id, question: text }); } else cur?.view.setRevealed(99);
+    if (jumped) {
+      // A transition is heard before the view changes; it is not the first answer audio.
+      S.onFirstAudio = null;
+      if (!(await speakF("bridge_to_custom", "Let me show you where that is.", run))) return;
+      showSlideView(jumped, { reveal: 99 }); S.covered.add(jumped.id); S.jumps.push({ from, to: jumped.id, question: text });
+      S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
+    } else cur?.view.setRevealed(99);
     if (r.callout_id) cur?.view.highlight(r.callout_id);
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "";
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
@@ -620,11 +632,11 @@ export function mountPlayer(host, bundle, api) {
     return new Promise((res) => {
       let done = false; const fin = (t) => { if (done) return; done = true; S.intakeResolver = null; stopListening(); res(t); }; S.intakeResolver = fin; el.inHeard.textContent = "";
       if (S.pendingIntakeAnswer) { const queued = S.pendingIntakeAnswer; S.pendingIntakeAnswer = ""; fin(queued); return; }
-      if (canListen() && !S.micDenied) { el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; listen({ timeout: 10000, onInterim: (t) => { el.inHeard.textContent = t; } }).then((t) => { if (done || run !== S.run) return; if (t) fin(t); else { el.inState.textContent = "Tap the mic to try again, or type below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); } }); }
+      if (S.inputMode === "voice" && canListen() && !S.micDenied) { el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; listen({ timeout: 10000, onInterim: (t) => { el.inHeard.textContent = t; } }).then((t) => { if (done || run !== S.run) return; if (t) fin(t); else { el.inState.textContent = "Tap the mic to try again, or type below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); } }); }
       else { el.inState.textContent = "Type your answer below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); }
     });
   }
-  async function intakeMic() { if (S.micOn) { stopListening(false); return; } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
+  async function intakeMic() { S.inputMode = "voice"; if (S.micOn) { stopListening(false); return; } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
   function parseName(t) { let m = t.match(/(?:my name is|myself|name's|call me|mera naam|naam)\s+([A-Za-zऀ-ॿ][a-zऀ-ॿ]+)/i); if (m) return cap(m[1]); m = t.match(/^([A-Za-z][a-z]+)\s+(?:here|speaking|bol raha|bol rahi)\b/i); if (m) return cap(m[1]); return ""; }
 
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -704,11 +716,19 @@ export function mountPlayer(host, bundle, api) {
   // ---------- handoff ----------
   function intentScore() { let s = 20; s += Math.min(30, S.questions.length * 8); s += S.resolved.size * 8; s += S.seg >= S.plan.length - 1 ? 15 : 0; if (S.cta && S.cta !== "summary") s += 30; if (S.leads.length) s += 10; s -= S.unresolved.size * 5; return Math.max(5, Math.min(98, s)); }
   function sessionRecord() {
-    const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((Date.now() - cur.enteredAt) / 100) / 10 }] : [])];
+    const now = sessionNow();
+    const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((now - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((Date.now() - S.started) / 6000) / 10, transcript: S.transcript };
+    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
+  }
+  function resumeSession() {
+    if (S.endedAt === null) return;
+    const idle = Date.now() - S.endedAt;
+    S.started += idle; if (cur) cur.enteredAt += idle;
+    S.endedAt = null; S.ended = false; el.handoff.classList.remove("open");
   }
   function showHandoff(c) {
+    if (S.endedAt === null) S.endedAt = Date.now();
     S.ended = true;
     el.lead.classList.remove("open");
     const session = sessionRecord();
@@ -726,7 +746,7 @@ export function mountPlayer(host, bundle, api) {
           h("button", { class: "btn ghost sm", onclick: () => showLeadPrompt("requested", openQuestions[0] || S.questions.at(-1) || c?.label || "test drive") }, "Request dealership follow-up"))])),
       h("div", { class: "actions", style: "display:flex;gap:10px;margin-top:14px" },
         h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); api.saveSession(sessionRecord()).catch(() => {}); const run = newRun(); speak("Thanks for your time. You can ask anything else whenever you are ready.", run); } }, "Done"),
-        h("button", { class: "btn ghost", onclick: () => { el.handoff.classList.remove("open"); S.ended = false; const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } }, "Back to the demo")));
+        h("button", { class: "btn ghost", onclick: () => { resumeSession(); const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } }, "Back to the demo")));
     el.handoff.classList.add("open"); api.saveSession(session).catch(() => {});
   }
 
@@ -763,7 +783,7 @@ export function mountPlayer(host, bundle, api) {
 
   // ---------- pause / stop ----------
   function togglePause() {
-    if (S.paused) { S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); const resume = S.resume; S.resume = null; if (resume) resume(); return; }
+    if (S.paused) { resumeSession(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); const resume = S.resume; S.resume = null; if (resume) resume(); return; }
     const origin = { ...S.playback }, intake = S.intakeOpen, conversation = !!S.conversationOrigin;
     interruptAll(); S.paused = true; el.pauseBtn.textContent = "▶"; el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press ▶ to continue.";
     S.resume = () => { if (intake) runIntake(); else if (conversation) holdConversation(newRun()); else resumePlayback({ ...origin, checkin: false }); };
@@ -771,7 +791,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
   function pause() { if (!S.paused) togglePause(); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   const onHide = () => { if (S.transcript.length && api.beacon) { try { api.beacon(sessionRecord()); } catch (e) {} } };

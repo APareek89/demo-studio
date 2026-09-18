@@ -1,6 +1,6 @@
 # Nexon — two real iterations and acceptance evidence
 
-Prepared 2026-09-18. **Real iteration 1: first actual Build failed at voice; no bundle. Real iteration 2: fixes in progress, second actual Build NOT RUN.** This protocol applies the ten agreed standards from [the issue log](../issues/2026-09-18-nexon.md). It establishes no vehicle facts, variants, prices or comparison results.
+Prepared 2026-09-18. **Real iteration 1: first actual Build failed at voice; no bundle. Real iteration 2: second actual Build succeeded; real customer validation and observed runtime fixes are in progress.** This protocol applies the ten agreed standards from [the issue log](../issues/2026-09-18-nexon.md). It establishes no vehicle facts, variants, prices or comparison results.
 
 ## Starting point and required inputs
 
@@ -27,7 +27,7 @@ The revised `competitors.json` expectations require positive supported compariso
 4. **Iteration 2 — second actual Build:** rebuild the same real demo through the product. Verify complete audio and the selected voice before customer testing, then run all three profiles, Q01–Q12 and all ten standards with fresh sessions. Record any changed source, setting or model and preserve the new artifacts separately.
 5. Complete only when both real iterations exist and iteration 2 meets every standard, including both positive competitor comparisons. Do not average a misleading answer, lost turn or consent failure into a passing score. Any remaining blocked requirement keeps the real-demo goal open.
 
-The preserved mock rehearsal and 19-case synthetic browser harness support regression confidence. They count as **neither** real iteration and prove neither factual accuracy, actual microphone quality, natural voice nor paid-provider latency.
+The preserved mock rehearsal and expanded synthetic browser harness support regression confidence. They count as **neither** real iteration and prove neither factual accuracy, actual microphone quality, natural voice nor paid-provider latency.
 
 ## Three test buyers
 
@@ -60,11 +60,11 @@ For **every Q01–Q12**, maintain two evidence rows:
 
 `I1/I2 · PASS/FAIL/BLOCKED/NOT RUN · build/version · profile/session · exact input/output · fact/source IDs · slide/return IDs · evidence link · issue ID`
 
-**Current rows: every Q01–Q12 is I1: BLOCKED (NX19, no bundle); I2: NOT RUN.** The individual statuses are stored in `output/nexon-real-evidence/iteration-1/run.json`. A correct refusal on Q07 or Q08 stays **BLOCKED for comparison coverage**.
+**Current rows: every Q01–Q12 is I1: BLOCKED (NX19, no bundle). I2 has a ready v1 bundle; initial customer failures and subsequent reruns are preserved separately under iteration-2. Do not treat the ready bundle or synthetic browser passes as completed customer acceptance.** The individual statuses are stored in `output/nexon-real-evidence/iteration-1/run.json`. A correct refusal on Q07 or Q08 stays **BLOCKED for comparison coverage**.
 
 ## Ten-standard pass/fail record
 
-**Current record: I1 standard 4 FAILS the complete/single-voice prerequisite (NX19); I1 standards 1–3 and 5–10 are BLOCKED by the absent bundle. All I2 standards are NOT RUN.** Actual main-batch durations pass the twenty-second budget, but acoustic intelligibility, naturalness and overlap remain untested. Update each standard with actual evidence/session links, issue IDs and reviewer/date; code inspection and mock passes cannot populate a real PASS.
+**Current record: I1 standard 4 FAILS the complete/single-voice prerequisite (NX19); I1 standards 1–3 and 5–10 are BLOCKED by the absent bundle. I2 audio-file completeness passes, while real customer standards are being tested and failures retained.** Actual main-batch durations pass the twenty-second budget, but acoustic intelligibility, naturalness and overlap remain untested. Update each standard with actual evidence/session links, issue IDs and reviewer/date; code inspection and mock passes cannot populate a real PASS.
 
 1. **First impression:** recognizable real Nexon, brief useful invitation and unobscured product. No mismatched sample imagery, blurred hero or internal diagnostics. Evidence: wide/phone welcome and opening recording.
 2. **Discovery:** one useful optional intake, visible typing/skip, exact stated needs retained, no stacked name request or repeated greeting. Evidence: all three intake transcripts and profiles.
@@ -87,4 +87,4 @@ Keep separate iteration indexes under `output/nexon-real-evidence/iteration-1/` 
 - **Screen/grounding:** real wide/phone images of welcome, intake, every slide, evidence highlight, return, clarification, callback and ending. Attach both manufacturers' proof for each positive comparison and the actual spoken verification caveat.
 - **Completion/cost:** actual ended session, Studio summary, protected share and latency panel; no unconsented lead. Report observed paid build/runtime/voice cost by iteration, including failures and unavailable cost portions.
 
-Final delivery links the real demo, both evidence indexes and the resolved/open issue record with measured cost and latency. Current result: **iteration 1 failed at voice; all twelve customer paths blocked; iteration 2 and all acoustic/customer verification pending**.
+Final delivery links the real demo, both evidence indexes and the resolved/open issue record with measured cost and latency. Current result: **iteration 1 failed at voice; iteration 2 built successfully. Customer-path reruns and acoustic listening remain in progress; see the iteration-2 run index and actual session snapshots.**

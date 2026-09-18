@@ -1,0 +1,12 @@
+{
+  "session_id": "s_mu73j2rpe8ug",
+  "demo_id": "dm_36d47b86",
+  "api_origin": "http://127.0.0.1:8893/api/demos/dm_36d47b86/sessions/s_mu73j2rpe8ug",
+  "retrieved_at": "2026-09-18T15:13:37.087456+00:00",
+  "redacted_fields": [
+    "share_key"
+  ],
+  "sha256": "356074922b8a12b800a5068caf2276f354c9e2e8ad78e4c040eb6be009a6328c",
+  "purpose": "Diagnostic typed routing check with unattributed automatic microphone captures; not independent voice-input acceptance",
+  "runtime_commit_reported_by_root": "64d2afd"
+}

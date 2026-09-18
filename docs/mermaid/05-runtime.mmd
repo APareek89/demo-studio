@@ -17,13 +17,13 @@ flowchart TD
   LINE["play slide: bridge, then lines<br/>[FUNCTION · playFrom / playLines]<br/>showSlideView cross-fades the slide · setRevealed(j) BEFORE line j's audio · legacy question / confirm step waits for a reply · completed statement → next line · next slide preloaded"]:::fn
   TRX["true transcript<br/>[FUNCTION · logHeard]<br/>an agent line is logged when its audio ENDS; cut off → heard prefix (currentTime / duration × words) marked interrupted; only this history goes to /run/qa"]:::fn
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
-  WAIT["owned waitFor, no auto-advance countdown<br/>[FUNCTION · interpretReply — exact confirmations]<br/>voice or typed answer settles once · late transcripts ignored · qualified yes goes to Q&A"]:::fn
+  WAIT["owned waitFor, no auto-advance countdown<br/>[FUNCTION · interpretReply — exact confirmations]<br/>voice or typed answer settles once · typing cancels capture and keeps typed waits until explicit mic · automatic listening only in voice mode · late transcripts ignored · qualified yes goes to Q&A"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]<br/>stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns"]:::ask
   QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each, one retry; all fail → decline + callback]<br/>bank stays local; synchronous live answer + speech offloaded by asyncio.to_thread<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ approved registry (including bank hits) AND (answered OR no number/claim words)"}:::dec
   RT{"where does the answer live?<br/>[FUNCTION · deck.slides_with_script then route_for]<br/>current reviewed narration/deeper citations + saved slide design · answer fact ids ∩ each slide's facts, else question words vs topics / titles · bank and live answers use the same join · NO LLM"}:::dec
-  JUMP["jump: cross-fade to the slide that carries the facts · all callouts shown, the matching one lit · slide marked covered (reached later: title + first line, no check-in)<br/>[FUNCTION · showSlideView + highlight]"]:::fn
+  JUMP["jump: await cached bridge_to_custom (else generic speak) before cross-fade · canceled run cannot jump · then all callouts shown, matching one lit · slide marked covered<br/>[FUNCTION · speakF + showSlideView + highlight]<br/>first answer audio stamped after the bridge; exact return point retained"]:::fn
   SPEAK["speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)<br/>[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · offer optional dealer-help form · hold playback"]:::term
   LEAD{"customer says call me / gives a number?<br/>[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
@@ -33,7 +33,7 @@ flowchart TD
   POP["test-drive / dealer-help form<br/>[ask]<br/>name + ten-digit phone + consent; dismissible; narration stays parked"]:::ask
   RES["resume after explicit resolution: spoken bridge → saved phase, slide and line; completed opening lines are not replayed; follow-ups retain the original checkpoint<br/>[FUNCTION · resumeAfterQA]"]:::fn
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
-  HAND["customer recap (actual topics + open questions, no internal scoring) → POST /run/session (Done, Stop and the tab-close sendBeacon, one id per visit)<br/>[FUNCTION · storage.backend(): local files · AWS adds a DynamoDB row + S3 mirror]<br/>then ONE lite call writes the follow-up summary from the TRUE transcript (record facts copied by code) · Studio › Sessions · keyed read-only share link, phones masked"]:::data
+  HAND["customer recap (actual topics + open questions, no internal scoring) → POST /run/session (Done, Stop and tab-close sendBeacon, one id per visit)<br/>first handoff freezes elapsed and final-slide dwell · explicit return excludes stopped idle · Restart resets timing<br/>[FUNCTION · storage.backend(): local files · AWS adds a DynamoDB row + S3 mirror]<br/>then ONE lite call writes the follow-up summary from the TRUE transcript (record facts copied by code) · Studio › Sessions · keyed read-only share link, phones masked"]:::data
 
   START --> PRELOAD --> HERO --> Q1 --> L1 --> P1 --> FILM --> OPEN
   P1 -.->|"starts before film"| PITCH --> PV
