@@ -54,7 +54,8 @@ def summarize(demo_id: str, session: dict) -> dict:
         out = mock.fake(SessionSummary)
         out.customer_name = (session.get("profile") or {}).get("name", "") or out.customer_name
     else:
-        out = runtime.structured(SUMMARY_SYSTEM.format(product=product), json.dumps(payload, ensure_ascii=False), SessionSummary, max_tokens=1200)
+        out = runtime.structured(SUMMARY_SYSTEM.format(product=product), json.dumps(payload, ensure_ascii=False), SessionSummary,
+                                 max_tokens=1200, thinking_level="low")
         model = "runtime"
     escalations = [e for e in session.get("escalations", []) if not str(e).startswith("callback requested")]
     # A proposed sales opener is not evidence that missing answers were obtained.

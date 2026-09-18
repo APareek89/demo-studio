@@ -1,0 +1,50 @@
+{
+  "checks": {
+    "proof_partial_matches_current_line": true,
+    "proof_answer_is_exact_bank_answer": true,
+    "proof_return_cue_then_exact_interrupted_line": true,
+    "proof_next_line_follows_once": true,
+    "deeper_partial_matches_current_line": true,
+    "deeper_answer_is_exact_bank_answer": true,
+    "deeper_return_cue_then_exact_interrupted_line": true,
+    "deeper_next_line_follows_once": true,
+    "both_questions_are_bank_jumps_from_boot": true,
+    "ended_zero_leads_current_summary": true
+  },
+  "transcript_indices_are_zero_based": true,
+  "proof_return_indices": [
+    7,
+    8,
+    10,
+    12,
+    13,
+    14
+  ],
+  "deeper_return_indices": [
+    16,
+    17,
+    19,
+    21,
+    22,
+    23
+  ],
+  "ui_evidence": [
+    "../proof-interrupt-origin.txt",
+    "../proof-interrupt-return-line.txt",
+    "../deeper-interrupt-origin.txt",
+    "../deeper-interrupt-return-line.txt"
+  ],
+  "known_failure": {
+    "issue": "NX38 before fix",
+    "caption": "The CNG boot is listed at 321 litres using the same ISO V215 measurement basis. Capacity alone won't settle the fit of your luggage.",
+    "expected_fact_ids": [
+      "F014"
+    ],
+    "actual_displayed_fact_ids": [
+      "F020",
+      "F021"
+    ],
+    "source": "../deeper-interrupt-return-line.txt"
+  },
+  "limits": "Explicit Yes clicks are operator/UI evidence; chip clicks are not user transcript entries. A partial transcript is the player estimate of interrupted delivery, not an acoustic transcript."
+}

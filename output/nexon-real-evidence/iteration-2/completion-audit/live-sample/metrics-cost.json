@@ -1,0 +1,782 @@
+{
+  "demo_id": "dm_36d47b86",
+  "runtime_commit": "cde49fe",
+  "session_id": "s_mu765nbzlv8f",
+  "captured_at": "2026-09-18T16:35:50.016789+00:00",
+  "window": {
+    "after_exclusive": 1789748705.617282,
+    "before_inclusive": 1789749350.016789
+  },
+  "ended": true,
+  "minutes": 9.1,
+  "logical_questions": 6,
+  "model_turns": 7,
+  "bank_turns": 0,
+  "lead_count": 0,
+  "saved_cta": "Book Test Drive",
+  "cta_is_customer_choice": false,
+  "summary": {
+    "error": "all runtime providers failed — gemini: 1 validation error for SessionSummary\n  Invalid JSON: EOF while parsing a value at line 1 column 0 [type=json_invalid, i | claude: Error code: 400 - {'type': 'er",
+    "generated_at": 1789749277.729955,
+    "transcript_lines": 45
+  },
+  "latency": {
+    "all": {
+      "turns": 7,
+      "complete": 7,
+      "excluded": 0,
+      "answered": 6,
+      "declined": 1,
+      "client_errors": 0,
+      "latency": {
+        "stt_ms": {
+          "n": 7,
+          "p50": 0,
+          "p95": 0,
+          "worst": 0
+        },
+        "qa_ms": {
+          "n": 7,
+          "p50": 6504,
+          "p95": 7973,
+          "worst": 7973
+        },
+        "post_qa_to_audio_ms": {
+          "n": 7,
+          "p50": 23,
+          "p95": 2830,
+          "worst": 2830
+        },
+        "total_ms": {
+          "n": 7,
+          "p50": 7971,
+          "p95": 10225,
+          "worst": 10225
+        }
+      }
+    },
+    "by_source": {
+      "bank": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "model": {
+        "turns": 7,
+        "complete": 7,
+        "excluded": 0,
+        "answered": 6,
+        "declined": 1,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 7,
+            "p50": 0,
+            "p95": 0,
+            "worst": 0
+          },
+          "qa_ms": {
+            "n": 7,
+            "p50": 6504,
+            "p95": 7973,
+            "worst": 7973
+          },
+          "post_qa_to_audio_ms": {
+            "n": 7,
+            "p50": 23,
+            "p95": 2830,
+            "worst": 2830
+          },
+          "total_ms": {
+            "n": 7,
+            "p50": 7971,
+            "p95": 10225,
+            "worst": 10225
+          }
+        }
+      },
+      "unclassified": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      }
+    },
+    "by_input": {
+      "typed": {
+        "turns": 7,
+        "complete": 7,
+        "excluded": 0,
+        "answered": 6,
+        "declined": 1,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 7,
+            "p50": 0,
+            "p95": 0,
+            "worst": 0
+          },
+          "qa_ms": {
+            "n": 7,
+            "p50": 6504,
+            "p95": 7973,
+            "worst": 7973
+          },
+          "post_qa_to_audio_ms": {
+            "n": 7,
+            "p50": 23,
+            "p95": 2830,
+            "worst": 2830
+          },
+          "total_ms": {
+            "n": 7,
+            "p50": 7971,
+            "p95": 10225,
+            "worst": 10225
+          }
+        }
+      },
+      "server": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "browser": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "unknown": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      }
+    },
+    "by_source_and_input": {
+      "bank/typed": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "bank/server": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "bank/browser": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "bank/unknown": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "model/typed": {
+        "turns": 7,
+        "complete": 7,
+        "excluded": 0,
+        "answered": 6,
+        "declined": 1,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 7,
+            "p50": 0,
+            "p95": 0,
+            "worst": 0
+          },
+          "qa_ms": {
+            "n": 7,
+            "p50": 6504,
+            "p95": 7973,
+            "worst": 7973
+          },
+          "post_qa_to_audio_ms": {
+            "n": 7,
+            "p50": 23,
+            "p95": 2830,
+            "worst": 2830
+          },
+          "total_ms": {
+            "n": 7,
+            "p50": 7971,
+            "p95": 10225,
+            "worst": 10225
+          }
+        }
+      },
+      "model/server": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "model/browser": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "model/unknown": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "unclassified/typed": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "unclassified/server": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "unclassified/browser": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      },
+      "unclassified/unknown": {
+        "turns": 0,
+        "complete": 0,
+        "excluded": 0,
+        "answered": 0,
+        "declined": 0,
+        "client_errors": 0,
+        "latency": {
+          "stt_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "qa_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "post_qa_to_audio_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          },
+          "total_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "worst": null
+          }
+        }
+      }
+    }
+  },
+  "model_ms": {
+    "n": 7,
+    "p50": 2736,
+    "p95": 7089,
+    "worst": 7089
+  },
+  "tts_render_ms": {
+    "n": 7,
+    "p50": 3241,
+    "p95": 5054,
+    "worst": 5054
+  },
+  "cost": {
+    "estimated_usd": 0.211976,
+    "usage_rows": 21,
+    "by_kind_model": {
+      "runtime/gemini-3.8-flash": {
+        "rows": 11,
+        "estimated_usd": 0.144693
+      },
+      "sarvam-tts/bulbul:v3": {
+        "rows": 9,
+        "estimated_usd": 0.026018
+      },
+      "runware-structured/openai:gpt@5.5": {
+        "rows": 1,
+        "estimated_usd": 0.041265
+      }
+    },
+    "whole_demo_recorded_through_cutoff": 4.211334,
+    "basis": "Recorded configured estimate; includes failed pitch, all7QA, extra handoff/re-entry TTS, premature summary and duplicate final-summary attempts. Unknown billed failed calls may add cost. Old unrecorded summaries and10zero-usageGeminiTTSclips remain excluded from whole-demo recorded total."
+  },
+  "quality": {
+    "L1": "pass",
+    "L2-initial": "selected-context gap",
+    "L2-repair": "supported source-specific figures, different measurement basis",
+    "L3": "balanced matched-dimension pass",
+    "L4": "grounded answer; unauthorized CTA fail",
+    "L5": "policy relationship fail",
+    "L6": "truthful decline pass",
+    "pitch": "all-provider failure; no personalized pitch",
+    "final_summary": "error; duplicate attempts preserved"
+  },
+  "qa_provider_failures": 0,
+  "summary_raw_gemini_responses": 3,
+  "limits": [
+    "MutedUI: first-answer timestamps measure media start, not acoustic intelligibility.",
+    "All7complete timings are retained, including clarification, wrong action and unsupported policy answer.",
+    "L2reply adds a second model turn; human reply/operator delay is not folded into individual QA latency.",
+    "A small nonrandom sample proves neither production tail latency nor general factual reliability.",
+    "9.1minutes includes operator inspection; not uninterrupted tour duration.",
+    "Trace wrappers may duplicate transport failures; cost comes only from usage rows.",
+    "All source/input files remain untouched."
+  ],
+  "sources": {
+    "session": {
+      "path": "data/demos/dm_36d47b86/sessions/s_mu765nbzlv8f.json",
+      "sha256": "c521a9282b55358aa4a9c4730098d1853851551ae935e581a9e142017bffbf1e"
+    },
+    "trace": {
+      "sha256": "7c83104134bc73572c10266cd379b414718dcec1bac94adbab0e0f0ada1a5210",
+      "rows": 462
+    },
+    "usage": {
+      "sha256": "7f20fdddeb24af521551b9bd9c1138fb70d92293ddc3ab000706162bd03441a9",
+      "rows": 386
+    },
+    "registry": {
+      "sha256": "a41e0f40da9272355d0f300f7a6c0da0f326e142b3c9e94f33c4b37d23d91d0b"
+    }
+  }
+}

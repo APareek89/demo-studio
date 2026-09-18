@@ -1,0 +1,11 @@
+FAIL policy: actual contradictory or-plus-unknown answer is declined
+FAIL policy: invalid meaning has no citations, CTA or proposed visual
+FAIL policy: only the existing safe decline reaches speech
+FAIL policy: semantic rejection offers callback without inventing a provider outage
+PASS policy: advertised limits with an explicit unknown remain usable
+PASS policy: a negated relationship is not an assertion
+PASS policy: a source that explicitly states the relationship retains it
+FAIL policy: a source-quote-only explicit unknown also rejects the assertion
+FAIL policy: reversed distance/time order cannot bypass the guard
+FAIL policy: spoken quantities cannot bypass the relation guard
+QA policy contracts: 3/10 (fake providers; network blocked)

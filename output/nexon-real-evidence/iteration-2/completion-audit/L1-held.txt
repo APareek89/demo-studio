@@ -1,0 +1,86 @@
+- banner:
+  - text: Demo
+  - generic: Studio
+  - navigation:
+    - link "Demo Studio":
+      - /url: "#/studio"
+    - link "My Demos":
+      - /url: "#/demos"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+  - generic "API keys":
+    - generic "key found": Claude
+    - generic "key found": Gemini
+    - generic "key found": Sarvam
+- main:
+  - generic "Your guide":
+    - img "Your guide"
+  - generic: Sulafat · Tata Nexon
+  - generic: Your turn
+  - button "Find your driving rhythm"
+  - button "Take in the stance"
+  - button "Settle into the cabin"
+  - button "Room for your plans"
+  - button "Safety starts with the details"
+  - button "Your cockpit, closer"
+  - button "Make the next step count"
+  - button "⛶"
+  - button "Unmute audio" [pressed]: 🔇
+  - button "⏸"
+  - button "⏹"
+  - button "💬": 💬
+  - button "↺"
+  - button "✕"
+  - generic: Look a little closer
+  - heading "Room for your plans" [level=2]
+  - img "Room for your plans"
+  - generic: "1"
+  - text: "Petrol/diesel: 382L boot, measured to ISO V215"
+  - generic: F014
+  - generic: "2"
+  - text: "Creative+PS/Fearless+PS petrol/diesel: 60:40 rear seats"
+  - generic: F024
+  - button "Book Test Drive"
+  - generic: Sulafat
+  - generic: Did that answer it?
+  - button "Yes, that helps"
+  - button "Not quite"
+  - button "Ask another question"
+  - textbox "Your question or answer":
+    - /placeholder: Ask a question or type your answer…
+  - button "Send" [active]
+  - generic: Take your time. Reply by voice or type, or choose an option.
+  - button "🎤"
+  - button "×"
+  - generic: Optional · dealership follow-up
+  - heading "Would you like to try it in person?" [level=3]
+  - paragraph: Share your details and the dealership can arrange a test drive.
+  - textbox "Your name"
+  - textbox "10-digit mobile number"
+  - paragraph: By sharing your number you agree the dealership may call you about this product. Nothing else is shared.
+  - button "Arrange a test drive"
+  - button "Not now"
+  - generic: Conversation
+  - button "✕"
+  - generic: Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?
+  - generic: I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.
+  - generic: Thanks for sharing that — I'll keep the demo focused on what matters to you.
+  - generic: Let's explore the Nexon Fearless Plus P S petrol automatic.
+  - generic: We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.
+  - generic: "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment."
+  - generic: We'll put each alongside what you need from your next car.
+  - generic: Give me one moment, please — I'm tailoring this to what you just told me.
+  - generic: personalisation was not ready in the opening window — continuing on the stable approved route
+  - generic: Alright — here we go.
+  - generic: This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.
+  - generic: For stop-and-go driving, try its response on a test drive and see how it feels to you.
+  - generic: Is an automatic the direction you're leaning towards?
+  - generic: For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: Now, let me get to what you asked about.
+  - generic: For the petrol Nexon, the documented boot space is 382 litres. According to the brochure, this is measured using the ISO V215 standard.
+  - generic: Did that answer it?
+  - textbox "Type a question…"
+  - button "↑"

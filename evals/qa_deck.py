@@ -400,6 +400,10 @@ from summary_contract import run as summary_contract
 summary_contract(check)
 from summary_usage_contract import run as summary_usage_contract
 summary_usage_contract(check)
+from summary_race_contract import run as summary_race_contract
+summary_race_contract(check)
+from qa_policy_contract import run as qa_policy_contract
+qa_policy_contract(check)
 check("runtime provider order defaults Gemini → Claude → Runware", config.RUNTIME_PROVIDERS == ["gemini", "claude", "runware"])
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
 

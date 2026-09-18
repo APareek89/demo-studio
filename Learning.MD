@@ -6,6 +6,60 @@
 
 <!-- Newest first. -->
 
+## 2026-09-18 — NX42 concurrency: a later duplicate overwrote a successful summary
+**Why 1:** Runware summary trace460 succeeded but duplicate failures461/462 replaced it with ERROR.
+**Why 2:** Each ended save started another worker before a result existed.
+**Why 3:** Workers wrote their old whole-session snapshot without checking the current saved input.
+**Why 4:** Reuse compared only transcript length, ignoring changed words, context, consent and timing.
+**Why 5:** Previous tests covered one worker's accounting, not held concurrent completions or resumed input.
+**Action taken:** A canonical full-input revision excludes only server summary/save timestamp. Session save/result attachment share a small per-session lock; identical in-flight work coalesces. Providers run outside locks. Completion reloads the latest record and attaches only to unchanged ended input with no current result. Equal-length corrected/resumed input survives, current success cannot be replaced by old error, and client saves cannot restore an old server summary. Actual-thread/ASGI regressions6/14→14/14; accounting8/8. Coordination is per-process for the current one-worker local server; lock entries last for its lifetime. No persisted schema/service/distributed guarantee or automatic paid retry is added. Existing failures/costs remain unchanged.
+
+
+## 2026-09-18 — NX42: summary reasoning consumed the output budget
+**Why 1:** Both final-summary requests returned truncated Gemini JSON at1185 billed output tokens.
+**Why 2:** Default hidden reasoning shared the1200-token envelope with the summary.
+**Why 3:** The response-control correction had reached QA/pitch but not summary.
+**Why 4:** The summary's short visible output had been mistaken for its total model output cost.
+**Why 5:** No caller-envelope test required LOW alongside the complete record and unchanged schema.
+**Action taken:** Summary now requests LOW through the existing guarded adapter, keeping1200 tokens and the full payload. Fake-provider10/11→11/11 checks this exact envelope. The original simultaneous requests, successful Runware fallback and later error overwrite remain evidence; generation/write concurrency needs its separate regression, and final actual completion remains pending.
+
+
+## 2026-09-18 — NX40: the guide selected its own proposed CTA
+**Why 1:** L4 asked how to assess traffic driving, but the model emitted a test-drive CTA.
+**Why 2:** The player sent that field straight to the selection flow.
+**Why 3:** Model interpretation was treated as explicit customer intent.
+**Why 4:** Selection narration also promised a handoff before any consented contact form was submitted.
+**Why 5:** Earlier tests covered callback refusal and explicit choices, not unsolicited/negated model actions.
+**Action taken:** A model CTA becomes only an optional configured choice in the answer-confirmation wait. Exact customer selection or a CTA button is required. Unknown/stale IDs do nothing; embedded/negated label mentions remain questions. The selected-action narration offers optional details without claiming transmission. Actual free browser33/36→36/36 proves the negative and positive paths; the original L4 recap remains preserved. Zero leads were submitted. Final actual L4 recovery remains pending.
+
+## 2026-09-18 — NX41: a cited warranty answer contradicted its explicit unknown
+**Why 1:** Actual L5 spoke '3 years or100000km' while also saying the relationship was not supplied.
+**Why 2:** Valid citation and quantity checks did not validate the relation between those quantities.
+**Why 3:** The prompt prohibited the inference, but model prose still introduced it.
+**Why 4:** The previous narrow relation guard applied only to optional pitch speech.
+**Why 5:** QA tests lacked this actual cited-but-contradictory answer before synthesis.
+**Action taken:** For cited policy/contractual facts explicitly marking the limit relationship unknown, reject an affirmative English time-or-distance/whichever-first relation before speech. Clear citations, proposed visual and CTA; use the existing decline/callback, without recording a provider outage. Honest attached uncertainty and explicitly documented policy relations remain usable.12 actual-QA fake-provider cases: initial3/10; independent unrelated-prefix bypass11/12; final12/12. Bad prose never reaches fake speech. This is a bounded English conflict guard, not general entailment; other unsupported paraphrases still require review. No policy is invented and no new product fallback is added.
+
+
+## 2026-09-18 — NX39: QA could not resolve the demo's selected comparison example
+**Symptom:** Actual L2 asks what differs from the selected Venue variant; trace439 asks which variant despite the reviewed plan defining regular HX10 turbo petrol seven-speed DCT.
+**Why 1:** QA could not identify which of the source registry's many Venue trims the reference meant.
+**Why 2:** The intake and recent transcript named Venue but did not specify HX10.
+**Why 3:** The explicit comparison-example mapping lived in plan.notes and never reached QA.
+**Why 4:** QA used the plan's persona and CTAs but omitted its reviewed contextual notes.
+**Why 5:** Input tests checked complete facts and customer history, not the distinction between demo examples and buyer selections.
+**Action taken:** Pass the existing notes in a separate comparison-context block, gated by competition on and script approval. The prompt uses a unique named demo configuration only for an explicit selected/chosen-demo reference; actual customer variants take precedence. Notes are neither facts nor inferred preferences. Missing or ambiguous configurations retain clarification when material. Seven real-call fake-provider checks make the generation suite39/44 before and44/44 after; all original fact conditions and provenance remain supplied. These checks prove the input contract, not model compliance. The original trace439 clarification and trace441 answer after the explicit HX10 reply are not rewritten; one live confirmation remains separate. No provider, schema or Build change.
+
+## 2026-09-18 — NX36 follow-up: personalization exhausted the same response budget
+**Symptom:** Final-sample B pitch trace432 returned incomplete JSON at2986 output tokens; Claude credit failure and Runware timeout followed, so the player used the reviewed route.
+**Why 1:** The structured pitch response exhausted its3000-token envelope.
+**Why 2:** Hidden reasoning shares that envelope with the required plan.
+**Why 3:** Only QA had been changed to explicit LOW thinking.
+**Why 4:** Pitch was treated as independent from the observed response-budget problem.
+**Why 5:** The pitch caller had no regression requiring the bounded reasoning setting.
+**Action taken:** Pitch now passes LOW explicitly through the existing runtime option. Full reviewed proof, schema,3000-token allowance, model/order/timeouts and deterministic grounding stay unchanged. Actual-call fake-provider contract fails46/47 before and passes47/47 after; provider48/48 preserves unknown-model and default-caller behavior. The failed live attempt remains preserved, and one subsequent runtime confirmation must establish recovery. No Build or source change.
+
+
 ## 2026-09-18 — NX38: deeper return retained the preceding answer's citations
 **Symptom:** After a cabin answer, the resumed CNG boot caption showed F020/F021 instead of its own F014.
 **Why 1:** The citation label was left over from Q&A.

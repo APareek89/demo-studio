@@ -1,0 +1,345 @@
+[
+  {
+    "id": "L1",
+    "trace_row": 437,
+    "tts_trace_row": 438,
+    "question": "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.",
+    "candidate": {
+      "answer": "For the petrol Nexon, the documented boot space is 382 litres. According to the brochure, this is measured using the ISO V215 standard.",
+      "fact_ids": [
+        "F014"
+      ],
+      "visual_ref": "im06",
+      "escalate": "",
+      "topic": "practicality",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "rendered_text": "For the petrol Nexon, the documented boot space is 382 litres. According to the brochure, this is measured using the ISO V215 standard.",
+    "delivered_transcript_index": 15,
+    "delivered_text": "For the petrol Nexon, the documented boot space is 382 litres. According to the brochure, this is measured using the ISO V215 standard.",
+    "assessment": "pass",
+    "reason": "F014 establishes petrol382L and ISO V215. No certification, luggage-fit or relative benefit added.",
+    "timing": {
+      "index": 1,
+      "source": "model",
+      "via": "typed",
+      "answered": true,
+      "client_error": false,
+      "route": "jump",
+      "stamps_ms": {
+        "voice_ended": 1789748798888,
+        "stt_done": 1789748798888,
+        "qa_done": 1789748804024,
+        "answer_audio": 1789748806845
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 5136,
+        "post_qa_to_audio_ms": 2821,
+        "total_ms": 7957
+      }
+    },
+    "model_ms": 2451,
+    "tts_render_ms": 2638,
+    "input_tokens": 20154,
+    "combined_output_tokens": 111
+  },
+  {
+    "id": "L2-initial",
+    "trace_row": 439,
+    "tts_trace_row": 440,
+    "question": "What can you show me that differs from the selected Venue variant?",
+    "candidate": {
+      "answer": "Which specific Venue variant are you comparing with?",
+      "fact_ids": [],
+      "visual_ref": "",
+      "escalate": "",
+      "topic": "practicality",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": "Which specific Venue variant are you comparing with?"
+    },
+    "rendered_text": "Which specific Venue variant are you comparing with?",
+    "delivered_transcript_index": 20,
+    "delivered_text": "Which specific Venue variant are you comparing with?",
+    "assessment": "context_gap",
+    "reason": "Clarification is safe and well formed, but the intended selected Venue configuration was not delivered as selected context. InitialL2 did not complete the comparison.",
+    "timing": {
+      "index": 2,
+      "source": "model",
+      "via": "typed",
+      "answered": true,
+      "client_error": false,
+      "route": "none",
+      "stamps_ms": {
+        "voice_ended": 1789748836005,
+        "stt_done": 1789748836005,
+        "qa_done": 1789748843968,
+        "answer_audio": 1789748843976
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 7963,
+        "post_qa_to_audio_ms": 8,
+        "total_ms": 7971
+      }
+    },
+    "model_ms": 7089,
+    "tts_render_ms": 823,
+    "input_tokens": 20146,
+    "combined_output_tokens": 81
+  },
+  {
+    "id": "L2-repair",
+    "trace_row": 441,
+    "tts_trace_row": 442,
+    "question": "What can you show me that differs from the selected Venue variant?",
+    "candidate": {
+      "answer": "For boot space, the petrol Tata Nexon lists 382 litres by ISO V215, while the Hyundai Venue lists 375 litres by the VDA 215 method — that is as per their website when we checked — please verify on their site.",
+      "fact_ids": [
+        "F014",
+        "C4-007"
+      ],
+      "visual_ref": "im06",
+      "escalate": "",
+      "topic": "practicality",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "rendered_text": "For boot space, the petrol Tata Nexon lists 382 litres by ISO V215, while the Hyundai Venue lists 375 litres by the VDA 215 method — that is as per their website when we checked — please verify on their site.",
+    "delivered_transcript_index": 23,
+    "delivered_text": "For boot space, the petrol Tata Nexon lists 382 litres by ISO V215, while the Hyundai Venue lists 375 litres by the VDA 215 method — that is as per their website when we checked — please verify on their site.",
+    "assessment": "qualified_source_figures_only",
+    "reason": "Both quoted volumes and distinct ISO V215/VDA215 bases are supported; full competitor caveat retained. No computed7L advantage or winner. This is not proof of directly comparable capacity under one test basis.",
+    "timing": {
+      "index": 3,
+      "source": "model",
+      "via": "typed",
+      "answered": true,
+      "client_error": false,
+      "route": "stay",
+      "stamps_ms": {
+        "voice_ended": 1789748960805,
+        "stt_done": 1789748960805,
+        "qa_done": 1789748968778,
+        "answer_audio": 1789748968790
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 7973,
+        "post_qa_to_audio_ms": 12,
+        "total_ms": 7985
+      }
+    },
+    "model_ms": 2862,
+    "tts_render_ms": 5054,
+    "input_tokens": 20158,
+    "combined_output_tokens": 145
+  },
+  {
+    "id": "L3",
+    "trace_row": 443,
+    "tts_trace_row": 444,
+    "question": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+    "candidate": {
+      "answer": "For front seat comfort, the Tata Nexon Fearless + PS petrol DCA features ventilated driver and co-driver seats, and the Brezza ZXi+ with 6-speed automatic also provides front ventilated seats; that is as per their website when we checked — please verify on their site.",
+      "fact_ids": [
+        "F019",
+        "F020",
+        "C6-001",
+        "C6-002"
+      ],
+      "visual_ref": "im05",
+      "escalate": "",
+      "topic": "comfort",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "rendered_text": "For front seat comfort, the Tata Nexon Fearless + PS petrol DCA features ventilated driver and co-driver seats, and the Brezza ZXi+ with 6-speed automatic also provides front ventilated seats; that is as per their website when we checked — please verify on their site.",
+    "delivered_transcript_index": 29,
+    "delivered_text": "For front seat comfort, the Tata Nexon Fearless + PS petrol DCA features ventilated driver and co-driver seats, and the Brezza ZXi+ with 6-speed automatic also provides front ventilated seats; that is as per their website when we checked — please verify on their site.",
+    "assessment": "pass",
+    "reason": "Same dimension: front ventilation on Fearless+PS petrolDCA and BrezzaZXi+6AT. Both configurations and full competitor caveat retained; no unmatched safety list.",
+    "timing": {
+      "index": 4,
+      "source": "model",
+      "via": "typed",
+      "answered": true,
+      "client_error": false,
+      "route": "jump",
+      "stamps_ms": {
+        "voice_ended": 1789748997121,
+        "stt_done": 1789748997121,
+        "qa_done": 1789749004527,
+        "answer_audio": 1789749007346
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 7406,
+        "post_qa_to_audio_ms": 2819,
+        "total_ms": 10225
+      }
+    },
+    "model_ms": 2736,
+    "tts_render_ms": 4622,
+    "input_tokens": 20214,
+    "combined_output_tokens": 163
+  },
+  {
+    "id": "L4",
+    "trace_row": 445,
+    "tts_trace_row": 446,
+    "question": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+    "candidate": {
+      "answer": "The selected Fearless + PS petrol pairs with a 7-speed dual-clutch automatic transmission. Since specific stop-and-go behavior is best felt directly, a test drive is the best way to evaluate how it responds in daily traffic.",
+      "fact_ids": [
+        "F019"
+      ],
+      "visual_ref": "",
+      "escalate": "",
+      "topic": "performance",
+      "cta": "book-test-drive",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "rendered_text": "The selected Fearless + PS petrol pairs with a 7-speed dual-clutch automatic transmission. Since specific stop-and-go behavior is best felt directly, a test drive is the best way to evaluate how it responds in daily traffic.",
+    "delivered_transcript_index": 34,
+    "delivered_text": "The selected Fearless + PS petrol pairs with a 7-speed dual-clutch automatic transmission. Since specific stop-and-go behavior is best felt directly, a test drive is the best way to evaluate how it responds in daily traffic.",
+    "assessment": "factual_pass_action_fail",
+    "reason": "F019 gearbox and test-drive fit assessment supported. However cta=book-test-drive promoted a recommendation to customer intent without a booking request, triggering handoff and erroneous savedCTA.",
+    "timing": {
+      "index": 5,
+      "source": "model",
+      "via": "typed",
+      "answered": true,
+      "client_error": false,
+      "route": "stay",
+      "stamps_ms": {
+        "voice_ended": 1789749040904,
+        "stt_done": 1789749040904,
+        "qa_done": 1789749047408,
+        "answer_audio": 1789749047421
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 6504,
+        "post_qa_to_audio_ms": 13,
+        "total_ms": 6517
+      }
+    },
+    "model_ms": 2568,
+    "tts_render_ms": 3874,
+    "input_tokens": 20238,
+    "combined_output_tokens": 129
+  },
+  {
+    "id": "L5",
+    "trace_row": 450,
+    "tts_trace_row": 451,
+    "question": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+    "candidate": {
+      "answer": "The advertised basic warranty for the Nexon is 3 years or 100 000 km, though the materials do not specify the relationship between time and distance or whether whichever comes first applies. Specific exclusions, transferability, and full terms are also unlisted in the source badge.",
+      "fact_ids": [
+        "F027"
+      ],
+      "visual_ref": "",
+      "escalate": "",
+      "topic": "ownership",
+      "cta": "",
+      "answered": true,
+      "clarifying_question": ""
+    },
+    "rendered_text": "The advertised basic warranty for the Nexon is 3 years or 100 000 km, though the materials do not specify the relationship between time and distance or whether whichever comes first applies. Specific exclusions, transferability, and full terms are also unlisted in the source badge.",
+    "delivered_transcript_index": 40,
+    "delivered_text": "The advertised basic warranty for the Nexon is 3 years or 100 000 km, though the materials do not specify the relationship between time and distance or whether whichever comes first applies. Specific exclusions, transferability, and full terms are also unlisted in the source badge.",
+    "assessment": "fail",
+    "reason": "F027 gives3years|100000km without their relationship. Spoken3years OR100000km adds an unsupported relation and contradicts the later relationship-unknown sentence. Nexon-only scope passed.",
+    "timing": {
+      "index": 6,
+      "source": "model",
+      "via": "typed",
+      "answered": true,
+      "client_error": false,
+      "route": "jump",
+      "stamps_ms": {
+        "voice_ended": 1789749103605,
+        "stt_done": 1789749103605,
+        "qa_done": 1789749110101,
+        "answer_audio": 1789749112931
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 6496,
+        "post_qa_to_audio_ms": 2830,
+        "total_ms": 9326
+      }
+    },
+    "model_ms": 3229,
+    "tts_render_ms": 3241,
+    "input_tokens": 20269,
+    "combined_output_tokens": 132
+  },
+  {
+    "id": "L6",
+    "trace_row": 452,
+    "tts_trace_row": 453,
+    "question": "What is the exact on-road price in Mumbai today, including every charge?",
+    "candidate": {
+      "answer": "I do not have the exact on-road price for Mumbai in my materials, and I won't guess. A representative can follow up with a full, itemised quote for your chosen variant.",
+      "fact_ids": [],
+      "visual_ref": "",
+      "escalate": "Exact on-road price in Mumbai including all charges",
+      "topic": "ownership",
+      "cta": "view-pricing",
+      "answered": false,
+      "clarifying_question": ""
+    },
+    "rendered_text": "I do not have the exact on-road price for Mumbai in my materials, and I won't guess. A representative can follow up with a full, itemised quote for your chosen variant.",
+    "delivered_transcript_index": 44,
+    "delivered_text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+    "assessment": "pass_decline",
+    "reason": "ExactMumbai on-road amount is absent. Actual player declined and held optional dealership help; no guessed amount. Modelcandidate view-pricing CTA was not dispatched because answered=false.",
+    "timing": {
+      "index": 7,
+      "source": "model",
+      "via": "typed",
+      "answered": false,
+      "client_error": false,
+      "route": "none",
+      "stamps_ms": {
+        "voice_ended": 1789749179819,
+        "stt_done": 1789749179819,
+        "qa_done": 1789749185228,
+        "answer_audio": 1789749185251
+      },
+      "complete": true,
+      "excluded_reason": null,
+      "latency": {
+        "stt_ms": 0,
+        "qa_ms": 5409,
+        "post_qa_to_audio_ms": 23,
+        "total_ms": 5432
+      }
+    },
+    "model_ms": 2408,
+    "tts_render_ms": 2917,
+    "input_tokens": 20294,
+    "combined_output_tokens": 117
+  }
+]

@@ -57,6 +57,10 @@ def run(check):
                       all(usage.summary(did)["total_usd"] > 0 for did in ids))
                 check("summary usage: parent context is unchanged by concurrent workers",
                       (usage.current_demo.get(), usage.current_stage.get()) == ("parent-demo", "parent-stage"))
+                direct = backend.get_session(ids[0], "s_fixture")
+                direct.pop("summary", None)
+                direct["profile"] = {"why": "New customer context for a distinct summary revision"}
+                backend.put_session(ids[0], direct)
                 routes._summarize_session(ids[0], "s_fixture")
                 check("summary usage: direct worker call restores both caller context values",
                       (usage.current_demo.get(), usage.current_stage.get()) == ("parent-demo", "parent-stage"))
@@ -65,6 +69,10 @@ def run(check):
                 usage.trace("runtime", "gemini-3.8-flash", latency_ms=1, error="Fixture provider failed")
                 raise RuntimeError("Fixture provider failed")
             with patch.object(routes._summary, "summarize", side_effect=failed):
+                revised = backend.get_session(ids[1], "s_fixture")
+                revised.pop("summary", None)
+                revised["profile"] = {"why": "Different input whose new summary attempt fails"}
+                backend.put_session(ids[1], revised)
                 routes._summarize_session(ids[1], "s_fixture")
                 check("summary usage: failure trace remains attributed and session keeps its error",
                       any(r.get("error") == "Fixture provider failed" for r in rows(ids[1], "trace.jsonl"))

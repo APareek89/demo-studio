@@ -1,0 +1,74 @@
+{
+  "runtime_commit": "cde49fe",
+  "demo_id": "dm_36d47b86",
+  "captured_at": 1789748790.250912,
+  "trace_path": "data/demos/dm_36d47b86/trace.jsonl",
+  "trace_sha256_at_capture": "b7fdc4d8dc281c34db23d1ed3d3ecbd69124cb0b40fd7b19f967c5634f4a7953",
+  "trace_rows_at_capture": 436,
+  "pitch_started_at_approx": 1789748705.6172822,
+  "status": "all_providers_failed",
+  "events": [
+    {
+      "row": 432,
+      "t": 1789748716.736282,
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 11119,
+      "in": 9070,
+      "out": 2986,
+      "response": "{\n  \"customer_state\": \"stated_want\",\n  \"decision_frame\": \"You're comparing this with the Brezza and Venue, looking for an automatic and checking what this variant includes. We'll start with the automatic transmission, explore this trim's equipment, and finish with written ownership details.\",\n  \"follow_up_question\": \"\",\n  \"primary_outcome\": \"Evaluate whether the Nexon's petrol automatic transmission and selected variant equipment meet your comparison criteria against the Brezza and Venue",
+      "error": "",
+      "prompt_sha256": "aa1b21ab3049fb1ebcfa5520bca32ccbb66be498b5b52e498682821fe334987f"
+    },
+    {
+      "row": 433,
+      "t": 1789748716.751885,
+      "kind": "runtime-gemini",
+      "model": "gemini",
+      "latency_ms": 11134,
+      "in": 0,
+      "out": 0,
+      "response": "",
+      "error": "1 validation error for PitchPlan\n  Invalid JSON: EOF while parsing a value at line 1 column 0 [type=json_invalid, input_value='', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid",
+      "prompt_sha256": "6a9b2772b5b5db8eaad8aa9f3ad10a236cdf16c46b47e24c0e7ddc00f6da7023"
+    },
+    {
+      "row": 434,
+      "t": 1789748717.42562,
+      "kind": "runtime-claude",
+      "model": "claude",
+      "latency_ms": 673,
+      "in": 0,
+      "out": 0,
+      "response": "",
+      "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfBDVzg1sXEW4snaF729B'}",
+      "prompt_sha256": "6a9b2772b5b5db8eaad8aa9f3ad10a236cdf16c46b47e24c0e7ddc00f6da7023"
+    },
+    {
+      "row": 435,
+      "t": 1789748732.491893,
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "latency_ms": 15054,
+      "in": 0,
+      "out": 0,
+      "response": "",
+      "error": "Runware request timed out",
+      "prompt_sha256": "6a9b2772b5b5db8eaad8aa9f3ad10a236cdf16c46b47e24c0e7ddc00f6da7023"
+    },
+    {
+      "row": 436,
+      "t": 1789748732.501197,
+      "kind": "runtime-runware",
+      "model": "runware",
+      "latency_ms": 15067,
+      "in": 0,
+      "out": 0,
+      "response": "",
+      "error": "Runware request timed out",
+      "prompt_sha256": "6a9b2772b5b5db8eaad8aa9f3ad10a236cdf16c46b47e24c0e7ddc00f6da7023"
+    }
+  ],
+  "assessment": "Gemini proposed a context-faithful decision frame but returned incomplete PitchPlan JSON. Claude reported credit failure and Runware timed out. This draft is not delivered personalised speech; the actual player fallback and transcript require the ended session. Live QA LOW is deliberately not applied to pitch.",
+  "delivered_pitch_verified": false
+}

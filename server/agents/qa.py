@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from .. import schemas, store, usage
 from ..llm import claude, runtime
 from .author import CLAIMISH, NUMBERISH
-from .principles import EVIDENCE_RULES, audience_instruction, fact_context, language_instruction
+from .principles import EVIDENCE_RULES, audience_instruction, fact_context, language_instruction, policy_relation_conflict
 
 QA_SYSTEM = """You are {persona_name}, the voice guide in a live product demo of {product_name} ({category}).
 Reply in 1-3 short spoken sentences in the persona's voice ({tone}). No markdown.
@@ -41,6 +41,10 @@ HARD RULES
   assistance feature. The decline rules still apply to any actual unsupported specification or guarantee question.
 - Answer the current question's product and scope. Resolve references from the conversation, but a previous shortlist or comparison is not a new request to compare.
   Do not add another brand's policy or features unless the current question asks for that comparison.
+- For an explicit reference to a selected or chosen demo variant, use DEMO COMPARISON CONTEXT only when it identifies
+  one configuration for that named product. An explicit customer variant or correction takes precedence; never infer a buyer selection or preference from these notes.
+  These notes identify comparison examples, not factual evidence: product claims still require approved registry facts
+  and all their conditions. If the configuration is missing or ambiguous, clarify only when it changes the answer.
 - For an explicit comparison, choose one shared dimension relevant to this buyer and state both sides for the same
   named configurations and matching test basis. A second dimension is optional only when both sides have matching
   evidence and the complete answer still fits the word limit. Do not compare unrelated feature lists or infer that
@@ -66,6 +70,9 @@ HARD RULES
 {evidence}
 
 CUSTOMER: {profile}
+
+DEMO COMPARISON CONTEXT (reviewed examples, not buyer selections or factual evidence):
+{demo_context}
 
 CALLS TO ACTION: {ctas}
 
@@ -106,6 +113,10 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     facts_txt = "\n".join(fact_context(f) for f in facts) or "(empty)"
     vis_txt = "\n".join([f"{s['id']} shot {s['start']:.0f}-{s['end']:.0f}s · {s['part']} · {s['description']}" for s in und.get("shots", [])] + [f"{i['id']} image · {i['angle']} · {i['description']}" for i in und.get("images", [])]) or "(none)"
     topics = sorted({s.get("topic", "") for s in plan.get("segments", [])} | {"other"})
+    # Existing reviewed plan notes can identify a demo example. Keep them out of
+    # CUSTOMER and the registry; they neither select for the buyer nor prove facts.
+    demo_context = (plan.get("notes") or "") if (demo.get("settings", {}).get("competition") == "on"
+                    and (demo.get("approvals") or {}).get("script") is True) else ""
     comp_txt = ""
     if demo.get("settings", {}).get("competition") == "on" and und.get("competitors"):
         rows = []
@@ -132,6 +143,7 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
         persona_name=voice.get("persona_name", "Maya"), product_name=und.get("product", {}).get("name", "the product"),
         category=und.get("product", {}).get("category", ""), tone=voice.get("tone", "warm, direct, honest"),
         topics=", ".join(t for t in topics if t), profile=json.dumps(profile or {"note": "unknown"}),
+        demo_context=demo_context or "(none supplied)",
         ctas=json.dumps([{"id": c["id"], "label": c["label"], "kind": c["kind"]} for c in plan.get("ctas", [])]),
         facts=facts_txt, visuals=vis_txt, language=language_instruction((profile or {}).get("language") or demo.get("settings", {}).get("language", "en-IN")), competitors=comp_txt, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")),
         evidence=EVIDENCE_RULES,
@@ -178,7 +190,12 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     escalate = out.escalate.strip()
     clarification = (out.clarifying_question or "").strip()
     cta = out.cta
-    if unsupported_citations:
+    selected_facts = [f for f in und.get("facts", []) if f["id"] in valid] + [
+        f for competitor in und.get("competitors", []) for f in competitor.get("facts", []) if f["id"] in valid]
+    policy_conflict = policy_relation_conflict(text, selected_facts)
+    if policy_conflict:
+        valid = []
+    if unsupported_citations or policy_conflict:
         # An action field must not exempt an unsupported claim from the decline
         # path or let that claim reach speech before the action is shown.
         text, clarification, cta = DONT_GUESS, "", ""
@@ -192,7 +209,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         clarification = ""
     if clarification:
         text, valid, escalate = clarification, [], ""
-    answered = bool(out.answered) and not unsupported_citations and (bool(valid) or not (NUMBERISH.search(text) or CLAIMISH.search(text)))
+    answered = bool(out.answered) and not unsupported_citations and not policy_conflict and (bool(valid) or not (NUMBERISH.search(text) or CLAIMISH.search(text)))
     if (NUMBERISH.search(text) or CLAIMISH.search(text)) and not valid:
         answered = False
         text, cta = DONT_GUESS, ""
@@ -207,7 +224,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     elif answered:
         _clear_runtime_unknown(demo_id, question)
     vis = None
-    if out.visual_ref and not clarification:
+    if out.visual_ref and not clarification and not policy_conflict:
         for s in und.get("shots", []):
             if s["id"] == out.visual_ref:
                 vis = {"kind": "shot", "ref": s["id"], "start": s["start"], "end": s["end"], "source_id": s["source_id"]}

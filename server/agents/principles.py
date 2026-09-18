@@ -3,6 +3,45 @@ Codex/2026-09-03/wh/outputs/evidence_based_sales_pitch_demo_playbook.json).
 These are injected into the plan, author, pitch and Q&A prompts, and drive the demo scorecard."""
 
 import json
+import re
+
+
+_POLICY_RELATION_TOPIC = re.compile(r"\b(?:relationship|which(?:ever)?[^.;]{0,35}(?:first|earlier)|(?:duration|time)[^.;]{0,35}(?:distance|usage)|limits?[^.;]{0,35}(?:appl|first|earlier))\b", re.I)
+_POLICY_RELATION_UNKNOWN = re.compile(r"\b(?:unknown|unstated|unspecified|undetermined)\b|\bnot\s+(?:provided|supplied|stated|specified|detailed|established|known|clear)\b|\b(?:does|do)\s+not\s+(?:state|specify|detail|explain|provide)\b", re.I)
+_POLICY_RELATION = re.compile(r"\bwhichever\s+(?:(?:occurs|comes|happens|is|applies)\s+)?(?:first|earlier)\b|\b(?:years?|months?|days?|hours?)\b[^.!?;]{0,35}\bor\b[^.!?;]{0,65}\b(?:km|kilometres?|kilometers?|miles?|cycles?)\b|\b(?:km|kilometres?|kilometers?|miles?|cycles?)\b[^.!?;]{0,35}\bor\b[^.!?;]{0,45}\b(?:years?|months?|days?|hours?)\b", re.I)
+
+
+def policy_relation_conflict(text: str, facts: list[dict]) -> bool:
+    """Reject an asserted policy relation when cited evidence explicitly leaves it unknown.
+
+    This English lexical guard addresses an observed contradiction, not general
+    entailment. An earlier assertion is not excused by a later unknown disclaimer.
+    A sentence that only says the relation is not supplied remains usable.
+    """
+    unknown = False
+    for fact in facts:
+        if fact.get("kind") != "policy" and fact.get("truth") != "contractual":
+            continue
+        evidence = str(fact.get("conditions") or "") + ";" + str((fact.get("source") or {}).get("quote") or "")
+        if any(_POLICY_RELATION_TOPIC.search(c) and _POLICY_RELATION_UNKNOWN.search(c)
+               for c in re.split(r"[.;\n]", evidence)):
+            unknown = True
+            break
+    if not unknown:
+        return False
+    for clause in re.split(r"[.!?;\n]|\b(?:though|although|however|but)\b", text):
+        for match in _POLICY_RELATION.finditer(clause):
+            # Only a preceding explicit uncertainty can negate this particular
+            # relation; never let a later caveat erase an affirmative first claim.
+            prefix = clause[:match.start()]
+            # Uncertainty about unrelated exclusions/terms does not negate a
+            # later affirmative relation in the same sentence.
+            attached_unknown = re.search(
+                "(?:" + _POLICY_RELATION_UNKNOWN.pattern + r")\s+(?:if|whether)\b[^,;]{0,120}$",
+                prefix, re.I)
+            if not attached_unknown:
+                return True
+    return False
 
 TRUTH_RULES = """EVIDENCE CLASSIFICATION AND SCOPE
 - Default manufacturer-stated specifications and features to stated. An official source, high confidence, or a named

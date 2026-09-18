@@ -1,0 +1,13 @@
+PASS policy: actual contradictory or-plus-unknown answer is declined
+PASS policy: invalid meaning has no citations, CTA or proposed visual
+PASS policy: only the existing safe decline reaches speech
+PASS policy: semantic rejection offers callback without inventing a provider outage
+PASS policy: advertised limits with an explicit unknown remain usable
+PASS policy: a negated relationship is not an assertion
+PASS policy: a source that explicitly states the relationship retains it
+PASS policy: a source-quote-only explicit unknown also rejects the assertion
+PASS policy: reversed distance/time order cannot bypass the guard
+PASS policy: spoken quantities cannot bypass the relation guard
+PASS policy: unrelated earlier uncertainty cannot excuse an assertion
+PASS policy: uncertainty attached to the actual limits remains usable
+QA policy contracts: 12/12 (fake providers; network blocked)

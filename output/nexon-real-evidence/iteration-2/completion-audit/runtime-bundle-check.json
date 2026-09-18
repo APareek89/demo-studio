@@ -1,0 +1,13 @@
+{
+  "demo_id": "dm_36d47b86",
+  "status": "ready",
+  "bundle_version": 1,
+  "hashes": {
+    "bundle.json": "d06a4dd2f84cbcfbec02c42413f971182ae1c73ffc146be93c31844e588f24ab",
+    "script.json": "74860a0f159de4cef195f563a3cddf6e0397f093b3423c2bab84b0cbeb457603",
+    "plan.json": "abd4e3a0dc38fdd175d208b53bcb554979d69e9089cabcd934a33526980add19",
+    "deck.json": "391292e35f17af86c09d115ad70d753735d1bf0f106409685fd373818fe8f54f",
+    "faq.json": "a83424627005c43f27992902366e9aaa819bcc314257951f1943396506e3d123"
+  },
+  "purpose": "Runtime confirmation uses existing second Build; no source/script/deck/FAQ rebuild requested."
+}

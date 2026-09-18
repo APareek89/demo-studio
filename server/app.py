@@ -969,20 +969,43 @@ async def run_tts(demo_id: str, req: Request):
     return {"url": f"/media/{demo_id}/{rel}" if rel else None}
 
 
+_session_work_guard = threading.Lock()
+_session_work_items = {}
+
+
+def _session_work(demo_id: str, sid: str):
+    """One small record lock and in-flight revision set per local session."""
+    with _session_work_guard:
+        key = (demo_id, sid)
+        if key not in _session_work_items:
+            _session_work_items[key] = (threading.Lock(), set())
+        return _session_work_items[key]
+
+
+def _session_revision(record: dict) -> str:
+    # Count equality cannot identify changed words, profile, consent or timing.
+    # Server bookkeeping is excluded so repeated Stop/Done/beacons share work.
+    content = {k: v for k, v in record.items() if k not in {"summary", "saved_at"}}
+    return hashlib.sha256(json.dumps(content, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+
+
 @app.post("/api/demos/{demo_id}/run/session")
 async def save_session(demo_id: str, req: Request):
     """Called on Done / Stop and by the tab-close beacon — all with the same id, so one record per visit. The summary is
-    written in the background once the session has ended, and kept when nothing new was heard since."""
+    written in the background once the session has ended, and kept only for unchanged session input."""
     _demo_or_404(demo_id)
     body = await req.json()
     sid = re.sub(r"[^A-Za-z0-9_-]", "", str(body.get("id") or "")) or f"s_{int(time.time())}"
     body["id"] = sid
     body["saved_at"] = time.time()
+    body.pop("summary", None)  # A client save cannot restore an old server-generated result.
     be = storage.backend()
-    prev = be.get_session(demo_id, sid) or {}
-    if prev.get("summary") and prev["summary"].get("transcript_lines") == len(body.get("transcript", [])):
-        body["summary"] = prev["summary"]
-    be.put_session(demo_id, body)
+    lock, _ = _session_work(demo_id, sid)
+    with lock:
+        prev = be.get_session(demo_id, sid) or {}
+        if prev.get("summary") and _session_revision(prev) == _session_revision(body):
+            body["summary"] = prev["summary"]
+        be.put_session(demo_id, body)
     be.after_write(demo_id)
     if body.get("ended") and not body.get("summary"):
         threading.Thread(target=_summarize_session, args=(demo_id, sid), daemon=True, name=f"summary-{sid}").start()
@@ -990,25 +1013,42 @@ async def save_session(demo_id: str, req: Request):
 
 
 def _summarize_session(demo_id: str, sid: str) -> None:
-    """After the customer is gone: one lite call, stored on the session (file + row). Errors are logged, never raised."""
+    """Coalesce identical work and attach only to its still-current ended session."""
     be = storage.backend()
-    s = be.get_session(demo_id, sid)
-    if not s:
-        return
-    # A plain Thread does not inherit request ContextVars. Attribute every
-    # provider attempt to this demo, including failures and fallback usage.
-    demo_token = usage.current_demo.set(demo_id)
-    stage_token = usage.current_stage.set("runtime")
+    lock, pending = _session_work(demo_id, sid)
+    with lock:
+        s = be.get_session(demo_id, sid)
+        if not s or not s.get("ended") or s.get("summary"):
+            return
+        revision = _session_revision(s)
+        if revision in pending:
+            return
+        pending.add(revision)
+    wrote = False
     try:
-        s["summary"] = _summary.summarize(demo_id, s)
-    except Exception as e:  # noqa: BLE001
-        s["summary"] = {"error": str(e)[:200], "generated_at": time.time(), "transcript_lines": len(s.get("transcript", []))}
-        store.log(demo_id, "summary-error", {"session": sid, "error": str(e)[:200]})
+        # A plain Thread does not inherit request ContextVars. Provider work is
+        # outside every record lock; unrelated sessions remain independent.
+        demo_token = usage.current_demo.set(demo_id)
+        stage_token = usage.current_stage.set("runtime")
+        try:
+            result = _summary.summarize(demo_id, s)
+        except Exception as e:  # noqa: BLE001
+            result = {"error": str(e)[:200], "generated_at": time.time(), "transcript_lines": len(s.get("transcript", []))}
+            store.log(demo_id, "summary-error", {"session": sid, "error": str(e)[:200]})
+        finally:
+            usage.current_stage.reset(stage_token)
+            usage.current_demo.reset(demo_token)
+        with lock:
+            latest = be.get_session(demo_id, sid)
+            if latest and latest.get("ended") and _session_revision(latest) == revision and not latest.get("summary"):
+                latest["summary"] = result
+                be.put_session(demo_id, latest)
+                wrote = True
     finally:
-        usage.current_stage.reset(stage_token)
-        usage.current_demo.reset(demo_token)
-    be.put_session(demo_id, s)
-    be.after_write(demo_id)
+        with lock:
+            pending.discard(revision)
+    if wrote:
+        be.after_write(demo_id)
 
 
 def _share_secret() -> bytes:

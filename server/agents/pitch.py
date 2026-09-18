@@ -237,7 +237,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
     ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
     try:
         # runtime providers in order, short timeout each: the plan must land while the standard opening plays
-        out = runtime.structured(sys, ask, schemas.PitchPlan, max_tokens=3000)
+        out = runtime.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, thinking_level="low")
     except Exception as e:
         raise RuntimeError(str(e)[:300]) from e
     p = out.model_dump()

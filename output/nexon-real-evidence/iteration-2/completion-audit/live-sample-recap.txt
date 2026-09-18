@@ -1,0 +1,129 @@
+- banner:
+  - text: Demo
+  - generic: Studio
+  - navigation:
+    - link "Demo Studio":
+      - /url: "#/studio"
+    - link "My Demos":
+      - /url: "#/demos"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+- main:
+  - generic "Your guide":
+    - img "Your guide"
+  - generic: Sulafat · Tata Nexon
+  - generic: Stopped
+  - button "Find your driving rhythm"
+  - button "Take in the stance"
+  - button "Settle into the cabin"
+  - button "Room for your plans"
+  - button "Safety starts with the details"
+  - button "Your cockpit, closer"
+  - button "Make the next step count"
+  - button "⛶"
+  - button "Unmute audio" [pressed]: 🔇
+  - button "⏸"
+  - button "⏹" [active]
+  - button "💬": 💬
+  - button "↺"
+  - button "✕"
+  - generic: Before you decide
+  - heading "Make the next step count" [level=2]
+  - img "Make the next step count"
+  - generic: "1"
+  - text: From ₹7.39 lakh ex-showroom; prices may change
+  - generic: F001
+  - generic: "2"
+  - text: "Warranty headline: 3 years | 100,000 km"
+  - generic: F027
+  - button "Book Test Drive"
+  - generic: Sulafat
+  - generic: Stopped.
+  - textbox "Your question or answer":
+    - /placeholder: Ask a question or type your answer…
+  - button "Send"
+  - generic: Tap to talk, or type your reply below.
+  - button "🎤"
+  - heading "Your recap" [level=2]
+  - paragraph: Tata Nexon
+  - heading "What matters to you" [level=5]
+  - paragraph: I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.
+  - paragraph: For the petrol Nexon I am considering, give me the documented boot volume and how it was measured. What can you show me that differs from the selected Venue variant? Which specific Venue variant are you comparing with? The selected Hyundai Venue HX10 petrol 7DCT. How does this chosen Nexon compare with the selected Brezza for an automatic family car? I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic? Yes, but what is the warranty for this Nexon, and what is still unknown about its limits? What is the exact on-road price in Mumbai today, including every charge?
+  - heading "What you explored" [level=5]
+  - list:
+    - listitem: Tata Nexon, up close
+    - listitem: Your shortlist starts here
+    - listitem: Find your driving rhythm
+    - listitem: Room for your plans
+    - listitem: Make the next step count
+  - heading "Questions still open" [level=5]
+  - list:
+    - listitem: I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?
+    - listitem: Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?
+    - listitem: What is the exact on-road price in Mumbai today, including every charge?
+  - heading "Your next step" [level=5]
+  - paragraph: Take your time. A dealership follow-up is optional.
+  - button "Request dealership follow-up"
+  - button "Done"
+  - button "Back to the demo"
+  - button "×"
+  - generic: Optional · dealership follow-up
+  - heading "Would you like the dealership to follow up?" [level=3]
+  - paragraph: I don't have that answer in the approved sources. Leave your details and the dealership can answer it directly.
+  - textbox "Your name"
+  - textbox "10-digit mobile number"
+  - paragraph: By sharing your number you agree the dealership may call you about this product. Nothing else is shared.
+  - button "Request a callback"
+  - button "Not now"
+  - generic: Conversation
+  - button "✕"
+  - generic: Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?
+  - generic: I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.
+  - generic: Thanks for sharing that — I'll keep the demo focused on what matters to you.
+  - generic: Let's explore the Nexon Fearless Plus P S petrol automatic.
+  - generic: We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.
+  - generic: "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment."
+  - generic: We'll put each alongside what you need from your next car.
+  - generic: Give me one moment, please — I'm tailoring this to what you just told me.
+  - generic: personalisation was not ready in the opening window — continuing on the stable approved route
+  - generic: Alright — here we go.
+  - generic: This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.
+  - generic: For stop-and-go driving, try its response on a test drive and see how it feels to you.
+  - generic: Is an automatic the direction you're leaning towards?
+  - generic: For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: Now, let me get to what you asked about.
+  - generic: For the petrol Nexon, the documented boot space is 382 litres. According to the brochure, this is measured using the ISO V215 standard.
+  - generic: Did that answer it?
+  - generic: Let's —
+  - generic: What can you show me that differs from the selected Venue variant?
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: Which specific Venue variant are you comparing with?
+  - generic: The selected Hyundai Venue HX10 petrol 7DCT.
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: For boot space, the petrol Tata Nexon lists 382 litres by ISO V215, while the Hyundai Venue lists 375 litres by the VDA 215 method — that is as per their website when we checked — please verify on their site.
+  - generic: Did that answer it?
+  - generic: Let's —
+  - generic: How does this chosen Nexon compare with the selected Brezza for an automatic family car?
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: Now, let me get to what you asked about.
+  - generic: For front seat comfort, the Tata Nexon Fearless + PS petrol DCA features ventilated driver and co-driver seats, and the Brezza ZXi+ with 6-speed automatic also provides front ventilated seats; that is as per their website when we checked — please verify on their site.
+  - generic: Did that answer it?
+  - generic: Let's —
+  - generic: I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: The selected Fearless + PS petrol pairs with a 7-speed dual-clutch automatic transmission. Since specific stop-and-go behavior is best felt directly, a test drive is the best way to evaluate how it responds in daily traffic.
+  - generic: Let's do that. I'll pass everything we discussed along so you don't repeat yourself.
+  - generic: What else would you like to explore?
+  - generic: Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: Now, let me get to what you asked about.
+  - generic: The advertised basic warranty for the Nexon is 3 years or 100 000 km, though the materials do not specify the relationship between time and distance or whether whichever comes first applies. Specific exclusions, transferability, and full terms are also unlisted in the source badge.
+  - generic: Did that answer it?
+  - generic: What is the exact on-road price in Mumbai today, including every charge?
+  - generic: Good question — give me one moment, please, while I check that for you.
+  - generic: I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.
+  - textbox "Type a question…"
+  - button "↑"

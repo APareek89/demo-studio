@@ -1,0 +1,99 @@
+{
+  "segment_id": "boot-practicality",
+  "lines": [
+    {
+      "text": "Here's the boot. Petrol and diesel versions are listed at 382 litres, measured to ISO V215.",
+      "step": "frame",
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "focus": "Rear luggage boot space"
+      },
+      "fact_ids": [
+        "F014"
+      ],
+      "card": "none",
+      "unverified": false,
+      "id": "boot-practicality-L1",
+      "start": 50.4,
+      "duration": 8.02,
+      "exact": true,
+      "audio": "audio/c8fd8e59945a30e2ef02.wav"
+    },
+    {
+      "text": "For a stroller or weekend bags, bring your own and check the fit with the seats in use.",
+      "step": "show",
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "focus": ""
+      },
+      "fact_ids": [],
+      "card": "facts",
+      "unverified": false,
+      "id": "boot-practicality-L2",
+      "start": 58.5,
+      "duration": 5.29,
+      "exact": true,
+      "audio": "audio/1b7944185188d98d3688.wav"
+    }
+  ],
+  "deeper": [
+    {
+      "text": "The CNG boot is listed at 321 litres using the same ISO V215 measurement basis. Capacity alone won't settle the fit of your luggage.",
+      "step": "show",
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "focus": ""
+      },
+      "fact_ids": [
+        "F014"
+      ],
+      "card": "none",
+      "unverified": false,
+      "id": "boot-practicality-D1",
+      "audio": "audio/84cde3b1d800632df210.wav"
+    },
+    {
+      "text": "Creative Plus P S and Fearless Plus P S petrol and diesel trims have sixty-forty flip-and-fold rear seats, plus a rear armrest with a cup holder.",
+      "step": "translate",
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "focus": ""
+      },
+      "fact_ids": [
+        "F024"
+      ],
+      "card": "none",
+      "unverified": false,
+      "id": "boot-practicality-D2",
+      "audio": "audio/2e05d25d3a32539ef4fb.wav"
+    }
+  ],
+  "bank_answers": [
+    {
+      "id": "Q05",
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "answer": "Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.",
+      "fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "audio": "audio/d1a4e859cd4781ce0a2a.wav",
+      "answered": true
+    },
+    {
+      "id": "Q11",
+      "question": "Does this Fearless + PS trim include both front-seat ventilation and rear AC vents?",
+      "answer": "Yes. The documented Fearless + PS petrol and diesel versions include ventilated driver and co-driver seats, along with rear AC vents.",
+      "fact_ids": [
+        "F020",
+        "F021"
+      ],
+      "audio": "audio/7d17ee501abb84c4a82d.wav",
+      "answered": true
+    }
+  ]
+}

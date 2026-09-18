@@ -1,0 +1,15 @@
+PASS summary race: first actual worker enters the fake provider
+FAIL summary race: identical in-flight saves launch only one provider call
+FAIL summary race: attaching success preserves the latest saved record metadata
+FAIL summary race: a late duplicate failure cannot replace current success
+PASS summary race: an identical completed save reuses its summary without provider work
+PASS summary race: held old revision reaches the provider
+PASS summary race: one held provider does not block another session summary
+FAIL summary race: a resumed same-length transcript survives an old result unchanged
+FAIL summary race: the newly ended revision receives its own summary
+FAIL summary race: equal transcript length cannot reuse a different-content summary
+FAIL summary race: changed non-transcript summary input triggers current work
+PASS summary race: superseded failed worker is held before completion
+FAIL summary race: a superseded error cannot overwrite the new session or summary
+PASS summary race: all fake workers terminate without outbound calls
+Summary race: 6/14 (actual threads and ASGI route, no paid calls)

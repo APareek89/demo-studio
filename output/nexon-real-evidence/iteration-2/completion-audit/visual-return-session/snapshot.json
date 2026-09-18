@@ -1,0 +1,69 @@
+{
+  "session_id": "s_mu75bjmvm5pw",
+  "demo_id": "dm_36d47b86",
+  "captured_at": "2026-09-18T16:27:26.598343+00:00",
+  "origin": "Read-only local saved session record; no API request and no share capability accessed.",
+  "session_sha256": "c6d417f3ba1c1c834a51bddfa119b36247e9f01ca0338beebd0be9a5eea35e4a",
+  "redacted_fields": [],
+  "frontend_reported_by_root": "3412b11 loaded before citation/focus fixes",
+  "summary_backend_reported_by_root": "cde49fe, restarted server67061 at port8893",
+  "classification": "Actual muted Browse proof/deeper interruption-return evidence, with pre-fix NX38 stale deeper citation preserved. Not post-fix citation acceptance.",
+  "source_files": {
+    "data/demos/dm_36d47b86/sessions/s_mu75bjmvm5pw.json": {
+      "sha256": "36ff0f6ce8cc749af38023fcc1a1d40898a73e21cd88efecd3ad2eda0945b740",
+      "bytes": 9651
+    },
+    "data/demos/dm_36d47b86/script.json": {
+      "sha256": "74860a0f159de4cef195f563a3cddf6e0397f093b3423c2bab84b0cbeb457603",
+      "bytes": 27840
+    },
+    "data/demos/dm_36d47b86/faq.json": {
+      "sha256": "a83424627005c43f27992902366e9aaa819bcc314257951f1943396506e3d123",
+      "bytes": 12688
+    },
+    "output/nexon-real-evidence/iteration-2/completion-audit/proof-interrupt-origin.txt": {
+      "sha256": "5304f834ed0aea02ded14ddfa0fa273ebcd9212f076586336ac5e4133caf7183",
+      "bytes": 2882
+    },
+    "output/nexon-real-evidence/iteration-2/completion-audit/proof-interrupt-return-line.txt": {
+      "sha256": "dec41344c953152c10d31c66d853a3f088702ede687a82719d9e89f8b7f09694",
+      "bytes": 3168
+    },
+    "output/nexon-real-evidence/iteration-2/completion-audit/deeper-interrupt-origin.txt": {
+      "sha256": "ad20af2a8e03a50fa2cb68abc88fb483748c15ba6f7c0c977319f235fae52f62",
+      "bytes": 3758
+    },
+    "output/nexon-real-evidence/iteration-2/completion-audit/deeper-interrupt-return-line.txt": {
+      "sha256": "a3ca06964f1c4a584baa517df27de2819fd65c546f4f626868e49afe6e743e63",
+      "bytes": 3725
+    },
+    "output/nexon-real-evidence/iteration-2/completion-audit/visual-return-session-recap.txt": {
+      "sha256": "e11d4c5b8575a278187ffd759f66111ac3fcb7fc0c31662afad6fc1242a4fda8",
+      "bytes": 5635
+    }
+  },
+  "artifacts": {
+    "session.json": {
+      "sha256": "c6d417f3ba1c1c834a51bddfa119b36247e9f01ca0338beebd0be9a5eea35e4a",
+      "bytes": 9652
+    },
+    "reviewed-lines-and-bank.json": {
+      "sha256": "f0a5bdd3dcdf74a23176006b3a3757de6a9d45cc635711cd6a8203527fd5ff23",
+      "bytes": 2930
+    },
+    "return-checks.json": {
+      "sha256": "909e3f2a480f444b59dc84af87daf2f70c062dd86514d995c66b4fdc40ca7290",
+      "bytes": 1481
+    },
+    "summary-accounting.json": {
+      "sha256": "811fcc87c783dbdbea9cc88d0fab0d59804bcbef894f0b73680fbfca3d612b2a",
+      "bytes": 5169
+    }
+  },
+  "limits": [
+    "23.3 minutes includes long review/idle time; it is not narration duration or an uninterrupted-tour benchmark.",
+    "Playback was muted; captions/transcript evidence only, no acoustic/microphone acceptance.",
+    "Two bank Q&A calls are real customer-route interactions, not new model-generated answers.",
+    "Historical false focus behaviour belongs to old frontend; this empty-intake Browse record does not retest the new parser."
+  ]
+}

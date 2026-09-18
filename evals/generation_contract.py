@@ -226,6 +226,53 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                       "Do not compare unrelated feature lists", "omit that dimension; never shorten away its scope",
                       comparison_fact["conditions"], rival_fact["conditions"], rival_fact["source"]["locator"], profile["why"],
                       "that is as per their website when we checked — please verify on their site")))
+
+        # Reviewed demo examples identify the referent, not a customer's choice
+        # or new fact evidence. Fake outputs prove the actual input/clarification
+        # path only; they do not claim a model will follow the precedence rule.
+        original_notes = files["plan.json"].get("notes", "")
+        example_notes = "Comparison example: Fixture rival GX 1.5 petrol automatic. This is not an inferred buyer selection."
+        files["plan.json"]["notes"] = example_notes
+        demo["approvals"] = {"script": True}
+        selected_question = "What differs from the selected demo variant of Fixture rival?"
+        for live in (False, True):
+            with patch.object(qa.runtime if live else qa.claude, "structured", return_value=proposed) as model:
+                qa.answer(demo_id, selected_question, profile=profile, live=live, voice_it=False)
+            envelope = model.call_args.args[0]
+            check(f"generation: {'runtime' if live else 'build FAQ'} receives reviewed demo example separately from buyer and fact evidence",
+                  example_notes in envelope and "DEMO COMPARISON CONTEXT" in envelope
+                  and all(value in envelope for value in (comparison_fact["conditions"], rival_fact["conditions"],
+                      rival_fact["source"]["locator"], json.dumps(rival_fact["source"]["quote"])))
+                  and model.call_args.args[1] == selected_question
+                  and "not buyer selections or factual evidence" in envelope)
+        correction = {"why": "I mean Fixture rival LX manual, not the GX automatic example."}
+        with patch.object(qa.runtime, "structured", return_value=proposed) as model:
+            qa.answer(demo_id, "What about that version?", profile=correction, live=True, voice_it=False)
+        envelope = model.call_args.args[0]
+        check("generation: explicit buyer variant overrides the demo example without becoming an inferred preference",
+              correction["why"] in envelope and example_notes in envelope
+              and "explicit customer variant or correction takes precedence" in envelope
+              and "never infer a buyer selection or preference from these notes" in envelope)
+        clarification = schemas.QAOut(answer="Which version do you mean?", answered=True, fact_ids=[],
+                                      clarifying_question="Which version do you mean?")
+        for label, notes in (("missing", ""), ("ambiguous", "Comparison examples: Fixture rival GX automatic or LX manual; neither is selected.")):
+            files["plan.json"]["notes"] = notes
+            with patch.object(qa.runtime, "structured", return_value=clarification) as model:
+                reply = qa.answer(demo_id, selected_question, profile=profile, live=True, voice_it=False)
+            envelope = model.call_args.args[0]
+            check(f"generation: {label} demo configuration retains the existing clarification path",
+                  reply["clarifying_question"] == clarification.clarifying_question
+                  and "missing or ambiguous" in envelope and "when it changes the answer" in envelope
+                  and (notes in envelope if notes else example_notes not in envelope))
+        files["plan.json"]["notes"] = example_notes
+        for label, competition, approved in (("competition disabled", "off", True), ("script unapproved", "on", False)):
+            demo["settings"]["competition"], demo["approvals"]["script"] = competition, approved
+            with patch.object(qa.runtime, "structured", return_value=clarification) as model:
+                qa.answer(demo_id, selected_question, profile=profile, live=True, voice_it=False)
+            check(f"generation: {label} cannot supply an unreviewed comparison example", example_notes not in model.call_args.args[0])
+        files["plan.json"]["notes"] = original_notes
+        demo["settings"]["competition"] = "on"
+        demo.pop("approvals")
         files["understanding.json"]["facts"].append(policy)
         shortlist = {"why": "I am considering Fixture car and Fixture rival."}
         prior = [{"role": "user", "text": "Compare the selected automatic versions."},

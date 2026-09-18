@@ -1,0 +1,129 @@
+{
+  "status": "DEMO_SCOPED_TRACE_AND_USAGE_VERIFIED",
+  "backend_reported_by_root": "cde49fe on restarted server67061",
+  "saved_summary_generated_at": 1789748693.365653,
+  "saved_summary_transcript_lines": 28,
+  "trace_rows": [
+    {
+      "trace_row": 429,
+      "t": 1789748685.725613,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 6053,
+      "in": 1305,
+      "out": 1022,
+      "chars": 0,
+      "usd": 0.00481,
+      "success": true,
+      "request_contains_both_exact_questions": true,
+      "request_sha256": "a54ea4d2afd5d5358618925ef15ff37fdc974180167579dc66cbfaae149994f3",
+      "response": {
+        "customer_name": "",
+        "context": "The customer is evaluating the Tata Nexon, focusing on the Fearless + PS trim, to see if it meets their safety and cabin comfort needs.",
+        "cared_about": [
+          "Six airbags and ISOFIX mounts as standard equipment across all variants",
+          "Front-seat ventilation on the Fearless + PS trim",
+          "Rear AC vents on the Fearless + PS trim"
+        ],
+        "objections": [],
+        "unanswered": [],
+        "opening_line": "You asked whether the Nexon includes six airbags and ISOFIX mounts as standard across all variants, and if the Fearless + PS trim features front-seat ventilation and rear AC vents."
+      },
+      "matches_saved_summary": false
+    },
+    {
+      "trace_row": 430,
+      "t": 1789748692.687932,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 8361,
+      "in": 1305,
+      "out": 687,
+      "chars": 0,
+      "usd": 0.00356,
+      "success": true,
+      "request_contains_both_exact_questions": true,
+      "request_sha256": "a54ea4d2afd5d5358618925ef15ff37fdc974180167579dc66cbfaae149994f3",
+      "response": {
+        "customer_name": "",
+        "context": "The customer is evaluating the Tata Nexon, specifically considering the Fearless + PS trim and safety standards across variants.",
+        "cared_about": [
+          "Standard safety equipment including six airbags and ISOFIX mounts across all variants",
+          "Cabin comfort features including front-seat ventilation and rear AC vents on the Fearless + PS trim"
+        ],
+        "objections": [],
+        "unanswered": [],
+        "opening_line": "You asked about standard six airbags, ISOFIX mounts, and whether the Fearless + PS trim includes front-seat ventilation and rear AC vents—I would love to help you take the next step in evaluating the Nexon."
+      },
+      "matches_saved_summary": false
+    },
+    {
+      "trace_row": 431,
+      "t": 1789748693.359621,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 8767,
+      "in": 1305,
+      "out": 597,
+      "chars": 0,
+      "usd": 0.00322,
+      "success": true,
+      "request_contains_both_exact_questions": true,
+      "request_sha256": "a54ea4d2afd5d5358618925ef15ff37fdc974180167579dc66cbfaae149994f3",
+      "response": {
+        "customer_name": "",
+        "context": "The customer is evaluating the Tata Nexon, focusing on the Fearless + PS trim and variant-wide safety features.",
+        "cared_about": [
+          "Standard safety equipment including six airbags and ISOFIX mounts across all variants",
+          "Front-seat ventilation",
+          "Rear AC vents on the Fearless + PS trim"
+        ],
+        "objections": [],
+        "unanswered": [],
+        "opening_line": "You asked during the tour about six airbags and ISOFIX mounts coming standard across all variants, as well as front-seat ventilation and rear AC vents on the Fearless + PS trim—I wanted to check how those features match what you need for your next car."
+      },
+      "matches_saved_summary": true
+    }
+  ],
+  "usage_rows": [
+    {
+      "usage_row": 363,
+      "t": 1789748685.723186,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 1305,
+      "out": 1022,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "usage_row": 364,
+      "t": 1789748692.6867552,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 1305,
+      "out": 687,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "usage_row": 365,
+      "t": 1789748693.359166,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 1305,
+      "out": 597,
+      "chars": 0,
+      "sec": 0.0
+    }
+  ],
+  "observed_duplicate_generations": 3,
+  "interpretation": "Three successful summary generations match the same ended transcript in this completion window. Latest trace431 matches the persisted summary. Repeated completion saves before the first summary finishes can start parallel summary threads; this attribution fix does not deduplicate them. No summary generation was triggered by this read-only audit.",
+  "limits": "Rows have no session_id. Attribution is supported by exact two-question prompt content, matching complete transcript time window, and final response equality. Do not count this as proof that old missing summary usage was backfilled."
+}

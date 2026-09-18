@@ -63,6 +63,11 @@ def run(check) -> None:
               and payload["unresolved"] == ["ownership"]
               and payload["escalations"] == record["escalations"]
               and kwargs["max_tokens"] == 1200)
+        check("summary: LOW thinking preserves the 1200-token schema and full session context",
+              kwargs.get("thinking_level") == "low" and kwargs["max_tokens"] == 1200
+              and runtime.call_args.args[2] is summary.SessionSummary
+              and payload["profile"] == record["profile"] and payload["questions"] == record["questions"]
+              and payload["transcript"] == record["transcript"])
 
         supplied.unanswered = []
         for field in ("unresolved", "escalations"):

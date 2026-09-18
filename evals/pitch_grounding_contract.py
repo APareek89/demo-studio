@@ -219,6 +219,9 @@ def run(check):
         check("pitch: an explicitly stated installation assessment is not blanket-blocked", bool(result["custom_batches"]) and len(audio) >= 1)
 
         envelope = call.args[0]
+        check("pitch: runtime requests LOW thinking with the same schema, proof context and token ceiling",
+              call.kwargs.get("thinking_level") == "low" and call.kwargs.get("max_tokens") == 3000
+              and call.args[2] is schemas.PitchPlan and "REVIEWED SPOKEN PROOF" in envelope)
         check("pitch: full evidence and scope-before-benefit rules reach the real prompt",
               warranty["source"]["quote"] in envelope and warranty["source"]["locator"] in envelope
               and warranty["conditions"] in envelope and "reasonable inference" not in envelope.lower()

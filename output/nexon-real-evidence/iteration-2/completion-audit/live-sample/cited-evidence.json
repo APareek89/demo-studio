@@ -1,0 +1,134 @@
+{
+  "facts": [
+    {
+      "kind": "spec",
+      "claim": "Boot space capacity",
+      "value": "382 L for Petrol & Diesel; 321 L for CNG",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, Petrol/Diesel versus Petrol + CNG columns; ** measurement footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "confidence": 1.0,
+      "conditions": "382 L in the petrol/diesel columns and 321 L in the Petrol + CNG column. Brochure measurement basis: ISO V215. Litres do not establish that a particular stroller or luggage set fits.",
+      "truth": "stated",
+      "id": "F014",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "confidence": 1.0,
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date.",
+      "truth": "stated",
+      "id": "F019",
+      "approved": true,
+      "edited": true
+    },
+    {
+      "kind": "feature",
+      "claim": "Front-seat ventilation",
+      "value": "Ventilated Driver & Co-Driver Seat",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, FEARLESS + PS persona walk",
+        "quote": "Ventilated Driver & Co-Driver Seat"
+      },
+      "confidence": 1.0,
+      "conditions": "Available on Fearless + PS petrol/diesel persona; does not apply to rear seats or lower trims.",
+      "truth": "stated",
+      "id": "F020",
+      "approved": true,
+      "edited": false
+    },
+    {
+      "kind": "policy",
+      "claim": "Advertised basic warranty",
+      "value": "3 years | 100 000 km",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, warranty badge",
+        "quote": "3 years | 100 000 km"
+      },
+      "confidence": 1.0,
+      "conditions": "Advertised basic warranty headline; specific terms, exclusions, transferability, or 'whichever occurs first' qualification not detailed in source badge.",
+      "truth": "contractual",
+      "id": "F027",
+      "approved": true,
+      "edited": false
+    }
+  ],
+  "competitors": [
+    {
+      "name": "Hyundai VENUE",
+      "source_id": "src_43582f",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "fetched_at": 1789741700.08623,
+      "facts": [
+        {
+          "kind": "spec",
+          "claim": "Boot capacity",
+          "value": "375 litres",
+          "source": {
+            "ref": "src_43582f",
+            "locator": "page 8",
+            "quote": "Spacious boot (375 litres)*"
+          },
+          "confidence": 1.0,
+          "conditions": "As per VDA 215 method",
+          "truth": "stated",
+          "id": "C4-007",
+          "approved": true,
+          "edited": false
+        }
+      ]
+    },
+    {
+      "name": "Maruti Suzuki Brezza",
+      "source_id": "src_87ab79",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "fetched_at": 1789741716.464468,
+      "facts": [
+        {
+          "kind": "availability",
+          "claim": "6-speed Automatic transmission availability (1.5L K15C Petrol ISG)",
+          "value": "6-speed automatic available on VXi, ZXi and ZXi+; unavailable on LXi",
+          "source": {
+            "ref": "src_87ab79",
+            "locator": "PDF page 10, FEATURES LIST, Powertrain matrix",
+            "quote": "columns LXi, VXi, ZXi, ZXi+; the automatic row is unavailable, ticked, ticked, ticked respectively."
+          },
+          "confidence": 1.0,
+          "conditions": "1.5L K15C Petrol ISG engine, India market. Selected comparison: Brezza ZXi+ with 6AT. The 1.0L Turbo Boosterjet row is manual; do not attach its output figures to this automatic.",
+          "truth": "stated",
+          "id": "C6-001",
+          "approved": true,
+          "edited": true
+        },
+        {
+          "kind": "feature",
+          "claim": "Front Ventilated Seats availability",
+          "value": "Ticked on ZXi+; unavailable on LXi, VXi, ZXi",
+          "source": {
+            "ref": "src_87ab79",
+            "locator": "PDF page 10, Comfort and Convenience",
+            "quote": "Front Ventilated Seats"
+          },
+          "confidence": 1.0,
+          "conditions": "Trim ZXi+ only (unavailable on LXi, VXi, ZXi), India market",
+          "truth": "stated",
+          "id": "C6-002",
+          "approved": true,
+          "edited": false
+        }
+      ]
+    }
+  ]
+}

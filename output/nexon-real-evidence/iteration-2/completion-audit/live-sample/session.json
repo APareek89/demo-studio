@@ -1,0 +1,437 @@
+{
+  "id": "s_mu765nbzlv8f",
+  "ended": true,
+  "profile": {
+    "name": "",
+    "why": "I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.",
+    "followup": "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.\nWhat can you show me that differs from the selected Venue variant?\nWhich specific Venue variant are you comparing with? The selected Hyundai Venue HX10 petrol 7DCT.\nHow does this chosen Nexon compare with the selected Brezza for an automatic family car?\nI mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?\nYes, but what is the warranty for this Nexon, and what is still unknown about its limits?\nWhat is the exact on-road price in Mumbai today, including every charge?",
+    "focus": [
+      "performance"
+    ]
+  },
+  "personalized": false,
+  "route": [
+    "powertrain-choices",
+    "exterior-stance",
+    "cabin-comfort",
+    "boot-practicality",
+    "safety-standards",
+    "tech-convenience",
+    "ownership-details"
+  ],
+  "slides": [
+    "sl06",
+    "sl03",
+    "sl04",
+    "sl05",
+    "sl07",
+    "sl08",
+    "sl09"
+  ],
+  "slides_visited": [
+    {
+      "slide_id": "sl00",
+      "kind": "hero_open",
+      "seconds": 25.8
+    },
+    {
+      "slide_id": "sl01",
+      "kind": "intro",
+      "seconds": 12.2
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 18.5
+    },
+    {
+      "slide_id": "sl06",
+      "kind": "proof",
+      "seconds": 65.7
+    },
+    {
+      "slide_id": "sl05",
+      "kind": "proof",
+      "seconds": 200.5
+    },
+    {
+      "slide_id": "sl02",
+      "kind": "outcome",
+      "seconds": 77.4
+    },
+    {
+      "slide_id": "sl09",
+      "kind": "establish",
+      "seconds": 143.9
+    }
+  ],
+  "covered": [
+    "sl05",
+    "sl02",
+    "sl09"
+  ],
+  "jumps": [
+    {
+      "from": "sl06",
+      "to": "sl05",
+      "question": "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured."
+    },
+    {
+      "from": "sl05",
+      "to": "sl02",
+      "question": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?"
+    },
+    {
+      "from": "sl02",
+      "to": "sl09",
+      "question": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?"
+    }
+  ],
+  "turns": [
+    {
+      "question": "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.",
+      "voice_ended": 1789748798888,
+      "stt_done": 1789748798888,
+      "via": "typed",
+      "qa_done": 1789748804024,
+      "answer_audio": 1789748806845,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789748836005,
+      "stt_done": 1789748836005,
+      "via": "typed",
+      "qa_done": 1789748843968,
+      "answer_audio": 1789748843976,
+      "from_bank": false,
+      "route": "none",
+      "answered": true
+    },
+    {
+      "question": "What can you show me that differs from the selected Venue variant?",
+      "voice_ended": 1789748960805,
+      "stt_done": 1789748960805,
+      "via": "typed",
+      "qa_done": 1789748968778,
+      "answer_audio": 1789748968790,
+      "from_bank": false,
+      "route": "stay",
+      "answered": true
+    },
+    {
+      "question": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "voice_ended": 1789748997121,
+      "stt_done": 1789748997121,
+      "via": "typed",
+      "qa_done": 1789749004527,
+      "answer_audio": 1789749007346,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+      "voice_ended": 1789749040904,
+      "stt_done": 1789749040904,
+      "via": "typed",
+      "qa_done": 1789749047408,
+      "answer_audio": 1789749047421,
+      "from_bank": false,
+      "route": "stay",
+      "answered": true
+    },
+    {
+      "question": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+      "voice_ended": 1789749103605,
+      "stt_done": 1789749103605,
+      "via": "typed",
+      "qa_done": 1789749110101,
+      "answer_audio": 1789749112931,
+      "from_bank": false,
+      "route": "jump",
+      "answered": true
+    },
+    {
+      "question": "What is the exact on-road price in Mumbai today, including every charge?",
+      "voice_ended": 1789749179819,
+      "stt_done": 1789749179819,
+      "via": "typed",
+      "qa_done": 1789749185228,
+      "answer_audio": 1789749185251,
+      "from_bank": false,
+      "route": "none",
+      "answered": false
+    }
+  ],
+  "usps_covered": [
+    "usp-powertrains"
+  ],
+  "questions": [
+    "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.",
+    "What can you show me that differs from the selected Venue variant?",
+    "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+    "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+    "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+    "What is the exact on-road price in Mumbai today, including every charge?"
+  ],
+  "escalations": [
+    "Exact on-road price in Mumbai including all charges"
+  ],
+  "leads": [],
+  "resolved": [
+    "practicality",
+    "comfort"
+  ],
+  "unresolved": [
+    "ownership"
+  ],
+  "cta": "Book Test Drive",
+  "intent": 91,
+  "drop_point": "Find your driving rhythm",
+  "minutes": 9.1,
+  "transcript": [
+    {
+      "role": "agent",
+      "text": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+      "t": 1789748705593
+    },
+    {
+      "role": "user",
+      "text": "I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes.",
+      "t": 1789748705596
+    },
+    {
+      "role": "agent",
+      "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+      "t": 1789748710440
+    },
+    {
+      "role": "agent",
+      "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+      "t": 1789748715468
+    },
+    {
+      "role": "agent",
+      "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+      "t": 1789748722633
+    },
+    {
+      "role": "agent",
+      "text": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+      "t": 1789748730144
+    },
+    {
+      "role": "agent",
+      "text": "We'll put each alongside what you need from your next car.",
+      "t": 1789748733620
+    },
+    {
+      "role": "agent",
+      "text": "Give me one moment, please — I'm tailoring this to what you just told me.",
+      "t": 1789748739162
+    },
+    {
+      "role": "agent",
+      "text": "Alright — here we go.",
+      "t": 1789748741107
+    },
+    {
+      "role": "agent",
+      "text": "This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.",
+      "t": 1789748746825
+    },
+    {
+      "role": "agent",
+      "text": "For stop-and-go driving, try its response on a test drive and see how it feels to you.",
+      "t": 1789748753286
+    },
+    {
+      "role": "agent",
+      "text": "Is an automatic the direction you're leaning towards?",
+      "t": 1789748756691
+    },
+    {
+      "role": "user",
+      "text": "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured.",
+      "t": 1789748798889
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789748804004
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789748806817
+    },
+    {
+      "role": "agent",
+      "text": "For the petrol Nexon, the documented boot space is 382 litres. According to the brochure, this is measured using the ISO V215 standard.",
+      "t": 1789748817487
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789748818414
+    },
+    {
+      "role": "agent",
+      "text": "Let's",
+      "t": 1789748836007,
+      "interrupted": true,
+      "full": "Let's get back to where we were.",
+      "heard_fraction": 0.14
+    },
+    {
+      "role": "user",
+      "text": "What can you show me that differs from the selected Venue variant?",
+      "t": 1789748836007
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789748841121
+    },
+    {
+      "role": "agent",
+      "text": "Which specific Venue variant are you comparing with?",
+      "t": 1789748846761
+    },
+    {
+      "role": "user",
+      "text": "The selected Hyundai Venue HX10 petrol 7DCT.",
+      "t": 1789748960805
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789748965921
+    },
+    {
+      "role": "agent",
+      "text": "For boot space, the petrol Tata Nexon lists 382 litres by ISO V215, while the Hyundai Venue lists 375 litres by the VDA 215 method — that is as per their website when we checked — please verify on their site.",
+      "t": 1789748990261
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789748991177
+    },
+    {
+      "role": "agent",
+      "text": "Let's",
+      "t": 1789748997121,
+      "interrupted": true,
+      "full": "Let's get back to where we were.",
+      "heard_fraction": 0.13
+    },
+    {
+      "role": "user",
+      "text": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?",
+      "t": 1789748997121
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749002239
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789749007319
+    },
+    {
+      "role": "agent",
+      "text": "For front seat comfort, the Tata Nexon Fearless + PS petrol DCA features ventilated driver and co-driver seats, and the Brezza ZXi+ with 6-speed automatic also provides front ventilated seats; that is as per their website when we checked — please verify on their site.",
+      "t": 1789749028053
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789749028964
+    },
+    {
+      "role": "agent",
+      "text": "Let's",
+      "t": 1789749040905,
+      "interrupted": true,
+      "full": "Let's get back to where we were.",
+      "heard_fraction": 0.1
+    },
+    {
+      "role": "user",
+      "text": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?",
+      "t": 1789749040905
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749046018
+    },
+    {
+      "role": "agent",
+      "text": "The selected Fearless + PS petrol pairs with a 7-speed dual-clutch automatic transmission. Since specific stop-and-go behavior is best felt directly, a test drive is the best way to evaluate how it responds in daily traffic.",
+      "t": 1789749063426
+    },
+    {
+      "role": "agent",
+      "text": "Let's do that. I'll pass everything we discussed along so you don't repeat yourself.",
+      "t": 1789749071663
+    },
+    {
+      "role": "agent",
+      "text": "What else would you like to explore?",
+      "t": 1789749102960
+    },
+    {
+      "role": "user",
+      "text": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?",
+      "t": 1789749103605
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749108722
+    },
+    {
+      "role": "agent",
+      "text": "Now, let me get to what you asked about.",
+      "t": 1789749112892
+    },
+    {
+      "role": "agent",
+      "text": "The advertised basic warranty for the Nexon is 3 years or 100 000 km, though the materials do not specify the relationship between time and distance or whether whichever comes first applies. Specific exclusions, transferability, and full terms are also unlisted in the source badge.",
+      "t": 1789749133995
+    },
+    {
+      "role": "agent",
+      "text": "Did that answer it?",
+      "t": 1789749134918
+    },
+    {
+      "role": "user",
+      "text": "What is the exact on-road price in Mumbai today, including every charge?",
+      "t": 1789749179821
+    },
+    {
+      "role": "agent",
+      "text": "Good question — give me one moment, please, while I check that for you.",
+      "t": 1789749184940
+    },
+    {
+      "role": "agent",
+      "text": "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.",
+      "t": 1789749197073
+    }
+  ],
+  "saved_at": 1789749257.0847218,
+  "summary": {
+    "error": "all runtime providers failed — gemini: 1 validation error for SessionSummary\n  Invalid JSON: EOF while parsing a value at line 1 column 0 [type=json_invalid, i | claude: Error code: 400 - {'type': 'er",
+    "generated_at": 1789749277.729955,
+    "transcript_lines": 45
+  }
+}

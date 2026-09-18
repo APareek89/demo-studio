@@ -341,7 +341,8 @@ export function mountPlayer(host, bundle, api) {
     if (/^(no|nope|not really|not quite|unsure|still unsure|not sure|tell me more|more|deeper|explain|elaborate|not clear|i'm not sure|nahi|nahin)$/.test(s)) {
       if (has("deeper")) return { value: "deeper" }; if (has("no")) return { value: "no" };
     }
-    for (const c of bundle.ctas || []) if (s.includes(c.label.toLowerCase()) && has("cta:" + c.id)) return { value: "cta:" + c.id };
+    // A mention (including a refusal or a question) is not a selection.
+    for (const c of bundle.ctas || []) if (s === c.label.toLowerCase().trim().replace(/[.!?,]+$/g, "") && has("cta:" + c.id)) return { value: "cta:" + c.id };
     if (/(not yet|later|think about|not now|baad mein)/.test(s) && has("notyet")) return { value: "notyet" };
     if (/(human|person|advisor|someone|sales|team)/.test(s) && has("human")) return { value: "human" };
     return { value: "question", text: t };
@@ -499,8 +500,10 @@ export function mountPlayer(host, bundle, api) {
     if (r.value.startsWith("cta:")) await ctaFlow(r.value.slice(4), run);
   }
   async function ctaFlow(id, run) {
-    const c = (bundle.ctas || []).find((x) => x.id === id) || { label: id, kind: "custom" }; S.cta = c.label;
-    const line = c.kind === "book" ? `Let's do that. I'll pass everything we discussed along so you don't repeat yourself.` : c.kind === "contact" ? `Done — someone from the team will take it from here with the full context.` : `Good call — “${c.label}” it is. Everything we discussed travels with it.`;
+    if (run !== S.run) return;
+    const c = (bundle.ctas || []).find((x) => x.id === id); if (!c) return;
+    S.cta = c.label;
+    const line = `You chose “${c.label}”. You can leave your details if you would like the dealership to follow up.`;
     const ok = await speak(line, run); if (!ok) return; showHandoff(c);
   }
   function captureOrigin() { if (!S.conversationOrigin) S.conversationOrigin = { ...S.playback }; }
@@ -587,12 +590,17 @@ export function mountPlayer(host, bundle, api) {
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
     if (!(await speak(r.answer, run, r.audio))) return;
-    if (r.cta) { await ctaFlow(r.cta, run); return; }
     if (r.offer_callback) showLeadPrompt("question", customerQuestion);
     if (!(await speakF("did_that_answer", "Did that answer it?", run))) return;
-    const r2 = await waitFor([{ label: "Yes, that helps", value: "yes", primary: true }, { label: "Not quite", value: "no" }, { label: "Ask another question", value: "question" }]);
+    // A model CTA is only a suggestion. Customer input must select a configured
+    // action; agreement that the answer helped never authorizes that action.
+    const suggested = (bundle.ctas || []).find((c) => c.id === r.cta);
+    const choices = [{ label: "Yes, that helps", value: "yes", primary: true }, { label: "Not quite", value: "no" }, { label: "Ask another question", value: "question" }];
+    if (suggested) choices.push({ label: suggested.label, value: "cta:" + suggested.id });
+    const r2 = await waitFor(choices);
     if (run !== S.run) return;
-    if (r2.value === "yes") { S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion); el.lead.classList.remove("open"); resumeAfterQA(); }
+    if (r2.value.startsWith("cta:")) await ctaFlow(r2.value.slice(4), run);
+    else if (r2.value === "yes") { S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion); el.lead.classList.remove("open"); resumeAfterQA(); }
     else if (r2.value === "no") {
       S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${customerQuestion}"`);
       if (!(await speak("What part is still unclear? Tell me a little more, or choose Continue when you are ready. I'll keep this question open.", run))) return;

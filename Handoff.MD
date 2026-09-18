@@ -4,9 +4,17 @@
 
 ## Current checkpoint — 2026-09-18
 
+**Decision NX39:** QA receives existing plan notes as separate demo comparison context only while competition is on and the script is approved. Explicit customer variants override these examples; notes cannot establish buyer preferences or product facts. The actual L2 trace439 clarification and trace441 reply-assisted recovery remain preserved. Generation input contracts39/44→44/44 verify context delivery, precedence instructions, retained evidence and genuinely missing/ambiguous clarification paths; model compliance and the targeted live confirmation remain pending. No schema change or Build.
+
+**Closure code checkpoint:**307/307 deck,24/24 acceptance,both smoke,44/44 generation,27/27 delivery; actual browser36/36;52 Python files,12JS+harness,focus12/12,8 diagram mirrors. Summary now uses LOW and coalesces identical saved revisions; old workers cannot overwrite current records. Finite final muted replay remains pending. No third Build, merge or deployment.
+
 **Active goal continuation after `d2ccd52`:** the user-provided goal resumed the incomplete acceptance work. Root is closing the remaining pitch-source, inferred-focus, response-delay and actual visual/return gaps against the existing second Build. No third Build or deployment. The previous closeout below is a preserved checkpoint, not an instruction to stop this resumed work. Playback remains muted. Predeclared validation scope: `output/nexon-real-evidence/iteration-2/completion-audit/plan.md`.
 
 **Continued code checkpoint:** exact approved speech now bounds cited custom proof; uncited bridges use exact reviewed-title route cues, and optional speech cannot repeat scheduled main lines. Raw customer context remains separate from topic hints. Generic title words no longer invent focus; deeper lines own/restore their source labels. Live QA uses LOW thinking on verified Gemini3.8Flash with the full facts and3000-token limit, and confines answers to the asked product/shared comparison dimension. Summary workers now attribute future usage to the demo. Free gates279/279 deck,24/24 acceptance, both smoke,37/37 generation,27/27 delivery; actual synthetic browser33/33; focus12/12;38 server Python files,12JS+harness and8 diagram mirrors pass. Actual final live sample remains pending. Previous cost and failure snapshots stay frozen.
+
+**Final-sample consent and policy repairs:** L4 incorrectly turned a model test-drive suggestion into a selected action; L5 spoke an unsupported warranty relation. Player now requires explicit CTA choice (actual browser33/36→36/36); QA rejects the observed policy contradiction before speech (12/12). Original failures remain. Final live recovery is pending.
+
+**Final-sample pitch repair:** the new B run still truncated the pitch JSON (trace432,2986 billed output tokens), then Claude lacked credit and Runware timed out. The player used the reviewed route. Apply the same explicit LOW thinking setting to pitch, preserving its full proof/schema/3000-token envelope and fallback order. Actual recovery remains pending; no third Build.
 
 **Two actual Builds are complete; overall customer acceptance is not.** Build1 failed at voice (`a5a663b`, 60/85 references, fifty Priya/ten Gemini, no bundle); all I1 customer paths stay BLOCKED. Build2 (`5cc9288`, `dm_36d47b86`, bundle v1) succeeded in 210.635s after 21-source review, 43 fact corrections/three rival holds, 38 lines, twelve slides/eighteen callouts and four FAQ edits. Integrity confirms 84/84 references, 80 exact Sarvam/Priya/en-IN WAVs, 10.411–18.859s main batches and retained reviewed content/visual edits. File validity does not establish natural speech.
 
@@ -249,6 +257,15 @@ and 🧑 **rotate the Vercel API token** that was pasted in chat on 2026-09-17.
 - Disclosed P2/environment limits: Gemini image/pixel audit unavailable, Audi GLB slightly high-gloss, deterministic runtime personalisation during intermittent pitch-provider 502s, and no acoustic listening score because the run stayed muted.
 
 ## Key decisions
+
+- 2026-09-18 — Session summary completion only owns the unchanged saved conversation revision. Coalesce duplicate local-process work, call providers outside record locks, and attach to the latest ended record. Do not overwrite resumed input/current results or accept a client-supplied summary.
+
+
+- 2026-09-18 — Preserve the two actual Builds. Runtime fixes and finite failed-path confirmations use the existing second bundle; no third Build, deployment or Part3 work. Review stays muted.
+- 2026-09-18 — QA, personalized pitch and session summary explicitly request LOW on supported Gemini3.8Flash; retain full inputs, existing3000/3000/1200 token limits and provider order. Reduced reasoning is a response-completion choice, not evidence that arbitrary output is true.
+- 2026-09-18 — A model CTA is a proposed option only. Explicit configured customer choice is required to record selection; consented form submission remains separate. Do not infer selection from a mention or say details were sent before submission.
+- 2026-09-18 — QA receives reviewed demo comparison notes separately from customer preferences and factual evidence; explicit buyer variant overrides the demo example. A policy relation contradicting an explicit source unknown declines before speech; no synthesized replacement claim.
+
 
 - 2026-09-18 — Runware is the third text fallback; MODEL_TIER=eval by default (Anand approved). Native textInference JSON mode + Pydantic preserves the consumer contract; Gemini text selection is separate from vision. Models/prices and rejected alternatives are in `docs/runware-fallback.md`.
 - Uploaded media defines identity; generated derivatives may preserve it but never redefine colour, trim or feature detail.

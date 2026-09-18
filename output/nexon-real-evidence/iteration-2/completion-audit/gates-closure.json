@@ -1,0 +1,43 @@
+[
+  {
+    "test": "qa_deck",
+    "exit": 0,
+    "tail": [
+      "",
+      "307/307 deck cases pass"
+    ]
+  },
+  {
+    "test": "qa_accept",
+    "exit": 0,
+    "tail": [
+      "Error opening input file /private/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/nexon-final-qa_accept-fhd4zaki/demos/dm_d08c4db6/sources/src_6c1fb3_bad.mp4.",
+      "Error opening input files: Invalid data found when processing input"
+    ],
+    "result": "24/24 acceptance cases pass; invalid-media stderr is the intentional fixture"
+  },
+  {
+    "test": "smoke_mock",
+    "exit": 0,
+    "tail": [
+      "jargon check ok: ['s1 line 1: states a figure or claim without a fact id \u2014 \u201cIt has a 3.4 kWh battery and 15A charging with IDC range.\u201d', \"s1: jargon 'kWh' in the main narration \u2014 move the complete technical quantity to deeper; never keep a number while dropping its unit\"]",
+      "SMOKE OK (phase 2) dm_d478161a"
+    ]
+  },
+  {
+    "test": "generation_contract",
+    "exit": 0,
+    "tail": [
+      "PASS generation: all contracts avoid actual provider and network calls",
+      "Generation input/approval contracts: 44/44 (model entailment not evaluated)"
+    ]
+  },
+  {
+    "test": "runtime_delivery_contract",
+    "exit": 0,
+    "tail": [
+      "PASS runtime delivery: all checks used fake providers and no outbound connection",
+      "Runtime delivery: 27/27 passed"
+    ]
+  }
+]

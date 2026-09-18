@@ -225,6 +225,40 @@ test('An unknown answer holds the callback form without narration behind it', as
   assert(player.context().slide === 'proof-one', 'Unknown answer advanced while the callback form was open');
   assert(env.played.length === before, 'Narration continued behind the callback form');
 });
+const withTestDrive = (b) => ({ ...b, ctas: [{ id: 'test-drive', label: 'Book a test drive', kind: 'book', when: 'always' }] });
+test('A model-suggested CTA is not a customer selection or an automatic recap', async () => {
+  const question = 'I mainly want help with stop-and-go traffic. How should I assess this selected automatic?';
+  await setup({ configure: withTestDrive, qa: async () => answered({ cta: 'test-drive' }) });
+  await atProof(); await type(question); await clock.tick(30000);
+  assert(!host.querySelector('.pl-handoff.open') && !host.querySelector('.pl-lead.open'), 'Model CTA ended the answer or opened a follow-up form without customer selection');
+  assert(button('Yes, that helps', '.pl-chips button') && button('Book a test drive', '.pl-chips button'), 'Suggested CTA replaced the normal answer-confirmation choices');
+  assert(player.context().slide === 'proof-one' && env.saved.length === 0 && env.leadCalls.length === 0, 'Model CTA advanced, saved a handoff or submitted a lead');
+  await click('Yes, that helps', '.pl-chips button'); window.dispatchEvent(new Event('pagehide'));
+  assert(player.context().slide === 'proof-two' && env.beacons.at(-1).cta === null, 'Confirming the answer recorded consent to the unrelated suggested action');
+});
+test('An explicitly chosen proposed CTA records the choice without claiming an unsent handoff', async () => {
+  await setup({ configure: withTestDrive, qa: async () => answered({ answer: 'You can choose a test drive if you would like.', fact_ids: [], cta: 'test-drive' }) });
+  await atProof(); await type('I would like to book a test drive.');
+  assert(!host.querySelector('.pl-handoff.open'), 'A model interpretation alone recorded customer selection');
+  await click('Book a test drive', '.pl-chips button');
+  assert(host.querySelector('.pl-handoff.open')?.textContent.includes('You selected “Book a test drive”') && env.saved.at(-1).cta === 'Book a test drive', 'Explicit CTA selection did not reach the matching recap');
+  assert(!env.played.some((t) => /pass everything|team will take it from here|everything we discussed travels/i.test(t)), 'Guide claimed a handoff before any consented submission');
+  assert(env.leadCalls.length === 0 && env.saved.at(-1).leads.length === 0, 'Selecting the next step submitted a lead without contact-form consent');
+  await click('Request dealership follow-up', '.pl-handoff button');
+  assert(host.querySelector('.pl-lead.open .consent'), 'Selected action lost the optional consent form');
+  await click('Not now', '.pl-lead button');
+  assert(env.leadCalls.length === 0, 'Declining the optional form submitted a lead');
+});
+test('A negated CTA mention at closing remains a question while an exact selection still works', async () => {
+  await setup({ configure: withTestDrive }); await atProof();
+  for (let i = 0; i < 3; i++) await click('Continue', '.pl-chips button');
+  assert(player.context().slide === 'hero-end', 'Fixture did not reach its closing choices');
+  const question = "Do not book a test drive; I still have a question.";
+  await type(question);
+  assert(env.calls.length === 1 && env.calls[0].question === question && !host.querySelector('.pl-handoff.open'), 'Mentioning a CTA inside a refusal was treated as selecting it');
+  await click('Yes, that helps', '.pl-chips button'); await type('Book a test drive');
+  assert(host.querySelector('.pl-handoff.open') && env.saved.at(-1).cta === 'Book a test drive' && env.leadCalls.length === 0, 'Exact typed CTA selection stopped working or bypassed contact-form consent');
+});
 test('A late speech result cannot answer the wait after a slide skip', async () => {
   await setup(); await atProof(); const old = recentRecognizer();
   await click('proof-two', '.pl-progress button');

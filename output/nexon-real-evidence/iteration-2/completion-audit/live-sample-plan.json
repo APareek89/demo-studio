@@ -1,0 +1,63 @@
+{
+  "runtime_commit": "cde49fe",
+  "demo_id": "dm_36d47b86",
+  "bundle_version": 1,
+  "profile": {
+    "why": "I'm comparing this with the Brezza and Venue. I want an automatic and care about what the chosen variant includes."
+  },
+  "muted": true,
+  "questions": [
+    {
+      "id": "L1",
+      "input": "For the petrol Nexon I am considering, give me the documented boot volume and how it was measured."
+    },
+    {
+      "id": "L2",
+      "input": "What can you show me that differs from the selected Venue variant?"
+    },
+    {
+      "id": "L3",
+      "input": "How does this chosen Nexon compare with the selected Brezza for an automatic family car?"
+    },
+    {
+      "id": "L4",
+      "input": "I mainly want help with stop-and-go traffic. How should I assess this selected Nexon automatic?"
+    },
+    {
+      "id": "L5",
+      "input": "Yes, but what is the warranty for this Nexon, and what is still unknown about its limits?"
+    },
+    {
+      "id": "L6",
+      "input": "What is the exact on-road price in Mumbai today, including every charge?"
+    }
+  ],
+  "purpose": "One new final-version sample after LOW thinking, matched comparison scope and reviewed pitch changes. Preserve every failed/slow turn; bank hits are not live model performance.",
+  "followup_hypotheses": [
+    {
+      "observed": "Pitch trace432 exhausts3000-token response then all fallbacks fail",
+      "change": "Explicit LOW on the existing pitch caller; preserve budget and full reviewed proof",
+      "confirmation": "One same-B-intake runtime session after free gates; no Build3"
+    },
+    {
+      "observed": "L2 asks which Venue variant because current plan.notes comparison examples were absent from QA context",
+      "change": "Deliver existing reviewed demo comparison context with explicit customer override and fact-only claim grounding",
+      "confirmation": "One exact L2 question in the same new B runtime session; preserve the failed original and its clarification repair"
+    },
+    {
+      "observed": "L4 model CTA created an unrequested Book Test Drive selection",
+      "change": "Treat generated CTA as optional choice; require explicit user selection",
+      "confirmation": "One exact L4 in the final B session, ordinary confirmation must hold and no selected CTA/lead appears"
+    },
+    {
+      "observed": "L5 asserted warranty or while citing an explicit unknown relationship",
+      "change": "Reject the observed policy contradiction before speech using the existing decline/callback",
+      "confirmation": "One exact L5; supported limits or honest decline, no invalid relation spoken"
+    },
+    {
+      "observed": "Final summary truncated, and a duplicate failure overwrote a successful fallback",
+      "change": "LOW within existing summary envelope plus same-session generation/write coherence",
+      "confirmation": "End the final B session and inspect one current successful saved summary plus all actual traces/costs"
+    }
+  ]
+}

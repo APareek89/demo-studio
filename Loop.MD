@@ -34,7 +34,21 @@ rebuilds the demo.
 
 ## Free evals — run after every change while the loop is on
 
+NX42 concurrency: `evals/summary_race_contract.py`14/14 after6/14 baseline, actual threads+ASGI with fake providers/temporary storage. Identical saved revisions coalesce; providers stay outside record locks; latest unchanged ended input owns result attachment. Changed same-length/resumed input and other sessions stay independent. Summary accounting8/8 remains. Included in deck307/307.
+
+
+NX42 summary caller: `evals/summary_contract.py`11/11 (10/11 before) requires LOW with the unchanged1200-token schema/full record. Fake providers only; actual final summary recovery is independent.
+
+
+- NX40 actual free browser contract:36/36, versus33/36 before. Model CTA is only a suggestion; explicit selection required; contact form owns lead consent. Positive choice, negated mention and unsolicited suggestion covered.
+- NX41 `evals/qa_policy_contract.py`:12/12, fake providers/network blocked, included in deck gate. Actual contradictory policy wording becomes a safe decline before speech; safe limits/attached uncertainty/documented relations remain. Initial3/10 and review11/12 failures are preserved.
+
+
+NX39 comparison context: `MOCK_LLM=1 CLOUD_SYNC=0 PYTHONPATH=. .venv/bin/python evals/generation_contract.py` passes44/44 (39/44 before). Seven cases cover the actual build/runtime input, exact approved comparison notes with full source conditions, explicit buyer-variant precedence, missing/ambiguous clarification, and omission with competition off or script unapproved. Fake responses test context delivery and existing clarification behavior only; they do not establish semantic compliance or replace the live L2 confirmation.
+
 `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/summary_usage_contract.py`: eight NX35 checks use real worker threads and temporary demo stores. They require one attributed usage/trace record per demo, positive cost, failure attribution and restoration of caller context. Provider/network calls are blocked. Included in the deck gate; baseline4/8, fixed8/8. Historical unrecorded charges remain unavailable.
+
+Pitch LOW supplement: `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/pitch_grounding_contract.py` now passes47/47 (46/47 before), asserting explicit LOW, unchanged3000 tokens, PitchPlan schema and reviewed-proof prompt through the actual call. Existing48 provider contracts cover the adapter. Actual personalization recovery is separate.
 
 Continued Nexon completion checks: `node evals/player_focus_contract.cjs` executes the production focus parser (4/12→12/12); `evals/pitch_grounding_contract.py` requires exact approved spoken proof with its complete citation set (initial24/38→38/38; final46/46 with neutral-cue and repetition guards); provider contracts48/48 verify live-QA-only LOW thinking on Gemini3.8Flash, full input, unchanged3000-token envelope/retries and no option on unknown overrides. Generation37/37 includes current-question scope and matched comparison dimensions. These free tests establish wiring and enforcement; the resumed actual sample establishes delivered content and speed.
 (Run with `MOCK_LLM=1` unless the eval says otherwise. Free = no API spend.)

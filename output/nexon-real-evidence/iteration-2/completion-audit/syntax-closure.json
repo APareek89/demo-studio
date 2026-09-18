@@ -1,0 +1,7 @@
+{
+  "python_files": 52,
+  "js_modules": 12,
+  "harness": "pass",
+  "diagram_mirrors": 8,
+  "focus": "Player focus contracts: 12/12 (real function; no UI/network/providers)"
+}
