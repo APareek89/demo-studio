@@ -27,13 +27,13 @@ flowchart TD
   SPEAK["speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)<br/>[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form"]:::term
   LEAD{"customer says call me / gives a number?<br/>[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
-  SAVE["POST /run/lead → leads/*.json<br/>[DATA] read back the number · continue"]:::data
+  SAVE["consent line shown → POST /run/lead → leads/*.json (+ DynamoDB row on AWS)<br/>[DATA] refused without consent · read back the number · continue"]:::data
   CONF["'Did that answer it?' → chips yes / not quite (20 s)<br/>[FUNCTION]"]:::fn
   LP{"lead prompt due?<br/>[FUNCTION]<br/>≥60 percent of demo OR ≥2 customer questions OR unknown answer"}:::dec
   POP["test-drive / dealer-help form<br/>[ask]<br/>name + ten-digit phone; dismissible; demo continues"]:::ask
   RES["resume: 'back to where we were' → the exact interrupted line (S.seg / S.line untouched by a jump — return stack depth 1); the next slide if the question came at a check-in<br/>[FUNCTION · resumeAfterQA]"]:::fn
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet<br/>[FUNCTION · closeFlow]"]:::fn
-  HAND["handoff summary<br/>[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
+  HAND["handoff summary → POST /run/session (Done, Stop and the tab-close sendBeacon, one id per visit)<br/>[FUNCTION · storage.backend(): local files · AWS adds a DynamoDB row + S3 mirror]<br/>then ONE lite call writes the follow-up summary from the TRUE transcript (record facts copied by code) · Studio › Sessions · keyed read-only share link, phones masked"]:::data
 
   START --> PRELOAD --> HERO --> Q1 --> L1 --> P1 --> FILM --> OPEN
   P1 -.->|"starts before film"| PITCH --> PV

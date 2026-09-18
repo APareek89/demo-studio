@@ -280,13 +280,13 @@ flowchart TD
   SPEAK["speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)&lt;br/&gt;[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card&lt;br/&gt;[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form"]:::term
   LEAD{"customer says call me / gives a number?&lt;br/&gt;[FUNCTION · offerCallback, regex [6-9]\\d{9}]"}:::dec
-  SAVE["POST /run/lead → leads/*.json&lt;br/&gt;[DATA] read back the number · continue"]:::data
+  SAVE["consent line shown → POST /run/lead → leads/*.json (+ DynamoDB row on AWS)&lt;br/&gt;[DATA] refused without consent · read back the number · continue"]:::data
   CONF["'Did that answer it?' → chips yes / not quite (20 s)&lt;br/&gt;[FUNCTION]"]:::fn
   LP{"lead prompt due?&lt;br/&gt;[FUNCTION]&lt;br/&gt;≥60 percent of demo OR ≥2 customer questions OR unknown answer"}:::dec
   POP["test-drive / dealer-help form&lt;br/&gt;[ask]&lt;br/&gt;name + ten-digit phone; dismissible; demo continues"]:::ask
   RES["resume: 'back to where we were' → the exact interrupted line (S.seg / S.line untouched by a jump — return stack depth 1); the next slide if the question came at a check-in&lt;br/&gt;[FUNCTION · resumeAfterQA]"]:::fn
   CLOSE["advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet&lt;br/&gt;[FUNCTION · closeFlow]"]:::fn
-  HAND["handoff summary&lt;br/&gt;[FUNCTION · intentScore] → POST /run/session → sessions/s_*.json"]:::data
+  HAND["handoff summary → POST /run/session (Done, Stop and the tab-close sendBeacon, one id per visit)&lt;br/&gt;[FUNCTION · storage.backend(): local files · AWS adds a DynamoDB row + S3 mirror]&lt;br/&gt;then ONE lite call writes the follow-up summary from the TRUE transcript (record facts copied by code) · Studio › Sessions · keyed read-only share link, phones masked"]:::data
 
   START --&gt; PRELOAD --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; FILM --&gt; OPEN
   P1 -.-&gt;|"starts before film"| PITCH --&gt; PV

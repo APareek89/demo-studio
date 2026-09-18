@@ -277,6 +277,48 @@ check("player: a covered slide plays its title + first line, no check-in", "shor
 check("player: the pitch route is applied by slide id, segment id as fallback", "r.slide_id && lib.find" in pj)
 check("player: a decline stays on the current slide (no transient answer slide)", "transientSlide(`ans-" not in pj)
 
+# ---- Phase 7 (local side): storage interface, session summary, consent, share link ----
+from server import storage as _storage
+from server.agents import summary as _summary_agent
+_storage.reset(); be = _storage.backend()
+check("storage backend defaults to local files", be.name == "local" and be.status()["backend"] == "local" and config.STORAGE_BACKEND == "local")
+_orig = config.STORAGE_BACKEND; config.STORAGE_BACKEND = "aws"; _storage.reset()
+check("STORAGE_BACKEND=aws without credentials (mock) falls back to local and says why", _storage.backend().name == "local" and "aws requested" in _storage.backend().status()["fallback_reason"])
+config.STORAGE_BACKEND = _orig; _storage.reset()
+check("the AWS backend is the local backend plus rows, mirror and signed media (one interface)", issubclass(_storage.Aws, _storage.Local) and all(hasattr(_storage.Aws, m) for m in ("put_session", "get_session", "list_sessions", "put_lead", "media_url", "ensure_table")))
+rec = {"id": "s_p7", "ended": True, "profile": {"name": "Asha"}, "questions": ["what is the range"], "escalations": ["could not answer: colours"], "leads": [{"phone": "9876543210", "question": "test drive"}], "cta": "summary", "intent": 40, "minutes": 3.2,
+       "slides_visited": [{"slide_id": dk["slides"][1]["id"], "kind": "proof", "seconds": 4.5}, {"slide_id": dk["slides"][1]["id"], "kind": "proof", "seconds": 1.5}],
+       "transcript": [{"role": "agent", "text": "hello there"}, {"role": "user", "text": "what is the range"}, {"role": "agent", "text": "I don't know from", "interrupted": True}]}
+r = c.post(f"/api/demos/{i}/run/session", json=rec).json()
+check("/run/session keeps the player's id and returns a share key", r["id"] == "s_p7" and len(r["share_key"]) == 20)
+sess = None
+for _ in range(60):
+    sess = c.get(f"/api/demos/{i}/sessions/s_p7").json()
+    if sess.get("summary"):
+        break
+    time.sleep(0.1)
+sm = sess.get("summary") or {}
+check("an ended session gets its summary in the background (mock: no model call)", bool(sm) and sm.get("model") == "mock" and "error" not in sm)
+check("the record's own facts are copied by code, not the model: name, questions, slides with seconds, CTA, leads", sm.get("customer_name") == "Asha" and sm.get("questions_asked") == ["what is the range"] and sm.get("slides_visited") == [{"slide_id": dk["slides"][1]["id"], "title": dk["slides"][1]["title"], "seconds": 6.0}] and sm.get("cta_result") == "summary" and sm.get("leads") == [{"phone": "9876543210", "question": "test drive"}])
+check("the summary carries the model's fields (context, cared_about, objections, unanswered, opening line)", all(k in sm for k in ("context", "cared_about", "objections", "unanswered", "opening_line")))
+g1 = sm.get("generated_at"); c.post(f"/api/demos/{i}/run/session", json=rec); time.sleep(0.3)
+check("saving again with nothing new heard keeps the summary (no second call)", c.get(f"/api/demos/{i}/sessions/s_p7").json()["summary"].get("generated_at") == g1)
+lst = c.get(f"/api/demos/{i}/sessions").json()
+check("GET /sessions lists the session with its state and storage backend, without transcripts", any(x["id"] == "s_p7" and x["ended"] and x["summary"] for x in lst["sessions"]) and lst["storage"]["backend"] == "local" and all("transcript" not in x for x in lst["sessions"]))
+sh = c.get(f"/api/share/{i}/s_p7", params={"k": r["share_key"]})
+check("the share link shows the summary with phones masked and no transcript", sh.status_code == 200 and sh.json()["leads"][0]["phone"].endswith("3210") and "•" in sh.json()["leads"][0]["phone"] and "transcript" not in sh.json())
+check("a wrong share key is refused", c.get(f"/api/share/{i}/s_p7", params={"k": "x" * 20}).status_code == 403 and c.get(f"/api/share/{i}/s_p7").status_code == 403)
+check("a lead without consent is refused", c.post(f"/api/demos/{i}/run/lead", json={"phone": "9876543210", "question": "x"}).status_code == 400)
+ld = c.post(f"/api/demos/{i}/run/lead", json={"phone": "9876543210", "question": "x", "consent": True, "consent_text": "By sharing your number…", "session_id": "s_p7"}).json()
+check("a lead records the consent line it was shown", ld["ok"] and ld["lead"]["consent"] is True and ld["lead"]["consent_text"].startswith("By sharing"))
+check("leads and sessions on the demo record come through the storage interface", len(c.get(f"/api/demos/{i}").json().get("leads", [])) >= 1 and any(x["id"] == "s_p7" for x in c.get(f"/api/demos/{i}").json().get("sessions", [])))
+pj = c.get("/web/player/player.js").text; aj = c.get("/web/app.js").text
+check("player: one line of consent is shown before a number is saved, and sent with the lead", "By sharing your number you agree" in pj and "consent: true, consent_text: CONSENT" in pj)
+check("player: one session id per visit; Done, Stop and the tab-close beacon update the same record", "sessionId: newSessionId()" in pj and 'window.addEventListener("pagehide", onHide)' in pj and "navigator.sendBeacon(" in aj)
+check("Studio has a Sessions page and a read-only share route", 'key: "sessions"' in aj and 'parts[0] === "share"' in aj and "renderShare" in c.get("/web/studio/sessions.js").text)
+check("local media is still served by the app (no redirect without a signed URL)", c.get(f"/media/{i}/does-not-exist.png").status_code == 404 and _storage.backend().media_url(i, "x.png") is None)
+check("the instance-role policy names only the bucket and the three tables, no IAM", (lambda pol: all(a.split(":")[0] in ("sts", "s3", "dynamodb") for s in pol["Statement"] for a in s["Action"]))(json.load(open("docs/aws/instance-role-policy.json"))))
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)

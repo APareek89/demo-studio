@@ -4,7 +4,7 @@
 
 ## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
 Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched. Phases: 1 simplify ✅ · 2 sources + image parts ✅ · 3 deck ✅ ·
-4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing ✅ · 7 AWS storage + session summary · 8 measure.
+4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing ✅ · 7 AWS storage + session summary (local side ✅ · AWS side waits on you) · 8 measure.
 - **Phase 1 done (committed):** 3D/Runware path removed (7 files deleted, 23 edited, net ≈ −900 lines); player stage = `video` | `slide`;
   `qa._local_grounded_answer` + the 10-minute cooldown deleted — every provider down → decline + callback; `server/llm/runtime.py`
   tries `RUNTIME_PROVIDERS` (default `gemini,claude`) with `RUNTIME_TIMEOUT` 15 s and one retry; `CLAUDE_RUNTIME_MODEL` /
@@ -58,6 +58,26 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   server with seeded FAQ entries: jump from sl03 line 2 → sl04 lit → answer → return to exactly that line; sl04 later plays
   one line, no check-in; same-slide question keeps the slide; session shows `covered` / `jumps`. Also fixed: a slide switch
   waited for an animation frame, which a hidden tab never gets — it now forces a reflow.
+- **Phase 7, local side done (committed):** `server/storage.py` — one interface (`put/get/list_session`, `put/list_lead`,
+  `media_url`, `after_write`) with `Local` (default) and `Aws(Local)` (adds one DynamoDB row per session / lead in
+  `demo-studio-sessions` — PK `demo_id`, SK `session#<id>` | `lead#<id>`, TTL `expires_at` = 180 days — the S3 mirror from
+  `cloud.py`, and a 302 to a 15-minute pre-signed URL for mirrored media). `STORAGE_BACKEND=aws` without credentials falls
+  back to local and says why in `/api/demos/{id}/sessions` → `storage`. `server/agents/summary.py`: one lite call on the
+  runtime providers (Gemini first) after a session ends, from the TRUE transcript; the record's own facts are copied by
+  code, the model writes context / cared about / objections / unanswered / opening line; mock never calls out. Player:
+  one session id per visit (Done, Stop and a `pagehide` `sendBeacon` all update the same record), one consent line on the
+  lead form sent with the lead (server refuses a lead without it). Studio › **Sessions** (list, detail with transcript,
+  copy share link) and `#/share/<demo>/<sid>/<key>` — a keyed read-only page (HMAC of demo+sid, secret in
+  `data/.share-secret` or `SHARE_SECRET`) showing the summary with phones masked, never the transcript. Browser-verified
+  on the mock server (Sessions list + detail + share link, the share page, a bad key, the consent line). Gates: deck
+  121/121 · accept 24/24 · smoke OK.
+- 🧑 **Phase 7, AWS side — needs two things from you** (inventory 2026-09-18: bucket `demo-studio-511833557379` with the
+  earlier mirror, tables `demo-studio-demos` + `demo-studio-events`, instance `i-0410e37b7ab0297e1` with **no** role):
+  (1) say **go on the table** → the agent creates `demo-studio-sessions` from this Mac (allowed for `demo-studio-*`);
+  (2) create the instance role in the console: IAM → Roles → Create role → AWS service → EC2 → attach a policy pasted from
+  `docs/aws/instance-role-policy.json` → name `demo-studio-instance` → EC2 → the instance → Actions → Security → Modify IAM
+  role. Then on the box: `STORAGE_BACKEND=aws` and `CLOUD_SYNC=1` in the service env, restart, and check
+  `/api/demos/{id}/sessions` → `storage.backend == "aws"`.
 - 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
   `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
   (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.

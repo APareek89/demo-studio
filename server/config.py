@@ -42,6 +42,11 @@ RUNTIME_PROVIDERS = [p.strip() for p in os.getenv("RUNTIME_PROVIDERS", "gemini,c
 RUNTIME_TIMEOUT = float(os.getenv("RUNTIME_TIMEOUT", "15"))
 CLAUDE_RUNTIME_MODEL = os.getenv("CLAUDE_RUNTIME_MODEL", "").strip() or CLAUDE_MODEL
 GEMINI_RUNTIME_MODEL = os.getenv("GEMINI_RUNTIME_MODEL", "").strip() or os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip()
+STORAGE_BACKEND = (os.getenv("STORAGE_BACKEND", "local").strip().lower() or "local")  # local | aws — aws falls back to local without credentials
+DDB_TABLE_SESSIONS = os.getenv("DDB_TABLE_SESSIONS", "demo-studio-sessions").strip() or "demo-studio-sessions"
+SESSION_TTL_DAYS = int(os.getenv("SESSION_TTL_DAYS", "180") or 180)  # customer data does not live forever
+MEDIA_SIGNED_URL_SECONDS = int(os.getenv("MEDIA_SIGNED_URL_SECONDS", "900") or 900)
+SHARE_SECRET = os.getenv("SHARE_SECRET", "").strip()  # empty → a random secret generated once into data/.share-secret
 GEMINI_IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image").strip() or "gemini-3.1-flash-lite-image"  # background clean-up + mascot
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip() or "gemini-3.6-flash"  # the proven vision tier (video shots + image tags); lite was the MVP downgrade
 GEMINI_TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview").strip() or "gemini-3.1-flash-tts-preview"
@@ -60,6 +65,7 @@ def health() -> dict:
         "anthropic": bool(ANTHROPIC_API_KEY),
         "gemini": bool(GEMINI_API_KEY),
         "gcloud_tts": bool(GCLOUD_TTS_API_KEY),
+        "storage": STORAGE_BACKEND,
         "sarvam": bool(SARVAM_API_KEY),
         "tts_provider": TTS_PROVIDER,
         "stt_provider": STT_PROVIDER,

@@ -2,17 +2,21 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import hmac
 import json
+import secrets
+import threading
 import re
 import time
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import cloud, config, events, graph, orchestrator, schemas, store, usage, runlog
-from .agents import align, author, deck, faq, pitch, qa, rehearsal, visuals, voice
+from . import cloud, config, events, graph, orchestrator, runlog, schemas, storage, store, usage
+from .agents import align, author, deck, faq, pitch, qa, rehearsal, summary as _summary, visuals, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -44,6 +48,9 @@ def media(demo_id: str, rel: str):
         cloud.fetch_file(demo_id, rel)
     if not p.exists() or not p.is_file():
         raise HTTPException(404)
+    signed = storage.backend().media_url(demo_id, rel)
+    if signed:
+        return RedirectResponse(signed, status_code=302)
     return FileResponse(p)
 
 
@@ -783,22 +790,17 @@ async def run_lead(demo_id: str, req: Request):
     phone = qa.parse_phone(body.get("phone") or body.get("text") or "")
     if not phone:
         raise HTTPException(400, "no valid Indian mobile number found")
+    if not body.get("consent"):
+        raise HTTPException(400, "consent required: the form shows one line of consent before a number is saved")
     lead = qa.save_lead(demo_id, phone, (body.get("question") or "").strip(), body.get("profile") or None, body.get("session_id"))
-    cloud.put_event(demo_id, "lead", {"phone": lead.get("phone"), "question": lead.get("question"), "profile": lead.get("profile")})
-    cloud.sync_demo_async(demo_id)
+    lead["consent"], lead["consent_text"] = True, str(body.get("consent_text") or "")[:300]
+    storage.backend().put_lead(demo_id, lead)
+    storage.backend().after_write(demo_id)
     return {"ok": True, "lead": lead}
 
 
 def _leads(demo_id: str) -> list[dict]:
-    out = []
-    d = store.path(demo_id, "leads")
-    if d.exists():
-        for p in sorted(d.glob("*.json"), reverse=True)[:50]:
-            try:
-                out.append(json.loads(p.read_text()))
-            except Exception:
-                pass
-    return out
+    return storage.backend().list_leads(demo_id)
 
 
 @app.get("/api/voices")
@@ -856,38 +858,89 @@ async def run_tts(demo_id: str, req: Request):
 
 @app.post("/api/demos/{demo_id}/run/session")
 async def save_session(demo_id: str, req: Request):
+    """Called on Done / Stop and by the tab-close beacon — all with the same id, so one record per visit. The summary is
+    written in the background once the session has ended, and kept when nothing new was heard since."""
     _demo_or_404(demo_id)
     body = await req.json()
-    sid = body.get("id") or f"s_{int(time.time())}"
+    sid = re.sub(r"[^A-Za-z0-9_-]", "", str(body.get("id") or "")) or f"s_{int(time.time())}"
     body["id"] = sid
     body["saved_at"] = time.time()
-    store.write_json(demo_id, f"sessions/{sid}.json", body)
-    cloud.put_event(demo_id, "session", {"session_id": sid, "profile": body.get("profile"), "cta": body.get("cta"), "intent": body.get("intent"), "questions": body.get("questions", []), "personalized": body.get("personalized"), "escalations": body.get("escalations", [])})
-    cloud.sync_demo_async(demo_id)
-    return {"ok": True, "id": sid}
+    be = storage.backend()
+    prev = be.get_session(demo_id, sid) or {}
+    if prev.get("summary") and prev["summary"].get("transcript_lines") == len(body.get("transcript", [])):
+        body["summary"] = prev["summary"]
+    be.put_session(demo_id, body)
+    be.after_write(demo_id)
+    if body.get("ended") and not body.get("summary"):
+        threading.Thread(target=_summarize_session, args=(demo_id, sid), daemon=True, name=f"summary-{sid}").start()
+    return {"ok": True, "id": sid, "share_key": _share_key(demo_id, sid)}
+
+
+def _summarize_session(demo_id: str, sid: str) -> None:
+    """After the customer is gone: one lite call, stored on the session (file + row). Errors are logged, never raised."""
+    be = storage.backend()
+    s = be.get_session(demo_id, sid)
+    if not s:
+        return
+    try:
+        s["summary"] = _summary.summarize(demo_id, s)
+    except Exception as e:  # noqa: BLE001
+        s["summary"] = {"error": str(e)[:200], "generated_at": time.time(), "transcript_lines": len(s.get("transcript", []))}
+        store.log(demo_id, "summary-error", {"session": sid, "error": str(e)[:200]})
+    be.put_session(demo_id, s)
+    be.after_write(demo_id)
+
+
+def _share_secret() -> bytes:
+    if config.SHARE_SECRET:
+        return config.SHARE_SECRET.encode()
+    p = config.DATA_DIR.parent / ".share-secret"
+    if not p.exists():
+        p.write_text(secrets.token_hex(32))
+    return p.read_text().strip().encode()
+
+
+def _share_key(demo_id: str, sid: str) -> str:
+    return hmac.new(_share_secret(), f"{demo_id}/{sid}".encode(), hashlib.sha256).hexdigest()[:20]
+
+
+def _public_view(s: dict) -> dict:
+    """What a share link shows: the summary and the questions — phone numbers masked to their last four digits."""
+    mask = lambda ph: ("•••••• " + str(ph)[-4:]) if ph else ""  # noqa: E731
+    sm = dict(s.get("summary") or {})
+    sm["leads"] = [{**l, "phone": mask(l.get("phone"))} for l in sm.get("leads", [])]
+    return {"id": s.get("id"), "saved_at": s.get("saved_at"), "minutes": s.get("minutes"), "profile": {"name": (s.get("profile") or {}).get("name", "")}, "cta": s.get("cta"), "intent": s.get("intent"),
+            "questions": s.get("questions", []), "escalations": s.get("escalations", []), "summary": sm, "leads": [{"phone": mask(l.get("phone")), "question": l.get("question")} for l in s.get("leads", [])]}
 
 
 def _sessions(demo_id: str) -> list[dict]:
-    out = []
-    d = store.path(demo_id, "sessions")
-    if d.exists():
-        for p in sorted(d.glob("*.json"), reverse=True)[:20]:
-            try:
-                s = json.loads(p.read_text())
-                out.append({"id": s.get("id"), "saved_at": s.get("saved_at"), "profile": s.get("profile"), "cta": s.get("cta"),
-                            "questions": len(s.get("questions", [])), "intent": s.get("intent"), "drop_point": s.get("drop_point"), "escalations": s.get("escalations", [])})
-            except Exception:
-                pass
-    return out
+    return storage.backend().list_sessions(demo_id, 20)
+
+
+@app.get("/api/demos/{demo_id}/sessions")
+def list_sessions(demo_id: str):
+    _demo_or_404(demo_id)
+    return {"sessions": storage.backend().list_sessions(demo_id), "storage": storage.backend().status()}
 
 
 @app.get("/api/demos/{demo_id}/sessions/{sid}")
 def get_session(demo_id: str, sid: str):
     _demo_or_404(demo_id)
-    s = store.read_json(demo_id, f"sessions/{sid}.json")
+    s = storage.backend().get_session(demo_id, sid)
     if not s:
         raise HTTPException(404)
-    return s
+    return {**s, "share_key": _share_key(demo_id, sid)}
+
+
+@app.get("/api/share/{demo_id}/{sid}")
+def share_session(demo_id: str, sid: str, k: str = ""):
+    """Read-only view for a link holder: the summary, never the full transcript or a full phone number."""
+    if not store.exists(demo_id) or not k or not hmac.compare_digest(k, _share_key(demo_id, sid)):
+        raise HTTPException(403, "this link is not valid")
+    s = storage.backend().get_session(demo_id, sid)
+    if not s:
+        raise HTTPException(404)
+    return _public_view(s)
 
 
 @app.post("/api/demos/{demo_id}/feedback")

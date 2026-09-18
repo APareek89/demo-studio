@@ -4,6 +4,7 @@ import { renderDemos } from "/web/demos.js";
 import { renderSources } from "/web/studio/sources.js";
 import { renderAlign } from "/web/studio/align.js?v=3e0";
 import { renderRehearse } from "/web/studio/rehearse.js";
+import { renderSessions, renderShare } from "/web/studio/sessions.js";
 import { renderPlayground } from "/web/playground.js";
 import { renderObservability } from "/web/observability.js";
 import { mountPlayer } from "/web/player/player.js";
@@ -26,6 +27,7 @@ const STEPS = [
   { key: "sources", n: "1", label: "Sources", sub: "upload, then configure" },
   { key: "align", n: "2", label: "Align", sub: "approve what the agent found" },
   { key: "rehearse", n: "3", label: "Rehearse", sub: "run it, give feedback" },
+  { key: "sessions", n: "•", label: "Sessions", sub: "who watched, what they asked" },
 ];
 
 function stepState(demo, key) {
@@ -33,6 +35,7 @@ function stepState(demo, key) {
   if (key === "sources") return { done: st !== "sources", locked: false };
   if (key === "align") return { done: st === "ready", locked: st === "sources" };
   if (key === "rehearse") return { done: false, locked: !["ready", "building"].includes(st) && !demo.__bundle };
+  if (key === "sessions") return { done: false, locked: false };
   return {};
 }
 
@@ -64,11 +67,13 @@ async function renderStudio(demoId, stage) {
   if (stage === "sources") renderSources(ctx);
   else if (stage === "align") renderAlign(ctx);
   else if (stage === "rehearse") renderRehearse(ctx);
+  else if (stage === "sessions") renderSessions(ctx);
 }
 
 async function route() {
   const parts = (location.hash || "#/demos").slice(2).split("/");
   if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2]); }
+  if (parts[0] === "share" && parts[1] && parts[2]) { setTab(""); if (current.unsub) { current.unsub(); current.unsub = null; } return renderShare({ main, demoId: parts[1], sid: parts[2], key: parts[3] || "" }); }
   if (parts[0] === "play" && parts[1]) {
     setTab("");
     if (current.unsub) { current.unsub(); current.unsub = null; }
@@ -98,6 +103,7 @@ async function renderPlay(demoId) {
     lead: (body) => api.post(`/api/demos/${demoId}/run/lead`, body),
     stt: (blob, lang) => { const fd = new FormData(); fd.append("file", blob, "speech.wav"); fd.append("language", lang || "en-IN"); return api.form(`/api/demos/${demoId}/run/stt`, fd).then((r) => r.transcript || ""); },
     saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s).catch(() => {}),
+    beacon: (s) => navigator.sendBeacon(`/api/demos/${demoId}/run/session`, new Blob([JSON.stringify(s)], { type: "application/json" })),
     downloadUrl: `/api/demos/${demoId}/export.mp4`,
     onClose: () => { try { playInstance.destroy(); } catch (e) {} playInstance = null; navigate("#/demos"); },
   });

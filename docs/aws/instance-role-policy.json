@@ -1,0 +1,11 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    { "Sid": "WhoAmI", "Effect": "Allow", "Action": ["sts:GetCallerIdentity"], "Resource": "*" },
+    { "Sid": "DemoFilesBucket", "Effect": "Allow", "Action": ["s3:ListBucket", "s3:GetBucketLocation"], "Resource": "arn:aws:s3:::demo-studio-511833557379" },
+    { "Sid": "DemoFilesObjects", "Effect": "Allow", "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"], "Resource": "arn:aws:s3:::demo-studio-511833557379/*" },
+    { "Sid": "DemoTables", "Effect": "Allow",
+      "Action": ["dynamodb:DescribeTable", "dynamodb:DescribeTimeToLive", "dynamodb:ListTables", "dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:Query", "dynamodb:Scan"],
+      "Resource": ["arn:aws:dynamodb:ap-south-1:511833557379:table/demo-studio-demos", "arn:aws:dynamodb:ap-south-1:511833557379:table/demo-studio-events", "arn:aws:dynamodb:ap-south-1:511833557379:table/demo-studio-sessions"] }
+  ]
+}

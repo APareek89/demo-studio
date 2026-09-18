@@ -51,8 +51,8 @@ qa = r.json(); assert qa["answered"] is False and qa["fact_ids"] == [], qa; prin
 und = store.read_json(i, "understanding.json"); assert any(u["origin"] == "runtime" for u in und["unknowns"]), "runtime unknown not recorded"
 r = c.post(f"/api/demos/{i}/run/pitch", json={"profile": {"name": "Anand", "why": "replace my Activa for a 25 km commute", "focus": []}, "refine": False}); assert r.status_code == 200, r.text
 pp = r.json(); assert pp["route"] and all(s["segment_id"] for s in pp["route"]), pp; print("pitch route", [s["segment_id"] for s in pp["route"]], "state", pp["customer_state"])
-r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "my number is 98765 43210", "question": "kerb weight", "profile": {"name": "Anand"}}); assert r.status_code == 200 and r.json()["lead"]["phone"] == "9876543210", r.text; print("lead saved")
-r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "call me on 12345", "question": "x"}); assert r.status_code == 400, "bad phone accepted"
+r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "my number is 98765 43210", "question": "kerb weight", "profile": {"name": "Anand"}, "consent": True, "consent_text": "By sharing your number you agree the dealership may call you about this product."}); assert r.status_code == 200 and r.json()["lead"]["phone"] == "9876543210", r.text; print("lead saved")
+r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "call me on 12345", "question": "x", "consent": True, "consent_text": "By sharing your number you agree the dealership may call you about this product."}); assert r.status_code == 400, "bad phone accepted"
 assert c.get(f"/api/demos/{i}").json()["leads"], "lead not listed"
 import struct
 wav = b"RIFF" + struct.pack("<I", 36 + 4000) + b"WAVEfmt " + struct.pack("<IHHIIHH", 16, 1, 1, 16000, 32000, 2, 16) + b"data" + struct.pack("<I", 4000) + b"\x00" * 4000
