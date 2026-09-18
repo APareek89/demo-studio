@@ -1,0 +1,28 @@
+PASS voice lock: the chosen cache remains usable during a transient breaker
+PASS voice lock: missing selected key does not select a configured fallback or hide cached Priya
+PASS voice lock: foreign-language cache cannot satisfy the chosen identity
+PASS voice lock: bank rate failure is explicit and never falls through to Gemini or Cloud
+PASS voice lock: main, checkin, deeper, closing and intake reuse only matching Priya cache
+PASS voice lock: mixed FAQ/filler references are replaced or cleared and successes checkpointed
+PASS voice lock: rebuild after cooldown requests only the missing selected-speaker clips
+PASS voice lock: recovered bank and fillers contain only matching cache paths
+PASS voice lock: a complete repeat build performs no synthesis
+PASS voice lock: missing main narration fails before bundle while later cached clips survive stop
+PASS voice lock: Gemini policy refusal is explicit, called once and never sent to another provider
+PASS voice lock: the observed sensitive-words refusal cannot bypass policy through an unlocked fallback
+PASS voice lock: runtime strict still pins the primary provider on failure
+PASS voice lock: locked Cloud voice keeps cache identity without any HTTP in mock mode
+PASS sarvam pacing: consecutive calls share conservative request spacing
+PASS sarvam pacing: 429 honors numeric Retry-After with identical text and speaker
+PASS sarvam pacing: 429 honors an HTTP-date Retry-After
+PASS sarvam pacing: malformed Retry-After uses bounded backoff
+PASS sarvam pacing: persistent429 stops after three attempts with an explicit shared cooldown
+PASS sarvam pacing: a long Retry-After is retained without waiting or retrying early
+PASS sarvam pacing: HTTP400 is not treated as a429 retry
+PASS sarvam pacing: HTTP401 is not treated as a429 retry
+PASS sarvam pacing: HTTP402 is not treated as a429 retry
+PASS sarvam pacing: HTTP403 is not treated as a429 retry
+PASS sarvam pacing: HTTP500 is not treated as a429 retry
+PASS sarvam pacing: HTTP503 is not treated as a429 retry
+PASS voice lock: all contracts avoid outbound requests
+Voice lock contracts: 27/27

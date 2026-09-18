@@ -18,8 +18,8 @@ flowchart TD
   DLAY["label layout<br/>[FUNCTION · deck.place_callouts]<br/>part confidence ≥ 0.6 → anchor = box centre, label at the first of 8 spots that is inside the frame, off the part box and clear of other labels; otherwise → side panel. Never a guessed position"]:::fn
   DOVR["deck-overrides.json (from Align)<br/>[DATA] user-chosen picture / title / text / dragged label wins"]:::data
   DJ["deck.json<br/>[DATA] slides · version++ · method model|derived"]:::data
-  PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>sarvam → gemini → gcloud → browser (no key)"}:::dec
-  TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>VOICE_WORKERS=4 parallel (contextvars copied per task) · stop after 4 failures · circuit breaker: 401/402/403/quota trips a provider for 10 min → next in chain · failures traced"]:::data
+  PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>locked: configured provider only<br/>unlocked: sarvam → gemini → gcloud → browser (no key)"}:::dec
+  TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>VOICE_WORKERS=3 · cache checked before circuit<br/>locked: matching provider/speaker clips only; no alternate voice<br/>Sarvam starts paced at 2.1s; 429-only retry ≤3 attempts, bounded wait, Retry-After honored<br/>partial audio checkpointed; any missing required narration/FAQ/filler stops Build<br/>policy refusal is not retried or routed around"]:::data
   BROWSER["voice_provider=browser<br/>[term] player speaks with Web Speech"]:::term
   LANGS{"settings.languages<br/>has extra languages?"}:::dec
   TRANS["translate script per extra language<br/>[AGENT · Claude text tier · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent

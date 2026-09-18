@@ -2,22 +2,75 @@
 Codex/2026-09-03/wh/outputs/evidence_based_sales_pitch_demo_playbook.json).
 These are injected into the plan, author, pitch and Q&A prompts, and drive the demo scorecard."""
 
+import json
+
+TRUTH_RULES = """EVIDENCE CLASSIFICATION AND SCOPE
+- Default manufacturer-stated specifications and features to stated. An official source, high confidence, or a named
+  measurement method (including ISO/VDA) does not by itself make a specification certified. Use certified only when
+  the source explicitly reports a certification or a named test/rating result; retain its test basis and scope.
+  Attribute a manufacturer's reported result to that source; do not imply you independently verified it.
+- Use modeled only for a source's estimate with its assumptions, observed for a reported measurement in use,
+  contractual for written terms, and stated for other source statements. Marketing language remains a claim,
+  never a measured result. Classification describes the evidence, not your confidence in the product.
+- Preserve exact quantities, units, currency, test basis, and all stated applicability: model generation, trim,
+  engine, fuel or operating mode, transmission, market, date and offer restrictions. Keep different engines and
+  fuels as separate facts. Never add a loading state, water capability, service hours or policy coverage by inference.
+- A short exact quote must support the claim. Include the relevant table heading or footnote in the locator and
+  conditions. Omit a table fact when its column/variant association is ambiguous; do not reconstruct missing cells.
+  Keep source disagreements separate with their conditions, rather than silently choosing or merging them."""
+
+EVIDENCE_RULES = """FROM EVIDENCE TO A USEFUL ANSWER
+- A valid fact id licenses only what its claim, value and conditions establish. Plans, product summaries, prior
+  scripts and visual descriptions are context, not additional evidence. Check the source quote and locator when
+  supplied; missing evidence stays missing even if a plausible benefit would sound persuasive.
+- Explain relevance as a choice or a fit-check when the source provides a feature/specification rather than a
+  demonstrated outcome. Ground clearance is not wading capability or a promise of no underbody damage. Boot volume
+  is not proof that particular luggage fits. Equal peak torque is not proof of equal pickup. Pictures do not prove
+  unreported performance, safety or durability. Do not promise safe passage through flooded roads from dimensions.
+- Keep trim, fuel, engine, transmission and test qualifiers attached to the claim. Do not transfer a feature across
+  variants or treat separate engines as operating modes of one engine. Do not compute a delta, percentage, conversion
+  or saving unless an approved fact states it; report the separate labelled source figures when useful.
+- Never drop a quantity's unit, currency or basis when simplifying speech. In a direct technical answer, say the
+  value with its unit and a short gloss; keep PS as PS, not horsepower. If detail is unnecessary for the main tour,
+  move the whole quantity to deeper detail or omit it, rather than speaking a unitless number.
+- An introductory finance amount must carry its stated period, later-payment change, eligibility and lender
+  conditions in the same answer or spoken batch. Do not round an exact offer into an enduring monthly cost. If the
+  terms cannot fit naturally, leave the offer out of the overview and explain it when asked. Prices retain their
+  stated basis and variant scope; a starting price is not the selected variant's price.
+- Be warm and direct. Ordinary supported features need no ritual disclaimer or certification label. Briefly name
+  the evidence basis when it changes the decision. Place unresolved points in the relevant answer or ownership
+  segment, not every slide. Use written policy for coverage, the lender for finance and test data for tested figures;
+  an in-person check or test drive can establish the buyer's fit or feel, not missing policy or certified figures."""
+
+
+def fact_context(fact: dict) -> str:
+    """Carry the approved row's evidence into generation without inventing missing provenance."""
+    source = fact.get("source") or {}
+    row = f"{fact['id']} [{fact['kind']}·{fact.get('truth', 'stated')}] {fact['claim']}: {fact['value']}"
+    if fact.get("conditions"):
+        row += f" (conditions: {fact['conditions']})"
+    return (row + f" (source: {source.get('ref') or 'not supplied'}; "
+            f"locator: {source.get('locator') or 'not supplied'}; "
+            f"quote: {json.dumps(source.get('quote', ''), ensure_ascii=False)})")
+
+
 PRINCIPLES = """GUIDING PRINCIPLES — few and broad; they apply at every step, they are not a sequence:
 G1 SPEAK LIKE A PERSON. Contractions, short sentences, everyday words, one question at a time, never two stacked. Warm, not salesy.
-G2 NO CITATION, NO CLAIM. Only the fact registry supports product claims; every figure cites its fact ids. Where the registry is silent, say so
-   plainly and route it to the next step ("that's not in this brochure — it's exactly what the test drive settles"). Never invent.
+G2 NO CITATION, NO CLAIM. Only the fact registry supports product claims; every figure cites its fact ids. A citation is
+   not proof of an added benefit. Where the registry is silent, say so and name the source or action that can resolve it.
 G3 EXPLAIN WHAT THE PROOF MEANS in everyday use, without inventing a result the source does not establish. A customer's distance,
    budget, location and routine come only from their actual words. A target persona, a previous script and any prompt examples
    are not evidence about this person. Without their context, describe a possible use conditionally; never claim it is theirs.
-G4 KEEP TRUTH KINDS SEPARATE and named: certified (with its test condition), estimate (with assumptions), observed, marketing copy
-   (name it as such), and the written terms. Never present marketing copy as a measurement.
+G4 KEEP TRUTH KINDS SEPARATE: stated specifications, certified results (with their test basis), modeled estimates
+   (with assumptions), observed results and written terms. Marketing copy is a claim, not a measurement. Name the
+   basis where it matters; an ordinary specification does not need a ritual label and must not become "certified".
 G5 SHOW WHAT YOU SAY. Every line names the picture that literally shows it; the picture changes when the subject changes.
 G6 ADAPT, DON'T INTERROGATE. Ask for context once, make declining easy, then mirror the customer's own words and let their answers
    at each pause choose the depth. Follow-ups respond to what was just said.
 G7 END WITH THE NEXT SENSIBLE ACTION — the one that resolves the biggest remaining uncertainty, with a concrete owner and step.
    Never "let me know what you think".
 REJECTED: opening with a decision frame or spec inventory before any greeting; feature-by-feature tours; questionnaire discovery;
-answering a stated want with a headline spec; a hard close."""
+answering a stated want with a headline spec; a hard close.""" + "\n\n" + EVIDENCE_RULES
 
 CUSTOMER_STATES = """CUSTOMER STATES (route by the strongest signal in what they said):
 - unknown: nothing specific stated. Stance: transparent. Give a balanced short route and let the buyer steer at a relevant checkin. Do not repeat intake, pretend to personalise or interrogate.
@@ -33,12 +86,12 @@ SCORECARD = [
     ("Interaction", "One relevant checkin at a time, after a natural batch of at most twenty seconds?"),
     ("Concrete language", "Reuses the buyer's route, numbers, situation and money assumptions?"),
     ("Visible contrast", "Current state versus desired state shown?"),
-    ("Truth split", "Certified, modeled, observed and contractual claims kept separate and named?"),
+    ("Truth split", "Stated, certified, modeled, observed and contractual claims kept distinct, with relevant basis?"),
     ("Risk reduction", "Dependencies, terms, service and unresolved questions addressed in proportion to relevance?"),
     ("Advance", "A specific next action, owner, trigger and success condition?"),
 ]
 
-PROOF_BLOCK = "Proof block pattern: SAY the outcome being tested → SHOW one observable result (a visual) → TRANSLATE what it means for this customer → CONFIRM with a question that tests relevance or uncovers the next constraint."
+PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated → CONFIRM with one question about relevance or the next constraint."
 
 LANGUAGES = {
     "en-IN": "Indian English", "hinglish": "Hinglish — natural Hindi-English mix as spoken in Indian cities; write Hindi words in Devanagari and keep product names, numbers, units and technical terms in English",
@@ -60,18 +113,18 @@ do not pad a shorter useful thought. Real questions belong in `checkin`, never h
 STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
   The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
-STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: who the product is for, the primary experience it creates,
-  the performance promise. NO specification list, no decision frame — the customer hasn't told you anything yet.
+STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: who the product is for and the experience or choice the
+  evidence lets them explore. NO invented performance promise, specification list or decision frame.
 STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs — one experience, one performance, one
   confidence/ownership. "The three things I'd pay attention to are…" Say they can steer the tour; do not ask another question.
 STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: explore in the order a person naturally meets the product — what they
   first see or touch → what they live with daily (comfort) → practicality → the core performance moment → what builds trust
-  (safety/reliability). Each segment: NOTICE one thing → SHOW it (the picture) → MEANING for this customer → CHECK with one
+  (safety/reliability). Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check → CHECK with one
   short question in `checkin`, separate from the spoken lines. The runtime reorders these per buyer; each must stand alone.
 STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive, ends by
   inviting questions in `checkin`, not as a narration line.
 STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the
-  two or three things the sources do not answer, declared plainly with where they get settled (test drive / dealer).
+  two or three things the sources do not answer, with the appropriate next source or check to resolve each.
 STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: "the strongest fit is X, and the one thing we should still verify is Y" —
   the decision framed HERE, in the buyer's own words when known — then one concrete next step naming a CTA.
 Technical detail lives in `deeper` layers and Q&A, never in the main narration unless asked."""
@@ -80,12 +133,13 @@ SIGNPOSTS = ["One thing you'll notice first —", "Now the part you'd live with 
              "Quickly, a few more things you'll like —", "One honest caveat before you decide —", "So, where that leaves you —"]
 
 AUDIENCE = {
-    "everyday": """PLAIN LANGUAGE — the customer is not technical. NEVER say: IDC, kWh, kW, amp, 15A, torque, Nm, newton metres, r/min, RPM, "Level 2", IP67, TFT, ABS, CBS,
-Li-ion, BMS, regen. Use plain terms such as "certified on the standard test", "battery size", "the motor", "pulling power",
-"the screen" or "the brakes" only where the source supports that meaning. Do not turn a connector rating into a promise of
-household compatibility, or a protection rating into an unqualified durability claim. Keep only the
-numbers that decide (range, charging time, price, warranty) and translate each into daily life. Put technical detail in the
-`deeper` layer; in Q&A give the plain answer first and offer the detail.""",
+    "everyday": """PLAIN LANGUAGE — the customer is not technical. Keep unexplained jargon out of main narration:
+IDC, kWh, kW, amp, 15A, torque, Nm, newton metres, r/min, RPM, "Level 2", IP67, TFT, ABS, CBS, Li-ion, BMS, regen.
+Move a technical quantity as a whole to `deeper` detail; never keep its number while dropping the unit. A direct Q&A
+request for that specification gets the complete value and unit with a short gloss, even for an everyday audience.
+Use terms such as "battery size", "the motor", "pulling power", "the screen" or "the brakes" only where supported;
+"pulling power" alone is not a unit. Do not turn a connector rating into household compatibility or a protection
+rating into an unqualified durability claim. Lead with the useful choice or fit-check, without inventing an outcome.""",
     "informed": """LANGUAGE — the customer knows the basics. Technical terms are fine with a two-word gloss the first time
 ("IDC — the certified test range"). Still lead with what a number means for them, not the number.""",
     "expert": """LANGUAGE — the customer is technical. Use the proper terms and test conditions; precision over warmth, no dumbing down.""",

@@ -3,7 +3,11 @@ Primary for India; Gemini / Google Cloud / browser are the fallbacks."""
 from __future__ import annotations
 
 import base64
+import math
+import threading
 import time
+from datetime import timezone
+from email.utils import parsedate_to_datetime
 
 import httpx
 
@@ -14,6 +18,62 @@ BASE = "https://api.sarvam.ai"
 SPEAKERS = {"aditya": "Aditya", "ritu": "Ritu", "priya": "Priya", "neha": "Neha", "rahul": "Rahul", "pooja": "Pooja", "rohan": "Rohan", "simran": "Simran", "kavya": "Kavya", "amit": "Amit", "dev": "Dev", "ishita": "Ishita", "shreya": "Shreya", "ratan": "Ratan", "varun": "Varun", "manan": "Manan", "sumit": "Sumit", "roopa": "Roopa", "kabir": "Kabir", "aayan": "Aayan", "shubh": "Shubh", "ashutosh": "Ashutosh", "advait": "Advait", "anand": "Anand", "tanya": "Tanya", "tarun": "Tarun", "sunny": "Sunny", "mani": "Mani", "gokul": "Gokul", "vijay": "Vijay", "shruti": "Shruti", "suhani": "Suhani", "mohit": "Mohit", "kavitha": "Kavitha", "rehan": "Rehan", "soham": "Soham", "rupali": "Rupali"}  # bulbul:v3 speakers, probed from the API 2026-09-03
 LANG = {"hinglish": "hi-IN", "en": "en-IN", "hi": "hi-IN"}
 SUPPORTED = {"en-IN", "hi-IN", "bn-IN", "gu-IN", "kn-IN", "ml-IN", "mr-IN", "od-IN", "pa-IN", "ta-IN", "te-IN"}
+
+# Bulbul v3 Starter is documented at 30 REST requests/minute, shared by the
+# account. Pace this process conservatively; a 429 still owns the cooldown.
+# https://docs.sarvam.ai/api/getting-started/ratelimits
+_TTS_INTERVAL = 2.1
+_TTS_WAIT_BUDGET = 30.0
+_TTS_LOCK = threading.Lock()
+_TTS_NEXT_REQUEST = 0.0
+
+
+class RateLimitError(RuntimeError):
+    def __init__(self, retry_after: float, detail: str = "rate limit window"):
+        self.retry_after = max(0.0, retry_after)
+        super().__init__(f"sarvam tts 429: {detail}; retry after {math.ceil(self.retry_after)}s")
+
+
+def _retry_after(value: str | None, fallback: float) -> float:
+    try:
+        seconds = float(value)
+    except (ValueError, TypeError):
+        try:
+            date = parsedate_to_datetime(value or "")
+            seconds = date.replace(tzinfo=date.tzinfo or timezone.utc).timestamp() - time.time()
+        except (ValueError, TypeError, OverflowError):
+            return fallback
+    return max(0.0, seconds) if math.isfinite(seconds) else fallback
+
+
+def _tts_slot(deadline: float) -> None:
+    global _TTS_NEXT_REQUEST
+    while True:
+        with _TTS_LOCK:
+            now = time.monotonic()
+            wait = max(0.0, _TTS_NEXT_REQUEST - now)
+            if wait <= 0:
+                _TTS_NEXT_REQUEST = now + _TTS_INTERVAL
+                return
+        if wait > max(0.0, deadline - now):
+            raise RateLimitError(wait, "pacing/cooldown exceeds this call's wait budget")
+        time.sleep(wait)
+
+
+def _tts_request(client, body: dict, deadline: float):
+    global _TTS_NEXT_REQUEST
+    for attempt in range(3):
+        _tts_slot(deadline)
+        response = client.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
+        if response.status_code != 429:
+            return response  # account, policy and other failures are not rate-limit retries
+        delay = _retry_after(response.headers.get("Retry-After"), 2.0 * (2 ** attempt))
+        with _TTS_LOCK:
+            _TTS_NEXT_REQUEST = max(_TTS_NEXT_REQUEST, time.monotonic() + delay)
+            remaining = max(0.0, _TTS_NEXT_REQUEST - time.monotonic())
+        if attempt == 2 or remaining > max(0.0, deadline - time.monotonic()):
+            raise RateLimitError(remaining, response.text[:160])
+    raise AssertionError("unreachable")
 
 
 def lang_code(code: str | None) -> str:
@@ -68,22 +128,22 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
     speaker = speaker if speaker in SPEAKERS else "priya"
     parts = []
     t0 = time.time()
+    deadline = time.monotonic() + _TTS_WAIT_BUDGET
     with httpx.Client(timeout=60) as c:
         for chunk in _chunks(text):
             body = {"text": chunk, "target_language_code": lang_code(language), "speaker": speaker, "model": config.SARVAM_TTS_MODEL,
                     "speech_sample_rate": 22050, "enable_preprocessing": True}
             if pace and abs(pace - 1.0) > 1e-3:
                 body["pace"] = pace  # bulbul:v3 rejects pitch/loudness; pace only when changed
-            r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
-            for wait_s in (1.5, 3.0, 6.0):  # 429 / 5xx are transient — back off before giving the line to the next provider
-                if r.status_code not in (429, 500, 502, 503, 504):
-                    break
-                time.sleep(wait_s)
-                r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
+            try:
+                r = _tts_request(c, body, deadline)
+            except RateLimitError as exc:
+                usage.trace("sarvam-tts", config.SARVAM_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=f"[{speaker} · {lang_code(language)}] " + text, error=str(exc), chars=len(text))
+                raise
             if r.status_code == 400 and "inputs" in r.text:  # older bulbul:v1 request shape
                 body.pop("text")
                 body["inputs"] = [chunk]
-                r = c.post(f"{BASE}/text-to-speech", headers={**_headers(), "content-type": "application/json"}, json=body)
+                r = _tts_request(c, body, deadline)
             if r.status_code != 200:
                 usage.trace("sarvam-tts", config.SARVAM_TTS_MODEL, latency_ms=(time.time() - t0) * 1000, user=f"[{speaker} · {lang_code(language)}] " + text, error=f"{r.status_code}: {r.text[:300]}", chars=len(text))
                 raise RuntimeError(f"sarvam tts {r.status_code}: {r.text[:160]}")

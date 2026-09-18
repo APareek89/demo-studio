@@ -1,0 +1,967 @@
+{
+  "segments": [
+    {
+      "id": "overview-intro",
+      "title": "Tata Nexon, up close",
+      "role": "intro",
+      "topic": "overview",
+      "outcome": "A guided look at the equipment and choices that matter to you",
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "lines": [
+        {
+          "text": "Let's take a closer look at the Nexon.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "overview-intro-L1",
+          "start": 0.0,
+          "duration": 4.2,
+          "exact": false,
+          "audio": "audio/4df8e27fd61b84ad1028.wav"
+        },
+        {
+          "text": "We'll explore its safety equipment, cabin and luggage space. You can pause or ask about another detail at any point.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F025",
+            "F010",
+            "F027"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "overview-intro-L2",
+          "start": 4.2,
+          "duration": 10.5,
+          "exact": false,
+          "audio": "audio/e00b7b4cf9c6ab5bb110.wav"
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The brochure lists the Nexon's length as 3,995 millimetres. Exterior dimensions alone don't establish passenger comfort.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im02",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F005"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "overview-intro-D1",
+          "audio": "audio/a8abb42dfee90bea9382.wav"
+        },
+        {
+          "text": "Tata reports five-star Global NCAP and Bharat NCAP ratings. Its Bharat NCAP scope covers petrol and diesel trims active in May 2026.",
+          "step": "show",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F003",
+            "F004"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "overview-intro-D2",
+          "audio": "audio/07aab7e850e12a380674.wav"
+        }
+      ],
+      "start": 0.0,
+      "duration": 14.7,
+      "spoken": 14.7,
+      "checkin_audio": null
+    },
+    {
+      "id": "three-reminders",
+      "title": "Three things to explore",
+      "role": "outcome",
+      "topic": "pillars",
+      "outcome": "Standard safety equipment, fuel-specific boot space and trim-specific cabin features",
+      "usp_ids": [
+        "usp-safety",
+        "usp-clearance",
+        "usp-cabin-tech"
+      ],
+      "lines": [
+        {
+          "text": "Keep three areas in mind: standard safety equipment, boot space by fuel type, and cabin features by trim.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F025",
+            "F010",
+            "F011",
+            "F027",
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-L1",
+          "start": 14.7,
+          "duration": 9.5,
+          "exact": false,
+          "audio": "audio/387be5534e9a99beba55.wav"
+        },
+        {
+          "text": "I'm happy to stay with the part that interests you.",
+          "step": "advance",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "cabin cockpit"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-L2",
+          "start": 24.2,
+          "duration": 5.3,
+          "exact": false,
+          "audio": "audio/72fba0f3568ffc56c627.wav"
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "Six airbags and electronic stability control are standard equipment.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-D1",
+          "audio": "audio/14fe8b35de552fe7d34d.wav"
+        },
+        {
+          "text": "For ground clearance, Tata lists 208 millimetres, with variation by variant.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im02",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F009"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "three-reminders-D2",
+          "audio": "audio/bfa1487481b4d60a13c6.wav"
+        }
+      ],
+      "start": 14.7,
+      "duration": 14.8,
+      "spoken": 14.8,
+      "checkin_audio": null
+    },
+    {
+      "id": "stance-design",
+      "title": "Meet the stance",
+      "role": "proof",
+      "topic": "clearance",
+      "outcome": "Published ground clearance with its variant qualification",
+      "usp_ids": [
+        "usp-clearance"
+      ],
+      "lines": [
+        {
+          "text": "Notice the side profile.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im02",
+            "focus": "raised profile"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "stance-design-L1",
+          "start": 29.5,
+          "duration": 2.1,
+          "exact": false,
+          "audio": "audio/ab5219e4cf3a0e4ad94d.wav"
+        },
+        {
+          "text": "Tata lists 208 millimetres of ground clearance, which varies by variant. It isn't a promise about water depth or clearing every obstacle.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im02",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F009"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "stance-design-L2",
+          "start": 31.6,
+          "duration": 11.6,
+          "exact": false,
+          "audio": "audio/2f83331ea70bd6ae5869.wav"
+        }
+      ],
+      "checkin": "Would you like a closer look at the side profile?",
+      "deeper": [
+        {
+          "text": "Smart and Pure use 195/60 R16 tyres; Creative and Fearless use 215/60 R16.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im02",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F023"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "stance-design-D1",
+          "audio": "audio/a7a71663d1c970907d44.wav"
+        },
+        {
+          "text": "The brochure lists front disc and rear drum brakes.",
+          "step": "translate",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F024"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "stance-design-D2",
+          "audio": "audio/ae978304a1cc02a01976.wav"
+        }
+      ],
+      "checkin_start": 43.2,
+      "checkin_duration": 5.3,
+      "start": 29.5,
+      "duration": 19.0,
+      "spoken": 13.7,
+      "checkin_audio": "audio/a8f1e129e9f926705d97.wav"
+    },
+    {
+      "id": "cockpit-experience",
+      "title": "Your cockpit, closer",
+      "role": "proof",
+      "topic": "technology",
+      "outcome": "A closer look at the touchscreen and the trim-specific driver display",
+      "usp_ids": [
+        "usp-cabin-tech"
+      ],
+      "lines": [
+        {
+          "text": "Here is the centre touchscreen.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": "dual screens"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-L1",
+          "start": 48.5,
+          "duration": 2.6,
+          "exact": false,
+          "audio": "audio/e4ccace09e7b3944a4e1.wav"
+        },
+        {
+          "text": "Pure plus begins with the 26.03-centimetre Harman touchscreen; Fearless plus P S adds a matching-size driver display.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F027",
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-L2",
+          "start": 51.1,
+          "duration": 8.9,
+          "exact": false,
+          "audio": "audio/59a39bcb3befada3fa0d.wav"
+        }
+      ],
+      "checkin": "Would you like to stay with the cabin, or move on?",
+      "deeper": [
+        {
+          "text": "The 26.03-centimetre Harman touchscreen starts at Pure plus in this brochure's trim list.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F027"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-D1",
+          "audio": "audio/b2ab094b28dbb7a127c0.wav"
+        },
+        {
+          "text": "The larger driver display is listed on Fearless plus P S. Check the exact trim when comparing cabins.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "digital driver cluster"
+          },
+          "fact_ids": [
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cockpit-experience-D2",
+          "audio": "audio/201444d61b91c809a40b.wav"
+        }
+      ],
+      "checkin_start": 60.0,
+      "checkin_duration": 5.8,
+      "start": 48.5,
+      "duration": 17.3,
+      "spoken": 11.5,
+      "checkin_audio": "audio/b3a765d8ba44fedbeda1.wav"
+    },
+    {
+      "id": "luggage-practicality",
+      "title": "Room for your plans",
+      "role": "proof",
+      "topic": "practicality",
+      "outcome": "Published boot volumes, with a practical fit check still to do",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Here is the luggage area.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im06",
+            "focus": "open luggage area"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "luggage-practicality-L1",
+          "start": 65.8,
+          "duration": 2.6,
+          "exact": false,
+          "audio": "audio/07c8477fbddf4042a73c.wav"
+        },
+        {
+          "text": "Petrol and diesel list 382 litres; CNG lists 321, both measured to ISO V215. Your bags still deserve a physical fit check.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im06",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F010",
+            "F011"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "luggage-practicality-L2",
+          "start": 68.4,
+          "duration": 11.6,
+          "exact": false,
+          "audio": "audio/06b0d3c79f09175a7a37.wav"
+        }
+      ],
+      "checkin": "What would you usually need to carry?",
+      "deeper": [
+        {
+          "text": "Both boot figures use ISO V215. A number alone cannot tell us whether your stroller will fit.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F010",
+            "F011"
+          ],
+          "card": "contrast",
+          "unverified": false,
+          "id": "luggage-practicality-D1",
+          "audio": "audio/138aa5e9f85717121cd2.wav"
+        },
+        {
+          "text": "The petrol fuel tank is listed at 44 litres. We don't have a verified real-world range figure here.",
+          "step": "show",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F012"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "luggage-practicality-D2",
+          "audio": "audio/3d07e8aa4a58891e77fd.wav"
+        }
+      ],
+      "checkin_start": 80.0,
+      "checkin_duration": 3.7,
+      "start": 65.8,
+      "duration": 17.9,
+      "spoken": 14.2,
+      "checkin_audio": "audio/57f35bb66f909f209084.wav"
+    },
+    {
+      "id": "performance-engines",
+      "title": "Choose your driving setup",
+      "role": "proof",
+      "topic": "performance",
+      "outcome": "Engine and gearbox choices scoped to the selected trim",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Nexon has petrol, diesel and CNG choices, with different gearbox options.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F022"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "performance-engines-L1",
+          "start": 83.7,
+          "duration": 5.8,
+          "exact": false,
+          "audio": "audio/65b76e77aa654fe8d0ae.wav"
+        },
+        {
+          "text": "If you prefer an automatic, petrol options include a seven-speed dual-clutch gearbox. Availability depends on the trim.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F022"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "performance-engines-L2",
+          "start": 89.5,
+          "duration": 8.9,
+          "exact": false,
+          "audio": "audio/19da89604f9a0466a531.wav"
+        }
+      ],
+      "checkin": "Is there a gearbox option you'd like to explore?",
+      "deeper": [
+        {
+          "text": "The 1.2-litre turbo petrol is listed at 88.2 kilowatts at 5,500 rpm in the brochure.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F014",
+            "F015"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "performance-engines-D1",
+          "audio": "audio/88a524bc52f0293c2219.wav"
+        },
+        {
+          "text": "The 1.5-litre turbo diesel is listed at 84.5 kilowatts at 3,750 rpm, with 260 newton-metres at 1,500 to 2,750 rpm.",
+          "step": "show",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F017",
+            "F018",
+            "F019"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "performance-engines-D2",
+          "audio": "audio/3fc3c7407c152052bf0b.wav"
+        }
+      ],
+      "checkin_start": 98.4,
+      "checkin_duration": 4.7,
+      "start": 83.7,
+      "duration": 19.4,
+      "spoken": 14.7,
+      "checkin_audio": "audio/e8ec45984a0260ec1fff.wav"
+    },
+    {
+      "id": "structural-safety",
+      "title": "Safety, with the detail",
+      "role": "proof",
+      "topic": "safety",
+      "outcome": "Manufacturer-reported crash ratings and standard safety equipment",
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "lines": [
+        {
+          "text": "Tata reports a five-star Bharat NCAP rating for petrol and diesel trims active in May 2026.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F004"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "structural-safety-L1",
+          "start": 103.1,
+          "duration": 8.4,
+          "exact": false,
+          "audio": "audio/6137bbd463f39adfd03d.wav"
+        },
+        {
+          "text": "Six airbags and electronic stability control are standard.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "structural-safety-L2",
+          "start": 111.5,
+          "duration": 4.2,
+          "exact": false,
+          "audio": "audio/c302725569ad892356a4.wav"
+        }
+      ],
+      "checkin": "Would you like to go into any of the safety details?",
+      "deeper": [
+        {
+          "text": "Tata lists three-point emergency-locking seatbelts for all occupants.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "structural-safety-D1",
+          "audio": "audio/9dc54770f110da4f21fe.wav"
+        },
+        {
+          "text": "ADAS, including autonomous emergency braking and lane keep assist, is listed only for Fearless plus P S petrol DCA.",
+          "step": "show",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F026"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "structural-safety-D2",
+          "audio": "audio/7af822035698949f36ff.wav"
+        }
+      ],
+      "checkin_start": 115.7,
+      "checkin_duration": 5.8,
+      "start": 103.1,
+      "duration": 18.4,
+      "spoken": 12.6,
+      "checkin_audio": "audio/200e4933797fc74e0e24.wav"
+    },
+    {
+      "id": "extra-features",
+      "title": "Details worth comparing",
+      "role": "features",
+      "topic": "features",
+      "outcome": "Camera and audio equipment with precise trim conditions",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Here are a few details worth comparing by trim.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": ""
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "extra-features-L1",
+          "start": 121.5,
+          "duration": 4.7,
+          "exact": false,
+          "audio": "audio/31a7e3d74e2a6025ab0d.wav"
+        },
+        {
+          "text": "Creative adds a 360-degree camera with blind-view monitor; JBL audio with a subwoofer is limited to Fearless plus P S petrol DCA.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F030",
+            "F029"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "extra-features-L2",
+          "start": 126.2,
+          "duration": 11.6,
+          "exact": false,
+          "audio": "audio/dc922c5aeb40d203a5b2.wav"
+        }
+      ],
+      "checkin": "Anything here you'd like to see more closely?",
+      "deeper": [
+        {
+          "text": "Fearless plus P S petrol and diesel list iRA connectivity. The first year is free; renewal charges apply.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F031"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "extra-features-D1",
+          "audio": "audio/73e3aec0f1b945e7e813.wav"
+        },
+        {
+          "text": "Driver-assistance features are limited to Fearless plus P S petrol DCA. CNG and diesel aren't listed with them.",
+          "step": "translate",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F026"
+          ],
+          "card": "contrast",
+          "unverified": false,
+          "id": "extra-features-D2",
+          "audio": "audio/5d54b66903d7b6097872.wav"
+        }
+      ],
+      "checkin_start": 137.8,
+      "checkin_duration": 4.2,
+      "start": 121.5,
+      "duration": 20.5,
+      "spoken": 16.3,
+      "checkin_audio": "audio/70716ceb69d077630eb7.wav"
+    },
+    {
+      "id": "ownership-terms",
+      "title": "Start with a clear quote",
+      "role": "establish",
+      "topic": "ownership",
+      "outcome": "Published starting price, conditional finance and dealer checks",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Prices start at seven point three nine lakh rupees ex-showroom, subject to change.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F001"
+          ],
+          "card": "price",
+          "unverified": false,
+          "id": "ownership-terms-L1",
+          "start": 142.0,
+          "duration": 6.8,
+          "exact": false,
+          "audio": "audio/8bdf9ef143371af9f702.wav"
+        },
+        {
+          "text": "Your chosen trim and on-road quote need a dealer check; finance depends on the lender.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F001",
+            "F002"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "ownership-terms-L2",
+          "start": 148.8,
+          "duration": 7.9,
+          "exact": false,
+          "audio": "audio/42974e937231176b9a52.wav"
+        }
+      ],
+      "checkin": "Would you like help checking a particular variant?",
+      "deeper": [
+        {
+          "text": "The advertised starting EMI is six thousand four hundred and ninety-nine rupees. It covers a Flexi scheme's first six months; later instalments are higher, and the financier decides approval.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F002"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "ownership-terms-D1",
+          "audio": "audio/e15baa19ecf1f78d0122.wav"
+        },
+        {
+          "text": "Tata publishes a roadside-assistance contact. The supplied footer doesn't specify the helpline's opening hours.",
+          "step": "show",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F032"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "ownership-terms-D2",
+          "audio": "audio/e617e6552435131147d2.wav"
+        }
+      ],
+      "checkin_start": 156.7,
+      "checkin_duration": 4.2,
+      "start": 142.0,
+      "duration": 18.9,
+      "spoken": 14.7,
+      "checkin_audio": "audio/88af0a795a9f61e2bd47.wav"
+    }
+  ],
+  "closing": [
+    {
+      "text": "The Nexon brings standard safety equipment, distinct fuel choices and cabin upgrades to compare by trim.",
+      "step": "translate",
+      "visual": {
+        "kind": "image",
+        "ref": "im01",
+        "focus": ""
+      },
+      "fact_ids": [
+        "F025",
+        "F022",
+        "F027"
+      ],
+      "card": "summary",
+      "unverified": false,
+      "id": "close-L1",
+      "start": 160.9,
+      "duration": 8.4,
+      "audio": "audio/bcb743b1f05d45eea2bd.wav"
+    },
+    {
+      "text": "Choose Book Test Drive when you're ready to try the seats, visibility and gearbox for yourself.",
+      "step": "advance",
+      "visual": {
+        "kind": "image",
+        "ref": "im01",
+        "focus": ""
+      },
+      "fact_ids": [],
+      "card": "none",
+      "unverified": false,
+      "id": "close-L2",
+      "start": 169.3,
+      "duration": 8.4,
+      "audio": "audio/da34dcc2dd3c62f7303a.wav"
+    }
+  ],
+  "intake_q1": "Welcome to Tata Nexon. What's the main thing you'd like your next car to do for you? You can skip this and browse.",
+  "intake_q2": "",
+  "issues": [],
+  "version": 1,
+  "intake_audio": {
+    "q1": "audio/2f6668c540d21a1b8494.wav"
+  },
+  "visual_audit": {
+    "method": "gemini_pixels",
+    "model": "gemini-3.6-flash",
+    "line_count": 38,
+    "image_count": 8,
+    "missing_line_count": 24
+  },
+  "timeline": {
+    "total_seconds": 177.7,
+    "batches": [
+      {
+        "id": "overview-intro",
+        "title": "Tata Nexon, up close",
+        "role": "intro",
+        "start": 0.0,
+        "duration": 14.7,
+        "spoken": 14.7,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "three-reminders",
+        "title": "Three things to explore",
+        "role": "outcome",
+        "start": 14.7,
+        "duration": 14.8,
+        "spoken": 14.8,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "stance-design",
+        "title": "Meet the stance",
+        "role": "proof",
+        "start": 29.5,
+        "duration": 19.0,
+        "spoken": 13.7,
+        "checkin": 5.3,
+        "over_20s": false
+      },
+      {
+        "id": "cockpit-experience",
+        "title": "Your cockpit, closer",
+        "role": "proof",
+        "start": 48.5,
+        "duration": 17.3,
+        "spoken": 11.5,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "luggage-practicality",
+        "title": "Room for your plans",
+        "role": "proof",
+        "start": 65.8,
+        "duration": 17.9,
+        "spoken": 14.2,
+        "checkin": 3.7,
+        "over_20s": false
+      },
+      {
+        "id": "performance-engines",
+        "title": "Choose your driving setup",
+        "role": "proof",
+        "start": 83.7,
+        "duration": 19.4,
+        "spoken": 14.7,
+        "checkin": 4.7,
+        "over_20s": false
+      },
+      {
+        "id": "structural-safety",
+        "title": "Safety, with the detail",
+        "role": "proof",
+        "start": 103.1,
+        "duration": 18.4,
+        "spoken": 12.6,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "extra-features",
+        "title": "Details worth comparing",
+        "role": "features",
+        "start": 121.5,
+        "duration": 20.5,
+        "spoken": 16.3,
+        "checkin": 4.2,
+        "over_20s": false
+      },
+      {
+        "id": "ownership-terms",
+        "title": "Start with a clear quote",
+        "role": "establish",
+        "start": 142.0,
+        "duration": 18.9,
+        "spoken": 14.7,
+        "checkin": 4.2,
+        "over_20s": false
+      }
+    ],
+    "exact": false
+  },
+  "voice_provider": "sarvam",
+  "voice_name": "priya",
+  "voice_failures": 0
+}

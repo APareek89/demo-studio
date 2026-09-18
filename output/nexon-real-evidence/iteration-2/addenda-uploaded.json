@@ -1,0 +1,26 @@
+{
+  "uploaded_at": "2026-09-18T14:23:19.282231+00:00",
+  "records": [
+    {
+      "source_id": "src_c9ea48",
+      "role": "product",
+      "name": "Tata Nexon ICE \u2014 reviewed official-source addendum",
+      "origin_url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "sha256": "7ad2c7a70dd5f97722e7bedbb744b3d2436cc4405a1259af4040c7e8e06e44e3"
+    },
+    {
+      "source_id": "src_87ab79",
+      "role": "competitor",
+      "name": "Maruti Suzuki Brezza \u2014 reviewed official-source addendum",
+      "origin_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "sha256": "3ef244ff1cd983d98d4cdfc61958f9b4918bcfee57be213c95ec54937d6dae2b"
+    },
+    {
+      "source_id": "src_64d8ad",
+      "role": "competitor",
+      "name": "Hyundai Venue \u2014 reviewed official-source addendum",
+      "origin_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "sha256": "94a45ad0d11501bda0d31a003d724e66150a97860ebf6e9b139472d5638c98be"
+    }
+  ]
+}

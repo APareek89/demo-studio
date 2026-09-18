@@ -1,0 +1,1256 @@
+{
+  "source_path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/usage.jsonl",
+  "captured_source_sha256": "93b5d6c9f79885302c81336705ee781ab2ccb335310d7ab6b7cc8dc5e9ed1fb3",
+  "cutoff_timestamp": 1789741103.468246,
+  "rows": [
+    {
+      "t": 1789739704.996706,
+      "stage": "understand",
+      "kind": "gemini",
+      "model": "gemini-3.6-flash",
+      "in": 8945,
+      "out": 1927,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739731.957877,
+      "stage": "understand",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 42759,
+      "out": 5685,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739740.043859,
+      "stage": "understand",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 20491,
+      "out": 2513,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739748.3254762,
+      "stage": "understand",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 7384,
+      "out": 2351,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739757.940714,
+      "stage": "understand",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 4865,
+      "out": 2931,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739768.766585,
+      "stage": "understand",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 7353,
+      "out": 3209,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739776.765028,
+      "stage": "understand",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 8610,
+      "out": 2115,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739793.823721,
+      "stage": "plan",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 4290,
+      "out": 4419,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739796.535736,
+      "stage": "plan",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 143,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739814.323017,
+      "stage": "author",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 6271,
+      "out": 5689,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739847.8222568,
+      "stage": "author",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 10141,
+      "out": 10186,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739890.7146702,
+      "stage": "author",
+      "kind": "gemini",
+      "model": "gemini-3.6-flash",
+      "in": 12546,
+      "out": 5420,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739905.836242,
+      "stage": "deck",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 2789,
+      "out": 3910,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739912.749374,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 627,
+      "out": 1312,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739917.738396,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11715,
+      "out": 766,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739922.1769621,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11717,
+      "out": 901,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739927.438928,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11710,
+      "out": 728,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739933.909487,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11710,
+      "out": 844,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739940.844577,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11717,
+      "out": 1486,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739947.88115,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 10416,
+      "out": 376,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.06336
+    },
+    {
+      "t": 1789739951.284419,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11716,
+      "out": 580,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739955.1701891,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11713,
+      "out": 570,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739963.567103,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11714,
+      "out": 1485,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739971.2955709,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 10413,
+      "out": 395,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.018987
+    },
+    {
+      "t": 1789739977.771232,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11712,
+      "out": 1485,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789739986.709437,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 10411,
+      "out": 486,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.021707
+    },
+    {
+      "t": 1789739993.284699,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11711,
+      "out": 1483,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740000.212846,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 10411,
+      "out": 411,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.019457
+    },
+    {
+      "t": 1789740007.871549,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11710,
+      "out": 1486,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740013.8357341,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 10409,
+      "out": 301,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.016147
+    },
+    {
+      "t": 1789740020.0904572,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11713,
+      "out": 964,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740028.887796,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11718,
+      "out": 853,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740032.792732,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11712,
+      "out": 384,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740039.228805,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11710,
+      "out": 1486,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740045.5145001,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 10409,
+      "out": 106,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.010297
+    },
+    {
+      "t": 1789740049.309587,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11711,
+      "out": 450,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740052.973558,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11712,
+      "out": 634,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740058.482535,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11718,
+      "out": 874,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740062.631783,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11713,
+      "out": 687,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740066.9650428,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 11713,
+      "out": 770,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740742.947228,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 612,
+      "out": 1063,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740750.0437171,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12306,
+      "out": 1444,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740754.175669,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12310,
+      "out": 778,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740761.164669,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12309,
+      "out": 1486,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740771.750088,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 11022,
+      "out": 548,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.07155
+    },
+    {
+      "t": 1789740775.9403038,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12313,
+      "out": 783,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740779.6015658,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12303,
+      "out": 575,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740786.410191,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12304,
+      "out": 1486,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740796.621245,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 11017,
+      "out": 619,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.028727
+    },
+    {
+      "t": 1789740800.6454022,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12304,
+      "out": 608,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740804.709976,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12308,
+      "out": 735,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740809.558131,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12307,
+      "out": 937,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740816.409046,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12310,
+      "out": 880,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740820.29098,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12309,
+      "out": 657,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740827.1074402,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12308,
+      "out": 820,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740832.746298,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12311,
+      "out": 1147,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740839.674003,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12306,
+      "out": 1485,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740844.4241018,
+      "stage": "faq",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 11019,
+      "out": 197,
+      "chars": 0,
+      "sec": 0.0,
+      "usd": 0.016077
+    },
+    {
+      "t": 1789740849.05763,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12305,
+      "out": 800,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740856.5088131,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12303,
+      "out": 1392,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740863.616798,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12310,
+      "out": 983,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740868.370979,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12312,
+      "out": 752,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740875.7194529,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12310,
+      "out": 1038,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740881.618193,
+      "stage": "faq",
+      "kind": "gemini-fallback",
+      "model": "gemini-3.8-flash",
+      "in": 12312,
+      "out": 972,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740975.694216,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 38,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740977.390142,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 120,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740977.665518,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 116,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740978.54444,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 51,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740978.680609,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 132,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740979.2545779,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 105,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740979.880905,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 24,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740979.956502,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 68,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740980.255519,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 76,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740981.200715,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 51,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740982.029048,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 49,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740982.2985861,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 137,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740982.605248,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 31,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740982.750943,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 74,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740984.4818492,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 89,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740984.7661471,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 117,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740984.8581061,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 101,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740985.254545,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 25,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740985.350168,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 50,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740987.1870039,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 99,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740987.24569,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 93,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740987.9206452,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 37,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740987.9372602,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 122,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740989.248401,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 73,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740989.832619,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 84,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740989.9622788,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 119,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740990.705151,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 48,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740991.654315,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 58,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740992.018668,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 91,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740992.941491,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 69,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740993.062176,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 114,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740993.8501818,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 52,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740993.948729,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 47,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740994.376582,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 115,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740995.995863,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 105,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740996.474356,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 111,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740996.871216,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 129,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740997.024338,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 45,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740997.831678,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 82,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740998.453015,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 86,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740999.2672791,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 50,
+      "sec": 0.0
+    },
+    {
+      "t": 1789740999.489534,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 111,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741000.129428,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 191,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741000.899284,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 104,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741000.901932,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 95,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741002.401877,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 114,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741004.5590038,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 132,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741006.134777,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 249,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741006.190538,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 218,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741008.1711712,
+      "stage": "voice",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 210,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741039.793247,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 342,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741042.145802,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 193,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741054.964205,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 209,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741064.997264,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 207,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741070.960483,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 40,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741070.999326,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 153,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741080.879152,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 19,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741088.776991,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 49,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741091.283262,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 120,
+      "sec": 0.0
+    },
+    {
+      "t": 1789741103.4483788,
+      "stage": "voice",
+      "kind": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "in": 0,
+      "out": 0,
+      "chars": 67,
+      "sec": 0.0
+    }
+  ]
+}

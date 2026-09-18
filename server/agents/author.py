@@ -7,7 +7,7 @@ import re
 from .. import schemas, store
 from ..llm import claude
 from . import visuals
-from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, language_instruction
+from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, fact_context, language_instruction
 
 AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can interrupt at any
 moment, so every line and every segment must stand alone (no "as I said").
@@ -18,9 +18,10 @@ moment, so every line and every segment must stand alone (no "as I said").
 
 Hard rules:
 1. GROUNDING (G2). Every sentence stating a spec, number, price, offer, policy or capability cites its fact ids in
-   fact_ids and never goes beyond them. A figure without a fact id is rejected by a validator. Name the kind of truth
-   (G4): "certified on the standard test", "an estimate assuming…", "the written warranty says…", "that's the brochure's
-   marketing line, not a measurement".
+   fact_ids and never goes beyond them. A figure without a fact id is rejected by a validator; an existing id does not
+   prove an added benefit. Keep truth kinds distinct (G4): ordinary stated specifications stay stated; reserve
+   certification language for explicit certified results with their basis. Name estimates, marketing and written
+   terms where relevant, without a ritual evidence label on every line.
 2. HONESTY. Where the registry is silent, say so in the persona's voice and say where it gets settled ("boot litres
    aren't in this brochure — one to check in person"). The establish segment DECLARES the top open questions; never
    paper over a gap.
@@ -32,12 +33,13 @@ Hard rules:
    commute distance, budget, location or household. Plans, personas and earlier scripts are not customer testimony.
    - intake_q1 = the greeting + ONE context choice from the plan, polished: warm, names brand and product, easy to decline.
      This is the only intake question. Return intake_q2 as an empty string for schema compatibility.
-   - intro (1-2 segments, ≤ 38 words each): the quick overview — who it's for, the experience, the promise. NO greeting,
+   - intro (1-2 segments, ≤ 38 words each): the quick overview — who it's for and the supported experience or choice. NO greeting,
      no self-introduction (already done in intake), no spec list, no decision frame.
    - outcome (≤ 38 words): the three things to remember — the plan's three USPs, plainly; the customer can steer the order.
      Say this as an invitation, not another intake question.
-   - proof (4-6 segments, ≤ 38 words each): NOTICE one thing → the picture SHOWS it → MEANING: what it changes for this
-     customer, in their routine — the meaning sentence is MANDATORY, a feature stated without its meaning is incomplete →
+   - proof (4-6 segments, ≤ 38 words each): NOTICE one thing → the picture SHOWS it → RELEVANCE: the choice it informs
+     or a useful fit-check. Explain a customer benefit only when the cited evidence establishes it; a specification
+     need not become a promised performance, safety or practical outcome →
      CHECK: one short question in `checkin` (never two). Technical detail goes to 2-3 `deeper` lines.
    - features (≤ 40 words): one sentence per feature, no numbers unless decisive; invite questions in `checkin`.
    - establish (≤ 36 words): variant + written terms in one line each, then the top open questions declared honestly.
@@ -48,7 +50,7 @@ Hard rules:
    Every real question goes in `checkin`, where the player explicitly waits for an answer. Narration and closing lines
    contain no questions. Do not duplicate a checkin in a line. `step=confirm` is retained only for old script compatibility.
 5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown. Concrete
-   nouns; no "smart/convenient/economical". Never more than two facts in a row without their meaning for this person.
+   nouns; no "smart/convenient/economical". Never more than two facts in a row without their supported relevance.
 {audience}
 {language}"""
 
@@ -130,7 +132,7 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
             for l in seg["lines"]:
                 m = JARGON.search(l["text"])
                 if m:
-                    issues.append(f"{seg['id']}: jargon '{m.group(0)}' in the main narration — say it plainly (technical detail belongs in deeper)")
+                    issues.append(f"{seg['id']}: jargon '{m.group(0)}' in the main narration — move the complete technical quantity to deeper; never keep a number while dropping its unit")
                     break
     intro_words = sum(words(l["text"]) for s in script["segments"] if s.get("role") in ("intro", "outcome") for l in s["lines"])
     if intro_words > 115:
@@ -243,7 +245,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         i["_allowed"] = store.visual_allowed(demo, i["source_id"])
     prev = store.read_json(demo_id, "script.json")
     emit("Writing the script…")
-    facts_txt = "\n".join(f"{f['id']} [{f['kind']}·{f.get('truth','stated')}] {f['claim']}: {f['value']}" + (f" (condition: {f['conditions']})" if f.get("conditions") else "") for f in und["facts"] if f.get("approved", True))
+    facts_txt = "\n".join(fact_context(f) for f in und["facts"] if f.get("approved", True))
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
     plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance")}

@@ -1,0 +1,311 @@
+{
+  "entries": [
+    {
+      "id": "Q01",
+      "question": "What is the starting ex-showroom price across the different engine variants?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": "audio/d742de7230b01773c9fa.wav",
+      "slide_id": null
+    },
+    {
+      "id": "Q02",
+      "question": "What are the official GNCAP and BNCAP crash safety ratings for the Nexon?",
+      "origin": "generated",
+      "answer": "The Tata Nexon holds a certified five-star safety rating from Global NCAP as reported by Tata Motors. It also achieved a certified five-star Bharat NCAP safety rating for petrol and diesel models active as of May 2026.",
+      "fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/50083f57527ce8b0a1ae.wav",
+      "slide_id": "sl01"
+    },
+    {
+      "id": "Q03",
+      "question": "What is the unladen ground clearance, and will it handle tall speed breakers easily?",
+      "origin": "generated",
+      "answer": "The stated ground clearance is 208 mm, varying by variant, but my material does not specify it as unladen. For tall speed breakers, I won’t promise “easily” without that condition and real load, but a test drive can confirm it safely for your roads.",
+      "fact_ids": [
+        "F009"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "source_id": "src_77c02b"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/fda32a8189018e1c11e9.wav",
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q04",
+      "question": "How much boot space do I lose if I choose the iCNG version over the petrol or diesel?",
+      "origin": "generated",
+      "answer": "The petrol and diesel versions offer 382 litres of boot space, while the iCNG version gives you 321 litres. That means you only lose 61 litres, so you still have a very practical boot for your everyday luggage.",
+      "fact_ids": [
+        "F010",
+        "F011"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "source_id": "src_e12f23"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/e3f67f08cfb7c8474636.wav",
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q05",
+      "question": "What safety equipment comes standard even on the base model?",
+      "origin": "generated",
+      "answer": "Every Tata Nexon comes equipped with six airbags, three-point seat belts for all occupants, and an electronic stability program as standard right from the base variant. You can also explore further safety ratings and features if you like.",
+      "fact_ids": [
+        "F025"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q06",
+      "question": "What are the power and torque outputs for the diesel engine?",
+      "origin": "generated",
+      "answer": "For the diesel Nexon, the manufacturer-stated maximum power is 84.5 kilowatts at 3,750 engine revs. Its manufacturer-stated pulling power is 260 in the official spec, available from 1,500 to 2,750 engine revs.",
+      "fact_ids": [
+        "F018",
+        "F019"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/0b8de2e7151724fa6e03.wav",
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q07",
+      "question": "What automatic transmission options can I get with the petrol engine?",
+      "origin": "generated",
+      "answer": "With the petrol engine, you can choose between a 6-speed automated manual transmission and a smooth 7-speed dual-clutch automatic. Their availability depends on the specific variant you select.",
+      "fact_ids": [
+        "F022"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/971edb00d61b41c0f8b1.wav",
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q08",
+      "question": "Does the Nexon come with ADAS features, and which specific functions are included?",
+      "origin": "generated",
+      "answer": "Yes, the Nexon offers driver assistance features specifically on the Fearless + PS petrol DCA variant. It includes Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, and Lane Keep Assist. These features are not available on diesel or CNG variants.",
+      "fact_ids": [
+        "F026"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/9d2a2efe148e2cd0bce6.wav",
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q09",
+      "question": "What are the screen sizes for the central touchscreen and the digital driver cluster?",
+      "origin": "generated",
+      "answer": "On the Pure plus variant and higher, the central touchscreen measures 26.03 cm. The digital driver display is also 26.03 cm on the Fearless plus PS trim.",
+      "fact_ids": [
+        "F027",
+        "F028"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/bb0600b371f1b3c0d9dd.wav",
+      "slide_id": "sl04"
+    },
+    {
+      "id": "Q10",
+      "question": "What is the real-world mileage and certified ARAI fuel efficiency across each fuel type?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q11",
+      "question": "What is the current delivery waiting period if I book the top-spec variant today?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q12",
+      "question": "Are there any dealer discounts, corporate benefits, or exchange bonuses available right now?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q13",
+      "question": "How clear is the 360-degree camera system when parking in dark basement spaces?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q14",
+      "question": "What would my starting monthly EMI look like for a standard finance plan?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q15",
+      "question": "What tyre size and braking setup does the car come fitted with?",
+      "origin": "generated",
+      "answer": "The Nexon comes fitted with disc brakes in the front and drum brakes at the rear. Depending on the persona, it features 195/60 R16 tyres on Smart and Pure, or wider 215/60 R16 tyres on Creative and Fearless.",
+      "fact_ids": [
+        "F023",
+        "F024"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "source_id": "src_77c02b"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": "audio/30d3a44ff6642f16c831.wav",
+      "slide_id": "sl03"
+    },
+    {
+      "id": "Q16",
+      "question": "What connected car features are supported through the mobile app?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl08"
+    },
+    {
+      "id": "Q17",
+      "question": "What is the petrol fuel tank capacity compared to the water equivalent capacity of the CNG cylinders?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q18",
+      "question": "How does the rear seat comfort and shoulder room compare to rivals like the Brezza or Sonet?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q19",
+      "question": "Is there a 24/7 roadside assistance contact number provided with the vehicle warranty?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q20",
+      "question": "Can the CNG variant comfortably climb steep mall ramps or hill station inclines with five adults and luggage?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    }
+  ],
+  "answered": 9,
+  "total": 20,
+  "registry_hash": "414049c339e4fb7dc59e",
+  "partial": false
+}

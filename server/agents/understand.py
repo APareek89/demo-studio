@@ -10,6 +10,7 @@ import json
 
 from .. import config, media, schemas, sources, store
 from ..llm import claude, gemini
+from .principles import TRUTH_RULES
 
 VIDEO_PROMPT = """You are indexing product footage so a demo can seek to the exact moment that shows a feature.
 Split this video into shots (a shot = one continuous camera view or one distinct subject). For EACH shot give
@@ -40,7 +41,7 @@ agent will be allowed to say. Rules:
 - BRAND: from the brand guideline if given; otherwise infer a sensible, restrained profile from the product and
   its category and say so in persona_hint.
 - PRODUCT: name, category, a factual 2-sentence summary, and who buys it.
-Return only what the schema asks for."""
+Return only what the schema asks for.""" + "\n\n" + TRUTH_RULES
 
 
 COMP_SYSTEM = """You extract ONLY stated facts from the supplied competitor source, for a strictly-cited comparison.
@@ -51,7 +52,7 @@ Preserve the exact model generation, variant, engine/fuel, transmission, test cy
 when stated. Put applicability in the claim and conditions; a feature of a named variant is never a whole-range feature.
 Respect table headers, availability marks and footnotes. If extracted table text does not preserve which variant a value
 belongs to, omit that fact rather than reconstructing the columns. A URL or marketing teaser is not evidence of the
-linked brochure's contents. An unavailable/empty source yields no facts."""
+linked brochure's contents. An unavailable/empty source yields no facts.""" + "\n\n" + TRUTH_RULES
 
 
 def _part(p) -> dict:

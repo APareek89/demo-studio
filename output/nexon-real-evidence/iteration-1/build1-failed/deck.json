@@ -1,0 +1,858 @@
+{
+  "hero_image": "im01",
+  "intro_video": null,
+  "slides": [
+    {
+      "id": "sl00",
+      "segment_id": null,
+      "kind": "hero_open",
+      "title": "Tata Nexon",
+      "topics": [],
+      "fact_ids": [],
+      "image_id": "im01",
+      "image_reason": "hero",
+      "motion": "zoom_in",
+      "callouts": [],
+      "lines": [],
+      "checkin": "",
+      "deeper": [],
+      "usp_ids": [],
+      "priority": false,
+      "role": "hero_open"
+    },
+    {
+      "id": "sl01",
+      "segment_id": "overview-intro",
+      "kind": "intro",
+      "title": "Tata Nexon, up close",
+      "topics": [
+        "overview"
+      ],
+      "fact_ids": [
+        "F003",
+        "F005"
+      ],
+      "image_id": "im01",
+      "image_reason": "hero — no picture matches this topic",
+      "motion": "pan_left",
+      "callouts": [],
+      "lines": [
+        {
+          "id": "overview-intro-L1",
+          "text": "The Tata Nexon is built for everyday city commuting and weekend highway trips with your family.",
+          "fact_ids": [
+            "F005"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "overview-intro-L2",
+          "text": "Under four metres long, it combines easy urban parking with certified five-star crash protection.",
+          "fact_ids": [
+            "F003",
+            "F005"
+          ],
+          "step": "translate"
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "id": "overview-intro-D1",
+          "text": "Its compact length fits neatly into tight street parking without sacrificing passenger space.",
+          "fact_ids": [
+            "F005"
+          ],
+          "step": "translate"
+        },
+        {
+          "id": "overview-intro-D2",
+          "text": "Both global and Indian crash agencies tested the platform and certified it at five stars.",
+          "fact_ids": [
+            "F003",
+            "F004"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "priority": false,
+      "role": "intro"
+    },
+    {
+      "id": "sl02",
+      "segment_id": "three-reminders",
+      "kind": "outcome",
+      "title": "Three things to explore",
+      "topics": [
+        "pillars"
+      ],
+      "fact_ids": [
+        "F003",
+        "F009",
+        "F027"
+      ],
+      "image_id": "im04",
+      "image_reason": "the script's own picture, and its parts match",
+      "motion": "zoom_in",
+      "callouts": [
+        {
+          "text": "Six airbags and stability control: standard",
+          "fact_ids": [
+            "F025"
+          ],
+          "part": "",
+          "reveal_on_line": 0,
+          "id": "sl02-c1",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        },
+        {
+          "text": "ISO V215: 382L petrol/diesel; 321L CNG",
+          "fact_ids": [
+            "F010",
+            "F011"
+          ],
+          "part": "",
+          "reveal_on_line": 0,
+          "id": "sl02-c2",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        },
+        {
+          "text": "Pure + upwards: 26.03 cm touchscreen",
+          "fact_ids": [
+            "F027"
+          ],
+          "part": "touchscreen",
+          "reveal_on_line": 1,
+          "id": "sl02-c3",
+          "confidence": 0.98,
+          "part_box": {
+            "x": 0.42,
+            "y": 0.398,
+            "w": 0.172,
+            "h": 0.115
+          },
+          "placement": "overlay",
+          "anchor": {
+            "x": 0.506,
+            "y": 0.4555
+          },
+          "label_pos": {
+            "x": 0.42,
+            "y": 0.288
+          }
+        }
+      ],
+      "lines": [
+        {
+          "id": "three-reminders-L1",
+          "text": "The three things I would pay attention to are certified five-star safety and tall road clearance.",
+          "fact_ids": [
+            "F003",
+            "F009"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "three-reminders-L2",
+          "text": "Along with twin digital screens, feel free to steer which of these three you explore first.",
+          "fact_ids": [
+            "F027"
+          ],
+          "step": "advance"
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "id": "three-reminders-D1",
+          "text": "Every trim includes six airbags and stability control as standard equipment.",
+          "fact_ids": [
+            "F025"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "three-reminders-D2",
+          "text": "The high stance gives you two hundred and eight millimetres of clearance over rough spots.",
+          "fact_ids": [
+            "F009"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [
+        "usp-safety",
+        "usp-clearance",
+        "usp-cabin-tech"
+      ],
+      "priority": false,
+      "role": "outcome"
+    },
+    {
+      "id": "sl03",
+      "segment_id": "stance-design",
+      "kind": "proof",
+      "title": "Meet the stance",
+      "topics": [
+        "clearance"
+      ],
+      "fact_ids": [
+        "F009"
+      ],
+      "image_id": "im02",
+      "image_reason": "the script's own picture",
+      "motion": "pan_left",
+      "callouts": [
+        {
+          "text": "208 mm clearance; varies by variant",
+          "fact_ids": [
+            "F009"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl03-c1",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        }
+      ],
+      "lines": [
+        {
+          "id": "stance-design-L1",
+          "text": "One thing you will notice first is the tall stance.",
+          "fact_ids": [
+            "F009"
+          ],
+          "step": "frame"
+        },
+        {
+          "id": "stance-design-L2",
+          "text": "Certified two hundred and eight millimetres of clearance lets you clear monsoon water and broken roads without underbody scrapes.",
+          "fact_ids": [
+            "F009"
+          ],
+          "step": "translate"
+        }
+      ],
+      "checkin": "Do your regular routes involve broken patches or tall speed breakers?",
+      "deeper": [
+        {
+          "id": "stance-design-D1",
+          "text": "Wheel sizes measure sixteen inches across all trims, with wider tyres on upper personas.",
+          "fact_ids": [
+            "F023"
+          ],
+          "step": "show"
+        },
+        {
+          "id": "stance-design-D2",
+          "text": "Front disc brakes paired with rear drums handle everyday stopping power.",
+          "fact_ids": [
+            "F024"
+          ],
+          "step": "translate"
+        }
+      ],
+      "usp_ids": [
+        "usp-clearance"
+      ],
+      "priority": true,
+      "role": "proof"
+    },
+    {
+      "id": "sl04",
+      "segment_id": "cockpit-experience",
+      "kind": "proof",
+      "title": "Your cockpit, closer",
+      "topics": [
+        "technology"
+      ],
+      "fact_ids": [
+        "F027",
+        "F028"
+      ],
+      "image_id": "im08",
+      "image_reason": "chosen in Align",
+      "motion": "zoom_in",
+      "callouts": [
+        {
+          "text": "Pure + upwards: 26.03 cm touchscreen",
+          "fact_ids": [
+            "F027"
+          ],
+          "part": "touchscreen",
+          "reveal_on_line": 1,
+          "id": "sl04-c1",
+          "confidence": 0.99,
+          "part_box": {
+            "x": 0.071,
+            "y": 0.175,
+            "w": 0.867,
+            "h": 0.598
+          },
+          "placement": "overlay",
+          "anchor": {
+            "x": 0.5045,
+            "y": 0.474
+          },
+          "label_pos": {
+            "x": 0.0401,
+            "y": 0.0453
+          }
+        },
+        {
+          "text": "Fearless + PS: 26.03 cm driver display",
+          "fact_ids": [
+            "F028"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl04-c2",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        }
+      ],
+      "lines": [
+        {
+          "id": "cockpit-experience-L1",
+          "text": "Now the part you would live with daily inside the cabin.",
+          "fact_ids": [
+            "F027",
+            "F028"
+          ],
+          "step": "frame"
+        },
+        {
+          "id": "cockpit-experience-L2",
+          "text": "Dual ten-point-two-five-inch screens put navigation right in your line of sight so you stay focused on traffic.",
+          "fact_ids": [
+            "F027",
+            "F028"
+          ],
+          "step": "translate"
+        }
+      ],
+      "checkin": "Would built-in navigation right on your instrument cluster be helpful on your daily commute?",
+      "deeper": [
+        {
+          "id": "cockpit-experience-D1",
+          "text": "The centre touchscreen is powered by Harman audio software starting from the Pure plus trim.",
+          "fact_ids": [
+            "F027"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "cockpit-experience-D2",
+          "text": "The full digital driver screen is equipped on the top Fearless plus persona.",
+          "fact_ids": [
+            "F028"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [
+        "usp-cabin-tech"
+      ],
+      "priority": false,
+      "role": "proof"
+    },
+    {
+      "id": "sl05",
+      "segment_id": "luggage-practicality",
+      "kind": "proof",
+      "title": "Room for your plans",
+      "topics": [
+        "practicality"
+      ],
+      "fact_ids": [
+        "F010"
+      ],
+      "image_id": "im06",
+      "image_reason": "the script's own picture, and its parts match",
+      "motion": "pan_left",
+      "callouts": [
+        {
+          "text": "Petrol/diesel: 382L boot, measured to ISO V215",
+          "fact_ids": [
+            "F010"
+          ],
+          "part": "boot",
+          "reveal_on_line": 1,
+          "id": "sl05-c1",
+          "confidence": 0.98,
+          "part_box": {
+            "x": 0.16,
+            "y": 0.299,
+            "w": 0.292,
+            "h": 0.399
+          },
+          "placement": "overlay",
+          "anchor": {
+            "x": 0.306,
+            "y": 0.4985
+          },
+          "label_pos": {
+            "x": 0.16,
+            "y": 0.189
+          }
+        }
+      ],
+      "lines": [
+        {
+          "id": "luggage-practicality-L1",
+          "text": "Here is how it handles luggage on family trips.",
+          "fact_ids": [
+            "F010"
+          ],
+          "step": "frame"
+        },
+        {
+          "id": "luggage-practicality-L2",
+          "text": "With three hundred and eighty-two litres of boot space, petrol and diesel models fit multiple suitcases easily for airport runs.",
+          "fact_ids": [
+            "F010"
+          ],
+          "step": "translate"
+        }
+      ],
+      "checkin": "Are you planning mostly weekend family getaways, or everyday city errands?",
+      "deeper": [
+        {
+          "id": "luggage-practicality-D1",
+          "text": "If you choose the gas variant, twin underfloor cylinders preserve three hundred and twenty-one litres of usable cargo room.",
+          "fact_ids": [
+            "F011",
+            "F013"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "luggage-practicality-D2",
+          "text": "The conventional petrol fuel tank holds forty-four litres for extended highway driving.",
+          "fact_ids": [
+            "F012"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [],
+      "priority": true,
+      "role": "proof"
+    },
+    {
+      "id": "sl06",
+      "segment_id": "performance-engines",
+      "kind": "proof",
+      "title": "Choose your driving setup",
+      "topics": [
+        "performance"
+      ],
+      "fact_ids": [
+        "F014",
+        "F017",
+        "F022"
+      ],
+      "image_id": "im01",
+      "image_reason": "hero — no picture matches this topic",
+      "motion": "zoom_in",
+      "callouts": [
+        {
+          "text": "Petrol: seven-speed automatic option; check trim",
+          "fact_ids": [
+            "F022"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl06-c1",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        }
+      ],
+      "lines": [
+        {
+          "id": "performance-engines-L1",
+          "text": "Under the hood, you get turbocharged engines across petrol, diesel, and factory-fitted gas.",
+          "fact_ids": [
+            "F014",
+            "F017"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "performance-engines-L2",
+          "text": "Available transmissions include a seven-speed dual-clutch automatic, giving you smooth acceleration without shifting stress in bumper-to-bumper jams.",
+          "fact_ids": [
+            "F022"
+          ],
+          "step": "translate"
+        }
+      ],
+      "checkin": "Do you prefer the convenience of an automatic, or the control of a manual gearbox?",
+      "deeper": [
+        {
+          "id": "performance-engines-D1",
+          "text": "The 1.2-litre turbo petrol produces one hundred and twenty horsepower for lively overtaking on the open highway.",
+          "fact_ids": [
+            "F014",
+            "F015"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "performance-engines-D2",
+          "text": "The 1.5-litre turbo diesel delivers strong pulling power lower down, ideal for heavy loads and long-distance touring.",
+          "fact_ids": [
+            "F017",
+            "F018",
+            "F019"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [],
+      "priority": false,
+      "role": "proof"
+    },
+    {
+      "id": "sl07",
+      "segment_id": "structural-safety",
+      "kind": "proof",
+      "title": "Safety, with the detail",
+      "topics": [
+        "safety"
+      ],
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F025"
+      ],
+      "image_id": "im01",
+      "image_reason": "hero — no picture matches this topic",
+      "motion": "pan_left",
+      "callouts": [
+        {
+          "text": "Petrol/diesel: 5-star BNCAP, May 2026 scope",
+          "fact_ids": [
+            "F004"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl07-c1",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        },
+        {
+          "text": "Six airbags and stability control: standard",
+          "fact_ids": [
+            "F025"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl07-c2",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        }
+      ],
+      "lines": [
+        {
+          "id": "structural-safety-L1",
+          "text": "Here is the part people ask about first.",
+          "fact_ids": [
+            "F003"
+          ],
+          "step": "frame"
+        },
+        {
+          "id": "structural-safety-L2",
+          "text": "Both Global and Bharat NCAP certified five stars, backed by standard six airbags and electronic stability control on every trim.",
+          "fact_ids": [
+            "F003",
+            "F004",
+            "F025"
+          ],
+          "step": "translate"
+        }
+      ],
+      "checkin": "Is standard safety gear your top priority when choosing a family car?",
+      "deeper": [
+        {
+          "id": "structural-safety-D1",
+          "text": "Every seat gets a three-point emergency locking seatbelt, keeping all passengers securely restrained.",
+          "fact_ids": [
+            "F025"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "structural-safety-D2",
+          "text": "On the top automatic petrol model, advanced driver assistance adds autonomous braking and lane keeping assist.",
+          "fact_ids": [
+            "F026"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "priority": true,
+      "role": "proof"
+    },
+    {
+      "id": "sl08",
+      "segment_id": "extra-features",
+      "kind": "features",
+      "title": "Details worth comparing",
+      "topics": [
+        "features"
+      ],
+      "fact_ids": [
+        "F029",
+        "F030"
+      ],
+      "image_id": "im04",
+      "image_reason": "chosen in Align",
+      "motion": "zoom_in",
+      "callouts": [
+        {
+          "text": "Creative upwards: 360° camera and blind-view monitor",
+          "fact_ids": [
+            "F030"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl08-c1",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        },
+        {
+          "text": "Fearless+PS petrol DCA: JBL audio with subwoofer",
+          "fact_ids": [
+            "F029"
+          ],
+          "part": "",
+          "reveal_on_line": 1,
+          "id": "sl08-c2",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        }
+      ],
+      "lines": [
+        {
+          "id": "extra-features-L1",
+          "text": "Quickly, a few more things you will like.",
+          "fact_ids": [],
+          "step": "frame"
+        },
+        {
+          "id": "extra-features-L2",
+          "text": "Upper trims add ventilated front seats, nine JBL speakers, and a 360-degree camera with blind-view monitor for effortless parking.",
+          "fact_ids": [
+            "F029",
+            "F030"
+          ],
+          "step": "say"
+        }
+      ],
+      "checkin": "Would you like to explore any of these premium features in more detail?",
+      "deeper": [
+        {
+          "id": "extra-features-D1",
+          "text": "Connected car technology with over seventy features is included, with the first year subscription free.",
+          "fact_ids": [
+            "F031"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "extra-features-D2",
+          "text": "Keep in mind that the premium JBL audio and advanced driver aids are not offered on gas models.",
+          "fact_ids": [
+            "F026",
+            "F029"
+          ],
+          "step": "translate"
+        }
+      ],
+      "usp_ids": [],
+      "priority": false,
+      "role": "features"
+    },
+    {
+      "id": "sl09",
+      "segment_id": "ownership-terms",
+      "kind": "establish",
+      "title": "Start with a clear quote",
+      "topics": [
+        "ownership"
+      ],
+      "fact_ids": [
+        "F001",
+        "F002"
+      ],
+      "image_id": "im01",
+      "image_reason": "chosen in Align",
+      "motion": "pan_left",
+      "callouts": [
+        {
+          "text": "From ₹7.39 lakh ex-showroom; prices may change",
+          "fact_ids": [
+            "F001"
+          ],
+          "part": "",
+          "reveal_on_line": 0,
+          "id": "sl09-c1",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        },
+        {
+          "text": "₹6,499 initially; higher after six months; lender-dependent",
+          "fact_ids": [
+            "F002"
+          ],
+          "part": "",
+          "reveal_on_line": 0,
+          "id": "sl09-c2",
+          "confidence": 0.0,
+          "part_box": null,
+          "placement": "panel",
+          "anchor": null,
+          "label_pos": null
+        }
+      ],
+      "lines": [
+        {
+          "id": "ownership-terms-L1",
+          "text": "Ex-showroom pricing starts at seven point three nine lakh rupees, with introductory finance around sixty-five hundred rupees monthly.",
+          "fact_ids": [
+            "F001",
+            "F002"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "ownership-terms-L2",
+          "text": "Tested fuel mileage and seat comfort are not in the brochure; an in-person test drive settles both.",
+          "fact_ids": [],
+          "step": "translate"
+        }
+      ],
+      "checkin": "Shall we review the starting variants, or schedule an in-person test drive?",
+      "deeper": [
+        {
+          "id": "ownership-terms-D1",
+          "text": "Initial financing instalments depend on lender approval and may increase after the promotional period.",
+          "fact_ids": [
+            "F002"
+          ],
+          "step": "say"
+        },
+        {
+          "id": "ownership-terms-D2",
+          "text": "Tata Motors provides round-the-clock roadside assistance via their toll-free helpline.",
+          "fact_ids": [
+            "F032"
+          ],
+          "step": "show"
+        }
+      ],
+      "usp_ids": [],
+      "priority": false,
+      "role": "establish"
+    },
+    {
+      "id": "sl10",
+      "segment_id": null,
+      "kind": "closing",
+      "title": "Your next step",
+      "topics": [],
+      "fact_ids": [
+        "F003",
+        "F009"
+      ],
+      "image_id": "im01",
+      "image_reason": "hero",
+      "motion": "none",
+      "callouts": [],
+      "lines": [
+        {
+          "id": "close-L1",
+          "text": "The strongest fit is a family seeking five-star safety and high road clearance, while real-world mileage and engine responsiveness remain to verify.",
+          "fact_ids": [
+            "F003",
+            "F009"
+          ],
+          "step": "translate"
+        },
+        {
+          "id": "close-L2",
+          "text": "To experience the turbo pulling power and high driving position firsthand, click Book Test Drive.",
+          "fact_ids": [],
+          "step": "advance"
+        }
+      ],
+      "checkin": "",
+      "deeper": [],
+      "usp_ids": [],
+      "priority": false,
+      "role": "closing"
+    },
+    {
+      "id": "sl11",
+      "segment_id": null,
+      "kind": "hero_close",
+      "title": "Tata Nexon",
+      "topics": [],
+      "fact_ids": [],
+      "image_id": "im01",
+      "image_reason": "hero",
+      "motion": "zoom_in",
+      "callouts": [],
+      "lines": [],
+      "checkin": "",
+      "deeper": [],
+      "usp_ids": [],
+      "priority": false,
+      "role": "hero_close"
+    }
+  ],
+  "version": 1,
+  "script_version": 1,
+  "method": "model",
+  "issues": []
+}

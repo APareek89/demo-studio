@@ -1,0 +1,78 @@
+{
+  "ack_with_context": {
+    "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+    "audio": null
+  },
+  "ack_no_context": {
+    "text": "No problem — you can steer me at any time.",
+    "audio": null
+  },
+  "bridge_to_custom": {
+    "text": "Now, let me get to what you asked about.",
+    "audio": "audio/bf9b5ca0371f14fe5a2d.wav"
+  },
+  "hold_on_question": {
+    "text": "Good question — give me one moment, please, while I check that for you.",
+    "audio": null
+  },
+  "hold_on_lookup": {
+    "text": "Give me one moment, please, while I pull that up.",
+    "audio": "audio/704b30821afb08a5e617.wav"
+  },
+  "back_to_demo": {
+    "text": "Let's get back to where we were.",
+    "audio": null
+  },
+  "nudge_continue": {
+    "text": "I'll carry on — stop me whenever you like.",
+    "audio": null
+  },
+  "put_in_writing": {
+    "text": "My voice dropped for a moment — I've put the answer on screen for you.",
+    "audio": null
+  },
+  "still_working": {
+    "text": "Give me one moment, please — I'm tailoring this to what you just told me.",
+    "audio": null
+  },
+  "good": {
+    "text": "Good — moving on.",
+    "audio": null
+  },
+  "glad": {
+    "text": "Glad that helps.",
+    "audio": null
+  },
+  "did_that_answer": {
+    "text": "Did that answer it?",
+    "audio": "audio/18b9a1c4129eed618996.wav"
+  },
+  "clearer": {
+    "text": "Is that clearer?",
+    "audio": null
+  },
+  "lets_go": {
+    "text": "Alright — here we go.",
+    "audio": null
+  },
+  "focus_first": {
+    "text": "Got it — let me show you the part that matters most for that first.",
+    "audio": "audio/4d77b2bf9632768c670e.wav"
+  },
+  "how_i_go": {
+    "text": "Here's how I'll go about it.",
+    "audio": null
+  },
+  "no_guess": {
+    "text": "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it.",
+    "audio": "audio/2c8d62f87ff94914b083.wav"
+  },
+  "before_video": {
+    "text": "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.",
+    "audio": null
+  },
+  "after_video": {
+    "text": "Now, let's get into what matters to you.",
+    "audio": null
+  }
+}

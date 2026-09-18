@@ -1,0 +1,354 @@
+{
+  "customer_persona": "A broad starting audience for the Nexon: people comparing a compact SUV for daily use, family travel or a preferred driving setup. This is not evidence about the current buyer.",
+  "decision_frame": "We'll take a balanced look at the published equipment and trim choices, and you can steer us toward what matters to you.",
+  "takeaway": "The Nexon has standard safety equipment, different fuel and gearbox choices, and cabin features that depend on the selected trim.",
+  "primary_outcome": "A clear shortlist based on standard safety equipment and the cabin and driving setup of the selected trim.",
+  "supporting_outcomes": [
+    "Published boot volumes separated by fuel type, with a personal luggage-fit check still to do",
+    "Cabin display and convenience choices tied to the documented trim"
+  ],
+  "concerns": [
+    {
+      "topic": "safety",
+      "why": "Buyers may want to examine published crash ratings and the safety equipment on their selected trim.",
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F025"
+      ]
+    },
+    {
+      "topic": "ground_clearance",
+      "why": "Buyers may want the published ground-clearance figure, without treating it as a guarantee about road obstacles or water.",
+      "fact_ids": [
+        "F009"
+      ]
+    },
+    {
+      "topic": "practicality",
+      "why": "Buyers may want to compare petrol/diesel and CNG boot figures, then check the fit of their own luggage.",
+      "fact_ids": [
+        "F010",
+        "F011"
+      ]
+    },
+    {
+      "topic": "running_costs",
+      "why": "Buyers may want verified fuel-efficiency and ownership-cost information before choosing an engine.",
+      "fact_ids": []
+    }
+  ],
+  "usps": [
+    {
+      "id": "usp-safety",
+      "name": "Standard safety equipment",
+      "why_it_matters": "Six airbags and electronic stability control are standard; manufacturer-reported crash ratings retain their published test and powertrain scope.",
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F025"
+      ]
+    },
+    {
+      "id": "usp-clearance",
+      "name": "Published ground clearance",
+      "why_it_matters": "The brochure lists 208 mm, varying by variant. This does not establish wading depth or guarantee clearance over obstacles.",
+      "fact_ids": [
+        "F009"
+      ]
+    },
+    {
+      "id": "usp-cabin-tech",
+      "name": "Cabin displays by trim",
+      "why_it_matters": "The 26.03 cm Harman touchscreen begins at Pure +; the 26.03 cm driver display is listed on Fearless + PS. Check the selected version.",
+      "fact_ids": [
+        "F027",
+        "F028",
+        "F030"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "id": "overview-intro",
+      "title": "Tata Nexon, up close",
+      "role": "intro",
+      "goal": "Invite the buyer into a brief visual tour without assuming their needs.",
+      "outcome": "",
+      "topic": "overview",
+      "fact_ids": [
+        "F001",
+        "F005"
+      ],
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "visual_refs": [
+        "im01",
+        "im02"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "three-reminders",
+      "title": "Three things to explore",
+      "role": "outcome",
+      "goal": "Introduce standard safety equipment, fuel-specific boot space and trim-specific cabin choices.",
+      "outcome": "Standard safety equipment, fuel-specific boot space and trim-specific cabin features",
+      "topic": "pillars",
+      "fact_ids": [
+        "F003",
+        "F009",
+        "F027"
+      ],
+      "usp_ids": [
+        "usp-safety",
+        "usp-clearance",
+        "usp-cabin-tech"
+      ],
+      "visual_refs": [
+        "im01",
+        "im04"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "stance-design",
+      "title": "Meet the stance",
+      "role": "proof",
+      "goal": "Show the side profile and the published ground-clearance figure with its limitation.",
+      "outcome": "Published ground clearance with its variant qualification",
+      "topic": "clearance",
+      "fact_ids": [
+        "F007",
+        "F009",
+        "F023"
+      ],
+      "usp_ids": [
+        "usp-clearance"
+      ],
+      "visual_refs": [
+        "im02",
+        "im07"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "cockpit-experience",
+      "title": "Your cockpit, closer",
+      "role": "proof",
+      "goal": "Show the centre touchscreen and distinguish its availability from the larger driver display.",
+      "outcome": "A closer look at the touchscreen and the trim-specific driver display",
+      "topic": "technology",
+      "fact_ids": [
+        "F027",
+        "F028"
+      ],
+      "usp_ids": [
+        "usp-cabin-tech"
+      ],
+      "visual_refs": [
+        "im04",
+        "im08"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "luggage-practicality",
+      "title": "Room for your plans",
+      "role": "proof",
+      "goal": "State the documented boot figures and leave individual luggage fit for a physical check.",
+      "outcome": "Published boot volumes, with a practical fit check still to do",
+      "topic": "practicality",
+      "fact_ids": [
+        "F010",
+        "F011"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im06",
+        "im03"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "performance-engines",
+      "title": "Choose your driving setup",
+      "role": "proof",
+      "goal": "Explain engine and gearbox choices without promising smoothness, efficiency or overtaking performance.",
+      "outcome": "Engine and gearbox choices scoped to the selected trim",
+      "topic": "performance",
+      "fact_ids": [
+        "F014",
+        "F015",
+        "F017",
+        "F018",
+        "F022"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im01",
+        "im02"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "structural-safety",
+      "title": "Safety, with the detail",
+      "role": "proof",
+      "goal": "Distinguish manufacturer-reported crash ratings, standard equipment and trim-specific driver assistance.",
+      "outcome": "Manufacturer-reported crash ratings and standard safety equipment",
+      "topic": "safety",
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F025",
+        "F026"
+      ],
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "visual_refs": [
+        "im07",
+        "im04"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "extra-features",
+      "title": "Details worth comparing",
+      "role": "features",
+      "goal": "Name useful camera and audio features with their exact trim conditions.",
+      "outcome": "Camera and audio equipment with precise trim conditions",
+      "topic": "features",
+      "fact_ids": [
+        "F029",
+        "F030",
+        "F031"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im05",
+        "im08"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "ownership-terms",
+      "title": "Start with a clear quote",
+      "role": "establish",
+      "goal": "State the starting price and conditional nature of finance, then identify what needs a current dealer quote.",
+      "outcome": "Published starting price, conditional finance and dealer checks",
+      "topic": "ownership",
+      "fact_ids": [
+        "F001",
+        "F002",
+        "F032"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im01"
+      ],
+      "priority_topic": false
+    }
+  ],
+  "ctas": [
+    {
+      "id": "book-test-drive",
+      "label": "Book Test Drive",
+      "kind": "book",
+      "url": "https://tata.cars/book-test-drive/landing.html",
+      "primary": true,
+      "when": "always"
+    },
+    {
+      "id": "view-pricing",
+      "label": "View Variant Prices",
+      "kind": "link",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "primary": false,
+      "when": "after_price"
+    },
+    {
+      "id": "contact-dealer",
+      "label": "Find a Dealer",
+      "kind": "contact",
+      "url": "https://tata.cars/dealer-locator.html",
+      "primary": false,
+      "when": "end"
+    }
+  ],
+  "voice": {
+    "persona_name": "Sulafat",
+    "persona_description": "An experienced Tata Motors automotive specialist who communicates with quiet confidence, precision, and genuine warmth. She avoids jargon, respects the buyer's time, and answers questions with technical accuracy.",
+    "tone": "Warm, reassuring, and grounded in safety and practical everyday driving.",
+    "sample_line": "Hello and welcome to Tata Motors; I am glad you are exploring the Nexon today, and I am here to help you inspect its features at your own pace.",
+    "suggested_voice": "Sulafat",
+    "language": "Indian English"
+  },
+  "visual_gaps": [
+    {
+      "what": "dual cylinder CNG boot floor layout",
+      "why": "The CNG boot figure needs a source-identified CNG image; the current general boot image does not prove the cylinder layout.",
+      "suggestion": "Add an official Nexon iCNG boot image that clearly identifies the fuel variant before pointing to its cylinder packaging."
+    },
+    {
+      "what": "360-degree surround camera display on the central screen",
+      "why": "F030 highlights the HD surround camera and blind view monitor, which is a major city parking selling point.",
+      "suggestion": "Upload an infotainment screen capture showing the active 360 camera view with parking guidelines."
+    },
+    {
+      "what": "ADAS sensor cluster on windscreen or front bumper",
+      "why": "The current material lists driver-assistance functions for Fearless + PS petrol DCA; it does not establish a particular sensor architecture.",
+      "suggestion": "Use an official image explicitly identifying the relevant Nexon driver-assistance hardware before pointing to a physical sensor."
+    }
+  ],
+  "intake": {
+    "q1": "Welcome to Tata Nexon. What's the main thing you'd like your next car to do for you? You can skip this and browse.",
+    "q2": "",
+    "chips": [
+      {
+        "key": "safety",
+        "label": "Five-Star Safety"
+      },
+      {
+        "key": "clearance",
+        "label": "Ground Clearance"
+      },
+      {
+        "key": "technology",
+        "label": "Screens & Tech"
+      },
+      {
+        "key": "practicality",
+        "label": "Boot & Cabin Space"
+      },
+      {
+        "key": "performance",
+        "label": "Engines & Gearboxes"
+      },
+      {
+        "key": "ownership",
+        "label": "Pricing & EMI"
+      }
+    ]
+  },
+  "state_questions": [
+    {
+      "state": "unknown",
+      "question": ""
+    },
+    {
+      "state": "stated_want",
+      "question": ""
+    },
+    {
+      "state": "stated_need",
+      "question": ""
+    }
+  ],
+  "do_not_recommend_if": "If a must-have requirement is not covered by the supplied material, verify it before recommending a trim.",
+  "advance": "Choose Book Test Drive when you're ready to try the seats, visibility and gearbox for yourself.",
+  "notes": "Use manufacturer-stated specifications and preserve exact engine/trim conditions. Ground clearance is not a water-depth or obstacle-clearance guarantee. Exterior dimensions and boot litres do not prove passenger comfort or luggage fit. A test drive can help assess personal comfort and driving feel; it does not establish representative fuel economy. Confirm the selected variant, current on-road quote, finance approval and detailed ownership terms. Source-specific engine figures must not be converted or blended. Only the current approved registry may supply facts.",
+  "voice_sample_audio": "audio/778e8cb426b0b2f9055c.wav"
+}

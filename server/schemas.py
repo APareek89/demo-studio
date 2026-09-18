@@ -57,8 +57,8 @@ class FactOut(BaseModel):
     value: str = Field(description="the fact itself, exactly as the source states it, with units")
     source: FactSource
     confidence: float = Field(description="0-1: how directly the source states this")
-    conditions: str = Field(default="", description="any condition attached, e.g. 'IDC test cycle', 'ex-showroom', 'select cities'")
-    truth: Literal["certified", "modeled", "observed", "contractual", "stated"] = Field(default="stated", description="certified = official test method; modeled = estimate under assumptions; observed = measured in use; contractual = written terms; stated = plain statement in the source")
+    conditions: str = Field(default="", description="all stated applicability: generation, trim, engine/fuel/mode, transmission, market/date, measurement/test basis, price basis and offer restrictions; do not infer missing conditions")
+    truth: Literal["certified", "modeled", "observed", "contractual", "stated"] = Field(default="stated", description="stated = ordinary source specifications/features; certified = explicitly reported certification or named test/rating result, retaining basis and scope (an official source or measurement method alone is insufficient); modeled = source estimate with assumptions; observed = reported measurement in use; contractual = written terms")
 
 
 class UnknownOut(BaseModel):
@@ -150,8 +150,8 @@ class Concern(BaseModel):
 class USP(BaseModel):
     id: str = Field(description="short slug, e.g. 'usp-warranty'")
     name: str = Field(description="the differentiated value, 3-8 words")
-    why_it_matters: str = Field(description="what it means for this buyer, 1 sentence, concrete")
-    fact_ids: list[str] = Field(description="facts that prove it; a USP with no facts is a claim and must be labelled so in why_it_matters")
+    why_it_matters: str = Field(description="one concrete sentence of supported relevance; a choice or fit-check is valid when the source does not demonstrate a customer outcome")
+    fact_ids: list[str] = Field(description="approved facts supporting the stated value and scope; no invented benefit or comparison; with no facts, describe the unresolved choice rather than asserting a product advantage")
 
 
 class StateQuestion(BaseModel):
@@ -164,7 +164,7 @@ class SegmentPlan(BaseModel):
     title: str
     role: Literal["intro", "outcome", "proof", "features", "establish"] = Field(description="intro = brief overview, no decision frame; outcome = three things to remember; proof = guided discovery; features = one 'a few more things' block; establish = assumptions, terms and open questions")
     goal: str = Field(description="what the customer should believe or understand after this segment")
-    outcome: str = Field(description="the customer outcome this segment proves, 3-8 words (empty for intro)")
+    outcome: str = Field(description="supported customer result or decision/fit-check explored, 3-8 words; no promised outcome inferred from a specification (empty for intro)")
     topic: str
     fact_ids: list[str]
     usp_ids: list[str] = Field(default_factory=list, description="USPs this segment covers")
@@ -211,7 +211,7 @@ class Plan(BaseModel):
     customer_persona: str = Field(description="general intended audience, 2 sentences; no invented individual distance, budget, location or household")
     decision_frame: str = Field(description="fit summary at the END: the strongest supported fit and what remains to verify; not an opening decision frame")
     takeaway: str = Field(description="the ONE sentence the buyer should be able to repeat after the demo")
-    primary_outcome: str = Field(description="the one customer outcome the demo proves")
+    primary_outcome: str = Field(description="one supported customer result or buying decision the demo explores; do not invent a performance or safety guarantee")
     supporting_outcomes: list[str] = Field(description="at most two")
     concerns: list[Concern]
     usps: list[USP] = Field(description="exactly three differentiated value points, each tied to facts")

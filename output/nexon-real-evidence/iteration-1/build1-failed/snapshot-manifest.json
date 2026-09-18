@@ -1,0 +1,78 @@
+{
+  "demo_id": "dm_36d47b86",
+  "captured_at": "2026-09-18T14:19:28.560939+00:00",
+  "status": "first_build_failed_voice",
+  "artifacts": [
+    {
+      "name": "script.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/script.json",
+      "sha256": "373fd23378a43be7ba3e2fb0e9a158bcf67b68b33e78dec89d671734c846d073",
+      "bytes": 27413
+    },
+    {
+      "name": "deck.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/deck.json",
+      "sha256": "9f49aed23d8163674ea64b35f1752aa5cafe79f55c1e38d8b322cc2f83fb661d",
+      "bytes": 22772
+    },
+    {
+      "name": "faq.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/faq.json",
+      "sha256": "5fcf5a7265e33ed7c96f2a9c888d844727d66e429dcb57af6815382b2e3ca2b5",
+      "bytes": 11765
+    },
+    {
+      "name": "plan.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/plan.json",
+      "sha256": "7da318f03c18f20ae566448c46c492ba1a57da7cba92f9f9abdafa3c4dc5c830",
+      "bytes": 11581
+    },
+    {
+      "name": "understanding.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/understanding.json",
+      "sha256": "653c37a61574efe9bd4d0f02cee6874f7af86c5d218c826629da0f28d7e22ff7",
+      "bytes": 77058
+    },
+    {
+      "name": "demo.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/demo.json",
+      "sha256": "fd68a7f805606399775da388b0073c99c4d88df74ba292e20072aba6e88e857b",
+      "bytes": 9490
+    },
+    {
+      "name": "deck-overrides.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/deck-overrides.json",
+      "sha256": "0c39fa74966cf7060fda4ec0d1ebd8425786d6d0e5edb527381081a390cba04a",
+      "bytes": 4123
+    },
+    {
+      "name": "fillers.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/fillers.json",
+      "sha256": "ffa24673c34bbe8f297725ab205e0e3587d1409d5a9184e3ea469f49150db73e",
+      "bytes": 2215
+    },
+    {
+      "name": "visual-audit.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/visual-audit.json",
+      "sha256": "273383546324772aec7aef9353be252fa1c65ac30a4a2d8054ca97ecf01e4fe7",
+      "bytes": 26443
+    },
+    {
+      "name": "trace-summary.json",
+      "sha256": "cf81da155e4033b0f3766c2f6a695bf984b0d3adf9db35dad3cc22bd6d806d88",
+      "bytes": 85285,
+      "derived_metadata_only": true
+    },
+    {
+      "name": "usage-summary.json",
+      "sha256": "3b16b9f535666c464ccd1a4762abec11870af72f2716262cef6747d4b7061f8f",
+      "bytes": 25270,
+      "derived_metadata_only": true
+    }
+  ],
+  "not_present": [
+    "bundle.json"
+  ],
+  "audio_copied": false,
+  "source_originals_copied": false
+}

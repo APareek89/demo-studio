@@ -10,15 +10,16 @@ from datetime import datetime, timezone
 from .. import schemas, store, usage
 from ..llm import claude, runtime
 from .author import CLAIMISH, NUMBERISH
-from .principles import audience_instruction, language_instruction
+from .principles import EVIDENCE_RULES, audience_instruction, fact_context, language_instruction
 
 QA_SYSTEM = """You are {persona_name}, the voice guide in a live product demo of {product_name} ({category}).
 Reply in 1-3 short spoken sentences in the persona's voice ({tone}). No markdown.
 
 HARD RULES
 - You have NO web search and NO tools. Only the FACT REGISTRY below may be stated as fact. Cite every fact id you
-  rely on in fact_ids. Name the kind of truth for figures: certified (with its test condition), modeled (with its
-  assumption), or the written terms.
+  rely on in fact_ids. Keep stated specifications distinct from certified results, modeled estimates, observations
+  and written terms. Official manufacturer specifications are not automatically certified. Give the relevant basis
+  when it matters, without a ritual label for ordinary facts.
 - If the registry does not answer the question, set answered=false, leave fact_ids empty, and say plainly that you're
   not sure from the material you have and won't guess — never estimate, never compare to other brands, never promise
   discounts, delivery dates or negotiate price. The player will then offer a salesperson callback; do NOT ask for a
@@ -40,6 +41,8 @@ HARD RULES
 {audience}
 {language}
 - Answer in plain words first, in one or two sentences; offer the technical detail rather than volunteering it.
+  When the customer asks for a technical quantity, the direct answer includes its value AND unit, with a short gloss.
+{evidence}
 
 CUSTOMER: {profile}
 
@@ -79,7 +82,7 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     demo = store.load(demo_id)
     voice = plan.get("voice", {})
     facts = [f for f in und.get("facts", []) if f.get("approved", True)]
-    facts_txt = "\n".join(f"{f['id']} [{f['kind']}·{f.get('truth','stated')}] {f['claim']}: {f['value']}" + (f" (condition: {f['conditions']})" if f.get("conditions") else "") for f in facts) or "(empty)"
+    facts_txt = "\n".join(fact_context(f) for f in facts) or "(empty)"
     vis_txt = "\n".join([f"{s['id']} shot {s['start']:.0f}-{s['end']:.0f}s · {s['part']} · {s['description']}" for s in und.get("shots", [])] + [f"{i['id']} image · {i['angle']} · {i['description']}" for i in und.get("images", [])]) or "(none)"
     topics = sorted({s.get("topic", "") for s in plan.get("segments", [])} | {"other"})
     comp_txt = ""
@@ -110,6 +113,7 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
         topics=", ".join(t for t in topics if t), profile=json.dumps(profile or {"note": "unknown"}),
         ctas=json.dumps([{"id": c["id"], "label": c["label"], "kind": c["kind"]} for c in plan.get("ctas", [])]),
         facts=facts_txt, visuals=vis_txt, language=language_instruction((profile or {}).get("language") or demo.get("settings", {}).get("language", "en-IN")), competitors=comp_txt, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")),
+        evidence=EVIDENCE_RULES,
     )
     return sys, und, plan
 

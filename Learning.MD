@@ -554,3 +554,38 @@
 - Why could the bundle retain it? Fallback joins treated an explicitly empty check-in as missing and kept deck citations.
 - Why was this missed? Prior checks verified saved visual overrides, without exercising a script correction followed by a slide edit.
 - Root cause and fix: the script is the authority for spoken text, citations, metadata and explicit empty questions. A shared deterministic join supplies Align and bundle without changing saved visual design. Five regressions cover preview/bundle parity, cleared questions, changed citations and held lines; Align review now47/47.
+
+## 2026-09-18 — Valid citations were turned into unproven benefits (NX14/NX16)
+
+**Why 1:** The first real plan/script/FAQ used clearance as flood/damage assurance, litres as demonstrated luggage fit, and unrelated engine figures as a mode-switch power delta.
+**Why 2:** Generation was required to turn every feature into a customer outcome or performance promise, although source evidence often established only a specification.
+**Why 3:** Truth descriptions equated an official test method with certification; product prompt context dropped exact source quotes/locators, and examples omitted the ordinary `stated` category.
+**Why 4:** A valid fact id was treated as sufficient grounding for extra meaning, while trim/fuel/finance restrictions could move out of the spoken claim. The planner's final id filter also allowed human-rejected facts still present in storage.
+**Why 5:** Structural mock checks covered citations and pacing, not the distinction between a sourced specification and a source-supported outcome; manual correction alone would not change the next generation.
+**Deepest why type:** `design`
+**Fix:** Shared extraction truth/scope rules and downstream evidence rules; prompt/schema descriptions now allow a useful choice or fit-check instead of an invented benefit. Product context carries the original quote and locator with truth/conditions. Explicit instructions preserve trim/fuel/finance scope, forbid unsupported arithmetic and route unknowns to the appropriate source. Plan reference filtering now accepts approved facts only. No new schema fields, semantic regex engine, model critic or paid call.
+**Prevention:** `evals/generation_contract.py` has 21 passing free input/approval contracts, with network/providers blocked; existing customer contracts remain 29/29. Eleven synthetic adversarial cases in `evals/fixtures/generation_grounding.json` cover negative and positive generation behavior for the authorized real review. Prompts and citation checks are not semantic entailment: inspect raw second-Read artifacts before polishing or claiming these failures resolved. Re-Read review preservation remains unchanged; reviewed facts must be snapshotted, identity-mapped and reapplied through the API separately.
+
+## 2026-09-18 — Plain-language guidance removed the unit (NX18)
+
+**Why 1:** A refreshed real FAQ said “pulling power is 260” without Nm.
+**Why 2:** The everyday-audience instruction prohibited both the technical abbreviation and its spoken unit, while asking the model to translate the number into a plain term.
+**Why 3:** The same style instruction governed a general tour and a direct technical question, with no exception for a complete requested quantity.
+**Why 4:** The jargon-repair instruction asked for plain wording without explicitly preserving the whole quantity.
+**Why 5:** Tests checked banned words and citation presence, not whether the complete value/unit reached speech or whether prompt rules conflicted.
+**Deepest why type:** `design`
+**Fix:** Main narration moves unnecessary technical quantities as a whole to deeper detail; direct Q&A retains the value, unit and scope with a short gloss. Jargon repair explicitly forbids dropping only the unit. Ordinary facts need no repeated disclaimer or certification label.
+**Prevention:** Free contracts capture actual build-FAQ and runtime prompt envelopes and prove a complete mocked answer reaches the speech seam unchanged; a deeper unit-bearing answer survives author validation. The adversarial unit-loss case still needs a real response review: no deterministic semantic/unit validator was added.
+
+
+## 2026-09-18 — A locked Priya build switched speakers after a Sarvam rate limit (NX19)
+
+**Why 1:** The first real Nexon Build exhausted a Sarvam request window, then synthesized FAQ/fillers with Gemini Sulafat although the chosen voice was locked to Priya.
+**Why 2:** Only strict runtime calls restricted the fallback chain; ordinary build speech ignored `voice_locked`.
+**Why 3:** FAQ/filler reuse trusted any existing audio path, without checking its provider/speaker/language/content hash.
+**Why 4:** The provider circuit was checked before its cache, making already-recorded Priya clips unavailable during a transient cooldown. Parallel workers also sent Sarvam requests without a shared pace.
+**Why 5:** The speech gate tested fallback availability rather than the chosen-voice invariant and recovery from a partially voiced build.
+**Deepest why type:** `code`
+**Fix:** Locked speech keeps the configured provider and speaker for build and runtime, including a missing key or temporary circuit failure. Matching cache reads happen first. Main, deeper, check-in, closing, intake, FAQ and filler clips are reused only by their chosen-voice hash; old Gemini references are replaced or cleared. Missing locked narration or bank audio stops the build before bundling, with completed work checkpointed. Gemini policy refusals, including the observed “Input blocked sensitive words”, are not retried by the voice stage or forwarded to another provider. A locked Cloud voice also preserves mock isolation.
+**Pacing evidence:** Sarvam's official [rate-limit documentation](https://docs.sarvam.ai/api/getting-started/ratelimits) lists Bulbul v3 Starter at 30 REST requests/minute, shared across account keys. This process conservatively spaces starts by 2.1 seconds; this is an application policy, not a claim about the account's actual tier. Only HTTP429 receives up to three attempts. Numeric or HTTP-date Retry-After is honored; a requested wait beyond the call's 30-second wait budget stops explicitly and preserves the shared cooldown. Other processes on the same account can still consume capacity.
+**Prevention:** `evals/voice_lock_contract.py` has 27 free cases with fake speech/HTTP/clock and blocked sockets. They reproduce mixed FAQ/fillers, cached main/check-in/intake, cooldown reuse, missing-only recovery, explicit incomplete narration, policy refusal, locked Cloud mock isolation, pacing and bounded retries. Failed real Build1 remains preserved; the next real build is the user's second attempt, not an uncounted recovery run. No live provider call was made for this fix.
