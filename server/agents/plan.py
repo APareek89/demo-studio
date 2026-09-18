@@ -24,6 +24,9 @@ salesperson: greet, offer a choice, overview before detail, then guided discover
 Produce exactly this:
 - intake.q1 = the GREETING + one context choice, in one breath: warm, names the brand and the product, then ONE low-pressure
   question that is easy to decline ("…or shall we just get started?"). ONE question only — never name + something else stacked.
+- intake.q2 = empty. There is no second discovery question after intake.
+- customer_persona is a general audience description, not a real customer's circumstances. Do not supply a fictional
+  distance, budget, family or location for the author to repeat. Unknown personal context stays unknown.
 - usps: EXACTLY THREE, each tied to fact ids — one about the daily EXPERIENCE (comfort/cabin/ease), one about PERFORMANCE or
   productivity, one about CONFIDENCE or ownership (safety, warranty, service). These three are the demo's spine.
 - decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening):
@@ -32,14 +35,14 @@ Produce exactly this:
 - segments, tagged by role, in this order:
   1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for, the experience, the promise. ≤ 38 words each.
      No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1).
-  1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath, offering the customer the order.
+  1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question.
   4-6 × role=proof — GUIDED DISCOVERY in the natural order for this product category (what a person first sees or touches →
      what they live with daily → practicality → the core performance moment → trust/safety). One area per segment. The
      runtime plays the buyer's strongest signal first, so each must stand alone.
   1 × role=features — a few more things, one sentence each.
   1 × role=establish — variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with
      where each gets settled (test drive / dealer / a document the owner can upload).
-- state_questions: the one follow-up for an unknown buyer, a stated want, a stated need.
+- state_questions: optional questions for responding to an unclear customer request; not an automatic discovery sequence.
 - advance: the next action naming a CTA label — chosen to resolve the biggest remaining uncertainty. do_not_recommend_if: honest.
 - Segments may only use facts that exist; a concern with no facts is planned as an honest gap, never invented.
 - Every segment needs a visual that shows its subject (shots quality ≥3 preferred, else images); missing → visual_gaps.
@@ -92,7 +95,7 @@ IMAGES ({len(und['images'])}):
 {imgs_txt or '(none)'}
 """
     if prev:
-        content += f"\nPREVIOUS PLAN (keep what still works; change only what the instruction asks):\n{json.dumps(prev)[:24000]}\n"
+        content += f"\nPREVIOUS PLAN (keep what still works; remove unsupported personal assumptions; it is not evidence of customer context):\n{json.dumps(prev)[:24000]}\n"
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, shape=PITCH_SHAPE, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
@@ -108,6 +111,7 @@ IMAGES ({len(und['images'])}):
     fact_ids = {f["id"] for f in und["facts"]}
     vis_ids = {s["id"] for s in vshots} | {i["id"] for i in vimgs}
     p = plan.model_dump()
+    p["intake"]["q2"] = ""
     usp_ids = {u["id"] for u in p["usps"]}
     for u in p["usps"]:
         u["fact_ids"] = [x for x in u["fact_ids"] if x in fact_ids]

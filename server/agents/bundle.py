@@ -46,7 +46,7 @@ def build(demo_id: str, emit) -> dict:
     def line(ln: dict) -> dict:
         v = visual(ln.get("visual"))
         return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": v, "start": ln.get("start"), "duration": ln.get("duration"),
-                "fact_ids": ln.get("fact_ids", []), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
+                "fact_ids": ln.get("fact_ids", []), "step": ln.get("step", "other"), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
 
     def assemble(sc: dict) -> dict:
         segs = []
@@ -75,7 +75,7 @@ def build(demo_id: str, emit) -> dict:
         def sl_line(l: dict) -> dict:
             src = by_id.get(l["id"], {})
             return {"id": l["id"], "text": src.get("text") or l["text"], "fact_ids": l.get("fact_ids", []), "audio": media_url(demo_id, src.get("audio")),
-                    "start": src.get("start"), "duration": src.get("duration")}
+                    "start": src.get("start"), "duration": src.get("duration"), "step": src.get("step") or l.get("step", "other")}
         out = []
         for s in deck.get("slides", []):
             seg = seg_by_id.get(s.get("segment_id") or "", {})

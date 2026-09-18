@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free player browser contract</title>
+<link rel="stylesheet" href="/web/styles.css">
+<style>
+  body { display: block; margin: 0; padding: 24px; background: #101722; color: #edf2f7; font: 15px system-ui; }
+  main { display: block; flex: none; width: 100%; max-width: 1180px; margin: auto; }
+  h1 { font-size: 24px; margin: 0 0 8px; }
+  p { color: #bdc7d5; }
+  #run { padding: 10px 18px; background: #9becbe; color: #10291d; border: 0; border-radius: 8px; cursor: pointer; }
+  #summary { margin: 18px 0; font-weight: 700; }
+  #results { padding-left: 24px; line-height: 1.7; }
+  .pass { color: #9becbe; } .fail { color: #ffadad; }
+  #fixture { height: 590px; border: 1px solid #64748b; border-radius: 12px; overflow: hidden; margin-top: 20px; }
+  #fixture .pl { height: 100%; }
+  #fixture .render-contract, #fixture .render-contract * { animation: none !important; transition: none !important; }
+  details { margin-top: 16px; } pre { white-space: pre-wrap; font-size: 12px; }
+</style>
+<main>
+  <h1>Player browser contract</h1>
+  <p>Real player UI. Synthetic bundle, speech events, audio and API replies. No paid calls or external connections. Virtual time preserves timer order and flushes promise continuations.</p>
+  <button id="run" disabled>Loading player…</button>
+  <div id="summary" role="status" aria-live="polite">Loading</div>
+  <ol id="results"></ol>
+  <details><summary>Evidence and test boundaries</summary><pre id="evidence"></pre></details>
+  <div id="fixture" aria-label="Real player under test"></div>
+</main>
+<script type="module">
+const host = document.querySelector('#fixture');
+const results = document.querySelector('#results');
+const summary = document.querySelector('#summary');
+const evidence = document.querySelector('#evidence');
+const runButton = document.querySelector('#run');
+const native = { timeout: window.setTimeout, interval: window.setInterval, clearTimeout: window.clearTimeout, clearInterval: window.clearInterval, now: Date.now };
+let env, player, clock;
+const flush = async () => { for (let i = 0; i < 100; i++) await Promise.resolve(); };
+const assert = (ok, message) => { if (!ok) throw new Error(message); };
+const snapshot = (x) => JSON.parse(JSON.stringify(x));
+const audioURL = (text) => 'fake-audio:' + encodeURIComponent(text);
+
+class Clock {
+  constructor() { this.now = 1800000000000; this.next = 1; this.jobs = new Map(); }
+  add(fn, delay, repeat, args) { const id = this.next++; this.jobs.set(id, { fn, at: this.now + Math.max(0, Number(delay) || 0), repeat, args }); return id; }
+  install() {
+    window.setTimeout = (fn, ms, ...args) => this.add(fn, ms, 0, args);
+    window.setInterval = (fn, ms, ...args) => this.add(fn, ms, Math.max(1, Number(ms) || 1), args);
+    window.clearTimeout = window.clearInterval = (id) => this.jobs.delete(id);
+    Date.now = () => this.now;
+  }
+  async tick(ms) {
+    const end = this.now + ms; let budget = 20000;
+    await flush();
+    while (budget--) {
+      const next = [...this.jobs].filter(([, j]) => j.at <= end).sort((a, b) => a[1].at - b[1].at || a[0] - b[0])[0];
+      if (!next) break;
+      const [id, j] = next; this.now = j.at;
+      if (j.repeat) j.at += j.repeat; else this.jobs.delete(id);
+      j.fn(...j.args); await flush();
+    }
+    assert(budget > 0, 'Virtual timer budget exhausted');
+    this.now = end; await flush();
+  }
+}
+
+class FakeAudio {
+  constructor(url) { this.src = url; this.currentTime = 0; this.duration = 10; this.paused = true; this.owner = env; }
+  load() {}
+  removeAttribute() {}
+  play() {
+    this.paused = false;
+    const e = this.owner, text = decodeURIComponent(this.src.replace('fake-audio:', ''));
+    e.active.add(this); e.maxActive = Math.max(e.maxActive, e.active.size); e.played.push(text); this.text = text;
+    this.onplaying?.();
+    if (!e.hold(text)) queueMicrotask(() => this.finish());
+    return Promise.resolve();
+  }
+  pause() { this.paused = true; this.owner.active.delete(this); }
+  finish() { if (this.paused) return; this.currentTime = this.duration; this.paused = true; this.owner.active.delete(this); this.onended?.(); }
+}
+
+// abort intentionally permits an already queued recognition result to arrive.
+// A real player must fence it by the listening attempt/run, not trust cancellation.
+class FakeRecognition {
+  constructor() { this.owner = env; this.owner.recognizers.push(this); this.started = false; }
+  start() { this.started = true; }
+  stop() { this.onend?.(); }
+  abort() { this.aborted = true; }
+  deliver(text) { const result = [{ transcript: text }]; result.isFinal = true; this.onresult?.({ results: [result] }); this.onend?.(); }
+}
+window.Audio = FakeAudio;
+window.SpeechRecognition = FakeRecognition;
+window.webkitSpeechRecognition = FakeRecognition;
+window.fetch = () => Promise.reject(new Error('Network is disabled in this harness'));
+const { mountPlayer } = await import('/web/player/player.js');
+const { renderSlide } = await import('/web/slide.js');
+
+const line = (id, text) => ({ id, text, fact_ids: ['f1'], audio: audioURL(text) });
+function slide(id, kind, text, checkin = '') {
+  return { id, segment_id: id, kind, title: id, topics: [id], image_url: null, image_parts: [], callouts: [], motion: 'none', lines: text ? [line(id + '-l1', text)] : [], checkin: { text: checkin, audio: checkin ? audioURL(checkin) : null }, deeper: [], priority: false, usp_ids: [], role: kind };
+}
+function bundle(opening = false) {
+  const slides = [slide('hero', 'hero_open', '')];
+  if (opening) { const s = slide('opening', 'intro', 'Opening first complete.'); s.lines.push(line('opening-l2', 'Opening second detail.')); slides.push(s); }
+  slides.push(slide('proof-one', 'proof', 'First proof.', 'Any questions about the first proof?'), slide('proof-two', 'proof', 'Second proof.', 'Any questions about the second proof?'), slide('proof-three', 'proof', 'Third proof.', 'Any questions about the third proof?'), slide('hero-end', 'hero_close', ''));
+  return { name: 'Synthetic browser contract', language: 'en-IN', product: { name: 'Fixture car' }, voice: { provider: 'sarvam', persona: { persona_name: 'Test guide' } }, intake: { q1: 'What matters to you?', audio: { q1: audioURL('What matters to you?') } }, media: {}, slides, facts: [{ id: 'f1', claim: 'Fixture fact', value: 'Evidence' }], ctas: [], fillers: {} };
+}
+const answered = (extra = {}) => ({ answered: true, answer: 'The approved source answers this.', fact_ids: ['f1'], topic: 'safety', route: 'stay', from_bank: true, ...extra });
+async function setup({ opening = false, hold = () => false, qa = async () => answered(), pitch = async () => null, configure = (b) => b } = {}) {
+  player?.destroy(); await flush();
+  env = { calls: [], saved: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold };
+  clock = new Clock(); clock.install();
+  const owner = env;
+  player = mountPlayer(host, configure(bundle(opening)), {
+    qa: async (request) => { owner.calls.push(snapshot(request)); return qa(request, owner.calls.length); },
+    tts: async (text) => audioURL(text),
+    pitch,
+    lead: async (request) => { owner.leadCalls.push(snapshot(request)); return {}; },
+    saveSession: async (record) => { owner.saved.push(snapshot(record)); },
+  });
+  await flush();
+}
+function button(text, selector = 'button') {
+  const labels = { 'Skip the intro': ['Skip the intro', 'Browse at my pace'], '▶ Start': ['▶ Start', 'Explore with me'] }[text] || [text];
+  return [...host.querySelectorAll(selector)].find((b) => labels.includes(b.textContent.trim()));
+}
+async function click(text, selector) { const b = button(text, selector); assert(b, 'Missing button: ' + text); b.click(); await flush(); }
+async function type(text) { const input = host.querySelector('.composer input'); input.value = text; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); input.blur(); await flush(); }
+async function atProof() { await click('Skip the intro'); assert(player.context().slide === 'proof-one', 'Fixture did not reach first proof'); assert(button('I have a question'), 'Fixture did not reach the first check-in'); }
+const recentRecognizer = () => env.recognizers.at(-1);
+const detail = () => ({ context: player?.context(), qa: env?.calls, audioStarted: env?.played, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, leadRequests: env?.leadCalls });
+const cases = [];
+const test = (name, fn) => cases.push({ name, fn });
+
+test('Question mode holds its place after 30 seconds of silence', async () => {
+  await setup(); await atProof(); await click('I have a question'); await clock.tick(30000);
+  assert(player.context().slide === 'proof-one', 'Question mode advanced the narrative without an explicit continue');
+  assert(env.calls.length === 0, 'Silence was submitted as a question');
+});
+test('A yes-prefixed question reaches QA instead of the next slide', async () => {
+  await setup(); await atProof(); await type('Yes, but what is the warranty?');
+  assert(env.calls.length === 1 && env.calls[0].question === 'Yes, but what is the warranty?', 'Substantive question was consumed as agreement');
+  assert(player.context().slide === 'proof-one', 'Question moved away from its current slide');
+});
+test('A typed clarification is accepted once with conversation history', async () => {
+  await setup({ qa: async (_, n) => n === 1 ? answered({ clarifying_question: 'Do you mean the manual or automatic?' }) : answered() });
+  await atProof(); await type('Which transmission is that?');
+  assert(env.played.includes('Do you mean the manual or automatic?'), 'Clarification was never asked');
+  const clarificationRecognition = recentRecognizer();
+  await type('The automatic, please.');
+  assert(env.calls.length === 2 && env.calls[1].question === 'Which transmission is that?', 'Clarification did not retain the original question for QA');
+  assert(env.calls[1].skip_bank === true, 'Clarification reply may be intercepted by an unrelated cached FAQ');
+  assert(env.calls[1].history.some((x) => x.text === 'Do you mean the manual or automatic?'), 'QA did not receive the actual clarification prompt');
+  assert(env.calls[1].history.filter((x) => x.role === 'user' && x.text === 'The automatic, please.').length === 1, 'Typed clarification was duplicated in history');
+  assert(env.calls[1].profile.followup === 'Do you mean the manual or automatic? The automatic, please.', 'Clarification context was not retained verbatim for the next response');
+  clarificationRecognition.deliver('The manual, stale speech'); await flush();
+  assert(env.calls.length === 2, 'A stale recognition result reopened the settled typed clarification');
+});
+test('An unknown answer holds the callback form without narration behind it', async () => {
+  await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
+  await atProof(); await type('What exact EMI will the bank guarantee?');
+  assert(host.querySelector('.pl-lead.open'), 'Unknown did not open callback form');
+  const before = env.played.length; await clock.tick(30000);
+  assert(player.context().slide === 'proof-one', 'Unknown answer advanced while the callback form was open');
+  assert(env.played.length === before, 'Narration continued behind the callback form');
+});
+test('A late speech result cannot answer the wait after a slide skip', async () => {
+  await setup(); await atProof(); const old = recentRecognizer();
+  await click('proof-two', '.pl-progress button');
+  assert(player.context().slide === 'proof-two', 'Fixture skip did not reach second proof');
+  old.deliver('Yes'); await flush();
+  assert(player.context().slide === 'proof-two', 'Stale recognition advanced the new slide');
+  assert(env.calls.length === 0, 'Stale recognition was submitted to QA');
+});
+test('A late speech result after restart leaves the new intake untouched', async () => {
+  await setup(); await click('▶ Start'); const old = recentRecognizer();
+  host.querySelector('button[title="Restart"]').click(); await flush();
+  old.deliver('My name is Stale, I need finance'); await flush();
+  assert(player.context().profile.why === '', 'Stale recognition filled the restarted profile');
+  assert(env.calls.length === 0, 'Stale recognition became a question in the new session');
+  assert(host.querySelector('.pl-intake.open'), 'Stale recognition dismissed the new intake');
+});
+test('Opening Q&A resumes the interrupted line without replaying completed lines', async () => {
+  await setup({ opening: true, hold: (text) => text === 'Opening second detail.' });
+  await click('Skip the intro');
+  assert(env.played.at(-1) === 'Opening second detail.', 'Fixture did not stop in second opening line');
+  await type('What about safety?'); await click('Yes, that helps');
+  assert(env.played.filter((t) => t === 'Opening first complete.').length === 1, 'Completed opening line replayed after Q&A');
+  assert(env.played.filter((t) => t === 'Opening second detail.').length === 2, 'Interrupted opening line did not resume');
+  assert(env.maxActive <= 1, 'Opening and answer audio overlapped');
+});
+test('A superseded QA response cannot speak over the current answer', async () => {
+  let release;
+  const pending = new Promise((resolve) => { release = resolve; });
+  await setup({ hold: (text) => text === 'Current answer.', qa: async (_, n) => n === 1 ? pending : answered({ answer: 'Current answer.' }) });
+  await atProof(); await type('Old question'); await type('New question');
+  assert(env.active.size === 1 && env.played.at(-1) === 'Current answer.', 'Fixture did not reach held current answer');
+  release(answered({ answer: 'Obsolete answer.' })); await flush(); await clock.tick(1000);
+  assert(!env.played.includes('Obsolete answer.'), 'Superseded answer was played');
+  assert(env.maxActive === 1 && env.active.size === 1, 'More than one narration audio played at once');
+});
+test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
+  await setup({
+    hold: (text) => text === 'First proof interrupted detail.',
+    qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer: 'The target slide carries that evidence.' }),
+    configure: (b) => {
+      b.slides.find((s) => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.'));
+      b.slides.find((s) => s.id === 'proof-three').callouts.push({ id: 'target-f1', text: 'Third proof detail', fact_ids: ['f1'], placement: 'panel', anchor: null, label_pos: null, reveal_on_line: 0 });
+      return b;
+    },
+  });
+  await click('Skip the intro');
+  assert(player.context().slide === 'proof-one' && player.context().line_index === 1, 'Fixture did not stop on the second proof line');
+  await type('Can you show the evidence on the other slide?');
+  assert(env.calls[0].slide_id === 'proof-one' && player.context().slide === 'proof-three', 'Routed question did not jump from its original slide to the answer slide');
+  assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Routed answer did not highlight its cited detail');
+  await click('Yes, that helps');
+  assert(player.context().slide === 'proof-one' && player.context().line_index === 1 && player.context().line_text === 'First proof interrupted detail.', 'Return point changed during the off-slide answer');
+  assert(env.played.filter((t) => t === 'First proof.').length === 1 && env.played.filter((t) => t === 'First proof interrupted detail.').length === 2, 'Return replayed a completed line or skipped the interrupted one');
+  assert(env.maxActive === 1, 'Off-slide answer overlapped narration');
+});
+test('Declining callback still permits completion and saves the finished session', async () => {
+  const question = 'Can you guarantee my exact monthly payment?';
+  await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
+  await atProof(); await type(question);
+  assert(host.querySelector('.pl-lead.open .consent')?.textContent.includes('agree'), 'Callback form did not explain consent');
+  await click('Not now', '.pl-lead button');
+  assert(!host.querySelector('.pl-lead.open') && env.leadCalls.length === 0, 'Declining consent created a callback request');
+  await click('Continue demo', '.pl-chips button');
+  assert(player.context().slide === 'proof-two', 'Declining callback prevented the explicit return to the tour');
+  await click('Continue', '.pl-chips button');
+  assert(player.context().slide === 'proof-three', 'Second proof did not complete');
+  await click('Continue', '.pl-chips button');
+  assert(player.context().slide === 'hero-end', 'Tour did not reach its final choice');
+  await click('Not yet', '.pl-chips button'); await click('Done', '.pl-handoff button');
+  const saved = env.saved.at(-1);
+  assert(env.saved.length >= 2 && saved.ended && new Set(env.saved.map((s) => s.id)).size === 1, 'Completion did not save one consistent ended session');
+  assert(saved.questions.includes(question) && saved.unresolved.includes('finance') && saved.leads.length === 0 && env.leadCalls.length === 0, 'Saved session lost the unanswered concern or invented a lead');
+  assert(saved.transcript.filter((x) => x.role === 'user' && x.text === question).length === 1, 'Saved transcript duplicated or lost the customer question');
+  assert(['First proof.', 'Second proof.', 'Third proof.'].every((text) => saved.transcript.some((x) => x.role === 'agent' && x.text === text)), 'Finished transcript omitted heard proof lines');
+  assert(saved.turns.length === 1 && saved.turns[0].qa_done != null && saved.turns[0].answer_audio != null, 'Completed session lost answer latency stamps');
+});
+test('A legacy deeper question waits until the customer explicitly skips it', async () => {
+  await setup({
+    hold: (text) => text === 'Next deeper detail.',
+    configure: (b) => {
+      b.slides.find((s) => s.id === 'proof-one').deeper = [
+        { ...line('deeper-one', 'Which seat would you use most?'), step: 'confirm' },
+        line('deeper-two', 'Next deeper detail.'),
+      ];
+      return b;
+    },
+  });
+  await atProof(); await click('Tell me more', '.pl-chips button');
+  assert(env.played.includes('Which seat would you use most?') && button('Skip this question', '.pl-chips button'), 'Deeper question did not open an explicit answer wait');
+  await clock.tick(30000);
+  assert(player.context().slide === 'proof-one' && !env.played.includes('Next deeper detail.'), 'Silence advanced past the deeper question');
+  await click('Skip this question', '.pl-chips button');
+  assert(env.played.filter((text) => text === 'Next deeper detail.').length === 1 && env.calls.length === 0, 'Explicit skip did not proceed exactly once without a fabricated QA turn');
+});
+test('Stopping with a callback open shows a buyer recap while retaining internal session detail', async () => {
+  const need = 'I need space for a stroller.', question = 'Will the boot take my stroller?', topic = 'Everyday practicality';
+  await setup({
+    qa: async () => ({ answered: false, topic: 'practicality', escalate: question }),
+    pitch: async () => ({ customer_state: 'stated_need', focus_topics: [], route: [{ slide_id: 'proof-one', segment_id: 'proof-one' }], custom_batches: [] }),
+    configure: (b) => { const first = b.slides.find((s) => s.id === 'proof-one'); first.title = topic; first.usp_ids = ['INTERNAL-USP-TEST']; return b; },
+  });
+  await click('▶ Start');
+  const intake = host.querySelector('.pl-intake.open .fallback input');
+  assert(intake, 'Fixture intake did not open'); intake.value = need;
+  intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  assert(player.context().slide === 'proof-one' && button('I have a question'), 'Known customer fixture did not reach its first proof');
+  await type(question);
+  assert(host.querySelector('.pl-lead.open'), 'Fixture callback form did not open');
+  host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
+  const handoff = host.querySelector('.pl-handoff.open'), text = handoff?.textContent || '';
+  assert(handoff && !host.querySelector('.pl-lead.open'), 'Stopping left the callback layered over the recap');
+  assert([need, topic, question].every((value) => text.includes(value)), 'Buyer recap omitted the actual need, explored topic or open question');
+  assert(!/\bIntent\b|\/\s*100|customer_state|stated_need|standard route|no state|route\s*(?:&|and)\s*drop|drop point|INTERNAL-USP-TEST|\bUSPs?\b|personali[sz]ed/i.test(text), 'Buyer recap exposes internal scoring, routing or personalization diagnostics');
+  assert(button('Done', '.pl-handoff button') && button('Back to the demo', '.pl-handoff button'), 'Recap removed its normal completion or return actions');
+  const saved = env.saved.at(-1);
+  assert(saved?.ended && typeof saved.intent === 'number' && saved.customer_state === 'stated_need' && saved.personalized === true, 'Customer-facing cleanup removed internal session state');
+  assert(saved.profile.why === need && saved.route.includes('proof-one') && saved.usps_covered.includes('INTERNAL-USP-TEST') && saved.questions.includes(question) && saved.unresolved.includes('practicality'), 'Saved record lost diagnostic detail needed by Studio');
+  assert(env.leadCalls.length === 0, 'Stopping submitted a callback without consent');
+});
+
+const imageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#c9ddd2"/><rect x="8" y="8" width="984" height="584" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="640" cy="280" r="100" fill="#204d43"/><text x="45" y="540" font-family="sans-serif" font-size="32" fill="#173b32">Synthetic geometry fixture — 1000 × 600</text></svg>');
+async function renderFixture(width) {
+  player?.destroy(); player = null; host.replaceChildren();
+  env = { calls: [], played: [], active: new Set(), maxActive: 0, geometry: [] };
+  const frame = document.createElement('div'); frame.className = 'pl render-contract';
+  frame.style.cssText = `position:relative;display:block;width:${width}px;max-width:100%;height:540px;overflow:visible`;
+  const stage = document.createElement('div'); stage.className = 'pl-stage'; stage.style.cssText = 'position:absolute;inset:0;overflow:visible';
+  const stack = document.createElement('div'); stack.className = 'slide-stack'; stack.style.inset = '0';
+  stage.append(stack); frame.append(stage); host.append(frame);
+  const sl = slide('geometry', 'proof', 'A supported point.'); sl.title = 'An exact product detail'; sl.image_url = imageFixture;
+  sl.callouts = [{ id: 'geometry-callout', text: 'Supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .64, y: .47 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 0 }];
+  const view = renderSlide(sl, { fit: true }); view.setRevealed(-1); stack.append(view.el); view.el.classList.add('on');
+  await view.img.decode(); view.layout();
+  return { frame, view };
+}
+const rect = (el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height, right: r.right, bottom: r.bottom }; };
+test('Revealing an overlay connects its leader to the visible chip centre', async () => {
+  const { frame, view } = await renderFixture(1000);
+  try {
+    assert(frame.clientWidth >= 700 && innerWidth > 620, 'Run the wide overlay check in a browser at least 748px wide');
+    const chip = view.pic.querySelector('.callout'), leader = view.pic.querySelector('.leaders line');
+    assert(chip.getBoundingClientRect().width === 0, 'Fixture overlay was not initially hidden');
+    view.setRevealed(0);
+    // Read immediately: relying on a later unrelated resize leaves the first spoken line mis-anchored.
+    const p = rect(view.pic), c = rect(chip), expected = { x: c.x + c.width / 2 - p.x, y: c.y + c.height / 2 - p.y };
+    const actual = { x: Number(leader.getAttribute('x1')) / 100 * p.width, y: Number(leader.getAttribute('y1')) / 100 * p.height };
+    env.geometry.push({ picture: p, chip: c, expectedLeaderOrigin: expected, actualLeaderOrigin: actual });
+    assert(c.width > 0 && c.height > 0 && actual.x > 1 && actual.y > 1, 'Visible overlay leader still originates at the picture corner');
+    assert(Math.abs(actual.x - expected.x) <= 1.5 && Math.abs(actual.y - expected.y) <= 1.5, 'Leader does not meet the actual visible chip centre');
+  } finally { view.destroy(); frame.remove(); }
+});
+test('Wide and narrow slides keep the native image ratio inside the stage', async () => {
+  const measurements = [];
+  for (const width of [1000, 390]) {
+    const { frame, view } = await renderFixture(width);
+    try {
+      view.setRevealed(0); view.layout();
+      const stage = rect(view.el), picture = rect(view.pic), image = rect(view.img), nativeRatio = view.img.naturalWidth / view.img.naturalHeight;
+      measurements.push({ requestedWidth: width, stage, picture, image, nativeRatio }); env.geometry = measurements;
+      assert(image.width > 0 && image.height > 0, 'Image has no visible area');
+      assert(Math.abs(image.width / image.height - nativeRatio) < .015, 'Image is distorted from its native aspect ratio');
+      assert(Math.abs(picture.width / picture.height - nativeRatio) < .015, 'Annotation picture box differs from the native image ratio');
+      assert(picture.x >= stage.x - 1 && picture.y >= stage.y - 1 && picture.right <= stage.right + 1 && picture.bottom <= stage.bottom + 1, 'Picture escapes its slide region');
+      assert(frame.scrollWidth <= frame.clientWidth + 1, 'Slide content causes horizontal overflow inside the fixture');
+      assert(document.documentElement.scrollWidth <= innerWidth + 1, 'Slide causes horizontal page overflow');
+    } finally { view.destroy(); frame.remove(); }
+  }
+});
+
+runButton.textContent = 'Run checks'; runButton.disabled = false; summary.textContent = `Ready — ${cases.length} browser checks`;
+runButton.addEventListener('click', async () => {
+  runButton.disabled = true; results.replaceChildren(); evidence.textContent = ''; const report = []; let passed = 0;
+  for (const c of cases) {
+    summary.textContent = 'Running: ' + c.name;
+    const li = document.createElement('li'); results.append(li);
+    try { await c.fn(); passed++; li.className = 'pass'; li.textContent = 'PASS — ' + c.name; report.push({ name: c.name, pass: true, evidence: detail() }); }
+    catch (error) { li.className = 'fail'; li.textContent = 'FAIL — ' + c.name + ': ' + error.message; report.push({ name: c.name, pass: false, error: error.message, evidence: detail() }); }
+    finally { player?.destroy(); player = null; await flush(); }
+  }
+  window.setTimeout = native.timeout; window.setInterval = native.interval; window.clearTimeout = native.clearTimeout; window.clearInterval = native.clearInterval; Date.now = native.now;
+  window.playerContractReport = { passed, total: cases.length, cases: report, boundaries: 'Real DOM/events and mountPlayer; synthetic audio/SpeechRecognition/API; virtual timers. Not an acoustic or native microphone check.' };
+  summary.textContent = `${passed}/${cases.length} passed; ${cases.length - passed} failed`;
+  summary.className = passed === cases.length ? 'pass' : 'fail'; evidence.textContent = JSON.stringify(window.playerContractReport, null, 2); runButton.disabled = false;
+});
+</script>
+</html>

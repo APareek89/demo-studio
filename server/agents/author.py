@@ -1,5 +1,4 @@
-"""Stage 3 — Author.  Claude writes the segment script; code enforces 'no citation, no claim'
-and the pacing rules (standard intro ≤ 2 min, proof blocks ≤ ~150 words)."""
+"""Stage 3 — Author. Claude writes grounded, conversational batches of at most twenty seconds."""
 from __future__ import annotations
 
 import json
@@ -28,20 +27,26 @@ Hard rules:
 3. VISUALS (G5). Every line binds to the visual that literally shows what it says (shot id or image id); 'focus' is a
    2-5 word on-screen label. When the subject changes, the picture changes.
 4. THE FLOW AND ITS BUDGETS (hard limits, validator-checked; one segment = one ≤20-second batch):
+   Aim for one natural ten-to-twenty-second thought, usually 19-38 words across the batch. Do not pad a short useful line,
+   write sentence fragments, or recite a list. This reusable script knows no individual customer: never assign them a
+   commute distance, budget, location or household. Plans, personas and earlier scripts are not customer testimony.
    - intake_q1 = the greeting + ONE context choice from the plan, polished: warm, names brand and product, easy to decline.
      This is the only intake question. Return intake_q2 as an empty string for schema compatibility.
    - intro (1-2 segments, ≤ 38 words each): the quick overview — who it's for, the experience, the promise. NO greeting,
      no self-introduction (already done in intake), no spec list, no decision frame.
-   - outcome (≤ 38 words): the three things to remember — the plan's three USPs, plainly, offering the customer the order.
+   - outcome (≤ 38 words): the three things to remember — the plan's three USPs, plainly; the customer can steer the order.
+     Say this as an invitation, not another intake question.
    - proof (4-6 segments, ≤ 38 words each): NOTICE one thing → the picture SHOWS it → MEANING: what it changes for this
      customer, in their routine — the meaning sentence is MANDATORY, a feature stated without its meaning is incomplete →
      CHECK: one short question in `checkin` (never two). Technical detail goes to 2-3 `deeper` lines.
-   - features (≤ 40 words): one sentence per feature, no numbers unless decisive; last line invites questions.
+   - features (≤ 40 words): one sentence per feature, no numbers unless decisive; invite questions in `checkin`.
    - establish (≤ 36 words): variant + written terms in one line each, then the top open questions declared honestly.
    - closing (2 lines, ≤ 45 words total): FIT SUMMARY — "the strongest fit is … and the one thing we should still verify
      is …" (the plan's decision_frame, in everyday nouns) — then the next step naming the CTA label.
    Signposts, varied, in the persona's voice: {signposts}
    card='contrast' where today meets after; 'price' only in a price block; 'facts' at most once; 'summary' in the closing.
+   Every real question goes in `checkin`, where the player explicitly waits for an answer. Narration and closing lines
+   contain no questions. Do not duplicate a checkin in a line. `step=confirm` is retained only for old script compatibility.
 5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown. Concrete
    nouns; no "smart/convenient/economical". Never more than two facts in a row without their meaning for this person.
 {audience}
@@ -103,8 +108,16 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
             line["unverified"] = False
 
     for seg in script["segments"]:
+        checkin = (seg.get("checkin") or "").strip()
+        # Checkins have no citation field. Moving a claim out of a line cannot
+        # exempt it from grounding: a question-only turn must remain claim-free.
+        if NUMBERISH.search(checkin) or CLAIMISH.search(checkin):
+            issues.append(f"{seg['id']}: checkin contains a figure or claim without citations — ask only about relevance, and keep cited facts in narration")
+            seg["checkin"], seg["checkin_audio"] = "", None
         for n, ln in enumerate(seg["lines"], 1):
             check(ln, f"{seg['id']} line {n}")
+            if re.search(r"[?？]", ln.get("text", "")) or ln.get("step") == "confirm":
+                issues.append(f"{seg['id']} line {n}: move the question to checkin so the player explicitly waits; narration must not ask it again")
         for n, ln in enumerate(seg.get("deeper", []), 1):
             check(ln, f"{seg['id']} deeper {n}")
         total = sum(words(l["text"]) for l in seg["lines"])
@@ -124,6 +137,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
         issues.append(f"opening (intro + outcome) is {intro_words} words; keep it under 115 (~45 s)")
     for n, ln in enumerate(script.get("closing", []), 1):
         check(ln, f"closing {n}")
+        if re.search(r"[?？]", ln.get("text", "")) or ln.get("step") == "confirm":
+            issues.append(f"closing line {n}: a question needs an explicit checkin; close with the next action instead")
     closing_words = sum(words(l["text"]) for l in script.get("closing", []))
     if closing_words > CLOSING_LIMIT:
         issues.append(f"closing is {closing_words} words, limit {CLOSING_LIMIT}")
@@ -246,7 +261,7 @@ IMAGES:
 {imgs_txt or '(none)'}
 """
     if prev and instruction:
-        content += f"\nPREVIOUS SCRIPT (revise; keep segment ids):\n{json.dumps({'segments': prev['segments'], 'closing': prev['closing']})[:40000]}\n"
+        content += f"\nPREVIOUS SCRIPT (revise; keep segment ids, but remove any assumed individual customer circumstances):\n{json.dumps({'segments': prev['segments'], 'closing': prev['closing']})[:40000]}\n"
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     audience = demo.get("settings", {}).get("audience", "everyday")

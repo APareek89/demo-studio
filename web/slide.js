@@ -7,9 +7,10 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 
 export function renderSlide(slide, opts = {}) {
   const callouts = slide.callouts || [];
-  const el = h("div", { class: `slide motion-${slide.motion || "none"}${opts.editable ? " editable" : ""}` });
+  const kind = slide.kind || "proof";
+  const el = h("div", { class: `slide slide-${kind} motion-${slide.motion || "none"}${opts.editable ? " editable" : ""}` });
   const pic = h("div", { class: "slide-pic" + (slide.image_url ? "" : " noimg") });
-  const img = h("img", { alt: "", draggable: "false" });
+  const img = h("img", { alt: slide.title || "Product view", draggable: "false" });
   const leaders = document.createElementNS(SVG_NS, "svg");
   leaders.setAttribute("class", "leaders"); leaders.setAttribute("viewBox", "0 0 100 100"); leaders.setAttribute("preserveAspectRatio", "none");
   const chips = new Map(), dots = new Map(), lines = new Map();
@@ -27,13 +28,27 @@ export function renderSlide(slide, opts = {}) {
   });
   const panel = h("div", { class: "slide-panel" }, ...callouts.map((c, k) => h("div", { class: "item " + (c.placement === "overlay" && c.label_pos ? "overlay" : "panel"), "data-id": c.id },
     h("span", { class: "num" }, String(k + 1)), h("span", {}, c.text, c.fact_ids?.length ? h("div", { class: "cite" }, c.fact_ids.join(", ")) : null))));
+  if (opts.fit) {
+    const chapter = ({hero_open: "A closer look", intro: "Meet your next possibility", outcome: "Made for your everyday",
+      proof: "Look a little closer", features: "The details that matter", establish: "Before you decide",
+      closing: "Your next move", hero_close: "Make it yours", custom: "Chosen for you"})[kind] || "Explore the details";
+    el.append(h("div", {class: "slide-heading"}, h("div", {class: "slide-chapter"}, chapter),
+      h("h2", {class: "slide-title"}, slide.title || "Explore the details")));
+  }
   el.append(pic, panel);
 
   function layout() {  // leader lines run from each chip's centre to its anchor; chip size is only known after layout
     if (opts.fit && img.naturalWidth && img.naturalHeight) {  // player: the picture box is the largest one of the image's ratio that fits the stage
       const SW = el.clientWidth || 1, SH = el.clientHeight || 1, R = img.naturalWidth / img.naturalHeight;
-      let w = SW, hh = SW / R; if (hh > SH) { hh = SH; w = SH * R; }
+      // Reserve a copy column on wide stages. On small stages the image sits between the heading and evidence.
+      // The picture keeps its native ratio: annotations and Align's saved coordinates use this exact same box.
+      const small = SW < 700;
+      const area = small ? {x: 16, y: kind === "hero_open" ? 18 : SH * .23, w: SW - 32, h: SH * (kind === "hero_open" ? .55 : .57)}
+        : {x: SW * .37, y: 18, w: SW * .60, h: SH - 36};
+      let w = area.w, hh = w / R; if (hh > area.h) { hh = area.h; w = hh * R; }
       pic.style.width = Math.round(w) + "px"; pic.style.height = Math.round(hh) + "px";
+      pic.style.left = Math.round(area.x + (area.w - w) / 2) + "px";
+      pic.style.top = Math.round(area.y + (area.h - hh) / 2) + "px";
     }
     const W = pic.clientWidth || 1, H = pic.clientHeight || 1;
     for (const [id, chip] of chips) { const ln = lines.get(id); if (!ln) continue; ln.setAttribute("x1", String((chip.offsetLeft + chip.offsetWidth / 2) / W * 100)); ln.setAttribute("y1", String((chip.offsetTop + chip.offsetHeight / 2) / H * 100)); }
@@ -47,6 +62,8 @@ export function renderSlide(slide, opts = {}) {
   }
   function setRevealed(lineIdx) {  // player: a callout appears when the line it supports starts; -1 hides all
     for (const c of callouts) { const on = c.reveal_on_line <= lineIdx; chips.get(c.id)?.classList.toggle("hidden", !on); dots.get(c.id)?.classList.toggle("hidden", !on); lines.get(c.id)?.classList.toggle("hidden", !on); panel.querySelector(`[data-id="${c.id}"]`)?.classList.toggle("hidden", !on); }
+    // A hidden chip has no dimensions. Recompute its leader only after it is visible.
+    layout();
   }
   function highlight(id) { for (const [cid, chip] of chips) chip.classList.toggle("hot", cid === id); for (const it of panel.children) it.classList.toggle("hot", it.dataset.id === id); }
   function setImage(url, parts) { pic.classList.toggle("noimg", !url); img.src = url || ""; slide.image_parts = parts || []; }

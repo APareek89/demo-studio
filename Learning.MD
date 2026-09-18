@@ -453,3 +453,66 @@
 **Deepest why type:** `overbroad-match`
 **Action taken:** `_quota_cooldown(message)` — a burst waits what Gemini asks (+1 s; 30 s without a hint); only `limit: 0` / `quota_value: 0` latches ten minutes. Unit cases in `qa_deck.py`.
 **Preventive action:** Any provider cooldown is sized from the provider's own retry hint, and the zero-quota case is matched on its specific markers, never on generic quota wording.
+
+### 2026-09-18 — The player needed a visible product and a readable conversation
+
+**Symptom:** The welcome blurred the product behind a large mascot; slide titles were hard to find, and a revealed overlay line started at the picture corner. A phone preview of the redesign then exposed a gradient fading out the hero.
+**Why 1:** The same presentation emphasized the guide and controls more than the product, and positions were measured while callout chips had no dimensions.
+**Why 2:** Reveal changed visibility without recomputing leader geometry; layout reserved a fixed caption height.
+**Why 3:** Existing checks covered data positions and desktop presentation, not visible rendered geometry after reveal or a changing conversation dock.
+**Deepest why type:** `design`
+**Action taken:** Product-first welcome, visible benefit headings, native-aspect pictures, scoped evidence panel, typed reply field, measured dock reservation, and layout recomputation after reveal. Mobile hero uses an upper picture area without an obscuring gradient.
+**Preventive action:** Browser checks measure leader endpoints after reveal and wide/narrow image bounds; visually review welcome, long answers and controls on a phone before calling the experience ready.
+
+### 2026-09-18 — Silence and qualified replies incorrectly advanced the demo
+
+**Symptom:** The browser swallowed “Yes, but what about charging?” as agreement and continued narration behind an unknown-answer callback form.
+**Why 1:** Short prefix matching classified any brief yes-prefixed reply as confirmation; timers treated silence as continuation.
+**Why 2:** The player had separate paths for chips, ordinary questions and microphone input rather than one owned customer turn.
+**Why 3:** A global reply resolver and mic flag let a delayed speech result target whichever wait happened to exist later.
+**Deepest why type:** `architecture`
+**Action taken:** Explicit question waits have no auto-advance countdown. Exact controls settle choices; qualified replies reach Q&A. Typing is always visible. Capture ownership spans permission, recording and transcription; late results cannot resolve a new turn. Unknown and dissatisfied answers retain the turn until explicit continuation.
+**Preventive action:** Browser regressions exercise silence, yes-but, stale speech after skip/restart, delayed QA, clarification and callback hold. Acoustic recognition quality remains a real-device test.
+
+### 2026-09-18 — Q&A lost the opening checkpoint and clarification context
+
+**Symptom:** An opening interruption could replay completed narration; short clarification replies could match an unrelated cached FAQ.
+**Why 1:** Return state described only the routed slides; the opening and deeper explanation had no independent checkpoint.
+**Why 2:** A clarification was treated as a new standalone question rather than a reply to the original one.
+**Why 3:** Tests checked structural strings and successful question routing, not a second reply inside an interrupted phase.
+**Deepest why type:** `design`
+**Action taken:** Preserve phase, slide and line across all follow-ups, then return with a spoken bridge after explicit resolution. Clarification speaks alone, accepts typing or voice, and sends the original question plus the actual reply/history with FAQ matching disabled.
+**Preventive action:** Browser cases cover opening and off-slide interruption, exact once-only typed clarification and deeper question waits; content cases reject a clarification containing an uncited claim.
+
+### 2026-09-18 — Fallback labels were fragments and rebuilds could remap edits
+
+**Symptom:** The iQube deck included “Charger supplied: portable new 950W charger that plugs”. Omitting a long fact also risked attaching an existing Align edit to a different numbered callout.
+**Why 1:** `_compact` sliced the first N words.
+**Why 2:** Fallback considered width without preserving complete meaning, conditions or truth type.
+**Why 3:** Positional callout IDs assumed the set and order could never change.
+**Why 4:** Evals measured length, layout and citations without an omitted earlier fact plus a saved edit.
+**Deepest why type:** `design`
+**Action taken:** Keep a complete original label with its qualifications only when it fits; otherwise omit it. Preserve prior unambiguous citation identity and reserve IDs belonging to omitted callouts or existing overrides.
+**Preventive action:** Long-label, condition, title and repeated-rebuild override regressions.
+
+### 2026-09-18 — The script substituted a default customer for the real viewer
+
+**Symptom:** The real iQube session recorded 5–10 km/day while the existing script described 30 km/day; prompts also repeated discovery.
+**Why 1:** The prompt wanted one context choice while the schema asked name, purpose and a second question.
+**Why 2:** Customer examples and generic personas appeared beside the actual customer context.
+**Why 3:** Reused plan/script text was not explicitly excluded as evidence about this viewer.
+**Why 4:** A valid product citation could license an unrelated personal quantity, and no-context output was accepted.
+**Why 5:** Tests checked shape and routes without testing ownership of personal details.
+**Deepest why type:** `design`
+**Action taken:** Align prompts and schema, enforce empty second-intake fields, suppress invented personalization after skipped intake, and reject quantities absent from customer or cited-fact inputs. Validate check-ins as well as narration so moving a claim into a question cannot bypass grounding.
+**Preventive action:** Adversarial 5–10 versus 30/thirty, skipped intake, valid spoken quantities, check-in grounding and second-intake tests. The quantity guard checks presence, not semantic entailment; the new real script still needs source and customer-profile review.
+
+### 2026-09-18 — The buyer ending exposed the internal sales handoff
+
+**Symptom:** Stop showed the customer an intent score, classification, route/drop point and USP identifiers; an open callback form could cover the summary.
+**Why 1:** The player rendered its internal session report directly as the customer ending.
+**Why 2:** One view served two audiences with different needs, and ending playback did not close subordinate overlays.
+**Why 3:** Completion tests verified record saving but not what the buyer saw.
+**Deepest why type:** `design`
+**Action taken:** Customer recap uses their actual stated needs, explored topics and questions still open, with one optional follow-up. Internal metrics remain in session storage. Opening the recap closes the callback form.
+**Preventive action:** Browser regression stops during an unresolved callback turn and checks buyer copy, visible overlays and preserved internal record separately.

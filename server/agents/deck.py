@@ -69,7 +69,9 @@ FACT REGISTRY (only these may be cited):
 
 
 def _compact(text: str, limit: int) -> str:
-    return " ".join(re.findall(r"\S+", text or "")[:limit])
+    """Keep complete copy or omit it; a word slice can remove a condition or half a sentence."""
+    complete = " ".join(re.findall(r"\S+", text or ""))
+    return complete if words(complete) <= limit else ""
 
 
 def _slide_tokens(seg: dict) -> set[str]:
@@ -137,8 +139,11 @@ def place_callouts(slide: dict, image: dict | None) -> None:
 # ---------- callouts ----------
 
 def derive_callouts(slide: dict, facts_by_id: dict, image: dict | None) -> list[dict]:
-    """No model (mock, old demos, model failure): the slide's own cited facts, claim + value in ≤ 8 words, pointed at the
-    part whose name shares a word with the fact. Grounded by construction."""
+    """No model: use a complete cited fact, including its scope, only when it fits.
+
+    Do not manufacture a shorter benefit or clip the qualifier. Narration and the
+    fact card retain omitted facts; an empty callout is preferable to a changed claim.
+    """
     names = [p["name"] for p in visuals.part_boxes(image or {})]
     seen, out = set(), []
     for li, ln in enumerate(slide["lines"]):
@@ -147,9 +152,18 @@ def derive_callouts(slide: dict, facts_by_id: dict, image: dict | None) -> list[
             if not f or fid in seen:
                 continue
             seen.add(fid)
+            label = f"{f['claim']}: {f['value']}"
+            if f.get("conditions"):
+                label += f"; {f['conditions']}"
+            truth_label = {"certified": "Certified", "modeled": "Estimate", "observed": "Observed", "contractual": "Written terms"}.get(f.get("truth"))
+            if truth_label:
+                label = f"{truth_label} — {label}"
+            label = _compact(label, MAX_CALLOUT_WORDS)
+            if not label:
+                continue
             ft = visuals._expand(visuals._tokens(f"{f['claim']} {f['value']}"))
             part = next((n for n in names if visuals._tokens(n) & ft), "")
-            out.append({"text": _compact(f"{f['claim']}: {f['value']}", MAX_CALLOUT_WORDS), "fact_ids": [fid], "part": part, "reveal_on_line": li})
+            out.append({"text": label, "fact_ids": [fid], "part": part, "reveal_on_line": li})
             if len(out) >= MAX_CALLOUTS:
                 return out
     return out
@@ -203,8 +217,9 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
         image_changed = o.get("image_id") in images_by_id and o["image_id"] != s["image_id"]
         if image_changed:
             s["image_id"], s["image_reason"] = o["image_id"], "chosen in Align"
-        if (o.get("title") or "").strip():
-            s["title"] = _compact(o["title"], MAX_TITLE_WORDS)
+        title = _compact(o.get("title", ""), MAX_TITLE_WORDS)
+        if title:
+            s["title"] = title
         img = images_by_id.get(s["image_id"])
         for oc in o.get("callouts", []):
             c = next((x for x in s["callouts"] if x["id"] == oc.get("id")), None)
@@ -239,6 +254,7 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
         raise RuntimeError("Author first, then the deck")
     demo = store.load(demo_id)
     prev = store.read_json(demo_id, "deck.json") or {}
+    overrides = store.read_json(demo_id, "deck-overrides.json") or {}
     facts_by_id = {f["id"]: f for f in und.get("facts", []) if f.get("approved", True)}
     images = [i for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])]
     images_by_id = {i["id"]: i for i in images}
@@ -249,13 +265,15 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
     plan_by_id = {s["id"]: s for s in plan.get("segments", [])}
 
     def slide(sid, seg_id, kind, title, image_id, lines, **kw):
-        return {"id": sid, "segment_id": seg_id, "kind": kind, "title": _compact(title, MAX_TITLE_WORDS), "topics": kw.get("topics", []),
+        safe_title = _compact(title, MAX_TITLE_WORDS) or {"intro": "Overview", "outcome": "What matters", "proof": "Explore the details",
+                                                       "features": "A few more things", "establish": "Ownership and terms", "closing": "Your next step"}.get(kind, "")
+        return {"id": sid, "segment_id": seg_id, "kind": kind, "title": safe_title, "topics": kw.get("topics", []),
                 "fact_ids": sorted({f for l in lines for f in l.get("fact_ids", [])}), "image_id": image_id, "image_reason": kw.get("reason", ""),
                 "motion": kw.get("motion", "zoom_in"), "callouts": [], "lines": lines, "checkin": kw.get("checkin", ""), "deeper": kw.get("deeper", []),
                 "usp_ids": kw.get("usp_ids", []), "priority": kw.get("priority", False), "role": kw.get("role", kind)}
 
     def strip(l):
-        return {"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", [])}
+        return {"id": l["id"], "text": l["text"], "fact_ids": l.get("fact_ids", []), "step": l.get("step", "other")}
 
     emit("Laying out one slide per script segment…")
     slides = [slide("sl00", None, "hero_open", product, hero_id, [], reason="hero", motion="zoom_in")]
@@ -299,15 +317,54 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
         elif s["lines"] and s["kind"] not in ("hero_open", "hero_close"):
             cleaned = derive_callouts(s, facts_by_id, img)
             n_derived += len(cleaned)
-        for k, c in enumerate(cleaned, 1):
-            c["id"] = f"{s['id']}-c{k}"
+        # Omitting a long fact must not move its old positional id onto a
+        # different fact and silently reapply that fact's reviewed Align edit.
+        # Reuse an id only for unambiguous matching evidence; keep orphaned
+        # override ids reserved even after a further rebuild.
+        old_callouts = next((old.get("callouts", []) for old in prev.get("slides", []) if old.get("id") == s["id"]), [])
+        old_overrides = next((old.get("callouts", []) for old in overrides.get("slides", []) if old.get("slide_id") == s["id"]), [])
+        reserved = {c.get("id") for c in old_callouts + old_overrides if c.get("id")}
+        identity = lambda c: tuple(sorted(set(c.get("fact_ids", []))))
+        reviewed = []
+        for edit in old_overrides:
+            old = next((c for c in old_callouts if c.get("id") == edit.get("id")), None)
+            if not old or "text" not in edit:
+                continue
+            candidate = {**old, **edit}
+            citations = set(candidate.get("fact_ids", []))
+            # An explicit, concise human edit may still be useful when the
+            # unedited fact is too long to derive. Keep it only while all its
+            # evidence is approved AND belongs to this slide.
+            if not citations or not citations <= allowed.intersection(s["fact_ids"]):
+                continue
+            safe = clean_callouts([candidate], s, allowed, img)
+            if safe:
+                reviewed.append({**safe[0], "id": old["id"]})
+        if reviewed:
+            reviewed_keys = {identity(c) for c in reviewed}
+            cleaned = (reviewed + [c for c in cleaned if identity(c) not in reviewed_keys])[:MAX_CALLOUTS]
+        next_id = 1
+        for c in cleaned:
+            if c.get("id"):
+                continue
+            key = identity(c)
+            matches = [old for old in old_callouts if identity(old) == key]
+            if key and len(matches) == 1 and sum(identity(new) == key for new in cleaned) == 1 and matches[0].get("id"):
+                c["id"] = matches[0]["id"]
+            else:
+                while f"{s['id']}-c{next_id}" in reserved:
+                    next_id += 1
+                c["id"] = f"{s['id']}-c{next_id}"
+                reserved.add(c["id"])
+                next_id += 1
         s["callouts"] = cleaned
         if out:
             title = next((t.title for t in out.titles if t.slide_id == s["id"]), "")
-            if title.strip():
-                s["title"] = _compact(title, MAX_TITLE_WORDS)
+            title = _compact(title, MAX_TITLE_WORDS)
+            if title:
+                s["title"] = title
         place_callouts(s, img)
-    apply_overrides(slides, store.read_json(demo_id, "deck-overrides.json") or {}, images_by_id, allowed)
+    apply_overrides(slides, overrides, images_by_id, allowed)
     overlay = sum(1 for s in slides for c in s["callouts"] if c["placement"] == "overlay")
     panel = sum(1 for s in slides for c in s["callouts"] if c["placement"] == "panel")
     intro_src = next((src["id"] for src in reversed(demo["sources"]) if src["kind"] == "video" and src.get("role") == "intro_video"), None)

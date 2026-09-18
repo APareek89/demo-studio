@@ -83,7 +83,7 @@ flowchart TD
   BUILD[&quot;BUILD phase (thread)&lt;br/&gt;[FUNCTION · graph.py]&lt;br/&gt;Voice → Rehearsal → Bundle&lt;br/&gt;see diagram 04&quot;]:::fn
   OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
-  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;see diagram 05&quot;]:::fn
+  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;product-first gallery · owned voice/typed turns · explicit Q&amp;A return&lt;br/&gt;see diagram 05&quot;]:::fn
   FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
   FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
   LIB[&quot;Demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&quot;]:::data
@@ -255,24 +255,24 @@ flowchart TD
 <h2>05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)</h2>
 <pre class="mermaid">%% 05 · Runtime — the player (web/player/player.js) and grounded Q&amp;A (server/agents/qa.py)
 flowchart TD
-  START[&quot;USER clicks Start&lt;br/&gt;[ask]&quot;]:::ask
+  START[&quot;USER chooses Explore with me or Browse at my pace&lt;br/&gt;[ask]&quot;]:::ask
   PRELOAD[&quot;preload all authored speech + opening film&lt;br/&gt;[FUNCTION · retained Audio/Video objects]&lt;br/&gt;intake, narration, deeper lines, check-ins, FAQ, fillers and closing&quot;]:::fn
-  HERO[&quot;hero slide on stage&lt;br/&gt;[FUNCTION · showSlideView(hero_open)]&lt;br/&gt;web/slide.js renderSlide in fit mode · one .slide-stack, slides cross-fade&quot;]:::data
+  HERO[&quot;hero slide on stage&lt;br/&gt;[FUNCTION · showSlideView(hero_open)]&lt;br/&gt;web/slide.js native-aspect fit · benefit heading + evidence panel · reveal recomputes leaders · dock height reserves readable space&quot;]:::data
   Q1[&quot;speak the ONE intake question&lt;br/&gt;[LIBRARY · bundle audio, else /run/tts, else Web Speech]&lt;br/&gt;greeting + product + &#x27;what are you buying it for, or shall we start?&#x27; (P02)&quot;]:::data
-  L1[&quot;listen ≤10 s&lt;br/&gt;[LIBRARY · Web Speech recognition]&lt;br/&gt;mic denied or silent → typed fallback input&quot;]:::data
-  P1[&quot;parse name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
+  L1[&quot;one owned response turn&lt;br/&gt;[LIBRARY · Sarvam STT or Web Speech recognition]&lt;br/&gt;typing always visible · capture can stop, question stays open until answer or Skip&quot;]:::data
+  P1[&quot;retain actual need + optional name + focus topics&lt;br/&gt;[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]&quot;]:::fn
   FILM[&quot;polite acknowledgement → opening film (overlay on the hero slide) → spoken return&lt;br/&gt;[FUNCTION · playIntroFilm]&lt;br/&gt;planner runs under recorded cover; film capped at 45 s; customer may skip&quot;]:::fn
-  OPEN[&quot;STANDARD OPENING · unchanged, 1-2 min&lt;br/&gt;[FUNCTION · playOpening]&lt;br/&gt;intro (frame) + outcome (end state first) · pre-rendered audio&quot;]:::fn
+  OPEN[&quot;SHORT STANDARD OPENING · no repeated discovery&lt;br/&gt;[FUNCTION · playOpening]&lt;br/&gt;intro (frame) + outcome (end state first) · pre-rendered audio&quot;]:::fn
   PITCH[&quot;pitch plan (starts before the film)&lt;br/&gt;[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each · POST /run/pitch refine=true]&lt;br/&gt;in: needs + focus, proof library, USPs, registry&lt;br/&gt;out: customer state, decision frame, route, custom batches, advance&quot;]:::agent
   PV[&quot;grounding + visual validators&lt;br/&gt;[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]&lt;br/&gt;segment ids exist · uncited claim dropped · multi-fact batch→card · establish last&quot;]:::fn
   DF[&quot;decision frame on a transient slide + speech&lt;br/&gt;[LIBRARY · /run/tts]&quot;]:::data
   CUSTOM[&quot;custom proof batches as transient slides&lt;br/&gt;[FUNCTION · transientSlide]&lt;br/&gt;the named picture else the current one · cited facts as panel callouts&quot;]:::fn
-  FALL[&quot;fallback: bundle q2 + keyword focus order&lt;br/&gt;[FUNCTION] if the planner times out (45 s)&quot;]:::fn
+  FALL[&quot;fallback: keyword focus order without a second intake question&lt;br/&gt;[FUNCTION] after opening: 150 ms, spoken cover, then 2.5 s; request retained across interruptions&quot;]:::fn
   PLAN[&quot;route = ordered content slides + establish&lt;br/&gt;[FUNCTION · buildRoute — pitch route by segment_id → slide]&quot;]:::fn
-  LINE[&quot;play slide: bridge, then lines&lt;br/&gt;[FUNCTION · playFrom / playLines]&lt;br/&gt;showSlideView cross-fades the slide · setRevealed(j) BEFORE line j&#x27;s audio · last line&#x27;s ended → next slide · no timer · next slide preloaded&quot;]:::fn
+  LINE[&quot;play slide: bridge, then lines&lt;br/&gt;[FUNCTION · playFrom / playLines]&lt;br/&gt;showSlideView cross-fades the slide · setRevealed(j) BEFORE line j&#x27;s audio · legacy question / confirm step waits for a reply · completed statement → next line · next slide preloaded&quot;]:::fn
   TRX[&quot;true transcript&lt;br/&gt;[FUNCTION · logHeard]&lt;br/&gt;an agent line is logged when its audio ENDS; cut off → heard prefix (currentTime / duration × words) marked interrupted; only this history goes to /run/qa&quot;]:::fn
   CHK[&quot;check-in question&lt;br/&gt;[LIBRARY · audio] then chips&quot;]:::data
-  WAIT[&quot;waitFor 15 s countdown + auto-listen 8 s&lt;br/&gt;[FUNCTION · interpretReply — regex, NO LLM]&lt;br/&gt;yes/continue · deeper · question · timeout&quot;]:::fn
+  WAIT[&quot;owned waitFor, no auto-advance countdown&lt;br/&gt;[FUNCTION · interpretReply — exact confirmations]&lt;br/&gt;voice or typed answer settles once · late transcripts ignored · qualified yes goes to Q&amp;A&quot;]:::fn
   DEEP[&quot;deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]&quot;]:::fn
   QIN[&quot;question text&lt;br/&gt;[ask · voice or 💬 typed]&lt;br/&gt;stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns&quot;]:::ask
   QA[&quot;POST /api/demos/id/run/qa&lt;br/&gt;[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each, one retry; all fail → decline + callback]&lt;br/&gt;in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs&lt;br/&gt;out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id&quot;]:::agent
@@ -280,15 +280,15 @@ flowchart TD
   RT{&quot;where does the answer live?&lt;br/&gt;[FUNCTION · deck.route_for — answer fact ids ∩ each slide&#x27;s facts, else the question&#x27;s words vs slide topics / titles · NO LLM]&quot;}:::dec
   JUMP[&quot;jump: cross-fade to the slide that carries the facts · all callouts shown, the matching one lit · slide marked covered (reached later: title + first line, no check-in)&lt;br/&gt;[FUNCTION · showSlideView + highlight]&quot;]:::fn
   SPEAK[&quot;speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)&lt;br/&gt;[FUNCTION]&quot;]:::fn
-  NOG[&quot;say &#x27;I don&#x27;t know from the material&#x27; without a source card&lt;br/&gt;[FUNCTION] question → understanding.unknowns (origin runtime) · open dealer-help form&quot;]:::term
+  NOG[&quot;say &#x27;I don&#x27;t know from the material&#x27; without a source card&lt;br/&gt;[FUNCTION] question → understanding.unknowns (origin runtime) · offer optional dealer-help form · hold playback&quot;]:::term
   LEAD{&quot;customer says call me / gives a number?&lt;br/&gt;[FUNCTION · offerCallback, regex [6-9]\\d{9}]&quot;}:::dec
-  SAVE[&quot;consent line shown → POST /run/lead → leads/*.json (+ DynamoDB row on AWS)&lt;br/&gt;[DATA] refused without consent · read back the number · continue&quot;]:::data
-  CONF[&quot;&#x27;Did that answer it?&#x27; → chips yes / not quite (20 s)&lt;br/&gt;[FUNCTION]&quot;]:::fn
-  LP{&quot;lead prompt due?&lt;br/&gt;[FUNCTION]&lt;br/&gt;≥60 percent of demo OR ≥2 customer questions OR unknown answer&quot;}:::dec
-  POP[&quot;test-drive / dealer-help form&lt;br/&gt;[ask]&lt;br/&gt;name + ten-digit phone; dismissible; demo continues&quot;]:::ask
-  RES[&quot;resume: &#x27;back to where we were&#x27; → the exact interrupted line (S.seg / S.line untouched by a jump — return stack depth 1); the next slide if the question came at a check-in&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
+  SAVE[&quot;consent line shown → POST /run/lead → leads/*.json (+ DynamoDB row on AWS)&lt;br/&gt;[DATA] refused without consent · read back the number&quot;]:::data
+  CONF[&quot;&#x27;Did that answer it?&#x27; → owned turn&lt;br/&gt;[FUNCTION] Yes that helps · Not quite · full follow-up question&quot;]:::fn
+  LP{&quot;customer explicitly resolves this question?&lt;br/&gt;[FUNCTION]&lt;br/&gt;Yes that helps / Continue demo&quot;}:::dec
+  POP[&quot;test-drive / dealer-help form&lt;br/&gt;[ask]&lt;br/&gt;name + ten-digit phone + consent; dismissible; narration stays parked&quot;]:::ask
+  RES[&quot;resume after explicit resolution: spoken bridge → saved phase, slide and line; completed opening lines are not replayed; follow-ups retain the original checkpoint&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
   CLOSE[&quot;advance (personalised from the pitch plan, else closing lines) → CTA chips + Not yet&lt;br/&gt;[FUNCTION · closeFlow]&quot;]:::fn
-  HAND[&quot;handoff summary → POST /run/session (Done, Stop and the tab-close sendBeacon, one id per visit)&lt;br/&gt;[FUNCTION · storage.backend(): local files · AWS adds a DynamoDB row + S3 mirror]&lt;br/&gt;then ONE lite call writes the follow-up summary from the TRUE transcript (record facts copied by code) · Studio › Sessions · keyed read-only share link, phones masked&quot;]:::data
+  HAND[&quot;customer recap (actual topics + open questions, no internal scoring) → POST /run/session (Done, Stop and the tab-close sendBeacon, one id per visit)&lt;br/&gt;[FUNCTION · storage.backend(): local files · AWS adds a DynamoDB row + S3 mirror]&lt;br/&gt;then ONE lite call writes the follow-up summary from the TRUE transcript (record facts copied by code) · Studio › Sessions · keyed read-only share link, phones masked&quot;]:::data
 
   START --&gt; PRELOAD --&gt; HERO --&gt; Q1 --&gt; L1 --&gt; P1 --&gt; FILM --&gt; OPEN
   P1 -.-&gt;|&quot;starts before film&quot;| PITCH --&gt; PV
@@ -298,20 +298,22 @@ flowchart TD
   PLAN --&gt; LINE --&gt; CHK
   LINE -.-&gt;|&quot;every spoken line&quot;| TRX
   CHK --&gt; WAIT
-  WAIT -- &quot;continue / timeout&quot; --&gt; LINE
+  WAIT -- &quot;explicit continue&quot; --&gt; LINE
   WAIT -- &quot;deeper&quot; --&gt; DEEP --&gt; WAIT
   WAIT -- &quot;question&quot; --&gt; QIN --&gt; QA --&gt; QV
   QV -- &quot;yes&quot; --&gt; RT
   RT -- &quot;stay / none&quot; --&gt; SPEAK
   RT -- &quot;jump&quot; --&gt; JUMP --&gt; SPEAK
   SPEAK --&gt; CONF --&gt; LP
-  QV -- &quot;no&quot; --&gt; NOG --&gt; POP
-  LP -- &quot;yes&quot; --&gt; POP --&gt; RES
-  LP -- &quot;no&quot; --&gt; RES
-  LEAD -- &quot;yes&quot; --&gt; SAVE --&gt; RES
+  QV -- &quot;no&quot; --&gt; NOG --&gt; POP --&gt; HOLD
+  HOLD -- &quot;ask another&quot; --&gt; QIN
+  HOLD -- &quot;Continue demo&quot; --&gt; RES
+  LP -- &quot;yes&quot; --&gt; RES
+  LP -- &quot;no / silence&quot; --&gt; HOLD[&quot;hold the current conversational turn&lt;br/&gt;Ask another · Continue demo&quot;]:::ask
+  LEAD -- &quot;yes&quot; --&gt; SAVE --&gt; HOLD
   LEAD -- &quot;no / continue&quot; --&gt; RES
   QIN -.-&gt;|&quot;explicit call request / phone&quot;| LEAD
-  SPEAK -.-&gt;|&quot;clarifying_question (P03)&quot;| QIN
+  QV -.-&gt;|&quot;clarification only, before any answer&quot;| CLAR[&quot;one clarifying question · typed or spoken reply&lt;br/&gt;same original question + transcript + profile.followup&quot;]:::ask --&gt; QA
   LINE -- &quot;last segment&quot; --&gt; CLOSE --&gt; HAND
   QIN -.-&gt;|&quot;interrupt at any moment cancels speech (run token) → logHeard partial&quot;| LINE
 

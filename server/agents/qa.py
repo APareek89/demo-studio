@@ -22,10 +22,13 @@ HARD RULES
   not sure from the material you have and won't guess — never estimate, never compare to other brands, never promise
   discounts, delivery dates or negotiate price. The player will then offer a salesperson callback; do NOT ask for a
   phone number yourself.
-- P03: if the question is a stated want whose real job is unclear (e.g. "does it have 100 km range?"), you may set
-  clarifying_question to ONE short question that uncovers the job (e.g. "do you need a hundred kilometres in one day,
-  or mainly want to charge less often?") — then answer briefly with the cited fact anyway.
-- P07: reuse the customer's own nouns and numbers from CUSTOMER where relevant.
+- P03: only when the customer's intent is ambiguous enough to change the answer, ask ONE short clarifying_question
+  FIRST. In that response, answer is that same question, answered=true, and fact_ids, visual_ref, escalate and cta are
+  empty. Wait for their reply before offering an answer. The question contains no product claims, figures or assumed
+  customer details. Do not clarify a clear factual question, and never use clarification to avoid declaring a missing fact.
+  When history contains the customer's clarification reply, answer the original question using it; do not restart discovery.
+- P07: reuse only the customer's actual nouns and numbers from CUSTOMER or their messages. Do not infer a commute,
+  budget, location or household from a persona, a prior script or an example. Unknown context remains unknown.
 - Prefer a visual: pick the shot or image id that literally shows what you are talking about.
 - If the customer asks to take an action (book, buy, reserve, talk to someone), set cta to the matching id.
 - topic: one of {topics}.
@@ -123,11 +126,24 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     valid = [x for x in out.fact_ids if x in fact_ids]
     text = out.answer.strip()
     escalate = out.escalate.strip()
+    clarification = (out.clarifying_question or "").strip()
+    # A clarification is a question-only turn, not a supported product answer.
+    # Keep the existing response shape: answered=true makes old players wait
+    # rather than opening a callback. Claims cannot hide in this question field.
+    if clarification and (out.cta or len(clarification.split()) > 38
+                          or len(re.findall(r"[?？]", clarification)) != 1
+                          or not clarification.endswith(("?", "？"))
+                          or NUMBERISH.search(clarification) or CLAIMISH.search(clarification)):
+        clarification = ""
+    if clarification:
+        text, valid, escalate = clarification, [], ""
     answered = bool(out.answered) and (bool(valid) or not (NUMBERISH.search(text) or CLAIMISH.search(text)))
     if (NUMBERISH.search(text) or CLAIMISH.search(text)) and not valid:
         answered = False
     offer_callback = False
-    if not answered and not out.cta:
+    if clarification:
+        answered = True
+    elif not answered and not out.cta:
         text = DONT_GUESS if not valid else text
         escalate = escalate or question
         offer_callback = True
@@ -135,7 +151,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     elif answered:
         _clear_runtime_unknown(demo_id, question)
     vis = None
-    if out.visual_ref:
+    if out.visual_ref and not clarification:
         for s in und.get("shots", []):
             if s["id"] == out.visual_ref:
                 vis = {"kind": "shot", "ref": s["id"], "start": s["start"], "end": s["end"], "source_id": s["source_id"]}
@@ -158,7 +174,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
             audio = None
     return {"audio": audio, "answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
             "visual": vis, "escalate": escalate, "topic": out.topic, "cta": out.cta, "answered": answered,
-            "clarifying_question": (out.clarifying_question or "").strip() if answered else "", "offer_callback": offer_callback}
+            "clarifying_question": clarification if answered else "", "offer_callback": offer_callback}
 
 
 CATEGORY_RULES = [

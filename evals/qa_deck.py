@@ -272,7 +272,7 @@ check("/run/pitch: every route step names its slide (personalisation orders slid
 pj = c.get("/web/player/player.js").text
 check("player sends the current slide with every question", "slide_id: cur?.slide?.id" in pj)
 check("player: jump cross-fades to the target, lights the callout, marks it covered; stay reveals this slide's callouts", 'r.route === "jump"' in pj and "S.covered.add(jumped.id)" in pj and "highlight(r.callout_id)" in pj and "cur?.view.setRevealed(99)" in pj)
-check("player: after a jump the demo returns to the exact interrupted line (S.seg / S.line untouched, depth 1)", "wasAtCheckin ? 0 : S.line" in pj and "S.seg = " not in _fn(pj, "handleQuestion"))
+check("player structure: Q&A keeps one playback checkpoint and resumes its phase (behavior checked in player_browser)", "S.conversationOrigin = { ...S.playback }" in pj and "resumePlayback(origin, run)" in pj and "origin.checkin ? 0 : origin.line" in pj and "S.seg = " not in _fn(pj, "handleQuestion"))
 check("player: a covered slide plays its title + first line, no check-in", "short ? 1 : sl.lines.length" in pj and "sl.checkin?.text && !short" in pj)
 check("player: the pitch route is applied by slide id, segment id as fallback", "r.slide_id && lib.find" in pj)
 check("player: a decline stays on the current slide (no transient answer slide)", "transientSlide(`ans-" not in pj)
@@ -336,7 +336,7 @@ check("total = first answer audio − voice ended, p95 ≥ p50", st["total"]["p9
 check("turns are split by answer source (bank vs model)", lat.get("by_source", {}).get("bank", 0) >= 1 and lat.get("by_source", {}).get("model", 0) >= 3)
 pj = c.get("/web/player/player.js").text
 check("player stamps voice ended + STT done for server STT, browser recognition and typed questions", 'S.lastListen = { voice_ended: tVoice, stt_done: Date.now(), via: "server" }' in pj and 'via: "browser"' in pj and 'via: "typed"' in pj)
-check("player stamps QA done on the response and first answer audio when the audio (or its caption) starts", "turn.qa_done = Date.now(); turn.from_bank" in pj and "a.onplaying = () => firstAudio()" in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
+check("player structure: QA and first-audio stamps use owned playback callbacks (behavior checked in player_browser)", "turn.qa_done = Date.now(); turn.from_bank" in pj and 'a.onplaying = () => { if (!done && my === S.ttsToken && run === S.run)' in pj and "firstAudio(); } else a.pause()" in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
 check("the turns travel on the session record", "turns: S.turns," in pj)
 check("Observability shows the percentiles", "p50" in c.get("/web/observability.js").text and "latency" in c.get("/web/observability.js").text)
 _r = c.get("/web/observability.js")
@@ -363,6 +363,8 @@ check("a burst-limit 429 without a hint cools down 30 s, a zero quota 600 s, a 5
 # ---- runtime config ----
 from provider_contract import run as provider_contract
 provider_contract(check, i)
+from customer_contract import run as customer_contract
+customer_contract(check, i)
 check("runtime provider order defaults Gemini → Claude → Runware", config.RUNTIME_PROVIDERS == ["gemini", "claude", "runware"])
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
 

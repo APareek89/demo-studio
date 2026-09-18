@@ -2,9 +2,17 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
-## Codex Part 1 — 2026-09-18 — `codex/runware-fallback`
+## Codex Part 2 — 2026-09-18 — `codex/real-demo-nexon`
 
-Part 2 now authorized on `codex/real-demo-nexon` (from `slides-v1`, Part 1 commits cherry-picked as dependencies): one Tata Nexon demo, two iterations, find and fix the experience issues against ten agreed standards. First free browser rehearsal `dm_3d6448af` at port 8891; issue log `docs/issues/2026-09-18-nexon.md`. Gemini billing and manufacturer material reuse permission are pending user answers. No paid calls, restricted downloads, merge or deployment. The broader Part 3 list remains deferred.
+One Tata Nexon demo with Brezza and Venue, two real iterations, is authorized. The free customer rehearsal `dm_3d6448af` is preserved at port8891 under `data/nexon-mock` and is explicitly fake content with existing sample imagery, not a Nexon demo. Findings and evidence: `docs/issues/2026-09-18-nexon.md`.
+
+Experience fixes: product-first responsive gallery; native-aspect pictures and repaired callout leaders; owned voice/typed turns without auto-advance; exact confirmations; clarification context and original-question routing; explicit return to saved opening/route/deeper/closing point; grounded context/complete labels; preserve reviewed slide edits. Customer recap separates buyer-facing content from internal session metrics.
+
+Free verification: deck203/203 (includes29 content +39 provider contracts), accept24/24, smoke both phases pass; browser14/14 including the final customer-recap regression; Python and all12 JS modules compile. Actual source facts, voice intelligibility, paid provider compatibility, personalized pitch quality and live latency remain unverified.
+
+**Next required input:** confirm Gemini billing is enabled, and whether Anand has permission to reuse the official manufacturer materials identified in `output/nexon-sources/`. The original brief explicitly requires billing confirmation and respecting source terms. No paid calls, restricted downloads, merge or deployment. Part3 remains deferred. Once answered, gather permitted originals, perform source/variant/Align review, build the real demo, test eight customer question paths, fix observed quality failures and validate iteration2.
+
+## Codex Part 1 — 2026-09-18 — `codex/runware-fallback`
 
 Anand approved Runware as the third text fallback and the exact two-tier model selection in chat. Build text now tries
 Claude → Gemini → Runware; runtime defaults Gemini → Claude → Runware. `MODEL_TIER=eval` defaults to Haiku 4.5,
@@ -13,7 +21,7 @@ Text tiers leave vision/speech configuration alone. Runware uses JSON mode, loca
 traces and cost accounting. Extracted PDFs use the same secondary text chain. No-citation and all-down callback rules stay.
 Details, exact prices, overrides and limitations: `docs/runware-fallback.md`. `/api/health` reports configuration, not account health.
 Baseline: deck 135/135. Core checkpoint `cdedb28`: deck 157/157. Completed Part 1: deck 174/174 (39 provider contracts), accept 24/24, smoke OK; Python compilation and all 8 required JS files pass; all 8 diagram copies match. Mock/fake transports only, no paid calls or real demo changes. Independent code review found no additional issues. Live account access, nested-schema compatibility and real latency remain unverified.
-Part 2 (car choice, mock walkthrough, billing confirmation and a paid run) and Part 3 remain separate; no merge/deploy authorized.
+Part 1 is complete; its two commits are cherry-picked into the Part 2 branch. No merge/deploy authorized.
 Effort: feature — text fallback and tiers; support — isolated evals, independent review and documentation.
 Rework: the existing Claude schema-recovery path now preserves its selected model, timeout, effort and retries.
 

@@ -156,13 +156,13 @@ class USP(BaseModel):
 
 class StateQuestion(BaseModel):
     state: Literal["unknown", "stated_want", "stated_need"]
-    question: str = Field(description="the ONE follow-up question the guide asks after the standard intro for a buyer in this state")
+    question: str = Field(description="optional clarification for an unclear customer request; never an automatic second intake question")
 
 
 class SegmentPlan(BaseModel):
     id: str = Field(description="short slug id, e.g. 'range'")
     title: str
-    role: Literal["intro", "outcome", "proof", "features", "establish"] = Field(description="intro = Frame (standard, always first); outcome = Act (the end state, always second); proof = main-pitch block (top 2-3); features = the one 'a few more things' block; establish = assumptions, terms, when not to recommend")
+    role: Literal["intro", "outcome", "proof", "features", "establish"] = Field(description="intro = brief overview, no decision frame; outcome = three things to remember; proof = guided discovery; features = one 'a few more things' block; establish = assumptions, terms and open questions")
     goal: str = Field(description="what the customer should believe or understand after this segment")
     outcome: str = Field(description="the customer outcome this segment proves, 3-8 words (empty for intro)")
     topic: str
@@ -202,25 +202,25 @@ class IntakeChip(BaseModel):
 
 
 class Intake(BaseModel):
-    q1: str = Field(description="first spoken question: the customer's name plus ONE open, high-yield question about what they are hoping this product would change for them — in the persona's voice")
-    q2: str = Field(description="fallback second question if the runtime planner is unavailable: anything specific to focus on, or get going")
+    q1: str = Field(description="warm brand/product greeting plus ONE useful context question, easy to decline; do not also ask for a name")
+    q2: str = Field(description="empty string; retained for older bundles, never a second intake question")
     chips: list[IntakeChip] = Field(description="4-7 focus topics the customer might pick, matching segment topics")
 
 
 class Plan(BaseModel):
-    customer_persona: str = Field(description="who is watching this demo and what they are deciding, 2 sentences")
-    decision_frame: str = Field(description="P01: one or two sentences — the decision the buyer is making and the criteria that make it good, in the buyer's terms (no company history)")
+    customer_persona: str = Field(description="general intended audience, 2 sentences; no invented individual distance, budget, location or household")
+    decision_frame: str = Field(description="fit summary at the END: the strongest supported fit and what remains to verify; not an opening decision frame")
     takeaway: str = Field(description="the ONE sentence the buyer should be able to repeat after the demo")
     primary_outcome: str = Field(description="the one customer outcome the demo proves")
     supporting_outcomes: list[str] = Field(description="at most two")
     concerns: list[Concern]
-    usps: list[USP] = Field(description="3-5 differentiated value points, each tied to facts")
+    usps: list[USP] = Field(description="exactly three differentiated value points, each tied to facts")
     segments: list[SegmentPlan]
     ctas: list[CTA]
     voice: VoiceBrief
     visual_gaps: list[VisualGap]
     intake: Intake
-    state_questions: list[StateQuestion] = Field(description="one follow-up question for each of the three customer states")
+    state_questions: list[StateQuestion] = Field(description="optional clarification suggestions, not an automatic discovery sequence")
     do_not_recommend_if: str = Field(description="P09: the honest condition under which the guide would not recommend this product, 1 sentence")
     advance: str = Field(description="P10: the next buyer action that resolves the largest remaining uncertainty, with an owner and trigger — references one CTA by label")
     notes: str = Field(default="", description="anything the planner wants the human to know")
@@ -235,8 +235,8 @@ class Visual(BaseModel):
 
 
 class LineOut(BaseModel):
-    text: str = Field(description="1-2 spoken sentences, natural, no markdown")
-    step: Literal["frame", "say", "show", "translate", "confirm", "establish", "advance", "other"] = Field(default="other", description="which proof-block step this line is")
+    text: str = Field(description="one natural spoken thought, 1-2 short sentences; the whole batch fits 10-20 seconds, no padding, lists or questions")
+    step: Literal["frame", "say", "show", "translate", "confirm", "establish", "advance", "other"] = Field(default="other", description="proof-block step; confirm is legacy compatibility only, new questions go in SegmentOut.checkin")
     visual: Visual
     fact_ids: list[str] = Field(description="every fact this line relies on; empty only for pure transition/opinion lines")
     card: Literal["none", "facts", "price", "summary", "contrast"] = "none"
@@ -250,15 +250,15 @@ class SegmentOut(BaseModel):
     outcome: str = ""
     usp_ids: list[str] = Field(default_factory=list)
     lines: list[LineOut]
-    checkin: str = Field(description="the CONFIRM question the guide asks after this segment (empty for intro and outcome)")
+    checkin: str = Field(description="ONE short question after proof/features, with an explicit wait for the answer; no claims or assumed customer details; empty for intro/outcome")
     deeper: list[LineOut] = Field(description="2-3 lines for 'tell me more', grounded")
 
 
 class ScriptOut(BaseModel):
     segments: list[SegmentOut]
-    closing: list[LineOut] = Field(description="2-3 lines: the advance (P10) naming the CTA, then the offer to answer anything else")
-    intake_q1: str
-    intake_q2: str
+    closing: list[LineOut] = Field(description="two lines, at most 45 words total: fit summary then next step naming the CTA; statements, no questions")
+    intake_q1: str = Field(description="warm greeting plus ONE useful context question; no name request stacked with it")
+    intake_q2: str = Field(description="empty string; no second intake")
 
 
 class Line(LineOut):
@@ -316,7 +316,7 @@ class Slide(BaseModel):
     image_reason: str = ""
     motion: Literal["zoom_in", "pan_left", "none"] = "zoom_in"
     callouts: list[Callout] = []
-    lines: list[dict] = []       # {id, text, fact_ids}; audio joins at bundle time by id
+    lines: list[dict] = []       # {id, text, fact_ids, step}; audio joins at bundle time by id
     checkin: str = ""
     deeper: list[dict] = []
     usp_ids: list[str] = []
@@ -343,15 +343,15 @@ class RouteStep(BaseModel):
 
 
 class CustomBatch(BaseModel):
-    text: str = Field(description="one spoken batch for THIS buyer, ≤ 50 words (about 20 seconds), in their nouns; every figure cites fact ids")
+    text: str = Field(description="one natural spoken thought for THIS buyer, ≤38 words (about 20 seconds), no questions; personal context only from their words, product figures cite fact ids")
     fact_ids: list[str] = Field(default_factory=list)
     visual_ref: str = Field(default="", description="the image or shot id that shows what this batch talks about")
 
 
 class PitchPlan(BaseModel):
     customer_state: Literal["unknown", "stated_want", "stated_need"]
-    decision_frame: str = Field(description="1-2 sentences recapping THIS buyer's decision in their words — spoken right after the standard intro")
-    follow_up_question: str = Field(description="the ONE follow-up question for this buyer (P03/P02); empty on a refine call")
+    decision_frame: str = Field(description="brief acknowledgement of this buyer's actual words and the route order after the overview; no product specs, assumed details or question")
+    follow_up_question: str = Field(description="always empty; the buyer already had one intake question")
     primary_outcome: str
     focus_topics: list[str] = Field(description="segment topics this buyer cares about, from their words (any language)")
     route: list[RouteStep] = Field(description="ordered proof/establish segments: primary outcome first, ≤2 supporting, then establish; 3-6 steps")
@@ -366,14 +366,14 @@ class PitchPlan(BaseModel):
 # ---------- Runtime Q&A ----------
 
 class QAOut(BaseModel):
-    answer: str = Field(description="1-3 spoken sentences")
+    answer: str = Field(description="1-3 short spoken sentences; when clarification is needed, only the clarifying question, no product answer yet")
     fact_ids: list[str] = Field(description="facts used; MUST be empty if the sources do not answer the question")
     visual_ref: str = Field(default="", description="shot or image id that best shows it, or empty")
     escalate: str = Field(default="", description="what a human should follow up on, or empty")
     topic: str = ""
     cta: str = Field(default="", description="cta id if the customer is asking to take that action, else empty")
-    answered: bool = Field(description="true only if the answer is fully supported by the cited facts")
-    clarifying_question: str = Field(default="", description="P03: if the question is a stated want whose real job is unclear, ask this ONE clarifying question instead of answering with a headline number; else empty")
+    answered: bool = Field(description="true for a fully supported answer or a question-only clarification turn; false for an unsupported factual answer")
+    clarifying_question: str = Field(default="", description="ONE short question only when ambiguous intent changes the answer; no claims, figures or assumed personal details; answer it before giving product facts; otherwise empty")
 
 
 class RehearsalQuestions(BaseModel):
