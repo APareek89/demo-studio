@@ -4,6 +4,15 @@
 
 ## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
 Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched.
+🔴 **PROVIDERS (2026-09-18 evening, verified with one-token probes):** the Anthropic key has **no credits** (400 "credit
+balance is too low") and the Gemini key is on the **free tier** (`generate_content_free_tier_requests, limit: 20` per minute
+on gemini-3.6-flash). Every build stage that needs a model therefore falls back by design: the deck's callouts come out
+*derived* (raw registry facts in the side panel), FAQ regeneration errors, runtime Q&A declines when both fail. Nothing is
+broken in the code — the account is starved. Fix = enable billing on the Gemini key (AI Studio → pay-as-you-go) or top up
+Anthropic; then `POST /revise {stage: deck, rebuild: true}` per demo (one Gemini call each) gives real callouts. The TVS iQube
+demo was rebuilt today (derived callouts; `deck_version` 3) and is `ready` on the new player. Two fragilities found on the
+way are fixed and committed: the FAQ bank regenerated questions on every rebuild (now reuses by registry hash) and one
+free-tier burst froze Gemini for 10 minutes (cooldown now sized from Gemini's retry hint).
 ▶ **NEXT (2026-09-18 evening):** everything local is built and committed on `slides-v1` (8 commits). Open: (1) the user's
 two AWS steps below (table go-ahead → agent creates `demo-studio-sessions`; instance role from
 `docs/aws/instance-role-policy.json`) then `STORAGE_BACKEND=aws` + `CLOUD_SYNC=1` on the box; (2) "Done means" #2 / #3 on
