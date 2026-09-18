@@ -366,6 +366,29 @@ from server.llm import gemini as _gem
 check("a burst-limit 429 with a retry hint cools down for that long (+1 s)", _gem._quota_cooldown("429 RESOURCE_EXHAUSTED: You exceeded your current quota, please check your plan and billing details. Please retry in 12.4s.")[0] == 13)
 check("a burst-limit 429 without a hint cools down 30 s, a zero quota 600 s, a 503 not at all", _gem._quota_cooldown("429 You exceeded your current quota")[0] == 30 and _gem._quota_cooldown("limit: 0 quota_value: 0")[0] == 600 and _gem._quota_cooldown("503 UNAVAILABLE high demand")[0] == 0)
 
+# ---- an outage never writes a decline into the FAQ bank ----
+_prev_bank = store.read_json(i, "faq.json") or {"entries": []}
+_good = {"id": "Q01", "question": "how far does it go on one charge", "origin": "generated", "answer": "It is 114 km on the certified cycle.", "fact_ids": ["F001"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None}
+store.write_json(i, "faq.json", {"entries": [_good], "answered": 1, "total": 1, "registry_hash": _faq._registry_hash(i), "partial": False})
+_orig_cs = _faq.qa.claude.structured
+def _down(*a, **k):
+    raise RuntimeError("providers down")
+_faq.qa.claude.structured = _down
+try:
+    _fb = _faq.run(i, lambda m: None)
+    check("FAQ bank: every provider down at rebuild → a previously answered entry is kept, not overwritten with a decline", len(_fb["entries"]) == 1 and _fb["entries"][0]["answered"] is True and _fb["entries"][0]["answer"] == _good["answer"] and not _fb["partial"])
+    _orig_gen2 = _faq.rehearsal.generate_questions
+    _faq.rehearsal.generate_questions = lambda *a, **k: ["what colours does it come in"]  # generation itself is a model call; stub it to reach the answer path
+    try:
+        _fb2 = _faq.run(i, lambda m: None, force=True)
+    finally:
+        _faq.rehearsal.generate_questions = _orig_gen2
+    check("FAQ bank: a question with no previous answer is marked for a retry (error), never a permanent decline; the bank is partial", bool(_fb2["entries"]) and all(e.get("error") and e["answered"] is False for e in _fb2["entries"]) and _fb2["partial"])
+    check("FAQ bank: an unbuilt entry never matches at runtime (the live model answers instead)", _faq.match(i, _fb2["entries"][0]["question"]) is None)
+finally:
+    _faq.qa.claude.structured = _orig_cs
+    store.write_json(i, "faq.json", _prev_bank)
+
 # ---- runtime config ----
 from provider_contract import run as provider_contract
 provider_contract(check, i)

@@ -68,6 +68,12 @@ Anthropic; then `POST /revise {stage: deck, rebuild: true}` per demo (one Gemini
 demo was rebuilt today (derived callouts; `deck_version` 3) and is `ready` on the new player. Two fragilities found on the
 way are fixed and committed: the FAQ bank regenerated questions on every rebuild (now reuses by registry hash) and one
 free-tier burst froze Gemini for 10 minutes (cooldown now sized from Gemini's retry hint).
+🟢 **Update after the handover:** Anand reopened Gemini billing — paid-tier limits (gemini-3.6-flash 2K RPM / 3M TPM /
+100K RPD; 3.1-pro 1K RPM; 3.1-flash-lite 10K RPM; flash TTS 1K RPM). Anthropic still has no credits. Codex's next task after the Nexon iteration-2 build is
+`CODEX_INSTRUCTIONS.MD` §10 (Experience pass, wave 2: residual conversation rules · script register audit ·
+Gemini-first build chain · slides only on Anand's word), reconciled with NX01–NX16. The FAQ-bank outage bug found in the real session is fixed
+(`provider_failed`; an outage never writes a decline). The TVS iQube bank still holds the 20 declines from the starved
+rebuild until the FAQ stage is run again (`POST /revise {stage: faq, rebuild: true}`, ~20 small Gemini calls).
 ▶ **NEXT (2026-09-18 evening):** everything local is built and committed on `slides-v1` (8 commits). Open: (1) the user's
 two AWS steps below (table go-ahead → agent creates `demo-studio-sessions`; instance role from
 `docs/aws/instance-role-policy.json`) then `STORAGE_BACKEND=aws` + `CLOUD_SYNC=1` on the box; (2) "Done means" #2 / #3 on

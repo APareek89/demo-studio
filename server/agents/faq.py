@@ -98,6 +98,7 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
         generated = rehearsal.generate_questions(demo_id, want, bias="answerable") if want else []
     questions = [(q, "document") for q in docs] + [(q, "generated") for q in generated]
     reusable = {e.get("question"): e for e in previous.get("entries", [])} if same_registry else {}
+    prev_by_q = {e.get("question"): e for e in previous.get("entries", [])}
     entries = []
     for i, (q, origin) in enumerate(questions, 1):
         emit(f"FAQ {i}/{len(questions)}: “{q[:70]}”")
@@ -106,6 +107,11 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
             continue
         try:
             r = qa.answer(demo_id, q, [], None, voice_it=False)
+            if r.get("provider_failed"):  # every provider down: keep the previous answer when the registry is unchanged, else mark the entry for a retry
+                old = prev_by_q.get(q) if same_registry else None
+                entries.append({**old, "id": f"Q{i:02d}", "origin": origin} if old and not old.get("error") else
+                               {"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": "", "fact_ids": [], "answered": False, "visual": None, "offer_callback": True, "clarifying_question": "", "audio": None, "error": "providers down at build — run the FAQ stage again"})
+                continue
             entries.append({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": r["answer"], "fact_ids": r["fact_ids"], "answered": r["answered"],
                             "visual": r.get("visual"), "offer_callback": r.get("offer_callback", False), "clarifying_question": r.get("clarifying_question", ""), "audio": None})
         except Exception as e:
@@ -116,7 +122,7 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
     slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
     for e in entries:
         e["slide_id"] = deck.slide_for(slides, e.get("fact_ids"), e["question"])[0] if slides else None
-    out = {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(entries), "registry_hash": registry_hash, "partial": False}
+    out = {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(entries), "registry_hash": registry_hash, "partial": any(e.get("error") for e in entries)}
     store.write_json(demo_id, "faq.json", out)
     store.log(demo_id, "faq", {"answered": out["answered"], "total": out["total"], "from_document": len(docs), "questions": [e["question"] for e in entries]})
     emit(f"FAQ bank ready: {out['answered']}/{out['total']} answered from the sources; the rest decline and offer a callback — all instant at runtime.")
@@ -131,6 +137,8 @@ def match(demo_id: str, question: str) -> dict | None:
         return None
     best, best_score = None, 0.0
     for e in bank.get("entries", []):
+        if e.get("error"):  # never built — the live model answers instead
+            continue
         et = _tokens(e["question"])
         if not et:
             continue

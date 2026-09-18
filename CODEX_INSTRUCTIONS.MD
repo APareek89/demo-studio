@@ -207,3 +207,75 @@ POST /voice/sample · GET /bundle · POST /run/qa {question, history, profile, s
 POST /run/lead {phone, question, profile, consent, consent_text, session_id} · POST /run/stt · POST /run/tts ·
 POST /run/session · GET /sessions · GET /sessions/{sid} · GET /api/share/{demo}/{sid}?k= · POST /feedback ·
 GET /usage · GET /runlog · GET /trace (with latency) · GET/POST /evals · GET /api/workflow · GET /api/voices
+
+---
+
+## 10. TASK 2 — Experience pass, wave 2 (reconciled with Codex's Nexon work, 2026-09-18 late)
+
+Read first: `docs/issues/2026-09-18-nexon.md` (NX01–NX16), `docs/qa/nexon-real-run-plan.md`, and the current checkpoint
+at the top of `Handoff.MD`. Do NOT redo what those already fixed. Two facts from Claude's last session:
+- The FAQ bank could store a provider outage as a decline (the TVS iQube bank was overwritten with 20 declines by a
+  starved rebuild). Fixed: `qa.answer` returns `provider_failed`; `faq.run` keeps the previous answer (same registry)
+  or marks the entry `error` for a retry and the bank `partial`; `faq.match` skips unbuilt entries. Cases in
+  `qa_deck.py`; your `faq_review_contract` still passes 41/41. Its `Learning.MD` entry ("A provider outage was written
+  into the FAQ bank as knowledge") sits uncommitted in the working tree next to your own — include it in your next commit.
+- Run the TVS iQube FAQ stage once (`POST /api/demos/dm_d5675e7f/revise {"stage": "faq", "rebuild": true}`) so its 20
+  outage declines are replaced by real answers (≈ 20 small Gemini calls).
+
+### Order
+1. **Finish the real Nexon iteration 2 exactly per the run plan** — twelve paths, three buyers, ten standards, the
+   required evidence — and report. Anand listens to that before anything below.
+2. Then the residual conversation rules R1–R7 (from Anand's own TVS run; none are in NX01–NX16).
+3. Then the script register audit (B) and the Gemini-first build chain (D).
+4. Slides (C) only on Anand's word after he has seen the real cinematic Nexon build.
+Branch `codex/experience-wave-2` off `codex/real-demo-nexon`; one commit per numbered item; gates green each time:
+deck, accept, both smoke phases, and every contract (`faq_review`, `generation`, `align_review`, `voice_lock`,
+`customer`, `provider`), Python compile, all JS modules, diagram copies. Ask before any paid run.
+
+### R — residual conversation rules (web/player/player.js, web/player/intake.js (new, pure), fillers in voice.py)
+R1 Name guard. `parseName` accepts a name only after an explicit cue ("my name is", "I'm <Capitalised>", "this is") and
+   never a dictionary word (stop-list: looking, thinking, interested, just, here, fine, good, not, sure, okay…). No name
+   → the guide uses none. The TVS run greeted the customer as "Looking". Move `parseName`/`parseFocus` to
+   `web/player/intake.js` and test them with `node evals/js/intake.test.mjs` (add to the gates).
+R2 Honest personalisation. The "one moment — I'm tailoring this" filler is spoken only while the pitch plan is still
+   pending at the end of the opening; if the plan fails or times out the guide claims nothing and continues with
+   "Let me take you through it — stop me any time." Plan wait window 6 s (paid tier answers in 2–4 s); pitch latency
+   shown in Observability. The TVS run promised tailoring and delivered the standard script.
+R3 Announce a jump. Before a cross-fade to another slide, a recorded bridge "That's on the <slide title> slide — one
+   moment." (per-slide audio rendered at build, generic filler fallback, same voice); keep the existing return line.
+R4 Resume forward. After an interruption, if ≥ 40 % of the cut line was heard, continue from the next line after a
+   recorded "Let's carry on."; otherwise replay the line. Pure `resumePoint(fraction)` in `web/player/flow.js`,
+   node-tested. Anand heard the same sentence twice and read it as "it went back to some slide".
+R5 Pace. 350 ms of silence between lines and 700 ms between slides — a fixed gap after `ended`, still event-driven.
+R6 Warm decline. "That isn't in the material I've been given, so I won't guess. I can have someone from the
+   dealership answer it — or we carry on." Two recorded variants; the callback form as today.
+R7 Check-in kinds. The author returns `checkin_kind: confirm | number | choice` (≤ 14 words, one topic, no "and");
+   chips follow the kind (Yes that's right / No / Question · a number hint · the two choices).
+
+### B — script register audit (server/agents/principles.py, author.py; Align Script card)
+Rules as P-rules quoted in the author prompt: sentences ≤ 18 words; one figure per sentence; a term explained once in
+plain words then used plainly; the kind-of-truth caveat once per topic as a short aside, never every sentence; no
+marketing adjectives; refer to the customer's own words only in custom batches; the opening never assumes the
+customer's numbers. `author.audit(script)` → `script.issues` (line id + rule) shown on the Script card; auto-fixed:
+a question in narration → the segment's check-in, a greeting outside the intake → dropped. Evals: audit cases on a
+crafted script. This complements NX09/NX14/NX16, which fixed meaning; this fixes register.
+
+### D — build chain Gemini-first (server/llm, config)
+Today build text tries Claude → Gemini → Runware, and Anthropic has no credits: every build call burns a failed Claude
+request first and pollutes traces. Make the build order configurable and default to `gemini,claude,runware` (Claude
+only when Gemini fails); keep the `MODEL_TIER` mapping and all fallback contracts; `health()` lists `build_providers`.
+Evals: order, fallback, mock never opens a provider. Anand's paid-tier limits (28-day console): 3.6 Flash 2K RPM /
+3M TPM / 100K RPD · 3.1 Pro 1K RPM · 3.1 Flash-Lite 10K RPM · Flash TTS 1K RPM — ample; keep `_retry` and the
+proportional cooldown as they are.
+
+### C — slides, only if Anand says the cinematic look is not there
+C1 Mockup before code: `docs/design/slides-mockup.html` — five slide kinds at 16:9 and phone width (hero · proof with
+   parts · proof without boxes as a fact strip · money as stat tiles · closing as a 3-point summary + CTAs); Anand
+   approves; only then C2: one layout template per `slide.kind` in `web/slide.js`, callouts as pills with the VALUE
+   large and the LABEL small (deck schema gains `value` + `label`, ≤ 8 words together; the derived fallback builds them
+   from `fact.value` / `fact.claim`), 300 ms rise on their line, fact ids behind a small ⓘ toggle.
+
+### Not to do
+No countdown anywhere; no mixed TTS providers within a demo; no questions in narration; never relax the validator; no
+new dependency; no barge-in / streaming / session resume / publish (out of scope). Report per item: what changed ·
+how to test it · what is still weak — plus a Loop.MD row per behaviour.

@@ -135,12 +135,14 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         msgs.insert(0, {"role": "user", "content": "(demo in progress)"})
     if msgs and msgs[-1]["role"] == "user":
         msgs.append({"role": "assistant", "content": "(listening)"})
+    provider_failed = False
     try:
         if live:
             out = runtime.structured(sys, question, schemas.QAOut, history=msgs, max_tokens=1500)
         else:
             out = claude.structured(sys, question, schemas.QAOut, max_tokens=1500, history=msgs)
     except Exception as e:  # noqa: BLE001
+        provider_failed = True  # an outage is not knowledge: callers must not store this decline as "the sources do not say"
         usage.trace("qa-providers-failed", "none", latency_ms=(time.monotonic() - started) * 1000, user=question, error=str(e)[:300],
                     system="Every reasoning provider failed; declining with a callback offer rather than guessing.")
         out = schemas.QAOut(answer=DONT_GUESS, fact_ids=[], visual_ref="", escalate=question, topic=classify(question)[0], cta="", answered=False, clarifying_question="")
@@ -206,7 +208,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
             audio = None
     return {"audio": audio, "answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
             "visual": vis, "escalate": escalate, "topic": out.topic, "cta": cta, "answered": answered,
-            "clarifying_question": clarification if answered else "", "offer_callback": offer_callback}
+            "clarifying_question": clarification if answered else "", "offer_callback": offer_callback, "provider_failed": provider_failed}
 
 
 CATEGORY_RULES = [
