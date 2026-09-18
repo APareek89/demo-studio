@@ -24,6 +24,13 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   `slides` (audio joined by line id) and keeps `segments` until the Phase 5 player; `translate_deck` gives titles/callouts per extra
   language. `POST /revise {stage: "deck"}`. RUN.md has a DECK section; diagrams 00/01/04 + ARCHITECTURE_FLOW updated. Mock script
   lines now cite F001/F002 so mock decks carry callouts.
+- **Phase 4 done (committed):** the Script card's batch table is a filmstrip of slides; **Review slides** opens an editor per slide
+  (`web/slide.js` renders a slide — picture, numbered chips at their positions, leader lines, side panel, dots on narrow screens —
+  and is shared with the Phase 5 player): drag a chip, swap the picture, edit title / callout text / fact ids / part, Save or
+  Save & approve. `PATCH /api/demos/{id}/align/deck` merges into `deck-overrides.json`, applies to `deck.json` through
+  `author.ungrounded` (an uncited claim, > 8 words, an off-picture position → 400), un-approves the Script card and marks only
+  `bundle` stale (`DOWNSTREAM["deck"] = ["bundle"]`). A swapped picture re-places its callouts (unlisted parts → panel). Preview
+  shows every slide rendered with its words and seconds. Voice still renders only at Build, after approval.
 - 🧑 AWS access still needed for Phase 7: the `demo-studio` IAM user cannot create an instance role (needs `iam:CreateRole`,
   `iam:AttachRolePolicy`, `iam:PassRole`, `ec2:AssociateIamInstanceProfile`) or revoke security-group rules
   (`ec2:RevokeSecurityGroupIngress`). Your IP rotates (three addresses in one hour), so Phase 7 moves SSH to SSM Session Manager.

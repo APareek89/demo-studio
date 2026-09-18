@@ -14,3 +14,5 @@ data/
 .idea/
 .vscode/
 .vercel
+# claude desktop launch config is per-machine
+.claude/

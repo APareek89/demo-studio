@@ -359,6 +359,42 @@ main{flex:1;min-height:0;display:flex}
 .pcard{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:6px}
 .pcard img,.pcard video{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--panel-2);border-radius:6px;cursor:zoom-in}
 
+/* ---------- Slides (Align review; the player reuses the same renderer) ---------- */
+.slide{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;align-items:start}
+.slide-pic{position:relative;overflow:hidden;border-radius:10px;background:var(--panel-2);user-select:none;line-height:0}
+.slide-pic img{display:block;width:100%;height:auto;pointer-events:none}
+.slide-pic.noimg{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:var(--muted);font:11px var(--mono);line-height:1.4}
+.slide-pic .leaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.slide-pic .leaders line{stroke:var(--accent);stroke-width:1.5;vector-effect:non-scaling-stroke;opacity:.9;transition:opacity .35s}
+.slide-pic .leaders line.hidden{opacity:0}
+.callout{position:absolute;max-width:32%;background:var(--ink);color:#fff;border-radius:8px;padding:6px 9px 6px 7px;font:600 12.5px/1.3 var(--disp);box-shadow:0 6px 18px rgba(18,33,58,.28);display:flex;gap:6px;align-items:flex-start;transition:opacity .35s,transform .35s;z-index:2;line-height:1.3}
+.callout .num,.dot .num,.slide-panel .num,.callout-row>.num{flex:none;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font:600 11px/18px var(--mono);text-align:center;display:inline-block}
+.callout.hidden{opacity:0;transform:translateY(6px);pointer-events:none}
+.callout.hot,.slide-panel .item.hot{outline:2px solid var(--warn);outline-offset:2px}
+.slide.editable .callout{cursor:grab;touch-action:none} .slide.editable .callout.dragging{cursor:grabbing;opacity:.9}
+.dot{position:absolute;display:none;transform:translate(-50%,-50%);z-index:2;line-height:0}.dot.hidden{opacity:0}
+.slide-panel{display:flex;flex-direction:column;gap:6px;min-width:0}
+.slide-panel .item{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12.5px;line-height:1.3;transition:opacity .35s}
+.slide-panel .item.overlay,.slide-panel .item.hidden{display:none}
+.slide-panel .item .cite{font:10px var(--mono);color:var(--muted);margin-top:2px}
+.deck-strip{display:flex;gap:8px;overflow-x:auto;padding:6px 2px}
+.deck-thumb{flex:none;width:150px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0;overflow:hidden;text-align:left;cursor:pointer;font-family:inherit}
+.deck-thumb:hover{border-color:var(--accent)}
+.deck-thumb img,.deck-thumb .noimg{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--panel-2)}
+.deck-thumb .noimg{display:flex;align-items:center;justify-content:center;font:10px var(--mono);color:var(--muted)}
+.deck-thumb .cap{padding:6px 8px;font-size:11.5px;line-height:1.3;color:var(--ink)} .deck-thumb .cap b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .deck-thumb .cap span{font:10px var(--mono);color:var(--muted)}
+.slide-review{border-top:1px solid var(--line);padding:14px 0}
+.slide-review-head{display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.slide-lines{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.5}
+.slide-editor{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:18px}
+.slide-editor-box{width:min(1280px,100%)}
+.slide-editor-form{display:grid;gap:10px;align-content:start}
+.slide-editor-form label{display:grid;gap:4px;font:10px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.slide-editor-form input,.slide-editor-form select{font:14px var(--disp);text-transform:none;letter-spacing:normal;color:var(--ink);width:100%}
+.callout-row{border:1px solid var(--line);border-radius:9px;padding:8px 10px 8px 34px;display:grid;gap:6px;position:relative}
+.callout-row>.num{position:absolute;left:9px;top:10px}
+@media (max-width:620px){.slide{grid-template-columns:1fr}.slide .callout{display:none}.slide .dot{display:block}.slide-panel .item.overlay{display:flex}.slide-editor{grid-template-columns:1fr}}
+
 /* full-screen play route (#/play/<id>) */
 .play-page{position:fixed;inset:0;z-index:60;background:var(--bg)}
 .play-page .pl{height:100%}

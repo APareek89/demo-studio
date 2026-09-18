@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response, StreamingRes
 from fastapi.staticfiles import StaticFiles
 
 from . import cloud, config, events, graph, orchestrator, schemas, store, usage, runlog
-from .agents import align, author, faq, pitch, qa, rehearsal, visuals, voice
+from .agents import align, author, deck, faq, pitch, qa, rehearsal, visuals, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -538,6 +538,86 @@ async def edit_aligned_script(demo_id: str, req: Request):
     store.update(demo_id, lambda d: d["approvals"].update({"visuals": False, "script": False}))
     runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s) saved; visual alignment {'refreshed' if realigned else 'kept'}; script and visuals require re-approval.")
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"], "issues": issues}
+
+
+@app.patch("/api/demos/{demo_id}/align/deck")
+async def edit_aligned_deck(demo_id: str, req: Request):
+    """Slide review in Align: picture, title, callout text / facts / part, dragged positions. Saved to deck-overrides.json
+    (kept over any rebuild) and applied to deck.json now, through the same validator as script lines. No model call."""
+    demo = _demo_or_404(demo_id)
+    body = await req.json()
+    edits = body.get("slides") or []
+    if not isinstance(edits, list) or not edits or len(edits) > 60:
+        raise HTTPException(400, "Send between 1 and 60 slide edits")
+    dk = store.read_json(demo_id, "deck.json") or {}
+    if not dk.get("slides"):
+        raise HTTPException(409, "No deck yet — configure the demo first")
+    und = store.read_json(demo_id, "understanding.json") or {}
+    allowed_facts = {f["id"] for f in und.get("facts", []) if f.get("approved", True)}
+    images = {i["id"]: i for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])}
+    slides = {s["id"]: s for s in dk["slides"]}
+    ov = store.read_json(demo_id, "deck-overrides.json") or {"slides": []}
+    ov_by = {o["slide_id"]: o for o in ov.get("slides", []) if o.get("slide_id")}
+    for e in edits:
+        sid = str(e.get("slide_id") or "")
+        s = slides.get(sid)
+        if not s:
+            raise HTTPException(404, f"slide not found: {sid}")
+        o = ov_by.setdefault(sid, {"slide_id": sid, "callouts": []})
+        if "image_id" in e:
+            if e["image_id"] not in images:
+                raise HTTPException(400, f"unknown or excluded picture: {e['image_id']}")
+            o["image_id"] = e["image_id"]
+        if "title" in e:
+            title = (e.get("title") or "").strip()
+            if not title or len(title) > 80:
+                raise HTTPException(400, "A title needs 1–80 characters")
+            o["title"] = title
+        oc_by = {c["id"]: c for c in o.get("callouts", []) if c.get("id")}
+        for ce in e.get("callouts") or []:
+            cid = str(ce.get("id") or "")
+            cur = next((c for c in s["callouts"] if c["id"] == cid), None)
+            if not cur:
+                raise HTTPException(404, f"callout not found: {cid}")
+            oc = oc_by.setdefault(cid, {"id": cid})
+            if "text" in ce or "fact_ids" in ce:
+                text = (ce.get("text") if "text" in ce else oc.get("text", cur["text"])).strip()
+                fids = ce.get("fact_ids") if "fact_ids" in ce else oc.get("fact_ids", cur["fact_ids"])
+                if not isinstance(fids, list):
+                    raise HTTPException(400, "fact_ids must be a list")
+                unknown = {str(x) for x in fids} - allowed_facts
+                if unknown:
+                    raise HTTPException(400, "Rejected or unknown fact ids cannot be attached: " + ", ".join(sorted(unknown)))
+                valid, bad = author.ungrounded(text, [str(x) for x in fids], allowed_facts)
+                if not text or bad:
+                    raise HTTPException(400, "That callout states a figure or claim without a fact id. Add the information as a source/fact first.")
+                if author.words(text) > deck.MAX_CALLOUT_WORDS:
+                    raise HTTPException(400, f"A callout is at most {deck.MAX_CALLOUT_WORDS} words")
+                oc["text"], oc["fact_ids"] = text, valid
+            if "part" in ce:
+                oc["part"] = (ce.get("part") or "").strip().lower()
+            if "label_pos" in ce:
+                lp = ce.get("label_pos") or {}
+                try:
+                    x, y = float(lp.get("x")), float(lp.get("y"))
+                except (TypeError, ValueError):
+                    raise HTTPException(400, "label_pos needs x and y")
+                if not (0 <= x <= 1 and 0 <= y <= 1):
+                    raise HTTPException(400, "label_pos is a fraction of the picture, 0–1")
+                oc["label_pos"] = {"x": round(x, 4), "y": round(y, 4)}
+            if ce.get("placement") in ("overlay", "panel"):
+                oc["placement"] = ce["placement"]
+        o["callouts"] = list(oc_by.values())
+    ov["slides"] = list(ov_by.values())
+    store.write_json(demo_id, "deck-overrides.json", ov)
+    deck.apply_overrides(dk["slides"], ov, images, allowed_facts)
+    schemas.Deck.model_validate(dk)
+    store.write_json(demo_id, "deck.json", dk)
+    orchestrator.invalidate(demo_id, "deck")
+    orchestrator.set_stage(demo_id, "deck", "done", message="slides edited in Align")
+    store.update(demo_id, lambda d: d["approvals"].__setitem__("script", False))
+    runlog.event(demo_id, "Slides edited in Align", f"{len(edits)} slide(s); the overrides are kept over any rebuild; the Script card requires re-approval.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
 
 
 @app.patch("/api/demos/{demo_id}/align/plan")

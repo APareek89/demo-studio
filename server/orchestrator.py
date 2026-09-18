@@ -16,7 +16,7 @@ DOWNSTREAM = {
     "understand": ["plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"],
     "plan": ["author", "deck", "voice", "rehearsal", "bundle"],
     "author": ["deck", "voice", "rehearsal", "bundle"],
-    "deck": ["voice", "rehearsal", "bundle"],
+    "deck": ["bundle"],  # audio is keyed by script text; a slide change only needs re-bundling
     "faq": ["voice", "rehearsal", "bundle"],
     "voice": ["bundle"],
     "rehearsal": ["bundle"],

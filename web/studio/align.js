@@ -1,4 +1,5 @@
 import { api, h, toast, esc } from "/web/api.js";
+import { renderSlide } from "/web/slide.js";
 
 const CARD_DEFS = [
   { key: "visuals", n: "1", title: "Visuals" },
@@ -67,7 +68,7 @@ export function renderAlign(ctx) {
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
             approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve"),
-            h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", pitch: "About the pitch: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key]; dockTa.focus(); } }, "Give feedback")) : null));
+            h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", script: "About the slides: ", faq: "About the FAQ bank: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key] || ""; dockTa.focus(); } }, "Give feedback")) : null));
       return el;
     }));
     buildBar.classList.toggle("hidden", !(cards && CARD_DEFS.every((c) => approvals[c.key]) && demo.status !== "ready"));
@@ -100,24 +101,19 @@ export function renderAlign(ctx) {
         f.script_issues?.length ? h("div", { class: "gap" }, h("b", {}, "Script lines held back: "), f.script_issues.length, " — they stated something without a citation and were excluded from narration.") : null);
     }
     if (key === "script") {
-      const pt = cards.script || {}; const tl = pt.timeline || {};
+      const pt = cards.script || {}; const tl = pt.timeline || {}; const dk = cards.deck || { slides: [] };
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
-      const roleLabel = { intro: "opening · frame", outcome: "opening · outcome", proof: "proof block", features: "more features", establish: "establish" };
+      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = sg.spoken ?? sg.duration;
       return h("div", {},
-        h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit script")),
-        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · data/demos/${demoId}/script.json · demo v${pt.version}` : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
+        h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit the words"), dk.slides.length ? h("button", { class: "btn sm primary", onclick: () => openSlideEditor(dk.slides.length > 1 ? 1 : 0) }, "Review slides") : null),
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
+        h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Slides · ${dk.slides.length}${dk.method ? ` · callouts by ${dk.method}` : ""}`),
+        h("div", { class: "deck-strip" }, ...dk.slides.map((s, i) => h("button", { class: "deck-thumb", title: s.title || s.kind, onclick: () => openSlideEditor(i) },
+          s.image_url ? h("img", { src: s.image_url, alt: "" }) : h("div", { class: "noimg" }, "no picture"),
+          h("div", { class: "cap" }, h("b", {}, s.title || s.kind), h("span", {}, `${s.kind.replaceAll("_", " ")}${secs[s.segment_id] ? ` · ${Math.round(secs[s.segment_id])} s` : ""}${s.callouts?.length ? ` · ${s.callouts.length} callout${s.callouts.length === 1 ? "" : "s"}` : ""}`))))),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Winning points · ${(pt.usps || []).length}`),
         h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", h("span", { class: "muted" }, u.why_it_matters)))),
-        pt.visual_audit?.method ? h("p", { class: `small ${pt.visual_audit.method === "gemini_pixels" && pt.visual_audit.missing_line_count ? "gap" : "muted"}` },
-          pt.visual_audit.method === "gemini_pixels"
-            ? `Gemini checked the real pixels: ${pt.visual_audit.image_count || 0} images against ${pt.visual_audit.line_count || 0} spoken lines${pt.visual_audit.missing_line_count ? ` · ${pt.visual_audit.missing_line_count} line(s) need the 3D placeholder/card because no image fully proves them` : " · full visual coverage"}.`
-            : "Pixel audit unavailable; conservative rules preserved the reviewed assignments. Human visual approval is still required.") : null,
-        h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, "Batches"),
-        h("div", { class: "unknowns" }, ...(pt.segments || []).map((sg) => h("div", { class: "unk", style: "flex-direction:column;align-items:stretch;gap:4px" },
-          h("div", { style: "display:flex;gap:8px;align-items:center" }, h("span", { class: "id" }, mmss(sg.start)), h("b", {}, sg.title), h("span", { class: "muted small" }, roleLabel[sg.role] || sg.role, (sg.spoken ?? sg.duration) ? ` · ${Math.round(sg.spoken ?? sg.duration)} s spoken` : ""), (sg.spoken ?? sg.duration) > 20.5 ? h("span", { class: "pill warn" }, "over 20 s") : null),
-          ...sg.lines.slice(0, 3).map((l) => h("div", { class: "small", style: "display:flex;gap:8px;align-items:flex-start" }, l.visual_url ? h("img", { src: l.visual_url, style: "width:44px;height:33px;object-fit:cover;border-radius:4px;flex:none" }) : h("span", { class: "mono muted", style: "width:44px;flex:none" }, "—"), h("span", {}, l.text))),
-          sg.lines.length > 3 ? h("div", { class: "small muted" }, `+ ${sg.lines.length - 3} more line(s) — open Preview`) : null))),
-        h("p", { class: "small muted", style: "margin:10px 0 0" }, "The first two batches always play unchanged. After the customer speaks, custom batches are written and voiced in the background while the opening plays, then the route continues. Open Preview for every line, second by second, with the picture on screen.")
+        h("p", { class: "small muted", style: "margin:10px 0 0" }, "Click a slide to review it: drag a callout, swap the picture, edit its text. Positions you set are kept when the deck is rebuilt. Preview shows every slide with its words and seconds.")
       );
     }
     if (key === "faq") {
@@ -182,21 +178,16 @@ export function renderAlign(ctx) {
         h("table", { class: "facts-table" }, h("tbody", {}, ...f.unknowns.filter((u) => u.status === "open").map((u) => h("tr", {}, h("td", { class: "id" }, u.id), h("td", {}, u.question), h("td", { class: "small muted" }, u.category, " · ", u.suggested_document))))));
     }
     if (key === "script") {
-      const pt = cards.script || {}; const tl = pt.timeline || {};
-      const rows = [];
-      const auditCell = (va) => va ? h("div", { class: "small" }, h("span", { class: `pill ${va.coverage === "full" ? "ok" : va.coverage === "partial" || va.missing_features?.length ? "warn" : ""}` }, va.coverage.replaceAll("_", " ")), va.visible_features?.length ? h("div", {}, "shows: ", va.visible_features.join(", ")) : null, va.missing_features?.length ? h("div", { class: "muted" }, "missing: ", va.missing_features.join(", ")) : null) : h("span", { class: "small muted" }, "rules checked");
-      for (const sg of pt.segments || []) {
-        for (const l of sg.lines || []) rows.push(h("tr", { class: l.unverified ? "removed" : "" }, h("td", { class: "id" }, mmss(l.start)), h("td", { class: "small muted" }, sg.title, h("br"), sg.role), h("td", {}, l.text), h("td", {}, l.visual_url ? h("img", { src: l.visual_url, style: "width:96px;height:72px;object-fit:cover;border-radius:6px;display:block" }) : null, h("div", { class: "mono small muted" }, l.visual || "3D placeholder")), h("td", {}, auditCell(l.visual_audit)), h("td", { class: "mono small" }, (l.fact_ids || []).join(", ") || "—"), h("td", { class: "small muted" }, l.card !== "none" ? l.card : "")));
-        if (sg.checkin) rows.push(h("tr", {}, h("td", { class: "id" }, ""), h("td", { class: "small muted" }, "pause point"), h("td", { class: "muted" }, h("i", {}, sg.checkin)), h("td", {}), h("td", {}), h("td", {}), h("td", {})));
-      }
-      for (const l of pt.closing || []) rows.push(h("tr", {}, h("td", { class: "id" }, mmss(l.start)), h("td", { class: "small muted" }, "closing"), h("td", {}, l.text), h("td", {}, l.visual_url ? h("img", { src: l.visual_url, style: "width:96px;height:72px;object-fit:cover;border-radius:6px;display:block" }) : null, h("div", { class: "mono small muted" }, l.visual || "3D placeholder")), h("td", {}, auditCell(l.visual_audit)), h("td", { class: "mono small" }, (l.fact_ids || []).join(", ") || "—"), h("td", {})));
+      const pt = cards.script || {}; const tl = pt.timeline || {}; const dk = cards.deck || { slides: [] };
+      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = { start: sg.start, spoken: sg.spoken ?? sg.duration, checkin: sg.checkin };
       return h("div", {},
-        h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Primary outcome"), h("span", {}, pt.primary_outcome || "—"), h("span", { class: "k" }, "Supporting"), h("span", {}, (pt.supporting_outcomes || []).join("; ") || "—"), h("span", { class: "k" }, "Not for"), h("span", {}, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Intake"), h("span", {}, pt.intake?.q1 || "—", h("br"), pt.intake?.q2 || "")),
-        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `Winning points`), h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", u.why_it_matters, u.fact_ids?.length ? h("span", { class: "mono small muted" }, ` [${u.fact_ids.join(", ")}]`) : null))),
-        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `Second by second · ${mmss(tl.total_seconds || 0)} total${tl.exact ? "" : " (estimated until voiced)"}`),
-        h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "at"), h("th", {}, "batch"), h("th", {}, "the guide says"), h("th", {}, "on screen"), h("th", {}, "visual check"), h("th", {}, "facts"), h("th", {}, "card"))), h("tbody", {}, ...rows)),
-        (pt.visual_changes || []).length ? h("div", {}, h("h3", { style: "margin:16px 0 6px;font-size:14px" }, "Why these pictures"), h("ul", { class: "gaplist" }, ...pt.visual_changes.map((c) => h("li", {}, h("b", {}, c.line_id), `: ${c.from || "—"} → ${c.to} — ${c.why}`)))) : null,
-        (pt.segments || []).some((sg) => sg.deeper?.length) ? h("div", {}, h("h3", { style: "margin:16px 0 6px;font-size:14px" }, "Only if asked (deeper lines)"), h("ul", { class: "gaplist" }, ...(pt.segments || []).flatMap((sg) => (sg.deeper || []).map((l) => h("li", {}, h("b", {}, sg.title), ": ", l.text))))) : null,
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Primary outcome"), h("span", {}, pt.primary_outcome || "—"), h("span", { class: "k" }, "Supporting"), h("span", {}, (pt.supporting_outcomes || []).join("; ") || "—"), h("span", { class: "k" }, "Not for"), h("span", {}, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Intake"), h("span", {}, pt.intake?.q1 || "—")),
+        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `${dk.slides.length} slides · ${mmss(tl.total_seconds || 0)} total${tl.exact ? "" : " (estimated until voiced)"}`),
+        ...dk.slides.map((s, i) => { const view = renderSlide(s, {}); const tm = secs[s.segment_id] || {}; return h("div", { class: "slide-review" },
+          h("div", { class: "slide-review-head" }, h("span", { class: "id mono small", style: "color:var(--accent)" }, tm.start != null ? mmss(tm.start) : ""), h("b", {}, s.title || s.kind), h("span", { class: "muted small" }, s.kind.replaceAll("_", " "), tm.spoken ? ` · ${Math.round(tm.spoken)} s` : "", s.image_id ? ` · ${s.image_id}: ${s.image_reason || ""}` : ""), h("button", { class: "btn sm ghost", onclick: () => openSlideEditor(i) }, "Edit")),
+          view.el,
+          s.lines?.length ? h("ol", { class: "slide-lines" }, ...s.lines.map((l) => h("li", {}, l.text, l.fact_ids?.length ? h("span", { class: "mono small muted" }, ` [${l.fact_ids.join(", ")}]`) : null))) : null,
+          tm.checkin ? h("p", { class: "small muted", style: "margin:6px 0 0" }, h("i", {}, "pause: ", tm.checkin)) : null); }),
         pt.scorecard ? h("p", { class: "small muted", style: "margin:12px 0 0" }, `Scorecard ${pt.scorecard.total}/20 — weakest: ${(pt.scorecard.weakest || []).slice(0, 2).join("; ")}`) : null);
     }
     if (key === "faq") {
@@ -241,6 +232,43 @@ export function renderAlign(ctx) {
     const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text), facts: h("input", { value: (line.fact_ids || []).join(", "), placeholder: "F001, F002" }), visual: h("input", { value: line.visual || "", placeholder: "im01, or blank for 3D / a fact card" }) }));
     const body = h("div", { class: "script-editor" }, ...fields.map(({ line, input, facts, visual }) => h("label", {}, h("span", {}, h("b", {}, line.section), h("small", { class: "mono muted" }, line.id)), input, h("small", { class: "muted" }, "Approved fact ids"), facts, h("small", { class: "muted" }, "Visual ref (blank keeps unsupported details on a fact card)"), visual)));
     editor("Edit what the guide says", { body, save: () => { const lines = fields.map(({ line, input, facts, visual }) => ({ id: line.id, text: input.value.trim(), fact_ids: facts.value.split(",").map((x) => x.trim()).filter(Boolean), visual_ref: visual.value.trim() })).filter((x, i) => x.text !== fields[i].line.text.trim() || x.fact_ids.join(",") !== (fields[i].line.fact_ids || []).join(",") || x.visual_ref !== (fields[i].line.visual || "")); if (!lines.length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/script`, { lines }); } }, "Save & re-align visuals");
+  }
+  function openSlideEditor(idx) {
+    let dk = cards.deck || { slides: [], images: [] }; if (!dk.slides.length) return;
+    let i = Math.max(0, Math.min(idx, dk.slides.length - 1));
+    const bg = h("div", { class: "preview-bg" }); const box = h("div", { class: "preview align-editor slide-editor-box" }); bg.append(box);
+    function draw() {
+      const orig = dk.slides[i]; const s = JSON.parse(JSON.stringify(orig)); const images = dk.images || []; const moved = {};
+      const title = h("input", { value: s.title || "", maxlength: 80 });
+      const imgSel = h("select", {}, ...images.map((x) => h("option", { value: x.id, selected: x.id === s.image_id }, `${x.id} · ${x.angle || ""} · ${(x.description || "").slice(0, 48)}`)));
+      const partNames = () => (images.find((x) => x.id === imgSel.value)?.parts || []).map((p) => p.name);
+      const partSel = (c) => h("select", {}, h("option", { value: "" }, "— side panel —"), ...partNames().map((n) => h("option", { value: n, selected: n === c.part }, n)));
+      const rows = (s.callouts || []).map((c) => ({ c, text: h("input", { value: c.text, maxlength: 90 }), facts: h("input", { value: (c.fact_ids || []).join(", "), placeholder: "F001" }), part: partSel(c) }));
+      const view = renderSlide(s, { editable: true, onMove: (id, pos) => { moved[id] = pos; } });
+      imgSel.onchange = () => { const nx = images.find((x) => x.id === imgSel.value); view.setImage(nx?.url, nx?.parts || []); for (const r of rows) { const keep = r.part.value; r.part.replaceChildren(h("option", { value: "" }, "— side panel —"), ...partNames().map((n) => h("option", { value: n, selected: n === keep }, n))); } };
+      const form = h("div", { class: "slide-editor-form" },
+        h("label", {}, "Title (≤ 6 words)", title),
+        images.length ? h("label", {}, "Picture", imgSel) : h("p", { class: "small muted" }, "No pictures in this demo."),
+        h("p", { class: "eyebrow", style: "margin:4px 0 0" }, `Callouts · ${rows.length}`),
+        ...rows.map((r, k) => h("div", { class: "callout-row" }, h("span", { class: "num" }, String(k + 1)), h("label", {}, "Text (≤ 8 words; a figure or claim needs a fact id)", r.text), h("label", {}, "Fact ids", r.facts), h("label", {}, "Points at", r.part), h("small", { class: "muted" }, r.c.placement === "overlay" ? `on the picture · part confidence ${r.c.confidence}` : (r.c.part ? `side panel · part confidence ${r.c.confidence} is below 0.6` : "side panel · no part named")))),
+        rows.length ? null : h("p", { class: "small muted" }, "No callouts on this slide."),
+        s.lines?.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:4px 0 0" }, "The guide says"), h("ol", { class: "slide-lines" }, ...s.lines.map((l) => h("li", {}, l.text)))) : null);
+      const save = async (approveAfter) => {
+        const out = { slide_id: orig.id, callouts: [] };
+        if (title.value.trim() !== (orig.title || "")) out.title = title.value.trim();
+        if (images.length && imgSel.value !== orig.image_id) out.image_id = imgSel.value;
+        for (const r of rows) { const co = { id: r.c.id }; if (r.text.value.trim() !== r.c.text) co.text = r.text.value.trim(); const f = r.facts.value.split(",").map((x) => x.trim()).filter(Boolean); if (f.join(",") !== (r.c.fact_ids || []).join(",")) co.fact_ids = f; if (r.part.value !== (r.c.part || "")) co.part = r.part.value; if (moved[r.c.id]) co.label_pos = moved[r.c.id]; if (Object.keys(co).length > 1) out.callouts.push(co); }
+        if (out.title !== undefined || out.image_id !== undefined || out.callouts.length) { await api.patch(`/api/demos/${demoId}/align/deck`, { slides: [out] }); await reload(); dk = cards.deck; toast("Slide saved"); }
+        if (approveAfter) { await setApproval("script", true); bg.remove(); } else draw();
+      };
+      box.replaceChildren(
+        h("div", { class: "phead" }, h("h2", {}, `Slide ${i + 1} of ${dk.slides.length}`, h("span", { class: "muted small", style: "margin-left:10px" }, orig.kind.replaceAll("_", " "))), h("div", { style: "display:flex;gap:6px" }, h("button", { class: "btn sm ghost", disabled: i === 0, onclick: () => { i--; draw(); } }, "◀ Prev"), h("button", { class: "btn sm ghost", disabled: i === dk.slides.length - 1, onclick: () => { i++; draw(); } }, "Next ▶"), h("button", { class: "btn sm", onclick: () => bg.remove() }, "Close"))),
+        h("div", { class: "pbody slide-editor" }, h("div", {}, view.el), form),
+        h("div", { class: "editor-actions" }, h("span", { class: "small muted", style: "margin-right:auto" }, "Drag a callout to move it. Saving keeps your positions over any rebuild; an uncited figure or claim is refused."), h("button", { class: "btn", onclick: () => save(false).catch((e) => toast(e.message, true)) }, "Save"), h("button", { class: "btn primary", onclick: () => save(true).catch((e) => toast(e.message, true)) }, "Save & approve")));
+      requestAnimationFrame(view.layout);
+    }
+    draw(); document.body.appendChild(bg);
+    const esc = (e) => { if (e.key === "Escape") { bg.remove(); document.removeEventListener("keydown", esc); } }; document.addEventListener("keydown", esc);
   }
   function openPitchEditor() {
     const pt = cards.script || {};

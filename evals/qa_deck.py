@@ -171,6 +171,39 @@ store.path(i, "deck-overrides.json").unlink(missing_ok=True)
 b = c.get(f"/api/demos/{i}/bundle").json()
 check("the rebuilt bundle carries the override", b["slides"][1]["title"] == "A title the user chose")
 
+# ---- Phase 4: slide review in Align — PATCH /align/deck through the same validator; overrides survive rebuilds ----
+dk = store.read_json(i, "deck.json"); s1 = dk["slides"][1]; c1 = s1["callouts"][0] if s1["callouts"] else None
+imgs_all = [im["id"] for im in und["images"]]; other_img = next((x for x in imgs_all if x != s1["image_id"]), None)
+r = c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": s1["id"], "title": "Chosen in review", "image_id": other_img, "callouts": ([{"id": c1["id"], "label_pos": {"x": 0.62, "y": 0.11}, "text": "Warranty in writing", "fact_ids": ["F001"]}] if c1 else [])}]})
+check("PATCH /align/deck accepts title, picture and callout edits", r.status_code == 200, r.text[:120])
+dk2 = store.read_json(i, "deck.json"); s2 = dk2["slides"][1]
+check("the edit lands in deck.json (title, picture chosen in Align)", s2["title"] == "Chosen in review" and s2["image_id"] == other_img and s2["image_reason"] == "chosen in Align")
+if c1:
+    c2 = next(x for x in s2["callouts"] if x["id"] == c1["id"])
+    check("callout text, facts and the dragged position land", c2["text"] == "Warranty in writing" and c2["fact_ids"] == ["F001"] and c2["label_pos"] == {"x": 0.62, "y": 0.11})
+ov = store.read_json(i, "deck-overrides.json")
+check("overrides are saved for the next rebuild", bool(ov) and ov["slides"][0]["slide_id"] == s1["id"] and ov["slides"][0]["title"] == "Chosen in review")
+d3 = c.get(f"/api/demos/{i}").json()["demo"]
+check("a slide edit un-approves the Script card and marks only the bundle stale", d3["approvals"]["script"] is False and d3["stages"]["bundle"]["status"] == "stale" and d3["stages"]["voice"]["status"] == "done" and d3["stages"]["deck"]["status"] == "done")
+if c1:
+    r = c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": s1["id"], "callouts": [{"id": c1["id"], "text": "Best in class mileage", "fact_ids": []}]}]})
+    check("an uncited claim in a callout is refused (400, names the fact-id rule)", r.status_code == 400 and "fact id" in r.json()["detail"])
+    r = c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": s1["id"], "callouts": [{"id": c1["id"], "text": "one two three four five six seven eight nine", "fact_ids": ["F001"]}]}]})
+    check("a 9-word callout is refused", r.status_code == 400)
+    r = c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": s1["id"], "callouts": [{"id": c1["id"], "label_pos": {"x": 1.4, "y": 0.2}}]}]})
+    check("a position outside the picture is refused", r.status_code == 400)
+check("an unknown picture is refused", c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": s1["id"], "image_id": "im99"}]}).status_code == 400)
+check("an unknown slide is 404", c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": "sl99", "title": "x"}]}).status_code == 404)
+r = c.post(f"/api/demos/{i}/revise", json={"stage": "deck"}); assert r.status_code == 200, r.text
+wait(i, "ready")
+s3 = store.read_json(i, "deck.json")["slides"][1]
+check("after a full deck rebuild the Align edits still win", s3["title"] == "Chosen in review" and s3["image_id"] == other_img)
+b = c.get(f"/api/demos/{i}/bundle").json()
+check("the rebuilt bundle shows the reviewed slide", b["slides"][1]["title"] == "Chosen in review" and b["slides"][1]["image_id"] == other_img)
+cd = c.get(f"/api/demos/{i}").json()["cards"]["deck"]
+check("cards.deck gives the editor its slides and pictures with parts", bool(cd["slides"]) and bool(cd["images"]) and all("parts" in im for im in cd["images"]) and all("image_url" in s for s in cd["slides"]))
+store.path(i, "deck-overrides.json").unlink(missing_ok=True)
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)

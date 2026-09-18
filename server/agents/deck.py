@@ -200,7 +200,8 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
         o = by_slide.get(s["id"])
         if not o:
             continue
-        if o.get("image_id") in images_by_id:
+        image_changed = o.get("image_id") in images_by_id and o["image_id"] != s["image_id"]
+        if image_changed:
             s["image_id"], s["image_reason"] = o["image_id"], "chosen in Align"
         if (o.get("title") or "").strip():
             s["title"] = _compact(o["title"], MAX_TITLE_WORDS)
@@ -216,8 +217,8 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
                     c["text"], c["fact_ids"] = text, valid
             if "part" in oc:
                 c["part"] = (oc.get("part") or "").strip().lower()
-        if any("part" in oc for oc in o.get("callouts", [])):
-            place_callouts(s, img)  # a new part → recompute its anchor and a clear spot
+        if image_changed or any("part" in oc for oc in o.get("callouts", [])):
+            place_callouts(s, img)  # a new picture or part → recompute anchors and clear spots; unlisted parts go to the panel
         for oc in o.get("callouts", []):
             c = next((x for x in s["callouts"] if x["id"] == oc.get("id")), None)
             lp = oc.get("label_pos")
