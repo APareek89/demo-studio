@@ -90,12 +90,17 @@
     {
       "id": "competitor_brezza",
       "question": "Why should I choose this over a Brezza automatic for short city trips?",
-      "expected_behavior": "Explain supported Nexon points relevant to short trips; acknowledge that an evidence-backed Brezza comparison is unavailable."
+      "expected_behavior": "For approved comparable current variants/transmissions, give a balanced comparison using cited Nexon and Brezza facts, connect it to the stated short-trip need, and include the current-specification/price verification caveat. If either side lacks permitted evidence, decline safely and mark real comparison coverage incomplete; a refusal is not a successful comparison."
     },
     {
       "id": "competitor_venue",
       "question": "Is the Venue safer than this Nexon, or are you just showing me more features?",
-      "expected_behavior": "Do not rank safety without comparable approved evidence; distinguish a feature list from a crash-test result."
+      "expected_behavior": "Do not rank safety without comparable approved evidence. Explain supported variant-scoped safety equipment on both vehicles, distinguish it from crash-test results, and include the verification caveat. A safe refusal of an unsupported ranking does not replace the required supported Venue comparison."
+    },
+    {
+      "id": "competitor_venue_supported",
+      "question": "For our short city trips, how do this Nexon and a similarly priced Venue automatic compare?",
+      "expected_behavior": "Identify the comparable variants and transmission types using permitted current official evidence. Compare relevant supported facts from both manufacturers, state meaningful limits and the live-price/specification verification caveat. Clarify the budget/variant only if needed to avoid guessing. A decline alone leaves required Venue comparison coverage incomplete."
     },
     {
       "id": "ambiguous_followup",
@@ -122,5 +127,6 @@
       "question": "One last question: is the automatic suitable for my stop-and-go traffic? Then carry on from where we stopped.",
       "expected_behavior": "Answer for the selected transmission using supported facts, then resume the interrupted narrative without duplicate speech."
     }
-  ]
+  ],
+  "completion_rule": "The real demo requires at least one successful supported comparison with Brezza and one with Venue. Safe declines prove refusal behavior only. Neither missing source permission nor an empty comparison registry can be counted as completed real comparison coverage."
 }

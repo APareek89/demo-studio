@@ -6,6 +6,10 @@
 
 One Tata Nexon demo with Brezza and Venue, two real iterations, is authorized. The free customer rehearsal `dm_3d6448af` is preserved at port8891 under `data/nexon-mock` and is explicitly fake content with existing sample imagery, not a Nexon demo. Findings and evidence: `docs/issues/2026-09-18-nexon.md`.
 
+Real draft prepared and read back through product API routes: `dm_36d47b86` in `data/demos`, status `sources`, version0, six disabled URL references (four Tata + Brezza/Venue as competitors), competition on, everyday audience, English, three-minute pitch. No read/build invoked; outbound networking was blocked during preparation. `output/nexon-sources/draft.json` records source IDs and remaining inputs. Creation used `MODEL_TIER=customer`; that is a process setting, so explicitly use the customer tier again when starting the paid build server. A later port8877 read-only request returned connection refused; do not assume the earlier real server is still running.
+
+Real-run protocol: `docs/qa/nexon-real-run-plan.md` defines both preserved iterations, three buyer profiles, twelve question paths and the ten standards. Brezza and Venue each require an actual supported comparison; safe refusals alone do not complete that coverage.
+
 Experience fixes: product-first responsive gallery; native-aspect pictures and repaired callout leaders; owned voice/typed turns without auto-advance; exact confirmations; clarification context and original-question routing; explicit return to saved opening/route/deeper/closing point; grounded context/complete labels; preserve reviewed slide edits. Customer recap separates buyer-facing content from internal session metrics.
 
 Free verification: deck203/203 (includes29 content +39 provider contracts), accept24/24, smoke both phases pass; browser14/14 including the final customer-recap regression; Python and all12 JS modules compile. Actual source facts, voice intelligibility, paid provider compatibility, personalized pitch quality and live latency remain unverified.

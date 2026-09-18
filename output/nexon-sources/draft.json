@@ -1,0 +1,57 @@
+{
+  "demo_id": "dm_36d47b86",
+  "name": "Tata Nexon \u2014 customer demo draft",
+  "status": "sources",
+  "data_dir": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86",
+  "prepared_via": "FastAPI product routes with all outbound socket connections blocked",
+  "mock": false,
+  "configured_tier": "customer",
+  "source_refs": [
+    {
+      "id": "src_73735b",
+      "url": "https://tata.cars/nexon/ice.html",
+      "role": "product",
+      "name": "Tata Nexon ICE model page"
+    },
+    {
+      "id": "src_e64b3e",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "role": "product",
+      "name": "Nexon Specifications & Dimensions"
+    },
+    {
+      "id": "src_07be3d",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "role": "product",
+      "name": "Tata Nexon Price & Variants in India"
+    },
+    {
+      "id": "src_afee4c",
+      "url": "https://tata.cars/nexon/ice/compare.html",
+      "role": "product",
+      "name": "Nexon variant comparison"
+    },
+    {
+      "id": "src_07ea50",
+      "url": "https://www.marutisuzuki.com/arena/brezza",
+      "role": "competitor",
+      "name": "Brezza official model page"
+    },
+    {
+      "id": "src_acce5c",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "role": "competitor",
+      "name": "Venue official model page"
+    }
+  ],
+  "ingestion_started": false,
+  "paid_calls": 0,
+  "bundle_ready": false,
+  "remaining": [
+    "Confirm Gemini billing is enabled",
+    "Confirm manufacturer-material reuse permission",
+    "Collect and visually review permitted original assets and current variant evidence",
+    "Enable approved source references, read, review all Align cards, build and validate two real iterations"
+  ],
+  "note": "use_in_demo=false is a saved review choice, not a provider-spending lock. Do not invoke /read or /build before the prerequisites are met."
+}
