@@ -577,6 +577,17 @@
 **Fix:** Main narration moves unnecessary technical quantities as a whole to deeper detail; direct Q&A retains the value, unit and scope with a short gloss. Jargon repair explicitly forbids dropping only the unit. Ordinary facts need no repeated disclaimer or certification label.
 **Prevention:** Free contracts capture actual build-FAQ and runtime prompt envelopes and prove a complete mocked answer reaches the speech seam unchanged; a deeper unit-bearing answer survives author validation. The adversarial unit-loss case still needs a real response review: no deterministic semantic/unit validator was added.
 
+## 2026-09-18 — The on-screen generator kept the old benefit-only contract
+
+**Why 1:** The second raw deck promised easy rough-road clearance, family luggage fit, highway efficiency and lower fuel costs from ordinary specifications.
+**Why 2:** Its prompt and callout/title schema descriptions still required a benefit or promise and explicitly rejected a bare specification label.
+**Why 3:** The earlier evidence-rule change reached plan, author and Q&A, but not this separate model-writing stage; deck context also omitted truth, exact source quote and locator.
+**Why 4:** The scope review followed spoken-content generation and missed that the on-screen model can independently create unsupported customer claims.
+**Why 5:** Earlier deck tests established bounded text, valid IDs and visual layout, not whether all generation surfaces received the same source/evidence contract.
+**Deepest why type:** `design`
+**Fix:** After freezing the raw I2 deck, align only its existing prompt/schema descriptions and fact context with the shared evidence rules. Complete neutral specifications and relevant fit-checks are allowed; omitted callouts are preferable to lost qualifications or invented benefits. No model critic, semantic regex engine, saved-override change or paid rebuild.
+**Prevention:** Two actual deck input-envelope contracts bring the free generation suite to 23/23; the 12-case adversarial review set includes deck benefits and fuel-cost overreach. The raw I2 script/FAQ still repeat semantic failures despite receiving the new instructions, so prompt assembly is not a faithful-generation guarantee. Record those failures before manual corrections. A separate stale saved label bound I1's BNCAP text to I2's ISOFIX F004: root owns review-identity recovery, and the prompt fix does not address it.
+
 
 ## 2026-09-18 — A locked Priya build switched speakers after a Sarvam rate limit (NX19)
 
@@ -589,3 +600,36 @@
 **Fix:** Locked speech keeps the configured provider and speaker for build and runtime, including a missing key or temporary circuit failure. Matching cache reads happen first. Main, deeper, check-in, closing, intake, FAQ and filler clips are reused only by their chosen-voice hash; old Gemini references are replaced or cleared. Missing locked narration or bank audio stops the build before bundling, with completed work checkpointed. Gemini policy refusals, including the observed “Input blocked sensitive words”, are not retried by the voice stage or forwarded to another provider. A locked Cloud voice also preserves mock isolation.
 **Pacing evidence:** Sarvam's official [rate-limit documentation](https://docs.sarvam.ai/api/getting-started/ratelimits) lists Bulbul v3 Starter at 30 REST requests/minute, shared across account keys. This process conservatively spaces starts by 2.1 seconds; this is an application policy, not a claim about the account's actual tier. Only HTTP429 receives up to three attempts. Numeric or HTTP-date Retry-After is honored; a requested wait beyond the call's 30-second wait budget stops explicitly and preserves the shared cooldown. Other processes on the same account can still consume capacity.
 **Prevention:** `evals/voice_lock_contract.py` has 27 free cases with fake speech/HTTP/clock and blocked sockets. They reproduce mixed FAQ/fillers, cached main/check-in/intake, cooldown reuse, missing-only recovery, explicit incomplete narration, policy refusal, locked Cloud mock isolation, pacing and bounded retries. Failed real Build1 remains preserved; the next real build is the user's second attempt, not an uncounted recovery run. No live provider call was made for this fix.
+
+## 2026-09-18 — Human FAQ review could not replace a generated answer
+
+**Why 1:** A real FAQ answer added benefits or connective wording that the reviewed facts did not establish, and Align offered no direct answer correction.
+**Why 2:** The FAQ card could display and approve a generated bank, while corrections went back through regeneration.
+**Why 3:** Generation and review were treated as the same operation; another model answer could repeat the defect and replace a human correction.
+**Why 4:** No explicit edit contract preserved the question, origin and registry hash while discarding derived audio, visual and route metadata.
+**Why 5:** The free gates checked generation/reuse, not the full human-review → ordinary Build path.
+**Deepest why type:** `design`
+**Fix:** Existing Align now accepts a supported answer plus fact ids at `PATCH /api/demos/{id}/align/faq/{qid}`. All ids must be approved and competition-eligible; mixed valid/invalid ids are rejected rather than filtered. Existing NUMBERISH/CLAIMISH rules reject uncited claims. Stale, partial and running banks cannot be edited. The route preserves bank/question identity and registry hash, clears old audio/error/clarification/callback, derives the visual and the slide from the current script joined to saved slide design, clears only FAQ approval, and invalidates voice/rehearsal/bundle while keeping FAQ done. Card and Preview offer a labelled, keyboard-focusable editor; no model is called.
+**Prevention:** `evals/faq_review_contract.py` passes 41 free API/build/cache contracts in temporary storage with providers and networking blocked. It covers held/mixed F/C citations, competition off/on, stale hashes/stages, graph gaps between stages, mutation-free failures, changed script references, excluded cached visuals, exact-answer normal Build reuse, fresh runtime stay/jump routing and removal of old recordings. This does not prove semantic entailment: a valid citation does not certify an added benefit, so the human must review meaning and scope. Only supported-answer edits are included; question/decline/clarification authoring is unchanged.
+
+## 2026-09-18 — Align Script Preview did not show the customer slide template
+
+**Why 1:** Script Preview showed the plain native image layout after the customer player had moved to cinematic slides.
+**Why 2:** Preview called the shared renderer without its fitted-player option.
+**Why 3:** Cinematic styling is scoped to the player stage, but the read-only preview had no stage wrapper.
+**Why 4:** The editable source-coordinate view and the customer presentation view shared a default rendering call despite serving different review tasks.
+**Why 5:** Previous preview checks compared text and saved overrides, without checking the final presentation shell.
+**Deepest why type:** `code`
+**Fix:** Only Script Preview now uses the fitted shared renderer inside a bounded `.pl` / `.pl-stage` shell, with an active slide and no player controls. The editable slide view retains its native coordinates and drag behavior.
+**Prevention:** Root's real-browser review must compare the customer-style Preview at wide/narrow widths before this checkpoint is accepted; syntax checks alone do not establish visual parity.
+
+## 2026-09-18 — Hidden mobile labels left a visible diagonal leader
+
+**Why 1:** A phone-sized cockpit preview showed a line from the picture's top-left corner to an evidence dot.
+**Why 2:** Narrow-layout CSS hid the overlay label and repeated its text in the evidence rail, but kept the SVG leader visible.
+**Why 3:** A hidden label has zero bounds, so layout could compute the leader origin at the picture corner.
+**Why 4:** Responsive visibility was applied to the label but not to the line that depends on that label.
+**Why 5:** Prior mobile checks verified native image fit, readable rail and numbered anchors, but did not inspect the leader's painted visibility.
+**Deepest why type:** `code`
+**Fix:** In the exact existing ≤699px cinematic container rule, hide the leaders with `visibility:hidden`. The native-image geometry, numbered dots, evidence rail and wide-screen label/leader remain unchanged.
+**Prevention:** The free browser harness adds a wide →390px →304px →wide check for hidden mobile leaders, visible dots/rail and restored desktop leaders. Required isolated gates after the fix pass: deck203/203, acceptance24/24, both smoke phases, Python38/JS12 and harness-module syntax. Actual browser results are recorded by root; the subagent's CUA had no available browser.

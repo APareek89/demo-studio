@@ -1,0 +1,14 @@
+Python compile: 38 modules, exit 0
+JS web/api.js: exit 0
+JS web/app.js: exit 0
+JS web/demos.js: exit 0
+JS web/observability.js: exit 0
+JS web/player/mascot.js: exit 0
+JS web/player/player.js: exit 0
+JS web/playground.js: exit 0
+JS web/slide.js: exit 0
+JS web/studio/align.js: exit 0
+JS web/studio/rehearse.js: exit 0
+JS web/studio/sessions.js: exit 0
+JS web/studio/sources.js: exit 0
+SYNTAX: 38 Python modules and 12 JS modules; PASS

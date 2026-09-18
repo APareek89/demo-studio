@@ -4,7 +4,7 @@
   "cases": [
     {
       "id": "ordinary-spec-is-stated",
-      "stages": ["understand", "author", "qa"],
+      "stages": ["understand", "author", "qa", "deck"],
       "source": "Official brochure, specification table: Ground clearance 205 mm. Boot volume 380 L (ISO 215). No certification statement is supplied.",
       "request": "Extract the facts and explain these specifications.",
       "must": ["Classify both ordinary specifications as stated", "Retain the boot measurement method", "Use direct natural wording without a certification label"],
@@ -20,7 +20,7 @@
     },
     {
       "id": "clearance-not-flood-capability",
-      "stages": ["plan", "author", "qa"],
+      "stages": ["plan", "author", "qa", "deck"],
       "facts": ["F001: Ground clearance 205 mm; stated. No water-wading or damage-free capability is documented."],
       "request": "Show why this matters for monsoon roads.",
       "bad_proposal": "This clearance lets you glide through flooded roads without underbody damage.",
@@ -29,7 +29,7 @@
     },
     {
       "id": "volume-not-tested-fit",
-      "stages": ["plan", "author", "qa"],
+      "stages": ["plan", "author", "qa", "deck"],
       "facts": ["F001: Boot volume 380 L (ISO 215); stated. No suitcase dimensions or loading trial supplied."],
       "request": "Will it fit our two large suitcases and a pushchair?",
       "bad_proposal": "The boot easily fits two suitcases and a pushchair.",
@@ -47,7 +47,7 @@
     },
     {
       "id": "feature-trim-fuel-scope",
-      "stages": ["understand", "plan", "author", "qa"],
+      "stages": ["understand", "plan", "author", "qa", "deck"],
       "source": "Feature matrix: camera on Plus and above, petrol/diesel only. Front parking sensors on Plus Premium and Max Premium only. CNG cells are blank.",
       "request": "Does Plus petrol automatic have the camera and front parking sensors?",
       "must": ["Keep the two features as separate facts with their applicable trims/fuels", "Answer only camera availability for the requested trim; state what the sensor row actually supports"],
@@ -55,7 +55,7 @@
     },
     {
       "id": "introductory-finance-is-not-monthly-cost",
-      "stages": ["understand", "author", "qa"],
+      "stages": ["understand", "author", "qa", "deck"],
       "source": "Introductory EMI ₹6,499 for the first six months; higher instalments thereafter. Subject to lender approval and stated eligibility. Starting ex-showroom price applies to the base variant.",
       "request": "How much would the selected automatic cost me each month?",
       "bad_proposal": "Ownership starts at around sixty-five hundred rupees a month.",
@@ -64,7 +64,7 @@
     },
     {
       "id": "plain-answer-keeps-unit",
-      "stages": ["author", "qa"],
+      "stages": ["author", "qa", "deck"],
       "facts": ["F001: Diesel automatic peak torque 250 Nm at the stated operating range; stated."],
       "request": "What is the diesel's torque?",
       "bad_proposal": "Its pulling power is 250.",
@@ -73,7 +73,7 @@
     },
     {
       "id": "source-conflict-and-footnote",
-      "stages": ["understand", "plan", "qa"],
+      "stages": ["understand", "plan", "qa", "deck"],
       "source": "2025 brochure: display 9 inches on Plus. 2026 feature table: display 10 inches on Plus Premium only, subject to specified package. No evidence reconciles the model-year difference.",
       "request": "What screen will I get on Plus?",
       "must": ["Keep source/year/trim/package conditions with separate facts", "Acknowledge the unresolved match for the customer's actual variant if no exact source is available"],
@@ -81,7 +81,7 @@
     },
     {
       "id": "missing-policy-is-not-test-drive-task",
-      "stages": ["plan", "author", "qa"],
+      "stages": ["plan", "author", "qa", "deck"],
       "facts": ["No standard warranty exclusions or tested fuel-consumption figure supplied. Seat images are available."],
       "request": "Where do I settle these open questions?",
       "must": ["Use written warranty terms for coverage/exclusions", "Use the relevant official test data for a tested consumption figure", "Use a visit or test drive for the buyer's seat fit and feel"],
@@ -89,11 +89,20 @@
     },
     {
       "id": "normal-feature-stays-conversational",
-      "stages": ["plan", "author", "qa"],
+      "stages": ["plan", "author", "qa", "deck"],
       "facts": ["F001: LED headlamps included on Plus petrol automatic; stated."],
       "request": "Does the Plus petrol automatic have LED headlamps?",
       "must": ["Answer yes directly with the applicable feature and citation", "Keep the spoken answer brief and natural"],
       "must_not": ["Unnecessary refusal or ritual uncertainty disclaimer", "Call the feature certified", "Add a proven visibility or safety advantage absent from the source"]
+    },
+    {
+      "id": "fuel-type-not-saving",
+      "stages": ["deck", "plan", "qa"],
+      "facts": ["F001: Twin-cylinder CNG engine offered; stated. No fuel-consumption, local fuel-price or ownership-cost comparison supplied."],
+      "request": "Write a short reason to consider this fuel option.",
+      "bad_proposal": "Twin-cylinder CNG lowers daily fuel costs.",
+      "must": ["Label the documented fuel choice or ask about the buyer's requirements", "Preserve the absence of a supported cost comparison"],
+      "must_not": ["Infer lower daily cost from the fuel type", "Promise savings without an approved source-stated result"]
     }
   ]
 }

@@ -1,0 +1,72 @@
+{
+  "replacements": [
+    {
+      "from": "Review modern convenience equipment including the 360-degree camera, front sensors, JBL audio, and iRA app.",
+      "to": "Displays and equipment tied to the selected trim. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Pricing, Warranty, and Clear Next Steps",
+      "to": "Make the next step count"
+    },
+    {
+      "from": "Clarifying published pricing, warranty badge, and local dealer checks",
+      "to": "An exact quote and written ownership terms"
+    },
+    {
+      "from": "State the starting ex-showroom price, 3-year warranty badge, and outline open questions for dealer verification.",
+      "to": "An exact quote and written ownership terms. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Welcome to Tata Motors! Would you like to tell me what you're looking for in your next SUV, or shall we jump straight in?",
+      "to": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?"
+    },
+    {
+      "from": "5-Star Safety",
+      "to": "Safety equipment"
+    },
+    {
+      "from": "Buyers want reassurance that structural safety and critical occupant protection are not reserved solely for top-tier trims.",
+      "to": "Buyers may want to distinguish standard equipment, trim-specific assistance and the published scope of crash results."
+    },
+    {
+      "from": "Families need to confirm that boot space remains functional across different fuel variants, particularly with twin CNG cylinders.",
+      "to": "Buyers may want published boot capacities, seat flexibility and a practical check with their own luggage."
+    },
+    {
+      "from": "iCNG dual-cylinder boot packaging layout",
+      "to": "A source-identified iCNG boot image"
+    },
+    {
+      "from": "F016 mentions the innovative 60-litre water-equivalent twin cylinders, but existing images only display the petrol/diesel luggage area.",
+      "to": "The current general boot picture does not prove the iCNG cylinder layout."
+    },
+    {
+      "from": "Upload an official photograph of the Nexon iCNG boot floor illustrating how luggage fits over the twin cylinders.",
+      "to": "Add an official image explicitly identifying the iCNG configuration before showing its packaging."
+    },
+    {
+      "from": "360-degree surround camera display on the infotainment screen",
+      "to": "A live surround-camera screen image"
+    },
+    {
+      "from": "F022 references the HD 360 surround view system and Blind View Monitor, which is a major city parking selling point.",
+      "to": "The brochure lists the camera; the current touchscreen picture does not show the active camera view."
+    },
+    {
+      "from": "Provide a high-resolution screenshot of the 10.25-inch touchscreen showing the active 360-degree camera feed with guidance lines.",
+      "to": "Add an official image of the active Nexon surround-view camera before pointing at that interface."
+    },
+    {
+      "from": "ADAS front radar and camera sensor module",
+      "to": "A source-identified driver-assistance feature image"
+    },
+    {
+      "from": "F025 lists advanced collision warning and emergency braking for Fearless + PS DCA, but exterior shots lack a dedicated sensor detail.",
+      "to": "The registry lists assistance functions but does not establish a sensor layout."
+    },
+    {
+      "from": "Upload a close-up image showing the front camera and radar housing integrated on the windscreen and grille.",
+      "to": "Use an official image explicitly identifying the relevant feature; do not guess at radar or camera hardware."
+    }
+  ]
+}

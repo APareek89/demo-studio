@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-09-18T14:45:57.653496+00:00",
+  "scope": "Final frozen working tree; no edits made during this gate run",
+  "head": "bfbda1f657252b9add648575541f1882fccccf8e",
+  "isolation": "Each behavior gate used its own temporary DEMO_STUDIO_DATA and DEMO_STUDIO_GRAPH_DB; MOCK_LLM=1, CLOUD_SYNC=0, STORAGE_BACKEND=local. Temporary directories removed after run.",
+  "results": {
+    "deck": {
+      "passed": 203,
+      "total": 203,
+      "log": "deck-final-i2.log"
+    },
+    "acceptance": {
+      "passed": 24,
+      "total": 24,
+      "log": "acceptance-final-i2.log"
+    },
+    "smoke": {
+      "phase_1": "PASS",
+      "phase_2": "PASS",
+      "log": "smoke-final-i2.log"
+    },
+    "syntax": {
+      "python_modules": 38,
+      "javascript_modules": 12,
+      "status": "PASS",
+      "log": "syntax-final-i2.log"
+    }
+  },
+  "paid_calls": 0,
+  "production_data_mutations": false,
+  "server_restarts": false
+}

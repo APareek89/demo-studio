@@ -1,0 +1,137 @@
+{
+  "replacements": [
+    {
+      "from": "F007",
+      "to": "F008"
+    },
+    {
+      "from": "F009",
+      "to": "F010"
+    },
+    {
+      "from": "Thoughtful cabin ventilation and comfort",
+      "to": "Cabin details to try"
+    },
+    {
+      "from": "Available front ventilated seats and standard rear air-conditioning vents help manage passenger comfort across hot Indian seasons.",
+      "to": "Fearless + PS petrol/diesel lists ventilated front seats; rear air vents begin at Pure +. Try the seating and controls for yourself."
+    },
+    {
+      "from": "Versatile multi-powertrain and transmission options",
+      "to": "A driving setup to explore"
+    },
+    {
+      "from": "Choosing between turbo petrol, turbo diesel, and dual-cylinder iCNG with manual, AMT, or dual-clutch transmissions allows you to tailor the SUV to your preferred driving routine.",
+      "to": "The selected Fearless + PS 1.2 turbo petrol pairs with seven-speed DCA. Diesel and CNG have different gearbox choices; compare the applicable configurations."
+    },
+    {
+      "from": "Comprehensive standard safety architecture",
+      "to": "Standard safety equipment"
+    },
+    {
+      "from": "Every Nexon variant includes six airbags, electronic stability program, and ISOFIX mounts alongside certified five-star crash test results.",
+      "to": "Six airbags, electronic stability control and ISOFIX are standard. Manufacturer-reported crash ratings have separate published test and powertrain scopes."
+    },
+    {
+      "from": "Welcome to Tata Nexon",
+      "to": "Tata Nexon, up close"
+    },
+    {
+      "from": "Introduce the Nexon as a compact SUV designed for confident city and highway journeys without premature spec lists.",
+      "to": "Explore the selected petrol automatic without assuming the buyer's needs. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Three Highlights to Guide Your Tour",
+      "to": "Your shortlist starts here"
+    },
+    {
+      "from": "Three core pillars spanning comfort, engine flexibility, and safety",
+      "to": "Cabin features, driving choice and standard safety equipment"
+    },
+    {
+      "from": "Highlight the three core pillars: everyday cabin comfort, diverse powertrain options, and standard structural safety.",
+      "to": "Cabin features, driving choice and standard safety equipment. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Compact Proportions and Ground Clearance",
+      "to": "Take in the stance"
+    },
+    {
+      "from": "Evaluating sub-4-meter dimensions and unladen ground clearance",
+      "to": "Published clearance with its variant qualification"
+    },
+    {
+      "from": "Showcase the SUV proportions, sub-four-metre footprint, and 208 mm ground clearance for road navigation.",
+      "to": "Published clearance with its variant qualification. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Interior Comfort and Climate",
+      "to": "Settle into the cabin"
+    },
+    {
+      "from": "Inspecting front-seat ventilation and passenger climate comfort",
+      "to": "Front-seat ventilation and rear vents on the selected trim"
+    },
+    {
+      "from": "Demonstrate the cabin environment, highlighting available ventilated front seats and standard rear AC vents.",
+      "to": "Front-seat ventilation and rear vents on the selected trim. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Boot Capacity and Storage Flexibility",
+      "to": "Room for your plans"
+    },
+    {
+      "from": "Assessing ISO-measured boot capacity and seating flexibility",
+      "to": "Published boot capacity and a personal luggage-fit check"
+    },
+    {
+      "from": "Present the 382-litre petrol/diesel boot space, 321-litre CNG volume, and split-folding seats.",
+      "to": "Published boot capacity and a personal luggage-fit check. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Engine and Transmission Choices",
+      "to": "Find your driving rhythm"
+    },
+    {
+      "from": "Selecting between petrol, diesel, and CNG powertrain configurations",
+      "to": "Explore the selected petrol automatic in a test drive"
+    },
+    {
+      "from": "Clarify the power outputs and gearbox pairings for the 1.2L petrol, 1.5L diesel, and 1.2L iCNG models.",
+      "to": "Explore the selected petrol automatic in a test drive. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Standard Protection and Active Safety",
+      "to": "Safety starts with the details"
+    },
+    {
+      "from": "Reviewing certified five-star crash ratings and standard safety gear",
+      "to": "Standard equipment and the scoped manufacturer-reported rating"
+    },
+    {
+      "from": "Detail the six standard airbags, ESP, ISOFIX anchors, certified 5-star ratings, and Fearless + PS DCA ADAS suite.",
+      "to": "Standard equipment and the scoped manufacturer-reported rating. Do not infer performance, safety or physical-fit outcomes from specifications."
+    },
+    {
+      "from": "Connected Tech and Audio Features",
+      "to": "Your cockpit, closer"
+    },
+    {
+      "from": "Checking camera views, premium sound, and connected features",
+      "to": "Displays and equipment tied to the selected trim"
+    }
+  ],
+  "fields": {
+    "customer_persona": "People considering a compact SUV for daily use, family travel or a preferred driving setup. This is a general audience, not evidence about the current buyer.",
+    "decision_frame": "Review how the selected petrol automatic and cabin equipment fit the buyer's stated priorities, then check personal fit and a current variant quote.",
+    "takeaway": "Explore the Nexon Fearless + PS petrol automatic through its cabin, family equipment and driving setup.",
+    "primary_outcome": "Decide whether the selected Nexon belongs on the buyer's shortlist.",
+    "supporting_outcomes": [
+      "Cabin equipment with exact trim applicability",
+      "Family practicality with personal child-seat and luggage-fit checks"
+    ],
+    "do_not_recommend_if": "A must-have requirement remains unsupported or fails the buyer's own fit check; verify it before recommending a trim.",
+    "advance": "Choose Book Test Drive to try the seating, visibility and gearbox response, then obtain a current written quote for the selected variant.",
+    "notes": "Use the exact selected configurations for comparisons: Nexon Fearless + PS 1.2 turbo petrol seven-speed DCA, Brezza ZXi+ 1.5 K15C petrol ISG six-speed automatic, regular Venue HX10 1.0 Turbo GDi petrol seven-speed DCT. These are comparison examples, not inferred buyer selections. Use only current approved registry evidence. Standard safety equipment and manufacturer-reported crash results are separate; BNCAP scope is petrol/diesel trims active May 2026. Ground clearance does not establish water capability; boot capacity does not establish luggage fit. Ordinary figures are stated, not certified. Preserve all trim/fuel and introductory finance conditions in the same answer. Do not compute unapproved performance or cost deltas. Resolve policy with written terms, financing with the lender, feel/fit with the buyer's own check."
+  }
+}

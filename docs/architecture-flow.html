@@ -162,6 +162,11 @@ flowchart TD
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
   EDIT[&quot;USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome&lt;br/&gt;[ask · edit modal]&quot;]:::ask
   SAVEEDIT[&quot;validate schema, source ownership and grounding before save&lt;br/&gt;[FUNCTION · store.edit_fact / author.ungrounded / author.validate]&lt;br/&gt;question audio cleared; affected approvals and downstream work stale&lt;br/&gt;script visual audit only when requested (Gemini vision)&quot;]:::fn
+  FAQEDIT[&quot;USER edits a supported FAQ answer + fact ids&lt;br/&gt;[ask · card or Preview · labelled keyboard-focusable editor]&lt;br/&gt;question wording stays fixed; human checks meaning and scope&quot;]:::ask
+  FAQGATE{&quot;finished current bank, no active run,&lt;br/&gt;and every citation approved + competition-eligible?&lt;br/&gt;[FUNCTION · app.edit_aligned_faq]&lt;br/&gt;reject empty citations and uncited claims&quot;}:::dec
+  FAQFAIL[&quot;400 invalid answer/citations or 409 stale/partial/running&lt;br/&gt;[term] no artifacts changed&quot;]:::term
+  FAQSAVE[&quot;save exact reviewed answer, question identity and registry hash&lt;br/&gt;[FUNCTION · PATCH /align/faq/{question_id}]&lt;br/&gt;clear old audio/error/clarification/callback; recompute allowed visual + slide&lt;br/&gt;slide targeting joins current script to saved deck design; no model call&quot;]:::fn
+  FAQBUILD[&quot;FAQ stays done; FAQ approval resets&lt;br/&gt;[FUNCTION · orchestrator.invalidate]&lt;br/&gt;voice / rehearsal / bundle become stale&lt;br/&gt;after approval, ordinary Build voices reviewed words without regenerating FAQ&quot;]:::fn
   REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
   R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
   R2[&quot;plan(instr) → voice sample&quot;]:::fn
@@ -192,6 +197,9 @@ flowchart TD
   A7 --&gt; REPLY
   ATT -.-&gt;|&quot;files but no revise action → revise(&#x27;understand&#x27;)&quot;| A5
   N6 --&gt; EDIT --&gt; SAVEEDIT --&gt; N6
+  N6 --&gt; FAQEDIT --&gt; FAQGATE
+  FAQGATE -- &quot;no&quot; --&gt; FAQFAIL
+  FAQGATE -- &quot;yes&quot; --&gt; FAQSAVE --&gt; FAQBUILD --&gt; N6
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

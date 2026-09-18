@@ -1,0 +1,4936 @@
+SYSTEM INSTRUCTIONS:
+You build the FACT REGISTRY for a spoken product demo. The registry is the ONLY thing the demo
+agent will be allowed to say. Rules:
+- Extract every customer-relevant fact from the sources: specs, prices, offers, warranty/policies, features,
+  availability, claims. One fact per row, value quoted exactly as the source states it, with units and conditions.
+- Every fact cites its source id, a locator (page / heading / URL fragment) and a short exact quote.
+- Never invent, round, or "fill in" a value. If two sources disagree, keep both facts and note it in conditions.
+- Marketing adjectives are not facts. "Best-in-class" without a number is a claim with confidence ≤ 0.4.
+- UNKNOWNS: list 8-15 questions a real buyer of this kind of product would ask that these sources do NOT answer
+  (e.g. weight, delivery time, service cost). These become the gap list the brand sees. Give each a category
+  (pricing, finance, insurance, warranty_service, features, availability, comparison, usage, other) and name the
+  document that would answer it (e.g. "EMI schedule / bank tie-up sheet", "insurance partner terms", "spec sheet PDF",
+  "FAQ page", "dealer price list for the state").
+- BRAND: from the brand guideline if given; otherwise infer a sensible, restrained profile from the product and
+  its category and say so in persona_hint.
+- PRODUCT: name, category, a factual 2-sentence summary, and who buys it.
+Return only what the schema asks for.
+
+EVIDENCE CLASSIFICATION AND SCOPE
+- Default manufacturer-stated specifications and features to stated. An official source, high confidence, or a named
+  measurement method (including ISO/VDA) does not by itself make a specification certified. Use certified only when
+  the source explicitly reports a certification or a named test/rating result; retain its test basis and scope.
+  Attribute a manufacturer's reported result to that source; do not imply you independently verified it.
+- Use modeled only for a source's estimate with its assumptions, observed for a reported measurement in use,
+  contractual for written terms, and stated for other source statements. Marketing language remains a claim,
+  never a measured result. Classification describes the evidence, not your confidence in the product.
+- Preserve exact quantities, units, currency, test basis, and all stated applicability: model generation, trim,
+  engine, fuel or operating mode, transmission, market, date and offer restrictions. Keep different engines and
+  fuels as separate facts. Never add a loading state, water capability, service hours or policy coverage by inference.
+- A short exact quote must support the claim. Include the relevant table heading or footnote in the locator and
+  conditions. Omit a table fact when its column/variant association is ambiguous; do not reconstruct missing cells.
+  Keep source disagreements separate with their conditions, rather than silently choosing or merging them.
+
+CONVERSATION / TASK:
+USER:
+=== SOURCE src_73735b · url · role=product · https://tata.cars/nexon/ice.html ===
+Tata Nexon - Price, Features, Safety & Tech | TATA.CARS
+The All-New Tata Nexon
+Nexon
+Go Back Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Go Back
+Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Overview
+iCNG
+Edition Edition CAMO #DARK RED #DARK
+Edition
+CAMO
+#DARK
+RED #DARK
+Specs
+Compare
+Price
+Configure
+Discover Nexon.ev
+Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Brochure
+Nexon Brochure 2026
+Nexon iCNG Brochure 2026
+Nexon CAMO Brochure
+Quick Link Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Quick Link
+Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Book a test drive
+Brand Stories
+Pre-owned vehicles
+Digital Showroom
+Dealers near me
+Sign In Sign Out Our Models Account Accessories Dealer Locator Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Digital Showroom Exchange Car Pre-Owned Rewards Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us Sitemap Book a Test Drive
+Sign In
+Sign Out
+Our Models
+Account
+Accessories
+Dealer Locator
+Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra
+Harrier
+Safari
+Punch
+Altroz
+Tiago
+Curvv
+Tigor
+Exchange Car
+Pre-Owned
+Rewards
+Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products
+Book a Service
+Estimate Service Cost
+Owner's Manual
+General Tips
+Fuel Saving Tips
+Best Value Service
+Value Added Services
+Phone Bluetooth™ Compatibility
+Android Auto User Guide
+Information On warranty
+Contact Us
+Sitemap
+Book a Test Drive
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS. Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Curvv Learn More
+Learn More
+Curvv.ev Learn More
+Curvv.ev
+Sierra Learn More
+Sierra.ev Learn More
+Sierra.ev
+Harrier Learn More
+Harrier.ev Learn More
+Harrier.ev
+Safari Learn More
+Nexon Learn More
+Nexon.ev Learn More
+Nexon.ev
+Punch Learn More
+Punch.ev Learn More
+Punch.ev
+Altroz Learn More
+Tiago Learn More
+Tiago.ev Learn More
+Tiago.ev
+Tigor Learn More
+Tigor.ev Learn More
+Tigor.ev
+XPRES Learn More
+XPRES
+× Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator
+State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+State* City*
+State*
+City*
+Vehicle Selection* Own Vehicle New Vehicle
+Own Vehicle New Vehicle
+Own Vehicle
+New Vehicle
+Model* Version*
+Model*
+Version*
+Your Vehicle*
+Service Type*
+Free Service Type*
+Kms/Months*
+Total Cost*
+Submit Book Service
+Design
+Safety
+Performance
+Technology
+Customer Delight
+Petrol/Diesel Petrol/Diesel Petrol/Diesel Petrol/Diesel
+Petrol/Diesel
+Nexon Now with ADAS India's Safest SUV Now Smarter with ADAS It’s got everything you want from an SUV and more. Starts at Rs 7.39 Lakhs* Experience the Nexon. Book Now Book a Test Drive Drag to rotate
+Nexon Now with ADAS India's Safest SUV Now Smarter with ADAS It’s got everything you want from an SUV and more. Starts at Rs 7.39 Lakhs* Experience the Nexon. Book Now Book a Test Drive
+Nexon Now with ADAS India's Safest SUV Now Smarter with ADAS It’s got everything you want from an SUV and more. Starts at Rs 7.39 Lakhs* Experience the Nexon.
+Now with ADAS India's Safest SUV Now Smarter with ADAS It’s got everything you want from an SUV and more. Starts at Rs 7.39 Lakhs* Experience the Nexon.
+It’s got everything you want from an SUV and more. Starts at Rs 7.39 Lakhs* Experience the Nexon.
+Book Now Book a Test Drive
+Drag to rotate
+Showroom price in
+Please Enter the Nearest City
+BAREJA
+NABHA
+JALPAIGURI
+RAJULA
+RAGHUNATHPUR
+AGAR
+PILIBHIT
+KODUVALLY
+DUNGARGARH
+CHHIBRAMAU
+KATIHAR
+BARASAT
+DOMBIVALI
+VIRAMGAM
+BANTHARA
+NORTH PARAVOOR
+CHIKKAMAGALURU
+NAUKAGHAT
+UTHAMAPALAYAM
+LATEHAR
+NAGARKURNOOL
+CHHINDWARA
+BARDOLI
+LADWA
+JEHANABAD
+BEWAR
+SHAJAPUR
+TEHRI
+KANHANGAD
+ALIGARH
+PINJORE
+REASI
+GUNTAKAL
+UTTAR BAGDOGRA
+ASHTA
+BILASPUR
+JHUNSI
+BARUIPUR
+BALUGAON
+KARUNAGAPALLY
+DIBRUGARH
+URULI KANCHAN
+MANDVI
+VYARA
+PRAYAGRAJ
+GUNA
+WARUD
+ERNAKULAM
+SECUNDERABAD CANTT
+VIKASNAGAR
+DHAULPUR
+HALOL
+NAGARCOIL
+NAVSARI
+PIDUGURALLA
+RAJGARH
+NOAMUNDI
+ANKLESVAR
+AGARTALA
+DHAMTARI
+BALRAMPUR
+PHAGWARA
+KANNAUJ
+CHIKHLI
+SILVASSA
+KOOTHATTUKULAM
+KHATEGAON
+JORTHANG
+BUXAR
+ERODE
+RAJSAMAND
+NEEMRANA
+BAIDYABATI
+RS PURA
+SAWAI MADHOPUR
+JHARSUGUDA
+NAMAKKAL
+ANUPPUR
+ANTAH
+UPPALA
+AZAMGARH
+KISHANGANJ
+KARANJA
+CHUMUKEDIMA
+ANAKAPALLE
+KHADIA
+PARAVOOR
+CHANDAULI
+GARIYABAND
+B C ROAD
+FARIDKOT
+PATAN
+KARUR
+THANE
+KOLKATA
+SARKAGHAT
+FARIDABAD
+BUNDI
+BAGRU
+UNA
+GORAKHPUR
+GOALPARA
+BIHARSHARIF
+ULUBERIA
+MADANAPALLE
+THEOG
+DHAMNOD
+CHANGARAMKULAM
+KUNNAMKULAM
+MOHANIA
+MADANAPALLI
+KUKSHI
+MEDAK
+LALITPUR
+BULANDSHAHR
+KARUKACHAL
+CHATRA
+NOHAR
+WANKANER
+PITHORAGARH
+AMBERPET
+MYSORE
+FARBESGANJ
+HALDIA
+ARWAL
+RAMPUR
+SHEIKHPURA
+BETUL
+GODDA
+CHANDAN NAGAR
+NILOKHERI
+DASUYA
+RAIGARH
+KHUNTI
+DEHRA
+DUDHNOI
+KANKER
+DHANWAR
+BARH
+JHANSI
+NARASARAOPET
+GHUMA
+SRINAGAR
+THAKURDWARA
+ITAWA
+PUNE
+AUTO NAGAR
+OSMANABAD
+LALGANJ
+SAKTI
+PANDHARPUR
+HASSAN
+DOMBIVLI EAST
+KANAKPURA
+KARAIKAL
+VENGARA
+ARARIA
+PAITHAN
+PHAPHAMAU
+KIRAOLI
+IDAR
+AMBAJOGAI
+KUNDLI
+SAGAR
+DUGRI
+CHIRALA
+DEHRADUN
+DUDU
+SOLAN
+DHAR
+CHENTHRAPINI
+RAMPURHAT
+CUDDALORE
+THIRUVALARCHI PATTI
+MANGAON
+CONTAI
+BAZPUR
+MALEGAON
+KHAIRTHAL
+HARIHARGANJ
+SINGANAYAKANAHALLI
+GADWAL
+JETPUR
+DELHI
+PARIPALLY
+KORBA
+BHUPALPALLY
+REWARI
+RAGHURAJNAGAR
+VADAKARA
+BIJNOR
+SINGHESAR ASTHAN
+VIDISHA
+VALLIYOOR
+SHAMGARH
+WADKHAL
+SIDDHARTHNAGAR
+VIRAR
+BAUDHGARH
+FEROZEPUR
+BAIKUNTHPUR
+SAHEBGANJ
+NAGAON
+LIMBDI
+NASHIK
+MANDI DABWALI
+RAMNAD
+DATAGANJ
+VIRUDHACHALAM
+TIPTUR
+KUTTIPPURAM
+ATHGAON
+TIRUCHIRAPPALLI
+SAKALDIHA
+ANANDPUR SAHIB
+BIRPARA
+SHOLAPUR
+ANKOLA
+SINNAR
+BHUPALPALLE
+DALTONGANJ
+VAIKOM
+KHARGHAR
+LAKHIMPUR KHERI
+GONDHAL
+NARAYANPET
+ZAHIRABAD
+KODARMA
+CHERUVATHUR
+BELAGAVI
+NAGAR
+BHARATPUR
+KATHUA
+ROING
+KOVILPATTI
+JAIPUR
+DABRA
+BEGUSARAI
+BARAMULLA
+SAMBALPUR
+GANGAWATI
+KINWAT
+AKURDI
+GANGTOK
+SIDDIPET
+PATAS
+BANKURA
+DHAMPUR
+KHATIMA
+SIMDEGA
+NISSING
+KODIMATHA
+DINDIGUL
+MACHILIPATNAM
+NADAUN
+TONK
+MAHENDRAGARH
+HOJAI
+BARAUT
+DEGLOOR
+BADDI
+MAHOBA
+BALUMATH
+MANDSAUR
+HANSI
+KAPURTHALA
+MIRA ROAD
+RISHIKESH
+JAGATSINGHPUR
+RAPAR
+PETLAD
+THENI
+MEDINIPUR
+SULLIA
+CHAMBA
+GAYA
+HANUMANGARH
+AKHNOOR
+SONEPAT
+METTUPALAYAM
+TUMKUR
+KARWI
+NIRSA
+BIKANER
+RS GHAT
+AKBARPUR
+SUJANPUR
+ANANTNAG
+RAURKELA
+VASCO
+MANJALLOOR
+AKOT
+AMBALA
+JAMMU
+JAMTARA
+UMARIA
+MADHUBANI
+SHAMSHABAD
+PARADIP
+PANNA
+RAJGHAR
+MUVATTUPUZHA
+BALAGHAT
+MUDIGERE
+BURDWAN
+UDAIPUR
+CHAKIA
+SOLAPUR
+PURULIYA
+NILAMBUR
+PHULBANI
+ASSANDH
+ISLAMPUR
+BANGANA (15/21)
+PERINTHALMANNA
+PAYYOLI
+BANGALORE
+PADUR
+KARIMNAGAR
+SANTIRBAZAR
+JOGINDERNAGAR
+BELLARY
+ETAWAH
+KARUNAGAPPALLY
+KHAMMAM
+VASAI-VIRAR CITY
+JHANJHARPUR
+KUMBAKONAM
+FARRUKHABAD-CUM-FATEHGARH
+MALIHABAD
+NOIDA
+SREEKANDAPURAM
+MUZAFFARPUR
+PALANI
+OTTAPALAM
+CHERUPUZHA
+PUNALUR
+SEMMANCHERI
+RAIPUR
+DHANBAD
+AHMADNAGAR
+ASHOK NAGAR
+MUDHAL TITTA
+DIDWANA
+TIRUCHENDUR
+NEW DELHI
+DEESA
+MALIKIPURAM
+SIWAN
+ONGOLE
+PURANPUR
+VILLIPURAM
+BAGHPAT
+JOWAI
+GHAZIABAD
+NANDYAL
+KARGIL
+RENUKOOT
+CHURU
+CHITRADURGA
+GURUGRAM
+ALWAR
+KHAMBHALIA
+NOW GAM
+TALIPARAMBA
+GOBICHETTIPALAYAM
+SIVAGANGA
+CHAKDAHA
+HINDUPUR
+AMBARNATH
+KADI
+BALURGHAT
+HOSUR
+NEEM KA THANA
+DHRANGADHRA
+BHUSAWAL
+BOKARO
+PATTAMBI
+JAORA
+THANJAVUR
+THANAGAZHI
+BISWANATH CHARIALI
+SAHARANPUR
+KALOL
+TAMLUK
+KOTTARAKKARA
+KALAYAT
+PORBANDAR
+DEODAR
+DIPHU
+LINGASUGUR
+JAUNPUR
+MARGHERITA
+PATHANKOT
+BALODA BAZAR
+SIRSI
+DODA
+ALIPURDUAR
+LUNGLEI
+SONAPUR
+NIZAMABAD
+KAWARDHA
+CHINSURAH
+SINDHANUR
+WARANGAL
+MANDASUR
+MOTIHARI
+LAMBERI
+ROBERTSGANJ
+HAJO
+SHEOPUR
+GARHWA
+KOTPUTLI
+SUJANGARH
+GANAUR
+GURGAON
+ASANSOL
+JORHAT
+MADLAUDA
+SURYAPET
+GORAYA
+PALANPUR
+KARJAT
+DIBAI
+BIAORA
+DHARWAD (RURAL)
+BASTI
+VALLABH VIDYANAGAR
+PARALAKHEMUNDI
+SAMBHAL
+FEROZPUR
+CHINTAMANI
+NARMADAPURAM
+HAMIRPUR
+SURAJPUR
+BHOR
+NARWANA
+LONI
+ALAUNDI
+KHARIAR ROAD
+SILIGURI (M CORP. ) (PART)
+MAWLAI
+TIRUPUR
+KOKRAJHAR
+KAVALI
+MANNARKKAD
+BATHINDA
+PATHALGAON
+SIYANA
+VERAVAL
+TIRUTTANI
+MALKAPUR
+VERNA
+MOHALI
+NADUVANNUR
+PALI
+BHIWANI
+CHIPLUN
+KARNAPRAYAG
+KHAIR
+BEHROR
+CHAKSU
+BIHTA
+BUDDAGUPPE
+PARBHANI
+BHANJANAGAR
+SANGLI
+RUPNARAYANPUR
+SAHIBGANJ
+SANKARI
+MANDYA
+KAIMGANJ
+UJJAIN
+MODASA
+BHILWARA
+KUNIGAL
+KURUKSHETRA UNIVERSITY
+DOHAD
+IRINJALAKUDA
+MEJA ROAD
+BARSHI
+VASAI
+PALGHAR
+MUNGELI
+GANDHIDHAM
+GHAZIPUR
+CHENNAI
+HALDWANI
+SALEM
+KALYANDURG
+CHITTUR
+SAGWARA
+SHANKARPALLE
+BUNDU
+RADHANPUR
+BARABANKI
+KARMETA
+PAYYANNUR
+BARELI
+KOTA
+WALUJ
+KALLAKKURICHI
+GAJRAULA
+CHANNAGIRI
+ALAPPUZHA
+MANJHANPUR
+BHOPAL
+JAMKHANDI
+RATNAGIRI
+SHAHADE
+KUSHAL NAGAR
+RAJAHMUNDRY
+BAGAHA
+PONDA
+LALSOT
+RAJKHARIAR
+CIVIL LINE
+CHALAKUDI
+JAJPUR
+KOTMA
+MORBI
+KHED SHIVAPUR
+RATLAM
+GAUR
+DAUSA
+PARAMAKUDI
+KHALARI
+CHERTHALA
+DARJEELING
+PERAMBRA
+DEPALPUR
+MODINAGAR
+BOISAR
+ARAMBAG
+MANSA
+SAMASTIPUR
+KORANI
+NARNAUL
+BIDAR
+DEWAS
+KHAMGAON
+CHHATARPUR
+RAJAM
+MURTHAL
+DHARWAD
+VADODARA
+NORTH LAKHIMPUR
+ALLAHABAD
+NUVEM
+WAJEGAON
+KHAGARIA
+GUDHA GORJI
+BAREILLY
+MADHOGANJ
+CHOMU
+DHARMAPURI
+CHANDRAPUR
+PANJIM
+GUMMIDIPOONDI
+NEW TEHRI
+CHHATTARPUR
+ANUPGARH
+SHAHPUR
+JODHPUR
+EDAPPAL
+MORINDA
+PURNEA
+MORADABAD
+UDHAMPUR
+AMRAVATI
+DOHRIGHAT
+CHITTAURGARH
+PARABHANI
+THIRUVILWAMALA
+WANAPARTHY
+SILIGURI
+BHANDARA
+NARAYANPUR
+PANDAVESWAR
+DEVANAHALLI
+TUNI
+NEEMUCH
+PARLI
+VALANCHERY
+RAJIM
+PALAKKAD
+WADA
+SINDHNUR
+BALANGIR
+NAWADA
+CHIRAWA
+PATHANAPURAM
+PILERNE
+CHEMMAD
+SHADNAGAR
+CHADAYAMANGALAM
+PALASI
+CHEEKA
+KRISHNANAGAR
+SHAHJAHANPUR
+GONDA
+HOSKOTE
+SUPWAL
+SHILLONG
+KALYAN
+RAJOURI
+MAU
+NAWANSHAHR
+AIZAWL
+PALIA
+MATHURA
+SRI NAGAR
+RAYA
+BADAUN
+NAKODER
+MANGALDOI
+GONDAL
+SRI MADHOPUR
+DARBANGHA
+BARGARH
+ANCHAL
+SHUJALPUR
+TIRUVANNAMALAI
+KARIMGANJ
+MAKRANA
+PATIALA
+PRODDATUR
+PUDUCHERRY
+KOSI KALAN
+JALALABAD
+KARNAL
+RAICHUR
+BAHERI
+VAPI
+MALDA
+RAXAUL
+PATHSALA
+ORAI
+KASGANJ
+ROPAR
+KODERMA
+UDUMALAIPETTAI
+WARDHA
+AMALAPURAM
+MAHASAMUND
+COOCH BEHAR
+SOHNA
+YAMUNANAGAR
+DINDORI
+DIMAPUR
+SITAMARHI
+RUDRAPRAYAG
+VARKALA
+MAHARAJGANJ
+PURNIA
+MDA
+BENGALURU
+BONGAIGAON
+ALIBAGH
+MEERGANJ
+SAMALKHA
+UMARGA
+HAILAKANDI
+DHEKIAJULI
+CHANDIKHOLE
+GOPALGANJ
+CHENGALPATTU
+VIZIANAGARAM
+BERHAMPUR
+SAHJAPUR
+KARAIKKUDI
+SHIRDI
+PATAUDI
+NAUTANWA
+ARANTHANGI
+BHADRAK
+PENDRA
+BADNAGAR
+SURAT
+VASHI
+GIRIDIH
+HOSPET
+ALIBAG
+PAKUR
+LUCKNOW
+SHAHBAD
+BARWANI
+BULDHANA
+MAHAM
+RAMGANJ MANDI
+PORT BLAIR
+AMROHA
+KONDAGAON
+NAILA-JANJGIR
+MANANTHAVADY
+JASOR
+SURI
+SULUR
+MERTA CITY
+GOSAINGANJ
+TIRUR
+NIRMAL
+SHRIRAMPUR
+KOPPAL
+KANJIRAPPALLY
+RAEBARELI
+GHUMARWIN
+MECHEDA
+NAGPUR
+BACHUPALLY
+TIRUNELVELI
+BHILAI
+WAIDHAN
+BALOD
+NANDURBAR
+NEYYATTINKARA
+NAIDUPETA
+DHARAPURAM
+MEHSANA
+KARIYAD
+WANI
+PALLICHAL
+VADUJ
+ADONI
+KANKAVLI
+CHILAKALURIPET
+CHIDAMBARAM
+PALA
+TIRUPPUR
+SIKANDRABAD
+COIMBATORE
+MALAPPURAM
+ANANTAPUR
+PONNANI
+TRIVANDRUM
+HOSHANGABAD
+PERUMBAVOOR
+KARAD
+HUBLI
+SAMPLA
+UTTARPARA
+TINSUKIA
+BHADRACHALAM
+EDAKKARA
+WAZIRPUR
+GURUVAYOOR
+HATHOJ
+KOLAR
+ROHRU
+AURANGABAD
+GOLAGHAT
+TARATALA
+KOLENCHERY
+BANKA
+ELURU
+YEOLA
+CHANDRAKONA CK ROAD
+MOIRANG
+NADIAD
+ROORKEE
+BALOTRA
+KEONJHAR
+MIRYALAGUDA
+VIRAR WEST
+METTUR
+ELLENABAD
+TILDA
+SIMRAHI
+RAHATA
+ANGUL
+HATHRAS
+BALASORE
+GANGANAGAR
+DANTEWADA
+COIMBATOTE
+VALSAD
+SINGUR
+ATTINGAL
+FARRUKHABAD
+PUNDRI
+AMBALLUR
+SATNA
+RAMAGUNDAM
+DAVANGERE
+ETTUMANOOR
+NEVASA BK.
+TAORU
+KHURJA
+PRATAPGARH
+SECUNDERABAD (CB)
+ADOOR
+MARKAPUR
+DEOGHAR
+SURATHKAL
+MAHABUBABAD
+RAWATBHATA
+FIROZPUR
+MOHANPUR
+BHIMAVARAM
+ALATHUR
+CHAIBASA
+VELLORE
+ADARSH NAGAR
+BADLI
+BOLPUR
+TIRUPATHUR
+JANGAREDDIGUDEM
+KRISHNAGIRI
+ANKLESWAR
+VISNAGAR
+BHUBHANESWAR
+KODUNGALLUR
+TIRUCHENGODE
+UDGIR
+THOUBAL
+GANDHINAGAR
+UMRED
+MUZAFFARNAGAR
+MARTHANDAM
+BALRAMPUR(RURAL)
+GOHANA
+KHARAGPUR
+RENWAL
+PUSAD
+PUNAHANA
+AZAD NAGAR
+MUGALSARAI
+RAJPIPLA
+HAZARIBAG
+BHAWANI MANDI
+BOTAD
+CHAKAN
+SHIKARIPURA
+DULIAJAN
+NAGDA
+NOKHA
+KOLHAPUR
+THODUPUZHA
+VARANASI
+KANPUR
+GUDUVANCHERI
+LUNAWADA
+TENKASI
+PENDURTHI
+MAHIDPUR
+RAIGAD
+PASCHIMI SINGHBHUM
+KONNI
+BEAWAR
+NAGERCOIL
+RAJPURA
+PALWAL
+GADAG
+VAGHODIA
+RAJNANDGAON
+KOTHAMANGALAM
+SULTAN BATHERY
+ADILABAD
+BHAWANIPATNA
+BHARUCH
+SULTANPUR
+DEGANA
+RAYAGADA
+GWALIOR
+MUKKAM
+FATEHABAD
+KANNAD
+MAYILADUTHURAI
+NANDED
+RANCHI
+DEEG
+Kolkata
+UNNAO
+NAGAUR
+GONIKOPPAL
+SUMERPUR
+BARBIL
+MANENDRAGARH
+CHIKODI
+BALLIA
+GANGAPUR
+KALYANPUR HOUSING
+DATIA
+HINGOLI
+VITTHAL UDYOG NAGAR
+BHADOI
+PANVEL
+1 OLD JUDICIAL COMPLEX
+RUPNAGAR
+MADHEPURA
+MANAWAR
+CHARKI DADRI
+NAWABGANJ
+ULHASNAGAR
+RUDAULI
+JHARGRAM
+LALKUAN
+KEKRI
+HISAR
+JASHPUR
+CHITTORGARH FORT
+KASHIPUR
+DARBHANGA
+RAJKOT
+SODEPUR
+BHOJPUR
+JAMUI
+GHIROR
+JAJAPUR
+KHATAULI
+PUDUKKOTTAI
+PALAMPUR
+SASWAD
+GUMLA
+DHARMANAGAR
+GONDIYA
+AREEKODE
+PHINTER
+MANJRI
+MUNDRA
+JOGINDARNAGAR
+IBRAHIMPATNAM
+DIGBOI
+MIRA-BHAYANDAR
+SONARI
+SARAIPALI
+RANIPETTAI
+KALLAMBALAM
+AMRELI
+KATOL
+BHADOHI
+KALYANI
+ANANDA NAGAR
+TANUKU
+RAIGANJ
+ABU ROAD
+KALABURAGI HCB
+AKOLA
+CHAPRA
+SECUNDERABAD
+GOKAK
+VAIJAPUR
+PAONTA SAHIB
+MAIHAR
+LUDHIANA
+JANGAON
+ORAS BK.
+BODELI
+MURWARA (KATNI)
+BINA
+ADITYAPUR INDUSTRIAL AREA
+JHAJJAR
+DHMPUR
+KARANPRAYAG
+SHIVAMOGGA
+DHULE
+MANDLA
+MUMBAI
+AMINGAON
+DUNGARPUR
+SEHORE
+LAL BAHADUR SHASTRI NAGAR
+SHAMSABAD
+BANSWARA
+KATRAS
+DEORIA
+REWA
+BANDIKUI
+TARN TARAN
+MADURAI
+DASPALLA
+ULWE
+LATUR
+BERASIA
+THIRUVARUR
+TUMSAR
+UDALGURI
+ATHANI
+UDAMALPET
+ARMUR
+KUSHINAGAR (NP)
+MANGALORE
+TEZPUR
+CHITTOOR
+BARMER
+RATANGARH
+PRATAPGARH CITY
+AALO
+GADCHIROLI
+RAMGARH
+RAUTARI
+SONI COLONY
+PAZHAYANNUR
+MALERKOTLA
+AMBUR
+BHUVANAGIRI
+SHAHDOL
+BASSI
+NORTH GUWAHATI
+SIVASAGAR
+SURENDRANAGAR
+INDAPUR
+CHAMRAJNAGAR
+NABARANGAPUR
+SEONI
+TIRUPATI
+JALAUN
+BORSAD
+CHIKKABALLAPUR
+AMBEJOGAI
+ARTAUNI
+BHAGALPUR
+GREATER NOIDA
+KURUKSHETRA
+OOTY
+CUDDAPAH
+DHENKANAL
+AJMER
+KURNOOL
+SHIVPURI
+JALANDHAR
+MIRZAPUR
+SUNDARGARH
+BATALA
+BHARAT NAGAR
+JAMSHEDPUR
+JAGDALPUR
+KALNA
+LEH
+BHATAPARA
+HARDOI
+CHIKKABALLAPURA (CMC)
+BAHADURGARH
+CHANNARAYAPATNA
+KANNUR
+KOTTAYAM
+MARGAO
+KHANNA
+PIRANGUT
+KAITHAL
+SHALIMAR
+PERAMBALUR
+KALWAR
+PALUS
+TOSHAM
+RAMNAGAR
+MANCHERIAL
+HALVAD
+SIKAR
+HAVERI
+AMRITSAR
+KANCHEEPURAM
+LOHARDAGA
+BERHAMPORE
+BARDDHAMAN
+THARAD
+DURGAPUR
+AHEMEDABAD
+SUAR
+MAJULI
+PANCHKULA
+BHAVNAGAR
+JAGDISHPUR
+BARAKAR
+SATHYAMANGALAM
+PAOTA
+AHMEDNAGAR
+GANGAPUR CITY
+SITAPUR
+MAHUVA
+KAVATHE MAHANKAL
+DAHANU
+AMRITPUR
+POWAYAN
+TIKAMGARH
+SARANGARH
+SASARAM
+KANTH
+GODHRA
+SAHARSA
+RAJAMPET
+MALPURA
+MORAN
+MANJERI
+TIRUVALLUR
+HUBBALLI-DHARWAD
+ULUBARI
+DURG
+BIJAPUR
+MANDI
+VIRUDHUNAGAR
+BHAVANI
+BEED
+IRITTY
+UDUPI
+BOMDILA
+KILIMANOOR
+KATTAKADA
+VIJAYAWADA
+PUTTUR
+KARKALA
+BARIPADA
+GUWAHATI
+BISHUNAPUR
+SULLURU (SULLURPETA)
+DHEMAJI
+BHARANIKAVU
+RAMBAN
+AURAIYA
+NELLORE
+SILCHAR
+GANDERBAL
+BETTIAH
+NARSIMHAPUR
+SRIKALAHASTI
+MALKANGIRI
+KUCHAMAN CITY
+DAVANAGERE
+JALORE
+ABBIHAL
+BICHOLIM
+PURI
+THRISSUR
+JIGANI
+ABOHAR
+HYDERABAD
+VISHRANTWADI
+KASARGOD
+POONCH
+KANGRA
+MYSURU
+PARLAKHEMUNDI
+QUILANDY
+CUTTACK
+SONIPAT
+MULLANPUR
+MUDHOL
+NEDUMANGAD
+SONEPUR
+ATRAULI
+DAMOH
+SHAMLI
+UMARPUR
+PANIPAT
+NAJIBABAD
+GADHINGLAJ
+GOSAIGANJ
+AMIN GAON
+JALGAON
+MUNDAKAYAM
+THAMARASSERY
+YAVATMAL
+NEDUMKANDAM
+KISHANGARH
+KOLLAM
+KHARGONE
+MAVELIKKARA
+SHAHPURA
+POLLACHI
+MOGA
+WADAKKANCHERY
+PANOOR
+GANGAVATHI
+PARASALA
+GANJ BASODA
+KUMHAILA
+ZIRAKPUR
+PITHORA
+FORBESGANJ
+JHALAWAR
+ICHALKARANJI
+MAINPURI
+SIDHI
+BARAMATI
+FARIDABAD - SEC 81
+SIKANDARAO
+RAISEN
+NAHAN
+CHAMOLI
+KHORDA
+MOHANLAL GANJ
+THIRUVANANTHAPURAM
+TALEGAON DABHADE
+UDUMALPET
+HOSHIARPUR
+SANGRUR
+KOCHI
+KOTHAGUDEM
+METPALLY
+BEMETARA
+TUTICORIN
+NONGPOH
+SANGAREDDY
+BODHAN
+BISHNUGARH
+MASAURHI
+BADRIKARI
+SAFIDON
+SATARA
+NERUL
+KHALILABAD
+OLPAD
+DEOLI
+BAGALKOT
+MURDESHWAR
+KUTTIYADI
+ARANI
+JASDAN
+ANAND
+VISAKHAPATNAM
+GURDASPUR
+NAVI MUMBAI
+KIM
+KANINA
+VITA
+SHEOHAR
+SURATGARH
+DUMKA
+MORIGAON
+RANGIA
+HAJIPUR
+BIJOYNAGAR
+TALASARI
+THALASSERY
+MANASA
+KOZHENCHERY
+JAGIROAD
+DIGLIPUR
+JOBNER
+SHERGHATI
+BHAVANIPURAM
+BACHED (38)
+NARAYANGAON
+PATNA
+KOZHIKODE
+MAHBUBNAGAR
+DEOBAND
+AUTADWADI HANDEWADI
+NAYAGARH
+LAKHISARAI
+BHUBANESWAR
+KOSLI
+CHAMPAWAT
+PATHIRIPPALA
+KENDRAPARA
+PASIGHAT
+AGRA
+BANDA
+MUKTSAR
+HARDWAR
+BHUJ
+GINGEE
+FAIZABAD
+ANGAMALY
+AKLUJ
+KATTAPPANA
+MANUGUR
+NEYVELI
+MADIKERI
+AVADI
+WASHIM
+KURAWALI
+INDORE
+SAMBA
+KUNDAPURA
+BAIJNATH
+MORENA
+KARAIKUDI
+ALMORA
+KHARSIA
+GULBARGA
+SANGAMNER
+RAMANATHAPURAM
+BAHRAICH
+AMBASSA
+HIMATNAGAR
+ANKLESHWAR
+KALKA
+DAHOD
+JAGITYAL
+AHMEDABAD
+KODAMENDHI
+BARAN
+GUNTUR
+RAJAPALAYAM
+JAMNAGAR
+SIRSA
+SIVAKASI
+PIPLI
+JABALPUR
+MEDCHAL
+ROHTAK
+MUNGER
+GOHAIN TEKELA GAON
+RUDRAPUR
+SATHUPALLI
+SHIMOGA
+ETAH
+KATGHORA
+BARPETA
+KOHIMA
+SARDHANA
+KINATHUKADAVU
+PALATHARA
+SRIKAKULAM
+KUSHINAGAR
+HOWRAH
+TOHANA
+ARIYALUR
+BHADRA
+BAPU NAGAR
+KAKINADA
+KADUR
+ARRAH
+KOTDWARA
+PHARENDA
+ITANAGAR
+ILKAL
+GAGRET
+IBRAHIMPATNAM (KHALSA)
+HAIDARGARH
+MANCHAR
+KASDOL
+RANIBENNUR
+JIND
+RAJAKILIPAKKAM
+CHANDIGARH
+KODAD
+HANDIA
+JHABUA
+NARAINGARH
+RAIPUR RANI
+SERAMPORE
+JUNAGADH
+JALNA
+HISSAR
+GOHPUR
+SANDILA
+AMADAMAK
+BARNALA
+JEYPORE L/R
+CHANDAUSI
+IMPHAL
+AMBIKAPUR
+FATEHPUR
+ANPARA
+JAGRAON
+BARAL
+PEHOWA
+ALIGANJ
+NARNAUND
+DHUBRI
+HAPUR
+NALGONDA
+MALBAZAR
+MEERUT
+JEWAR
+RAYACHOTI
+CHITTORGARH
+HINDAUN
+BADNAWAR
+SIRCILLA
+BARRACKPORE
+KAMAREDDY
+DALSINGHSARAI
+KALPETTA
+MANESAR
+NADAPURAM
+MATTANCHERRY
+VISHAKHAPATNAM
+BHIND
+SHIMLA
+DOMJUR
+GHATSHILA
+PULWAMA
+SHIKRAPUR
+PADOLI
+JHUNJHUNU
+BASIRHAT
+BOKAKHAT
+ATTUR
+MAWANA
+FIROZABAD
+HODAL
+KHANPUR
+KOTTAKKAL
+PATTUKKOTTAI
+KULLU
+TANDUR
+PONDICHERRY
+MOHAMMADI
+KAPADVANJ
+KONDOTTY
+VIKARABAD
+BHIWADI
+offer(s)** available
+Starting from Variants available See all prices
+Starting from Variants available
+Starting from
+Variants available
+* Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * Offers are subject to change without prior information at the discretion of Tata Motors. Contact your nearest Tata Motors dealer for offer details. Offer available on selected variants. # EMI calculated is based on Flexi scheme of Rs.809 per lac instalment for first 6 months. The subsequent EMI after 6 months will be higher. The final EMI and Finance will be at the sole discretion of the Financier.
+* Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices.
+* Offers are subject to change without prior information at the discretion of Tata Motors. Contact your nearest Tata Motors dealer for offer details. Offer available on selected variants.
+# EMI calculated is based on Flexi scheme of Rs.809 per lac instalment for first 6 months. The subsequent EMI after 6 months will be higher. The final EMI and Finance will be at the sole discretion of the Financier.
+Starting EMI of ₹6,499 # Get loan offers
+Starting EMI of ₹6,499 #
+Starting EMI of
+₹6,499 #
+Get loan offers
+offer(s)** available Get Efficient. Go Eco-Friendly
+Get Efficient. Go Eco-Friendly
+Request a call back Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms.
+Select Valid Label
+Mr. Miss. Mrs. Dr. Prof. Ms.
+Mr.
+Miss.
+Mrs.
+Dr.
+Prof.
+Ms.
+First Name Enter Valid Name
+Enter Valid Name
+Last Name Enter Valid Name
+Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP
+Mobile Number +91 Enter Valid Number +91 India
++91 Enter Valid Number
++91
+Enter Valid Number
++91 India
+India
+Enter the OTP code here Enter Valid OTP
+Enter Valid OTP
+Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode
+Email ID (Optional) Enter Valid Email Id
+Enter Valid Email Id
+Pincode (Optional) Enter Valid Pincode
+Enter Valid Pincode
+submit Resend OTP Resent Please Validate Otp
+submit Resend OTP Resent
+Resend OTP Resent
+Resend OTP
+Resent
+Please Validate Otp
+we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+we will be in touch
+Thanks for providing your details, our team will be in touch as soon as possible.
+Thanks for providing your details,
+our team will be in touch as soon as possible.
+Head Turner Design
+New Nexon with its raised hood, sleek lamps and dynamic stance gives it an aggressive SUV style. The signature X factor of Nexon has become futuristic.
+R16 Alloy Wheels Design meets function with attractive rims that will wheel in all the looks and compliments.
+R16 Alloy Wheels
+Design meets function with attractive rims that will wheel in all the looks and compliments.
+Sequential LED DRLs Welcome to a brighter, safer and more stylish driving experience by making your vehicle more visible to other drivers, especially during daytime hours.
+Sequential LED DRLs
+Welcome to a brighter, safer and more stylish driving experience by making your vehicle more visible to other drivers, especially during daytime hours.
+Bi-Functional Full LED Lamp Shine on and look beyond as you light the way with bright and beautiful LED headlights.
+Bi-Functional Full LED Lamp
+Shine on and look beyond as you light the way with bright and beautiful LED headlights.
+Electric Panoramic Sunroof with Tilt Funtion A complimentary colour for your car’s roof so that you make a memorable first impression, every time.
+Electric Panoramic Sunroof with Tilt Funtion
+A complimentary colour for your car’s roof so that you make a memorable first impression, every time.
+X-Factor Taillamp with Welcome And Goodbye Function A special welcome and goodbye greeting from your car that’ll add more delight to every drive.
+X-Factor Taillamp with Welcome And Goodbye Function
+A special welcome and goodbye greeting from your car that’ll add more delight to every drive.
+Bi Functional Full LED Lamp
+Dual Tone Roof
+X Factor Tail lamp with Welcome and Goodbye Function
+2-Spoke Steering Wheel with Illuminated Logo Wrap your hands around a bespoke leather grip that’ll add a glow to your face.
+2-Spoke Steering Wheel with Illuminated Logo
+Wrap your hands around a bespoke leather grip that’ll add a glow to your face.
+Next Gen Phygital Touch Panel All your car's controls fitted elegantly in one panel, at your command with a simple touch.
+Next Gen Phygital Touch Panel
+All your car's controls fitted elegantly in one panel, at your command with a simple touch.
+Grand Floor Console with Leatherette Armrest Explore and rule the roads while keeping comfort at arm’s reach.
+Grand Floor Console with Leatherette Armrest
+Explore and rule the roads while keeping comfort at arm’s reach.
+Premium Dashboard with Leatherette Mid Pad Admire the masterpiece that is your vehicle as you embark on new experiences.
+Premium Dashboard with Leatherette Mid Pad
+Admire the masterpiece that is your vehicle as you embark on new experiences.
+2-Spoke Steering Wheel With Illuminated Logo
+Next Gen Capacitive Touch Panel
+Grand Floor Console With Leatherette Armrest
+Three Tone Dashboard With Leather Mid Pad
+Digital Showroom Explore our complete range of cars from the comfort of your homes. Take Me To Virtual Showroom
+Digital Showroom Explore our complete range of cars from the comfort of your homes.
+Explore our complete range of cars from the comfort of your homes.
+Take Me To Virtual Showroom
+City Outdoor City Outdoor
+City Outdoor
+City
+Outdoor
+Panoramic Sunroof Bask in some natural light with the all new Panoramic sunroof.
+Panoramic Sunroof
+Bask in some natural light with the all new Panoramic sunroof.
+New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard
+Fortified Cabin
+Drive securely while being cocooned inside an iron-clad frame that’ll protect you from the world and keep you safe on your adventures.
+360° Safety The Tata Nexon is designed to put your safety first and offers a superior drive without any compromises. 360° Safety The Tata Nexon is designed to put your safety first and offers a superior drive without any compromises. GNCAP 5 Star Rating The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores, giving it the highest 5-star rating among all Indian cars.
+360° Safety The Tata Nexon is designed to put your safety first and offers a superior drive without any compromises.
+360° Safety
+The Tata Nexon is designed to put your safety first and offers a superior drive without any compromises.
+360° Safety The Tata Nexon is designed to put your safety first and offers a superior drive without any compromises. GNCAP 5 Star Rating The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores, giving it the highest 5-star rating among all Indian cars.
+360° Safety The Tata Nexon is designed to put your safety first and offers a superior drive without any compromises. GNCAP 5 Star Rating
+GNCAP 5 Star Rating
+The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores, giving it the highest 5-star rating among all Indian cars.
+6 Airbags Uncompromising safety that provides more protection to you and your dear ones in every journey.
+6 Airbags
+Uncompromising safety that provides more protection to you and your dear ones in every journey.
+E-Call / B-Call Any given day we're just a call away. E-Call 24/7 assistance in the case of an emergency. B-Call 24/7 assistance in an event of a car breakdown.
+E-Call / B-Call
+Any given day we're just a call away. E-Call 24/7 assistance in the case of an emergency. B-Call 24/7 assistance in an event of a car breakdown.
+Any given day we're just a call away.
+E-Call 24/7 assistance in the case of an emergency.
+B-Call 24/7 assistance in an event of a car breakdown.
+HD 360-Degree Surround View System with Front Parking Sensor Focus on the drive while monitoring everything that’s in front, what’s behind and also all around you.
+HD 360-Degree Surround View System with Front Parking Sensor
+Focus on the drive while monitoring everything that’s in front, what’s behind and also all around you.
+Blind View Monitor (BVM) Drive without any surprises with a display that promises a clear side view during every turn.
+Blind View Monitor (BVM)
+Drive without any surprises with a display that promises a clear side view during every turn.
+HD Reverse Parking Camera Parking perfection. Advanced ultrasonic sensors with rear camera feed including the dynamic guideways for hassle-free reverse parking.
+HD Reverse Parking Camera
+Parking perfection. Advanced ultrasonic sensors with rear camera feed including the dynamic guideways for hassle-free reverse parking.
+360 Surround View System with Front Parking Sensor
+Blind View Monitor
+Reverse Parking Camera
+Electronic Stability Program (ESP) Feel confident and secure on the road with the advanced technology that keeps you in control by smoothly navigating through any twists and turns the road may bring.
+Electronic Stability Program (ESP)
+Feel confident and secure on the road with the advanced technology that keeps you in control by smoothly navigating through any twists and turns the road may bring.
+Tyre Pressure Monitoring System (TPMS)​ Enjoy the road and the smooth drive while we’re monitoring your tyres to keep the good times rolling.
+Tyre Pressure Monitoring System (TPMS)​
+Enjoy the road and the smooth drive while we’re monitoring your tyres to keep the good times rolling.
+Auto Headlamps with Rain Sensing Wipers Makes your drive an immersive experience with all the information for a safe and convenient drive in one place.
+Auto Headlamps with Rain Sensing Wipers
+Makes your drive an immersive experience with all the information for a safe and convenient drive in one place.
+Front Fog Lamp with Cornering Function Emerge from every fog flawless with a light that pierces through and shows you the road clearly.
+Front Fog Lamp with Cornering Function
+Emerge from every fog flawless with a light that pierces through and shows you the road clearly.
+I- Size Child Seat (Joie i-Spin Safe) *Available in accessories Age: 0-4 Years Weight: 0-18 kg
+I- Size Child Seat (Joie i-Spin Safe)
+*Available in accessories Age: 0-4 Years Weight: 0-18 kg
+*Available in accessories
+Age: 0-4 Years Weight: 0-18 kg
+Electronic Stability Program
+Tyre Pressure Monitoring system
+AUTO HEADLAMPS WITH RAIN SENSING WIPERS
+Front Fog Lamp with cornering function
+i-Size Child Seat (Joie i-Spin Safe)
+ADAS -Front Collision Warning Stay alert with audio and visual warnings for potential front collisions.
+ADAS -Front Collision Warning
+Stay alert with audio and visual warnings for potential front collisions.
+ADAS -Autonomous Emergency Braking Instincts that guide, braking instantly to protect you when danger suddenly appears.
+ADAS -Autonomous Emergency Braking
+Instincts that guide, braking instantly to protect you when danger suddenly appears.
+ADAS -High Beam Assist Automatically switch between high and low beams for optimal visibility.
+ADAS -High Beam Assist
+Automatically switch between high and low beams for optimal visibility.
+ADAS - Lane Centering System Keeps you perfectly balanced in your lane, no matter what's ahead.
+ADAS - Lane Centering System
+Keeps you perfectly balanced in your lane, no matter what's ahead.
+ADAS -Lane Departure Warning A subtle nudge from the car when your focus starts to wander off.
+ADAS -Lane Departure Warning
+A subtle nudge from the car when your focus starts to wander off.
+ADAS -Lane Keep Assist It’s the steady hand guiding you back on course, smooth and reassuring.
+ADAS -Lane Keep Assist
+It’s the steady hand guiding you back on course, smooth and reassuring.
+ADAS -Traffic Sign Recognition Your onboard scout, spotting every sign before the road even reveals it.
+ADAS -Traffic Sign Recognition
+Your onboard scout, spotting every sign before the road even reveals it.
+Front Collision Warning
+Autonomous Emergency Braking
+High Beam Assist
+Lane Centering System
+Lane Departure Warning
+Lane Keep Assist
+Traffic Sign Recognition
+Performance Exciting Performance New Nexon outperformance all competition with Turbocharged Petrol and Diesel engine. New Nexon is geared with monostable shifter with paddle shifter in AMT and DCT transmision for refined ergonomics.
+Exciting Performance
+New Nexon outperformance all competition with Turbocharged Petrol and Diesel engine. New Nexon is geared with monostable shifter with paddle shifter in AMT and DCT transmision for refined ergonomics.
+7-Speed DCA with E-Shifter Gear up to the technologically advanced and effortlessly classy way of shifting. Paddle Shifter Transition from normal to exciting with one flick, from the comfort of your steering wheel. Multi-Drive Modes – Eco, Sport, City No matter the day, there’s a mode for your every mood so you can take on every road. 7-Speed DCA Paddle Shifter Multi Drive Modes – Eco, City and Sport
+7-Speed DCA with E-Shifter Gear up to the technologically advanced and effortlessly classy way of shifting.
+7-Speed DCA with E-Shifter
+Gear up to the technologically advanced and effortlessly classy way of shifting.
+Paddle Shifter Transition from normal to exciting with one flick, from the comfort of your steering wheel.
+Paddle Shifter
+Transition from normal to exciting with one flick, from the comfort of your steering wheel.
+Multi-Drive Modes – Eco, Sport, City No matter the day, there’s a mode for your every mood so you can take on every road.
+Multi-Drive Modes – Eco, Sport, City
+No matter the day, there’s a mode for your every mood so you can take on every road.
+7-Speed DCA
+Multi Drive Modes – Eco, City and Sport
+Turbocharged Engine Rev up the all new BS-VI compliant engine and feel the power it has to offer in both petrol and diesel variants. - 1.2 l Turbocharged Revotron Petrol with Class-leading 120 PS (88.2 kW) power. - 1.5 l Turbocharged Revotorq Diesel with Class-leading 115 PS (84.5 kW) power. Ground Clearance High seating stance that makes you feel on top of the world and provide better vision of what’s ahead. TURBOCHARGED ENGINE Ground Clearance
+Turbocharged Engine Rev up the all new BS-VI compliant engine and feel the power it has to offer in both petrol and diesel variants. - 1.2 l Turbocharged Revotron Petrol with Class-leading 120 PS (88.2 kW) power. - 1.5 l Turbocharged Revotorq Diesel with Class-leading 115 PS (84.5 kW) power.
+Turbocharged Engine
+Rev up the all new BS-VI compliant engine and feel the power it has to offer in both petrol and diesel variants. - 1.2 l Turbocharged Revotron Petrol with Class-leading 120 PS (88.2 kW) power. - 1.5 l Turbocharged Revotorq Diesel with Class-leading 115 PS (84.5 kW) power.
+Rev up the all new BS-VI compliant engine and feel the power it has to offer in both petrol and diesel variants.
+- 1.2 l Turbocharged Revotron Petrol with Class-leading 120 PS (88.2 kW) power.
+- 1.5 l Turbocharged Revotorq Diesel with Class-leading 115 PS (84.5 kW) power.
+Ground Clearance High seating stance that makes you feel on top of the world and provide better vision of what’s ahead.
+Ground Clearance
+High seating stance that makes you feel on top of the world and provide better vision of what’s ahead.
+TURBOCHARGED ENGINE
+Futuristic Technology
+New Nexon offers latest tech features like first in segment 10.25” infotainment system by Harman TM and 10.25” digital instrument cluster, Connected Vehicle technology with IRA 2.0 and many more.
+26.03 cm Floating Infotainment System by Harman™ Superior acoustics that’ll make every drive a concert on wheels and make your heart sing with joy.
+26.03 cm Floating Infotainment System by Harman™
+Superior acoustics that’ll make every drive a concert on wheels and make your heart sing with joy.
+26.03 cm Digital Instrument Cluster The new screen that’ll grab all the attention while letting you customize controls so that you can focus on the road ahead.
+26.03 cm Digital Instrument Cluster
+The new screen that’ll grab all the attention while letting you customize controls so that you can focus on the road ahead.
+Connected Vehicle Technology with iRA 2.2 Always stay close to your Nexon by accessing it through your mobile and monitoring it, even from afar.
+Connected Vehicle Technology with iRA 2.2
+Always stay close to your Nexon by accessing it through your mobile and monitoring it, even from afar.
+Voice Assisted Panoramic Sunroof Open the sunroof with the words of your choice and watch the car obey your command.
+Voice Assisted Panoramic Sunroof
+Open the sunroof with the words of your choice and watch the car obey your command.
+JBL-Branded 9-Speaker and Subwoofer Experience music like never before Enjoy a rich and dynamic audio experience from 9 directions that adds excitement and joy to your journeys.
+JBL-Branded 9-Speaker and Subwoofer
+Experience music like never before Enjoy a rich and dynamic audio experience from 9 directions that adds excitement and joy to your journeys.
+10.25” Floating Infotainment System
+10.25” Digital Instrument cluster
+Connected Vehicle Technology With iRA 2.0
+Voice assisted Electric Sunroof
+JBL BRANDED 8-SPEAKERS AND SUBWOOFER
+Wireless Charger Head out on long drives without the worry of running out of juice on your mobile phone.
+Wireless Charger
+Head out on long drives without the worry of running out of juice on your mobile phone.
+AudioWorx Elevate your music listening by choosing your preferred sound setting and enjoying superior entertainment on the go.
+AudioWorx
+Elevate your music listening by choosing your preferred sound setting and enjoying superior entertainment on the go.
+Android Auto and Apple CarPlay with Wireless Connectivity Connect your phone with your Nexon seamlessly and operate it without compromising on your safety.
+Android Auto and Apple CarPlay with Wireless Connectivity
+Connect your phone with your Nexon seamlessly and operate it without compromising on your safety.
+Navigation Display on Instrument Cluster Set off on journeys unafraid with convenient access to maps always powering you.
+Navigation Display on Instrument Cluster
+Set off on journeys unafraid with convenient access to maps always powering you.
+Plush Comfort
+What was comfortable, became way more comfortable in the New Nexon which comes with leatherette Ventilated Seats, Height Adjustable driver and co-driver seat and many more.
+Premium Benecke-Kaliko Ventilated Leatherette Seats Drive seated in the perfect combination of comfort and elegance, perfected by German engineering. Air Purifier Escape the world and its impurities with every drive as you breathe in pure air and exhale the worries. (382*L) Boot Space Make room for more of everything with a reimagined boot that lets you store without any compromises and create more memories. Premium Benecke-Kaliko Ventilated Leatherette Seats Air-Purifier 382L Boot Space
+Premium Benecke-Kaliko Ventilated Leatherette Seats Drive seated in the perfect combination of comfort and elegance, perfected by German engineering.
+Premium Benecke-Kaliko Ventilated Leatherette Seats
+Drive seated in the perfect combination of comfort and elegance, perfected by German engineering.
+Air Purifier Escape the world and its impurities with every drive as you breathe in pure air and exhale the worries.
+Air Purifier
+Escape the world and its impurities with every drive as you breathe in pure air and exhale the worries.
+(382*L) Boot Space Make room for more of everything with a reimagined boot that lets you store without any compromises and create more memories.
+(382*L) Boot Space
+Make room for more of everything with a reimagined boot that lets you store without any compromises and create more memories.
+Air-Purifier
+382L Boot Space
+Cooled Glove Box Keep your precious belongings safe, an arm's reach away and cool at all times. Rear AC Vent Beat the heat as you sink into the comfort of the Nexon with powerful cooling for everyone, in the front or in the rear. Fully Automatic Temperature Control (FATC) Turns your car into such a comfortable space, that you’ll keep sitting in the car, even after reaching your destination. Cooled Glove Box Rear AC Vent Fully Automatic Temperature control
+Cooled Glove Box Keep your precious belongings safe, an arm's reach away and cool at all times.
+Cooled Glove Box
+Keep your precious belongings safe, an arm's reach away and cool at all times.
+Rear AC Vent Beat the heat as you sink into the comfort of the Nexon with powerful cooling for everyone, in the front or in the rear.
+Rear AC Vent
+Beat the heat as you sink into the comfort of the Nexon with powerful cooling for everyone, in the front or in the rear.
+Fully Automatic Temperature Control (FATC) Turns your car into such a comfortable space, that you’ll keep sitting in the car, even after reaching your destination.
+Fully Automatic Temperature Control (FATC)
+Turns your car into such a comfortable space, that you’ll keep sitting in the car, even after reaching your destination.
+Fully Automatic Temperature control
+See What Experts Say
+Find Dealership Find a TATA.CARS dealerships nearest to you, using the dealer locator. Find Now Book a Test Drive We know you will love our cars, which is why you can book a test drive online at the nearest dealership. Book Now
+Find Dealership Find a TATA.CARS dealerships nearest to you, using the dealer locator. Find Now
+Find Dealership Find a TATA.CARS dealerships nearest to you, using the dealer locator.
+Find Dealership
+Find a TATA.CARS dealerships nearest to you, using the dealer locator.
+Find Now
+Book a Test Drive We know you will love our cars, which is why you can book a test drive online at the nearest dealership. Book Now
+Book a Test Drive We know you will love our cars, which is why you can book a test drive online at the nearest dealership.
+We know you will love our cars, which is why you can book a test drive online at the nearest dealership.
+Book Now
+Download Brochure Request Call Back Book a Test Drive Book Now Request a call back Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+Download Brochure Request Call Back Book a Test Drive Book Now
+Download Brochure
+Request Call Back
+TATA Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Help Service Dealer Locator Digital Showroom Car Financing Quick Links Contact Us Privacy Policy Terms & Condition Blogs Social Facebook Twitter Instagram Youtube For Roadside Assistance, call on - 18002098282 Copyright © 2026 TATA.CARS. All Rights Reserved
+TATA Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Help Service Dealer Locator Digital Showroom Car Financing Quick Links Contact Us Privacy Policy Terms & Condition Blogs Social Facebook Twitter Instagram Youtube
+TATA
+Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Tata Cars
+Help Service Dealer Locator Digital Showroom Car Financing
+Help
+Service
+Car Financing
+Quick Links Contact Us Privacy Policy Terms & Condition Blogs
+Quick Links
+Privacy Policy
+Terms & Condition
+Blogs
+Social Facebook Twitter Instagram Youtube
+Social
+Facebook
+Twitter
+Instagram
+Youtube
+For Roadside Assistance, call on - 18002098282 Copyright © 2026 TATA.CARS. All Rights Reserved
+For Roadside Assistance, call on - 18002098282
+Copyright © 2026 TATA.CARS. All Rights Reserved
+
+=== SOURCE src_e64b3e · url · role=product · https://tata.cars/nexon/ice/specifications.html ===
+Tata Nexon Specifications - Engine & Feature Options | TATA.CARS
+Nexon Specifications & Dimensions
+Nexon
+Go Back Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Go Back
+Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Overview
+iCNG
+Edition Edition CAMO #DARK RED #DARK
+Edition
+CAMO
+#DARK
+RED #DARK
+Specs
+Compare
+Price
+Configure
+Discover Nexon.ev
+Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Brochure
+Nexon Brochure 2026
+Nexon iCNG Brochure 2026
+Nexon CAMO Brochure
+Quick Link Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Quick Link
+Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Book a test drive
+Brand Stories
+Pre-owned vehicles
+Digital Showroom
+Dealers near me
+Sign In Sign Out Our Models Account Accessories Dealer Locator Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Digital Showroom Exchange Car Pre-Owned Rewards Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us Sitemap Book a Test Drive
+Sign In
+Sign Out
+Our Models
+Account
+Accessories
+Dealer Locator
+Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra
+Harrier
+Safari
+Punch
+Altroz
+Tiago
+Curvv
+Tigor
+Exchange Car
+Pre-Owned
+Rewards
+Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products
+Book a Service
+Estimate Service Cost
+Owner's Manual
+General Tips
+Fuel Saving Tips
+Best Value Service
+Value Added Services
+Phone Bluetooth™ Compatibility
+Android Auto User Guide
+Information On warranty
+Contact Us
+Sitemap
+Book a Test Drive
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS. Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Curvv Learn More
+Learn More
+Curvv.ev Learn More
+Curvv.ev
+Sierra Learn More
+Sierra.ev Learn More
+Sierra.ev
+Harrier Learn More
+Harrier.ev Learn More
+Harrier.ev
+Safari Learn More
+Nexon Learn More
+Nexon.ev Learn More
+Nexon.ev
+Punch Learn More
+Punch.ev Learn More
+Punch.ev
+Altroz Learn More
+Tiago Learn More
+Tiago.ev Learn More
+Tiago.ev
+Tigor Learn More
+Tigor.ev Learn More
+Tigor.ev
+XPRES Learn More
+XPRES
+× Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator
+State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+State* City*
+State*
+City*
+Vehicle Selection* Own Vehicle New Vehicle
+Own Vehicle New Vehicle
+Own Vehicle
+New Vehicle
+Model* Version*
+Model*
+Version*
+Your Vehicle*
+Service Type*
+Free Service Type*
+Kms/Months*
+Total Cost*
+Submit Book Service
+Nexon Specifications
+Specifications
+Nexon Specifications Features Only Differences Brochures Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure All Collapse All Expand All Unfound Variant
+Specifications Features Only Differences Brochures Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure All Collapse All Expand All
+Specifications Features
+Features
+Only Differences Brochures Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure All Collapse All Expand All
+Only Differences
+Brochures Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure All
+Brochures
+Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure All
+Nexon CAMO Brochure All
+All
+Collapse All Expand All
+Collapse All
+Expand All
+Unfound Variant
+Frequently Asked Questions
+What are the engine options available in Tata Nexon? Tata Nexon offers three powertrain options: 1.2L Turbocharged Revotron petrol (120 PS/170 Nm), 1.5L Turbocharged Revotorq diesel (113 PS/260 Nm), and iCNG with 1.2L Turbocharged Revotron Engine (98 PS/170 Nm). Each engine is tuned for optimal performance and efficiency across different driving conditions. Discover the Tata Nexon to explore all features and variants.
+What are the engine options available in Tata Nexon?
+Tata Nexon offers three powertrain options: 1.2L Turbocharged Revotron petrol (120 PS/170 Nm), 1.5L Turbocharged Revotorq diesel (113 PS/260 Nm), and iCNG with 1.2L Turbocharged Revotron Engine (98 PS/170 Nm). Each engine is tuned for optimal performance and efficiency across different driving conditions. Discover the Tata Nexon to explore all features and variants.
+What are the transmission options available in Tata Nexon? The Tata Nexon offers multiple transmission choices: 5-Speed  manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox.
+What are the transmission options available in Tata Nexon?
+The Tata Nexon offers multiple transmission choices: 5-Speed  manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox.
+What are the dimensions and boot space of Tata Nexon? The Tata Nexon measures 3,995 mm in length, 1,804 mm in width, and 1,620 mm in height with a 2,498 mm wheelbase. Boot space is 321 L for CNG & 382 L for Petrol & Diesel.
+What are the dimensions and boot space of Tata Nexon?
+The Tata Nexon measures 3,995 mm in length, 1,804 mm in width, and 1,620 mm in height with a 2,498 mm wheelbase. Boot space is 321 L for CNG & 382 L for Petrol & Diesel.
+What safety features are available in Tata Nexon? The Tata Nexon has a 5-star BNCAP safety rating with features including 6 airbags, ADAS, ABS with EBD, ESP, hill assist, TPMS, 360-degree camera with Blind View Monitor, and ISOFIX mounts, Rain Sensing Wiper, Auto Headlamps. Configure your Tata Nexon to see all safety options.
+What safety features are available in Tata Nexon?
+The Tata Nexon has a 5-star BNCAP safety rating with features including 6 airbags, ADAS, ABS with EBD, ESP, hill assist, TPMS, 360-degree camera with Blind View Monitor, and ISOFIX mounts, Rain Sensing Wiper, Auto Headlamps. Configure your Tata Nexon to see all safety options.
+What infotainment features are available in Tata Nexon? The Tata Nexon offers a premium infotainment experience with: 10.25-inch touchscreen infotainment system Wireless Android Auto and Apple CarPlay iRA connected car technology with 70+ features JBL 9-speaker premium sound system Voice command recognition OTA (Over-The-Air) software updates In-built navigation with live traffic updates Remote vehicle controls via smartphone app
+What infotainment features are available in Tata Nexon?
+The Tata Nexon offers a premium infotainment experience with: 10.25-inch touchscreen infotainment system Wireless Android Auto and Apple CarPlay iRA connected car technology with 70+ features JBL 9-speaker premium sound system Voice command recognition OTA (Over-The-Air) software updates In-built navigation with live traffic updates Remote vehicle controls via smartphone app
+The Tata Nexon offers a premium infotainment experience with:
+10.25-inch touchscreen infotainment system
+Wireless Android Auto and Apple CarPlay
+iRA connected car technology with 70+ features
+JBL 9-speaker premium sound system
+Voice command recognition
+OTA (Over-The-Air) software updates
+In-built navigation with live traffic updates
+Remote vehicle controls via smartphone app
+Find Dealership Find a TATA.CARS dealerships nearest to you, using the dealer locator. Find Now Book a Test Drive We know you will love our cars, which is why you can book a test drive online at the nearest dealership. Book Now
+Find Dealership Find a TATA.CARS dealerships nearest to you, using the dealer locator. Find Now
+Find Dealership Find a TATA.CARS dealerships nearest to you, using the dealer locator.
+Find Dealership
+Find a TATA.CARS dealerships nearest to you, using the dealer locator.
+Find Now
+Book a Test Drive We know you will love our cars, which is why you can book a test drive online at the nearest dealership. Book Now
+Book a Test Drive We know you will love our cars, which is why you can book a test drive online at the nearest dealership.
+We know you will love our cars, which is why you can book a test drive online at the nearest dealership.
+Book Now
+Download Brochure Request Call Back Book a Test Drive Book Now Request a call back Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+Download Brochure Request Call Back Book a Test Drive Book Now
+Download Brochure
+Request Call Back
+Request a call back Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms.
+Select Valid Label
+Mr. Miss. Mrs. Dr. Prof. Ms.
+Mr.
+Miss.
+Mrs.
+Dr.
+Prof.
+Ms.
+First Name Enter Valid Name
+Enter Valid Name
+Last Name Enter Valid Name
+Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP
+Mobile Number +91 Enter Valid Number +91 India
++91 Enter Valid Number
++91
+Enter Valid Number
++91 India
+India
+Enter the OTP code here Enter Valid OTP
+Enter Valid OTP
+Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode
+Email ID (Optional) Enter Valid Email Id
+Enter Valid Email Id
+Pincode (Optional) Enter Valid Pincode
+Enter Valid Pincode
+submit Resend OTP Resent Please Validate Otp
+submit Resend OTP Resent
+Resend OTP Resent
+Resend OTP
+Resent
+Please Validate Otp
+we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+we will be in touch
+Thanks for providing your details, our team will be in touch as soon as possible.
+Thanks for providing your details,
+our team will be in touch as soon as possible.
+TATA Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Help Service Dealer Locator Digital Showroom Car Financing Quick Links Contact Us Privacy Policy Terms & Condition Blogs Social Facebook Twitter Instagram Youtube For Roadside Assistance, call on - 18002098282 Copyright © 2026 TATA.CARS. All Rights Reserved
+TATA Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Help Service Dealer Locator Digital Showroom Car Financing Quick Links Contact Us Privacy Policy Terms & Condition Blogs Social Facebook Twitter Instagram Youtube
+TATA
+Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Tata Cars
+Help Service Dealer Locator Digital Showroom Car Financing
+Help
+Service
+Car Financing
+Quick Links Contact Us Privacy Policy Terms & Condition Blogs
+Quick Links
+Privacy Policy
+Terms & Condition
+Blogs
+Social Facebook Twitter Instagram Youtube
+Social
+Facebook
+Twitter
+Instagram
+Youtube
+For Roadside Assistance, call on - 18002098282 Copyright © 2026 TATA.CARS. All Rights Reserved
+For Roadside Assistance, call on - 18002098282
+Copyright © 2026 TATA.CARS. All Rights Reserved
+
+=== SOURCE src_07be3d · url · role=product · https://tata.cars/nexon/ice/price.html ===
+Tata Nexon Price in India – From ₹7.39 L* Onwards | TATA.CARS
+Tata Nexon Price & Variants in India
+Nexon
+Go Back Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Go Back
+Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Overview
+iCNG
+Edition Edition CAMO #DARK RED #DARK
+Edition
+CAMO
+#DARK
+RED #DARK
+Specs
+Compare
+Price
+Configure
+Discover Nexon.ev
+Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Brochure
+Nexon Brochure 2026
+Nexon iCNG Brochure 2026
+Nexon CAMO Brochure
+Quick Link Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Quick Link
+Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Book a test drive
+Brand Stories
+Pre-owned vehicles
+Digital Showroom
+Dealers near me
+Sign In Sign Out Our Models Account Accessories Dealer Locator Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Digital Showroom Exchange Car Pre-Owned Rewards Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us Sitemap Book a Test Drive
+Sign In
+Sign Out
+Our Models
+Account
+Accessories
+Dealer Locator
+Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra
+Harrier
+Safari
+Punch
+Altroz
+Tiago
+Curvv
+Tigor
+Exchange Car
+Pre-Owned
+Rewards
+Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products
+Book a Service
+Estimate Service Cost
+Owner's Manual
+General Tips
+Fuel Saving Tips
+Best Value Service
+Value Added Services
+Phone Bluetooth™ Compatibility
+Android Auto User Guide
+Information On warranty
+Contact Us
+Sitemap
+Book a Test Drive
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS. Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Curvv Learn More
+Learn More
+Curvv.ev Learn More
+Curvv.ev
+Sierra Learn More
+Sierra.ev Learn More
+Sierra.ev
+Harrier Learn More
+Harrier.ev Learn More
+Harrier.ev
+Safari Learn More
+Nexon Learn More
+Nexon.ev Learn More
+Nexon.ev
+Punch Learn More
+Punch.ev Learn More
+Punch.ev
+Altroz Learn More
+Tiago Learn More
+Tiago.ev Learn More
+Tiago.ev
+Tigor Learn More
+Tigor.ev Learn More
+Tigor.ev
+XPRES Learn More
+XPRES
+× Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator
+State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+State* City*
+State*
+City*
+Vehicle Selection* Own Vehicle New Vehicle
+Own Vehicle New Vehicle
+Own Vehicle
+New Vehicle
+Model* Version*
+Model*
+Version*
+Your Vehicle*
+Service Type*
+Free Service Type*
+Kms/Months*
+Total Cost*
+Submit Book Service
+Nexon Price
+Select your location
+Choose your location for correct vehicles prices.
+City
+BAREJA
+NABHA
+JALPAIGURI
+RAJULA
+RAGHUNATHPUR
+AGAR
+PILIBHIT
+KODUVALLY
+DUNGARGARH
+CHHIBRAMAU
+KATIHAR
+BARASAT
+DOMBIVALI
+VIRAMGAM
+BANTHARA
+NORTH PARAVOOR
+CHIKKAMAGALURU
+NAUKAGHAT
+UTHAMAPALAYAM
+LATEHAR
+NAGARKURNOOL
+CHHINDWARA
+BARDOLI
+LADWA
+JEHANABAD
+BEWAR
+SHAJAPUR
+TEHRI
+KANHANGAD
+ALIGARH
+PINJORE
+REASI
+GUNTAKAL
+UTTAR BAGDOGRA
+ASHTA
+BILASPUR
+JHUNSI
+BARUIPUR
+BALUGAON
+KARUNAGAPALLY
+DIBRUGARH
+URULI KANCHAN
+MANDVI
+VYARA
+PRAYAGRAJ
+GUNA
+WARUD
+ERNAKULAM
+SECUNDERABAD CANTT
+VIKASNAGAR
+DHAULPUR
+HALOL
+NAGARCOIL
+NAVSARI
+PIDUGURALLA
+RAJGARH
+NOAMUNDI
+ANKLESVAR
+AGARTALA
+DHAMTARI
+BALRAMPUR
+PHAGWARA
+KANNAUJ
+CHIKHLI
+SILVASSA
+KOOTHATTUKULAM
+KHATEGAON
+JORTHANG
+BUXAR
+ERODE
+RAJSAMAND
+NEEMRANA
+BAIDYABATI
+RS PURA
+SAWAI MADHOPUR
+JHARSUGUDA
+NAMAKKAL
+ANUPPUR
+ANTAH
+UPPALA
+AZAMGARH
+KISHANGANJ
+KARANJA
+CHUMUKEDIMA
+ANAKAPALLE
+KHADIA
+PARAVOOR
+CHANDAULI
+GARIYABAND
+B C ROAD
+FARIDKOT
+PATAN
+KARUR
+THANE
+KOLKATA
+SARKAGHAT
+FARIDABAD
+BUNDI
+BAGRU
+UNA
+GORAKHPUR
+GOALPARA
+BIHARSHARIF
+ULUBERIA
+MADANAPALLE
+THEOG
+DHAMNOD
+CHANGARAMKULAM
+KUNNAMKULAM
+MOHANIA
+MADANAPALLI
+KUKSHI
+MEDAK
+LALITPUR
+BULANDSHAHR
+KARUKACHAL
+CHATRA
+NOHAR
+WANKANER
+PITHORAGARH
+AMBERPET
+MYSORE
+FARBESGANJ
+HALDIA
+ARWAL
+RAMPUR
+SHEIKHPURA
+BETUL
+GODDA
+CHANDAN NAGAR
+NILOKHERI
+DASUYA
+RAIGARH
+KHUNTI
+DEHRA
+DUDHNOI
+KANKER
+DHANWAR
+BARH
+JHANSI
+NARASARAOPET
+GHUMA
+SRINAGAR
+THAKURDWARA
+ITAWA
+PUNE
+AUTO NAGAR
+OSMANABAD
+LALGANJ
+SAKTI
+PANDHARPUR
+HASSAN
+DOMBIVLI EAST
+KANAKPURA
+KARAIKAL
+VENGARA
+ARARIA
+PAITHAN
+PHAPHAMAU
+KIRAOLI
+IDAR
+AMBAJOGAI
+KUNDLI
+SAGAR
+DUGRI
+CHIRALA
+DEHRADUN
+DUDU
+SOLAN
+DHAR
+CHENTHRAPINI
+RAMPURHAT
+CUDDALORE
+THIRUVALARCHI PATTI
+MANGAON
+CONTAI
+BAZPUR
+MALEGAON
+KHAIRTHAL
+HARIHARGANJ
+SINGANAYAKANAHALLI
+GADWAL
+JETPUR
+DELHI
+PARIPALLY
+KORBA
+BHUPALPALLY
+REWARI
+RAGHURAJNAGAR
+VADAKARA
+BIJNOR
+SINGHESAR ASTHAN
+VIDISHA
+VALLIYOOR
+SHAMGARH
+WADKHAL
+SIDDHARTHNAGAR
+VIRAR
+BAUDHGARH
+FEROZEPUR
+BAIKUNTHPUR
+SAHEBGANJ
+NAGAON
+LIMBDI
+NASHIK
+MANDI DABWALI
+RAMNAD
+DATAGANJ
+VIRUDHACHALAM
+TIPTUR
+KUTTIPPURAM
+ATHGAON
+TIRUCHIRAPPALLI
+SAKALDIHA
+ANANDPUR SAHIB
+BIRPARA
+SHOLAPUR
+ANKOLA
+SINNAR
+BHUPALPALLE
+DALTONGANJ
+VAIKOM
+KHARGHAR
+LAKHIMPUR KHERI
+GONDHAL
+NARAYANPET
+ZAHIRABAD
+KODARMA
+CHERUVATHUR
+BELAGAVI
+NAGAR
+BHARATPUR
+KATHUA
+ROING
+KOVILPATTI
+JAIPUR
+DABRA
+BEGUSARAI
+BARAMULLA
+SAMBALPUR
+GANGAWATI
+KINWAT
+AKURDI
+GANGTOK
+SIDDIPET
+PATAS
+BANKURA
+DHAMPUR
+KHATIMA
+SIMDEGA
+NISSING
+KODIMATHA
+DINDIGUL
+MACHILIPATNAM
+NADAUN
+TONK
+MAHENDRAGARH
+HOJAI
+BARAUT
+DEGLOOR
+BADDI
+MAHOBA
+BALUMATH
+MANDSAUR
+HANSI
+KAPURTHALA
+MIRA ROAD
+RISHIKESH
+JAGATSINGHPUR
+RAPAR
+PETLAD
+THENI
+MEDINIPUR
+SULLIA
+CHAMBA
+GAYA
+HANUMANGARH
+AKHNOOR
+SONEPAT
+METTUPALAYAM
+TUMKUR
+KARWI
+NIRSA
+BIKANER
+RS GHAT
+AKBARPUR
+SUJANPUR
+ANANTNAG
+RAURKELA
+VASCO
+MANJALLOOR
+AKOT
+AMBALA
+JAMMU
+JAMTARA
+UMARIA
+MADHUBANI
+SHAMSHABAD
+PARADIP
+PANNA
+RAJGHAR
+MUVATTUPUZHA
+BALAGHAT
+MUDIGERE
+BURDWAN
+UDAIPUR
+CHAKIA
+SOLAPUR
+PURULIYA
+NILAMBUR
+PHULBANI
+ASSANDH
+ISLAMPUR
+BANGANA (15/21)
+PERINTHALMANNA
+PAYYOLI
+BANGALORE
+PADUR
+KARIMNAGAR
+SANTIRBAZAR
+JOGINDERNAGAR
+BELLARY
+ETAWAH
+KARUNAGAPPALLY
+KHAMMAM
+VASAI-VIRAR CITY
+JHANJHARPUR
+KUMBAKONAM
+FARRUKHABAD-CUM-FATEHGARH
+MALIHABAD
+NOIDA
+SREEKANDAPURAM
+MUZAFFARPUR
+PALANI
+OTTAPALAM
+CHERUPUZHA
+PUNALUR
+SEMMANCHERI
+RAIPUR
+DHANBAD
+AHMADNAGAR
+ASHOK NAGAR
+MUDHAL TITTA
+DIDWANA
+TIRUCHENDUR
+NEW DELHI
+DEESA
+MALIKIPURAM
+SIWAN
+ONGOLE
+PURANPUR
+VILLIPURAM
+BAGHPAT
+JOWAI
+GHAZIABAD
+NANDYAL
+KARGIL
+RENUKOOT
+CHURU
+CHITRADURGA
+GURUGRAM
+ALWAR
+KHAMBHALIA
+NOW GAM
+TALIPARAMBA
+GOBICHETTIPALAYAM
+SIVAGANGA
+CHAKDAHA
+HINDUPUR
+AMBARNATH
+KADI
+BALURGHAT
+HOSUR
+NEEM KA THANA
+DHRANGADHRA
+BHUSAWAL
+BOKARO
+PATTAMBI
+JAORA
+THANJAVUR
+THANAGAZHI
+BISWANATH CHARIALI
+SAHARANPUR
+KALOL
+TAMLUK
+KOTTARAKKARA
+KALAYAT
+PORBANDAR
+DEODAR
+DIPHU
+LINGASUGUR
+JAUNPUR
+MARGHERITA
+PATHANKOT
+BALODA BAZAR
+SIRSI
+DODA
+ALIPURDUAR
+LUNGLEI
+SONAPUR
+NIZAMABAD
+KAWARDHA
+CHINSURAH
+SINDHANUR
+WARANGAL
+MANDASUR
+MOTIHARI
+LAMBERI
+ROBERTSGANJ
+HAJO
+SHEOPUR
+GARHWA
+KOTPUTLI
+SUJANGARH
+GANAUR
+GURGAON
+ASANSOL
+JORHAT
+MADLAUDA
+SURYAPET
+GORAYA
+PALANPUR
+KARJAT
+DIBAI
+BIAORA
+DHARWAD (RURAL)
+BASTI
+VALLABH VIDYANAGAR
+PARALAKHEMUNDI
+SAMBHAL
+FEROZPUR
+CHINTAMANI
+NARMADAPURAM
+HAMIRPUR
+SURAJPUR
+BHOR
+NARWANA
+LONI
+ALAUNDI
+KHARIAR ROAD
+SILIGURI (M CORP. ) (PART)
+MAWLAI
+TIRUPUR
+KOKRAJHAR
+KAVALI
+MANNARKKAD
+BATHINDA
+PATHALGAON
+SIYANA
+VERAVAL
+TIRUTTANI
+MALKAPUR
+VERNA
+MOHALI
+NADUVANNUR
+PALI
+BHIWANI
+CHIPLUN
+KARNAPRAYAG
+KHAIR
+BEHROR
+CHAKSU
+BIHTA
+BUDDAGUPPE
+PARBHANI
+BHANJANAGAR
+SANGLI
+RUPNARAYANPUR
+SAHIBGANJ
+SANKARI
+MANDYA
+KAIMGANJ
+UJJAIN
+MODASA
+BHILWARA
+KUNIGAL
+KURUKSHETRA UNIVERSITY
+DOHAD
+IRINJALAKUDA
+MEJA ROAD
+BARSHI
+VASAI
+PALGHAR
+MUNGELI
+GANDHIDHAM
+GHAZIPUR
+CHENNAI
+HALDWANI
+SALEM
+KALYANDURG
+CHITTUR
+SAGWARA
+SHANKARPALLE
+BUNDU
+RADHANPUR
+BARABANKI
+KARMETA
+PAYYANNUR
+BARELI
+KOTA
+WALUJ
+KALLAKKURICHI
+GAJRAULA
+CHANNAGIRI
+ALAPPUZHA
+MANJHANPUR
+BHOPAL
+JAMKHANDI
+RATNAGIRI
+SHAHADE
+KUSHAL NAGAR
+RAJAHMUNDRY
+BAGAHA
+PONDA
+LALSOT
+RAJKHARIAR
+CIVIL LINE
+CHALAKUDI
+JAJPUR
+KOTMA
+MORBI
+KHED SHIVAPUR
+RATLAM
+GAUR
+DAUSA
+PARAMAKUDI
+KHALARI
+CHERTHALA
+DARJEELING
+PERAMBRA
+DEPALPUR
+MODINAGAR
+BOISAR
+ARAMBAG
+MANSA
+SAMASTIPUR
+KORANI
+NARNAUL
+BIDAR
+DEWAS
+KHAMGAON
+CHHATARPUR
+RAJAM
+MURTHAL
+DHARWAD
+VADODARA
+NORTH LAKHIMPUR
+ALLAHABAD
+NUVEM
+WAJEGAON
+KHAGARIA
+GUDHA GORJI
+BAREILLY
+MADHOGANJ
+CHOMU
+DHARMAPURI
+CHANDRAPUR
+PANJIM
+GUMMIDIPOONDI
+NEW TEHRI
+CHHATTARPUR
+ANUPGARH
+SHAHPUR
+JODHPUR
+EDAPPAL
+MORINDA
+PURNEA
+MORADABAD
+UDHAMPUR
+AMRAVATI
+DOHRIGHAT
+CHITTAURGARH
+PARABHANI
+THIRUVILWAMALA
+WANAPARTHY
+SILIGURI
+BHANDARA
+NARAYANPUR
+PANDAVESWAR
+DEVANAHALLI
+TUNI
+NEEMUCH
+PARLI
+VALANCHERY
+RAJIM
+PALAKKAD
+WADA
+SINDHNUR
+BALANGIR
+NAWADA
+CHIRAWA
+PATHANAPURAM
+PILERNE
+CHEMMAD
+SHADNAGAR
+CHADAYAMANGALAM
+PALASI
+CHEEKA
+KRISHNANAGAR
+SHAHJAHANPUR
+GONDA
+HOSKOTE
+SUPWAL
+SHILLONG
+KALYAN
+RAJOURI
+MAU
+NAWANSHAHR
+AIZAWL
+PALIA
+MATHURA
+SRI NAGAR
+RAYA
+BADAUN
+NAKODER
+MANGALDOI
+GONDAL
+SRI MADHOPUR
+DARBANGHA
+BARGARH
+ANCHAL
+SHUJALPUR
+TIRUVANNAMALAI
+KARIMGANJ
+MAKRANA
+PATIALA
+PRODDATUR
+PUDUCHERRY
+KOSI KALAN
+JALALABAD
+KARNAL
+RAICHUR
+BAHERI
+VAPI
+MALDA
+RAXAUL
+PATHSALA
+ORAI
+KASGANJ
+ROPAR
+KODERMA
+UDUMALAIPETTAI
+WARDHA
+AMALAPURAM
+MAHASAMUND
+COOCH BEHAR
+SOHNA
+YAMUNANAGAR
+DINDORI
+DIMAPUR
+SITAMARHI
+RUDRAPRAYAG
+VARKALA
+MAHARAJGANJ
+PURNIA
+MDA
+BENGALURU
+BONGAIGAON
+ALIBAGH
+MEERGANJ
+SAMALKHA
+UMARGA
+HAILAKANDI
+DHEKIAJULI
+CHANDIKHOLE
+GOPALGANJ
+CHENGALPATTU
+VIZIANAGARAM
+BERHAMPUR
+SAHJAPUR
+KARAIKKUDI
+SHIRDI
+PATAUDI
+NAUTANWA
+ARANTHANGI
+BHADRAK
+PENDRA
+BADNAGAR
+SURAT
+VASHI
+GIRIDIH
+HOSPET
+ALIBAG
+PAKUR
+LUCKNOW
+SHAHBAD
+BARWANI
+BULDHANA
+MAHAM
+RAMGANJ MANDI
+PORT BLAIR
+AMROHA
+KONDAGAON
+NAILA-JANJGIR
+MANANTHAVADY
+JASOR
+SURI
+SULUR
+MERTA CITY
+GOSAINGANJ
+TIRUR
+NIRMAL
+SHRIRAMPUR
+KOPPAL
+KANJIRAPPALLY
+RAEBARELI
+GHUMARWIN
+MECHEDA
+NAGPUR
+BACHUPALLY
+TIRUNELVELI
+BHILAI
+WAIDHAN
+BALOD
+NANDURBAR
+NEYYATTINKARA
+NAIDUPETA
+DHARAPURAM
+MEHSANA
+KARIYAD
+WANI
+PALLICHAL
+VADUJ
+ADONI
+KANKAVLI
+CHILAKALURIPET
+CHIDAMBARAM
+PALA
+TIRUPPUR
+SIKANDRABAD
+COIMBATORE
+MALAPPURAM
+ANANTAPUR
+PONNANI
+TRIVANDRUM
+HOSHANGABAD
+PERUMBAVOOR
+KARAD
+HUBLI
+SAMPLA
+UTTARPARA
+TINSUKIA
+BHADRACHALAM
+EDAKKARA
+WAZIRPUR
+GURUVAYOOR
+HATHOJ
+KOLAR
+ROHRU
+AURANGABAD
+GOLAGHAT
+TARATALA
+KOLENCHERY
+BANKA
+ELURU
+YEOLA
+CHANDRAKONA CK ROAD
+MOIRANG
+NADIAD
+ROORKEE
+BALOTRA
+KEONJHAR
+MIRYALAGUDA
+VIRAR WEST
+METTUR
+ELLENABAD
+TILDA
+SIMRAHI
+RAHATA
+ANGUL
+HATHRAS
+BALASORE
+GANGANAGAR
+DANTEWADA
+COIMBATOTE
+VALSAD
+SINGUR
+ATTINGAL
+FARRUKHABAD
+PUNDRI
+AMBALLUR
+SATNA
+RAMAGUNDAM
+DAVANGERE
+ETTUMANOOR
+NEVASA BK.
+TAORU
+KHURJA
+PRATAPGARH
+SECUNDERABAD (CB)
+ADOOR
+MARKAPUR
+DEOGHAR
+SURATHKAL
+MAHABUBABAD
+RAWATBHATA
+FIROZPUR
+MOHANPUR
+BHIMAVARAM
+ALATHUR
+CHAIBASA
+VELLORE
+ADARSH NAGAR
+BADLI
+BOLPUR
+TIRUPATHUR
+JANGAREDDIGUDEM
+KRISHNAGIRI
+ANKLESWAR
+VISNAGAR
+BHUBHANESWAR
+KODUNGALLUR
+TIRUCHENGODE
+UDGIR
+THOUBAL
+GANDHINAGAR
+UMRED
+MUZAFFARNAGAR
+MARTHANDAM
+BALRAMPUR(RURAL)
+GOHANA
+KHARAGPUR
+RENWAL
+PUSAD
+PUNAHANA
+AZAD NAGAR
+MUGALSARAI
+RAJPIPLA
+HAZARIBAG
+BHAWANI MANDI
+BOTAD
+CHAKAN
+SHIKARIPURA
+DULIAJAN
+NAGDA
+NOKHA
+KOLHAPUR
+THODUPUZHA
+VARANASI
+KANPUR
+GUDUVANCHERI
+LUNAWADA
+TENKASI
+PENDURTHI
+MAHIDPUR
+RAIGAD
+PASCHIMI SINGHBHUM
+KONNI
+BEAWAR
+NAGERCOIL
+RAJPURA
+PALWAL
+GADAG
+VAGHODIA
+RAJNANDGAON
+KOTHAMANGALAM
+SULTAN BATHERY
+ADILABAD
+BHAWANIPATNA
+BHARUCH
+SULTANPUR
+DEGANA
+RAYAGADA
+GWALIOR
+MUKKAM
+FATEHABAD
+KANNAD
+MAYILADUTHURAI
+NANDED
+RANCHI
+DEEG
+Kolkata
+UNNAO
+NAGAUR
+GONIKOPPAL
+SUMERPUR
+BARBIL
+MANENDRAGARH
+CHIKODI
+BALLIA
+GANGAPUR
+KALYANPUR HOUSING
+DATIA
+HINGOLI
+VITTHAL UDYOG NAGAR
+BHADOI
+PANVEL
+1 OLD JUDICIAL COMPLEX
+RUPNAGAR
+MADHEPURA
+MANAWAR
+CHARKI DADRI
+NAWABGANJ
+ULHASNAGAR
+RUDAULI
+JHARGRAM
+LALKUAN
+KEKRI
+HISAR
+JASHPUR
+CHITTORGARH FORT
+KASHIPUR
+DARBHANGA
+RAJKOT
+SODEPUR
+BHOJPUR
+JAMUI
+GHIROR
+JAJAPUR
+KHATAULI
+PUDUKKOTTAI
+PALAMPUR
+SASWAD
+GUMLA
+DHARMANAGAR
+GONDIYA
+AREEKODE
+PHINTER
+MANJRI
+MUNDRA
+JOGINDARNAGAR
+IBRAHIMPATNAM
+DIGBOI
+MIRA-BHAYANDAR
+SONARI
+SARAIPALI
+RANIPETTAI
+KALLAMBALAM
+AMRELI
+KATOL
+BHADOHI
+KALYANI
+ANANDA NAGAR
+TANUKU
+RAIGANJ
+ABU ROAD
+KALABURAGI HCB
+AKOLA
+CHAPRA
+SECUNDERABAD
+GOKAK
+VAIJAPUR
+PAONTA SAHIB
+MAIHAR
+LUDHIANA
+JANGAON
+ORAS BK.
+BODELI
+MURWARA (KATNI)
+BINA
+ADITYAPUR INDUSTRIAL AREA
+JHAJJAR
+DHMPUR
+KARANPRAYAG
+SHIVAMOGGA
+DHULE
+MANDLA
+MUMBAI
+AMINGAON
+DUNGARPUR
+SEHORE
+LAL BAHADUR SHASTRI NAGAR
+SHAMSABAD
+BANSWARA
+KATRAS
+DEORIA
+REWA
+BANDIKUI
+TARN TARAN
+MADURAI
+DASPALLA
+ULWE
+LATUR
+BERASIA
+THIRUVARUR
+TUMSAR
+UDALGURI
+ATHANI
+UDAMALPET
+ARMUR
+KUSHINAGAR (NP)
+MANGALORE
+TEZPUR
+CHITTOOR
+BARMER
+RATANGARH
+PRATAPGARH CITY
+AALO
+GADCHIROLI
+RAMGARH
+RAUTARI
+SONI COLONY
+PAZHAYANNUR
+MALERKOTLA
+AMBUR
+BHUVANAGIRI
+SHAHDOL
+BASSI
+NORTH GUWAHATI
+SIVASAGAR
+SURENDRANAGAR
+INDAPUR
+CHAMRAJNAGAR
+NABARANGAPUR
+SEONI
+TIRUPATI
+JALAUN
+BORSAD
+CHIKKABALLAPUR
+AMBEJOGAI
+ARTAUNI
+BHAGALPUR
+GREATER NOIDA
+KURUKSHETRA
+OOTY
+CUDDAPAH
+DHENKANAL
+AJMER
+KURNOOL
+SHIVPURI
+JALANDHAR
+MIRZAPUR
+SUNDARGARH
+BATALA
+BHARAT NAGAR
+JAMSHEDPUR
+JAGDALPUR
+KALNA
+LEH
+BHATAPARA
+HARDOI
+CHIKKABALLAPURA (CMC)
+BAHADURGARH
+CHANNARAYAPATNA
+KANNUR
+KOTTAYAM
+MARGAO
+KHANNA
+PIRANGUT
+KAITHAL
+SHALIMAR
+PERAMBALUR
+KALWAR
+PALUS
+TOSHAM
+RAMNAGAR
+MANCHERIAL
+HALVAD
+SIKAR
+HAVERI
+AMRITSAR
+KANCHEEPURAM
+LOHARDAGA
+BERHAMPORE
+BARDDHAMAN
+THARAD
+DURGAPUR
+AHEMEDABAD
+SUAR
+MAJULI
+PANCHKULA
+BHAVNAGAR
+JAGDISHPUR
+BARAKAR
+SATHYAMANGALAM
+PAOTA
+AHMEDNAGAR
+GANGAPUR CITY
+SITAPUR
+MAHUVA
+KAVATHE MAHANKAL
+DAHANU
+AMRITPUR
+POWAYAN
+TIKAMGARH
+SARANGARH
+SASARAM
+KANTH
+GODHRA
+SAHARSA
+RAJAMPET
+MALPURA
+MORAN
+MANJERI
+TIRUVALLUR
+HUBBALLI-DHARWAD
+ULUBARI
+DURG
+BIJAPUR
+MANDI
+VIRUDHUNAGAR
+BHAVANI
+BEED
+IRITTY
+UDUPI
+BOMDILA
+KILIMANOOR
+KATTAKADA
+VIJAYAWADA
+PUTTUR
+KARKALA
+BARIPADA
+GUWAHATI
+BISHUNAPUR
+SULLURU (SULLURPETA)
+DHEMAJI
+BHARANIKAVU
+RAMBAN
+AURAIYA
+NELLORE
+SILCHAR
+GANDERBAL
+BETTIAH
+NARSIMHAPUR
+SRIKALAHASTI
+MALKANGIRI
+KUCHAMAN CITY
+DAVANAGERE
+JALORE
+ABBIHAL
+BICHOLIM
+PURI
+THRISSUR
+JIGANI
+ABOHAR
+HYDERABAD
+VISHRANTWADI
+KASARGOD
+POONCH
+KANGRA
+MYSURU
+PARLAKHEMUNDI
+QUILANDY
+CUTTACK
+SONIPAT
+MULLANPUR
+MUDHOL
+NEDUMANGAD
+SONEPUR
+ATRAULI
+DAMOH
+SHAMLI
+UMARPUR
+PANIPAT
+NAJIBABAD
+GADHINGLAJ
+GOSAIGANJ
+AMIN GAON
+JALGAON
+MUNDAKAYAM
+THAMARASSERY
+YAVATMAL
+NEDUMKANDAM
+KISHANGARH
+KOLLAM
+KHARGONE
+MAVELIKKARA
+SHAHPURA
+POLLACHI
+MOGA
+WADAKKANCHERY
+PANOOR
+GANGAVATHI
+PARASALA
+GANJ BASODA
+KUMHAILA
+ZIRAKPUR
+PITHORA
+FORBESGANJ
+JHALAWAR
+ICHALKARANJI
+MAINPURI
+SIDHI
+BARAMATI
+FARIDABAD - SEC 81
+SIKANDARAO
+RAISEN
+NAHAN
+CHAMOLI
+KHORDA
+MOHANLAL GANJ
+THIRUVANANTHAPURAM
+TALEGAON DABHADE
+UDUMALPET
+HOSHIARPUR
+SANGRUR
+KOCHI
+KOTHAGUDEM
+METPALLY
+BEMETARA
+TUTICORIN
+NONGPOH
+SANGAREDDY
+BODHAN
+BISHNUGARH
+MASAURHI
+BADRIKARI
+SAFIDON
+SATARA
+NERUL
+KHALILABAD
+OLPAD
+DEOLI
+BAGALKOT
+MURDESHWAR
+KUTTIYADI
+ARANI
+JASDAN
+ANAND
+VISAKHAPATNAM
+GURDASPUR
+NAVI MUMBAI
+KIM
+KANINA
+VITA
+SHEOHAR
+SURATGARH
+DUMKA
+MORIGAON
+RANGIA
+HAJIPUR
+BIJOYNAGAR
+TALASARI
+THALASSERY
+MANASA
+KOZHENCHERY
+JAGIROAD
+DIGLIPUR
+JOBNER
+SHERGHATI
+BHAVANIPURAM
+BACHED (38)
+NARAYANGAON
+PATNA
+KOZHIKODE
+MAHBUBNAGAR
+DEOBAND
+AUTADWADI HANDEWADI
+NAYAGARH
+LAKHISARAI
+BHUBANESWAR
+KOSLI
+CHAMPAWAT
+PATHIRIPPALA
+KENDRAPARA
+PASIGHAT
+AGRA
+BANDA
+MUKTSAR
+HARDWAR
+BHUJ
+GINGEE
+FAIZABAD
+ANGAMALY
+AKLUJ
+KATTAPPANA
+MANUGUR
+NEYVELI
+MADIKERI
+AVADI
+WASHIM
+KURAWALI
+INDORE
+SAMBA
+KUNDAPURA
+BAIJNATH
+MORENA
+KARAIKUDI
+ALMORA
+KHARSIA
+GULBARGA
+SANGAMNER
+RAMANATHAPURAM
+BAHRAICH
+AMBASSA
+HIMATNAGAR
+ANKLESHWAR
+KALKA
+DAHOD
+JAGITYAL
+AHMEDABAD
+KODAMENDHI
+BARAN
+GUNTUR
+RAJAPALAYAM
+JAMNAGAR
+SIRSA
+SIVAKASI
+PIPLI
+JABALPUR
+MEDCHAL
+ROHTAK
+MUNGER
+GOHAIN TEKELA GAON
+RUDRAPUR
+SATHUPALLI
+SHIMOGA
+ETAH
+KATGHORA
+BARPETA
+KOHIMA
+SARDHANA
+KINATHUKADAVU
+PALATHARA
+SRIKAKULAM
+KUSHINAGAR
+HOWRAH
+TOHANA
+ARIYALUR
+BHADRA
+BAPU NAGAR
+KAKINADA
+KADUR
+ARRAH
+KOTDWARA
+PHARENDA
+ITANAGAR
+ILKAL
+GAGRET
+IBRAHIMPATNAM (KHALSA)
+HAIDARGARH
+MANCHAR
+KASDOL
+RANIBENNUR
+JIND
+RAJAKILIPAKKAM
+CHANDIGARH
+KODAD
+HANDIA
+JHABUA
+NARAINGARH
+RAIPUR RANI
+SERAMPORE
+JUNAGADH
+JALNA
+HISSAR
+GOHPUR
+SANDILA
+AMADAMAK
+BARNALA
+JEYPORE L/R
+CHANDAUSI
+IMPHAL
+AMBIKAPUR
+FATEHPUR
+ANPARA
+JAGRAON
+BARAL
+PEHOWA
+ALIGANJ
+NARNAUND
+DHUBRI
+HAPUR
+NALGONDA
+MALBAZAR
+MEERUT
+JEWAR
+RAYACHOTI
+CHITTORGARH
+HINDAUN
+BADNAWAR
+SIRCILLA
+BARRACKPORE
+KAMAREDDY
+DALSINGHSARAI
+KALPETTA
+MANESAR
+NADAPURAM
+MATTANCHERRY
+VISHAKHAPATNAM
+BHIND
+SHIMLA
+DOMJUR
+GHATSHILA
+PULWAMA
+SHIKRAPUR
+PADOLI
+JHUNJHUNU
+BASIRHAT
+BOKAKHAT
+ATTUR
+MAWANA
+FIROZABAD
+HODAL
+KHANPUR
+KOTTAKKAL
+PATTUKKOTTAI
+KULLU
+TANDUR
+PONDICHERRY
+MOHAMMADI
+KAPADVANJ
+KONDOTTY
+VIKARABAD
+BHIWADI
+Register your interest We are expanding our service to additional cities, please register your interest to prioritise your city and we will inform you as soon as we are active. Show available locations City
+Register your interest
+We are expanding our service to additional cities, please register your interest to prioritise your city and we will inform you as soon as we are active. Show available locations City
+We are expanding our service to additional cities, please register your interest to prioritise your city and we will inform you as soon as we are active. Show available locations
+We are expanding our service to additional cities, please register your interest to prioritise your city and we will inform you as soon as we are active.
+Show available locations
+Available in your area Get a subscripton Benefits of a subscription Lorem ipsum dolor sit amet, consectetur adipiscing elit. Accumsan velit adipiscing non magna id mi. Sit elit tincidunt eget sed enim. Libero consectetur cras integer sit sed lobortis. Eu nullam sociis amet, sit purus id. Ultricies amet, cras viverra egestas id faucibus sem nunc. Learn more Doorstep delivery and service Brand new vehicle Hassle free ownership Easy entry and exit Learn more
+Available in your area Get a subscripton Benefits of a subscription Lorem ipsum dolor sit amet, consectetur adipiscing elit. Accumsan velit adipiscing non magna id mi. Sit elit tincidunt eget sed enim. Libero consectetur cras integer sit sed lobortis. Eu nullam sociis amet, sit purus id. Ultricies amet, cras viverra egestas id faucibus sem nunc. Learn more
+Available in your area Get a subscripton Benefits of a subscription Lorem ipsum dolor sit amet, consectetur adipiscing elit. Accumsan velit adipiscing non magna id mi. Sit elit tincidunt eget sed enim. Libero consectetur cras integer sit sed lobortis. Eu nullam sociis amet, sit purus id. Ultricies amet, cras viverra egestas id faucibus sem nunc.
+Available in your area
+Get a subscripton
+Benefits of a subscription
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Accumsan velit adipiscing non magna id mi. Sit elit tincidunt eget sed enim. Libero consectetur cras integer sit sed lobortis. Eu nullam sociis amet, sit purus id. Ultricies amet, cras viverra egestas id faucibus sem nunc.
+Learn more
+Doorstep delivery and service Brand new vehicle Hassle free ownership Easy entry and exit
+Doorstep delivery and service
+Brand new vehicle
+Hassle free ownership
+Easy entry and exit
+Launching in July 2021 The subscription service will soon be operating within your location. Would you like to be notifed when its available? Notify me Coming soon Get notified upon release City Email address Please enter valid email address We will let you know when subscriptions are released and become available in your area. Confirm Success We have successfully registered your interest and we will notify you when subscriptions become available in your area.
+Launching in July 2021
+The subscription service will soon be operating within your location. Would you like to be notifed when its available?
+Notify me Coming soon Get notified upon release City Email address Please enter valid email address We will let you know when subscriptions are released and become available in your area. Confirm Success We have successfully registered your interest and we will notify you when subscriptions become available in your area.
+Coming soon Get notified upon release City Email address Please enter valid email address We will let you know when subscriptions are released and become available in your area. Confirm
+Coming soon Get notified upon release City Email address Please enter valid email address We will let you know when subscriptions are released and become available in your area.
+Coming soon
+Get notified upon release
+Email address
+Please enter valid email address
+We will let you know when subscriptions are released and become available in your area.
+Confirm
+Success We have successfully registered your interest and we will notify you when subscriptions become available in your area.
+Success
+We have successfully registered your interest and we will notify you when subscriptions become available in your area.
+Would you be interested in the subscription service? While we are not currently serving your city, please do register with your details so that we can inform you as soon as we are active in your city. Register interest Not available in your area Register interest City Email address Please enter valid email address We will notify you if your location is selected to proceed with subscriptions and when it is launched. Confirm Success We have successfully registered your interest and we will notify you when subscriptions become available in your area.
+Would you be interested in the subscription service?
+While we are not currently serving your city, please do register with your details so that we can inform you as soon as we are active in your city.
+Register interest Not available in your area Register interest City Email address Please enter valid email address We will notify you if your location is selected to proceed with subscriptions and when it is launched. Confirm Success We have successfully registered your interest and we will notify you when subscriptions become available in your area.
+Not available in your area Register interest City Email address Please enter valid email address We will notify you if your location is selected to proceed with subscriptions and when it is launched. Confirm
+Not available in your area Register interest City Email address Please enter valid email address We will notify you if your location is selected to proceed with subscriptions and when it is launched.
+Not available in your area
+Register interest
+We will notify you if your location is selected to proceed with subscriptions and when it is launched.
+Purchase Subscription Fuel Type Transmission Type Edition Price Change Price Purchase Subscription Fuel Type Transmission Type Edition Price Total Monthly Total Monthly Apply Filters Reset
+Purchase
+Subscription
+Fuel Type Transmission Type Edition Price Change
+Fuel Type Transmission Type Edition Price
+Fuel Type
+Transmission Type
+Price Purchase Subscription Fuel Type Transmission Type Edition Price Total Monthly Total Monthly Apply Filters Reset
+Purchase Subscription
+Fuel Type Transmission Type Edition Price Total Monthly Total Monthly Apply Filters Reset
+Fuel Type Transmission Type Edition Price Total Monthly
+Total Monthly
+Apply Filters Reset
+Pure + 1.2 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster 6 Speed Manual Transmission See More See Less Offer Price Price * Monthly Configure
+Pure + 1.2 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster 6 Speed Manual Transmission See More See Less
+Pure + 1.2 Offer Price Price * Monthly
+Offer Price Price * Monthly
+Offer Price
+Price *
+Monthly
+26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster 6 Speed Manual Transmission
+26.03 cm Touchscreen Infotainment By HARMAN™
+Wireless Android Auto™ & Apple Car Play™
+HD Rear View Camera
+Auto Fold ORVM
+All Power Windows
+Height Adjustable Driver Seat
+Front Armrest
+Rear AC Vents
+Body Coloured Door Handles
+Roof Rails
+Shark Fin Antenna
+4 Speakers
+10.16 cm Full Digital Instrument Cluster
+6 Speed Manual Transmission
+See More
+See Less
+Smart 1.2 Offer Price Price * Monthly 6 Airbags LED Head Lamps & DRLs LED end to end Tail Lamps R16 Wheels Electronic Stability Program 2-Spoke Steering Wheel with Illuminated Logo Multi Drive modes: Eco, City, Sports Front Power Windows ISOFIX Rear Spoiler ORVM with Side Indicators Full Digital Cluster Central Locking with Key All-adjustable Headrest Air Conditioning 100 % Flip & Fold Seat 5 Speed Manual Transmission 12V Power Outlet Front Anti-glare IRVM Immobiliser Rear Park Assist System Key Ring Illumination 100 % Flip & Fold (Cushion & Back) Puncture Repair Kit See More See Less
+Smart 1.2 Offer Price Price * Monthly
+6 Airbags LED Head Lamps & DRLs LED end to end Tail Lamps R16 Wheels Electronic Stability Program 2-Spoke Steering Wheel with Illuminated Logo Multi Drive modes: Eco, City, Sports Front Power Windows ISOFIX Rear Spoiler ORVM with Side Indicators Full Digital Cluster Central Locking with Key All-adjustable Headrest Air Conditioning 100 % Flip & Fold Seat 5 Speed Manual Transmission 12V Power Outlet Front Anti-glare IRVM Immobiliser Rear Park Assist System Key Ring Illumination 100 % Flip & Fold (Cushion & Back) Puncture Repair Kit
+6 Airbags
+LED Head Lamps & DRLs
+LED end to end Tail Lamps
+R16 Wheels
+Electronic Stability Program
+2-Spoke Steering Wheel with Illuminated Logo
+Multi Drive modes: Eco, City, Sports
+Front Power Windows
+ISOFIX
+Rear Spoiler ORVM with Side Indicators
+Full Digital Cluster
+Central Locking with Key
+All-adjustable Headrest
+Air Conditioning
+100 % Flip & Fold Seat
+5 Speed Manual Transmission
+12V Power Outlet Front Anti-glare IRVM
+Immobiliser Rear Park Assist System
+Key Ring Illumination
+100 % Flip & Fold (Cushion & Back)
+Puncture Repair Kit
+Smart + AMT 1.2 Offer Price Price * Monthly
+6 Airbags LED Head Lamps & DRLs LED end to end Tail Lamps Electronic Stability Program 2-Spoke Steering Wheel with Illuminated Logo 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power Windows Steering Wheel Controls Air Conditioning 100 % Flip & Fold Seat Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM USB Charging Port A Type Follow Me Home Headlamps ISOFIX Rear Spoiler ORVM with Side Indicators Full Digital Cluster E-Shifter & Paddle Shifters* Multi Drive modes: Eco, City, Sports Puncture Repair Kit
+17.78 cm Touchscreen Infotainment by HARMAN™
+Android Auto™ and Apple CarPlay™
+2 Speakers Wheel Covers
+Steering Wheel Controls
+Wheel Cover
+Remote Central Locking Flip Key
+Electrically Operated ORVM
+USB Charging Port A Type
+Follow Me Home Headlamps
+E-Shifter & Paddle Shifters*
+Pure + AMT 1.2 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster E-Shifter & Paddle Shifters* See More See Less Offer Price Price * Monthly Configure
+Pure + AMT 1.2 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster E-Shifter & Paddle Shifters* See More See Less
+Pure + AMT 1.2 Offer Price Price * Monthly
+26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster E-Shifter & Paddle Shifters*
+Pure + S AMT 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers E-Shifter & Paddle Shifters* See More See Less Offer Price Price * Monthly Configure
+Pure + S AMT 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers E-Shifter & Paddle Shifters* See More See Less
+Pure + S AMT 1.2 Offer Price Price * Monthly
+Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers E-Shifter & Paddle Shifters*
+Voice-assisted Electric Sunroof
+Auto Headlamps
+Rain Sensing Wipers
+Pure + S 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Pure + S 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Pure + S 1.2 Offer Price Price * Monthly
+Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers
+Smart + 1.5 Offer Price Price * Monthly
+6 Airbags LED Head Lamps & DRLs LED end to end Tail Lamps Electronic Stability Program 2-Spoke Steering Wheel with Illuminated Logo 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls Air Conditioning 100 % Flip & Fold Seat Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM USB Charging Port A Type Follow Me Home Headlamps ISOFIX Rear Spoiler ORVM with Side Indicators Full Digital Cluster 6 Speed Manual Transmission Puncture Repair Kit
+All Power WIndows
+Smart + S 1.5 Offer Price Price * Monthly Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit See More See Less Offer Price Price * Monthly Configure
+Smart + S 1.5 Offer Price Price * Monthly Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit See More See Less
+Smart + S 1.5 Offer Price Price * Monthly
+Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit
+Pure + 1.5 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster See More See Less Offer Price Price * Monthly Configure
+Pure + 1.5 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster See More See Less
+Pure + 1.5 Offer Price Price * Monthly
+26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster
+Pure + S 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Pure + S 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Pure + S 1.5 Offer Price Price * Monthly
+Pure + AMT 1.5 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster See More See Less Offer Price Price * Monthly Configure
+Pure + AMT 1.5 Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster See More See Less
+Pure + AMT 1.5 Offer Price Price * Monthly
+26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster
+Pure + PS 1.2 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less Offer Price Price * Monthly Configure
+Pure + PS 1.2 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less
+Pure + PS 1.2 Offer Price Price * Monthly
+Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters
+Panoramic Sunroof
+Cruise Control
+Hidden Rear Wiper and Washer
+2 Tweeters
+Creative 1.2 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less Offer Price Price * Monthly Configure
+Creative 1.2 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less
+Creative 1.2 Offer Price Price * Monthly
+Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel
+Additional over Pure +
+360° HD Surround View System
+R16 Alloy Wheels
+Push Button Start
+Fully Automatic Temperature Control with Capacitive touch
+USB Charging port A type + C Type
+Cooled Glovebox
+Touch Based Control Panel
+Creative DCA 1.2 Offer Price Price * Monthly Additional over Pure + 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails See More See Less Offer Price Price * Monthly Configure
+Creative DCA 1.2 Offer Price Price * Monthly Additional over Pure + 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails See More See Less
+Creative DCA 1.2 Offer Price Price * Monthly
+Additional over Pure + 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails
+Pure + PS AMT 1.2 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less Offer Price Price * Monthly Configure
+Pure + PS AMT 1.2 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less
+Pure + PS AMT 1.2 Offer Price Price * Monthly
+Creative AMT 1.2 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel E-Shifter & Paddle Shifters* See More See Less Offer Price Price * Monthly Configure
+Creative AMT 1.2 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel E-Shifter & Paddle Shifters* See More See Less
+Creative AMT 1.2 Offer Price Price * Monthly
+Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel E-Shifter & Paddle Shifters*
+Pure + PS 1.5 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less Offer Price Price * Monthly Configure
+Pure + PS 1.5 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less
+Pure + PS 1.5 Offer Price Price * Monthly
+Creative 1.5 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less Offer Price Price * Monthly Configure
+Creative 1.5 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less
+Creative 1.5 Offer Price Price * Monthly
+Pure + PS AMT 1.5 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less Offer Price Price * Monthly Configure
+Pure + PS AMT 1.5 Offer Price Price * Monthly Panoramic Sunroof Cruise Control Hidden Rear Wiper and Washer 2 Tweeters See More See Less
+Pure + PS AMT 1.5 Offer Price Price * Monthly
+Creative AMT 1.5 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less Offer Price Price * Monthly Configure
+Creative AMT 1.5 Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less
+Creative AMT 1.5 Offer Price Price * Monthly
+Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Cruise Control Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel
+360° HD Surround View System
+Creative + S 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Creative + S 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Creative + S 1.5 Offer Price Price * Monthly
+Creative + S AMT 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers E-Shifter & Paddle Shifters* See More See Less Offer Price Price * Monthly Configure
+Creative + S AMT 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers E-Shifter & Paddle Shifters* See More See Less
+Creative + S AMT 1.2 Offer Price Price * Monthly
+Creative + S AMT 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Creative + S AMT 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Creative + S AMT 1.5 Offer Price Price * Monthly
+Creative + S 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Creative + S 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Creative + S 1.2 Offer Price Price * Monthly
+Creative + S DK 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Creative + S DK 1.2 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Creative + S DK 1.2 Offer Price Price * Monthly
+Creative + S DK 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Creative + S DK 1.5 Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Creative + S DK 1.5 Offer Price Price * Monthly
+Smart + 1.2 Offer Price Price * Monthly Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls E-Shifter & Paddle Shifters* USB Charging Port A Type Follow Me Home Headlamps Puncture Repair Kit See More See Less Offer Price Price * Monthly Configure
+Smart + 1.2 Offer Price Price * Monthly Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls E-Shifter & Paddle Shifters* USB Charging Port A Type Follow Me Home Headlamps Puncture Repair Kit See More See Less
+Smart + 1.2 Offer Price Price * Monthly
+Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls E-Shifter & Paddle Shifters* USB Charging Port A Type Follow Me Home Headlamps Puncture Repair Kit
+Smart + S 1.2 Offer Price Price * Monthly Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit See More See Less Offer Price Price * Monthly Configure
+Smart + S 1.2 Offer Price Price * Monthly Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit See More See Less
+Smart + S 1.2 Offer Price Price * Monthly
+Smart CNG Offer Price Price * Monthly 6 Airbags LED Head Lamps & DRLs LED end to end Tail Lamps R16 Wheels Electronic Stability Program 2-Spoke Steering Wheel with Illuminated Logo Front Power Windows ISOFIX Rear Spoiler ORVM with Side Indicators Full Digital Cluster Central Locking with Key All-adjustable Headrest Air Conditioning 100 % Flip & Fold Seat 6 Speed Manual Transmission 12V Power Outlet Front Anti-glare IRVM Immobiliser Rear Park Assist System Key Ring Illumination 100 % Flip & Fold (Cushion & Back) 3-point ELR with SBR & ODS Puncture Repair Kit See More See Less
+Smart CNG Offer Price Price * Monthly
+6 Airbags LED Head Lamps & DRLs LED end to end Tail Lamps R16 Wheels Electronic Stability Program 2-Spoke Steering Wheel with Illuminated Logo Front Power Windows ISOFIX Rear Spoiler ORVM with Side Indicators Full Digital Cluster Central Locking with Key All-adjustable Headrest Air Conditioning 100 % Flip & Fold Seat 6 Speed Manual Transmission 12V Power Outlet Front Anti-glare IRVM Immobiliser Rear Park Assist System Key Ring Illumination 100 % Flip & Fold (Cushion & Back) 3-point ELR with SBR & ODS Puncture Repair Kit
+3-point ELR with SBR & ODS
+Smart + CNG Offer Price Price * Monthly Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls USB Charging Port A Type Follow Me Home Headlamps Puncture Repair Kit See More See Less Offer Price Price * Monthly Configure
+Smart + CNG Offer Price Price * Monthly Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls USB Charging Port A Type Follow Me Home Headlamps Puncture Repair Kit See More See Less
+Smart + CNG Offer Price Price * Monthly
+Wheel Cover Remote Central Locking Flip Key Electrically Operated ORVM 17.78 cm Touchscreen Infotainment by HARMAN™ Android Auto™ and Apple CarPlay™ 2 Speakers Wheel Covers All Power WIndows Steering Wheel Controls USB Charging Port A Type Follow Me Home Headlamps Puncture Repair Kit
+Smart + S CNG Offer Price Price * Monthly Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit See More See Less Offer Price Price * Monthly Configure
+Smart + S CNG Offer Price Price * Monthly Auto Headlamps Voice-assisted Electric Sunroof Rain Sensing Wipers Roof Rails Puncture Repair Kit See More See Less
+Smart + S CNG Offer Price Price * Monthly
+Pure + CNG Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster 6 Speed Manual Transmission See More See Less Offer Price Price * Monthly Configure
+Pure + CNG Offer Price Price * Monthly 26.03 cm Touchscreen Infotainment By HARMAN™ Wireless Android Auto™ & Apple Car Play™ HD Rear View Camera Auto Fold ORVM All Power Windows Height Adjustable Driver Seat Front Armrest Rear AC Vents Body Coloured Door Handles Roof Rails Shark Fin Antenna 4 Speakers 10.16 cm Full Digital Instrument Cluster 6 Speed Manual Transmission See More See Less
+Pure + CNG Offer Price Price * Monthly
+Pure + S CNG Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Pure + S CNG Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Pure + S CNG Offer Price Price * Monthly
+Pure + PS CNG Offer Price Price * Monthly Panoramic Sunroof Hidden Rear Wiper and Washer 2 Tweeters See More See Less Offer Price Price * Monthly Configure
+Pure + PS CNG Offer Price Price * Monthly Panoramic Sunroof Hidden Rear Wiper and Washer 2 Tweeters See More See Less
+Pure + PS CNG Offer Price Price * Monthly
+Panoramic Sunroof Hidden Rear Wiper and Washer 2 Tweeters
+Creative CNG Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less Offer Price Price * Monthly Configure
+Creative CNG Offer Price Price * Monthly Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel See More See Less
+Creative CNG Offer Price Price * Monthly
+Additional over Pure + 360° HD Surround View System R16 Alloy Wheels Push Button Start Fully Automatic Temperature Control with Capacitive touch Hidden Rear Wiper and Washer USB Charging port A type + C Type Cooled Glovebox Touch Based Control Panel
+Creative + PS 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS 1.2 Offer Price Price * Monthly
+Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor
+Bi-LED Headlamp
+Wide “X Graphic” Full LED Taillights
+Front Fog Lamp with Cornering
+Wireless Charger
+Tyre Pressure Monitoring System
+Rear Defogger
+60:40 Flip & Fold Seats
+Rear Seat Armrest with Cup Holder
+Passive Entry Passive Start + Push Button Start
+Auto Headlamps#
+Rain Sensing Wipers#
+Parcel Tray
+4 Speakers + 2 Tweeters
+Front Parking Sensor
+Fearless + PS 1.2 Offer Price Price * Monthly
+Sequential LED DRLs and Taillamp with Welcome/Goodbye
+Signature
+26.03 cm Digital Instrument Cluster with Navigation Display
+Ventilated Driver & Co-Driver Seat
+Premium Benecke Kaliko™ Leatherette Seats
+Air Purifier
+Auto-dimming IRVM
+Boot Lamp
+Grand Console with Amrest Leatherette
+Leather-wrapped Steering Wheel
+Door Trim with Soft Touch
+A + C type USB Charger Rear 2nd Row
+4 Speakers + 4 Tweeters
+Stylised Wiper Blade and Arm
+Xpress Cooling
+Boot Power Outlet
+Cooled Glove Box
+Chrome Inner Door Handles
+Height Adjustable Front Seat Belts
+Voice-assisted Electric Panoramic Sunroof
+JBL Branded Speaker System*
+Subwoofer*
+Emergency Call & Breakdown Call*
+iRA Connected Vehicle Features*
+Remote Vehicle Controls like Remote Engine Start/Stop*
+Navigation-based Services*
+Vehicle Diagnostic Reports*
+Weather Updates*
+Over the Air Software Updates
+Creative + PS DK 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS DK 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS DK 1.2 Offer Price Price * Monthly
+Fearless + PS DK 1.2 Offer Price Price * Monthly
+Creative + PS DCA 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS DCA 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS DCA 1.2 Offer Price Price * Monthly
+Fearless + A PS DCA 1.2 Offer Price Price * Monthly
+ADAS
+Rear Sunshade
+Creative + PS DCA DK 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS DCA DK 1.2 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS DCA DK 1.2 Offer Price Price * Monthly
+Fearless + PS DCA DK 1.2 Offer Price Price * Monthly
+Creative + PS AMT 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS AMT 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS AMT 1.5 Offer Price Price * Monthly
+Fearless + PS 1.5 Offer Price Price * Monthly
+Fearless + PS DK 1.5 Offer Price Price * Monthly
+Fearless + PS AMT 1.5 Offer Price Price * Monthly
+Creative + PS AMT DK 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS AMT DK 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS AMT DK 1.5 Offer Price Price * Monthly
+Fearless + PS AMT DK 1.5 Offer Price Price * Monthly
+Creative + S DK CNG Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less Offer Price Price * Monthly Configure
+Creative + S DK CNG Offer Price Price * Monthly Voice-assisted Electric Sunroof Auto Headlamps Rain Sensing Wipers See More See Less
+Creative + S DK CNG Offer Price Price * Monthly
+Creative + PS 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS 1.5 Offer Price Price * Monthly
+Creative + PS DK 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less Offer Price Price * Monthly Configure
+Creative + PS DK 1.5 Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp with Cornering Wireless Charger Tyre Pressure Monitoring System Rear Defogger 60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder Passive Entry Passive Start + Push Button Start Auto Headlamps# Rain Sensing Wipers# Parcel Tray 4 Speakers + 2 Tweeters Front Parking Sensor See More See Less
+Creative + PS DK 1.5 Offer Price Price * Monthly
+Creative + PS DK CNG Offer Price Price * Monthly Panoramic Sunroof Bi-LED Headlamp Wide “X Graphic” Full LED Taillights Front Fog Lamp
+
+=== SOURCE src_afee4c · url · role=product · https://tata.cars/nexon/ice/compare.html ===
+Tata Nexon Comparison – Variants, Specs & Features | TATA.CARS
+Nexon Price & Variants in India
+Nexon
+Go Back Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Go Back
+Overview iCNG Edition Edition CAMO #DARK RED #DARK Specs Compare Price Configure Discover Nexon.ev Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Overview
+iCNG
+Edition Edition CAMO #DARK RED #DARK
+Edition
+CAMO
+#DARK
+RED #DARK
+Specs
+Compare
+Price
+Configure
+Discover Nexon.ev
+Brochure Brochure Nexon Brochure 2026 Nexon iCNG Brochure 2026 Nexon CAMO Brochure
+Brochure
+Nexon Brochure 2026
+Nexon iCNG Brochure 2026
+Nexon CAMO Brochure
+Quick Link Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Quick Link
+Book a test drive Brand Stories Pre-owned vehicles Digital Showroom Dealers near me
+Book a test drive
+Brand Stories
+Pre-owned vehicles
+Digital Showroom
+Dealers near me
+Sign In Sign Out Our Models Account Accessories Dealer Locator Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Digital Showroom Exchange Car Pre-Owned Rewards Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us Sitemap Book a Test Drive
+Sign In
+Sign Out
+Our Models
+Account
+Accessories
+Dealer Locator
+Request a call back Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Sierra
+Harrier
+Safari
+Punch
+Altroz
+Tiago
+Curvv
+Tigor
+Exchange Car
+Pre-Owned
+Rewards
+Service Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products Book a Service Estimate Service Cost Owner's Manual General Tips Fuel Saving Tips Best Value Service Value Added Services Phone Bluetooth™ Compatibility Android Auto User Guide Information On warranty Contact Us
+Service Products
+Book a Service
+Estimate Service Cost
+Owner's Manual
+General Tips
+Fuel Saving Tips
+Best Value Service
+Value Added Services
+Phone Bluetooth™ Compatibility
+Android Auto User Guide
+Information On warranty
+Contact Us
+Sitemap
+Book a Test Drive
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS. Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Our Models Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Drive NEW FOREVER. A whole new range of cars from TATA.CARS.
+Curvv Learn More Curvv.ev Learn More Sierra Learn More Sierra.ev Learn More Harrier Learn More Harrier.ev Learn More Safari Learn More Nexon Learn More Nexon.ev Learn More Punch Learn More Punch.ev Learn More Altroz Learn More Tiago Learn More Tiago.ev Learn More Tigor Learn More Tigor.ev Learn More XPRES Learn More
+Curvv Learn More
+Learn More
+Curvv.ev Learn More
+Curvv.ev
+Sierra Learn More
+Sierra.ev Learn More
+Sierra.ev
+Harrier Learn More
+Harrier.ev Learn More
+Harrier.ev
+Safari Learn More
+Nexon Learn More
+Nexon.ev Learn More
+Nexon.ev
+Punch Learn More
+Punch.ev Learn More
+Punch.ev
+Altroz Learn More
+Tiago Learn More
+Tiago.ev Learn More
+Tiago.ev
+Tigor Learn More
+Tigor.ev Learn More
+Tigor.ev
+XPRES Learn More
+XPRES
+× Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+Service Cost Calculator
+State* City* Vehicle Selection* Own Vehicle New Vehicle Model* Version* Your Vehicle* Service Type* Free Service Type* Kms/Months* Total Cost* Submit Book Service
+State* City*
+State*
+City*
+Vehicle Selection* Own Vehicle New Vehicle
+Own Vehicle New Vehicle
+Own Vehicle
+New Vehicle
+Model* Version*
+Model*
+Version*
+Your Vehicle*
+Service Type*
+Free Service Type*
+Kms/Months*
+Total Cost*
+Submit Book Service
+Tata Model Tata Model
+Tata Model
+Tata
+Model
+Model ICE/EV Version Change Select vehicle X Model ICE/EV Version Confirm Price Starting from Book Now * All models shown are of top variants and for illustration purposes only. * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices.
+Model ICE/EV Version
+ICE/EV Version
+ICE/EV
+Version
+Change Select vehicle X Model ICE/EV Version Confirm
+Select vehicle X Model ICE/EV Version Confirm
+Select vehicle
+Confirm
+Price Starting from Book Now * All models shown are of top variants and for illustration purposes only. * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices.
+Starting from
+Book Now
+* All models shown are of top variants and for illustration purposes only. * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices.
+* All models shown are of top variants and for illustration purposes only.
+* Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices.
+Calculator Finance Pay back over months Deposit ₹ 1 Lakh Per Month * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * The EMI is calculated at 9% rate of interest and 7 year repayment period Per Month * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * The EMI is calculated at 9% rate of interest and 7 year repayment period
+Calculator Finance Pay back over months Deposit ₹ 1 Lakh
+Calculator
+Finance
+Pay back over months Deposit ₹ 1 Lakh
+Pay back over months
+Pay back over
+Deposit ₹ 1 Lakh
+Deposit
+₹
+1
+Per Month * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * The EMI is calculated at 9% rate of interest and 7 year repayment period Per Month * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * The EMI is calculated at 9% rate of interest and 7 year repayment period
+Per Month * Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * The EMI is calculated at 9% rate of interest and 7 year repayment period
+Per Month
+* Prices indicated are Ex-showroom prices. Prices are subject to change without prior information at discretion of Tata Motors. Contact your nearest Tata Motors dealer for exact prices. * The EMI is calculated at 9% rate of interest and 7 year repayment period
+Specifications Features Show differences Collapse All Expand All Error Message
+Specifications Features Show differences Collapse All Expand All
+Specifications Features
+Specifications
+Features
+Show differences
+Collapse All Expand All
+Collapse All
+Expand All
+Error Message
+Book Now Book Now
+Find Dealership Find a TATA.CARS car dealerships nearest to you, using the dealer locator. Find Now Build Your Own Configure a Nexon car as per your needs. Build Now Price Explore pricing of all the variants and view the current offers. Explore
+Find Dealership Find a TATA.CARS car dealerships nearest to you, using the dealer locator. Find Now
+Find Dealership Find a TATA.CARS car dealerships nearest to you, using the dealer locator.
+Find Dealership
+Find a TATA.CARS car dealerships nearest to you, using the dealer locator.
+Find Now
+Build Your Own Configure a Nexon car as per your needs. Build Now Price Explore pricing of all the variants and view the current offers. Explore
+Build Your Own Configure a Nexon car as per your needs. Build Now
+Build Your Own Configure a Nexon car as per your needs.
+Configure a Nexon car as per your needs.
+Build Now
+Price Explore pricing of all the variants and view the current offers. Explore
+Price Explore pricing of all the variants and view the current offers.
+Explore pricing of all the variants and view the current offers.
+Explore
+Download Brochure Request Call Back Book a Test Drive Book Now Request a call back Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+Download Brochure Request Call Back Book a Test Drive Book Now
+Download Brochure
+Request Call Back
+Request a call back Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode submit Resend OTP Resent Please Validate Otp
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms. First Name Enter Valid Name Last Name Enter Valid Name
+Select Valid Label Mr. Miss. Mrs. Dr. Prof. Ms.
+Select Valid Label
+Mr. Miss. Mrs. Dr. Prof. Ms.
+Mr.
+Miss.
+Mrs.
+Dr.
+Prof.
+Ms.
+First Name Enter Valid Name
+Enter Valid Name
+Last Name Enter Valid Name
+Mobile Number +91 Enter Valid Number +91 India Enter the OTP code here Enter Valid OTP
+Mobile Number +91 Enter Valid Number +91 India
++91 Enter Valid Number
++91
+Enter Valid Number
++91 India
+India
+Enter the OTP code here Enter Valid OTP
+Enter Valid OTP
+Email ID (Optional) Enter Valid Email Id Pincode (Optional) Enter Valid Pincode
+Email ID (Optional) Enter Valid Email Id
+Enter Valid Email Id
+Pincode (Optional) Enter Valid Pincode
+Enter Valid Pincode
+submit Resend OTP Resent Please Validate Otp
+submit Resend OTP Resent
+Resend OTP Resent
+Resend OTP
+Resent
+Please Validate Otp
+we will be in touch Thanks for providing your details, our team will be in touch as soon as possible.
+we will be in touch
+Thanks for providing your details, our team will be in touch as soon as possible.
+Thanks for providing your details,
+our team will be in touch as soon as possible.
+TATA Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Help Service Dealer Locator Digital Showroom Car Financing Quick Links Contact Us Privacy Policy Terms & Condition Blogs Social Facebook Twitter Instagram Youtube For Roadside Assistance, call on - 18002098282 Copyright © 2026 TATA.CARS. All Rights Reserved
+TATA Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor Help Service Dealer Locator Digital Showroom Car Financing Quick Links Contact Us Privacy Policy Terms & Condition Blogs Social Facebook Twitter Instagram Youtube
+TATA
+Tata Cars Sierra Harrier Safari Nexon Punch Altroz Tiago Curvv Tigor
+Tata Cars
+Help Service Dealer Locator Digital Showroom Car Financing
+Help
+Service
+Car Financing
+Quick Links Contact Us Privacy Policy Terms & Condition Blogs
+Quick Links
+Privacy Policy
+Terms & Condition
+Blogs
+Social Facebook Twitter Instagram Youtube
+Social
+Facebook
+Twitter
+Instagram
+Youtube
+For Roadside Assistance, call on - 18002098282 Copyright © 2026 TATA.CARS. All Rights Reserved
+For Roadside Assistance, call on - 18002098282
+Copyright © 2026 TATA.CARS. All Rights Reserved
+
+=== SOURCE src_706e38 · pdf · role=product · Tata Nexon official brochure ===
+[page 1]
+More Style. More Safety. More Tech.
+
+
+[page 2]
+THE NEXON PHILOSOPHY
+People are its true inspiration, those 
+who think ahead, go the extra mile, and 
+prioritize safety without compromise. 
+The Nexon is more than a car; it’s a 
+symbol of that mindset. Now, India’s 
+safest SUV gets smarter with ADAS, 
+redefining driving with confidence and 
+care. Nexon with ADAS: safety and 
+intelligence, together.
+
+[page 3]
+Your inner child is creative.
+Wide-eyed and inquisitive.
+The world is yours to explore.
+You drive your passion.
+You live in the moment.
+Enjoying the smallest of joys.
+You pride in being yourself.
+And lead a life of ultimate 
+sophistication.
+Pragmatism is your thing.
+You believe in results.
+Smart work over hard work.
+You do what’s wise and best for 
+your future.
+CREATIVE PURE SMART
+No is never your answer.
+To this adventure called life.
+Be it a long drive.
+Or a cross-country drive.
+The answer is always yes.
+FEARLESS
+Find the Nexon 
+that matches youPERSONAS
+
+[page 4]
+DESIGNED TO IMPRESS
+
+[page 5]
+DIAMOND CUT ALLOY WHEELS
+AIR CURTAIN
+Moves like magic, it’s so aerodynamic
+BI-FUNCTION FULL LED LAMP
+See beyond the natural light
+SEQUENTIAL LED DRLs
+Grab attention the stylish way
+X-FACTOR TAILLAMP WITH WELCOME
+AND GOODBYE FUNCTION
+Matches your X-factor of etiquette and chivalry
+DUAL-TONE ROOF
+A colour palette for your car 
+with a shade of you
+Evokes emotion whenever in motion
+
+[page 6]
+2-SPOKE STEERING WHEEL 
+WITH ILLUMINATED LOGO
+Steer your passion that keeps
+your glow on
+GRAND FLOOR CONSOLE WITH 
+LEATHERETTE ARMREST
+Rule your comfort within an arm’s reach
+NEXT-GEN PHYGITAL TOUCH PANEL
+Great possibilities, just a touch away
+
+[page 7]
+Command your ship through
+a living masterpiece
+THREE TONE DASHBOARD
+WITH LEATHERETTE MID PAD
+
+[page 8]
+Spacious legroom ain’t
+a luxury now
+Fully Automatic Temperature Control Xpress CoolMore Features
+ Rear AC Vents 60:40 Rear Seat Split
+EXPERIENCE PLUSH COMFORT
+
+[page 9]
+PREMIUM BENECKE-KALIKO
+TM
+VENTILATED LEATHERETTE SEATS
+Lounge into salon like cool luxury
+382*L BOOT SPACE
+There’s a universe in you and an 
+equally spacious boot
+AIR-PURIFIER
+Inhale pure air,
+Exhale worries
+REAR SUNSHADE *
+Keeps the heat out. 
+Comfort, on demand.
+
+[page 10]
+FORTIFIED CABIN
+An iron clad skeleton system to 
+protect you from the outside
+TYRE PRESSURE MONITORING SYSTEM
+Intuitive and alert, never under pressure
+AUTO HEADLAMPS WITH 
+RAIN-SENSING WIPERS
+Eyes on the road, we’ll keep it 
+clear for you
+EMERGENCY CALL (E-CALL) /
+BREAKDOWN CALL (B-CALL)
+Any given day we’re just
+a call away
+E-CALL* 24/7 assistance in 
+the case of an emergency
+B-CALL* 24/7 assistance in 
+an event of a car breakdown
+BLIND VIEW MONITOR
+Ensure a safe drive with a clear side view on 
+the screen during turns
+360° HD SURROUND VIEW SYSTEM WITH
+FRONT PARKING SENSORS
+Enjoy an all-round view around you
+
+[page 11]
+YOUR NEW SAFE SPACE
+6 AIRBAGS *
+Your safety is six times 
+important
+Additional Safety Features
+ Auto-dimming IRVM 3-Point ELR# Rear DefoggerISOFIX*Electronic Stability Program*
+* As standard, #For all seats
+
+
+[page 12]
+More Style. More Safety. More Tech.
+
+[page 13]
+
+
+[page 14]
+
+
+[page 15]
+LANE KEEP ASSIST
+Guides you back, smooth and safe. Counter steers 
+to prevent vehicle from departing from its lane.
+HIGH BEAM ASSIST
+Bright when needed, dim when not. Automatically switch 
+between high and low beams for optimal visibility.FRONT COLLISION WARNING
+Spots trouble before you do! Get alerts for 
+potential front collision risks.
+LANE CENTERING SYSTEM
+Keeps you perfectly centered in your lane, by 
+continuously monitoring lane markings.
+It’s the steady hand guiding you back on 
+course, with alerts for unintended 
+diversions.
+LANE DEPARTURE WARNING
+AUTONOMOUS EMERGENCY BRAKING
+Brakes on time, every time. Reduce the risk of 
+frontal collisions through early warnings. 
+Reads the signs, so you don’t miss them. 
+Recognizes important traffic signs and 
+displays them in real time
+TRAFFIC SIGN RECOGNITION
+ADAS
+Advanced Driver 
+Assistance Systems
+
+[page 16]
+TECH TO STAY AHEAD
+Big entertainment is a big mood
+26.03 cm FLOATING 
+INFOTAINMENT SYSTEM BY HARMAN™
+NAVIGATION DISPLAY ON 
+INSTRUMENT CLUSTER
+AUDIOWORX*
+Surround yourself with 
+cinematic entertainment 
+on the move
+Android Auto
+TM
+ and
+Apple CarPlay
+TM
+ 
+with Wireless Connectivity
+26.03 cm Digital Instrument Cluster
+with Driver Attention Assist
+Never lets your guard down
+
+[page 17]
+Placeholder image
+ELECTRIC PANORAMIC
+SUNROOF WITH VOICE
+COMMANDS
+Your words, 
+our command
+WIRELESS CHARGER
+Power-up hassle free
+JBL-BRANDED 9 SPEAKERS
+WITH SUBWOOFER
+Drive to your grooveAlways in touch with you
+CONNECTED VEHICLE TECHNOLOGY 
+WITH iRA APP
+
+[page 18]
+N
+R
+D P
+Effortless and comfortable 
+drive inspired by you
+7-SPEED DUAL CLUTCH AUTOMATIC
+Let your day decide your drive
+MULTI DRIVE MODES –  
+ECO, CITY AND SPORT PADDLE SHIFTERS
+Relive the joy of a controller, once again
+E-SHIFTER
+Gear shifting in its 
+wristy elegance
+Auto Park Lock
+Machine
+Learning
+Shift by Wire
+Technology
+Self-healing
+Mechanism
+AMT TRANSMISSION
+Elevate your driving 
+automatically
+Wet Clutch with
+Active Cooling
+Technology
+
+[page 19]
+208 mm
+GROUND CLEARANCE
+Colossal stance to 
+charge your way ahead
+PERFORMANCE THAT EXCITES
+
+[page 20]
+Interiors that define Modern Luxury
+Grassland Beige
+Dual-Tone Roof 
+FEARLESS
+Top notch performance
+to conquer every road. 
+Interiors that define Modern Luxury
+Grassland Beige
+Dual-Tone Roof 
+
+[page 21]
+Grassland Beige
+Dual-Tone Roof 
+Ocean Blue
+Dual-Tone Roof 
+Carbon Black
+Pure Grey
+Dual-Tone Roof 
+Royal Blue
+Dual-Tone Roof 
+Dual-Tone Roof 
+Pristine White
+RED #DARK
+Daytona Grey
+Dual-Tone Roof 
+Also available in
+
+[page 22]
+Exclusive Interior for Ocean Blue
+Dual-Tone Roof Option
+Ocean Blue
+Dual-Tone Roof 
+CREATIVE
+A reimagined colourful 
+driving experience.
+
+[page 23]
+Grassland Beige
+Dual-Tone Roof 
+Ocean Blue
+Dual-Tone Roof 
+Carbon Black
+Pure Grey
+Dual-Tone Roof 
+Royal Blue
+Dual-Tone Roof 
+Dual-Tone Roof 
+Pristine White
+Daytona Grey
+Dual-Tone Roof 
+Also available in
+
+[page 24]
+Pure Grey
+Also available in
+Pristine White Daytona Grey Grassland Beige
+Royal Blue Pure Grey
+PURE
+Minimalism pushed 
+to the max.
+
+[page 25]
+Pristine White
+SMART
+Simple, made 
+capable.
+Also available in
+Grassland Beige
+Royal Blue Pristine White
+Daytona Grey
+
+[page 26]
+Power. Space. Features.
+
+[page 27]
+ TURBOCHARGED 
+CNG ENGINE
+ST
+ INDIA'S
+A turbocharged CNG SUV engine enhances your 
+Nexon’s performance and gives you the kind of 
+power that is unlike any other CNG engine.
+Superior power of 73.5 kW in CNG mode
+Torque of 170 Nm in CNG mode
+Easy city maneuverability
+Effortless drive in all terrains
+KEY HIGHLIGHTS OF 
+NEXON TURBO CNG SUV 
+PERFORMANCE:
+India’s first Turbo CNG SUV that offers unmatched performance 
+with uncompromised boot space. More power and more storage 
+adding that little bit more to every drive.
+POWERFUL WOW!
+CNG SUV 
+
+[page 28]
+#1st refers to introduced by Tata Motors Passenger Vehicles and Industry 
+represents the Passenger Car segment.
+Shift effortlessly between CNG and petrol mode 
+for higher fuel efficiency
+SINGLE ADVANCED ECU
+Switch to petrol mode automatically and 
+conveniently in case of low CNG
+AUTO-SWITCH BETWEEN FUELS
+Go environment-friendly by switching cartridges 
+instead of filter replacements
+MODULAR FUEL FILTER
+Refuel quickly and safely with a special nozzle
+FASTER REFUELING
+Switch driving modes automatically and start your vehicle 
+directly in CNG mode.
+DIRECT START IN CNG
+With the intelligently placed twin cylinders under the luggage area,
+get 321* litres of generous boot space while still having an uncompromised
+fuel capacity of 60* (30+30) litres.
+INNOVATIVE  TWIN-CYLINDER TECHNOLOGY
+SPACIOUS  WOW!
+CNG SUV 
+
+[page 29]
+With best-in-class safety* features, the Nexon iCNG is housed 
+in an energy-absorbing structure for added rigidity to the car's 
+chassis, thus ensuring safety for everyone inside.
+Immediately detects a gas leak and switches from 
+CNG to petrol mode
+LEAK DETECTION
+The iCNG kit has been tested across temperatures 
+and pressures to prevent any gas leaks
+ADVANCED MATERIALS IN iCNG KIT TO 
+PREVENT LEAKAGE
+Conveniently placed fire extinguisher, nested under the 
+co-driver’s seat to keep you safe in any emergency
+FIRE PROTECTION DEVICE
+Cuts off CNG supply to the engine immediately in case of a 
+thermal incident and releases gas from the cylinder 
+directly into the atmosphere through a special nozzle
+THERMAL INCIDENT PROTECTION
+THE KEY SAFETY FEATURES OF 
+TURBO CNG ARE:
+A microswitch that turns off ignition if fuel lid is left 
+open, and stays off until the lid is closed
+MICROSWITCH TO KEEP THE CAR SWITCHED 
+OFF AT THE TIME OF REFUELING
+SAFE WOW!
+CNG SUV 
+
+[page 30]
+
+
+[page 31]
+Luxurious leatherette seats with blue stitching and matching accents
+MORE FEATURES Premium Benecke Kaliko™ Leatherette Seats Ventilated Front Seats Height Adjustable Co-driver Seat 60:40 Flip & Fold Seat Xpress CoolWireless Charger
+
+[page 32]
+#DARK THEMED DASHBOARD *Available in Creative + S, Creative + PS and Fearless + PS
+
+[page 33]
+ 7-SPEED WET CLUTCH INTELLIGENT DCA WITH MONOSTABLE 
+SHIFTER & PADDLE SHIFTER
+ 360° HIGH DEFINITION SURROUND VIEW SYSTEM WITH A BLIND VIEW MONITOR
+7-SPEED WET CLUTCH INTELLIGENT DCA WITH MONOSTABLE SHIFTER & PADDLE SHIFTER
+VOICE-ASSISTED PANORAMIC SUNROOF  
+#DARK MASCOT 
+
+[page 34]
+
+
+[page 35]
+Smart headlights that never blind. They switch 
+between high and low beam on their own, giving 
+you clear vision without startling others.
+LANE CENTERING SYSTEM
+Stay centered and in control. Keeps you in 
+the middle of your lane by constantly
+watching the road markings.
+LANE KEEP ASSIST
+Guides you back, smooth and safe. Counter 
+steers to prevent vehicle from departing from 
+its lane.
+AUTONOMOUS EMERGENCY BRAKING
+Brakes that react fast. In emergencies, the car 
+slows down and reduces the chances of a frontal 
+crash.
+TRAFFIC SIGN RECOGNITION
+Never miss a sign. It spots speed limits, 
+warnings, and key signs and indicates in 
+real-time.
+FRONT COLLISION WARNING
+Senses trouble before you do. Keeps an eye out 
+for vehicles ahead and alerts you incase of 
+potential front collisions.
+A gentle reminder if you drift. Warns you 
+when the car is leaving the lane without 
+signalling.
+LANE DEPARTURE WARNING
+
+[page 36]
+COOL WHEN IT’S HOT. COMFORT STITCHED FOR THE LONG RUN.
+PREMIUM BENECKE-KALIKO™  VENTILATED RED LEATHERETTE SEATS
+
+[page 37]
+REAR SUNSHADE*
+Keeps the heat out. 
+Comfort, on demand.
+Sleek black surfaces. Luxury with a driver’s edge.
+Red deco stitching on midpad.
+RED HOT #DARK
+THEMED INTERIOR DASHBOARD
+VOICE ASSISTED 
+PANORAMIC SUNROOF
+One word, and the sky is yours. 
+7-SPEED WET CLUTCH
+Intelligent DCA with Monostable Shifter
+& Paddle Shifter
+360° SURROUND CAMERA 
+High definition surround view system
+with a blind view monitor
+
+[page 38]
+PERSONA WALK
+SMART
+6 Airbags
+LED Head Lamps & DRLs 
+LED Tail Lamps
+R16 Steel Wheels
+Electronic Stability Program
+2-Spoke Steering Wheel with Illuminated Logo
+Multi-Drive modes: Eco, City, Sports
+Front Power Windows
+IRVM
+ISOFIX
+Rear Spoiler ORVM with Side Indicators
+Full Digital Cluster
+Central Locking with Key
+All-adjustable Headrest
+SMART + ( Additional over Smart)
+Wheel Cover
+Remote Central Locking Flip Key
+Electrically Operated ORVM
+17.78 cm HARMANTM Touchscreen with AA/ACP
+2 Speakers    
+All Power Windows
+Steering Wheel Controls
+E-Shifter & Paddle Shifters*
+USB Charging Port A Type
+Follow Me Home Headlamps
+26.03 cm Touchscreen Infotainment By HARMAN™
+Wireless Android Auto™ & Apple Car Play™
+HD Rear View Camera
+Auto-Fold ORVM
+Height Adjustable Driver Seat
+Front Armrest
+Rear AC Vents
+Body-Coloured Door Handles
+Shark Fin Antenna
+4 Speakers
+10.16 cm Full Digital Instrument Cluster
+Voice-assisted Electric Sunroof
+Auto Headlamps
+Rain-Sensing Wipers
+PURE + S
+Voice-assisted Panoramic Sunroof
+Cruise Control◊
+Rear Wiper and Washer
+2 Tweeters
+PURE + PS (Additional over Pure +S)
+PURE +
+SMART + S
+Auto Headlamps 
+Voice-assisted Electric Sunroof
+Rain-Sensing Wipers
+Roof Rails 
+( Additional over Smart +)
+( Additional over Smart +)
+(Additional over Pure +)
+
+[page 39]
+*Disclaimer: Available in AMT / DCA
+*For Nexon iCNG feature list please refer to Nexon iCNG brochure
+*Disclaimer: Available in AMT / DCA
+CREATIVE + S ( Additional over Creative)
+Voice-assisted Electric Sunroof
+Auto Headlamps
+Rain-Sensing Wipers
+#DARK
+Panoramic Sunroof
+Bi-LED Headlamp
+Wide “X Graphic” Full LED Taillights
+Front Fog Lamp with Cornering
+Wireless Charger
+Tyre Pressure Monitoring System
+Rear Defogger
+60:40 Flip & Fold Seats
+Rear Seat Armrest with Cup Holder
+Passive Entry Passive Start
+Parcel Tray
+4 Speakers + 2 Tweeters
+ Front Parking Sensor
+26.03cm Slim Bezel Touchscreen 
+infotainment system by HARMANTM 
+CREATIVE + PS ( Additional over Creative + S) #DARK
+360O HD Surround View System
+with Blind View Monitor
+R16 Alloy Wheels
+Push Button Start
+Fully Automatic Temperature Control with Capacitive touch
+Cruise Control*
+Hidden Rear Wiper and Washer
+USB Charging port A type + C Type
+Cooled Glovebox
+Touch Based Control Panel
+CREATIVE ( Additional over Pure +)
+Sequential LED DRLs and Taillamp with Welcome/Goodbye 
+Signature
+26.03 cm Slim Bezel Touchscreen    
+Infotainment System by HARMANTM
+26.03 cm Digital Instrument Cluster
+Ventilated Driver & Co-Driver Seat
+Premium Benecke Kaliko™ Leatherette Seats
+Air Purifier
+Auto-dimming IRVM
+Boot Lamp
+Grand Console with Amrest Leatherette
+Leather-wrapped Steering Wheel
+Door Trim with Soft Touch
+A  + C type USB Charger Rear 2nd Row
+4 Speakers + 4 Tweeters
+Stylised Wiper Blade and Arm
+Xpress Cooling
+Boot Power Outlet
+Cooled Glove Box
+Chrome Inner Door Handles
+Height Adjustable Front Seat Belts
+Voice-assisted Electric Panoramic Sunroof
+JBL Branded Speaker System*
+Subwoofer*
+Emergency Call & Breakdown Call*
+iRA Connected Vehicle Features* 
+Remote Vehicle Controls like Remote Engine Start/Stop*
+Navigation-based Services*
+Vehicle Diagnostic Reports*
+Weather Updates*
+Over the Air Software Updates
+Rear sunshade*
+ADAS*
+ 
+FEARLESS + PS ( Additional over Creative + PS) #DARK RED #DARK
+ Front Collision Warning
+  Autonomous Emergency Braking
+   Lane Centering System
+    Traffic Sign Recognition
+     Lane Departure Warning
+      High Beam Assist
+       Lane Keep Assist
+
+[page 40]
+Above-mentioned features are key differentiating features. For detailed list/ features/ specifications, please visit our website tatanexon.com. Images and illustrations are indicative and for informative purposes only. All features/specifications are not 
+available in all variants/personas and may vary for different variants/personas. Specifications/features subject to change without prior information. Please consult an authorised Tata Motors dealer for latest information on features/specifications before deciding 
+to place an order. Colours may not match the actual colours due to printing limitations. Android, Apple, HARMAN™, what3words, are registered trademarks. First year iRA app subscription free. Renewal charges apply. *Exclusive Persona Themed Interiors and 
+Exteriors. *This varies as per variant **Bootspace as per ISO V215. Features like Multi drive modes, Cruise control, iRA Connected car feature, E-Call & B-Call only available in Petrol & Diesel. *Features not available in CNG. (Multidrive Mode, Cruise Control, iRA 
+Connected Vehicle, E-Call, B-Call, Subwoofer). Features only available in Fearless + PS DCA:□- JBL branded speaker system, Subwoofer, ADAS*, ADAS not available in CNG & Diesel. Rear sunshade only available in fearless +PS DCA and in all of Red #Dark. Red 
+#DARK edition only available in fearless+ PS. ◊Cruise control is not available in CNG. /currency.tfNexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26. Terms and Conditions apply. 
+TO KNOW MORE:
+CALL - 1800 209 8282 OR
+SMS 'NEXON' TO 5616161
+Tata Motors Passenger Vehicle Business Unit, 
+Tata Motors Limited, 4th Floor, Ahura Centre,  
+Mahakali Caves Road, MIDC, Andheri (East),  
+Mumbai 400093.
+ http://cars.tatamotors.com/suv/nexon        /officialtatamotorscars         /TataMotors_Car        /tatanexonofficial           /tatamotorsgroup
+ Download the ConnectNext App Download the Tata Motors' Connected-car App, iRA.
+**Diesel option starts from Smart + and Smart +S
+5 MT 6 MT 6 AMT 6 AMT6 MT 6 MT
+CNGPetrol 1.2 Turbocharged Engine
+DCA
+Smart
+Smart +
+Pure +
+Pure + S
+Pure + PS
+Smart + S
+Diesel (1.5L)
+Creative
+Creative + S
+Creative + PS
+Fearless + PS
+KEY FEATURES OF NEXON
+COLORS
+ L *W*H (mm)  3995*1804*1620
+ Wheelbase (mm)  2498 
+ Tyre Size (mm)  195/60 R16 (Smart & Pure Persona)
+   215/60 R16 (Creative & Fearless Persona)
+ Ground Clearance (mm)   208*
+ Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine,
+  1199 cc, 3-cylinder  1497 cc, 4-cylinder  1199 cc, 3-cylinder
+ Fuel Petrol Diesel Petrol + CNG
+ 
+Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm
+ CNG Mode - 73.52 @5000 rpm
+    Petrol Mode - 88.52 @5000 rpm
+ 
+Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm
+ CNG Mode - 170 @2000 rpm
+    Petrol Mode - 170 @1750 rpm
+ Suspension  Front - Independent, Lower Wishbone, McPherson Strut with Coil Spring
+   Rear - Semi-independent, Open Profile Twist Beam with Stabiliser Bar, Coil Spring and Shock Absorber
+ Brakes  Front Disc, Rear Drum
+ Fuel Tank Capacity (L)  44
+ Boot Space (L)  382**  321**
+TECHNICAL SPECIFICATION
+POWER TRAIN & TRANSMISSION
+Ocean Blue comes with White roof optionUpper Triangle represents roof colour
+Lower Triangle represents body colour
+Persona Pure
+Grey
+Smart
+Pure
+Creative
+Fearless
+Royal
+Blue #DARK RED
+#DARK
+Pristine 
+White
+Daytona
+Grey
+Grassland
+Beige
+Ocean
+Blue
+*DARK available in Creative + S, Creative + PS, Fearless + PS
+*Red #DARK available only in FEARLESS + PS
+kmyears
+iRA subscription
+with Road side assistanceYEAR
+/currency.tf
+
+=== SOURCE src_c9ea48 · text · role=product · Tata Nexon ICE — reviewed official-source addendum.md ===
+REVIEWED TRANSCRIPTION OF OFFICIAL SOURCE — Tata Nexon ICE
+Prepared 18 September 2026 for local demo dm_36d47b86, iteration 2.
+This is a reviewer-prepared source addendum, not a new manufacturer publication.
+Official source URL: https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf
+Original uploaded source ID in iteration 1: src_706e38
+Original PDF SHA256: d590ff0c550a3de3ae7f77683a474cc7400fb319c16bf0e10a5e0e6cd70f738f
+Role for ingestion: product
+Method: visually checked original PDF labels, matrix headers/cells and footnotes. Quoted labels are source wording. Matrix transcriptions explicitly pair the printed row with its printed column; they are not represented as continuous prose quotations. Whitespace and typographic spacing are normalized. No new customer-facing fact IDs are assigned here.
+
+N1 — Advertised basic warranty
+Locator: PDF page 40, warranty badge.
+Visible badge wording: "3 years | 100 000 km" and "WARRANTY".
+Supported claim: the manufacturer advertises a 3-year / 100,000-km warranty headline. Classification: contractual policy headline. The supplied badge does not state whichever occurs first, exclusions, transferability, service conditions or detailed applicability; those remain unknown. This does not establish free service or maintenance.
+
+N2 — Front-seat ventilation on the chosen petrol trim
+Locator: PDF page 39, FEARLESS + PS feature panel.
+Exact label: "Ventilated Driver & Co-Driver Seat".
+Applicability: Fearless + PS in the documented petrol/diesel persona feature list, including the selected Fearless + PS petrol DCA. The page directs iCNG equipment to a separate iCNG brochure. This does not describe ventilated rear seats or all Nexon trims.
+
+N3 — Rear AC vents
+Locator: PDF page 38, PURE + panel; pages 38–39, additional-equipment hierarchy.
+Exact label: "Rear AC Vents".
+Applicability: Pure + and higher in the documented petrol/diesel persona hierarchy, including the selected Fearless + PS petrol DCA. The separate iCNG equipment list is not supplied here. This feature is not asserted to be exclusive to Nexon.
+
+N4 — ISOFIX
+Locator: PDF page 11, standard-equipment labels and footnote; page 38, SMART list.
+Exact source labels: "ISOFIX*"; footnote "* As standard". Page 38 also lists "ISOFIX" under SMART.
+Supported claim: manufacturer-stated standard ISOFIX equipment. The source supplies no attachment-point count, universal child-seat compatibility, installation instructions or guaranteed safety outcome.
+
+N5 — Selected Nexon petrol automatic pairing
+Locator: PDF page 40, POWER TRAIN & TRANSMISSION matrix; PDF page 18, DCA feature label.
+Matrix transcription: row Fearless + PS; engine/fuel header Petrol 1.2 Turbocharged Engine; transmission column DCA; cell ticked.
+Exact page-18 label: "7-SPEED DUAL CLUTCH AUTOMATIC".
+Supported selected combination: Nexon Fearless + PS, 1.2L turbocharged petrol, seven-speed DCA. Do not assign this DCA to the diesel or iCNG columns. This evidence does not establish comparative smoothness, durability or efficiency.
+
+N6 — Separate front parking sensor fact
+Locator: PDF page 39, CREATIVE + PS panel and higher FEARLESS + PS inheritance.
+Exact label: "Front Parking Sensor".
+Applicability: Creative + PS and Fearless + PS in the documented petrol/diesel feature hierarchy. The separate CREATIVE panel lists the surround-view camera and blind-view monitor; it does not establish a front parking sensor on base Creative. Consult the separate iCNG feature list for iCNG.
+
+N7 — Rear-seat flexibility
+Locator: PDF page 39, CREATIVE + PS panel, inherited by FEARLESS + PS.
+Exact labels: "60:40 Flip & Fold Seats"; "Rear Seat Armrest with Cup Holder".
+Applicability: Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. These features do not establish that a particular stroller, suitcase or child seat fits.
+
+Scope: current India-market brochure captured 18 September 2026. Features and specifications can vary by trim and may change; the manufacturer directs buyers to confirm the selected variant. No price, financing approval, real-world mileage, delivery promise, practical luggage-fit guarantee or cross-brand safety ranking is supplied by this addendum.
+
+
+PRODUCT HINT: Tata Nexon — Compact SUV https://tata.cars/nexon/ice.html
+VISUALS AVAILABLE (context only, never a fact source): 0 video shots, 8 images.
+
+REVISION INSTRUCTION FROM THE USER — follow it precisely:
+Read all current sources, incorporating the three explicitly reviewer-prepared transcriptions of the official manufacturer brochures. Keep their source IDs and exact locators/quotes; the transcriptions are not new manufacturer publications. Selected comparison configurations are Nexon Fearless + PS 1.2L turbo petrol seven-speed DCA, Brezza ZXi+ 1.5L K15C petrol ISG six-speed automatic, and regular Venue HX10 Kappa 1.0L Turbo GDi petrol seven-speed DCT. They are comparison examples, not a statement that the current buyer has selected a variant. Preserve every fuel, engine, transmission, trim, date, market, price-basis and offer qualification in each fact. Extract front-seat ventilation, rear AC vents, standard ISOFIX, the warranty headline, the selected automatic pairing, front sensors and rear-seat flexibility from their supplied evidence. Do not infer luggage/child-seat fit, flood or water capability, smoothness, economy, warranty exclusions or whichever-comes-first terms. Ordinary specifications are stated, not certified. Do not blend brochure kW values with differently expressed website figures or borrow RPM from another source. Keep rivals separate from product facts, and use the qualified source for the requested trim. Camera/BVM begins at Creative in the product brochure; front sensors are a separate Creative + PS/Fearless + PS fact. Keep the exact introductory finance amount and all stated conditions together, and distinguish starting ex-showroom pricing from a local quote. Extract only information actually supplied. Previous reviewed records are context, not authority for a different source or ID. Include remaining unanswered buyer questions without contradicting readable warranty, ventilation or ISOFIX evidence.

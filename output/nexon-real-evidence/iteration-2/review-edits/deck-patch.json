@@ -1,0 +1,250 @@
+{
+  "slides": [
+    {
+      "slide_id": "sl00",
+      "title": "Tata Nexon",
+      "image_id": "im01",
+      "callouts": []
+    },
+    {
+      "slide_id": "sl01",
+      "title": "Tata Nexon, up close",
+      "image_id": "im01",
+      "callouts": []
+    },
+    {
+      "slide_id": "sl02",
+      "title": "Your shortlist starts here",
+      "image_id": "im05",
+      "callouts": [
+        {
+          "id": "sl02-c4",
+          "text": "Fearless+PS petrol/diesel: ventilated front seats",
+          "fact_ids": [
+            "F020"
+          ],
+          "part": "seat",
+          "placement": "overlay"
+        },
+        {
+          "id": "sl02-c5",
+          "text": "Six airbags and stability control: standard",
+          "fact_ids": [
+            "F003"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl03",
+      "title": "Take in the stance",
+      "image_id": "im02",
+      "callouts": [
+        {
+          "id": "sl03-c2",
+          "text": "208 mm clearance; varies by variant",
+          "fact_ids": [
+            "F013"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl04",
+      "title": "Settle into the cabin",
+      "image_id": "im05",
+      "callouts": [
+        {
+          "id": "sl04-c3",
+          "text": "Fearless+PS petrol/diesel: ventilated front seats",
+          "fact_ids": [
+            "F020"
+          ],
+          "part": "seat",
+          "placement": "overlay"
+        },
+        {
+          "id": "sl04-c4",
+          "text": "Pure+ upwards, petrol/diesel: rear air vents",
+          "fact_ids": [
+            "F021"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl05",
+      "title": "Room for your plans",
+      "image_id": "im06",
+      "callouts": [
+        {
+          "id": "sl05-c2",
+          "text": "Petrol/diesel: 382L boot, measured to ISO V215",
+          "fact_ids": [
+            "F014"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl05-c3",
+          "text": "Creative+PS/Fearless+PS petrol/diesel: 60:40 rear seats",
+          "fact_ids": [
+            "F024"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl06",
+      "title": "Find your driving rhythm",
+      "image_id": "im01",
+      "callouts": [
+        {
+          "id": "sl06-c2",
+          "text": "Fearless+PS petrol: seven-speed DCA",
+          "fact_ids": [
+            "F019"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl06-c3",
+          "text": "Diesel: manual or automated-manual options",
+          "fact_ids": [
+            "F018"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl06-c4",
+          "text": "CNG: six-speed manual",
+          "fact_ids": [
+            "F018"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl07",
+      "title": "Safety starts with the details",
+      "image_id": "im01",
+      "callouts": [
+        {
+          "id": "sl07-c1",
+          "text": "Petrol/diesel: 5-star BNCAP, May 2026 scope",
+          "fact_ids": [
+            "F006"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl07-c3",
+          "text": "Six airbags and stability control: standard",
+          "fact_ids": [
+            "F003"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl07-c4",
+          "text": "ISOFIX: standard; check child-seat compatibility",
+          "fact_ids": [
+            "F004"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl08",
+      "title": "Your cockpit, closer",
+      "image_id": "im08",
+      "callouts": [
+        {
+          "id": "sl08-c3",
+          "text": "Pure+ upwards, petrol/diesel: 26.03 cm touchscreen",
+          "fact_ids": [
+            "F007"
+          ],
+          "part": "touchscreen",
+          "placement": "overlay",
+          "label_pos": {
+            "x": 0.0401,
+            "y": 0.0453
+          }
+        },
+        {
+          "id": "sl08-c4",
+          "text": "Fearless+PS petrol/diesel: 26.03 cm driver display",
+          "fact_ids": [
+            "F009"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl08-c5",
+          "text": "Fearless+PS petrol DCA: JBL audio with subwoofer",
+          "fact_ids": [
+            "F026"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl09",
+      "title": "Make the next step count",
+      "image_id": "im01",
+      "callouts": [
+        {
+          "id": "sl09-c1",
+          "text": "From \u20b97.39 lakh ex-showroom; prices may change",
+          "fact_ids": [
+            "F001"
+          ],
+          "part": "",
+          "placement": "panel"
+        },
+        {
+          "id": "sl09-c3",
+          "text": "Warranty headline: 3 years | 100,000 km",
+          "fact_ids": [
+            "F027"
+          ],
+          "part": "",
+          "placement": "panel"
+        }
+      ]
+    },
+    {
+      "slide_id": "sl10",
+      "title": "Your next step",
+      "image_id": "im01",
+      "callouts": []
+    },
+    {
+      "slide_id": "sl11",
+      "title": "Tata Nexon",
+      "image_id": "im01",
+      "callouts": []
+    }
+  ]
+}

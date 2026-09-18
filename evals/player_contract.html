@@ -387,6 +387,23 @@ test('A narrow slide exposes numbered evidence without cropping the image or cov
     assert(frame.scrollWidth <= frame.clientWidth + 1 && JSON.stringify(sl.callouts) === JSON.stringify(saved), 'Narrow evidence caused overflow or rewrote saved coordinates');
   } finally { view.destroy(); frame.remove(); }
 });
+test('Narrow evidence hides leaders with their labels and restores them on a wide slide', async () => {
+  const { frame, view } = await renderFixture(1000);
+  try {
+    for (const width of [1000, 390, 304, 1000]) {
+      frame.style.width = width + 'px'; view.setRevealed(0); view.layout();
+      const leader = view.pic.querySelector('.leaders line'), chip = view.pic.querySelector('.callout'), dot = view.pic.querySelector('.dot');
+      const item = view.el.querySelector('.slide-panel .item'), narrow = frame.clientWidth <= 699;
+      env.geometry.push({ width: frame.clientWidth, leaderVisibility: getComputedStyle(leader).visibility, chip: rect(chip), dot: rect(dot), evidence: rect(item) });
+      if (narrow) {
+        assert(chip.getBoundingClientRect().width === 0 && getComputedStyle(leader).visibility === 'hidden', 'A hidden mobile label left its leader slicing across the image');
+        assert(rect(dot).width > 0 && getComputedStyle(dot).visibility === 'visible' && rect(item).height > 0, 'Hiding mobile leaders also hid the numbered dot or evidence rail');
+      } else {
+        assert(rect(chip).width > 0 && getComputedStyle(leader).visibility === 'visible', 'Wide slide did not restore its overlay label and leader');
+      }
+    }
+  } finally { view.destroy(); frame.remove(); }
+});
 test('Opening and closing hero images retain their native ratio within wide and narrow stages', async () => {
   const measurements = [];
   for (const kind of ['hero_open', 'hero_close']) for (const width of [1000, 390]) {

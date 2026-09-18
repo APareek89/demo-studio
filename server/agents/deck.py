@@ -19,7 +19,7 @@ from .. import config, schemas, store
 from ..llm import claude
 from . import visuals
 from .author import ungrounded, words
-from .principles import audience_instruction, language_instruction
+from .principles import EVIDENCE_RULES, audience_instruction, fact_context, language_instruction
 
 KIND_BY_ROLE = {"intro": "intro", "outcome": "outcome", "proof": "proof", "features": "features", "establish": "establish"}
 MAX_CALLOUTS = 3
@@ -32,7 +32,7 @@ MARGIN, GAP = 0.02, 0.02
 
 class CalloutOut(BaseModel):
     slide_id: str
-    text: str = Field(description="≤ 8 words: the one thing on this slide that moves a buyer — a benefit in their terms backed by the cited fact, never a bare spec label")
+    text: str = Field(description="≤ 8 words: a complete source-supported label, neutral specification or fit-check; retain material scope and units, and omit the callout if they do not fit; never invent a benefit")
     fact_ids: list[str] = Field(description="every fact this callout relies on; a figure or claim with none is deleted")
     part: str = Field(default="", description="the product part it points at, spelled EXACTLY as in the slide's PARTS list, or empty")
     reveal_on_line: int = Field(default=0, description="0-based index of the slide line this callout supports")
@@ -40,7 +40,7 @@ class CalloutOut(BaseModel):
 
 class SlideTitleOut(BaseModel):
     slide_id: str
-    title: str = Field(description="≤ 6 words, plain: the slide's promise in the buyer's terms")
+    title: str = Field(description="≤ 6 words, plain: the supported topic or choice to explore, without a promised result beyond the facts")
 
 
 class DeckOut(BaseModel):
@@ -49,14 +49,18 @@ class DeckOut(BaseModel):
 
 
 DECK_SYSTEM = """You write the on-screen layer of a spoken product demo: a short title and up to three callouts per slide.
-The narration already says everything; the screen must make the buyer WANT it and trust it.
-- A callout is ≤ 8 words: a benefit in the buyer's terms with the fact that proves it ("Two-year warranty, in writing",
-  "Charges from any home socket"). Never a bare spec label, never an adjective without a fact.
-- Every figure or claim cites fact ids from the REGISTRY; a validator deletes any callout without a citation.
+Help the buyer notice the supported detail or choice. Narration and existing slide titles are context, not evidence
+for extra claims; use the current fact registry and its conditions even when narration sounds more persuasive.
+- A callout is ≤ 8 words: a complete supported label, neutral specification or fit-check. A plain feature name with
+  its scope is useful; no benefit or performance promise is required. Retain units and material trim/fuel/offer
+  qualifications. If they cannot fit, omit the callout rather than dropping a condition or inventing a shorter benefit.
+- Every figure or claim cites fact ids from the REGISTRY. A validator deletes an uncited claim, but an existing id
+  does not establish that an added benefit is true. Do not infer room, road capability, savings or safety from a spec.
 - Point each callout at a part from that slide's PARTS list, spelled exactly; leave part empty when nothing fits — it is
   then shown in a side panel, which is fine. Never point at a part that is not listed.
 - reveal_on_line is the 0-based line the callout supports, so it appears as those words are spoken.
 - At most three per slide; none for the greeting and closing slides. Titles ≤ 6 words, plain, no marketing.
+{evidence}
 {audience}
 {language}
 PRODUCT: {product}
@@ -196,9 +200,9 @@ def _ask_model(demo: dict, und: dict, plan: dict, slides: list[dict], images_by_
             continue
         parts = ", ".join(p["name"] for p in visuals.part_boxes(images_by_id.get(s["image_id"]) or {})) or "(none)"
         rows.append(f"{s['id']} [{s['kind']}] title: {s['title']}\n  PARTS on its picture: {parts}\n" + "\n".join(f"  line {i}: {l['text']}  facts {l['fact_ids']}" for i, l in enumerate(s["lines"])))
-    facts_txt = "\n".join(f"{f['id']} [{f['kind']}] {f['claim']}: {f['value']}" + (f" ({f['conditions']})" if f.get("conditions") else "") for f in facts_by_id.values()) or "(empty)"
+    facts_txt = "\n".join(fact_context(f) for f in facts_by_id.values()) or "(empty)"
     st = demo.get("settings", {})
-    sys = DECK_SYSTEM.format(audience=audience_instruction(st.get("audience", "everyday")), language=language_instruction(st.get("language", "en-IN")),
+    sys = DECK_SYSTEM.format(evidence=EVIDENCE_RULES, audience=audience_instruction(st.get("audience", "everyday")), language=language_instruction(st.get("language", "en-IN")),
                              product=json.dumps(und.get("product", {})), persona=json.dumps({k: voice.get(k) for k in ("persona_name", "tone")}),
                              slides="\n".join(rows), facts=facts_txt)
     ask = "Write the titles and callouts now." + (f"\n\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}" if instruction else "")

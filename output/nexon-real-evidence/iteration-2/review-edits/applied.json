@@ -1,0 +1,1810 @@
+{
+  "applied_at": "2026-09-18T14:34:46.107226+00:00",
+  "steps": [
+    {
+      "route": "/align/facts/F001",
+      "method": "PATCH",
+      "payload": {
+        "value": "Rs 7.39 Lakhs*",
+        "conditions": "Starting ex-showroom price on the official model page, checked 18 September 2026. Prices may change without prior information; obtain an exact selected-variant dealer quote."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F002",
+      "method": "PATCH",
+      "payload": {
+        "value": "₹6,499",
+        "conditions": "Advertised starting EMI under the Flexi scheme: Rs. 809 per lakh instalment for the first 6 months; subsequent EMI is higher. Offers apply to selected variants and may change; final EMI and finance are at the financier's sole discretion. Not a customer-approved EMI.",
+        "truth": "contractual"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F003",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "Manufacturer states six airbags and electronic stability program as standard; three-point ELR belts are stated for all occupants. Do not infer child-seat compatibility or a crash-outcome guarantee."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F005",
+      "method": "PATCH",
+      "payload": {
+        "value": "5 Star Rating",
+        "source": {
+          "ref": "src_73735b",
+          "locator": "360° Safety section; GNCAP rating label",
+          "quote": "GNCAP 5 Star Rating"
+        },
+        "conditions": "Global NCAP five-star rating as reported by Tata Motors. The extracted statement does not identify the test date, generation or tested variant scope; it does not establish superiority over rivals.",
+        "claim": "Global NCAP crash-test rating"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F006",
+      "method": "PATCH",
+      "payload": {
+        "value": "5-star BNCAP safety rating",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+          "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+        },
+        "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F007",
+      "method": "PATCH",
+      "payload": {
+        "value": "26.03 cm touchscreen infotainment by HARMAN",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+          "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+        },
+        "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list.",
+        "claim": "Infotainment touchscreen size",
+        "truth": "stated"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F008",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: TECHNICAL SPECIFICATION table, Petrol column; Engine, Power (kW), Torque (Nm) rows",
+          "quote": "Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder 1497 cc, 4-cylinder 1199 cc, 3-cylinder Fuel Petrol Diesel Petrol + CNG Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+        },
+        "conditions": "Petrol column of the May 2026 brochure. Power and torque retain the printed rpm conditions. No PS conversion or cross-fuel equivalence is asserted."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F009",
+      "method": "PATCH",
+      "payload": {
+        "value": "26.03 cm digital instrument cluster",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Fearless + PS feature panel",
+          "quote": "26.03 cm Digital Instrument Cluster"
+        },
+        "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG.",
+        "claim": "Digital instrument cluster size",
+        "truth": "stated"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F010",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: TECHNICAL SPECIFICATION table, Diesel column; Engine, Power (kW), Torque (Nm) rows",
+          "quote": "Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder 1497 cc, 4-cylinder 1199 cc, 3-cylinder Fuel Petrol Diesel Petrol + CNG Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+        },
+        "conditions": "Diesel column of the May 2026 brochure. Power and torque retain the printed rpm conditions. Do not substitute or combine the differently stated website PS values."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F011",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: TECHNICAL SPECIFICATION table, Petrol + CNG column; Engine, Power (kW), Torque (Nm) rows",
+          "quote": "Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder 1497 cc, 4-cylinder 1199 cc, 3-cylinder Fuel Petrol Diesel Petrol + CNG Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+        },
+        "conditions": "Petrol + CNG column of the May 2026 brochure; the CNG-mode and petrol-mode outputs/rpm apply only to their named mode. Do not blend with the separate petrol-only engine column or other-page PS/kW expressions."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F012",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: TECHNICAL SPECIFICATION, L *W*H and Wheelbase rows",
+          "quote": "L *W*H (mm) 3995*1804*1620 Wheelbase (mm) 2498"
+        },
+        "conditions": "Manufacturer-published dimensions in the May 2026 brochure. The brochure says specifications may vary by variant and may change; confirm the selected variant when ordering."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F013",
+      "method": "PATCH",
+      "payload": {
+        "value": "208 mm",
+        "truth": "stated",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: ground-clearance row and variant footnote",
+          "quote": "Ground Clearance (mm) 208*"
+        },
+        "conditions": "Varies as per variant (brochure footnote). No loading/unladen condition is stated in the supplied source."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F014",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Boot Space row, Petrol/Diesel versus Petrol + CNG columns; ** measurement footnote",
+          "quote": "Boot Space (L) 382** 321**"
+        },
+        "conditions": "382 L in the petrol/diesel columns and 321 L in the Petrol + CNG column. Brochure measurement basis: ISO V215. Litres do not establish that a particular stroller or luggage set fits."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F015",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "44 L is listed for the petrol/diesel liquid-fuel tank in the May 2026 technical table. The separately stated twin-cylinder iCNG capacity is a different fact."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F016",
+      "method": "PATCH",
+      "payload": {
+        "value": "60 (30+30) litres",
+        "truth": "stated",
+        "conditions": "Manufacturer-described combined twin-cylinder fuel capacity for iCNG. The source does not specify water capacity, usable gas quantity or an equivalent mass."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F017",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40: Tyre Size row, Smart & Pure versus Creative & Fearless personas",
+          "quote": "Tyre Size (mm) 195/60 R16 (Smart & Pure Persona) 215/60 R16 (Creative & Fearless Persona)"
+        },
+        "conditions": "Tyre sizes are assigned to the named personas in the May 2026 brochure; this does not state different rim diameters or tyre availability for an unlisted variant."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F018",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "Official specifications FAQ, checked 18 September 2026. Choices depend on fuel/engine and variant; use the brochure powertrain matrix for a specific trim. The listed iCNG option is manual only."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F019",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+          "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+        },
+        "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F021",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 38: Pure + feature panel; pages 38–39 persona hierarchy and separate-iCNG disclaimer",
+          "quote": "Rear AC Vents"
+        },
+        "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. The brochure directs iCNG equipment to its separate feature list; no iCNG availability is established here."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F022",
+      "method": "PATCH",
+      "payload": {
+        "value": "360° HD Surround View System with Blind View Monitor",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+          "quote": "HD Surround View System with Blind View Monitor"
+        },
+        "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F023",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS additional-equipment hierarchy; iCNG disclaimer",
+          "quote": "Front Parking Sensor"
+        },
+        "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. This fact does not establish the sensor on base Creative or on iCNG."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F024",
+      "method": "PATCH",
+      "payload": {
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS hierarchy; iCNG disclaimer",
+          "quote": "60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder"
+        },
+        "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. Separate iCNG feature list required. No flat-floor claim, child-seat compatibility, or fit for a particular stroller/luggage set is established."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F025",
+      "method": "PATCH",
+      "payload": {
+        "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+          "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+        },
+        "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F026",
+      "method": "PATCH",
+      "payload": {
+        "value": "JBL-branded 9 speakers with subwoofer",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+          "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+        },
+        "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F028",
+      "method": "PATCH",
+      "payload": {
+        "claim": "iRA connected features and app subscription",
+        "value": "iRA connected vehicle features; first-year app subscription free",
+        "source": {
+          "ref": "src_706e38",
+          "locator": "PDF page 39: Fearless + PS iRA Connected Vehicle Features; page 40: subscription and fuel restrictions",
+          "quote": "First year iRA app subscription free. Renewal charges apply."
+        },
+        "conditions": "Fearless + PS in the documented petrol/diesel feature list; iRA is not available in CNG. First-year app subscription is free; renewal charges apply. No renewal price or validated 70+ feature count is supplied.",
+        "truth": "contractual"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/F029",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "Roadside-assistance phone number on the official model-page footer, checked 18 September 2026. Hours, coverage, response time and call charges are not established by this footer."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C1-002",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C1-003",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C1-004",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C1-005",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C1-006",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C2-012",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C2-013",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C3-023",
+      "method": "PATCH",
+      "payload": {
+        "value": "20.47 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi Turbo, including printed unit; certification footnote ***"
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C3-024",
+      "method": "PATCH",
+      "payload": {
+        "value": "19.96 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for ZXi/ZXi+ Turbo, including printed unit; certification footnote ***"
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C3-025",
+      "method": "PATCH",
+      "payload": {
+        "value": "21.09 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi MT, including printed unit; certification footnote ***"
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C3-026",
+      "method": "PATCH",
+      "payload": {
+        "value": "20.81 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for ZXi MT, including printed unit; certification footnote ***"
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C3-027",
+      "method": "PATCH",
+      "payload": {
+        "value": "20.17 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for VXi/ZXi/ZXi+ AT, including printed unit; certification footnote ***"
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C3-028",
+      "method": "PATCH",
+      "payload": {
+        "value": "26.90 km/kg",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi/ZXi CNG MT, including printed unit; certification footnote ***"
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C4-018",
+      "method": "PATCH",
+      "payload": {
+        "conditions": "On Bluelink-equipped trims: HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10 and HX10 Knight in the reviewed matrix. Three-year subscription period; paid service afterward. Functionality depends on adequate power and uninterrupted network connectivity.",
+        "source": {
+          "locator": "PDF page 20: Bluelink equipment rows; page 21: three-year subscription badge and paid-renewal/network terms",
+          "quote": "Bluelink will be available on paid basis post the 3 year period."
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C6-001",
+      "method": "PATCH",
+      "payload": {
+        "value": "6-speed automatic available on VXi, ZXi and ZXi+; unavailable on LXi",
+        "conditions": "1.5L K15C Petrol ISG engine, India market. Selected comparison: Brezza ZXi+ with 6AT. The 1.0L Turbo Boosterjet row is manual; do not attach its output figures to this automatic."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C6-003",
+      "method": "PATCH",
+      "payload": {
+        "value": "Available on LXi, VXi, ZXi and ZXi+"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C6-004",
+      "method": "PATCH",
+      "payload": {
+        "value": "Available on LXi, VXi, ZXi and ZXi+"
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C2-003/approval",
+      "method": "POST",
+      "payload": {
+        "approved": false
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C2-007/approval",
+      "method": "POST",
+      "payload": {
+        "approved": false
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/facts/C2-011/approval",
+      "method": "POST",
+      "payload": {
+        "approved": false
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/plan",
+      "method": "PATCH",
+      "payload": {
+        "replacements": [
+          {
+            "from": "F007",
+            "to": "F008"
+          },
+          {
+            "from": "F009",
+            "to": "F010"
+          },
+          {
+            "from": "Thoughtful cabin ventilation and comfort",
+            "to": "Cabin details to try"
+          },
+          {
+            "from": "Available front ventilated seats and standard rear air-conditioning vents help manage passenger comfort across hot Indian seasons.",
+            "to": "Fearless + PS petrol/diesel lists ventilated front seats; rear air vents begin at Pure +. Try the seating and controls for yourself."
+          },
+          {
+            "from": "Versatile multi-powertrain and transmission options",
+            "to": "A driving setup to explore"
+          },
+          {
+            "from": "Choosing between turbo petrol, turbo diesel, and dual-cylinder iCNG with manual, AMT, or dual-clutch transmissions allows you to tailor the SUV to your preferred driving routine.",
+            "to": "The selected Fearless + PS 1.2 turbo petrol pairs with seven-speed DCA. Diesel and CNG have different gearbox choices; compare the applicable configurations."
+          },
+          {
+            "from": "Comprehensive standard safety architecture",
+            "to": "Standard safety equipment"
+          },
+          {
+            "from": "Every Nexon variant includes six airbags, electronic stability program, and ISOFIX mounts alongside certified five-star crash test results.",
+            "to": "Six airbags, electronic stability control and ISOFIX are standard. Manufacturer-reported crash ratings have separate published test and powertrain scopes."
+          },
+          {
+            "from": "Welcome to Tata Nexon",
+            "to": "Tata Nexon, up close"
+          },
+          {
+            "from": "Introduce the Nexon as a compact SUV designed for confident city and highway journeys without premature spec lists.",
+            "to": "Explore the selected petrol automatic without assuming the buyer's needs. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Three Highlights to Guide Your Tour",
+            "to": "Your shortlist starts here"
+          },
+          {
+            "from": "Three core pillars spanning comfort, engine flexibility, and safety",
+            "to": "Cabin features, driving choice and standard safety equipment"
+          },
+          {
+            "from": "Highlight the three core pillars: everyday cabin comfort, diverse powertrain options, and standard structural safety.",
+            "to": "Cabin features, driving choice and standard safety equipment. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Compact Proportions and Ground Clearance",
+            "to": "Take in the stance"
+          },
+          {
+            "from": "Evaluating sub-4-meter dimensions and unladen ground clearance",
+            "to": "Published clearance with its variant qualification"
+          },
+          {
+            "from": "Showcase the SUV proportions, sub-four-metre footprint, and 208 mm ground clearance for road navigation.",
+            "to": "Published clearance with its variant qualification. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Interior Comfort and Climate",
+            "to": "Settle into the cabin"
+          },
+          {
+            "from": "Inspecting front-seat ventilation and passenger climate comfort",
+            "to": "Front-seat ventilation and rear vents on the selected trim"
+          },
+          {
+            "from": "Demonstrate the cabin environment, highlighting available ventilated front seats and standard rear AC vents.",
+            "to": "Front-seat ventilation and rear vents on the selected trim. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Boot Capacity and Storage Flexibility",
+            "to": "Room for your plans"
+          },
+          {
+            "from": "Assessing ISO-measured boot capacity and seating flexibility",
+            "to": "Published boot capacity and a personal luggage-fit check"
+          },
+          {
+            "from": "Present the 382-litre petrol/diesel boot space, 321-litre CNG volume, and split-folding seats.",
+            "to": "Published boot capacity and a personal luggage-fit check. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Engine and Transmission Choices",
+            "to": "Find your driving rhythm"
+          },
+          {
+            "from": "Selecting between petrol, diesel, and CNG powertrain configurations",
+            "to": "Explore the selected petrol automatic in a test drive"
+          },
+          {
+            "from": "Clarify the power outputs and gearbox pairings for the 1.2L petrol, 1.5L diesel, and 1.2L iCNG models.",
+            "to": "Explore the selected petrol automatic in a test drive. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Standard Protection and Active Safety",
+            "to": "Safety starts with the details"
+          },
+          {
+            "from": "Reviewing certified five-star crash ratings and standard safety gear",
+            "to": "Standard equipment and the scoped manufacturer-reported rating"
+          },
+          {
+            "from": "Detail the six standard airbags, ESP, ISOFIX anchors, certified 5-star ratings, and Fearless + PS DCA ADAS suite.",
+            "to": "Standard equipment and the scoped manufacturer-reported rating. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Connected Tech and Audio Features",
+            "to": "Your cockpit, closer"
+          },
+          {
+            "from": "Checking camera views, premium sound, and connected features",
+            "to": "Displays and equipment tied to the selected trim"
+          }
+        ],
+        "fields": {
+          "customer_persona": "People considering a compact SUV for daily use, family travel or a preferred driving setup. This is a general audience, not evidence about the current buyer.",
+          "decision_frame": "Review how the selected petrol automatic and cabin equipment fit the buyer's stated priorities, then check personal fit and a current variant quote.",
+          "takeaway": "Explore the Nexon Fearless + PS petrol automatic through its cabin, family equipment and driving setup.",
+          "primary_outcome": "Decide whether the selected Nexon belongs on the buyer's shortlist.",
+          "supporting_outcomes": [
+            "Cabin equipment with exact trim applicability",
+            "Family practicality with personal child-seat and luggage-fit checks"
+          ],
+          "do_not_recommend_if": "A must-have requirement remains unsupported or fails the buyer's own fit check; verify it before recommending a trim.",
+          "advance": "Choose Book Test Drive to try the seating, visibility and gearbox response, then obtain a current written quote for the selected variant.",
+          "notes": "Use the exact selected configurations for comparisons: Nexon Fearless + PS 1.2 turbo petrol seven-speed DCA, Brezza ZXi+ 1.5 K15C petrol ISG six-speed automatic, regular Venue HX10 1.0 Turbo GDi petrol seven-speed DCT. These are comparison examples, not inferred buyer selections. Use only current approved registry evidence. Standard safety equipment and manufacturer-reported crash results are separate; BNCAP scope is petrol/diesel trims active May 2026. Ground clearance does not establish water capability; boot capacity does not establish luggage fit. Ordinary figures are stated, not certified. Preserve all trim/fuel and introductory finance conditions in the same answer. Do not compute unapproved performance or cost deltas. Resolve policy with written terms, financing with the lender, feel/fit with the buyer's own check."
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/plan",
+      "method": "PATCH",
+      "payload": {
+        "replacements": [
+          {
+            "from": "Review modern convenience equipment including the 360-degree camera, front sensors, JBL audio, and iRA app.",
+            "to": "Displays and equipment tied to the selected trim. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Pricing, Warranty, and Clear Next Steps",
+            "to": "Make the next step count"
+          },
+          {
+            "from": "Clarifying published pricing, warranty badge, and local dealer checks",
+            "to": "An exact quote and written ownership terms"
+          },
+          {
+            "from": "State the starting ex-showroom price, 3-year warranty badge, and outline open questions for dealer verification.",
+            "to": "An exact quote and written ownership terms. Do not infer performance, safety or physical-fit outcomes from specifications."
+          },
+          {
+            "from": "Welcome to Tata Motors! Would you like to tell me what you're looking for in your next SUV, or shall we jump straight in?",
+            "to": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?"
+          },
+          {
+            "from": "5-Star Safety",
+            "to": "Safety equipment"
+          },
+          {
+            "from": "Buyers want reassurance that structural safety and critical occupant protection are not reserved solely for top-tier trims.",
+            "to": "Buyers may want to distinguish standard equipment, trim-specific assistance and the published scope of crash results."
+          },
+          {
+            "from": "Families need to confirm that boot space remains functional across different fuel variants, particularly with twin CNG cylinders.",
+            "to": "Buyers may want published boot capacities, seat flexibility and a practical check with their own luggage."
+          },
+          {
+            "from": "iCNG dual-cylinder boot packaging layout",
+            "to": "A source-identified iCNG boot image"
+          },
+          {
+            "from": "F016 mentions the innovative 60-litre water-equivalent twin cylinders, but existing images only display the petrol/diesel luggage area.",
+            "to": "The current general boot picture does not prove the iCNG cylinder layout."
+          },
+          {
+            "from": "Upload an official photograph of the Nexon iCNG boot floor illustrating how luggage fits over the twin cylinders.",
+            "to": "Add an official image explicitly identifying the iCNG configuration before showing its packaging."
+          },
+          {
+            "from": "360-degree surround camera display on the infotainment screen",
+            "to": "A live surround-camera screen image"
+          },
+          {
+            "from": "F022 references the HD 360 surround view system and Blind View Monitor, which is a major city parking selling point.",
+            "to": "The brochure lists the camera; the current touchscreen picture does not show the active camera view."
+          },
+          {
+            "from": "Provide a high-resolution screenshot of the 10.25-inch touchscreen showing the active 360-degree camera feed with guidance lines.",
+            "to": "Add an official image of the active Nexon surround-view camera before pointing at that interface."
+          },
+          {
+            "from": "ADAS front radar and camera sensor module",
+            "to": "A source-identified driver-assistance feature image"
+          },
+          {
+            "from": "F025 lists advanced collision warning and emergency braking for Fearless + PS DCA, but exterior shots lack a dedicated sensor detail.",
+            "to": "The registry lists assistance functions but does not establish a sensor layout."
+          },
+          {
+            "from": "Upload a close-up image showing the front camera and radar housing integrated on the windscreen and grille.",
+            "to": "Use an official image explicitly identifying the relevant feature; do not guess at radar or camera hardware."
+          }
+        ]
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/script",
+      "method": "PATCH",
+      "payload": {
+        "lines": [
+          {
+            "id": "intro-overview-L1",
+            "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+            "fact_ids": [
+              "F019"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "intro-overview-L2",
+            "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "intro-overview-D1",
+            "text": "The brochure lists a length of 3,995 millimetres and a wheelbase of 2,498 millimetres.",
+            "fact_ids": [
+              "F012"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "intro-overview-D2",
+            "text": "A personal visit is the place to check your driving position and the space around your passengers.",
+            "fact_ids": [],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "three-reminders-L1",
+            "text": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+            "fact_ids": [
+              "F020",
+              "F019",
+              "F003"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "three-reminders-L2",
+            "text": "We'll put each alongside what you need from your next car.",
+            "fact_ids": [],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "three-reminders-D1",
+            "text": "This Fearless Plus P S petrol automatic has ventilated front seats; rear air vents begin at Pure Plus in the petrol and diesel range.",
+            "fact_ids": [
+              "F020",
+              "F021"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "three-reminders-D2",
+            "text": "Six airbags, electronic stability control and ISOFIX are standard equipment.",
+            "fact_ids": [
+              "F003",
+              "F004"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "exterior-stance-L1",
+            "text": "Take in the side profile.",
+            "fact_ids": [],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "exterior-stance-L2",
+            "text": "Tata lists 208 millimetres of ground clearance, with variation by trim. Keep that figure alongside the roads and parking spaces you use.",
+            "fact_ids": [
+              "F013"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "exterior-stance-D1",
+            "text": "The brochure lists a width of 1,804 millimetres and a height of 1,620 millimetres. Check the dimensions against your parking space.",
+            "fact_ids": [
+              "F012"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "exterior-stance-D2",
+            "text": "Smart and Pure use 195/60 R16 tyres; Creative and Fearless use 215/60 R16.",
+            "fact_ids": [
+              "F017"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "cabin-comfort-L1",
+            "text": "In this Fearless Plus P S petrol automatic, both front seats are ventilated, and rear passengers have their own air vents.",
+            "fact_ids": [
+              "F019",
+              "F020",
+              "F021"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "cabin-comfort-L2",
+            "text": "Try both rows when you visit.",
+            "fact_ids": [],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "cabin-comfort-D1",
+            "text": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+            "fact_ids": [
+              "F020"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "cabin-comfort-D2",
+            "text": "Rear air vents begin at Pure Plus and continue through the higher petrol and diesel trims.",
+            "fact_ids": [
+              "F021"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "boot-practicality-L1",
+            "text": "Here's the boot. Petrol and diesel versions are listed at 382 litres, measured to ISO V215.",
+            "fact_ids": [
+              "F014"
+            ],
+            "visual_ref": "im06"
+          },
+          {
+            "id": "boot-practicality-L2",
+            "text": "For a stroller or weekend bags, bring your own and check the fit with the seats in use.",
+            "fact_ids": [],
+            "visual_ref": "im06"
+          },
+          {
+            "id": "boot-practicality-D1",
+            "text": "The CNG boot is listed at 321 litres using the same ISO V215 measurement basis. Capacity alone won't settle the fit of your luggage.",
+            "fact_ids": [
+              "F014"
+            ],
+            "visual_ref": "im06"
+          },
+          {
+            "id": "boot-practicality-D2",
+            "text": "Creative Plus P S and Fearless Plus P S petrol and diesel trims have sixty-forty flip-and-fold rear seats, plus a rear armrest with a cup holder.",
+            "fact_ids": [
+              "F024"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "powertrain-choices-L1",
+            "text": "This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.",
+            "fact_ids": [
+              "F019"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "powertrain-choices-L2",
+            "text": "For stop-and-go driving, try its response on a test drive and see how it feels to you.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "powertrain-choices-D1",
+            "text": "The 1.2-litre turbo petrol is listed at 88.2 kilowatts at 5,500 rpm, with 170 newton-metres at 1,750 to 4,000 rpm.",
+            "fact_ids": [
+              "F008"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "powertrain-choices-D2",
+            "text": "The diesel has manual and automated-manual options. CNG uses a six-speed manual; the seven-speed dual-clutch automatic is a petrol option, with availability depending on trim.",
+            "fact_ids": [
+              "F018",
+              "F019"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "safety-standards-L1",
+            "text": "Six airbags, electronic stability control and ISOFIX are standard equipment.",
+            "fact_ids": [
+              "F003",
+              "F004"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "safety-standards-L2",
+            "text": "Tata reports a five-star Bharat NCAP rating for petrol and diesel trims active in May 2026. Extra driver-assistance features depend on the trim.",
+            "fact_ids": [
+              "F006",
+              "F025"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "safety-standards-D1",
+            "text": "For your child seat, ISOFIX is a useful starting point. Check the seat's compatibility and installation instructions before fitting it.",
+            "fact_ids": [
+              "F004"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "safety-standards-D2",
+            "text": "Fearless Plus P S petrol DCA also lists autonomous emergency braking and lane keep assist. Those features don't establish a safety ranking against another car.",
+            "fact_ids": [
+              "F025"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "tech-convenience-L1",
+            "text": "Take a closer look at the cockpit: this Fearless Plus P S has a 26.03-centimetre touchscreen and a matching-size driver display.",
+            "fact_ids": [
+              "F007",
+              "F009"
+            ],
+            "visual_ref": "im08"
+          },
+          {
+            "id": "tech-convenience-L2",
+            "text": "On the petrol automatic, JBL audio with a subwoofer is another detail to try.",
+            "fact_ids": [
+              "F026"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "tech-convenience-D1",
+            "text": "The touchscreen begins at Pure Plus; the matching-size driver display is listed on Fearless Plus P S in the petrol and diesel range.",
+            "fact_ids": [
+              "F007",
+              "F009"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "tech-convenience-D2",
+            "text": "Creative adds the surround-view camera and blind-view monitor; front parking sensors start at Creative Plus P S in the petrol and diesel range.",
+            "fact_ids": [
+              "F022",
+              "F023"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "ownership-details-L1",
+            "text": "For the buying decision, get a current on-road quote for your exact variant.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "ownership-details-L2",
+            "text": "Tata advertises a three-year, 100,000-kilometre warranty headline. Read the full written coverage and exclusions before deciding.",
+            "fact_ids": [
+              "F027"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "ownership-details-D1",
+            "text": "The advertised starting price is 7.39 lakh rupees ex-showroom, subject to change. It isn't a quote for this Fearless Plus P S automatic.",
+            "fact_ids": [
+              "F001"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "ownership-details-D2",
+            "text": "The Flexi offer advertises 6,499 rupees monthly for the first six months, with higher instalments after that. Final EMI and finance are at the financier's discretion.",
+            "fact_ids": [
+              "F002"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "close-L1",
+            "text": "We've looked at the cabin, family equipment and petrol automatic. The next useful check is how the seats, visibility and gearbox feel to you.",
+            "fact_ids": [
+              "F019",
+              "F020",
+              "F003",
+              "F004"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "close-L2",
+            "text": "Choose Book Test Drive when you're ready, or stay here and ask another question.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          }
+        ],
+        "intake_q1": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+        "checkins": [
+          {
+            "segment_id": "intro-overview",
+            "text": ""
+          },
+          {
+            "segment_id": "three-reminders",
+            "text": ""
+          },
+          {
+            "segment_id": "exterior-stance",
+            "text": "Does that cover what you wanted to know about the exterior?"
+          },
+          {
+            "segment_id": "cabin-comfort",
+            "text": "How does that fit what you want from the cabin?"
+          },
+          {
+            "segment_id": "boot-practicality",
+            "text": "Does that help with the luggage checks you want to make?"
+          },
+          {
+            "segment_id": "powertrain-choices",
+            "text": "Is an automatic the direction you're leaning towards?"
+          },
+          {
+            "segment_id": "safety-standards",
+            "text": "Does that cover your main safety concerns?"
+          },
+          {
+            "segment_id": "tech-convenience",
+            "text": "Does that cover the cockpit features you wanted to see?"
+          },
+          {
+            "segment_id": "ownership-details",
+            "text": ""
+          }
+        ],
+        "segments": [
+          {
+            "id": "intro-overview",
+            "title": "Tata Nexon, up close",
+            "outcome": "Explore the selected petrol automatic without assuming the buyer's needs"
+          },
+          {
+            "id": "three-reminders",
+            "title": "Your shortlist starts here",
+            "outcome": "Cabin features, driving choice and standard safety equipment"
+          },
+          {
+            "id": "exterior-stance",
+            "title": "Take in the stance",
+            "outcome": "Published clearance with its variant qualification"
+          },
+          {
+            "id": "cabin-comfort",
+            "title": "Settle into the cabin",
+            "outcome": "Front-seat ventilation and rear vents on the selected trim"
+          },
+          {
+            "id": "boot-practicality",
+            "title": "Room for your plans",
+            "outcome": "Published boot capacity and a personal luggage-fit check"
+          },
+          {
+            "id": "powertrain-choices",
+            "title": "Find your driving rhythm",
+            "outcome": "Explore the selected petrol automatic in a test drive"
+          },
+          {
+            "id": "safety-standards",
+            "title": "Safety starts with the details",
+            "outcome": "Standard equipment and the scoped manufacturer-reported rating"
+          },
+          {
+            "id": "tech-convenience",
+            "title": "Your cockpit, closer",
+            "outcome": "Displays and equipment tied to the selected trim"
+          },
+          {
+            "id": "ownership-details",
+            "title": "Make the next step count",
+            "outcome": "An exact quote and written ownership terms"
+          }
+        ],
+        "realign_visuals": false
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/product",
+      "method": "PATCH",
+      "payload": {
+        "summary": "Tata Nexon is a compact SUV with petrol, diesel and iCNG options. This demo uses Fearless + PS 1.2L turbo petrol seven-speed DCA as its concrete example; equipment and transmission availability are qualified by the reviewed registry.",
+        "audience": "People exploring a compact SUV for their own driving and family needs; individual circumstances come only from what the customer says."
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/plan",
+      "method": "PATCH",
+      "payload": {
+        "fields": {
+          "customer_persona": "People considering a compact SUV for daily use, family travel or a preferred driving setup. This is a general audience, not evidence about the current buyer.",
+          "decision_frame": "Review how the selected petrol automatic and cabin equipment fit the buyer's stated priorities, then check personal fit and a current variant quote.",
+          "takeaway": "Explore the Nexon Fearless + PS petrol automatic through its cabin, family equipment and driving setup.",
+          "primary_outcome": "Decide whether the selected Nexon belongs on the buyer's shortlist.",
+          "supporting_outcomes": [
+            "Cabin equipment with exact trim applicability",
+            "Family practicality with personal child-seat and luggage-fit checks"
+          ],
+          "do_not_recommend_if": "A must-have requirement remains unsupported or fails the buyer's own fit check; verify it before recommending a trim.",
+          "advance": "Choose Book Test Drive to try the seating, visibility and gearbox response, then obtain a current written quote for the selected variant.",
+          "notes": "Use the exact selected configurations for comparisons: Nexon Fearless + PS 1.2 turbo petrol seven-speed DCA, Brezza ZXi+ 1.5 K15C petrol ISG six-speed automatic, regular Venue HX10 1.0 Turbo GDi petrol seven-speed DCT. These are comparison examples, not inferred buyer selections. Use only current approved registry evidence. Standard safety equipment and manufacturer-reported crash results are separate; BNCAP scope is petrol/diesel trims active May 2026. Ground clearance does not establish water capability; boot capacity does not establish luggage fit. Ordinary figures are stated, not certified. Preserve all trim/fuel and introductory finance conditions in the same answer. Do not compute unapproved performance or cost deltas. Resolve policy with written terms, financing with the lender, feel/fit with the buyer's own check."
+        }
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/script",
+      "method": "PATCH",
+      "payload": {
+        "lines": [
+          {
+            "id": "intro-overview-L1",
+            "text": "Let's explore the Nexon Fearless Plus P S petrol automatic.",
+            "fact_ids": [
+              "F019"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "intro-overview-L2",
+            "text": "We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "intro-overview-D1",
+            "text": "The brochure lists a length of 3,995 millimetres and a wheelbase of 2,498 millimetres.",
+            "fact_ids": [
+              "F012"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "intro-overview-D2",
+            "text": "A personal visit is the place to check your driving position and the space around your passengers.",
+            "fact_ids": [],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "three-reminders-L1",
+            "text": "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment.",
+            "fact_ids": [
+              "F020",
+              "F019",
+              "F003"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "three-reminders-L2",
+            "text": "We'll put each alongside what you need from your next car.",
+            "fact_ids": [],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "three-reminders-D1",
+            "text": "This Fearless Plus P S petrol automatic has ventilated front seats; rear air vents begin at Pure Plus in the petrol and diesel range.",
+            "fact_ids": [
+              "F020",
+              "F021"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "three-reminders-D2",
+            "text": "Six airbags, electronic stability control and ISOFIX are standard equipment.",
+            "fact_ids": [
+              "F003",
+              "F004"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "exterior-stance-L1",
+            "text": "Take in the side profile.",
+            "fact_ids": [],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "exterior-stance-L2",
+            "text": "Tata lists 208 millimetres of ground clearance, with variation by trim. Keep that figure alongside the roads and parking spaces you use.",
+            "fact_ids": [
+              "F013"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "exterior-stance-D1",
+            "text": "The brochure lists a width of 1,804 millimetres and a height of 1,620 millimetres. Check the dimensions against your parking space.",
+            "fact_ids": [
+              "F012"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "exterior-stance-D2",
+            "text": "Smart and Pure use 195/60 R16 tyres; Creative and Fearless use 215/60 R16.",
+            "fact_ids": [
+              "F017"
+            ],
+            "visual_ref": "im02"
+          },
+          {
+            "id": "cabin-comfort-L1",
+            "text": "In this Fearless Plus P S petrol automatic, both front seats are ventilated, and rear passengers have their own air vents.",
+            "fact_ids": [
+              "F019",
+              "F020",
+              "F021"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "cabin-comfort-L2",
+            "text": "Try both rows when you visit.",
+            "fact_ids": [],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "cabin-comfort-D1",
+            "text": "Front-seat ventilation is listed for Fearless Plus P S in the petrol and diesel trim list. It isn't rear-seat ventilation.",
+            "fact_ids": [
+              "F020"
+            ],
+            "visual_ref": "im05"
+          },
+          {
+            "id": "cabin-comfort-D2",
+            "text": "Rear air vents begin at Pure Plus and continue through the higher petrol and diesel trims.",
+            "fact_ids": [
+              "F021"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "boot-practicality-L1",
+            "text": "Here's the boot. Petrol and diesel versions are listed at 382 litres, measured to ISO V215.",
+            "fact_ids": [
+              "F014"
+            ],
+            "visual_ref": "im06"
+          },
+          {
+            "id": "boot-practicality-L2",
+            "text": "For a stroller or weekend bags, bring your own and check the fit with the seats in use.",
+            "fact_ids": [],
+            "visual_ref": "im06"
+          },
+          {
+            "id": "boot-practicality-D1",
+            "text": "The CNG boot is listed at 321 litres using the same ISO V215 measurement basis. Capacity alone won't settle the fit of your luggage.",
+            "fact_ids": [
+              "F014"
+            ],
+            "visual_ref": "im06"
+          },
+          {
+            "id": "boot-practicality-D2",
+            "text": "Creative Plus P S and Fearless Plus P S petrol and diesel trims have sixty-forty flip-and-fold rear seats, plus a rear armrest with a cup holder.",
+            "fact_ids": [
+              "F024"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "powertrain-choices-L1",
+            "text": "This Fearless Plus P S pairs the turbo petrol engine with a seven-speed dual-clutch automatic.",
+            "fact_ids": [
+              "F019"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "powertrain-choices-L2",
+            "text": "For stop-and-go driving, try its response on a test drive and see how it feels to you.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "powertrain-choices-D1",
+            "text": "The 1.2-litre turbo petrol is listed at 88.2 kilowatts at 5,500 rpm, with 170 newton-metres at 1,750 to 4,000 rpm.",
+            "fact_ids": [
+              "F008"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "powertrain-choices-D2",
+            "text": "The diesel has manual and automated-manual options. CNG uses a six-speed manual; the seven-speed dual-clutch automatic is a petrol option, with availability depending on trim.",
+            "fact_ids": [
+              "F018",
+              "F019"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "safety-standards-L1",
+            "text": "Six airbags, electronic stability control and ISOFIX are standard equipment.",
+            "fact_ids": [
+              "F003",
+              "F004"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "safety-standards-L2",
+            "text": "Tata reports a five-star Bharat NCAP rating for petrol and diesel trims active in May 2026. Extra driver-assistance features depend on the trim.",
+            "fact_ids": [
+              "F006",
+              "F025"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "safety-standards-D1",
+            "text": "For your child seat, ISOFIX is a useful starting point. Check the seat's compatibility and installation instructions before fitting it.",
+            "fact_ids": [
+              "F004"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "safety-standards-D2",
+            "text": "On this Fearless Plus P S petrol automatic, the listed driver assists include autonomous emergency braking and lane keep assist.",
+            "fact_ids": [
+              "F025"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "tech-convenience-L1",
+            "text": "Take a closer look at the cockpit: this Fearless Plus P S has a 26.03-centimetre touchscreen and a matching-size driver display.",
+            "fact_ids": [
+              "F007",
+              "F009"
+            ],
+            "visual_ref": "im08"
+          },
+          {
+            "id": "tech-convenience-L2",
+            "text": "On the petrol automatic, JBL audio with a subwoofer is another detail to try.",
+            "fact_ids": [
+              "F026"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "tech-convenience-D1",
+            "text": "The 26.03-centimetre touchscreen begins at Pure Plus. The same-size driver display is listed on Fearless Plus P S in the petrol and diesel range.",
+            "fact_ids": [
+              "F007",
+              "F009"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "tech-convenience-D2",
+            "text": "Creative adds the surround-view camera and blind-view monitor; front parking sensors start at Creative Plus P S in the petrol and diesel range.",
+            "fact_ids": [
+              "F022",
+              "F023"
+            ],
+            "visual_ref": "im04"
+          },
+          {
+            "id": "ownership-details-L1",
+            "text": "For the buying decision, get a current on-road quote for your exact variant.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "ownership-details-L2",
+            "text": "Tata advertises a three-year, 100,000-kilometre warranty headline. Read the full written coverage and exclusions before deciding.",
+            "fact_ids": [
+              "F027"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "ownership-details-D1",
+            "text": "The advertised starting price is 7.39 lakh rupees ex-showroom, subject to change. It isn't a quote for this Fearless Plus P S automatic.",
+            "fact_ids": [
+              "F001"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "ownership-details-D2",
+            "text": "For selected variants, Flexi EMI is advertised from 6,499 rupees for the first six months, with higher instalments later. Final EMI and finance remain at the financier's discretion.",
+            "fact_ids": [
+              "F002"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "close-L1",
+            "text": "We've looked at the cabin, family equipment and petrol automatic. The next useful check is how the seats, visibility and gearbox feel to you.",
+            "fact_ids": [
+              "F019",
+              "F020",
+              "F003",
+              "F004"
+            ],
+            "visual_ref": "im01"
+          },
+          {
+            "id": "close-L2",
+            "text": "Choose Book Test Drive when you're ready, or stay here and ask another question.",
+            "fact_ids": [],
+            "visual_ref": "im01"
+          }
+        ],
+        "intake_q1": "Welcome to the Tata Nexon. What matters most in your next car, or would you prefer a quick look around?",
+        "checkins": [
+          {
+            "segment_id": "intro-overview",
+            "text": ""
+          },
+          {
+            "segment_id": "three-reminders",
+            "text": ""
+          },
+          {
+            "segment_id": "exterior-stance",
+            "text": "Does that cover what you wanted to know about the exterior?"
+          },
+          {
+            "segment_id": "cabin-comfort",
+            "text": "How does that fit what you want from the cabin?"
+          },
+          {
+            "segment_id": "boot-practicality",
+            "text": "Does that help with the luggage checks you want to make?"
+          },
+          {
+            "segment_id": "powertrain-choices",
+            "text": "Is an automatic the direction you're leaning towards?"
+          },
+          {
+            "segment_id": "safety-standards",
+            "text": "Does that cover your main safety concerns?"
+          },
+          {
+            "segment_id": "tech-convenience",
+            "text": "Does that cover the cockpit features you wanted to see?"
+          },
+          {
+            "segment_id": "ownership-details",
+            "text": ""
+          }
+        ],
+        "segments": [
+          {
+            "id": "intro-overview",
+            "title": "Tata Nexon, up close",
+            "outcome": "Explore the selected petrol automatic without assuming the buyer's needs"
+          },
+          {
+            "id": "three-reminders",
+            "title": "Your shortlist starts here",
+            "outcome": "Cabin features, driving choice and standard safety equipment"
+          },
+          {
+            "id": "exterior-stance",
+            "title": "Take in the stance",
+            "outcome": "Published clearance with its variant qualification"
+          },
+          {
+            "id": "cabin-comfort",
+            "title": "Settle into the cabin",
+            "outcome": "Front-seat ventilation and rear vents on the selected trim"
+          },
+          {
+            "id": "boot-practicality",
+            "title": "Room for your plans",
+            "outcome": "Published boot capacity and a personal luggage-fit check"
+          },
+          {
+            "id": "powertrain-choices",
+            "title": "Find your driving rhythm",
+            "outcome": "Explore the selected petrol automatic in a test drive"
+          },
+          {
+            "id": "safety-standards",
+            "title": "Safety starts with the details",
+            "outcome": "Standard equipment and the scoped manufacturer-reported rating"
+          },
+          {
+            "id": "tech-convenience",
+            "title": "Your cockpit, closer",
+            "outcome": "Displays and equipment tied to the selected trim"
+          },
+          {
+            "id": "ownership-details",
+            "title": "Make the next step count",
+            "outcome": "An exact quote and written ownership terms"
+          }
+        ],
+        "realign_visuals": false
+      },
+      "status": 200
+    },
+    {
+      "route": "/align/deck",
+      "method": "PATCH",
+      "payload": {
+        "slides": [
+          {
+            "slide_id": "sl00",
+            "title": "Tata Nexon",
+            "image_id": "im01",
+            "callouts": []
+          },
+          {
+            "slide_id": "sl01",
+            "title": "Tata Nexon, up close",
+            "image_id": "im01",
+            "callouts": []
+          },
+          {
+            "slide_id": "sl02",
+            "title": "Your shortlist starts here",
+            "image_id": "im05",
+            "callouts": [
+              {
+                "id": "sl02-c4",
+                "text": "Fearless+PS petrol/diesel: ventilated front seats",
+                "fact_ids": [
+                  "F020"
+                ],
+                "part": "seat",
+                "placement": "overlay"
+              },
+              {
+                "id": "sl02-c5",
+                "text": "Six airbags and stability control: standard",
+                "fact_ids": [
+                  "F003"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl03",
+            "title": "Take in the stance",
+            "image_id": "im02",
+            "callouts": [
+              {
+                "id": "sl03-c2",
+                "text": "208 mm clearance; varies by variant",
+                "fact_ids": [
+                  "F013"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl04",
+            "title": "Settle into the cabin",
+            "image_id": "im05",
+            "callouts": [
+              {
+                "id": "sl04-c3",
+                "text": "Fearless+PS petrol/diesel: ventilated front seats",
+                "fact_ids": [
+                  "F020"
+                ],
+                "part": "seat",
+                "placement": "overlay"
+              },
+              {
+                "id": "sl04-c4",
+                "text": "Pure+ upwards, petrol/diesel: rear air vents",
+                "fact_ids": [
+                  "F021"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl05",
+            "title": "Room for your plans",
+            "image_id": "im06",
+            "callouts": [
+              {
+                "id": "sl05-c2",
+                "text": "Petrol/diesel: 382L boot, measured to ISO V215",
+                "fact_ids": [
+                  "F014"
+                ],
+                "part": "boot",
+                "placement": "overlay"
+              },
+              {
+                "id": "sl05-c3",
+                "text": "Creative+PS/Fearless+PS petrol/diesel: 60:40 rear seats",
+                "fact_ids": [
+                  "F024"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl06",
+            "title": "Find your driving rhythm",
+            "image_id": "im01",
+            "callouts": [
+              {
+                "id": "sl06-c2",
+                "text": "Fearless+PS petrol: seven-speed DCA",
+                "fact_ids": [
+                  "F019"
+                ],
+                "part": "",
+                "placement": "panel"
+              },
+              {
+                "id": "sl06-c3",
+                "text": "Diesel: manual or automated-manual options",
+                "fact_ids": [
+                  "F018"
+                ],
+                "part": "",
+                "placement": "panel"
+              },
+              {
+                "id": "sl06-c4",
+                "text": "CNG: six-speed manual",
+                "fact_ids": [
+                  "F018"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl07",
+            "title": "Safety starts with the details",
+            "image_id": "im01",
+            "callouts": [
+              {
+                "id": "sl07-c1",
+                "text": "Petrol/diesel: 5-star BNCAP, May 2026 scope",
+                "fact_ids": [
+                  "F006"
+                ],
+                "part": "",
+                "placement": "panel"
+              },
+              {
+                "id": "sl07-c3",
+                "text": "Six airbags and stability control: standard",
+                "fact_ids": [
+                  "F003"
+                ],
+                "part": "",
+                "placement": "panel"
+              },
+              {
+                "id": "sl07-c4",
+                "text": "ISOFIX: standard; check child-seat compatibility",
+                "fact_ids": [
+                  "F004"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl08",
+            "title": "Your cockpit, closer",
+            "image_id": "im08",
+            "callouts": [
+              {
+                "id": "sl08-c3",
+                "text": "Pure+ upwards, petrol/diesel: 26.03 cm touchscreen",
+                "fact_ids": [
+                  "F007"
+                ],
+                "part": "touchscreen",
+                "placement": "overlay",
+                "label_pos": {
+                  "x": 0.0401,
+                  "y": 0.0453
+                }
+              },
+              {
+                "id": "sl08-c4",
+                "text": "Fearless+PS petrol/diesel: 26.03 cm driver display",
+                "fact_ids": [
+                  "F009"
+                ],
+                "part": "",
+                "placement": "panel"
+              },
+              {
+                "id": "sl08-c5",
+                "text": "Fearless+PS petrol DCA: JBL audio with subwoofer",
+                "fact_ids": [
+                  "F026"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl09",
+            "title": "Make the next step count",
+            "image_id": "im01",
+            "callouts": [
+              {
+                "id": "sl09-c1",
+                "text": "From ₹7.39 lakh ex-showroom; prices may change",
+                "fact_ids": [
+                  "F001"
+                ],
+                "part": "",
+                "placement": "panel"
+              },
+              {
+                "id": "sl09-c3",
+                "text": "Warranty headline: 3 years | 100,000 km",
+                "fact_ids": [
+                  "F027"
+                ],
+                "part": "",
+                "placement": "panel"
+              }
+            ]
+          },
+          {
+            "slide_id": "sl10",
+            "title": "Your next step",
+            "image_id": "im01",
+            "callouts": []
+          },
+          {
+            "slide_id": "sl11",
+            "title": "Tata Nexon",
+            "image_id": "im01",
+            "callouts": []
+          }
+        ]
+      },
+      "status": 200
+    }
+  ]
+}

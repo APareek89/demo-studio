@@ -16,7 +16,7 @@ from unittest.mock import patch
 
 def run(check, demo_id: str = "generation-fixture") -> None:
     from server import config, media, schemas, sources, store
-    from server.agents import author, plan, principles, qa, understand, visuals, voice
+    from server.agents import author, deck, plan, principles, qa, understand, visuals, voice
     from server.llm import mock
 
     source = {"ref": "src-product", "locator": "page 4 / diesel column / footnote †",
@@ -126,6 +126,19 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         issues = author.validate(jargon, und)
         check("generation: a jargon repair requests moving the whole quantity, never deleting its unit",
               any("complete technical quantity" in issue and "never keep a number while dropping its unit" in issue for issue in issues))
+
+        slide = {"id": "sl01", "kind": "proof", "title": "Driving choices", "image_id": None,
+                 "lines": [{"text": technical["text"], "fact_ids": ["F001"]}]}
+        approved = {row["id"]: row for row in und["facts"] if row.get("approved", True)}
+        with patch.object(deck.claude, "structured", return_value=deck.DeckOut(titles=[], callouts=[])) as model:
+            deck._ask_model(demo, und, planned, [slide], {}, approved)
+        deck_system = model.call_args.args[0]
+        check("generation: deck receives current quote, locator, units, truth and applicability",
+              all(value in deck_system for value in required)
+              and "REJECTED PRODUCT CLAIM" not in deck_system and "REJECTED QUOTE" not in deck_system)
+        check("generation: deck receives shared evidence rules and permits omission when scope cannot fit",
+              principles.EVIDENCE_RULES in deck_system and "omit the callout" in deck_system
+              and "neutral specification" in model.call_args.args[2].model_json_schema()["$defs"]["CalloutOut"]["properties"]["text"]["description"])
 
         for live in (False, True):
             proposed_answer = schemas.QAOut(answer="The diesel automatic's peak torque is 250 Nm, or newton metres.", fact_ids=["F001"], answered=True)

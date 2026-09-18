@@ -1,0 +1,28 @@
+{
+  "iteration": 2,
+  "demo_id": "dm_36d47b86",
+  "status": "reviewed-awaiting-build",
+  "read_started_at": "2026-09-18T14:26:49.561797+00:00",
+  "model_tier": "customer",
+  "build_attempts": 0,
+  "source_count": 21,
+  "real_customer_cases": {
+    "Q01": "PENDING",
+    "Q02": "PENDING",
+    "Q03": "PENDING",
+    "Q04": "PENDING",
+    "Q05": "PENDING",
+    "Q06": "PENDING",
+    "Q07": "PENDING",
+    "Q08": "PENDING",
+    "Q09": "PENDING",
+    "Q10": "PENDING",
+    "Q11": "PENDING",
+    "Q12": "PENDING"
+  },
+  "acoustic_validation": "NOT TESTED",
+  "read_commit": "bfbda1f657252b9add648575541f1882fccccf8e",
+  "align_approved_at": "2026-09-18T14:50:01.487831+00:00",
+  "faq_edits_verified": 4,
+  "prebuild_browser_cases": "20/20 synthetic"
+}

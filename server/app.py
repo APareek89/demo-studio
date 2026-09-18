@@ -593,6 +593,65 @@ async def edit_aligned_script(demo_id: str, req: Request):
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"], "issues": issues}
 
 
+@app.patch("/api/demos/{demo_id}/align/faq/{question_id}")
+async def edit_aligned_faq(demo_id: str, question_id: str, req: Request):
+    """Save a human-reviewed supported answer without regenerating the FAQ bank."""
+    demo = _demo_or_404(demo_id)
+    body = await req.json()
+    if not isinstance(body, dict) or set(body) != {"answer", "fact_ids"}:
+        raise HTTPException(400, "Send answer and fact_ids only; this editor saves supported answers")
+    text, ids = body["answer"], body["fact_ids"]
+    if not isinstance(text, str) or not 1 <= len(text.strip()) <= 2000:
+        raise HTTPException(400, "answer must contain 1–2000 characters")
+    if not isinstance(ids, list) or any(not isinstance(fid, str) or not fid.strip() for fid in ids):
+        raise HTTPException(400, "fact_ids must be a list of fact ids")
+    if len(ids) != len(set(ids)):
+        raise HTTPException(400, "fact_ids must not contain duplicates")
+    text = text.strip()
+    und = store.read_json(demo_id, "understanding.json") or {}
+    allowed = qa.approved_fact_ids(und, demo.get("settings", {}).get("competition") == "on")
+    if set(ids) - allowed:
+        raise HTTPException(400, "Every citation must be approved and allowed by the comparison setting")
+    valid, ungrounded = author.ungrounded(text, ids, allowed)
+    if ungrounded:
+        raise HTTPException(400, "That answer states an uncited figure or claim; cite approved facts first")
+    if not valid:
+        raise HTTPException(400, "A supported answer needs at least one approved fact id")
+    bank = store.read_json(demo_id, "faq.json") or {}
+    matches = [entry for entry in bank.get("entries", []) if entry.get("id") == question_id]
+    if not matches:
+        raise HTTPException(404, "FAQ question not found")
+    if len(matches) != 1:
+        raise HTTPException(400, "FAQ question id is ambiguous")
+    if graph.is_running(demo_id) or demo.get("running") or any(stage.get("status") == "running" for stage in demo.get("stages", {}).values()):
+        raise HTTPException(409, "Wait for the current stage to finish before reviewing an FAQ answer")
+    if demo.get("stages", {}).get("faq", {}).get("status") != "done" or bank.get("partial") or bank.get("registry_hash") != faq._registry_hash(demo_id):
+        raise HTTPException(409, "Refresh the FAQ bank from the current facts before editing its answers")
+    entry = matches[0]
+    # An old answer's audio, image or clarification must not survive a correction.
+    visual = None
+    ref = visuals.for_facts(und, valid)
+    for item in und.get("images", []) + und.get("shots", []):
+        if item.get("id") == ref and store.visual_allowed(demo, item.get("source_id")):
+            visual = {"kind": "image" if item in und.get("images", []) else "shot", "ref": ref, "source_id": item.get("source_id")}
+            if visual["kind"] == "shot":
+                visual.update({"start": item.get("start"), "end": item.get("end")})
+            break
+    slides = deck.slides_with_script((store.read_json(demo_id, "deck.json") or {}).get("slides", []),
+                                    store.read_json(demo_id, "script.json") or {})
+    entry.update({"answer": text, "fact_ids": valid, "answered": True, "audio": None,
+                  "visual": visual, "offer_callback": False, "clarifying_question": "",
+                  "slide_id": deck.slide_for(slides, valid, entry["question"])[0]})
+    entry.pop("error", None)
+    bank["answered"] = sum(bool(e.get("answered")) for e in bank.get("entries", []))
+    store.write_json(demo_id, "faq.json", bank)
+    orchestrator.invalidate(demo_id, "faq")
+    orchestrator.set_stage(demo_id, "faq", "done", message="reviewed FAQ answer saved; recording requires rebuild")
+    store.update(demo_id, lambda d: d["approvals"].update({"faq": False}))
+    runlog.event(demo_id, f"FAQ {question_id} edited directly", "Reviewed answer saved with approved citations; FAQ requires re-approval and its recording will be rebuilt.")
+    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+
+
 @app.patch("/api/demos/{demo_id}/align/deck")
 async def edit_aligned_deck(demo_id: str, req: Request):
     """Slide review in Align: picture, title, callout text / facts / part, dragged positions. Saved to deck-overrides.json

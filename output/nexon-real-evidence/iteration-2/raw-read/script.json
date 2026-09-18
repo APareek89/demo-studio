@@ -1,0 +1,768 @@
+{
+  "segments": [
+    {
+      "id": "intro-overview",
+      "title": "Welcome to Tata Nexon",
+      "role": "intro",
+      "topic": "overview",
+      "outcome": "",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "The Tata Nexon is a compact SUV built under four metres for easy city handling and relaxed highway driving.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [
+            "F012"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "intro-overview-L1",
+          "start": 0.0,
+          "duration": 10.0,
+          "exact": false
+        },
+        {
+          "text": "It gives you flexible cabin room and powertrain choices tailored to your daily routine.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "intro-overview-L2",
+          "start": 10.0,
+          "duration": 7.4,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "Its overall length is 3,995 millimetres with a wheelbase of 2,498 millimetres.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F012"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "intro-overview-D1"
+        },
+        {
+          "text": "This keeps parking manageable in dense urban spaces while preserving passenger legroom.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "intro-overview-D2"
+        }
+      ],
+      "start": 0.0,
+      "duration": 17.4,
+      "spoken": 17.4
+    },
+    {
+      "id": "three-reminders",
+      "title": "Three Highlights to Guide Your Tour",
+      "role": "outcome",
+      "topic": "pillars",
+      "outcome": "Three core pillars spanning comfort, engine flexibility, and safety",
+      "usp_ids": [
+        "usp-comfort",
+        "usp-powertrains",
+        "usp-safety"
+      ],
+      "lines": [
+        {
+          "text": "The three things I'd pay attention to are available seat ventilation, flexible engine choices, and standard five-star safety architecture.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F003",
+            "F007",
+            "F020"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-L1",
+          "start": 17.4,
+          "duration": 10.0,
+          "exact": false
+        },
+        {
+          "text": "You can steer us toward whichever matters most to you first.",
+          "step": "advance",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-L2",
+          "start": 27.4,
+          "duration": 5.8,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "We can explore certified safety ratings, boot volume, or transmission choices whenever you wish.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [
+            "F006",
+            "F014",
+            "F018"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-D1"
+        },
+        {
+          "text": "Tell me anytime which part of the car you want to inspect in detail.",
+          "step": "advance",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "three-reminders-D2"
+        }
+      ],
+      "start": 17.4,
+      "duration": 15.8,
+      "spoken": 15.8
+    },
+    {
+      "id": "exterior-stance",
+      "title": "Compact Proportions and Ground Clearance",
+      "role": "proof",
+      "topic": "exterior",
+      "outcome": "Evaluating sub-4-meter dimensions and unladen ground clearance",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "One thing you'll notice first is the stance.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": "Tata Nexon exterior"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "exterior-stance-L1",
+          "start": 33.2,
+          "duration": 4.2,
+          "exact": false
+        },
+        {
+          "text": "With an unladen ground clearance of 208 millimetres, it gives you useful underbody margin on rough roads.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F013"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "exterior-stance-L2",
+          "start": 37.4,
+          "duration": 8.9,
+          "exact": false
+        }
+      ],
+      "checkin": "Does that ground clearance suit the roads you usually travel on?",
+      "deeper": [
+        {
+          "text": "The SUV measures 1,804 millimetres wide and 1,620 millimetres tall across all personas.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F012"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "exterior-stance-D1"
+        },
+        {
+          "text": "Wheel sizes range from 195/60 R16 on Smart and Pure trims to 215/60 R16 on Creative and Fearless.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F017"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "exterior-stance-D2"
+        }
+      ],
+      "checkin_start": 46.3,
+      "checkin_duration": 5.8,
+      "start": 33.2,
+      "duration": 18.9,
+      "spoken": 13.1
+    },
+    {
+      "id": "cabin-comfort",
+      "title": "Interior Comfort and Climate",
+      "role": "proof",
+      "topic": "comfort",
+      "outcome": "Inspecting front-seat ventilation and passenger climate comfort",
+      "usp_ids": [
+        "usp-comfort"
+      ],
+      "lines": [
+        {
+          "text": "Now the part you'd live with daily.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "cabin-comfort-L1",
+          "start": 52.1,
+          "duration": 3.7,
+          "exact": false
+        },
+        {
+          "text": "Rear air conditioning vents come standard from the Pure Plus trim, while front seat ventilation is included on the Fearless Plus PS.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F020",
+            "F021"
+          ],
+          "card": "contrast",
+          "unverified": false,
+          "id": "cabin-comfort-L2",
+          "start": 55.8,
+          "duration": 11.6,
+          "exact": false
+        }
+      ],
+      "checkin": "Would front ventilated seats make a big difference in your daily drive?",
+      "deeper": [
+        {
+          "text": "Ventilated seats are fitted specifically for both the driver and co-driver on the Fearless Plus PS trim.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "Ventilated front seats"
+          },
+          "fact_ids": [
+            "F020"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cabin-comfort-D1"
+        },
+        {
+          "text": "Rear passengers benefit from dedicated airflow vents across Pure Plus, Creative, and Fearless variants.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F021"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "cabin-comfort-D2"
+        }
+      ],
+      "checkin_start": 67.4,
+      "checkin_duration": 6.3,
+      "start": 52.1,
+      "duration": 21.6,
+      "spoken": 15.3
+    },
+    {
+      "id": "boot-practicality",
+      "title": "Boot Capacity and Storage Flexibility",
+      "role": "proof",
+      "topic": "practicality",
+      "outcome": "Assessing ISO-measured boot capacity and seating flexibility",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Here's the part people ask about for weekend luggage.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im06",
+            "focus": "Rear luggage boot space"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "boot-practicality-L1",
+          "start": 73.7,
+          "duration": 4.7,
+          "exact": false
+        },
+        {
+          "text": "Petrol and diesel trims offer 382 litres of boot space, while the dual-cylinder CNG setup provides 321 litres.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F014",
+            "F016"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "boot-practicality-L2",
+          "start": 78.4,
+          "duration": 9.5,
+          "exact": false
+        }
+      ],
+      "checkin": "Will that boot capacity accommodate your typical family packing?",
+      "deeper": [
+        {
+          "text": "Boot volume is certified under ISO V215 standards, and the CNG variant uses twin cylinders totalling 60 litres water capacity.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F014",
+            "F016"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "boot-practicality-D1"
+        },
+        {
+          "text": "Starting on Creative Plus PS, you also get sixty-forty flip and fold rear seats to handle longer cargo.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F024"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "boot-practicality-D2"
+        }
+      ],
+      "checkin_start": 87.9,
+      "checkin_duration": 4.7,
+      "start": 73.7,
+      "duration": 18.9,
+      "spoken": 14.2
+    },
+    {
+      "id": "powertrain-choices",
+      "title": "Engine and Transmission Choices",
+      "role": "proof",
+      "topic": "performance",
+      "outcome": "Selecting between petrol, diesel, and CNG powertrain configurations",
+      "usp_ids": [
+        "usp-powertrains"
+      ],
+      "lines": [
+        {
+          "text": "When it comes to driving, you have three distinct fuel setups.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "powertrain-choices-L1",
+          "start": 92.6,
+          "duration": 5.8,
+          "exact": false
+        },
+        {
+          "text": "You can choose a 120 PS turbo petrol, a 115 PS turbo diesel, or a twin-cylinder CNG with manual or automatic gearboxes.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F007",
+            "F009",
+            "F011",
+            "F018"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "powertrain-choices-L2",
+          "start": 98.4,
+          "duration": 11.6,
+          "exact": false
+        }
+      ],
+      "checkin": "Do you prefer an automatic gearbox or a manual for your daily trips?",
+      "deeper": [
+        {
+          "text": "The 1.2-litre petrol delivers 170 Nm of torque, while the 1.5-litre diesel produces 260 Nm.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F008",
+            "F010"
+          ],
+          "card": "facts",
+          "unverified": false,
+          "id": "powertrain-choices-D1"
+        },
+        {
+          "text": "If you want the seven-speed dual-clutch automatic, it pairs exclusively with the 1.2-litre petrol engine on Fearless Plus PS.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F018",
+            "F019"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "powertrain-choices-D2"
+        }
+      ],
+      "checkin_start": 110.0,
+      "checkin_duration": 6.8,
+      "start": 92.6,
+      "duration": 24.2,
+      "spoken": 17.4
+    },
+    {
+      "id": "safety-standards",
+      "title": "Standard Protection and Active Safety",
+      "role": "proof",
+      "topic": "safety",
+      "outcome": "Reviewing certified five-star crash ratings and standard safety gear",
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "lines": [
+        {
+          "text": "For complete peace of mind, protection comes built in.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "safety-standards-L1",
+          "start": 116.8,
+          "duration": 4.7,
+          "exact": false
+        },
+        {
+          "text": "Every Nexon trim includes six airbags, electronic stability program, and certified five-star crash test safety.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F003",
+            "F004",
+            "F005",
+            "F006"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "safety-standards-L2",
+          "start": 121.5,
+          "duration": 7.9,
+          "exact": false
+        }
+      ],
+      "checkin": "Is standard safety equipment your top priority when choosing a trim?",
+      "deeper": [
+        {
+          "text": "BNCAP awarded petrol and diesel trims a certified five-star safety rating, matching Global NCAP test scores.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F005",
+            "F006"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "safety-standards-D1"
+        },
+        {
+          "text": "The Fearless Plus PS dual-clutch petrol adds an ADAS suite with autonomous emergency braking and lane keep assist.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F025"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "safety-standards-D2"
+        }
+      ],
+      "checkin_start": 129.4,
+      "checkin_duration": 5.8,
+      "start": 116.8,
+      "duration": 18.4,
+      "spoken": 12.6
+    },
+    {
+      "id": "tech-convenience",
+      "title": "Connected Tech and Audio Features",
+      "role": "features",
+      "topic": "technology",
+      "outcome": "Checking camera views, premium sound, and connected features",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Quickly, a few more things you'll like.",
+          "step": "frame",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "tech-convenience-L1",
+          "start": 135.2,
+          "duration": 3.7,
+          "exact": false
+        },
+        {
+          "text": "Higher trims add a 360-degree surround camera, front parking sensors, premium JBL audio, and first-year connected app access.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F022",
+            "F023",
+            "F026",
+            "F028"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "tech-convenience-L2",
+          "start": 138.9,
+          "duration": 9.5,
+          "exact": false
+        }
+      ],
+      "checkin": "Which of these digital features would you like to explore further?",
+      "deeper": [
+        {
+          "text": "The 360-degree camera includes a blind view monitor and becomes available from the Creative persona upwards.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F022"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "tech-convenience-D1"
+        },
+        {
+          "text": "The nine-speaker JBL sound setup with subwoofer is reserved for the Fearless Plus PS dual-clutch petrol.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F026"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "tech-convenience-D2"
+        }
+      ],
+      "checkin_start": 148.4,
+      "checkin_duration": 5.8,
+      "start": 135.2,
+      "duration": 19.0,
+      "spoken": 13.2
+    },
+    {
+      "id": "ownership-details",
+      "title": "Pricing, Warranty, and Clear Next Steps",
+      "role": "establish",
+      "topic": "ownership",
+      "outcome": "Clarifying published pricing, warranty badge, and local dealer checks",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "The Nexon starts at 7.39 Lakhs ex-showroom, backed by an advertised three-year or 100,000-kilometre warranty badge.",
+          "step": "establish",
+          "visual": null,
+          "fact_ids": [
+            "F001",
+            "F027"
+          ],
+          "card": "price",
+          "unverified": false,
+          "id": "ownership-details-L1",
+          "start": 154.2,
+          "duration": 8.4,
+          "exact": false
+        },
+        {
+          "text": "Official figures don't state real-world mileage or wading depth, so verify exact on-road costs and tests with your dealer.",
+          "step": "say",
+          "visual": null,
+          "fact_ids": [],
+          "card": "none",
+          "unverified": false,
+          "id": "ownership-details-L2",
+          "start": 162.6,
+          "duration": 10.0,
+          "exact": false
+        }
+      ],
+      "checkin": "Shall we check dealer availability or booking steps next?",
+      "deeper": [
+        {
+          "text": "A flexi finance scheme starts at 6,499 rupees monthly for the first six months, subject to lender approval.",
+          "step": "show",
+          "visual": null,
+          "fact_ids": [
+            "F002"
+          ],
+          "card": "price",
+          "unverified": false,
+          "id": "ownership-details-D1"
+        },
+        {
+          "text": "Roadside assistance is available across India through Tata's toll-free line at 1800 209 8282.",
+          "step": "translate",
+          "visual": null,
+          "fact_ids": [
+            "F029"
+          ],
+          "card": "none",
+          "unverified": false,
+          "id": "ownership-details-D2"
+        }
+      ],
+      "checkin_start": 172.6,
+      "checkin_duration": 4.7,
+      "start": 154.2,
+      "duration": 23.1,
+      "spoken": 18.4
+    }
+  ],
+  "closing": [
+    {
+      "text": "The strongest fit is a proven compact SUV with standard five-star safety, and the main thing to verify is your preferred engine feel.",
+      "step": "frame",
+      "visual": null,
+      "fact_ids": [
+        "F003",
+        "F005",
+        "F006"
+      ],
+      "card": "summary",
+      "unverified": false,
+      "id": "close-L1",
+      "start": 177.3,
+      "duration": 12.1
+    },
+    {
+      "text": "Take the next step by selecting Book Test Drive to try it out at your nearest showroom.",
+      "step": "advance",
+      "visual": null,
+      "fact_ids": [],
+      "card": "none",
+      "unverified": false,
+      "id": "close-L2",
+      "start": 189.4,
+      "duration": 8.9
+    }
+  ],
+  "intake_q1": "Welcome to Tata Motors! Would you like to tell me what you're looking for in your next SUV, or shall we jump straight in?",
+  "intake_q2": "",
+  "issues": [],
+  "version": 2,
+  "intake_audio": {},
+  "visual_audit": {
+    "method": "gemini_pixels",
+    "model": "gemini-3.6-flash",
+    "line_count": 38,
+    "image_count": 8,
+    "missing_line_count": 20
+  },
+  "timeline": {
+    "total_seconds": 198.3,
+    "batches": [
+      {
+        "id": "intro-overview",
+        "title": "Welcome to Tata Nexon",
+        "role": "intro",
+        "start": 0.0,
+        "duration": 17.4,
+        "spoken": 17.4,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "three-reminders",
+        "title": "Three Highlights to Guide Your Tour",
+        "role": "outcome",
+        "start": 17.4,
+        "duration": 15.8,
+        "spoken": 15.8,
+        "checkin": -0.0,
+        "over_20s": false
+      },
+      {
+        "id": "exterior-stance",
+        "title": "Compact Proportions and Ground Clearance",
+        "role": "proof",
+        "start": 33.2,
+        "duration": 18.9,
+        "spoken": 13.1,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "cabin-comfort",
+        "title": "Interior Comfort and Climate",
+        "role": "proof",
+        "start": 52.1,
+        "duration": 21.6,
+        "spoken": 15.3,
+        "checkin": 6.3,
+        "over_20s": false
+      },
+      {
+        "id": "boot-practicality",
+        "title": "Boot Capacity and Storage Flexibility",
+        "role": "proof",
+        "start": 73.7,
+        "duration": 18.9,
+        "spoken": 14.2,
+        "checkin": 4.7,
+        "over_20s": false
+      },
+      {
+        "id": "powertrain-choices",
+        "title": "Engine and Transmission Choices",
+        "role": "proof",
+        "start": 92.6,
+        "duration": 24.2,
+        "spoken": 17.4,
+        "checkin": 6.8,
+        "over_20s": false
+      },
+      {
+        "id": "safety-standards",
+        "title": "Standard Protection and Active Safety",
+        "role": "proof",
+        "start": 116.8,
+        "duration": 18.4,
+        "spoken": 12.6,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "tech-convenience",
+        "title": "Connected Tech and Audio Features",
+        "role": "features",
+        "start": 135.2,
+        "duration": 19.0,
+        "spoken": 13.2,
+        "checkin": 5.8,
+        "over_20s": false
+      },
+      {
+        "id": "ownership-details",
+        "title": "Pricing, Warranty, and Clear Next Steps",
+        "role": "establish",
+        "start": 154.2,
+        "duration": 23.1,
+        "spoken": 18.4,
+        "checkin": 4.7,
+        "over_20s": false
+      }
+    ],
+    "exact": false
+  }
+}

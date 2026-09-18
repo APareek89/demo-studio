@@ -1,0 +1,33 @@
+{
+  "frozen_at": "2026-09-18T14:50:01.487831+00:00",
+  "files": {
+    "demo.json": {
+      "sha256": "3f34a7aea5a10480fbe7cf525647ab5535ee4034dc33af70a051c4294a77bfbd",
+      "bytes": 11022
+    },
+    "understanding.json": {
+      "sha256": "4a9fcf918f34e8f4f8fb062bad3704f9715c2326cff4cde3b6f779899af08647",
+      "bytes": 91582
+    },
+    "plan.json": {
+      "sha256": "abd4e3a0dc38fdd175d208b53bcb554979d69e9089cabcd934a33526980add19",
+      "bytes": 12786
+    },
+    "script.json": {
+      "sha256": "99d9f6e65c2d095552e828a06ab0bd033b72f3dab3dd29605addec4df07419fa",
+      "bytes": 25545
+    },
+    "deck.json": {
+      "sha256": "391292e35f17af86c09d115ad70d753735d1bf0f106409685fd373818fe8f54f",
+      "bytes": 23951
+    },
+    "deck-overrides.json": {
+      "sha256": "db939e092ec37e8b5a8da3cee1bbc04a483d14031b3c7f6cc3d90b7577d91fc3",
+      "bytes": 8106
+    },
+    "faq.json": {
+      "sha256": "e797d7c6976c851e2f34b4fd3aee7250a033f7748412a6b1fd587bcb793cada0",
+      "bytes": 12128
+    }
+  }
+}

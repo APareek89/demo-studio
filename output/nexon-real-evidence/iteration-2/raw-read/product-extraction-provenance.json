@@ -1,0 +1,94 @@
+{
+  "demo_id": "dm_36d47b86",
+  "iteration": 2,
+  "read_started_at": "2026-09-18T14:26:49.561797+00:00",
+  "understand_completed_at": "2026-09-18T14:28:41.859513+00:00",
+  "extraction_trace_at": "2026-09-18T14:27:34.622926+00:00",
+  "model": "gemini-3.8-flash",
+  "kind": "gemini-fallback",
+  "facts": 29,
+  "raw_registry_sha256": "1dbe622300027330b2539902baf53fc891ce23a7c93220093d0c964806234f7f",
+  "raw_registry_mtime_utc": "2026-09-18T14:28:45.985222+00:00",
+  "product_source_records": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9643729,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_e64b3e",
+      "kind": "url",
+      "name": "Nexon Specifications & Dimensions",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9683552,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_07be3d",
+      "kind": "url",
+      "name": "Tata Nexon Price & Variants in India",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9719129,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_afee4c",
+      "kind": "url",
+      "name": "Nexon variant comparison",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/compare.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.975327,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "mime": "application/pdf",
+      "size": 15291642,
+      "role": "product",
+      "added_at": 1789739230.9918551,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_c9ea48",
+      "kind": "text",
+      "name": "Tata Nexon ICE — reviewed official-source addendum.md",
+      "path": "sources/src_c9ea48_Tata_Nexon_ICE_reviewed_official-source_addendum.md",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "mime": "application/octet-stream",
+      "size": 4255,
+      "role": "product",
+      "added_at": 1789741399.267064,
+      "use_in_demo": true
+    }
+  ],
+  "input_sha256": "6ae819163c68dd743341ab543175a0c99d79a1a824deb49e026a8226651cd444",
+  "pdf_sha256": "d590ff0c550a3de3ae7f77683a474cc7400fb319c16bf0e10a5e0e6cd70f738f",
+  "visual_evidence": [
+    "output/nexon-sources/review/nexon-specs-40.png",
+    "output/nexon-sources/review/nexon-variants-39.png",
+    "output/nexon-sources/review/brochure-38.png",
+    "output/nexon-sources/review/brochure-11.png"
+  ]
+}

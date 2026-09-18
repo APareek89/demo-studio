@@ -1,0 +1,354 @@
+{
+  "id": "dm_36d47b86",
+  "name": "Tata Nexon",
+  "product": {
+    "name": "Tata Nexon",
+    "category": "Compact SUV",
+    "url": "https://tata.cars/nexon/ice.html"
+  },
+  "status": "align",
+  "created_at": 1789736013.958175,
+  "updated_at": 1789742948.620852,
+  "version": 0,
+  "sources": [
+    {
+      "id": "src_73735b",
+      "kind": "url",
+      "name": "Tata Nexon ICE model page",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9643729,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_e64b3e",
+      "kind": "url",
+      "name": "Nexon Specifications & Dimensions",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9683552,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_07be3d",
+      "kind": "url",
+      "name": "Tata Nexon Price & Variants in India",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.9719129,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_afee4c",
+      "kind": "url",
+      "name": "Nexon variant comparison",
+      "path": "",
+      "url": "https://tata.cars/nexon/ice/compare.html",
+      "mime": "text/html",
+      "size": 0,
+      "role": "product",
+      "added_at": 1789736013.975327,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_07ea50",
+      "kind": "url",
+      "name": "Brezza official model page",
+      "path": "",
+      "url": "https://www.marutisuzuki.com/arena/brezza",
+      "mime": "text/html",
+      "size": 0,
+      "role": "competitor",
+      "added_at": 1789736013.979224,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_acce5c",
+      "kind": "url",
+      "name": "Venue official model page",
+      "path": "",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "mime": "text/html",
+      "size": 0,
+      "role": "competitor",
+      "added_at": 1789736013.9832551,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_a958c6",
+      "kind": "image",
+      "name": "Tata Nexon — exterior-hero",
+      "path": "sources/src_a958c6_exterior-hero.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-0-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 27943,
+      "role": "hero",
+      "added_at": 1789739230.879513,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_77c02b",
+      "kind": "image",
+      "name": "Tata Nexon — exterior-side",
+      "path": "sources/src_77c02b_exterior-side.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-4-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 30369,
+      "role": "product",
+      "added_at": 1789739230.886615,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_18b690",
+      "kind": "image",
+      "name": "Tata Nexon — exterior-angle-3",
+      "path": "sources/src_18b690_exterior-angle-3.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-18-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 30291,
+      "role": "product",
+      "added_at": 1789739230.89324,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_1db8e5",
+      "kind": "image",
+      "name": "Tata Nexon — dashboard",
+      "path": "sources/src_1db8e5_dashboard.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/three-tone-dashboard-1?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 128199,
+      "role": "product",
+      "added_at": 1789739230.900119,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_dd0ccf",
+      "kind": "image",
+      "name": "Tata Nexon — seating",
+      "path": "sources/src_dd0ccf_seating.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/premium-ventilated-leatherette-seats?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 128545,
+      "role": "product",
+      "added_at": 1789739230.905452,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_e12f23",
+      "kind": "image",
+      "name": "Tata Nexon — boot",
+      "path": "sources/src_e12f23_boot.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bootspace-v2?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 108200,
+      "role": "product",
+      "added_at": 1789739230.910906,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_6a2af2",
+      "kind": "image",
+      "name": "Tata Nexon — lighting",
+      "path": "sources/src_6a2af2_lighting.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bi-functional-led-lamp?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 119283,
+      "role": "product",
+      "added_at": 1789739230.917513,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_03bb45",
+      "kind": "image",
+      "name": "Tata Nexon — infotainment",
+      "path": "sources/src_03bb45_infotainment.avif",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/floating-infotainment-system?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "mime": "image/avif",
+      "size": 120888,
+      "role": "product",
+      "added_at": 1789739230.923168,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_706e38",
+      "kind": "pdf",
+      "name": "Tata Nexon official brochure",
+      "path": "sources/src_706e38_nexon-brochure-may-2026.pdf",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "mime": "application/pdf",
+      "size": 15291642,
+      "role": "product",
+      "added_at": 1789739230.9918551,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_b28460",
+      "kind": "pdf",
+      "name": "Maruti Suzuki Brezza — brochure",
+      "path": "sources/src_b28460_brezza-brochure.pdf",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "mime": "application/pdf",
+      "size": 8138123,
+      "role": "competitor",
+      "added_at": 1789739231.03114,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_43582f",
+      "kind": "pdf",
+      "name": "Hyundai Venue — brochure",
+      "path": "sources/src_43582f_venue-brochure.pdf",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "mime": "application/pdf",
+      "size": 3608771,
+      "role": "competitor",
+      "added_at": 1789739231.052073,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_73036b",
+      "kind": "text",
+      "name": "Hyundai Venue — official trim-qualified feature tables",
+      "path": "sources/src_73036b_Hyundai_Venue_official_trim-qualified_feature_tables.md",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "mime": "application/octet-stream",
+      "size": 18372,
+      "role": "competitor",
+      "added_at": 1789739231.059977,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_c9ea48",
+      "kind": "text",
+      "name": "Tata Nexon ICE — reviewed official-source addendum.md",
+      "path": "sources/src_c9ea48_Tata_Nexon_ICE_reviewed_official-source_addendum.md",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "mime": "application/octet-stream",
+      "size": 4255,
+      "role": "product",
+      "added_at": 1789741399.267064,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_87ab79",
+      "kind": "text",
+      "name": "Maruti Suzuki Brezza — reviewed official-source addendum.md",
+      "path": "sources/src_87ab79_Maruti_Suzuki_Brezza_reviewed_official-source_addendum.md",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "mime": "application/octet-stream",
+      "size": 3086,
+      "role": "competitor",
+      "added_at": 1789741399.273515,
+      "use_in_demo": true
+    },
+    {
+      "id": "src_64d8ad",
+      "kind": "text",
+      "name": "Hyundai Venue — reviewed official-source addendum.md",
+      "path": "sources/src_64d8ad_Hyundai_Venue_reviewed_official-source_addendum.md",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "mime": "application/octet-stream",
+      "size": 3361,
+      "role": "competitor",
+      "added_at": 1789741399.27889,
+      "use_in_demo": true
+    }
+  ],
+  "stages": {
+    "understand": {
+      "status": "done",
+      "updated_at": 1789742086.0945752,
+      "error": null,
+      "message": "product framing edited directly",
+      "started_at": 1789741609.548618,
+      "seconds": 476.5
+    },
+    "plan": {
+      "status": "done",
+      "updated_at": 1789742212.774705,
+      "error": null,
+      "message": "direct pitch edits saved and validated",
+      "started_at": 1789741721.909738,
+      "seconds": 490.9
+    },
+    "author": {
+      "status": "done",
+      "updated_at": 1789742212.79984,
+      "error": null,
+      "message": "direct script edits saved and validated",
+      "started_at": 1789741741.907997,
+      "seconds": 470.9
+    },
+    "deck": {
+      "status": "done",
+      "updated_at": 1789742754.7840781,
+      "error": null,
+      "message": "slides edited in Align",
+      "started_at": 1789741836.701783,
+      "seconds": 918.1
+    },
+    "faq": {
+      "status": "done",
+      "updated_at": 1789742862.212866,
+      "error": null,
+      "message": "reviewed FAQ answer saved; recording requires rebuild",
+      "started_at": 1789742212.858294,
+      "seconds": 649.4
+    },
+    "voice": {
+      "status": "error",
+      "updated_at": 1789741103.468246,
+      "error": "Voice bank incomplete: 11 FAQ answer(s) and 14 filler line(s) have no audio. Wait for the provider window to reset, then rebuild; partial audio was checkpointed.",
+      "message": "",
+      "started_at": 1789740974.937879,
+      "seconds": 128.5
+    },
+    "rehearsal": {
+      "status": "idle",
+      "updated_at": null,
+      "error": null,
+      "message": ""
+    },
+    "bundle": {
+      "status": "idle",
+      "updated_at": null,
+      "error": null,
+      "message": ""
+    }
+  },
+  "approvals": {
+    "visuals": true,
+    "facts": true,
+    "script": true,
+    "faq": true,
+    "persona": true,
+    "ctas": true
+  },
+  "settings": {
+    "tts_provider": "sarvam",
+    "voice_name": "en-IN-Chirp3-HD-Aoede",
+    "language": "en-IN",
+    "competition": "on",
+    "audience": "everyday",
+    "pitch_minutes": 3,
+    "languages": [
+      "en-IN"
+    ],
+    "rehearsal_questions": 12,
+    "enhance_images": "off",
+    "intro_video": "off",
+    "sarvam_speaker": "priya",
+    "voice_locked": true
+  },
+  "running": null
+}

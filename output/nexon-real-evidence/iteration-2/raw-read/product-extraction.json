@@ -1,0 +1,458 @@
+{
+  "product": {
+    "name": "Tata Nexon",
+    "category": "Compact SUV",
+    "summary": "The Tata Nexon is a sub-4-meter compact SUV available in petrol, diesel, and iCNG powertrain options with manual, AMT, and dual-clutch automatic transmissions. It features standard safety equipment including 6 airbags, ESP, and ISOFIX mounts, alongside available advanced driver assistance systems (ADAS) and a 10.25-inch infotainment display.",
+    "audience": "Individual buyers and families seeking a compact SUV with comprehensive safety features, modern digital tech, and flexible powertrain choices for urban and highway driving."
+  },
+  "facts": [
+    {
+      "kind": "price",
+      "claim": "Starting ex-showroom price",
+      "value": "Rs 7.39 Lakhs*",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Overview banner",
+        "quote": "Starts at Rs 7.39 Lakhs*"
+      },
+      "confidence": 1,
+      "conditions": "Ex-showroom price; subject to change without prior information at the discretion of Tata Motors; contact nearest dealer for exact prices.",
+      "truth": "stated"
+    },
+    {
+      "kind": "offer",
+      "claim": "Starting flexi scheme EMI",
+      "value": "₹6,499",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Finance banner and footnote #",
+        "quote": "Starting EMI of ₹6,499 #"
+      },
+      "confidence": 1,
+      "conditions": "Calculated based on Flexi scheme of Rs. 809 per lac instalment for first 6 months; subsequent EMI after 6 months will be higher; final EMI and finance at sole discretion of financier.",
+      "truth": "modeled"
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section",
+        "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+      },
+      "confidence": 1,
+      "conditions": "Standard across all occupants/seats on new Nexon.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Standard ISOFIX child seat mounts",
+      "value": "ISOFIX standard",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 11, standard-equipment labels and footnote",
+        "quote": "ISOFIX*"
+      },
+      "confidence": 1,
+      "conditions": "Standard across variants; footnoted '* As standard'; attachment-point count and universal compatibility not stated.",
+      "truth": "stated"
+    },
+    {
+      "kind": "claim",
+      "claim": "Global NCAP crash test rating",
+      "value": "5-star rating with highest adult and child safety scores among all Indian cars",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "360° Safety / GNCAP 5 Star Rating",
+        "quote": "The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores, giving it the highest 5-star rating among all Indian cars."
+      },
+      "confidence": 0.4,
+      "conditions": "Manufacturer marketing claim referencing GNCAP test results; specific test protocol/date footnote not detailed on page.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "BNCAP safety rating",
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "FAQ section",
+        "quote": "The Tata Nexon has a 5-star BNCAP safety rating with features including 6 airbags, ADAS, ABS with EBD, ESP, hill assist, TPMS, 360-degree camera with Blind View Monitor, and ISOFIX mounts"
+      },
+      "confidence": 1,
+      "conditions": "Applicable for Petrol & Diesel trims active as on May '26.",
+      "truth": "certified"
+    },
+    {
+      "kind": "spec",
+      "claim": "1.2L Turbocharged Revotron petrol engine output (Website)",
+      "value": "120 PS (88.2 kW) power",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Performance / Turbocharged Engine",
+        "quote": "1.2 l Turbocharged Revotron Petrol with Class-leading 120 PS (88.2 kW) power."
+      },
+      "confidence": 1,
+      "conditions": "BS-VI compliant; petrol fuel variant; class-leading claim reflects manufacturer statement.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "1.2L Turbocharged Revotron petrol engine specifications (Brochure)",
+      "value": "1199 cc, 3-cylinder; Power: 88.2 kW @ 5500 rpm; Torque: 170 Nm @ 1750-4000 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION table",
+        "quote": "1199 cc, 3-cylinder | 88.2 @5500 rpm | 170 @1750-4000 rpm"
+      },
+      "confidence": 1,
+      "conditions": "Petrol fuel.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5L Turbocharged Revotorq diesel engine output (Website)",
+      "value": "115 PS (84.5 kW) power",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Performance / Turbocharged Engine",
+        "quote": "1.5 l Turbocharged Revotorq Diesel with Class-leading 115 PS (84.5 kW) power."
+      },
+      "confidence": 1,
+      "conditions": "BS-VI compliant; diesel fuel variant; class-leading claim reflects manufacturer statement. Disagrees with FAQ in src_e64b3e stating 113 PS.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)",
+      "value": "1497 cc, 4-cylinder; Power: 84.5 kW @ 3750 rpm; Torque: 260 Nm @ 1500-2750 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION table",
+        "quote": "1497 cc, 4-cylinder | 84.5 @3750 rpm | 260 @1500-2750 rpm"
+      },
+      "confidence": 1,
+      "conditions": "Diesel fuel.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "1.2L Turbocharged Revotron iCNG engine specifications (Brochure)",
+      "value": "1199 cc, 3-cylinder; Power: CNG Mode - 73.52 kW @ 5000 rpm, Petrol Mode - 88.52 kW @ 5000 rpm; Torque: CNG Mode - 170 Nm @ 2000 rpm, Petrol Mode - 170 Nm @ 1750 rpm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION table",
+        "quote": "1199 cc, 3-cylinder | CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm | CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+      },
+      "confidence": 1,
+      "conditions": "Petrol + CNG fuel. Power in CNG mode also stated as 73.5 kW on brochure page 27 and 98 PS on src_e64b3e FAQ.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "Vehicle dimensions",
+      "value": "Length: 3,995 mm, Width: 1,804 mm, Height: 1,620 mm, Wheelbase: 2,498 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION table",
+        "quote": "L *W*H (mm) 3995*1804*1620 | Wheelbase (mm) 2498"
+      },
+      "confidence": 1,
+      "conditions": "Applies across ICE personas.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "Ground clearance",
+      "value": "208 mm",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 19 and page 40, Ground Clearance",
+        "quote": "208 mm GROUND CLEARANCE"
+      },
+      "confidence": 1,
+      "conditions": "Unladen; footnoted as varying per variant.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "Boot space capacity",
+      "value": "382 L for Petrol & Diesel; 321 L for CNG",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "FAQ section",
+        "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+      },
+      "confidence": 1,
+      "conditions": "Boot space measured as per ISO V215 standard.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "Fuel tank capacity",
+      "value": "44 L",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION table",
+        "quote": "Fuel Tank Capacity (L) 44"
+      },
+      "confidence": 1,
+      "conditions": "Petrol and Diesel tanks.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "CNG cylinder capacity",
+      "value": "60 (30+30) litres",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 28, Innovative Twin-Cylinder Technology",
+        "quote": "uncompromised fuel capacity of 60* (30+30) litres."
+      },
+      "confidence": 1,
+      "conditions": "Water-equivalent total capacity across dual twin cylinders.",
+      "truth": "stated"
+    },
+    {
+      "kind": "spec",
+      "claim": "Tyre sizes",
+      "value": "195/60 R16 for Smart & Pure Personas; 215/60 R16 for Creative & Fearless Personas",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, TECHNICAL SPECIFICATION table",
+        "quote": "195/60 R16 (Smart & Pure Persona) 215/60 R16 (Creative & Fearless Persona)"
+      },
+      "confidence": 1,
+      "conditions": "Wheel size varies by persona.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Transmission options available",
+      "value": "5-Speed manual, 6-speed manual, 6-speed AMT, and 7-speed DCT (Dual Clutch Transmission) for petrol; 6-speed manual or 6-speed AMT for diesel; 6-speed manual exclusively for iCNG",
+      "source": {
+        "ref": "src_e64b3e",
+        "locator": "FAQ section",
+        "quote": "The Tata Nexon offers multiple transmission choices: 5-Speed manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox."
+      },
+      "confidence": 1,
+      "conditions": "Varies by powertrain choice.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Fearless + PS petrol automatic pairing",
+      "value": "1.2L Turbocharged Petrol paired with 7-Speed DCA",
+      "source": {
+        "ref": "src_c9ea48",
+        "locator": "N5, page 40 matrix & page 18 DCA label",
+        "quote": "row Fearless + PS; engine/fuel header Petrol 1.2 Turbocharged Engine; transmission column DCA; cell ticked."
+      },
+      "confidence": 1,
+      "conditions": "Selected Fearless + PS petrol variant.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Front-seat ventilation",
+      "value": "Ventilated Driver & Co-Driver Seat",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, FEARLESS + PS persona walk",
+        "quote": "Ventilated Driver & Co-Driver Seat"
+      },
+      "confidence": 1,
+      "conditions": "Available on Fearless + PS petrol/diesel persona; does not apply to rear seats or lower trims.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Rear AC vents availability",
+      "value": "Rear AC Vents",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 38, PURE + persona panel",
+        "quote": "Rear AC Vents"
+      },
+      "confidence": 1,
+      "conditions": "Standard on Pure + and inherited by all higher trims (Creative, Fearless).",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "360-degree surround view and Blind View Monitor",
+      "value": "360° HD Surround View System with Blind View Monitor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, CREATIVE persona panel",
+        "quote": "360O HD Surround View System with Blind View Monitor"
+      },
+      "confidence": 1,
+      "conditions": "Introduced at Creative persona and above.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Front parking sensors",
+      "value": "Front Parking Sensor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, CREATIVE + PS persona panel",
+        "quote": "Front Parking Sensor"
+      },
+      "confidence": 1,
+      "conditions": "Available starting on Creative + PS and inherited by Fearless + PS; not available on base Creative.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "Rear seat flexibility",
+      "value": "60:40 Flip & Fold Seats and Rear Seat Armrest with Cup Holder",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 39, CREATIVE + PS persona panel",
+        "quote": "60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder"
+      },
+      "confidence": 1,
+      "conditions": "Introduced at Creative + PS and inherited by Fearless + PS.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "ADAS features suite",
+      "value": "Front Collision Warning, Autonomous Emergency Braking, High Beam Assist, Lane Centering System, Lane Departure Warning, Lane Keep Assist, Traffic Sign Recognition",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Safety section / ADAS",
+        "quote": "Front Collision Warning Autonomous Emergency Braking High Beam Assist Lane Centering System Lane Departure Warning Lane Keep Assist Traffic Sign Recognition"
+      },
+      "confidence": 1,
+      "conditions": "Available only on Fearless + PS DCA; not available on CNG or Diesel variants.",
+      "truth": "stated"
+    },
+    {
+      "kind": "feature",
+      "claim": "JBL sound system with subwoofer",
+      "value": "JBL-Branded 9-Speaker and Subwoofer",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Futuristic Technology",
+        "quote": "JBL-Branded 9-Speaker and Subwoofer"
+      },
+      "confidence": 1,
+      "conditions": "Only available on Fearless + PS DCA; not available on CNG.",
+      "truth": "stated"
+    },
+    {
+      "kind": "policy",
+      "claim": "Advertised basic warranty",
+      "value": "3 years | 100 000 km",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, warranty badge",
+        "quote": "3 years | 100 000 km"
+      },
+      "confidence": 1,
+      "conditions": "Advertised basic warranty headline; specific terms, exclusions, transferability, or 'whichever occurs first' qualification not detailed in source badge.",
+      "truth": "contractual"
+    },
+    {
+      "kind": "feature",
+      "claim": "Connected car app subscription",
+      "value": "First year iRA app subscription free",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "page 40, footnotes",
+        "quote": "First year iRA app subscription free. Renewal charges apply."
+      },
+      "confidence": 1,
+      "conditions": "Free for the first year; renewal charges apply thereafter; iRA connected features only on Petrol & Diesel.",
+      "truth": "contractual"
+    },
+    {
+      "kind": "other",
+      "claim": "Roadside assistance contact",
+      "value": "18002098282",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "Footer",
+        "quote": "For Roadside Assistance, call on - 18002098282"
+      },
+      "confidence": 1,
+      "conditions": "Toll-free roadside assistance contact in India.",
+      "truth": "stated"
+    }
+  ],
+  "unknowns": [
+    {
+      "question": "What is the detailed on-road price breakdown (RTO registration fees, road tax, and handling charges) for my specific city?",
+      "why_customers_ask": "The sources only provide a starting ex-showroom price and disclaim local pricing variations.",
+      "category": "pricing",
+      "suggested_document": "dealer price list for the state"
+    },
+    {
+      "question": "What are the specific warranty exclusions, component coverages, and does it operate strictly on a whichever-comes-first basis?",
+      "why_customers_ask": "The brochure displays a 3-year / 100,000 km headline badge without written policy terms or limitation details.",
+      "category": "warranty_service",
+      "suggested_document": "Owner's warranty booklet / policy terms"
+    },
+    {
+      "question": "What are the scheduled periodic maintenance costs and labor rates across the first 5 years or 50,000 km?",
+      "why_customers_ask": "Buyers want to estimate long-term routine service costs before committing to a purchase.",
+      "category": "warranty_service",
+      "suggested_document": "Estimate Service Cost sheet / PMS schedule"
+    },
+    {
+      "question": "What is the real-world ARAI certified fuel economy (mileage) for the 1.2L Turbo Petrol DCA and 1.5L Diesel manual/AMT?",
+      "why_customers_ask": "Official sources mention multi-drive modes and turbo performance but provide no certified ARAI fuel efficiency figures.",
+      "category": "usage",
+      "suggested_document": "spec sheet PDF"
+    },
+    {
+      "question": "What is the typical waiting period and delivery timeline across variants and colors?",
+      "why_customers_ask": "Prospective buyers need to plan delivery schedules and trade-ins.",
+      "category": "availability",
+      "suggested_document": "dealer variant allocation and delivery schedule"
+    },
+    {
+      "question": "What is the kerb weight and gross vehicle weight (GVW) of each Nexon powertrain variant?",
+      "why_customers_ask": "Weight data is omitted from the specification tables and is relevant for towing, tire wear, and vehicle dynamics.",
+      "category": "features",
+      "suggested_document": "spec sheet PDF"
+    },
+    {
+      "question": "What is the maximum water-wading depth capability of the Tata Nexon?",
+      "why_customers_ask": "While ground clearance is listed at 208 mm, buyers in flood-prone areas inquire about water wading thresholds.",
+      "category": "usage",
+      "suggested_document": "Owner's manual technical data"
+    },
+    {
+      "question": "What are the terms, insurer tie-ups, and add-on coverages (e.g., zero depreciation, engine protect) for Tata Nexon insurance?",
+      "why_customers_ask": "Buyers need to calculate full annual insurance costs and compare partner options.",
+      "category": "insurance",
+      "suggested_document": "insurance partner terms"
+    },
+    {
+      "question": "What are the standard finance interest rates, processing fees, and full amortization schedules beyond the 6-month flexi promotional period?",
+      "why_customers_ask": "The source notes an initial flexi EMI of ₹809 per lakh for 6 months but notes subsequent EMIs will be higher.",
+      "category": "finance",
+      "suggested_document": "EMI schedule / bank tie-up sheet"
+    }
+  ],
+  "brand": {
+    "tone": "Bold, tech-forward, reassuring, and distinctly focused on modern safety and progressive engineering.",
+    "voice_style": "Speak with confident warmth, articulate clarity, and strict adherence to verified specifications without hyperbole.",
+    "dos": [
+      "Explicitly highlight standard safety features such as 6 airbags and ESP across all trims",
+      "Accurately state engine configurations and transmission pairings with exact units",
+      "Clearly explain trim-level dependencies for premium features like ADAS and ventilated seats"
+    ],
+    "donts": [
+      "Do not make unverified claims about real-world fuel economy or water wading depth",
+      "Do not infer warranty terms, exclusions, or whichever-comes-first rules beyond the printed 3-year / 100,000 km badge",
+      "Do not generalize ADAS or DCA transmission availability to diesel or iCNG models"
+    ],
+    "persona_hint": "An authoritative, courteous Tata Motors product specialist who presents accurate technical specifications and transparent commercial conditions."
+  }
+}

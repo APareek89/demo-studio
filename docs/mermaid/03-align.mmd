@@ -17,6 +17,11 @@ flowchart TD
   A7["answer<br/>[term] nothing changes"]:::term
   EDIT["USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome<br/>[ask · edit modal]"]:::ask
   SAVEEDIT["validate schema, source ownership and grounding before save<br/>[FUNCTION · store.edit_fact / author.ungrounded / author.validate]<br/>question audio cleared; affected approvals and downstream work stale<br/>script visual audit only when requested (Gemini vision)"]:::fn
+  FAQEDIT["USER edits a supported FAQ answer + fact ids<br/>[ask · card or Preview · labelled keyboard-focusable editor]<br/>question wording stays fixed; human checks meaning and scope"]:::ask
+  FAQGATE{"finished current bank, no active run,<br/>and every citation approved + competition-eligible?<br/>[FUNCTION · app.edit_aligned_faq]<br/>reject empty citations and uncited claims"}:::dec
+  FAQFAIL["400 invalid answer/citations or 409 stale/partial/running<br/>[term] no artifacts changed"]:::term
+  FAQSAVE["save exact reviewed answer, question identity and registry hash<br/>[FUNCTION · PATCH /align/faq/{question_id}]<br/>clear old audio/error/clarification/callback; recompute allowed visual + slide<br/>slide targeting joins current script to saved deck design; no model call"]:::fn
+  FAQBUILD["FAQ stays done; FAQ approval resets<br/>[FUNCTION · orchestrator.invalidate]<br/>voice / rehearsal / bundle become stale<br/>after approval, ordinary Build voices reviewed words without regenerating FAQ"]:::fn
   REV{"which stage?<br/>[FUNCTION · _revise thread]"}:::dec
   R1["understand(instr) → plan<br/>approvals visuals+facts reset"]:::fn
   R2["plan(instr) → voice sample"]:::fn
@@ -47,6 +52,9 @@ flowchart TD
   A7 --> REPLY
   ATT -.->|"files but no revise action → revise('understand')"| A5
   N6 --> EDIT --> SAVEEDIT --> N6
+  N6 --> FAQEDIT --> FAQGATE
+  FAQGATE -- "no" --> FAQFAIL
+  FAQGATE -- "yes" --> FAQSAVE --> FAQBUILD --> N6
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

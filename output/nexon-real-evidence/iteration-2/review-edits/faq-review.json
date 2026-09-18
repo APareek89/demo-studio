@@ -1,0 +1,252 @@
+{
+  "demo_id": "dm_36d47b86",
+  "status": "reviewed_corrections_prepared_not_applied",
+  "captured_at": "2026-09-18T14:41:08.280555+00:00",
+  "refresh_started_timestamp": 1789742212.858294,
+  "refresh_finished_timestamp": 1789742377.27936,
+  "refresh_seconds": 164.4,
+  "faq_sha256": "73c78d82e5549dd389b432acb605b9e3201c12a157e78e1e5e128101d02e5554",
+  "reviewed_live_registry_sha256": "4a9fcf918f34e8f4f8fb062bad3704f9715c2326cff4cde3b6f779899af08647",
+  "faq_registry_hash": "25a76ecd368c554ecf0b",
+  "matches_live_registry": true,
+  "entry_count": 20,
+  "patch_count": 4,
+  "patch_endpoint": "PATCH /api/demos/dm_36d47b86/align/faq/{id}",
+  "application_note": "Send each row.patch as the endpoint body. Do not replace the whole bank. Existing FAQ route clears affected audio and requires FAQ re-approval.",
+  "rows": [
+    {
+      "id": "Q01",
+      "question": "What is the starting ex-showroom price for the base variant?",
+      "before_answer": "The Tata Nexon has a starting ex-showroom price of Rs 7.39 Lakhs. Because prices are subject to change, we recommend getting an exact quote from your local dealer for your preferred variant.",
+      "before_fact_ids": [
+        "F001"
+      ],
+      "decision": "keep",
+      "reason": "Starting ex-showroom price and dealer-quote/change condition retained."
+    },
+    {
+      "id": "Q02",
+      "question": "How does the flexi EMI scheme work, and what is the minimum monthly installment?",
+      "before_answer": "Under the advertised Flexi scheme, the starting EMI is ₹6,499, calculated at Rs. 809 per lakh for the first 6 months, after which the monthly payment is higher. This offer applies to selected variants, and the final financing terms remain at the sole discretion of the financier.",
+      "before_fact_ids": [
+        "F002"
+      ],
+      "decision": "keep",
+      "reason": "Introductory Flexi figure, first-six-month basis, subsequent increase and financier discretion retained."
+    },
+    {
+      "id": "Q03",
+      "question": "What are the power and torque outputs of this 1.2L turbo petrol engine?",
+      "before_answer": "The 1.2-litre turbocharged petrol engine delivers a maximum power of 88.2 kW at 5,500 rpm. For pulling strength, it produces a peak torque of 170 Nm between 1,750 and 4,000 rpm.",
+      "before_fact_ids": [
+        "F008"
+      ],
+      "decision": "keep",
+      "reason": "Petrol power/torque units and rpm conditions match F008."
+    },
+    {
+      "id": "Q04",
+      "question": "Can I get a dual-clutch automatic transmission on the diesel or CNG models, or is it exclusive to petrol?",
+      "before_answer": "The 7-speed dual-clutch automatic transmission is offered only on the petrol variants. The diesel engine comes with a 6-speed manual or a 6-speed AMT, while the iCNG model is exclusively available with a 6-speed manual gearbox.",
+      "before_fact_ids": [
+        "F018"
+      ],
+      "decision": "keep",
+      "reason": "Fuel-specific transmission choices agree with F018; no named-trim pairing invented."
+    },
+    {
+      "id": "Q05",
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "before_answer": "Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.",
+      "before_fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "decision": "keep",
+      "reason": "Standard airbags/seatbelts/ESC and ISOFIX match F003/F004; no child-seat-fit guarantee."
+    },
+    {
+      "id": "Q06",
+      "question": "What safety ratings did it achieve in the Global NCAP and Bharat NCAP crash tests?",
+      "before_answer": "The Tata Nexon achieved a 5-star rating in Global NCAP crash testing. It also holds a 5-star Bharat NCAP safety rating, which applies to the petrol and diesel trims active as of May 2026.",
+      "before_fact_ids": [
+        "F005",
+        "F006"
+      ],
+      "decision": "keep",
+      "reason": "Named crash ratings and BNCAP petrol/diesel May-2026 scope retained; no rival ranking."
+    },
+    {
+      "id": "Q07",
+      "question": "How much boot space do I get in litres on this petrol model?",
+      "before_answer": "On the petrol Nexon, you get 382 litres of boot space, measured according to the ISO V215 standard. That offers ample room for your regular luggage and family getaways.",
+      "before_fact_ids": [
+        "F014"
+      ],
+      "decision": "patch",
+      "reason": "Remove unsupported ample-luggage/family-getaway benefit; retain the published capacity and measurement basis.",
+      "proposed_patch": {
+        "answer": "The petrol Nexon has a published boot capacity of 382 litres, measured to ISO V215.",
+        "fact_ids": [
+          "F014"
+        ]
+      }
+    },
+    {
+      "id": "Q08",
+      "question": "Do the rear seats fold in a 60:40 split, and do they fold down flat for extra luggage?",
+      "before_answer": "Yes, the Nexon lists 60:40 Flip & Fold rear seats on Creative + PS and Fearless + PS petrol/diesel. I’m not sure from the material I have whether they fold completely flat, and I won’t guess.",
+      "before_fact_ids": [
+        "F024"
+      ],
+      "decision": "keep",
+      "reason": "Correct split-seat scope; flat-floor unknown is explicit."
+    },
+    {
+      "id": "Q09",
+      "question": "What is the ground clearance, and will it scrape over large speed breakers when fully loaded with five people?",
+      "before_answer": "The Nexon’s ground clearance is stated as 208 mm, though it can vary by variant. I’m not sure from the material I have whether it will scrape over large speed breakers when fully loaded with five people, so I won’t guess—best to check that with a test drive on your usual roads.",
+      "before_fact_ids": [
+        "F013"
+      ],
+      "decision": "keep",
+      "reason": "Clearance and variant condition retained; loaded scraping assurance correctly declined."
+    },
+    {
+      "id": "Q10",
+      "question": "What does the standard manufacturer warranty cover in terms of years and kilometres?",
+      "before_answer": "The Tata Nexon comes with an advertised basic warranty of 3 years or 100,000 kilometres. For specific coverage details and full terms, your local dealership can provide complete documentation.",
+      "before_fact_ids": [
+        "F027"
+      ],
+      "decision": "patch",
+      "reason": "Remove unsupported OR relation between warranty limits. Retain advertised numbers and acknowledge missing detailed terms.",
+      "proposed_patch": {
+        "answer": "Tata advertises a basic warranty of three years and one lakh kilometres. The supplied brochure doesn't explain which limit applies first or the exclusions, so please confirm the full warranty terms.",
+        "fact_ids": [
+          "F027"
+        ]
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Does this Fearless + PS trim include both front-seat ventilation and rear AC vents?",
+      "before_answer": "Yes, the Fearless + PS trim includes ventilated seats for both the driver and co-driver. It also comes with rear AC vents to keep everyone in the cabin comfortable.",
+      "before_fact_ids": [
+        "F020",
+        "F021"
+      ],
+      "decision": "patch",
+      "reason": "Remove cabin-comfort promise and preserve documented petrol/diesel applicability.",
+      "proposed_patch": {
+        "answer": "Yes. The documented Fearless + PS petrol and diesel versions include ventilated driver and co-driver seats, along with rear AC vents.",
+        "fact_ids": [
+          "F020",
+          "F021"
+        ]
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "How large is the central infotainment touchscreen and the driver's digital instrument display?",
+      "before_answer": "On the Pure + trim and higher, the central touchscreen infotainment by HARMAN measures 26.03 cm across. The driver's digital instrument cluster is also 26.03 cm in size on the Fearless + PS trim.",
+      "before_fact_ids": [
+        "F007",
+        "F009"
+      ],
+      "decision": "patch",
+      "reason": "Preserve petrol/diesel scope for both trim-specific display claims; do not imply screen width with across.",
+      "proposed_patch": {
+        "answer": "In the documented petrol and diesel range, Pure + and higher have a 26.03 cm HARMAN touchscreen. Fearless + PS also has a 26.03 cm digital driver display.",
+        "fact_ids": [
+          "F007",
+          "F009"
+        ]
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "What is the capacity of the fuel tank on the petrol variant versus the cylinders on the iCNG model?",
+      "before_answer": "The petrol Nexon comes with a fuel tank capacity of 44 litres. On the iCNG variant, it features a twin-cylinder setup with a total capacity of 60 litres, arranged as two 30-litre cylinders.",
+      "before_fact_ids": [
+        "F015",
+        "F016"
+      ],
+      "decision": "keep",
+      "reason": "Fuel/cylinder capacities match F015/F016; no water-capacity or gas-mass equivalence added."
+    },
+    {
+      "id": "Q14",
+      "question": "Is the iRA connected car app included free permanently, or does it require a paid subscription after a trial?",
+      "before_answer": "It is not free permanently. On the Fearless + PS petrol and diesel variants, the first-year iRA app subscription is free, and renewal charges apply after that.",
+      "before_fact_ids": [
+        "F028"
+      ],
+      "decision": "keep",
+      "reason": "iRA trim/fuel scope, first-year free and paid renewal retained."
+    },
+    {
+      "id": "Q15",
+      "question": "Does this specific trim include the branded JBL audio setup with a subwoofer?",
+      "before_answer": "Which trim are you looking at?",
+      "before_fact_ids": [],
+      "decision": "keep",
+      "reason": "Ambiguous trim receives a short clarification, not an unsupported equipment answer."
+    },
+    {
+      "id": "Q16",
+      "question": "Are there any active ADAS features included on this top-spec model?",
+      "before_answer": "Yes, on the Fearless + PS petrol DCA, you get features like Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, and Lane Keep Assist, alongside Traffic Sign Recognition, Lane Departure Warning, and High Beam Assist. Please note that this ADAS suite is exclusive to the petrol automatic and is not available on diesel or CNG versions.",
+      "before_fact_ids": [
+        "F025"
+      ],
+      "decision": "keep",
+      "reason": "ADAS features tied to Fearless + PS petrol DCA; diesel/CNG exclusion retained."
+    },
+    {
+      "id": "Q17",
+      "question": "Does the 360-degree camera also give me a blind view monitor in the instrument cluster when using turn signals?",
+      "before_answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "before_fact_ids": [],
+      "decision": "keep",
+      "reason": "Instrument-cluster/indicator activation detail unsupported; decline retained."
+    },
+    {
+      "id": "Q18",
+      "question": "How does the rear-seat knee room compare directly against the Maruti Brezza or Hyundai Venue?",
+      "before_answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "before_fact_ids": [],
+      "decision": "keep",
+      "reason": "Comparable rear knee-room evidence absent; honest decline retained, not a positive comparison pass."
+    },
+    {
+      "id": "Q19",
+      "question": "What is the realistic waiting period right now if I book this Fearless DCA in a dual-tone finish?",
+      "before_answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "before_fact_ids": [],
+      "decision": "keep",
+      "reason": "Current delivery timing unsupported; decline retained."
+    },
+    {
+      "id": "Q20",
+      "question": "What should I expect for routine maintenance and periodic service costs around the 30,000 km mark?",
+      "before_answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "before_fact_ids": [],
+      "decision": "keep",
+      "reason": "Routine service cost unsupported; decline retained."
+    }
+  ],
+  "checks": {
+    "all_20_reviewed": true,
+    "all_existing_citations_approved": true,
+    "patches_pass_grounding_gate": true,
+    "refreshed_stage_done": true,
+    "partial_false": true,
+    "fresh_after_latest_refresh_start": true,
+    "positive_Brezza_comparison": "PENDING actual customer path Q07",
+    "positive_Venue_comparison": "PENDING actual customer path Q08",
+    "acoustic_validation": "NOT TESTED",
+    "paid_calls": false,
+    "production_writes": false
+  }
+}

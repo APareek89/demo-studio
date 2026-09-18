@@ -1,0 +1,127 @@
+[
+  {
+    "id": "C1-002",
+    "patch": {
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-003",
+    "patch": {
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-004",
+    "patch": {
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-005",
+    "patch": {
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C1-006",
+    "patch": {
+      "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+    }
+  },
+  {
+    "id": "C2-012",
+    "patch": {
+      "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+    }
+  },
+  {
+    "id": "C2-013",
+    "patch": {
+      "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+    }
+  },
+  {
+    "id": "C3-023",
+    "patch": {
+      "value": "20.47 km/l",
+      "source": {
+        "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi Turbo, including printed unit; certification footnote ***"
+      }
+    }
+  },
+  {
+    "id": "C3-024",
+    "patch": {
+      "value": "19.96 km/l",
+      "source": {
+        "locator": "PDF page 10, visually checked fuel-efficiency badge for ZXi/ZXi+ Turbo, including printed unit; certification footnote ***"
+      }
+    }
+  },
+  {
+    "id": "C3-025",
+    "patch": {
+      "value": "21.09 km/l",
+      "source": {
+        "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi MT, including printed unit; certification footnote ***"
+      }
+    }
+  },
+  {
+    "id": "C3-026",
+    "patch": {
+      "value": "20.81 km/l",
+      "source": {
+        "locator": "PDF page 10, visually checked fuel-efficiency badge for ZXi MT, including printed unit; certification footnote ***"
+      }
+    }
+  },
+  {
+    "id": "C3-027",
+    "patch": {
+      "value": "20.17 km/l",
+      "source": {
+        "locator": "PDF page 10, visually checked fuel-efficiency badge for VXi/ZXi/ZXi+ AT, including printed unit; certification footnote ***"
+      }
+    }
+  },
+  {
+    "id": "C3-028",
+    "patch": {
+      "value": "26.90 km/kg",
+      "source": {
+        "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi/ZXi CNG MT, including printed unit; certification footnote ***"
+      }
+    }
+  },
+  {
+    "id": "C4-018",
+    "patch": {
+      "conditions": "On Bluelink-equipped trims: HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10 and HX10 Knight in the reviewed matrix. Three-year subscription period; paid service afterward. Functionality depends on adequate power and uninterrupted network connectivity.",
+      "source": {
+        "locator": "PDF page 20: Bluelink equipment rows; page 21: three-year subscription badge and paid-renewal/network terms",
+        "quote": "Bluelink will be available on paid basis post the 3 year period."
+      }
+    }
+  },
+  {
+    "id": "C6-001",
+    "patch": {
+      "value": "6-speed automatic available on VXi, ZXi and ZXi+; unavailable on LXi",
+      "conditions": "1.5L K15C Petrol ISG engine, India market. Selected comparison: Brezza ZXi+ with 6AT. The 1.0L Turbo Boosterjet row is manual; do not attach its output figures to this automatic."
+    }
+  },
+  {
+    "id": "C6-003",
+    "patch": {
+      "value": "Available on LXi, VXi, ZXi and ZXi+"
+    }
+  },
+  {
+    "id": "C6-004",
+    "patch": {
+      "value": "Available on LXi, VXi, ZXi and ZXi+"
+    }
+  }
+]

@@ -1,0 +1,841 @@
+[
+  {
+    "iteration1_id": "F001",
+    "iteration1_original_claim": "Starting ex-showroom price",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Overview banner",
+      "quote": "Starts at Rs 7.39 Lakhs*"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "Rs 7.39 Lakhs*",
+      "conditions": "Starting ex-showroom price stated on the official model page, checked 18 September 2026; subject to change without prior information; obtain an exact selected-variant dealer quote."
+    },
+    "iteration2_ids": [
+      "F001"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Starting ex-showroom price"
+    ],
+    "iteration2_proposed_claims": [
+      "Starting ex-showroom price"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F002",
+    "iteration1_original_claim": "Starting monthly EMI",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Pricing / EMI section",
+      "quote": "Starting EMI of ₹6,499 #"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "₹6,499",
+      "conditions": "Advertised starting EMI under the Flexi scheme: Rs. 809 per lakh instalment for the first 6 months; subsequent EMI is higher. Offers apply to selected variants and may change; final EMI and finance are at the financier's sole discretion. Not a customer-approved EMI."
+    },
+    "iteration2_ids": [
+      "F002"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Starting flexi scheme EMI"
+    ],
+    "iteration2_proposed_claims": [
+      "Starting flexi scheme EMI"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F003",
+    "iteration1_original_claim": "GNCAP safety rating",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "360° Safety section",
+      "quote": "GNCAP 5 Star Rating The new Tata Nexon is the safest* car on Indian roads with the highest adult and child safety scores"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "5 Star Rating",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "360° Safety section; GNCAP rating label",
+        "quote": "GNCAP 5 Star Rating"
+      },
+      "conditions": "Global NCAP five-star rating as reported by Tata Motors. The extracted statement does not identify the test date, generation or tested variant scope; it does not establish superiority over rivals."
+    },
+    "iteration2_ids": [
+      "F005"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Global NCAP crash test rating"
+    ],
+    "iteration2_proposed_claims": [
+      "Global NCAP crash-test rating"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F004",
+    "iteration1_original_claim": "BNCAP safety rating",
+    "iteration1_original_source": {
+      "ref": "src_e64b3e",
+      "locator": "Frequently Asked Questions",
+      "quote": "The Tata Nexon has a 5-star BNCAP safety rating with features including 6 airbags, ADAS, ABS with EBD, ESP, hill assist, TPMS"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+        "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+      },
+      "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking."
+    },
+    "iteration2_ids": [
+      "F006"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "BNCAP safety rating"
+    ],
+    "iteration2_proposed_claims": [
+      "BNCAP safety rating"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F005",
+    "iteration1_original_claim": "Overall vehicle length",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "L *W*H (mm) 3995*1804*1620"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "3,995 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    },
+    "iteration2_ids": [
+      "F012"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "Vehicle dimensions"
+    ],
+    "iteration2_proposed_claims": [
+      "Vehicle dimensions"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F006",
+    "iteration1_original_claim": "Overall vehicle width",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "L *W*H (mm) 3995*1804*1620"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "1,804 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    },
+    "iteration2_ids": [
+      "F012"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "Vehicle dimensions"
+    ],
+    "iteration2_proposed_claims": [
+      "Vehicle dimensions"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F007",
+    "iteration1_original_claim": "Overall vehicle height",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "L *W*H (mm) 3995*1804*1620"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "1,620 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    },
+    "iteration2_ids": [
+      "F012"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "Vehicle dimensions"
+    ],
+    "iteration2_proposed_claims": [
+      "Vehicle dimensions"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F008",
+    "iteration1_original_claim": "Wheelbase",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Wheelbase (mm) 2498"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "2,498 mm",
+      "truth": "stated",
+      "conditions": "Manufacturer-stated dimensions in the May 2026 brochure; exterior measurements do not establish cabin or rear-seat space."
+    },
+    "iteration2_ids": [
+      "F012"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "Vehicle dimensions"
+    ],
+    "iteration2_proposed_claims": [
+      "Vehicle dimensions"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F009",
+    "iteration1_original_claim": "Ground clearance",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 19 & page 40",
+      "quote": "208 mm GROUND CLEARANCE"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "208 mm",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: ground-clearance row and variant footnote",
+        "quote": "Ground Clearance (mm) 208*"
+      },
+      "conditions": "Varies as per variant (brochure footnote). No loading/unladen condition is stated in the supplied source."
+    },
+    "iteration2_ids": [
+      "F013"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Ground clearance"
+    ],
+    "iteration2_proposed_claims": [
+      "Ground clearance"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F010",
+    "iteration1_original_claim": "Petrol & Diesel boot space",
+    "iteration1_original_source": {
+      "ref": "src_e64b3e",
+      "locator": "Frequently Asked Questions",
+      "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+    },
+    "iteration1_reviewed_patch": {
+      "value": "382 L",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, fuel-column headings, and ISO V215 footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "conditions": "Petrol and diesel column of the May 2026 brochure; manufacturer-stated bootspace as per ISO V215. No practical luggage-fit guarantee or cross-method comparison is established."
+    },
+    "iteration2_ids": [
+      "F014"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "Boot space capacity"
+    ],
+    "iteration2_proposed_claims": [
+      "Boot space capacity"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F011",
+    "iteration1_original_claim": "CNG boot space",
+    "iteration1_original_source": {
+      "ref": "src_e64b3e",
+      "locator": "Frequently Asked Questions",
+      "quote": "Boot space is 321 L for CNG & 382 L for Petrol & Diesel."
+    },
+    "iteration1_reviewed_patch": {
+      "value": "321 L",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, fuel-column headings, and ISO V215 footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "conditions": "Petrol + CNG column of the May 2026 brochure; manufacturer-stated bootspace as per ISO V215. No practical luggage-fit guarantee or cross-method comparison is established."
+    },
+    "iteration2_ids": [
+      "F014"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "Boot space capacity"
+    ],
+    "iteration2_proposed_claims": [
+      "Boot space capacity"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F012",
+    "iteration1_original_claim": "Petrol fuel tank capacity",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Fuel Tank Capacity (L) 44"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "44 L",
+      "truth": "stated",
+      "conditions": "Petrol fuel-tank capacity as listed in the May 2026 brochure."
+    },
+    "iteration2_ids": [
+      "F015"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Fuel tank capacity"
+    ],
+    "iteration2_proposed_claims": [
+      "Fuel tank capacity"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F013",
+    "iteration1_original_claim": "CNG cylinder capacity",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 28, INNOVATIVE TWIN-CYLINDER TECHNOLOGY",
+      "quote": "fuel capacity of 60* (30+30) litres."
+    },
+    "iteration1_reviewed_patch": {
+      "value": "60 (30+30) litres",
+      "truth": "stated",
+      "conditions": "Manufacturer-described combined twin-cylinder fuel capacity for iCNG. The source does not specify water capacity, usable gas quantity or an equivalent mass."
+    },
+    "iteration2_ids": [
+      "F016"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "CNG cylinder capacity"
+    ],
+    "iteration2_proposed_claims": [
+      "CNG cylinder capacity"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F014",
+    "iteration1_original_claim": "Petrol engine displacement and cylinders",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "1199 cc, 3-cylinder",
+      "truth": "stated",
+      "conditions": "Petrol 1.2L Turbocharged Revotron engine."
+    },
+    "iteration2_ids": [
+      "F008"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.2L Turbocharged Revotron petrol engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.2L Turbocharged Revotron petrol engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F015",
+    "iteration1_original_claim": "Petrol engine maximum power",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Power (kW) 88.2 @5500 rpm"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "88.2 kW @ 5500 rpm",
+      "truth": "stated",
+      "conditions": "Petrol 1.2L Turbocharged Revotron engine."
+    },
+    "iteration2_ids": [
+      "F008"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.2L Turbocharged Revotron petrol engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.2L Turbocharged Revotron petrol engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F016",
+    "iteration1_original_claim": "Petrol engine maximum torque",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Torque (Nm) 170 @1750-4000 rpm"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "170 Nm @ 1750-4000 rpm",
+      "truth": "stated",
+      "conditions": "Petrol 1.2L Turbocharged Revotron engine; not the petrol-mode column of the bi-fuel engine."
+    },
+    "iteration2_ids": [
+      "F008"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.2L Turbocharged Revotron petrol engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.2L Turbocharged Revotron petrol engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F017",
+    "iteration1_original_claim": "Diesel engine displacement and cylinders",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "1.5L Turbocharged Revotorq Engine, 1497 cc, 4-cylinder"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "1497 cc, 4-cylinder",
+      "truth": "stated",
+      "conditions": "Diesel 1.5L Turbocharged Revotorq engine."
+    },
+    "iteration2_ids": [
+      "F010"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F018",
+    "iteration1_original_claim": "Diesel engine maximum power",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Power (kW) 84.5 @3750 rpm"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "84.5 kW @ 3750 rpm",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Power (kW), diesel 1.5L Turbocharged Revotorq column",
+        "quote": "84.5 @3750 rpm"
+      },
+      "conditions": "Diesel 1.5L Turbocharged Revotorq engine. This fact uses only the brochure kW expression; conflicting web-page PS expressions are not combined or converted here."
+    },
+    "iteration2_ids": [
+      "F010"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F019",
+    "iteration1_original_claim": "Diesel engine maximum torque",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Torque (Nm) 260 @1500-2750 rpm"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "260 Nm @ 1500-2750 rpm",
+      "truth": "stated",
+      "conditions": "Diesel 1.5L Turbocharged Revotorq engine."
+    },
+    "iteration2_ids": [
+      "F010"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.5L Turbocharged Revotorq diesel engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F020",
+    "iteration1_original_claim": "CNG mode power output",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "CNG Mode - 73.52 @5000 rpm"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "73.52 kW @ 5000 rpm",
+      "truth": "stated",
+      "conditions": "1.2L Turbocharged Revotron bi-fuel engine operating in CNG mode; page-40 expression only."
+    },
+    "iteration2_ids": [
+      "F011"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.2L Turbocharged Revotron iCNG engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.2L Turbocharged Revotron iCNG engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F021",
+    "iteration1_original_claim": "CNG mode torque output",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "CNG Mode - 170 @2000 rpm"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "170 Nm @ 2000 rpm",
+      "truth": "stated",
+      "conditions": "1.2L Turbocharged Revotron bi-fuel engine operating in CNG mode."
+    },
+    "iteration2_ids": [
+      "F011"
+    ],
+    "mapping_kind": "many_old_to_one_new",
+    "iteration2_raw_claims": [
+      "1.2L Turbocharged Revotron iCNG engine specifications (Brochure)"
+    ],
+    "iteration2_proposed_claims": [
+      "1.2L Turbocharged Revotron iCNG engine specifications (Brochure)"
+    ],
+    "reason": "Original source plus claim meaning determines this correspondence; numeric IDs do not. Apply only the reviewed combined patch, not an old single-field value over the new combined fact."
+  },
+  {
+    "iteration1_id": "F022",
+    "iteration1_original_claim": "Available transmissions",
+    "iteration1_original_source": {
+      "ref": "src_e64b3e",
+      "locator": "Frequently Asked Questions",
+      "quote": "5-Speed manual, 6-speed manual, 6-speed AMT, and a 7-speed DCT (Dual Clutch Transmission) for petrol variants. The diesel engine comes with a 6-speed manual gearbox or 6-speed AMT. The iCNG variant is exclusively available with a 6-speed manual gearbox."
+    },
+    "iteration1_reviewed_patch": {
+      "value": "Petrol: 5-speed manual, 6-speed manual, 6-speed AMT, or 7-speed DCT; diesel: 6-speed manual or 6-speed AMT; iCNG: 6-speed manual only.",
+      "conditions": "Official specifications FAQ engine-level choices; availability also varies by trim. Use the brochure powertrain matrix before assigning a transmission to a named variant."
+    },
+    "iteration2_ids": [
+      "F018"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Transmission options available"
+    ],
+    "iteration2_proposed_claims": [
+      "Transmission options available"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F023",
+    "iteration1_original_claim": "Tyre sizes",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Tyre Size (mm) 195/60 R16 (Smart & Pure Persona) 215/60 R16 (Creative & Fearless Persona)"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "195/60 R16 (Smart & Pure) and 215/60 R16 (Creative & Fearless)",
+      "truth": "stated",
+      "conditions": "195/60 R16 for Smart and Pure personas; 215/60 R16 for Creative and Fearless personas, as listed in the May 2026 brochure."
+    },
+    "iteration2_ids": [
+      "F017"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Tyre sizes"
+    ],
+    "iteration2_proposed_claims": [
+      "Tyre sizes"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F024",
+    "iteration1_original_claim": "Braking setup",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 40, TECHNICAL SPECIFICATION",
+      "quote": "Brakes Front Disc, Rear Drum"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "Front Disc, Rear Drum",
+      "truth": "stated",
+      "conditions": "As listed in the May 2026 technical specification table; confirm the selected variant."
+    },
+    "iteration2_ids": [],
+    "mapping_kind": "omitted_unmatched",
+    "iteration2_raw_claims": [],
+    "iteration2_proposed_claims": [],
+    "reason": "No brake fact extracted; do not carry an old F024 citation into new rear-seat F024."
+  },
+  {
+    "iteration1_id": "F025",
+    "iteration1_original_claim": "Standard safety equipment",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Safety section",
+      "quote": "New Nexon takes the safety to new level with 6 Airbags, 3 point ELR for all occupants and Electronic stability program as standard"
+    },
+    "iteration1_reviewed_patch": {},
+    "iteration2_ids": [
+      "F003"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Standard safety equipment"
+    ],
+    "iteration2_proposed_claims": [
+      "Standard safety equipment"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F026",
+    "iteration1_original_claim": "ADAS functions list",
+    "iteration1_original_source": {
+      "ref": "src_706e38",
+      "locator": "page 39, FEARLESS + PS",
+      "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote."
+    },
+    "iteration2_ids": [
+      "F025"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "ADAS features suite"
+    ],
+    "iteration2_proposed_claims": [
+      "ADAS features suite"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F027",
+    "iteration1_original_claim": "Infotainment display size",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Futuristic Technology section",
+      "quote": "26.03 cm Floating Infotainment System by Harman™"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "26.03 cm touchscreen infotainment by HARMAN",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+        "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+      },
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list."
+    },
+    "iteration2_ids": [
+      "F007"
+    ],
+    "mapping_kind": "omitted_in_raw_deliberate_identity_replacement_proposed",
+    "iteration2_raw_claims": [
+      "1.2L Turbocharged Revotron petrol engine output (Website)"
+    ],
+    "iteration2_proposed_claims": [
+      "Infotainment touchscreen size"
+    ],
+    "reason": "No raw same-meaning fact exists. This is an intentional review-time replacement, not an ID match; all new/old references to the target ID must be rewritten."
+  },
+  {
+    "iteration1_id": "F028",
+    "iteration1_original_claim": "Digital instrument cluster size",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Futuristic Technology section",
+      "quote": "26.03 cm Digital Instrument Cluster"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "26.03 cm digital instrument cluster",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel",
+        "quote": "26.03 cm Digital Instrument Cluster"
+      },
+      "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG."
+    },
+    "iteration2_ids": [
+      "F009"
+    ],
+    "mapping_kind": "omitted_in_raw_deliberate_identity_replacement_proposed",
+    "iteration2_raw_claims": [
+      "1.5L Turbocharged Revotorq diesel engine output (Website)"
+    ],
+    "iteration2_proposed_claims": [
+      "Digital instrument cluster size"
+    ],
+    "reason": "No raw same-meaning fact exists. This is an intentional review-time replacement, not an ID match; all new/old references to the target ID must be rewritten."
+  },
+  {
+    "iteration1_id": "F029",
+    "iteration1_original_claim": "Premium sound system",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Futuristic Technology section",
+      "quote": "JBL-Branded 9-Speaker and Subwoofer"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "JBL-branded 9 speakers with subwoofer",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+        "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+      },
+      "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker."
+    },
+    "iteration2_ids": [
+      "F026"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "JBL sound system with subwoofer"
+    ],
+    "iteration2_proposed_claims": [
+      "JBL sound system with subwoofer"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F030",
+    "iteration1_original_claim": "Camera system",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "360° Safety section",
+      "quote": "HD 360-Degree Surround View System with Front Parking Sensor"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "360° HD Surround View System with Blind View Monitor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+        "quote": "HD Surround View System with Blind View Monitor"
+      },
+      "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG."
+    },
+    "iteration2_ids": [
+      "F022"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "360-degree surround view and Blind View Monitor"
+    ],
+    "iteration2_proposed_claims": [
+      "360-degree surround view and Blind View Monitor"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F031",
+    "iteration1_original_claim": "Connected car app",
+    "iteration1_original_source": {
+      "ref": "src_e64b3e",
+      "locator": "Frequently Asked Questions",
+      "quote": "iRA connected car technology with 70+ features"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "iRA Connected Vehicle Features",
+      "truth": "contractual",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel; page 40: subscription and fuel restrictions",
+        "quote": "iRA Connected Vehicle Features"
+      },
+      "conditions": "Fearless + PS in the documented petrol/diesel feature list; not available in CNG. First-year iRA app subscription is free; renewal charges apply. No renewal price is supplied."
+    },
+    "iteration2_ids": [
+      "F028"
+    ],
+    "mapping_kind": "partial_match_expanded_to_restore_reviewed_scope",
+    "iteration2_raw_claims": [
+      "Connected car app subscription"
+    ],
+    "iteration2_proposed_claims": [
+      "iRA connected features and app subscription"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  },
+  {
+    "iteration1_id": "F032",
+    "iteration1_original_claim": "Roadside assistance phone contact",
+    "iteration1_original_source": {
+      "ref": "src_73735b",
+      "locator": "Footer",
+      "quote": "For Roadside Assistance, call on - 18002098282"
+    },
+    "iteration1_reviewed_patch": {
+      "value": "18002098282",
+      "conditions": "Official roadside-assistance contact as printed in the model-page footer. The footer does not establish service hours; connected E-Call/B-Call is a separate qualified feature."
+    },
+    "iteration2_ids": [
+      "F029"
+    ],
+    "mapping_kind": "source_and_meaning_match",
+    "iteration2_raw_claims": [
+      "Roadside assistance contact"
+    ],
+    "iteration2_proposed_claims": [
+      "Roadside assistance contact"
+    ],
+    "reason": "Match uses original source plus meaning. The proposed patch preserves any prior intentional source correction and removes unsupported qualifiers."
+  }
+]

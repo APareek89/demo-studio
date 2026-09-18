@@ -1,0 +1,214 @@
+{
+  "product_count": 29,
+  "reviewed_count": 29,
+  "patch_count": 26,
+  "unchanged_count": 3,
+  "quote_checks": [
+    {
+      "id": "F001",
+      "source_ref": "src_73735b",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F002",
+      "source_ref": "src_73735b",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F003",
+      "source_ref": "src_73735b",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F004",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F005",
+      "source_ref": "src_73735b",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F006",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F007",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F008",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F009",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F010",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F011",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F012",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F013",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F014",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F015",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F016",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F017",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F018",
+      "source_ref": "src_e64b3e",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F019",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": "PDF page 40 matrix; PDF page 18 label"
+    },
+    {
+      "id": "F020",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F021",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F022",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F023",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F024",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F025",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F026",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F027",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": false,
+      "additional_visual_check": "PDF page 40 warranty badge"
+    },
+    {
+      "id": "F028",
+      "source_ref": "src_706e38",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    },
+    {
+      "id": "F029",
+      "source_ref": "src_73735b",
+      "quote_matches_normalized_input": true,
+      "additional_visual_check": null
+    }
+  ],
+  "production_writes": false,
+  "paid_calls": 0,
+  "raw_extraction_to_persisted_differences": [
+    {
+      "id": "F017",
+      "field": "value",
+      "extracted": "195/60 R16 for Smart & Pure Personas; 215/60 R16 for Creative & Fearless Personas",
+      "persisted": "195/60 R16 (Smart & Pure) and 215/60 R16 (Creative & Fearless)"
+    }
+  ],
+  "value_restoration_flags": [
+    "F001",
+    "F006",
+    "F013",
+    "F016",
+    "F017"
+  ],
+  "restoration_limitation": "Previous human edits are restored only by exact claim match and only the value, not conditions/source/truth. The edited flag is not evidence of full human correction preservation.",
+  "store_edit_fact_contract": "26/26 patches accepted against in-memory exact raw registry and actual source records",
+  "store_set_fact_approval_contract": "29/29 approvals accepted in memory",
+  "understanding_schema": "valid after all edits",
+  "network": "socket connect forbidden; no calls",
+  "live_registry_hash_unchanged": true,
+  "live_registry_sha256_at_validation": "483d0af565d7b889abd70c0d7e28af61673eeacaae96512b046230a5529def6a",
+  "validated_at": "2026-09-18T14:33:18.586999+00:00",
+  "final_product_facts_match_raw": true,
+  "subsequent_live_changes": {
+    "top_level_keys": [
+      "unknowns"
+    ],
+    "note": "Later Read stages changed unknowns after isolated validation. No product facts changed. Apply patches through existing API; do not replace the whole understanding snapshot."
+  }
+}

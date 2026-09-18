@@ -1,0 +1,76 @@
+{
+  "read_started_at": "2026-09-18T14:26:49.561797+00:00",
+  "commit": "bfbda1f657252b9add648575541f1882fccccf8e",
+  "files": [
+    {
+      "file": "understanding.json",
+      "stage": {
+        "status": "done",
+        "updated_at": 1789741721.859513,
+        "error": null,
+        "message": "",
+        "started_at": 1789741609.548618,
+        "seconds": 112.3
+      },
+      "source_mtime": 1789741721.8519468,
+      "frozen_at": "2026-09-18T14:28:45.985333+00:00",
+      "sha256": "1dbe622300027330b2539902baf53fc891ce23a7c93220093d0c964806234f7f"
+    },
+    {
+      "file": "plan.json",
+      "stage": {
+        "status": "done",
+        "updated_at": 1789741739.642248,
+        "error": null,
+        "message": "",
+        "started_at": 1789741721.909738,
+        "seconds": 17.7
+      },
+      "source_mtime": 1789741741.9023929,
+      "frozen_at": "2026-09-18T14:29:16.697887+00:00",
+      "sha256": "98a89d71976a4aa75e13ab7ecad93449972685f5c43b6d2e62a3ee6400f54f94"
+    },
+    {
+      "file": "script.json",
+      "stage": {
+        "status": "done",
+        "updated_at": 1789741836.671829,
+        "error": null,
+        "message": "",
+        "started_at": 1789741741.907997,
+        "seconds": 94.8
+      },
+      "source_mtime": 1789741836.6697977,
+      "frozen_at": "2026-09-18T14:30:38.961674+00:00",
+      "sha256": "15ebdd075f15e3b3d8c4d26f800b639c9dd34da3a572a6bc1c567299743c9db6"
+    },
+    {
+      "file": "deck.json",
+      "stage": {
+        "status": "done",
+        "updated_at": 1789741852.836134,
+        "error": null,
+        "message": "",
+        "started_at": 1789741836.701783,
+        "seconds": 16.1
+      },
+      "source_mtime": 1789741852.833471,
+      "frozen_at": "2026-09-18T14:33:58.894431+00:00",
+      "sha256": "f875938825f0ca5b0a99aca9386c26a5b2897218d372db50e435e259fc7583a9"
+    },
+    {
+      "file": "faq.json",
+      "stage": {
+        "status": "done",
+        "updated_at": 1789741993.096708,
+        "error": null,
+        "message": "",
+        "started_at": 1789741852.885163,
+        "seconds": 140.2
+      },
+      "source_mtime": 1789741993.095607,
+      "frozen_at": "2026-09-18T14:33:58.894837+00:00",
+      "sha256": "da5f6a9594bf84366c39ea5adaeaa0e61d60c8a945189e7f1223fd961ac70062"
+    }
+  ]
+}

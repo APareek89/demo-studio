@@ -1,0 +1,2179 @@
+{
+  "demo_id": "dm_36d47b86",
+  "status": "prepared_not_applied",
+  "prepared_at": "2026-09-18T14:33:28.114203+00:00",
+  "iteration2_registry_sha256": "1dbe622300027330b2539902baf53fc891ce23a7c93220093d0c964806234f7f",
+  "iteration1_reviewed_registry_sha256": "653c37a61574efe9bd4d0f02cee6874f7af86c5d218c826629da0f28d7e22ff7",
+  "fact_patch_endpoint": "PATCH /api/demos/dm_36d47b86/align/facts/{id}",
+  "approval_endpoint": "POST /api/demos/dm_36d47b86/align/facts/{id}/approval",
+  "execution_note": "Send each row.patch as the request body. Recheck expected before rows if rival content changes. Apply patches then holds. All source refs retain their owner. No API call made by this audit.",
+  "counts": {
+    "source_groups": 7,
+    "reviewed_facts": 95,
+    "patches": 17,
+    "holds": 3,
+    "expected_approved_after": 92,
+    "old_fact_mappings": 74
+  },
+  "edits": [
+    {
+      "id": "C1-002",
+      "owner_source_id": "src_07ea50",
+      "before": {
+        "kind": "feature",
+        "claim": "Ambient lighting color options",
+        "value": "64-colour",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "Interior #car-detail-interior",
+          "quote": "64-colour Ambient Lighting lets you pick your vibe on an interactive wheel, making the cabin feel unmistakably yours, every single drive."
+        },
+        "confidence": 1.0,
+        "conditions": "New Brezza",
+        "truth": "stated",
+        "id": "C1-002",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        }
+      ]
+    },
+    {
+      "id": "C1-003",
+      "owner_source_id": "src_07ea50",
+      "before": {
+        "kind": "feature",
+        "claim": "Front seat cooling levels",
+        "value": "three levels",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "Interior #car-detail-interior",
+          "quote": "Ventilated Front Seats keep you comfortable with three levels of seat cooling, so you lead every play without breaking a sweat."
+        },
+        "confidence": 1.0,
+        "conditions": "New Brezza",
+        "truth": "stated",
+        "id": "C1-003",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        }
+      ]
+    },
+    {
+      "id": "C1-004",
+      "owner_source_id": "src_07ea50",
+      "before": {
+        "kind": "spec",
+        "claim": "Infotainment screen size",
+        "value": "10.1\"",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "Technology #technology-block",
+          "quote": "Brezza 10.1\" SmartPlay Pro+"
+        },
+        "confidence": 1.0,
+        "conditions": "New Brezza SmartPlay Pro+",
+        "truth": "stated",
+        "id": "C1-004",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        }
+      ]
+    },
+    {
+      "id": "C1-005",
+      "owner_source_id": "src_07ea50",
+      "before": {
+        "kind": "feature",
+        "claim": "App launcher apps support",
+        "value": "35+ apps",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "Technology #technology-block",
+          "quote": "Access 35+ apps including YouTube, Spotify and JioSaavn directly from the screen, so your everyday favourites are always a tap away."
+        },
+        "confidence": 1.0,
+        "conditions": "New Brezza",
+        "truth": "stated",
+        "id": "C1-005",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        }
+      ]
+    },
+    {
+      "id": "C1-006",
+      "owner_source_id": "src_07ea50",
+      "before": {
+        "kind": "feature",
+        "claim": "360 View Camera perspective points",
+        "value": "8-point 3D views",
+        "source": {
+          "ref": "src_07ea50",
+          "locator": "Technology #technology-block",
+          "quote": "See every angle around the car with 8-point 3D views and auto activation during parking, so nothing around you goes unnoticed."
+        },
+        "confidence": 1.0,
+        "conditions": "New Brezza",
+        "truth": "stated",
+        "id": "C1-006",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "ZXi+ trim. Availability is not asserted for the whole Brezza range."
+      },
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        }
+      ]
+    },
+    {
+      "id": "C2-012",
+      "owner_source_id": "src_acce5c",
+      "before": {
+        "kind": "feature",
+        "claim": "Audio speaker setup",
+        "value": "Bose 8-speaker setup",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "Elevating Every Drive with Smart Connectivity and Immersive Tech",
+          "quote": "immersive Bose 8-speaker setup"
+        },
+        "confidence": 1.0,
+        "conditions": "All-new Hyundai VENUE",
+        "truth": "stated",
+        "id": "C2-012",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+      },
+      "reason": "Restore reviewed trim scope; web highlights are not whole-range equipment.",
+      "additional_evidence": [
+        {
+          "source_id": "src_73036b",
+          "file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+          "visual": "output/nexon-sources/review/venue-20.png",
+          "locator": "HTML table 5 row 6"
+        }
+      ]
+    },
+    {
+      "id": "C2-013",
+      "owner_source_id": "src_acce5c",
+      "before": {
+        "kind": "feature",
+        "claim": "Driver assistance system",
+        "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "Where Confidence Meets Cutting-Edge Safety",
+          "quote": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features"
+        },
+        "confidence": 1.0,
+        "conditions": "All-new Hyundai VENUE",
+        "truth": "stated",
+        "id": "C2-013",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "HX10 and HX10 Knight only in the reviewed official feature matrix."
+      },
+      "reason": "Restore reviewed trim scope; web highlights are not whole-range equipment.",
+      "additional_evidence": [
+        {
+          "source_id": "src_73036b",
+          "file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+          "visual": "output/nexon-sources/review/venue-20.png",
+          "locator": "HTML table 2 rows 33–48"
+        }
+      ]
+    },
+    {
+      "id": "C3-023",
+      "owner_source_id": "src_b28460",
+      "before": {
+        "kind": "spec",
+        "claim": "Certified fuel efficiency (LXi/VXi Turbo)",
+        "value": "20.47",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, Fuel efficiency chart and footnote ***",
+          "quote": "20.47 LXi/VXi Turbo"
+        },
+        "confidence": 1.0,
+        "conditions": "LXi/VXi Turbo; certified by test agency under Rule 115 of CMVR 1989",
+        "truth": "certified",
+        "id": "C3-023",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "20.47 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi Turbo, including printed unit; certification footnote ***"
+        }
+      },
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png",
+          "badge": "LXi/VXi Turbo",
+          "visually_verified_value": "20.47 km/l",
+          "footnote": "Fuel efficiency as certified by test agency under Rule 115 of CMVR 1989."
+        }
+      ]
+    },
+    {
+      "id": "C3-024",
+      "owner_source_id": "src_b28460",
+      "before": {
+        "kind": "spec",
+        "claim": "Certified fuel efficiency (ZXi/ZXi+ Turbo)",
+        "value": "19.96",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, Fuel efficiency chart and footnote ***",
+          "quote": "19.96 ZXi/ZXi+ Turbo"
+        },
+        "confidence": 1.0,
+        "conditions": "ZXi/ZXi+ Turbo; certified by test agency under Rule 115 of CMVR 1989",
+        "truth": "certified",
+        "id": "C3-024",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "19.96 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for ZXi/ZXi+ Turbo, including printed unit; certification footnote ***"
+        }
+      },
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png",
+          "badge": "ZXi/ZXi+ Turbo",
+          "visually_verified_value": "19.96 km/l",
+          "footnote": "Fuel efficiency as certified by test agency under Rule 115 of CMVR 1989."
+        }
+      ]
+    },
+    {
+      "id": "C3-025",
+      "owner_source_id": "src_b28460",
+      "before": {
+        "kind": "spec",
+        "claim": "Certified fuel efficiency (LXi/VXi MT)",
+        "value": "21.09",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, Fuel efficiency chart and footnote ***",
+          "quote": "21.09 LXi/VXi MT"
+        },
+        "confidence": 1.0,
+        "conditions": "LXi/VXi MT (1.5L Petrol); certified by test agency under Rule 115 of CMVR 1989",
+        "truth": "certified",
+        "id": "C3-025",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "21.09 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi MT, including printed unit; certification footnote ***"
+        }
+      },
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png",
+          "badge": "LXi/VXi MT",
+          "visually_verified_value": "21.09 km/l",
+          "footnote": "Fuel efficiency as certified by test agency under Rule 115 of CMVR 1989."
+        }
+      ]
+    },
+    {
+      "id": "C3-026",
+      "owner_source_id": "src_b28460",
+      "before": {
+        "kind": "spec",
+        "claim": "Certified fuel efficiency (ZXi MT)",
+        "value": "20.81",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, Fuel efficiency chart and footnote ***",
+          "quote": "20.81 ZXi MT"
+        },
+        "confidence": 1.0,
+        "conditions": "ZXi MT (1.5L Petrol); certified by test agency under Rule 115 of CMVR 1989",
+        "truth": "certified",
+        "id": "C3-026",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "20.81 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for ZXi MT, including printed unit; certification footnote ***"
+        }
+      },
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png",
+          "badge": "ZXi MT",
+          "visually_verified_value": "20.81 km/l",
+          "footnote": "Fuel efficiency as certified by test agency under Rule 115 of CMVR 1989."
+        }
+      ]
+    },
+    {
+      "id": "C3-027",
+      "owner_source_id": "src_b28460",
+      "before": {
+        "kind": "spec",
+        "claim": "Certified fuel efficiency (VXi/ZXi/ZXi+ AT)",
+        "value": "20.17",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, Fuel efficiency chart and footnote ***",
+          "quote": "20.17 VXi/ZXi/ZXi+ AT"
+        },
+        "confidence": 1.0,
+        "conditions": "VXi/ZXi/ZXi+ AT (1.5L Petrol 6AT); certified by test agency under Rule 115 of CMVR 1989",
+        "truth": "certified",
+        "id": "C3-027",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "20.17 km/l",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for VXi/ZXi/ZXi+ AT, including printed unit; certification footnote ***"
+        }
+      },
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png",
+          "badge": "VXi/ZXi/ZXi+ AT",
+          "visually_verified_value": "20.17 km/l",
+          "footnote": "Fuel efficiency as certified by test agency under Rule 115 of CMVR 1989."
+        }
+      ]
+    },
+    {
+      "id": "C3-028",
+      "owner_source_id": "src_b28460",
+      "before": {
+        "kind": "spec",
+        "claim": "Certified fuel efficiency (LXi/VXi/ZXi CNG MT)",
+        "value": "26.90 kg",
+        "source": {
+          "ref": "src_b28460",
+          "locator": "page 10, Fuel efficiency chart and footnote ***",
+          "quote": "26.90 LXi/VXi/ZXi CNG MT kg"
+        },
+        "confidence": 1.0,
+        "conditions": "LXi/VXi/ZXi CNG MT; certified by test agency under Rule 115 of CMVR 1989",
+        "truth": "certified",
+        "id": "C3-028",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "26.90 km/kg",
+        "source": {
+          "locator": "PDF page 10, visually checked fuel-efficiency badge for LXi/VXi/ZXi CNG MT, including printed unit; certification footnote ***"
+        }
+      },
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png",
+          "badge": "LXi/VXi/ZXi CNG MT",
+          "visually_verified_value": "26.90 km/kg",
+          "footnote": "Fuel efficiency as certified by test agency under Rule 115 of CMVR 1989."
+        }
+      ]
+    },
+    {
+      "id": "C4-018",
+      "owner_source_id": "src_43582f",
+      "before": {
+        "kind": "offer",
+        "claim": "Bluelink subscription duration",
+        "value": "3 Years",
+        "source": {
+          "ref": "src_43582f",
+          "locator": "page 21",
+          "quote": "3 Years Bluelink subscription"
+        },
+        "confidence": 1.0,
+        "conditions": "Post 3 year period Bluelink will be available on paid basis",
+        "truth": "contractual",
+        "id": "C4-018",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "conditions": "On Bluelink-equipped trims: HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10 and HX10 Knight in the reviewed matrix. Three-year subscription period; paid service afterward. Functionality depends on adequate power and uninterrupted network connectivity.",
+        "source": {
+          "locator": "PDF page 20: Bluelink equipment rows; page 21: three-year subscription badge and paid-renewal/network terms",
+          "quote": "Bluelink will be available on paid basis post the 3 year period."
+        }
+      },
+      "reason": "Restore Bluelink-equipped trim scope, paid renewal and network qualifications.",
+      "additional_evidence": [
+        {
+          "source_id": "src_73036b",
+          "file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+          "visual": "output/nexon-sources/review/venue-20.png",
+          "locator": "HTML table 5 rows 12–13; brochure page 21 terms"
+        }
+      ]
+    },
+    {
+      "id": "C6-001",
+      "owner_source_id": "src_87ab79",
+      "before": {
+        "kind": "availability",
+        "claim": "6-speed Automatic transmission availability (1.5L K15C Petrol ISG)",
+        "value": "Unavailable on LXi; ticked (available) on VXi, ZXi, ZXi",
+        "source": {
+          "ref": "src_87ab79",
+          "locator": "PDF page 10, FEATURES LIST, Powertrain matrix",
+          "quote": "columns LXi, VXi, ZXi, ZXi+; the automatic row is unavailable, ticked, ticked, ticked respectively."
+        },
+        "confidence": 1.0,
+        "conditions": "1.5L K15C Petrol ISG engine, trims LXi, VXi, ZXi, ZXi+, India market",
+        "truth": "stated",
+        "id": "C6-001",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "6-speed automatic available on VXi, ZXi and ZXi+; unavailable on LXi",
+        "conditions": "1.5L K15C Petrol ISG engine, India market. Selected comparison: Brezza ZXi+ with 6AT. The 1.0L Turbo Boosterjet row is manual; do not attach its output figures to this automatic."
+      },
+      "reason": "Restore the dropped + in ZXi+ and the selected engine/automatic pairing.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        },
+        {
+          "source_id": "src_87ab79",
+          "locator": "addendum B1"
+        }
+      ]
+    },
+    {
+      "id": "C6-003",
+      "owner_source_id": "src_87ab79",
+      "before": {
+        "kind": "feature",
+        "claim": "Rear AC Vents availability",
+        "value": "Ticked on LXi, VXi, ZXi, ZXi",
+        "source": {
+          "ref": "src_87ab79",
+          "locator": "PDF page 10, Comfort and Convenience",
+          "quote": "Rear AC Vents"
+        },
+        "confidence": 1.0,
+        "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+        "truth": "stated",
+        "id": "C6-003",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Available on LXi, VXi, ZXi and ZXi+"
+      },
+      "reason": "Restore the dropped + in ZXi+; all four trim columns are marked available.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        },
+        {
+          "source_id": "src_87ab79",
+          "locator": "addendum B3"
+        }
+      ]
+    },
+    {
+      "id": "C6-004",
+      "owner_source_id": "src_87ab79",
+      "before": {
+        "kind": "feature",
+        "claim": "ISOFIX Child Seat Restraint System availability",
+        "value": "Ticked on LXi, VXi, ZXi, ZXi",
+        "source": {
+          "ref": "src_87ab79",
+          "locator": "PDF page 10, Safety",
+          "quote": "ISOFIX Child Seat Restraint System"
+        },
+        "confidence": 1.0,
+        "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+        "truth": "stated",
+        "id": "C6-004",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "value": "Available on LXi, VXi, ZXi and ZXi+"
+      },
+      "reason": "Restore the dropped + in ZXi+; all four trim columns are marked available.",
+      "additional_evidence": [
+        {
+          "source_id": "src_b28460",
+          "file": "output/nexon-sources/rivals/brezza-brochure.pdf",
+          "page": 10,
+          "visual": "output/nexon-sources/review/brezza-10.png"
+        },
+        {
+          "source_id": "src_87ab79",
+          "locator": "addendum B4"
+        }
+      ]
+    }
+  ],
+  "holds": [
+    {
+      "id": "C2-003",
+      "before": {
+        "kind": "spec",
+        "claim": "Overall height",
+        "value": "1,665 mm",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "The all-new Hyundai VENUE",
+          "quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+        },
+        "confidence": 1.0,
+        "conditions": "All-new Hyundai VENUE",
+        "truth": "stated",
+        "id": "C2-003",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "approved": false
+      },
+      "reason": "Retain old C2-003 generic height hold; qualified C4-003/C4-004 preserve wheel/roof-rail conditions."
+    },
+    {
+      "id": "C2-007",
+      "before": {
+        "kind": "spec",
+        "claim": "Engine cylinder configuration",
+        "value": "Straight engine (4-cylinder)",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "The all-new Hyundai VENUE",
+          "quote": "Engine cylinder configuration – Straight engine (4-cylinder)"
+        },
+        "confidence": 1.0,
+        "conditions": "All-new Hyundai VENUE",
+        "truth": "stated",
+        "id": "C2-007",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "approved": false
+      },
+      "reason": "Retain old C2-007 generic four-cylinder hold; the web statement does not identify an engine and must not describe the turbo candidate."
+    },
+    {
+      "id": "C2-011",
+      "before": {
+        "kind": "feature",
+        "claim": "Curved panoramic displays",
+        "value": "Dual 62.5 cm (12.3” + 12.3”)",
+        "source": {
+          "ref": "src_acce5c",
+          "locator": "Key Highlights",
+          "quote": "Dual 62.5 cm (12.3” + 12.3”) Curved Panoramic displays"
+        },
+        "confidence": 1.0,
+        "conditions": "All-new Hyundai VENUE",
+        "truth": "stated",
+        "id": "C2-011",
+        "approved": true,
+        "edited": false
+      },
+      "patch": {
+        "approved": false
+      },
+      "reason": "Old C2-015 generic navigation row is no longer extracted separately. Hold this related broad web display highlight; use qualified C5-006/C5-007. New C2-015 means six airbags and must stay approved."
+    }
+  ],
+  "all_facts": [
+    {
+      "id": "C1-001",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "Airbags standard count",
+      "value": "6 Airbags",
+      "conditions": "Standard across the range",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Safety #safety-tab-block",
+      "source_quote": "6 Airbags Front, side and curtain airbags protect every seat in the cabin, standard across the range."
+    },
+    {
+      "id": "C1-002",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "Ambient lighting color options",
+      "value": "64-colour",
+      "conditions": "New Brezza",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Interior #car-detail-interior",
+      "source_quote": "64-colour Ambient Lighting lets you pick your vibe on an interactive wheel, making the cabin feel unmistakably yours, every single drive."
+    },
+    {
+      "id": "C1-003",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "Front seat cooling levels",
+      "value": "three levels",
+      "conditions": "New Brezza",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Interior #car-detail-interior",
+      "source_quote": "Ventilated Front Seats keep you comfortable with three levels of seat cooling, so you lead every play without breaking a sweat."
+    },
+    {
+      "id": "C1-004",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "Infotainment screen size",
+      "value": "10.1\"",
+      "conditions": "New Brezza SmartPlay Pro+",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Technology #technology-block",
+      "source_quote": "Brezza 10.1\" SmartPlay Pro+"
+    },
+    {
+      "id": "C1-005",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "App launcher apps support",
+      "value": "35+ apps",
+      "conditions": "New Brezza",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Technology #technology-block",
+      "source_quote": "Access 35+ apps including YouTube, Spotify and JioSaavn directly from the screen, so your everyday favourites are always a tap away."
+    },
+    {
+      "id": "C1-006",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "360 View Camera perspective points",
+      "value": "8-point 3D views",
+      "conditions": "New Brezza",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed ZXi+ scope. The model page supplies the feature detail; the brochure matrix supplies trim applicability.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Technology #technology-block",
+      "source_quote": "See every angle around the car with 8-point 3D views and auto activation during parking, so nothing around you goes unnoticed."
+    },
+    {
+      "id": "C1-007",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "Electronic Stability Program",
+      "value": "Electronic Stability Program (ESP®)",
+      "conditions": "New Brezza",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Safety #safety-tab-block",
+      "source_quote": "Electronic Stability Program (ESP®) Enables the car to sense any loss of grip and adjust braking and power instantly, keeping the New Brezza when the road isn't."
+    },
+    {
+      "id": "C1-008",
+      "owner_name": "New Brezza",
+      "owner_source_id": "src_07ea50",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/arena/brezza",
+      "claim": "Hill Hold Assist",
+      "value": "Hill Hold Assist",
+      "conditions": "New Brezza",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-model.txt",
+      "source_locator": "Safety #safety-tab-block",
+      "source_quote": "Hill Hold Assist It holds the brakes on an incline while you move from brake to accelerator, so there's no rollback and no second-guessing."
+    },
+    {
+      "id": "C2-001",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Overall length",
+      "value": "3,995 mm",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+    },
+    {
+      "id": "C2-002",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Overall width",
+      "value": "1,800 mm",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+    },
+    {
+      "id": "C2-003",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Overall height",
+      "value": "1,665 mm",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "hold",
+      "reason": "Retain old C2-003 generic height hold; qualified C4-003/C4-004 preserve wheel/roof-rail conditions.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Dimensions – 3,995 mm L x 1,800 mm W x 1,665 mm H"
+    },
+    {
+      "id": "C2-004",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Wheelbase",
+      "value": "2520 mm",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "Key Exterior highlights",
+      "source_quote": "Dimensions (mm): 3995 (Length) * 1800 (Width) * 1665 (Height) * 2520 (Wheelbase)"
+    },
+    {
+      "id": "C2-005",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Fuel tank capacity",
+      "value": "45 L",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Fuel tank capacity - 45 L"
+    },
+    {
+      "id": "C2-006",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Body style",
+      "value": "Sub-compact SUV",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Body style - Sub-compact SUV"
+    },
+    {
+      "id": "C2-007",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Engine cylinder configuration",
+      "value": "Straight engine (4-cylinder)",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "hold",
+      "reason": "Retain old C2-007 generic four-cylinder hold; the web statement does not identify an engine and must not describe the turbo candidate.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Engine cylinder configuration – Straight engine (4-cylinder)"
+    },
+    {
+      "id": "C2-008",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Number of doors",
+      "value": "5",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Number of doors - 5"
+    },
+    {
+      "id": "C2-009",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Driveline",
+      "value": "Front-wheel drive",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Driveline - Front-wheel drive"
+    },
+    {
+      "id": "C2-010",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Configurations listed",
+      "value": "HX 2, HX 4, HX 5, HX 5 Knight, HX 5+, HX 6T, HX 6T Knight, HX 6, HX 7, HX 8, HX 8 Knight, HX 10, HX 10 Knight",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "The all-new Hyundai VENUE",
+      "source_quote": "Configurations - HX 2, HX 4, HX 5, HX 5 Knight, HX 5+, HX 6T, HX 6T Knight, HX 6, HX 7, HX 8, HX 8 Knight, HX 10, HX 10 Knight"
+    },
+    {
+      "id": "C2-011",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Curved panoramic displays",
+      "value": "Dual 62.5 cm (12.3” + 12.3”)",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "hold",
+      "reason": "Old C2-015 generic navigation row is no longer extracted separately. Hold this related broad web display highlight; use qualified C5-006/C5-007. New C2-015 means six airbags and must stay approved.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "Key Highlights",
+      "source_quote": "Dual 62.5 cm (12.3” + 12.3”) Curved Panoramic displays"
+    },
+    {
+      "id": "C2-012",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Audio speaker setup",
+      "value": "Bose 8-speaker setup",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed trim scope; web highlights are not whole-range equipment.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "Elevating Every Drive with Smart Connectivity and Immersive Tech",
+      "source_quote": "immersive Bose 8-speaker setup"
+    },
+    {
+      "id": "C2-013",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Driver assistance system",
+      "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "patch_then_keep",
+      "reason": "Restore reviewed trim scope; web highlights are not whole-range equipment.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "Where Confidence Meets Cutting-Edge Safety",
+      "source_quote": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features"
+    },
+    {
+      "id": "C2-014",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Standard safety features count",
+      "value": "33 safety features as standard across all variants",
+      "conditions": "All-new Hyundai VENUE, standard across all variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "Where Confidence Meets Cutting-Edge Safety",
+      "source_quote": "33 safety features as standard across all variants"
+    },
+    {
+      "id": "C2-015",
+      "owner_name": "The all-new Hyundai VENUE",
+      "owner_source_id": "src_acce5c",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "claim": "Airbags count",
+      "value": "6 airbags",
+      "conditions": "All-new Hyundai VENUE",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-model.txt",
+      "source_locator": "Key Safety features",
+      "source_quote": "6 airbags"
+    },
+    {
+      "id": "C3-001",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Overall length",
+      "value": "3995 mm",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET",
+      "source_quote": "Length (mm)   3995"
+    },
+    {
+      "id": "C3-002",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Overall width",
+      "value": "1790 mm",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET",
+      "source_quote": "Width (mm)   1790"
+    },
+    {
+      "id": "C3-003",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Overall height (unladen)",
+      "value": "1685 mm",
+      "conditions": "Unladen, all variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET",
+      "source_quote": "Height (unladen) (mm)   1685"
+    },
+    {
+      "id": "C3-004",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Wheelbase",
+      "value": "2500 mm",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET",
+      "source_quote": "Wheelbase (mm)   2500"
+    },
+    {
+      "id": "C3-005",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Seating capacity",
+      "value": "5",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET",
+      "source_quote": "Seating Capacity       5"
+    },
+    {
+      "id": "C3-006",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Displacement (K10C DiTC)",
+      "value": "998 cc",
+      "conditions": "Engine Type: K10C DiTC Smart Hybrid, Petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "Capacity (cc) 998"
+    },
+    {
+      "id": "C3-007",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Displacement (K15C Smart Hybrid)",
+      "value": "1462 cc",
+      "conditions": "Engine Type: K15C Smart Hybrid, Petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "Capacity (cc) 998 1462 1462"
+    },
+    {
+      "id": "C3-008",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum power (K10C DiTC)",
+      "value": "81 kW (110.12 PS) @ 5500 rpm",
+      "conditions": "Engine Type: K10C DiTC Smart Hybrid, Petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "Max Power Output (kW @ rpm) 81 kW (110.12 PS) @ 5500 rpm"
+    },
+    {
+      "id": "C3-009",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum power (K15C Smart Hybrid)",
+      "value": "75.8 kW (103.05 PS) @ 6000 rpm",
+      "conditions": "Engine Type: K15C Smart Hybrid, Petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "75.8 kW (103.05 PS) @ 6000 rpm"
+    },
+    {
+      "id": "C3-010",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum power in Gasoline Mode (K15C ISS)",
+      "value": "75.8 kW (103.05 PS) @ 6000 rpm",
+      "conditions": "Engine Type: K15C ISS, Petrol + CNG (Bi-fuel), Gasoline Mode",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "75.8 kW (103.05 PS) @ 6000 rpm (Gasoline Mode)"
+    },
+    {
+      "id": "C3-011",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum power in CNG Mode (K15C ISS)",
+      "value": "64.6 kW (87.8 PS) @ 5500 rpm",
+      "conditions": "Engine Type: K15C ISS, Petrol + CNG (Bi-fuel), CNG Mode",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "64.6 kW (87.8 PS) @ 5500 rpm (CNG Mode)"
+    },
+    {
+      "id": "C3-012",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum torque (K10C DiTC)",
+      "value": "170 Nm @ 2000-3500 rpm",
+      "conditions": "Engine Type: K10C DiTC Smart Hybrid, Petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "Max Torque (Nm@rpm) 170 Nm @ 2000-3500 rpm"
+    },
+    {
+      "id": "C3-013",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum torque (K15C Smart Hybrid)",
+      "value": "139.0 Nm @ 4400 rpm",
+      "conditions": "Engine Type: K15C Smart Hybrid, Petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "139.0 Nm @ 4400 rpm"
+    },
+    {
+      "id": "C3-014",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum torque in Gasoline Mode (K15C ISS)",
+      "value": "139 Nm @4400 rpm",
+      "conditions": "Engine Type: K15C ISS, Petrol + CNG (Bi-fuel), Gasoline Mode",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "139 Nm @4400 rpm (Gasoline Mode)"
+    },
+    {
+      "id": "C3-015",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Maximum torque in CNG Mode (K15C ISS)",
+      "value": "121.5 Nm @ 4200 rpm",
+      "conditions": "Engine Type: K15C ISS, Petrol + CNG (Bi-fuel), CNG Mode",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "121.5 Nm @ 4200 rpm (CNG Mode)"
+    },
+    {
+      "id": "C3-016",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Emission standard",
+      "value": "BS VI",
+      "conditions": "All engine types (K10C DiTC Smart Hybrid, K15C Smart Hybrid, K15C ISS)",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "Emission Type BS VI BS VI BS VI"
+    },
+    {
+      "id": "C3-017",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Fuel tank capacity (Petrol)",
+      "value": "48L",
+      "conditions": "All engines",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "Fuel Tank Capacity (L) 48L 48L Petrol: 48L"
+    },
+    {
+      "id": "C3-018",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "CNG tank capacity",
+      "value": "55L (Water Equivalent)",
+      "conditions": "Engine Type: K15C ISS, Bi-fuel CNG",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, ENGINE",
+      "source_quote": "CNG: 55L (Water Equivalent)"
+    },
+    {
+      "id": "C3-019",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Tyre size",
+      "value": "215/60 R16",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, Tyre",
+      "source_quote": "Tyre Size##  215/60 R16"
+    },
+    {
+      "id": "C3-020",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Spare tyre size",
+      "value": "215/60 R16",
+      "conditions": "Spare wheel material is steel",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, footnote ##",
+      "source_quote": "spare tyre size is 215/60 R16"
+    },
+    {
+      "id": "C3-021",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Front brakes",
+      "value": "Ventilated Disc",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, Brakes",
+      "source_quote": "Front Brakes  Ventilated Disc"
+    },
+    {
+      "id": "C3-022",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Rear brakes",
+      "value": "Drum",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, SPECIFICATION SHEET, Brakes",
+      "source_quote": "Rear Brakes  Drum"
+    },
+    {
+      "id": "C3-023",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Certified fuel efficiency (LXi/VXi Turbo)",
+      "value": "20.47",
+      "conditions": "LXi/VXi Turbo; certified by test agency under Rule 115 of CMVR 1989",
+      "decision": "patch_then_keep",
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, Fuel efficiency chart and footnote ***",
+      "source_quote": "20.47 LXi/VXi Turbo"
+    },
+    {
+      "id": "C3-024",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Certified fuel efficiency (ZXi/ZXi+ Turbo)",
+      "value": "19.96",
+      "conditions": "ZXi/ZXi+ Turbo; certified by test agency under Rule 115 of CMVR 1989",
+      "decision": "patch_then_keep",
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, Fuel efficiency chart and footnote ***",
+      "source_quote": "19.96 ZXi/ZXi+ Turbo"
+    },
+    {
+      "id": "C3-025",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Certified fuel efficiency (LXi/VXi MT)",
+      "value": "21.09",
+      "conditions": "LXi/VXi MT (1.5L Petrol); certified by test agency under Rule 115 of CMVR 1989",
+      "decision": "patch_then_keep",
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, Fuel efficiency chart and footnote ***",
+      "source_quote": "21.09 LXi/VXi MT"
+    },
+    {
+      "id": "C3-026",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Certified fuel efficiency (ZXi MT)",
+      "value": "20.81",
+      "conditions": "ZXi MT (1.5L Petrol); certified by test agency under Rule 115 of CMVR 1989",
+      "decision": "patch_then_keep",
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, Fuel efficiency chart and footnote ***",
+      "source_quote": "20.81 ZXi MT"
+    },
+    {
+      "id": "C3-027",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Certified fuel efficiency (VXi/ZXi/ZXi+ AT)",
+      "value": "20.17",
+      "conditions": "VXi/ZXi/ZXi+ AT (1.5L Petrol 6AT); certified by test agency under Rule 115 of CMVR 1989",
+      "decision": "patch_then_keep",
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, Fuel efficiency chart and footnote ***",
+      "source_quote": "20.17 VXi/ZXi/ZXi+ AT"
+    },
+    {
+      "id": "C3-028",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Certified fuel efficiency (LXi/VXi/ZXi CNG MT)",
+      "value": "26.90 kg",
+      "conditions": "LXi/VXi/ZXi CNG MT; certified by test agency under Rule 115 of CMVR 1989",
+      "decision": "patch_then_keep",
+      "reason": "Restore the printed efficiency unit; CNG is distance per kilogram. The existing quote is retained; the unit is visible in the original badge.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, Fuel efficiency chart and footnote ***",
+      "source_quote": "26.90 LXi/VXi/ZXi CNG MT kg"
+    },
+    {
+      "id": "C3-029",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Standard warranty",
+      "value": "3 years or 1 00 000 km whichever is earlier",
+      "conditions": "Standard warranty",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, WARRANTY",
+      "source_quote": "*3 years or 1 00 000 km whichever is earlier."
+    },
+    {
+      "id": "C3-030",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Warranty extension",
+      "value": "EXTENDABLE UPTO 6 YEARS",
+      "conditions": "Extendable warranty option",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, WARRANTY",
+      "source_quote": "EXTENDABLE UPTO 6 YEARS"
+    },
+    {
+      "id": "C3-031",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "6 Airbags (Front, Side and Curtain)",
+      "value": "Available",
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, FEATURES LIST, Safety",
+      "source_quote": "6 Airbags (Front, Side and Curtain)^^    "
+    },
+    {
+      "id": "C3-032",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Electronic Stability Program (ESP)",
+      "value": "Available",
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, FEATURES LIST, Safety",
+      "source_quote": "Electronic Stability Program (ESP)    "
+    },
+    {
+      "id": "C3-033",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Hill Hold Assist",
+      "value": "Available",
+      "conditions": "Standard across LXi, VXi, ZXi, ZXi+ variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, FEATURES LIST, Safety",
+      "source_quote": "Hill Hold Assist    "
+    },
+    {
+      "id": "C3-034",
+      "owner_name": "The New Brezza",
+      "owner_source_id": "src_b28460",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Touch Screen Audio size (ZXi+)",
+      "value": "25.65 cm (10.1\")",
+      "conditions": "ZXi+ variant",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/brezza-brochure.txt",
+      "source_locator": "page 10, FEATURES LIST, Infotainment",
+      "source_quote": "Touch Screen Audio - 17.78 cm (7\") 17.78 cm (7\") 25.65 cm (10.1\")"
+    },
+    {
+      "id": "C4-001",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Overall length",
+      "value": "3 995 mm",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Dimensions",
+      "source_quote": "Length (mm) 3 995"
+    },
+    {
+      "id": "C4-002",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Overall width",
+      "value": "1 800 mm",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Dimensions",
+      "source_quote": "Width (mm) 1 800"
+    },
+    {
+      "id": "C4-003",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Overall height",
+      "value": "1 665 mm",
+      "conditions": "With R16 wheel size and roof rails",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Dimensions",
+      "source_quote": "Height (mm) 1 665^"
+    },
+    {
+      "id": "C4-004",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Overall height",
+      "value": "1 650 mm",
+      "conditions": "With R15 wheel size and roof rails",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Dimensions footnote ^",
+      "source_quote": "1 650 mm with R15 wheel size and roof rails."
+    },
+    {
+      "id": "C4-005",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Wheelbase",
+      "value": "2 520 mm",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Dimensions",
+      "source_quote": "Wheelbase (mm) 2 520"
+    },
+    {
+      "id": "C4-006",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Fuel tank capacity",
+      "value": "45 l",
+      "conditions": "All variants",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Dimensions",
+      "source_quote": "Fuel tank capacity (l) 45"
+    },
+    {
+      "id": "C4-007",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Boot capacity",
+      "value": "375 litres",
+      "conditions": "As per VDA 215 method",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 8",
+      "source_quote": "Spacious boot (375 litres)*"
+    },
+    {
+      "id": "C4-008",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Engine displacement",
+      "value": "1 197 cm3",
+      "conditions": "Kappa 1.2 l MPi petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Displacement (cm3) 1 197"
+    },
+    {
+      "id": "C4-009",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Maximum power",
+      "value": "61 kW (83 PS) @ 6 000 r/min",
+      "conditions": "Kappa 1.2 l MPi petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Max. Power 61 kW (83 PS) @ 6 000 r/min"
+    },
+    {
+      "id": "C4-010",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Maximum torque",
+      "value": "114.7 Nm (11.7 kgm) @ 4 200 r/min",
+      "conditions": "Kappa 1.2 l MPi petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Max. Torque 114.7 Nm (11.7 kgm) @ 4 200 r/min"
+    },
+    {
+      "id": "C4-011",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Engine displacement",
+      "value": "998 cm3",
+      "conditions": "Kappa 1.0 l Turbo GDi petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Displacement (cm3) 998"
+    },
+    {
+      "id": "C4-012",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Maximum power",
+      "value": "88.3 kW (120 PS) @ 6 000 r/min",
+      "conditions": "Kappa 1.0 l Turbo GDi petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Max. Power 88.3 kW (120 PS) @ 6 000 r/min"
+    },
+    {
+      "id": "C4-013",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Maximum torque",
+      "value": "172 Nm (17.5 kgm) @ 1 500-4 000 r/min",
+      "conditions": "Kappa 1.0 l Turbo GDi petrol",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Max. Torque 172 Nm (17.5 kgm) @ 1 500-4 000 r/min"
+    },
+    {
+      "id": "C4-014",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Engine displacement",
+      "value": "1 493 cm3",
+      "conditions": "U2 1.5 l CRDi VGT diesel",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Displacement (cm3) 1 493"
+    },
+    {
+      "id": "C4-015",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Maximum power",
+      "value": "85 kW (116 PS) @ 4 000 r/min",
+      "conditions": "U2 1.5 l CRDi VGT diesel",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Max. Power 85 kW (116 PS) @ 4 000 r/min"
+    },
+    {
+      "id": "C4-016",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Maximum torque",
+      "value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min",
+      "conditions": "U2 1.5 l CRDi VGT diesel",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 18, Technical specifications, Engine",
+      "source_quote": "Max. Torque 250 Nm (25.5 kgm) @ 1 500-2 750 r/min"
+    },
+    {
+      "id": "C4-017",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Extended warranty limit",
+      "value": "upto 7 years or 1 40 000 kms whichsoever earlier",
+      "conditions": "All variants, terms & conditions apply",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 21",
+      "source_quote": "##Upto 7 years extended warranty is applicable for all variants. It is applicable for upto 7 years or 1 40 000 kms whichsoever earlier"
+    },
+    {
+      "id": "C4-018",
+      "owner_name": "Hyundai VENUE",
+      "owner_source_id": "src_43582f",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Bluelink subscription duration",
+      "value": "3 Years",
+      "conditions": "Post 3 year period Bluelink will be available on paid basis",
+      "decision": "patch_then_keep",
+      "reason": "Restore Bluelink-equipped trim scope, paid renewal and network qualifications.",
+      "evidence_file": "output/nexon-sources/rivals/venue-brochure.txt",
+      "source_locator": "page 21",
+      "source_quote": "3 Years Bluelink subscription"
+    },
+    {
+      "id": "C5-001",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Airbag (Driver & passenger)",
+      "value": "S",
+      "conditions": "All trims (HX2, HX4, HX5, HX5+, HX5 Knight, HX6, HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10, HX10 Knight); India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Safety (official HTML table 2), HTML table 2, data row 1",
+      "source_quote": "Airbag\tDriver & passenger\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS"
+    },
+    {
+      "id": "C5-002",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Airbag (Side & Curtain)",
+      "value": "S",
+      "conditions": "All trims (HX2, HX4, HX5, HX5+, HX5 Knight, HX6, HX6T, HX6T Knight, HX7, HX8, HX8 Knight, HX10, HX10 Knight); India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Safety (official HTML table 2), HTML table 2, data row 2",
+      "source_quote": "Airbag\tSide & Curtain\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS\tS"
+    },
+    {
+      "id": "C5-003",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Rear Disc brakes availability on HX8",
+      "value": "S^",
+      "conditions": "HX8 trim; DCT/AT Only per footnote S^; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Safety (official HTML table 2), HTML table 2, data row 10",
+      "source_quote": "Disc brakes\tRear\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS^\tS\tS\tS"
+    },
+    {
+      "id": "C5-004",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Hyundai Smartsense Smart Cruise Control with Stop & Go (SCC with S&G)",
+      "value": "S",
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Safety (official HTML table 2), HTML table 2, data row 42",
+      "source_quote": "Hyundai Smartsense (Advanced Driver Assist System)\tSmart Cruise Control with Stop & Go (SCC with S&G)\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+    },
+    {
+      "id": "C5-005",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Wheels R16 diamond cut alloys",
+      "value": "S",
+      "conditions": "HX7, HX8, HX10 trims only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Exterior (official HTML table 3), HTML table 3, data row 4",
+      "source_quote": "Wheels\tR16 (D=405.6 mm) diamond cut alloys\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS\t-\tS\t-"
+    },
+    {
+      "id": "C5-006",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Dual curved panoramic displays",
+      "value": "S",
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Interior (official HTML table 4), HTML table 4, data row 2",
+      "source_quote": "Dual curved panoramic displays\tDual curved panoramic displays\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+    },
+    {
+      "id": "C5-007",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Infotainment system 31.24 cm (12.3”) ccNC navigation system",
+      "value": "S",
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Infotainment & Connectivity (official HTML table 5), HTML table 5, data row 2",
+      "source_quote": "Infotainment system\t31.24 cm (12.3”) ccNC navigation system\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+    },
+    {
+      "id": "C5-008",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Bose premium sound 8 speaker system",
+      "value": "S",
+      "conditions": "HX10 and HX10 Knight trims only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Infotainment & Connectivity (official HTML table 5), HTML table 5, data row 6",
+      "source_quote": "Bose premium sound 8 speaker system\tBose premium sound 8 speaker system\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS"
+    },
+    {
+      "id": "C5-009",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Front row ventilated seats",
+      "value": "S",
+      "conditions": "HX8, HX8 Knight, HX10, HX10 Knight trims only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Comfort & Convenience (official HTML table 6), HTML table 6, data row 5",
+      "source_quote": "Front row ventilated seats\tFront row ventilated seats\t-\t-\t-\t-\t-\t-\t-\t-\t-\tS\tS\tS\tS"
+    },
+    {
+      "id": "C5-010",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_73036b",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "claim": "Idle stop & go (ISG) availability",
+      "value": "1.0 T-PL only",
+      "conditions": "HX10 and HX10 Knight trims; 1.0 Turbo petrol only; India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-sources/rivals/venue-feature-tables.txt",
+      "source_locator": "SECTION: Comfort & Convenience (official HTML table 6), HTML table 6, data row 27",
+      "source_quote": "Idle stop & go (ISG)\tIdle stop & go (ISG)\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t1.0 T-PL only\t1.0 T-PL only"
+    },
+    {
+      "id": "C6-001",
+      "owner_name": "Maruti Suzuki Brezza",
+      "owner_source_id": "src_87ab79",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "6-speed Automatic transmission availability (1.5L K15C Petrol ISG)",
+      "value": "Unavailable on LXi; ticked (available) on VXi, ZXi, ZXi",
+      "conditions": "1.5L K15C Petrol ISG engine, trims LXi, VXi, ZXi, ZXi+, India market",
+      "decision": "patch_then_keep",
+      "reason": "Restore the dropped + in ZXi+ and the selected engine/automatic pairing.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "source_locator": "PDF page 10, FEATURES LIST, Powertrain matrix",
+      "source_quote": "columns LXi, VXi, ZXi, ZXi+; the automatic row is unavailable, ticked, ticked, ticked respectively."
+    },
+    {
+      "id": "C6-002",
+      "owner_name": "Maruti Suzuki Brezza",
+      "owner_source_id": "src_87ab79",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Front Ventilated Seats availability",
+      "value": "Ticked on ZXi+; unavailable on LXi, VXi, ZXi",
+      "conditions": "Trim ZXi+ only (unavailable on LXi, VXi, ZXi), India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "source_locator": "PDF page 10, Comfort and Convenience",
+      "source_quote": "Front Ventilated Seats"
+    },
+    {
+      "id": "C6-003",
+      "owner_name": "Maruti Suzuki Brezza",
+      "owner_source_id": "src_87ab79",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "Rear AC Vents availability",
+      "value": "Ticked on LXi, VXi, ZXi, ZXi",
+      "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+      "decision": "patch_then_keep",
+      "reason": "Restore the dropped + in ZXi+; all four trim columns are marked available.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "source_locator": "PDF page 10, Comfort and Convenience",
+      "source_quote": "Rear AC Vents"
+    },
+    {
+      "id": "C6-004",
+      "owner_name": "Maruti Suzuki Brezza",
+      "owner_source_id": "src_87ab79",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "ISOFIX Child Seat Restraint System availability",
+      "value": "Ticked on LXi, VXi, ZXi, ZXi",
+      "conditions": "Trims LXi, VXi, ZXi, ZXi+, India market",
+      "decision": "patch_then_keep",
+      "reason": "Restore the dropped + in ZXi+; all four trim columns are marked available.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "source_locator": "PDF page 10, Safety",
+      "source_quote": "ISOFIX Child Seat Restraint System"
+    },
+    {
+      "id": "C6-005",
+      "owner_name": "Maruti Suzuki Brezza",
+      "owner_source_id": "src_87ab79",
+      "source_role": "competitor",
+      "source_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "claim": "60:40 Split Seat (Rear) availability",
+      "value": "Ticked on ZXi, ZXi+; unavailable on LXi, VXi",
+      "conditions": "Trims ZXi, ZXi+ (unavailable on LXi, VXi), India market",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/brezza-competitor-addendum.txt",
+      "source_locator": "PDF page 10, Comfort and Convenience",
+      "source_quote": "60:40 Split Seat (Rear)"
+    },
+    {
+      "id": "C7-001",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_64d8ad",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Transmission",
+      "value": "7 - speed DCT",
+      "conditions": "regular Venue HX10, Kappa 1.0 l Turbo GDi petrol engine",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "source_locator": "PDF page 19, Engine & trim plan; PDF page 18, Technical specifications, turbo-petrol transmission column",
+      "source_quote": "7 - speed DCT"
+    },
+    {
+      "id": "C7-002",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_64d8ad",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Front row ventilated seats",
+      "value": "Standard (marked S)",
+      "conditions": "HX 8, HX 8 Knight, HX 10, and HX 10 Knight trims; other columns unavailable",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "source_locator": "PDF page 20, Comfort & Convenience",
+      "source_quote": "Front row ventilated seats"
+    },
+    {
+      "id": "C7-003",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_64d8ad",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "Rear AC vents",
+      "value": "Standard (marked S)",
+      "conditions": "all thirteen named HX trim columns, including regular HX 10",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "source_locator": "PDF page 20, Comfort & Convenience",
+      "source_quote": "Rear AC vents"
+    },
+    {
+      "id": "C7-004",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_64d8ad",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "ISOFIX child seat anchors",
+      "value": "Standard (marked S)",
+      "conditions": "all thirteen named HX trim columns, including regular HX 10",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "source_locator": "PDF page 19, Safety",
+      "source_quote": "ISOFIX"
+    },
+    {
+      "id": "C7-005",
+      "owner_name": "Hyundai Venue",
+      "owner_source_id": "src_64d8ad",
+      "source_role": "competitor",
+      "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "claim": "60:40 split rear seat",
+      "value": "Standard (marked S)",
+      "conditions": "regular HX 10 trim",
+      "decision": "keep",
+      "reason": "Value and applicability agree with the owning official source; matrix cells/footnotes checked where relevant.",
+      "evidence_file": "output/nexon-real-evidence/iteration-1/review-edits/iteration-2-addenda/venue-competitor-addendum.txt",
+      "source_locator": "PDF page 20, Interior",
+      "source_quote": "60:40 split rear seat"
+    }
+  ],
+  "positive_comparison_sets": {
+    "Brezza_ZXi_plus_1_5_petrol_6AT": {
+      "transmission": [
+        "C6-001"
+      ],
+      "engine": [
+        "C3-007",
+        "C3-009",
+        "C3-013"
+      ],
+      "front_ventilation": [
+        "C6-002"
+      ],
+      "rear_ac": [
+        "C6-003"
+      ],
+      "isofix": [
+        "C6-004"
+      ],
+      "split_rear_seat": [
+        "C6-005"
+      ],
+      "certified_test_efficiency": [
+        "C3-027"
+      ]
+    },
+    "Venue_regular_HX10_1_0_turbo_petrol_7DCT": {
+      "transmission": [
+        "C7-001"
+      ],
+      "engine": [
+        "C4-011",
+        "C4-012",
+        "C4-013"
+      ],
+      "front_ventilation": [
+        "C7-002"
+      ],
+      "rear_ac": [
+        "C7-003"
+      ],
+      "isofix": [
+        "C7-004"
+      ],
+      "split_rear_seat": [
+        "C7-005"
+      ],
+      "navigation": [
+        "C5-007"
+      ]
+    }
+  },
+  "validation": {
+    "all_owner_source_refs_match": true,
+    "all_sources_role_competitor": true,
+    "all_patches_pass_Fact_schema": true,
+    "all_74_old_ids_mapped": true,
+    "all_95_new_ids_reviewed": true,
+    "prior_semantic_holds_preserved": true,
+    "new_C2_015_airbags_not_rejected": true,
+    "positive_Brezza_and_Venue_material_retained": true,
+    "paid_calls": false,
+    "production_writes": false
+  }
+}

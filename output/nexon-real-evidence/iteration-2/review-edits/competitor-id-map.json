@@ -1,0 +1,1581 @@
+[
+  {
+    "old_id": "C1-001",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Airbags count and coverage",
+    "old_value": "6 Airbags",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C1-001"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-001",
+        "owner_source_id": "src_07ea50",
+        "claim": "Airbags standard count",
+        "value": "6 Airbags"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-002",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Ambient lighting color options",
+    "old_value": "64-colour",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C1-002"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-002",
+        "owner_source_id": "src_07ea50",
+        "claim": "Ambient lighting color options",
+        "value": "64-colour"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-003",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Front seat cooling levels",
+    "old_value": "three levels of seat cooling",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C1-003"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-003",
+        "owner_source_id": "src_07ea50",
+        "claim": "Front seat cooling levels",
+        "value": "three levels"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-004",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "SmartPlay Pro+ display size",
+    "old_value": "10.1\"",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C1-004"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-004",
+        "owner_source_id": "src_07ea50",
+        "claim": "Infotainment screen size",
+        "value": "10.1\""
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-005",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "360 view camera views",
+    "old_value": "8-point 3D views and auto activation during parking",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C1-006"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-006",
+        "owner_source_id": "src_07ea50",
+        "claim": "360 View Camera perspective points",
+        "value": "8-point 3D views"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-006",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "App launcher apps support",
+    "old_value": "35+ apps",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C1-005"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-005",
+        "owner_source_id": "src_07ea50",
+        "claim": "App launcher apps support",
+        "value": "35+ apps"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-007",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Safety assistance systems",
+    "old_value": "Electronic Stability Program (ESP®)",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C1-007"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-007",
+        "owner_source_id": "src_07ea50",
+        "claim": "Electronic Stability Program",
+        "value": "Electronic Stability Program (ESP®)"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-008",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Hill hold support",
+    "old_value": "Hill Hold Assist",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C1-008"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C1-008",
+        "owner_source_id": "src_07ea50",
+        "claim": "Hill Hold Assist",
+        "value": "Hill Hold Assist"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-009",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Parking sensors",
+    "old_value": "Front and Rear Parking Assist Sensors",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C1-010",
+    "old_owner_source_id": "src_07ea50",
+    "old_claim": "Wireless charger cooling feature",
+    "old_value": "Wireless Charger with Active Cooling",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-001",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Length",
+    "old_value": "3,995 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-001"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-001",
+        "owner_source_id": "src_acce5c",
+        "claim": "Overall length",
+        "value": "3,995 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-002",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Width",
+    "old_value": "1,800 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-002"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-002",
+        "owner_source_id": "src_acce5c",
+        "claim": "Overall width",
+        "value": "1,800 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-003",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Height",
+    "old_value": "1,665 mm",
+    "old_approved": false,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-003"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-003",
+        "owner_source_id": "src_acce5c",
+        "claim": "Overall height",
+        "value": "1,665 mm"
+      }
+    ],
+    "reapply_action": "hold same-source generic fact again",
+    "hold_new_ids": [
+      "C2-003"
+    ],
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-004",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Wheelbase",
+    "old_value": "2520 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-004"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-004",
+        "owner_source_id": "src_acce5c",
+        "claim": "Wheelbase",
+        "value": "2520 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-005",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Fuel tank capacity",
+    "old_value": "45 L",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-005"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-005",
+        "owner_source_id": "src_acce5c",
+        "claim": "Fuel tank capacity",
+        "value": "45 L"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-006",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Body style",
+    "old_value": "Sub-compact SUV",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-006"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-006",
+        "owner_source_id": "src_acce5c",
+        "claim": "Body style",
+        "value": "Sub-compact SUV"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-007",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Engine cylinder configuration",
+    "old_value": "Straight engine (4-cylinder)",
+    "old_approved": false,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-007"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-007",
+        "owner_source_id": "src_acce5c",
+        "claim": "Engine cylinder configuration",
+        "value": "Straight engine (4-cylinder)"
+      }
+    ],
+    "reapply_action": "hold same-source generic fact again",
+    "hold_new_ids": [
+      "C2-007"
+    ],
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-008",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Number of doors",
+    "old_value": "5",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-008"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-008",
+        "owner_source_id": "src_acce5c",
+        "claim": "Number of doors",
+        "value": "5"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-009",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Driveline",
+    "old_value": "Front-wheel drive",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-009"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-009",
+        "owner_source_id": "src_acce5c",
+        "claim": "Driveline",
+        "value": "Front-wheel drive"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-010",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Configurations",
+    "old_value": "HX 2, HX 4, HX 5, HX 5 Knight, HX 5+, HX 6T, HX 6T Knight, HX 6, HX 7, HX 8, HX 8 Knight, HX 10, HX 10 Knight",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-010"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-010",
+        "owner_source_id": "src_acce5c",
+        "claim": "Configurations listed",
+        "value": "HX 2, HX 4, HX 5, HX 5 Knight, HX 5+, HX 6T, HX 6T Knight, HX 6, HX 7, HX 8, HX 8 Knight, HX 10, HX 10 Knight"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-011",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "ADAS specification",
+    "old_value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C2-013"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-013",
+        "owner_source_id": "src_acce5c",
+        "claim": "Driver assistance system",
+        "value": "Hyundai SmartSense Level 2 ADAS with 16 intelligent features"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-012",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Standard safety features",
+    "old_value": "33 safety features as standard across all variants",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-014"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-014",
+        "owner_source_id": "src_acce5c",
+        "claim": "Standard safety features count",
+        "value": "33 safety features as standard across all variants"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-013",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Airbags",
+    "old_value": "6 airbags",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C2-015"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-015",
+        "owner_source_id": "src_acce5c",
+        "claim": "Airbags count",
+        "value": "6 airbags"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-014",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Sound system",
+    "old_value": "Bose premium sound 8 speaker system",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C2-012"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C2-012",
+        "owner_source_id": "src_acce5c",
+        "claim": "Audio speaker setup",
+        "value": "Bose 8-speaker setup"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C2-015",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Navigation touchscreen size",
+    "old_value": "31.24 cm (12.3”)",
+    "old_approved": false,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [
+      {
+        "id": "C5-007",
+        "owner_source_id": "src_73036b",
+        "claim": "Infotainment system 31.24 cm (12.3”) ccNC navigation system",
+        "value": "S"
+      }
+    ],
+    "reapply_action": "retain semantic hold on C2-011; keep qualified C5-007",
+    "hold_new_ids": [
+      "C2-011"
+    ],
+    "related_broader_new_ids": [
+      "C2-011"
+    ],
+    "warning": "New C2-015 means six airbags, not the former navigation claim.",
+    "replacement_fact_ids_from_other_sources": [
+      "C5-007"
+    ]
+  },
+  {
+    "old_id": "C2-016",
+    "old_owner_source_id": "src_acce5c",
+    "old_claim": "Wheel size and type",
+    "old_value": "R16 (D= 405.6 mm) diamond cut alloy wheels",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [
+      {
+        "id": "C5-005",
+        "owner_source_id": "src_73036b",
+        "claim": "Wheels R16 diamond cut alloys",
+        "value": "S"
+      }
+    ],
+    "reapply_action": "use separately owned replacement",
+    "replacement_fact_ids_from_other_sources": [
+      "C5-005"
+    ]
+  },
+  {
+    "old_id": "C3-001",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Length",
+    "old_value": "3995 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-001"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-001",
+        "owner_source_id": "src_b28460",
+        "claim": "Overall length",
+        "value": "3995 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-002",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Width",
+    "old_value": "1790 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-002"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-002",
+        "owner_source_id": "src_b28460",
+        "claim": "Overall width",
+        "value": "1790 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-003",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Height (unladen)",
+    "old_value": "1685 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-003"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-003",
+        "owner_source_id": "src_b28460",
+        "claim": "Overall height (unladen)",
+        "value": "1685 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-004",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Wheelbase",
+    "old_value": "2500 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-004"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-004",
+        "owner_source_id": "src_b28460",
+        "claim": "Wheelbase",
+        "value": "2500 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-005",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Seating Capacity",
+    "old_value": "5",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-005"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-005",
+        "owner_source_id": "src_b28460",
+        "claim": "Seating capacity",
+        "value": "5"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-006",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Engine Capacity, K10C DiTC Smart Hybrid",
+    "old_value": "998 cc",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-006"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-006",
+        "owner_source_id": "src_b28460",
+        "claim": "Displacement (K10C DiTC)",
+        "value": "998 cc"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-007",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Max Power Output, K10C DiTC Smart Hybrid",
+    "old_value": "81 kW (110.12 PS) @ 5500 rpm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-008"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-008",
+        "owner_source_id": "src_b28460",
+        "claim": "Maximum power (K10C DiTC)",
+        "value": "81 kW (110.12 PS) @ 5500 rpm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-008",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Max Torque, K10C DiTC Smart Hybrid",
+    "old_value": "170 Nm @ 2000-3500 rpm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-012"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-012",
+        "owner_source_id": "src_b28460",
+        "claim": "Maximum torque (K10C DiTC)",
+        "value": "170 Nm @ 2000-3500 rpm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-009",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Engine Capacity, K15C Smart Hybrid",
+    "old_value": "1462 cc",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C3-007"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-007",
+        "owner_source_id": "src_b28460",
+        "claim": "Displacement (K15C Smart Hybrid)",
+        "value": "1462 cc"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "note": "Capacity quote is already correct in new C3-007; no reapply needed.",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-010",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Max Power Output, K15C Smart Hybrid",
+    "old_value": "75.8 kW (103.05 PS) @ 6000 rpm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-009"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-009",
+        "owner_source_id": "src_b28460",
+        "claim": "Maximum power (K15C Smart Hybrid)",
+        "value": "75.8 kW (103.05 PS) @ 6000 rpm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-011",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Max Torque, K15C Smart Hybrid",
+    "old_value": "139.0 Nm @ 4400 rpm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-013"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-013",
+        "owner_source_id": "src_b28460",
+        "claim": "Maximum torque (K15C Smart Hybrid)",
+        "value": "139.0 Nm @ 4400 rpm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-012",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Emission Type",
+    "old_value": "BS VI",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-016"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-016",
+        "owner_source_id": "src_b28460",
+        "claim": "Emission standard",
+        "value": "BS VI"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "note": "Retain new stated truth type; do not restore the old certified label for ordinary emissions/boot specification.",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-013",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Fuel Tank Capacity, Petrol",
+    "old_value": "48L",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-017"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-017",
+        "owner_source_id": "src_b28460",
+        "claim": "Fuel tank capacity (Petrol)",
+        "value": "48L"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-014",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Tyre Size",
+    "old_value": "215/60 R16",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-019"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-019",
+        "owner_source_id": "src_b28460",
+        "claim": "Tyre size",
+        "value": "215/60 R16"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-015",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "6 Airbags (Front, Side and Curtain)",
+    "old_value": "Available across LXi, VXi, ZXi, ZXi+",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-031"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-031",
+        "owner_source_id": "src_b28460",
+        "claim": "6 Airbags (Front, Side and Curtain)",
+        "value": "Available"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-016",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Electronic Stability Program (ESP)",
+    "old_value": "Available across LXi, VXi, ZXi, ZXi+",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-032"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C3-032",
+        "owner_source_id": "src_b28460",
+        "claim": "Electronic Stability Program (ESP)",
+        "value": "Available"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C3-017",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "ISOFIX Child Seat Restraint System",
+    "old_value": "Available across LXi, VXi, ZXi, ZXi+",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [
+      {
+        "id": "C6-004",
+        "owner_source_id": "src_87ab79",
+        "claim": "ISOFIX Child Seat Restraint System availability",
+        "value": "Ticked on LXi, VXi, ZXi, ZXi"
+      }
+    ],
+    "reapply_action": "use separately owned replacement",
+    "replacement_fact_ids_from_other_sources": [
+      "C6-004"
+    ]
+  },
+  {
+    "old_id": "C3-018",
+    "old_owner_source_id": "src_b28460",
+    "old_claim": "Standard Warranty",
+    "old_value": "3 years or 1 00 000 km whichever is earlier",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C3-029",
+      "C3-030"
+    ],
+    "mapping_status": "same_source_split",
+    "new_facts": [
+      {
+        "id": "C3-029",
+        "owner_source_id": "src_b28460",
+        "claim": "Standard warranty",
+        "value": "3 years or 1 00 000 km whichever is earlier"
+      },
+      {
+        "id": "C3-030",
+        "owner_source_id": "src_b28460",
+        "claim": "Warranty extension",
+        "value": "EXTENDABLE UPTO 6 YEARS"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-001",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Length",
+    "old_value": "3 995 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-001"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-001",
+        "owner_source_id": "src_43582f",
+        "claim": "Overall length",
+        "value": "3 995 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-002",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Width",
+    "old_value": "1 800 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-002"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-002",
+        "owner_source_id": "src_43582f",
+        "claim": "Overall width",
+        "value": "1 800 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-003",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Height",
+    "old_value": "1 665 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-003"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-003",
+        "owner_source_id": "src_43582f",
+        "claim": "Overall height",
+        "value": "1 665 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-004",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Height with R15 wheel size and roof rails",
+    "old_value": "1 650 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-004"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-004",
+        "owner_source_id": "src_43582f",
+        "claim": "Overall height",
+        "value": "1 650 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-005",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Wheelbase",
+    "old_value": "2 520 mm",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-005"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-005",
+        "owner_source_id": "src_43582f",
+        "claim": "Wheelbase",
+        "value": "2 520 mm"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-006",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Fuel tank capacity",
+    "old_value": "45 l",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-006"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-006",
+        "owner_source_id": "src_43582f",
+        "claim": "Fuel tank capacity",
+        "value": "45 l"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-007",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Boot capacity",
+    "old_value": "375 litres",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-007"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-007",
+        "owner_source_id": "src_43582f",
+        "claim": "Boot capacity",
+        "value": "375 litres"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "note": "Retain new stated truth type; do not restore the old certified label for ordinary emissions/boot specification.",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-008",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Displacement - Kappa 1.2 l MPi petrol",
+    "old_value": "1 197 cm3",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-008"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-008",
+        "owner_source_id": "src_43582f",
+        "claim": "Engine displacement",
+        "value": "1 197 cm3"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-009",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Maximum power - Kappa 1.2 l MPi petrol",
+    "old_value": "61 kW (83 PS) @ 6 000 r/min",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-009"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-009",
+        "owner_source_id": "src_43582f",
+        "claim": "Maximum power",
+        "value": "61 kW (83 PS) @ 6 000 r/min"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-010",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Maximum torque - Kappa 1.2 l MPi petrol",
+    "old_value": "114.7 Nm (11.7 kgm) @ 4 200 r/min",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-010"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-010",
+        "owner_source_id": "src_43582f",
+        "claim": "Maximum torque",
+        "value": "114.7 Nm (11.7 kgm) @ 4 200 r/min"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-011",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Displacement - Kappa 1.0 l Turbo GDi petrol",
+    "old_value": "998 cm3",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-011"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-011",
+        "owner_source_id": "src_43582f",
+        "claim": "Engine displacement",
+        "value": "998 cm3"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-012",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Maximum power - Kappa 1.0 l Turbo GDi petrol",
+    "old_value": "88.3 kW (120 PS) @ 6 000 r/min",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-012"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-012",
+        "owner_source_id": "src_43582f",
+        "claim": "Maximum power",
+        "value": "88.3 kW (120 PS) @ 6 000 r/min"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-013",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Maximum torque - Kappa 1.0 l Turbo GDi petrol",
+    "old_value": "172 Nm (17.5 kgm) @ 1 500-4 000 r/min",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-013"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-013",
+        "owner_source_id": "src_43582f",
+        "claim": "Maximum torque",
+        "value": "172 Nm (17.5 kgm) @ 1 500-4 000 r/min"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-014",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Displacement - U2 1.5 l CRDi diesel",
+    "old_value": "1 493 cm3",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-014"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-014",
+        "owner_source_id": "src_43582f",
+        "claim": "Engine displacement",
+        "value": "1 493 cm3"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-015",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Maximum power - U2 1.5 l CRDi diesel",
+    "old_value": "85 kW (116 PS) @ 4 000 r/min",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-015"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-015",
+        "owner_source_id": "src_43582f",
+        "claim": "Maximum power",
+        "value": "85 kW (116 PS) @ 4 000 r/min"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-016",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Maximum torque - U2 1.5 l CRDi diesel",
+    "old_value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-016"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-016",
+        "owner_source_id": "src_43582f",
+        "claim": "Maximum torque",
+        "value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-017",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Standard airbags",
+    "old_value": "6 Airbags standard",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [
+      {
+        "id": "C2-015",
+        "owner_source_id": "src_acce5c",
+        "claim": "Airbags count",
+        "value": "6 airbags"
+      }
+    ],
+    "reapply_action": "use separately owned replacement",
+    "replacement_fact_ids_from_other_sources": [
+      "C2-015"
+    ]
+  },
+  {
+    "old_id": "C4-018",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Extended warranty coverage",
+    "old_value": "upto 7 years or 1 40 000 kms whichsoever earlier",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C4-017"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-017",
+        "owner_source_id": "src_43582f",
+        "claim": "Extended warranty limit",
+        "value": "upto 7 years or 1 40 000 kms whichsoever earlier"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C4-019",
+    "old_owner_source_id": "src_43582f",
+    "old_claim": "Bluelink subscription duration",
+    "old_value": "3 Years",
+    "old_approved": true,
+    "old_edited": true,
+    "same_source_new_ids": [
+      "C4-018"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C4-018",
+        "owner_source_id": "src_43582f",
+        "claim": "Bluelink subscription duration",
+        "value": "3 Years"
+      }
+    ],
+    "reapply_action": "patch reviewed scope/content",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-001",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Driver & passenger airbag availability on HX2",
+    "old_value": "S",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C5-001"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C5-001",
+        "owner_source_id": "src_73036b",
+        "claim": "Airbag (Driver & passenger)",
+        "value": "S"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-002",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Side & Curtain airbag availability on HX2",
+    "old_value": "S",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C5-002"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C5-002",
+        "owner_source_id": "src_73036b",
+        "claim": "Airbag (Side & Curtain)",
+        "value": "S"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-003",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "3 point seat belt (all seats) availability across all trims",
+    "old_value": "S",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-004",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Tyre pressure monitoring system (TPMS) highline availability on HX2",
+    "old_value": "Not available (-)",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-005",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Tyre pressure monitoring system (TPMS) highline availability on HX4",
+    "old_value": "S",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-006",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Kappa 1.2 l MPi petrol transmission on HX2",
+    "old_value": "MT",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-007",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Kappa 1.0 l Turbo GDi petrol transmission on HX10",
+    "old_value": "DCT",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [
+      {
+        "id": "C7-001",
+        "owner_source_id": "src_64d8ad",
+        "claim": "Transmission",
+        "value": "7 - speed DCT"
+      }
+    ],
+    "reapply_action": "use separately owned replacement",
+    "replacement_fact_ids_from_other_sources": [
+      "C7-001"
+    ]
+  },
+  {
+    "old_id": "C5-008",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "U2 1.5 l CRDi diesel transmission on HX8",
+    "old_value": "AT",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-009",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Infotainment display screen size on HX2",
+    "old_value": "26.03 cm (10.25”)",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [],
+    "mapping_status": "not_reextracted_from_same_source",
+    "new_facts": [],
+    "reapply_action": "no mutation; no current extracted row",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-010",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Infotainment display screen size on HX10",
+    "old_value": "31.24 cm (12.3”)",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C5-007"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C5-007",
+        "owner_source_id": "src_73036b",
+        "claim": "Infotainment system 31.24 cm (12.3”) ccNC navigation system",
+        "value": "S"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  },
+  {
+    "old_id": "C5-011",
+    "old_owner_source_id": "src_73036b",
+    "old_claim": "Front row ventilated seats availability on HX8",
+    "old_value": "S",
+    "old_approved": true,
+    "old_edited": false,
+    "same_source_new_ids": [
+      "C5-009"
+    ],
+    "mapping_status": "same_source_equivalent",
+    "new_facts": [
+      {
+        "id": "C5-009",
+        "owner_source_id": "src_73036b",
+        "claim": "Front row ventilated seats",
+        "value": "S"
+      }
+    ],
+    "reapply_action": "retain supported new fact",
+    "replacement_fact_ids_from_other_sources": []
+  }
+]

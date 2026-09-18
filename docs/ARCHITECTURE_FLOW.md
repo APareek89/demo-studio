@@ -38,6 +38,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | MP4 export | FUNCTION | parked: `GET /export.mp4` → 409 until the exporter is rebuilt for slides with HTML callouts | `server/exporter.py` |
 | Approvals reset | FUNCTION | new uploads and source/fact/script edits reset affected approvals and re-run the relevant alignment path | `server/app.py`, `orchestrator.py` |
 | Align review completeness | FUNCTION | F and C facts are shown together for review but stored separately; API/chat edit/reject share schema and source-ownership validation. Optional truth/source corrections require existing sources; changing a product source requires fresh locator/quote/conditions, while C facts stay with their source group. Script review supports lines, one intake, check-ins and title/outcome metadata; question claims reject, changed question audio clears and downstream work becomes stale | `store.edit_fact`, `store.set_fact_approval`, `agents/align.py`, `PATCH /align/script` |
+| Direct FAQ review | FUNCTION + HUMAN | A finished, current bank accepts an answer with at least one approved F/C citation; every id must be allowed, with competitors gated by the comparison setting. Partial/stale banks and active graph/stage work reject edits. Exact wording, question identity and registry hash survive; old audio/error/clarification/callback clear, excluded visuals stay excluded, and the slide is derived from the current script joined to deck design. FAQ approval resets and voice/rehearsal/bundle become stale while FAQ stays done, so ordinary Build retains the reviewed answer. Meaning and source scope remain a human check, not proven entailment | `PATCH /align/faq/{question_id}`, `agents/faq.py`, `agents/voice.py`, `web/studio/align.js` |
 
 ## File index
 
@@ -47,7 +48,7 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Store | `server/store.py` (`data/demos/<id>/…`) |
 | Understand | `server/agents/understand.py`, `server/sources.py`, `server/llm/gemini.py`, `server/llm/claude.py`, `server/schemas.py` |
 | Plan | `server/agents/plan.py` |
-| Align | `server/agents/align.py`, `server/orchestrator.py` (`handle_message`, `apply_actions`, `_revise`), `web/studio/align.js` |
+| Align | `server/agents/align.py`, `server/orchestrator.py` (`handle_message`, `apply_actions`, `_revise`), direct review routes in `server/app.py`, `web/studio/align.js` |
 | Author / validator / pixel audit | `server/agents/author.py`, `server/agents/visuals.py`, `visual-audit.json` |
 | Deck (one slide per segment) | `server/agents/deck.py`, `deck.json`, `deck-overrides.json`, `deck.<lang>.json` |
 | Voice | `server/agents/voice.py` |

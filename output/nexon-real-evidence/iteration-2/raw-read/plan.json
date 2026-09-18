@@ -1,0 +1,379 @@
+{
+  "customer_persona": "Buyers looking for a compact SUV for daily urban commuting, weekend family travel, or flexible highway trips. They value certified crash protection, functional everyday comfort, and a choice of fuel and gearbox configurations to suit their lifestyle.",
+  "decision_frame": "The strongest supported fit is a compact SUV engineered with standard six airbags, five-star crash test ratings, and flexible fuel setups, while the essential step remaining is to test drive your preferred powertrain and verify local on-road pricing with an authorized dealer.",
+  "takeaway": "The Tata Nexon combines standard five-star crash safety equipment with versatile petrol, diesel, and iCNG driving setups tailored to your routine.",
+  "primary_outcome": "Choosing the right Nexon powertrain and trim based on verified safety ratings, practical dimensions, and documented cabin features.",
+  "supporting_outcomes": [
+    "Comparing published petrol, diesel, and CNG boot capacities against your daily cargo needs.",
+    "Identifying trim-dependent equipment such as ventilated seating, 360-degree cameras, and advanced driver assistance."
+  ],
+  "concerns": [
+    {
+      "topic": "safety",
+      "why": "Buyers want reassurance that structural safety and critical occupant protection are not reserved solely for top-tier trims.",
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F025"
+      ]
+    },
+    {
+      "topic": "practicality",
+      "why": "Families need to confirm that boot space remains functional across different fuel variants, particularly with twin CNG cylinders.",
+      "fact_ids": [
+        "F012",
+        "F014",
+        "F016",
+        "F024"
+      ]
+    },
+    {
+      "topic": "performance",
+      "why": "Drivers want clarity on which engines pair with automatic gearboxes and how power outputs differ across petrol, diesel, and CNG.",
+      "fact_ids": [
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F018",
+        "F019"
+      ]
+    },
+    {
+      "topic": "ownership",
+      "why": "Prospective owners want clear visibility on starting price, finance terms, and warranty coverage before visiting a showroom.",
+      "fact_ids": [
+        "F001",
+        "F002",
+        "F027",
+        "F028"
+      ]
+    }
+  ],
+  "usps": [
+    {
+      "id": "usp-comfort",
+      "name": "Thoughtful cabin ventilation and comfort",
+      "why_it_matters": "Available front ventilated seats and standard rear air-conditioning vents help manage passenger comfort across hot Indian seasons.",
+      "fact_ids": [
+        "F020",
+        "F021"
+      ]
+    },
+    {
+      "id": "usp-powertrains",
+      "name": "Versatile multi-powertrain and transmission options",
+      "why_it_matters": "Choosing between turbo petrol, turbo diesel, and dual-cylinder iCNG with manual, AMT, or dual-clutch transmissions allows you to tailor the SUV to your preferred driving routine.",
+      "fact_ids": [
+        "F007",
+        "F009",
+        "F011",
+        "F018",
+        "F019"
+      ]
+    },
+    {
+      "id": "usp-safety",
+      "name": "Comprehensive standard safety architecture",
+      "why_it_matters": "Every Nexon variant includes six airbags, electronic stability program, and ISOFIX mounts alongside certified five-star crash test results.",
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F005",
+        "F006"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "id": "intro-overview",
+      "title": "Welcome to Tata Nexon",
+      "role": "intro",
+      "goal": "Introduce the Nexon as a compact SUV designed for confident city and highway journeys without premature spec lists.",
+      "outcome": "",
+      "topic": "overview",
+      "fact_ids": [
+        "F012"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im01",
+        "im02"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "three-reminders",
+      "title": "Three Highlights to Guide Your Tour",
+      "role": "outcome",
+      "goal": "Highlight the three core pillars: everyday cabin comfort, diverse powertrain options, and standard structural safety.",
+      "outcome": "Three core pillars spanning comfort, engine flexibility, and safety",
+      "topic": "pillars",
+      "fact_ids": [
+        "F003",
+        "F007",
+        "F020"
+      ],
+      "usp_ids": [
+        "usp-comfort",
+        "usp-powertrains",
+        "usp-safety"
+      ],
+      "visual_refs": [
+        "im01",
+        "im04",
+        "im07"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "exterior-stance",
+      "title": "Compact Proportions and Ground Clearance",
+      "role": "proof",
+      "goal": "Showcase the SUV proportions, sub-four-metre footprint, and 208 mm ground clearance for road navigation.",
+      "outcome": "Evaluating sub-4-meter dimensions and unladen ground clearance",
+      "topic": "exterior",
+      "fact_ids": [
+        "F012",
+        "F013",
+        "F017"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im02",
+        "im07",
+        "im01"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "cabin-comfort",
+      "title": "Interior Comfort and Climate",
+      "role": "proof",
+      "goal": "Demonstrate the cabin environment, highlighting available ventilated front seats and standard rear AC vents.",
+      "outcome": "Inspecting front-seat ventilation and passenger climate comfort",
+      "topic": "comfort",
+      "fact_ids": [
+        "F020",
+        "F021"
+      ],
+      "usp_ids": [
+        "usp-comfort"
+      ],
+      "visual_refs": [
+        "im05",
+        "im04"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "boot-practicality",
+      "title": "Boot Capacity and Storage Flexibility",
+      "role": "proof",
+      "goal": "Present the 382-litre petrol/diesel boot space, 321-litre CNG volume, and split-folding seats.",
+      "outcome": "Assessing ISO-measured boot capacity and seating flexibility",
+      "topic": "practicality",
+      "fact_ids": [
+        "F014",
+        "F016",
+        "F024"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im06",
+        "im03"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "powertrain-choices",
+      "title": "Engine and Transmission Choices",
+      "role": "proof",
+      "goal": "Clarify the power outputs and gearbox pairings for the 1.2L petrol, 1.5L diesel, and 1.2L iCNG models.",
+      "outcome": "Selecting between petrol, diesel, and CNG powertrain configurations",
+      "topic": "performance",
+      "fact_ids": [
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F018",
+        "F019"
+      ],
+      "usp_ids": [
+        "usp-powertrains"
+      ],
+      "visual_refs": [
+        "im01",
+        "im02"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "safety-standards",
+      "title": "Standard Protection and Active Safety",
+      "role": "proof",
+      "goal": "Detail the six standard airbags, ESP, ISOFIX anchors, certified 5-star ratings, and Fearless + PS DCA ADAS suite.",
+      "outcome": "Reviewing certified five-star crash ratings and standard safety gear",
+      "topic": "safety",
+      "fact_ids": [
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F025"
+      ],
+      "usp_ids": [
+        "usp-safety"
+      ],
+      "visual_refs": [
+        "im07",
+        "im04"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "tech-convenience",
+      "title": "Connected Tech and Audio Features",
+      "role": "features",
+      "goal": "Review modern convenience equipment including the 360-degree camera, front sensors, JBL audio, and iRA app.",
+      "outcome": "Checking camera views, premium sound, and connected features",
+      "topic": "technology",
+      "fact_ids": [
+        "F022",
+        "F023",
+        "F026",
+        "F028"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im08",
+        "im04"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "ownership-details",
+      "title": "Pricing, Warranty, and Clear Next Steps",
+      "role": "establish",
+      "goal": "State the starting ex-showroom price, 3-year warranty badge, and outline open questions for dealer verification.",
+      "outcome": "Clarifying published pricing, warranty badge, and local dealer checks",
+      "topic": "ownership",
+      "fact_ids": [
+        "F001",
+        "F002",
+        "F027",
+        "F029"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im01",
+        "im03"
+      ],
+      "priority_topic": true
+    }
+  ],
+  "ctas": [
+    {
+      "id": "book-test-drive",
+      "label": "Book Test Drive",
+      "kind": "book",
+      "url": "https://tata.cars/book-test-drive/landing.html",
+      "primary": true,
+      "when": "always"
+    },
+    {
+      "id": "view-pricing",
+      "label": "View Variant Prices",
+      "kind": "link",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "primary": false,
+      "when": "after_price"
+    },
+    {
+      "id": "find-dealer",
+      "label": "Find a Dealer",
+      "kind": "contact",
+      "url": "https://tata.cars/dealer-locator.html",
+      "primary": false,
+      "when": "end"
+    }
+  ],
+  "voice": {
+    "persona_name": "Sulafat",
+    "persona_description": "An articulate and courteous Tata Motors product specialist who presents technical specifications with warm clarity and strict accuracy. She avoids exaggerated claims, respects customer priorities, and highlights verified evidence.",
+    "tone": "Warm, confident, reassuring, and grounded in verified engineering facts.",
+    "sample_line": "Hello and welcome to Tata Motors! I am glad you are exploring the Nexon today, and I am here to help you inspect its features at your own pace.",
+    "suggested_voice": "Sulafat",
+    "language": "Indian English"
+  },
+  "visual_gaps": [
+    {
+      "what": "iCNG dual-cylinder boot packaging layout",
+      "why": "F016 mentions the innovative 60-litre water-equivalent twin cylinders, but existing images only display the petrol/diesel luggage area.",
+      "suggestion": "Upload an official photograph of the Nexon iCNG boot floor illustrating how luggage fits over the twin cylinders."
+    },
+    {
+      "what": "360-degree surround camera display on the infotainment screen",
+      "why": "F022 references the HD 360 surround view system and Blind View Monitor, which is a major city parking selling point.",
+      "suggestion": "Provide a high-resolution screenshot of the 10.25-inch touchscreen showing the active 360-degree camera feed with guidance lines."
+    },
+    {
+      "what": "ADAS front radar and camera sensor module",
+      "why": "F025 lists advanced collision warning and emergency braking for Fearless + PS DCA, but exterior shots lack a dedicated sensor detail.",
+      "suggestion": "Upload a close-up image showing the front camera and radar housing integrated on the windscreen and grille."
+    }
+  ],
+  "intake": {
+    "q1": "Welcome to Tata Motors! Would you like to tell me what you're looking for in your next SUV, or shall we jump straight in?",
+    "q2": "",
+    "chips": [
+      {
+        "key": "safety",
+        "label": "5-Star Safety"
+      },
+      {
+        "key": "performance",
+        "label": "Engines & Gearboxes"
+      },
+      {
+        "key": "practicality",
+        "label": "Boot & Space"
+      },
+      {
+        "key": "comfort",
+        "label": "Cabin Comfort"
+      },
+      {
+        "key": "technology",
+        "label": "Tech & Cameras"
+      },
+      {
+        "key": "ownership",
+        "label": "Pricing & Terms"
+      }
+    ]
+  },
+  "state_questions": [
+    {
+      "state": "unknown",
+      "question": "Which aspect of the Nexon would you like to examine first, such as the safety equipment, engine choices, or interior comfort?"
+    },
+    {
+      "state": "stated_want",
+      "question": "To make sure we check the exact setup, which gearbox and fuel type do you prefer for your daily driving?"
+    },
+    {
+      "state": "stated_need",
+      "question": "To ensure the cabin and boot match your routine, will you primarily use the car for city traffic, highway commutes, or family road trips?"
+    }
+  ],
+  "do_not_recommend_if": "I would not recommend the Tata Nexon if your priority requires third-row passenger seating or verified real-world fuel economy figures that are not currently published in official specifications.",
+  "advance": "Take the next step by clicking 'Book Test Drive' to experience the seating comfort, driving position, and gearbox response firsthand at your local showroom.",
+  "notes": "All claims adhere strictly to approved registry facts F001 through F029. Ground clearance of 208 mm is unladen and variant-dependent; it is never described as a water-wading guarantee. Crash test ratings explicitly reflect published GNCAP and BNCAP scopes. Pricing starts at Rs 7.39 Lakhs ex-showroom, and the introductory EMI of Rs 6,499 carries full terms regarding subsequent increases. Unknowns U01 through U09 are directed to dealer verification.",
+  "voice_sample_audio": "audio/82d4770f17c86b4e63a8.wav"
+}

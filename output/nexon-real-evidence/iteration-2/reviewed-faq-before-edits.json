@@ -1,0 +1,335 @@
+{
+  "entries": [
+    {
+      "id": "Q01",
+      "question": "What is the starting ex-showroom price for the base variant?",
+      "origin": "generated",
+      "answer": "The Tata Nexon has a starting ex-showroom price of Rs 7.39 Lakhs. Because prices are subject to change, we recommend getting an exact quote from your local dealer for your preferred variant.",
+      "fact_ids": [
+        "F001"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im01",
+        "source_id": "src_a958c6"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q02",
+      "question": "How does the flexi EMI scheme work, and what is the minimum monthly installment?",
+      "origin": "generated",
+      "answer": "Under the advertised Flexi scheme, the starting EMI is ₹6,499, calculated at Rs. 809 per lakh for the first 6 months, after which the monthly payment is higher. This offer applies to selected variants, and the final financing terms remain at the sole discretion of the financier.",
+      "fact_ids": [
+        "F002"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q03",
+      "question": "What are the power and torque outputs of this 1.2L turbo petrol engine?",
+      "origin": "generated",
+      "answer": "The 1.2-litre turbocharged petrol engine delivers a maximum power of 88.2 kW at 5,500 rpm. For pulling strength, it produces a peak torque of 170 Nm between 1,750 and 4,000 rpm.",
+      "fact_ids": [
+        "F008"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q04",
+      "question": "Can I get a dual-clutch automatic transmission on the diesel or CNG models, or is it exclusive to petrol?",
+      "origin": "generated",
+      "answer": "The 7-speed dual-clutch automatic transmission is offered only on the petrol variants. The diesel engine comes with a 6-speed manual or a 6-speed AMT, while the iCNG model is exclusively available with a 6-speed manual gearbox.",
+      "fact_ids": [
+        "F018"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q05",
+      "question": "Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?",
+      "origin": "generated",
+      "answer": "Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.",
+      "fact_ids": [
+        "F003",
+        "F004"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q06",
+      "question": "What safety ratings did it achieve in the Global NCAP and Bharat NCAP crash tests?",
+      "origin": "generated",
+      "answer": "The Tata Nexon achieved a 5-star rating in Global NCAP crash testing. It also holds a 5-star Bharat NCAP safety rating, which applies to the petrol and diesel trims active as of May 2026.",
+      "fact_ids": [
+        "F005",
+        "F006"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q07",
+      "question": "How much boot space do I get in litres on this petrol model?",
+      "origin": "generated",
+      "answer": "On the petrol Nexon, you get 382 litres of boot space, measured according to the ISO V215 standard. That offers ample room for your regular luggage and family getaways.",
+      "fact_ids": [
+        "F014"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "source_id": "src_e12f23"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q08",
+      "question": "Do the rear seats fold in a 60:40 split, and do they fold down flat for extra luggage?",
+      "origin": "generated",
+      "answer": "Yes, the Nexon lists 60:40 Flip & Fold rear seats on Creative + PS and Fearless + PS petrol/diesel. I’m not sure from the material I have whether they fold completely flat, and I won’t guess.",
+      "fact_ids": [
+        "F024"
+      ],
+      "answered": false,
+      "visual": {
+        "kind": "image",
+        "ref": "im06",
+        "source_id": "src_e12f23"
+      },
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q09",
+      "question": "What is the ground clearance, and will it scrape over large speed breakers when fully loaded with five people?",
+      "origin": "generated",
+      "answer": "The Nexon’s ground clearance is stated as 208 mm, though it can vary by variant. I’m not sure from the material I have whether it will scrape over large speed breakers when fully loaded with five people, so I won’t guess—best to check that with a test drive on your usual roads.",
+      "fact_ids": [
+        "F013"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "source_id": "src_77c02b"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl03"
+    },
+    {
+      "id": "Q10",
+      "question": "What does the standard manufacturer warranty cover in terms of years and kilometres?",
+      "origin": "generated",
+      "answer": "The Tata Nexon comes with an advertised basic warranty of 3 years or 100,000 kilometres. For specific coverage details and full terms, your local dealership can provide complete documentation.",
+      "fact_ids": [
+        "F027"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q11",
+      "question": "Does this Fearless + PS trim include both front-seat ventilation and rear AC vents?",
+      "origin": "generated",
+      "answer": "Yes, the Fearless + PS trim includes ventilated seats for both the driver and co-driver. It also comes with rear AC vents to keep everyone in the cabin comfortable.",
+      "fact_ids": [
+        "F020",
+        "F021"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im05",
+        "source_id": "src_dd0ccf"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl04"
+    },
+    {
+      "id": "Q12",
+      "question": "How large is the central infotainment touchscreen and the driver's digital instrument display?",
+      "origin": "generated",
+      "answer": "On the Pure + trim and higher, the central touchscreen infotainment by HARMAN measures 26.03 cm across. The driver's digital instrument cluster is also 26.03 cm in size on the Fearless + PS trim.",
+      "fact_ids": [
+        "F007",
+        "F009"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q13",
+      "question": "What is the capacity of the fuel tank on the petrol variant versus the cylinders on the iCNG model?",
+      "origin": "generated",
+      "answer": "The petrol Nexon comes with a fuel tank capacity of 44 litres. On the iCNG variant, it features a twin-cylinder setup with a total capacity of 60 litres, arranged as two 30-litre cylinders.",
+      "fact_ids": [
+        "F015",
+        "F016"
+      ],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q14",
+      "question": "Is the iRA connected car app included free permanently, or does it require a paid subscription after a trial?",
+      "origin": "generated",
+      "answer": "It is not free permanently. On the Fearless + PS petrol and diesel variants, the first-year iRA app subscription is free, and renewal charges apply after that.",
+      "fact_ids": [
+        "F028"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im08",
+        "source_id": "src_03bb45"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl08"
+    },
+    {
+      "id": "Q15",
+      "question": "Does this specific trim include the branded JBL audio setup with a subwoofer?",
+      "origin": "generated",
+      "answer": "Which trim are you looking at?",
+      "fact_ids": [],
+      "answered": true,
+      "visual": null,
+      "offer_callback": false,
+      "clarifying_question": "Which trim are you looking at?",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q16",
+      "question": "Are there any active ADAS features included on this top-spec model?",
+      "origin": "generated",
+      "answer": "Yes, on the Fearless + PS petrol DCA, you get features like Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, and Lane Keep Assist, alongside Traffic Sign Recognition, Lane Departure Warning, and High Beam Assist. Please note that this ADAS suite is exclusive to the petrol automatic and is not available on diesel or CNG versions.",
+      "fact_ids": [
+        "F025"
+      ],
+      "answered": true,
+      "visual": {
+        "kind": "image",
+        "ref": "im04",
+        "source_id": "src_1db8e5"
+      },
+      "offer_callback": false,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q17",
+      "question": "Does the 360-degree camera also give me a blind view monitor in the instrument cluster when using turn signals?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q18",
+      "question": "How does the rear-seat knee room compare directly against the Maruti Brezza or Hyundai Venue?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q19",
+      "question": "What is the realistic waiting period right now if I book this Fearless DCA in a dual-tone finish?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    },
+    {
+      "id": "Q20",
+      "question": "What should I expect for routine maintenance and periodic service costs around the 30,000 km mark?",
+      "origin": "generated",
+      "answer": "I'm not sure about that from the material I've been given, so I won't guess. I can offer a salesperson callback, or we can carry on.",
+      "fact_ids": [],
+      "answered": false,
+      "visual": null,
+      "offer_callback": true,
+      "clarifying_question": "",
+      "audio": null,
+      "slide_id": null
+    }
+  ],
+  "answered": 15,
+  "total": 20,
+  "registry_hash": "25a76ecd368c554ecf0b",
+  "partial": false
+}

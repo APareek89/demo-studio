@@ -1,0 +1,275 @@
+[
+  {
+    "id": "F001",
+    "patch": {
+      "value": "Rs 7.39 Lakhs*",
+      "conditions": "Starting ex-showroom price on the official model page, checked 18 September 2026. Prices may change without prior information; obtain an exact selected-variant dealer quote."
+    }
+  },
+  {
+    "id": "F002",
+    "patch": {
+      "value": "₹6,499",
+      "conditions": "Advertised starting EMI under the Flexi scheme: Rs. 809 per lakh instalment for the first 6 months; subsequent EMI is higher. Offers apply to selected variants and may change; final EMI and finance are at the financier's sole discretion. Not a customer-approved EMI.",
+      "truth": "contractual"
+    }
+  },
+  {
+    "id": "F003",
+    "patch": {
+      "conditions": "Manufacturer states six airbags and electronic stability program as standard; three-point ELR belts are stated for all occupants. Do not infer child-seat compatibility or a crash-outcome guarantee."
+    }
+  },
+  {
+    "id": "F005",
+    "patch": {
+      "value": "5 Star Rating",
+      "source": {
+        "ref": "src_73735b",
+        "locator": "360° Safety section; GNCAP rating label",
+        "quote": "GNCAP 5 Star Rating"
+      },
+      "conditions": "Global NCAP five-star rating as reported by Tata Motors. The extracted statement does not identify the test date, generation or tested variant scope; it does not establish superiority over rivals.",
+      "claim": "Global NCAP crash-test rating"
+    }
+  },
+  {
+    "id": "F006",
+    "patch": {
+      "value": "5-star BNCAP safety rating",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Bharat NCAP five-star rating graphic and applicability footnote",
+        "quote": "Nexon BNCAP safety rating is applicable for Petrol & Diesel trims active as on May'26."
+      },
+      "conditions": "Manufacturer-reported Bharat NCAP five-star rating; petrol and diesel trims active as of May 2026. Do not extend this scope to CNG or infer a rival ranking."
+    }
+  },
+  {
+    "id": "F007",
+    "patch": {
+      "value": "26.03 cm touchscreen infotainment by HARMAN",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39: additional-equipment persona hierarchy",
+        "quote": "26.03 cm Touchscreen Infotainment By HARMAN™"
+      },
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. Smart + lists a smaller screen. The brochure directs iCNG features to a separate iCNG list.",
+      "claim": "Infotainment touchscreen size",
+      "truth": "stated"
+    }
+  },
+  {
+    "id": "F008",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: TECHNICAL SPECIFICATION table, Petrol column; Engine, Power (kW), Torque (Nm) rows",
+        "quote": "Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder 1497 cc, 4-cylinder 1199 cc, 3-cylinder Fuel Petrol Diesel Petrol + CNG Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+      },
+      "conditions": "Petrol column of the May 2026 brochure. Power and torque retain the printed rpm conditions. No PS conversion or cross-fuel equivalence is asserted."
+    }
+  },
+  {
+    "id": "F009",
+    "patch": {
+      "value": "26.03 cm digital instrument cluster",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS feature panel",
+        "quote": "26.03 cm Digital Instrument Cluster"
+      },
+      "conditions": "Fearless + PS in the documented petrol/diesel persona list; not a whole-range display specification. Consult the separate iCNG feature list for iCNG.",
+      "claim": "Digital instrument cluster size",
+      "truth": "stated"
+    }
+  },
+  {
+    "id": "F010",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: TECHNICAL SPECIFICATION table, Diesel column; Engine, Power (kW), Torque (Nm) rows",
+        "quote": "Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder 1497 cc, 4-cylinder 1199 cc, 3-cylinder Fuel Petrol Diesel Petrol + CNG Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+      },
+      "conditions": "Diesel column of the May 2026 brochure. Power and torque retain the printed rpm conditions. Do not substitute or combine the differently stated website PS values."
+    }
+  },
+  {
+    "id": "F011",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: TECHNICAL SPECIFICATION table, Petrol + CNG column; Engine, Power (kW), Torque (Nm) rows",
+        "quote": "Engine 1.2L Turbocharged Revotron Engine, 1.5L Turbocharged Revotorq Engine, 1.2L Turbocharged Revotron Engine, 1199 cc, 3-cylinder 1497 cc, 4-cylinder 1199 cc, 3-cylinder Fuel Petrol Diesel Petrol + CNG Power (kW) 88.2 @5500 rpm 84.5 @3750 rpm CNG Mode - 73.52 @5000 rpm Petrol Mode - 88.52 @5000 rpm Torque (Nm) 170 @1750-4000 rpm 260 @1500-2750 rpm CNG Mode - 170 @2000 rpm Petrol Mode - 170 @1750 rpm"
+      },
+      "conditions": "Petrol + CNG column of the May 2026 brochure; the CNG-mode and petrol-mode outputs/rpm apply only to their named mode. Do not blend with the separate petrol-only engine column or other-page PS/kW expressions."
+    }
+  },
+  {
+    "id": "F012",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: TECHNICAL SPECIFICATION, L *W*H and Wheelbase rows",
+        "quote": "L *W*H (mm) 3995*1804*1620 Wheelbase (mm) 2498"
+      },
+      "conditions": "Manufacturer-published dimensions in the May 2026 brochure. The brochure says specifications may vary by variant and may change; confirm the selected variant when ordering."
+    }
+  },
+  {
+    "id": "F013",
+    "patch": {
+      "value": "208 mm",
+      "truth": "stated",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: ground-clearance row and variant footnote",
+        "quote": "Ground Clearance (mm) 208*"
+      },
+      "conditions": "Varies as per variant (brochure footnote). No loading/unladen condition is stated in the supplied source."
+    }
+  },
+  {
+    "id": "F014",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Boot Space row, Petrol/Diesel versus Petrol + CNG columns; ** measurement footnote",
+        "quote": "Boot Space (L) 382** 321**"
+      },
+      "conditions": "382 L in the petrol/diesel columns and 321 L in the Petrol + CNG column. Brochure measurement basis: ISO V215. Litres do not establish that a particular stroller or luggage set fits."
+    }
+  },
+  {
+    "id": "F015",
+    "patch": {
+      "conditions": "44 L is listed for the petrol/diesel liquid-fuel tank in the May 2026 technical table. The separately stated twin-cylinder iCNG capacity is a different fact."
+    }
+  },
+  {
+    "id": "F016",
+    "patch": {
+      "value": "60 (30+30) litres",
+      "truth": "stated",
+      "conditions": "Manufacturer-described combined twin-cylinder fuel capacity for iCNG. The source does not specify water capacity, usable gas quantity or an equivalent mass."
+    }
+  },
+  {
+    "id": "F017",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40: Tyre Size row, Smart & Pure versus Creative & Fearless personas",
+        "quote": "Tyre Size (mm) 195/60 R16 (Smart & Pure Persona) 215/60 R16 (Creative & Fearless Persona)"
+      },
+      "conditions": "Tyre sizes are assigned to the named personas in the May 2026 brochure; this does not state different rim diameters or tyre availability for an unlisted variant."
+    }
+  },
+  {
+    "id": "F018",
+    "patch": {
+      "conditions": "Official specifications FAQ, checked 18 September 2026. Choices depend on fuel/engine and variant; use the brochure powertrain matrix for a specific trim. The listed iCNG option is manual only."
+    }
+  },
+  {
+    "id": "F019",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 40 powertrain matrix: Fearless + PS row, Petrol 1.2 Turbocharged Engine / DCA column is ticked; PDF page 18 automatic label",
+        "quote": "7-SPEED DUAL CLUTCH AUTOMATIC"
+      },
+      "conditions": "The May 2026 brochure matrix lists DCA for Fearless + PS petrol; page 18 supplies the seven-speed automatic label. This is a supported powertrain pairing, not proof of current dealer stock or delivery date."
+    }
+  },
+  {
+    "id": "F021",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 38: Pure + feature panel; pages 38–39 persona hierarchy and separate-iCNG disclaimer",
+        "quote": "Rear AC Vents"
+      },
+      "conditions": "Pure + and higher in the documented petrol/diesel persona hierarchy. The brochure directs iCNG equipment to its separate feature list; no iCNG availability is established here."
+    }
+  },
+  {
+    "id": "F022",
+    "patch": {
+      "value": "360° HD Surround View System with Blind View Monitor",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative panel; higher-persona additions and iCNG disclaimer",
+        "quote": "HD Surround View System with Blind View Monitor"
+      },
+      "conditions": "Creative and higher in the documented petrol/diesel persona hierarchy. Does not include the separately listed front parking sensor. Consult the separate iCNG feature list for iCNG."
+    }
+  },
+  {
+    "id": "F023",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS additional-equipment hierarchy; iCNG disclaimer",
+        "quote": "Front Parking Sensor"
+      },
+      "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. This fact does not establish the sensor on base Creative or on iCNG."
+    }
+  },
+  {
+    "id": "F024",
+    "patch": {
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Creative + PS feature panel and Fearless + PS hierarchy; iCNG disclaimer",
+        "quote": "60:40 Flip & Fold Seats Rear Seat Armrest with Cup Holder"
+      },
+      "conditions": "Creative + PS and Fearless + PS in the documented petrol/diesel hierarchy. Separate iCNG feature list required. No flat-floor claim, child-seat compatibility, or fit for a particular stroller/luggage set is established."
+    }
+  },
+  {
+    "id": "F025",
+    "patch": {
+      "value": "Front Collision Warning, Autonomous Emergency Braking, Lane Centering System, Traffic Sign Recognition, Lane Departure Warning, High Beam Assist, Lane Keep Assist",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS ADAS list; page 40: Fearless + PS DCA-only and CNG/diesel exclusion footnote",
+        "quote": "Front Collision Warning Autonomous Emergency Braking Lane Centering System Traffic Sign Recognition Lane Departure Warning High Beam Assist Lane Keep Assist"
+      },
+      "conditions": "Only Fearless + PS petrol DCA; ADAS is not available in CNG or diesel, per the page-40 footnote."
+    }
+  },
+  {
+    "id": "F026",
+    "patch": {
+      "value": "JBL-branded 9 speakers with subwoofer",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 17: audio feature label; page 40: JBL/subwoofer availability footnotes",
+        "quote": "JBL-BRANDED 9 SPEAKERS WITH SUBWOOFER"
+      },
+      "conditions": "JBL branded speaker system and subwoofer only on Fearless + PS DCA; subwoofer is unavailable in CNG. The wording does not establish a tenth speaker."
+    }
+  },
+  {
+    "id": "F028",
+    "patch": {
+      "claim": "iRA connected features and app subscription",
+      "value": "iRA connected vehicle features; first-year app subscription free",
+      "source": {
+        "ref": "src_706e38",
+        "locator": "PDF page 39: Fearless + PS iRA Connected Vehicle Features; page 40: subscription and fuel restrictions",
+        "quote": "First year iRA app subscription free. Renewal charges apply."
+      },
+      "conditions": "Fearless + PS in the documented petrol/diesel feature list; iRA is not available in CNG. First-year app subscription is free; renewal charges apply. No renewal price or validated 70+ feature count is supplied.",
+      "truth": "contractual"
+    }
+  },
+  {
+    "id": "F029",
+    "patch": {
+      "conditions": "Roadside-assistance phone number on the official model-page footer, checked 18 September 2026. Hours, coverage, response time and call charges are not established by this footer."
+    }
+  }
+]

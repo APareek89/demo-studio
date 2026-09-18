@@ -1,0 +1,40 @@
+[
+  {
+    "id": "Q07",
+    "patch": {
+      "answer": "The petrol Nexon has a published boot capacity of 382 litres, measured to ISO V215.",
+      "fact_ids": [
+        "F014"
+      ]
+    }
+  },
+  {
+    "id": "Q10",
+    "patch": {
+      "answer": "Tata advertises a basic warranty of three years and one lakh kilometres. The supplied brochure doesn't explain which limit applies first or the exclusions, so please confirm the full warranty terms.",
+      "fact_ids": [
+        "F027"
+      ]
+    }
+  },
+  {
+    "id": "Q11",
+    "patch": {
+      "answer": "Yes. The documented Fearless + PS petrol and diesel versions include ventilated driver and co-driver seats, along with rear AC vents.",
+      "fact_ids": [
+        "F020",
+        "F021"
+      ]
+    }
+  },
+  {
+    "id": "Q12",
+    "patch": {
+      "answer": "In the documented petrol and diesel range, Pure + and higher have a 26.03 cm HARMAN touchscreen. Fearless + PS also has a 26.03 cm digital driver display.",
+      "fact_ids": [
+        "F007",
+        "F009"
+      ]
+    }
+  }
+]
