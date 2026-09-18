@@ -2,6 +2,14 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
+## 🤝 Codex handover — 2026-09-18 evening
+From here Anand works with Codex. Codex's standing rules are in `AGENTS.md` (Codex reads that file automatically) and
+the orientation, working protocol and first task prompt are in `CODEX_INSTRUCTIONS.MD` (§8 is the copy-paste prompt:
+Runware as the third text fallback with a cost tier · one real car demo built the customer's way with an issue log ·
+hardening list). Claude's last code commit is 6c62402 (Gemini cooldown); this handover is docs only. Nothing is running
+that needs attention; the local real server is `.venv/bin/uvicorn server.app:app --port 8877`. The eval table in
+`Loop.MD` is the contract Codex must keep green (deck 135/135 · accept 24/24 · smoke OK).
+
 ## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
 Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched.
 🔴 **PROVIDERS (2026-09-18 evening, verified with one-token probes):** the Anthropic key has **no credits** (400 "credit
