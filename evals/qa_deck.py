@@ -251,6 +251,11 @@ content = [s for s in dk["slides"] if s["kind"] not in ("hero_open", "hero_close
 tgt, other = content[0], content[1]
 import copy as _copy
 dk_orig = _copy.deepcopy(dk)
+und_orig = store.read_json(i, "understanding.json")
+und_route = _copy.deepcopy(und_orig)
+# A bank citation must be approved in the registry as well as present on its slide.
+und_route["facts"].append({**_copy.deepcopy(und_route["facts"][0]), "id": "FROUTE", "approved": True})
+store.write_json(i, "understanding.json", und_route)
 tgt["fact_ids"] = tgt["fact_ids"] + ["FROUTE"]; tgt["callouts"][0]["fact_ids"] = tgt["callouts"][0]["fact_ids"] + ["FROUTE"]  # mock slides all cite F001: give one slide a fact only it carries
 store.write_json(i, "deck.json", dk)
 seed = {"id": "Q99", "question": "how many kilometres on one full charge", "origin": "test", "answer": "The registry answer.", "fact_ids": ["FROUTE"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None, "slide_id": tgt["id"]}
@@ -267,6 +272,7 @@ try:
     check("/run/qa: the model path carries slide_id + route too (mock declines → none)", "route" in r and r["route"] == "none" and r["slide_id"] == other["id"])
 finally:
     store.write_json(i, "faq.json", fq); store.write_json(i, "deck.json", dk_orig)
+    store.write_json(i, "understanding.json", und_orig)
 r = c.post(f"/api/demos/{i}/run/pitch", json={"profile": {"name": "Test", "why": "daily commute", "focus": []}, "refine": True})
 check("/run/pitch: every route step names its slide (personalisation orders slides)", r.status_code == 200 and bool(r.json()["route"]) and all(st.get("slide_id") in sids for st in r.json()["route"]), r.text[:120])
 pj = c.get("/web/player/player.js").text

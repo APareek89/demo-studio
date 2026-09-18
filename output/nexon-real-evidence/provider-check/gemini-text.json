@@ -1,0 +1,67 @@
+{
+  "check": "gemini-text",
+  "started_at": "2026-09-18T13:05:57.650079+00:00",
+  "model_tier": "customer",
+  "mock": false,
+  "records": [
+    {
+      "t": 1789736763.856838,
+      "kind": "provider-check-text",
+      "model": "gemini-3.8-flash",
+      "in": 76,
+      "out": 232,
+      "chars": 0,
+      "sec": 0,
+      "cost_usd": 0.000927,
+      "cost_basis": "configured_estimate"
+    }
+  ],
+  "traces": [
+    {
+      "kind": "provider-check-text",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 5919.792175292969,
+      "system": "Return only JSON matching the supplied schema. Use only the provided synthetic fixture. This is an adapter check, not product data.",
+      "user": "SYSTEM INSTRUCTIONS:\nReturn only JSON matching the supplied schema. Use only the provided synthetic fixture. This is an adapter check, not product data.\n\nCONVERSATION / TASK:\nSynthetic fixture F1: the test distance is 42 km. Return answer \"42 km\" and facts [{\"fact_id\":\"F1\",\"value\":42}].",
+      "response": "{\"answer\":\"42 km\",\"facts\":[{\"fact_id\":\"F1\",\"value\":42}]}",
+      "input_tokens": 76,
+      "output_tokens": 232
+    }
+  ],
+  "transport": [
+    {
+      "provider": "gemini",
+      "requested_model": "gemini-3.8-flash",
+      "returned_model_version": "gemini-3.8-flash",
+      "response_id": "NjetataEIv3D4-EPltDHkQY",
+      "latency_ms": 5905,
+      "usage": {
+        "candidates_token_count": 21,
+        "prompt_token_count": 76,
+        "prompt_tokens_details": [
+          {
+            "modality": "TEXT",
+            "token_count": 76
+          }
+        ],
+        "thoughts_token_count": 211,
+        "total_token_count": 308
+      }
+    }
+  ],
+  "provider": "gemini",
+  "requested_model": "gemini-3.8-flash",
+  "result": {
+    "answer": "42 km",
+    "facts": [
+      {
+        "fact_id": "F1",
+        "value": 42
+      }
+    ]
+  },
+  "passed": true,
+  "elapsed_s": 6.181,
+  "completed_at": "2026-09-18T13:06:03.857050+00:00",
+  "total_recorded_usd": 0.000927
+}

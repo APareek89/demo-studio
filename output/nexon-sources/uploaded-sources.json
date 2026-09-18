@@ -1,0 +1,101 @@
+{
+  "demo_id": "dm_36d47b86",
+  "sources": [
+    {
+      "manifest_id": "exterior-hero",
+      "source_id": "src_a958c6",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-hero.avif",
+      "role": "hero",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-0-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "413e4811bd90e5703c0c4d771c388834c56b9a6001ce937d70fcb70e36536d18"
+    },
+    {
+      "manifest_id": "exterior-side",
+      "source_id": "src_77c02b",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-side.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-4-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "3a3541b8666778706a1358aee5c7e0a0e0ccfcfa7e7aa3d73777e0f44ebc2365"
+    },
+    {
+      "manifest_id": "exterior-angle-3",
+      "source_id": "src_18b690",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-angle-3.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-18-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "56fb5c47103713305494a0e78d46a19aa193acd9e1f15d8c3fabae2c097d50c2"
+    },
+    {
+      "manifest_id": "dashboard",
+      "source_id": "src_1db8e5",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/dashboard.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/three-tone-dashboard-1?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "e7de93d5fa4bb0ebe04195e2b4b8bed30d1e846fbb45db4e38d5dc22453326d2"
+    },
+    {
+      "manifest_id": "seating",
+      "source_id": "src_dd0ccf",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/seating.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/premium-ventilated-leatherette-seats?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "8e497897f10594f1602bfc691ff8a8954c8c24d4f2016427f29c48de73749998"
+    },
+    {
+      "manifest_id": "boot",
+      "source_id": "src_e12f23",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/boot.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/bootspace-v2?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "c5b1b4a44689013cc0846aee28b98616bf3486e7c8c2561ed8b110fb504e1e8d"
+    },
+    {
+      "manifest_id": "lighting",
+      "source_id": "src_6a2af2",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/lighting.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/bi-functional-led-lamp?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "4b6edf13af00ddb8cba519999441180aa8867fe665162c68db993a0432731ef9"
+    },
+    {
+      "manifest_id": "infotainment",
+      "source_id": "src_03bb45",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/infotainment.avif",
+      "role": "product",
+      "origin_url": "https://s7ap1.scene7.com/is/image/tatamotors/floating-infotainment-system?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "sha256": "ebf782c2ac05ea9b80bf86e241b48789e9c1f7b23d70bece7ec6238f0cbb9a99"
+    },
+    {
+      "manifest_id": "brochure",
+      "source_id": "src_706e38",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/brochures/nexon-brochure-may-2026.pdf",
+      "role": "product",
+      "origin_url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "sha256": "d590ff0c550a3de3ae7f77683a474cc7400fb319c16bf0e10a5e0e6cd70f738f"
+    },
+    {
+      "manifest_id": "brezza-brochure",
+      "source_id": "src_b28460",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-brochure.pdf",
+      "role": "competitor",
+      "origin_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "sha256": "bdaa4654b016ad0e83c610de09d722d2381a8251a4f4630515e6fc7e81f4b591"
+    },
+    {
+      "manifest_id": "venue-brochure",
+      "source_id": "src_43582f",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-brochure.pdf",
+      "role": "competitor",
+      "origin_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "sha256": "e08b9c95c3bac2603fe8f1051d519a8a26f7a348ad21b1f1ebf034f1b75fff9d"
+    },
+    {
+      "manifest_id": "venue-feature-tables",
+      "source_id": "src_73036b",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-feature-tables.txt",
+      "role": "competitor",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "sha256": "764e83471ee820e16f9bbd125f57e2ae0b209d3946c5460ad576202f0b30f54d"
+    }
+  ]
+}

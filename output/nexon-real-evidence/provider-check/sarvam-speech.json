@@ -1,0 +1,71 @@
+{
+  "check": "sarvam-speech",
+  "started_at": "2026-09-18T13:05:57.671806+00:00",
+  "model_tier": "customer",
+  "mock": false,
+  "records": [
+    {
+      "t": 1789736758.4917068,
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 36,
+      "sec": 0,
+      "cost_usd": 0.0006428571428571427,
+      "cost_basis": "configured_estimate"
+    },
+    {
+      "t": 1789736759.345542,
+      "kind": "sarvam-stt",
+      "model": "saarika:v2.5",
+      "in": 0,
+      "out": 0,
+      "chars": 0,
+      "sec": 2.476,
+      "cost_usd": 0.0002456349206349206,
+      "cost_basis": "configured_estimate"
+    }
+  ],
+  "traces": [
+    {
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "latency_ms": 798.7511157989502,
+      "user": "[priya · en-IN] My daily drive is twelve kilometres.",
+      "response": "[audio]",
+      "chars": 36
+    },
+    {
+      "kind": "sarvam-stt",
+      "model": "saarika:v2.5",
+      "latency_ms": 838.0968570709229,
+      "user": "[en-IN audio 77 KB]",
+      "response": "My daily drive is 12 kilometers."
+    }
+  ],
+  "transport": [],
+  "provider": "sarvam",
+  "tts_model": "bulbul:v3",
+  "stt_model": "saarika:v2.5",
+  "speaker": "priya",
+  "language": "en-IN",
+  "source_text": "My daily drive is twelve kilometres.",
+  "audio": {
+    "path": "output/nexon-real-evidence/provider-check/sarvam-readiness.wav",
+    "bytes": 109176,
+    "sha256": "5fa2c07c085e445ea0e653b526c1b316b2cd1c9355b57236d747fa8d141caf8e",
+    "channels": 1,
+    "sample_width": 2,
+    "sample_rate": 22050,
+    "duration_s": 2.4746485260770976,
+    "rms": 5464.923769029614
+  },
+  "tts_passed": true,
+  "completed_at": "2026-09-18T13:05:59.345778+00:00",
+  "total_recorded_usd": 0.0008884920634920633,
+  "transcript": "My daily drive is 12 kilometers.",
+  "stt_passed": true,
+  "passed": true,
+  "elapsed_s": 1.653
+}

@@ -516,3 +516,23 @@
 **Deepest why type:** `design`
 **Action taken:** Customer recap uses their actual stated needs, explored topics and questions still open, with one optional follow-up. Internal metrics remain in session storage. Opening the recap closes the callback form.
 **Preventive action:** Browser regression stops during an unresolved callback turn and checks buyer copy, visible overlays and preserved internal record separately.
+
+## 2026-09-18 — Cinematic evidence rail collapsed and labels moved between layouts
+
+**Why 1:** Narrow callout evidence had zero height despite visible child boxes.
+**Why 2:** Evidence items reused the class `overlay`, whose global modal rule made them absolutely positioned.
+**Why 3:** Renderer styling changed composition without an explicit in-flow reset for the semantic marker.
+**Why 4:** Earlier geometry checks only bounded the picture and leader; they did not require a nonzero evidence parent.
+**Why 5:** Saved image coordinates, responsive evidence and modal utility styles had no joint browser contract.
+**Fix:** Scope evidence items to static positioning; reserve the full fallback evidence band before placing chips; measure heading bounds without animation; reject oversized chip placements; preserve native image/anchor geometry and saved Align data.
+**Prevention:** The19-case player harness includes narrow/portrait evidence, nonzero fallback parent, consecutive-layout stability and exact anchors through resize. All19 pass with synthetic audio/API only; real Nexon verification stays separate.
+
+## 2026-09-18 — Competitor applicability and rejected evidence bypassed runtime checks
+
+**Why 1:** Rival PDF/text sources did not contribute facts, and runtime comparisons lost trim conditions.
+**Why 2:** Competitor ingestion selected only URLs, while the Q&A context copied only claim/value.
+**Why 3:** Upload provenance and richer fact fields were not carried consistently across source ingestion, prompt assembly and FAQ reuse.
+**Why 4:** A cached FAQ answer bypassed live approval checks, and a CTA could bypass replacement of rejected or uncited answer text.
+**Why 5:** The prior contract tested happy-path citations without rejected evidence combined with cached audio or action fields.
+**Fix:** Read rival documents into separate C-facts; preserve conditions, truth, locator, quote and source URL/date; validate URL metadata before mutation; share approval guards between model and bank paths; invalidate FAQ reuse when approvals/competition change; reject unsafe claim text before speech regardless of CTA.
+**Prevention:** `evals/source_contract.py` exercises isolated PDF/text ingestion, provenance validation through the real API, rejected/mixed citations, bank hits with revoked facts/disabled comparisons, and the actual text passed to speech. Live semantic claim-to-source review remains required; token/citation checks alone do not prove entailment.

@@ -286,7 +286,8 @@ test('Stopping with a callback open shows a buyer recap while retaining internal
 });
 
 const imageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#c9ddd2"/><rect x="8" y="8" width="984" height="584" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="640" cy="280" r="100" fill="#204d43"/><text x="45" y="540" font-family="sans-serif" font-size="32" fill="#173b32">Synthetic geometry fixture — 1000 × 600</text></svg>');
-async function renderFixture(width) {
+const tallImageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1000" viewBox="0 0 600 1000"><rect width="600" height="1000" fill="#c9ddd2"/><rect x="8" y="8" width="584" height="984" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="300" cy="800" r="100" fill="#204d43"/></svg>');
+async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture } = {}) {
   player?.destroy(); player = null; host.replaceChildren();
   env = { calls: [], played: [], active: new Set(), maxActive: 0, geometry: [] };
   const frame = document.createElement('div'); frame.className = 'pl render-contract';
@@ -294,13 +295,23 @@ async function renderFixture(width) {
   const stage = document.createElement('div'); stage.className = 'pl-stage'; stage.style.cssText = 'position:absolute;inset:0;overflow:visible';
   const stack = document.createElement('div'); stack.className = 'slide-stack'; stack.style.inset = '0';
   stage.append(stack); frame.append(stage); host.append(frame);
-  const sl = slide('geometry', 'proof', 'A supported point.'); sl.title = 'An exact product detail'; sl.image_url = imageFixture;
-  sl.callouts = [{ id: 'geometry-callout', text: 'Supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .64, y: .47 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 0 }];
+  const sl = slide('geometry', kind, 'A supported point.'); sl.title = 'An exact product detail'; sl.image_url = image;
+  sl.callouts = callouts ?? [{ id: 'geometry-callout', text: 'Supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .64, y: .47 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 0 }];
   const view = renderSlide(sl, { fit: true }); view.setRevealed(-1); stack.append(view.el); view.el.classList.add('on');
   await view.img.decode(); view.layout();
-  return { frame, view };
+  return { frame, view, slide: sl };
 }
 const rect = (el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height, right: r.right, bottom: r.bottom }; };
+const evidenceRailDetails = (view) => {
+  const panel = view.el.querySelector('.slide-panel');
+  const measure = (node) => {
+    const css = getComputedStyle(node);
+    return { className: node.className, box: rect(node), clientHeight: node.clientHeight, scrollHeight: node.scrollHeight,
+      display: css.display, position: css.position, inset: css.inset, flexDirection: css.flexDirection,
+      flex: css.flex, height: css.height, maxHeight: css.maxHeight, overflow: css.overflow };
+  };
+  return { panel: measure(panel), items: [...panel.children].map(measure) };
+};
 test('Revealing an overlay connects its leader to the visible chip centre', async () => {
   const { frame, view } = await renderFixture(1000);
   try {
@@ -332,6 +343,112 @@ test('Wide and narrow slides keep the native image ratio inside the stage', asyn
       assert(document.documentElement.scrollWidth <= innerWidth + 1, 'Slide causes horizontal page overflow');
     } finally { view.destroy(); frame.remove(); }
   }
+});
+test('Resizing keeps the exact native-image anchor without changing saved callout coordinates', async () => {
+  const { frame, view, slide: sl } = await renderFixture(1000);
+  const saved = snapshot(sl.callouts), measurements = [];
+  try {
+    for (const width of [1000, 780, 390, 1000]) {
+      frame.style.width = width + 'px'; view.setRevealed(-1); view.layout(); view.setRevealed(0); view.highlight('geometry-callout');
+      const stage = rect(view.el), image = rect(view.img), picture = rect(view.pic);
+      const expected = { x: image.x + image.width * saved[0].anchor.x, y: image.y + image.height * saved[0].anchor.y };
+      const leader = view.pic.querySelector('.leaders line'), point = view.pic.querySelector('.leaders').createSVGPoint();
+      point.x = leader.x2.baseVal.value; point.y = leader.y2.baseVal.value;
+      const endpoint = point.matrixTransform(leader.getScreenCTM());
+      measurements.push({ requestedWidth: width, image, picture, expectedAnchor: expected, actualAnchor: { x: endpoint.x, y: endpoint.y } }); env.geometry = measurements;
+      assert(Math.abs(endpoint.x - expected.x) <= 1.5 && Math.abs(endpoint.y - expected.y) <= 1.5, 'Resizing moved the anchor away from its saved point on the native image');
+      assert(picture.x >= stage.x - 1 && picture.y >= stage.y - 1 && picture.right <= stage.right + 1 && picture.bottom <= stage.bottom + 1, 'Resizing pushed the annotated image outside the slide');
+      assert(JSON.stringify(sl.callouts) === JSON.stringify(saved), 'Layout, reveal or highlight rewrote saved Align coordinates');
+    }
+  } finally { view.destroy(); frame.remove(); }
+});
+test('A narrow slide exposes numbered evidence without cropping the image or covering it with labels', async () => {
+  const callouts = [
+    { id: 'left-detail', text: 'First supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .22, y: .55 }, label_pos: { x: .08, y: .18 }, reveal_on_line: 0 },
+    { id: 'right-detail', text: 'Second supported detail', fact_ids: ['f2'], placement: 'overlay', anchor: { x: .77, y: .45 }, label_pos: { x: .69, y: .78 }, reveal_on_line: 0 },
+  ];
+  const saved = snapshot(callouts), { frame, view, slide: sl } = await renderFixture(390, { callouts });
+  try {
+    assert([...view.el.querySelectorAll('.slide-panel .item')].every((item) => item.getBoundingClientRect().height === 0), 'Unspoken narrow-screen evidence was already visible');
+    view.setRevealed(0); view.layout();
+    const stage = rect(view.el), image = rect(view.img), panel = view.el.querySelector('.slide-panel'), strip = rect(panel);
+    env.geometry.push({ stage, image, evidenceStrip: strip, railLayout: evidenceRailDetails(view) });
+    assert(strip.width > 0 && strip.height > 0 && strip.x >= stage.x - 1 && strip.right <= stage.right + 1 && strip.y >= stage.y - 1 && strip.bottom <= stage.bottom + 1, 'Narrow evidence strip is missing or outside the visible slide');
+    assert(image.bottom <= strip.y + 2 || image.y >= strip.bottom - 2, 'Narrow evidence strip covers the authentic image');
+    for (let i = 0; i < callouts.length; i++) {
+      const c = saved[i], item = panel.querySelector(`[data-id="${c.id}"]`), dot = view.pic.querySelector(`.dot[data-id="${c.id}"]`), chip = view.pic.querySelector(`.callout[data-id="${c.id}"]`);
+      const d = rect(dot), itemBox = rect(item);
+      assert(itemBox.width > 0 && itemBox.height > 0 && item.textContent.includes(c.text) && item.querySelector('.num')?.textContent === String(i + 1), 'Narrow evidence lost its supported label or matching number');
+      assert(parseFloat(getComputedStyle(item).fontSize) >= 11, 'Narrow evidence became too small to read');
+      assert(chip.getBoundingClientRect().width === 0, 'Narrow layout still covers the product with an overlay label');
+      assert(d.width > 0 && d.height > 0 && dot.querySelector('.num')?.textContent === String(i + 1), 'Narrow image lost the evidence number');
+      assert(Math.abs(d.x + d.width / 2 - (image.x + image.width * c.anchor.x)) <= 1.5 && Math.abs(d.y + d.height / 2 - (image.y + image.height * c.anchor.y)) <= 1.5, 'Narrow evidence number points at the wrong image location');
+    }
+    assert(frame.scrollWidth <= frame.clientWidth + 1 && JSON.stringify(sl.callouts) === JSON.stringify(saved), 'Narrow evidence caused overflow or rewrote saved coordinates');
+  } finally { view.destroy(); frame.remove(); }
+});
+test('Opening and closing hero images retain their native ratio within wide and narrow stages', async () => {
+  const measurements = [];
+  for (const kind of ['hero_open', 'hero_close']) for (const width of [1000, 390]) {
+    const { frame, view } = await renderFixture(width, { kind, callouts: [] });
+    try {
+      view.layout();
+      const stage = rect(view.el), image = rect(view.img), picture = rect(view.pic), title = rect(view.el.querySelector('.slide-title'));
+      measurements.push({ kind, requestedWidth: width, stage, image, title }); env.geometry = measurements;
+      assert(image.width > 0 && image.height > 0 && Math.abs(image.width / image.height - view.img.naturalWidth / view.img.naturalHeight) < .015, 'Hero image lost its native proportions');
+      assert(picture.x >= stage.x - 1 && picture.y >= stage.y - 1 && picture.right <= stage.right + 1 && picture.bottom <= stage.bottom + 1, 'Hero image escapes the visible slide');
+      assert(title.width > 0 && title.height > 0 && title.x >= stage.x - 1 && title.right <= stage.right + 1 && title.y >= stage.y - 1 && title.bottom <= stage.bottom + 1, 'Hero title is clipped outside its stage');
+      assert(frame.scrollWidth <= frame.clientWidth + 1, 'Hero content creates horizontal overflow');
+    } finally { view.destroy(); frame.remove(); }
+  }
+});
+test('Crowded overlay labels settle in one pass without colliding with their fallback evidence', async () => {
+  const callouts = Array.from({ length: 4 }, (_, i) => ({
+    id: 'crowded-' + i, text: `Detail ${i + 1}: supported fixture information with a longer approved explanation that needs several readable lines.`,
+    fact_ids: ['f' + (i + 1)], placement: 'overlay', anchor: { x: .5 + i * .1, y: .5 }, label_pos: { x: .68, y: .14 }, reveal_on_line: 0,
+  }));
+  const saved = snapshot(callouts), { frame, view, slide: sl } = await renderFixture(1000, { callouts });
+  try {
+    view.setRevealed(0);
+    const visible = (node) => { const box = rect(node); return box.width > 0 && box.height > 0 && getComputedStyle(node).visibility !== 'hidden'; };
+    const overlaps = (a, b) => a.x < b.right - 1 && a.right > b.x + 1 && a.y < b.bottom - 1 && a.bottom > b.y + 1;
+    const state = () => callouts.map((c) => {
+      const chip = view.pic.querySelector(`.callout[data-id="${c.id}"]`), item = view.el.querySelector(`.slide-panel [data-id="${c.id}"]`);
+      return { id: c.id, chip: rect(chip), chipVisible: visible(chip), evidenceVisible: visible(item) };
+    });
+    const first = state(), panel = rect(view.el.querySelector('.slide-panel')), heading = rect(view.el.querySelector('.slide-heading'));
+    env.geometry.push({ firstPass: first, evidenceStrip: panel, heading, railLayout: evidenceRailDetails(view) });
+    assert(panel.width > 0 && panel.height > 0, 'Fallback evidence has no visible parent rail; child boxes alone do not prove visibility');
+    assert(first.some((c) => c.chipVisible) && first.some((c) => c.evidenceVisible), 'Crowded fixture did not exercise both overlay and fallback evidence');
+    for (const c of first) {
+      assert(c.chipVisible !== c.evidenceVisible, 'A supported label is missing or duplicated after fallback');
+      if (c.chipVisible) {
+        assert(!overlaps(c.chip, heading) && !overlaps(c.chip, panel), 'First layout leaves an overlay over the title or newly visible evidence rail');
+        assert(!first.some((other) => other.id !== c.id && other.chipVisible && overlaps(c.chip, other.chip)), 'First layout leaves readable overlay labels on top of each other');
+      }
+    }
+    view.layout(); const second = state();
+    assert(JSON.stringify(second) === JSON.stringify(first), 'A second layout changes fallback membership or label positions');
+    view.setRevealed(-1); view.setRevealed(0);
+    assert(JSON.stringify(state()) === JSON.stringify(first), 'Hiding and revealing the same evidence changes settled placement');
+    assert(JSON.stringify(sl.callouts) === JSON.stringify(saved), 'Fallback placement rewrites the saved Align coordinates');
+  } finally { view.destroy(); frame.remove(); }
+});
+test('A tall native image stays above wrapped mobile evidence', async () => {
+  const callouts = [0, 1].map((i) => ({ id: 'wrapped-' + i,
+    text: 'Supported fixture detail with a carefully reviewed explanation that wraps across several lines in a narrow view.',
+    fact_ids: ['f' + i], placement: 'overlay', anchor: { x: .5, y: .8 }, label_pos: { x: .1, y: .1 }, reveal_on_line: 0,
+  }));
+  const { frame, view } = await renderFixture(390, { callouts, image: tallImageFixture });
+  try {
+    view.setRevealed(0); view.layout();
+    const stage = rect(view.el), image = rect(view.img), panel = rect(view.el.querySelector('.slide-panel'));
+    env.geometry.push({ stage, image, wrappedEvidence: panel, railLayout: evidenceRailDetails(view) });
+    assert(panel.height > 55, 'Fixture did not produce wrapped mobile evidence');
+    assert(Math.abs(image.width / image.height - .6) < .015, 'Tall image lost its native aspect ratio');
+    assert(image.bottom <= panel.y + 1, 'Wrapped mobile evidence covers the lower part of the tall image');
+    assert(image.y >= stage.y - 1 && panel.bottom <= stage.bottom + 1 && frame.scrollWidth <= frame.clientWidth + 1, 'Tall image or evidence escapes the slide');
+  } finally { view.destroy(); frame.remove(); }
 });
 
 runButton.textContent = 'Run checks'; runButton.disabled = false; summary.textContent = `Ready — ${cases.length} browser checks`;

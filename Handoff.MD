@@ -2,6 +2,16 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
+## Current checkpoint — 2026-09-18
+
+Anand resumed after a pause and confirmed Gemini billing plus permission to reuse official manufacturer materials. Live probes passed for Gemini customer text/vision, Runware customer text and Sarvam TTS/STT; evidence in `output/nexon-real-evidence/provider-check/`. Runware remains a text fallback, not a speech/vision fallback. Do not repeat successful probes.
+
+The first Cinematic variant of the supplied M4 HTML now informs **only the slides**: dark image-led composition, white headings, lime anchors and evidence. Existing intake, dock and conversation behavior remain. Native image coordinates and saved Align edits are preserved; stable label placement and mobile evidence fixes pass19/19 actual browser cases (synthetic media/API). Required free gates: deck203/203, source39/39, acceptance24/24, both smoke phases, Python/12 JS modules and diagram copies pass. Authentic Nexon visuals and real voice/customer paths still need review.
+
+The real draft `dm_36d47b86` has18 sources uploaded through product APIs:8 unchanged official images, Nexon brochure,2 rival brochures, trim-qualified Venue text and6 URLs. `output/nexon-sources/manifest.json`, `uploaded-sources.json` and `comparison-audit.md` retain URLs, hashes and applicability. Image enhancement and opening film are off. Local customer-tier server8893 uses `data/demos` and `data/nexon-customer/graph.sqlite`, cloud off. Rival PDF/text extraction and runtime/FAQ approval/provenance safeguards are fixed and tested, including uncited/rejected claims with CTAs and numeric equipment counts.
+
+Next: real Read → source/fact/variant and six-card Align review → Build → actual customer validation → preserve iteration1 → fix → iteration2. Both real iterations remain incomplete. No deployment. Browser unlocked and ready. Mock preview8891 and free harness8892 also remain available.
+
 ## Codex Part 2 — 2026-09-18 — `codex/real-demo-nexon`
 
 One Tata Nexon demo with Brezza and Venue, two real iterations, is authorized. The free customer rehearsal `dm_3d6448af` is preserved at port8891 under `data/nexon-mock` and is explicitly fake content with existing sample imagery, not a Nexon demo. Findings and evidence: `docs/issues/2026-09-18-nexon.md`.
@@ -14,7 +24,7 @@ Experience fixes: product-first responsive gallery; native-aspect pictures and r
 
 Free verification: deck203/203 (includes29 content +39 provider contracts), accept24/24, smoke both phases pass; browser14/14 including the final customer-recap regression; Python and all12 JS modules compile. Actual source facts, voice intelligibility, paid provider compatibility, personalized pitch quality and live latency remain unverified.
 
-**Next required input:** confirm Gemini billing is enabled, and whether Anand has permission to reuse the official manufacturer materials identified in `output/nexon-sources/`. The original brief explicitly requires billing confirmation and respecting source terms. No paid calls, restricted downloads, merge or deployment. Part3 remains deferred. Once answered, gather permitted originals, perform source/variant/Align review, build the real demo, test eight customer question paths, fix observed quality failures and validate iteration2.
+**Prerequisites resolved:** Anand confirmed billing and permission to reuse the manufacturer materials. Real build and testing are authorized; merge/deployment and Part3 remain deferred. Gather permitted originals, preserve competitor applicability, perform source/variant/Align review, build the real demo, test all twelve question paths, fix observed quality failures and validate iteration2. Browser is unlocked; continue the real workflow.
 
 ## Codex Part 1 — 2026-09-18 — `codex/runware-fallback`
 

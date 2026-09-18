@@ -83,7 +83,7 @@ flowchart TD
   BUILD[&quot;BUILD phase (thread)&lt;br/&gt;[FUNCTION · graph.py]&lt;br/&gt;Voice → Rehearsal → Bundle&lt;br/&gt;see diagram 04&quot;]:::fn
   OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
-  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;product-first gallery · owned voice/typed turns · explicit Q&amp;A return&lt;br/&gt;see diagram 05&quot;]:::fn
+  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;cinematic slides · owned voice/typed turns · explicit Q&amp;A return&lt;br/&gt;see diagram 05&quot;]:::fn
   FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
   FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
   LIB[&quot;Demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&quot;]:::data
@@ -114,7 +114,8 @@ flowchart TD
   IMGS[&quot;image tags&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: batches of ≤12 images&lt;br/&gt;out: ImagesOut · description, angle, quality, full_product, parts — each {name, box_2d 0-1000 → {x,y,w,h} 0-1, confidence}&quot;]:::agent
   IDS[&quot;assign ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;sh01.., im01.. + source_id&quot;]:::fn
   DOCS[&quot;sources.source_text&lt;br/&gt;[LIBRARY · pypdf / python-docx / httpx+bs4]&lt;br/&gt;in: pdf/docx/txt/url&lt;br/&gt;out: text with [page n] markers; PDFs also attached natively&quot;]:::data
-  FACTS[&quot;fact registry + brand + product&lt;br/&gt;[AGENT · Claude text tier · messages.parse; extracted text fallback Gemini → Runware]&lt;br/&gt;in: all documents + product hint (+ previous registry + revision instruction)&lt;br/&gt;out: FactsOut · facts with source ref/locator/quote, unknowns, brand&quot;]:::agent
+  FACTS[&quot;fact registry + brand + product&lt;br/&gt;[AGENT · Claude text tier · messages.parse; extracted text fallback Gemini → Runware]&lt;br/&gt;in: product / brand documents (rivals excluded) + product hint (+ previous registry + revision instruction)&lt;br/&gt;out: FactsOut · facts with source ref/locator/quote, unknowns, brand&quot;]:::agent
+  COMP[&quot;competitor document facts&lt;br/&gt;[AGENT · same text fallback chain]&lt;br/&gt;official URL / PDF / doc / text → separate C-facts&lt;br/&gt;retain variant conditions, truth, source URL, locator, quote and read date&quot;]:::agent
   FIDS[&quot;assign F001.. / U01.. · keep human edits&lt;br/&gt;[FUNCTION]&quot;]:::fn
   UND[&quot;understanding.json&lt;br/&gt;[DATA]&quot;]:::data
   PLAN[&quot;demo plan (sales principles P01-P10 in prompt)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;in: registry, shots, images, brand, URL, language (+ previous plan)&lt;br/&gt;out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if&quot;]:::agent
@@ -128,7 +129,8 @@ flowchart TD
   ISV -- &quot;video&quot; --&gt; UPV --&gt; SHOTS --&gt; IDS
   SHOTS -- &quot;no images uploaded&quot; --&gt; STILLS --&gt; IMGS
   ISV -- &quot;image&quot; --&gt; IMGS --&gt; IDS
-  ISV -- &quot;pdf / doc / url / text&quot; --&gt; DOCS --&gt; FACTS --&gt; FIDS
+  ISV -- &quot;product / brand pdf / doc / url / text&quot; --&gt; DOCS --&gt; FACTS --&gt; FIDS
+  ISV -- &quot;role=competitor: URL / PDF / doc / text&quot; --&gt; COMP --&gt; UND
   IDS --&gt; UND
   FIDS --&gt; UND
   UND --&gt; PLAN --&gt; PVAL --&gt; PJ --&gt; SAMPLE --&gt; OPEN --&gt; CONV
@@ -276,7 +278,7 @@ flowchart TD
   DEEP[&quot;deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]&quot;]:::fn
   QIN[&quot;question text&lt;br/&gt;[ask · voice or 💬 typed]&lt;br/&gt;stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns&quot;]:::ask
   QA[&quot;POST /api/demos/id/run/qa&lt;br/&gt;[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each, one retry; all fail → decline + callback]&lt;br/&gt;in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs&lt;br/&gt;out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id&quot;]:::agent
-  QV{&quot;valid?&lt;br/&gt;[FUNCTION · qa.answer]&lt;br/&gt;fact_ids ⊆ registry AND (answered OR no number/claim words)&quot;}:::dec
+  QV{&quot;valid?&lt;br/&gt;[FUNCTION · qa.answer]&lt;br/&gt;fact_ids ⊆ approved registry (including bank hits) AND (answered OR no number/claim words)&quot;}:::dec
   RT{&quot;where does the answer live?&lt;br/&gt;[FUNCTION · deck.route_for — answer fact ids ∩ each slide&#x27;s facts, else the question&#x27;s words vs slide topics / titles · NO LLM]&quot;}:::dec
   JUMP[&quot;jump: cross-fade to the slide that carries the facts · all callouts shown, the matching one lit · slide marked covered (reached later: title + first line, no check-in)&lt;br/&gt;[FUNCTION · showSlideView + highlight]&quot;]:::fn
   SPEAK[&quot;speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)&lt;br/&gt;[FUNCTION]&quot;]:::fn

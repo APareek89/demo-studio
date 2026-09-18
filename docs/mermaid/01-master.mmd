@@ -17,7 +17,7 @@ flowchart TD
   BUILD["BUILD phase (thread)<br/>[FUNCTION · graph.py]<br/>Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data
-  PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>product-first gallery · owned voice/typed turns · explicit Q&A return<br/>see diagram 05"]:::fn
+  PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>cinematic slides · owned voice/typed turns · explicit Q&A return<br/>see diagram 05"]:::fn
   FB["USER gives feedback<br/>[ask · Rehearse panel]"]:::ask
   FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'understand') → rebuild"]:::agent
   LIB["Demos tab<br/>[DATA · list of data/demos/*/demo.json]"]:::data

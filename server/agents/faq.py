@@ -76,8 +76,9 @@ def doc_questions(demo_id: str) -> list[str]:
 def _registry_hash(demo_id: str) -> str:
     und = store.read_json(demo_id, "understanding.json") or {}
     rows = [(f.get("id"), f.get("claim"), f.get("value"), f.get("conditions"), f.get("approved", True)) for f in und.get("facts", [])]
-    rows += [(f.get("id"), f.get("claim"), f.get("value"), f.get("conditions"), True) for c in und.get("competitors", []) for f in c.get("facts", [])]
-    return hashlib.sha256(json.dumps(rows, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
+    rows += [(f.get("id"), f.get("claim"), f.get("value"), f.get("conditions"), f.get("approved", True)) for c in und.get("competitors", []) for f in c.get("facts", [])]
+    competition = store.load(demo_id).get("settings", {}).get("competition", "off")
+    return hashlib.sha256(json.dumps({"facts": rows, "competition": competition}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
 
 
 def run(demo_id: str, emit, force: bool = False) -> dict:

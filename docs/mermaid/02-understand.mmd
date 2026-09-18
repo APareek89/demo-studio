@@ -8,7 +8,8 @@ flowchart TD
   IMGS["image tags<br/>[AGENT · Gemini 3.6 Flash]<br/>in: batches of ≤12 images<br/>out: ImagesOut · description, angle, quality, full_product, parts — each {name, box_2d 0-1000 → {x,y,w,h} 0-1, confidence}"]:::agent
   IDS["assign ids<br/>[FUNCTION]<br/>sh01.., im01.. + source_id"]:::fn
   DOCS["sources.source_text<br/>[LIBRARY · pypdf / python-docx / httpx+bs4]<br/>in: pdf/docx/txt/url<br/>out: text with [page n] markers; PDFs also attached natively"]:::data
-  FACTS["fact registry + brand + product<br/>[AGENT · Claude text tier · messages.parse; extracted text fallback Gemini → Runware]<br/>in: all documents + product hint (+ previous registry + revision instruction)<br/>out: FactsOut · facts with source ref/locator/quote, unknowns, brand"]:::agent
+  FACTS["fact registry + brand + product<br/>[AGENT · Claude text tier · messages.parse; extracted text fallback Gemini → Runware]<br/>in: product / brand documents (rivals excluded) + product hint (+ previous registry + revision instruction)<br/>out: FactsOut · facts with source ref/locator/quote, unknowns, brand"]:::agent
+  COMP["competitor document facts<br/>[AGENT · same text fallback chain]<br/>official URL / PDF / doc / text → separate C-facts<br/>retain variant conditions, truth, source URL, locator, quote and read date"]:::agent
   FIDS["assign F001.. / U01.. · keep human edits<br/>[FUNCTION]"]:::fn
   UND["understanding.json<br/>[DATA]"]:::data
   PLAN["demo plan (sales principles P01-P10 in prompt)<br/>[AGENT · Claude text tier]<br/>in: registry, shots, images, brand, URL, language (+ previous plan)<br/>out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if"]:::agent
@@ -22,7 +23,8 @@ flowchart TD
   ISV -- "video" --> UPV --> SHOTS --> IDS
   SHOTS -- "no images uploaded" --> STILLS --> IMGS
   ISV -- "image" --> IMGS --> IDS
-  ISV -- "pdf / doc / url / text" --> DOCS --> FACTS --> FIDS
+  ISV -- "product / brand pdf / doc / url / text" --> DOCS --> FACTS --> FIDS
+  ISV -- "role=competitor: URL / PDF / doc / text" --> COMP --> UND
   IDS --> UND
   FIDS --> UND
   UND --> PLAN --> PVAL --> PJ --> SAMPLE --> OPEN --> CONV

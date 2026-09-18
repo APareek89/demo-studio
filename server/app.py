@@ -204,7 +204,10 @@ async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), 
 async def patch_source(demo_id: str, source_id: str, req: Request):
     _demo_or_404(demo_id)
     body = await req.json()
-    return {"sources": store.patch_source(demo_id, source_id, body)["sources"]}
+    try:
+        return {"sources": store.patch_source(demo_id, source_id, body)["sources"]}
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
 
 
 @app.get("/api/demos/{demo_id}/faq-template")
@@ -740,7 +743,7 @@ def get_bundle(demo_id: str):
 
 @app.post("/api/demos/{demo_id}/run/qa")
 async def run_qa(demo_id: str, req: Request):
-    _demo_or_404(demo_id)
+    demo = _demo_or_404(demo_id)
     usage.current_demo.set(demo_id)
     usage.current_stage.set("runtime")
     body = await req.json()
@@ -755,6 +758,11 @@ async def run_qa(demo_id: str, req: Request):
         return r
 
     hit = faq.match(demo_id, q)
+    if hit and not body.get("skip_bank"):
+        und = store.read_json(demo_id, "understanding.json") or {}
+        allowed = qa.approved_fact_ids(und, demo.get("settings", {}).get("competition") == "on")
+        if set(hit.get("fact_ids") or []) - allowed:
+            hit = None  # stale/rejected rival evidence must not bypass live QA
     if hit and not body.get("skip_bank"):
         r = {"from_bank": True, "bank_id": hit["id"], "audio": f"/media/{demo_id}/{hit['audio']}" if hit.get("audio") else None, "answer": hit["answer"], "fact_ids": hit["fact_ids"], "facts": [], "visual": hit.get("visual"),
              "escalate": "", "topic": "", "cta": "", "answered": hit["answered"], "clarifying_question": hit.get("clarifying_question", ""), "offer_callback": hit.get("offer_callback", not hit["answered"])}

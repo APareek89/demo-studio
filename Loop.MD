@@ -76,6 +76,12 @@ rebuilds the demo.
 | 37 | Part 1: `MOCK_LLM=1 .venv/bin/python evals/qa_deck.py` includes `evals/provider_contract.py`, using fake provider clients/HTTP and a blocked network | Runtime Gemini → Claude → Runware and build Claude → Gemini → Runware; all-down decline + callback; mock isolation; JSON repair, per-attempt billing/traces, shared timeout budget, duplicate-task rejection; grounding and text-only boundaries; tier defaults/overrides and unchanged media models; exact pricing, native cost and UTC promotion boundary; Gemini thought-token billing; extracted-PDF fallback and no repeated exhausted chain; read-key guards; Claude schema recovery preserves its model and limits. See `docs/runware-fallback.md`. |
 | 38 | Part 2 free customer contracts: `qa_deck.py` imports `customer_contract.py`; `python evals/player_browser.py` then Run checks in the in-app browser at desktop width (synthetic APIs/audio/speech, CSP blocks external connections) | Content29/29: one intake, no invented context, clarification-first grounding, complete qualified labels, stable reviewed overrides, old step metadata. Browser14/14: silence, yes-but, stale speech, typed clarification, callback hold, phase/jump return, late responses, legacy deeper question, consent decline/completion/session stamps, buyer-facing recap without internal scores, reveal geometry and native-aspect wide/narrow images. Actual speech recognition, source accuracy and paid latency require the real run; this free gate cannot certify customer readiness. |
 
+### Cinematic/source supplement — 2026-09-18
+
+`evals/player_browser.py` now serves19 browser cases. All original14 behavior cases remain; five new cases cover exact anchors through resize without saved edits changing, readable narrow evidence, opening/closing native ratios, stable crowded fallback and tall-image/wrapped-evidence separation. Last actual browser result19/19; synthetic media is not a real voice test.
+
+`MOCK_LLM=1 .venv/bin/python evals/source_contract.py` covers rival PDF/text isolation, official source metadata validation, retained applicability/provenance and rejected-citation handling. Run it with the other required gates before accepting the real comparison pipeline.
+
 ## Golden set — paid/graded evals (real keys; runs ONLY with approval)
 | # | Input | Reference output / must-haves | Check (exact / contains / rubric) |
 |---|-------|-------------------------------|-----------------------------------|

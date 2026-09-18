@@ -1,0 +1,30 @@
+{
+  "recorded_at": "2026-09-18T13:49:18.311629+00:00",
+  "demo": "dm_3d6448af",
+  "harness": "http://127.0.0.1:8892/",
+  "base_commit": "e66bc7327936fe97efaceca45393deb36e10344c",
+  "working_tree_changes": true,
+  "browser": {
+    "passed": 19,
+    "total": 19,
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "boundaries": "Actual production DOM/renderer/player with synthetic audio/API/STT and virtual timers; no microphone acoustics or paid answer evidence."
+  },
+  "source_suite": {
+    "passed": 39,
+    "total": 39
+  },
+  "real_iterations_completed": 0,
+  "deck_suite": {
+    "passed": 203,
+    "total": 203
+  },
+  "acceptance_suite": {
+    "passed": 24,
+    "total": 24
+  },
+  "smoke": "both phases pass"
+}

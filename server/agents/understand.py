@@ -43,9 +43,15 @@ agent will be allowed to say. Rules:
 Return only what the schema asks for."""
 
 
-COMP_SYSTEM = """You extract ONLY stated figures from a competitor's official product page, for a strictly-cited comparison.
+COMP_SYSTEM = """You extract ONLY stated facts from the supplied competitor source, for a strictly-cited comparison.
 Rules: one fact per row, value exactly as stated with units, a locator and a short exact quote; kinds spec/price/offer/policy/
-feature/availability; never infer or round; ignore marketing adjectives. Name the product as the page names it."""
+feature/availability; never infer or round; ignore marketing adjectives. Name the product as the source names it.
+Use only this source, never general knowledge or the main demo product. Each fact must cite the supplied SOURCE id.
+Preserve the exact model generation, variant, engine/fuel, transmission, test cycle, market, price basis and effective date
+when stated. Put applicability in the claim and conditions; a feature of a named variant is never a whole-range feature.
+Respect table headers, availability marks and footnotes. If extracted table text does not preserve which variant a value
+belongs to, omit that fact rather than reconstructing the columns. A URL or marketing teaser is not evidence of the
+linked brochure's contents. An unavailable/empty source yields no facts."""
 
 
 def _part(p) -> dict:
@@ -277,24 +283,30 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
             if e:
                 f["value"], f["edited"] = e["value"], True
 
-    # ---- competitors (only from URLs the user added with role=competitor; used at runtime only when enabled)
+    # Rival documents use the same page-located text extractor, but never enter
+    # the product registry. Uploaded sources can retain their official URL as
+    # metadata; source_text still reads their local document, not that URL.
     competitors = []
-    comp_urls = [s for s in demo["sources"] if s.get("role") == "competitor" and s["kind"] == "url"]
-    for s in comp_urls:
-        emit(f"Reading competitor page {s['url'][:60]}…")
+    comp_sources = [s for s in demo["sources"] if s.get("role") == "competitor" and s["kind"] in ("url", "pdf", "doc", "text")]
+    for s in comp_sources:
+        emit(f"Reading competitor source {s.get('name') or s.get('url', '')}…")
         st = sources.source_text(demo_id, s)
         try:
-            cout = claude.structured(COMP_SYSTEM, f"=== SOURCE {s['id']} · competitor official page · {st['name']} ===\n{st['text'][:50000]}", schemas.CompetitorsOut, max_tokens=12000)
+            cout = claude.structured(COMP_SYSTEM,
+                                    f"=== SOURCE {s['id']} · competitor · {s['kind']} · {st['name']} ===\n"
+                                    f"SOURCE URL: {s.get('url') or '(not supplied; cite the uploaded document)'}\n{st['text'][:50000]}",
+                                    schemas.CompetitorsOut, max_tokens=12000)
         except Exception as e:
-            emit(f"Competitor page skipped: {claude.describe_error(e)[:100]}")
+            emit(f"Competitor source skipped: {claude.describe_error(e)[:100]}")
             continue
         for comp in cout.competitors:
             cfacts = []
             for fi, f in enumerate(comp.facts, 1):
                 d = f.model_dump()
+                d["source"]["ref"] = s["id"]
                 d.update({"id": f"C{len(competitors)+1}-{fi:03d}", "approved": True, "edited": False})
                 cfacts.append(d)
-            competitors.append({"name": comp.name, "url": s["url"], "source_id": s["id"], "facts": cfacts, "fetched_at": store.now()})
+            competitors.append({"name": comp.name, "url": s.get("url", ""), "source_id": s["id"], "facts": cfacts, "fetched_at": store.now()})
     und = {
         "product": out.product.model_dump(), "shots": shots, "images": images,
         "facts": facts, "unknowns": unknowns, "brand": out.brand.model_dump(),

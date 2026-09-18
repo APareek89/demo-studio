@@ -87,4 +87,4 @@ Keep separate immutable iteration indexes, for example `output/nexon-real-eviden
 - **Screen/grounding:** real wide/phone images of welcome, intake, every slide, evidence highlight, return, clarification, callback and ending. Attach both manufacturers' proof for each positive comparison and the actual spoken verification caveat.
 - **Completion/cost:** actual ended session, Studio summary, protected share and latency panel; no unconsented lead. Report observed paid build/runtime/voice cost by iteration, including failures and unavailable cost portions.
 
-Final delivery links the real demo, both evidence indexes and the resolved/open issue record with measured cost and latency. Current result: **protocol ready; billing/source inputs and real verification pending**.
+Final delivery links the real demo, both evidence indexes and the resolved/open issue record with measured cost and latency. Current result: **protocol ready; billing/source permission confirmed; real verification pending**.

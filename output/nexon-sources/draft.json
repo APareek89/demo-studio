@@ -48,10 +48,14 @@
   "paid_calls": 0,
   "bundle_ready": false,
   "remaining": [
-    "Confirm Gemini billing is enabled",
-    "Confirm manufacturer-material reuse permission",
     "Collect and visually review permitted original assets and current variant evidence",
     "Enable approved source references, read, review all Align cards, build and validate two real iterations"
   ],
-  "note": "use_in_demo=false is a saved review choice, not a provider-spending lock. Do not invoke /read or /build before the prerequisites are met."
+  "note": "User prerequisites resolved. Real Read/Build remain pending; provider probes are separate evidence, not a completed customer build.",
+  "prerequisites_confirmed": {
+    "date": "2026-09-18",
+    "gemini_billing": true,
+    "manufacturer_reuse_permission": true,
+    "provenance": "Anand explicitly confirmed both pending prerequisites in chat before requesting the cinematic slide template."
+  }
 }

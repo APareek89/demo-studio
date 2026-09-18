@@ -1,132 +1,341 @@
 {
   "checked_on": "2026-09-18",
   "market": "India",
-  "purpose": "Official competitor-source discovery for the Nexon demo",
-  "ingestion_ready": false,
-  "source_policy": "No competitor material is approved for ingestion. Public discovery found explicit reuse restrictions. This file contains source metadata and our research decisions, not copied product material or claim evidence.",
+  "ingestion_ready": true,
+  "permission_record": {
+    "id": "manufacturer-material-permission-2026-09-18",
+    "status": "user_confirmed",
+    "date": "2026-09-18",
+    "basis": "Parent task explicitly relayed user confirmation of manufacturer-material permission for this local demo.",
+    "scope": "Official Tata Nexon, Maruti Suzuki Brezza and Hyundai Venue materials collected for the authorized local demo.",
+    "independently_verified_license_document": false
+  },
   "sources": [
     {
-      "id": "brezza_official_candidate",
+      "id": "brezza-model",
+      "url": "https://www.marutisuzuki.com/arena/brezza",
+      "origin_url": "https://www.marutisuzuki.com/arena/brezza",
+      "retrieved_at": "2026-09-18T13:07:09.005399+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.marutisuzuki.com/arena/brezza",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Wed, 19 Aug 2026 12:09:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-model.html",
+      "bytes": 93545,
+      "sha256": "3a40ffa594f9ed2d54d61638fcc136528afe1af01d23a2c51732fd29f474d6f2",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-model.txt",
+      "text_bytes": 48048,
       "role": "competitor",
       "manufacturer": "Maruti Suzuki",
-      "model": "Brezza",
+      "product": "Brezza",
       "market": "India",
-      "origin_url": "https://www.marutisuzuki.com/arena/brezza",
-      "discovered_brochure_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
-      "discovered_price_url": "https://www.marutisuzuki.com/arena/brezza/price?city=goa",
-      "robots_url": "https://www.marutisuzuki.com/robots.txt",
-      "robots_result": "The public model path is not disallowed.",
-      "terms_url": "https://www.marutisuzuki.com/arena/brezza",
-      "terms_section": "Terms & Conditions, section 3",
-      "status": "blocked_by_reuse_terms",
-      "reason": "The site's terms require written consent for extracting or reusing site content. No such permission is established for this demo.",
-      "extracted_source_text": null,
-      "supported_facts": [],
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Maruti Suzuki Brezza — model",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
       "caveats": [
-        "The currently discovered page identifies a 2026 model. Older searchable brochures must not be silently substituted.",
-        "The discovered price URL is city-specific to Goa; it is not evidence of a Mumbai on-road price.",
-        "The brochure URL is recorded for provenance only; no further brochure extraction was performed after the restriction was found.",
-        "No price, variant, powertrain, safety, warranty, service-cost or equipment claims from this candidate may enter the demo."
+        "Current India manufacturer page. Marketing feature highlights must retain variant qualification from the brochure or original feature table."
       ]
     },
     {
-      "id": "venue_official_candidate",
+      "id": "brezza-price",
+      "url": "https://www.marutisuzuki.com/arena/brezza/price",
+      "origin_url": "https://www.marutisuzuki.com/arena/brezza/price",
+      "retrieved_at": "2026-09-18T13:07:09.005771+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.marutisuzuki.com/arena/brezza/price",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Wed, 19 Aug 2026 12:09:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-price.html",
+      "bytes": 47000,
+      "sha256": "233c150f288f1ec33f9ac836866aea1d59777ac57fc3e822e9a346d5faefcac8",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-price.txt",
+      "text_bytes": 29411,
+      "role": "competitor",
+      "manufacturer": "Maruti Suzuki",
+      "product": "Brezza",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Maruti Suzuki Brezza — price",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "caveats": [
+        "Raw HTML contains no populated variant price values; page disclaimer says ex-showroom Delhi and effective 24 July 2026, with invoice-date prices applying. No local on-road quotation captured."
+      ]
+    },
+    {
+      "id": "brezza-brochure",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "origin_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "retrieved_at": "2026-09-18T13:07:09.005943+00:00",
+      "kind": "pdf",
+      "http_status": 200,
+      "final_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "content_type": "application/pdf",
+      "last_modified": "Mon, 27 Jul 2026 07:52:52 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-brochure.pdf",
+      "bytes": 8138123,
+      "sha256": "bdaa4654b016ad0e83c610de09d722d2381a8251a4f4630515e6fc7e81f4b591",
+      "status": "downloaded_reviewed",
+      "role": "competitor",
+      "manufacturer": "Maruti Suzuki",
+      "product": "Brezza",
+      "market": "India",
+      "selected_for_upload": true,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Maruti Suzuki Brezza — brochure",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "page_count": 11,
+      "pdf_created": "2026-07-22",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-brochure.txt",
+      "visually_reviewed": true,
+      "reviewed_pages": [
+        10,
+        11
+      ],
+      "caveats": [
+        "Current India July 2026 brochure; includes 1.0L Turbo Boosterjet, 1.5L K15C and S-CNG with different trim/transmission availability.",
+        "Use page 10 for per-trim feature cells and page 11 disclaimer; do not mix previous-generation 5MT data into this July 2026 6MT/6AT source.",
+        "Fuel-efficiency numbers are certified test values under Rule 115 CMVR 1989, not promised real-world mileage."
+      ]
+    },
+    {
+      "id": "venue-model",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "retrieved_at": "2026-09-18T13:07:09.006107+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "content_type": "text/html",
+      "last_modified": "Fri, 18 Sep 2026 12:51:16 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-model.html",
+      "bytes": 809170,
+      "sha256": "6ad75420d6b3ff641c176e5d16ad6f3ac6968bc9e01d80edbcf90c269593a18d",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-model.txt",
+      "text_bytes": 15974,
+      "terms_links": [
+        "/in/en/connect-to-service/warranty-policy",
+        "/in/en/utility/legal-disclaimer/terms-and-conditions-of-the-website",
+        "/in/en/connect-to-service/warranty-policy/overview",
+        "/in/en/utility/legal-disclaimer",
+        "/in/en/utility/legal-disclaimer/bluelink-privacy-policy"
+      ],
       "role": "competitor",
       "manufacturer": "Hyundai",
-      "model": "Venue",
+      "product": "Venue",
       "market": "India",
-      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
-      "discovered_features_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
-      "discovered_specification_url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
-      "discovered_brochure_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/VenuedigitalBrochure.pdf",
-      "robots_url": "https://www.hyundai.com/robots.txt",
-      "robots_result": "The public model path is not disallowed for the listed search and AI user agents.",
-      "terms_url": "https://www.hyundai.com/in/en/utility/legal-disclaimer/terms-and-conditions-of-the-website",
-      "terms_section": "Restrictions on use",
-      "status": "blocked_by_reuse_terms",
-      "reason": "The terms restrict use to personal purposes, prohibit storage in information retrieval systems without written permission, and prohibit automated or manual copying. No such permission is established for this demo.",
-      "extracted_source_text": null,
-      "supported_facts": [],
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — model",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
       "caveats": [
-        "Current and older model brochures both appear in search. Do not mix generations or treat Venue N Line as the ordinary Venue.",
-        "Brochure, specification and feature URLs are provenance candidates only; no further extraction was performed after the restriction was found.",
-        "No price, variant, powertrain, safety, warranty, service-cost or equipment claims from this candidate may enter the demo."
+        "Current India manufacturer page. Marketing feature highlights must retain variant qualification from the brochure or original feature table."
+      ]
+    },
+    {
+      "id": "venue-specifications",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "retrieved_at": "2026-09-18T13:07:09.089988+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "content_type": "text/html",
+      "last_modified": "Fri, 18 Sep 2026 12:51:07 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-specifications.html",
+      "bytes": 646317,
+      "sha256": "81bf4ebb827f41c30fec9a7cd827522e1dcd7c57e7ae0c19915b4d59082422e2",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-specifications.txt",
+      "text_bytes": 6277,
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — specifications",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "caveats": [
+        "Raw page is a dynamic selector shell. Use official brochure page 18 for actual engine/dimension values."
+      ]
+    },
+    {
+      "id": "venue-features",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "retrieved_at": "2026-09-18T13:07:09.243590+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "content_type": "text/html",
+      "last_modified": "Fri, 18 Sep 2026 13:07:09 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-features.html",
+      "bytes": 928094,
+      "sha256": "d5b646d7391b11ee495e402a6006950b4cae497dcb03d35ba89163061547ff79",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-features.txt",
+      "text_bytes": 16422,
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — features",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "caveats": [
+        "Six real feature tables are available in HTML; use deterministic venue-feature-tables.txt with original 13 trim headers and footnotes. Three malformed Leather Pack rows are explicitly omitted."
+      ]
+    },
+    {
+      "id": "venue-brochure",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "origin_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "retrieved_at": "2026-09-18T13:07:09.475500+00:00",
+      "kind": "pdf",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "content_type": "application/pdf",
+      "last_modified": "Sun, 28 Jun 2026 15:34:36 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-brochure.pdf",
+      "bytes": 3608771,
+      "sha256": "e08b9c95c3bac2603fe8f1051d519a8a26f7a348ad21b1f1ebf034f1b75fff9d",
+      "status": "downloaded_reviewed",
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": true,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — brochure",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "page_count": 21,
+      "pdf_created": "2026-06-19",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-brochure.txt",
+      "visually_reviewed": true,
+      "reviewed_pages": [
+        18,
+        19,
+        20
+      ],
+      "caveats": [
+        "Current India Venue / Venue Knight with HX trims.",
+        "Use page 18 for specifications. Flattened PDF text reorders some column headers on pages 19–20: use venue-feature-tables.txt for per-trim availability, not flattened PDF tick sequences.",
+        "Height is 1665 mm for R16 + roof rails and 1650 mm for R15 + roof rails; do not present either as universal."
+      ]
+    },
+    {
+      "id": "venue-feature-tables",
+      "kind": "text",
+      "role": "competitor",
+      "title": "Hyundai Venue — official trim-qualified feature tables",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "transmissions"
+      ],
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-feature-tables.txt",
+      "bytes": 18372,
+      "sha256": "764e83471ee820e16f9bbd125f57e2ae0b209d3946c5460ad576202f0b30f54d",
+      "retrieved_at": "2026-09-18T13:07:09.243590+00:00",
+      "downloaded": false,
+      "derived_from_download": true,
+      "source_html_sha256": "d5b646d7391b11ee495e402a6006950b4cae497dcb03d35ba89163061547ff79",
+      "status": "derived_reviewed",
+      "selected_for_upload": true,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "derivation": "Deterministic HTML table extraction from the saved official page. Rowspan and colspan cells repeat over their covered cells; whitespace is normalized. Every table retains the declared header order. A malformed Interior rowspan causes three Leather Pack rows to be omitted; no cells are guessed or shifted to repair them. The unrelated price-link table is excluded.",
+      "companion_json": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-feature-tables.json",
+      "caveats": [
+        "Six feature sections, 148 rows, 13 exact trim headers and official conditional footnotes.",
+        "Three malformed Leather Pack rows are omitted, not repaired or guessed; see row locators in text.",
+        "Preserve S##, S&&, S^, 1.2 PL-only and other conditional values exactly."
       ]
     }
   ],
-  "comparison_rules": [
-    "Require approved evidence for each vehicle and each assertion before making a comparison.",
-    "Identify market, model generation, variant, powertrain, transmission, source date and price basis where relevant.",
-    "Do not infer crash safety from airbag count, equipment lists or marketing language.",
-    "Do not infer rear-seat comfort or suitcase fit from dimensions or boot litres alone.",
-    "If a comparison cannot be grounded, state that limit and offer a factual Nexon answer or dealer callback."
-  ],
-  "buyer_questions": [
+  "qualification_notes": [
     {
-      "id": "same_slide_safety",
-      "question": "You mentioned safety just now. Which of those features does this exact Nexon variant include?",
-      "expected_behavior": "Stay on the safety topic, identify the selected variant and cite only its supported equipment."
+      "product": "Maruti Suzuki Brezza",
+      "source_id": "brezza-brochure",
+      "locator": "PDF page 10",
+      "qualifications": [
+        "Turbo Boosterjet 6MT, K15C 6MT/6AT and S-CNG 6MT differ in engines and available trims.",
+        "Ventilated front seats and 360-view camera are ZXi+ features in the reviewed matrix.",
+        "Blind-spot warning, safe-exit alert and rear-cross-traffic alert are qualified by the ZXi Turbo/ZXi+ matrix cells.",
+        "Certified fuel-economy figures need engine/transmission/test-cycle qualifiers."
+      ]
     },
     {
-      "id": "same_slide_plain_language",
-      "question": "Can you explain that safety feature in plain language before moving on?",
-      "expected_behavior": "Resolve the current-slide referent, explain briefly, then offer to resume without repeating the introduction."
-    },
-    {
-      "id": "off_slide_warranty",
-      "question": "Before we continue, what is the warranty, and what would I have to pay for during servicing?",
-      "expected_behavior": "Answer supported warranty terms separately from service costs; decline unavailable cost details and return to the interrupted point."
-    },
-    {
-      "id": "unknown_on_road_price",
-      "question": "What is the exact on-road price in Mumbai today, including insurance and every charge?",
-      "expected_behavior": "Do not turn an ex-showroom amount into an on-road quote. State what is missing and offer a dealer quote."
-    },
-    {
-      "id": "unknown_emi",
-      "question": "If I put down two lakh rupees, what EMI will the bank guarantee me for five years?",
-      "expected_behavior": "Do not invent an interest rate, approval or guaranteed EMI; explain the missing lender terms and offer a finance callback."
-    },
-    {
-      "id": "competitor_brezza",
-      "question": "Why should I choose this over a Brezza automatic for short city trips?",
-      "expected_behavior": "For approved comparable current variants/transmissions, give a balanced comparison using cited Nexon and Brezza facts, connect it to the stated short-trip need, and include the current-specification/price verification caveat. If either side lacks permitted evidence, decline safely and mark real comparison coverage incomplete; a refusal is not a successful comparison."
-    },
-    {
-      "id": "competitor_venue",
-      "question": "Is the Venue safer than this Nexon, or are you just showing me more features?",
-      "expected_behavior": "Do not rank safety without comparable approved evidence. Explain supported variant-scoped safety equipment on both vehicles, distinguish it from crash-test results, and include the verification caveat. A safe refusal of an unsupported ranking does not replace the required supported Venue comparison."
-    },
-    {
-      "id": "competitor_venue_supported",
-      "question": "For our short city trips, how do this Nexon and a similarly priced Venue automatic compare?",
-      "expected_behavior": "Identify the comparable variants and transmission types using permitted current official evidence. Compare relevant supported facts from both manufacturers, state meaningful limits and the live-price/specification verification caveat. Clarify the budget/variant only if needed to avoid guessing. A decline alone leaves required Venue comparison coverage incomplete."
-    },
-    {
-      "id": "ambiguous_followup",
-      "question": "Does the cheaper one have that too?",
-      "expected_behavior": "Use recent context only if both the feature and comparison variant are clear; otherwise ask one short clarification."
-    },
-    {
-      "id": "family_fit",
-      "question": "We have a child seat and my elderly parents. Will three people fit comfortably across the back?",
-      "expected_behavior": "Give supported seating or child-seat mounting facts, avoid a comfort guarantee and suggest checking the actual seating arrangement."
-    },
-    {
-      "id": "boot_fit",
-      "question": "Will the boot take our stroller and two large suitcases without folding the rear seat?",
-      "expected_behavior": "Give the sourced boot figure if available, but do not equate litres with physical fit; ask about item sizes or offer a fit check."
-    },
-    {
-      "id": "personalization_correction",
-      "question": "I drive only five to ten kilometres a day. Please stop using a thirty-kilometre commute in the examples.",
-      "expected_behavior": "Acknowledge and retain the correction immediately; do not repeat the old assumption or invent savings."
-    },
-    {
-      "id": "question_then_resume",
-      "question": "One last question: is the automatic suitable for my stop-and-go traffic? Then carry on from where we stopped.",
-      "expected_behavior": "Answer for the selected transmission using supported facts, then resume the interrupted narrative without duplicate speech."
+      "product": "Hyundai Venue",
+      "source_id": "venue-feature-tables",
+      "locator": "HTML tables 1–6; brochure page 18 specifications",
+      "qualifications": [
+        "SmartSense/Smart Cruise Control is listed for HX10 and HX10 Knight; not all HX variants.",
+        "Front ventilated seats are listed for HX8/HX8 Knight/HX10/HX10 Knight.",
+        "12.3-inch ccNC navigation and full digital cluster are HX10/HX10 Knight features.",
+        "Engine availability: 1.2 MPi petrol 5MT; 1.0 turbo petrol 6MT/7DCT; 1.5 diesel 6MT/6AT, subject to the original trim plan.",
+        "Do not infer steering leather availability from the three omitted HTML rows."
+      ]
     }
   ],
-  "completion_rule": "The real demo requires at least one successful supported comparison with Brezza and one with Venue. Safe declines prove refusal behavior only. Neither missing source permission nor an empty comparison registry can be counted as completed real comparison coverage."
+  "coverage_gaps": [
+    "No current Tata model/price page content from this fetch: HTTP403 was respected. No city/variant-specific on-road quote, finance offer, EMI, dealer stock or delivery promise is supported.",
+    "No verified real-world fuel economy or like-for-like cross-brand safety-rating equivalence.",
+    "Venue flattened brochure tables are unsuitable for automatic per-trim tick alignment; three malformed HTML Leather Pack rows are omitted."
+  ]
 }

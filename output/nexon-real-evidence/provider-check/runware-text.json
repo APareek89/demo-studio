@@ -1,0 +1,78 @@
+{
+  "check": "runware-text",
+  "started_at": "2026-09-18T13:05:57.649278+00:00",
+  "model_tier": "customer",
+  "mock": false,
+  "records": [
+    {
+      "t": 1789736760.685973,
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "in": 162,
+      "out": 41,
+      "chars": 0,
+      "sec": 0,
+      "usd": 0.00204,
+      "cost_usd": 0.00204,
+      "cost_basis": "provider_returned"
+    }
+  ],
+  "traces": [
+    {
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "latency_ms": 3009.7044579451904,
+      "system": "Return only JSON matching the supplied schema. Use only the provided synthetic fixture. This is an adapter check, not product data.",
+      "user": "Synthetic fixture F1: the test distance is 42 km. Return answer \"42 km\" and facts [{\"fact_id\":\"F1\",\"value\":42}].",
+      "response": "{\"answer\":\"42 km\",\"facts\":[{\"fact_id\":\"F1\",\"value\":42}]}",
+      "error": "",
+      "input_tokens": 162,
+      "output_tokens": 41,
+      "usd": 0.00204
+    }
+  ],
+  "transport": [
+    {
+      "http_status": 200,
+      "requested_model": "openai:gpt@5.5",
+      "task_uuid": "b8320cdb-b45d-4d7d-ba63-abc63dcea2a2",
+      "response": {
+        "data": [
+          {
+            "taskUUID": "b8320cdb-b45d-4d7d-ba63-abc63dcea2a2",
+            "taskType": "textInference",
+            "text": "{\"answer\":\"42 km\",\"facts\":[{\"fact_id\":\"F1\",\"value\":42}]}",
+            "finishReason": "stop",
+            "usage": {
+              "promptTokens": 162,
+              "completionTokens": 41,
+              "totalTokens": 203,
+              "completionTokensDetails": {
+                "reasoningTokens": 12
+              },
+              "promptTokensDetails": {
+                "cachedTokens": 0
+              }
+            },
+            "cost": 0.00204
+          }
+        ]
+      }
+    }
+  ],
+  "provider": "runware",
+  "requested_model": "openai:gpt@5.5",
+  "result": {
+    "answer": "42 km",
+    "facts": [
+      {
+        "fact_id": "F1",
+        "value": 42
+      }
+    ]
+  },
+  "passed": true,
+  "elapsed_s": 3.011,
+  "completed_at": "2026-09-18T13:06:00.686456+00:00",
+  "total_recorded_usd": 0.00204
+}

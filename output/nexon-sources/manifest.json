@@ -1,39 +1,629 @@
 {
   "product": "Tata Nexon ICE (India)",
-  "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-  "status": "reference_manifest_only_asset_reuse_restricted",
-  "ready_for_demo_upload": false,
-  "downloaded_asset_count": 0,
+  "draft_id": "dm_36d47b86",
+  "updated_at": "2026-09-18T13:45:21.505187+00:00",
+  "status": "upload_ready_user_confirmed_permission",
+  "ready_for_demo_upload": true,
+  "selected_image_count": 8,
+  "downloaded_image_count": 10,
+  "downloaded_brochure_count": 3,
+  "original_asset_policy": "Original manufacturer downloads are unchanged. Review PNGs are lossless decoding/rendering for inspection only and are not selected uploads. No generated, edited or identity-substituted product imagery.",
+  "permission": {
+    "id": "manufacturer-material-permission-2026-09-18",
+    "status": "user_confirmed",
+    "date": "2026-09-18",
+    "basis": "Parent task explicitly relayed user confirmation of manufacturer-material permission for this local demo.",
+    "scope": "Official Tata Nexon, Maruti Suzuki Brezza and Hyundai Venue materials collected for the authorized local demo.",
+    "independently_verified_license_document": false
+  },
   "official_redirect": {
     "from": "https://cars.tatamotors.com/nexon/ice.html",
     "to": "https://tata.cars/nexon/ice.html",
     "verified": true
   },
-  "robots": {
-    "url": "https://tata.cars/robots.txt",
-    "http_status": 200,
-    "allow": [
-      "/"
-    ],
-    "disallow": [
-      "/*?modelId",
-      "/*?sku",
-      "https://stage-tata.cars/"
-    ],
-    "note": "No disallowed query URLs visited. Scene7 robots.txt returned HTTP404."
-  },
-  "terms": {
-    "url": "https://tata.cars/terms-conditions.html",
-    "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-    "exact_short_excerpt": "This Website is for personal use only.",
-    "summary": "The terms restrict reproduction/use of site materials beyond accessing and using the site, and direct requests for permission to Tata Motors. No exception for this demo reuse was established.",
-    "action_taken": "No product images, brochure or video downloaded for application ingestion."
-  },
-  "alternate_official_media_check": {
-    "url": "https://www.tatamotors.com/newsroom/media-library/",
-    "result": "HTTP403; not bypassed. Older 2023 launch press material found but not substituted for current specification/imagery."
-  },
+  "terms": [
+    {
+      "manufacturer": "Tata Motors",
+      "url": "https://tata.cars/terms-conditions.html",
+      "exact_short_excerpt": "This Website is for personal use only.",
+      "restriction_summary": "Site terms limit reuse; manufacturer permission was confirmed by the user for this local demo."
+    },
+    {
+      "manufacturer": "Maruti Suzuki",
+      "url": "https://www.marutisuzuki.com/arena/brezza",
+      "location": "Embedded terms on model page",
+      "exact_short_excerpt": "without express written consent of MSIL",
+      "restriction_summary": "Extraction/reuse restriction; manufacturer permission was confirmed by the user for this local demo.",
+      "local_evidence": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-model.html"
+    },
+    {
+      "manufacturer": "Hyundai",
+      "url": "https://www.hyundai.com/in/en/utility/legal-disclaimer/terms-and-conditions-of-the-website",
+      "exact_short_excerpt": "provided solely for your personal purposes only.",
+      "restriction_summary": "Storage/reproduction and automated copying are restricted; manufacturer permission was confirmed by the user for this local demo.",
+      "local_evidence": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-terms.html"
+    }
+  ],
+  "robots": [
+    {
+      "url": "https://tata.cars/robots.txt",
+      "http_status": 200,
+      "allow": [
+        "/"
+      ],
+      "disallow": [
+        "/*?modelId",
+        "/*?sku",
+        "https://stage-tata.cars/"
+      ],
+      "note": "No disallowed query URLs visited. Scene7 robots.txt returned HTTP404."
+    },
+    {
+      "manufacturer": "Maruti Suzuki",
+      "url": "https://www.marutisuzuki.com/robots.txt",
+      "local_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-robots.txt",
+      "checked": "Allow /; disallowed *.plain.html paths were not visited."
+    },
+    {
+      "manufacturer": "Hyundai",
+      "url": "https://www.hyundai.com/robots.txt",
+      "local_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-robots.txt",
+      "checked": "Allow /; disallowed select-model-name query URLs were not visited."
+    }
+  ],
   "sources": [
+    {
+      "id": "specifications",
+      "url": "https://tata.cars/nexon/ice/specifications.html",
+      "retrieved_at": "2026-09-18T13:04:59.131935+00:00",
+      "http_status": 200,
+      "final_url": "https://tata.cars/nexon/ice/specifications.html",
+      "content_type": "text/html;charset=utf-8",
+      "last_modified": null,
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/pages/specifications.html",
+      "bytes": 3944559,
+      "sha256": "347ab35b4d9daef80e760071411d69efdcf9d6144782fc0bef8b5aef8cb3a640",
+      "status": "downloaded_reviewed",
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": false,
+      "kind": "url",
+      "role": "product",
+      "topics": [
+        "specifications"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice/specifications.html",
+      "title": "Nexon Specifications & Dimensions",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/pages/specifications.txt",
+      "caveats": [
+        "Dynamic selector data is not fully present in raw HTML text; the current brochure is the primary specification and variant reference."
+      ]
+    },
+    {
+      "id": "variants",
+      "url": "https://tata.cars/nexon/ice/compare.html",
+      "retrieved_at": "2026-09-18T13:04:59.132420+00:00",
+      "http_status": 200,
+      "final_url": "https://tata.cars/nexon/ice/compare.html",
+      "content_type": "text/html;charset=utf-8",
+      "last_modified": null,
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/pages/variants.html",
+      "bytes": 238588,
+      "sha256": "0caa7f091e6b90e241186a5f38304a674b899a062964dc0c67b4381011cc05ec",
+      "status": "downloaded_reviewed",
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": false,
+      "kind": "url",
+      "role": "product",
+      "topics": [
+        "variants"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice/compare.html",
+      "title": "Nexon variant comparison",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/pages/variants.txt",
+      "caveats": [
+        "Dynamic selector data is not fully present in raw HTML text; the current brochure is the primary specification and variant reference."
+      ]
+    },
+    {
+      "id": "brochure",
+      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "retrieved_at": "2026-09-18T13:04:59.132991+00:00",
+      "http_status": 200,
+      "final_url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
+      "content_type": "application/pdf",
+      "last_modified": "Fri, 14 Aug 2026 11:24:26 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/brochures/nexon-brochure-may-2026.pdf",
+      "bytes": 15291642,
+      "sha256": "d590ff0c550a3de3ae7f77683a474cc7400fb319c16bf0e10a5e0e6cd70f738f",
+      "status": "downloaded_reviewed",
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "pdf",
+      "role": "product",
+      "topics": [
+        "specifications",
+        "features",
+        "variants"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice/specifications.html",
+      "title": "Tata Nexon official brochure",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/brochures/nexon-brochure-may-2026.txt",
+      "page_count": 40,
+      "pdf_created": "2026-05-14",
+      "visually_reviewed": true,
+      "reviewed_pages": [
+        1,
+        11,
+        13,
+        14,
+        38,
+        39,
+        40
+      ],
+      "caveats": [
+        "May 2026 edition; HTTP Last-Modified is 14 August 2026.",
+        "Use the variant/fuel/transmission matrix and footnotes on pages 38–40; do not infer universal equipment from feature spreads.",
+        "Text extracted from multi-column tables may lose column alignment. Page 40 was visually checked at high resolution."
+      ]
+    },
+    {
+      "id": "exterior-hero",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-0-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.133196+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-0-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-hero.avif",
+      "bytes": 27943,
+      "sha256": "413e4811bd90e5703c0c4d771c388834c56b9a6001ce937d70fcb70e36536d18",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 750,
+      "height": 500,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "hero",
+      "topics": [
+        "exterior",
+        "front",
+        "hero"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — exterior-hero",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Full front three-quarter, Grassland Beige with black roof.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/exterior-hero.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Transparent original; suitable for a charcoal background.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGBA",
+      "alpha": {
+        "present": true,
+        "extrema": [
+          0,
+          255
+        ],
+        "fully_transparent_pixels": 259967,
+        "total_pixels": 375000
+      }
+    },
+    {
+      "id": "exterior-angle-2",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-9-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.227629+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-9-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-angle-2.avif",
+      "bytes": 30810,
+      "sha256": "e2e56facae5f44efc4b6984393d82798de7f3a039e9fd63365939cd0fb3d3112",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 750,
+      "height": 500,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": false,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "exterior",
+        "rear"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — exterior-angle-2",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Full rear-left three-quarter, Grassland Beige with black roof.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/exterior-angle-2.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Redundant rear angle, retained but not selected for upload.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGBA",
+      "alpha": {
+        "present": true,
+        "extrema": [
+          0,
+          255
+        ],
+        "fully_transparent_pixels": 231793,
+        "total_pixels": 375000
+      }
+    },
+    {
+      "id": "exterior-angle-3",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-18-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.251499+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-18-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-angle-3.avif",
+      "bytes": 30291,
+      "sha256": "56fb5c47103713305494a0e78d46a19aa193acd9e1f15d8c3fabae2c097d50c2",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 750,
+      "height": 500,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "exterior",
+        "rear"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — exterior-angle-3",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Full rear-right three-quarter, Grassland Beige with black roof.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/exterior-angle-3.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Rear view selected for the eight-image kit.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGBA",
+      "alpha": {
+        "present": true,
+        "extrema": [
+          0,
+          255
+        ],
+        "fully_transparent_pixels": 251268,
+        "total_pixels": 375000
+      }
+    },
+    {
+      "id": "dashboard",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/three-tone-dashboard-1?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.628588+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/three-tone-dashboard-1?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:47 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/dashboard.avif",
+      "bytes": 128199,
+      "sha256": "e7de93d5fa4bb0ebe04195e2b4b8bed30d1e846fbb45db4e38d5dc22453326d2",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 614,
+      "height": 400,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "interior",
+        "dashboard"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — dashboard",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Dashboard, steering wheel, infotainment and center console with promotional scenery through the windscreen.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/dashboard.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Equipment and upholstery are variant-dependent.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGB",
+      "alpha": {
+        "present": false
+      }
+    },
+    {
+      "id": "seating",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/premium-ventilated-leatherette-seats?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.734113+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/premium-ventilated-leatherette-seats?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:47 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/seating.avif",
+      "bytes": 128545,
+      "sha256": "8e497897f10594f1602bfc691ff8a8954c8c24d4f2016427f29c48de73749998",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 614,
+      "height": 400,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "interior",
+        "seating",
+        "comfort"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — seating",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Front seats and console with manufacturer-added airflow illustration.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/seating.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Airflow illustration is part of the official original; it is not independent evidence of cooling performance. Ventilation is variant-dependent.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGB",
+      "alpha": {
+        "present": false
+      }
+    },
+    {
+      "id": "boot",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bootspace-v2?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.801705+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/bootspace-v2?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:43 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/boot.avif",
+      "bytes": 108200,
+      "sha256": "c5b1b4a44689013cc0846aee28b98616bf3486e7c8c2561ed8b110fb504e1e8d",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 614,
+      "height": 400,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "boot",
+        "storage"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — boot",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Open rear hatch with luggage.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/boot.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Illustrative loading; do not generalize petrol/diesel boot volume to CNG. Capacity claim needs brochure ISO V215 and fuel qualification.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGB",
+      "alpha": {
+        "present": false
+      }
+    },
+    {
+      "id": "lighting",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bi-functional-led-lamp?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:04:59.807783+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/bi-functional-led-lamp?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:43 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/lighting.avif",
+      "bytes": 119283,
+      "sha256": "4b6edf13af00ddb8cba519999441180aa8867fe665162c68db993a0432731ef9",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 614,
+      "height": 400,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "exterior",
+        "headlamp",
+        "detail"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — lighting",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Close view of front lighting and grille.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/lighting.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "LED equipment is variant-dependent.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGB",
+      "alpha": {
+        "present": false
+      }
+    },
+    {
+      "id": "infotainment",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/floating-infotainment-system?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "retrieved_at": "2026-09-18T13:05:00.176077+00:00",
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/floating-infotainment-system?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "last_modified": "Sun, 23 Mar 2025 10:37:47 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/infotainment.avif",
+      "bytes": 120888,
+      "sha256": "ebf782c2ac05ea9b80bf86e241b48789e9c1f7b23d70bece7ec6238f0cbb9a99",
+      "status": "downloaded_reviewed",
+      "format": "AVIF",
+      "width": 614,
+      "height": 400,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "interior",
+        "infotainment",
+        "detail"
+      ],
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "title": "Tata Nexon — infotainment",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Infotainment screen close-up showing a promotional interface.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/infotainment.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Screen equipment is variant-dependent; interface is illustrative.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "verified_by": "Exact URL present in official model-page DOM",
+      "mode": "RGB",
+      "alpha": {
+        "present": false
+      }
+    },
+    {
+      "id": "exterior-side",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-4-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice.html",
+      "verified_by": "Official Tata Scene7 360-degree asset sequence; numeric frame inferred and verified by public HTTP plus visual inspection",
+      "http_status": 200,
+      "retrieved_at": "2026-09-18T13:06:26.321551+00:00",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/exterior-side.avif",
+      "sha256": "3a3541b8666778706a1358aee5c7e0a0e0ccfcfa7e7aa3d73777e0f44ebc2365",
+      "bytes": 30369,
+      "width": 750,
+      "height": 500,
+      "content_type": "image/avif",
+      "downloaded": true,
+      "status": "downloaded_reviewed",
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "selected_for_upload": true,
+      "kind": "image",
+      "role": "product",
+      "topics": [
+        "exterior",
+        "side"
+      ],
+      "title": "Tata Nexon — exterior-side",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Near-side view with slight front angle; full car, Grassland Beige with black roof.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/exterior-side.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Frame URL inferred from the official 360 sequence, then independently downloaded and visually verified; not claimed to have been observed verbatim in DOM.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim.",
+        "Previously observed on current official model page; Scene7 originals are dated March 2025, so use the current brochure for 2026 equipment qualifications."
+      ],
+      "mode": "RGBA",
+      "alpha": {
+        "present": true,
+        "extrema": [
+          0,
+          255
+        ],
+        "fully_transparent_pixels": 233595,
+        "total_pixels": 375000
+      }
+    },
+    {
+      "id": "hero-scene-camo",
+      "url": "https://s7ap1.scene7.com/is/image/tatamotors/nexon-camo-banner-d?$BA-1920-925-D$&fit=crop&fmt=avif-alpha",
+      "origin_url": "https://tata.cars/nexon/ice/specifications.html",
+      "verified_by": "Exact img src observed in saved official specifications HTML",
+      "retrieved_at": "2026-09-18T13:43:25.232710+00:00",
+      "earlier_attempt": "ReadTimeout after 30 seconds; no bytes saved",
+      "selected_for_upload": false,
+      "http_status": 200,
+      "final_url": "https://s7ap1.scene7.com/is/image/tatamotors/nexon-camo-banner-d?$BA-1920-925-D$&fit=crop&fmt=avif-alpha",
+      "content_type": "image/avif",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/images/hero-scene-camo.avif",
+      "bytes": 1390221,
+      "sha256": "2931e29c68e30e5fa25bc8a476dbde58e948e93c2dbe1e0cb0130619d512d69a",
+      "downloaded": true,
+      "last_modified": "Thu, 06 Aug 2026 11:08:13 GMT",
+      "width": 1920,
+      "height": 925,
+      "mode": "RGB",
+      "status": "downloaded_reviewed",
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "kind": "image",
+      "role": "hero",
+      "topics": [
+        "exterior",
+        "hero",
+        "camo"
+      ],
+      "title": "Tata Nexon — hero-scene-camo",
+      "visually_reviewed": true,
+      "visual_review": {
+        "description": "Two CAMO limited-edition cars in a split city/forest manufacturer composite with baked-in launch copy.",
+        "review_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/review/hero-scene-camo.png",
+        "method": "Human-visible tool inspection of lossless decoded PNG; original AVIF bytes unchanged."
+      },
+      "caveats": [
+        "Unselected alternate. CAMO-specific styling and embedded text make it unsuitable as the default hero for this generic Grassland Beige Nexon demo.",
+        "Authentic manufacturer promotional depiction/render, not claimed as a real-world photograph. Product-family imagery does not prove equipment fitted to a customer-selected trim."
+      ],
+      "alpha": {
+        "present": false
+      }
+    },
     {
       "id": "model",
       "kind": "url",
@@ -44,37 +634,16 @@
         "model"
       ],
       "title": "Tata Nexon ICE model page",
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "http_status": 200,
+      "http_status": 403,
       "downloaded": false,
       "file": null,
-      "status": "reference_url_verified",
+      "status": "current_fetch_forbidden_not_bypassed",
       "caveats": [
-        "Current India Nexon ICE page; excludes Nexon.ev.",
-        "Page facts must retain variant/fuel/location and effective-date qualifications.",
-        "Reuse of site content is subject to the recorded site terms."
-      ]
-    },
-    {
-      "id": "specifications",
-      "kind": "url",
-      "url": "https://tata.cars/nexon/ice/specifications.html",
-      "origin_url": "https://tata.cars/nexon/ice/specifications.html",
-      "role": "product",
-      "topics": [
-        "specifications"
+        "Earlier public discovery returned HTTP200; the current fetch returned HTTP403 and was not bypassed.",
+        "No current city/variant price quote is established."
       ],
-      "title": "Nexon Specifications & Dimensions",
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "http_status": 200,
-      "downloaded": false,
-      "file": null,
-      "status": "reference_url_verified",
-      "caveats": [
-        "Current India Nexon ICE page; excludes Nexon.ev.",
-        "Page facts must retain variant/fuel/location and effective-date qualifications.",
-        "Reuse of site content is subject to the recorded site terms."
-      ]
+      "selected_for_upload": false,
+      "last_checked": "2026-09-18"
     },
     {
       "id": "price",
@@ -86,245 +655,386 @@
         "price"
       ],
       "title": "Tata Nexon Price & Variants in India",
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "http_status": 200,
+      "http_status": 403,
       "downloaded": false,
       "file": null,
-      "status": "reference_url_verified",
+      "status": "current_fetch_forbidden_not_bypassed",
       "caveats": [
-        "Current India Nexon ICE page; excludes Nexon.ev.",
-        "Page facts must retain variant/fuel/location and effective-date qualifications.",
-        "Reuse of site content is subject to the recorded site terms."
-      ]
-    },
-    {
-      "id": "variants",
-      "kind": "url",
-      "url": "https://tata.cars/nexon/ice/compare.html",
-      "origin_url": "https://tata.cars/nexon/ice/compare.html",
-      "role": "product",
-      "topics": [
-        "variants"
+        "Earlier public discovery returned HTTP200; the current fetch returned HTTP403 and was not bypassed.",
+        "No current city/variant price quote is established."
       ],
-      "title": "Nexon variant comparison",
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "http_status": 200,
-      "downloaded": false,
-      "file": null,
-      "status": "reference_url_verified",
-      "caveats": [
-        "Current India Nexon ICE page; excludes Nexon.ev.",
-        "Page facts must retain variant/fuel/location and effective-date qualifications.",
-        "Reuse of site content is subject to the recorded site terms."
-      ]
+      "selected_for_upload": false,
+      "last_checked": "2026-09-18"
     },
     {
-      "id": "brochure",
-      "kind": "pdf",
-      "url": "https://tata.cars/content/dam/tml/pv/products/nexon/year-2026/ice/promoting-vc/brochures/may/nexon-brochure-may.pdf",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
+      "id": "brezza-model",
+      "url": "https://www.marutisuzuki.com/arena/brezza",
+      "origin_url": "https://www.marutisuzuki.com/arena/brezza",
+      "retrieved_at": "2026-09-18T13:07:09.005399+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.marutisuzuki.com/arena/brezza",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Wed, 19 Aug 2026 12:09:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-model.html",
+      "bytes": 93545,
+      "sha256": "3a40ffa594f9ed2d54d61638fcc136528afe1af01d23a2c51732fd29f474d6f2",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-model.txt",
+      "text_bytes": 48048,
+      "role": "competitor",
+      "manufacturer": "Maruti Suzuki",
+      "product": "Brezza",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Maruti Suzuki Brezza — model",
       "topics": [
-        "specifications",
+        "competitor",
+        "variants",
         "features",
-        "variants"
+        "specifications"
       ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
+      "caveats": [
+        "Current India manufacturer page. Marketing feature highlights must retain variant qualification from the brochure or original feature table."
+      ]
+    },
+    {
+      "id": "brezza-price",
+      "url": "https://www.marutisuzuki.com/arena/brezza/price",
+      "origin_url": "https://www.marutisuzuki.com/arena/brezza/price",
+      "retrieved_at": "2026-09-18T13:07:09.005771+00:00",
+      "kind": "html",
       "http_status": 200,
-      "verified_by": "Public HEAD request; link observed on current model page",
+      "final_url": "https://www.marutisuzuki.com/arena/brezza/price",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Wed, 19 Aug 2026 12:09:45 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-price.html",
+      "bytes": 47000,
+      "sha256": "233c150f288f1ec33f9ac836866aea1d59777ac57fc3e822e9a346d5faefcac8",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-price.txt",
+      "text_bytes": 29411,
+      "role": "competitor",
+      "manufacturer": "Maruti Suzuki",
+      "product": "Brezza",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Maruti Suzuki Brezza — price",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "caveats": [
+        "Raw HTML contains no populated variant price values; page disclaimer says ex-showroom Delhi and effective 24 July 2026, with invoice-date prices applying. No local on-road quotation captured."
+      ]
+    },
+    {
+      "id": "brezza-brochure",
+      "url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "origin_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
+      "retrieved_at": "2026-09-18T13:07:09.005943+00:00",
+      "kind": "pdf",
+      "http_status": 200,
+      "final_url": "https://www.marutisuzuki.com/content/dam/msil/arena/in/en/assets/cars/brezza/brochures/new_brezza_brochure.pdf",
       "content_type": "application/pdf",
-      "content_length": 15291642,
-      "last_modified": "Fri, 14 Aug 2026 11:24:26 GMT",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
+      "last_modified": "Mon, 27 Jul 2026 07:52:52 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-brochure.pdf",
+      "bytes": 8138123,
+      "sha256": "bdaa4654b016ad0e83c610de09d722d2381a8251a4f4630515e6fc7e81f4b591",
+      "status": "downloaded_reviewed",
+      "role": "competitor",
+      "manufacturer": "Maruti Suzuki",
+      "product": "Brezza",
+      "market": "India",
+      "selected_for_upload": true,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Maruti Suzuki Brezza — brochure",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
+      "page_count": 11,
+      "pdf_created": "2026-07-22",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/brezza-brochure.txt",
+      "visually_reviewed": true,
+      "reviewed_pages": [
+        10,
+        11
+      ],
       "caveats": [
-        "Path says May 2026; server Last-Modified is August 14, 2026.",
-        "PDF content was not reviewed or substituted with a 2023/2025 brochure."
+        "Current India July 2026 brochure; includes 1.0L Turbo Boosterjet, 1.5L K15C and S-CNG with different trim/transmission availability.",
+        "Use page 10 for per-trim feature cells and page 11 disclaimer; do not mix previous-generation 5MT data into this July 2026 6MT/6AT source.",
+        "Fuel-efficiency numbers are certified test values under Rule 115 CMVR 1989, not promised real-world mileage."
       ]
     },
     {
-      "id": "exterior-hero",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-0-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "hero",
-      "topics": [
-        "exterior",
-        "hero"
+      "id": "venue-model",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "retrieved_at": "2026-09-18T13:07:09.006107+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/in/en/find-a-car/venue/highlights",
+      "content_type": "text/html",
+      "last_modified": "Fri, 18 Sep 2026 12:51:16 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-model.html",
+      "bytes": 809170,
+      "sha256": "6ad75420d6b3ff641c176e5d16ad6f3ac6968bc9e01d80edbcf90c269593a18d",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-model.txt",
+      "text_bytes": 15974,
+      "terms_links": [
+        "/in/en/connect-to-service/warranty-policy",
+        "/in/en/utility/legal-disclaimer/terms-and-conditions-of-the-website",
+        "/in/en/connect-to-service/warranty-policy/overview",
+        "/in/en/utility/legal-disclaimer",
+        "/in/en/utility/legal-disclaimer/bluelink-privacy-policy"
       ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — model",
+      "topics": [
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
+      ],
       "caveats": [
-        "Grassland Beige dual-tone exterior; exact angle not visually checked",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+        "Current India manufacturer page. Marketing feature highlights must retain variant qualification from the brochure or original feature table."
       ]
     },
     {
-      "id": "exterior-angle-2",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-9-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
+      "id": "venue-specifications",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "retrieved_at": "2026-09-18T13:07:09.089988+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/in/en/find-a-car/venue/specification",
+      "content_type": "text/html",
+      "last_modified": "Fri, 18 Sep 2026 12:51:07 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-specifications.html",
+      "bytes": 646317,
+      "sha256": "81bf4ebb827f41c30fec9a7cd827522e1dcd7c57e7ae0c19915b4d59082422e2",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-specifications.txt",
+      "text_bytes": 6277,
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — specifications",
       "topics": [
-        "exterior"
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
       ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
       "caveats": [
-        "Second angle from official 360 asset list; angle requires visual review",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+        "Raw page is a dynamic selector shell. Use official brochure page 18 for actual engine/dimension values."
       ]
     },
     {
-      "id": "exterior-angle-3",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/GrasslandBeige-18-2?$PO-750-500-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
+      "id": "venue-features",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "retrieved_at": "2026-09-18T13:07:09.243590+00:00",
+      "kind": "html",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "content_type": "text/html",
+      "last_modified": "Fri, 18 Sep 2026 13:07:09 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-features.html",
+      "bytes": 928094,
+      "sha256": "d5b646d7391b11ee495e402a6006950b4cae497dcb03d35ba89163061547ff79",
+      "status": "downloaded_reviewed",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-features.txt",
+      "text_bytes": 16422,
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": false,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — features",
       "topics": [
-        "exterior"
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
       ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
       "caveats": [
-        "Third angle from official 360 asset list; angle requires visual review",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+        "Six real feature tables are available in HTML; use deterministic venue-feature-tables.txt with original 13 trim headers and footnotes. Three malformed Leather Pack rows are explicitly omitted."
       ]
     },
     {
-      "id": "dashboard",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/three-tone-dashboard-1?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
+      "id": "venue-brochure",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "origin_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "retrieved_at": "2026-09-18T13:07:09.475500+00:00",
+      "kind": "pdf",
+      "http_status": 200,
+      "final_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/venue.pdf",
+      "content_type": "application/pdf",
+      "last_modified": "Sun, 28 Jun 2026 15:34:36 GMT",
+      "downloaded": true,
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-brochure.pdf",
+      "bytes": 3608771,
+      "sha256": "e08b9c95c3bac2603fe8f1051d519a8a26f7a348ad21b1f1ebf034f1b75fff9d",
+      "status": "downloaded_reviewed",
+      "role": "competitor",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
+      "selected_for_upload": true,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "title": "Hyundai Venue — brochure",
       "topics": [
-        "interior",
-        "dashboard"
+        "competitor",
+        "variants",
+        "features",
+        "specifications"
       ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
+      "page_count": 21,
+      "pdf_created": "2026-06-19",
+      "extracted_text_file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-brochure.txt",
+      "visually_reviewed": true,
+      "reviewed_pages": [
+        18,
+        19,
+        20
+      ],
       "caveats": [
-        "Dashboard asset identified by official DOM description",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+        "Current India Venue / Venue Knight with HX trims.",
+        "Use page 18 for specifications. Flattened PDF text reorders some column headers on pages 19–20: use venue-feature-tables.txt for per-trim availability, not flattened PDF tick sequences.",
+        "Height is 1665 mm for R16 + roof rails and 1650 mm for R15 + roof rails; do not present either as universal."
       ]
     },
     {
-      "id": "seating",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/premium-ventilated-leatherette-seats?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
+      "id": "venue-feature-tables",
+      "kind": "text",
+      "role": "competitor",
+      "title": "Hyundai Venue — official trim-qualified feature tables",
+      "manufacturer": "Hyundai",
+      "product": "Venue",
+      "market": "India",
       "topics": [
-        "interior",
-        "seating",
-        "comfort"
+        "competitor",
+        "variants",
+        "features",
+        "transmissions"
       ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
+      "url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "origin_url": "https://www.hyundai.com/in/en/find-a-car/venue/features",
+      "file": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-feature-tables.txt",
+      "bytes": 18372,
+      "sha256": "764e83471ee820e16f9bbd125f57e2ae0b209d3946c5460ad576202f0b30f54d",
+      "retrieved_at": "2026-09-18T13:07:09.243590+00:00",
       "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
+      "derived_from_download": true,
+      "source_html_sha256": "d5b646d7391b11ee495e402a6006950b4cae497dcb03d35ba89163061547ff79",
+      "status": "derived_reviewed",
+      "selected_for_upload": true,
+      "permission_record": "manufacturer-material-permission-2026-09-18",
+      "derivation": "Deterministic HTML table extraction from the saved official page. Rowspan and colspan cells repeat over their covered cells; whitespace is normalized. Every table retains the declared header order. A malformed Interior rowspan causes three Leather Pack rows to be omitted; no cells are guessed or shifted to repair them. The unrelated price-link table is excluded.",
+      "companion_json": "/Users/macbook/Documents/demo-studio/output/nexon-sources/rivals/venue-feature-tables.json",
       "caveats": [
-        "Seating asset; equipment is variant-dependent",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+        "Six feature sections, 148 rows, 13 exact trim headers and official conditional footnotes.",
+        "Three malformed Leather Pack rows are omitted, not repaired or guessed; see row locators in text.",
+        "Preserve S##, S&&, S^, 1.2 PL-only and other conditional values exactly."
+      ]
+    }
+  ],
+  "upload_source_ids": [
+    "exterior-hero",
+    "exterior-side",
+    "exterior-angle-3",
+    "dashboard",
+    "seating",
+    "boot",
+    "lighting",
+    "infotainment",
+    "brochure",
+    "brezza-brochure",
+    "venue-brochure",
+    "venue-feature-tables"
+  ],
+  "upload_rules": [
+    "Images retain the recorded hero/product roles and official source URLs.",
+    "Nexon brochure is product. Both rival brochures and Venue extracted tables must remain competitor.",
+    "Use source.url metadata for exact official origin/download URL after file upload.",
+    "Do not upload review PNGs, unused rear angle or CAMO alternate as if selected.",
+    "Inspect generated claims against variant/fuel/transmission qualifiers before approval."
+  ],
+  "qualification_notes": [
+    {
+      "product": "Tata Nexon ICE",
+      "source_id": "brochure",
+      "locator": "PDF pages 38–40",
+      "qualifications": [
+        "ADAS and JBL branded speakers/subwoofer: Fearless+ PS DCA only; do not extend to diesel/CNG.",
+        "Boot volume: petrol/diesel 382 L versus CNG 321 L, measured under ISO V215.",
+        "Bharat NCAP footnote applies to petrol/diesel trims active in May 2026; do not extend this claim to CNG.",
+        "iRA first-year subscription is free; renewal charges apply.",
+        "Fuel/transmission availability varies by trim; use the page 40 matrix.",
+        "Warranty headline is 3 years / 100,000 km; full contractual exclusions have not been independently reviewed."
       ]
     },
     {
-      "id": "boot",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bootspace-v2?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
-      "topics": [
-        "boot",
-        "storage"
-      ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
-      "caveats": [
-        "Boot asset; do not generalize petrol/diesel capacity to CNG",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      "product": "Maruti Suzuki Brezza",
+      "source_id": "brezza-brochure",
+      "locator": "PDF page 10",
+      "qualifications": [
+        "Turbo Boosterjet 6MT, K15C 6MT/6AT and S-CNG 6MT differ in engines and available trims.",
+        "Ventilated front seats and 360-view camera are ZXi+ features in the reviewed matrix.",
+        "Blind-spot warning, safe-exit alert and rear-cross-traffic alert are qualified by the ZXi Turbo/ZXi+ matrix cells.",
+        "Certified fuel-economy figures need engine/transmission/test-cycle qualifiers."
       ]
     },
     {
-      "id": "lighting",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/bi-functional-led-lamp?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
-      "topics": [
-        "exterior",
-        "headlamp",
-        "detail"
-      ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
-      "caveats": [
-        "Headlamp detail; equipment is variant-dependent",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
-      ]
-    },
-    {
-      "id": "infotainment",
-      "kind": "image",
-      "url": "https://s7ap1.scene7.com/is/image/tatamotors/floating-infotainment-system?$TT-614-400-S$&fit=crop&fmt=avif-alpha",
-      "origin_url": "https://tata.cars/nexon/ice.html",
-      "role": "product",
-      "topics": [
-        "interior",
-        "infotainment",
-        "detail"
-      ],
-      "retrieved_at": "2026-09-18T12:28:22.663516+00:00",
-      "verified_by": "Exact URL present in official model-page DOM; image bytes not downloaded",
-      "downloaded": false,
-      "file": null,
-      "status": "not_downloaded_reuse_restriction",
-      "visually_reviewed": false,
-      "caveats": [
-        "Infotainment asset; equipment is variant-dependent",
-        "Promotional product-family imagery does not prove fitted equipment on a specific variant."
+      "product": "Hyundai Venue",
+      "source_id": "venue-feature-tables",
+      "locator": "HTML tables 1–6; brochure page 18 specifications",
+      "qualifications": [
+        "SmartSense/Smart Cruise Control is listed for HX10 and HX10 Knight; not all HX variants.",
+        "Front ventilated seats are listed for HX8/HX8 Knight/HX10/HX10 Knight.",
+        "12.3-inch ccNC navigation and full digital cluster are HX10/HX10 Knight features.",
+        "Engine availability: 1.2 MPi petrol 5MT; 1.0 turbo petrol 6MT/7DCT; 1.5 diesel 6MT/6AT, subject to the original trim plan.",
+        "Do not infer steering leather availability from the three omitted HTML rows."
       ]
     }
   ],
   "optional_video": {
     "downloaded": false,
-    "file": null,
     "status": "skipped_no_verified_permitted_direct_download"
   },
   "coverage_gaps": [
-    "No reusable image/brochure files collected because the explicit reuse restriction remains unresolved.",
-    "Exact 2026 per-variant equipment matrix and current brochure contents still need review.",
-    "Static specifications/price/compare pages have no HTML tables; dynamic selector content requires additional verification.",
-    "Current price page title advertises a starting value; no city/variant-specific transactional price, EMI or financing terms captured.",
-    "Front/side/rear angles of the three official exterior assets require visual inspection before labeling.",
-    "No real-world mileage, finance guarantees, delivery timing or dealer-specific offers supported."
+    "No current Tata model/price page content from this fetch: HTTP403 was respected. No city/variant-specific on-road quote, finance offer, EMI, dealer stock or delivery promise is supported.",
+    "No verified real-world fuel economy or like-for-like cross-brand safety-rating equivalence.",
+    "Images are manufacturer promotional depictions with trim-dependent equipment; Grassland Beige original exterior assets are 750×500 and cabin/detail originals are 614×400.",
+    "Only a near-side slight-front view is selected, not a perfectly orthographic side elevation.",
+    "Higher-resolution CAMO banner is available but unselected because it depicts a limited edition and contains baked-in text.",
+    "Venue flattened brochure tables are unsuitable for automatic per-trim tick alignment; three malformed HTML Leather Pack rows are omitted.",
+    "No official direct product video was verified for permitted download.",
+    "Permission is based on user confirmation relayed by the parent task; no license document was independently inspected."
   ],
-  "recommendation": "Use owner-supplied official assets with permission, or obtain reuse permission from Tata Motors; preserve these verified URLs as the source checklist."
+  "recommendation": "Use the eight selected unchanged originals, current Nexon brochure, and rival sources with competitor roles. Keep the transparent beige hero; reserve the CAMO banner for an explicitly CAMO-specific demo."
 }

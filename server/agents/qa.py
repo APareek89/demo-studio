@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from datetime import datetime, timezone
 
 from .. import schemas, store, usage
 from ..llm import claude, runtime
@@ -65,6 +66,13 @@ def _local_terms(text: str) -> set[str]:
     return out
 
 
+def approved_fact_ids(und: dict, competition: bool = False) -> set[str]:
+    ids = {f["id"] for f in und.get("facts", []) if f.get("approved", True)}
+    if competition:
+        ids |= {f["id"] for c in und.get("competitors", []) for f in c.get("facts", []) if f.get("approved", True)}
+    return ids
+
+
 def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
@@ -77,11 +85,24 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     comp_txt = ""
     if demo.get("settings", {}).get("competition") == "on" and und.get("competitors"):
         rows = []
+        sources_by_id = {s["id"]: s for s in demo.get("sources", [])}
         for c in und["competitors"]:
-            for f in c["facts"]:
-                rows.append(f"{f['id']} [{c['name']} · {f['kind']}] {f['claim']}: {f['value']} (source {c['url']})")
-        comp_txt = ("- COMPARISONS ARE ALLOWED ONLY against this COMPETITOR REGISTRY (figures from their official pages, as read on "
-                    "the date shown). Cite the C-fact ids, compare like with like (same test condition), and END every comparative "
+            source = sources_by_id.get(c.get("source_id"), {})
+            try:
+                checked = datetime.fromtimestamp(c["fetched_at"], timezone.utc).date().isoformat()
+            except (KeyError, TypeError, ValueError, OverflowError, OSError):
+                checked = "not recorded"
+            for f in c.get("facts", []):
+                if not f.get("approved", True):
+                    continue
+                citation = f.get("source", {})
+                rows.append(f"{f['id']} [{c['name']} · {f['kind']} · {f.get('truth', 'stated')}] {f['claim']}: {f['value']}"
+                            + (f" (conditions: {f['conditions']})" if f.get("conditions") else "")
+                            + f" (source: {source.get('name') or c.get('source_id', '')}; URL: {c.get('url') or source.get('url') or 'not supplied'}; "
+                            f"locator: {citation.get('locator') or 'not supplied'}; quote: {json.dumps(citation.get('quote', ''), ensure_ascii=False)}; checked: {checked})")
+        comp_txt = ("- COMPARISONS ARE ALLOWED ONLY against this COMPETITOR REGISTRY (facts from the supplied pages/documents, as read on "
+                    "the date shown). Conditions and variant/powertrain/transmission qualifiers are mandatory; do not generalize them to another trim. "
+                    "A missing matching variant or test basis means the comparison is unknown. Cite the C-fact ids, compare like with like (same test condition), and END every comparative "
                     "statement with: 'that is as per their website when we checked — please verify on their site'.\nCOMPETITOR REGISTRY:\n" + "\n".join(rows))
     sys = QA_SYSTEM.format(
         persona_name=voice.get("persona_name", "Maya"), product_name=und.get("product", {}).get("name", "the product"),
@@ -120,30 +141,37 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
                     system="Every reasoning provider failed; declining with a callback offer rather than guessing.")
         out = schemas.QAOut(answer=DONT_GUESS, fact_ids=[], visual_ref="", escalate=question, topic=classify(question)[0], cta="", answered=False, clarifying_question="")
 
-    fact_ids = {f["id"] for f in und.get("facts", []) if f.get("approved", True)}
-    if store.load(demo_id).get("settings", {}).get("competition") == "on":
-        fact_ids |= {f["id"] for c in und.get("competitors", []) for f in c["facts"]}
-    valid = [x for x in out.fact_ids if x in fact_ids]
+    fact_ids = approved_fact_ids(und, store.load(demo_id).get("settings", {}).get("competition") == "on")
+    unsupported_citations = set(out.fact_ids) - fact_ids
+    # A valid citation cannot lend cover to a rejected competitor fact in the
+    # same answer. Decline the whole proposed claim rather than keeping its text.
+    valid = [] if unsupported_citations else list(out.fact_ids)
     text = out.answer.strip()
     escalate = out.escalate.strip()
     clarification = (out.clarifying_question or "").strip()
+    cta = out.cta
+    if unsupported_citations:
+        # An action field must not exempt an unsupported claim from the decline
+        # path or let that claim reach speech before the action is shown.
+        text, clarification, cta = DONT_GUESS, "", ""
     # A clarification is a question-only turn, not a supported product answer.
     # Keep the existing response shape: answered=true makes old players wait
     # rather than opening a callback. Claims cannot hide in this question field.
-    if clarification and (out.cta or len(clarification.split()) > 38
+    if clarification and (cta or len(clarification.split()) > 38
                           or len(re.findall(r"[?？]", clarification)) != 1
                           or not clarification.endswith(("?", "？"))
                           or NUMBERISH.search(clarification) or CLAIMISH.search(clarification)):
         clarification = ""
     if clarification:
         text, valid, escalate = clarification, [], ""
-    answered = bool(out.answered) and (bool(valid) or not (NUMBERISH.search(text) or CLAIMISH.search(text)))
+    answered = bool(out.answered) and not unsupported_citations and (bool(valid) or not (NUMBERISH.search(text) or CLAIMISH.search(text)))
     if (NUMBERISH.search(text) or CLAIMISH.search(text)) and not valid:
         answered = False
+        text, cta = DONT_GUESS, ""
     offer_callback = False
     if clarification:
         answered = True
-    elif not answered and not out.cta:
+    elif not answered and not cta:
         text = DONT_GUESS if not valid else text
         escalate = escalate or question
         offer_callback = True
@@ -173,7 +201,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         except Exception:
             audio = None
     return {"audio": audio, "answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
-            "visual": vis, "escalate": escalate, "topic": out.topic, "cta": out.cta, "answered": answered,
+            "visual": vis, "escalate": escalate, "topic": out.topic, "cta": cta, "answered": answered,
             "clarifying_question": clarification if answered else "", "offer_callback": offer_callback}
 
 

@@ -14,6 +14,7 @@ import threading
 import time
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from . import config
 
@@ -259,7 +260,19 @@ def remove_source(demo_id: str, source_id: str) -> None:
 
 
 def patch_source(demo_id: str, source_id: str, fields: dict) -> dict:
-    allowed = {k: v for k, v in fields.items() if k in ("use_in_demo", "role", "name", "play", "proxy", "derived_from")}
+    allowed = {k: v for k, v in fields.items() if k in ("use_in_demo", "role", "name", "play", "proxy", "derived_from", "url")}
+    if "url" in allowed:
+        url = allowed["url"]
+        try:
+            if not isinstance(url, str) or not url.strip() or any(char.isspace() for char in url.strip()):
+                raise ValueError
+            parsed = urlsplit(url.strip())
+            if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+                raise ValueError
+            _ = parsed.port  # reject malformed/out-of-range ports before saving
+        except (ValueError, TypeError):
+            raise ValueError("Source URL must be an absolute http(s) URL without credentials") from None
+        allowed["url"] = url.strip()
     def fn(d):
         for s in d["sources"]:
             if s["id"] == source_id:
