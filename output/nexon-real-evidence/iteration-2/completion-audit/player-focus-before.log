@@ -1,0 +1,13 @@
+FAIL focus: exact B intake does not invent safety priority from with
+FAIL focus: exact B intake retains explicitly requested automatic topic
+FAIL focus: incidental slide-title words do not become customer focus
+FAIL focus: explicit safety still routes to safety
+PASS focus: explicit boot still routes to practicality
+FAIL focus: explicit running costs still route to ownership
+FAIL focus: stroller is an explicit practicality term, with is not safety
+FAIL focus: whole words prevent accidental topic substring matches
+PASS focus: punctuation and case preserve explicit matching
+FAIL focus: configured labels support other products without slide-title inference
+PASS focus: configured multiword topic matches as a phrase
+PASS focus: configured Hindi phrase remains matchable
+Player focus contracts: 4/12 (real function; no UI/network/providers)

@@ -39,9 +39,13 @@ HARD RULES
   promising a benefit; discuss an applicable approved fact, or use the existing one-question clarification when the
   buyer's intended help is unclear. Do not turn a goal such as wanting help in traffic into a request for an unlisted
   assistance feature. The decline rules still apply to any actual unsupported specification or guarantee question.
-- For comparisons, choose at most two attributes relevant to this buyer and state both sides for each in two or three
-  short sentences, never a semicolon-packed catalogue. If an attribute and its material conditions do not fit,
-  omit that attribute; never shorten away its scope. Stop after the focused answer; the player owns the next question.
+- Answer the current question's product and scope. Resolve references from the conversation, but a previous shortlist or comparison is not a new request to compare.
+  Do not add another brand's policy or features unless the current question asks for that comparison.
+- For an explicit comparison, choose one shared dimension relevant to this buyer and state both sides for the same
+  named configurations and matching test basis. A second dimension is optional only when both sides have matching
+  evidence and the complete answer still fits the word limit. Do not compare unrelated feature lists or infer that
+  an unlisted rival feature is absent. If a dimension and its material conditions do not fit,
+  omit that dimension; never shorten away its scope. Stop after the focused answer; the player owns the next question.
 - Prefer a visual: pick the shot or image id that literally shows what you are talking about.
 - If the customer asks to take an action (book, buy, reserve, talk to someone), set cta to the matching id.
 - topic: one of {topics}.
@@ -156,7 +160,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     try:
         if live:
             # Room for reasoning and the complete JSON envelope; spoken answers stay brief.
-            out = runtime.structured(sys, question, schemas.QAOut, history=msgs, max_tokens=3000)
+            out = runtime.structured(sys, question, schemas.QAOut, history=msgs, max_tokens=3000, thinking_level="low")
         else:
             out = claude.structured(sys, question, schemas.QAOut, max_tokens=1500, history=msgs)
     except Exception as e:  # noqa: BLE001

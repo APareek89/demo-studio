@@ -995,11 +995,18 @@ def _summarize_session(demo_id: str, sid: str) -> None:
     s = be.get_session(demo_id, sid)
     if not s:
         return
+    # A plain Thread does not inherit request ContextVars. Attribute every
+    # provider attempt to this demo, including failures and fallback usage.
+    demo_token = usage.current_demo.set(demo_id)
+    stage_token = usage.current_stage.set("runtime")
     try:
         s["summary"] = _summary.summarize(demo_id, s)
     except Exception as e:  # noqa: BLE001
         s["summary"] = {"error": str(e)[:200], "generated_at": time.time(), "transcript_lines": len(s.get("transcript", []))}
         store.log(demo_id, "summary-error", {"session": sid, "error": str(e)[:200]})
+    finally:
+        usage.current_stage.reset(stage_token)
+        usage.current_demo.reset(demo_token)
     be.put_session(demo_id, s)
     be.after_write(demo_id)
 

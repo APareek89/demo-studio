@@ -6,6 +6,51 @@
 
 <!-- Newest first. -->
 
+## 2026-09-18 — NX38: deeper return retained the preceding answer's citations
+**Symptom:** After a cabin answer, the resumed CNG boot caption showed F020/F021 instead of its own F014.
+**Why 1:** The citation label was left over from Q&A.
+**Why 2:** Main lines assigned their sources but deeper lines did not.
+**Why 3:** These playback paths had separate loops with incomplete state updates.
+**Why 4:** Return tests checked the caption and position, not their accompanying citations.
+**Why 5:** Citation ownership across claim/question transitions was not asserted end-to-end.
+**Action taken:** Every deeper line assigns its own sources, including resumed lines; question/check-in/transition states clear stale citations. Run ownership protects against late canceled fillers. The actual real-demo failure is preserved in `completion-audit/deeper-interrupt-return-line.txt`. Actual browser harness32/33→33/33 checks F014→QA F020/F021→returnedF014→D2F024→empty prompt. No new audio or Build.
+
+## 2026-09-18 — NX34 continuation: cited speech still added an unproved location
+**Symptom:** The final A pitch added “in the rear cabin” to the ISOFIX equipment fact without explicit source support.
+**Why 1:** Valid fact IDs were mistaken for evidence of every word in a paraphrase.
+**Why 2:** The model could freely elaborate cited proof.
+**Why 3:** Lexical omission guards covered prior failures, not arbitrary new properties.
+**Why 4:** The runtime did not reuse the wording already reviewed at Align.
+**Why 5:** Factual generation and personal relevance were coupled in each custom batch.
+**Action taken:** Keep model-led selection, order and buyer framing, but permit cited custom speech and bridges only as exact current approved script proof with the complete citation set. Unverified, rejected, unapproved and unsuitable proof is unavailable.46 adversarial checks cover new location/property additions and supported reuse (initial baseline24/38; final46/46 after uncited-cue and repetition regressions). This trusts reviewed wording and current fact identity; it does not solve NX20 or human review errors.
+
+## 2026-09-18 — NX36: live reasoning exhausted a short-answer JSON budget
+**Symptom:** Even a 3000-token envelope could end in truncated JSON, followed by the whole provider fallback chain; one measured answer took46.745s.
+**Why 1:** Thinking and answer JSON share the output limit.
+**Why 2:** The model used its default thinking level for a short, closed-evidence answer.
+**Why 3:** More output room alone did not bound hidden reasoning.
+**Why 4:** Runtime QA had no explicit thinking control distinct from other model work.
+**Why 5:** Provider-envelope tests checked token capacity but not the reasoning setting.
+**Action taken:** Live QA requests LOW thinking on the documented exact Gemini3.8Flash model. Full evidence, schema,3000-token envelope, model, order and timeouts remain; other calls and unknown overrides retain defaults. Provider48/48 covers actual SDK options, retries, thought-token accounting and invalid-citation rejection. QA prompt also confines direct questions to their requested product and comparisons to a shared dimension. Real speed and answer quality require the predeclared sample, not these fake transport checks.
+
+## 2026-09-18 — NX37: a slide title invented a buyer priority
+**Symptom:** A buyer comparing automatics received an invented “main” safety priority.
+**Why 1:** `profile.focus` contained safety although the raw answer did not.
+**Why 2:** The parser matched “with” in the safety slide's title.
+**Why 3:** Any title word longer than three characters counted as interest evidence.
+**Why 4:** Marketing titles had been treated as topic vocabulary.
+**Why 5:** The model received computed focus alongside raw customer statements without a clear distinction.
+**Action taken:** Whole canonical topic/chip phrases and specific topic aliases replace title-word matching (actual function4/12→12/12). Pitch separates computed routing hints from raw buyer language; hints never establish a stated/ranked preference. Preserve the actual failed B transcript. Negation and arbitrary semantic intent still require conversational judgment; this parser supplies route hints, not inferred preference truth.
+
+## 2026-09-18 — NX35: background summary cost was absent
+**Symptom:** Eight real summaries existed, but the demo's usage and trace files contained none of their provider work.
+**Why 1:** Accounting silently returns when no demo context exists.
+**Why 2:** The summary runs in a plain background thread, outside the request context.
+**Why 3:** That thread did not establish its own demo and stage.
+**Why 4:** Existing summary tests checked content, not an actual worker's attribution.
+**Why 5:** Cost reconciliation treated saved summaries and provider records as separate concerns.
+**Action taken:** Set demo/runtime ContextVars around summary generation and reset both on success or failure. A real-thread, temporary-store regression demonstrates missing records before (4/8) and correct isolated usage, costs and failure traces after (8/8). No network or provider calls. Existing unrecorded costs remain unknown; this fix does not reconstruct history.
+
 ### 2026-09-18 — Align could not correct competitor citations or spoken questions
 
 **Symptom:** Real Nexon source review found competitor facts outside the review card and edit/reject lookup. Incorrect truth labels and blended citations could not be repaired directly; intake questions, check-ins and segment outcomes also remained outside script editing.

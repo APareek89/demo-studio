@@ -222,9 +222,26 @@ def run(check, demo_id: str = "generation-fixture") -> None:
             envelope = model.call_args.args[0]
             check(f"generation: {'runtime' if live else 'build FAQ'} comparison envelope carries focus, scope and full caveat",
                   all(piece in envelope for piece in ("within 60 words, including required caveats", "A direct single-fact answer can use one sentence",
-                      "choose at most two attributes relevant to this buyer", "omit that attribute; never shorten away its scope",
+                      "choose one shared dimension relevant to this buyer", "A second dimension is optional only when both sides",
+                      "Do not compare unrelated feature lists", "omit that dimension; never shorten away its scope",
                       comparison_fact["conditions"], rival_fact["conditions"], rival_fact["source"]["locator"], profile["why"],
                       "that is as per their website when we checked — please verify on their site")))
+        files["understanding.json"]["facts"].append(policy)
+        shortlist = {"why": "I am considering Fixture car and Fixture rival."}
+        prior = [{"role": "user", "text": "Compare the selected automatic versions."},
+                 {"role": "assistant", "text": "Those are the listed transmission choices."}]
+        question = "What warranty does Fixture car provide?"
+        for live in (False, True):
+            proposed = schemas.QAOut(answer="The supplied terms apply to Fixture car.", fact_ids=["F004"], answered=True)
+            with patch.object(qa.runtime if live else qa.claude, "structured", return_value=proposed) as model:
+                qa.answer(demo_id, question, history=prior, profile=shortlist, live=live, voice_it=False)
+            envelope = model.call_args.args[0]
+            check(f"generation: {'runtime' if live else 'build FAQ'} current product scope survives a previous comparison",
+                  model.call_args.args[1] == question and shortlist["why"] in envelope
+                  and any(message["content"] == prior[0]["text"] for message in model.call_args.kwargs["history"])
+                  and all(rule in envelope for rule in ("Answer the current question's product and scope",
+                      "a previous shortlist or comparison is not a new request to compare",
+                      "Do not add another brand's policy or features unless the current question asks for that comparison")))
         files["understanding.json"] = und
         demo["settings"]["competition"] = "off"
 

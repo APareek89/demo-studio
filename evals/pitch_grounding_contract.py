@@ -31,6 +31,22 @@ def run(check):
          "lines": [{"id": "l1", "text": "ISOFIX mounts are standard.", "fact_ids": ["F004"]}]},
         {"id": "ownership", "role": "establish", "title": "Written terms", "topic": "ownership",
          "lines": [{"id": "l2", "text": "The written headline leaves the limits' relationship unstated.", "fact_ids": ["F027"]}]}]}
+    # These positive examples are deliberately reviewed proof, not newly
+    # generated paraphrases. Their exact wording/citations remain the boundary.
+    reviewed = [
+        ("The advertised limits are 3 years and 100 000 km; their relationship is not supplied.", ["F027"]),
+        ("For your child seat, the brochure lists ISOFIX mounts as standard; bring the seat to check its fit in person.", ["F004"]),
+        ("The listed boot is 382 litres for petrol and diesel, and 321 litres for CNG, measured using ISO V215; check your stroller in person.", ["F014"]),
+        ("The petrol boot is listed at 382 litres measured using ISO V215.", ["F014"]),
+        ("The written warranty lasts 3 years or 100 000 km, whichever occurs first.", ["F027"]),
+        ("The documented assessment describes installation as straightforward.", ["F004"]),
+        ("The brochure lists ISOFIX mounts as standard.", ["F004"]),
+    ]
+    script["segments"][0]["deeper"] = [
+        {"id": f"reviewed-{i}", "text": text, "fact_ids": ids, "unverified": False}
+        for i, (text, ids) in enumerate(reviewed)
+    ]
+    demo = {"settings": {"language": "en-IN"}, "approvals": {"script": True}}
     plan = {"voice": {}, "ctas": [], "segments": []}
     files = {"understanding.json": und, "script.json": script, "plan.json": plan,
              "deck.json": {"slides": [{"id": "sl-safety", "segment_id": "safety"}, {"id": "sl-ownership", "segment_id": "ownership"}]}}
@@ -43,7 +59,7 @@ def run(check):
     with ExitStack() as stack:
         stack.enter_context(patch.object(config, "MOCK_LLM", True))
         stack.enter_context(patch.object(store, "read_json", side_effect=lambda _id, name: copy.deepcopy(files.get(name))))
-        stack.enter_context(patch.object(store, "load", return_value={"settings": {"language": "en-IN"}}))
+        stack.enter_context(patch.object(store, "load", side_effect=lambda _id: copy.deepcopy(demo)))
         stack.enter_context(patch.object(store, "log"))
         writes = stack.enter_context(patch.object(store, "write_json", side_effect=AssertionError("No source or script writes")))
         stack.enter_context(patch.object(voice, "provider_for", return_value="sarvam"))
@@ -53,10 +69,10 @@ def run(check):
         blocked = [stack.enter_context(patch(name, side_effect=AssertionError("No provider/network calls"))) for name in
                    ("socket.socket.connect", "socket.create_connection", "server.llm.gemini.client", "server.llm.runware._post", "server.llm.claude._client_opts")]
 
-        def generate(text, ids, *, bridge=False):
+        def generate(text, ids, *, bridge=False, route_index=0):
             item = proposed.model_copy(deep=True)
             if bridge:
-                item.route[0].bridge, item.route[0].bridge_fact_ids = text, ids
+                item.route[route_index].bridge, item.route[route_index].bridge_fact_ids = text, ids
             else:
                 item.custom_batches = [schemas.CustomBatch(text=text, fact_ids=ids)]
             spoken.clear()
@@ -74,9 +90,71 @@ def run(check):
         check("pitch: observed uncited installation bridge is dropped before speech", not result["route"][0]["bridge"] and result["route"][0].get("bridge_dropped") == bad_bridge and bad_bridge not in audio)
         result, _, audio = generate(bad_bridge, ["F004"], bridge=True)
         check("pitch: an equipment citation alone cannot license an installation benefit", not result["route"][0]["bridge"] and bad_bridge not in audio)
+        for text in (
+            "The rear mounting points sit under a removable panel.",
+            "The cabin surface feels velvety to the touch.",
+            "Next: Child seat mounting. The anchors sit beneath a panel.",
+        ):
+            result, _, audio = generate(text, [], bridge=True)
+            check(f"pitch: uncited free product prose never reaches bridge speech: {text}",
+                  not result["route"][0]["bridge"] and result["route"][0].get("bridge_dropped") == text and text not in audio)
+        wrong_route = "Next: Written terms."
+        result, _, audio = generate(wrong_route, [], bridge=True)
+        check("pitch: a neutral cue cannot be attached to the wrong route segment",
+              not result["route"][0]["bridge"] and wrong_route not in audio)
         child_batch = "To secure your child seat properly across your city drives, ISOFIX mounts come standard across all variants."
         result, _, audio = generate(child_batch, ["F004"])
         check("pitch: equipment-only proof does not license properly secured child-seat outcome", not result["custom_batches"] and child_batch not in audio)
+
+        for text in (
+            "For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin.",
+            "ISOFIX mounts are standard and made from titanium.",
+            "ISOFIX mounts are standard. They are hidden beneath a removable panel.",
+        ):
+            for bridge in (False, True):
+                result, _, audio = generate(text, ["F004"], bridge=bridge)
+                check(f"pitch: unreviewed property detail never reaches {'bridge' if bridge else 'batch'} speech: {text}",
+                      (not result["route"][0]["bridge"] if bridge else not result["custom_batches"]) and text not in audio)
+
+        main_proof = "ISOFIX mounts are standard."
+        for bridge in (False, True):
+            result, _, audio = generate(main_proof, ["F004"], bridge=bridge)
+            main_text = [line["text"] for segment in script["segments"]
+                         if segment["id"] in {step["segment_id"] for step in result["route"]}
+                         for line in segment["lines"]]
+            check(f"pitch: main-route proof is not repeated in an optional {'bridge' if bridge else 'batch'}",
+                  (not result["route"][0]["bridge"] if bridge else not result["custom_batches"])
+                  and (audio + main_text).count(main_proof) == 1)
+        trusted = "The brochure lists ISOFIX mounts as standard."
+        result, _, audio = generate(trusted, ["F004"])
+        check("pitch: exact reviewed proof remains available for the selected buyer need",
+              bool(result["custom_batches"]) and result["custom_batches"][0]["text"] == trusted and trusted in audio)
+        result, _, audio = generate(trusted, ["F027"])
+        check("pitch: reviewed text cannot be relabelled with different fact ids", not result["custom_batches"] and trusted not in audio)
+        result, _, audio = generate(trusted, ["F004", "MISSING"])
+        check("pitch: invalid model citations are not silently stripped into a trusted proof", not result["custom_batches"] and trusted not in audio)
+        script["segments"][0]["deeper"][-1]["unverified"] = True
+        result, _, audio = generate(trusted, ["F004"])
+        check("pitch: an unverified script line cannot authorize new speech", not result["custom_batches"] and trusted not in audio)
+        script["segments"][0]["deeper"][-1]["unverified"] = False
+        original_line = copy.deepcopy(script["segments"][0]["deeper"][-1])
+        script["segments"][0]["deeper"][-1]["fact_ids"] = ["MISSING"]
+        result, _, audio = generate(trusted, ["F004"])
+        check("pitch: a script line with unsupported citations supplies no reviewed proof", not result["custom_batches"] and trusted not in audio)
+        bad_reviewed = "ISOFIX mounts make installation straightforward."
+        script["segments"][0]["deeper"][-1] = {**original_line, "text": bad_reviewed}
+        result, _, audio = generate(bad_reviewed, ["F004"])
+        check("pitch: existing source-condition safeguards still apply to reviewed proof", not result["custom_batches"] and bad_reviewed not in audio)
+        script["segments"][0]["deeper"][-1] = original_line
+        demo["approvals"]["script"] = False
+        result, _, audio = generate(trusted, ["F004"])
+        check("pitch: unapproved script supplies no custom proof while the route remains",
+              not result["custom_batches"] and len(result["route"]) == 2 and trusted not in audio)
+        demo["approvals"]["script"] = True
+        no_proof = "The source lists ISOFIX as standard equipment."
+        result, _, audio = generate(no_proof, ["F004"])
+        check("pitch: no exact reviewed proof omits only the optional batch",
+              not result["custom_batches"] and len(result["route"]) == 2 and no_proof not in audio)
 
         for wording in ("The warranty lasts 3 years or 100 000 km.", "The warranty lasts 3 years and 100 000 km, whichever occurs first."):
             for bridge in (False, True):
@@ -90,9 +168,19 @@ def run(check):
         safe_mount = "For your child seat, the brochure lists ISOFIX mounts as standard; bring the seat to check its fit in person."
         result, _, audio = generate(safe_mount, ["F004"])
         check("pitch: plain equipment and a proposed personal fit check survive", result["custom_batches"][0]["text"] == safe_mount and safe_mount in audio)
-        neutral = "For the child seat you mentioned, let's look at this part of the cabin."
+        neutral = "Next: Child seat mounting."
+        result, neutral_call, audio = generate(neutral, [], bridge=True)
+        check("pitch: the exact route-owned neutral cue needs no fabricated product claim", result["route"][0]["bridge"] == neutral and neutral in audio)
+        check("pitch: prompt supplies exact neutral cues by route and forbids other uncited prose",
+              '"safety": "' + neutral + '"' in neutral_call.args[0]
+              and '"ownership": "' + wrong_route + '"' in neutral_call.args[0]
+              and "NEUTRAL ROUTE CUES" in neutral_call.args[0]
+              and "no other uncited prose" in neutral_call.args[0])
+        demo["approvals"]["script"] = False
         result, _, audio = generate(neutral, [], bridge=True)
-        check("pitch: a neutral context-only bridge needs no fabricated product claim", result["route"][0]["bridge"] == neutral and neutral in audio)
+        check("pitch: an unreviewed title cannot authorize a neutral spoken cue",
+              not result["route"][0]["bridge"] and neutral not in audio)
+        demo["approvals"]["script"] = True
 
         bare_volume = "For your stroller, the listed boot is 382 litres for petrol and diesel, and 321 litres for CNG."
         result, _, audio = generate(bare_volume, ["F014"])
@@ -100,9 +188,9 @@ def run(check):
         qualified_volume = "The listed boot is 382 litres for petrol and diesel, and 321 litres for CNG, measured using ISO V215; check your stroller in person."
         result, _, audio = generate(qualified_volume, ["F014"])
         check("pitch: complete volume scope and measurement basis survive", result["custom_batches"][0]["text"] == qualified_volume and qualified_volume in audio)
-        route_only = "For the stroller you mentioned, let's look at the boot."
-        result, _, _ = generate(route_only, ["F014"], bridge=True)
-        check("pitch: a context-only route cue need not recite an unused measurement standard", result["route"][0]["bridge"] == route_only)
+        result, _, audio = generate(wrong_route, [], bridge=True, route_index=1)
+        check("pitch: the next reviewed route title supplies its own neutral cue",
+              result["route"][1]["bridge"] == wrong_route and wrong_route in audio)
         quote_basis = copy.deepcopy(boot)
         quote_basis["value"], quote_basis["conditions"] = "382 L", "Petrol only."
         quote_basis["source"]["quote"] = "Boot volume 382 L, ISO V215."
@@ -136,6 +224,28 @@ def run(check):
               and warranty["conditions"] in envelope and "reasonable inference" not in envelope.lower()
               and "all material conditions" in envelope and "installation" in envelope
               and "relationship" in envelope and "not evidence" in envelope)
+        check("pitch: the prompt exposes reviewed proof and limits factual wording to it",
+              "REVIEWED SPOKEN PROOF" in envelope and trusted in envelope
+              and "exact text and the complete fact_ids" in envelope)
+        selection = proposed.model_copy(deep=True)
+        selection.custom_batches = [schemas.CustomBatch(text=safe_mount, fact_ids=["F004"]),
+                                    schemas.CustomBatch(text=qualified_volume, fact_ids=["F014"])]
+        spoken.clear()
+        before_profile = copy.deepcopy(profile)
+        with patch.object(pitch.runtime, "structured", return_value=selection):
+            selected = pitch.plan_pitch("pitch-fixture", profile)
+        check("pitch: reviewed factual reuse keeps selected need-led proof order and customer context",
+              [item["text"] for item in selected["custom_batches"]] == [safe_mount, qualified_volume]
+              and [item["fact_ids"] for item in selected["custom_batches"]] == [["F004"], ["F014"]]
+              and selected["decision_frame"] == selection.decision_frame and profile == before_profile)
+        hinted = {"focus": ["safety is the main priority"]}
+        with patch.object(pitch.runtime, "structured", return_value=selection.model_copy(deep=True)) as model:
+            hint_only = pitch.plan_pitch("pitch-fixture", hinted)
+        raw_customer = model.call_args.args[0].split("CUSTOMER SAID:", 1)[1].split("COMPUTED ROUTING HINTS", 1)[0]
+        check("pitch: computed focus alone cannot create stated need or attributed preference",
+              hint_only["customer_state"] == "unknown" and not hint_only["custom_batches"]
+              and "safety is the main priority" not in raw_customer
+              and "never evidence" in model.call_args.args[0])
         check("pitch: tests made no provider/network calls or source/script writes", not writes.called and not any(x.called for x in blocked))
 
 

@@ -64,7 +64,7 @@ export function mountPlayer(host, bundle, api) {
     } catch (e) {}
   }, 150);
   const F = (key, fallback) => { const f = bundle.fillers?.[key]; return f?.audio ? { text: f.text, audio: f.audio } : { text: fallback || f?.text || "", audio: null }; };
-  const speakF = (key, fallback, run) => { const f = F(key, fallback); return speak(f.text, run, f.audio); };
+  const speakF = (key, fallback, run) => { if (run === S.run) el.cite.textContent = ""; const f = F(key, fallback); return speak(f.text, run, f.audio); };
   let LANG = (bundle.language === "hinglish" ? "hi-IN" : bundle.language) || "en-IN";
   Object.defineProperty(S, "lang", { set(v) { LANG = v === "hinglish" ? "hi-IN" : v; }, get() { return LANG; } });
   let serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
@@ -371,7 +371,7 @@ export function mountPlayer(host, bundle, api) {
     });
   }
   function resolveWait(v) { clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; stopListening(); setChips([]); w.resolve(typeof v === "string" ? { value: v } : v); } }
-  async function askAndListen(question, run, secs = 10000, preset = null) { const ok = await speak(question, run, preset); if (!ok) return null; const r = await waitFor([{ label: "Skip this question", value: "skip" }], 0, { openAnswer: true, listenSecs: secs }); return run === S.run ? r.text || "" : null; }
+  async function askAndListen(question, run, secs = 10000, preset = null) { if (run !== S.run) return null; el.cite.textContent = ""; const ok = await speak(question, run, preset); if (!ok) return null; const r = await waitFor([{ label: "Skip this question", value: "skip" }], 0, { openAnswer: true, listenSecs: secs }); return run === S.run ? r.text || "" : null; }
 
   // ---------- route building: the pitch plan orders slides ----------
   function buildRoute(plan) {
@@ -392,6 +392,8 @@ export function mountPlayer(host, bundle, api) {
   }
   async function waitForLineQuestion(line, run) {
     if (line.step !== "confirm" && !/[?？]/.test(line.text || "")) return run === S.run;
+    if (run !== S.run) return false;
+    el.cite.textContent = "";
     const r = await waitFor([{ label: "Skip this question", value: "continue" }], 0, { openAnswer: true });
     if (run !== S.run) return false;
     if (r.text) { rememberContext(r.text); handleQuestion(r.text); return false; }
@@ -432,7 +434,7 @@ export function mountPlayer(host, bundle, api) {
       lineIdx = 0; bridgeDone = false; if (run !== S.run) return;
       const topic = topicOf(sl);
       if (sl.checkin?.text && !short) {
-        S.atCheckin = true; S.playback.checkin = true; const ok = await speak(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
+        S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = ""; const ok = await speak(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
         const conc = !!sl.priority || S.profile.focus.includes(topic);
         const chips = conc ? [{ label: "That settles it", value: "yes", primary: true }, { label: "Still unsure", value: "deeper" }, { label: "I have a question", value: "question" }] : [{ label: "Continue", value: "continue", primary: true }, { label: "Tell me more", value: "deeper" }, { label: "I have a question", value: "question" }];
         const r = await waitFor(chips); if (run !== S.run) return;
@@ -451,11 +453,13 @@ export function mountPlayer(host, bundle, api) {
     for (let j = from; j < lines.length; j++) {
       if (run !== S.run) return false;
       S.playback = { phase: "deeper", index: S.seg, line: j };
+      el.cite.textContent = lines[j].fact_ids?.length ? "sources: " + lines[j].fact_ids.join(", ") : "";
       if (!(await speak(lines[j].text, run, lines[j].audio))) return false;
       S.playback.line = j + 1;
       if (!(await waitForLineQuestion(lines[j], run))) return false;
     }
     S.playback = { phase: "route", index: S.seg, line: sl.lines.length, checkin: true, bridgeDone: true };
+    el.cite.textContent = "";
     if (!lines.length && !(await speak("That's everything the material covers on this. Ask me anything specific and I'll check.", run))) return false;
     if (!(await speakF("clearer", "Is that clearer?", run))) return false;
     const r = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }]);
@@ -481,11 +485,12 @@ export function mountPlayer(host, bundle, api) {
     const cs = closingSlide();
     if (cs) {
       const view = showSlideView(cs, { reveal: line - 1 });
-      if (line === 0 && S.pitch?.advance) { view.setRevealed(0); if (!(await speak(S.pitch.advance, run, S.pitch.advance_audio))) return; S.playback.line = 1; if (!(await waitForLineQuestion({ text: S.pitch.advance }, run))) return; if (!(await playLines(cs, run, view, 1))) return; }
+      if (line === 0 && S.pitch?.advance) { view.setRevealed(0); el.cite.textContent = ""; if (!(await speak(S.pitch.advance, run, S.pitch.advance_audio))) return; S.playback.line = 1; if (!(await waitForLineQuestion({ text: S.pitch.advance }, run))) return; if (!(await playLines(cs, run, view, 1))) return; }
       else if (!(await playLines(cs, run, view, line))) return;
     }
     S.playback = { phase: "closing", line: cs?.lines?.length || 0 };
     showSlideView(heroClose(), { reveal: 99 });
+    el.cite.textContent = "";
     const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
     const r = await waitFor(chips, 0); if (run !== S.run) return;
     if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
@@ -501,6 +506,7 @@ export function mountPlayer(host, bundle, api) {
   function captureOrigin() { if (!S.conversationOrigin) S.conversationOrigin = { ...S.playback }; }
   async function listenForQuestion() {
     captureOrigin(); interruptAll(); const run = newRun();
+    el.cite.textContent = "";
     el.cap.textContent = "What would you like to know?";
     const r = await waitFor([{ label: "Continue demo", value: "continue", primary: true }], 0, { openAnswer: true });
     if (run !== S.run) return;
@@ -525,6 +531,7 @@ export function mountPlayer(host, bundle, api) {
   // ---------- questions, don't-guess, lead capture ----------
   async function handleQuestion(text, options = {}) {
     captureOrigin(); interruptAll(); const run = newRun(); let jumped = null;
+    el.cite.textContent = "";
     const customerQuestion = options.question || text;
     const last = S.transcript.at(-1); if (!(last?.role === "user" && last.text === text)) addMsg("user", text);
     // Keep raw customer wording beyond the short transcript window, without inferring a preference.
@@ -645,11 +652,32 @@ export function mountPlayer(host, bundle, api) {
   function parseName(t) { let m = t.match(/(?:my name is|myself|name's|call me|mera naam|naam)\s+([A-Za-zऀ-ॿ][a-zऀ-ॿ]+)/i); if (m) return cap(m[1]); m = t.match(/^([A-Za-z][a-z]+)\s+(?:here|speaking|bol raha|bol rahi)\b/i); if (m) return cap(m[1]); return ""; }
 
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  function parseFocus(t) { const out = []; const s = t.toLowerCase(); for (const c of bundle.intake?.chips || []) { const words = c.label.toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w)) || s.includes(c.key.toLowerCase())) out.push(c.key); } for (const sl of library()) { const words = (sl.title + " " + topicOf(sl)).toLowerCase().split(/[^a-z0-9ऀ-ॿ]+/).filter((w) => w.length > 3); if (words.some((w) => s.includes(w))) out.push(topicOf(sl)); } return [...new Set(out)].slice(0, 4); }
+  function parseFocus(t) {
+    // Mentioned topics guide routing; they never establish a stated or ranked preference.
+    // Slide titles contain generic words (e.g. "with") and are not customer vocabulary.
+    const norm = (s) => String(s || "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}\p{M}]+/gu, " ").trim();
+    const text = ` ${norm(t)} `;
+    const aliases = {
+      performance: ["automatic", "engine", "engines", "gearbox", "gearboxes", "transmission"],
+      practicality: ["boot", "luggage", "stroller"],
+      ownership: ["running cost", "running costs", "cost of ownership", "price", "pricing", "warranty"],
+    };
+    const terms = new Map();
+    const add = (key, labels = []) => {
+      if (!key) return;
+      terms.set(key, [...(terms.get(key) || []), key, ...labels, ...(aliases[key] || [])]);
+    };
+    for (const c of bundle.intake?.chips || []) add(c.key, String(c.label || "").split(/\s*[&/|]\s*/));
+    for (const sl of library()) add(topicOf(sl));
+    return [...terms].filter(([, values]) => values.some((value) => {
+      const phrase = norm(value); return phrase && text.includes(` ${phrase} `);
+    })).map(([key]) => key).slice(0, 4);
+  }
   function withTimeout(p, ms) { return Promise.race([p, new Promise((res) => setTimeout(() => res(null), ms))]); }
 
   async function runIntake() {
     const run = newRun(); S.browseOnly = false; S.playback = { phase: "intake", line: 0 }; S.intakeOpen = true; el.intake.classList.add("open"); el.inFallback.classList.add("open");
+    el.cite.textContent = "";
     showSlideView(heroOpen(), { reveal: 99 });
     const q1 = bundle.intake?.q1 || `What matters most to you as you consider ${bundle.product?.name || "this"}?`;
     el.inState.textContent = guide;

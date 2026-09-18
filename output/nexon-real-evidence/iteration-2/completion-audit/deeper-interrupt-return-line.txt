@@ -1,0 +1,75 @@
+- banner:
+  - navigation:
+    - link "Demo Studio":
+      - /url: "#/studio"
+    - link "My Demos":
+      - /url: "#/demos"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+- main:
+  - generic "Your guide":
+    - img "Your guide"
+  - generic: Sulafat · Tata Nexon
+  - generic: Speaking
+  - button "⛶"
+  - button "Unmute audio" [pressed]: 🔇
+  - button "⏸"
+  - button "⏹"
+  - button "💬": 💬
+  - button "↺"
+  - button "✕"
+  - generic: Look a little closer
+  - heading "Room for your plans" [level=2]
+  - img "Room for your plans"
+  - generic: "1"
+  - generic: "Petrol/diesel: 382L boot, measured to ISO V215"
+  - generic: "2"
+  - generic: "Creative+PS/Fearless+PS petrol/diesel: 60:40 rear seats"
+  - button "Book Test Drive"
+  - generic: Sulafat
+  - generic: The CNG boot is listed at 321 litres using the same ISO V215 measurement basis. Capacity alone won't settle the fit of your luggage.
+  - generic: "sources: F020, F021"
+  - textbox "Your question or answer":
+    - /placeholder: Ask a question or type your answer…
+  - button "Send"
+  - generic: Tap to talk, or type your reply below.
+  - button "🎤"
+  - button "×"
+  - generic: Optional · dealership follow-up
+  - heading "Would you like to try it in person?" [level=3]
+  - paragraph: Share your details and the dealership can arrange a test drive.
+  - textbox "Your name"
+  - textbox "10-digit mobile number"
+  - paragraph: By sharing your number you agree the dealership may call you about this product. Nothing else is shared.
+  - button "Arrange a test drive"
+  - button "Not now"
+  - generic: Conversation
+  - button "✕"
+  - generic: Let's explore the Nexon Fearless Plus P S petrol automatic.
+  - generic: We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.
+  - generic: "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment."
+  - generic: We'll put each alongside what you need from your next car.
+  - generic: Take in the side profile.
+  - generic: Tata lists 208 millimetres of ground clearance, with variation by trim. Keep that figure alongside the roads and parking spaces you use.
+  - generic: Does that cover what you wanted to know about the exterior?
+  - generic: Here's the boot. Petrol and diesel versions are —
+  - generic: Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?
+  - generic: Now, let me get to what you asked about.
+  - generic: answered from the FAQ bank — no model call
+  - generic: Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.
+  - generic: Did that answer it?
+  - generic: Let's get back to where we were.
+  - generic: Here's the boot. Petrol and diesel versions are listed at 382 litres, measured to ISO V215.
+  - generic: For a stroller or weekend bags, bring your own and check the fit with the seats in use.
+  - generic: Does that help with the luggage checks you want to make?
+  - generic: The CNG boot is listed at 321 —
+  - generic: Does this Fearless + PS trim include both front-seat ventilation and rear AC vents?
+  - generic: Now, let me get to what you asked about.
+  - generic: answered from the FAQ bank — no model call
+  - generic: Yes. The documented Fearless + PS petrol and diesel versions include ventilated driver and co-driver seats, along with rear AC vents.
+  - generic: Did that answer it?
+  - generic: Let's get back to where we were.
+  - textbox "Type a question…"
+  - button "↑"

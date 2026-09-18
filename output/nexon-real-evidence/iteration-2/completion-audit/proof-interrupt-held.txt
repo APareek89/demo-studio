@@ -1,0 +1,82 @@
+- banner:
+  - text: Demo
+  - generic: Studio
+  - navigation:
+    - link "Demo Studio":
+      - /url: "#/studio"
+    - link "My Demos":
+      - /url: "#/demos"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+  - generic "API keys":
+    - generic "key found": Claude
+    - generic "key found": Gemini
+    - generic "key found": Sarvam
+- main:
+  - generic "Your guide":
+    - img "Your guide"
+  - generic: Sulafat · Tata Nexon
+  - generic: Your turn
+  - button "Take in the stance"
+  - button "Settle into the cabin"
+  - button "Room for your plans"
+  - button "Find your driving rhythm"
+  - button "Safety starts with the details"
+  - button "Your cockpit, closer"
+  - button "Make the next step count"
+  - button "⛶"
+  - button "Unmute audio" [pressed]: 🔇
+  - button "⏸"
+  - button "⏹"
+  - button "💬": 💬
+  - button "↺"
+  - button "✕"
+  - generic: Made for your everyday
+  - heading "Your shortlist starts here" [level=2]
+  - img "Your shortlist starts here"
+  - generic: "1"
+  - generic: "1"
+  - generic: "Fearless+PS petrol/diesel: ventilated front seats"
+  - generic: "2"
+  - text: "Six airbags and stability control: standard"
+  - generic: F003
+  - button "Book Test Drive"
+  - generic: Sulafat
+  - generic: Did that answer it?
+  - generic: "sources: F003, F004"
+  - button "Yes, that helps"
+  - button "Not quite"
+  - button "Ask another question"
+  - textbox "Your question or answer":
+    - /placeholder: Ask a question or type your answer…
+  - button "Send" [active]
+  - generic: Take your time. Reply by voice or type, or choose an option.
+  - button "🎤"
+  - button "×"
+  - generic: Optional · dealership follow-up
+  - heading "Would you like to try it in person?" [level=3]
+  - paragraph: Share your details and the dealership can arrange a test drive.
+  - textbox "Your name"
+  - textbox "10-digit mobile number"
+  - paragraph: By sharing your number you agree the dealership may call you about this product. Nothing else is shared.
+  - button "Arrange a test drive"
+  - button "Not now"
+  - generic: Conversation
+  - button "✕"
+  - generic: Let's explore the Nexon Fearless Plus P S petrol automatic.
+  - generic: We'll look at the cabin, family details and driving choices. You can steer the tour toward what matters to you.
+  - generic: "Three things to explore: front-seat ventilation, a seven-speed automatic, and standard safety equipment."
+  - generic: We'll put each alongside what you need from your next car.
+  - generic: Take in the side profile.
+  - generic: Tata lists 208 millimetres of ground clearance, with variation by trim. Keep that figure alongside the roads and parking spaces you use.
+  - generic: Does that cover what you wanted to know about the exterior?
+  - generic: Here's the boot. Petrol and diesel versions are —
+  - generic: Does the Nexon come with six airbags and ISOFIX mounts as standard equipment across all variants?
+  - generic: Now, let me get to what you asked about.
+  - generic: answered from the FAQ bank — no model call
+  - generic: Yes, six airbags and ISOFIX child seat mounts are both standard equipment across the Nexon lineup. You also get three-point seatbelts for every passenger and an electronic stability program included as standard.
+  - generic: Did that answer it?
+  - textbox "Type a question…"
+  - button "↑"

@@ -1,0 +1,53 @@
+- banner:
+  - text: Demo
+  - generic: Studio
+  - navigation:
+    - link "Demo Studio":
+      - /url: "#/studio"
+    - link "My Demos":
+      - /url: "#/demos"
+    - link "Playground":
+      - /url: "#/playground"
+    - link "Observability":
+      - /url: "#/observability"
+  - generic "API keys":
+    - generic "key found": Claude
+    - generic "key found": Gemini
+    - generic "key found": Sarvam
+- main:
+  - generic "Your guide":
+    - img "Your guide"
+  - generic: Sulafat · Tata Nexon
+  - generic: Paused
+  - button "⛶"
+  - button "Unmute audio" [pressed]: 🔇
+  - button "▶" [active]
+  - button "⏹"
+  - button "💬"
+  - button "↺"
+  - button "✕"
+  - generic: Meet your next possibility
+  - heading "Tata Nexon, up close" [level=2]
+  - img "Tata Nexon, up close"
+  - button "Book Test Drive"
+  - generic: Sulafat
+  - generic: Paused — press ▶ to continue.
+  - generic: "sources: F019"
+  - textbox "Your question or answer":
+    - /placeholder: Ask a question or type your answer…
+  - button "Send"
+  - generic: Tap to talk, or type your reply below.
+  - button "🎤"
+  - button "×"
+  - generic: Optional · dealership follow-up
+  - heading "Would you like to try it in person?" [level=3]
+  - paragraph: Share your details and the dealership can arrange a test drive.
+  - textbox "Your name"
+  - textbox "10-digit mobile number"
+  - paragraph: By sharing your number you agree the dealership may call you about this product. Nothing else is shared.
+  - button "Arrange a test drive"
+  - button "Not now"
+  - generic: Conversation
+  - button "✕"
+  - textbox "Type a question…"
+  - button "↑"

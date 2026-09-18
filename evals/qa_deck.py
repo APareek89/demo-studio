@@ -398,6 +398,8 @@ from pitch_grounding_contract import run as pitch_grounding_contract
 pitch_grounding_contract(check)
 from summary_contract import run as summary_contract
 summary_contract(check)
+from summary_usage_contract import run as summary_usage_contract
+summary_usage_contract(check)
 check("runtime provider order defaults Gemini → Claude → Runware", config.RUNTIME_PROVIDERS == ["gemini", "claude", "runware"])
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
 

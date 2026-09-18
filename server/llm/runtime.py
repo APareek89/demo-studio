@@ -16,7 +16,8 @@ from . import claude, gemini, mock, runware
 T = TypeVar("T", bound=BaseModel)
 
 
-def structured(system: str, content: str, schema: type[T], *, history: list[dict] | None = None, max_tokens: int = 1500) -> T:
+def structured(system: str, content: str, schema: type[T], *, history: list[dict] | None = None,
+               max_tokens: int = 1500, thinking_level: str | None = None) -> T:
     if config.MOCK_LLM:
         out = mock.fake(schema)
         usage.trace("runtime", "mock", latency_ms=5, system=system, user=content, response=out.model_dump_json()[:4000])
@@ -30,8 +31,9 @@ def structured(system: str, content: str, schema: type[T], *, history: list[dict
                                          timeout=config.RUNTIME_TIMEOUT, max_retries=1, model=config.CLAUDE_RUNTIME_MODEL, fallback=False)
             if provider == "gemini":
                 msgs = list(history or []) + [{"role": "user", "content": content}]
+                thinking = {"thinking_level": thinking_level} if thinking_level is not None else {}
                 return gemini.text_structured(system, claude._fallback_transcript(msgs), schema, max_tokens=max_tokens,
-                                              timeout_s=config.RUNTIME_TIMEOUT, model=config.GEMINI_RUNTIME_MODEL, tries=2, kind="runtime")
+                                              timeout_s=config.RUNTIME_TIMEOUT, model=config.GEMINI_RUNTIME_MODEL, tries=2, kind="runtime", **thinking)
             if provider == "runware":
                 return runware.structured(system, content, schema, history=history, max_tokens=max_tokens,
                                           timeout=config.RUNTIME_TIMEOUT, model=config.RUNWARE_TEXT_MODEL)

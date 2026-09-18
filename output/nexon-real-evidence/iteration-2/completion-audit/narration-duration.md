@@ -1,0 +1,11 @@
+# Final A narration duration — file evidence only
+
+The preserved natural-end session `s_mu752gpf8em1` has **31 agent entries, all 31 matched** to existing exact Sarvam/Priya/en-IN text-hash WAV files. Their frame counts sum to **192.853424 seconds (3 minutes 12.853 seconds)**. The longest clip is **17.066667 seconds**; none exceeds20 seconds. No agent entry is unmatched or marked interrupted.
+
+This counts intake, acknowledgments, custom and reviewed narration, bridges, check-ins and closing once per transcript occurrence. It excludes the user's words, response/review waits, and the separately saved later operator resume. The original 5.6-minute session is therefore not used as narration duration. Short acknowledgments/check-ins are naturally under 10 seconds; this does not label each filler as a 10–20 second idea.
+
+The source is [the unchanged natural-end transcript](../customer-shorttrip-recovery/session.json), not `operator-resume-session.json`. The matching rule is the current `server/agents/voice.py:_cache_key`: SHA1 of `provider|speaker|language|text.strip()`, first 20 hex characters. For each entry, the matching WAV was opened locally and its duration calculated as frames/sample-rate. The total is summed as exact fractions before rounding, with no deduplication. [The JSON evidence](narration-duration.json) records each text, cache key, file SHA256, byte size, frames, rate, channel/width format and duration, plus hashes of the transcript, source snapshot and cache-key implementation.
+
+The result supports the PRD's **approximately three-minute narration** target, not a strict 180-second ceiling. All individual recorded entries fit the 20-second maximum. It does not establish source entailment or natural speech: **no audio was played, no UI operated and no provider called**. Cache identity/header validity is not independent transcription or listening. The user's later muted portion remains caption/transcript validation only; intelligibility, pronunciation, naturalness and acoustic overlap are NOT VALIDATED.
+
+Precision note: an earlier quick check reported 192.852 seconds by summing clip values individually rounded to milliseconds. This artifact uses exact frame/rate fractions and is the authoritative duration calculation.

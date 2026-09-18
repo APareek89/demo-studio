@@ -33,6 +33,10 @@ an uncited fact. Done = the iQube sample runs end-to-end locally with real keys 
 rebuilds the demo.
 
 ## Free evals — run after every change while the loop is on
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/summary_usage_contract.py`: eight NX35 checks use real worker threads and temporary demo stores. They require one attributed usage/trace record per demo, positive cost, failure attribution and restoration of caller context. Provider/network calls are blocked. Included in the deck gate; baseline4/8, fixed8/8. Historical unrecorded charges remain unavailable.
+
+Continued Nexon completion checks: `node evals/player_focus_contract.cjs` executes the production focus parser (4/12→12/12); `evals/pitch_grounding_contract.py` requires exact approved spoken proof with its complete citation set (initial24/38→38/38; final46/46 with neutral-cue and repetition guards); provider contracts48/48 verify live-QA-only LOW thinking on Gemini3.8Flash, full input, unchanged3000-token envelope/retries and no option on unknown overrides. Generation37/37 includes current-question scope and matched comparison dimensions. These free tests establish wiring and enforcement; the resumed actual sample establishes delivered content and speed.
 (Run with `MOCK_LLM=1` unless the eval says otherwise. Free = no API spend.)
 
 | # | Input (question / action / call) | Expected (answer / behavior / output) |

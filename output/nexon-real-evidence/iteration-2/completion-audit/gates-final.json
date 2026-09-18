@@ -1,0 +1,42 @@
+[
+  {
+    "test": "qa_deck",
+    "exit": 0,
+    "tail": [
+      "",
+      "279/279 deck cases pass"
+    ]
+  },
+  {
+    "test": "qa_accept",
+    "exit": 0,
+    "tail": [
+      "",
+      "24/24 cases behave as required"
+    ]
+  },
+  {
+    "test": "smoke_mock",
+    "exit": 0,
+    "tail": [
+      "jargon check ok: ['s1 line 1: states a figure or claim without a fact id \u2014 \u201cIt has a 3.4 kWh battery and 15A charging with IDC range.\u201d', \"s1: jargon 'kWh' in the main narration \u2014 move the complete technical quantity to deeper; never keep a number while dropping its unit\"]",
+      "SMOKE OK (phase 2) dm_4059b346"
+    ]
+  },
+  {
+    "test": "generation_contract",
+    "exit": 0,
+    "tail": [
+      "PASS generation: all contracts avoid actual provider and network calls",
+      "Generation input/approval contracts: 37/37 (model entailment not evaluated)"
+    ]
+  },
+  {
+    "test": "runtime_delivery_contract",
+    "exit": 0,
+    "tail": [
+      "PASS runtime delivery: all checks used fake providers and no outbound connection",
+      "Runtime delivery: 27/27 passed"
+    ]
+  }
+]

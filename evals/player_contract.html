@@ -130,7 +130,7 @@ async function click(text, selector) { const b = button(text, selector); assert(
 async function type(text) { const input = host.querySelector('.composer input'); input.value = text; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); input.blur(); await flush(); }
 async function atProof() { await click('Skip the intro'); assert(player.context().slide === 'proof-one', 'Fixture did not reach first proof'); assert(button('I have a question'), 'Fixture did not reach the first check-in'); }
 const recentRecognizer = () => env.recognizers.at(-1);
-const detail = () => ({ context: player?.context(), qa: env?.calls, audioStarted: env?.played, ttsRequests: env?.ttsCalls, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, beaconSessions: env?.beacons, leadRequests: env?.leadCalls });
+const detail = () => ({ context: player?.context(), currentCitations: host.querySelector('.pl-cap .cite')?.textContent, qa: env?.calls, audioStarted: env?.played, ttsRequests: env?.ttsCalls, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, beaconSessions: env?.beacons, leadRequests: env?.leadCalls });
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
@@ -364,6 +364,40 @@ test('Declining callback still permits completion and saves the finished session
   assert(saved.transcript.filter((x) => x.role === 'user' && x.text === question).length === 1, 'Saved transcript duplicated or lost the customer question');
   assert(['First proof.', 'Second proof.', 'Third proof.'].every((text) => saved.transcript.some((x) => x.role === 'agent' && x.text === text)), 'Finished transcript omitted heard proof lines');
   assert(saved.turns.length === 1 && saved.turns[0].qa_done != null && saved.turns[0].answer_audio != null, 'Completed session lost answer latency stamps');
+});
+test('Deeper narration owns its citations across Q&A return and clears them for question prompts', async () => {
+  const first = 'CNG boot volume is 321 litres, measured to ISO V215.';
+  const second = 'The reviewed second detail has a different source.';
+  const answer = 'The cabin answer uses two other reviewed facts.';
+  const citations = () => host.querySelector('.pl-cap .cite').textContent;
+  const finish = async () => { assert(env.active.size === 1, 'Expected exactly one held audio'); [...env.active][0].finish(); await flush(); };
+  await setup({
+    hold: (text) => [first, second, answer].includes(text),
+    qa: async () => answered({ answer, fact_ids: ['F020', 'F021'], topic: 'comfort' }),
+    configure: (b) => {
+      b.slides.find((s) => s.id === 'proof-one').deeper = [
+        { ...line('boot-D1', first), fact_ids: ['F014'] },
+        { ...line('boot-D2', second), fact_ids: ['F024'] },
+      ];
+      return b;
+    },
+  });
+  await atProof();
+  assert(citations() === '', 'Main check-in retained the preceding claim sources');
+  await click('Tell me more', '.pl-chips button');
+  assert(env.played.at(-1) === first && citations() === 'sources: F014', 'First deeper line did not show its own F014 citation');
+  await type('What are the cabin features?');
+  assert(env.played.at(-1) === answer && citations() === 'sources: F020, F021', 'Q&A did not show its own answer citations');
+  await finish();
+  assert(button('Yes, that helps', '.pl-chips button') && citations() === '', 'Did-that-answer question retained the answer citations');
+  await click('Yes, that helps', '.pl-chips button');
+  assert(env.played.at(-1) === first && citations() === 'sources: F014', 'Resumed deeper D1 retained the unrelated cabin answer citations');
+  assert(env.played.filter((text) => text === first).length === 2, 'Deeper return skipped or repeatedly replayed D1');
+  await finish();
+  assert(env.played.at(-1) === second && citations() === 'sources: F024', 'Second deeper line retained D1 citations');
+  await finish();
+  assert(button('Yes, continue', '.pl-chips button') && citations() === '', 'Deeper check-in retained the preceding claim sources');
+  assert(env.maxActive === 1, 'Citation lifecycle change overlapped narration');
 });
 test('A legacy deeper question waits until the customer explicitly skips it', async () => {
   await setup({

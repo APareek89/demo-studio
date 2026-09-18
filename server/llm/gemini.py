@@ -136,7 +136,8 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
 
 def text_structured(system: str, transcript: str, schema: type[BaseModel], *, max_tokens: int = 16000,
                     temperature: float = 0.2, fallback_reason: str = "", timeout_s: float | None = None,
-                    model: str | None = None, tries: int = 2, kind: str = "gemini-fallback") -> Any:
+                    model: str | None = None, tries: int = 2, kind: str = "gemini-fallback",
+                    thinking_level: str | None = None) -> Any:
     """Text-only structured call: the fallback when Claude is unavailable, and the primary at runtime."""
     if config.MOCK_LLM:
         return mock.fake(schema)
@@ -145,6 +146,9 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
     prompt = f"SYSTEM INSTRUCTIONS:\n{system}\n\nCONVERSATION / TASK:\n{transcript}"
     cfg: dict = dict(response_mime_type="application/json", response_schema=schema, temperature=temperature,
                      max_output_tokens=min(max(256, max_tokens), 32768))
+    if thinking_level is not None and model == "gemini-3.8-flash":
+        # Only this exact model's support is verified; unknown overrides retain their defaults.
+        cfg["thinking_config"] = t.ThinkingConfig(thinking_level=thinking_level)
     if timeout_s:
         cfg["http_options"] = t.HttpOptions(timeout=int(timeout_s * 1000))
     t0 = time.time()

@@ -295,6 +295,7 @@ def run(check, demo_id: str) -> None:
         recorded.reset_mock()
         traced.reset_mock()
         with patch.object(qa, "_system", return_value=("Approved facts", budget_registry, {})), \
+                patch.object(config, "GEMINI_RUNTIME_MODEL", "gemini-3.8-flash"), \
                 patch.object(store, "load", return_value={"settings": {}}), \
                 patch.object(store, "read_json", return_value={}), \
                 patch.object(store, "write_json", side_effect=AssertionError("Budget contract wrote data")), \
@@ -307,7 +308,12 @@ def run(check, demo_id: str) -> None:
             sdk_config = request["config"]
             check("providers: live QA reserves 3000 output tokens in the real Gemini SDK envelope",
                   sdk_config.max_output_tokens == 3000 and sdk_config.response_schema is schemas.QAOut
-                  and sdk_config.response_mime_type == "application/json" and sdk_config.thinking_config is None)
+                  and sdk_config.response_mime_type == "application/json")
+            check("providers: live QA uses LOW thinking on the documented Gemini 3.8 model",
+                  sdk_config.thinking_config is not None
+                  and sdk_config.thinking_config.thinking_level == "LOW"
+                  and sdk_config.thinking_config.thinking_budget is None
+                  and request["contents"] == "SYSTEM INSTRUCTIONS:\nApproved facts\n\nCONVERSATION / TASK:\nUSER:\nWhat is the documented capacity?")
             check("providers: complete live QA keeps its approved citation and stops after Gemini",
                   live_answer["answered"] and live_answer["answer"] == budget_answer.answer
                   and live_answer["fact_ids"] == ["F-contract"] and not live_answer["provider_failed"]
@@ -321,10 +327,48 @@ def run(check, demo_id: str) -> None:
             built_answer = qa.answer(demo_id, "Build-time capacity?", voice_it=False, live=False)
             check("providers: build-time QA keeps its existing 1500-token budget",
                   built_answer["answered"] and build_call.call_count == 1
-                  and build_call.call_args.kwargs["max_tokens"] == 1500 and len(budget_requests) == 1)
+                  and build_call.call_args.kwargs["max_tokens"] == 1500
+                  and "thinking_level" not in build_call.call_args.kwargs and len(budget_requests) == 1)
             runtime.structured("System", "Non-QA runtime caller", schemas.QAOut)
             check("providers: unrelated runtime callers retain the 1500-token default",
-                  len(budget_requests) == 2 and budget_requests[1]["config"].max_output_tokens == 1500)
+                  len(budget_requests) == 2 and budget_requests[1]["config"].max_output_tokens == 1500
+                  and budget_requests[1]["config"].thinking_config is None)
+            with patch.object(config, "GEMINI_RUNTIME_MODEL", "gemini-unknown-override"):
+                qa.answer(demo_id, "Capacity with an override?", voice_it=False, live=True)
+            check("providers: live QA leaves unknown model overrides free of thinking options",
+                  budget_requests[-1]["model"] == "gemini-unknown-override"
+                  and budget_requests[-1]["config"].thinking_config is None
+                  and budget_requests[-1]["config"].max_output_tokens == 3000)
+
+            retry_requests = []
+
+            def retry_generate(**kwargs):
+                retry_requests.append(kwargs)
+                if len(retry_requests) == 1:
+                    raise RuntimeError("503 UNAVAILABLE synthetic transient")
+                return budget_reply
+
+            recorded.reset_mock()
+            with patch.object(gemini, "client", return_value=SimpleNamespace(models=SimpleNamespace(generate_content=retry_generate))), \
+                    patch.object(gemini.time, "sleep") as backoff:
+                retried = qa.answer(demo_id, "Retry the documented capacity?", voice_it=False, live=True)
+            check("providers: LOW live QA preserves the two-attempt retry, timeout and usage accounting",
+                  retried["answered"] and len(retry_requests) == 2
+                  and backoff.call_args_list == [((2,), {})]
+                  and all(r["config"].thinking_config.thinking_level == "LOW"
+                          and r["config"].max_output_tokens == 3000
+                          and r["config"].http_options.timeout == int(config.RUNTIME_TIMEOUT * 1000)
+                          for r in retry_requests)
+                  and retry_requests[0]["contents"] == retry_requests[1]["contents"]
+                  and recorded.call_count == 1 and recorded.call_args.kwargs["output_tokens"] == 1780)
+
+            with patch.object(budget_reply, "text", schemas.QAOut(answer="It travels 999 km.", fact_ids=["F-rejected"], answered=True).model_dump_json()), \
+                    patch.object(qa, "_record_unknown"):
+                rejected = qa.answer(demo_id, "An unsupported range?", voice_it=False, live=True)
+            check("providers: LOW live QA still rejects an unsupported citation before speech",
+                  not rejected["answered"] and not rejected["fact_ids"] and rejected["offer_callback"]
+                  and "999" not in rejected["answer"]
+                  and budget_requests[-1]["config"].thinking_config.thinking_level == "LOW")
 
         # PDFs reach the secondary text chain only after source-labelled extraction.
         source = {"id": "src_contract", "kind": "pdf", "role": "product", "name": "official-brochure.pdf", "path": "sources/contract.pdf"}

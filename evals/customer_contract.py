@@ -166,6 +166,23 @@ def run(check, demo_id: str) -> None:
               result["answered"] and result["fact_ids"] == ["F1"] and model.call_args.args[1] == "Will it suit me?"
               and any(row["content"] == "Night driving." for row in model.call_args.kwargs["history"]))
 
+        # Runtime factual wording now comes from approved script proof. Keep the
+        # deliberately wrong customer examples available too, so these cases
+        # still exercise numeric ownership rather than only proof availability.
+        pitch_script = copy.deepcopy(script)
+        pitch_script["segments"][0]["deeper"] = [
+            {"text": text, "fact_ids": ["F1"], "unverified": False}
+            for text in (
+                "For your 30 km commute.",
+                "For your 30 km commute, see the lamp.",
+                "For your thirty-kilometre commute.",
+                "For your thirty-kilometre commute, see the lamp.",
+                "For your five-to-ten kilometre journey, see the lamp.",
+                "For the journeys you mentioned, this uses a one point two litre engine.",
+            )
+        ]
+        files["script.json"] = pitch_script
+        demo["approvals"] = {"script": True}
         generated = schemas.PitchPlan(customer_state="stated_need", decision_frame="For your 30 km commute, let's start there.",
                                       follow_up_question="What is your budget?", primary_outcome="Comfort", focus_topics=["comfort"],
                                       route=[schemas.RouteStep(segment_id="proof", bridge="For your 30 km commute.", bridge_fact_ids=["F1"])],
