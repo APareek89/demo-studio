@@ -355,6 +355,11 @@ try:
 finally:
     _reh.generate_questions = _orig_gen
 
+# ---- Gemini quota cooldown is proportional to the error (a free-tier burst must not freeze builds for ten minutes) ----
+from server.llm import gemini as _gem
+check("a burst-limit 429 with a retry hint cools down for that long (+1 s)", _gem._quota_cooldown("429 RESOURCE_EXHAUSTED: You exceeded your current quota, please check your plan and billing details. Please retry in 12.4s.")[0] == 13)
+check("a burst-limit 429 without a hint cools down 30 s, a zero quota 600 s, a 503 not at all", _gem._quota_cooldown("429 You exceeded your current quota")[0] == 30 and _gem._quota_cooldown("limit: 0 quota_value: 0")[0] == 600 and _gem._quota_cooldown("503 UNAVAILABLE high demand")[0] == 0)
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)

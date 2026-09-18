@@ -432,3 +432,13 @@
 **Deepest why type:** `unnecessary-dependency`
 **Action taken:** When the registry hash is unchanged the previously generated questions stand (no call); `force` regenerates. Proven by a counting test in `qa_deck.py`.
 **Preventive action:** A rebuild of one stage may only call a model for that stage; every downstream node reuses by content hash, and the eval counts model calls on a second run.
+
+### 2026-09-18 — One busy second froze Gemini for ten minutes
+
+**Symptom:** On a real rebuild the deck writer fell back to derived callouts twice; the demo's log said "Gemini rate limit cooldown: current quota exhausted; wait or enable billing" while a fresh one-token probe of the same key answered fine.
+**Why 1:** `gemini._retry` latched a 600 s cooldown on any message containing "exceeded your current quota".
+**Why 2:** That text is also Gemini's ordinary per-minute burst 429 on a free-tier key, which carries its own "retry in Ns" hint.
+**Why 3:** The latch was written against the zero-quota case (no billing) and never tested against a burst.
+**Deepest why type:** `overbroad-match`
+**Action taken:** `_quota_cooldown(message)` — a burst waits what Gemini asks (+1 s; 30 s without a hint); only `limit: 0` / `quota_value: 0` latches ten minutes. Unit cases in `qa_deck.py`.
+**Preventive action:** Any provider cooldown is sized from the provider's own retry hint, and the zero-quota case is matched on its specific markers, never on generic quota wording.

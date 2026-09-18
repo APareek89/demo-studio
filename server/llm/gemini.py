@@ -5,6 +5,7 @@ import io
 import json
 import mimetypes
 import struct
+import re
 import time
 from pathlib import Path
 from typing import Any
@@ -35,9 +36,22 @@ def _types():
     return types
 
 
-def _is_hard_quota(message: str) -> bool:
+def _quota_cooldown(message: str) -> tuple[int, str]:
+    """How long to stop calling Gemini after a quota error, and why. A zero quota (no billing) is worth ten minutes;
+    a burst limit ("exceeded your current quota … retry in 12s") is worth exactly what Gemini asks, else 30 s —
+    a free-tier key must not lose ten minutes of builds to one busy second."""
     low = message.lower()
-    return any(marker in low for marker in ("exceeded your current quota", "check your plan and billing", "limit: 0", "quota_value: 0"))
+    if "limit: 0" in low or "quota_value: 0" in low:
+        return 600, "zero quota on this key — enable billing or use another key"
+    if "exceeded your current quota" in low or "check your plan and billing" in low:
+        m = re.search(r"retry in ([\d.]+)\s*s", low) or re.search(r"retrydelay[^\d]{0,6}([\d.]+)s", low)
+        secs = int(float(m.group(1))) + 1 if m else 30
+        return secs, f"burst limit — waiting {secs}s"
+    return 0, ""
+
+
+def _is_hard_quota(message: str) -> bool:
+    return _quota_cooldown(message)[0] > 0
 
 
 def _retry(fn, tries: int = 4, waits=(4, 10, 25)):
@@ -54,9 +68,10 @@ def _retry(fn, tries: int = 4, waits=(4, 10, 25)):
             # A zero/current-quota response is not a burst limit. Retrying it
             # for every later image, planning and FAQ call turns a clean
             # fallback into minutes of dead time, so remember it briefly.
-            if _is_hard_quota(s):
-                _hard_quota_reason = "current quota exhausted; wait or enable billing"
-                _hard_quota_until = time.time() + 600
+            secs, why = _quota_cooldown(s)
+            if secs:
+                _hard_quota_reason = why
+                _hard_quota_until = time.time() + secs
                 raise
             transient = any(k in s for k in ("503", "UNAVAILABLE", "429", "RESOURCE_EXHAUSTED", "500 INTERNAL", "502", "504", "overloaded", "high demand"))
             last = e
