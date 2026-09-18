@@ -1,0 +1,38 @@
+{
+  "sessions": [
+    {
+      "id": "s_mu72zmm82u16",
+      "saved_at": 1789743860.0608482,
+      "profile": {
+        "name": "",
+        "why": "I drive only five to ten kilometres a day, mostly in city traffic. We have a child seat and a stroller. I care about practicality and running costs.",
+        "followup": "",
+        "focus": [
+          "practicality",
+          "child seat",
+          "stroller",
+          "running costs"
+        ]
+      },
+      "cta": "summary",
+      "questions": 4,
+      "intent": 66,
+      "drop_point": "Safety starts with the details",
+      "escalations": [
+        "Please help the customer arrange an in-person boot fit check with their stroller, two large suitcases, and child seat."
+      ],
+      "minutes": 8.3,
+      "ended": true,
+      "summary": {
+        "context": "Drives five to ten kilometres a day mostly in city traffic and needs a practical car to accommodate a child seat and stroller while keeping running costs in mind.",
+        "opening_line": "You mentioned you drive five to ten kilometres a day and need to fit a stroller and two large suitcases with your child seat in use\u2014shall we arrange an in-person boot fit check to see how everything fits?",
+        "customer_name": ""
+      },
+      "leads": 0
+    }
+  ],
+  "storage": {
+    "backend": "local",
+    "fallback_reason": ""
+  }
+}

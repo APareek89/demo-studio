@@ -1,0 +1,211 @@
+{
+  "demo_id": "dm_36d47b86",
+  "iteration": 2,
+  "purpose": "Independent read-only prebuild content and integrity audit",
+  "reviewed_commit": "5cc9288",
+  "recorded_at": "2026-09-18T14:53:32.778247+00:00",
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "Current citation approval across script, effective deck, FAQ and plan",
+      "pass": true,
+      "detail": "All referenced IDs exist and remain approved."
+    },
+    {
+      "check": "Product and seven rival source-owner boundaries",
+      "pass": true,
+      "detail": "29 product facts and 95 rival facts retain enabled sources with the correct roles and owners."
+    },
+    {
+      "check": "Three semantic rival holds preserved",
+      "pass": true,
+      "detail": [
+        "C2-003",
+        "C2-007",
+        "C2-011"
+      ]
+    },
+    {
+      "check": "All six Align cards approved",
+      "pass": true,
+      "detail": {
+        "visuals": true,
+        "facts": true,
+        "script": true,
+        "faq": true,
+        "persona": true,
+        "ctas": true
+      }
+    },
+    {
+      "check": "Twenty complete FAQ entries tied to current registry",
+      "pass": true,
+      "detail": {
+        "count": 20,
+        "partial": false,
+        "registry_hash": "25a76ecd368c554ecf0b"
+      }
+    },
+    {
+      "check": "Review payload parity: product-facts.json",
+      "pass": true,
+      "detail": "Exact reviewed fields preserved."
+    },
+    {
+      "check": "Review payload parity: competitor-patches.json",
+      "pass": true,
+      "detail": "Every reviewed field matches, including merged source locator/quote patches; source ref and unedited quote fields are preserved."
+    },
+    {
+      "check": "Review payload parity: competitor-approvals.json",
+      "pass": true,
+      "detail": "Exact reviewed fields preserved."
+    },
+    {
+      "check": "Review payload parity: faq-patches.json",
+      "pass": true,
+      "detail": "Exact reviewed fields preserved."
+    },
+    {
+      "check": "Review payload parity: script-patch.json",
+      "pass": true,
+      "detail": "Exact reviewed fields preserved."
+    },
+    {
+      "check": "Review payload parity: deck-patch.json + boot-placement-patch.json",
+      "pass": true,
+      "detail": "Exact reviewed fields preserved."
+    },
+    {
+      "check": "Plan stale unqualified claims removed",
+      "pass": true,
+      "detail": "Superseded prose is absent, including clearance/load, water-equivalent CNG and unqualified all-variant safety wording."
+    },
+    {
+      "check": "Twelve slides use source-backed product images",
+      "pass": true,
+      "detail": {
+        "count": 12,
+        "invalid": []
+      }
+    },
+    {
+      "check": "Reviewed cockpit identity and saved drag preserved",
+      "pass": true,
+      "detail": {
+        "slide_id": "sl08",
+        "previous_iteration_slide_id": "sl04",
+        "image_id": "im08",
+        "title": "Your cockpit, closer",
+        "label_pos": {
+          "x": 0.0401,
+          "y": 0.0453
+        },
+        "anchor": {
+          "x": 0.503,
+          "y": 0.475
+        }
+      }
+    },
+    {
+      "check": "Remapped touchscreen and driver-display facts route to cockpit",
+      "pass": true,
+      "detail": {
+        "slide_id": "sl08",
+        "route": "jump",
+        "callout_id": "sl08-c3",
+        "by": "facts"
+      }
+    },
+    {
+      "check": "Published measurements retain stated truth",
+      "pass": true,
+      "detail": {
+        "F005": "stated",
+        "F006": "certified",
+        "F007": "stated",
+        "F009": "stated",
+        "F012": "stated",
+        "F013": "stated",
+        "F014": "stated",
+        "F016": "stated"
+      }
+    },
+    {
+      "check": "Official previously reviewed CTA destinations preserved",
+      "pass": true,
+      "detail": [
+        "https://tata.cars/book-test-drive/landing.html",
+        "https://tata.cars/nexon/ice/price.html",
+        "https://tata.cars/dealer-locator.html"
+      ]
+    },
+    {
+      "check": "Locked selected voice remains Sarvam Priya",
+      "pass": true,
+      "detail": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN",
+        "locked": true
+      }
+    }
+  ],
+  "blocking_findings": [],
+  "artifacts": {
+    "demo.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/demo.json",
+      "sha256": "70675cc9e3f89263f6a147db049052ae234e481cbcb9eb43f8f9153984cb1e95"
+    },
+    "understanding.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/understanding.json",
+      "sha256": "4a9fcf918f34e8f4f8fb062bad3704f9715c2326cff4cde3b6f779899af08647"
+    },
+    "script.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/script.json",
+      "sha256": "f41c85eb274faf1458cb75574ab30296fd041d06ddc0b0ad2aa5db9f35ac6529"
+    },
+    "deck.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/deck.json",
+      "sha256": "391292e35f17af86c09d115ad70d753735d1bf0f106409685fd373818fe8f54f"
+    },
+    "deck-overrides.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/deck-overrides.json",
+      "sha256": "db939e092ec37e8b5a8da3cee1bbc04a483d14031b3c7f6cc3d90b7577d91fc3"
+    },
+    "plan.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/plan.json",
+      "sha256": "abd4e3a0dc38fdd175d208b53bcb554979d69e9089cabcd934a33526980add19"
+    },
+    "faq.json": {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/faq.json",
+      "sha256": "e797d7c6976c851e2f34b4fd3aee7250a033f7748412a6b1fd587bcb793cada0"
+    }
+  },
+  "review_basis": [
+    "Live approved registry and source-owner boundaries",
+    "Previously completed 95-rival source audit and reviewed product registry",
+    "38 narrated lines, six segment check-ins and optional intake, twelve effective slides, all twenty approved FAQ answers",
+    "Saved review payloads applied via product APIs"
+  ],
+  "manual_scope_results": [
+    "Fearless + PS petrol DCA claims qualified; front ventilation, rear AC, screen sizes, 60:40 seats, cameras, ADAS and JBL wording retain reviewed scope.",
+    "No narration promises water/rough-road ability, physical luggage fit, certified dimensions, 24/7 service, unsupported HP conversion or guessed finance amount.",
+    "Four regenerated FAQ defects are fixed: ISO V215 wording, warranty limit ambiguity, unsupported comfort result and centimetre units.",
+    "Unsupported five-year costs, real waiting period, exact rear legroom comparisons and flat-floor capability remain unknown rather than invented."
+  ],
+  "nonblocking_notes": [
+    "Raw deck fact_ids are stale in places, but the effective joining function used by Align, runtime and bundle recalculates from reviewed script and retains callout/deeper facts.",
+    "Cockpit image and user drag were preserved by topic on sl08 after rereading changed slide order; iteration1 used sl04.",
+    "Plan persona retains a legacy Sulafat label, but locked selection derives actual audio identity from demo.settings: Sarvam/priya. Postbuild audit must verify every referenced audio hash.",
+    "Positive Brezza and Venue comparisons still require actual runtime probes. FAQ declines do not count as completed comparison coverage."
+  ],
+  "pending_real_evidence": [
+    "Build2 ready bundle",
+    "All required audio clips and provider/content hashes",
+    "Actual WAV durations and main-batch budget",
+    "Build and runtime latency/cost evidence",
+    "Acoustic intelligibility, visual presentation and twelve real customer paths"
+  ],
+  "capture_note": "Read-only content audit completed before Build2 was started; report/artifact hashes were recorded while the parent began Build2. No completed audio or bundle is asserted here."
+}

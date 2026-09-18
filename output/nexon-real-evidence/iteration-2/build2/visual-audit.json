@@ -1,0 +1,977 @@
+{
+  "method": "gemini_pixels",
+  "model": "gemini-3.6-flash",
+  "lines": [
+    {
+      "line_id": "intro-overview-L1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "compact SUV body",
+        "under four metres length"
+      ],
+      "visible_features": [
+        "compact SUV body"
+      ],
+      "missing_features": [
+        "under four metres length"
+      ],
+      "confidence": 0.85,
+      "reason": "Shows side profile of the compact SUV, but cannot visually verify exact length under four metres."
+    },
+    {
+      "line_id": "intro-overview-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "cabin room",
+        "powertrain choices"
+      ],
+      "visible_features": [
+        "cabin room"
+      ],
+      "missing_features": [
+        "powertrain choices"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows interior cabin room, but does not depict powertrain choices."
+    },
+    {
+      "line_id": "intro-overview-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "3,995 millimetres length",
+        "2,498 millimetres wheelbase"
+      ],
+      "visible_features": [
+        "side profile view"
+      ],
+      "missing_features": [
+        "3,995 millimetres length exact measurement",
+        "2,498 millimetres wheelbase exact measurement"
+      ],
+      "confidence": 0.75,
+      "reason": "Shows side profile and wheelbase visually, but cannot verify literal millimetre dimensions."
+    },
+    {
+      "line_id": "intro-overview-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "passenger legroom"
+      ],
+      "visible_features": [
+        "front cabin view"
+      ],
+      "missing_features": [
+        "passenger legroom"
+      ],
+      "confidence": 0.7,
+      "reason": "Shows front dashboard cabin, but does not clearly demonstrate passenger legroom."
+    },
+    {
+      "line_id": "three-reminders-L1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "seat ventilation",
+        "flexible engine choices",
+        "five-star safety architecture"
+      ],
+      "visible_features": [
+        "seat ventilation"
+      ],
+      "missing_features": [
+        "flexible engine choices",
+        "five-star safety architecture"
+      ],
+      "confidence": 0.85,
+      "reason": "Image im05 clearly shows front seat ventilation graphics, but missing engines and safety proofs."
+    },
+    {
+      "line_id": "three-reminders-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Conversational prompt contains no concrete visual product features."
+    },
+    {
+      "line_id": "three-reminders-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "certified safety ratings",
+        "boot volume",
+        "transmission choices"
+      ],
+      "visible_features": [
+        "boot volume"
+      ],
+      "missing_features": [
+        "certified safety ratings",
+        "transmission choices"
+      ],
+      "confidence": 0.85,
+      "reason": "Shows open boot volume filled with luggage, but missing safety ratings and transmissions."
+    },
+    {
+      "line_id": "three-reminders-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Prompt asking user preference is non-visual."
+    },
+    {
+      "line_id": "exterior-stance-L1",
+      "visual": "im01",
+      "coverage": "full",
+      "spoken_features": [
+        "car stance"
+      ],
+      "visible_features": [
+        "car stance"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Front three-quarter view fully highlights the SUV stance."
+    },
+    {
+      "line_id": "exterior-stance-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "208 millimetres ground clearance",
+        "underbody margin"
+      ],
+      "visible_features": [
+        "underbody margin"
+      ],
+      "missing_features": [
+        "208 millimetres ground clearance exact measurement"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows ground clearance underbody margin, but numerical 208mm figure is unverified by photo."
+    },
+    {
+      "line_id": "exterior-stance-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "1,804 millimetres width",
+        "1,620 millimetres height"
+      ],
+      "visible_features": [
+        "car width and height proportions"
+      ],
+      "missing_features": [
+        "1,804 millimetres width",
+        "1,620 millimetres height"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows front body proportions, but exact millimetre dimensions are not proved."
+    },
+    {
+      "line_id": "exterior-stance-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "alloy wheels",
+        "16-inch tire size"
+      ],
+      "visible_features": [
+        "alloy wheels"
+      ],
+      "missing_features": [
+        "16-inch tire size markings"
+      ],
+      "confidence": 0.85,
+      "reason": "Shows side alloy wheels clearly, but tire spec numbers are not legible."
+    },
+    {
+      "line_id": "cabin-comfort-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Introductory comfort phrase contains no concrete physical feature claims."
+    },
+    {
+      "line_id": "cabin-comfort-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "rear air conditioning vents",
+        "front seat ventilation"
+      ],
+      "visible_features": [
+        "front seat ventilation"
+      ],
+      "missing_features": [
+        "rear air conditioning vents"
+      ],
+      "confidence": 0.85,
+      "reason": "Shows front seat ventilation, but rear AC vents are not visible in this image."
+    },
+    {
+      "line_id": "cabin-comfort-D1",
+      "visual": "im05",
+      "coverage": "full",
+      "spoken_features": [
+        "driver ventilated seat",
+        "co-driver ventilated seat"
+      ],
+      "visible_features": [
+        "driver ventilated seat",
+        "co-driver ventilated seat"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Image explicitly shows air stream ventilation graphics on both front driver and co-driver seats."
+    },
+    {
+      "line_id": "cabin-comfort-D2",
+      "visual": "none",
+      "coverage": "none",
+      "spoken_features": [
+        "rear airflow vents"
+      ],
+      "visible_features": [],
+      "missing_features": [
+        "rear airflow vents"
+      ],
+      "confidence": 0.9,
+      "reason": "No supplied image shows the rear seat airflow vents."
+    },
+    {
+      "line_id": "boot-practicality-L1",
+      "visual": "im06",
+      "coverage": "full",
+      "spoken_features": [
+        "boot luggage capacity"
+      ],
+      "visible_features": [
+        "boot luggage capacity"
+      ],
+      "missing_features": [],
+      "confidence": 0.95,
+      "reason": "Open tailgate with luggage directly proves boot luggage capacity."
+    },
+    {
+      "line_id": "boot-practicality-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "382 litres boot space",
+        "dual-cylinder CNG setup"
+      ],
+      "visible_features": [
+        "boot space filled with luggage"
+      ],
+      "missing_features": [
+        "382 litres boot space exact measurement",
+        "dual-cylinder CNG setup"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows full boot luggage compartment, but does not show exact litre count or CNG twin cylinders."
+    },
+    {
+      "line_id": "boot-practicality-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "twin cylinders CNG setup",
+        "ISO V215 boot volume standard"
+      ],
+      "visible_features": [
+        "boot space"
+      ],
+      "missing_features": [
+        "twin cylinders CNG setup",
+        "ISO V215 boot volume standard"
+      ],
+      "confidence": 0.75,
+      "reason": "Shows standard boot area, but twin CNG tanks under floor and ISO certification are missing."
+    },
+    {
+      "line_id": "boot-practicality-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "sixty-forty flip and fold rear seats"
+      ],
+      "visible_features": [
+        "rear seat backrest"
+      ],
+      "missing_features": [
+        "sixty-forty flip and fold rear seats mechanism"
+      ],
+      "confidence": 0.7,
+      "reason": "Shows back of rear seats in boot, but does not show them folded in a 60:40 split."
+    },
+    {
+      "line_id": "powertrain-choices-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "General spoken statement regarding engine options is non-visual."
+    },
+    {
+      "line_id": "powertrain-choices-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Engine horsepower figures and fuel types cannot be proven visually by photo."
+    },
+    {
+      "line_id": "powertrain-choices-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Torque and displacement engine specs are non-visual claims."
+    },
+    {
+      "line_id": "powertrain-choices-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "seven-speed dual-clutch automatic gear selector"
+      ],
+      "visible_features": [
+        "center console gear selector"
+      ],
+      "missing_features": [
+        "seven-speed dual-clutch automatic internal mechanism"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows center console drive selector, but cannot visually confirm 7-speed dual-clutch specs."
+    },
+    {
+      "line_id": "safety-standards-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Introductory statement about built-in protection is non-visual."
+    },
+    {
+      "line_id": "safety-standards-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Six airbags, ESP, and 5-star crash test ratings cannot be visually verified by photo alone."
+    },
+    {
+      "line_id": "safety-standards-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "BNCAP and Global NCAP certified safety scores are non-visual ratings."
+    },
+    {
+      "line_id": "safety-standards-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "ADAS suite",
+        "autonomous emergency braking",
+        "lane keep assist"
+      ],
+      "visible_features": [
+        "front camera sensor housing"
+      ],
+      "missing_features": [
+        "autonomous emergency braking operation",
+        "lane keep assist operation"
+      ],
+      "confidence": 0.75,
+      "reason": "Shows front camera sensor housing, but active ADAS features cannot be proved in static photo."
+    },
+    {
+      "line_id": "tech-convenience-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Transition phrase with no physical product features."
+    },
+    {
+      "line_id": "tech-convenience-L2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "360-degree surround camera",
+        "front parking sensors",
+        "JBL audio",
+        "connected app access"
+      ],
+      "visible_features": [
+        "360-degree surround camera",
+        "front parking sensors"
+      ],
+      "missing_features": [
+        "JBL audio",
+        "connected app access"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows front camera and parking sensor on bumper, but lacks JBL audio and app access visuals."
+    },
+    {
+      "line_id": "tech-convenience-D1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "360-degree camera",
+        "blind view monitor"
+      ],
+      "visible_features": [
+        "360-degree camera"
+      ],
+      "missing_features": [
+        "blind view monitor display"
+      ],
+      "confidence": 0.8,
+      "reason": "Shows front camera hardware, but missing screen display showing blind view monitor."
+    },
+    {
+      "line_id": "tech-convenience-D2",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "nine-speaker JBL sound setup with subwoofer"
+      ],
+      "visible_features": [
+        "dashboard speaker grille"
+      ],
+      "missing_features": [
+        "nine-speaker JBL sound setup with subwoofer branding"
+      ],
+      "confidence": 0.7,
+      "reason": "Shows cabin speaker grille, but cannot prove nine JBL speakers or subwoofer."
+    },
+    {
+      "line_id": "ownership-details-L1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Starting price and warranty terms are non-visual commercial details."
+    },
+    {
+      "line_id": "ownership-details-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Mileage disclaimers and test drive advice are non-visual."
+    },
+    {
+      "line_id": "ownership-details-D1",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Finance scheme terms and monthly payments are non-visual."
+    },
+    {
+      "line_id": "ownership-details-D2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Toll-free telephone number for roadside assistance is non-visual."
+    },
+    {
+      "line_id": "close-L1",
+      "visual": "none",
+      "coverage": "partial",
+      "spoken_features": [
+        "compact SUV body",
+        "five-star safety rating"
+      ],
+      "visible_features": [
+        "compact SUV body"
+      ],
+      "missing_features": [
+        "five-star safety rating"
+      ],
+      "confidence": 0.85,
+      "reason": "Shows compact SUV body, but safety rating claim is non-visual."
+    },
+    {
+      "line_id": "close-L2",
+      "visual": "none",
+      "coverage": "not_visual",
+      "spoken_features": [],
+      "visible_features": [],
+      "missing_features": [],
+      "confidence": 1.0,
+      "reason": "Call to action to book test drive is non-visual."
+    }
+  ],
+  "images": [
+    {
+      "visual": "im01",
+      "visible_features": [
+        "front three-quarter view",
+        "gold paint finish",
+        "LED DRL line",
+        "alloy wheels",
+        "roof rails",
+        "Tata emblem"
+      ],
+      "script_line_ids": [
+        "exterior-stance-L1"
+      ],
+      "limitations": [
+        "does not show interior features",
+        "does not verify millimetre dimensions or ground clearance specs"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im02",
+      "visible_features": [
+        "side profile view",
+        "alloy wheels",
+        "dual tone black roof",
+        "ground clearance clearance",
+        "door handles"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "does not show precise 3,995 mm length measurement text",
+        "does not show interior cabin"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "visual": "im03",
+      "visible_features": [
+        "rear three-quarter view",
+        "LED taillights",
+        "rear bumper",
+        "alloy wheels",
+        "shark fin antenna"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "does not show open boot space interior",
+        "does not show front grille"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "visual": "im04",
+      "visible_features": [
+        "dashboard",
+        "steering wheel with Tata logo",
+        "digital instrument cluster",
+        "infotainment screen",
+        "center console controls"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "does not show rear AC vents",
+        "does not prove active ADAS or sound system setup"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im05",
+      "visible_features": [
+        "driver ventilated seat",
+        "co-driver ventilated seat",
+        "front seat ventilation air streams",
+        "center console"
+      ],
+      "script_line_ids": [
+        "cabin-comfort-D1"
+      ],
+      "limitations": [
+        "does not show rear seat air vents",
+        "does not show dashboard screen"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im06",
+      "visible_features": [
+        "open boot space",
+        "loaded luggage and travel bags",
+        "rear tailgate",
+        "rear bumper"
+      ],
+      "script_line_ids": [
+        "boot-practicality-L1"
+      ],
+      "limitations": [
+        "does not show CNG cylinders under boot floor",
+        "does not show folded 60:40 seats split mechanism"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im07",
+      "visible_features": [
+        "front fascia close-up",
+        "Tata emblem",
+        "LED DRL light strip",
+        "headlamp unit",
+        "front camera sensor",
+        "front parking sensor"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "does not show entire vehicle side or rear",
+        "cannot prove software operation of ADAS"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "visual": "im08",
+      "visible_features": [
+        "infotainment touchscreen display",
+        "radio interface screen"
+      ],
+      "script_line_ids": [],
+      "limitations": [
+        "does not show surround camera feed on screen",
+        "does not show steering controls"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "changes": [
+    {
+      "line_id": "intro-overview-L1",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows side profile of the compact SUV, but cannot visually verify exact length under four metres."
+    },
+    {
+      "line_id": "intro-overview-L2",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows interior cabin room, but does not depict powertrain choices."
+    },
+    {
+      "line_id": "intro-overview-D1",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows side profile and wheelbase visually, but cannot verify literal millimetre dimensions."
+    },
+    {
+      "line_id": "intro-overview-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows front dashboard cabin, but does not clearly demonstrate passenger legroom."
+    },
+    {
+      "line_id": "three-reminders-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Image im05 clearly shows front seat ventilation graphics, but missing engines and safety proofs."
+    },
+    {
+      "line_id": "three-reminders-L2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Conversational prompt contains no concrete visual product features."
+    },
+    {
+      "line_id": "three-reminders-D1",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows open boot volume filled with luggage, but missing safety ratings and transmissions."
+    },
+    {
+      "line_id": "three-reminders-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Prompt asking user preference is non-visual."
+    },
+    {
+      "line_id": "exterior-stance-L2",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows ground clearance underbody margin, but numerical 208mm figure is unverified by photo."
+    },
+    {
+      "line_id": "exterior-stance-D1",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows front body proportions, but exact millimetre dimensions are not proved."
+    },
+    {
+      "line_id": "exterior-stance-D2",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows side alloy wheels clearly, but tire spec numbers are not legible."
+    },
+    {
+      "line_id": "cabin-comfort-L1",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Introductory comfort phrase contains no concrete physical feature claims."
+    },
+    {
+      "line_id": "cabin-comfort-L2",
+      "from": "im05",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows front seat ventilation, but rear AC vents are not visible in this image."
+    },
+    {
+      "line_id": "cabin-comfort-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "No supplied image shows the rear seat airflow vents."
+    },
+    {
+      "line_id": "boot-practicality-L2",
+      "from": "im06",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows full boot luggage compartment, but does not show exact litre count or CNG twin cylinders."
+    },
+    {
+      "line_id": "boot-practicality-D1",
+      "from": "im06",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows standard boot area, but twin CNG tanks under floor and ISO certification are missing."
+    },
+    {
+      "line_id": "boot-practicality-D2",
+      "from": "im03",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows back of rear seats in boot, but does not show them folded in a 60:40 split."
+    },
+    {
+      "line_id": "powertrain-choices-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "General spoken statement regarding engine options is non-visual."
+    },
+    {
+      "line_id": "powertrain-choices-L2",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Engine horsepower figures and fuel types cannot be proven visually by photo."
+    },
+    {
+      "line_id": "powertrain-choices-D1",
+      "from": "im02",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Torque and displacement engine specs are non-visual claims."
+    },
+    {
+      "line_id": "powertrain-choices-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows center console drive selector, but cannot visually confirm 7-speed dual-clutch specs."
+    },
+    {
+      "line_id": "safety-standards-L1",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Introductory statement about built-in protection is non-visual."
+    },
+    {
+      "line_id": "safety-standards-L2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Six airbags, ESP, and 5-star crash test ratings cannot be visually verified by photo alone."
+    },
+    {
+      "line_id": "safety-standards-D1",
+      "from": "im07",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "BNCAP and Global NCAP certified safety scores are non-visual ratings."
+    },
+    {
+      "line_id": "safety-standards-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows front camera sensor housing, but active ADAS features cannot be proved in static photo."
+    },
+    {
+      "line_id": "tech-convenience-L1",
+      "from": "im08",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Transition phrase with no physical product features."
+    },
+    {
+      "line_id": "tech-convenience-L2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows front camera and parking sensor on bumper, but lacks JBL audio and app access visuals."
+    },
+    {
+      "line_id": "tech-convenience-D1",
+      "from": "im08",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows front camera hardware, but missing screen display showing blind view monitor."
+    },
+    {
+      "line_id": "tech-convenience-D2",
+      "from": "im04",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows cabin speaker grille, but cannot prove nine JBL speakers or subwoofer."
+    },
+    {
+      "line_id": "ownership-details-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Starting price and warranty terms are non-visual commercial details."
+    },
+    {
+      "line_id": "ownership-details-L2",
+      "from": "im03",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Mileage disclaimers and test drive advice are non-visual."
+    },
+    {
+      "line_id": "ownership-details-D1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Finance scheme terms and monthly payments are non-visual."
+    },
+    {
+      "line_id": "ownership-details-D2",
+      "from": "im03",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Toll-free telephone number for roadside assistance is non-visual."
+    },
+    {
+      "line_id": "close-L1",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Shows compact SUV body, but safety rating claim is non-visual."
+    },
+    {
+      "line_id": "close-L2",
+      "from": "im01",
+      "to": null,
+      "pass": "gemini_vision",
+      "why": "Call to action to book test drive is non-visual."
+    }
+  ],
+  "catalogue": [
+    "im01 · three-quarter · Front three-quarter view of Tata Nexon in gold shade",
+    "im02 · left side · Left side profile view of Tata Nexon",
+    "im03 · three-quarter · Rear three-quarter view of Tata Nexon",
+    "im04 · detail · Dashboard view from front interior showing digital cluster, steering wheel, and infotainment screen",
+    "im05 · detail · Interior detail showing ventilated front seats",
+    "im06 · rear · Rear view showing open tailgate filled with suitcases and travel bags",
+    "im07 · detail · Close-up front view of Tata Nexon showing front badge, LED DRL line, and headlamp unit",
+    "im08 · detail · Close-up of infotainment touchscreen displaying radio interface"
+  ],
+  "unused_after": [
+    "im02",
+    "im03",
+    "im04",
+    "im07",
+    "im08"
+  ],
+  "proposals": [
+    {
+      "line_id": "intro-overview-L2",
+      "proposal": "im05",
+      "hits": [
+        "interior",
+        "seat"
+      ]
+    },
+    {
+      "line_id": "three-reminders-L1",
+      "proposal": "im05",
+      "hits": [
+        "interior",
+        "seat"
+      ]
+    },
+    {
+      "line_id": "three-reminders-D1",
+      "proposal": "im03",
+      "hits": [
+        "boot"
+      ]
+    },
+    {
+      "line_id": "boot-practicality-D2",
+      "proposal": "im05",
+      "hits": [
+        "interior",
+        "seat"
+      ]
+    }
+  ]
+}

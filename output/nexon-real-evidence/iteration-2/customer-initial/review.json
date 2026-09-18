@@ -1,0 +1,144 @@
+{
+  "demo_id": "dm_36d47b86",
+  "session_id": "s_mu72zmm82u16",
+  "status": "INITIAL_CUSTOMER_RUN_WITH_FAILURES_FINAL_RERUN_PENDING",
+  "ended": true,
+  "minutes": 11.3,
+  "transcript_lines": 38,
+  "questions": [
+    "How much boot space do I get in litres on this petrol model?",
+    "Will our stroller and two large suitcases fit with the child seat in use?",
+    "Hello",
+    "Yes, but what is the warranty?"
+  ],
+  "turns": [
+    {
+      "question": "How much boot space do I get in litres on this petrol model?",
+      "via": "typed",
+      "from_bank": true,
+      "answered": true,
+      "route": "stay",
+      "stt_ms": 0,
+      "qa_roundtrip_ms": 22,
+      "qa_done_to_audio_ms": 15,
+      "voice_or_typed_end_to_audio_ms": 37
+    },
+    {
+      "question": "Will our stroller and two large suitcases fit with the child seat in use?",
+      "via": "typed",
+      "from_bank": false,
+      "answered": false,
+      "route": "none",
+      "stt_ms": 0,
+      "qa_roundtrip_ms": 18781,
+      "qa_done_to_audio_ms": 2713,
+      "voice_or_typed_end_to_audio_ms": 21494
+    },
+    {
+      "question": "Hello",
+      "via": "server",
+      "from_bank": false,
+      "answered": true,
+      "route": "none",
+      "stt_ms": 338,
+      "qa_roundtrip_ms": 11432,
+      "qa_done_to_audio_ms": 5,
+      "voice_or_typed_end_to_audio_ms": 11775
+    },
+    {
+      "question": "Yes, but what is the warranty?",
+      "via": "typed",
+      "from_bank": false,
+      "answered": true,
+      "route": "jump",
+      "stt_ms": 0,
+      "qa_roundtrip_ms": 10360,
+      "qa_done_to_audio_ms": 30,
+      "voice_or_typed_end_to_audio_ms": 10390
+    }
+  ],
+  "profile_context_preserved": "I drive only five to ten kilometres a day, mostly in city traffic. We have a child seat and a stroller. I care about practicality and running costs.",
+  "leads_submitted": 0,
+  "summary_in_stored_session": null,
+  "findings": [
+    {
+      "id": "NX24",
+      "case": "Q03",
+      "result": "FAIL_INITIAL",
+      "observed": "Boot-capacity question interrupted the outcome slide; approved bank answer correctly states 382 litres/ISO V215, but session route is stay instead of jumping to the reviewed boot slide. The interrupted line resumes after explicit confirmation.",
+      "evidence": [
+        "s_mu72zmm82u16.json",
+        "../screenshots/Q03-stale-routing-found.png"
+      ],
+      "retest": "Actual off-slide question must jump to the matching reviewed slide, highlight and return to the exact interrupted line."
+    },
+    {
+      "id": "NX25",
+      "case": "Q10",
+      "result": "FAIL_INITIAL_PRESENTATION",
+      "observed": "Personalized boot badge is a truncated Petrol & fragment and inherits the cabin picture. The stroller-fit question itself honestly declines; no fit guarantee is invented.",
+      "evidence": [
+        "s_mu72zmm82u16.json",
+        "../screenshots/Q10-decline-and-truncated-runtime-label.png"
+      ],
+      "retest": "Personalized boot content must display complete reviewed wording and the reviewed boot image, or omit/neutral fallback."
+    },
+    {
+      "id": "NX14/NX16 recurrence",
+      "case": "Q02",
+      "result": "FAIL_INITIAL_GROUNDING",
+      "observed": "Yes, but what is the warranty? reaches live QA, not Continue. The spoken answer changes the source badge 3 years | 100000 km into 3 years or 100000 km and omits the documented terms gap.",
+      "evidence": [
+        "s_mu72zmm82u16.json",
+        "../runtime-warranty-review.md",
+        "../screenshots/Q02-warranty-answer-routing.png"
+      ],
+      "retest": "Preserve the supported warranty headline and the uncertainty about terms rather than inferring how the limits interact."
+    },
+    {
+      "id": "NX26",
+      "case": "runtime delivery",
+      "result": "OPEN_RETEST",
+      "observed": "Parent observed slow provider work interfering with cached media delivery. The session timing stamps measure customer delays but do not independently establish the server concurrency cause.",
+      "evidence": [
+        "s_mu72zmm82u16.json"
+      ],
+      "retest": "Verify concurrent cached media remains responsive during a slow live provider call; free runtime delivery contracts cover this deterministically."
+    }
+  ],
+  "partial_evidence": [
+    "Family five-to-ten-kilometres context appears unchanged in later personalized narration.",
+    "Qualified yes is sent as a full question; it does not blindly advance.",
+    "An unknown fit question declines and records an escalation; no lead was submitted.",
+    "Session ended and full heard transcript/latency stamps were stored. Summary is null in the fetched session. Parent subsequently verified Studio session detail, keyed share and Observability navigation."
+  ],
+  "not_completed": [
+    "A valid same-slide fact answer with matching evidence",
+    "Successful exact off-slide jump-and-return after the routing fix",
+    "Both positive supported Brezza and Venue comparisons with caveats",
+    "Ambiguous typed clarification with retained original question",
+    "Unknown exact on-road quote and guaranteed EMI",
+    "Safety-ranking boundary",
+    "Thirty-second real unanswered-question hold and correction",
+    "Final phone-layout and post-fix completion; determine whether substantive summary content is required beyond the working detail/share pages",
+    "Independent acoustic intelligibility and naturalness review"
+  ],
+  "limits": [
+    "Initial run failures remain visible; later synthetic passes do not rewrite this session.",
+    "The four recorded turn timings are individual observations, not a representative latency percentile.",
+    "Full private response is retained locally with the share capability; use the redacted evidence copy for commits/sharing."
+  ],
+  "studio_followup": {
+    "provenance": "Parent actual CUA observation after the initial session snapshot",
+    "sessions_detail": "PASS: initial session detail opened from Studio Sessions",
+    "keyed_share": "PASS: keyed read-only share opened; stored key redacted in UI evidence",
+    "observability": "PASS: actual panel displayed four turns, one bank / three model; total p50 11.8s and p95 21.5s",
+    "observability_scope": "Displayed statistics describe the initial four-turn session, not final representative performance",
+    "evidence": [
+      "share-ui.txt",
+      "observability-ui.txt",
+      "../screenshots/observability-initial.png"
+    ],
+    "align_access": "LIMITATION: both direct Align hash and visible Align link redirect the ready demo to Rehearse; observed only, unchanged"
+  }
+}

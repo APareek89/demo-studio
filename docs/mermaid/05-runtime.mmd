@@ -4,14 +4,14 @@ flowchart TD
   PRELOAD["preload all authored speech + opening film<br/>[FUNCTION · retained Audio/Video objects]<br/>intake, narration, deeper lines, check-ins, FAQ, fillers and closing"]:::fn
   HERO["hero slide on stage<br/>[FUNCTION · showSlideView(hero_open)]<br/>web/slide.js native-aspect fit · benefit heading + evidence panel · reveal recomputes leaders · dock height reserves readable space"]:::data
   Q1["speak the ONE intake question<br/>[LIBRARY · bundle audio, else /run/tts, else Web Speech]<br/>greeting + product + 'what are you buying it for, or shall we start?' (P02)"]:::data
-  L1["one owned response turn<br/>[LIBRARY · Sarvam STT or Web Speech recognition]<br/>typing always visible · capture can stop, question stays open until answer or Skip"]:::data
+  L1["one owned response turn<br/>[LIBRARY · Sarvam STT offloaded by asyncio.to_thread, or Web Speech recognition]<br/>typing always visible · capture can stop, question stays open until answer or Skip"]:::data
   P1["retain actual need + optional name + focus topics<br/>[FUNCTION · parseName / parseFocus — regex + chip/segment keywords, NO LLM]"]:::fn
   FILM["polite acknowledgement → opening film (overlay on the hero slide) → spoken return<br/>[FUNCTION · playIntroFilm]<br/>planner runs under recorded cover; film capped at 45 s; customer may skip"]:::fn
   OPEN["SHORT STANDARD OPENING · no repeated discovery<br/>[FUNCTION · playOpening]<br/>intro (frame) + outcome (end state first) · pre-rendered audio"]:::fn
-  PITCH["pitch plan (starts before the film)<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each · POST /run/pitch refine=true]<br/>in: needs + focus, proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
+  PITCH["pitch plan (starts before the film)<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each · POST /run/pitch refine=true]<br/>whole synchronous plan offloaded by asyncio.to_thread so cached media stays responsive<br/>in: needs + focus, current script proof library, USPs, registry<br/>out: customer state, decision frame, route, custom batches, advance"]:::agent
   PV["grounding + visual validators<br/>[FUNCTION · pitch.plan_pitch / visuals.for_text_and_facts]<br/>segment ids exist · uncited claim dropped · multi-fact batch→card · establish last"]:::fn
-  DF["decision frame on a transient slide + speech<br/>[LIBRARY · /run/tts]"]:::data
-  CUSTOM["custom proof batches as transient slides<br/>[FUNCTION · transientSlide]<br/>the named picture else the current one · cited facts as panel callouts"]:::fn
+  DF["decision frame on a transient slide + speech<br/>[LIBRARY · /run/tts offloads strict selected-voice synthesis by asyncio.to_thread]"]:::data
+  CUSTOM["custom proof batches as transient slides<br/>[FUNCTION · transientSlide]<br/>named picture → reviewed slide covering every cited fact → neutral hero · complete reviewed labels first · whole qualified fact ≤8 words else omit"]:::fn
   FALL["fallback: keyword focus order without a second intake question<br/>[FUNCTION] after opening: 150 ms, spoken cover, then 2.5 s; request retained across interruptions"]:::fn
   PLAN["route = ordered content slides + establish<br/>[FUNCTION · buildRoute — pitch route by segment_id → slide]"]:::fn
   LINE["play slide: bridge, then lines<br/>[FUNCTION · playFrom / playLines]<br/>showSlideView cross-fades the slide · setRevealed(j) BEFORE line j's audio · legacy question / confirm step waits for a reply · completed statement → next line · next slide preloaded"]:::fn
@@ -20,9 +20,9 @@ flowchart TD
   WAIT["owned waitFor, no auto-advance countdown<br/>[FUNCTION · interpretReply — exact confirmations]<br/>voice or typed answer settles once · late transcripts ignored · qualified yes goes to Q&A"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
   QIN["question text<br/>[ask · voice or 💬 typed]<br/>stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns"]:::ask
-  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each, one retry; all fail → decline + callback]<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
+  QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude → runware, 15 s each, one retry; all fail → decline + callback]<br/>bank stays local; synchronous live answer + speech offloaded by asyncio.to_thread<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ approved registry (including bank hits) AND (answered OR no number/claim words)"}:::dec
-  RT{"where does the answer live?<br/>[FUNCTION · deck.route_for — answer fact ids ∩ each slide's facts, else the question's words vs slide topics / titles · NO LLM]"}:::dec
+  RT{"where does the answer live?<br/>[FUNCTION · deck.slides_with_script then route_for]<br/>current reviewed narration/deeper citations + saved slide design · answer fact ids ∩ each slide's facts, else question words vs topics / titles · bank and live answers use the same join · NO LLM"}:::dec
   JUMP["jump: cross-fade to the slide that carries the facts · all callouts shown, the matching one lit · slide marked covered (reached later: title + first line, no check-in)<br/>[FUNCTION · showSlideView + highlight]"]:::fn
   SPEAK["speak the answer on the current slide (stay · none: matching callout lit) or on the target (jump)<br/>[FUNCTION]"]:::fn
   NOG["say 'I don't know from the material' without a source card<br/>[FUNCTION] question → understanding.unknowns (origin runtime) · offer optional dealer-help form · hold playback"]:::term

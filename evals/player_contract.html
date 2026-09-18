@@ -285,6 +285,60 @@ test('Stopping with a callback open shows a buyer recap while retaining internal
   assert(env.leadCalls.length === 0, 'Stopping submitted a callback without consent');
 });
 
+async function customLabels(facts, factIds, callouts = []) {
+  const narration = 'Let us look at the evidence for your needs.';
+  let fixture;
+  await setup({
+    opening: true,
+    hold: (text) => text === narration,
+    pitch: async () => ({ customer_state: 'stated_need', custom_batches: [{ text: narration, fact_ids: factIds, audio: audioURL(narration) }], route: [] }),
+    configure: (b) => {
+      b.facts = facts;
+      b.slides.find((s) => s.id === 'hero').image_url = tallImageFixture;
+      b.slides.find((s) => s.id === 'opening').image_url = imageFixture + '#current-cabin';
+      const reviewed = b.slides.find((s) => s.id === 'proof-one');
+      reviewed.image_url = imageFixture + '#reviewed-boot'; reviewed.callouts = callouts;
+      fixture = b; return b;
+    },
+  });
+  const saved = snapshot(fixture.slides);
+  await click('▶ Start');
+  const intake = host.querySelector('.pl-intake.open .fallback input');
+  assert(intake, 'Personalized fixture intake did not open');
+  intake.value = 'I need room for family luggage.';
+  intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  assert(player.context().slide === 'custom-1' && env.played.includes(narration), 'Fixture did not reach its personalized slide');
+  assert(JSON.stringify(fixture.slides) === JSON.stringify(saved), 'Transient evidence mutated a reviewed deck slide');
+  return {
+    labels: [...host.querySelectorAll('.slide.on .slide-panel .item')].map((item) => ({ text: item.children[1].firstChild.textContent, citations: item.querySelector('.cite')?.textContent || '' })),
+    imageURL: host.querySelector('.slide.on .slide-pic img')?.getAttribute('src'),
+  };
+}
+test('Personalized boot evidence reuses its complete reviewed label and image, not the current cabin', async () => {
+  const reviewed = 'Petrol/diesel: 382L boot, measured to ISO V215';
+  const { labels, imageURL } = await customLabels(
+    [{ id: 'boot', claim: 'Boot space capacity', value: '382 L for Petrol & Diesel, 321 L for CNG', conditions: 'Measured to ISO V215; capacity does not establish luggage fit.', approved: true }],
+    ['boot'], [{ id: 'reviewed-boot', text: reviewed, fact_ids: ['boot'], placement: 'panel', reveal_on_line: 0 }]);
+  assert(labels.length === 1 && labels[0].text === reviewed && labels[0].citations === 'boot', 'Personalized slide clipped or replaced its complete reviewed boot label');
+  assert(imageURL === imageFixture + '#reviewed-boot', 'Personalized boot evidence inherited the unrelated current cabin instead of its reviewed boot image');
+});
+test('Personalized evidence omits an overlong fact and cannot borrow a differently scoped callout', async () => {
+  const { labels, imageURL } = await customLabels(
+    [{ id: 'boot', claim: 'Boot space capacity', value: '382 L for Petrol & Diesel, 321 L for CNG', conditions: 'Measured to ISO V215; capacity does not establish luggage fit.', approved: true },
+     { id: 'seats', claim: 'Rear seat', value: '60:40 split', approved: true }],
+    ['boot'], [{ id: 'combined', text: '382L boot and split rear seats', fact_ids: ['boot', 'seats'], placement: 'panel', reveal_on_line: 0 }]);
+  assert(labels.length === 0, 'An incomplete fallback or callout with uncited extra evidence reached the personalized slide');
+  assert(imageURL === tallImageFixture, 'Without a matching reviewed evidence slide, personalized content borrowed the unrelated current cabin');
+});
+test('Personalized fallback retains complete conditions and truth, and excludes rejected facts', async () => {
+  const { labels } = await customLabels(
+    [{ id: 'range', claim: 'Range', value: '100 km', conditions: 'Eco mode', truth: 'modeled', approved: true },
+     { id: 'held', claim: 'Warranty', value: 'Lifetime', approved: false },
+     { id: 'long-scope', claim: 'Charging', value: 'Quick', conditions: 'Only when every listed temperature and supply condition applies', approved: true }],
+    ['range', 'held', 'long-scope']);
+  assert(labels.length === 1 && labels[0].text === 'Estimate — Range: 100 km; Eco mode' && labels[0].citations === 'range', 'Fallback lost its scope/truth or displayed a rejected or overlong fact');
+});
+
 const imageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#c9ddd2"/><rect x="8" y="8" width="984" height="584" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="640" cy="280" r="100" fill="#204d43"/><text x="45" y="540" font-family="sans-serif" font-size="32" fill="#173b32">Synthetic geometry fixture — 1000 × 600</text></svg>');
 const tallImageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1000" viewBox="0 0 600 1000"><rect width="600" height="1000" fill="#c9ddd2"/><rect x="8" y="8" width="584" height="984" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="300" cy="800" r="100" fill="#204d43"/></svg>');
 async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture } = {}) {

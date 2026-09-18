@@ -1,0 +1,14 @@
+{
+  "session_id": "s_mu72zmm82u16",
+  "demo_id": "dm_36d47b86",
+  "fetched_at": "2026-09-18T15:07:21.564394+00:00",
+  "method": "GET",
+  "route": "/api/demos/dm_36d47b86/sessions/s_mu72zmm82u16",
+  "status_code": 200,
+  "full_response_private_file": "s_mu72zmm82u16.private.json",
+  "full_response_sha256": "c46336cc678fc3a24f234f0ee3a80efeea0c3df0dfa7c37ff506c0ca1f9f5f7e",
+  "share_safe_file": "s_mu72zmm82u16.json",
+  "share_safe_sha256": "caf65a1f204bfa149775e9311f68f0ff6527b28a69041bc1fb79168f17cb7101",
+  "note": "Full response retained locally with mode0600; contains the read-only share capability and must not be committed. The evidence JSON omits only share_key, retaining its presence/hash and the full session, transcript, turns and summary.",
+  "full_private_file_sha256": "f0da4e27b9f235870d194584062f9596182d83edf95e750af6ee9bfa42fb4ba5"
+}

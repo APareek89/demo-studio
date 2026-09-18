@@ -1,0 +1,78 @@
+{
+  "ack_with_context": {
+    "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+    "audio": "audio/bdf8273e3f77d0339262.wav"
+  },
+  "ack_no_context": {
+    "text": "No problem — you can steer me at any time.",
+    "audio": "audio/0623e8d602585b194504.wav"
+  },
+  "bridge_to_custom": {
+    "text": "Now, let me get to what you asked about.",
+    "audio": "audio/4b000ba6a7ddb18173ef.wav"
+  },
+  "hold_on_question": {
+    "text": "Good question — give me one moment, please, while I check that for you.",
+    "audio": "audio/9ff4e671f9c54bddf6c1.wav"
+  },
+  "hold_on_lookup": {
+    "text": "Give me one moment, please, while I pull that up.",
+    "audio": "audio/1e505a4a020b9c87320a.wav"
+  },
+  "back_to_demo": {
+    "text": "Let's get back to where we were.",
+    "audio": "audio/55602bb22e17066fd8ce.wav"
+  },
+  "nudge_continue": {
+    "text": "I'll carry on — stop me whenever you like.",
+    "audio": "audio/d0ea8da6e3e0bef2efc9.wav"
+  },
+  "put_in_writing": {
+    "text": "My voice dropped for a moment — I've put the answer on screen for you.",
+    "audio": "audio/2e92866d61048cbd4271.wav"
+  },
+  "still_working": {
+    "text": "Give me one moment, please — I'm tailoring this to what you just told me.",
+    "audio": "audio/de48307f3c4dd8f81285.wav"
+  },
+  "good": {
+    "text": "Good — moving on.",
+    "audio": "audio/3b83a07646839b823eec.wav"
+  },
+  "glad": {
+    "text": "Glad that helps.",
+    "audio": "audio/637d754862c4b4d7aa54.wav"
+  },
+  "did_that_answer": {
+    "text": "Did that answer it?",
+    "audio": "audio/80b155958f3be5f13903.wav"
+  },
+  "clearer": {
+    "text": "Is that clearer?",
+    "audio": "audio/a661022ea7ec4a4a10d9.wav"
+  },
+  "lets_go": {
+    "text": "Alright — here we go.",
+    "audio": "audio/3631e07e81f9631d4179.wav"
+  },
+  "focus_first": {
+    "text": "Got it — let me show you the part that matters most for that first.",
+    "audio": "audio/c54af514546a007c2cb7.wav"
+  },
+  "how_i_go": {
+    "text": "Here's how I'll go about it.",
+    "audio": "audio/c6f6448facfe7e56a80f.wav"
+  },
+  "no_guess": {
+    "text": "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it.",
+    "audio": "audio/d627687812b7ca9e8b98.wav"
+  },
+  "before_video": {
+    "text": "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.",
+    "audio": "audio/dee533dca435a866c3d8.wav"
+  },
+  "after_video": {
+    "text": "Now, let's get into what matters to you.",
+    "audio": "audio/267f2f0506b660f0fb78.wav"
+  }
+}

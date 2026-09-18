@@ -1,28 +1,110 @@
 {
   "iteration": 2,
   "demo_id": "dm_36d47b86",
-  "status": "reviewed-awaiting-build",
+  "status": "build2-ready-customer-rerun-pending",
   "read_started_at": "2026-09-18T14:26:49.561797+00:00",
   "model_tier": "customer",
-  "build_attempts": 0,
+  "build_attempts": 1,
   "source_count": 21,
   "real_customer_cases": {
     "Q01": "PENDING",
-    "Q02": "PENDING",
-    "Q03": "PENDING",
+    "Q02": "FAIL_INITIAL_GROUNDING; intent handling passed; final rerun pending",
+    "Q03": "FAIL_INITIAL_ROUTING; final rerun pending",
     "Q04": "PENDING",
     "Q05": "PENDING",
     "Q06": "PENDING",
     "Q07": "PENDING",
     "Q08": "PENDING",
     "Q09": "PENDING",
-    "Q10": "PENDING",
+    "Q10": "PARTIAL: honest fit refusal; personalized label/image failed; final rerun pending",
     "Q11": "PENDING",
-    "Q12": "PENDING"
+    "Q12": "PARTIAL: ended session stored, no lead submitted; actual Studio detail/keyed share/Observability passed; post-fix completion rerun pending"
   },
-  "acoustic_validation": "NOT TESTED",
+  "acoustic_validation": "NOT INDEPENDENTLY VALIDATED; PCM files are non-silent, which is not intelligibility evidence",
   "read_commit": "bfbda1f657252b9add648575541f1882fccccf8e",
   "align_approved_at": "2026-09-18T14:50:01.487831+00:00",
   "faq_edits_verified": 4,
-  "prebuild_browser_cases": "20/20 synthetic"
+  "prebuild_browser_cases": "20/20 synthetic",
+  "build_commit": "5cc9288490e2a6ece72bf1cc0d268cccffe9b27a",
+  "build_requested_at": "2026-09-18T14:52:12.542313+00:00",
+  "hypothesis": "Locked Priya cache reconciliation plus paced Sarvam requests will record every required clip without voice switching; reviewed FAQ wording and cinematic Align edits will survive ordinary Build.",
+  "total_actual_build_attempts": 2,
+  "build_started_at": "2026-09-18T14:52:16.960959+00:00",
+  "build_completed_at": "2026-09-18T14:55:47.596236+00:00",
+  "bundle_version": 1,
+  "bundle_built_at": 1789743347.589771,
+  "build_wall_seconds": 210.635,
+  "build_integrity": {
+    "status": "PASS",
+    "report": "build-integrity.json",
+    "required_audio_references": 84,
+    "present_audio_references": 84,
+    "unique_audio_files": 80,
+    "provider": "sarvam",
+    "speaker": "priya",
+    "language": "en-IN",
+    "exact_text_voice_hashes": true,
+    "all_wavs_valid_and_non_silent": true,
+    "script_bundle_parity": true,
+    "all_main_batches_within_20_5_seconds": true,
+    "all_twenty_reviewed_faq_preserved": true,
+    "saved_cockpit_drag_preserved": true
+  },
+  "cost_before_customer_testing": {
+    "basis": "Recorded usage at configured rates, an estimate rather than invoice. Trace estimates are separately rounded per call. Cached existing clips incur no new call in this voice stage.",
+    "voice_usage_estimate_usd": 0.149161,
+    "voice_trace_estimate_usd": 0.14918,
+    "iteration_usage_estimate_through_voice_usd": 1.438176,
+    "voice_recorded_characters": 8353,
+    "assumed_inr_per_1000_chars": 1.5,
+    "assumed_inr_per_usd": 84.0,
+    "build_usage_estimate_usd": 0.293438,
+    "build_trace_estimate_usd": 0.29346,
+    "build_usage_by_stage": {
+      "voice": {
+        "calls": 78,
+        "usd": 0.149161
+      },
+      "rehearsal": {
+        "calls": 2,
+        "usd": 0.144277
+      }
+    },
+    "iteration2_usage_estimate_before_customers_usd": 1.582453,
+    "iteration2_trace_success_estimate_before_customers_usd": 1.45542,
+    "iteration2_trace_all_estimate_before_customers_usd": 1.58251,
+    "scope": "Build voice/rehearsal/bundle from actual voice-stage start through 1789743348; iteration2 from recorded second Read start through same cutoff. Customer runtime after cutoff excluded."
+  },
+  "customer_test_status": "INITIAL_RUN_HAS_FAILURES; FINAL_RERUN_PENDING",
+  "initial_customer_session": {
+    "id": "s_mu72zmm82u16",
+    "evidence": "customer-initial/s_mu72zmm82u16.json",
+    "review": "customer-initial/review.json",
+    "ended": true,
+    "turns": 4,
+    "leads_submitted": 0,
+    "issues": [
+      "NX24",
+      "NX25",
+      "NX26",
+      "NX14/NX16 runtime warranty recurrence"
+    ],
+    "studio_followup": {
+      "provenance": "Parent actual CUA observation after the initial session snapshot",
+      "sessions_detail": "PASS: initial session detail opened from Studio Sessions",
+      "keyed_share": "PASS: keyed read-only share opened; stored key redacted in UI evidence",
+      "observability": "PASS: actual panel displayed four turns, one bank / three model; total p50 11.8s and p95 21.5s",
+      "observability_scope": "Displayed statistics describe the initial four-turn session, not final representative performance",
+      "evidence": [
+        "share-ui.txt",
+        "observability-ui.txt",
+        "../screenshots/observability-initial.png"
+      ],
+      "align_access": "LIMITATION: both direct Align hash and visible Align link redirect the ready demo to Rehearse; observed only, unchanged"
+    }
+  },
+  "postfix_browser_gate": "23/23 actual CUA; synthetic inputs/audio, not real customer/acoustic acceptance",
+  "last_updated_at": "2026-09-18T15:09:05.771174+00:00",
+  "build_attempts_scope": "This iteration contains one Build; total_actual_build_attempts includes the failed first iteration.",
+  "ready_demo_align_access": "OBSERVED_LIMITATION: direct hash and visible link both redirect READY demo to Rehearse; no change made"
 }

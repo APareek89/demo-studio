@@ -633,3 +633,60 @@
 **Deepest why type:** `code`
 **Fix:** In the exact existing ≤699px cinematic container rule, hide the leaders with `visibility:hidden`. The native-image geometry, numbered dots, evidence rail and wide-screen label/leader remain unchanged.
 **Prevention:** The free browser harness adds a wide →390px →304px →wide check for hidden mobile leaders, visible dots/rail and restored desktop leaders. Required isolated gates after the fix pass: deck203/203, acceptance24/24, both smoke phases, Python38/JS12 and harness-module syntax. Actual browser results are recorded by root; the subagent's CUA had no available browser.
+
+### 2026-09-18 — A provider outage was written into the FAQ bank as knowledge
+
+**Symptom:** After the starved rebuild every one of the TVS iQube bank's 20 entries read "I'm not sure about that from the material I've been given"; at runtime every bank question declined, and the customer heard a guide that seemed to know nothing.
+**Why 1:** `qa.answer` turns any provider exception into the DONT_GUESS decline (Phase 1: never guess) and `faq.run` stored that decline exactly like a real "the sources do not say".
+**Why 2:** The return value carried no sign that the decline came from an exception rather than the model.
+**Why 3:** The bank had only ever been rebuilt with working providers.
+**Deepest why type:** `conflated-states`
+**Action taken:** `qa.answer` returns `provider_failed`; `faq.run` then keeps the previous answer (same registry) or marks the entry `error` for a retry and the bank `partial`; `faq.match` skips unbuilt entries so the live model answers. Three cases in `qa_deck.py`.
+**Preventive action:** "The sources do not say" and "the model was down" are different states everywhere they can be stored; a stored decline must carry which one it is.
+
+## 2026-09-18 — Runtime Q&A routed through an obsolete script copy (NX24)
+
+**Why 1:** A correct boot FAQ stayed on the cabin slide during the second real customer run.
+**Why 2:** The saved deck still held an old deeper-line F014 citation on that cabin slide, and runtime routing preferred a fact already present on the current slide.
+**Why 3:** Align Preview and bundle hydrated saved slide design from the reviewed script, while `/run/qa` read raw deck copies.
+**Why 4:** Two paths interpreted the same saved slide artifact with different authorities for spoken citations.
+**Why 5:** Earlier routing regressions had consistent deck/script fixtures and did not exercise a reassigned fact after direct human review.
+**Deepest why type:** `code`
+**Fix:** Runtime Q&A joins current script lines/deeper citations onto saved deck design through the existing `slides_with_script` helper before routing either a bank hit or a live answer. Declines still remain on the current slide, and routing does not mutate saved design. The pitch path already reads its fact-bearing library from the script; its sole raw-deck lookup maps stable segment ids to slide ids and has no stale-fact interpretation to repair.
+**Prevention:** `evals/runtime_delivery_contract.py` reproduces raw cabin-stay versus reviewed boot-jump, then exercises actual bank/model API routes, the correct stay and decline paths, and no deck/script writes. Correct fact ids and correct returned text are insufficient evidence that the displayed topic is correct.
+
+## 2026-09-18 — Slow customer provider work blocked cached media (NX26)
+
+**Why 1:** Prerecorded acknowledgement audio could not be delivered while a runtime pitch was waiting on its model/speech work.
+**Why 2:** An `async` FastAPI endpoint called the synchronous pitch function directly and occupied its event loop.
+**Why 3:** Runtime Q&A, TTS and STT endpoints used the same direct synchronous-provider pattern.
+**Why 4:** Declaring an endpoint async had been treated as sufficient concurrency, despite blocking work inside it.
+**Why 5:** Prior tests checked endpoint responses independently, rather than concurrent media delivery on the same ASGI loop during a held provider call.
+**Deepest why type:** `code`
+**Fix:** Await built-in `asyncio.to_thread` for the existing synchronous pitch, live QA, TTS and STT calls. Their provider order, result shapes, tracing context, strict selected voice, language arguments and HTTP502 behavior remain intact. No service, dependency, model, timer or streaming path was added.
+**Prevention:** The combined runtime-delivery suite passes27/27 with fake providers and blocked sockets. One AsyncClient/ASGITransport event loop holds each fake provider on a threading.Event and proves actual cached media plus health complete before release. It also checks worker/context propagation and failures. This frees the event loop; it neither shortens provider work nor cancels an underlying worker if a request is abandoned, and does not establish a latency SLA.
+
+
+### 2026-09-18 — Personalized slides bypassed complete-label and image review
+
+**Symptom:** Real Nexon playback showed “Boot space capacity: 382 L for Petrol &” over the preceding cabin image.
+**Why 1:** `transientSlide` sliced fact text to eight words and inherited the current picture when no explicit visual arrived.
+**Why 2:** The reviewed deck already had a complete qualified boot label and its own image, but the runtime slide did not consult it.
+**Why 3:** The earlier complete-label correction applied only to backend derived callouts, leaving this separate customer-visible formatter unchanged.
+**Why 4:** Browser tests covered turn ownership and geometry without inspecting the content and image of a personalized fact slide.
+**Why 5:** The same evidence-preservation rule had not been checked at every place that presents a fact.
+**Deepest why type:** `design`
+**Action taken:** Transient slides reuse complete reviewed labels only when all their citations belong to the approved transient facts. Otherwise they keep the entire claim, value, conditions and truth qualifier within eight words or omit the badge. Without an explicit visual, a reviewed slide must cover every cited fact before its picture is reused; otherwise use the neutral hero. Stored deck data is never changed.
+**Preventive action:** Real-browser contract fixtures cover reviewed boot wording/image after a cabin, mixed-scope refusal, complete short conditions/truth, rejected facts and unchanged review objects. No paid call or content rebuild is needed.
+
+
+## 2026-09-18 — Live warranty wording resolves an explicitly unknown policy relationship
+
+**Why 1:** Actual profile-A Q02 was heard as “3 years or 1,00,000 km” although the cited headline only joins the limits with a bar and its reviewed conditions leave the relationship unknown.
+**Why 2:** The short qualified reply missed the long reviewed FAQ question and reached live generation.
+**Why 3:** General source/conditions instructions did not explicitly distinguish a list of policy limits from their legal relationship; plausible connective wording survived citation validation.
+**Why 4:** The validator checks citations/claim presence, not whether “or” or “whichever first” is entailed by a source.
+**Why 5:** Prior generation checks verified evidence delivery but had no synthetic headline-policy case paired with an explicit-terms control.
+**Deepest why type:** `prompt`
+**Fix:** One generic QA_SYSTEM bullet preserves explicit unknown terms, forbids deriving a limit relationship from a slash/bar, and retains relationships or coverage rules when explicitly supplied. The missing term belongs only in the relevant answer. No car facts, matcher changes, new service, schema field, provider or speech behavior were added.
+**Prevention and limit:** Four input-envelope cases cover unknown relationships and explicit relationships/exclusions through both actual build-FAQ and runtime QA assembly, with providers and sockets blocked. Baseline was 23/27; the prompt change passes 27/27 plus compilation. These checks establish delivery of the rule and exact evidence, **not model compliance or semantic entailment**. A fresh live Q02 result remains necessary; the original failing session is retained. FAQ matching remains unchanged because a stop-word/threshold shortcut was not shown to preserve scope.

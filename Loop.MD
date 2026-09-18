@@ -143,3 +143,19 @@ The conservative Sarvam start interval is 2.1 seconds, based on the published Bu
 | Input | Expected |
 |---|---|
 | Free `evals/player_browser.py` harness, new twentieth case; wide browser with simulated slide widths1000→390→304→1000 | The ≤699px layout hides both overlay label and its dependent SVG leader, retains visible numbered dot/evidence rail, and restores visible label/leader at wide width. Native anchor coordinates remain unchanged. Run through the browser; source and syntax checks are not visual proof. |
+
+## Runtime routing and media delivery supplement — 2026-09-18
+
+| Input | Expected |
+|---|---|
+| `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/runtime_delivery_contract.py` | 27 free cases in isolated data/graph storage: actual bank/live API routing uses reviewed script citations over stale deck deeper lines; correct stay/decline behavior and unchanged saved design; a held fake pitch/QA/TTS/STT call permits cached media and health on the same ASGI event loop; worker/contextvars, language/refine/live/strict-voice arguments and HTTP502 behavior preserved. All network/providers blocked; no production changes. Provider latency and worker cancellation are not guaranteed by offloading. |
+
+
+### NX25 personalized evidence — 2026-09-18
+
+`evals/player_browser.py` now serves23 browser cases: the prior20 plus three real-DOM personalized-slide checks. Complete reviewed boot text and the reviewed boot picture win over a prior cabin; a callout containing an extra uncited fact cannot be borrowed; long facts are omitted instead of clipped; short full conditions/truth survive and rejected facts do not display. The fixture also confirms the original reviewed slides stay unchanged. Actual CUA execution passed23/23; evidence is in iteration-2 `screenshots/browser-23-contract.txt/png`. Synthetic audio remains distinct from acoustic validation.
+
+
+## Headline policy terms supplement — 2026-09-18
+
+`MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/generation_contract.py` now passes27/27. Four added free input-envelope cases exercise real QA assembly for build FAQ and runtime, pairing a synthetic unknown duration/distance relationship with explicitly supplied “whichever occurs first” and an exclusion. Exact values, quotes, locator, contractual classification and conditions must reach each provider envelope together with the generic headline-policy rule. The new cases failed before the prompt change (23/27); no provider or network call occurs. This is not a model-following or semantic-accuracy test; actual live warranty wording must still be reviewed.

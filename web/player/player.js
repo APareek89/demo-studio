@@ -135,12 +135,33 @@ export function mountPlayer(host, bundle, api) {
     if (next.image_url) { const im = new Image(); im.decoding = "async"; im.src = next.image_url; S.preloads.push(im); }
     for (const l of [...(next.lines || []), next.checkin?.audio ? { audio: next.checkin.audio } : null].filter(Boolean)) if (l.audio) { const a = new Audio(l.audio); a.preload = "auto"; a.load(); S.preloads.push(a); }
   }
-  // A line spoken outside the deck (decision frame, custom batch, an answer) gets a transient slide: the picture it names,
-  // else the current one, with its cited facts as panel callouts.
+  // A line spoken outside the deck gets complete reviewed evidence, never a clipped fact or an unrelated current image.
   function transientSlide(id, kind, text, factIds, visual, title = "") {
-    const facts = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id));
-    return { id, kind, title, topics: [], image_url: (visual && mediaUrlFor(visual)) || cur?.slide?.image_url || heroOpen().image_url || null, image_parts: [], motion: "none",
-      callouts: facts.slice(0, 3).map((f, k) => ({ id: `${id}-c${k + 1}`, text: compact(`${f.claim}: ${f.value}`, 8), fact_ids: [f.id], placement: "panel", anchor: null, label_pos: null, reveal_on_line: 0 })),
+    const facts = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id) && f.approved !== false);
+    const allowed = new Set(facts.map((f) => f.id));
+    const complete = (label) => typeof label === "string" && label.trim() && wordsOf(label) <= 8;
+    const reviewed = slides.map((slide) => ({ slide, callouts: (slide.callouts || []).filter((c) => complete(c.text) && c.fact_ids?.length && c.fact_ids.every((fid) => allowed.has(fid))) }));
+    const match = facts.length ? reviewed.find(({ slide, callouts }) => slide.image_url && facts.every((f) => callouts.some((c) => c.fact_ids.includes(f.id)))) : null;
+    const candidates = [...(match?.callouts || []), ...reviewed.flatMap((s) => s.callouts)];
+    const callouts = [], seen = new Set();
+    for (const f of facts) {
+      if (seen.has(f.id)) continue;
+      const saved = candidates.find((c) => c.fact_ids.includes(f.id) && c.fact_ids.every((fid) => !seen.has(fid)));
+      let label = saved?.text;
+      if (!label && f.claim != null && f.value != null) {
+        label = `${f.claim}: ${f.value}` + (f.conditions ? `; ${f.conditions}` : "");
+        const truth = { certified: "Certified", modeled: "Estimate", observed: "Observed", contractual: "Written terms" }[f.truth];
+        if (truth) label = `${truth} — ${label}`;
+        label = label.trim().replace(/\s+/g, " ");
+      }
+      if (!complete(label)) continue;
+      const citations = saved ? [...saved.fact_ids] : [f.id];
+      citations.forEach((fid) => seen.add(fid));
+      callouts.push({ id: `${id}-c${callouts.length + 1}`, text: label, fact_ids: citations, placement: "panel", anchor: null, label_pos: null, reveal_on_line: 0 });
+      if (callouts.length === 3) break;
+    }
+    return { id, kind, title, topics: [], image_url: (visual && mediaUrlFor(visual)) || match?.slide.image_url || heroOpen().image_url || null, image_parts: [], motion: "none",
+      callouts,
       lines: [{ id, text, fact_ids: factIds || [] }], checkin: { text: "" }, deeper: [], usp_ids: [], priority: false, role: kind };
   }
 

@@ -156,6 +156,33 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                   reply["answered"] and reply["answer"] == proposed_answer.answer
                   and speak.call_args.args[1] == proposed_answer.answer)
 
+        # Test the real QA input envelope, not whether a mocked model obeys it.
+        # The explicit-terms control must retain known relationships/exclusions;
+        # this rule must not turn every policy answer into an unknown.
+        policy_cases = [
+            ("unknown relationship", "2 years | 40,000 km",
+             "Headline only; relation between the duration and distance limits, exclusions and transferability are not supplied."),
+            ("explicit relationship and exclusion", "4 years or 80,000 km, whichever occurs first",
+             "Whichever occurs first; commercial use excluded. These are the supplied written terms."),
+        ]
+        for label, value, conditions in policy_cases:
+            policy = {**copy.deepcopy(fact), "id": "F004", "kind": "policy", "truth": "contractual",
+                      "claim": "Advertised equipment warranty", "value": value, "conditions": conditions,
+                      "source": {"ref": "src-policy", "locator": "policy sheet / warranty panel", "quote": value}}
+            files["understanding.json"] = {**copy.deepcopy(und), "facts": [policy]}
+            for live in (False, True):
+                target = qa.runtime if live else qa.claude
+                proposed = schemas.QAOut(answer="I can confirm only the supplied terms.", fact_ids=["F004"], answered=True)
+                with patch.object(target, "structured", return_value=proposed) as model:
+                    qa.answer(demo_id, "What does the warranty headline establish?", live=live, voice_it=False)
+                envelope = model.call_args.args[0]
+                check(f"generation: {'runtime' if live else 'build FAQ'} policy envelope retains {label} and headline rule",
+                      all(piece in envelope for piece in (value, conditions, json.dumps(value), policy["source"]["locator"],
+                          "[policy·contractual]", "a headline is not the complete policy", "Preserve explicit unknowns",
+                          "Retain a relationship or coverage rule when the source explicitly states it"))
+                      and model.call_args.args[2] is schemas.QAOut)
+        files["understanding.json"] = und
+
         check("generation: all contracts avoid actual provider and network calls",
               not any(call.called for call in providers + network))
 

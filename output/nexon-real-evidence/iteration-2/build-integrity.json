@@ -1,0 +1,3014 @@
+{
+  "demo_id": "dm_36d47b86",
+  "iteration": 2,
+  "build_commit": "5cc9288",
+  "captured_at": "2026-09-18T14:58:09.818719+00:00",
+  "status": "PASS",
+  "stage": {
+    "status": "done",
+    "updated_at": 1789743300.3085399,
+    "error": null,
+    "message": "",
+    "started_at": 1789743136.960959,
+    "seconds": 163.3
+  },
+  "required_audio_count": 84,
+  "referenced_audio_count": 84,
+  "unique_audio_files": 80,
+  "coverage": {
+    "main": {
+      "required": 18,
+      "present": 18,
+      "missing_ids": []
+    },
+    "deeper": {
+      "required": 18,
+      "present": 18,
+      "missing_ids": []
+    },
+    "checkin": {
+      "required": 6,
+      "present": 6,
+      "missing_ids": []
+    },
+    "closing": {
+      "required": 2,
+      "present": 2,
+      "missing_ids": []
+    },
+    "intake": {
+      "required": 1,
+      "present": 1,
+      "missing_ids": []
+    },
+    "faq": {
+      "required": 20,
+      "present": 20,
+      "missing_ids": []
+    },
+    "filler": {
+      "required": 19,
+      "present": 19,
+      "missing_ids": []
+    }
+  },
+  "missing_clips": [],
+  "single_voice": {
+    "pass": true,
+    "declared_provider": "sarvam",
+    "declared_speaker": "priya",
+    "expected_provider": "sarvam",
+    "expected_speaker": "priya",
+    "language": "en-IN",
+    "mismatches": [],
+    "method": "Every referenced file stem compared to SHA1(provider|speaker|language|exact stripped current text), first 20 hexadecimal characters. Actual voice-stage trace provider corroborates this identity."
+  },
+  "all_present_wavs_valid": true,
+  "all_required_wavs_non_silent": true,
+  "invalid_wavs": [],
+  "silent_or_unmeasured_wavs": [],
+  "audio_files": [
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/9867bd2ef193b906a575.wav",
+      "relative_path": "audio/9867bd2ef193b906a575.wav",
+      "bytes": 218310,
+      "sha256": "b19b4e4dfef3caf44872637de63e72bd303f2f517af8c16731d36f5386d2c98e",
+      "references": [
+        {
+          "group": "main",
+          "id": "intro-overview-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 4.949342,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 109133,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32497,
+        "rms_pcm": 4452.021,
+        "rms_dbfs": -17.34,
+        "nonzero_fraction": 0.96225,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/23c0b7a070a95323d1de.wav",
+      "relative_path": "audio/23c0b7a070a95323d1de.wav",
+      "bytes": 312390,
+      "sha256": "9356e832368d04ef08a77759c575910f40f5ff2d72b76c512117071b764621c9",
+      "references": [
+        {
+          "group": "main",
+          "id": "intro-overview-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 7.082676,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 156173,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31553,
+        "rms_pcm": 4720.354,
+        "rms_dbfs": -16.83,
+        "nonzero_fraction": 0.96451,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/33aff045b82e82aed0ac.wav",
+      "relative_path": "audio/33aff045b82e82aed0ac.wav",
+      "bytes": 466680,
+      "sha256": "05a1d22d286409f105434196057fecf4b46e9870d85d4827d3591c347f12281a",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "intro-overview-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.581315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 233318,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31387,
+        "rms_pcm": 4732.306,
+        "rms_dbfs": -16.81,
+        "nonzero_fraction": 0.96251,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/1cc7097948e90cc0fb68.wav",
+      "relative_path": "audio/1cc7097948e90cc0fb68.wav",
+      "bytes": 210784,
+      "sha256": "7b5502a7ab33bce856876de12baf2bde00b6b9334e37de28f876b1c1f827d039",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "intro-overview-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 4.778685,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 105370,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4016.699,
+        "rms_dbfs": -18.23,
+        "nonzero_fraction": 0.98374,
+        "clipped_fraction": 9e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/19682729087f87eba73f.wav",
+      "relative_path": "audio/19682729087f87eba73f.wav",
+      "bytes": 327442,
+      "sha256": "e0359b16b8a9313fd5a2e494e90de623a2c6987c6f3c6d7743acf9861be03ddf",
+      "references": [
+        {
+          "group": "main",
+          "id": "three-reminders-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 7.423991,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 163699,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 4196.83,
+        "rms_dbfs": -17.85,
+        "nonzero_fraction": 0.918,
+        "clipped_fraction": 6e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/64f947c6dc1877e2047c.wav",
+      "relative_path": "audio/64f947c6dc1877e2047c.wav",
+      "bytes": 150572,
+      "sha256": "aa2719679c7552a8d1d6c931625f4ffecf576318265fb0f93107969258390fc2",
+      "references": [
+        {
+          "group": "main",
+          "id": "three-reminders-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 3.413333,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 75264,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30235,
+        "rms_pcm": 4868.47,
+        "rms_dbfs": -16.56,
+        "nonzero_fraction": 0.9784,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/a3f6d354972275394b0e.wav",
+      "relative_path": "audio/a3f6d354972275394b0e.wav",
+      "bytes": 421522,
+      "sha256": "b46c2cc2d281096aafa979c20300768a2169c89cccda63f3b0c4914db73eda49",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "three-reminders-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.557324,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 210739,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32213,
+        "rms_pcm": 4701.904,
+        "rms_dbfs": -16.86,
+        "nonzero_fraction": 0.94749,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/2e53d52f358b49e28d2f.wav",
+      "relative_path": "audio/2e53d52f358b49e28d2f.wav",
+      "bytes": 263468,
+      "sha256": "7fdf3bcba348f9c5e711c73524b8fe29ff73026c7b2ffb4f902bb5eae9de077f",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "three-reminders-D2"
+        },
+        {
+          "group": "main",
+          "id": "safety-standards-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.973333,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 131712,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32551,
+        "rms_pcm": 4584.724,
+        "rms_dbfs": -17.08,
+        "nonzero_fraction": 0.95846,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/4b95087427c5c301bb5d.wav",
+      "relative_path": "audio/4b95087427c5c301bb5d.wav",
+      "bytes": 79072,
+      "sha256": "e43c79a0fa2541d4fc55813b7b3fdda1c6745fe8e59d883c119cb4f310749f32",
+      "references": [
+        {
+          "group": "main",
+          "id": "exterior-stance-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.792018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 39514,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30347,
+        "rms_pcm": 4813.643,
+        "rms_dbfs": -16.66,
+        "nonzero_fraction": 0.9735,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/b86f47d4a7d1e682a5b0.wav",
+      "relative_path": "audio/b86f47d4a7d1e682a5b0.wav",
+      "bytes": 413996,
+      "sha256": "b92dd21a79cc962c7b7b756b8da8474d7e006f5b5a32b48f551056af6b364424",
+      "references": [
+        {
+          "group": "main",
+          "id": "exterior-stance-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.386667,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 206976,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32571,
+        "rms_pcm": 4397.468,
+        "rms_dbfs": -17.44,
+        "nonzero_fraction": 0.9529,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/5a7466364eb6ca9c6161.wav",
+      "relative_path": "audio/5a7466364eb6ca9c6161.wav",
+      "bytes": 493024,
+      "sha256": "400f8f2e0273b8f42a8ab6dd7f49ba2931ed1e971155d129de8aba4240557a05",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "exterior-stance-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 11.178685,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 246490,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31437,
+        "rms_pcm": 4686.086,
+        "rms_dbfs": -16.89,
+        "nonzero_fraction": 0.95887,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/a7a71663d1c970907d44.wav",
+      "relative_path": "audio/a7a71663d1c970907d44.wav",
+      "bytes": 519366,
+      "sha256": "b90975befea34396987b8c672abf79988f85cd12e453a2afd1fbae355653ea8b",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "exterior-stance-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 11.776009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 259661,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31905,
+        "rms_pcm": 4565.339,
+        "rms_dbfs": -17.12,
+        "nonzero_fraction": 0.95751,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/70433a18ab18d24f7c7f.wav",
+      "relative_path": "audio/70433a18ab18d24f7c7f.wav",
+      "bytes": 131756,
+      "sha256": "ea45c25be6ab2ebd0da80065596975bbd1ec55d132f4f0f4b43b4dad0111df78",
+      "references": [
+        {
+          "group": "checkin",
+          "id": "exterior-stance"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.986667,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 65856,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31216,
+        "rms_pcm": 4760.846,
+        "rms_dbfs": -16.76,
+        "nonzero_fraction": 0.97431,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/375622d74f2cc624350b.wav",
+      "relative_path": "audio/375622d74f2cc624350b.wav",
+      "bytes": 361312,
+      "sha256": "31567e3a2eca782d89186664cad9205405719212037533113ecef5dce96487d3",
+      "references": [
+        {
+          "group": "main",
+          "id": "cabin-comfort-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 8.192018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 180634,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32257,
+        "rms_pcm": 4780.399,
+        "rms_dbfs": -16.72,
+        "nonzero_fraction": 0.97613,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/81f1bc110146370c17a1.wav",
+      "relative_path": "audio/81f1bc110146370c17a1.wav",
+      "bytes": 97888,
+      "sha256": "749a19f3d995d87a30ea67e99725a023366fcfee783ff70113e945913965fde5",
+      "references": [
+        {
+          "group": "main",
+          "id": "cabin-comfort-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.218685,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 48922,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31847,
+        "rms_pcm": 4820.239,
+        "rms_dbfs": -16.65,
+        "nonzero_fraction": 0.9696,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/24ced63931c34d50a457.wav",
+      "relative_path": "audio/24ced63931c34d50a457.wav",
+      "bytes": 402706,
+      "sha256": "cb92778a8e6d7dbff7e76860d2baff74cb37b5c267f828933506a3fdc380dad8",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "cabin-comfort-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.130658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 201331,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 4732.909,
+        "rms_dbfs": -16.81,
+        "nonzero_fraction": 0.96425,
+        "clipped_fraction": 5e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/273945c7cbf50f8a5b5c.wav",
+      "relative_path": "audio/273945c7cbf50f8a5b5c.wav",
+      "bytes": 240888,
+      "sha256": "a860d43198474e9c0d3ae0d0e24d64864757df4df27eea0b1b26b73cf789fd3c",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "cabin-comfort-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.461315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 120422,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32408,
+        "rms_pcm": 5234.421,
+        "rms_dbfs": -15.93,
+        "nonzero_fraction": 0.98724,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/b87af8453f499c13dddb.wav",
+      "relative_path": "audio/b87af8453f499c13dddb.wav",
+      "bytes": 131756,
+      "sha256": "3849e4008376c0ff79d21aff5cb7b0facc67372c39abec117a49f1e0372632cd",
+      "references": [
+        {
+          "group": "checkin",
+          "id": "cabin-comfort"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.986667,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 65856,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31809,
+        "rms_pcm": 5242.446,
+        "rms_dbfs": -15.92,
+        "nonzero_fraction": 0.83238,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/c8fd8e59945a30e2ef02.wav",
+      "relative_path": "audio/c8fd8e59945a30e2ef02.wav",
+      "bytes": 353784,
+      "sha256": "655111b552134c5d596e6300fea4b86dcbfef361ceca502e51d8a23962d55891",
+      "references": [
+        {
+          "group": "main",
+          "id": "boot-practicality-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 8.021315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 176870,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32551,
+        "rms_pcm": 4907.138,
+        "rms_dbfs": -16.49,
+        "nonzero_fraction": 0.96587,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/1b7944185188d98d3688.wav",
+      "relative_path": "audio/1b7944185188d98d3688.wav",
+      "bytes": 233362,
+      "sha256": "9c30509fc077fc7d94083b21cd7fcf992ddea5c8654f230a941ca7775c31d8ce",
+      "references": [
+        {
+          "group": "main",
+          "id": "boot-practicality-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.290658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 116659,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30069,
+        "rms_pcm": 4872.672,
+        "rms_dbfs": -16.55,
+        "nonzero_fraction": 0.96132,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/84cde3b1d800632df210.wav",
+      "relative_path": "audio/84cde3b1d800632df210.wav",
+      "bytes": 500550,
+      "sha256": "d8186545762b8a4de31c4296a64a53addba361c5a521e6c14fc61ada3afee13e",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "boot-practicality-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 11.349342,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 250253,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31143,
+        "rms_pcm": 4498.883,
+        "rms_dbfs": -17.25,
+        "nonzero_fraction": 0.97937,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/2e05d25d3a32539ef4fb.wav",
+      "relative_path": "audio/2e05d25d3a32539ef4fb.wav",
+      "bytes": 466680,
+      "sha256": "8c76f81f1f9fe050899712fe1e21257dd4df38e7aed8a946c3a830ab06d5d476",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "boot-practicality-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.581315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 233318,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31501,
+        "rms_pcm": 4350.726,
+        "rms_dbfs": -17.54,
+        "nonzero_fraction": 0.95519,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/e31b8ed5e2bb96d8c064.wav",
+      "relative_path": "audio/e31b8ed5e2bb96d8c064.wav",
+      "bytes": 131756,
+      "sha256": "185c8186848c4e0a96b959b8f994ce30bae3f9f5fb8467d8d86e3e09f09f25eb",
+      "references": [
+        {
+          "group": "checkin",
+          "id": "boot-practicality"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.986667,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 65856,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32304,
+        "rms_pcm": 4758.649,
+        "rms_dbfs": -16.76,
+        "nonzero_fraction": 0.97583,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/834d89c6bc374259fd29.wav",
+      "relative_path": "audio/834d89c6bc374259fd29.wav",
+      "bytes": 248416,
+      "sha256": "88fe402b8e248d31c6b5896df9c17a1b78a4afc721490dd5513f15c54f13fcf2",
+      "references": [
+        {
+          "group": "main",
+          "id": "powertrain-choices-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.632018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 124186,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30697,
+        "rms_pcm": 4831.746,
+        "rms_dbfs": -16.63,
+        "nonzero_fraction": 0.9887,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/1a35c4df0ec7b9928ca1.wav",
+      "relative_path": "audio/1a35c4df0ec7b9928ca1.wav",
+      "bytes": 282284,
+      "sha256": "831a8f09a5708b60f942878eda2f542dd08c05fcfdc32918ea74d29c75ce716f",
+      "references": [
+        {
+          "group": "main",
+          "id": "powertrain-choices-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 6.4,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 141120,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32609,
+        "rms_pcm": 5464.314,
+        "rms_dbfs": -15.56,
+        "nonzero_fraction": 0.96588,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/5997b40a9a6ed2966ed7.wav",
+      "relative_path": "audio/5997b40a9a6ed2966ed7.wav",
+      "bytes": 748920,
+      "sha256": "849e1acf5a4017df104ccd86b3ad923d14e7a01a1744a5629218fab642f8e23a",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "powertrain-choices-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 16.981315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 374438,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4562.277,
+        "rms_dbfs": -17.13,
+        "nonzero_fraction": 0.9717,
+        "clipped_fraction": 3e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/958b47a76655d75491d2.wav",
+      "relative_path": "audio/958b47a76655d75491d2.wav",
+      "bytes": 587104,
+      "sha256": "9faae227179e168ccced40c99d7d6378bc34e1e80fa63a3694c57d3b7ba22c3c",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "powertrain-choices-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 13.312018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 293530,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31597,
+        "rms_pcm": 4703.034,
+        "rms_dbfs": -16.86,
+        "nonzero_fraction": 0.95717,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/cf1d3bbc9bc65592b1e7.wav",
+      "relative_path": "audio/cf1d3bbc9bc65592b1e7.wav",
+      "bytes": 146808,
+      "sha256": "6472ed4dc664ec1c3dfcd2ebe2a33673b87a5e9447099d4cda392d71a6923e83",
+      "references": [
+        {
+          "group": "checkin",
+          "id": "powertrain-choices"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 3.327982,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 73382,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30263,
+        "rms_pcm": 5476.142,
+        "rms_dbfs": -15.54,
+        "nonzero_fraction": 0.96002,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/bb61235bc9d44ad24d20.wav",
+      "relative_path": "audio/bb61235bc9d44ad24d20.wav",
+      "bytes": 568288,
+      "sha256": "2377297723b6036efaf17aefde8a8623a6fdbc7dc002a4f2c249c4b783dff710",
+      "references": [
+        {
+          "group": "main",
+          "id": "safety-standards-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 12.885351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 284122,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32444,
+        "rms_pcm": 4350.396,
+        "rms_dbfs": -17.54,
+        "nonzero_fraction": 0.90968,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/72dc7b3b55b720742b8e.wav",
+      "relative_path": "audio/72dc7b3b55b720742b8e.wav",
+      "bytes": 372600,
+      "sha256": "3908e3a925a4d7df17f544000df9c0585bb0e78b56d4d8272861baa741f5a0d0",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "safety-standards-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 8.447982,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 186278,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32752,
+        "rms_pcm": 5034.68,
+        "rms_dbfs": -16.27,
+        "nonzero_fraction": 0.96507,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/dd9558fee49a7f73b22c.wav",
+      "relative_path": "audio/dd9558fee49a7f73b22c.wav",
+      "bytes": 429048,
+      "sha256": "386697bcaf0d106e6cec86e44e161dac7d6211213f40f0ba09ec848abf7cab8e",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "safety-standards-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.727982,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 214502,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 5210.341,
+        "rms_dbfs": -15.97,
+        "nonzero_fraction": 0.97553,
+        "clipped_fraction": 9e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/acd0b8e8014dc4b9ff0b.wav",
+      "relative_path": "audio/acd0b8e8014dc4b9ff0b.wav",
+      "bytes": 124230,
+      "sha256": "8514ff76c5d970765a9c13b2eb3412ac4f004446c6a519e364a3ed602bdd435f",
+      "references": [
+        {
+          "group": "checkin",
+          "id": "safety-standards"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.816009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 62093,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30695,
+        "rms_pcm": 4403.352,
+        "rms_dbfs": -17.43,
+        "nonzero_fraction": 0.96314,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/3151dd26fe62ab7e7e99.wav",
+      "relative_path": "audio/3151dd26fe62ab7e7e99.wav",
+      "bytes": 425286,
+      "sha256": "5faf24d340e20977f6bd78a3d08ea39a37c77dfdc0c8cd9f29dd9eb312f8df8e",
+      "references": [
+        {
+          "group": "main",
+          "id": "tech-convenience-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.642676,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 212621,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31903,
+        "rms_pcm": 4029.265,
+        "rms_dbfs": -18.2,
+        "nonzero_fraction": 0.96502,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/da7f8db64e1abc5fbd27.wav",
+      "relative_path": "audio/da7f8db64e1abc5fbd27.wav",
+      "bytes": 255942,
+      "sha256": "c642ff4ea6bfcdebd3ffa0f34b32e2edcd4aff6a0f9ec713173e45961c5fe9d7",
+      "references": [
+        {
+          "group": "main",
+          "id": "tech-convenience-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.802676,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 127949,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32098,
+        "rms_pcm": 5514.205,
+        "rms_dbfs": -15.48,
+        "nonzero_fraction": 0.96453,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/92068000b1abd802da8d.wav",
+      "relative_path": "audio/92068000b1abd802da8d.wav",
+      "bytes": 466680,
+      "sha256": "dc1d016f65af509e8ea71474090dfbd659f5817da6aaf9be2622b26debbd5423",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "tech-convenience-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.581315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 233318,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32387,
+        "rms_pcm": 4802.586,
+        "rms_dbfs": -16.68,
+        "nonzero_fraction": 0.98639,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/8563c0898a4b85cc8fbe.wav",
+      "relative_path": "audio/8563c0898a4b85cc8fbe.wav",
+      "bytes": 474208,
+      "sha256": "114c7b59ec717827c520cfc17ee4acc75770ec11f2bafcb2fc1a0351313a3392",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "tech-convenience-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.752018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 237082,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4406.063,
+        "rms_dbfs": -17.43,
+        "nonzero_fraction": 0.91851,
+        "clipped_fraction": 4e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/db0816ac852a3476473a.wav",
+      "relative_path": "audio/db0816ac852a3476473a.wav",
+      "bytes": 124230,
+      "sha256": "eaeb75117aff0c268a554a6b7534e8aaacea015ef8d2b7cc9459710bb7ff3341",
+      "references": [
+        {
+          "group": "checkin",
+          "id": "tech-convenience"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.816009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 62093,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32722,
+        "rms_pcm": 5053.557,
+        "rms_dbfs": -16.24,
+        "nonzero_fraction": 0.96695,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/454d19d93e1d90d8f9e9.wav",
+      "relative_path": "audio/454d19d93e1d90d8f9e9.wav",
+      "bytes": 218310,
+      "sha256": "bad3822e417f367cfa74089e35dd3bc6545ee82e69dfbca421e9a0bda040069e",
+      "references": [
+        {
+          "group": "main",
+          "id": "ownership-details-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 4.949342,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 109133,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32647,
+        "rms_pcm": 5311.105,
+        "rms_dbfs": -15.81,
+        "nonzero_fraction": 0.97038,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/5ac3e9ab703417b72d83.wav",
+      "relative_path": "audio/5ac3e9ab703417b72d83.wav",
+      "bytes": 455392,
+      "sha256": "0903d124a967394c6b5f1ee0789c4450ace670c46053ada87943baf64b8df8ce",
+      "references": [
+        {
+          "group": "main",
+          "id": "ownership-details-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.325351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 227674,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32453,
+        "rms_pcm": 5087.14,
+        "rms_dbfs": -16.18,
+        "nonzero_fraction": 0.89302,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/ea0fe4738cb0fec81643.wav",
+      "relative_path": "audio/ea0fe4738cb0fec81643.wav",
+      "bytes": 474208,
+      "sha256": "393eb065d65d8fc03abe8714bbdb5b1b9710c5040024df813976818a09c64c4b",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "ownership-details-D1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.752018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 237082,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4511.97,
+        "rms_dbfs": -17.22,
+        "nonzero_fraction": 0.93658,
+        "clipped_fraction": 1.3e-05,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/83254bea9e5df2554bb6.wav",
+      "relative_path": "audio/83254bea9e5df2554bb6.wav",
+      "bytes": 681184,
+      "sha256": "ed21cd4e054bdf1d678b2411ab95da1e03e9b88a779da71f783b55917b0ad669",
+      "references": [
+        {
+          "group": "deeper",
+          "id": "ownership-details-D2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 15.445351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 340570,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4618.358,
+        "rms_dbfs": -17.02,
+        "nonzero_fraction": 0.95239,
+        "clipped_fraction": 3e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/508b584eded873c8db41.wav",
+      "relative_path": "audio/508b584eded873c8db41.wav",
+      "bytes": 398944,
+      "sha256": "e64125d6ab0493e86c3464566c204a5acd6541dce1e6160bd6182e1587171734",
+      "references": [
+        {
+          "group": "closing",
+          "id": "close-L1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.045351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 199450,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 4609.1,
+        "rms_dbfs": -17.04,
+        "nonzero_fraction": 0.93878,
+        "clipped_fraction": 5e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/68b401136fcb29663ccb.wav",
+      "relative_path": "audio/68b401136fcb29663ccb.wav",
+      "bytes": 222072,
+      "sha256": "8bf5657a39f791d87397c79a86b5809e6e9043bebd3390de560e4a4869fc714d",
+      "references": [
+        {
+          "group": "closing",
+          "id": "close-L2"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.034649,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 111014,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32160,
+        "rms_pcm": 4911.75,
+        "rms_dbfs": -16.48,
+        "nonzero_fraction": 0.94575,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/298342740f598eaf6a4f.wav",
+      "relative_path": "audio/298342740f598eaf6a4f.wav",
+      "bytes": 297336,
+      "sha256": "f115e455d98af5870f69cb4307d5356d383d0f83baff07c136346d2543f301b2",
+      "references": [
+        {
+          "group": "intake",
+          "id": "q1"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 6.741315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 148646,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32279,
+        "rms_pcm": 5356.194,
+        "rms_dbfs": -15.73,
+        "nonzero_fraction": 0.95433,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/17a0f702d49e599558c5.wav",
+      "relative_path": "audio/17a0f702d49e599558c5.wav",
+      "bytes": 556998,
+      "sha256": "278d3a0557b16f674f708c40d162e743a8a1b8dd87650cbfd0f50a374754681c",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q01"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 12.629342,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 278477,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32384,
+        "rms_pcm": 4837.706,
+        "rms_dbfs": -16.62,
+        "nonzero_fraction": 0.97995,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/33c8a3ff4d85ecfddbac.wav",
+      "relative_path": "audio/33c8a3ff4d85ecfddbac.wav",
+      "bytes": 1005466,
+      "sha256": "6ebcf34bf13bcda8dbcf80aaf89760215ec3e13a16f934dccc04588c365557fe",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q02"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 22.798685,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 502711,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 4495.27,
+        "rms_dbfs": -17.25,
+        "nonzero_fraction": 0.95161,
+        "clipped_fraction": 4e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/a19911093f98d95525b7.wav",
+      "relative_path": "audio/a19911093f98d95525b7.wav",
+      "bytes": 975360,
+      "sha256": "0f904a6ff5f0fb7a988f76b7325843f1c2114832cd2db8e2fb06a24c8086d08c",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q03"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 22.116009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 487658,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32045,
+        "rms_pcm": 4691.642,
+        "rms_dbfs": -16.88,
+        "nonzero_fraction": 0.92071,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/cba7dc36353003be8406.wav",
+      "relative_path": "audio/cba7dc36353003be8406.wav",
+      "bytes": 1023634,
+      "sha256": "f534131a1799a3ee185bf1444b64cd431b0f64e8c875fbf1a82681fe9b02b65c",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q04"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 23.210658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 511795,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4556.83,
+        "rms_dbfs": -17.14,
+        "nonzero_fraction": 0.9405,
+        "clipped_fraction": 2e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/d1a4e859cd4781ce0a2a.wav",
+      "relative_path": "audio/d1a4e859cd4781ce0a2a.wav",
+      "bytes": 639788,
+      "sha256": "e7bbd0fc9c852502f81a5d480a6e9df731bac4d8a4e970470a55aeb51d710983",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q05"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 14.506667,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 319872,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32001,
+        "rms_pcm": 4659.852,
+        "rms_dbfs": -16.94,
+        "nonzero_fraction": 0.98221,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/f1ad4fcdd1fd37550c33.wav",
+      "relative_path": "audio/f1ad4fcdd1fd37550c33.wav",
+      "bytes": 692472,
+      "sha256": "262e9d11dd7fc03811dbd890540d656e2375756fd6a1e8c0b8e9563dde0ce4ca",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q06"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 15.701315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 346214,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 5065.078,
+        "rms_dbfs": -16.22,
+        "nonzero_fraction": 0.98132,
+        "clipped_fraction": 6e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/da9ddead54edba7547a1.wav",
+      "relative_path": "audio/da9ddead54edba7547a1.wav",
+      "bytes": 368838,
+      "sha256": "b4d134e24e27208ab3a200c42b19777c4f4c7b85b04de6a122b136070a40f606",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q07"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 8.362676,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 184397,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30889,
+        "rms_pcm": 4684.228,
+        "rms_dbfs": -16.9,
+        "nonzero_fraction": 0.96412,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/0f2b2544e621b155848d.wav",
+      "relative_path": "audio/0f2b2544e621b155848d.wav",
+      "bytes": 666130,
+      "sha256": "a3fef40711323938ff245143e5b938a204d282e233881050cb5a3e2544a5d05a",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q08"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 15.103991,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 333043,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31935,
+        "rms_pcm": 4901.687,
+        "rms_dbfs": -16.5,
+        "nonzero_fraction": 0.94342,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/6aca81db86718bec5e68.wav",
+      "relative_path": "audio/6aca81db86718bec5e68.wav",
+      "bytes": 866226,
+      "sha256": "cce1b7918cb4bec87c71066cf0f96c7287d83a8a1806a222f94b759df9a4e305",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q09"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 19.641315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 433091,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 4744.582,
+        "rms_dbfs": -16.79,
+        "nonzero_fraction": 0.95728,
+        "clipped_fraction": 2e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/64e5e8c5de1fc6e525d3.wav",
+      "relative_path": "audio/64e5e8c5de1fc6e525d3.wav",
+      "bytes": 598392,
+      "sha256": "b9a59e62cc92f416f4b0811cf1e54222ede729571f7ab52bfecef596012f887d",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q10"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 13.567982,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 299174,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32768,
+        "rms_pcm": 5067.032,
+        "rms_dbfs": -16.21,
+        "nonzero_fraction": 0.95805,
+        "clipped_fraction": 7e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/7d17ee501abb84c4a82d.wav",
+      "relative_path": "audio/7d17ee501abb84c4a82d.wav",
+      "bytes": 455392,
+      "sha256": "9c3f13f3e2ad1784b468eacca9a2d4e1c95a17e431cec95f9007dd8108f370c2",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q11"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.325351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 227674,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32493,
+        "rms_pcm": 5215.007,
+        "rms_dbfs": -15.96,
+        "nonzero_fraction": 0.98056,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/2dea7ec8efb77cdc274b.wav",
+      "relative_path": "audio/2dea7ec8efb77cdc274b.wav",
+      "bytes": 632262,
+      "sha256": "8568ba055275226670a2bf7ee7a84221edaddd7637618d097b4581425d29a28f",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q12"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 14.336009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 316109,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32760,
+        "rms_pcm": 4874.79,
+        "rms_dbfs": -16.55,
+        "nonzero_fraction": 0.95755,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/afb564de7737ff00e59e.wav",
+      "relative_path": "audio/afb564de7737ff00e59e.wav",
+      "bytes": 636024,
+      "sha256": "fa1ff92a812b6318b3af02be4b377a5d5ebccb95bd2a12e935c6455eb8581e52",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q13"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 14.421315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 317990,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32491,
+        "rms_pcm": 4549.597,
+        "rms_dbfs": -17.15,
+        "nonzero_fraction": 0.96563,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/60ebc99f5f00ada40d36.wav",
+      "relative_path": "audio/60ebc99f5f00ada40d36.wav",
+      "bytes": 466680,
+      "sha256": "9ebf4518915ec3feb47857598d685530e5b37249b2c35383942ec503799d8924",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q14"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 10.581315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 233318,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32089,
+        "rms_pcm": 4829.818,
+        "rms_dbfs": -16.63,
+        "nonzero_fraction": 0.9615,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/8a0f36ec2d51aa21e7aa.wav",
+      "relative_path": "audio/8a0f36ec2d51aa21e7aa.wav",
+      "bytes": 64018,
+      "sha256": "0314e4202c2762789e0bbd09108aa7fb687e6ca841f9c30eb3e648b5a2e22f83",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q15"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.450658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 31987,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 29124,
+        "rms_pcm": 4518.359,
+        "rms_dbfs": -17.21,
+        "nonzero_fraction": 0.923,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/bd77acaad09d9e2dfc95.wav",
+      "relative_path": "audio/bd77acaad09d9e2dfc95.wav",
+      "bytes": 1144704,
+      "sha256": "8290ca34d7cb99488d32fe6cb701b0a5abc48c99a476c41c204c5f047476e758",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q16"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 25.956009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 572330,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 4689.273,
+        "rms_dbfs": -16.89,
+        "nonzero_fraction": 0.91929,
+        "clipped_fraction": 7e-06,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/d742de7230b01773c9fa.wav",
+      "relative_path": "audio/d742de7230b01773c9fa.wav",
+      "bytes": 402706,
+      "sha256": "582eced1cafa0c0d1e4b24b33596197cc8e8c5f1374067b396be882cdfd51169",
+      "references": [
+        {
+          "group": "faq",
+          "id": "Q17"
+        },
+        {
+          "group": "faq",
+          "id": "Q18"
+        },
+        {
+          "group": "faq",
+          "id": "Q19"
+        },
+        {
+          "group": "faq",
+          "id": "Q20"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 9.130658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 201331,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32767,
+        "rms_pcm": 5582.419,
+        "rms_dbfs": -15.37,
+        "nonzero_fraction": 0.95603,
+        "clipped_fraction": 1e-05,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/bdf8273e3f77d0339262.wav",
+      "relative_path": "audio/bdf8273e3f77d0339262.wav",
+      "bytes": 210784,
+      "sha256": "11f5ea6cb4068831bc2c0aecfcbec7c9d7bed9112bb7013c87447bbd129a3fe6",
+      "references": [
+        {
+          "group": "filler",
+          "id": "ack_with_context"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 4.778685,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 105370,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31143,
+        "rms_pcm": 3972.089,
+        "rms_dbfs": -18.33,
+        "nonzero_fraction": 0.88422,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/0623e8d602585b194504.wav",
+      "relative_path": "audio/0623e8d602585b194504.wav",
+      "bytes": 112940,
+      "sha256": "1055e44dae5bf87f26be704d222bc8217a392a457a4f2d220cac2aafedb3a124",
+      "references": [
+        {
+          "group": "filler",
+          "id": "ack_no_context"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.56,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 56448,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 28526,
+        "rms_pcm": 4120.15,
+        "rms_dbfs": -18.01,
+        "nonzero_fraction": 0.92322,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/4b000ba6a7ddb18173ef.wav",
+      "relative_path": "audio/4b000ba6a7ddb18173ef.wav",
+      "bytes": 120466,
+      "sha256": "597379207f7b154397d3a2ba15868ca96101f8cd79203a855c011e7cccd3879c",
+      "references": [
+        {
+          "group": "filler",
+          "id": "bridge_to_custom"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.730658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 60211,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31699,
+        "rms_pcm": 4961.663,
+        "rms_dbfs": -16.4,
+        "nonzero_fraction": 0.91855,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/9ff4e671f9c54bddf6c1.wav",
+      "relative_path": "audio/9ff4e671f9c54bddf6c1.wav",
+      "bytes": 191968,
+      "sha256": "6f89cdef63e7463f8296f580373b6c63ffca7dcec734065159f6f6b738763137",
+      "references": [
+        {
+          "group": "filler",
+          "id": "hold_on_question"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 4.352018,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 95962,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31793,
+        "rms_pcm": 4551.372,
+        "rms_dbfs": -17.15,
+        "nonzero_fraction": 0.93135,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/1e505a4a020b9c87320a.wav",
+      "relative_path": "audio/1e505a4a020b9c87320a.wav",
+      "bytes": 116704,
+      "sha256": "ba825a445cc55ca046f6522bc6137f5ec50ef1abc7fbbf55aed34b60ecd4525c",
+      "references": [
+        {
+          "group": "filler",
+          "id": "hold_on_lookup"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.645351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 58330,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31348,
+        "rms_pcm": 4842.213,
+        "rms_dbfs": -16.61,
+        "nonzero_fraction": 0.95222,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/55602bb22e17066fd8ce.wav",
+      "relative_path": "audio/55602bb22e17066fd8ce.wav",
+      "bytes": 75308,
+      "sha256": "4dfd34bc5b9803086dfd09ceb0b5fe2242661f945d7dbf19403232c8ed32a942",
+      "references": [
+        {
+          "group": "filler",
+          "id": "back_to_demo"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.706667,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 37632,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31808,
+        "rms_pcm": 4554.996,
+        "rms_dbfs": -17.14,
+        "nonzero_fraction": 0.9861,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/d0ea8da6e3e0bef2efc9.wav",
+      "relative_path": "audio/d0ea8da6e3e0bef2efc9.wav",
+      "bytes": 146808,
+      "sha256": "d802654fb451d7f78caac59f4b41d8fff08d9f5f689118eebf03311869b957c0",
+      "references": [
+        {
+          "group": "filler",
+          "id": "nudge_continue"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 3.327982,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 73382,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31056,
+        "rms_pcm": 4928.975,
+        "rms_dbfs": -16.45,
+        "nonzero_fraction": 0.89397,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/2e92866d61048cbd4271.wav",
+      "relative_path": "audio/2e92866d61048cbd4271.wav",
+      "bytes": 222072,
+      "sha256": "345e1e567308099893dc424d3d96b5bd59514ecf3626858ae2d3c9286887d388",
+      "references": [
+        {
+          "group": "filler",
+          "id": "put_in_writing"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.034649,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 111014,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31608,
+        "rms_pcm": 5238.951,
+        "rms_dbfs": -15.92,
+        "nonzero_fraction": 0.94823,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/de48307f3c4dd8f81285.wav",
+      "relative_path": "audio/de48307f3c4dd8f81285.wav",
+      "bytes": 240888,
+      "sha256": "0b5bd7c32472f9142e02d3aa400c53bd1f6b0c70d5176bb708129411ae276a4a",
+      "references": [
+        {
+          "group": "filler",
+          "id": "still_working"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 5.461315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 120422,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32539,
+        "rms_pcm": 4735.468,
+        "rms_dbfs": -16.8,
+        "nonzero_fraction": 0.9325,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/3b83a07646839b823eec.wav",
+      "relative_path": "audio/3b83a07646839b823eec.wav",
+      "bytes": 60256,
+      "sha256": "9cb3d45e9a6fe8910637d2d72b2883b1e666223fa014441be5cdd3b82bcbab02",
+      "references": [
+        {
+          "group": "filler",
+          "id": "good"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.365351,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 30106,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30025,
+        "rms_pcm": 4650.384,
+        "rms_dbfs": -16.96,
+        "nonzero_fraction": 0.86209,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/637d754862c4b4d7aa54.wav",
+      "relative_path": "audio/637d754862c4b4d7aa54.wav",
+      "bytes": 71544,
+      "sha256": "df709f65ce71bbd832d30053156186b9424710c22a9cc6c2d1654601cd58dc21",
+      "references": [
+        {
+          "group": "filler",
+          "id": "glad"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.621315,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 35750,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31795,
+        "rms_pcm": 3505.138,
+        "rms_dbfs": -19.41,
+        "nonzero_fraction": 0.83765,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/80b155958f3be5f13903.wav",
+      "relative_path": "audio/80b155958f3be5f13903.wav",
+      "bytes": 37676,
+      "sha256": "ffaac20263420b80edcfa6349fce188781d3177d92a59207bae574dc8f427b6b",
+      "references": [
+        {
+          "group": "filler",
+          "id": "did_that_answer"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 0.853333,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 18816,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31673,
+        "rms_pcm": 5429.869,
+        "rms_dbfs": -15.61,
+        "nonzero_fraction": 0.93086,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/a661022ea7ec4a4a10d9.wav",
+      "relative_path": "audio/a661022ea7ec4a4a10d9.wav",
+      "bytes": 90360,
+      "sha256": "caac8882996e79386d44f1824e81d4072071fc0c01feb9f1b4a86013b88a4032",
+      "references": [
+        {
+          "group": "filler",
+          "id": "clearer"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 2.047982,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 45158,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30132,
+        "rms_pcm": 3492.839,
+        "rms_dbfs": -19.45,
+        "nonzero_fraction": 0.62002,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/3631e07e81f9631d4179.wav",
+      "relative_path": "audio/3631e07e81f9631d4179.wav",
+      "bytes": 82834,
+      "sha256": "1edc699b2efc3ffa45f504c0830d151bcdeb22e2cbe4fd00cd0f7b5d20a29963",
+      "references": [
+        {
+          "group": "filler",
+          "id": "lets_go"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.877324,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 41395,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30929,
+        "rms_pcm": 6126.532,
+        "rms_dbfs": -14.56,
+        "nonzero_fraction": 0.9583,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/c54af514546a007c2cb7.wav",
+      "relative_path": "audio/c54af514546a007c2cb7.wav",
+      "bytes": 180678,
+      "sha256": "9d0b266f19b868f8e76ada0605e10cac40bfb30bab5e2bc813977e260293aede",
+      "references": [
+        {
+          "group": "filler",
+          "id": "focus_first"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 4.096009,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 90317,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31335,
+        "rms_pcm": 5040.079,
+        "rms_dbfs": -16.26,
+        "nonzero_fraction": 0.98014,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/c6f6448facfe7e56a80f.wav",
+      "relative_path": "audio/c6f6448facfe7e56a80f.wav",
+      "bytes": 82834,
+      "sha256": "d00132d2d75487ab43ede1749bf02cdd6b978b5411f53f2d5f30b8cbe8cb86d9",
+      "references": [
+        {
+          "group": "filler",
+          "id": "how_i_go"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 1.877324,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 41395,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 30177,
+        "rms_pcm": 5455.729,
+        "rms_dbfs": -15.57,
+        "nonzero_fraction": 0.95893,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/d627687812b7ca9e8b98.wav",
+      "relative_path": "audio/d627687812b7ca9e8b98.wav",
+      "bytes": 346258,
+      "sha256": "1f06b06abe65eef276387a4a0aaa018f6cadcce81de8010cc6fc07675dc57d4f",
+      "references": [
+        {
+          "group": "filler",
+          "id": "no_guess"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 7.850658,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 173107,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 32684,
+        "rms_pcm": 4703.448,
+        "rms_dbfs": -16.86,
+        "nonzero_fraction": 0.94695,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/dee533dca435a866c3d8.wav",
+      "relative_path": "audio/dee533dca435a866c3d8.wav",
+      "bytes": 274758,
+      "sha256": "b0106c6b91c71cac0244dc45e20d47dcf610074a0cbcd80d830ec03f48c2ca35",
+      "references": [
+        {
+          "group": "filler",
+          "id": "before_video"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 6.229342,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 137357,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31441,
+        "rms_pcm": 4629.309,
+        "rms_dbfs": -17.0,
+        "nonzero_fraction": 0.93933,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    },
+    {
+      "path": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/audio/267f2f0506b660f0fb78.wav",
+      "relative_path": "audio/267f2f0506b660f0fb78.wav",
+      "bytes": 139282,
+      "sha256": "ebe46c4f9827020a26fbece97cdc86c3c2581cf8674e40f3f4677d50cdbade14",
+      "references": [
+        {
+          "group": "filler",
+          "id": "after_video"
+        }
+      ],
+      "identity": {
+        "provider": "sarvam",
+        "speaker": "priya",
+        "language": "en-IN"
+      },
+      "cache_key_matches": true,
+      "duration_seconds": 3.157324,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width_bytes": 2,
+      "frames": 69619,
+      "format": "NONE",
+      "wav_valid": true,
+      "signal": {
+        "peak_pcm": 31285,
+        "rms_pcm": 4175.161,
+        "rms_dbfs": -17.9,
+        "nonzero_fraction": 0.96688,
+        "clipped_fraction": 0.0,
+        "non_silent": true
+      }
+    }
+  ],
+  "main_batches": [
+    {
+      "id": "intro-overview",
+      "line_ids": [
+        "intro-overview-L1",
+        "intro-overview-L2"
+      ],
+      "main_seconds": 12.032,
+      "checkin_seconds": 0,
+      "main_plus_checkin_seconds": 12.032,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "three-reminders",
+      "line_ids": [
+        "three-reminders-L1",
+        "three-reminders-L2"
+      ],
+      "main_seconds": 10.837,
+      "checkin_seconds": 0,
+      "main_plus_checkin_seconds": 10.837,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "exterior-stance",
+      "line_ids": [
+        "exterior-stance-L1",
+        "exterior-stance-L2"
+      ],
+      "main_seconds": 11.179,
+      "checkin_seconds": 2.987,
+      "main_plus_checkin_seconds": 14.165,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "cabin-comfort",
+      "line_ids": [
+        "cabin-comfort-L1",
+        "cabin-comfort-L2"
+      ],
+      "main_seconds": 10.411,
+      "checkin_seconds": 2.987,
+      "main_plus_checkin_seconds": 13.397,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "boot-practicality",
+      "line_ids": [
+        "boot-practicality-L1",
+        "boot-practicality-L2"
+      ],
+      "main_seconds": 13.312,
+      "checkin_seconds": 2.987,
+      "main_plus_checkin_seconds": 16.299,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "powertrain-choices",
+      "line_ids": [
+        "powertrain-choices-L1",
+        "powertrain-choices-L2"
+      ],
+      "main_seconds": 12.032,
+      "checkin_seconds": 3.328,
+      "main_plus_checkin_seconds": 15.36,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "safety-standards",
+      "line_ids": [
+        "safety-standards-L1",
+        "safety-standards-L2"
+      ],
+      "main_seconds": 18.859,
+      "checkin_seconds": 2.816,
+      "main_plus_checkin_seconds": 21.675,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "tech-convenience",
+      "line_ids": [
+        "tech-convenience-L1",
+        "tech-convenience-L2"
+      ],
+      "main_seconds": 15.445,
+      "checkin_seconds": 2.816,
+      "main_plus_checkin_seconds": 18.261,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    },
+    {
+      "id": "ownership-details",
+      "line_ids": [
+        "ownership-details-L1",
+        "ownership-details-L2"
+      ],
+      "main_seconds": 15.275,
+      "checkin_seconds": 0,
+      "main_plus_checkin_seconds": 15.275,
+      "within_20_seconds": true,
+      "within_20_5_seconds": true
+    }
+  ],
+  "main_batches_under_20_seconds": true,
+  "main_batches_under_20_5_seconds": true,
+  "main_plus_checkins_and_closing_seconds": 151.381,
+  "intake_seconds": 6.741315,
+  "voice_failures": 0,
+  "voice_trace_counts": {
+    "sarvam-tts:success": 78
+  },
+  "voice_trace_errors": [],
+  "voice_latency": {
+    "wall_seconds": 163.348,
+    "recorded_stage_seconds": 163.3,
+    "request_count": 78,
+    "min_call_ms": 936,
+    "max_call_ms": 18277
+  },
+  "cost": {
+    "basis": "Recorded usage at configured rates, an estimate rather than invoice. Trace estimates are separately rounded per call. Cached existing clips incur no new call in this voice stage.",
+    "voice_usage_estimate_usd": 0.149161,
+    "voice_trace_estimate_usd": 0.14918,
+    "iteration_usage_estimate_through_voice_usd": 1.438176,
+    "voice_recorded_characters": 8353,
+    "assumed_inr_per_1000_chars": 1.5,
+    "assumed_inr_per_usd": 84.0,
+    "build_usage_estimate_usd": 0.293438,
+    "build_trace_estimate_usd": 0.29346,
+    "build_usage_by_stage": {
+      "voice": {
+        "calls": 78,
+        "usd": 0.149161
+      },
+      "rehearsal": {
+        "calls": 2,
+        "usd": 0.144277
+      }
+    },
+    "iteration2_usage_estimate_before_customers_usd": 1.582453,
+    "iteration2_trace_success_estimate_before_customers_usd": 1.45542,
+    "iteration2_trace_all_estimate_before_customers_usd": 1.58251,
+    "scope": "Build voice/rehearsal/bundle from actual voice-stage start through 1789743348; iteration2 from recorded second Read start through same cutoff. Customer runtime after cutoff excluded."
+  },
+  "limits": [
+    "Nonzero PCM signal establishes that clips are not entirely silent. It does not establish intelligibility, correct pronunciation or natural pacing.",
+    "Audio cache identity and trace evidence establish selected provider/speaker parameters, not perceptual speaker recognition.",
+    "This proves built artifact integrity, not acoustic intelligibility or the twelve real customer paths.",
+    "Generated rehearsal and synthetic browser gates do not replace actual customer session evidence.",
+    "Usage costs are configured estimates, not provider invoices; failed-trace estimates and successful-usage totals are reported separately."
+  ],
+  "ready": true,
+  "bundle_present": true,
+  "bundle_version": 1,
+  "bundle_built_at": 1789743347.589771,
+  "build_started_timestamp": 1789743136.960959,
+  "build_ended_timestamp": 1789743347.596236,
+  "build_wall_seconds": 210.635,
+  "customer_trace_cutoff_timestamp": 1789743348,
+  "script_to_bundle_parity": {
+    "pass": true,
+    "mismatches": [],
+    "scope": "All active main/deeper/closing IDs, text, citations, turn steps, timing, audio URLs, check-ins, intake, 12 slide designs, all 20 FAQ and 19 fillers."
+  },
+  "reviewed_script_preserved": {
+    "pass": true,
+    "mismatches": []
+  },
+  "published_media": {
+    "pass": true,
+    "reference_count": 194,
+    "unique_assets": 88,
+    "missing": []
+  },
+  "stage_errors": [],
+  "build_trace_counts": {
+    "sarvam-tts:success": 78,
+    "gemini-fallback:success": 1,
+    "runware-structured:error": 1
+  },
+  "build_trace_errors": [
+    {
+      "t": 1789743347.484703,
+      "stage": "rehearsal",
+      "kind": "runware-structured",
+      "model": "openai:gpt@5.5",
+      "latency_ms": 35586,
+      "in": 7418,
+      "out": 3000,
+      "chars": 0,
+      "usd": 0.12709,
+      "succeeded": false,
+      "error_category": "Runware returned an incomplete or refused answer",
+      "system_sha256": "8e7b264c2acecd3d687ebb0a4272dd887580e5b83de1c3002cac4502214b56c7",
+      "user_sha256": "c0c04c21cc87eeb5e37d0f7a327b1433232ec785d1c93cd44720bf34734a7db9",
+      "response_sha256": "de0f2569bdc7f763a4304e92a7406e2f56f7956afa60b60847561dd387e3314b"
+    }
+  ],
+  "cta_checks": [
+    {
+      "id": "book-test-drive",
+      "url": "https://tata.cars/book-test-drive/landing.html",
+      "matches_reviewed_plan": true,
+      "source_basis": "Previously verified exact link present in supplied official Tata model HTML; no network re-fetch during audit."
+    },
+    {
+      "id": "view-pricing",
+      "url": "https://tata.cars/nexon/ice/price.html",
+      "matches_reviewed_plan": true,
+      "source_basis": "Previously verified exact link present in supplied official Tata model HTML; no network re-fetch during audit."
+    },
+    {
+      "id": "find-dealer",
+      "url": "https://tata.cars/dealer-locator.html",
+      "matches_reviewed_plan": true,
+      "source_basis": "Previously verified exact link present in supplied official Tata model HTML; no network re-fetch during audit."
+    }
+  ],
+  "saved_cockpit": {
+    "slide_id": "sl08",
+    "previous_iteration_slide_id": "sl04",
+    "image_id": "im08",
+    "title": "Your cockpit, closer",
+    "callout": {
+      "text": "Pure+ upwards, petrol/diesel: 26.03 cm touchscreen",
+      "fact_ids": [
+        "F007"
+      ],
+      "part": "touchscreen",
+      "reveal_on_line": 1,
+      "id": "sl08-c3",
+      "confidence": 0.98,
+      "part_box": {
+        "x": 0.07,
+        "y": 0.178,
+        "w": 0.866,
+        "h": 0.594
+      },
+      "placement": "overlay",
+      "anchor": {
+        "x": 0.503,
+        "y": 0.475
+      },
+      "label_pos": {
+        "x": 0.0401,
+        "y": 0.0453
+      }
+    },
+    "bundle_matches_deck": true
+  },
+  "build_stages": {
+    "voice": {
+      "status": "done",
+      "updated_at": 1789743300.3085399,
+      "error": null,
+      "message": "",
+      "started_at": 1789743136.960959,
+      "seconds": 163.3
+    },
+    "rehearsal": {
+      "status": "done",
+      "updated_at": 1789743347.526455,
+      "error": null,
+      "message": "",
+      "started_at": 1789743300.380897,
+      "seconds": 47.1
+    },
+    "bundle": {
+      "status": "done",
+      "updated_at": 1789743347.596236,
+      "error": null,
+      "message": "",
+      "started_at": 1789743347.586706,
+      "seconds": 0.0
+    }
+  },
+  "customer_paths": "Pending actual player evidence; generated rehearsal is not a real customer-session pass.",
+  "voice_audit_captured_at": "2026-09-18T14:56:19.864208+00:00",
+  "snapshot_manifest": "/Users/macbook/Documents/demo-studio/output/nexon-real-evidence/iteration-2/build2/snapshot-manifest.json"
+}

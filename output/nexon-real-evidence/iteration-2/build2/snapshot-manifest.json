@@ -1,0 +1,87 @@
+{
+  "demo_id": "dm_36d47b86",
+  "captured_at": "2026-09-18T14:56:43.488791+00:00",
+  "status": "second_build_ready",
+  "customer_trace_cutoff_timestamp": 1789743348,
+  "artifacts": [
+    {
+      "name": "bundle.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/bundle.json",
+      "sha256": "d06a4dd2f84cbcfbec02c42413f971182ae1c73ffc146be93c31844e588f24ab",
+      "bytes": 142693
+    },
+    {
+      "name": "script.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/script.json",
+      "sha256": "74860a0f159de4cef195f563a3cddf6e0397f093b3423c2bab84b0cbeb457603",
+      "bytes": 27840
+    },
+    {
+      "name": "deck.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/deck.json",
+      "sha256": "391292e35f17af86c09d115ad70d753735d1bf0f106409685fd373818fe8f54f",
+      "bytes": 23951
+    },
+    {
+      "name": "faq.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/faq.json",
+      "sha256": "a83424627005c43f27992902366e9aaa819bcc314257951f1943396506e3d123",
+      "bytes": 12688
+    },
+    {
+      "name": "plan.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/plan.json",
+      "sha256": "abd4e3a0dc38fdd175d208b53bcb554979d69e9089cabcd934a33526980add19",
+      "bytes": 12786
+    },
+    {
+      "name": "understanding.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/understanding.json",
+      "sha256": "4a9fcf918f34e8f4f8fb062bad3704f9715c2326cff4cde3b6f779899af08647",
+      "bytes": 91582
+    },
+    {
+      "name": "demo.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/demo.json",
+      "sha256": "c96ddc90eaf3d2d0c3b0d1ddadce3442cfae477da79144d5b79fd392e16984d5",
+      "bytes": 11012
+    },
+    {
+      "name": "deck-overrides.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/deck-overrides.json",
+      "sha256": "db939e092ec37e8b5a8da3cee1bbc04a483d14031b3c7f6cc3d90b7577d91fc3",
+      "bytes": 8106
+    },
+    {
+      "name": "fillers.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/fillers.json",
+      "sha256": "2a9f6ba027b9721583e4f66dfbc53f4d26e5888b1e31ee4ad2ea68f096ac79f4",
+      "bytes": 2607
+    },
+    {
+      "name": "visual-audit.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/visual-audit.json",
+      "sha256": "59e612c2b444b812f6b3fd493f1104a43be255fa2b150dc96269f3135806da23",
+      "bytes": 27957
+    },
+    {
+      "name": "rehearsal.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/rehearsal.json",
+      "sha256": "21cf8e7910040ae6d652bedf37f69c3702fc0e851de60ad694b85c07c7809258",
+      "bytes": 8851
+    },
+    {
+      "name": "trace-summary.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/trace.jsonl",
+      "sha256": "d31530ef7b7fcb73c3ff2940b14ab3f52663a766b82397abe9f6d822ecadf8aa",
+      "bytes": 164291
+    },
+    {
+      "name": "usage-summary.json",
+      "source": "/Users/macbook/Documents/demo-studio/data/demos/dm_36d47b86/usage.jsonl",
+      "sha256": "0c21b85ea83b7557bc7c05013bbd887a1a52f54f85851b7e1e3e642692568fd7",
+      "bytes": 53701
+    }
+  ],
+  "excluded": "Raw source and audio originals; audio paths and hashes are in ../voice-integrity.json. Raw full prompts/transcripts are excluded from trace summaries."
+}

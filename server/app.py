@@ -853,7 +853,10 @@ async def run_qa(demo_id: str, req: Request):
     if not q:
         raise HTTPException(400, "question required")
     cur_slide = (body.get("slide_id") or "").strip() or None
-    slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
+    # Reviewed script is authoritative for narration/deeper citations, including
+    # when saved slide design still contains an older copy of those lines.
+    slides = deck.slides_with_script((store.read_json(demo_id, "deck.json") or {}).get("slides", []),
+                                    store.read_json(demo_id, "script.json") or {})
 
     def routed(r: dict) -> dict:  # where the answer lives — plain code on fact ids and topics, no model call; a decline never moves the slide
         r.update(deck.route_for(slides, cur_slide, r.get("fact_ids"), q) if r.get("answered") else {"slide_id": cur_slide, "route": "none", "callout_id": None, "by": ""})
@@ -872,7 +875,7 @@ async def run_qa(demo_id: str, req: Request):
         runlog.runtime_qa(demo_id, q, {**r, "answer": "[bank " + hit["id"] + "] " + r["answer"]}, body.get("profile") or None)
         return r
     try:
-        r = qa.answer(demo_id, q, body.get("history") or [], body.get("profile") or None, live=True)
+        r = await asyncio.to_thread(qa.answer, demo_id, q, body.get("history") or [], body.get("profile") or None, live=True)
     except RuntimeError as e:
         raise HTTPException(502, str(e))
     r["from_bank"] = False
@@ -888,7 +891,7 @@ async def run_pitch(demo_id: str, req: Request):
     usage.current_stage.set("runtime")
     body = await req.json()
     try:
-        return pitch.plan_pitch(demo_id, body.get("profile") or {}, bool(body.get("refine")))
+        return await asyncio.to_thread(pitch.plan_pitch, demo_id, body.get("profile") or {}, bool(body.get("refine")))
     except RuntimeError as e:
         raise HTTPException(502, str(e))
 
@@ -944,7 +947,7 @@ async def run_stt(demo_id: str, file: UploadFile = File(...), language: str = Fo
     if len(data) < 1000:
         return {"transcript": ""}
     try:
-        text = sarvam.stt(data, file.filename or "audio.wav", language, file.content_type or "audio/wav")
+        text = await asyncio.to_thread(sarvam.stt, data, file.filename or "audio.wav", language, file.content_type or "audio/wav")
     except Exception as e:
         raise HTTPException(502, sarvam.describe_error(e))
     return {"transcript": text}
@@ -960,7 +963,7 @@ async def run_tts(demo_id: str, req: Request):
     if not text:
         raise HTTPException(400, "text required")
     try:
-        rel = voice.render_line(demo_id, text, lang=(body.get("language") or None), strict=True)
+        rel = await asyncio.to_thread(voice.render_line, demo_id, text, lang=(body.get("language") or None), strict=True)
     except Exception as e:
         raise HTTPException(502, str(e)[:300])
     return {"url": f"/media/{demo_id}/{rel}" if rel else None}
