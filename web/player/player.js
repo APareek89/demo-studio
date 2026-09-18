@@ -8,6 +8,8 @@
 // facts, then return to the interrupted line · none): S.seg / S.line are never touched by a jump, so the return point is
 // always the interrupted line — a return stack of depth 1. A slide seen during a jump is covered: reached later, it plays
 // its title and first line only.
+// Every customer turn is stamped four times — voice ended, STT done, QA done, first answer audio playing — and kept on
+// the session record; Observability shows p50 / p95 per stage.
 // The transcript holds only what the customer actually heard (a cut-off line is logged as the words that played and
 // marked interrupted); only that transcript is sent as history to /run/qa.
 // mountPlayer(host, bundle, {qa, tts, pitch, lead, stt, saveSession}) → { destroy, restart, pause, context }
@@ -27,7 +29,7 @@ export function mountPlayer(host, bundle, api) {
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
-    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false };
+    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, turns: [], lastListen: null, onFirstAudio: null };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
 
@@ -94,6 +96,7 @@ export function mountPlayer(host, bundle, api) {
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
   function acceptTypedAnswer(text) {
+    S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "typed" };
     if (S.intakeOpen) { if (S.intakeResolver) S.intakeResolver(text); else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; } return; }
     if (S.waiter) { addMsg("user", text); resolveWait(interpretReply(text, S.waitChips)); return; }
     handleQuestion(text);
@@ -153,9 +156,10 @@ export function mountPlayer(host, bundle, api) {
     const n = Math.min(sp.words, Math.round(frac * sp.words)); if (n <= 0) return;
     addMsg("agent", sp.text.split(/\s+/).slice(0, n).join(" "), { interrupted: true, full: sp.text, heard_fraction: +frac.toFixed(2) });
   }
-  function captionOnly(text, run) { return new Promise((res) => { const my = ++S.ttsToken; const words = wordsOf(text); const ms = Math.max(1200, words / 2.5 * 1000); const sp = { text, words, audio: null, startedAt: Date.now(), estMs: ms }; S.speaking = sp; const t = setTimeout(() => { if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken && run === S.run); }, ms); S.captionTimer = t; }); }
+  function firstAudio() { if (S.onFirstAudio) { const f = S.onFirstAudio; S.onFirstAudio = null; f(Date.now()); } }
+  function captionOnly(text, run) { return new Promise((res) => { firstAudio(); const my = ++S.ttsToken; const words = wordsOf(text); const ms = Math.max(1200, words / 2.5 * 1000); const sp = { text, words, audio: null, startedAt: Date.now(), estMs: ms }; S.speaking = sp; const t = setTimeout(() => { if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken && run === S.run); }, ms); S.captionTimer = t; }); }
   function speakBrowser(text) {
-    return new Promise((res) => { const my = ++S.ttsToken; const u = new SpeechSynthesisUtterance(text); S.utterance = u; const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1; const sp = { text, words: wordsOf(text), audio: null, startedAt: Date.now(), estMs: Math.max(1500, text.length * 75) }; S.speaking = sp; let done = false; const fin = () => { if (done) return; done = true; if (S.utterance === u) S.utterance = null; if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken); }; const t = setTimeout(fin, sp.estMs + 4000); u.onend = () => { clearTimeout(t); fin(); }; u.onerror = () => { clearTimeout(t); fin(); }; try { speechSynthesis.speak(u); } catch (e) { fin(); } });
+    return new Promise((res) => { const my = ++S.ttsToken; const u = new SpeechSynthesisUtterance(text); u.onstart = () => firstAudio(); S.utterance = u; const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1; const sp = { text, words: wordsOf(text), audio: null, startedAt: Date.now(), estMs: Math.max(1500, text.length * 75) }; S.speaking = sp; let done = false; const fin = () => { if (done) return; done = true; if (S.utterance === u) S.utterance = null; if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken); }; const t = setTimeout(fin, sp.estMs + 4000); u.onend = () => { clearTimeout(t); fin(); }; u.onerror = () => { clearTimeout(t); fin(); }; try { speechSynthesis.speak(u); } catch (e) { fin(); } });
   }
   async function audioUrlFor(text, preset) { if (preset) return preset; if (!useServerVoice) return null; if (S.ttsCache.has(text)) return S.ttsCache.get(text); const p = api.tts(text).catch(() => null); S.ttsCache.set(text, p); return p; }
   function prefetch(items) { if (!useServerVoice) return; for (const it of items) if (it && !it.audio && it.text) audioUrlFor(it.text); }
@@ -165,7 +169,7 @@ export function mountPlayer(host, bundle, api) {
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
     if (run !== S.run) return false;
     let ok;
-    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); a.muted = S.muted; S.audio = a; const sp = { text, words: wordsOf(text), audio: a, startedAt: Date.now(), estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp; let done = false; const fin = () => { if (done) return; done = true; if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken); }; const safeFallback = () => { if (done) return; done = true; if (S.speaking === sp) S.speaking = null; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
+    if (url) ok = await new Promise((res) => { const my = ++S.ttsToken; const a = new Audio(url); a.muted = S.muted; S.audio = a; const sp = { text, words: wordsOf(text), audio: a, startedAt: Date.now(), estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp; let done = false; const fin = () => { if (done) return; done = true; if (S.speaking === sp) { logHeard(sp, true); S.speaking = null; } res(my === S.ttsToken); }; a.onplaying = () => firstAudio(); const safeFallback = () => { if (done) return; done = true; if (S.speaking === sp) S.speaking = null; (useServerVoice ? captionOnly(text, run) : speakBrowser(text)).then(res); }; a.onended = fin; a.onerror = safeFallback; a.play().catch(safeFallback); });
     else ok = useServerVoice ? await captionOnly(text, run) : await speakBrowser(text);
     if (ok && run === S.run) setStatus("idle", "Ready");
     return ok && run === S.run;
@@ -190,8 +194,8 @@ export function mountPlayer(host, bundle, api) {
     return new Promise((res) => {
       const finish = async () => { if (done) return; done = true; S.stopServerListen = null; try { proc.disconnect(); src.disconnect(); stream.getTracks().forEach((t) => t.stop()); await ctx.close(); } catch (e) {} S.micOn = false; setMicUI(false);
         if (!spoke || !chunks.length) { res(""); return; }
-        setStatus("thinking", "Transcribing"); onInterim("…");
-        try { const t = await api.stt(encodeWav(chunks, ctx.sampleRate), LANG); res((t || "").trim()); } catch (e) { if (SR) { serverSTT = false; addMsg("note", "Server listening is unavailable — using the browser's speech recognition."); } res(""); } };
+        const tVoice = Date.now(); setStatus("thinking", "Transcribing"); onInterim("…");
+        try { const t = await api.stt(encodeWav(chunks, ctx.sampleRate), LANG); S.lastListen = { voice_ended: tVoice, stt_done: Date.now(), via: "server" }; res((t || "").trim()); } catch (e) { if (SR) { serverSTT = false; addMsg("note", "Server listening is unavailable — using the browser's speech recognition."); } res(""); } };
       S.stopServerListen = finish;
       proc.onaudioprocess = (e) => { const d = e.inputBuffer.getChannelData(0); chunks.push(new Float32Array(d)); let sum = 0; for (let i = 0; i < d.length; i++) sum += d[i] * d[i]; const rms = Math.sqrt(sum / d.length); const now = Date.now(); if (rms > 0.012) { spoke = true; lastVoice = now; } if ((spoke && now - lastVoice > 1300) || now - t0 > timeout || (!spoke && now - t0 > Math.min(timeout, 7000))) finish(); };
       src.connect(proc); proc.connect(ctx.destination);
@@ -204,7 +208,7 @@ export function mountPlayer(host, bundle, api) {
       try { if (S.rec) S.rec.abort(); } catch (e) {}
       const rec = new SR(); S.rec = rec; rec.lang = LANG; rec.interimResults = true; rec.continuous = false;
       let fin = "", interim = "", ended = false; S.micOn = true; setMicUI(true);
-      const end = () => { if (ended) return; ended = true; S.micOn = false; setMicUI(false); clearTimeout(t); res((fin || interim).trim()); };
+      const end = () => { if (ended) return; ended = true; S.micOn = false; setMicUI(false); clearTimeout(t); if ((fin || interim).trim()) S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "browser" }; res((fin || interim).trim()); };
       rec.onresult = (e) => { interim = ""; fin = ""; for (const r of e.results) { if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript; } onInterim((fin || interim).trim()); };
       rec.onerror = (e) => { if (e.error === "not-allowed" || e.error === "service-not-allowed") S.micDenied = true; end(); };
       rec.onend = end; const t = setTimeout(() => { try { rec.stop(); } catch (e) {} }, timeout);
@@ -322,11 +326,14 @@ export function mountPlayer(host, bundle, api) {
   async function handleQuestion(text) {
     const wasAtCheckin = S.atCheckin; interruptAll(); const run = newRun(); let jumped = null;
     const last = S.transcript.at(-1); if (!(last?.role === "user" && last.text === text)) addMsg("user", text);  // a chip-wait reply is already logged
-    S.questions.push(text); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
+    S.questions.push(text);
+    const turn = { question: text, ...(S.lastListen || { voice_ended: Date.now(), stt_done: Date.now(), via: "unknown" }), qa_done: null, answer_audio: null }; S.lastListen = null; S.turns.push(turn); el.live.textContent = ""; setStatus("thinking", "Thinking"); el.cap.textContent = "…";
     let r;
     const qaP = api.qa({ question: text, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null });
     try { r = await withTimeout(qaP, 700); if (!r) { const okH = await speakF("hold_on_question", "Good question — give me one moment, please, while I check that for you.", run); if (!okH) return; r = await qaP; } }
-    catch (e) { if (run !== S.run) return; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin, !!jumped); return; }
+    catch (e) { turn.qa_done = Date.now(); turn.error = true; if (run !== S.run) return; S.onFirstAudio = (ts) => { turn.answer_audio = ts; }; const ok = await speak("I couldn't reach my notes just now — give me a second and ask again, or I'll flag it for the team.", run); if (!ok) return; S.escalations.push(`error answering: "${text}"`); resumeAfterQA(wasAtCheckin, !!jumped); return; }
+    turn.qa_done = Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered;
+    S.onFirstAudio = (ts) => { turn.answer_audio = ts; };  // the first answer audio (or its caption) to start
     if (run !== S.run) return;
     if (!r.answered) {
       if (r.escalate) S.escalations.push(r.escalate);
@@ -460,7 +467,7 @@ export function mountPlayer(host, bundle, api) {
   function sessionRecord() {
     const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((Date.now() - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((Date.now() - S.started) / 6000) / 10, transcript: S.transcript };
+    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((Date.now() - S.started) / 6000) / 10, transcript: S.transcript };
   }
   function showHandoff(c) {
     S.ended = true;
@@ -517,7 +524,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.textContent = "⏸"; el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.sessionId = newSessionId(); S.ended = false; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
   function pause() { interruptAll(); setStatus("idle", "Paused"); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   const onHide = () => { if (S.transcript.length && api.beacon) { try { api.beacon(sessionRecord()); } catch (e) {} } };

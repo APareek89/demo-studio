@@ -319,6 +319,29 @@ check("Studio has a Sessions page and a read-only share route", 'key: "sessions"
 check("local media is still served by the app (no redirect without a signed URL)", c.get(f"/media/{i}/does-not-exist.png").status_code == 404 and _storage.backend().media_url(i, "x.png") is None)
 check("the instance-role policy names only the bucket and the three tables, no IAM", (lambda pol: all(a.split(":")[0] in ("sts", "s3", "dynamodb") for s in pol["Statement"] for a in s["Action"]))(json.load(open("docs/aws/instance-role-policy.json"))))
 
+# ---- Phase 8: four stamps per turn → p50 / p95 per stage in Observability ----
+t0 = 1_700_000_000_000
+turns = [{"question": "a", "voice_ended": t0, "stt_done": t0 + 400, "qa_done": t0 + 1400, "answer_audio": t0 + 1900, "from_bank": True, "via": "server"},
+         {"question": "b", "voice_ended": t0, "stt_done": t0 + 600, "qa_done": t0 + 2600, "answer_audio": t0 + 3400, "from_bank": False, "via": "server"},
+         {"question": "c", "voice_ended": t0, "stt_done": t0, "qa_done": t0 + 1000, "answer_audio": t0 + 1200, "from_bank": False, "via": "typed"},
+         {"question": "d", "voice_ended": t0, "stt_done": t0 + 500, "qa_done": t0 + 1500, "answer_audio": None, "from_bank": False, "via": "server"}]
+c.post(f"/api/demos/{i}/run/session", json={"id": "s_p8", "ended": False, "profile": {}, "questions": ["a", "b", "c", "d"], "transcript": [], "turns": turns})
+lat = c.get(f"/api/demos/{i}/trace?limit=5").json().get("latency") or {}
+st = lat.get("stages", {})
+check("/trace carries latency: every stamped turn counted, per stage n / p50 / p95", lat.get("turns", 0) >= 4 and all(k in st for k in ("stt", "qa", "tts", "total")) and all({"n", "p50", "p95"} <= set(st[k]) for k in st))
+mine = [tn for s in _storage.backend().iter_sessions(i) for tn in (s.get("turns") or []) if s.get("id") == "s_p8"]
+check("stt = STT done − voice ended (typed turns count as 0); p50 of [400, 600, 0, 500] is 450-ish by nearest rank → 500", st["stt"]["n"] >= 4 and st["stt"]["p50"] in (400, 450, 500) and st["stt"]["p95"] >= 500)
+check("qa = QA done − STT done; a turn with no answer audio still counts for stt and qa but not tts / total", st["qa"]["n"] >= 4 and st["tts"]["n"] == st["total"]["n"] and st["tts"]["n"] <= st["qa"]["n"] - 1)
+check("total = first answer audio − voice ended, p95 ≥ p50", st["total"]["p95"] >= st["total"]["p50"] and st["total"]["p50"] >= 1000)
+check("turns are split by answer source (bank vs model)", lat.get("by_source", {}).get("bank", 0) >= 1 and lat.get("by_source", {}).get("model", 0) >= 3)
+pj = c.get("/web/player/player.js").text
+check("player stamps voice ended + STT done for server STT, browser recognition and typed questions", 'S.lastListen = { voice_ended: tVoice, stt_done: Date.now(), via: "server" }' in pj and 'via: "browser"' in pj and 'via: "typed"' in pj)
+check("player stamps QA done on the response and first answer audio when the audio (or its caption) starts", "turn.qa_done = Date.now(); turn.from_bank" in pj and "a.onplaying = () => firstAudio()" in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
+check("the turns travel on the session record", "turns: S.turns," in pj)
+check("Observability shows the percentiles", "p50" in c.get("/web/observability.js").text and "latency" in c.get("/web/observability.js").text)
+_r = c.get("/web/observability.js")
+check("front-end files are served with Cache-Control: no-cache and revalidate to a 304; APIs untouched", _r.headers.get("cache-control") == "no-cache" and c.get("/web/observability.js", headers={"If-None-Match": _r.headers.get("etag", "")}).status_code == 304 and c.get("/").headers.get("cache-control") == "no-cache" and c.get("/api/health").headers.get("cache-control") is None)
+
 # ---- runtime config ----
 check("runtime provider order is configurable and defaults gemini first", config.RUNTIME_PROVIDERS[0] == "gemini" and "claude" in config.RUNTIME_PROVIDERS)
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)

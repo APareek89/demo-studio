@@ -268,7 +268,7 @@ def workflow():
 @app.get("/api/demos/{demo_id}/trace")
 def get_trace(demo_id: str, limit: int = 300):
     demo = _demo_or_404(demo_id)
-    return {"stages": demo.get("stages", {}), "rows": usage.traces(demo_id, limit), "usage": usage.summary(demo_id)}
+    return {"stages": demo.get("stages", {}), "rows": usage.traces(demo_id, limit), "usage": usage.summary(demo_id), "latency": _latency(demo_id)}
 
 
 @app.get("/api/demos/{demo_id}/evals")
@@ -913,6 +913,31 @@ def _public_view(s: dict) -> dict:
             "questions": s.get("questions", []), "escalations": s.get("escalations", []), "summary": sm, "leads": [{"phone": mask(l.get("phone")), "question": l.get("question")} for l in s.get("leads", [])]}
 
 
+STAGES_MS = (("stt", "voice_ended", "stt_done"), ("qa", "stt_done", "qa_done"), ("tts", "qa_done", "answer_audio"), ("total", "voice_ended", "answer_audio"))
+
+
+def _pct(values: list[float], q: float) -> float | None:
+    """Nearest-rank percentile on a sorted copy; None when there is nothing to rank."""
+    if not values:
+        return None
+    v = sorted(values)
+    k = max(0, min(len(v) - 1, int(round(q * (len(v) - 1)))))
+    return round(v[k])
+
+
+def _latency(demo_id: str) -> dict:
+    """p50 / p95 per stage over every stamped customer turn of this demo: voice ended → STT done → QA done → first answer
+    audio playing. Typed questions stamp voice and STT together (stt = 0). Turns that never produced audio only count
+    where they have both stamps."""
+    turns = [tn for s in storage.backend().iter_sessions(demo_id) for tn in (s.get("turns") or [])]
+    out = {"turns": len(turns), "sessions_with_turns": sum(1 for s in storage.backend().iter_sessions(demo_id) if s.get("turns")), "stages": {}}
+    for name, a, b in STAGES_MS:
+        vals = [float(tn[b]) - float(tn[a]) for tn in turns if isinstance(tn.get(a), (int, float)) and isinstance(tn.get(b), (int, float)) and tn[b] >= tn[a]]
+        out["stages"][name] = {"n": len(vals), "p50": _pct(vals, 0.5), "p95": _pct(vals, 0.95)}
+    out["by_source"] = {k: sum(1 for tn in turns if (tn.get("from_bank") and k == "bank") or (not tn.get("from_bank") and k == "model")) for k in ("bank", "model")}
+    return out
+
+
 def _sessions(demo_id: str) -> list[dict]:
     return storage.backend().list_sessions(demo_id, 20)
 
@@ -957,6 +982,18 @@ async def feedback(demo_id: str, req: Request):
         return graph.handle_message(demo_id, msg, [], "rehearse")
     except RuntimeError as e:
         raise HTTPException(409, str(e))
+
+
+@app.middleware("http")
+async def _revalidate_static(request: Request, call_next):
+    """The no-build front end is plain ES modules: without a cache policy a browser reuses a recently fetched module by
+    heuristic freshness (a reload only revalidates the document), so a deploy could mix old and new modules. `no-cache`
+    means revalidate every time — with the ETag that is a cheap 304 when nothing changed."""
+    resp = await call_next(request)
+    path = request.url.path
+    if path == "/" or path.startswith("/web/") or path.endswith((".html", ".js", ".css")):
+        resp.headers["Cache-Control"] = "no-cache"
+    return resp
 
 
 app.mount("/web", StaticFiles(directory=str(config.WEB_DIR)), name="web")

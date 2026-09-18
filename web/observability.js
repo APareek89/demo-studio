@@ -1,4 +1,5 @@
-// Observability — every model/speech call per demo: stage, model, latency, tokens, cost, prompt, response.
+// Observability — every model/speech call per demo: stage, model, latency, tokens, cost, prompt, response — and the
+// customer's answer latency: p50 / p95 per stage (voice ended → STT done → QA done → first answer audio) over every stamped turn.
 import { api, h, fmtTime } from "/web/api.js";
 
 const rc = (el, ...nodes) => el.replaceChildren(...nodes.flat().filter(Boolean));
@@ -13,8 +14,8 @@ export async function renderObservability({ main, navigate, demoId }) {
   rc(main, page);
   if (!id) { page.append(h("div", { class: "empty" }, "Nothing to observe yet — read a demo's sources first.")); return; }
   const wrap = h("div", { class: "obs" }); page.append(wrap);
-  const stagesBox = h("div", { class: "box" }); const totalsBox = h("div", { class: "box" }); const rowsBox = h("div", { class: "box" });
-  wrap.append(stagesBox, totalsBox, rowsBox);
+  const stagesBox = h("div", { class: "box" }); const totalsBox = h("div", { class: "box" }); const latencyBox = h("div", { class: "box" }); const rowsBox = h("div", { class: "box" });
+  wrap.append(stagesBox, totalsBox, latencyBox, rowsBox);
   let data = null;
 
   async function load() {
@@ -24,6 +25,11 @@ export async function renderObservability({ main, navigate, demoId }) {
     const u = data.usage || {}; const byModel = Object.entries(u.by_model || {});
     rc(totalsBox, h("h3", {}, "Totals"), h("div", { class: "stages" }, h("div", { class: "stg" }, h("div", { class: "n" }, "cost"), h("div", { class: "v" }, `$${(u.total_usd || 0).toFixed(3)}`), h("div", { class: "s" }, `≈ ₹${(u.total_inr || 0).toFixed(0)} · ${u.rows || 0} calls`)),
       ...byModel.map(([m, v]) => h("div", { class: "stg" }, h("div", { class: "n" }, m), h("div", { class: "v" }, `$${v.usd.toFixed(3)}`), h("div", { class: "s" }, `${v.calls} calls · ${v.in.toLocaleString()} in / ${v.out.toLocaleString()} out` + (v.chars ? ` · ${v.chars.toLocaleString()} chars` : ""))))));
+    const lat = data.latency || { turns: 0, stages: {} }; const ms = (v) => v == null ? "—" : v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${v}ms`;
+    const LABELS = { stt: ["speech → text", "voice ended → STT done"], qa: ["answer", "STT done → QA done"], tts: ["first audio", "QA done → answer audio playing"], total: ["customer waits", "voice ended → answer audio playing"] };
+    rc(latencyBox, h("h3", {}, "Answer latency ", h("span", { class: "small muted" }, `${lat.turns || 0} customer turn${lat.turns === 1 ? "" : "s"} · ${lat.sessions_with_turns || 0} session${lat.sessions_with_turns === 1 ? "" : "s"}` + (lat.by_source ? ` · ${lat.by_source.bank} from the FAQ bank, ${lat.by_source.model} from the model` : ""))),
+      lat.turns ? h("div", { class: "stages" }, ...Object.entries(lat.stages).map(([k, v]) => h("div", { class: "stg" }, h("div", { class: "n" }, LABELS[k]?.[0] || k), h("div", { class: "v" }, "p50 ", ms(v.p50)), h("div", { class: "s" }, `p95 ${ms(v.p95)} · ${v.n} turn${v.n === 1 ? "" : "s"}`), h("div", { class: "s muted" }, LABELS[k]?.[1] || ""))))
+        : h("p", { class: "small muted", style: "margin:0" }, "No customer turns yet — every question asked in a session stamps voice ended, STT done, QA done and first answer audio."));
     const seen = new Set(["".concat()]); const opts = [...new Set((data.rows || []).map((r) => r.stage))];
     const cur = stageFilter.value; rc(stageFilter, h("option", { value: "" }, "all stages"), ...opts.map((s) => h("option", { value: s, selected: s === cur }, s)));
     renderRows();

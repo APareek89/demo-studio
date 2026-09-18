@@ -412,3 +412,13 @@
 **Deepest why type:** `hidden-assumption`
 **Action taken:** Insert → `layout()` → forced reflow (`void el.offsetWidth`) → add `on`, synchronously. Same transition, no frame dependency. Found by the Phase 6 scripted browser check (which itself had to move its polling into one call: model latency between calls let the demo run ahead).
 **Preventive action:** Nothing that decides what is on screen may depend on animation frames or on the tab being visible; only audio events and user actions drive the player.
+
+### 2026-09-18 — A reload kept running the old module
+
+**Symptom:** After a deploy of new front-end modules, the Observability page still ran the previous `observability.js` after a reload; a `no-store` fetch of the same URL returned the new file.
+**Why 1:** `/web` was served with an ETag but no `Cache-Control`, so browsers applied heuristic freshness (10 % of the file's age) to each module.
+**Why 2:** A modern reload revalidates only the document; module imports come from the cache when still "fresh".
+**Why 3:** One import already carried a hand-written `?v=3e0`, a per-file workaround that nobody extends to the next file.
+**Deepest why type:** `missing-policy`
+**Action taken:** A middleware sets `Cache-Control: no-cache` on `/`, `/web/*` and any `.html/.js/.css` — every load revalidates, a 304 when unchanged. APIs untouched.
+**Preventive action:** Every static asset the app serves has an explicit cache policy; version queries on imports are not the mechanism.

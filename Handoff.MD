@@ -3,8 +3,14 @@
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
 ## slides-v1 build — branch `slides-v1` (from `master` 794b8e5) — started 2026-09-18
-Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched. Phases: 1 simplify ✅ · 2 sources + image parts ✅ · 3 deck ✅ ·
-4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing ✅ · 7 AWS storage + session summary (local side ✅ · AWS side waits on you) · 8 measure.
+Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched.
+▶ **NEXT (2026-09-18 evening):** everything local is built and committed on `slides-v1` (8 commits). Open: (1) the user's
+two AWS steps below (table go-ahead → agent creates `demo-studio-sessions`; instance role from
+`docs/aws/instance-role-policy.json`) then `STORAGE_BACKEND=aws` + `CLOUD_SYNC=1` on the box; (2) "Done means" #2 / #3 on
+a real 5+ image demo need real keys (Gemini + Sarvam) — run `evals/qa_deck.py`'s paid mirror only with consent; (3) deploy
+`slides-v1` to the EC2 box only when the user says so (the box runs `master`); (4) open reminders: rotate the Vercel token
+pasted in chat, decide t3.micro vs t3.small. Phases: 1 simplify ✅ · 2 sources + image parts ✅ · 3 deck ✅ ·
+4 Align slide review ✅ · 5 player ✅ · 6 questions + slide routing ✅ · 7 AWS storage + session summary (local side ✅ · AWS side waits on you) · 8 measure ✅.
 - **Phase 1 done (committed):** 3D/Runware path removed (7 files deleted, 23 edited, net ≈ −900 lines); player stage = `video` | `slide`;
   `qa._local_grounded_answer` + the 10-minute cooldown deleted — every provider down → decline + callback; `server/llm/runtime.py`
   tries `RUNTIME_PROVIDERS` (default `gemini,claude`) with `RUNTIME_TIMEOUT` 15 s and one retry; `CLAUDE_RUNTIME_MODEL` /
@@ -71,6 +77,15 @@ Plan and the user's answers are in the 2026-09-18 chat; `master` stays untouched
   `data/.share-secret` or `SHARE_SECRET`) showing the summary with phones masked, never the transcript. Browser-verified
   on the mock server (Sessions list + detail + share link, the share page, a bad key, the consent line). Gates: deck
   121/121 · accept 24/24 · smoke OK.
+- **Phase 8 done (committed):** the player stamps every customer turn four times — `voice_ended` (server STT: capture
+  stopped; browser recognition: result in; typed: submit), `stt_done` (text back), `qa_done` (`/run/qa` returned),
+  `answer_audio` (the first answer audio, or its caption, started — via a one-shot `S.onFirstAudio` hook in `speak`) — and
+  sends them as `turns` on the session record. `/api/demos/{id}/trace` adds `latency`: n / p50 / p95 per stage (stt, qa,
+  tts, total; nearest rank over every stamped turn of the demo's sessions; a turn that never produced audio counts only for
+  stt and qa) plus bank-vs-model counts; Observability shows an **Answer latency** panel. Also fixed while verifying: the
+  front end is now served with `Cache-Control: no-cache` (a reload used to keep stale modules — a real risk after a deploy).
+  Browser-verified: a typed question then Done → one stamped turn on the session record; Observability › Answer latency
+  shows the four stages with p50 / p95. Gates: deck 131/131 · accept 24/24 · smoke OK.
 - 🧑 **Phase 7, AWS side — needs two things from you** (inventory 2026-09-18: bucket `demo-studio-511833557379` with the
   earlier mirror, tables `demo-studio-demos` + `demo-studio-events`, instance `i-0410e37b7ab0297e1` with **no** role):
   (1) say **go on the table** → the agent creates `demo-studio-sessions` from this Mac (allowed for `demo-studio-*`);

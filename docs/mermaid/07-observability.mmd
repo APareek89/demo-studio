@@ -5,8 +5,9 @@ flowchart TD
   REC["usage.record (tokens / chars / seconds)<br/>[DATA · usage.jsonl] → cost estimate (Playground › Cost)"]:::data
   TR["usage.trace<br/>[DATA · trace.jsonl] {t, stage, kind, model, latency_ms, in, out, chars, usd, system[:6000], user[:6000], response[:6000], error}"]:::data
   STG["stage timings<br/>[DATA · demo.stages[stage] {status, started_at, seconds, error}] written by orchestrator._run_stage"]:::data
-  API["GET /api/demos/id/trace?limit=N<br/>[FUNCTION] → {stages, rows, usage summary}"]:::fn
-  TAB["Observability tab<br/>[ask · demo picker · stage filter]<br/>stage cards (seconds, status) · totals by model · calls table (when, stage, call·model, latency, tokens, cost) · click a row → system prompt, input, response, error"]:::ask
+  LAT["session.turns — four stamps per customer turn (voice ended · STT done · QA done · first answer audio)<br/>[FUNCTION · app._latency — nearest-rank p50 / p95 per stage over every stamped turn of the demo's sessions]"]:::fn
+  API["GET /api/demos/id/trace?limit=N<br/>[FUNCTION] → {stages, rows, usage summary} + latency {turns, stages: stt/qa/tts/total → n, p50, p95, by_source}"]:::fn
+  TAB["Observability tab<br/>[ask · demo picker · stage filter]<br/>stage cards (seconds, status) · totals by model · calls table (when, stage, call·model, latency, tokens, cost) · click a row → system prompt, input, response, error · Answer latency panel (p50 / p95 per stage, bank vs model)"]:::ask
   MOCK["MOCK_LLM=1 · claude.structured traces the fake call too<br/>[FUNCTION] so the tab can be QA'd without spend"]:::fn
 
   CTX --> CALL --> REC
@@ -18,6 +19,7 @@ flowchart TD
   API --> TAB
   MOCK -.-> TR
 
+  LAT --> API
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
   classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;

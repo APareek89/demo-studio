@@ -19,7 +19,7 @@ flowchart TD
   CHK["check-in question<br/>[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s<br/>[FUNCTION · interpretReply — regex, NO LLM]<br/>yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)<br/>[FUNCTION]"]:::fn
-  QIN["question text<br/>[ask · voice or 💬 typed]"]:::ask
+  QIN["question text<br/>[ask · voice or 💬 typed]<br/>stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns"]:::ask
   QA["POST /api/demos/id/run/qa<br/>[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]<br/>in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs<br/>out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
   QV{"valid?<br/>[FUNCTION · qa.answer]<br/>fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
   RT{"where does the answer live?<br/>[FUNCTION · deck.route_for — answer fact ids ∩ each slide's facts, else the question's words vs slide topics / titles · NO LLM]"}:::dec

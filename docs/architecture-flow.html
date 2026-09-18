@@ -272,7 +272,7 @@ flowchart TD
   CHK["check-in question&lt;br/&gt;[LIBRARY · audio] then chips"]:::data
   WAIT["waitFor 15 s countdown + auto-listen 8 s&lt;br/&gt;[FUNCTION · interpretReply — regex, NO LLM]&lt;br/&gt;yes/continue · deeper · question · timeout"]:::fn
   DEEP["deeper lines (2-3, pre-authored)&lt;br/&gt;[FUNCTION]"]:::fn
-  QIN["question text&lt;br/&gt;[ask · voice or 💬 typed]"]:::ask
+  QIN["question text&lt;br/&gt;[ask · voice or 💬 typed]&lt;br/&gt;stamps: voice ended · STT done (typed: both at submit) → QA done → first answer audio → session.turns"]:::ask
   QA["POST /api/demos/id/run/qa&lt;br/&gt;[AGENT · RUNTIME_PROVIDERS gemini → claude, 15 s each, one retry; all fail → decline + callback]&lt;br/&gt;in: question, the TRUE transcript (last 8 turns), profile, current slide_id, registry, visuals, CTAs&lt;br/&gt;out: answer, fact_ids, visual, escalate, topic, cta, answered + slide_id, route, callout_id"]:::agent
   QV{"valid?&lt;br/&gt;[FUNCTION · qa.answer]&lt;br/&gt;fact_ids ⊆ registry AND (answered OR no number/claim words)"}:::dec
   RT{"where does the answer live?&lt;br/&gt;[FUNCTION · deck.route_for — answer fact ids ∩ each slide's facts, else the question's words vs slide topics / titles · NO LLM]"}:::dec
@@ -350,16 +350,18 @@ flowchart TD
   classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
 </pre>
 <h2>07 · Observability — every model / speech call → trace.jsonl → Observability tab (web/observability.js)</h2>
-<pre class="mermaid">%% 07 · Observability — every model / speech call → trace.jsonl → Observability tab (web/observability.js)
+<pre class="mermaid">
+%% 07 · Observability — every model / speech call → trace.jsonl → Observability tab (web/observability.js)
 flowchart TD
-  CTX[&quot;contextvars current_demo · current_stage&lt;br/&gt;[FUNCTION · usage.py] set by orchestrator._run_stage (build stages) and by runtime routes (stage &#x27;runtime&#x27;), translate sets &#x27;translate&#x27;&quot;]:::fn
-  CALL[&quot;one call&lt;br/&gt;[LIBRARY · claude.py structured/_soft_structured/text · gemini.py structured/tts · sarvam.py tts/stt]&lt;br/&gt;t0 → response → latency_ms&quot;]:::fn
-  REC[&quot;usage.record (tokens / chars / seconds)&lt;br/&gt;[DATA · usage.jsonl] → cost estimate (Playground › Cost)&quot;]:::data
-  TR[&quot;usage.trace&lt;br/&gt;[DATA · trace.jsonl] {t, stage, kind, model, latency_ms, in, out, chars, usd, system[:6000], user[:6000], response[:6000], error}&quot;]:::data
-  STG[&quot;stage timings&lt;br/&gt;[DATA · demo.stages[stage] {status, started_at, seconds, error}] written by orchestrator._run_stage&quot;]:::data
-  API[&quot;GET /api/demos/id/trace?limit=N&lt;br/&gt;[FUNCTION] → {stages, rows, usage summary}&quot;]:::fn
-  TAB[&quot;Observability tab&lt;br/&gt;[ask · demo picker · stage filter]&lt;br/&gt;stage cards (seconds, status) · totals by model · calls table (when, stage, call·model, latency, tokens, cost) · click a row → system prompt, input, response, error&quot;]:::ask
-  MOCK[&quot;MOCK_LLM=1 · claude.structured traces the fake call too&lt;br/&gt;[FUNCTION] so the tab can be QA&#x27;d without spend&quot;]:::fn
+  CTX["contextvars current_demo · current_stage&lt;br/&gt;[FUNCTION · usage.py] set by orchestrator._run_stage (build stages) and by runtime routes (stage 'runtime'), translate sets 'translate'"]:::fn
+  CALL["one call&lt;br/&gt;[LIBRARY · claude.py structured/_soft_structured/text · gemini.py structured/tts · sarvam.py tts/stt]&lt;br/&gt;t0 → response → latency_ms"]:::fn
+  REC["usage.record (tokens / chars / seconds)&lt;br/&gt;[DATA · usage.jsonl] → cost estimate (Playground › Cost)"]:::data
+  TR["usage.trace&lt;br/&gt;[DATA · trace.jsonl] {t, stage, kind, model, latency_ms, in, out, chars, usd, system[:6000], user[:6000], response[:6000], error}"]:::data
+  STG["stage timings&lt;br/&gt;[DATA · demo.stages[stage] {status, started_at, seconds, error}] written by orchestrator._run_stage"]:::data
+  LAT["session.turns — four stamps per customer turn (voice ended · STT done · QA done · first answer audio)&lt;br/&gt;[FUNCTION · app._latency — nearest-rank p50 / p95 per stage over every stamped turn of the demo's sessions]"]:::fn
+  API["GET /api/demos/id/trace?limit=N&lt;br/&gt;[FUNCTION] → {stages, rows, usage summary} + latency {turns, stages: stt/qa/tts/total → n, p50, p95, by_source}"]:::fn
+  TAB["Observability tab&lt;br/&gt;[ask · demo picker · stage filter]&lt;br/&gt;stage cards (seconds, status) · totals by model · calls table (when, stage, call·model, latency, tokens, cost) · click a row → system prompt, input, response, error · Answer latency panel (p50 / p95 per stage, bank vs model)"]:::ask
+  MOCK["MOCK_LLM=1 · claude.structured traces the fake call too&lt;br/&gt;[FUNCTION] so the tab can be QA'd without spend"]:::fn
 
   CTX --&gt; CALL --&gt; REC
   CALL --&gt; TR
@@ -370,6 +372,7 @@ flowchart TD
   API --&gt; TAB
   MOCK -.-&gt; TR
 
+  LAT --&gt; API
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
   classDef dec fill:#f3e8ff,stroke:#9333ea,color:#2a0a4a;

@@ -43,6 +43,18 @@ class Local:
                     pass
         return out
 
+    def iter_sessions(self, demo_id: str, limit: int = 200) -> list[dict]:
+        """Full records, newest first — for roll-ups (latency percentiles); the working copy on disk is the source."""
+        out = []
+        d = store.path(demo_id, "sessions")
+        if d.exists():
+            for p in sorted(d.glob("*.json"), reverse=True)[:limit]:
+                try:
+                    out.append(json.loads(p.read_text()))
+                except Exception:
+                    pass
+        return out
+
     def put_lead(self, demo_id: str, lead: dict) -> None:
         store.write_json(demo_id, f"leads/{lead['id']}.json", lead)
 
