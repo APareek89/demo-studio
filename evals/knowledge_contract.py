@@ -173,6 +173,7 @@ class KnowledgeContract(unittest.TestCase):
             ("model", "Aster", "Nova"), ("powertrain", "1.5l Turbo GDi petrol", "1.5l MPi petrol"),
             ("powertrain", "1.5l Turbo GDi petrol", "2.0l Turbo GDi petrol"),
             ("powertrain", "1.5l Turbo GDi petrol", "petrol"),
+            ("powertrain", "1.5l petrol", "1.5l petrol"),
             ("market", "India", "South Africa"), ("model_year", "2026", "2025"),
             ("variant", "Entry", "Premium"), ("transmission", "6MT", "7DCT"),
             ("test_basis", "standard", "modified"), ("generation", "second", "first"),

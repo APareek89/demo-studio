@@ -252,6 +252,8 @@ def _displacement_conflict(a: dict, b: dict) -> dict | None:
         # cannot identify which of a model's engines an assertion describes.
         if not re.search(r"\d+(?:\.\d+)? l\b", text) or not re.search(r"\b(?:petrol|diesel)\b", text):
             return None
+        if "petrol" in text and not re.search(r"\b(?:turbo|mpi|naturally aspirated)\b", text):
+            return None
         return scope_value(re.sub(r"\bengine\b", "", text), "powertrain")
     ax, bx = engine(x.get("powertrain", "")), engine(y.get("powertrain", ""))
     if not ax or ax != bx:
