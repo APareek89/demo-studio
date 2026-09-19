@@ -178,8 +178,8 @@ _ORDINAL_NAME = rf"{_ORDINAL_ATOM}(?:[ -]{_ORDINAL_ATOM}){{0,3}}"
 _ORDINAL = re.compile(
     rf"\b(?:(?:starting|beginning)\s+)?(?P<prefix>from|up\s+to)\s+(?:the\s+)?"
     rf"(?P<first>{_ORDINAL_NAME})(?:\s+(?:trim|variant)s?)?"
-    rf"(?:\s+(?P<tail>upwards?|onwards?|and\s+(?:above|up|higher)|and\s+(?:below|down|lower)))?"
-    rf"|(?<![\w(])(?P<last>{_ORDINAL_NAME})(?:\s+(?:trim|variant)s?)?\s+"
+    rf"(?:(?:\s*,)?\s+(?P<tail>upwards?|onwards?|and\s+(?:above|up|higher)|and\s+(?:below|down|lower)))?"
+    rf"|(?<![\w(])(?P<last>{_ORDINAL_NAME})(?:\s+(?:trim|variant)s?)?(?:\s*,)?\s+"
     rf"(?P<suffix>and\s+(?:above|up|higher|below|down|lower)|upwards?|onwards?|downwards?)\b",
     re.I,
 )
@@ -209,7 +209,7 @@ def _ordinal_clauses(text: str, facts: list[dict] | None = None) -> list[str]:
     # clauses are separate proof units; ambiguous unsplit multi-threshold prose
     # is refused below rather than borrowing a convenient neighbouring feature.
     clauses = [v.strip() for v in re.split(
-        r"[;\n]|[.!?](?:\s|$)|,?\s+\b(?:while|whereas|but)\b|,\s+and\s+", text, flags=re.I
+        r"[;\n]|[.!?](?:\s|$)|,?\s+\b(?:while|whereas|but)\b|,\s+and\s+(?!(?:above|up|higher|below|down|lower)\b)", text, flags=re.I
     ) if v.strip()]
     result = []
     for clause in clauses:

@@ -185,5 +185,43 @@ class OrdinalContract(unittest.TestCase):
                     text=f"{count} {shared_modifier}{kind} {head} are available on Nimbus and above."
                     with self.subTest(text=text):self.assertEqual(rejects(text,[f]),rejected)
 
+    def test_comma_coordinated_open_ranges_are_not_named_enumerations(self):
+        f=fact("Rear camera on Nimbus, Aurora, Zenith", variant="Nimbus, Aurora, Zenith")
+        for text in (
+            "Rear camera is standard on Nimbus, Aurora, and higher.",
+            "Rear camera is standard on trims like Nimbus, Aurora, and above.",
+            "Rear camera is standard on Nimbus, Aurora, and lower.",
+            "Rear camera is standard from Nimbus, and above.",
+        ):
+            with self.subTest(text=text): self.assertTrue(rejects(text,[f]))
+        self.assertFalse(rejects("Rear camera is standard on Nimbus, Aurora, and Zenith.",[f]))
+
+    def test_comma_threshold_spelling_still_needs_same_feature_literal_proof(self):
+        for assertion in ("Rear camera on Nimbus and above", "Rear camera on Nimbus, and above"):
+            f=fact(assertion)
+            for text in ("Rear camera on Nimbus, and higher.", "Rear camera from Nimbus, and above."):
+                with self.subTest(assertion=assertion,text=text): self.assertFalse(rejects(text,[f]))
+            for text in ("Front camera on Nimbus, and higher.", "Rear camera on Aurora, and higher.",
+                         "Rear camera on Nimbus, and lower."):
+                self.assertTrue(rejects(text,[f]))
+
+    def test_comma_ranges_do_not_merge_independent_feature_proofs(self):
+        f=fact("Rear camera on Nimbus and above; heated seats on Aurora and above")
+        self.assertFalse(rejects("Rear camera on Nimbus, and above, and heated seats on Aurora, and higher.",[f]))
+        self.assertTrue(rejects("Rear camera on Aurora, and higher, and heated seats on Aurora, and higher.",[f]))
+        self.assertTrue(rejects("Rear camera on Nimbus, and higher, while heated seats on Nimbus, and higher.",[f]))
+        self.assertFalse(rejects("Rear camera on Nimbus, Aurora, and Zenith, and heated seats on Aurora, and above.",[f]))
+
+    def test_actual_comma_range_is_rejected_through_graph_without_losing_other_rows(self):
+        from server.runtime_graph import validate_decision
+        case=json.loads((Path(__file__).parent / "fixtures/runtime_guard_coordination.json").read_text())["q033"]
+        self.assertTrue(rejects(case["decision"]["sentences"][1]["text"],case["facts"]))
+        result,errors=validate_decision(case["decision"],case["facts"],case["question"])
+        self.assertIn("unsupported_ordinal_fitment",errors)
+        self.assertNotIn("and higher",result["answer"])
+        self.assertIn("Rear parking sensors",result["answer"])
+        self.assertIn("electric parking brake",result["answer"])
+        self.assertNotIn("F248",result["fact_ids"])
+
 
 if __name__=="__main__": unittest.main()

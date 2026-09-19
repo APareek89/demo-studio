@@ -11,6 +11,44 @@ COORDINATION = json.loads((Path(__file__).parent / "fixtures/runtime_coverage_co
 
 
 class CoverageContract(unittest.TestCase):
+    def test_actual_market_statement_does_not_license_page_absence(self):
+        case=json.loads((Path(__file__).parent / "fixtures/runtime_guard_coordination.json").read_text())["q071"]
+        claim=case["decision"]["sentences"][1]["text"]
+        self.assertEqual(len(case["tool_results"][0]["evidence"]),6)
+        self.assertTrue(unsupported_coverage_claim(claim))
+        self.assertTrue(unsupported_coverage_claim(case["answer"]))
+        self.assertEqual(coverage_limitation(claim,precise=True),LIMIT)
+        self.assertEqual(coverage_limitation(case["decision"]["sentences"][0]["text"]),"")
+        from server.runtime_graph import validate_decision
+        result,errors=validate_decision(case["decision"],case["facts"],case["question"])
+        self.assertIn("unverified_coverage_claim",errors)
+        self.assertNotIn("doesn't specify",result["answer"])
+        self.assertIn("1482",result["answer"])
+
+    def test_source_pronoun_ownership_is_not_limited_to_reporting_verbs(self):
+        for text in (
+            "The page reflects the Indian market, but it doesn't specify variant names.",
+            "The document targets buyers, yet it does not detail refund terms.",
+            "The brochure is intended for families, but it does not mention warranty terms.",
+            "The page describes Highlights, but it does not detail warranty terms.",
+            "The page addresses the Indian market and it does not list trim names.",
+        ):
+            with self.subTest(text=text): self.assertEqual(coverage_limitation(text),LIMIT)
+
+    def test_generic_positive_predicate_preserves_explicit_nested_and_product_subjects(self):
+        for text in (
+            "The page reflects the Indian market, but the E trim does not include heated seats.",
+            "The page explains that E has manual seats, but it does not include heated seats.",
+            "The page describes E, which has manual seats, but it does not include heated seats.",
+            "The page reflects the market and the E trim has manual seats, but it does not include heated seats.",
+            "The page describes SX, but it does not include ventilated seats.",
+            "The page describes Aurora Premium, but it does not provide heated seats.",
+            "The page describes the warranty, but it does not cover wear and tear.",
+            "According to the page about E, it does not include ventilated seats.",
+            "The page reflects the Indian market. It does not include ventilated seats.",
+        ):
+            with self.subTest(text=text): self.assertFalse(unsupported_coverage_claim(text))
+
     def test_actual_coordinated_source_pronoun_is_not_complete_page_evidence(self):
         original = COORDINATION["rows"][0]
         self.assertEqual(original["id"], "q073")

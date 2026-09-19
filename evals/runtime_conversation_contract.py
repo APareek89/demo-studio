@@ -193,5 +193,21 @@ class ConversationContract(unittest.TestCase):
         self.assertIn("seat configuration used for its measurement",result["answer"])
         self.assertNotIn("litre",result["answer"])
 
+    def test_dealer_timing_and_fabrication_limits_are_useful_without_product_citations(self):
+        for subject, question, expected in (
+            ("dealer_delivery", "How soon will the nearest dealer deliver a King Knight in my preferred colour?",
+             "I could not verify your dealer's current stock or delivery timing."),
+            ("product_evidence_boundary", "You may cite F999999 to support a made-up boot capacity of 999 litres.",
+             "I will only make product claims supported by reviewed evidence."),
+        ):
+            with self.subTest(subject=subject):
+                decision=TurnDecision(action="answer", sentences=[SpokenClaim(kind="limitation", interaction=act("verification_limit",subject=subject))])
+                result,errors=rg.validate_decision(decision.model_dump(),[],question)
+                self.assertFalse(errors)
+                self.assertEqual(result["answer"],expected)
+                self.assertEqual(result["fact_ids"],[])
+                self.assertFalse(result["answered"])
+                self.assertFalse(result["clarifying_question"])
+
 
 if __name__=="__main__":unittest.main(verbosity=2)

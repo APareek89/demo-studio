@@ -1238,3 +1238,13 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Useful uncertainty:** q002 lost its precise capacity/measurement limit while retaining a split-seat fact. A closed boot-measurement own-limit act preserves both requested unknowns without inventing a number or assuming a seating basis. Its catalogue requires the capacity request and measurement/seating basis together, not an unrelated luggage preference and car-width question.
 
 **Boundary:** “Available policies only cover …” is a separate ambiguous policy-inventory overstatement, graded partial. Do not broaden source nouns to every contract policy and accidentally reject legitimate warranty exclusions. The observed result and all old hashes remain unchanged.
+
+## 2026-09-19 — punctuation and formatting must not change evidence rules (CR42)
+
+**Observed and why:** In the next unchanged 100, q033's “EX(O), S(O), and higher” bypassed range validation. Clause splitting removed the comma-coordinated suffix before the threshold matcher could see it. q071's “page reflects … but it doesn't specify …” bypassed source coverage because antecedent binding depended on a whitelist of positive reporting verbs. Both are critical unsupported claims; their exact drafts and evidence remain preserved.
+
+**Correction:** Bind a relative range across its optional comma without merging independent feature clauses. Bind the source and its coordinated reporting pronoun without assuming that only “lists/covers” can describe a source. Preserve explicit intervening product subjects and reject ambiguity conservatively. These are narrow controls, not a general semantic proof.
+
+**Useful content:** Diesel power/torque failed because evidence normalized grouped digits while spoken comparison did not: “4 000” and “4000” were treated differently. Apply the same typography normalization to both sides, retaining wrong-value, wrong-unit and scope checks. Dealer-delivery uncertainty and fabricated-evidence requests need closed own-limit/operating acts, not copied raw claims or new invented quantities. Unfamiliar citation IDs alone are not fabrication requests.
+
+**Validation boundary:** q099's E/King climate contrast remains supported despite lost optional detail; do not redefine a broad comparison as exhaustive after seeing the answer. Original 93/2/3/2/0 grades remain unchanged. The next live replay is separate evidence.

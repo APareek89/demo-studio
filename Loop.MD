@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Current finite checks — ranges, source subjects and grouped quantities
+
+Loop remains off. The settled `d7c4bbe`/v7 cohort remains 93 supported, 2 partial, 3 unhelpful, 2 unsafe and 0 provider failures. Bounded fixes preserve comma-coordinated ranges, source-pronoun ownership and symmetric numeric typography; closed dealer/evidence acts keep useful limits. Final ordinal 21, coverage 20, grouped quantities 8, typed helper 29, conversation 18, schema 8, deck 320, acceptance 24 and both smoke phases pass with isolated storage and zero outbound attempts. Graph, repair, limits, cohort and clause checks pass; independent pairing, calculator-deadline and currency checks also pass. Exact logs/hashes are under `final-gates/range-source-*`. No source, script, speech or UI changes. The next unchanged live 100 has a separate $3.50/300-completion cap within the overall $20 ceiling.
+
 ## Current finite checks — source coverage and useful boot uncertainty
 
 Loop remains off. The settled three-second fallback cohort scored 94 supported, 4 partial, 1 unsafe and 1 provider failure; its two original budget segments remain preserved. The coordinated source-pronoun guard and question-bound boot-measurement limit have independent reviews. Final coverage 17, typed helper 24, conversation 17, schema 8, deck 320, acceptance 24 and both smoke phases pass in isolated storage with zero outbound attempts. Graph, repair, limits, cohort and clause controls also pass. Logs and frozen hashes are under `final-gates/coverage-boot-*`. No source, script, speech or UI changes. The next unchanged live 100 is separately capped at $3.50/300 completions; free checks do not replace live acceptance.

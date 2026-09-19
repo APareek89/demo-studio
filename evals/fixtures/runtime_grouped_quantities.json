@@ -1,0 +1,1363 @@
+{
+  "case_id": "q032",
+  "code_commit": "d7c4bbedfb2d2007fc57413bccb7d34b32946689",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "snapshot_sha256": "fa8bfa54b9c1fd23e0f042b76d89b49efb35fc3b50f4ad04817f4856925f33fc",
+  "raw_row_sha256": "87ce7266ebe38ed947485c98a2a500a04ba75398d3d9bee43d112bb1bf8827e3",
+  "original_result_row": {
+    "id": "q032",
+    "category": "product",
+    "question": "How much power and torque does the diesel engine make?",
+    "review_expectation": "review against pinned evidence and stated inputs",
+    "session_id": "qa100_1789836674_q032",
+    "elapsed_ms": 4710,
+    "status": "limited_or_refused",
+    "mechanics": {
+      "no_audio": true,
+      "no_http_error": true,
+      "citations_if_answered": true
+    },
+    "result": {
+      "answer": "I don't have a supported answer to that yet. We can check it with a salesperson or carry on.",
+      "fact_ids": [],
+      "facts": [],
+      "condition_fact_ids": [],
+      "condition_evidence": [],
+      "covered_condition_rejections": false,
+      "answered": false,
+      "clarifying_question": "",
+      "offer_callback": true,
+      "topic": "powertrain_specifications",
+      "cta": "",
+      "slide_id": null,
+      "route": "none",
+      "callout_id": null,
+      "by": "",
+      "audio": null,
+      "visual": null,
+      "from_bank": false,
+      "provider_failed": false,
+      "reasoning_failed": false,
+      "calculation_fallback": false,
+      "repair_failed": false,
+      "tool_results": [],
+      "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+      "validation_errors": [
+        "unsupported_quantity",
+        "unsupported_assertion_feature"
+      ],
+      "provider_used": "gemini",
+      "model_used": "gemini-3.8-flash",
+      "validation_repair": {
+        "attempted": true,
+        "accepted": false,
+        "budget_ms": 9417,
+        "original_validation_errors": [
+          "unsupported_quantity",
+          "unsupported_assertion_feature"
+        ],
+        "validation_errors": [
+          "unsupported_quantity",
+          "unsupported_quantity"
+        ],
+        "provider_used": "gemini",
+        "model_used": "gemini-3.8-flash",
+        "latency_ms": 2359
+      },
+      "runtime_utterance_id": "u_2e77a796a9b21251d732",
+      "turn_id": "q032",
+      "timings": {
+        "retrieve_ms": 102,
+        "reason_ms": 2224,
+        "repair_ms": 2359,
+        "graph_ms": 4700
+      },
+      "graph_timings": {
+        "retrieve_ms": 102,
+        "reason_ms": 2224,
+        "repair_ms": 2359,
+        "graph_ms": 4700
+      }
+    },
+    "quality_review": {
+      "answerability": "pending",
+      "grounded_correct": null,
+      "scope_correct": null,
+      "human_helpfulness": null,
+      "notes": ""
+    }
+  },
+  "trace_path": "data/demos/dm_41513908/trace.jsonl",
+  "events": [
+    {
+      "trace_line": 5172,
+      "raw_trace_sha256": "ea2be0b2a195ca97a0898ba3ebbd93e09fd79c4e7aba9b3ba06d0bced306d8a1",
+      "timestamp": 1789836739.5621,
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 2131,
+      "error": "",
+      "payload": {
+        "question": "How much power and torque does the diesel engine make?",
+        "customer": {
+          "scope": {}
+        },
+        "conversation": [],
+        "evidence": [
+          {
+            "id": "F228",
+            "kind": "spec",
+            "claim": "1.5l U2 CRDi diesel maximum torque",
+            "value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min",
+            "conditions": "1.5l U2 CRDi diesel engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l U2 CRDi diesel",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F227",
+            "kind": "spec",
+            "claim": "1.5l U2 CRDi diesel maximum power",
+            "value": "85 kW (116 PS) @ 4 000 r/min",
+            "conditions": "1.5l U2 CRDi diesel engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l U2 CRDi diesel",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F109",
+            "kind": "spec",
+            "claim": "Max torque (1.5 l U2 CRDi)",
+            "value": "250 Nm (25.5 kgm) @ 1 500 - 2 750 r/min",
+            "conditions": "1.5 l U2 CRDi engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l U2 CRDi diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "Performance · block 28"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F108",
+            "kind": "spec",
+            "claim": "Max power (1.5 l U2 CRDi)",
+            "value": "85 kW (116 PS) @ 4 000 r/min",
+            "conditions": "1.5 l U2 CRDi engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l U2 CRDi diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "Performance · block 28"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F058",
+            "kind": "spec",
+            "claim": "1.5L Diesel transmission options",
+            "value": "6-speed manual or 6-speed automatic",
+            "conditions": "1.5-litre diesel engine",
+            "scope": {
+              "model": "Hyundai CRETA",
+              "powertrain": "1.5L diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_51f57f",
+              "locator": "page 43, Specifications FAQ"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F224",
+            "kind": "spec",
+            "claim": "1.5l MPi petrol maximum torque",
+            "value": "143.8 Nm (14.7 kgm) @ 4 500 r/min",
+            "conditions": "1.5l MPi petrol engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l MPi petrol",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l MPi petrol"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F226",
+            "kind": "spec",
+            "claim": "1.5l U2 CRDi diesel engine displacement",
+            "value": "1 493 cm3",
+            "conditions": "1.5l U2 CRDi diesel engine; 4 cylinders, 16 valves DOHC",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l U2 CRDi diesel",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F232",
+            "kind": "spec",
+            "claim": "1.5l Turbo GDi petrol maximum torque",
+            "value": "253 Nm (25.8 kgm) @ 1 500~3 500 r/min",
+            "conditions": "1.5l Turbo GDi petrol engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l Turbo GDi petrol",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l Turbo GDi petrol"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F189",
+            "kind": "spec",
+            "claim": "Engine options",
+            "value": "1.5L petrol, diesel, and turbo petrol",
+            "conditions": "Available options vary by selected variant",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_91fa41526174",
+              "locator": "Discover the Hyundai CRETA Price in Pune · block 16"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F107",
+            "kind": "spec",
+            "claim": "Engine displacement (1.5 l U2 CRDi)",
+            "value": "1 493 cm3",
+            "conditions": "1.5 l U2 CRDi engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l U2 CRDi diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "Performance · block 28"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F105",
+            "kind": "claim",
+            "claim": "Most powerful engine in lineup",
+            "value": "The 1.5-liter Turbo GDi petrol engine is the most powerful option in the CRETA lineup, delivering the highest power output among regular petrol and diesel engines and providing an exhilarating driving experience.",
+            "conditions": "Among regular petrol and diesel engines in CRETA lineup",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l Turbo GDi petrol"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_673bc558f396",
+              "locator": "5.Is the petrol-turbo engine the most powerful among the CRETA’s lineup? · block 91"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F085",
+            "kind": "spec",
+            "claim": "1.5L diesel transmissions",
+            "value": "6-speed manual or a 6-speed automatic",
+            "conditions": "1.5L U2 CRDi diesel engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5L U2 CRDi diesel",
+              "transmission": "6MT / 6AT",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_673bc558f396",
+              "locator": "FAQs · 2. What are the transmission choices for each CRETA engine variant? · block 85"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F124",
+            "kind": "feature",
+            "claim": "Engine line-up options",
+            "value": "1.5 l U2 CRDi diesel 1.5 l MPi Petrol 1.5 l Turbo GDi petrol",
+            "conditions": "Available engine options listed",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "New Hyundai CRETA Car Engine Specification · block 25"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F223",
+            "kind": "spec",
+            "claim": "1.5l MPi petrol maximum power",
+            "value": "84.4 kW (115 PS) @ 6 300 r/min",
+            "conditions": "1.5l MPi petrol engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l MPi petrol",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l MPi petrol"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          }
+        ],
+        "requested_scope": {},
+        "conflicts": [],
+        "mandatory_dependencies": [],
+        "tools_so_far": [],
+        "tool_errors": [],
+        "tools_remaining": 4,
+        "CUSTOMER_URLS": [],
+        "required_page_verification": [],
+        "allowed_interactions": {
+          "verification_limit": [],
+          "input_request": [],
+          "fit_check": []
+        },
+        "guide": {
+          "persona_name": "Priya",
+          "persona_description": "A poised and welcoming Hyundai guide who explains automotive features with calm clarity. the guide focuses on real-world comfort and grounded facts without pushy sales talk.",
+          "tone": "Warm, reassuring, and attentive with measured enthusiasm for cabin craftsmanship.",
+          "sample_line": "Hello and welcome to Hyundai. I am Priya, and I am delighted to show you the thoughtful comfort and reassuring safety built into the CRETA.",
+          "suggested_voice": "priya",
+          "language": "en-IN"
+        },
+        "product": {
+          "name": "Hyundai CRETA",
+          "category": "Compact SUV",
+          "url": "https://www.hyundai.com/in/en/find-a-car/creta/highlights"
+        },
+        "ctas": [
+          {
+            "id": "cta-test-drive",
+            "label": "Book a Test Drive",
+            "kind": "book",
+            "url": "https://www.hyundai.com/in/en/click-to-buy/creta-request-a-test-drive?id=creta&prod=creta",
+            "primary": true,
+            "when": "end"
+          },
+          {
+            "id": "cta-locate-dealer",
+            "label": "Locate Dealer",
+            "kind": "contact",
+            "url": "https://www.hyundai.com/in/en/click-to-buy/find-a-dealer-and-website",
+            "primary": false,
+            "when": "always"
+          },
+          {
+            "id": "cta-download-brochure",
+            "label": "Download Brochure",
+            "kind": "link",
+            "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/creta.pdf",
+            "primary": false,
+            "when": "always"
+          }
+        ],
+        "reviewed_comparison_examples": ""
+      },
+      "response": "{\n  \"action\": \"answer\",\n  \"sentences\": [\n    {\n      \"text\": \"The 1.5-litre U2 CRDi diesel engine delivers a maximum power of 85 kW, which is 116 PS at 4 000 r/min.\",\n      \"fact_ids\": [\"F227\"],\n      \"kind\": \"fact\",\n      \"interaction\": null\n    },\n    {\n      \"text\": \"It produces a maximum pulling power of 250 Nm between 1 500 and 2 750 r/min.\",\n      \"fact_ids\": [\"F228\"],\n      \"kind\": \"fact\",\n      \"interaction\": null\n    }\n  ],\n  \"clarification\": \"\",\n  \"clarification_act\": null,\n  \"tool_calls\": [],\n  \"answered\": true,\n  \"topic\": \"powertrain_specifications\",\n  \"cta\": \"\"\n}"
+    },
+    {
+      "trace_line": 5176,
+      "raw_trace_sha256": "86fee4dd260a96575ba1de9501fd81589f915062c7d0e9409768b473c474242e",
+      "timestamp": 1789836741.90893,
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 2296,
+      "error": "",
+      "payload": {
+        "question": "How much power and torque does the diesel engine make?",
+        "conversation": [],
+        "requested_scope": {},
+        "customer": {
+          "scope": {}
+        },
+        "guide": {
+          "persona_name": "Priya",
+          "persona_description": "A poised and welcoming Hyundai guide who explains automotive features with calm clarity. the guide focuses on real-world comfort and grounded facts without pushy sales talk.",
+          "tone": "Warm, reassuring, and attentive with measured enthusiasm for cabin craftsmanship.",
+          "sample_line": "Hello and welcome to Hyundai. I am Priya, and I am delighted to show you the thoughtful comfort and reassuring safety built into the CRETA.",
+          "suggested_voice": "priya",
+          "language": "en-IN"
+        },
+        "evidence": [
+          {
+            "id": "F228",
+            "kind": "spec",
+            "claim": "1.5l U2 CRDi diesel maximum torque",
+            "value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min",
+            "conditions": "1.5l U2 CRDi diesel engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l U2 CRDi diesel",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F227",
+            "kind": "spec",
+            "claim": "1.5l U2 CRDi diesel maximum power",
+            "value": "85 kW (116 PS) @ 4 000 r/min",
+            "conditions": "1.5l U2 CRDi diesel engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l U2 CRDi diesel",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F109",
+            "kind": "spec",
+            "claim": "Max torque (1.5 l U2 CRDi)",
+            "value": "250 Nm (25.5 kgm) @ 1 500 - 2 750 r/min",
+            "conditions": "1.5 l U2 CRDi engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l U2 CRDi diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "Performance · block 28"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F108",
+            "kind": "spec",
+            "claim": "Max power (1.5 l U2 CRDi)",
+            "value": "85 kW (116 PS) @ 4 000 r/min",
+            "conditions": "1.5 l U2 CRDi engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l U2 CRDi diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "Performance · block 28"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F058",
+            "kind": "spec",
+            "claim": "1.5L Diesel transmission options",
+            "value": "6-speed manual or 6-speed automatic",
+            "conditions": "1.5-litre diesel engine",
+            "scope": {
+              "model": "Hyundai CRETA",
+              "powertrain": "1.5L diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_51f57f",
+              "locator": "page 43, Specifications FAQ"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F224",
+            "kind": "spec",
+            "claim": "1.5l MPi petrol maximum torque",
+            "value": "143.8 Nm (14.7 kgm) @ 4 500 r/min",
+            "conditions": "1.5l MPi petrol engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l MPi petrol",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l MPi petrol"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F226",
+            "kind": "spec",
+            "claim": "1.5l U2 CRDi diesel engine displacement",
+            "value": "1 493 cm3",
+            "conditions": "1.5l U2 CRDi diesel engine; 4 cylinders, 16 valves DOHC",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l U2 CRDi diesel",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F232",
+            "kind": "spec",
+            "claim": "1.5l Turbo GDi petrol maximum torque",
+            "value": "253 Nm (25.8 kgm) @ 1 500~3 500 r/min",
+            "conditions": "1.5l Turbo GDi petrol engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l Turbo GDi petrol",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l Turbo GDi petrol"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F189",
+            "kind": "spec",
+            "claim": "Engine options",
+            "value": "1.5L petrol, diesel, and turbo petrol",
+            "conditions": "Available options vary by selected variant",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_91fa41526174",
+              "locator": "Discover the Hyundai CRETA Price in Pune · block 16"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F107",
+            "kind": "spec",
+            "claim": "Engine displacement (1.5 l U2 CRDi)",
+            "value": "1 493 cm3",
+            "conditions": "1.5 l U2 CRDi engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l U2 CRDi diesel"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "Performance · block 28"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F105",
+            "kind": "claim",
+            "claim": "Most powerful engine in lineup",
+            "value": "The 1.5-liter Turbo GDi petrol engine is the most powerful option in the CRETA lineup, delivering the highest power output among regular petrol and diesel engines and providing an exhilarating driving experience.",
+            "conditions": "Among regular petrol and diesel engines in CRETA lineup",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5 l Turbo GDi petrol"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_673bc558f396",
+              "locator": "5.Is the petrol-turbo engine the most powerful among the CRETA’s lineup? · block 91"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F085",
+            "kind": "spec",
+            "claim": "1.5L diesel transmissions",
+            "value": "6-speed manual or a 6-speed automatic",
+            "conditions": "1.5L U2 CRDi diesel engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5L U2 CRDi diesel",
+              "transmission": "6MT / 6AT",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_673bc558f396",
+              "locator": "FAQs · 2. What are the transmission choices for each CRETA engine variant? · block 85"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F124",
+            "kind": "feature",
+            "claim": "Engine line-up options",
+            "value": "1.5 l U2 CRDi diesel 1.5 l MPi Petrol 1.5 l Turbo GDi petrol",
+            "conditions": "Available engine options listed",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_fbd71842024b",
+              "locator": "New Hyundai CRETA Car Engine Specification · block 25"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F223",
+            "kind": "spec",
+            "claim": "1.5l MPi petrol maximum power",
+            "value": "84.4 kW (115 PS) @ 6 300 r/min",
+            "conditions": "1.5l MPi petrol engine",
+            "scope": {
+              "model": "CRETA",
+              "powertrain": "1.5l MPi petrol",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_22b687",
+              "locator": "page 15, Technical specifications; engine column 1.5l MPi petrol"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          }
+        ],
+        "original_sentences": [
+          {
+            "text": "The 1.5-litre U2 CRDi diesel engine delivers a maximum power of 85 kW, which is 116 PS at 4 000 r/min.",
+            "fact_ids": [
+              "F227"
+            ],
+            "kind": "fact",
+            "interaction": null
+          },
+          {
+            "text": "It produces a maximum pulling power of 250 Nm between 1 500 and 2 750 r/min.",
+            "fact_ids": [
+              "F228"
+            ],
+            "kind": "fact",
+            "interaction": null
+          }
+        ],
+        "validation_feedback": [
+          {
+            "text": "The 1.5-litre U2 CRDi diesel engine delivers a maximum power of 85 kW, which is 116 PS at 4 000 r/min.",
+            "fact_ids": [
+              "F227"
+            ],
+            "kind": "fact",
+            "error": "unsupported_quantity"
+          },
+          {
+            "text": "It produces a maximum pulling power of 250 Nm between 1 500 and 2 750 r/min.",
+            "fact_ids": [
+              "F228"
+            ],
+            "kind": "fact",
+            "error": "unsupported_assertion_feature"
+          }
+        ],
+        "tool_results": [],
+        "mandatory_dependencies": [],
+        "allowed_interactions": {
+          "verification_limit": [],
+          "input_request": [],
+          "fit_check": []
+        }
+      },
+      "response": "{\n  \"sentences\": [\n    {\n      \"text\": \"The 1.5l U2 CRDi diesel engine makes a maximum power of 85 kW (116 PS) @ 4 000 r/min.\",\n      \"fact_ids\": [\"F227\"],\n      \"kind\": \"fact\",\n      \"interaction\": null\n    },\n    {\n      \"text\": \"Its maximum torque is 250 Nm (25.5 kgm) @ 1 500-2 750 r/min.\",\n      \"fact_ids\": [\"F228\"],\n      \"kind\": \"fact\",\n      \"interaction\": null\n    }\n  ]\n}"
+    },
+    {
+      "trace_line": 5178,
+      "raw_trace_sha256": "a4ad7a6f0b8f39accbe18e495abeb42a28fe9457d2905efd17b3552454fd6b70",
+      "timestamp": 1789836741.96915,
+      "kind": "runtime-validation-repair",
+      "model": "code",
+      "latency_ms": 2359,
+      "error": "",
+      "payload": null,
+      "response": "{\"attempted\": true, \"accepted\": false, \"budget_ms\": 9417, \"original_validation_errors\": [\"unsupported_quantity\", \"unsupported_assertion_feature\"], \"validation_errors\": [\"unsupported_quantity\", \"unsupported_quantity\"], \"provider_used\": \"gemini\", \"model_used\": \"gemini-3.8-flash\", \"latency_ms\": 2359, \"original_sentences\": [{\"text\": \"The 1.5-litre U2 CRDi diesel engine delivers a maximum power of 85 kW, which is 116 PS at 4 000 r/min.\", \"fact_ids\": [\"F227\"], \"kind\": \"fact\", \"interaction\": null}, {\"text\": \"It produces a maximum pulling power of 250 Nm between 1 500 and 2 750 r/min.\", \"fact_ids\": [\"F228\"], \"kind\": \"fact\", \"interaction\": null}], \"final_answer\": \"I don't have a supported answer to that yet. We can check it with a salesperson or carry on.\"}"
+    },
+    {
+      "trace_line": 5179,
+      "raw_trace_sha256": "880d1bb90bf06b4ab7dca5e47d5718dc8f003365dc1ea925be2374015cb63a4a",
+      "timestamp": 1789836741.975193,
+      "kind": "runtime-graph",
+      "model": "code",
+      "latency_ms": 4700,
+      "error": "",
+      "payload": null,
+      "response": "{\"turn_id\": \"q032\", \"snapshot_id\": \"kb_2d616ba1bcec1469e8c7ab40\", \"timings\": {\"retrieve_ms\": 102, \"reason_ms\": 2224, \"repair_ms\": 2359, \"graph_ms\": 4700}, \"answered\": false, \"provider_used\": \"gemini\", \"model_used\": \"gemini-3.8-flash\", \"errors\": [\"unsupported_quantity\", \"unsupported_assertion_feature\"]}"
+    }
+  ],
+  "full_pinned_assertions": [
+    {
+      "kind": "spec",
+      "claim": "1.5L Diesel transmission options",
+      "value": "6-speed manual or 6-speed automatic",
+      "source": {
+        "ref": "src_51f57f",
+        "locator": "page 43, Specifications FAQ",
+        "quote": "a 6-speed manual or a 6-speed automatic for the diesel"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5-litre diesel engine",
+      "scope": {
+        "model": "Hyundai CRETA",
+        "powertrain": "1.5L diesel"
+      },
+      "truth": "stated",
+      "id": "F058",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+        "assertion_hash": "44cc572d5e621365cb10a5292f53bbb9edef1f926c69645cf15ab0996f252a3f",
+        "evidence_id": "ev_aebc9d6928a2fb2cd77fd09b",
+        "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": ""
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5L diesel transmissions",
+      "value": "6-speed manual or a 6-speed automatic",
+      "source": {
+        "ref": "src_673bc558f396",
+        "locator": "FAQs · 2. What are the transmission choices for each CRETA engine variant? · block 85",
+        "quote": "the 1.5-litre diesel has a 6-speed manual or a 6-speed automatic"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5L U2 CRDi diesel engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5L U2 CRDi diesel",
+        "transmission": "6MT / 6AT",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F085",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "9cf58b835041e9d512c7a03b560b9e59eb3cd536456e837aa052324f07e80212",
+        "assertion_hash": "9901577a55f9d4b637f3f9a68d91f7ab92f45ccba60de8e7fc722c5812a707cb",
+        "evidence_id": "ev_3329d65e0d10fcb32db6cc98",
+        "evidence_path": "knowledge/sources/src_673bc558f396/9cf58b835041e9d512c7a03b560b9e59eb3cd536456e837aa052324f07e80212.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/performance",
+        "fetched_at": 1789816351.272327
+      }
+    },
+    {
+      "kind": "claim",
+      "claim": "Most powerful engine in lineup",
+      "value": "The 1.5-liter Turbo GDi petrol engine is the most powerful option in the CRETA lineup, delivering the highest power output among regular petrol and diesel engines and providing an exhilarating driving experience.",
+      "source": {
+        "ref": "src_673bc558f396",
+        "locator": "5.Is the petrol-turbo engine the most powerful among the CRETA’s lineup? · block 91",
+        "quote": "The 1.5-liter Turbo GDi petrol engine is the most powerful option in the CRETA lineup, delivering the highest power output among regular petrol and diesel engines and providing an exhilarating driving experience."
+      },
+      "confidence": 0.9,
+      "conditions": "Among regular petrol and diesel engines in CRETA lineup",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5 l Turbo GDi petrol"
+      },
+      "truth": "stated",
+      "id": "F105",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "9cf58b835041e9d512c7a03b560b9e59eb3cd536456e837aa052324f07e80212",
+        "assertion_hash": "cd1de03b715a8df9e035e38bddd4a1fc12c7fea02ca5840eab2591684266d1b7",
+        "evidence_id": "ev_fe1f727e2a2a114ff636e90c",
+        "evidence_path": "knowledge/sources/src_673bc558f396/9cf58b835041e9d512c7a03b560b9e59eb3cd536456e837aa052324f07e80212.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/performance",
+        "fetched_at": 1789816351.272327
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "Engine displacement (1.5 l U2 CRDi)",
+      "value": "1 493 cm3",
+      "source": {
+        "ref": "src_fbd71842024b",
+        "locator": "Performance · block 28",
+        "quote": "Displacement(cm3) 1 493 cm3"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5 l U2 CRDi engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5 l U2 CRDi diesel"
+      },
+      "truth": "stated",
+      "id": "F107",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0",
+        "assertion_hash": "2a384288e35927a8fa2b7b8bfd9c428c5733298d83102caaf44d6494d31dd7de",
+        "evidence_id": "ev_bb04ea8b58fae37d46e74477",
+        "evidence_path": "knowledge/sources/src_fbd71842024b/862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+        "fetched_at": 1789816365.735126
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "Max power (1.5 l U2 CRDi)",
+      "value": "85 kW (116 PS) @ 4 000 r/min",
+      "source": {
+        "ref": "src_fbd71842024b",
+        "locator": "Performance · block 28",
+        "quote": "Max. Power 85 kW (116 PS) @ 4 000 r/min"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5 l U2 CRDi engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5 l U2 CRDi diesel"
+      },
+      "truth": "stated",
+      "id": "F108",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0",
+        "assertion_hash": "d8e8e900c4355eca1f18782b7bfe91240f39e376854ae34473dc14383715275b",
+        "evidence_id": "ev_1d4451869d38eea90f1bc0a6",
+        "evidence_path": "knowledge/sources/src_fbd71842024b/862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+        "fetched_at": 1789816365.735126
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "Max torque (1.5 l U2 CRDi)",
+      "value": "250 Nm (25.5 kgm) @ 1 500 - 2 750 r/min",
+      "source": {
+        "ref": "src_fbd71842024b",
+        "locator": "Performance · block 28",
+        "quote": "Max. Torque 250 Nm (25.5 kgm) @ 1 500 - 2 750 r/min"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5 l U2 CRDi engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5 l U2 CRDi diesel"
+      },
+      "truth": "stated",
+      "id": "F109",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0",
+        "assertion_hash": "1b1f0108028ceb85249e89a611132681f54c2b220372f2e98a739a93243f33e5",
+        "evidence_id": "ev_be0140bd7649e975dfe1ccfc",
+        "evidence_path": "knowledge/sources/src_fbd71842024b/862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+        "fetched_at": 1789816365.735126
+      }
+    },
+    {
+      "kind": "feature",
+      "claim": "Engine line-up options",
+      "value": "1.5 l U2 CRDi diesel 1.5 l MPi Petrol 1.5 l Turbo GDi petrol",
+      "source": {
+        "ref": "src_fbd71842024b",
+        "locator": "New Hyundai CRETA Car Engine Specification · block 25",
+        "quote": "1.5 l U2 CRDi diesel 1.5 l MPi  Petrol 1.5 l Turbo GDi petrol"
+      },
+      "confidence": 1.0,
+      "conditions": "Available engine options listed",
+      "scope": {
+        "model": "CRETA"
+      },
+      "truth": "stated",
+      "id": "F124",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0",
+        "assertion_hash": "96da454753bbd6c81e8c415dd369a562162597634257464bdf0675601390ea7c",
+        "evidence_id": "ev_dacf15e3a2c26489dc218714",
+        "evidence_path": "knowledge/sources/src_fbd71842024b/862949af4b1ae58ed5df4b89548b75c87cd1233070b409c48382ed0eac20fdc0.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+        "fetched_at": 1789816365.735126
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "Engine options",
+      "value": "1.5L petrol, diesel, and turbo petrol",
+      "source": {
+        "ref": "src_91fa41526174",
+        "locator": "Discover the Hyundai CRETA Price in Pune · block 16",
+        "quote": "The lineup includes 1.5L petrol, diesel, and turbo petrol engine options"
+      },
+      "confidence": 1.0,
+      "conditions": "Available options vary by selected variant",
+      "scope": {
+        "model": "CRETA"
+      },
+      "truth": "stated",
+      "id": "F189",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+        "assertion_hash": "d98aec6831d5762ad6761ebac882f7d1dc7a14e280d0ce27344eec6259179342",
+        "evidence_id": "ev_799e427b58b3dad00f879777",
+        "evidence_path": "knowledge/sources/src_91fa41526174/9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-pune",
+        "fetched_at": 1789816388.02736
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5l MPi petrol maximum power",
+      "value": "84.4 kW (115 PS) @ 6 300 r/min",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 15, Technical specifications; engine column 1.5l MPi petrol",
+        "quote": "Technical specifications Items 1.5l MPi petrol 1.5l U2 CRDi diesel 1.5l Turbo GDi petrol Dimensions Overall length (mm) 4 330 Overall width (mm) 1 790 Overall height (mm) 1 635^^^ Wheelbase (mm) 2 610 Fuel tank capacity (l) 50 Engine Configuration 4 cylinders, 16 valves 4 cylinders, 16 valves 4 cylinders, 16 valves Cam type DOHC DOHC DOHC Displacement (cm3) 1 497 1 493 1 482 84.4 kW (115 PS) 85 kW (116 PS) 117.5 kW (160 PS) Max. power @ 6 300 r/min @ 4 000 r/min @ 5 500 r/min 143.8 Nm (14.7 kgm) 250 Nm (25.5 kgm) 253 Nm (25.8 kgm) Max. torque @ 4 500 r/min @ 1 500-2 750 r/min @ 1 500~3 500 r/min Transmission 6-speed manual & 6-speed manual & Type Intelligent variable 7-speed DCT 6-speed automatic transmission (iVT)"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5l MPi petrol engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5l MPi petrol",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F223",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "e64d371a1a466314886c51a73c91073f0120032d4a1faad8ac3f2c30247ecc0f",
+        "evidence_id": "ev_e544a4ab0a86466d6f85acbf",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F204",
+        "supersedes": [
+          "F204"
+        ],
+        "override_of": "ff4b1a6fd47bfcd71135a7b2b81d47355729a0db69c97b6ff16138c2b5650a2f",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Engine",
+            "quote": "84.4 kW (115 PS) @ 6 300 r/min"
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "1.5l mpi petrol"
+          },
+          "conditions": "1.5l mpi petrol engine"
+        }
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5l MPi petrol maximum torque",
+      "value": "143.8 Nm (14.7 kgm) @ 4 500 r/min",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 15, Technical specifications; engine column 1.5l MPi petrol",
+        "quote": "Technical specifications Items 1.5l MPi petrol 1.5l U2 CRDi diesel 1.5l Turbo GDi petrol Dimensions Overall length (mm) 4 330 Overall width (mm) 1 790 Overall height (mm) 1 635^^^ Wheelbase (mm) 2 610 Fuel tank capacity (l) 50 Engine Configuration 4 cylinders, 16 valves 4 cylinders, 16 valves 4 cylinders, 16 valves Cam type DOHC DOHC DOHC Displacement (cm3) 1 497 1 493 1 482 84.4 kW (115 PS) 85 kW (116 PS) 117.5 kW (160 PS) Max. power @ 6 300 r/min @ 4 000 r/min @ 5 500 r/min 143.8 Nm (14.7 kgm) 250 Nm (25.5 kgm) 253 Nm (25.8 kgm) Max. torque @ 4 500 r/min @ 1 500-2 750 r/min @ 1 500~3 500 r/min Transmission 6-speed manual & 6-speed manual & Type Intelligent variable 7-speed DCT 6-speed automatic transmission (iVT)"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5l MPi petrol engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5l MPi petrol",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F224",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "198993c9a49d016c74e4bb22394887edcee987b8dbc12bc6a01830d7f8acfefd",
+        "evidence_id": "ev_e544a4ab0a86466d6f85acbf",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F205",
+        "supersedes": [
+          "F205"
+        ],
+        "override_of": "790493d8b6eceaf762c291406cff33689e24543a68bc0cddf19398147acd30fd",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Engine",
+            "quote": "143.8 Nm (14.7 kgm) @ 4 500 r/min"
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "1.5l mpi petrol"
+          },
+          "conditions": "1.5l mpi petrol engine"
+        }
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5l U2 CRDi diesel engine displacement",
+      "value": "1 493 cm3",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel",
+        "quote": "Technical specifications Items 1.5l MPi petrol 1.5l U2 CRDi diesel 1.5l Turbo GDi petrol Dimensions Overall length (mm) 4 330 Overall width (mm) 1 790 Overall height (mm) 1 635^^^ Wheelbase (mm) 2 610 Fuel tank capacity (l) 50 Engine Configuration 4 cylinders, 16 valves 4 cylinders, 16 valves 4 cylinders, 16 valves Cam type DOHC DOHC DOHC Displacement (cm3) 1 497 1 493 1 482 84.4 kW (115 PS) 85 kW (116 PS) 117.5 kW (160 PS) Max. power @ 6 300 r/min @ 4 000 r/min @ 5 500 r/min 143.8 Nm (14.7 kgm) 250 Nm (25.5 kgm) 253 Nm (25.8 kgm) Max. torque @ 4 500 r/min @ 1 500-2 750 r/min @ 1 500~3 500 r/min Transmission 6-speed manual & 6-speed manual & Type Intelligent variable 7-speed DCT 6-speed automatic transmission (iVT)"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5l U2 CRDi diesel engine; 4 cylinders, 16 valves DOHC",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5l U2 CRDi diesel",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F226",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "903ff7fca5f2afb3b91b67ee98f185f618ef4a7778dabe75ea90cc3df9a4fd92",
+        "evidence_id": "ev_4621a98939d57dc714cc45e9",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F207",
+        "supersedes": [
+          "F207"
+        ],
+        "override_of": "21bc0cda35445180342a41c4d1d9311bdff62412e67584e48b8e50b1d3efe117",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Engine",
+            "quote": "Displacement (cm3) 1 493"
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "1.5l u2 crdi diesel"
+          },
+          "conditions": "1.5l u2 crdi diesel engine; 4 cylinders, 16 valves dohc"
+        }
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5l U2 CRDi diesel maximum power",
+      "value": "85 kW (116 PS) @ 4 000 r/min",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel",
+        "quote": "Technical specifications Items 1.5l MPi petrol 1.5l U2 CRDi diesel 1.5l Turbo GDi petrol Dimensions Overall length (mm) 4 330 Overall width (mm) 1 790 Overall height (mm) 1 635^^^ Wheelbase (mm) 2 610 Fuel tank capacity (l) 50 Engine Configuration 4 cylinders, 16 valves 4 cylinders, 16 valves 4 cylinders, 16 valves Cam type DOHC DOHC DOHC Displacement (cm3) 1 497 1 493 1 482 84.4 kW (115 PS) 85 kW (116 PS) 117.5 kW (160 PS) Max. power @ 6 300 r/min @ 4 000 r/min @ 5 500 r/min 143.8 Nm (14.7 kgm) 250 Nm (25.5 kgm) 253 Nm (25.8 kgm) Max. torque @ 4 500 r/min @ 1 500-2 750 r/min @ 1 500~3 500 r/min Transmission 6-speed manual & 6-speed manual & Type Intelligent variable 7-speed DCT 6-speed automatic transmission (iVT)"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5l U2 CRDi diesel engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5l U2 CRDi diesel",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F227",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "f36db70105231c6fa835cd06ddfb5c3b62b540836e6b8724d797226bfd12af2f",
+        "evidence_id": "ev_4621a98939d57dc714cc45e9",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F208",
+        "supersedes": [
+          "F208"
+        ],
+        "override_of": "2f42a5edd6dedf4828b9cc5c2c39dae00838d1a4199fad985bd5035e51430aa2",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Engine",
+            "quote": "85 kW (116 PS) @ 4 000 r/min"
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "1.5l u2 crdi diesel"
+          },
+          "conditions": "1.5l u2 crdi diesel engine"
+        }
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5l U2 CRDi diesel maximum torque",
+      "value": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 15, Technical specifications; engine column 1.5l U2 CRDi diesel",
+        "quote": "Technical specifications Items 1.5l MPi petrol 1.5l U2 CRDi diesel 1.5l Turbo GDi petrol Dimensions Overall length (mm) 4 330 Overall width (mm) 1 790 Overall height (mm) 1 635^^^ Wheelbase (mm) 2 610 Fuel tank capacity (l) 50 Engine Configuration 4 cylinders, 16 valves 4 cylinders, 16 valves 4 cylinders, 16 valves Cam type DOHC DOHC DOHC Displacement (cm3) 1 497 1 493 1 482 84.4 kW (115 PS) 85 kW (116 PS) 117.5 kW (160 PS) Max. power @ 6 300 r/min @ 4 000 r/min @ 5 500 r/min 143.8 Nm (14.7 kgm) 250 Nm (25.5 kgm) 253 Nm (25.8 kgm) Max. torque @ 4 500 r/min @ 1 500-2 750 r/min @ 1 500~3 500 r/min Transmission 6-speed manual & 6-speed manual & Type Intelligent variable 7-speed DCT 6-speed automatic transmission (iVT)"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5l U2 CRDi diesel engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5l U2 CRDi diesel",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F228",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "059224f1da9ad11f59c02b8102245464c19f2d2a766a93cb9ad74ef451f1414b",
+        "evidence_id": "ev_4621a98939d57dc714cc45e9",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F209",
+        "supersedes": [
+          "F209"
+        ],
+        "override_of": "3b2e358fe52ba274ecd8b49e316d907b6f6723ee8fb730b83646bcc9214b07f3",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Engine",
+            "quote": "250 Nm (25.5 kgm) @ 1 500-2 750 r/min"
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "1.5l u2 crdi diesel"
+          },
+          "conditions": "1.5l u2 crdi diesel engine"
+        }
+      }
+    },
+    {
+      "kind": "spec",
+      "claim": "1.5l Turbo GDi petrol maximum torque",
+      "value": "253 Nm (25.8 kgm) @ 1 500~3 500 r/min",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 15, Technical specifications; engine column 1.5l Turbo GDi petrol",
+        "quote": "Technical specifications Items 1.5l MPi petrol 1.5l U2 CRDi diesel 1.5l Turbo GDi petrol Dimensions Overall length (mm) 4 330 Overall width (mm) 1 790 Overall height (mm) 1 635^^^ Wheelbase (mm) 2 610 Fuel tank capacity (l) 50 Engine Configuration 4 cylinders, 16 valves 4 cylinders, 16 valves 4 cylinders, 16 valves Cam type DOHC DOHC DOHC Displacement (cm3) 1 497 1 493 1 482 84.4 kW (115 PS) 85 kW (116 PS) 117.5 kW (160 PS) Max. power @ 6 300 r/min @ 4 000 r/min @ 5 500 r/min 143.8 Nm (14.7 kgm) 250 Nm (25.5 kgm) 253 Nm (25.8 kgm) Max. torque @ 4 500 r/min @ 1 500-2 750 r/min @ 1 500~3 500 r/min Transmission 6-speed manual & 6-speed manual & Type Intelligent variable 7-speed DCT 6-speed automatic transmission (iVT)"
+      },
+      "confidence": 1.0,
+      "conditions": "1.5l Turbo GDi petrol engine",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "1.5l Turbo GDi petrol",
+        "market": "India"
+      },
+      "truth": "stated",
+      "id": "F232",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "b4ce039aa9d380f0ffeba42a13967995ec8276021ce2a5544b82f878766865fe",
+        "evidence_id": "ev_3f32e48240efc3f16e9c383b",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F212",
+        "supersedes": [
+          "F212"
+        ],
+        "override_of": "004df8fb6e81f693b5d2c4772c12f7dd634719d2e2d6369f13bc60f1fc163a47",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Engine",
+            "quote": "253 Nm (25.8 kgm) @ 1 500~3 500 r/min"
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "1.5l turbo gdi petrol"
+          },
+          "conditions": "1.5l turbo gdi petrol engine"
+        }
+      }
+    }
+  ],
+  "preserved_at": "2026-09-19T16:57:30.464322+00:00",
+  "reviewer": "player_ui",
+  "purpose": "Preserve immutable actual result, model-visible evidence and full approved assertions for diagnosis without provider calls. Original artifacts unchanged."
+}

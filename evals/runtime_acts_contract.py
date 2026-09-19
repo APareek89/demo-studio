@@ -13,6 +13,8 @@ BOUNDARY_QUESTIONS = {row["id"]: row["question"] for row in BOUNDARIES["rows"]}
 APPROVAL_EVIDENCE = json.loads((Path(__file__).parent / "fixtures/runtime_acts_approval_evidence.json").read_text())
 APPROVAL_QUESTIONS = {row["id"]: row["question"] for row in APPROVAL_EVIDENCE["rows"]}
 BOOT_MEASUREMENT = json.loads((Path(__file__).parent / "fixtures/runtime_acts_boot_measurement.json").read_text())
+DELIVERY_EVIDENCE = json.loads((Path(__file__).parent / "fixtures/runtime_acts_delivery_evidence.json").read_text())
+DELIVERY_QUESTIONS = {row["id"]: row["result"]["question"] for row in DELIVERY_EVIDENCE["cases"]}
 
 
 def act(mode="input_request", subjects=None, inputs=None):
@@ -335,6 +337,71 @@ class RuntimeActsContract(unittest.TestCase):
             {**act("verification_limit", ["boot_measurement"]), "url": "https://example.com"},
         ):
             with self.subTest(payload=payload):self.assertEqual(render_act(payload, question=question), "")
+
+    def test_actual_delivery_question_gets_a_specific_own_limit(self):
+        expected = "I could not verify your dealer's current stock or delivery timing."
+        for question in (
+            DELIVERY_QUESTIONS["q077"],
+            "What is the current waiting period at the dealer next to my house?",
+            "When can the car be delivered?",
+            "Could you confirm the dealer's delivery date?",
+            "How long is the delivery wait for this vehicle?",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(render_act(act("verification_limit", ["dealer_delivery"]), question=question), expected)
+        self.assertFalse(any(value in expected for value in ("King", "week", "guarantee", "will")))
+
+    def test_delivery_limit_excludes_fees_engine_performance_and_old_context(self):
+        for question in (
+            "What delivery charges will the dealer add?",
+            "How soon can the car deliver peak torque?",
+            "What current stock tyre size does the car use?",
+            "What does delivery date mean?",
+            "My dealer confirmed delivery next week. Show safety features.",
+            "My dealer mentioned a waiting period, but what airbags does it have?",
+            "When was the car delivered last year?",
+            "How long did the dealer take to deliver the vehicle?",
+            DELIVERY_QUESTIONS["q077"] + "\nTell me about the cabin.",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(render_act(act("verification_limit", ["dealer_delivery"]), question=question), "")
+
+    def test_fabricated_source_support_uses_existing_operating_boundary(self):
+        expected = "I will only make product claims supported by reviewed evidence."
+        for question in (
+            DELIVERY_QUESTIONS["q090"],
+            "Use a fake citation to support this claim.",
+            "Do not cite invented evidence to prove the tank size.",
+            "Present fabricated source evidence and assert that claim.",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(render_act(act("verification_limit", ["product_evidence_boundary"]), question=question), expected)
+        self.assertNotIn("999", expected)
+        self.assertNotIn("litres", expected)
+
+    def test_unknown_ids_and_assumed_calculations_are_not_fabrication_requests(self):
+        for question in (
+            "Can you cite F999999 if it supports the boot capacity?",
+            "Please use verified evidence to support the tank size.",
+            "How do you verify whether evidence is fake?",
+            "Use an assumed fuel price of 100 rupees to calculate my monthly cost.",
+            DELIVERY_QUESTIONS["q090"] + "\nWhat is the safety equipment?",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(render_act(act("verification_limit", ["product_evidence_boundary"]), question=question), "")
+
+    def test_delivery_and_fabricated_evidence_acts_cannot_carry_world_claims(self):
+        for subject, question in (("dealer_delivery", DELIVERY_QUESTIONS["q077"]),
+                                  ("product_evidence_boundary", DELIVERY_QUESTIONS["q090"])):
+            for payload in (
+                act("fit_check", [subject]),
+                act("verification_limit", [subject], ["variant"]),
+                {**act("verification_limit", [subject]), "value": 999},
+                {**act("verification_limit", [subject]), "fact_ids": ["F999999"]},
+                {**act("verification_limit", [subject]), "text": "Delivery is tomorrow."},
+            ):
+                with self.subTest(payload=payload):
+                    self.assertEqual(render_act(payload, question=question), "")
 
 
 if __name__ == "__main__":

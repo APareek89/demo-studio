@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 
 SUBJECT_IDS = ("rear_armrest", "personal_comfort", "guaranteed_resale",
                "comparison_evidence", "source_instructions", "lender_approval",
-               "product_evidence_boundary", "boot_measurement")
+               "product_evidence_boundary", "boot_measurement", "dealer_delivery")
 INPUT_IDS = ("source_url", "city", "variant", "loan_amount", "interest_rate",
              "loan_tenure", "fuel_efficiency", "fuel_price", "travel_distance")
 MODES = ("verification_limit", "input_request", "fit_check")
@@ -33,6 +33,7 @@ _LIMITS = {
     "lender_approval": "I cannot confirm or guarantee a lender's loan approval.",
     "product_evidence_boundary": "I will only make product claims supported by reviewed evidence.",
     "boot_measurement": "I could not verify the boot capacity or the seat configuration used for its measurement from the reviewed evidence.",
+    "dealer_delivery": "I could not verify your dealer's current stock or delivery timing.",
 }
 _LABELS = {
     "source_url": "the public product-page URL",
@@ -105,10 +106,34 @@ def _product_evidence_boundary(text: str) -> bool:
     disregard = r"\b(?:ignore|override|disregard)\s+(?:(?:your|the|all|our|reviewed|verified)\s+){0,3}(?:sources?|evidence|records)\b"
     speech = r"\b(?:say|claim|tell|state|pretend|assert)\b"
     fabricate = r"\b(?:invent|fabricate|make\s+up)\b[^.!?\n]{0,60}\b(?:claims?|facts?|evidence|specifications?|features?|equipment)\b"
-    return any(re.search(product, clause, re.I) and (
+    # A request to pass fabricated evidence off as support is itself an evidence
+    # bypass, even when the product attribute is not in a keyword catalogue.
+    # This licenses only our fixed boundary, never the citation or invented value.
+    fabricated_support = lambda clause: all(re.search(pattern, clause, re.I) for pattern in (
+        r"\b(?:cite|use|present|claim|assert)\b",
+        r"\b(?:fake|fabricated|invented|made[- ]up)\b",
+        r"\b(?:citations?|evidence|sources?|F\d+)\b",
+        r"\b(?:support|verify|prove|claim|assert)\b"))
+    return any(fabricated_support(clause) or (re.search(product, clause, re.I) and (
         (re.search(disregard, clause, re.I) and re.search(speech, clause, re.I))
-        or re.search(fabricate, clause, re.I))
+        or re.search(fabricate, clause, re.I)))
         for clause in re.split(r"[.!?\n]", text))
+
+
+def _dealer_delivery_request(text: str) -> bool:
+    """Current dealer stock/timing questions, not delivery charges or past plans."""
+    subject = r"\b(?:dealers?|dealerships?|cars?|vehicles?|variants?|trims?)\b"
+    timing = r"\b(?:waiting\s+period|wait\s+time|delivery\s+(?:date|time|timing|timeline))\b"
+    question = r"\b(?:what|when|confirm|verify|tell)\b[^.!?;\n]{0,80}" + timing
+    arrival = r"\b(?:when|how\s+(?:soon|long))\b[^.!?;\n]{0,100}\b(?:delivered|delivery|wait)\b"
+    dealer_arrival = r"\b(?:when|how\s+(?:soon|long))\b[^.!?;\n]{0,100}\bdeliver\b"
+    return any(re.search(subject, clause, re.I)
+        and not re.search(r"\b(?:when|how\s+long)\s+(?:was|were|did|had)\b", clause, re.I) and (
+        re.search(question, clause, re.I) or re.search(arrival, clause, re.I)
+        or (re.search(r"\b(?:dealer|dealership)s?\b", clause, re.I)
+            and re.search(dealer_arrival, clause, re.I)))
+        for _, sentence in _clauses(text)
+        for clause in re.split(r",?\s+\b(?:but|however|whereas)\b\s*", sentence, flags=re.I))
 
 
 def _lender_approval_request(text: str) -> bool:
@@ -166,6 +191,8 @@ def _context(text: str) -> tuple[set[str], set[str]]:
         subjects.add("product_evidence_boundary")
     if _boot_measurement_request(text):
         subjects.add("boot_measurement")
+    if _dealer_delivery_request(text):
+        subjects.add("dealer_delivery")
     inputs = set()
     if re.search(r"\b(?:emi|loan|borrow|repayment|monthly payment)\b", text, re.I):
         inputs.update(_FAMILIES["loan"])

@@ -1,0 +1,463 @@
+{
+  "source_commit": "d7c4bbedfb2d2007fc57413bccb7d34b32946689",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "purpose": "Immutable observed drafts and evidence for coordination guard regressions; not a new live cohort.",
+  "q033": {
+    "question": "Which features would help in a crowded city parking space?",
+    "answer": "Rear parking sensors come standard across all CRETA variants to help guide you. A rear camera with dynamic guidelines is standard on trims like EX(O), S(O), and higher, while front parking sensors and a surround view monitor are standard on SX Premium, King, King Knight, and Lounge Edition. An electric parking brake with auto hold is also fitted on King, King Knight, Lounge Edition, and automatic versions of S(O), S(O) Knight, and SX Premium.",
+    "raw_row_sha256": "0bb4bc38bd40956a1fa6dbc6e07b7c33b9e7c10fe2316bc290996fb3162ced18",
+    "trace_line": 5184,
+    "raw_trace_sha256": "9f5336a354a0a962c344755ce5b1e33ca9d902b50c0391e510c2da62ece65c7c",
+    "decision": {
+      "action": "answer",
+      "sentences": [
+        {
+          "text": "Rear parking sensors come standard across all CRETA variants to help guide you.",
+          "fact_ids": [
+            "F174",
+            "F195"
+          ],
+          "kind": "fact",
+          "interaction": null
+        },
+        {
+          "text": "A rear camera with dynamic guidelines is standard on trims like EX(O), S(O), and higher, while front parking sensors and a surround view monitor are standard on SX Premium, King, King Knight, and Lounge Edition.",
+          "fact_ids": [
+            "F215",
+            "F248"
+          ],
+          "kind": "fact",
+          "interaction": null
+        },
+        {
+          "text": "An electric parking brake with auto hold is also fitted on King, King Knight, Lounge Edition, and automatic versions of S(O), S(O) Knight, and SX Premium.",
+          "fact_ids": [
+            "F064",
+            "F161"
+          ],
+          "kind": "fact",
+          "interaction": null
+        }
+      ],
+      "clarification": "",
+      "clarification_act": null,
+      "tool_calls": [],
+      "answered": true,
+      "topic": "parking_features"
+    },
+    "facts": [
+      {
+        "kind": "feature",
+        "claim": "Standard safety equipment",
+        "value": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors",
+        "source": {
+          "ref": "src_c27090234838",
+          "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) · block 14",
+          "quote": "Standard safety equipment includes six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors."
+        },
+        "conditions": "Standard equipment across the range.",
+        "scope": {
+          "model": "Hyundai CRETA",
+          "market": "India"
+        },
+        "truth": "stated",
+        "id": "F174",
+        "approved": true,
+        "knowledge": {
+          "source_revision": "2ffe4ee7625afaa661751b44e2f1f8d292a6b3fd3c82feaa8efc95f996085809",
+          "assertion_hash": "73690e8983631dce46f0aa227cfce265d9183562dc74a715ffd69385184063bd",
+          "evidence_id": "ev_50d7401554cdcc2caaf38fbf",
+          "evidence_path": "knowledge/sources/src_c27090234838/2ffe4ee7625afaa661751b44e2f1f8d292a6b3fd3c82feaa8efc95f996085809.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "website",
+          "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-jaipur",
+          "fetched_at": 1789816384.600978
+        }
+      },
+      {
+        "kind": "feature",
+        "claim": "Standard safety equipment across all variants",
+        "value": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system",
+        "source": {
+          "ref": "src_91fa41526174",
+          "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) · block 14",
+          "quote": "All variants of the Hyundai CRETA are equipped with a strong set of safety features. It includes six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system."
+        },
+        "conditions": "Equipped across all variants",
+        "scope": {
+          "model": "CRETA"
+        },
+        "truth": "stated",
+        "id": "F195",
+        "approved": true,
+        "knowledge": {
+          "source_revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+          "assertion_hash": "87034bde4d6c59273e22435d8013484d8ec9dcd7da51d5039c990ad8da1b746c",
+          "evidence_id": "ev_997a589b58d4380e079058cd",
+          "evidence_path": "knowledge/sources/src_91fa41526174/9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "website",
+          "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-pune",
+          "fetched_at": 1789816388.02736
+        }
+      },
+      {
+        "kind": "feature",
+        "claim": "Front parking sensors and camera views",
+        "value": "Front parking sensors, surround view monitor and blind-spot view monitor are standard on SX Premium, King, King Knight and Lounge Edition.",
+        "source": {
+          "ref": "src_962d2536a6b1",
+          "locator": "Safety · block 24",
+          "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition Airbag | Driver & passenger | S | S | S | S | S | S | S | S | S | S Side & curtain | S | S | S | S | S | S | S | S | S | S ABS(Anti-lock braking system) with EBD | S | S | S | S | S | S | S | S | S | S Electronic stability control (ESC) | S | S | S | S | S | S | S | S | S | S Vehicle stability management (VSM) | S | S | S | S | S | S | S | S | S | S Hill start assist control (HAC) | S | S | S | S | S | S | S | S | S | S Tyre pressure monitoring system(TPMS) Highline | S | S | S | S | S | S | S | S | S | S Rear disc brakes | S | S | S | S | S | S | S | S | S | S Seat belt pretensioners - driver & passenger | S | S | S | S | S | S | S | S | S | S Driver anchor pretensioner | S | S | S | S | S | S | S | S | S | S Height adjustable front seat belts | S | S | S | S | S | S | S | S | S | S 3 Point seat belts (all seats) | S | S | S | S | S | S | S | S | S | S Seatbelt reminder (all seats) | S | S | S | S | S | S | S | S | S | S ISOFIX | S | S | S | S | S | S | S | S | S | S Emergency stop signal (ESS) | S | S | S | S | S | S | S | S | S | S Impact sensing auto door unlock | S | S | S | S | S | S | S | S | S | S Speed sensing auto door lock | S | S | S | S | S | S | S | S | S | S Inside door override (Driver only) | S | S | S | S | S | S | S | S | S | S Driver Power window with auto up down and safety | - | - | - | - | - | S | S | S | S | S Immobilizer | S | S | S | S | S | S | S | S | S | S Burglar alarm | S | S | S | S | S | S | S | S | S | S Central Locking | S | S | S | S | S | S | S | S | S | S Inside rear | Day and night mirror | S | S | S | S | S | - | - | - | - | - Day and night mirror with telematics switches | - | - | - | - | - | S | S | - | - | - Electro chromic mirror (ECM) with telematics switches | - | - | - | - | - | - | - | S | S | S Automatic headlamps | - | - | - | S | S | S | S | S | S | S Headlamp escort function | S | S | S | S | S | S | S | S | S | S Rear defogger with timer | - | - | - | S | S | S | S | S | S | S Puddle lamps with welcome function | Driver side | - | - | - | - | - | S | S | S | S | S Passenger side | - | - | - | - | - | - | - | S | S | S Parking assist | Rear parking sensors | S | S | S | S | S | S | S | S | S | S Rear camera with dynamic guidelines | - | - | S | S | S | S | S | S | S | S Front Parking sensors | - | - | - | - | - | - | S | S | S | S Driver rear view monitor (DRVM) | - | - | - | S | S | S | S | S | S | S Hyundai SmartSense (Advanced driver assistance system) | Forward Collision Warning (FCW) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Car (FCA-Car) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Pedestrian (FCA-Ped) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Cycle (FCA-Cyl) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Junction Turning (FCA-JT) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Direct Oncoming (FCA-DO) | - | - | - | - | - | - | - | S | S | S Blind-spot Collision Warning (BCW) | - | - | - | - | - | - | - | S | S | S Blind-spot Collision - Avoidance Assist (BCA) | - | - | - | - | - | - | - | S | S | S Lane Keeping Assist (LKA) | - | - | - | - | - | - | - | S | S | S Lane Departure Warning (LDW) | - | - | - | - | - | - | - | S | S | S Driver Attention Warning (DAW) | - | - | - | - | - | - | - | S | S | S Safe Exit Warning (SEW) | - | - | - | - | - | - | - | S | S | S Smart Cruise Control with Stop & Go (SCC with S&G) | - | - | - | - | - | - | - | S* | S* | S* Lane Following Assist (LFA) | - | - | - | - | - | - | - | S | S | S High Beam Assist (HBA) | - | - | - | - | - | - | - | S | S | S Leading Vehicle Departure Alert (LVDA) | - | - | - | - | - | - | - | S | S | S Rear Cross - Traffic Collision Warning (RCCW) | - | - | - | - | - | - | - | S | S | S Rear Cross - Traffic Collision - Avoidance Assist (RCCA) | - | - | - | - | - | - | - | S | S | S Surround view monitor (SVM) | - | - | - | - | - | - | S | S | S | S Blind-spot view monitor (BVM) | - | - | - | - | - | - | S | S | S | S Dash cam | - | - | - | S | S | S | S | S | S | S"
+        },
+        "conditions": "Standard only on the named variants in the India feature matrix.",
+        "scope": {
+          "model": "CRETA",
+          "market": "India",
+          "variant": "SX Premium, King, King Knight, Lounge Edition"
+        },
+        "truth": "stated",
+        "id": "F215",
+        "approved": true,
+        "knowledge": {
+          "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+          "assertion_hash": "a03a439649fd346ae5e3c444d98f41df6b4109c803f421f6721098c3d8b842fc",
+          "evidence_id": "ev_5c02fdd0fbae0b4f7b19dc22",
+          "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "website",
+          "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+          "fetched_at": 1789816368.917721,
+          "previous_id": "F155",
+          "supersedes": [
+            "F155"
+          ],
+          "override_of": "25f3afb6679431a01963c37bea908386e4edbbf240a98724a80a5c9ac2951127",
+          "override_evidence": {
+            "source": {
+              "ref": "src_962d2536a6b1",
+              "locator": "Safety · block 24",
+              "quote": "Surround view monitor (SVM) | - | - | - | - | - | - | S | S | S | S Blind-spot view monitor (BVM) | - | - | - | - | - | - | S | S | S | S"
+            },
+            "scope": {
+              "model": "creta",
+              "market": "india",
+              "variant": "sx premium, king, king knight, lounge edition"
+            },
+            "conditions": "trims sx premium, king, king knight, and lounge edition only"
+          }
+        }
+      },
+      {
+        "kind": "feature",
+        "claim": "Rear camera",
+        "value": "Rear camera with dynamic guidelines standard on EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight; Not available on E, EX",
+        "source": {
+          "ref": "src_22b687",
+          "locator": "page 13, Key features matrix, Parking assist / Rear camera with dynamic guidelines; columns E through King Knight",
+          "quote": "Parking assist         Rear camera with dynamic guidelines              -      -      S      S      S      S      S      S      S"
+        },
+        "conditions": "Exact named India-market trims shown in the supplied manufacturer brochure matrix. Rear parking sensors are a separate row and are standard on E and EX. No model-year or current-stock guarantee.",
+        "scope": {
+          "model": "CRETA",
+          "market": "India"
+        },
+        "truth": "stated",
+        "id": "F248",
+        "approved": true,
+        "knowledge": {
+          "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+          "assertion_hash": "34d4a56126dc00f019a9c53f9f685f95bff5ee0cccf5c043cc569d2532f25742",
+          "evidence_id": "ev_4440bc1ab60888d82ae2bc56",
+          "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "uploaded",
+          "source_url": "",
+          "fetched_at": "",
+          "previous_id": "F136",
+          "supersedes": [
+            "F136"
+          ],
+          "override_of": "3bf6c7219f57c6bb39bdec36aae26ddf47decb997938a4cd4aa4576cf6d2cc6b",
+          "override_evidence": {
+            "source": {
+              "ref": "src_93e5ef21c73e",
+              "locator": "4.Does the Hyundai CRETA have a reversing camera? · block 119",
+              "quote": "The higher variants of the Hyundai CRETA are equipped with a rear camera with dynamic guidelines to aid safe reversing and parking."
+            },
+            "scope": {
+              "model": "creta"
+            },
+            "conditions": "higher variants only"
+          }
+        }
+      },
+      {
+        "kind": "feature",
+        "claim": "Electric parking brake with auto hold availability",
+        "value": "Standard on King, King Knight, Lounge Edition; IVT, AT or DCT only on S(O), S(O) Knight, SX Premium; not available on E, EX, EX(O), SX",
+        "source": {
+          "ref": "src_51f57f",
+          "locator": "page 39, Comfort and convenience by variant table and page 41 footnote",
+          "quote": "Electric parking brake with auto hold – – – S* S* – S* S S S"
+        },
+        "conditions": "Asterisk denotes IVT, AT or DCT automatic transmissions only on S(O), S(O) Knight, SX Premium",
+        "scope": {
+          "model": "Hyundai CRETA"
+        },
+        "truth": "stated",
+        "id": "F064",
+        "approved": true,
+        "knowledge": {
+          "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+          "assertion_hash": "fb0cf7bdbf69df6de9dd302abada26b3f812348880b78d7d916dddd584430280",
+          "evidence_id": "ev_05bdcc571333582a4f0cd8c3",
+          "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "uploaded",
+          "source_url": "",
+          "fetched_at": ""
+        }
+      },
+      {
+        "kind": "feature",
+        "claim": "Electric parking brake with auto hold",
+        "value": "Standard on King, King Knight, Lounge Edition, and IVT/AT/DCT trims of S(O), S(O) Knight, SX Premium",
+        "source": {
+          "ref": "src_962d2536a6b1",
+          "locator": "COMFORT & CONVENIENCE · block 30 & block 33",
+          "quote": "Electric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S"
+        },
+        "conditions": "Asterisk denotes IVT/AT/DCT only for S(O), S(O) Knight, SX Premium",
+        "scope": {
+          "model": "CRETA",
+          "market": "India"
+        },
+        "truth": "stated",
+        "id": "F161",
+        "approved": true,
+        "knowledge": {
+          "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+          "assertion_hash": "26a58b69c9145a3ccff25e634d8b697cc6e74d302ad2c811c24fbc27595ff7c3",
+          "evidence_id": "ev_d944bd818a113e551311a8e2",
+          "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "website",
+          "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+          "fetched_at": 1789816368.917721
+        }
+      }
+    ]
+  },
+  "q071": {
+    "question": "Use https://www.kia.com/in/our-vehicles/seltos/specs.html to check a Seltos engine specification. State the market and variant if available.",
+    "answer": "According to the Kia India webpage, the new Seltos comes with 1482 cc and 1497 cc petrol engines, as well as a 1493 cc diesel engine. According to www.kia.com, the page reflects the Indian market, but it doesn't specify variant names for these engine capacities.",
+    "raw_row_sha256": "b6e704aec12499d59d5818ba9d86bc5baf44449b4da90a579e3cb4a7a5c20139",
+    "trace_line": 5474,
+    "raw_trace_sha256": "7aca9607c26dc3c140d6907bdcc70f5130f985fcefeab5156854658964d4e1fd",
+    "decision": {
+      "action": "answer",
+      "sentences": [
+        {
+          "text": "According to the Kia India webpage, the new Seltos comes with 1482 cc and 1497 cc petrol engines, as well as a 1493 cc diesel engine.",
+          "fact_ids": [
+            "W5487d71fd754"
+          ],
+          "kind": "fact",
+          "interaction": null
+        },
+        {
+          "text": "The page reflects the Indian market, but it doesn't specify variant names for these engine capacities.",
+          "fact_ids": [
+            "W5487d71fd754"
+          ],
+          "kind": "fact",
+          "interaction": null
+        }
+      ],
+      "clarification": "",
+      "clarification_act": null,
+      "tool_calls": [],
+      "answered": true,
+      "topic": "engine_specifications"
+    },
+    "tool_results": [
+      {
+        "tool": "source_lookup",
+        "url": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+        "evidence": [
+          {
+            "id": "W5487d71fd754",
+            "claim": "Customer-selected website passage",
+            "value": "The new Kia Seltos is available with 1482 cc and 1497 cc petrol engines. In diesel, it comes with a 1493 cc engine.",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+              "locator": "How many cc is a new Kia Seltos engine? · block 260",
+              "quote": "The new Kia Seltos is available with 1482 cc and 1497 cc petrol engines. In diesel, it comes with a 1493 cc engine."
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "How many cc is a new Kia Seltos engine?"
+            },
+            "fetched_at": 1789836824.7634618,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "Wc860b473df68",
+            "claim": "Customer-selected website passage",
+            "value": "The New Seltos is available with tyre size of 205/65 R16 - 40.56 cm (16”), 215/60 R17 - 43.66 cm (17”), 215/55 R18 - 46.2 cm (18”)",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+              "locator": "What is new Seltos tyre size? · block 254",
+              "quote": "The New Seltos is available with tyre size of 205/65 R16 - 40.56 cm (16”), 215/60 R17 - 43.66 cm (17”), 215/55 R18 - 46.2 cm (18”)"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "What is new Seltos tyre size?"
+            },
+            "fetched_at": 1789836824.7634618,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W1ec0f45ad554",
+            "claim": "Customer-selected website passage",
+            "value": "The new Kia Seltos comes with a 47-litre fuel tank capacity for the Smartstream G1.5 petrol engine and the 1.5L CRDi VGT diesel engine. It offers a 50-litre fuel tank capacity for the Smartstream G1.5 T-GDi petrol engine.",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+              "locator": "What is new Kia Seltos Fuel tank capacity? · block 256",
+              "quote": "The new Kia Seltos comes with a 47-litre fuel tank capacity for the Smartstream G1.5 petrol engine and the 1.5L CRDi VGT diesel engine. It offers a 50-litre fuel tank capacity for the Smartstream G1.5 T-GDi petrol engine."
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "What is new Kia Seltos Fuel tank capacity?"
+            },
+            "fetched_at": 1789836824.7634618,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "Wa3736a42ff02",
+            "claim": "Customer-selected website passage",
+            "value": "Smartstream G1.5 6MT",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+              "locator": "Engine · block 131",
+              "quote": "Smartstream G1.5 6MT"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "Engine"
+            },
+            "fetched_at": 1789836824.7634618,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W58bf3ae998c5",
+            "claim": "Customer-selected website passage",
+            "value": "Smartstream G1.5 IVT",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+              "locator": "Engine · block 133",
+              "quote": "Smartstream G1.5 IVT"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "Engine"
+            },
+            "fetched_at": 1789836824.7634618,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W5487f43ff036",
+            "claim": "Customer-selected website passage",
+            "value": "Smartstream G1.5 T-GDi 6iMT",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+              "locator": "Engine · block 134",
+              "quote": "Smartstream G1.5 T-GDi 6iMT"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "Engine"
+            },
+            "fetched_at": 1789836824.7634618,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          }
+        ],
+        "pages": [
+          {
+            "url": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+            "discovery": "customer URL",
+            "fetched_at": 1789836824.7634618
+          }
+        ],
+        "scope": {
+          "model_tokens": [
+            "seltos"
+          ],
+          "locale": [
+            "in"
+          ],
+          "seed_url": "https://www.kia.com/in/our-vehicles/seltos/specs.html"
+        },
+        "elapsed_ms": 506,
+        "coverage": [
+          "Evidence pack limit reached; some matching sections were not included."
+        ],
+        "requested_url": "https://www.kia.com/in/our-vehicles/seltos/specs.html"
+      }
+    ],
+    "facts": [
+      {
+        "id": "W5487d71fd754",
+        "claim": "Customer-selected website passage",
+        "value": "The new Kia Seltos is available with 1482 cc and 1497 cc petrol engines. In diesel, it comes with a 1493 cc engine.",
+        "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+        "source": {
+          "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+          "locator": "How many cc is a new Kia Seltos engine? · block 260",
+          "quote": "The new Kia Seltos is available with 1482 cc and 1497 cc petrol engines. In diesel, it comes with a 1493 cc engine."
+        },
+        "scope": {},
+        "scope_unverified": true,
+        "context": {
+          "kind": "text",
+          "heading": "How many cc is a new Kia Seltos engine?"
+        },
+        "fetched_at": 1789836824.7634618,
+        "provenance": "live_web",
+        "approved": true,
+        "truth": "stated"
+      }
+    ]
+  }
+}

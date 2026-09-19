@@ -129,13 +129,17 @@ def _elapsed(started: float) -> int:
     return round((time.monotonic() - started) * 1000)
 
 
+def _grouped_digits(text: str) -> str:
+    # PDF typography uses spaces between thousands groups; this is formatting,
+    # not arithmetic or permission to borrow unrelated cells from a source table.
+    return re.sub(r"(?<![\d.])\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?!\d)", lambda m: re.sub(r"\s", "", m.group()), text)
+
+
 def _fact_text(f: dict) -> str:
     text = " ".join(str(f.get(k, "")) for k in ("claim", "value", "conditions"))
     if f.get("provenance") in {"calculation", "live_web"}:
         text += " " + str(f.get("source", {}).get("quote", ""))
-    # PDF typography uses spaces between thousands groups; this is formatting,
-    # not arithmetic or permission to borrow unrelated cells from a source table.
-    return re.sub(r"(?<![\d.])\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?!\d)", lambda m: re.sub(r"\s", "", m.group()), text)
+    return _grouped_digits(text)
 
 
 def _reason_evidence(f: dict) -> dict:
@@ -642,7 +646,7 @@ def _dependency_payload(evidence: list[dict], requested: dict | None = None) -> 
 
 
 def _quantity_units(text: str) -> set[tuple[Decimal,str]]:
-    text=re.sub(r"(?<![\d.])\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?!\d)",lambda m:re.sub(r"\s","",m.group()),text)
+    text=_grouped_digits(text)
     units=r"newton[- ]met(?:er|re)s?|kilograms?|litres?|liters?|millimet(?:er|re)s?|centimet(?:er|re)s?|horsepower|rupees?|percent|speeds?|gears?|airbags?|seats?|doors?|wheels?|r/min|rpm|kgm|bhp|kW|PS|Nm|INR|mm|cm|kg|hp|litre|liter|l|%"
     aliases={"ps":"ps","kw":"kw","bhp":"bhp","hp":"hp","horsepower":"hp","nm":"nm","kgm":"kgm","rpm":"rpm","r/min":"rpm","mm":"mm","cm":"cm","kg":"kg","inr":"currency","l":"litre","%":"percent","percent":"percent"}
     pairs=set()
@@ -1268,7 +1272,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             supported = _numbers(assertion_text)
             supported |= _rounded_calculation_values(facts,text)
             # A number that appears only in customer context is not a product fact.
-            if _numbers(text)-supported:
+            if _numbers(_grouped_digits(text))-supported:
                 reject("unsupported_quantity"); continue
             unit_pairs=_quantity_units(assertion_text)
             unit_pairs |= {(value,"currency") for value in _rounded_calculation_values(facts,text)}

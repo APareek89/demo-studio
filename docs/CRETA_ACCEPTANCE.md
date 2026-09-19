@@ -2,7 +2,13 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest three-second fallback experiment
+## Latest coverage and boot replay
+
+On `d7c4bbe` and unchanged v7, the same 100 questions scored **93 supported, 2 partial, 3 unhelpful, 2 unsafe and 0 provider failures**. Text median **2.616 s**, p95 **6.711 s**, maximum **11.827 s**. Recorded 141 completions cost **$1.080407**; cumulative estimate **$14.1456**. All 149 launches have terminal events, with unchanged trace/usage/results for 47.932 seconds before further edits. Thirteen late losing completions cost $0.42394, included. Optional repair timeouts on q026/q090 are not whole-turn outages. All ten calculations independently recompute.
+
+The critical gate still fails: q033 adds an unsupported camera-fitment range to an exact list; q071 claims an entire webpage omits variant mapping after only selected passages were fetched. q026's wheel coverage and q048's blanket direct-source attribution are partial. q032 rejects valid grouped-digit diesel figures; q077 loses the dealer-delivery limit; q090 loses a specific fake-evidence refusal. Independent review accepts q099's useful E/King climate comparison despite lost additional detail, because the request does not require an exhaustive feature inventory. All raw answers, exact line hashes and original grades remain preserved in `qa100-v7-coverage-boot-final/`. Neither source content nor speech changed.
+
+## Earlier three-second fallback experiment
 
 On60d3e60/v7 the unchanged100 scored **94 supported,4partial,1unsafe,1provider failure**. The original run paused after88 at its conservative next-pair cost reserve; remaining12 completed separately with unchanged code/source/profile, within the original combined$2.50/300-completion cap. Both segments and the merged100 raw lines are preserved in `qa100-v7-early-fallback-combined/`.
 

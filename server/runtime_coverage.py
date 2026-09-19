@@ -25,16 +25,26 @@ _ACTIVE_ABSENCE = re.compile(
     r"\b" + _SOURCE + r"\s+" + _ADVERBS
     + r"(?:does not|do not|doesn't|don't|did not|didn't|never|has not|have not|hasn't|haven't)\s+"
     + _ADVERBS + r"(?:" + _REPORT + r"|" + _REPORTED + r")\b", re.I)
-# A directly coordinated 'page lists ..., but it does not mention ...' keeps
+# A directly coordinated 'page reflects ..., but it does not mention ...' keeps
 # the page as its subject. Do not infer that ownership across sentences,
 # embedded clauses or a possible intervening singular product referent.
+# The positive predicate is not restricted to reporting verbs: it establishes
+# subject ownership, not evidence coverage. Function words cannot stand in for
+# a predicate ('according to the page about the E trim ...').
+_SOURCE_PREDICATE = (
+    r"(?!(?:the|a|an|this|that|these|those|its|their|our|your|my|his|her|"
+    r"he|she|it|they|we|you|which|who|where|when|while|because|although|"
+    r"and|or|but|yet|with|without|about|of|for|from|to|in|on|at|by|"
+    r"as|than|under|over|after|before|through|between)\b)[a-z][a-z'-]*"
+)
 _COORDINATED_SOURCE_ABSENCE = re.compile(
-    r"\b" + _SOURCE + r"\s+" + _ADVERBS + _REPORT
+    r"\b" + _SOURCE + r"\s+" + _ADVERBS + _SOURCE_PREDICATE
     + r"\b(?P<object>[^.!?;]{0,180}?)\s*,?\s+(?:but|and|yet)\s+it\s+"
     + _ADVERBS + r"(?:does not|doesn't|did not|didn't|never|has not|hasn't)\s+"
     + _ADVERBS + r"(?P<negative_report>" + _REPORT + r"|" + _REPORTED + r")\b", re.I)
 _EMBEDDED_SOURCE_CLAUSE = re.compile(
-    r"\b(?:that|which|who|where|when|while|because|although|but)\b", re.I)
+    r"\b(?:that|which|who|where|when|while|because|although|but)\b"
+    r"|\b(?:and|or|yet)\s+(?:the|a|an|this|that|it|he|she|they)\b", re.I)
 _POSSIBLE_PRODUCT_REFERENT = re.compile(
     r"\b(?:product|service|item|plan|package|policy|warranty|vehicle|car|trim|variant|model|feature)\b", re.I)
 _BARE_NAMED_REFERENT = re.compile(
