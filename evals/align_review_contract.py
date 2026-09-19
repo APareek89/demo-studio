@@ -65,6 +65,7 @@ def run(check, _demo_id=None):
         result = api.patch(f"/api/demos/{did}/align/facts/C001", json={"truth":"stated", "conditions":"HX8 only", "source":{"locator":"specification table", "quote":"Rival HX8 length 3995 mm."}})
         saved = store.read_json(did, "understanding.json")
         corrected = saved["competitors"][0]["facts"][0]
+        corrected_id = corrected["id"]
         check("align review: C truth and citation can be corrected without resending its value",
               result.status_code == 200 and corrected["truth"] == "stated" and corrected["conditions"] == "HX8 only"
               and corrected["source"] == {"ref":rival["id"], "locator":"specification table", "quote":"Rival HX8 length 3995 mm."}
@@ -72,21 +73,21 @@ def run(check, _demo_id=None):
         check("align review: C edits preserve separate storage, source owner and all product facts",
               saved["facts"] == und["facts"] and saved["competitors"][0]["source_id"] == rival["id"]
               and saved["competitors"][1] == und["competitors"][1]
-              and "scope" not in corrected and "competitor_name" not in corrected)
+              and corrected.get("scope") == und["competitors"][0]["facts"][0].get("scope") and "competitor_name" not in corrected)
         current = store.load(did)
         check("align review: fact edit invalidates downstream work and all approvals, keeping corrected understanding done",
               not any(current["approvals"].values()) and current["stages"]["understand"]["status"] == "done"
               and all(current["stages"][key]["status"] == "stale" for key in orchestrator.DOWNSTREAM["understand"]))
         for label, fid, payload, status in (
             ("unknown fact", "C999", {"value":"3990 mm"}, 404),
-            ("invalid truth", "C001", {"truth":"official"}, 400),
+            ("invalid truth", corrected_id, {"truth":"official"}, 400),
             ("non-text value", "F001", {"value":3990}, 400),
             ("empty value", "F001", {"value":" "}, 400),
             ("unknown source", "F001", {"source":{"ref":"missing", "locator":"p1", "quote":"x"}, "conditions":""}, 400),
             ("blended source ids", "F001", {"source":{"ref":product["id"] + "," + product2["id"], "locator":"p1", "quote":"x"}, "conditions":""}, 400),
             ("product citing competitor", "F001", {"source":{"ref":rival["id"], "locator":"p1", "quote":"x"}, "conditions":""}, 400),
-            ("competitor citing product", "C001", {"source":{"ref":product["id"], "locator":"p1", "quote":"x"}, "conditions":""}, 400),
-            ("competitor source reassignment", "C001", {"source":{"ref":rival2["id"], "locator":"p1", "quote":"x"}, "conditions":""}, 400),
+            ("competitor citing product", corrected_id, {"source":{"ref":product["id"], "locator":"p1", "quote":"x"}, "conditions":""}, 400),
+            ("competitor source reassignment", corrected_id, {"source":{"ref":rival2["id"], "locator":"p1", "quote":"x"}, "conditions":""}, 400),
             ("source change retaining old evidence", "F001", {"source":{"ref":product2["id"]}}, 400),
             ("unsupported citation field", "F001", {"source":{"url":"https://example.com"}}, 400),
             ("structural fact mutation", "F001", {"id":"C003"}, 400),
@@ -96,35 +97,37 @@ def run(check, _demo_id=None):
             check(f"align review: {label} is rejected without any mutation", result.status_code == status and snapshot() == before)
         result = api.patch(f"/api/demos/{did}/align/facts/F001", json={"value":"3990 mm", "truth":"stated", "conditions":"current brochure", "source":{"ref":product2["id"], "locator":"dimensions", "quote":"Product length 3990 mm."}})
         updated = store.read_json(did, "understanding.json")["facts"][0]
+        updated_id = updated["id"]
         check("align review: product citation replacement requires and saves its own exact evidence",
               result.status_code == 200 and updated["source"] == {"ref":product2["id"], "locator":"dimensions", "quote":"Product length 3990 mm."}
               and updated["conditions"] == "current brochure" and updated["truth"] == "stated")
-        result = api.post(f"/api/demos/{did}/align/facts/C001/approval", json={"approved":False})
+        result = api.post(f"/api/demos/{did}/align/facts/{corrected_id}/approval", json={"approved":False})
         saved = store.read_json(did, "understanding.json")
         check("align review: rejecting a C fact removes its QA eligibility while keeping it reviewable",
-              result.status_code == 200 and "C001" not in qa.approved_fact_ids(saved, True)
-              and any(f["id"] == "C001" and not f["approved"] for f in result.json()["cards"]["facts"]["facts"]))
-        result = api.post(f"/api/demos/{did}/align/facts/C001/approval", json={"approved":True})
+              result.status_code == 200 and corrected_id not in qa.approved_fact_ids(saved, True)
+              and any(f["id"] == corrected_id and not f["approved"] for f in result.json()["cards"]["facts"]["facts"]))
+        result = api.post(f"/api/demos/{did}/align/facts/{corrected_id}/approval", json={"approved":True})
         saved = store.read_json(did, "understanding.json")
         check("align review: restoring a C fact still respects competition-off at runtime",
-              result.status_code == 200 and "C001" in qa.approved_fact_ids(saved, True) and "C001" not in qa.approved_fact_ids(saved, False))
+              result.status_code == 200 and corrected_id in qa.approved_fact_ids(saved, True) and corrected_id not in qa.approved_fact_ids(saved, False))
         for payload in ({"approved":"false"}, {}, []):
             before = snapshot()
-            result = api.post(f"/api/demos/{did}/align/facts/C001/approval", json=payload)
+            result = api.post(f"/api/demos/{did}/align/facts/{corrected_id}/approval", json=payload)
             check("align review: approval requires a literal boolean and is atomic", result.status_code == 400 and snapshot() == before)
 
         approve_all()
-        action = schemas.AlignAction(type="edit_fact", fact_id="C001", fact_value="3990 mm", fact_truth="stated", fact_conditions="HX8 only", fact_source=schemas.FactSource(ref=rival["id"], locator="reviewed table", quote="HX8 length 3990 mm")).model_dump()
+        action = schemas.AlignAction(type="edit_fact", fact_id=corrected_id, fact_value="3990 mm", fact_truth="stated", fact_conditions="HX8 only", fact_source=schemas.FactSource(ref=rival["id"], locator="reviewed table", quote="HX8 length 3990 mm")).model_dump()
         notes = orchestrator.apply_actions(did, [action], [], "align", {})
         corrected = store.read_json(did, "understanding.json")["competitors"][0]["facts"][0]
         check("align review: structured chat corrections use the same C lookup, provenance and approval invalidation",
-              notes == ["edited C001"] and corrected["value"] == "3990 mm" and corrected["source"]["locator"] == "reviewed table"
+              notes == [f"edited {corrected_id} → {corrected['id']}"] and corrected["value"] == "3990 mm" and corrected["source"]["locator"] == "reviewed table"
               and not any(store.load(did)["approvals"].values()))
+        corrected_id = corrected["id"]
         before = snapshot()
-        notes = orchestrator.apply_actions(did, [{"type":"edit_fact", "fact_id":"C001", "fact_truth":"unsupported"}], [], "align", {})
+        notes = orchestrator.apply_actions(did, [{"type":"edit_fact", "fact_id":corrected_id, "fact_truth":"unsupported"}], [], "align", {})
         check("align review: an invalid chat correction reports failure without writing", snapshot() == before and "Could not edit" in notes[0])
-        notes = orchestrator.apply_actions(did, [{"type":"remove_fact", "fact_id":"C001"}], [], "align", {})
-        check("align review: chat rejection targets C storage and removes runtime eligibility", notes == ["removed C001"] and "C001" not in qa.approved_fact_ids(store.read_json(did, "understanding.json"), True))
+        notes = orchestrator.apply_actions(did, [{"type":"remove_fact", "fact_id":corrected_id}], [], "align", {})
+        check("align review: chat rejection targets C storage and removes runtime eligibility", notes == [f"removed {corrected_id}"] and corrected_id not in qa.approved_fact_ids(store.read_json(did, "understanding.json"), True))
 
         approve_all()
         result = api.patch(f"/api/demos/{did}/align/script", json={"intake_q1":"What would you like to explore?", "checkins":[{"segment_id":"proof", "text":"Does that suit your use?"}], "segments":[{"id":"proof", "title":"Dimensions", "outcome":""}], "realign_visuals":False})
@@ -155,7 +158,7 @@ def run(check, _demo_id=None):
             before = snapshot()
             result = api.patch(f"/api/demos/{did}/align/script", json={**payload, "realign_visuals":False})
             check(f"align review: {label} rejects atomically", result.status_code == status and snapshot() == before)
-        result = api.patch(f"/api/demos/{did}/align/script", json={"lines":[{"id":"proof-L1", "text":"Length is 3990 mm.", "fact_ids":["F001"]}], "checkins":[{"segment_id":"proof", "text":""}], "segments":[{"id":"proof", "outcome":"Length is 3990 mm."}], "realign_visuals":False})
+        result = api.patch(f"/api/demos/{did}/align/script", json={"lines":[{"id":"proof-L1", "text":"Length is 3990 mm.", "fact_ids":[updated_id]}], "checkins":[{"segment_id":"proof", "text":""}], "segments":[{"id":"proof", "outcome":"Length is 3990 mm."}], "realign_visuals":False})
         check("align review: existing cited line edits combine with cited metadata and explicit checkin removal",
               result.status_code == 200 and store.read_json(did, "script.json")["segments"][0]["checkin"] == ""
               and store.read_json(did, "script.json")["segments"][0]["outcome"] == "Length is 3990 mm.")
@@ -167,7 +170,7 @@ def run(check, _demo_id=None):
         current_script["segments"][1]["topic"] = "overview"
         current_script["closing"] = [{"id":"close-L1", "text":"Old closing.", "fact_ids":[]}]
         store.write_json(did, "script.json", current_script)
-        callout = {"id":"sl01-c1", "text":"Reviewed label", "fact_ids":["F001"], "placement":"panel", "label_pos":{"x":0.25,"y":0.35}}
+        callout = {"id":"sl01-c1", "text":"Reviewed label", "fact_ids":[updated_id], "placement":"panel", "label_pos":{"x":0.25,"y":0.35}}
         stale_deck = {"slides":[
             {"id":"sl00", "kind":"hero_open", "title":"Product hero", "lines":[], "image_id":None, "callouts":[]},
             {"id":"sl01", "segment_id":"proof", "kind":"proof", "role":"proof", "title":"Reviewed slide title", "image_id":None,

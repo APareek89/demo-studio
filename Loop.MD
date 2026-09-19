@@ -3,6 +3,31 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## 2026-09-19 — Provider readiness boundary
+
+`evals/readiness_contract.py`: 10/10 pass for actual Read/Build API queries, missing/expired/mock/failed checks, selected speech identity, explicit override and mock bypass; sockets blocked. `evals/readiness_ui_contract.mjs`: 5/5 pass for read-only panel mount, explicit credit-using probe, demo-scoped override and revocation. These validate orchestration, not live service availability. Loop remains off.
+
+Incident accounting: retained mock fixture `dm_498d4665` confirms one successful Gemini image call, locally estimated $0.02 (₹1.68). Unknown additional intermediate stores were removed before the defect was identified; no total zero-cost claim is valid. Final blocked-egress gates are separate evidence.
+
+## Conversational runtime implementation contracts — 2026-09-19
+
+Authorized implementation checks on `codex/creta-conversational-demo`; Loop remains off. The approved plan is `docs/plan-runtime-experience-2026-09-19.md`. Mock/fake contracts establish control and validation behavior, not live speech quality or a completed Creta demo.
+
+- `evals/knowledge_contract.py`:36 local tests. Immutable evidence identity/snapshots, scope/conflict precedence and explicit selections, document provenance, budgeted extraction, local OCR and isolated fake-source browser rendering.
+- `evals/runtime_graph_contract.py`:51. Actual LangGraph produces versioned delivery plans; deterministic EMI/other calculations require quoted inputs and units; only supplied URLs authorize lookup; unsupported claims, invented IDs and stale-turn checkpoints are rejected; outage is not a cached knowledge gap.
+- `evals/sarvam_stream_contract.py`:17. Fake WebSocket protocol and streaming cancellation contracts. `evals/live_voice_contract.mjs`:46 with fake devices/transports, including early voice answers, interrupted playback, final transcription ownership and personalized callout remapping. Caption-only completion is excluded from useful-audio timing; browser endpoint receipt and actual speech-end are separate clock cohorts. `evals/player_focus_contract.cjs`:12 verifies exact configured focus resolution. None proves native acoustic accuracy.
+- `evals/speech_style_contract.py`:13. Real author/voice/pitch/translation functions preserve cited reviewed claims and Priya identity, separate delivery metadata from speech, key cache by effective pace/persona, measure overview WAV duration, hold unsupported gearbox outcomes and dropped overview units, and replace unseen slide speech without duplication.
+- `evals/build_hardening_contract.py`:16. Actual Ready revision parks at Align before voice; subsequent explicit approval/Build completes; image-only changes preserve factual approvals/review cache; changed facts/script/FAQ/prompts invalidate reviews; durable SSE/progress survives reload; mocked image/mascot paths cannot initialize Gemini.
+- `evals/sse_client_contract.mjs`:4. Actual API client starts with current snapshot, suppresses duplicate/historical completion events, accepts subsequent live state and cleans up listeners.
+- `evals/live_transport_contract.py`:8 mic-generation ownership and connection lifecycle checks. `evals/overview_edit_contract.py`:9 direct editable-overview validation/duration checks.
+- `evals/fact_identity_contract.py`:17. Actual review API allocates fresh IDs for changed assertions/scope, leaves immutable published snapshots and old ledger meaning intact, invalidates draft approvals, retires old-ID routes, preserves no-op files and rejects invalid scope atomically. Re-Read lineage is also covered by knowledge tests.
+- `evals/gemini_schema_contract.py`:4 validates current SDK JSON-schema serialization for scope/delivery dictionaries. Provider55 (inside deck) includes configurable Gemini-first text builds, order overrides, explicit no-fallback behavior, media isolation and health reporting.
+- `evals/runtime_metrics_contract.py`:7 validates cohorts, absent audio, failure/cancellation counts and interruption clock boundaries; these are fixtures, not observed latency results.
+- Existing regressions remain: generation44, pitch47, voice27, align47, FAQ42, customer29, policy12, summary11/accounting8/race14, runtime delivery27. The FAQ and deck/smoke fixtures now explicitly reapprove changed content before Build; original assertions remain.
+- Final required gates: deck315/315; acceptance24/24; both smoke phases. Each reports `OUTBOUND_SOCKET_ATTEMPTS=0` under MOCK_LLM=1, CLOUD_SYNC=0, local storage and independent temporary data/graph stores. Syntax85 Python and21 JS/harness files. All25 contract script invocations exit0; provider cases execute through deck rather than its import-only file. Logs: `output/creta-runtime-2026-09-19/final-free-gates/`, `final-contracts/` and the final affected-path rerun in `focused-final/` (all green; Python sockets blocked).
+
+Intermediate tests exposed an optional-media mock-guard hole; their warning logs and uncertain accounting are retained in `output/creta-runtime-2026-09-19/mock-guard-audit/`. Do not equate MOCK configuration alone with proved zero spend. Real capability probes have begun; synthetic Sarvam listening passed3/3 intent/entity checks at a stage estimate $0.0062, without establishing native microphone or acoustic quality. TVS iQube repair is separately covered by38 local live-API and33 isolated reuse checks, with nine supported FAQ corrections, no full Build and the documented legacy approval/publication caveat. Remaining release evidence: completed real source/Align/build review, useful-answer validation over100 questions,20 voice interruptions, three complete buyer journeys and measured cache/model/tool latency cohorts. Proposed latency targets remain targets, not promises or observed results.
+
 ## Atelier visual acceptance — 2026-09-19
 
 Authorized bounded checks for B Atelier's CSS-only integration; Loop remains off. No new product behaviour.

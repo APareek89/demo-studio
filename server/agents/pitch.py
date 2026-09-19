@@ -3,6 +3,7 @@ approved proof blocks for THIS buyer (P02/P03/P05/P07), with grounded one-line b
 from __future__ import annotations
 
 import json
+import copy
 import re
 
 from .. import schemas, store
@@ -38,6 +39,13 @@ Your output:
   Bridges are statements, not questions.
   Never put intro/outcome segments in the route (they already played).
 - skipped: segments left out, with the reason.
+- personalized_segments: rewrite the selected segment's spoken composition for this buyer. Select the most relevant
+  complete reviewed main/deeper sentences from THAT segment, put the answer to their need first, and omit unrelated
+  detail. Copy each factual sentence exactly with its complete citations, visual and delivery metadata; do not invent
+  a new causal benefit or alter conditions. Supply customer_quote as at most eight consecutive words copied verbatim
+  from their why/followup; code uses this to create a short personal introduction. The resulting lines REPLACE the
+  segment's default narration; never repeat them as custom_batches or a bridge. Keep total proof to 28 words when
+  adding personal framing; no question (the existing checkin still waits). For unknown context leave replacements empty.
 - usp_order: which USPs get covered, in order (every route step's usps).
 - custom_batches: when the buyer said something specific, select 2-3 relevant items from REVIEWED SPOKEN PROOF, in the
   order that best serves their stated need. Copy each item's exact text and the complete fact_ids; never add a prefix,
@@ -70,6 +78,9 @@ NEUTRAL ROUTE CUES (code-owned wording, keyed by segment_id; copy the matching c
 
 MAIN ROUTE SPEECH (already plays for each selected segment; do not repeat it in optional proof):
 {main_speech}
+
+SEGMENT SCRIPT (reviewed main/deeper lines, with immutable evidence and delivery):
+{segment_script}
 
 USPS: {usps}
 CTAS: {ctas}
@@ -202,25 +213,28 @@ def _reviewed_proofs(script: dict, facts: list[dict], *, approved: bool) -> list
                 continue
             key = _proof_key(text, ids)
             if key not in seen:
-                proofs.append({"text": text, "fact_ids": list(dict.fromkeys(ids))})
+                proofs.append({"text": text, "fact_ids": list(dict.fromkeys(ids)), "delivery": copy.deepcopy(line.get("delivery") or {})})
                 seen.add(key)
     return proofs
 
 
-def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
+def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: bool = True,
+               timeout_budget_s: float | None = None, seen_segment_ids: list[str] | None = None) -> dict:
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
     script = store.read_json(demo_id, "script.json") or {}
     demo = store.load(demo_id)
     voice = plan.get("voice", {})
-    segs = [s for s in script.get("segments", []) if s.get("role") in ("proof", "features", "establish") and any(not l.get("unverified") for l in s["lines"])]
+    seen = set(seen_segment_ids or [])
+    segs = [s for s in script.get("segments", []) if s.get("id") not in seen and s.get("role") in ("proof", "features", "establish") and any(not l.get("unverified") for l in s["lines"])]
     plan_by_id = {s["id"]: s for s in plan.get("segments", [])}
     library = "\n".join(f"{s['id']} [{s['role']}] {s['title']} — outcome: {s.get('outcome') or plan_by_id.get(s['id'], {}).get('outcome','')} — topic {s['topic']} — usps {s.get('usp_ids') or plan_by_id.get(s['id'], {}).get('usp_ids', [])} — facts {sorted({f for l in s['lines'] for f in l.get('fact_ids', [])})}" for s in segs) or "(no proof blocks)"
     facts = [f for f in und.get("facts", []) if f.get("approved", True)]
     facts_txt = "\n".join(fact_context(f) for f in facts) or "(empty)"
     script_approved = (demo.get("approvals") or {}).get("script") is True
-    proofs = _reviewed_proofs(script, facts, approved=script_approved)
+    proofs = _reviewed_proofs({"segments": segs}, facts, approved=script_approved)
     proof_keys = {_proof_key(item["text"], item["fact_ids"]) for item in proofs}
+    proof_delivery = {_proof_key(item["text"], item["fact_ids"]): item["delivery"] for item in proofs}
     neutral_cues = _neutral_route_cues(segs, approved=script_approved)
     main_speech = {s["id"]: [line["text"] for line in s["lines"] if line.get("text") and not line.get("unverified")]
                    for s in segs}
@@ -233,11 +247,13 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         primary=plan.get("primary_outcome", ""), supporting=plan.get("supporting_outcomes", []), advance=plan.get("advance", ""), dnr=plan.get("do_not_recommend_if", ""), facts=facts_txt,
         proofs=json.dumps(proofs, ensure_ascii=False), neutral_cues=json.dumps(neutral_cues, ensure_ascii=False),
         main_speech=json.dumps(main_speech, ensure_ascii=False),
+        segment_script=json.dumps(segs, ensure_ascii=False),
     )
     ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
     try:
         # runtime providers in order, short timeout each: the plan must land while the standard opening plays
-        out = runtime.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, thinking_level="low")
+        budget = {"timeout_budget_s": timeout_budget_s} if timeout_budget_s is not None else {}
+        out = runtime.structured(sys, ask, schemas.PitchPlan, max_tokens=3000, thinking_level="low", **budget)
     except Exception as e:
         raise RuntimeError(str(e)[:300]) from e
     p = out.model_dump()
@@ -329,6 +345,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
             b["visual_ref"] = _vis.for_facts(und, b["fact_ids"]) or ""
         b["visual_ref"] = _vis.for_text_and_facts(demo_id, und, txt, b["fact_ids"], b.get("visual_ref") or "") or ""
         b["words"] = len(txt.split())
+        b["delivery"] = copy.deepcopy(proof_delivery.get(_proof_key(txt, proposed_ids)) or {})
         batches.append(b)
     to_voice = [(b, "audio", b["text"]) for b in batches] + [(st, "bridge_audio", st["bridge"]) for st in route if st.get("bridge")]
     if p.get("decision_frame"):
@@ -337,11 +354,11 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         to_voice.append((p, "follow_up_audio", p["follow_up_question"]))
     if p.get("advance"):
         to_voice.append((p, "advance_audio", p["advance"]))
-    if to_voice and _voice.provider_for(demo) != "browser":
+    if voice_it and to_voice and _voice.provider_for(demo) != "browser":
         import contextvars as _cv
         from concurrent.futures import ThreadPoolExecutor as _TPE
         with _TPE(max_workers=4) as pool:
-            futs = {pool.submit(_cv.copy_context().run, _voice.render_line, demo_id, text, strict=True): (obj, key) for obj, key, text in to_voice}
+            futs = {pool.submit(_cv.copy_context().run, _voice.render_line, demo_id, text, strict=True, delivery=obj.get("delivery") or None): (obj, key) for obj, key, text in to_voice}
             for fut in futs:
                 obj, key = futs[fut]
                 try:
@@ -355,6 +372,53 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False) -> dict:
         b["visual"] = b["visual"] or {"kind": "none"}
     p["custom_batches"] = batches
     p["route"] = route
+    # Stream delivery can start with validated text without waiting for an entire
+    # TTS batch. Factual speech remains reviewed copy, with its citations/style.
+    by_segment = {s["id"]: s for s in segs}
+    p["script_segments"] = [copy.deepcopy(by_segment[step["segment_id"]]) for step in route]
+    replacements = []
+    route_ids = {step["segment_id"] for step in route}
+    for proposed in p.get("personalized_segments", []) if has_context and script_approved else []:
+        sid = proposed.get("segment_id")
+        if sid not in route_ids or any(item["segment_id"] == sid for item in replacements):
+            continue
+        base = by_segment[sid]
+        available = {_proof_key(line.get("text", ""), line.get("fact_ids", [])): line
+                     for line in [*base.get("lines", []), *base.get("deeper", [])]
+                     if not line.get("unverified") and line.get("fact_ids")
+                     and all(fid in by_fact for fid in line.get("fact_ids", []))}
+        chosen, keys = [], set()
+        for line in proposed.get("lines", []):
+            key = _proof_key(line.get("text", ""), line.get("fact_ids", []))
+            source = available.get(key)
+            if (not source or key in keys or re.search(r"[?？]", source.get("text", ""))
+                    or _unsupported_addition(source["text"], [by_fact[fid] for fid in source["fact_ids"]])):
+                chosen = []
+                break
+            # Fresh text has fresh audio ownership; do not attach a base clip to
+            # the personalized preface or accept model-supplied media paths.
+            chosen.append(copy.deepcopy(source))
+            chosen[-1]["base_line_index"] = next((i for i, original in enumerate(base.get("lines", [])) if original.get("id") == source.get("id")), None)
+            keys.add(key)
+        if not chosen or sum(len(line["text"].split()) for line in chosen) > 38:
+            continue
+        quote = " ".join((proposed.get("customer_quote") or "").split())
+        customer_words = [" ".join(str(profile.get(k) or "").split()) for k in ("why", "followup")]
+        if quote and len(quote.split()) <= 8 and any(quote.casefold() in value.casefold() for value in customer_words) and not re.search(r"[<>\[\]?？]", quote):
+            preface = f'You mentioned “{quote}”. Let’s start there.'
+            if len(preface.split()) + sum(len(line["text"].split()) for line in chosen) <= 38:
+                chosen.insert(0, {"id": f"{sid}-personal", "text": preface, "fact_ids": [], "step": "frame",
+                                  "visual": copy.deepcopy(chosen[0].get("visual") or {"kind": "none", "ref": ""}),
+                                  "delivery": {"tone": "warm", "pace": 1.0}, "audio": None, "base_line_index": None})
+        replacement = {**copy.deepcopy(base), "segment_id": sid, "lines": chosen, "personalized": True}
+        replacements.append(replacement)
+    p["personalized_segments"] = replacements
+    if replacements:
+        # Replacements are the speech for their slides, not another pre-roll.
+        p["custom_batches"] = []
+        for step in route:
+            if any(item["segment_id"] == step["segment_id"] for item in replacements):
+                step["bridge"], step["bridge_audio"] = "", None
     ctas = {c["id"]: c for c in plan.get("ctas", [])}
     if p.get("advance_cta") not in ctas:
         prim = next((c for c in ctas.values() if c.get("primary")), next(iter(ctas.values()), None))

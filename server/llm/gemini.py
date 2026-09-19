@@ -117,7 +117,7 @@ def structured(prompt: str, parts: list[Any], schema: type[BaseModel], *, temper
     resp = _retry(lambda: client().models.generate_content(
         model=config.GEMINI_MODEL,
         contents=contents,
-        config=t.GenerateContentConfig(response_mime_type="application/json", response_schema=schema, temperature=temperature),
+        config=t.GenerateContentConfig(response_mime_type="application/json", response_json_schema=schema.model_json_schema(), temperature=temperature),
     ))
     text = resp.text or ""
     try:
@@ -144,7 +144,9 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
     t = _types()
     model = model or config.GEMINI_TEXT_MODEL
     prompt = f"SYSTEM INSTRUCTIONS:\n{system}\n\nCONVERSATION / TASK:\n{transcript}"
-    cfg: dict = dict(response_mime_type="application/json", response_schema=schema, temperature=temperature,
+    # The legacy response_schema converter rejects dictionary properties locally.
+    # Send JSON Schema intact; validate the response with the same Pydantic model.
+    cfg: dict = dict(response_mime_type="application/json", response_json_schema=schema.model_json_schema(), temperature=temperature,
                      max_output_tokens=min(max(256, max_tokens), 32768))
     if thinking_level is not None and model == "gemini-3.8-flash":
         # Only this exact model's support is verified; unknown overrides retain their defaults.
@@ -152,8 +154,12 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
     if timeout_s:
         cfg["http_options"] = t.HttpOptions(timeout=int(timeout_s * 1000))
     t0 = time.time()
-    resp = _retry(lambda: client().models.generate_content(model=model, contents=prompt, config=t.GenerateContentConfig(**cfg)),
-                  tries=tries, waits=(2,))
+    try:
+        resp = _retry(lambda: client().models.generate_content(model=model, contents=prompt, config=t.GenerateContentConfig(**cfg)),
+                      tries=tries, waits=(2,))
+    except Exception as exc:
+        usage.trace(kind,model,latency_ms=(time.time()-t0)*1000,system=system[:TRACE_SYS],user=prompt,error=usage.redact(str(exc))[:500])
+        raise
     text = resp.text or ""
     try:
         um = resp.usage_metadata
@@ -249,6 +255,8 @@ def describe_error(e: Exception) -> str:
 def generate_image(parts: list, prompt: str, *, model: str | None = None) -> tuple[bytes, str] | None:
     """One image from the Gemini image model (edit when `parts` carries a source image, generate when empty).
     Returns (bytes, mime) or None when the response has no image. Quota/billing errors raise — callers fall back."""
+    if config.MOCK_LLM:
+        return None  # Optional image generation must never leave the free path.
     import time as _time
     model = model or config.GEMINI_IMAGE_MODEL
     t = _types()

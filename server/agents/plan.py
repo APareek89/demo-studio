@@ -27,8 +27,9 @@ Produce exactly this:
 - intake.q2 = empty. There is no second discovery question after intake.
 - customer_persona is a general audience description, not a real customer's circumstances. Do not supply a fictional
   distance, budget, family or location for the author to repeat. Unknown personal context stays unknown.
-- usps: EXACTLY THREE, each tied to fact ids — one about the daily EXPERIENCE (comfort/cabin/ease), one about PERFORMANCE or
-  productivity, one about CONFIDENCE or ownership (safety, warranty, service). These three are the demo's spine.
+- usps: EXACTLY THREE, each tied to fact ids — choose the strongest supported features across daily EXPERIENCE,
+  PERFORMANCE and CONFIDENCE/ownership. Rank by relevance and strength of evidence; never force an unsupported advantage
+  to fill a category. These three are the demo's spine, with the most compelling sourced reason to care first.
   Their names and why_it_matters must stay within the cited evidence; relevance can be a useful choice or fit-check,
   without claiming a demonstrated result, unique advantage or peace-of-mind guarantee.
 - decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening):
@@ -39,8 +40,8 @@ Produce exactly this:
   1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice. ≤ 38 words each.
      No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1).
   1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question.
-  4-6 × role=proof — GUIDED DISCOVERY in the natural order for this product category (what a person first sees or touches →
-     what they live with daily → practicality → the core performance moment → trust/safety). One area per segment. The
+  4-6 × role=proof — GUIDED DISCOVERY: strongest supported standout feature first, then the everyday use or choice it
+     opens up, adjacent proof, practical fit and ownership. Avoid a fixed exterior-to-engine checklist. One area per segment. The
      runtime plays the buyer's strongest signal first, so each must stand alone.
   1 × role=features — a few more things, one sentence each.
   1 × role=establish — variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with
@@ -50,7 +51,9 @@ Produce exactly this:
 - Segments may only use approved registry facts; a concern with no facts is planned as an honest gap, never invented.
 - Every segment needs a visual that shows its subject (shots quality ≥3 preferred, else images); missing → visual_gaps.
 - CTAs: 2-3 fitting the product; one primary; the advance references one.
-- Voice: a persona matching the brand — warm, direct, honest. Voices: Sulafat (warm), Aoede (breezy), Leda (youthful),
+- Voice: a persona matching the brand — a warm, cheerful, attentive and honest product guide; subtle enthusiasm,
+  plain language and restrained pauses, never theatrical excitement or pressure. Keep the configured speaker identity;
+  this brief must not override a locked voice. Voices: Sulafat (warm), Aoede (breezy), Leda (youthful),
   Despina (smooth), Kore (firm), Achernar (soft), Zephyr (bright).
 {language}
 Return exactly the schema."""

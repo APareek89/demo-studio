@@ -6,7 +6,7 @@ import re
 
 from .. import schemas, store
 from ..llm import claude
-from . import visuals
+from . import speech_style, visuals
 from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, fact_context, language_instruction
 
 AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can interrupt at any
@@ -51,6 +51,17 @@ Hard rules:
    contain no questions. Do not duplicate a checkin in a line. `step=confirm` is retained only for old script compatibility.
 5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown. Concrete
    nouns; no "smart/convenient/economical". Never more than two facts in a row without their supported relevance.
+6. MAKE THE PRODUCT WORTH EXPLORING. Lead with the strongest supported reason to care, then show the actual feature.
+   Choose a vivid, concrete observation over generic praise. A good opening makes the buyer want to see the cabin or
+   try a feature; it does not recite the vehicle's dimensions or say every feature is exciting. Show standout features
+   early; keep technical mechanics for a requested deeper answer. A transmission type alone never proves smooth,
+   imperceptible or jerk-free shifts. A safety feature never promises that an accident cannot happen.
+7. DELIVERY. Be a helpful, cheerful, attentive guide: gentle enthusiasm, a reassuring cadence for limitations, no
+   theatrical excitement, repeated superlatives or forced fillers. Use punctuation for natural pauses. Set each line's
+   delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9–1.08. Never put [emotion] or SSML in text.
+   Write overview as a separate, self-contained 23–28 word thought for Explore's 10–15 second introduction: a compelling
+   supported feature/benefit first, with its variant qualification and citations. No greeting, question or dimensions.
+   Do not duplicate overview verbatim in the regular segments; it is an alternative opening while the route is planned.
 {audience}
 {language}"""
 
@@ -73,7 +84,8 @@ LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
 ROUTE_LIMIT = 360  # ≈ 3 minutes at the measured ~1.9 words/s: intro + outcome + best 3 proof + features + establish + closing
-JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen)\b")
+JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP)\b")
+_SHIFT_PROMISE = re.compile(r"\b(?:imperceptible|seamless|jerk[- ]free)\s+(?:gear\s*)?(?:shifts?|changes?)\b|\b(?:won't|will not|cannot|can't)\s+(?:even\s+)?feel\s+(?:the\s+)?(?:gear\s*)?(?:shifts?|changes?)\b", re.I)
 
 
 def words(t: str) -> int:
@@ -95,7 +107,18 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     issues: list[str] = []
 
     def check(line: dict, where: str):
+        prepared = speech_style.prepare(line.get("text", ""), line.get("delivery"))
+        if prepared["plain_text"] != line.get("text", "").strip():
+            issues.append(f"{where}: removed unsupported delivery markup; keep delivery metadata separate from spoken words")
+            line["text"] = prepared["plain_text"]
+        if line.get("delivery"):
+            line["delivery"] = speech_style.normalize(line["delivery"])
         line["fact_ids"], bad = ungrounded(line.get("text", ""), line.get("fact_ids"), fact_ids)
+        cited = [f for f in und["facts"] if f["id"] in line["fact_ids"]]
+        evidence = " ".join(str(f.get(k, "")) for f in cited for k in ("claim", "value", "conditions")) + " " + " ".join(str((f.get("source") or {}).get("quote", "")) for f in cited)
+        if _SHIFT_PROMISE.search(line.get("text", "")) and not _SHIFT_PROMISE.search(evidence):
+            issues.append(f"{where}: transmission evidence does not establish an imperceptible or seamless shift outcome")
+            bad = True
         v = line.get("visual") or {"kind": "none", "ref": "", "focus": ""}
         if v.get("ref") and v["ref"] not in vis:
             issues.append(f"{where}: visual '{v['ref']}' does not exist")
@@ -104,7 +127,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
             v["kind"] = vis[v["ref"]]
         line["visual"] = v
         if bad:
-            issues.append(f"{where}: states a figure or claim without a fact id — “{line.get('text', '')[:90]}”")
+            if not line["fact_ids"]:
+                issues.append(f"{where}: states a figure or claim without a fact id — “{line.get('text', '')[:90]}”")
             line["unverified"] = True
         else:
             line["unverified"] = False
@@ -150,6 +174,16 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     route = sum(by_role.get("intro", [0])) + sum(by_role.get("outcome", [0])) + sum(sorted(by_role.get("proof", []), reverse=True)[:3]) + sum(by_role.get("features", [0])) + sum(by_role.get("establish", [0])) + closing_words
     if route > ROUTE_LIMIT:
         issues.append(f"a full route would run {route} words (~{route/150:.1f} min); keep it under {ROUTE_LIMIT} (3 minutes) — cut, don't compress")
+    overview = script.get("overview") or script.get("runtime_overview")
+    if overview:
+        check(overview, "Explore overview")
+        if not 23 <= words(overview.get("text", "")) <= 28:
+            issues.append("Explore overview: use 23–28 words for the 10–15 second opening")
+        if not overview.get("fact_ids") or re.search(r"[?？]", overview.get("text", "")):
+            issues.append("Explore overview needs cited evidence and must not ask a question")
+            overview["unverified"] = True
+        if audience == "everyday" and JARGON.search(overview.get("text", "")):
+            issues.append("Explore overview: move technical jargon to deeper detail")
     return issues
 
 
@@ -224,6 +258,10 @@ def split_long_batches(script: dict) -> int:
 
 
 def _assign_ids(script: dict) -> None:
+    overview = script.pop("overview", None)
+    if overview:
+        overview["id"] = "runtime-overview"
+        script["runtime_overview"] = overview
     for seg in script["segments"]:
         for n, ln in enumerate(seg["lines"], 1):
             ln["id"] = f"{seg['id']}-L{n}"
@@ -281,7 +319,7 @@ IMAGES:
     issues = validate(script, und, audience)
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
-        fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({"segments": script["segments"], "closing": script["closing"], "intake_q1": script["intake_q1"], "intake_q2": script["intake_q2"]})[:60000]
+        fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
         fix += "\n\nVALIDATOR ISSUES — fix every one: cite the correct fact ids, or rewrite the line so it makes no unsupported claim (state the gap honestly); shorten where told. Return the full script.\n" + "\n".join("- " + i for i in issues)
         try:
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)

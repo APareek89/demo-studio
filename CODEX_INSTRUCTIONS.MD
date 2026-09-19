@@ -1,3 +1,5 @@
+> Current scope (19 September 2026): the approved plan in `docs/plan-runtime-experience-2026-09-19.md` and current `PRD.md` supersede historical restrictions below on runtime streaming/barge-in, new extraction dependencies and paid Creta validation. Atelier/cinematic design remains. Keep review playback muted and use Codex's in-app browser; do not control Anand's Chrome.
+
 # Codex — orientation, rules of work, and the first task
 
 Written 2026-09-18 by the previous agent (Claude) when Anand moved day-to-day work to Codex. Everything here is

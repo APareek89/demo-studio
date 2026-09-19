@@ -6,6 +6,60 @@
 
 <!-- Newest first. -->
 
+
+## 2026-09-19 — Editing a fact must not change an old citation's meaning
+
+**Why1:** The review API updated a fact object in place while preserving its F/C ID. **Why2:** Identity was treated as a row key rather than the meaning of an assertion and its applicability. **Why3:** immutable publication alone did not protect later draft references and conflict decisions. **Why4:** correcting trim/year/conditions could silently rebind an old citation. **Why5:** edit tests checked the corrected value, not the old assertion's continued identity.
+**Fix:** Validate under the demo lock, allocate a fresh ID for material edits, archive the prior registry, record override ancestry and supersede historical conflicts without retargeting them. Old IDs cease to resolve in the current draft, while old published snapshots remain unchanged. No-op edits do not write or invalidate. Align exposes structured applicability and validates dates. `fact_identity_contract.py`17/17 plus knowledge Re-Read lineage tests cover the actual API, immutable snapshots, retired-ID rejection and atomic invalid-input handling.
+
+## 2026-09-19 — A declared provider preference had not reached the build adapter
+
+**Why1:** Real text builds still attempted Claude before Gemini. **Why2:** only runtime reasoning had a configured provider order. **Why3:** the older build adapter embedded its fallback chain. **Why4:** build and runtime shared a provider module name while using different entry contracts. **Why5:** tests preserved the old default instead of asserting the approved Gemini-first build behavior.
+**Fix:** `BUILD_PROVIDERS` defaults to Gemini → Claude → Runware for text-only structured builds, validates configured names and appears in health and extraction-cache identity. Explicit no-fallback calls and original media preserve their contracts; the plain Align greeting remains an explicitly documented legacy path. Seven new provider cases raise the suite to55; deck315 exercises them without network.
+
+## 2026-09-19 — Valid application schemas were rejected by Gemini's legacy schema converter
+
+**Why1:** Real Read failed before generation on `additionalProperties`. **Why2:** dictionary-valued scope/delivery fields are valid JSON Schema but were sent through the SDK's older `response_schema` converter. **Why3:** the converter has a narrower schema vocabulary. **Why4:** mocked model output never exercised real SDK serialization. **Why5:** schema coverage ended at application validation.
+**Fix:** use `response_json_schema` with the Pydantic model's complete JSON Schema and retain typed output validation. Four SDK-wire regression cases pass; a small real FactsOut probe confirms the corrected adapter. This does not certify the full Creta source read or the factual quality of model extraction.
+
+## 2026-09-19 — Old provider-outage FAQ answers needed a supported, reviewable repair
+
+**Why1:** TVS iQube's20 FAQ answers were provider-outage declines, including questions with saved evidence. **Why2:** failed authored answers had been retained as a bank. **Why3:** nine questions could now be corrected deterministically, but remaining temporal/unsupported questions still lacked evidence. **Why4:** the bank's legacy fact hash omitted the newer competition envelope, obscuring safe reuse. **Why5:** neither a new full Build nor silent hash replacement would establish what was actually preserved.
+**Fix:** snapshot all134 files, prove the exact legacy hash against the unchanged71 facts, record both hashes, then apply nine source-limited answers through the review API. Eleven declines remain. Live API38/38 and isolated reuse33/33 pass; no provider call or full Build. Existing legacy QA reads edited bank text before approval, so record that limitation rather than claiming card approval is a publication lock. Evidence and rollback snapshot stay in `output/creta-runtime-2026-09-19/iqube-repair/`.
+
+## 2026-09-19 — Provider readiness must be observed, not inferred from keys
+
+Why could a real build begin without a working runtime? Configuration presence was the only entry check. Why was that insufficient? Speech and reasoning use separate capabilities/accounts and may fail independently. Why did a previous success not suffice? It can expire, be a mock result, or belong to a different speaker. Why was this invisible in tests? The route fixture asserted key configuration only. Why was the real build not protected? Observed capability results were not part of its entry contract. The Read/Build gate now checks a fresh real reasoning result and, for Sarvam Build, the selected speech voice; it never probes implicitly. Sources/Rehearse show results, a credit-using check button, and an explicit per-demo in-tab override, recorded on use. `evals/readiness_contract.py` (10 checks) and `evals/readiness_ui_contract.mjs` (5 checks) would have caught the missing boundary.
+
+**Mock incident accounting addendum:** retained fixture `dm_498d4665` confirms a successful Gemini mascot image request before the guard fix: 61 input/1,489 output tokens, $0.02 local estimated image cost (₹1.68 at assumed FX). This is not a provider invoice or a bound on deleted intermediate stores. Preserve `output/creta-runtime-2026-09-19/mock-guard-audit/dm_498d4665-*` alongside the earlier warnings.
+
+
+## 2026-09-19 — Mock mode must guard optional media at its provider boundary
+
+**Why1:** Intermediate “free” integration runs emitted Gemini SDK image warnings after an import was repaired. **Why2:** The previously broken optional-media import had hidden a path without a MOCK_LLM early return. **Why3:** Text/speech mocks did not automatically protect image generation. **Why4:** A successful mock pipeline was assumed to imply no external side effect. **Why5:** Optional provider entry points lacked an explicit negative regression and process-level egress evidence.
+**Fix:** `gemini.generate_image` and `media.generate_mascot` return before provider initialization in mock mode. `build_hardening_contract.py` patches Gemini client construction to raise and asserts it is never reached. Final gates also block socket creation/connect and record zero attempts.
+**Accounting:** Intermediate warning logs are preserved in `output/creta-runtime-2026-09-19/mock-guard-audit/`. Some disposable stores had already been deleted before discovery; their spend is uncertain, not zero. Retain traces before cleanup when provider activity is in doubt. A repaired import is a behavior change and must recheck the actual downstream side effect.
+
+## 2026-09-19 — Ready revisions skipped the human checkpoint
+
+**Why1:** Revising a ready demo could immediately generate speech and bundle it. **Why2:** Graph routing treated previous Ready/rebuild flags as authorization to bypass Align. **Why3:** Approval fields could remain true after the reviewed content changed. **Why4:** stage invalidation and human approval invalidation were separate. **Why5:** Existing tests directly waited for Ready after a revision and reinforced the shortcut.
+**Fix:** Stage output comparison clears affected approvals; Ready revisions return to the real Align interrupt. Only a fresh explicit approved Build proceeds. Visual-only maintenance does not invalidate facts. `build_hardening_contract.py` exercises the actual revise→interrupt→approve→build graph; deck/smoke fixtures preserve earlier assertions while following that sequence.
+
+## 2026-09-19 — A reconnect replayed old navigation events and lost warnings
+
+**Why1:** Reopening Align could replay an earlier build-complete redirect. **Why2:** every new EventSource began at sequence zero. **Why3:** hello carried a number but did not establish a client/server baseline. **Why4:** the server ignored reconnect IDs and kept event state only in memory. **Why5:** progress messages were ephemeral and stage completion overwrote their text.
+**Fix:** Durable bounded event IDs, fresh snapshot hello, Last-Event-ID replay and client deduplication separate fresh navigation from reconnect. Stage records retain recent progress and warnings. Six build/SSE checks plus four real-client fake-transport cases cover these boundaries.
+
+## 2026-09-19 — Style changes and repeated reviews need semantic cache identities
+
+**Why1:** Identical words could reuse audio with outdated delivery/persona, while harmless audio timestamps could repeat scoring. **Why2:** speech keys omitted delivery/profile and review inputs included recording bookkeeping. **Why3:** one notion of “changed” was used for content, media and validation. **Why4:** separate overview/translation paths inherited audio or missed the translated text. **Why5:** there were no cross-path cache and metadata contracts.
+**Fix:** Speech keys include normalized delivery/persona; the voice-stage key includes settings/languages and spoken inputs. Rehearsal hashes reviewed content/evidence/FAQ/prompts, excluding audio/timelines and image-only maintenance. Optional overview translation clears source audio, preserves citations and holds changed numeric units. Regression coverage: speech13 and build16, with legacy voice27 retained.
+
+## 2026-09-19 — A factual citation is not permission to invent a customer benefit
+
+**Why1:** A gearbox type can be rewritten into an unsupported promise such as imperceptible shifts. **Why2:** benefit-first writing was conflated with inferring a desirable outcome from a feature. **Why3:** familiar automotive jargon also made the narration feel technical and generic. **Why4:** personalization appended repeated proof rather than replacing the selected narration. **Why5:** editorial and runtime validation needed the same clear evidence boundary.
+**Fix:** Lead with sourced standout features and supported relevance; otherwise present a choice or fit-check. Everyday scripts move complete technical quantities to deeper answers. Runtime personalization composes reviewed factual sentences with an exact customer-need preface and replaces slide speech; it cannot invent a new factual paraphrase. Delivery markers remain separate metadata, with supported pace/punctuation only. Free contracts prove these boundaries, not whether a live model will produce a compelling human-level pitch; that still needs real customer review.
+
 ## 2026-09-19 — A playable build did not satisfy the live-experience goal
 
 **Feedback:** Anand said yesterday's demo did not achieve the requested human-level runtime experience.

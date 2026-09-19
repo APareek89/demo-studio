@@ -20,6 +20,8 @@ from .agents import align, author, deck, faq, pitch, qa, rehearsal, summary as _
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
+from .runtime_live import router as runtime_live_router
+app.include_router(runtime_live_router)
 
 
 def _demo_or_404(demo_id: str) -> dict:
@@ -271,7 +273,34 @@ def workflow():
 @app.get("/api/demos/{demo_id}/trace")
 def get_trace(demo_id: str, limit: int = 300):
     demo = _demo_or_404(demo_id)
-    return {"stages": demo.get("stages", {}), "rows": usage.traces(demo_id, limit), "usage": usage.summary(demo_id), "latency": _latency(demo_id)}
+    from .runtime_metrics import aggregate
+    return {"stages": demo.get("stages", {}), "rows": usage.traces(demo_id, limit), "usage": usage.summary(demo_id), "latency": _latency(demo_id), "runtime_metrics": aggregate(demo_id)}
+
+
+@app.get("/api/runtime/metrics")
+def runtime_metrics():
+    from .runtime_metrics import aggregate
+    return aggregate()
+
+
+@app.get("/api/runtime/workflow")
+def runtime_workflow():
+    from .runtime_graph import graph as live_graph
+    return {"mermaid": live_graph.get_graph().draw_mermaid(), "version": 1, "delivery": "Validated DeliveryPlan; audio delivered separately on browser request"}
+
+
+@app.get("/api/demos/{demo_id}/readiness")
+def provider_readiness(demo_id: str):
+    _demo_or_404(demo_id)
+    from .readiness import status
+    return status(demo_id)
+
+
+@app.post("/api/demos/{demo_id}/readiness/probe")
+async def probe_provider_readiness(demo_id: str):
+    _demo_or_404(demo_id)
+    from .readiness import probe
+    return await probe(demo_id)
 
 
 @app.get("/api/demos/{demo_id}/evals")
@@ -323,8 +352,34 @@ def remove_source(demo_id: str, source_id: str):
     return {"sources": store.load(demo_id)["sources"]}
 
 
+def _require_provider_readiness(demo: dict, *, for_build: bool = False, override: bool = False) -> None:
+    """A key's presence is not proof of service. Never spend on an implicit probe."""
+    if config.MOCK_LLM:
+        return
+    if override:
+        runlog.event(demo["id"], "Provider readiness override", "Operator explicitly continued without a successful current provider check.")
+        return
+    from .readiness import status
+    observed = status(demo["id"])
+    checks = observed.get("checks") or {}
+    issues = []
+    if observed.get("stale") or observed.get("mock"):
+        issues.append("a fresh real provider check is needed")
+    if not checks.get("reasoning", {}).get("ready"):
+        issues.append("reasoning has not passed its latest check")
+    selected = demo.get("settings", {}).get("tts_provider") or config.TTS_PROVIDER
+    if for_build and selected == "sarvam":
+        speech = checks.get("streaming_speech") or {}
+        if not speech.get("ready"):
+            issues.append("streaming speech has not passed its latest check")
+        elif speech.get("voice") != voice.voice_name_for(demo, "sarvam"):
+            issues.append("the selected voice needs a new speech check")
+    if issues:
+        raise HTTPException(409, "Provider readiness: " + "; ".join(issues) + ". Check providers in Sources or Rehearse, or explicitly enable the readiness override there.")
+
+
 @app.post("/api/demos/{demo_id}/read")
-def read_sources(demo_id: str):
+def read_sources(demo_id: str, override_readiness: bool = False):
     demo = _demo_or_404(demo_id)
     if not demo["sources"]:
         raise HTTPException(400, "Add at least one source first")
@@ -332,6 +387,7 @@ def read_sources(demo_id: str):
         raise HTTPException(400, "Add a text-provider key in .env (Anthropic, Gemini or Runware)")
     if any(s["kind"] in ("video", "image") for s in demo["sources"]) and not config.GEMINI_API_KEY and not config.MOCK_LLM:
         raise HTTPException(400, "GEMINI_API_KEY missing in .env (needed for video/images)")
+    _require_provider_readiness(demo, override=override_readiness)
     try:
         graph.start_read(demo_id)
     except RuntimeError as e:
@@ -342,13 +398,20 @@ def read_sources(demo_id: str):
 # ---------- events (SSE) ----------
 
 @app.get("/api/demos/{demo_id}/events")
-async def sse(demo_id: str, since: int = 0):
+async def sse(demo_id: str, request: Request, since: int | None = None):
     _demo_or_404(demo_id)
 
     async def gen():
-        seq = since
+        try:
+            resume = int(request.headers.get("last-event-id", ""))
+        except (ValueError, TypeError):
+            resume = since
+        # Fresh view = current state plus future events. Historical build completion
+        # must not navigate a newly opened Align screen away from human review.
+        baseline = events.snapshot(demo_id, resume)
+        seq = baseline["seq"]
         last_beat = time.time()
-        yield f"event: hello\ndata: {json.dumps({'seq': events.latest_seq(demo_id)})}\n\n"
+        yield f"id: {seq}\nevent: hello\ndata: {json.dumps(baseline)}\n\n"
         while True:
             evs = events.since(demo_id, seq)
             for ev in evs:
@@ -404,22 +467,47 @@ def unapprove(demo_id: str, card: str):
     return out
 
 
-@app.patch("/api/demos/{demo_id}/align/facts/{fact_id}")
-async def edit_aligned_fact(demo_id: str, fact_id: str, req: Request):
-    """Direct, human-authored correction. Downstream script/FAQ must be reviewed again."""
+@app.patch("/api/demos/{demo_id}/knowledge/conflicts/{conflict_id}")
+async def resolve_knowledge_conflict(demo_id: str, conflict_id: str, req: Request):
     _demo_or_404(demo_id)
+    from .knowledge import resolve_conflict
     body = await req.json()
     try:
-        store.edit_fact(demo_id, fact_id, body)
+        result = resolve_conflict(demo_id,conflict_id,str(body.get("preferred_fact_id") or ""),note=str(body.get("note") or "")[:1000])
+    except KeyError:
+        raise HTTPException(404,"Source conflict not found")
+    except ValueError as exc:
+        raise HTTPException(400,str(exc))
+    orchestrator.invalidate(demo_id,"understand")
+    orchestrator.set_stage(demo_id,"understand","done",message="Source conflict reviewed; downstream content needs review")
+    store.update(demo_id,lambda d:d["approvals"].update({c:False for c in store.CARDS}))
+    runlog.event(demo_id,"Source conflict resolved",conflict_id+" → "+str(body.get("preferred_fact_id")))
+    return {"ok":True,"conflict":result["conflict"],"approvals":store.load(demo_id)["approvals"],"cards":align.cards(demo_id)}
+
+
+@app.patch("/api/demos/{demo_id}/align/facts/{fact_id}")
+async def edit_aligned_fact(demo_id: str, fact_id: str, req: Request):
+    """A corrected assertion gets a new ID; historical citations never change meaning."""
+    demo = _demo_or_404(demo_id)
+    if graph.is_running(demo_id) or demo.get("running") or any(stage.get("status") == "running" for stage in demo.get("stages", {}).values()):
+        raise HTTPException(409, "Wait for the current stage to finish before editing a fact")
+    body = await req.json()
+    try:
+        fact = store.edit_fact(demo_id, fact_id, body)
     except KeyError:
         raise HTTPException(404, "fact not found")
     except ValueError as exc:
         raise HTTPException(400, str(exc))
-    orchestrator.invalidate(demo_id, "understand")
-    orchestrator.set_stage(demo_id, "understand", "done", message="direct fact edit saved and validated")
-    store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
-    runlog.event(demo_id, f"Fact {fact_id} edited directly", "Script, visuals and FAQ require re-approval before build.")
-    return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+    changed = fact["id"] != fact_id
+    if changed:
+        orchestrator.invalidate(demo_id, "understand")
+        orchestrator.set_stage(demo_id, "understand", "done", message="direct fact edit saved with a new assertion ID")
+        store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+        runlog.event(demo_id, f"Fact {fact_id} replaced by {fact['id']}", "Historical citations stay unchanged. Script, visuals and FAQ require re-approval before build.")
+    result = {"ok": True, "fact": fact, "changed": changed, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+    if changed:
+        result["previous_id"] = fact_id
+    return result
 
 
 @app.post("/api/demos/{demo_id}/align/facts/{fact_id}/approval")
@@ -509,12 +597,19 @@ async def edit_aligned_script(demo_id: str, req: Request):
     if len(requested) != len(edits):
         raise HTTPException(400, "Every script edit needs a line id")
     for edit in requested.values():
-        if not any(key in edit for key in ("text", "fact_ids", "visual_ref")):
-            raise HTTPException(400, "Each script edit must change text, fact ids or the visual ref")
+        if not any(key in edit for key in ("text", "fact_ids", "visual_ref", "delivery")):
+            raise HTTPException(400, "Each script edit must change text, fact ids, delivery or the visual ref")
         if "text" in edit and (not (edit.get("text") or "").strip() or len((edit.get("text") or "").strip()) > 1200):
             raise HTTPException(400, "Every edited line needs 1–1200 characters")
         if "fact_ids" in edit and (not isinstance(edit.get("fact_ids"), list) or len(edit["fact_ids"]) > 30):
             raise HTTPException(400, "fact_ids must be a list of at most 30 fact ids")
+        if "delivery" in edit:
+            delivery = edit["delivery"]
+            if not isinstance(delivery,dict) or set(delivery)-{"tone","pace"} or delivery.get("tone","warm") not in {"warm","upbeat","calm","reassuring"}:
+                raise HTTPException(400, "Delivery needs a supported tone and optional pace")
+            pace = delivery.get("pace",1.0)
+            if isinstance(pace,bool) or not isinstance(pace,(int,float)) or not .9<=pace<=1.08:
+                raise HTTPException(400, "Delivery pace must be between 0.9 and 1.08")
     script = store.read_json(demo_id, "script.json") or {}
     und = store.read_json(demo_id, "understanding.json") or {}
     missing_segments = (set(question_edits) | set(segment_edits)) - {seg.get("id") for seg in script.get("segments", [])}
@@ -544,17 +639,27 @@ async def edit_aligned_script(demo_id: str, req: Request):
                 if "text" in edit:
                     line["text"] = (edit.get("text") or "").strip()
                     line.pop("audio", None)
+                if "delivery" in edit:
+                    line["delivery"] = edit["delivery"]
+                    line.pop("audio", None)
                 if "fact_ids" in edit:
                     line["fact_ids"] = [str(x) for x in edit["fact_ids"]]
                 if "visual_ref" in edit:
                     line["visual"] = ({"kind": "image" if str(edit["visual_ref"]).startswith("im") else "shot", "ref": str(edit["visual_ref"]), "focus": (line.get("visual") or {}).get("focus", "")} if edit.get("visual_ref") else {"kind": "none", "ref": "", "focus": ""})
                 found.add(line["id"])
-    for line in script.get("closing", []):
+    extra_lines = [*script.get("closing", []), *([script["runtime_overview"]] if script.get("runtime_overview") else [])]
+    for line in extra_lines:
         if line.get("id") in requested:
             edit = requested[line["id"]]
             if "text" in edit:
                 line["text"] = (edit.get("text") or "").strip()
                 line.pop("audio", None)
+            if "delivery" in edit:
+                line["delivery"] = edit["delivery"]
+                line.pop("audio", None)
+            if "text" in edit or "delivery" in edit:
+                for field in ("duration_seconds", "duration_exact", "duration_in_range", "duration", "exact"):
+                    line.pop(field, None)
             if "fact_ids" in edit:
                 line["fact_ids"] = [str(x) for x in edit["fact_ids"]]
             if "visual_ref" in edit:
@@ -575,7 +680,7 @@ async def edit_aligned_script(demo_id: str, req: Request):
                 seg[field] = text
     issues = author.validate(script, und, demo.get("settings", {}).get("audience", "everyday"))
     invalid = [line.get("id") for seg in script.get("segments", []) for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])] if line.get("id") in requested and line.get("unverified")]
-    invalid += [line.get("id") for line in script.get("closing", []) if line.get("id") in requested and line.get("unverified")]
+    invalid += [line.get("id") for line in extra_lines if line.get("id") in requested and line.get("unverified")]
     if invalid:
         raise HTTPException(400, "That edit introduces an uncited claim or figure. Add the information as a source/fact first: " + ", ".join(invalid))
     script["issues"] = issues
@@ -792,8 +897,9 @@ async def set_ctas(demo_id: str, req: Request):
 
 
 @app.post("/api/demos/{demo_id}/build")
-def build(demo_id: str):
-    _demo_or_404(demo_id)
+def build(demo_id: str, override_readiness: bool = False):
+    demo = _demo_or_404(demo_id)
+    _require_provider_readiness(demo, for_build=True, override=override_readiness)
     try:
         graph.start_build(demo_id)
     except RuntimeError as e:
@@ -852,6 +958,22 @@ async def run_qa(demo_id: str, req: Request):
     q = (body.get("question") or "").strip()
     if not q:
         raise HTTPException(400, "question required")
+    # Legacy integrations without a session keep the original REST contract.
+    # New players always identify their session; explicit v1 also enables graph
+    # calls from tools/benchmarks without a browser.
+    if body.get("runtime_version") == 1 or (body.get("session_id") and (store.read_json(demo_id, "bundle.json") or {}).get("runtime", {}).get("version") == 1):
+        from .runtime_graph import run_turn
+        result = (await run_turn(demo_id, body))["result"]
+        # HTTP is the typed/disconnected fallback. Live WS renders the validated
+        # delivery plan only when the browser requests it after slide routing.
+        if body.get("voice_it", True) and result.get("answer"):
+            try:
+                rel = await asyncio.to_thread(voice.render_line, demo_id, result["answer"], strict=True)
+                result["audio"] = f"/media/{demo_id}/{rel}" if rel else None
+            except Exception:
+                result["audio"] = None
+        runlog.runtime_qa(demo_id, q, result, body.get("profile") or None)
+        return result
     cur_slide = (body.get("slide_id") or "").strip() or None
     # Reviewed script is authoritative for narration/deeper citations, including
     # when saved slide design still contains an older copy of those lines.
@@ -890,6 +1012,9 @@ async def run_pitch(demo_id: str, req: Request):
     usage.current_demo.set(demo_id)
     usage.current_stage.set("runtime")
     body = await req.json()
+    if body.get("runtime_version") == 1 or (body.get("session_id") and (store.read_json(demo_id, "bundle.json") or {}).get("runtime", {}).get("version") == 1):
+        from .runtime_graph import run_turn
+        return (await run_turn(demo_id, body, kind="explore"))["result"]
     try:
         return await asyncio.to_thread(pitch.plan_pitch, demo_id, body.get("profile") or {}, bool(body.get("refine")))
     except RuntimeError as e:

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import time
 
-from .. import config, store
+from .. import config, store, knowledge
 from . import visuals
 
 
@@ -46,7 +46,7 @@ def build(demo_id: str, emit) -> dict:
     def line(ln: dict) -> dict:
         v = visual(ln.get("visual"))
         return {"id": ln["id"], "text": ln["text"], "audio": media_url(demo_id, ln.get("audio")), "visual": v, "start": ln.get("start"), "duration": ln.get("duration"),
-                "fact_ids": ln.get("fact_ids", []), "step": ln.get("step", "other"), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified"))}
+                "fact_ids": ln.get("fact_ids", []), "step": ln.get("step", "other"), "card": ln.get("card", "none"), "unverified": bool(ln.get("unverified")), "delivery": ln.get("delivery", {})}
 
     def assemble(sc: dict) -> dict:
         segs = []
@@ -75,7 +75,7 @@ def build(demo_id: str, emit) -> dict:
         def sl_line(l: dict) -> dict:
             src = by_id.get(l["id"], {})
             return {"id": l["id"], "text": src.get("text") or l["text"], "fact_ids": l.get("fact_ids", []), "audio": media_url(demo_id, src.get("audio")),
-                    "start": src.get("start"), "duration": src.get("duration"), "step": src.get("step") or l.get("step", "other")}
+                    "start": src.get("start"), "duration": src.get("duration"), "step": src.get("step") or l.get("step", "other"), "delivery": src.get("delivery", {})}
         out = []
         from .deck import slides_with_script
         for s in slides_with_script(deck.get("slides", []), sc):
@@ -99,6 +99,10 @@ def build(demo_id: str, emit) -> dict:
         if sc:
             alt[lang] = assemble(sc)
             alt[lang]["slides"] = assemble_slides(sc, store.read_json(demo_id, f"deck.{lang}.json"))
+            overview = sc.get("runtime_overview") or {}
+            if overview and not overview.get("unverified"):
+                intro = next((s for s in alt[lang]["slides"] if s.get("kind") == "intro"), {})
+                alt[lang]["runtime_overview"] = {"text": overview.get("text", ""), "audio": media_url(demo_id, overview.get("audio")), "fact_ids": overview.get("fact_ids", []), "slide_id": intro.get("id"), "duration_seconds": overview.get("duration_seconds"), "duration_exact": overview.get("duration_exact", False), "delivery": overview.get("delivery", {})}
     segments = []
     for seg in script.get("segments", []):
         splan = next((s for s in plan.get("segments", []) if s["id"] == seg["id"]), {})
@@ -146,6 +150,16 @@ def build(demo_id: str, emit) -> dict:
         "brand": und.get("brand", {}),
         "guardrails": {"no_citation_no_claim": True, "escalate_on_unknown": True, "no_price_negotiation": True},
     }
+    snapshot = knowledge.snapshot(demo_id, publish=all(demo.get("approvals", {}).get(c) for c in store.CARDS))
+    b["knowledge_snapshot_id"] = snapshot["id"]
+    overview = script.get("runtime_overview") or {}
+    if overview.get("unverified"):
+        overview = {}
+    intro_slide = next((s for s in b["slides"] if s.get("kind") == "intro"), next(iter(b["slides"]), {}))
+    overview_slide = next((s for s in b["slides"] if s.get("image_id") == (overview.get("visual") or {}).get("ref") and s.get("kind") in ("intro", "outcome")), intro_slide)
+    b["runtime"] = {"version": 1, "continuous_voice": True, "tools": ["calculator", "source_lookup"], "knowledge_snapshot_id": snapshot["id"],
+                    "overview": {"text": overview.get("text", ""), "audio": media_url(demo_id, overview.get("audio")), "fact_ids": overview.get("fact_ids", []),
+                                 "slide_id": overview_slide.get("id"), "duration_seconds": overview.get("duration_seconds"), "duration_exact": overview.get("duration_exact", False), "delivery": overview.get("delivery", {})}}
     store.write_json(demo_id, "bundle.json", b)
 
     def upd(d):

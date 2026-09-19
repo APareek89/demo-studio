@@ -9,10 +9,18 @@ import re
 import time
 from datetime import datetime, timezone
 
-from . import store
+from . import store, config
 
 current_demo: contextvars.ContextVar[str | None] = contextvars.ContextVar("current_demo", default=None)
 current_stage: contextvars.ContextVar[str] = contextvars.ContextVar("current_stage", default="runtime")
+
+
+def redact(text: str) -> str:
+    value = str(text or "")
+    for name in ("ANTHROPIC_API_KEY", "GEMINI_API_KEY", "RUNWARE_API_KEY", "SARVAM_API_KEY", "GCLOUD_TTS_API_KEY"):
+        secret = getattr(config,name,"")
+        if secret: value=value.replace(secret,"[redacted]")
+    return value
 
 # USD per 1M tokens unless noted. Override any of these in .env; they are assumptions, shown as such.
 PRICES = {
@@ -73,6 +81,7 @@ def trace(kind: str, model: str, *, latency_ms: float, system: str = "", user: s
     demo_id = demo_id or current_demo.get()
     if not demo_id or not store.exists(demo_id):
         return
+    system,user,response,error = (redact(v) for v in (system,user,response,error))
     row = {"t": time.time(), "stage": stage or current_stage.get(), "kind": kind, "model": model, "latency_ms": round(latency_ms),
            "in": int(input_tokens or 0), "out": int(output_tokens or 0), "chars": int(chars or 0),
            "system": (system or "")[:TRACE_MAX_CHARS] if TRACE_CAPTURE == "full" else f"[{len(system or '')} chars]",

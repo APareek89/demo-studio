@@ -60,10 +60,6 @@ def understand(state: DemoState) -> dict:
             events.publish(d, "progress", stage="understand", message="Sources already read — reusing the registry and visuals.")
             return {}
     orch._run_stage(d, "understand", state.get("instruction", "") if state.get("entry") in ("read", "revise") else "")
-    if state.get("entry") == "revise":
-        # New source material can change any downstream card. Never leave a stale
-        # approval green and accidentally expose Build before the new alignment pass.
-        store.update(d, lambda x: x["approvals"].update({card: False for card in store.CARDS}))
     return {}
 
 
@@ -121,7 +117,7 @@ def align_wait(state: DemoState) -> Command:
 
 def author(state: DemoState) -> dict:
     d = state["demo_id"]
-    orch._set_status(d, "building" if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))) else "reading")
+    orch._set_status(d, "building" if state.get("entry") == "build" else "reading")
     if state.get("entry") == "build":
         runlog.event(d, "BUILD started", "All six cards approved. Voice (narration + FAQ answers + fillers) → rehearsal → bundle.")
         if store.load(d)["stages"]["author"]["status"] == "done":
@@ -135,7 +131,7 @@ def deck(state: DemoState) -> dict:
     d = state["demo_id"]
     if state.get("entry") == "build" and store.load(d)["stages"]["deck"]["status"] == "done":
         return {}
-    orch._set_status(d, "building" if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))) else "reading")
+    orch._set_status(d, "building" if state.get("entry") == "build" else "reading")
     instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "deck" else ""
     orch._run_stage(d, "deck", instr)
     return {}
@@ -143,6 +139,9 @@ def deck(state: DemoState) -> dict:
 
 def voice(state: DemoState) -> dict:
     orch._set_status(state["demo_id"], "building")
+    if (store.load(state["demo_id"])["stages"]["voice"]["status"] == "done"
+            and (store.read_json(state["demo_id"], "script.json") or {}).get("voice_input_hash") == orch.voice.input_hash(state["demo_id"])):
+        return {}  # A visual-only revision does not re-record approved speech.
     orch._run_stage(state["demo_id"], "voice", "")
     return {}
 
@@ -173,7 +172,7 @@ def after_plan(state: DemoState) -> str:
 
 
 def after_author(state: DemoState) -> str:
-    if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))):
+    if state.get("entry") == "build" and all(store.load(state["demo_id"])["approvals"].values()):
         d = state["demo_id"]
         return "voice" if store.load(d)["stages"]["faq"]["status"] == "done" else "faq"  # a stale bank re-answers before voicing
     return "faq"
@@ -184,13 +183,17 @@ def faq(state: DemoState) -> dict:
     explicit_retry = state.get("entry") == "revise" and state.get("revise_stage") == "faq"
     if store.load(d)["stages"]["faq"]["status"] == "done" and not explicit_retry:
         return {}
-    orch._set_status(d, "building" if state.get("entry") == "build" or (state.get("entry") == "revise" and (state.get("rebuild") or state.get("prev_ready"))) else "reading")
+    orch._set_status(d, "building" if state.get("entry") == "build" else "reading")
     orch._run_stage(d, "faq", state.get("instruction", "") if explicit_retry else "")
     return {}
 
 
 def after_voice(state: DemoState) -> str:
-    return "bundle" if state.get("entry") == "revise" else "rehearsal"
+    return "rehearsal"  # Semantic input caching decides whether scoring is reusable.
+
+
+def after_faq(state: DemoState) -> str:
+    return "voice" if state.get("entry") == "build" and all(store.load(state["demo_id"])["approvals"].values()) else "align_enter"
 
 
 def build_graph() -> StateGraph:
@@ -213,7 +216,7 @@ def build_graph() -> StateGraph:
     g.add_edge("align_enter", "align_wait")
     g.add_edge("author", "deck")
     g.add_conditional_edges("deck", after_author, {"voice": "voice", "faq": "faq"})
-    g.add_conditional_edges("faq", lambda st: "voice" if st.get("entry") == "build" or (st.get("entry") == "revise" and (st.get("rebuild") or st.get("prev_ready"))) else "align_enter", {"voice": "voice", "align_enter": "align_enter"})
+    g.add_conditional_edges("faq", after_faq, {"voice": "voice", "align_enter": "align_enter"})
     g.add_conditional_edges("voice", after_voice, {"rehearsal": "rehearsal", "bundle": "bundle"})
     g.add_edge("rehearsal", "bundle")
     g.add_edge("bundle", "finish")
@@ -292,7 +295,7 @@ def start_revise(demo_id: str, stage: str, instruction: str, rebuild: bool = Fal
     if is_running(demo_id):
         raise RuntimeError("This demo is already being processed — wait for it to finish")
     prev_ready = store.load(demo_id)["status"] == "ready"  # read BEFORE the status flips, or a ready demo never rebuilds
-    orch._set_status(demo_id, "reading" if stage in ("understand", "plan", "deck", "faq") and not rebuild and not prev_ready else "building")
+    orch._set_status(demo_id, "reading")  # Every revision returns through human Align, even from Ready.
     _submit(demo_id, {"type": "revise", "stage": stage, "instruction": instruction, "rebuild": rebuild},
             {"entry": "revise", "revise_stage": stage, "instruction": instruction, "rebuild": rebuild, "prev_ready": prev_ready, "pending": None}, "revise")
 

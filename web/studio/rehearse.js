@@ -1,6 +1,7 @@
 import { api, h, toast, fmtTime } from "/web/api.js";
 import { mountPlayer } from "/web/player/player.js";
 import { icon } from "/web/icons.js";
+import { providerReadiness } from "/web/provider-readiness.js";
 
 export function renderRehearse(ctx) {
   const { demoId, area } = ctx;
@@ -19,7 +20,7 @@ export function renderRehearse(ctx) {
   area.replaceChildren(overlay, h("header", { class: "studio-page-head rehearse-page-head" }, h("div", { class: "eyebrow" }, "Demo workspace / Rehearse"), h("h1", {}, "Experience your demo"), h("p", { class: "lede" }, "Explore it as a customer, ask questions and refine the details before sharing.")), h("div", { class: "rehearse" },
     h("div", { class: "rpanel" },
       h("div", { class: "box feedback-box" }, h("h3", {}, icon("message", { size: 18 }), "Feedback"), h("p", { class: "small muted", style: "margin:0 0 12px" }, "Tell your agent what needs work. It applies the feedback to the relevant part of your demo."), fb, h("div", { class: "feedback-actions", style: "margin-top:12px;display:flex;gap:8px" }, fbBtn, h("button", { class: "btn ghost", onclick: () => player && player.restart() }, "Restart demo")), fbReply),
-      scoreBox, covBox, leadBox, sessBox,
+      providerReadiness(demoId), scoreBox, covBox, leadBox, sessBox,
       h("div", { class: "box upcoming-box" }, h("h3", {}, icon("globe", { size: 18 }), "Publish", h("span", { class: "pill" }, "Coming soon")), h("p", { class: "small muted", style: "margin:0" }, "Hosted publishing and an embed snippet are planned. Use this workspace to rehearse your demo."))),
     host));
 
@@ -60,6 +61,7 @@ export function renderRehearse(ctx) {
     catch (e) { host.replaceChildren(h("div", { class: "studio-empty rehearse-empty" }, icon(demo.status === "building" ? "clock" : "play", { size: 30 }), h("h2", {}, demo.status === "building" ? "Your demo is being built" : "Your demo will appear here"), h("p", {}, demo.status === "building" ? "The preview becomes available when your build is complete." : "Approve the six cards in Align, then build your demo to start rehearsing."))); return; }
     if (player) player.destroy();
     player = mountPlayer(host, bundle, {
+      liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
       qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),
       tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
       tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),

@@ -58,6 +58,7 @@ class FactOut(BaseModel):
     source: FactSource
     confidence: float = Field(description="0-1: how directly the source states this")
     conditions: str = Field(default="", description="all stated applicability: generation, trim, engine/fuel/mode, transmission, market/date, measurement/test basis, price basis and offer restrictions; do not infer missing conditions")
+    scope: dict[str, str] = Field(default_factory=dict, description="Only explicitly stated applicability: model, generation, model_year, market, variant, powertrain, transmission, test_basis, price_basis, effective_from, effective_to. Missing means unknown; do not infer. Dates ISO YYYY-MM-DD when stated.")
     truth: Literal["certified", "modeled", "observed", "contractual", "stated"] = Field(default="stated", description="stated = ordinary source specifications/features; certified = explicitly reported certification or named test/rating result, retaining basis and scope (an official source or measurement method alone is insufficient); modeled = source estimate with assumptions; observed = reported measurement in use; contractual = written terms")
 
 
@@ -120,6 +121,7 @@ class Fact(FactOut):
     id: str
     approved: bool = True
     edited: bool = False
+    knowledge: dict[str, Any] = Field(default_factory=dict)
 
 
 class Unknown(UnknownOut):
@@ -137,6 +139,7 @@ class Understanding(BaseModel):
     brand: Brand
     video_summaries: dict[str, str] = {}
     competitors: list[dict] = []
+    knowledge: dict[str, Any] = Field(default_factory=dict)
 
 
 # ---------- Plan (Claude) ----------
@@ -240,6 +243,7 @@ class LineOut(BaseModel):
     visual: Visual
     fact_ids: list[str] = Field(description="every fact this line relies on; empty only for pure transition/opinion lines")
     card: Literal["none", "facts", "price", "summary", "contrast"] = "none"
+    delivery: dict[str, Any] = Field(default_factory=dict, description="Subtle delivery metadata only: tone warm/upbeat/calm/reassuring, optional pace 0.9–1.08. Never put emotion tags or SSML in text.")
 
 
 class SegmentOut(BaseModel):
@@ -255,6 +259,7 @@ class SegmentOut(BaseModel):
 
 
 class ScriptOut(BaseModel):
+    overview: Optional[LineOut] = Field(default=None, description="Standalone 23–28 word, 10–15 second opening for Explore while its route is planned. Lead with sourced standout features and their supported relevance, retain variant qualifiers, cite facts. No greeting/question/spec list; not a segment.")
     segments: list[SegmentOut]
     closing: list[LineOut] = Field(description="two lines, at most 45 words total: fit summary then next step naming the CTA; statements, no questions")
     intake_q1: str = Field(description="warm greeting plus ONE useful context question; no name request stacked with it")
@@ -348,6 +353,12 @@ class CustomBatch(BaseModel):
     visual_ref: str = Field(default="", description="the image or shot id that shows what this batch talks about")
 
 
+class PersonalizedSegment(BaseModel):
+    segment_id: str
+    customer_quote: str = Field(default="", description="At most eight consecutive words copied exactly from this customer's why/followup, selecting the need relevant to this segment; no invented context")
+    lines: list[LineOut] = Field(default_factory=list, description="Compose a focused replacement using complete reviewed factual lines from this segment's main/deeper speech. Preserve exact factual wording and all fact_ids; reorder/select for this customer's need. No new factual paraphrase or appended repeat.")
+
+
 class PitchPlan(BaseModel):
     customer_state: Literal["unknown", "stated_want", "stated_need"]
     decision_frame: str = Field(description="brief acknowledgement of this buyer's actual words and the route order after the overview; no product specs, assumed details or question")
@@ -360,6 +371,7 @@ class PitchPlan(BaseModel):
     advance: str = Field(description="the closing advance for this buyer (P10), naming the CTA label")
     advance_cta: str = Field(default="", description="cta id")
     custom_batches: list[CustomBatch] = Field(default_factory=list, description="2-3 batches spoken right after the standard opening, tying the product to what THIS buyer said; empty when the buyer said nothing specific")
+    personalized_segments: list[PersonalizedSegment] = Field(default_factory=list, description="Need-led replacements for selected unseen route segments. The runtime validates each factual clause and supplies a safe personal preface; invalid replacements fall back to reviewed speech.")
     do_not_recommend_if: str = Field(default="")
 
 

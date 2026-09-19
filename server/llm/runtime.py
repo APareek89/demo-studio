@@ -17,26 +17,35 @@ T = TypeVar("T", bound=BaseModel)
 
 
 def structured(system: str, content: str, schema: type[T], *, history: list[dict] | None = None,
-               max_tokens: int = 1500, thinking_level: str | None = None) -> T:
+               max_tokens: int = 1500, thinking_level: str | None = None,
+               timeout_budget_s: float | None = None) -> T:
     if config.MOCK_LLM:
         out = mock.fake(schema)
         usage.trace("runtime", "mock", latency_ms=5, system=system, user=content, response=out.model_dump_json()[:4000])
         return out
     errors: list[str] = []
+    deadline = time.monotonic() + timeout_budget_s if timeout_budget_s is not None else None
     for provider in config.RUNTIME_PROVIDERS:
         t0 = time.time()
+        remaining = deadline - time.monotonic() if deadline is not None else config.RUNTIME_TIMEOUT
+        if remaining <= 0:
+            errors.append("whole-turn deadline reached")
+            break
+        # One bounded attempt per provider in the conversational graph. Legacy
+        # callers retain their contract; fallbacks share, never reset, this clock.
+        timeout = min(config.RUNTIME_TIMEOUT, remaining)
         try:
             if provider == "claude":
                 return claude.structured(system, content, schema, max_tokens=max_tokens, history=history,
-                                         timeout=config.RUNTIME_TIMEOUT, max_retries=1, model=config.CLAUDE_RUNTIME_MODEL, fallback=False)
+                                         timeout=timeout, max_retries=0 if deadline else 1, model=config.CLAUDE_RUNTIME_MODEL, fallback=False)
             if provider == "gemini":
                 msgs = list(history or []) + [{"role": "user", "content": content}]
                 thinking = {"thinking_level": thinking_level} if thinking_level is not None else {}
                 return gemini.text_structured(system, claude._fallback_transcript(msgs), schema, max_tokens=max_tokens,
-                                              timeout_s=config.RUNTIME_TIMEOUT, model=config.GEMINI_RUNTIME_MODEL, tries=2, kind="runtime", **thinking)
+                                              timeout_s=timeout, model=config.GEMINI_RUNTIME_MODEL, tries=1 if deadline else 2, kind="runtime", **thinking)
             if provider == "runware":
                 return runware.structured(system, content, schema, history=history, max_tokens=max_tokens,
-                                          timeout=config.RUNTIME_TIMEOUT, model=config.RUNWARE_TEXT_MODEL)
+                                          timeout=timeout, model=config.RUNWARE_TEXT_MODEL)
             errors.append(f"{provider}: unknown provider")
         except Exception as e:  # noqa: BLE001 — the next provider gets its turn; the caller declines when all fail
             errors.append(f"{provider}: {str(e)[:120]}")

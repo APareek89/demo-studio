@@ -4,7 +4,7 @@ import { renderDemos } from "/web/demos.js";
 import { renderHome } from "/web/home.js";
 import { icon } from "/web/icons.js";
 import { renderSources } from "/web/studio/sources.js";
-import { renderAlign } from "/web/studio/align.js?v=3e0";
+import { renderAlign } from "/web/studio/align.js";
 import { renderRehearse } from "/web/studio/rehearse.js";
 import { renderSessions, renderShare } from "/web/studio/sessions.js";
 import { renderPlayground } from "/web/playground.js";
@@ -101,6 +101,7 @@ async function renderPlay(demoId) {
   const host = h("div", { class: "play-page" });
   main.replaceChildren(host);
   playInstance = mountPlayer(host, bundle, {
+    liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
     qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),
     tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
     tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),

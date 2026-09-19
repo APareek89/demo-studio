@@ -17,6 +17,7 @@ import { mascot } from "/web/player/mascot.js";
 import { renderSlide } from "/web/slide.js";
 import { h } from "/web/api.js";
 import { icon } from "/web/icons.js";
+import { LiveVoiceClient } from "/web/player/live-voice.js";
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
@@ -24,6 +25,11 @@ const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
 const compact = (t, n) => String(t || "").split(/\s+/).slice(0, n).join(" ");
 const newSessionId = () => "s_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const CONSENT = "By sharing your number you agree the dealership may call you about this product. Nothing else is shared.";
+function explicitContextCorrection(text) {
+  const value = String(text || "").trim();
+  if (/[?？]/.test(value) || /^(?:what if|if |suppose|imagine|for example|hypothetically)\b/i.test(value)) return false;
+  return /^(?:actually[,\s]+)?(?:my (?:priority|main concern) is\b|i (?:care (?:most|more) about|want to focus on|would (?:rather|prefer)|prefer)\b|(?:boot(?: space)?|safety|comfort|range|space|ownership costs?|running costs?|performance|technology) (?:matters? more|is (?:my )?priority)\b)/i.test(value);
+}
 
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
@@ -31,7 +37,7 @@ export function mountPlayer(host, bundle, api) {
     profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, inputMode: "voice", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
     leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
-    listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set() };
+    listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set(), interruptions: [] };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
 
@@ -99,10 +105,54 @@ export function mountPlayer(host, bundle, api) {
   }) : null;
   dockObserver?.observe(root.querySelector(".pl-dock"));
 
+  // A single capture session stays independent of each narration/question delivery.
+  // Old bundles keep their recorded/manual path; runtime.version=1 opts into the new protocol.
+  let live = null;
+  function createLive() {
+    S.pendingRefinement = null; S.contextRevision = 0; S.interruptions.length = 0;
+    if (!api.liveUrl) return;
+    live = new LiveVoiceClient({ url: api.liveUrl, sessionId: S.sessionId, language: LANG,
+      onSpeechStart: (event) => {
+        if (S.ended) return;
+        S.inputMode = "voice"; S.speechDetectedAt = event.detected_at;
+        if (S.intakeOpen || S.waiter || S.promptRun === S.run) cancelSpeech();
+        else { captureOrigin(); interruptAll(); holdConversation(newRun()); }
+        S.interruptions.push({ detected_at: event.detected_at, stopped_at: Date.now(), phase: S.playback.phase, detection_source: event.source });
+        setStatus("listening", "Listening"); el.live.textContent = "Listening…";
+      },
+      onTranscript: (event) => {
+        if (S.ended) return;
+        const text = (event.text || "").trim();
+        if (!event.final) { if (S.intakeOpen) el.inHeard.textContent = text; else el.live.textContent = text; return; }
+        if (!text) return;
+        S.lastListen = { voice_ended: event.voice_ended, stt_done: event.stt_done, speech_detected: S.speechDetectedAt || null, endpoint_received_at: event.endpoint_received_at, server_endpoint_received_at: event.server_endpoint_received_at, speech_end_basis: event.speech_end_basis, via: "realtime" };
+        resumeSession();
+        if (S.intakeOpen) { if (S.intakeResolver) S.intakeResolver(text); else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; } return; }
+        if (S.promptRun === S.run && !S.waiter) { S.pendingPromptAnswer = text; return; }
+        if (S.waiter) { addMsg("user", text); resolveWait(replyForTurn(text, S.waiter)); return; }
+        handleQuestion(text);
+      },
+      onState: (state) => {
+        S.micOn = state === "listening"; S.micOpening = state === "opening"; setMicUI(S.micOn);
+        if (state === "opening") { el.hint.textContent = "Opening microphone… You can type while it connects."; if (S.intakeOpen) el.inState.textContent = "Opening microphone — or type below"; }
+      },
+      onError: (message) => { el.hint.textContent = message; if (S.intakeOpen) el.inState.textContent = message; addMsg("note", message); }
+    });
+    live.setMuted(S.muted);
+  }
+  createLive();
+  function startLive(capture = !mutedByDefault) {
+    if (!live) return;
+    live.unlockOutput().catch(() => {});
+    live.connect().catch(() => { el.hint.textContent = "Live voice is unavailable. You can type your question below."; });
+    if (capture) { S.inputMode = "voice"; live.startCapture(); }
+    else S.inputMode = "typed";
+  }
+
   // ---------- helpers ----------
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
-  function preferTyping() { S.inputMode = "typed"; stopListening(); }
+  function preferTyping() { S.inputMode = "typed"; if (!live) stopListening(); }
   function acceptTypedAnswer(text) {
     preferTyping();
     resumeSession();
@@ -113,7 +163,7 @@ export function mountPlayer(host, bundle, api) {
   }
   function toggleDrawer(force) { const on = force === undefined ? !el.drawer.classList.contains("open") : force; el.drawer.classList.toggle("open", on); if (on) { el.chatBtn.classList.remove("unread"); setTimeout(() => el.q.focus(), 80); } }
   function updateMuteUi() { el.muteBtn.replaceChildren(icon(S.muted ? "volume-off" : "volume", { size: 18 })); el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio"; el.muteBtn.setAttribute("aria-label", el.muteBtn.title); el.muteBtn.setAttribute("aria-pressed", String(S.muted)); el.muteBtn.classList.toggle("on", S.muted); }
-  function toggleMute() { S.muted = !S.muted; if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !el.stage.classList.contains("film-on"); updateMuteUi(); }
+  function toggleMute() { S.muted = !S.muted; live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !el.stage.classList.contains("film-on"); updateMuteUi(); }
   function setChips(list) { const owner = S.waiter; el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => { if (S.waiter === owner) resolveWait(c.value); } }, c.label))); }
   function clearTimer() { if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   function newRun() { return ++S.run; }
@@ -193,7 +243,14 @@ export function mountPlayer(host, bundle, api) {
     return new Promise((res) => {
       const my = ++S.ttsToken, words = wordsOf(text), ms = Math.max(1200, words / 2.5 * 1000);
       const sp = { text, words, audio: null, startedAt: Date.now(), estMs: ms }; S.speaking = sp;
-      setStatus("idle", "Audio unavailable · reading together"); firstAudio();
+      setStatus("idle", "Audio unavailable · reading together");
+      // A readable caption is useful fallback, but is never successful audio.
+      // Clear the callback so later narration cannot stamp this failed answer.
+      S.onFirstAudio = null;
+      if (S.activeTurn) {
+        if (S.activeTurn.qa_done) { S.activeTurn.caption_at = Date.now(); S.activeTurn.delivery_failed = true; S.activeTurn.failed = true; }
+        else S.activeTurn.ack_caption_at = Date.now();
+      }
       let done = false;
       const finish = (complete) => { if (done) return; done = true; clearTimeout(t); if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; } res(complete && my === S.ttsToken && run === S.run); };
       const cancel = () => finish(false); S.cancelVoice = cancel;
@@ -215,12 +272,31 @@ export function mountPlayer(host, bundle, api) {
     });
   }
   async function audioUrlFor(text, preset) { if (preset) return preset; if (!useServerVoice) return null; if (S.ttsCache.has(text)) return S.ttsCache.get(text); const p = api.tts(text).catch(() => null); S.ttsCache.set(text, p); return p; }
-  function prefetch(items) { if (!useServerVoice) return; for (const it of items) if (it && !it.audio && it.text) audioUrlFor(it.text); }
-  async function speak(text, run, preset) {
+  function prefetch(items) { if (!useServerVoice || live) return; for (const it of items) if (it && !it.audio && it.text) audioUrlFor(it.text); }
+  async function speak(text, run, preset, delivery = null) {
     if (run !== S.run || !text) return run === S.run;
     el.cap.textContent = text; if (S.intakeOpen) el.inQ.textContent = text; setStatus("thinking", "Preparing audio");
+    if (live?.ready && !preset) {
+      const sp = { text, words: wordsOf(text), audio: null, startedAt: null, estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp;
+      const cancel = () => live?.cancelAudio(); S.cancelVoice = cancel;
+      try {
+        const ok = await live.speak(text, { utteranceId: delivery?.runtime_utterance_id, turnId: delivery?.runtime_turn_id,
+          onStart: (ts) => { if (run === S.run && S.speaking === sp) { sp.startedAt = ts; setStatus("speaking", "Speaking"); firstAudio(); } } });
+        if (S.speaking === sp) { if (sp.startedAt) logHeard(sp, ok); S.speaking = null; }
+        if (S.cancelVoice === cancel) S.cancelVoice = null;
+        if (ok && run === S.run) setStatus("idle", live.mic ? "Listening" : "Ready");
+        return ok && run === S.run;
+      } catch (error) {
+        if (S.speaking === sp) { if (sp.startedAt) logHeard(sp, false); S.speaking = null; }
+        if (S.cancelVoice === cancel) S.cancelVoice = null;
+        if (run !== S.run || error.name === "AbortError") return false;
+        addMsg("note", "The selected voice is unavailable for this line. Showing its caption.");
+        return captionOnly(text, run);
+      }
+    }
+    const voiceToken = S.ttsToken;
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
-    if (run !== S.run) return false;
+    if (run !== S.run || voiceToken !== S.ttsToken) return false;
     let ok;
     if (url) ok = await new Promise((res) => {
       const my = ++S.ttsToken, a = new Audio(url); a.muted = S.muted; S.audio = a;
@@ -245,6 +321,11 @@ export function mountPlayer(host, bundle, api) {
     S.ttsToken++; if (S.cancelVoice) S.cancelVoice(); S.cancelVoice = null;
     try { speechSynthesis.cancel(); } catch (e) {} S.utterance = null;
     if (S.audio) { try { S.audio.pause(); } catch (e) {} S.audio = null; }
+  }
+  async function speakPrompt(text, run, preset, delivery = null) {
+    S.promptRun = run;
+    const ok = await speak(text, run, preset, delivery);
+    return ok || (!!live && run === S.run);
   }
 
   // ---------- voice in ----------
@@ -319,18 +400,25 @@ export function mountPlayer(host, bundle, api) {
     });
   }
   function stopListening(discard = true) {
+    if (live) { S.micOn = live.mic; setMicUI(S.micOn); return; }
     if (!discard) { S.finishListen?.(); return; }
     const cancel = S.cancelListen; S.listenId++; S.cancelListen = null; S.finishListen = null; S.rec = null;
     if (cancel) cancel(); S.micOn = false; setMicUI(false);
   }
   function setMicUI(on) {
     el.mic.classList.toggle("on", on); el.inMic.classList.toggle("on", on);
+    if (live) {
+      for (const button of [el.mic, el.inMic]) { button.title = on ? "Mute microphone" : "Enable microphone"; button.setAttribute("aria-label", button.title); button.setAttribute("aria-pressed", String(on)); }
+      el.hint.textContent = on ? "Microphone on — speak any time to interrupt. Tap to mute." : "Microphone off — type below or tap to enable it.";
+      if (S.intakeOpen) el.inState.textContent = on ? "Listening — take your time" : "Type your answer, or enable the microphone";
+      return;
+    }
     if (on) { setStatus("listening", "Listening"); el.hint.textContent = "Listening… tap the mic when you are done, or type below."; if (S.intakeOpen) el.inState.textContent = "Listening — or type your answer below"; }
     else { el.live.textContent = ""; if (el.status.classList.contains("listening")) setStatus("idle", "Your turn"); el.hint.textContent = canListen() && !S.micDenied ? "Tap to talk, or type your reply below." : "Type your reply below."; }
   }
 
   // ---------- flow primitives ----------
-  function interruptAll() { newRun(); cancelSpeech(); stopListening(); try { el.film.pause(); } catch (e) {} el.stage.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
+  function interruptAll() { newRun(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt(); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} el.stage.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
   function interpretReply(t, chips) {
     const s = t.toLowerCase().trim().replace(/[.!?,]+$/g, ""), has = (v) => chips.some((c) => c.value === v);
     if (has("callme") && PHONE.test(s.replace(/\s|-/g, ""))) return { value: "phone", text: t };
@@ -356,6 +444,7 @@ export function mountPlayer(host, bundle, api) {
     return { value: "answer", text };
   }
   function listenForTurn(turn) {
+    if (live) { setMicUI(live.mic); return; }
     if (S.inputMode !== "voice" || S.waiter !== turn || turn.run !== S.run || !canListen() || S.micDenied) return;
     listen({ timeout: turn.listenSecs, onInterim: (t) => { if (S.waiter === turn) el.live.textContent = t; } }).then((t) => {
       if (S.waiter !== turn || turn.run !== S.run) return;
@@ -368,12 +457,13 @@ export function mountPlayer(host, bundle, api) {
       clearTimer();
       const turn = { resolve: res, run: S.run, chips, openAnswer: !!opts.openAnswer, listenSecs: opts.listenSecs || 10000 };
       S.waiter = turn; S.waitChips = chips; setChips(chips); setStatus("idle", "Your turn");
+      if (S.pendingPromptAnswer) { const text = S.pendingPromptAnswer; S.pendingPromptAnswer = ""; addMsg("user", text); resolveWait(replyForTurn(text, turn)); return; }
       el.hint.textContent = "Take your time. Reply by voice or type, or choose an option.";
       if (opts.listen !== false) listenForTurn(turn);
     });
   }
-  function resolveWait(v) { clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; stopListening(); setChips([]); w.resolve(typeof v === "string" ? { value: v } : v); } }
-  async function askAndListen(question, run, secs = 10000, preset = null) { if (run !== S.run) return null; el.cite.textContent = ""; const ok = await speak(question, run, preset); if (!ok) return null; const r = await waitFor([{ label: "Skip this question", value: "skip" }], 0, { openAnswer: true, listenSecs: secs }); return run === S.run ? r.text || "" : null; }
+  function resolveWait(v) { clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.promptRun = null; S.waitChips = []; stopListening(); setChips([]); w.resolve(typeof v === "string" ? { value: v } : v); } }
+  async function askAndListen(question, run, secs = 10000, preset = null, delivery = null) { if (run !== S.run) return null; el.cite.textContent = ""; if (!(await speakPrompt(question, run, preset, delivery))) { S.promptRun = null; return null; } const r = await waitFor([{ label: "Skip this question", value: "skip" }], 0, { openAnswer: true, listenSecs: secs }); return run === S.run ? r.text || "" : null; }
 
   // ---------- route building: the pitch plan orders slides ----------
   function buildRoute(plan) {
@@ -384,6 +474,17 @@ export function mountPlayer(host, bundle, api) {
       const focus = new Set(S.profile.focus); const hit = (s) => focus.has(topicOf(s)) || focus.has(s.segment_id); const proof = lib.filter((s) => s.kind !== "establish"); const est = lib.filter((s) => s.kind === "establish");
       steps = [...proof.filter(hit), ...proof.filter((s) => !hit(s)), ...est].map((slide) => ({ slide, bridge: "", bridge_fact_ids: [] }));
     }
+    const personalized = new Map((plan?.personalized_segments || []).map(segment => [segment.segment_id, segment]));
+    steps = steps.map(step => {
+      const segment = personalized.get(step.slide.segment_id);
+      if (!segment?.lines?.length) return step;
+      // Keep the reviewed image/parts and citation geometry; only validated speech is visit-local.
+      const callouts = (step.slide.callouts || []).flatMap(callout => {
+        const index = segment.lines.findIndex(line => Number.isInteger(line.base_line_index) && line.base_line_index === callout.reveal_on_line);
+        return index < 0 ? [] : [{ ...callout, reveal_on_line: index }];
+      });
+      return { ...step, slide: { ...step.slide, lines: segment.lines, callouts, ...(segment.checkin ? { checkin: segment.checkin } : {}) } };
+    });
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
   }
@@ -391,6 +492,33 @@ export function mountPlayer(host, bundle, api) {
     if (!text) return;
     S.profile.followup = [S.profile.followup, text].filter(Boolean).join("\n");
     S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(text)])];
+  }
+  function queueRefinement() {
+    if (!api.pitch || !live) return;
+    const sessionId = S.sessionId, revision = S.contextRevision = (S.contextRevision || 0) + 1;
+    const origin = S.conversationOrigin || S.playback;
+    const seen = [...new Set([...S.visited.map(visit => visit.slide_id), cur?.slide?.id].map(id => slides.find(slide => slide.id === id)?.segment_id).filter(Boolean))];
+    const pending = { revision, afterSegment: ["route", "deeper"].includes(origin.phase) ? S.plan[origin.index]?.slide.segment_id : null, seen, status: "pending" };
+    S.pendingRefinement = pending;
+    withTimeout(api.pitch({ profile: profileForServer(), refine: true, voice_it: false, session_id: sessionId, seen_segments: seen }).catch(() => null), 12000).then(plan => {
+      if (S.sessionId !== sessionId || S.pendingRefinement !== pending || S.ended) return;
+      pending.status = plan?.route?.length ? "ready" : "failed"; pending.plan = plan;
+    });
+  }
+  async function applyUpcomingPlan(index, run) {
+    const pending = S.pendingRefinement;
+    if (!pending || pending.status === "pending") return run === S.run;
+    const prefix = S.plan.slice(0, index);
+    if (pending.afterSegment && !prefix.some(step => step.slide.segment_id === pending.afterSegment)) return run === S.run;
+    S.pendingRefinement = null;
+    if (pending.status === "failed") return speak("I couldn't finish updating the route just now. I'll continue with the reviewed demo, and you can ask about what matters to you.", run);
+    const previous = S.plan; buildRoute(pending.plan);
+    const seen = new Set([...pending.seen, ...prefix.map(step => step.slide.segment_id)]);
+    const future = S.plan.filter(step => !seen.has(step.slide.segment_id));
+    S.plan = future.length ? [...prefix, ...future] : previous;
+    S.seg = index; S.pitch = { ...S.pitch, ...pending.plan }; renderProgress();
+    addMsg("note", "Updated the unplayed route from your stated priority; the current return point was retained.");
+    return run === S.run;
   }
   async function waitForLineQuestion(line, run) {
     if (line.step !== "confirm" && !/[?？]/.test(line.text || "")) return run === S.run;
@@ -406,7 +534,10 @@ export function mountPlayer(host, bundle, api) {
       if (run !== S.run) return false;
       S.line = j; S.playback.line = j;
       const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : "";
-      if (!(await speak(ln.text, run, ln.audio))) return false;
+      const isQuestion = ln.step === "confirm" || /[?？]/.test(ln.text || "");
+      if (isQuestion) S.promptRun = run;
+      const spoken = await speak(ln.text, run, ln.audio);
+      if (!spoken && !(live && isQuestion && run === S.run)) return false;
       S.line = j + 1; S.playback.line = j + 1;
       if (!(await waitForLineQuestion(ln, run))) return false;
     }
@@ -427,6 +558,7 @@ export function mountPlayer(host, bundle, api) {
   async function playFrom(idx, lineIdx = 0, bridgeDone = false) {
     const run = newRun();
     for (let i = idx; i < S.plan.length; i++) {
+      if (!(await applyUpcomingPlan(i, run))) return;
       const step = S.plan[i], sl = step.slide; S.seg = i; S.atCheckin = false; S.playback = { phase: "route", index: i, line: lineIdx, checkin: false, bridgeDone }; renderProgress();
       prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
       const short = lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // seen during a question: title + first line, no check-in
@@ -436,7 +568,7 @@ export function mountPlayer(host, bundle, api) {
       lineIdx = 0; bridgeDone = false; if (run !== S.run) return;
       const topic = topicOf(sl);
       if (sl.checkin?.text && !short) {
-        S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = ""; const ok = await speak(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
+        S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = ""; const ok = await speakPrompt(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
         const conc = !!sl.priority || S.profile.focus.includes(topic);
         const chips = conc ? [{ label: "That settles it", value: "yes", primary: true }, { label: "Still unsure", value: "deeper" }, { label: "I have a question", value: "question" }] : [{ label: "Continue", value: "continue", primary: true }, { label: "Tell me more", value: "deeper" }, { label: "I have a question", value: "question" }];
         const r = await waitFor(chips); if (run !== S.run) return;
@@ -463,7 +595,7 @@ export function mountPlayer(host, bundle, api) {
     S.playback = { phase: "route", index: S.seg, line: sl.lines.length, checkin: true, bridgeDone: true };
     el.cite.textContent = "";
     if (!lines.length && !(await speak("That's everything the material covers on this. Ask me anything specific and I'll check.", run))) return false;
-    if (!(await speakF("clearer", "Is that clearer?", run))) return false;
+    const clearer = F("clearer", "Is that clearer?"); if (!(await speakPrompt(clearer.text, run, clearer.audio))) return false;
     const r = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }]);
     if (run !== S.run) return false;
     if (r.value === "yes") { S.resolved.add(topicOf(sl)); S.unresolved.delete(topicOf(sl)); S.openQuestions.delete(`More clarity on ${sl.title}`); return true; }
@@ -517,6 +649,7 @@ export function mountPlayer(host, bundle, api) {
     if (r.text) handleQuestion(r.text); else if (r.value === "continue") resumeAfterQA();
   }
   function micTap() {
+    if (live) { if (live.mic || S.micOpening) live.stopCapture(); else { resumeSession(); S.inputMode = "voice"; live.startCapture(); } return; }
     S.inputMode = "voice";
     resumeSession();
     if (S.micOn) { stopListening(false); return; }
@@ -524,16 +657,48 @@ export function mountPlayer(host, bundle, api) {
     if (S.waiter) { listenForTurn(S.waiter); return; }
     listenForQuestion();
   }
-  async function holdConversation(run) {
-    const r = await waitFor([{ label: "Ask another question", value: "question" }, { label: "Continue demo", value: "continue", primary: true }]);
+  async function holdConversation(run, { suggested = null } = {}) {
+    const cta = (bundle.ctas || []).find(item => item.id === suggested);
+    const choices = [{ label: "Ask another question", value: "question" }, { label: "Continue demo", value: "continue", primary: true }];
+    if (cta) choices.push({ label: cta.label, value: "cta:" + cta.id });
+    const r = await waitFor(choices);
     if (run !== S.run) return;
     if (r.value === "continue") { el.lead.classList.remove("open"); resumeAfterQA(); }
+    else if (r.value.startsWith("cta:")) await ctaFlow(r.value.slice(4), run);
     else if (r.text) handleQuestion(r.text);
     else if (r.value === "question") listenForQuestion();
   }
 
   // ---------- questions, don't-guess, lead capture ----------
+  async function questionResult(qaP, run, turn) {
+    const early = await withTimeout(qaP, 500);
+    if (run !== S.run || early) return early;
+    S.onFirstAudio = ts => { turn.ack_audio = ts; };
+    const filler = speakF("hold_on_question", "Give me one moment while I check that for you.", run);
+    const ready = qaP.then(result => ({ kind: "answer", result }), error => ({ kind: "error", error }));
+    const winner = await Promise.race([ready, filler.then(ok => ({ kind: "filler", ok }))]);
+    if (run !== S.run) return null;
+    S.onFirstAudio = null;
+    if (winner.kind !== "filler") {
+      // Cancel only this acknowledgment's output. The question still owns its
+      // graph turn and deferred answer; do not interrupt it or await stale TTS.
+      cancelSpeech();
+      if (winner.kind === "error") throw winner.error;
+      return winner.result;
+    }
+    if (!winner.ok) return null;
+    setStatus("thinking", "Checking the approved information");
+    return qaP;
+  }
   async function handleQuestion(text, options = {}) {
+    if (live && !options.question && explicitContextCorrection(text)) {
+      captureOrigin(); interruptAll(); const run = newRun();
+      if (!(S.transcript.at(-1)?.role === "user" && S.transcript.at(-1)?.text === text)) addMsg("user", text);
+      rememberContext(text);
+      S.profile.focus = [...new Set([...parseFocus(text), ...S.profile.focus])]; queueRefinement();
+      if (await speak("Thanks—I've noted that priority. I'll use it to tailor the remaining demo.", run)) await holdConversation(run);
+      return;
+    }
     captureOrigin(); interruptAll(); const run = newRun(); let jumped = null;
     el.cite.textContent = "";
     const customerQuestion = options.question || text;
@@ -546,26 +711,30 @@ export function mountPlayer(host, bundle, api) {
     if (!options.question) S.questions.push(text);
     S.openQuestions.add(customerQuestion);
     const turn = { question: customerQuestion, ...(S.lastListen || { voice_ended: Date.now(), stt_done: Date.now(), via: "unknown" }), qa_done: null, answer_audio: null }; S.lastListen = null; S.turns.push(turn); el.live.textContent = ""; setStatus("thinking", "Checking your question"); el.cap.textContent = "Checking the approved information…";
+    S.activeTurn = turn; turn.input_source = turn.via; turn.cancelled = false;
     let r;
-    const qaP = api.qa({ question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null, ...(options.skipBank ? { skip_bank: true } : {}) });
+    const questionPayload = { question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null, session_id: S.sessionId, voice_ended_at: turn.voice_ended, cursor: { ...S.playback }, ...(options.skipBank ? { skip_bank: true } : {}) };
+    const qaP = live?.ready ? live.ask(questionPayload) : api.qa(questionPayload);
     try {
-      r = await withTimeout(qaP, 700);
-      if (run !== S.run) return;
-      if (!r) { if (!(await speakF("hold_on_question", "Give me one moment while I check that for you.", run))) return; setStatus("thinking", "Checking the approved information"); r = await qaP; }
+      r = await questionResult(qaP, run, turn);
+      if (run !== S.run || !r) return;
     } catch (e) {
-      turn.qa_done = Date.now(); turn.error = true; if (run !== S.run) return;
+      turn.qa_done = Date.now(); if (run !== S.run || e.name === "AbortError") { turn.cancelled = true; return; } turn.error = true; turn.failed = true;
       S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
       if (!(await speak("I couldn't reach my notes just now. You can ask again, or choose Continue when you are ready.", run))) return;
+      turn.delivery_done = Date.now(); S.activeTurn = null;
       S.escalations.push(`error answering: "${customerQuestion}"`); S.unresolved.add("question"); await holdConversation(run); return;
     }
     if (run !== S.run) return;
-    turn.qa_done = Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered;
+    turn.qa_done = Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered; turn.failed = !!(r.provider_failed || r.timed_out);
+    turn.tool_count = r.tool_count || r.tool_results?.length || 0; turn.tool_results = (r.tool_results || []).map(tool => ({ type: tool.type || tool.tool, ok: tool.ok, source_url: tool.source_url, error: tool.error })); turn.graph_timings = r.graph_timings || {}; turn.answer_route = turn.tool_count ? "tool" : r.from_bank ? "cache" : "model";
     S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
     // A clarification is the answer for this turn. Do not speak a provisional claim or ask it twice.
     if (r.clarifying_question) {
       el.cite.textContent = "";
-      const a = await askAndListen(r.clarifying_question, run, 10000, r.answer === r.clarifying_question ? r.audio : null);
+      const a = await askAndListen(r.clarifying_question, run, 10000, r.answer === r.clarifying_question ? r.audio : null, r.answer === r.clarifying_question ? r : null);
       if (run !== S.run) return;
+      turn.delivery_done = Date.now(); S.activeTurn = null;
       if (a) { rememberContext(`${r.clarifying_question} ${a}`); handleQuestion(a, { question: customerQuestion, skipBank: true }); }
       else await holdConversation(run);
       return;
@@ -574,7 +743,9 @@ export function mountPlayer(host, bundle, api) {
       if (r.escalate) S.escalations.push(r.escalate);
       if (r.topic && r.topic !== "other") S.raised.add(r.topic);
       S.unresolved.add(r.topic || "question"); el.cite.textContent = "";
-      if (!(await speak("I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.", run))) return;
+      const decline = live && r.answer ? r.answer : "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.";
+      if (!(await speak(decline, run, live ? r.audio : null, live ? r : null))) return;
+      turn.delivery_done = Date.now(); S.activeTurn = null;
       showLeadPrompt("unknown", customerQuestion); await holdConversation(run); return;
     }
     const from = cur?.slide?.id || null;
@@ -590,8 +761,14 @@ export function mountPlayer(host, bundle, api) {
     el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "";
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
-    if (!(await speak(r.answer, run, r.audio))) return;
+    if (!(await speak(r.answer, run, r.audio, r))) return;
+    turn.delivery_done = Date.now(); S.activeTurn = null;
     if (r.offer_callback) showLeadPrompt("question", customerQuestion);
+    if (live) {
+      S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion);
+      // No ritual satisfaction question: the customer owns the next turn and continuation.
+      await holdConversation(run, { suggested: r.cta }); return;
+    }
     if (!(await speakF("did_that_answer", "Did that answer it?", run))) return;
     // A model CTA is only a suggestion. Customer input must select a configured
     // action; agreement that the answer helped never authorizes that action.
@@ -653,11 +830,12 @@ export function mountPlayer(host, bundle, api) {
     return new Promise((res) => {
       let done = false; const fin = (t) => { if (done) return; done = true; S.intakeResolver = null; stopListening(); res(t); }; S.intakeResolver = fin; el.inHeard.textContent = "";
       if (S.pendingIntakeAnswer) { const queued = S.pendingIntakeAnswer; S.pendingIntakeAnswer = ""; fin(queued); return; }
+      if (live) { setMicUI(live.mic); el.inFallback.classList.add("open"); if (!live.mic) setTimeout(() => el.inText.focus(), 50); return; }
       if (S.inputMode === "voice" && canListen() && !S.micDenied) { el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; listen({ timeout: 10000, onInterim: (t) => { el.inHeard.textContent = t; } }).then((t) => { if (done || run !== S.run) return; if (t) fin(t); else { el.inState.textContent = "Tap the mic to try again, or type below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); } }); }
       else { el.inState.textContent = "Type your answer below"; el.inState.className = "state"; el.inFallback.classList.add("open"); setTimeout(() => el.inText.focus(), 50); }
     });
   }
-  async function intakeMic() { S.inputMode = "voice"; if (S.micOn) { stopListening(false); return; } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
+  async function intakeMic() { if (live) { micTap(); return; } S.inputMode = "voice"; if (S.micOn) { stopListening(false); return; } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
   function parseName(t) { let m = t.match(/(?:my name is|myself|name's|call me|mera naam|naam)\s+([A-Za-zऀ-ॿ][a-zऀ-ॿ]+)/i); if (m) return cap(m[1]); m = t.match(/^([A-Za-z][a-z]+)\s+(?:here|speaking|bol raha|bol rahi)\b/i); if (m) return cap(m[1]); return ""; }
 
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -690,30 +868,40 @@ export function mountPlayer(host, bundle, api) {
     showSlideView(heroOpen(), { reveal: 99 });
     const q1 = bundle.intake?.q1 || `What matters most to you as you consider ${bundle.product?.name || "this"}?`;
     el.inState.textContent = guide;
-    const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok) return;
+    const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok && (!live || run !== S.run)) return;
     const a1 = await intakeWait(run); if (run !== S.run) return;
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
-    const ack = a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
-    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 60000) : null;
+    const ack = live ? "Thanks—that helps me focus the demo. While I tailor it, here's a quick overview of the car." : a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
+    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
     S.playback = { phase: "opening", index: 0, line: 0 };
-    const fa = a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
-    const okF = await playIntroFilm(run); if (!okF) return;
+    const fa = live ? { text: ack, audio: bundle.runtime?.overview_ack?.audio } : a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
+    if (!live) { const okF = await playIntroFilm(run); if (!okF) return; }
     await startAfterIntake(run, a1);
   }
   async function startAfterIntake(run = newRun(), a1 = S.profile.why, checkpoint = { phase: "opening", index: 0, line: 0 }) {
     // Keep the same planning request alive across questions during the opening.
-    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: true }).catch(() => null), 60000) : Promise.resolve(null);
-    if (checkpoint.phase === "opening" || checkpoint.phase === "intake") {
-      if (!(await playOpening(run, checkpoint.index || 0, checkpoint.line || 0))) return;
+    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
+    if (["opening", "intake", "overview"].includes(checkpoint.phase)) {
+      const overview = live && !S.browseOnly ? bundle.runtime?.overview : null;
+      if (overview?.text) {
+        if (!S.overviewPlayed) {
+          S.playback = { phase: "overview", line: 0 };
+          const visual = slides.find(slide => slide.id === overview.slide_id) || opening()[0] || heroOpen();
+          showSlideView(visual, { reveal: 99 }); el.cite.textContent = overview.fact_ids?.length ? "sources: " + overview.fact_ids.join(", ") : "";
+          if (!(await speak(overview.text, run, overview.audio))) return;
+          S.overviewPlayed = true;
+        }
+      } else if (!(await playOpening(run, checkpoint.index || 0, checkpoint.line || 0))) return;
     }
     if (S.browseOnly) { buildRoute(null); playFrom(0, 0); return; }
     let plan = S.pitch;
-    if (!plan) {
+    if (!plan && !(live && S.planningDecided)) {
       S.playback = { phase: "planning", line: 0 };
       plan = await withTimeout(S.pitchPromise, 150); if (run !== S.run) return;
-      if (!plan) { if (!(await speakF("still_working", "One moment — I'm tailoring this to what you told me.", run))) return; plan = await withTimeout(S.pitchPromise, 2500); if (run !== S.run) return; }
+      if (!plan && !live) { if (!(await speakF("still_working", "One moment — I'm tailoring this to what you told me.", run))) return; plan = await withTimeout(S.pitchPromise, 2500); if (run !== S.run) return; }
     }
+    S.planningDecided = true;
     S.personalized = !!plan;
     if (!plan) addMsg("note", "personalisation was not ready in the opening window — continuing on the stable approved route");
     if (plan) {
@@ -730,7 +918,7 @@ export function mountPlayer(host, bundle, api) {
       if (!(await speakF("how_i_go", "Let's look at the parts that matter to you.", run))) return;
     } else {
       S.playback = { phase: "plan_bridge", line: 0 };
-      if (!(await speakF("lets_go", "Let's take a closer look.", run))) return;
+      if (!(await (live ? speak("I couldn't finish tailoring the route just now. Let's explore the reviewed demo, and you can guide me as we go.", run) : speakF("lets_go", "Let's take a closer look.", run)))) return;
     }
     buildRoute(S.pitch); playFrom(0, 0);
   }
@@ -761,7 +949,7 @@ export function mountPlayer(host, bundle, api) {
     const now = sessionNow();
     const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((now - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
+    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
   }
   function resumeSession() {
     if (S.endedAt === null) return;
@@ -770,6 +958,7 @@ export function mountPlayer(host, bundle, api) {
     S.endedAt = null; S.ended = false; el.handoff.classList.remove("open");
   }
   function showHandoff(c) {
+    live?.stopCapture();
     if (S.endedAt === null) S.endedAt = Date.now();
     S.ended = true;
     el.lead.classList.remove("open");
@@ -788,7 +977,7 @@ export function mountPlayer(host, bundle, api) {
           h("button", { class: "btn ghost sm", onclick: () => showLeadPrompt("requested", openQuestions[0] || S.questions.at(-1) || c?.label || "test drive") }, "Request dealership follow-up"))])),
       h("div", { class: "actions", style: "display:flex;gap:10px;margin-top:14px" },
         h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); api.saveSession(sessionRecord()).catch(() => {}); const run = newRun(); speak("Thanks for your time. You can ask anything else whenever you are ready.", run); } }, "Done"),
-        h("button", { class: "btn ghost", onclick: () => { resumeSession(); const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } }, "Back to the demo")));
+        h("button", { class: "btn ghost", onclick: () => { resumeSession(); if (live) { startLive(); listenForQuestion(); } else { const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } } }, "Back to the demo")));
     el.handoff.classList.add("open"); api.saveSession(session).catch(() => {});
   }
 
@@ -833,17 +1022,17 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   function pause() { if (!S.paused) togglePause(); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
-  const onHide = () => { if (S.transcript.length && api.beacon) { try { api.beacon(sessionRecord()); } catch (e) {} } };
+  const onHide = () => { live?.close(); if (S.transcript.length && api.beacon) { try { api.beacon(sessionRecord()); } catch (e) {} } };
   window.addEventListener("pagehide", onHide);
-  function destroy() { dockObserver?.disconnect(); window.removeEventListener("pagehide", onHide); interruptAll(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
+  function destroy() { dockObserver?.disconnect(); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   renderCtas();
   updateMuteUi();
   showSlideView(heroOpen(), { reveal: 99 });
-  const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, "Take a closer look. Ask what matters to you."), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); runIntake(); } }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); skipIntake(); } }, "Browse at my pace"))));
+  const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, "Take a closer look. Ask what matters to you."), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); startLive(); runIntake(); } }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); startLive(); skipIntake(); } }, "Browse at my pace"))));
   el.stage.append(startBtn);
   // language chooser (multi-language bundles)
   const alts = bundle.alt_languages ? Object.keys(bundle.alt_languages) : [];
@@ -855,7 +1044,9 @@ export function mountPlayer(host, bundle, api) {
   function applyLanguage(code) {
     const alt = bundle.alt_languages?.[code]; if (!alt) return;
     bundle.segments = alt.segments; bundle.closing = alt.closing; bundle.intake = alt.intake; bundle.language = code; bundle.voice = { ...bundle.voice, provider: alt.voice_provider || bundle.voice.provider }; bundle.slides = alt.slides || bundle.slides;
+    if (bundle.runtime) bundle.runtime = { ...bundle.runtime, overview: alt.runtime_overview || null };
     slides = slidesOf(bundle); S.lang = code;
+    if (live) live.language = S.lang;
     if (cur) { cur.view.destroy(); cur = null; } showSlideView(heroOpen(), { reveal: 99 });
   }
   return { destroy, restart, pause, context };

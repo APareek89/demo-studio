@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 
 from .. import schemas, store
 from ..llm import claude
@@ -11,6 +12,30 @@ from .principles import PRINCIPLES, SCORECARD
 QGEN_SYSTEM = """You generate the questions a real prospective buyer asks during a product demo. Mix: specs and
 numbers, price and offers, ownership and support, setup/usage in their situation, comparisons, risks and edge cases,
 and 2-3 questions the given sources clearly cannot answer. Short, natural, first person. No duplicates."""
+
+
+def input_hash(demo_id: str) -> str:
+    """Audio, timestamps and version counters cannot invalidate a semantic review."""
+    from ..orchestrator import semantic
+    demo = store.load(demo_id)
+    settings = demo.get("settings", {})
+    und = store.read_json(demo_id, "understanding.json") or {}
+    script = store.read_json(demo_id, "script.json") or {}
+    bank = store.read_json(demo_id, "faq.json") or {}
+    def spoken(line):
+        return {key: line.get(key) for key in ("id", "text", "fact_ids", "step", "delivery", "unverified") if key in line}
+    script_input = {"intake_q1": script.get("intake_q1"), "closing": [spoken(line) for line in script.get("closing", [])],
+                    "runtime_overview": spoken(script.get("runtime_overview") or {}),
+                    "segments": [{**{key: segment.get(key) for key in ("id", "title", "role", "topic", "outcome", "usp_ids", "checkin")},
+                                  "lines": [spoken(line) for line in segment.get("lines", [])],
+                                  "deeper": [spoken(line) for line in segment.get("deeper", [])]} for segment in script.get("segments", [])]}
+    inputs = {"understanding": semantic({key: und.get(key) for key in ("product", "brand", "facts", "competitors", "unknowns")}),
+              "plan": semantic(store.read_json(demo_id, "plan.json") or {}), "script": script_input,
+              "faq": semantic({"entries": bank.get("entries", []), "partial": bank.get("partial", False)})}
+    inputs["settings"] = {key: settings.get(key) for key in ("language", "audience", "competition", "rehearsal_questions")}
+    inputs["prompts"] = {"questions": QGEN_SYSTEM, "score": SCORE_SYSTEM, "criteria": SCORECARD,
+                         "qa": qa.QA_SYSTEM, "schema": schemas.Scorecard.model_json_schema()}
+    return hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
 def generate_questions(demo_id: str, n: int = 12, bias: str | None = None) -> list[str]:
@@ -24,13 +49,18 @@ def generate_questions(demo_id: str, n: int = 12, bias: str | None = None) -> li
 
 
 def run(demo_id: str, emit) -> dict:
+    fingerprint = input_hash(demo_id)
+    previous = store.read_json(demo_id, "rehearsal.json") or {}
+    if previous.get("input_hash") == fingerprint and (previous.get("scorecard") is not None or previous.get("skipped")):
+        emit("Rehearsal and scorecard reused: script, evidence, FAQ and review prompts are unchanged.")
+        return previous
     demo = store.load(demo_id)
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
     n = int(demo.get("settings", {}).get("rehearsal_questions", 12) or 12)
     if n <= 0:
         emit("Rehearsal skipped (0 questions configured).")
-        out = {"questions": [], "coverage": None, "gaps": [], "skipped": True}
+        out = {"questions": [], "coverage": None, "gaps": [], "skipped": True, "input_hash": fingerprint}
         store.write_json(demo_id, "rehearsal.json", out)
         return out
     bank = store.read_json(demo_id, "faq.json") or {}
@@ -38,7 +68,7 @@ def run(demo_id: str, emit) -> dict:
         results = [{"question": e["question"], "answered": e["answered"], "fact_ids": e["fact_ids"], "answer": e["answer"], "escalate": ""} for e in bank["entries"]]
         answered = sum(1 for r in results if r["answered"])
         gaps = [r["question"] for r in results if not r["answered"]]
-        out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False, "from_bank": True}
+        out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False, "from_bank": True, "input_hash": fingerprint}
         emit(f"Rehearsal uses the FAQ bank: {answered}/{len(results)} answered from the sources — scoring the script…")
         out["scorecard"] = score_script(demo_id, emit)
         store.write_json(demo_id, "rehearsal.json", out)
@@ -60,7 +90,7 @@ def run(demo_id: str, emit) -> dict:
             results.append({"question": q, "answered": False, "fact_ids": [], "answer": "", "escalate": f"error: {e}"})
     answered = sum(1 for r in results if r["answered"])
     gaps = [r["question"] for r in results if not r["answered"]]
-    out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False}
+    out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False, "input_hash": fingerprint}
     out["scorecard"] = score_script(demo_id, emit)
     store.write_json(demo_id, "rehearsal.json", out)
     store.log(demo_id, "rehearsal", {"coverage": out["coverage"], "gaps": gaps})

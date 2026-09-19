@@ -1,7 +1,7 @@
 %% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
   N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
-  GO["POST /api/demos/id/build<br/>[FUNCTION] gate: all 6 approvals true"]:::fn
+  GO["POST /api/demos/id/build<br/>[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness<br/>explicit operator override logged; mock bypass"]:::fn
   AUTH["script draft (principles + PITCH_SHAPE + audience level)<br/>[AGENT · Claude text tier · messages.parse]<br/>in: plan, registry, shots, images, brand, language, audience (+ previous script + instruction)<br/>out: ScriptOut · intro + outcome (fixed opening, signposted) + ≤3 proof + one 'more features' block + establish; lines {text, step, visual, fact_ids, card}; checkin = CONFIRM; deeper = technical detail; closing = advance"]:::agent
   VAL["grounding + pacing + plain-language validator<br/>[FUNCTION · author.validate]<br/>fact_ids ⊆ registry · visual ref exists · NUMBERISH/CLAIMISH text with no fact id → unverified · opening ≤ 115 words · role budgets intro 55 / outcome 60 / proof 60 / features 110 / establish 45 · route ≤ 480 words (≈3 min) · JARGON regex (kWh, IDC, amp, 15A, Nm…) in main narration for audience=everyday → issue"]:::fn
   ISS{"issues > 0?"}:::dec
@@ -13,7 +13,7 @@ flowchart TD
   AUDIT["visual-audit.json<br/>[DATA]<br/>line reasons, image feature inventory, missing features, changes"]:::data
   SJ["script.json<br/>[DATA] visual refs + audit summary · version++"]:::data
   DPIC["one slide per segment · picture per slide<br/>[FUNCTION · deck.choose_image]<br/>tagged parts vs. the slide's words (+2 for the script's own pick); score ≥ 3 else the hero<br/>hero_open / intro / outcome / proof… / establish / closing / hero_close"]:::fn
-  DCALL["titles + callouts<br/>[AGENT · Claude → Gemini → Runware text tier · deck.DeckOut]<br/>in: per slide its lines, fact ids and the PARTS on its picture; the registry<br/>out: ≤ 6-word title, ≤ 3 callouts of ≤ 8 words each citing fact ids and naming a listed part"]:::agent
+  DCALL["titles + callouts<br/>[AGENT · Gemini → Claude → Runware text tier · deck.DeckOut]<br/>in: per slide its lines, fact ids and the PARTS on its picture; the registry<br/>out: ≤ 6-word title, ≤ 3 callouts of ≤ 8 words each citing fact ids and naming a listed part"]:::agent
   DVAL["the script-line rule on every callout<br/>[FUNCTION · author.ungrounded]<br/>uncited figure/claim, > 8 words, unlisted part → dropped; a slide left empty gets its own cited facts (claim: value)"]:::fn
   DLAY["label layout<br/>[FUNCTION · deck.place_callouts]<br/>part confidence ≥ 0.6 → anchor = box centre, label at the first of 8 spots that is inside the frame, off the part box and clear of other labels; otherwise → side panel. Never a guessed position"]:::fn
   DOVR["deck-overrides.json (from Align)<br/>[DATA] user-chosen picture / title / text / dragged label wins"]:::data
@@ -22,14 +22,14 @@ flowchart TD
   TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>VOICE_WORKERS=3 · cache checked before circuit<br/>locked: matching provider/speaker clips only; no alternate voice<br/>Sarvam starts paced at 2.1s; 429-only retry ≤3 attempts, bounded wait, Retry-After honored<br/>partial audio checkpointed; any missing required narration/FAQ/filler stops Build<br/>policy refusal is not retried or routed around"]:::data
   BROWSER["voice_provider=browser<br/>[term] player speaks with Web Speech"]:::term
   LANGS{"settings.languages<br/>has extra languages?"}:::dec
-  TRANS["translate script per extra language<br/>[AGENT · Claude text tier · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent
+  TRANS["translate script per extra language<br/>[AGENT · configured text tier · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent
   TTS2["render every translated line<br/>[LIBRARY · same chain, lang override]"]:::data
   QGEN["likely customer questions<br/>[AGENT · Claude text tier]<br/>in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)"]:::agent
   QA["answer each via qa.answer<br/>[AGENT · Claude text tier + FUNCTION validator]<br/>see diagram 05 · one paid call per question"]:::agent
   COV["coverage = answered / N · gaps list<br/>[FUNCTION] → rehearsal.json"]:::fn
-  SCORE["demo scorecard<br/>[AGENT · Claude text tier · judge]<br/>in: plan + script · out: 10 criteria × 0-2, total, weakest 2-3 with fixes"]:::agent
+  SCORE["demo scorecard<br/>[AGENT · Claude text tier · judge]<br/>reuse by semantic script/fact/FAQ/prompt hash; out: 10 criteria ×0–2 + gaps"]:::agent
   BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script, deck (+ script.&lt;lang&gt;.json, deck.&lt;lang&gt;.json)<br/>out: bundle.json · slides with image URL, part boxes, callouts, and each line's audio joined by id; segments kept for the pre-slide player; CTAs, facts, languages + alt_languages; version++"]:::fn
-  READY["status ready · SSE phase_done build · stage seconds recorded for Observability<br/>[term]"]:::term
+  READY["status ready · durable SSE phase_done build<br/>[DATA · events.json + stage progress/warnings]<br/>fresh subscriber receives current baseline; valid cursor resumes bounded history"]:::term
 
   GO --> AUTH --> VAL --> ISS
   ISS -- "yes" --> FIX --> VAL2 --> IDS

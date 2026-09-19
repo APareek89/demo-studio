@@ -1,6 +1,7 @@
 import { api, h, toast, esc } from "/web/api.js";
 import { renderSlide } from "/web/slide.js";
 import { icon } from "/web/icons.js";
+import { readinessQuery } from "/web/provider-readiness.js";
 
 const CARD_DEFS = [
   { key: "visuals", n: "1", title: "Visuals", icon: "image" },
@@ -50,7 +51,7 @@ export function renderAlign(ctx) {
   }
   function hideOverlay() { overlay.classList.add("hidden"); }
   async function retry() {
-    try { if (demo.status === "error" && !cards) await api.post(`/api/demos/${demoId}/read`); else if (Object.values(demo.approvals).every(Boolean)) await api.post(`/api/demos/${demoId}/build`); else await api.post(`/api/demos/${demoId}/read`); logEl.replaceChildren(); showOverlay(cards ? "building" : "reading"); }
+    try { if (demo.status === "error" && !cards) await api.post(`/api/demos/${demoId}/read`); else if (Object.values(demo.approvals).every(Boolean)) await api.post(`/api/demos/${demoId}/build${readinessQuery(demoId)}`); else await api.post(`/api/demos/${demoId}/read`); logEl.replaceChildren(); showOverlay(cards ? "building" : "reading"); }
     catch (e) { toast(e.message, true); }
   }
   function logLine(ev) { const d = h("div", {}, ev.stage ? h("span", { class: "stage" }, ev.stage + " · ") : null, ev.message); logEl.append(d); logEl.scrollTop = logEl.scrollHeight; }
@@ -89,13 +90,16 @@ export function renderAlign(ctx) {
     if (key === "facts") {
       const f = cards.facts;
       const rows = f.facts.map((x) => h("tr", { class: (x.edited ? "edited" : "") + (x.approved === false ? " removed" : "") },
-        h("td", { class: "id" }, x.id), h("td", {}, x.scope === "competitor" ? h("div", { class: "small muted" }, x.competitor_name || "Competitor") : null, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null),
+        h("td", { class: "id" }, x.id), h("td", {}, x.scope === "competitor" ? h("div", { class: "small muted" }, x.competitor_name || "Competitor") : null, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null,
+          Object.keys(x.applicability || {}).length ? h("div", { class: "small muted" }, Object.entries(x.applicability).map(([key, value]) => `${key.replaceAll("_", " ")}: ${value}`).join(" · ")) : null,
+          x.knowledge?.review_required ? h("div", { class: "small" }, x.knowledge.review_required) : null),
         h("td", { class: "src" }, `${x.source?.ref || ""} ${x.source?.locator || ""}`, x.source?.quote ? h("div", { title: x.source.quote }, "“", x.source.quote.slice(0, 50), x.source.quote.length > 50 ? "…" : "", "”") : null),
-        h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"), " ", h("button", { class: "btn sm ghost", title: x.approved === false ? "Restore this information" : "Keep this information out of the demo", onclick: () => setFactApproval(x, x.approved === false) }, x.approved === false ? "Restore" : "Reject"))));
+        h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"), " ", h("button", { class: "btn sm ghost", title: x.approved === false ? "Restore this information" : "Keep this information out of the demo", onclick: () => x.approved === false && f.conflicts?.some((c) => c.status !== "superseded" && c.fact_ids?.includes(x.id) && c.fact_ids.length > 1) ? resolveEvidence(f.conflicts.find((c) => c.status !== "superseded" && c.fact_ids?.includes(x.id) && c.fact_ids.length > 1), x) : setFactApproval(x, x.approved === false) }, x.approved === false ? (f.conflicts?.some((c) => c.status !== "superseded" && c.fact_ids?.includes(x.id) && c.fact_ids.length > 1) ? "Select evidence" : "Restore") : "Reject"))));
       const open = f.unknowns.filter((u) => u.status === "open");
       return h("div", {},
         h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px" }, h("p", { class: "small muted", style: "margin:0" }, `${f.facts.length} facts from ${f.sources.length} source${f.sources.length === 1 ? "" : "s"}. The guide can only say what's in this table.`), h("button", { class: "btn sm", onclick: openProductEditor }, "Edit product summary")),
         h("div", { style: "max-height:360px;overflow:auto" }, h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "id"), h("th", {}, "fact"), h("th", {}, "source"), h("th", {}, ""))), h("tbody", {}, ...rows))),
+        evidenceReview(f),
         open.length ? h("div", {}, h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px;gap:8px;flex-wrap:wrap" }, h("p", { class: "eyebrow", style: "margin:0" }, `${open.length} questions the sources don't answer`), h("a", { class: "btn sm", href: `/api/demos/${demoId}/faq-template`, download: `FAQ-${demoId}.md`, title: "A Markdown file with every open question grouped by category — fill the answers and upload it here" }, "Download FAQ template")),
           h("p", { class: "small muted", style: "margin:0 0 6px" }, "Grouped by what would answer them. Finance and insurance questions need their own documents — the guide declines these rather than guessing."),
           ...(() => { const cats = { pricing: "Pricing & offers", finance: "Finance / EMI", insurance: "Insurance", warranty_service: "Warranty & service", features: "Features & specs", availability: "Availability & delivery", comparison: "Comparisons", usage: "Usage & ownership", other: "Other" }; const groups = {}; for (const u of open) (groups[u.category || "other"] ||= []).push(u); return Object.keys(cats).filter((k) => groups[k]).map((k) => { const docs = [...new Set(groups[k].map((u) => u.suggested_document).filter(Boolean))]; return h("div", { class: "unk-group" }, h("p", { class: "eyebrow" }, `${cats[k]} · ${groups[k].length}`), docs.length ? h("p", { class: "doc" }, "upload: " + docs.join(" · ")) : null, h("div", { class: "unknowns" }, ...groups[k].map((u) => h("div", { class: "unk" }, h("span", { class: "id" }, u.id), h("span", {}, u.question, u.origin === "rehearsal" ? h("span", { class: "muted" }, " · from rehearsal") : u.origin === "runtime" ? h("span", { class: "muted" }, " · asked in a demo") : null))))); }); })()) : null,
@@ -108,6 +112,7 @@ export function renderAlign(ctx) {
       return h("div", {},
         h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit the words"), dk.slides.length ? h("button", { class: "btn sm primary", onclick: () => openSlideEditor(dk.slides.length > 1 ? 1 : 0) }, "Review slides") : null),
         h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
+        pt.runtime_overview ? h("div", { class: "gap" }, h("b", {}, "Short customer overview"), h("p", {}, pt.runtime_overview.text), h("div", { class: "small muted" }, `Evidence: ${(pt.runtime_overview.fact_ids || []).join(", ") || "No factual claims"}`), h("button", { class: "btn sm ghost", onclick: openScriptEditor }, "Edit overview")) : null,
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Slides · ${dk.slides.length}${dk.method ? ` · callouts by ${dk.method}` : ""}`),
         h("div", { class: "deck-strip" }, ...dk.slides.map((s, i) => h("button", { class: "deck-thumb", title: s.title || s.kind, onclick: () => openSlideEditor(i) },
           s.image_url ? h("img", { src: s.image_url, alt: "" }) : h("div", { class: "noimg" }, "no picture"),
@@ -226,8 +231,16 @@ export function renderAlign(ctx) {
     const truth = h("select", {}, ...["stated", "certified", "modeled", "observed", "contractual"].map((t) => h("option", { value: t, selected: t === (fact.truth || "stated") }, t)));
     const source = h("select", {}, ...(cards.facts.sources || []).filter((s) => fact.scope === "competitor" ? s.id === fact.competitor_source_id : s.role !== "competitor").map((s) => h("option", { value: s.id, selected: s.id === fact.source?.ref }, `${s.id} · ${s.name || s.url || s.kind}`)));
     const locator = h("input", { value: fact.source?.locator || "" }); const quote = h("textarea", {}, fact.source?.quote || "");
-    const body = h("div", { class: "edit-form" }, h("label", {}, "Information", claim), h("label", {}, "Value", value), h("label", {}, "Conditions / caveat", conditions), h("label", {}, "Evidence type", truth), h("label", {}, "Source", source), h("label", {}, "Page or section", locator), h("label", {}, "Exact supporting quote", quote), h("p", { class: "small muted" }, "Use the source's exact scope and wording. A direct correction makes every downstream card require approval again."));
-    editor(`Edit ${fact.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/facts/${fact.id}`, { claim: claim.value, value: value.value, conditions: conditions.value, truth: truth.value, source: { ref: source.value, locator: locator.value, quote: quote.value } }) }, "Save & re-align");
+    const applicability = [["model", "Model"], ["model_year", "Model year"], ["generation", "Generation"], ["market", "Market"], ["variant", "Variant / trim"], ["powertrain", "Powertrain"], ["transmission", "Transmission"], ["test_basis", "Test basis"], ["price_basis", "Price basis"], ["effective_from", "Effective from"], ["effective_to", "Effective until"]].map(([key, label]) => ({ key, label, input: h("input", { value: fact.applicability?.[key] || "", type: key.startsWith("effective_") ? "date" : "text", maxlength: 500 }) }));
+    const scopeFields = h("details", {}, h("summary", {}, "Review applicability"), h("p", { class: "small muted" }, "Enter only what the source establishes. A blank field means unknown; it does not mean every variant or market."), ...applicability.map(({ label, input }) => h("label", {}, label, input)));
+    const body = h("div", { class: "edit-form" }, h("label", {}, "Information", claim), h("label", {}, "Value", value), h("label", {}, "Conditions / caveat", conditions), scopeFields, h("label", {}, "Evidence type", truth), h("label", {}, "Source", source), h("label", {}, "Page or section", locator), h("label", {}, "Exact supporting quote", quote), h("p", { class: "small muted" }, "Use the source's exact scope and wording. A changed assertion receives a new citation ID and makes every downstream card require approval again. Published evidence keeps its original ID."));
+    editor(`Edit ${fact.id}`, { body, save: async () => {
+      const scope = Object.fromEntries(applicability.filter(({ input }) => input.value.trim()).map(({ key, input }) => [key, input.value.trim()]));
+      const result = await api.patch(`/api/demos/${demoId}/align/facts/${fact.id}`, { claim: claim.value, value: value.value, conditions: conditions.value, scope, truth: truth.value, source: { ref: source.value, locator: locator.value, quote: quote.value } });
+      const newId = result.fact?.id || result.id;
+      if (newId && newId !== fact.id) toast(`${fact.id} replaced by ${newId}. Review and approve the affected cards again.`);
+      return result;
+    } }, "Save & re-align");
   }
   function openProductEditor() {
     const product = cards.product || {};
@@ -241,6 +254,7 @@ export function renderAlign(ctx) {
   }
   function openScriptEditor() {
     const all = [];
+    if (cards.script?.runtime_overview) all.push({ ...cards.script.runtime_overview, id: "runtime-overview", section: "Short customer overview" });
     for (const seg of cards.script?.segments || []) for (const line of seg.lines || []) all.push({ ...line, section: seg.title });
     for (const line of cards.script?.closing || []) all.push({ ...line, section: "Closing" });
     const fields = all.map((line) => ({ line, input: h("textarea", {}, line.text), facts: h("input", { value: (line.fact_ids || []).join(", "), placeholder: "F001, F002" }), visual: h("input", { value: line.visual || "", placeholder: "im01, or blank for a fact card" }) }));
@@ -293,6 +307,43 @@ export function renderAlign(ctx) {
     draw(); document.body.appendChild(bg);
     const esc = (e) => { if (e.key === "Escape") { bg.remove(); document.removeEventListener("keydown", esc); } }; document.addEventListener("keydown", esc);
   }
+  function evidenceReview(f) {
+    const coverage = f.coverage || {}; const seeds = coverage.seeds || []; const conflicts = f.conflicts || [];
+    const blocked = seeds.flatMap((s) => s.blocked || []); const deferred = seeds.flatMap((s) => s.deferred || []);
+    const fetched = seeds.flatMap((s) => s.fetched || []); const sourceName = (id) => f.sources.find((s) => s.id === id)?.name || id;
+    const extractionWarnings = (coverage.extraction || []).filter((s) => s.error || s.warnings?.length);
+    const changed = f.diff || {}; const sourceLine = (s) => h("li", { style: "overflow-wrap:anywhere;margin:4px 0" }, s.url || sourceName(s.source_id), s.reason ? ` — ${s.reason}` : "", ...(s.warnings || []).map((w) => h("div", { class: "small muted" }, w)));
+    return h("section", { "aria-label": "Source coverage and conflicts", style: "margin-top:14px" },
+      h("div", { class: "gap" }, h("b", {}, "Source coverage · "),
+        !Object.keys(coverage).length ? "Not recorded for this earlier read." : coverage.complete ? "Eligible source frontier checked within the stated scope." : "Partial — review the gaps before approving.",
+        h("div", { class: "small muted" }, `${fetched.length} web pages/documents read · ${blocked.length} blocked · ${deferred.length} deferred. Uploaded sources: ${(coverage.extraction || []).filter((s) => !fetched.some((p) => p.source_id === s.source_id)).length}.`),
+        coverage.budget ? h("div", { class: "small muted" }, `Per model crawl limit: ${coverage.budget.html_pages} pages, ${coverage.budget.documents} documents, ${coverage.budget.document_pages} document pages, depth ${coverage.budget.depth}. A budget limit is not complete coverage.`) : null,
+        coverage.rendering || coverage.ocr ? h("div", { class: "small muted" }, `JavaScript extraction: ${(coverage.rendering || "not recorded").replaceAll("_", " ")} · OCR: ${(coverage.ocr || "not recorded").replaceAll("_", " ")}. See source warnings for actual outcomes.`) : null),
+      (seeds.length || extractionWarnings.length) ? h("details", { style: "margin:10px 0" }, h("summary", { style: "cursor:pointer;font-weight:600" }, "Inspect source coverage and remaining pages"),
+        ...seeds.map((seed) => h("div", { style: "margin:12px 0" }, h("b", {}, sourceName(seed.source_id)),
+          h("p", { class: "small muted", style: "margin:4px 0" }, `Model scope: ${(seed.model_tokens || []).join(", ") || "ambiguous"}. Topics found: ${(seed.topics_seen || []).join(", ") || "not established"}.`),
+          ...(seed.warnings || []).map((w) => h("p", { class: "small" }, w)),
+          ...[["Read", seed.fetched], ["Earlier revisions retained — verify freshness", seed.retained], ["Blocked", seed.blocked], ["Deferred — another bounded read is needed", seed.deferred], ["Skipped outside model scope (sample)", seed.skipped]].filter(([, rows]) => rows?.length).map(([label, rows]) =>
+            h("details", { style: "margin:6px 0" }, h("summary", {}, `${label} (${rows.length})`), h("ul", { class: "small", style: "padding-left:20px" }, ...rows.map(sourceLine)))))),
+        ...extractionWarnings.map((s) => h("div", { class: "gap small" }, h("b", {}, sourceName(s.source_id)), s.error ? h("p", {}, s.error) : null, ...(s.warnings || []).map((w) => h("p", {}, w))))) : null,
+      Object.keys(changed).length ? h("p", { class: "small muted" }, `This read: ${(changed.added || []).length} new · ${(changed.changed || []).length} changed · ${(changed.removed || []).length} removed · ${(changed.unchanged || []).length} unchanged fact identities. Earlier demos retain their published evidence.`) : null,
+      conflicts.length ? h("details", { open: conflicts.some((c) => c.status === "unresolved"), style: "margin:10px 0" }, h("summary", { style: "cursor:pointer;font-weight:600" }, `Evidence decisions and conflicts (${conflicts.length})`),
+        ...conflicts.map((conflict) => h("div", { class: "gap" },
+          h("b", {}, conflict.status === "superseded" ? `Earlier decision superseded by ${conflict.superseded_by || "a reviewed edit"}` : conflict.resolution === "uploaded_document" ? `Uploaded document takes precedence: ${conflict.preferred_fact_id}` : conflict.resolution === "human_edit" ? "Human correction preserved" : conflict.resolution === "human_review" ? `Reviewer selected ${conflict.preferred_fact_id}` : "Conflicting evidence needs review"),
+          h("p", { class: "small", style: "margin:5px 0" }, conflict.reason || ""),
+          h("div", { class: "small muted" }, Object.entries(conflict.scope || {}).map(([key, value]) => `${key.replaceAll("_", " ")}: ${value}`).join(" · ")),
+          ...(conflict.fact_ids || []).map((id) => { const fact = f.facts.find((x) => x.id === id); return h("div", { class: "small", style: "margin:6px 0" }, h("b", {}, id), fact ? ` · ${fact.claim}: ${fact.value} · ${sourceName(fact.source?.ref)}` : " · earlier fact retained in the evidence history", fact ? h("button", { class: "btn sm ghost", onclick: () => editFact(fact) }, "Review fact") : null, fact && conflict.status !== "superseded" && conflict.fact_ids.length > 1 ? h("button", { class: "btn sm ghost", onclick: () => resolveEvidence(conflict, fact) }, `Use ${id}`) : null); }),
+          conflict.preferred_fact_id && conflict.status !== "superseded" ? h("p", { class: "small muted", style: "margin:5px 0" }, "Other assertions in this decision are excluded from retrieval. Different or unknown applicability is never automatically merged.") : null))) : null);
+  }
+
+  async function resolveEvidence(conflict, fact) {
+    try {
+      await api.patch(`/api/demos/${demoId}/knowledge/conflicts/${encodeURIComponent(conflict.id)}`, { preferred_fact_id: fact.id, note: "Selected explicitly in the Facts review." });
+      toast(`${fact.id} selected. Review and approve the affected cards again.`);
+      await reload();
+    } catch (error) { toast(error.message, true); }
+  }
+
   function openPitchEditor() {
     const pt = cards.script || {};
     const keys = [["customer_persona", "Customer and decision"], ["decision_frame", "Decision frame"], ["takeaway", "Takeaway"], ["primary_outcome", "Primary outcome"], ["do_not_recommend_if", "Do not recommend if"], ["advance", "Next action"]];
@@ -346,7 +397,7 @@ export function renderAlign(ctx) {
     sendBtn.disabled = false;
   }
 
-  async function build() { try { await api.post(`/api/demos/${demoId}/build`); logEl.replaceChildren(); showOverlay("building"); } catch (e) { toast(e.message, true); } }
+  async function build() { try { await api.post(`/api/demos/${demoId}/build${readinessQuery(demoId)}`); logEl.replaceChildren(); showOverlay("building"); } catch (e) { toast(e.message, true); } }
 
   const onVis = () => { if (document.visibilityState === "visible") reload().catch(() => {}); };
   document.addEventListener("visibilitychange", onVis);

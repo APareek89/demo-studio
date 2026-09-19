@@ -1,4 +1,4 @@
-"""Claude — the reasoning/writing model. Structured outputs via Pydantic (messages.parse)."""
+"""Structured build dispatcher, plus the Claude-specific media/runtime adapter."""
 from __future__ import annotations
 
 import base64
@@ -91,31 +91,46 @@ def _fallback_transcript(msgs: list[dict]) -> str:
     return "\n\n".join(f"{str(m.get('role', 'user')).upper()}:\n{_blocks_text(m.get('content'))}" for m in msgs)
 
 
-def text_fallback(system: str, msgs: list[dict], schema: type[T], *, max_tokens: int = 16000,
-                  fallback_reason: str = "", timeout: float | None = None) -> T:
-    """Build-time secondary chain, also used after PDFs are explicitly extracted to text.
-
-    Never flatten media into placeholders. Runtime orders providers itself and does not use this chain.
-    """
+def _build_text(system: str, msgs: list[dict], schema: type[T], *, max_tokens: int = 16000,
+                providers: list[str] | None = None, fallback_reason: str = "", timeout: float | None = None,
+                soft: bool = False, effort: str | None = None, model: str | None = None,
+                max_retries: int | None = None) -> T:
+    """One attempt per configured provider; never routes media or nests runtime fallback."""
     if not msgs or not _text_only_messages(msgs):
         raise ValueError("Text fallback requires text-only messages; extract source text before retrying")
     if config.MOCK_LLM:
         return mock.fake(schema)
     from . import gemini, runware
     errors = []
-    try:
-        return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens,
-                                      fallback_reason=fallback_reason, timeout_s=timeout)
-    except Exception as e:
-        # Keep the chain's diagnostic without copying provider payloads or credentials into a new error.
-        errors.append(f"gemini: {type(e).__name__}")
-    try:
-        history = [{"role": m["role"], "content": _blocks_text(m["content"])} for m in msgs[:-1]]
-        return runware.structured(system, _blocks_text(msgs[-1]["content"]), schema,
-                                  history=history, max_tokens=max_tokens, timeout=timeout)
-    except Exception as e:
-        errors.append(f"runware: {type(e).__name__}")
-        raise TextFallbackError("All build text fallbacks failed — " + " | ".join(errors)) from e
+    for provider in (config.BUILD_PROVIDERS if providers is None else providers):
+        try:
+            if provider == "gemini":
+                return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens,
+                                              fallback_reason=fallback_reason, timeout_s=timeout)
+            if provider == "claude":
+                return structured(system, msgs[-1]["content"], schema, history=msgs[:-1], max_tokens=max_tokens,
+                                  soft=soft, effort=effort, timeout=timeout, model=model, max_retries=max_retries,
+                                  fallback=False)
+            if provider == "runware":
+                history = [{"role": m["role"], "content": _blocks_text(m["content"])} for m in msgs[:-1]]
+                return runware.structured(system, _blocks_text(msgs[-1]["content"]), schema,
+                                         history=history, max_tokens=max_tokens, timeout=timeout)
+            raise ValueError("Unsupported build provider")
+        except Exception as exc:
+            # Provider adapters retain redacted diagnostics; do not copy payloads into a new error.
+            errors.append(f"{provider}: {type(exc).__name__}")
+    raise TextFallbackError("All build text providers failed — " + " | ".join(errors))
+
+
+def text_fallback(system: str, msgs: list[dict], schema: type[T], *, max_tokens: int = 16000,
+                  fallback_reason: str = "", timeout: float | None = None) -> T:
+    """After explicit media extraction, try configured secondary text providers once.
+
+    Claude already owned the original media attempt. It is not repeated here, and
+    media can never be flattened into placeholder text for another provider.
+    """
+    return _build_text(system, msgs, schema, max_tokens=max_tokens, fallback_reason=fallback_reason,
+                       timeout=timeout, providers=[p for p in config.BUILD_PROVIDERS if p != "claude"])
 
 
 def _record(resp, kind: str = "claude", *, t0: float | None = None, system: str = "", msgs: list | None = None, error: str = "", model: str | None = None) -> None:
@@ -145,13 +160,17 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
                model: str | None = None, fallback: bool = True, max_retries: int | None = None) -> T:
     """One call, validated output. `content` is the user turn (blocks or plain text).
     soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit.
-    fallback=False disables the built-in Gemini → Runware fallback (runtime orders providers itself)."""
+    fallback=False calls only Claude (runtime orders providers itself). Text-only build calls otherwise use BUILD_PROVIDERS."""
     if config.MOCK_LLM:
         out = mock.fake(schema)
         usage.trace("claude", "mock", latency_ms=5, system=system, user=(content if isinstance(content, str) else json.dumps(content)[:4000]), response=out.model_dump_json()[:4000])
         return out
     msgs = list(history or [])
     msgs.append({"role": "user", "content": content if isinstance(content, list) else [text_block(content)]})
+    if fallback and _text_only_messages(msgs):
+        return _build_text(system, msgs, schema, max_tokens=max_tokens, timeout=timeout, soft=soft,
+                           effort=effort, model=model, max_retries=max_retries)
+    call_started = time.time()
     try:
         if soft:
             return _soft_structured(system, msgs, schema, max_tokens, effort=effort, timeout=timeout, model=model, max_retries=max_retries)
@@ -179,6 +198,8 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
             raise RuntimeError("Claude returned no structured output")
         return parsed
     except Exception as e:
+        usage.trace("claude-structured-failed",model or config.CLAUDE_MODEL,latency_ms=(time.time()-call_started)*1000,
+                    user=_blocks_text(content),error=usage.redact(str(e))[:500])
         if fallback and (not config.ANTHROPIC_API_KEY or _provider_unavailable(e)) and _text_only_messages(msgs):
             return text_fallback(system, msgs, schema, max_tokens=max_tokens,
                                  fallback_reason=describe_error(e), timeout=timeout)

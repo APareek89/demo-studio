@@ -35,10 +35,13 @@ assert "faq" in st["cards"], "faq card missing"
 assert any(m["role"] == "agent" for m in st["conversation"]), "no opening message"
 print("cards: images", len(st["cards"]["visuals"]["images"]), "facts", len(st["cards"]["facts"]["facts"]), "ctas", len(st["cards"]["ctas"]), "script batches", len(st["cards"]["script"]["segments"]), "seconds", st["cards"]["script"]["timeline"]["total_seconds"], "faq", st["cards"]["faq"]["total"])
 r = c.post(f"/api/demos/{i}/align", data={"message": "looks fine", "context": "align"}); assert r.status_code == 200, r.text; print("align reply:", r.json()["reply"][:60])
+r = c.post(f"/api/demos/{i}/ctas", json={"ctas": [{"id": "book", "label": "Book a test ride", "kind": "book", "url": "", "primary": True, "when": "always"}]}); assert r.status_code == 200, r.text
+assert not c.get(f"/api/demos/{i}").json()["demo"]["approvals"]["ctas"], "changed CTA must be reviewed"
+r = c.post(f"/api/demos/{i}/revise", json={"stage":"author", "instruction":"Use the selected CTA in the closing."}); assert r.status_code == 200, r.text
+wait(i, "align"); print("CTA revision → human Align ok")
 for card in c.get(f"/api/demos/{i}").json()["demo"]["approvals"].keys():
     r = c.post(f"/api/demos/{i}/approve/{card}"); assert r.status_code == 200, r.text
 assert all(c.get(f"/api/demos/{i}").json()["demo"]["approvals"].values()); print("approved all")
-r = c.post(f"/api/demos/{i}/ctas", json={"ctas": [{"id": "book", "label": "Book a test ride", "kind": "book", "url": "", "primary": True, "when": "always"}]}); assert r.status_code == 200, r.text
 r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready", 180); print("build → ready ok")
 b = c.get(f"/api/demos/{i}/bundle").json()

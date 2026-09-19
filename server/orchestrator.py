@@ -7,6 +7,7 @@ from __future__ import annotations
 import threading
 import time
 import traceback
+import re
 
 from . import cloud, events, media, store, usage, runlog
 from .agents import align, author, bundle, deck, faq, plan, rehearsal, understand, voice
@@ -30,6 +31,15 @@ def is_running(demo_id: str) -> bool:
 
 def emit_for(demo_id: str, stage: str | None = None):
     def emit(message: str):
+        if stage:
+            def retain(d):
+                state = d["stages"].setdefault(stage, {})
+                entry = {"t": time.time(), "message": str(message)}
+                state["message"] = str(message)
+                state["progress"] = (state.get("progress", []) + [entry])[-40:]
+                if re.search(r"\b(warning|skipped|unavailable|missing|failed|error|fallback|held back|timed captions)\b", str(message), re.I):
+                    state["warnings"] = (state.get("warnings", []) + [entry])[-20:]
+            store.update(demo_id, retain)
         events.publish(demo_id, "progress", stage=stage, message=message)
     return emit
 
@@ -38,9 +48,10 @@ def set_stage(demo_id: str, stage: str, status: str, error: str | None = None, m
     def fn(d):
         prev = d["stages"].get(stage, {})
         started = time.time() if status == "running" else prev.get("started_at")
-        d["stages"][stage] = {"status": status, "updated_at": time.time(), "error": error, "message": message, "started_at": started,
+        d["stages"][stage] = {**prev, "status": status, "updated_at": time.time(), "error": error, "message": message or ("" if status == "running" else prev.get("message", "")), "started_at": started,
                               "seconds": round(time.time() - started, 1) if started and status in ("done", "error") else prev.get("seconds")}
         if status == "running":
+            d["stages"][stage].update(progress=[], warnings=[])
             d["running"] = stage
         elif d.get("running") == stage:
             d["running"] = None
@@ -56,11 +67,47 @@ def invalidate(demo_id: str, stage: str) -> None:
     store.update(demo_id, fn)
 
 
+_NON_SEMANTIC = {"audio", "checkin_audio", "intake_audio", "voice_sample_audio", "voice_provider", "voice_name", "voice_input_hash",
+                 "voice_failures", "version", "updated_at", "created_at", "t", "timeline",
+                 "duration_seconds", "duration_exact", "duration_in_range", "exact", "spoken", "checkin_start", "checkin_duration"}
+
+
+def semantic(value):
+    """Keep approval content while excluding recording/version bookkeeping."""
+    if isinstance(value, dict):
+        ignored = _NON_SEMANTIC | ({"start", "duration"} if "text" in value or "lines" in value else set())
+        return {k: semantic(v) for k, v in value.items() if k not in ignored}
+    if isinstance(value, list):
+        return [semantic(v) for v in value]
+    return value
+
+
+def changed_cards(stage: str, before: dict | None, after: dict | None) -> set[str]:
+    before, after = semantic(before or {}), semantic(after or {})
+    if before == after:
+        return set()
+    if stage == "understand":
+        factual = ("facts", "competitors", "unknowns", "product", "brand")
+        return set(store.CARDS) if any(before.get(k) != after.get(k) for k in factual) else {"visuals", "script"}
+    if stage == "plan":
+        cards = set()
+        if before.get("voice") != after.get("voice"):
+            cards.add("persona")
+        if before.get("ctas") != after.get("ctas"):
+            cards.add("ctas")
+        if {k: v for k, v in before.items() if k not in ("voice", "ctas")} != {k: v for k, v in after.items() if k not in ("voice", "ctas")}:
+            cards.update(("script", "visuals"))
+        return cards
+    return {"author": {"script", "visuals"}, "deck": {"visuals"}, "faq": {"faq"}}.get(stage, set())
+
+
 def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
     usage.current_demo.set(demo_id)
     usage.current_stage.set(stage)
     set_stage(demo_id, stage, "running")
     emit = emit_for(demo_id, stage)
+    output_file = {"understand": "understanding.json", "plan": "plan.json", "author": "script.json", "deck": "deck.json", "faq": "faq.json"}.get(stage)
+    previous = store.read_json(demo_id, output_file) if output_file else None
     try:
         if stage == "understand":
             out = understand.run(demo_id, emit, instruction)
@@ -80,6 +127,9 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
             out = bundle.build(demo_id, emit)
         else:
             raise ValueError(stage)
+        cards = changed_cards(stage, previous, store.read_json(demo_id, output_file)) if output_file else set()
+        if cards:
+            store.update(demo_id, lambda d: d["approvals"].update({card: False for card in cards}))
         set_stage(demo_id, stage, "done")
         invalidate(demo_id, stage)
         st = store.load(demo_id)["stages"].get(stage, {})
@@ -153,13 +203,16 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
             _append_conversation(demo_id, "agent", align.card_prompt(demo_id, nxt) if nxt else align.card_prompt(demo_id, "done"), system=True)
         elif t == "edit_fact" and a.get("fact_id"):
             edits = {field: a["fact_" + field] for field in ("value", "claim") if a.get("fact_" + field)}
-            edits.update({field: a["fact_" + field] for field in ("conditions", "truth", "source") if a.get("fact_" + field) is not None})
+            edits.update({field: a["fact_" + field] for field in ("conditions", "truth", "source", "scope") if a.get("fact_" + field) is not None})
             try:
-                store.edit_fact(demo_id, a["fact_id"], edits)
+                corrected = store.edit_fact(demo_id, a["fact_id"], edits)
             except (KeyError, ValueError) as exc:
                 notes.append(f"Could not edit {a['fact_id']}: {str(exc)}")
                 continue
-            notes.append(f"edited {a['fact_id']}")
+            if corrected["id"] == a["fact_id"]:
+                notes.append(f"unchanged {a['fact_id']}")
+                continue
+            notes.append(f"edited {a['fact_id']} → {corrected['id']}")
             invalidate(demo_id, "understand")
             set_stage(demo_id, "understand", "done", message="fact correction saved and validated")
             set_stage(demo_id, "faq", "stale", message="fact edited — bank re-answers on the next build")
@@ -188,6 +241,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                 p["ctas"] = a["ctas"]
                 store.write_json(demo_id, "plan.json", p)
                 invalidate(demo_id, "plan")
+                store.update(demo_id, lambda d: d["approvals"].update(ctas=False, script=False, visuals=False))
                 notes.append(f"ctas set ({len(a['ctas'])})")
         elif t == "set_voice":
             p = store.read_json(demo_id, "plan.json") or {}
@@ -201,6 +255,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                 store.update(demo_id, lambda d, n=a["voice_name"]: (d["settings"].__setitem__("voice_name", n), d["settings"].__setitem__("voice_locked", True)))
             store.write_json(demo_id, "plan.json", p)
             invalidate(demo_id, "plan")
+            store.update(demo_id, lambda d: d["approvals"].update(persona=False, script=False, visuals=False))
             try:
                 rel = voice.sample(demo_id, v.get("sample_line", "Hello, I'm your guide for today."))
                 p["voice_sample_audio"] = rel

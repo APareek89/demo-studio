@@ -1,0 +1,27 @@
+%% 08 · Runtime graph nodes — exported from server/runtime_graph.py
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	retrieve(retrieve)
+	reason(reason)
+	tools(tools)
+	validate(validate)
+	explore(explore)
+	delivery_plan(delivery_plan)
+	__end__([<p>__end__</p>]):::last
+	__start__ -.-> explore;
+	__start__ -.-> retrieve;
+	explore --> delivery_plan;
+	reason -.-> tools;
+	reason -.-> validate;
+	retrieve --> reason;
+	tools --> reason;
+	validate --> delivery_plan;
+	delivery_plan --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

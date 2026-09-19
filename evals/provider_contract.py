@@ -21,7 +21,7 @@ import httpx
 
 def run(check, demo_id: str) -> None:
     from server import app as app_module
-    from server import config, schemas, store, usage
+    from server import config, readiness, schemas, store, usage
     from server.agents import author, deck, qa, understand
     from server.llm import claude, gemini, runware, runtime
 
@@ -50,7 +50,7 @@ def run(check, demo_id: str) -> None:
     with ExitStack() as stack:
         stack.enter_context(patch.multiple(config, MOCK_LLM=False, ANTHROPIC_API_KEY="contract-claude-key-not-real",
                                           GEMINI_API_KEY="contract-gemini-key-not-real", RUNWARE_API_KEY=secret,
-                                          RUNTIME_PROVIDERS=["gemini", "claude", "runware"],
+                                          RUNTIME_PROVIDERS=["gemini", "claude", "runware"], BUILD_PROVIDERS=["gemini", "claude", "runware"],
                                           CLAUDE_RUNTIME_MODEL="claude-runtime-contract",
                                           GEMINI_RUNTIME_MODEL="gemini-runtime-contract",
                                           RUNWARE_TEXT_MODEL="deepseek:v4@flash"))
@@ -110,7 +110,21 @@ def run(check, demo_id: str) -> None:
             succeed["provider"] = "runware"
             with patch.object(config, "GEMINI_API_KEY", ""):
                 out = claude.structured("System", "Build question", schemas.QAOut)
-            check("providers: build reaches Runware even without a Gemini key", out == answer and calls == ["claude", "gemini", "runware"])
+            check("providers: build reaches Runware even without a Gemini key", out == answer and calls == ["gemini", "claude", "runware"])
+            for provider, expected in (("gemini", ["gemini"]), ("claude", ["gemini", "claude"])):
+                calls.clear(); succeed["provider"] = provider
+                out = claude.structured("System", "Build question", schemas.QAOut)
+                check(f"providers: {provider} build success stops later providers", out == answer and calls == expected)
+            calls.clear(); succeed["provider"] = "runware"
+            with patch.object(config, "BUILD_PROVIDERS", ["runware", "gemini", "claude"]):
+                out = claude.structured("System", "Configured build question", schemas.QAOut)
+            check("providers: configured build order is honored independently of runtime", out == answer and calls == ["runware"])
+            calls.clear(); succeed["provider"] = "claude"
+            out = claude.structured("System", "Explicit Claude call", schemas.QAOut, fallback=False)
+            check("providers: explicit fallback=False never enters build provider chain", out == answer and calls == ["claude"])
+            calls.clear()
+            out = claude.structured("System", [{"type": "document", "source": {"type": "base64", "media_type": "application/pdf", "data": "fixture"}}], schemas.QAOut)
+            check("providers: media remains with its original Claude adapter", out == answer and calls == ["claude"])
             calls.clear()
             succeed["provider"] = "none"
             results = [qa.answer(demo_id, "Contract test unsupported price", voice_it=False, live=True) for _ in range(2)]
@@ -131,7 +145,7 @@ def run(check, demo_id: str) -> None:
         with patch.object(claude, "_client_opts", return_value=SimpleNamespace(messages=SimpleNamespace(parse=reject_grammar))), \
                 patch.object(claude, "_soft_structured", return_value=answer) as soft:
             out = claude.structured("System", "Question", schemas.QAOut, model="claude-contract-explicit",
-                                    timeout=9.0, effort="low", max_retries=1)
+                                    timeout=9.0, effort="low", max_retries=1, fallback=False)
             check("providers: Claude grammar retry preserves model, timeout, effort and retries",
                   out == answer and soft.call_count == 1
                   and soft.call_args.kwargs == {"model": "claude-contract-explicit", "timeout": 9.0,
@@ -224,7 +238,12 @@ def run(check, demo_id: str) -> None:
                       and all(resolved[key] == cm for key in ("CLAUDE_MODEL", "CLAUDE_PLAN_MODEL", "CLAUDE_LITE_MODEL", "CLAUDE_RUNTIME_MODEL"))
                       and resolved["GEMINI_TEXT_MODEL"] == resolved["GEMINI_RUNTIME_MODEL"] == gm
                       and resolved["RUNWARE_TEXT_MODEL"] == rm
-                      and resolved["RUNTIME_PROVIDERS"] == ["gemini", "claude", "runware"])
+                      and resolved["RUNTIME_PROVIDERS"] == ["gemini", "claude", "runware"]
+                      and resolved["BUILD_PROVIDERS"] == ["gemini", "claude", "runware"]
+                      and resolved["health"]()["build_providers"] == ["gemini", "claude", "runware"])
+            ordered = isolated(config.__file__, {"BUILD_PROVIDERS": "runware,gemini,runware"})
+            check("providers: build order config deduplicates and health reports it", ordered["BUILD_PROVIDERS"] == ["runware", "gemini"] and ordered["health"]()["build_providers"] == ["runware", "gemini"])
+            check("providers: unknown build provider fails configuration before a call", failure(lambda: isolated(config.__file__, {"BUILD_PROVIDERS": "unknown"}), ValueError) is not None)
             media_models = {"GEMINI_MODEL": "gemini-3.6-flash", "GEMINI_IMAGE_MODEL": "gemini-3.1-flash-lite-image",
                             "GEMINI_TTS_MODEL": "gemini-3.1-flash-tts-preview"}
             check("providers: changing text tier leaves vision, image and speech defaults unchanged",
@@ -307,7 +326,7 @@ def run(check, demo_id: str) -> None:
             request = budget_requests[0]
             sdk_config = request["config"]
             check("providers: live QA reserves 3000 output tokens in the real Gemini SDK envelope",
-                  sdk_config.max_output_tokens == 3000 and sdk_config.response_schema is schemas.QAOut
+                  sdk_config.max_output_tokens == 3000 and sdk_config.response_json_schema == schemas.QAOut.model_json_schema()
                   and sdk_config.response_mime_type == "application/json")
             check("providers: live QA uses LOW thinking on the documented Gemini 3.8 model",
                   sdk_config.thinking_config is not None
@@ -402,8 +421,8 @@ def run(check, demo_id: str) -> None:
                 patch.object(runware, "_post", side_effect=document_response):
             understanding = understand.run(demo_id, lambda message: None)
             sent_text = json.dumps(document_tasks[-1]["messages"])
-            check("providers: unavailable PDF reader falls back once with source-labelled extracted text",
-                  document_calls == ["claude", "gemini", "runware"] and understanding["facts"][0]["source"]["ref"] == "src_contract"
+            check("providers: extracted PDF text follows configured build chain once with source labels",
+                  document_calls == ["gemini", "claude", "runware"] and understanding["facts"][0]["source"]["ref"] == "src_contract"
                   and all(text in sent_text for text in ("SOURCE src_contract", source["name"], "Warranty: 3 years"))
                   and all(text not in sent_text for text in ("DO-NOT-SEND-MEDIA", "base64", "[pdf document]")))
             document_demo["sources"] = [{**source, "kind": "text", "name": "facts.txt"}]
@@ -416,19 +435,20 @@ def run(check, demo_id: str) -> None:
             with patch.object(runware, "_post", side_effect=no_runware):
                 error = failure(lambda: understand.run(demo_id, lambda message: None))
             check("providers: exhausted source-text chain is not restarted by document recovery",
-                  bool(error) and document_calls == ["claude", "gemini", "runware"])
+                  bool(error) and document_calls == ["gemini", "claude", "runware"])
 
         # Exercise route guards directly; the graph is stubbed so no background work starts.
         with patch.multiple(config, ANTHROPIC_API_KEY="", GEMINI_API_KEY=""), \
-                patch.object(app_module, "_demo_or_404", return_value={"sources": [{"kind": "text"}]}) as get_demo, \
+                patch.object(app_module, "_demo_or_404", return_value={"id": demo_id, "sources": [{"kind": "text"}]}) as get_demo, \
+                patch.object(readiness, "status", return_value={"stale": False, "mock": False, "checks": {"reasoning": {"ready": True}}}), \
                 patch.object(app_module.graph, "start_read") as start_read:
             result = app_module.read_sources(demo_id)
-            check("providers: Runware key alone permits a text-only source read", result == {"ok": True} and start_read.call_count == 1)
-            get_demo.return_value = {"sources": [{"kind": "image"}]}
+            check("providers: Runware key with observed readiness permits a text-only source read", result == {"ok": True} and start_read.call_count == 1)
+            get_demo.return_value = {"id": demo_id, "sources": [{"kind": "image"}]}
             error = failure(lambda: app_module.read_sources(demo_id), app_module.HTTPException)
             check("providers: image sources still require Gemini before a read starts",
                   error is not None and error.status_code == 400 and "GEMINI_API_KEY" in error.detail and start_read.call_count == 1)
-            get_demo.return_value = {"sources": [{"kind": "text"}]}
+            get_demo.return_value = {"id": demo_id, "sources": [{"kind": "text"}]}
             with patch.object(config, "RUNWARE_API_KEY", ""):
                 error = failure(lambda: app_module.read_sources(demo_id), app_module.HTTPException)
             check("providers: no model key refuses a real source read before the graph starts",

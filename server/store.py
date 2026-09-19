@@ -209,10 +209,17 @@ def _fact_entry(understanding: dict, fact_id: str):
 
 
 def edit_fact(demo_id: str, fact_id: str, edits: dict) -> dict:
-    """Validate a human correction completely before saving either fact registry."""
-    allowed = {"value", "claim", "conditions", "truth", "source"}
+    """Validate and version a human correction under the demo's write lock."""
+    with _lock(demo_id):
+        return _edit_fact_locked(demo_id, fact_id, edits)
+
+
+def _edit_fact_locked(demo_id: str, fact_id: str, edits: dict) -> dict:
+    from datetime import date
+    from . import knowledge
+    allowed = {"value", "claim", "conditions", "truth", "source", "scope"}
     if not isinstance(edits, dict) or not edits or set(edits) - allowed:
-        raise ValueError("Send value, claim, conditions, truth or source fields only")
+        raise ValueError("Send value, claim, conditions, truth, source or scope fields only")
     und = read_json(demo_id, "understanding.json") or {}
     fact, owner = _fact_entry(und, fact_id)
     candidate = {**fact, "source": dict(fact.get("source") or {})}
@@ -223,6 +230,23 @@ def edit_fact(demo_id: str, fact_id: str, edits: dict) -> dict:
         if not isinstance(value, str) or len(value.strip()) > limit or (field != "conditions" and not value.strip()):
             raise ValueError(f"{field} must be text of {'0' if field == 'conditions' else '1'}–{limit} characters")
         candidate[field] = value.strip()
+    if "scope" in edits:
+        scope = edits["scope"]
+        if not isinstance(scope, dict) or set(scope) - knowledge.SCOPE_KEYS:
+            raise ValueError("scope must be an object containing only known applicability fields")
+        if any(not isinstance(value, str) or len(value.strip()) > 500 for value in scope.values()):
+            raise ValueError("Every scope value must be text of at most 500 characters")
+        candidate["scope"] = {key: value.strip() for key, value in scope.items() if value.strip()}
+        for key in ("effective_from", "effective_to"):
+            if key in candidate["scope"]:
+                try:
+                    parsed = date.fromisoformat(candidate["scope"][key])
+                    if parsed.isoformat() != candidate["scope"][key]:
+                        raise ValueError("not ISO date")
+                except ValueError as exc:
+                    raise ValueError(f"scope.{key} must be an ISO YYYY-MM-DD date") from exc
+        if candidate["scope"].get("effective_from", "") > candidate["scope"].get("effective_to", "9999-12-31"):
+            raise ValueError("scope.effective_to cannot precede effective_from")
     if "source" in edits:
         source = edits["source"]
         if not isinstance(source, dict) or not source or set(source) - {"ref", "locator", "quote"}:
@@ -249,8 +273,15 @@ def edit_fact(demo_id: str, fact_id: str, edits: dict) -> dict:
             raise ValueError("A competitor fact must keep its owning competitor source; review the fact from the other source instead")
     elif source.get("role") == "competitor":
         raise ValueError("A product fact cannot cite a competitor source")
-    candidate["edited"] = True
+    candidate = knowledge.copy_on_edit(demo_id, fact, candidate, competitor=owner is not None)
+    if candidate["id"] == fact["id"]:
+        return fact  # A no-op preserves approvals, metadata and cached draft inputs.
+    fact.clear()
     fact.update(candidate)
+    for conflict in und.get("knowledge", {}).get("conflicts", []):
+        if fact_id in conflict.get("fact_ids", []):
+            conflict.update(status="superseded", resolution="assertion_edited", superseded_by=fact["id"],
+                            reason="A referenced assertion was corrected. Re-read to compare the current evidence; the earlier decision is not transferred.")
     write_json(demo_id, "understanding.json", und)
     return fact
 

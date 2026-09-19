@@ -12,21 +12,21 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 
 | Gate | Enforcer | Threshold / rule | Where |
 |---|---|---|---|
-| Read allowed | FUNCTION | ≥1 source; keys present or `MOCK_LLM=1` | `server/app.py` `read_sources` |
+| Read allowed | FUNCTION | ≥1 source and fresh observed non-mock reasoning success; explicit logged operator override; `MOCK_LLM=1` bypass | `server/app.py` `read_sources` |
 | One run per demo | FUNCTION | a second read/build/revise while a thread is alive → 409 | `orchestrator._spawn` |
-| Build allowed | FUNCTION | all 6 approvals true | `orchestrator.start_build` |
+| Build allowed | FUNCTION | all 6 approvals true + observed reasoning/selected Sarvam speech readiness or explicit logged override | `orchestrator.start_build` |
 | Grounding (authoring) | FUNCTION | `fact_ids ⊆ registry`; visual ref exists; text matching `NUMBERISH`/`CLAIMISH` with no fact id → `unverified` (excluded from voice + bundle) | `agents/author.validate` |
 | Script-image proof | AGENT + FUNCTION | after stable line ids: Gemini inspects every real image (batches ≤12) against every spoken line; every line and image must return; only `full` coverage binds an image to a concrete feature line; otherwise the hero + cited card; model failure uses conservative rules | `agents/visuals.py`, `visual-audit.json` |
 | Deck: picture per slide | FUNCTION | tagged parts vs. the slide's words, +2 for the script's own pick, score ≥ 3 else the hero | `agents/deck.choose_image` |
 | Deck: callouts | AGENT + FUNCTION | model writes ≤ 3 per slide, ≤ 8 words, citing fact ids and a listed part; `author.ungrounded` drops an uncited figure/claim; an empty slide gets its own cited facts; Align overrides win | `agents/deck.py`, `deck-overrides.json` |
 | Deck: label position | FUNCTION | part confidence ≥ 0.6 → anchor at the box centre and a label spot inside the frame, off the part box, clear of other labels; else side panel — never guessed | `agents/deck.place_callouts` |
-| Grounding (runtime) | FUNCTION | invalid/empty fact ids on a number/claim answer → don't-guess reply + escalate + unknown recorded; every provider down → the same decline + callback, no cooldown, no local guessing | `agents/qa.answer` |
-| Runtime providers | CONFIG | `RUNTIME_PROVIDERS` (default `gemini,claude,runware`); `MODEL_TIER=eval|customer` selects text defaults; explicit role overrides win. `RUNTIME_TIMEOUT` 15 s per provider request; live QA/pitch/summary request LOW thinking for exact supported Gemini3.8Flash, retaining full inputs and existing3000/3000/1200-token output limits; Runware repair gets remaining budget (network-phase timeouts, not a strict wall timer); models `GEMINI_RUNTIME_MODEL` / `CLAUDE_RUNTIME_MODEL` / `RUNWARE_TEXT_MODEL` | `server/llm/runtime.py`, `config.py` |
-| Build text fallback | FUNCTION | Claude → Gemini → Runware; Runware JSON + Pydantic, at most one repair; extracted PDFs retain source labels; media blocks never flattened; mock never calls out; vision/speech independent of text tier | `server/llm/claude.py`, `gemini.py`, `runware.py`, `agents/understand.py` |
+| Grounding (runtime) | FUNCTION | Runtime-v1 graph validates approved pinned evidence IDs, quantities, explicit applicability, policy relationships, estimates and live-web attribution; preserves supported partial sentences. Deterministic checks are not a semantic entailment proof. Legacy clients retain `qa.answer`. | `server/runtime_graph.py`, `runtime_tools.py`, `knowledge.py` |
+| Runtime providers | CONFIG + FUNCTION | Gemini → Claude → Runware; runtime-v1 graph shares a 12-second reasoning/tool budget, max2 tool rounds/4 calls. Whole validated answer is returned before cancellable voice streaming; legacy calls retain prior request limits. | `server/llm/runtime.py`, `runtime_graph.py`, `runtime_delivery.py` |
+| Build text fallback | FUNCTION | `BUILD_PROVIDERS` defaults to Gemini → Claude → Runware for text-only structured builds; Runware JSON + Pydantic, at most one repair; extracted PDFs retain source labels; media blocks never flattened; mock never calls out; vision/speech independent of text tier | `server/llm/claude.py`, `gemini.py`, `runware.py`, `agents/understand.py` |
 | Voice completeness | FUNCTION | Locked builds retain the configured provider/speaker across narration, FAQ and fillers; matching hash caches remain usable during a circuit cooldown. Sarvam starts are paced; only 429 retries, within a bounded budget and Retry-After. Missing required audio checkpoints and fails before bundle; policy refusal is not routed around. | `agents/voice.render_script`, `llm/sarvam.py` |
 | Rehearsal size | CONFIG | `settings.rehearsal_questions` (default 12, each a paid Claude call) | `config.REHEARSAL_QUESTIONS` |
 | Player check-in | FUNCTION | owned response turn without auto-advance; voice and visible typing settle once; stale speech is ignored; qualified confirmations reach Q&A; follow-ups hold playback until explicit resolution | `web/player/player.js` `waitFor` |
-| Pitch time budget | FUNCTION | runtime providers in order (Gemini → Claude → Runware), 15 s request budgets; player waits ≤2.65 s after the opening then falls back to the standard route (`personalized:false` in the session) | `agents/pitch.py`, `player.js` `startAfterIntake` |
+| Pitch time budget | FUNCTION | Explore plans unseen route and customer framing concurrently with a measured overview; graph deadline12s; failure uses reviewed route. Corrections apply at a safe boundary. | `runtime_graph.explore`, `agents/pitch.py`, `player.js` |
 | Bridge grounding | FUNCTION | a runtime bridge with a figure/claim and no fact id is dropped (`bridge_dropped`) | `agents/pitch.py` |
 | Decline categories | AGENT rule + FUNCTION | pricing, discounts, finance, insurance, features, availability, warranty/service, comparisons → decline when not in the registry; comparisons only from approved competitor page/document facts with variant conditions and provenance when `settings.competition=on`, always with a verify caveat | `agents/qa.py` |
 | Uploads | FUNCTION | 1 GB per file; AVIF/HEIC converted for the models, originals served; videos play from the original (ffmpeg optional) | `config.MAX_UPLOAD_MB`, `server/media.py` |
@@ -42,13 +42,13 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 
 ## File index
 
-The professional UI adds `#/home` as the default entry, with real workspace counts and links to existing demo actions. `web/home.js`, `web/demos.js`, `web/icons.js` and `web/{design-system,studio-ui,insights-ui,player-ui}.css` own the presentation system. Sources → Align → Rehearse and runtime tool capabilities are unchanged. See [the UI design and file guide](design/professional-ui.md).
+The professional UI adds `#/home` as the default entry, with real workspace counts and links to existing demo actions. `web/home.js`, `web/demos.js`, `web/icons.js` and `web/{design-system,studio-ui,insights-ui,player-ui}.css` own the presentation system. Sources → Align → Rehearse remains the builder workflow. The separately approved runtime upgrade adds the conversation graph, continuous voice and bounded tools described below. See [the UI design and file guide](design/professional-ui.md).
 
 | Stage | Files |
 |---|---|
 | Shell, routes, SSE | `server/app.py`, `server/events.py`, `web/app.js`, `web/api.js` |
 | Store | `server/store.py` (`data/demos/<id>/…`) |
-| Understand | `server/agents/understand.py`, `server/sources.py`, `server/llm/gemini.py`, `server/llm/claude.py`, `server/schemas.py` |
+| Understand | `server/agents/understand.py`, `server/crawl.py`, `server/knowledge.py`, `server/sources.py`, `server/llm/gemini.py`, `server/llm/claude.py`, `server/schemas.py` |
 | Plan | `server/agents/plan.py` |
 | Align | `server/agents/align.py`, `server/orchestrator.py` (`handle_message`, `apply_actions`, `_revise`), direct review routes in `server/app.py`, `web/studio/align.js` |
 | Author / validator / pixel audit | `server/agents/author.py`, `server/agents/visuals.py`, `visual-audit.json` |
@@ -56,7 +56,9 @@ The professional UI adds `#/home` as the default entry, with real workspace coun
 | Voice | `server/agents/voice.py` |
 | Rehearsal | `server/agents/rehearsal.py` |
 | Bundle | `server/agents/bundle.py` |
-| Runtime Q&A | `server/agents/qa.py`, `server/llm/runtime.py` |
+| Runtime Q&A | `server/runtime_graph.py`, `runtime_state.py`, `runtime_tools.py`, `knowledge.py`, `llm/runtime.py`; legacy `agents/qa.py` |
+| Continuous voice and delivery | `server/runtime_live.py`, `runtime_delivery.py`, `llm/sarvam_stream.py`, `web/player/live-voice.js`, `voice-worklet.js` |
+| Readiness and cohorts | `server/readiness.py`, `runtime_metrics.py`, `web/provider-readiness.js`, `web/observability.js` |
 | Player | `web/player/player.js`, `web/studio/rehearse.js` (`server/exporter.py` parked) |
 | Mock mode | `server/llm/mock.py` (`MOCK_LLM=1`) |
 | Playground | `web/playground.js`, `POST /evals`, `GET /usage`, `GET /faq-template` in `server/app.py` |

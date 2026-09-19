@@ -161,6 +161,11 @@ check("older demos (parts as plain names) still derive callouts, in the panel", 
 first = dk["slides"][1]
 store.write_json(i, "deck-overrides.json", {"slides": [{"slide_id": first["id"], "title": "A title the user chose", "callouts": ([{"id": first["callouts"][0]["id"], "label_pos": {"x": 0.5, "y": 0.5}}] if first["callouts"] else [])}]})
 r = c.post(f"/api/demos/{i}/revise", json={"stage": "deck", "instruction": "shorter titles"}); assert r.status_code == 200, r.text
+wait(i, "align")
+check("ready deck revision returns to human Align before rebuilding", c.get(f"/api/demos/{i}").json()["demo"]["status"] == "align")
+for card in c.get(f"/api/demos/{i}").json()["demo"]["approvals"]:
+    r = c.post(f"/api/demos/{i}/approve/{card}"); assert r.status_code == 200, r.text
+r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready")
 dk2 = store.read_json(i, "deck.json"); st2 = c.get(f"/api/demos/{i}").json()["demo"]["stages"]
 check("revise deck bumps the deck version without re-authoring", dk2["version"] == dk["version"] + 1 and st2["author"]["status"] == "done" and st2["deck"]["status"] == "done")
@@ -195,6 +200,10 @@ if c1:
 check("an unknown picture is refused", c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": s1["id"], "image_id": "im99"}]}).status_code == 400)
 check("an unknown slide is 404", c.patch(f"/api/demos/{i}/align/deck", json={"slides": [{"slide_id": "sl99", "title": "x"}]}).status_code == 404)
 r = c.post(f"/api/demos/{i}/revise", json={"stage": "deck"}); assert r.status_code == 200, r.text
+wait(i, "align")
+for card in c.get(f"/api/demos/{i}").json()["demo"]["approvals"]:
+    r = c.post(f"/api/demos/{i}/approve/{card}"); assert r.status_code == 200, r.text
+r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready")
 s3 = store.read_json(i, "deck.json")["slides"][1]
 check("after a full deck rebuild the Align edits still win", s3["title"] == "Chosen in review" and s3["image_id"] == other_img)

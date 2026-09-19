@@ -28,8 +28,9 @@ export async function renderObservability({ main, navigate, demoId }) {
   const stagesBox = h("section", { class: "box insight-panel insight-stages" });
   const totalsBox = h("section", { class: "box insight-panel" });
   const latencyBox = h("section", { class: "box insight-panel insight-latency" });
+  const cohortsBox = h("section", { class: "box insight-panel" });
   const rowsBox = h("section", { class: "box insight-panel insight-calls" });
-  wrap.append(latencyBox, totalsBox, stagesBox, rowsBox);
+  wrap.append(latencyBox, cohortsBox, totalsBox, stagesBox, rowsBox);
   let data = null;
 
   async function load() {
@@ -44,6 +45,13 @@ export async function renderObservability({ main, navigate, demoId }) {
       h("div", { class: "insight-metric-grid insight-cost-grid" }, metric("Total cost", `$${(u.total_usd || 0).toFixed(3)}`, `≈ ₹${(u.total_inr || 0).toFixed(0)} · ${u.rows || 0} calls`, "", "is-primary"),
         ...byModel.map(([m, v]) => metric(m, `$${v.usd.toFixed(3)}`, `${v.calls} calls`, `${v.in.toLocaleString()} in / ${v.out.toLocaleString()} out` + (v.chars ? ` · ${v.chars.toLocaleString()} chars` : "")))));
     const lat = data.latency || { turns: 0, stages: {} }; const ms = (v) => v == null ? "—" : v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${v}ms`;
+    const cohorts = data.runtime_metrics?.cohorts || [];
+    rc(cohortsBox, sectionHead("clock", "Conversation cohorts", "Successful response timing by version, voice, input, route and speech-end basis. Filler and failed or cancelled turns are excluded."),
+      cohorts.length ? h("div", { class: "insight-table-scroll" }, h("table", { class: "trace insight-table" },
+        h("thead", {}, h("tr", {}, ...["Version · input · route", "Voice", "Timed / all", "p50", "p95", "Missing · cancelled · failed"].map(v => h("th", {}, v)))),
+        h("tbody", {}, ...cohorts.map(c => h("tr", {}, h("td", {}, `v${c.version} · ${c.input} · ${c.route} · ${(c.speech_end_basis || "unspecified").replaceAll("_", " ")}`), h("td", {}, c.voice_provider), h("td", {}, `${c.complete_timings} / ${c.turns}`), h("td", {}, ms(c.p50_ms)), h("td", {}, `${ms(c.p95_ms)}${c.small_sample ? " · small sample" : ""}`), h("td", {}, `${c.missing_timings} · ${c.cancelled} · ${c.failed}`))))))
+        : h("p", { class: "insight-footnote" }, "Complete a customer session to see measured conversation cohorts."),
+      h("p", { class: "insight-footnote" }, data.runtime_metrics?.note || "Missing timestamps are not treated as zero response time."));
     const LABELS = { stt: ["Speech → text", "Voice ended → STT done"], qa: ["Answer", "STT done → QA done"], tts: ["First audio", "QA done → answer audio playing"], total: ["Customer waits", "Voice ended → answer audio playing"] };
     rc(latencyBox, sectionHead("clock", "Answer latency", `${lat.turns || 0} customer turn${lat.turns === 1 ? "" : "s"} · ${lat.sessions_with_turns || 0} session${lat.sessions_with_turns === 1 ? "" : "s"}` + (lat.by_source ? ` · ${lat.by_source.bank} from the FAQ bank, ${lat.by_source.model} from the model` : ""), h("span", { class: "insight-section-tag" }, "Customer experience")),
       lat.turns ? h("div", { class: "insight-metric-grid" }, ...Object.entries(lat.stages).map(([k, v]) => metric(LABELS[k]?.[0] || k, h("span", {}, h("small", {}, "p50 "), ms(v.p50)), `p95 ${ms(v.p95)} · ${v.n} turn${v.n === 1 ? "" : "s"}`, LABELS[k]?.[1] || "", k === "total" ? "is-primary" : "")))

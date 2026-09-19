@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import contextvars
 import hashlib
+import json
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -12,7 +13,7 @@ import time
 import httpx
 
 from .. import config, store, usage
-from . import translate
+from . import speech_style, translate
 from ..llm import gemini, sarvam, mock as speech_mock
 
 GEMINI_VOICES = ["Sulafat", "Aoede", "Leda", "Despina", "Kore", "Achernar", "Zephyr"]
@@ -68,11 +69,11 @@ def _style(demo_id: str) -> str:
     return f"Speak as {v.get('persona_description','a warm product guide')} Tone: {v.get('tone','warm and direct')}. Natural conversational pace, no rush.{lang_note}"
 
 
-def _gcloud(text: str, voice: str, *, allow_voice_fallback: bool = True) -> tuple[bytes, str]:
+def _gcloud(text: str, voice: str, *, allow_voice_fallback: bool = True, pace: float = 1.0) -> tuple[bytes, str]:
     if config.MOCK_LLM:
         return speech_mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
     body = {"input": {"text": text}, "voice": {"languageCode": "-".join(voice.split("-")[:2]) if voice.count("-") >= 2 else "en-IN", "name": voice},
-            "audioConfig": {"audioEncoding": "MP3", "speakingRate": 1.0}}
+            "audioConfig": {"audioEncoding": "MP3", "speakingRate": pace}}
     with httpx.Client(timeout=60) as c:
         r = c.post("https://texttospeech.googleapis.com/v1/text:synthesize", params={"key": config.GCLOUD_TTS_API_KEY}, json=body)
         if allow_voice_fallback and r.status_code != 200 and "Neural2" not in voice and "Wavenet" not in voice:
@@ -146,14 +147,24 @@ FILLERS = {
 }
 
 
-def _cache_key(provider: str, voice: str, lang: str, text: str) -> str:
-    return hashlib.sha1(f"{provider}|{voice}|{lang}|{text.strip()}".encode()).hexdigest()[:20]
+def _cache_key(provider: str, voice: str, lang: str, text: str, delivery_identity: dict | None = None) -> str:
+    identity = f"{provider}|{voice}|{lang}|{text.strip()}"
+    if delivery_identity:
+        identity += "|delivery-v1|" + json.dumps(delivery_identity, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha1(identity.encode()).hexdigest()[:20]
 
 
-def _cached(demo_id: str, text: str, demo: dict, lang: str | None = None, provider: str | None = None) -> str | None:
+def _delivery_identity(demo_id: str, delivery: dict | None) -> dict | None:
+    persona = (store.read_json(demo_id, "plan.json") or {}).get("voice") or {}
+    if not persona and not delivery:
+        return None  # Existing unstyled caches remain compatible.
+    return {"delivery": speech_style.normalize(delivery), "persona": persona}
+
+
+def _cached(demo_id: str, text: str, demo: dict, lang: str | None = None, provider: str | None = None, *, delivery: dict | None = None) -> str | None:
     lang = lang or demo.get("settings", {}).get("language", "en-IN")
     provider = provider or provider_for(demo)
-    key = _cache_key(provider, voice_name_for(demo, provider), lang, text)
+    key = _cache_key(provider, voice_name_for(demo, provider), lang, speech_style.prepare(text, delivery)["text"], _delivery_identity(demo_id, delivery))
     for ext in ("wav", "mp3", "m4a"):
         path = store.path(demo_id, "audio", f"{key}.{ext}")
         if path.is_file() and path.stat().st_size:
@@ -165,11 +176,13 @@ class VoicePolicyError(RuntimeError):
     pass
 
 
-def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str | None = None, strict: bool = False) -> str | None:
+def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str | None = None, strict: bool = False, delivery: dict | None = None) -> str | None:
     """Returns a media-relative path like 'audio/<hash>.wav', or None when only the browser voice is available.
     Locked/strict calls use one provider and speaker; cache reads precede cooldown checks.
     Unlocked calls may try configured fallbacks, except a content-policy refusal never falls through."""
     demo = demo or store.load(demo_id)
+    prepared = speech_style.prepare(text, delivery)
+    text = prepared["text"]
     if not text.strip():
         return None
     chain = provider_chain(demo)
@@ -182,20 +195,23 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
     last_err: Exception | None = None
     for provider in chain:
         voice = voice_name_for(demo, provider)
-        cached = _cached(demo_id, text, demo, lang, provider)
+        cached = _cached(demo_id, text, demo, lang, provider, delivery=delivery)
         if cached:
             return cached  # Breakers block new spend, never usable cached audio.
         if _tripped(provider):
             last_err = RuntimeError(f"{provider} skipped: {_TRIPPED.get(provider, (0, 'provider cooldown'))[1]}")
             continue
-        key = _cache_key(provider, voice, lang, text)
+        key = _cache_key(provider, voice, lang, text, _delivery_identity(demo_id, delivery))
         try:
             if provider == "sarvam":
-                data, ext = sarvam.tts(text, voice, lang)
+                data, ext = sarvam.tts(text, voice, lang, pace=prepared["pace"]) if prepared["pace"] != 1.0 else sarvam.tts(text, voice, lang)
             elif provider == "gemini":
-                data, ext = gemini.tts(text, voice, _style(demo_id))
+                style = _style(demo_id)
+                if delivery:
+                    style += f" Subtly {speech_style.normalize(delivery)['tone']}; pace {prepared['pace']}, never theatrical."
+                data, ext = gemini.tts(text, voice, style)
             else:
-                data, ext = _gcloud(text, voice, allow_voice_fallback=not (strict or locked))
+                data, ext = _gcloud(text, voice, allow_voice_fallback=not (strict or locked), **({"pace": prepared["pace"]} if prepared["pace"] != 1.0 else {}))
         except Exception as e:
             last_err = e
             _maybe_trip(provider, e)
@@ -224,11 +240,13 @@ def render_script(demo_id: str, emit) -> dict:
     except Exception as e:
         emit(f"Timeline not updated ({str(e)[:60]}).")
     extra = [l for l in (demo.get("settings", {}).get("languages") or []) if l and l != demo.get("settings", {}).get("language", "en-IN")]
+    complete = not script.get("voice_failures")
     for lang in extra:
         try:
             translate.translate(demo_id, lang, emit)
             _render_one(demo_id, emit, demo, translate.script_path(lang), lang)
         except Exception as e:
+            complete = False
             emit(f"{lang}: skipped ({str(e)[:120]}).")
             if demo.get("settings", {}).get("voice_locked"):
                 raise
@@ -237,7 +255,29 @@ def render_script(demo_id: str, emit) -> dict:
             translate.translate_deck(demo_id, lang, emit)
         except Exception as e:  # noqa: BLE001 — titles/callouts fall back to the main language; narration is already voiced
             emit(f"{lang}: slide text kept in the main language ({str(e)[:80]}).")
+    if complete:
+        script["voice_input_hash"] = input_hash(demo_id)
+    else:
+        script.pop("voice_input_hash", None)
+    store.write_json(demo_id, "script.json", script)
     return script
+
+
+def input_hash(demo_id: str) -> str:
+    """Identity/settings/text hash used only to skip an unchanged voice stage."""
+    demo = store.load(demo_id)
+    script = store.read_json(demo_id, "script.json") or {}
+    def line_input(line):
+        return {"text": line.get("text", ""), "delivery": speech_style.normalize(line.get("delivery")), "unverified": line.get("unverified", False)}
+    spoken = [line_input(line) for segment in script.get("segments", []) for line in [*segment.get("lines", []), *segment.get("deeper", [])]]
+    spoken += [line_input(line) for line in script.get("closing", [])]
+    spoken.append(line_input(script.get("runtime_overview") or {}))
+    settings = demo.get("settings", {})
+    inputs = {"settings": {key: settings.get(key) for key in ("tts_provider", "voice_name", "sarvam_speaker", "voice_locked", "language", "languages")},
+              "persona": (store.read_json(demo_id, "plan.json") or {}).get("voice"), "lines": spoken,
+              "questions": [script.get("intake_q1", ""), *[segment.get("checkin", "") for segment in script.get("segments", [])]],
+              "faq": [entry.get("answer", "") for entry in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "fillers": FILLERS}
+    return hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
 def _render_bank_and_fillers(demo_id: str, emit, demo: dict) -> None:
@@ -318,6 +358,9 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
             todo.append((seg, "checkin_audio"))
     for ln in script.get("closing", []):
         todo.append((ln, "audio"))
+    overview = script.get("runtime_overview")
+    if overview and not overview.get("unverified"):
+        todo.append((overview, "audio"))
     intake = {"q1": script.get("intake_q1", "")}
     total = len(todo) + 1
     done, failures = 0, 0
@@ -332,10 +375,11 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
     def work(item):
         obj, key = item
         text = obj["text"] if key == "audio" else obj["checkin"]
+        delivery = obj.get("delivery") if key == "audio" else None
         if stop.is_set():
-            return (obj, key, _cached(demo_id, text, demo, lang), "skipped")
+            return (obj, key, _cached(demo_id, text, demo, lang, delivery=delivery), "skipped")
         try:
-            return (obj, key, render_line(demo_id, text, demo=demo, lang=lang), None)
+            return (obj, key, render_line(demo_id, text, demo=demo, lang=lang, delivery=delivery), None)
         except VoicePolicyError as e:
             with lock:
                 policy_failed.add((id(obj), key))
@@ -372,7 +416,7 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
         for obj, key in retry:
             text = obj["text"] if key == "audio" else obj["checkin"]
             try:
-                obj[key] = render_line(demo_id, text, demo=demo, lang=lang)
+                obj[key] = render_line(demo_id, text, demo=demo, lang=lang, delivery=obj.get("delivery") if key == "audio" else None)
                 recovered += 1
                 time.sleep(0.5)
             except Exception as e:
@@ -393,6 +437,14 @@ def _render_one(demo_id: str, emit, demo: dict, path: str, lang: str | None) -> 
     script["voice_provider"] = provider
     script["voice_name"] = voice_name_for(demo, provider)
     script["voice_failures"] = failures
+    if overview and not overview.get("unverified"):
+        from .author import _audio_seconds, words, WPS
+        measured = _audio_seconds(demo_id, overview.get("audio"))
+        overview["duration_seconds"] = measured if measured is not None else round(words(overview.get("text", "")) / WPS, 2)
+        overview["duration_exact"] = measured is not None
+        overview["duration_in_range"] = measured is not None and 10 <= measured <= 15
+        if measured is not None and not overview["duration_in_range"]:
+            emit(f"Explore overview is {measured:.1f}s; its 10–15s target needs a script/pacing review.")
     store.write_json(demo_id, path, script)
     store.log(demo_id, "voice", {"provider": provider, "lines": total, "failures": failures, "language": lang})
     missing = sum(1 for obj, key in todo if not obj.get(key)) + sum(1 for key, text in intake.items() if text.strip() and not script.get("intake_audio", {}).get(key))

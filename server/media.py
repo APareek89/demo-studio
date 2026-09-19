@@ -212,7 +212,7 @@ def clean_background_local(demo_id: str, src: dict) -> str:
 
 def clean_background_gemini(demo_id: str, src: dict) -> str | None:
     """Ask the Gemini image model for a clean studio version of the same product (no redraw). Raises on quota."""
-    from ..llm import gemini
+    from .llm import gemini
     p = model_image_path(demo_id, src)
     out = store.path(demo_id, "derived", store.path(demo_id, src["path"]).stem + "_ai.png")
     if out.exists():
@@ -264,7 +264,10 @@ def enhance_images(demo_id: str, emit=lambda m: None) -> list[dict]:
 def generate_mascot(demo_id: str, persona: dict | None, emit=lambda m: None) -> str | None:
     """A friendly mascot for the guide, generated once per demo by the Gemini image model. Returns the
     media-relative path, or None when generation is not possible (then the player uses the built-in mascot)."""
-    from ..llm import gemini
+    from .llm import gemini
+    from . import config
+    if config.MOCK_LLM:
+        return None
     out = store.path(demo_id, "media", "mascot.png")
     if out.exists():
         return "media/mascot.png"

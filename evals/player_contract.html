@@ -136,6 +136,20 @@ const detail = () => ({ context: player?.context(), currentCitations: host.query
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
+test('An answer arriving during acknowledgment cuts only the filler and never overlaps voices', async () => {
+  let release;
+  const filler = 'Give me one moment while I check that for you.';
+  await setup({ hold: text => text === filler, qa: () => new Promise(resolve => { release = resolve; }) });
+  await atProof(); await type('What does the approved source say?'); await clock.tick(701);
+  const oldAudio = [...env.active].find(audio => audio.text === filler);
+  assert(oldAudio && env.calls.length === 1, 'Fixture did not reach the in-flight acknowledgment');
+  release(answered({ answer: 'The useful answer is ready now.' })); await flush();
+  assert(oldAudio.paused && env.played.includes('The useful answer is ready now.'), 'Ready answer remained blocked behind the acknowledgment');
+  assert(env.maxActive === 1 && env.calls.length === 1, 'Filler overlapped the answer or restarted reasoning');
+  const spoken = env.played.length; oldAudio.finish(); await flush();
+  assert(env.played.length === spoken, 'A late filler ending resumed stale playback');
+});
+
 test('Typing keeps later question waits closed to ambient speech until an explicit mic tap', async () => {
   await setup(); await click('▶ Start');
   const first = recentRecognizer();

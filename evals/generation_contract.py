@@ -68,7 +68,7 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                 return schemas.FactsOut(product=schemas.Product(**product), brand=schemas.Brand(**brand), facts=[row], unknowns=[])
             assert schema is schemas.CompetitorsOut
             return schemas.CompetitorsOut(competitors=[schemas.CompetitorOut(name="Rival", facts=[row])])
-        with patch.object(sources, "source_text", side_effect=lambda _id, src: {"name": src["name"], "text": source_text[src["id"]]}), \
+        with patch.object(sources, "source_text", side_effect=lambda _id, src, **_kwargs: {"name": src["name"], "text": source_text[src["id"]]}), \
                 patch.object(understand.claude, "structured", side_effect=extract):
             understand.run(demo_id, lambda _msg: None)
         for schema in (schemas.FactsOut, schemas.CompetitorsOut):

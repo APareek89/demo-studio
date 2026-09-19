@@ -17,7 +17,9 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   concerns, interrupt with questions, get honest answers, take a call to action.
 
 ## Must never break
-- **No citation, no claim.** The guide may only state facts in the registry, each with a source.
+- **No citation, no claim.** Authored speech uses the approved registry. Live answers use its pinned
+  snapshot, explicitly attributed customer-selected website evidence, or audited calculations from
+  supplied inputs. Live evidence never silently updates the registry; promotion requires Align.
   An unanswerable question takes the "I won't guess" path and is escalated — never invented.
   Enforced deterministically at authoring (validator) and at runtime (server-side Q&A validator).
 - **Keys stay server-side.** API keys live in `.env`; the browser never sees them.
@@ -35,7 +37,24 @@ same path without keys.
 
 ## Out of scope (for now)
 Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
-measurement, payments, 3D product visuals (removed 2026-09-18), voice barge-in, streaming STT/LLM/TTS, session resume after refresh.
+measurement, payments, 3D product visuals (removed 2026-09-18), unvalidated LLM-token speech,
+session resume after refresh and multi-worker runtime ownership.
+
+## Approved runtime upgrade — 2026-09-19
+- Keep Atelier and the cinematic slides. Open with supported standout features in everyday language;
+  use a warm, cheerful guide with restrained pace and punctuation, never invented SSML/emotion controls.
+- One initial microphone permission enables continuous listening. Speech onset cancels local audio;
+  session, turn, utterance and capture-generation ownership reject stale output. Typed input remains available.
+- A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →
+  validates → produces a delivery plan. Selected-voice streaming happens outside graph replay. Tools share
+  two rounds/four calls and a 12-second foreground reasoning budget; failures are explicit.
+- Explore plays a grounded, measured 10–15-second overview while the LLM orders unseen slides and
+  personalizes spoken framing. Explicit corrections affect the next safe boundary; questions wait for answers.
+- Crawl only the intended model/market and relevant policies; retain page/table context and visible gaps.
+  Uploaded documents win genuine same-scope conflicts. Immutable evidence IDs and published snapshots
+  preserve old demos. Semantic relevance never proves a claim.
+- Build → record failures → fix → replay against the supplied Hyundai Creta material. Publish observed
+  latency/sample sizes separately from targets. Muted automation cannot sign off acoustic listening/echo quality.
 
 ## Added 2026-09-03 (batch 2)
 - A demo is at most ~3 minutes of narration before Q&A: opening ≤ 60 s, main pitch 60–90 s, one "more features" block 60–90 s, close ≤ 30 s. The guide signposts, translates numbers into the customer's routine, and keeps technical detail for questions.

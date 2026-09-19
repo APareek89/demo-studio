@@ -1,7 +1,7 @@
 %% 01 · Master flow — Demo Studio (Sources → Align → Rehearse)
 flowchart TD
   LG["Since 2026-09-04 this flow runs as ONE LangGraph graph — server/graph.py<br/>see diagram 00 (auto-exported) · Align = interrupt · sqlite checkpoints"]:::data
-  PROV["TEXT providers · MODEL_TIER=eval default, customer opt-in<br/>[FUNCTION · server/config.py: health + llm/*]<br/>build: Claude → Gemini → Runware · runtime: Gemini → Claude → Runware<br/>Runware: native JSON + Pydantic + one repair · usage + failure traces<br/>vision/speech keep their own models"]:::data
+  PROV["TEXT providers · MODEL_TIER=eval default, customer opt-in<br/>[FUNCTION · server/config.py: health + llm/*]<br/>build: Gemini → Claude → Runware (configurable) · runtime: Gemini → Claude → Runware<br/>Runware: native JSON + Pydantic + one repair · usage + failure traces<br/>vision/speech keep their own models"]:::data
   PROV -.-> READ
   PROV -.-> ALIGN
   U["USER adds sources<br/>[ask · Studio › Sources]<br/>in: video, images, PDF/DOCX/TXT, product URL, pasted brand text"]:::ask

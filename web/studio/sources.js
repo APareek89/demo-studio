@@ -1,5 +1,6 @@
 import { api, h, toast, fmtSize } from "/web/api.js";
 import { icon } from "/web/icons.js";
+import { providerReadiness, readinessQuery } from "/web/provider-readiness.js";
 
 const SOURCE_ICONS = { intro_video: "video", hero: "image", product: "layers", catalogue: "file", brand: "sparkles", competitor: "globe" };
 
@@ -7,7 +8,7 @@ const ZONES = [
   { role: "intro_video", title: "Opening film (optional)", desc: "A 10–20 second brand or product film with audio. The guide greets the customer and asks what they need, then plays this film before beginning the tailored walkthrough. MP4/MOV.", accept: "video/*", multiple: false },
   { role: "hero", title: "Hero image (optional)", desc: "One picture of the whole product for the first and last slide. Without it, the best full-product image is used. JPG/PNG/WEBP/AVIF/HEIC.", accept: "image/*,.avif,.heic,.heif", multiple: false },
   { role: "product", title: "Product video & images", desc: "MP4/MOV video (up to 1 GB — the demo plays your original; export with “fast start” so seeking is instant), JPG/PNG/WEBP/AVIF/HEIC images.", accept: "video/*,image/*,.avif,.heic,.heif", multiple: true },
-  { role: "catalogue", title: "Catalogue, spec sheet, price list", desc: "PDF, DOCX, TXT, MD, CSV. Every fact the guide will ever state comes from here — with a citation.", accept: ".pdf,.docx,.txt,.md,.csv", multiple: true },
+  { role: "catalogue", title: "Catalogue, spec sheet, price list", desc: "PDF, DOCX, TXT, MD, CSV. These materials ground the guide’s core product claims in reviewed evidence and citations.", accept: ".pdf,.docx,.txt,.md,.csv", multiple: true },
   { role: "brand", title: "Brand guidelines", desc: "PDF/DOCX, or paste a few lines about tone and what never to say. Optional — the agent infers a restrained default.", accept: ".pdf,.docx,.txt,.md", multiple: true, text: true },
   { role: "competitor", title: "Competitor pages (optional)", desc: "Official product-page URLs only. Figures are extracted with citations and used for comparisons only if you switch comparisons on — every comparison ends with “as per their website when we checked — please verify”.", url: true },
 ];
@@ -59,9 +60,9 @@ export function renderSources(ctx) {
   function zone(z) {
     if (z.url) {
       const u = h("input", { "aria-label": "Competitor product page URL", placeholder: "https://example.com/competitor", style: "flex:1;min-width:220px" });
-      const compSel = h("select", { onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { competition: compSel.value } }); toast(compSel.value === "on" ? "Comparisons on — cited, with a verify caveat" : "Comparisons off"); } catch (e) { toast(e.message, true); } } }, h("option", { value: "off", selected: (demo.settings?.competition || "off") === "off" }, "Comparisons: off (guide declines to compare)"), h("option", { value: "on", selected: demo.settings?.competition === "on" }, "Comparisons: on — only from these pages, always with a verify caveat"));
+      const compSel = h("select", { onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { competition: compSel.value } }); toast(compSel.value === "on" ? "Comparisons on — cited, with a verify caveat" : "Comparisons off"); } catch (e) { toast(e.message, true); } } }, h("option", { value: "off", selected: (demo.settings?.competition || "off") === "off" }, "Reviewed competitor sources: off"), h("option", { value: "on", selected: demo.settings?.competition === "on" }, "Reviewed competitor sources: on — cited, with a verify caveat"));
       compSel.setAttribute("aria-label", "Competitor comparisons");
-      return h("div", { class: "zone wide" }, h("div", { class: "zone-title" }, h("span", { class: "zone-icon" }, icon(SOURCE_ICONS[z.role])), h("h3", {}, z.title)), h("p", {}, z.desc), h("div", { class: "pick" }, u, h("button", { class: "btn sm", onclick: () => { const v = u.value.trim(); if (v) { upload("competitor", [], { url: v }); u.value = ""; } } }, icon("plus", { size: 15 }), "Add page"), compSel));
+      return h("div", { class: "zone wide" }, h("div", { class: "zone-title" }, h("span", { class: "zone-icon" }, icon(SOURCE_ICONS[z.role])), h("h3", {}, z.title)), h("p", {}, z.desc), h("p", { class: "muted small" }, "During a live conversation, the guide can also check a public competitor URL supplied by the customer. Those findings are cited for that conversation and do not change the approved knowledge."), h("div", { class: "pick" }, u, h("button", { class: "btn sm", onclick: () => { const v = u.value.trim(); if (v) { upload("competitor", [], { url: v }); u.value = ""; } } }, icon("plus", { size: 15 }), "Add page"), compSel));
     }
     const input = h("input", { type: "file", accept: z.accept, multiple: z.multiple, "aria-label": z.title });
     input.addEventListener("change", () => { if (input.files.length) upload(z.role, [...input.files]); input.value = ""; });
@@ -87,7 +88,7 @@ export function renderSources(ctx) {
     await saveMeta();
     const u = urlIn.value.trim();
     if (u && !demo.sources.some((s) => s.kind === "url" && s.url === u)) await upload("product", [], { url: u });
-    try { await api.post(`/api/demos/${demoId}/read`); ctx.navigate(`#/studio/${demoId}/align`); }
+    try { await api.post(`/api/demos/${demoId}/read${readinessQuery(demoId)}`); ctx.navigate(`#/studio/${demoId}/align`); }
     catch (e) { toast(e.message, true); }
   }
 
@@ -104,8 +105,9 @@ export function renderSources(ctx) {
     h("div", { class: "src-grid" }, ...ZONES.map(zone)),
     h("div", { class: "studio-section-title source-library-title" }, icon("file", { size: 19 }), h("h2", {}, "Source library"), sourceCount),
     list,
+    providerReadiness(demoId),
     h("div", { class: "src-actions" },
-      h("div", { class: "note" }, h("strong", {}, "Next: review and align"), h("br"), "Your guide reads the sources and prepares the facts, visuals and pitch for your approval. Allow 1–3 minutes. Questions outside the sources are left open.", h("br"), uploading),
+      h("div", { class: "note" }, h("strong", {}, "Next: review and align"), h("br"), "Your guide reads the sources and prepares the facts, visuals and pitch for your approval. Build time depends on the sources. Progress and any blocked pages are shown as the guide reads. New questions need supported evidence or are left open.", h("br"), uploading),
       readBtn),
   ));
   refreshList();

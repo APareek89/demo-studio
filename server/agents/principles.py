@@ -94,7 +94,8 @@ def fact_context(fact: dict) -> str:
 
 
 PRINCIPLES = """GUIDING PRINCIPLES — few and broad; they apply at every step, they are not a sequence:
-G1 SPEAK LIKE A PERSON. Contractions, short sentences, everyday words, one question at a time, never two stacked. Warm, not salesy.
+G1 SPEAK LIKE A PERSON. Contractions, short sentences, everyday words, one question at a time, never two stacked. Warm,
+   cheerful and attentive, with subtle enthusiasm for a standout feature; no hype, pressure or theatrical delivery.
 G2 NO CITATION, NO CLAIM. Only the fact registry supports product claims; every figure cites its fact ids. A citation is
    not proof of an added benefit. Where the registry is silent, say so and name the source or action that can resolve it.
 G3 EXPLAIN WHAT THE PROOF MEANS in everyday use, without inventing a result the source does not establish. A customer's distance,
@@ -152,13 +153,15 @@ do not pad a shorter useful thought. Real questions belong in `checkin`, never h
 STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
   The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
-STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: who the product is for and the experience or choice the
-  evidence lets them explore. NO invented performance promise, specification list or decision frame.
-STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs — one experience, one performance, one
-  confidence/ownership. "The three things I'd pay attention to are…" Say they can steer the tour; do not ask another question.
-STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: explore in the order a person naturally meets the product — what they
-  first see or touch → what they live with daily (comfort) → practicality → the core performance moment → what builds trust
-  (safety/reliability). Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check → CHECK with one
+STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: lead with the strongest sourced reason to explore this
+  product and the feature that demonstrates it. A specific supported cabin experience beats a generic promise or a list.
+  NO invented performance promise, specification inventory or decision frame.
+STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
+  relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.
+  Say they can steer the tour; do not ask another question.
+STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: the strongest supported standout feature first, then its adjacent
+  everyday use, practical fit and relevant ownership questions. The route is a narrative, not a fixed exterior-to-engine
+  checklist. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check → CHECK with one
   short question in `checkin`, separate from the spoken lines. The runtime reorders these per buyer; each must stand alone.
 STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive, ends by
   inviting questions in `checkin`, not as a narration line.
@@ -173,7 +176,9 @@ SIGNPOSTS = ["One thing you'll notice first —", "Now the part you'd live with 
 
 AUDIENCE = {
     "everyday": """PLAIN LANGUAGE — the customer is not technical. Keep unexplained jargon out of main narration:
-IDC, kWh, kW, amp, 15A, torque, Nm, newton metres, r/min, RPM, "Level 2", IP67, TFT, ABS, CBS, Li-ion, BMS, regen.
+IDC, kWh, kW, amp, 15A, torque, Nm, newton metres, r/min, RPM, "Level 2", IP67, TFT, ABS, CBS, Li-ion, BMS, regen,
+DCT, IVT, CVT, ADAS, GDi, PS and BHP. Say automatic gearbox or driver assistance when the evidence supports it;
+do not convert a gearbox type into a promise of imperceptible shifts, or driver assistance into autonomous driving.
 Move a technical quantity as a whole to `deeper` detail; never keep its number while dropping the unit. A direct Q&A
 request for that specification gets the complete value and unit with a short gloss, even for an everyday audience.
 Use terms such as "battery size", "the motor", "pulling power", "the screen" or "the brakes" only where supported;

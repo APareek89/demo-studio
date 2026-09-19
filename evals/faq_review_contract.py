@@ -103,6 +103,8 @@ def run(check, _demo_id=None):
         check("FAQ review: visual and slide derive from corrected facts",entry["slide_id"]=="safety" and entry["visual"]=={"kind":"image","ref":"im02","source_id":source["id"]})
         check("FAQ review: only FAQ approval clears and only its build dependants become stale",demo["stages"]["faq"]["status"]=="done" and not demo["approvals"]["faq"] and all(v for k,v in demo["approvals"].items() if k!="faq") and all(demo["stages"][k]["status"]=="stale" for k in ("voice","rehearsal","bundle")) and all(demo["stages"][k]["status"]=="done" for k in ("understand","plan","author","deck")))
         check("FAQ review: source/plan/script/deck artifacts are unchanged",all(store.path(did,k).read_bytes()==before[k] for k in ("understanding.json","plan.json","script.json","deck.json")))
+        check("FAQ review: unapproved correction returns Build to human Align",graph.after_author({"demo_id":did,"entry":"build"})=="faq" and graph.after_faq({"demo_id":did,"entry":"build"})=="align_enter")
+        store.update(did,lambda d:d["approvals"].update({key:True for key in store.CARDS}))
         with patch.object(orchestrator,"_run_stage",side_effect=AssertionError("normal Build must not regenerate FAQ")) as stage:
             check("FAQ review: normal Build proceeds to voice and skips FAQ generation",graph.after_author({"demo_id":did,"entry":"build"})=="voice" and graph.faq({"demo_id":did,"entry":"build"})=={} and not stage.called)
         reused=faq.run(did,lambda _:None)

@@ -11,10 +11,24 @@ export const api = {
   patch: (p, body) => fetch(p, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body || {}) }).then(handle),
   del: (p) => fetch(p, { method: "DELETE" }).then(handle),
   form: (p, fd) => fetch(p, { method: "POST", body: fd }).then(handle),
-  subscribe(demoId, onEvent, since = 0) {
-    const es = new EventSource(`/api/demos/${demoId}/events?since=${since}`);
+  subscribe(demoId, onEvent, since = null) {
+    // A new screen needs current state, never an old build-complete redirect.
+    // Native EventSource sends Last-Event-ID on reconnect within this stream.
+    const cursor = Number.isInteger(since) && since >= 0 ? since : null;
+    const es = new EventSource(`/api/demos/${demoId}/events${cursor === null ? '' : `?since=${cursor}`}`);
+    let delivered = cursor;
     for (const t of ["progress", "stage", "status", "message", "phase_done", "phase_error", "hello"]) {
-      es.addEventListener(t, (e) => { try { onEvent(t, JSON.parse(e.data)); } catch (err) {} });
+      es.addEventListener(t, (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (t === 'hello') { delivered = data.seq; onEvent(t, data); return; }
+          if (Number.isInteger(data.seq)) {
+            if (delivered !== null && data.seq <= delivered) return;
+            delivered = data.seq;
+          }
+          onEvent(t, data);
+        } catch (err) {}
+      });
     }
     es.onerror = () => {};
     return () => es.close();

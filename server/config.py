@@ -49,6 +49,11 @@ GEMINI_TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "").strip() or _gemini_text_d
 _runware_eval_model = os.getenv("RUNWARE_TEXT_MODEL", "").strip() or "deepseek:v4@flash"
 RUNWARE_TEXT_MODEL_PREMIUM = os.getenv("RUNWARE_TEXT_MODEL_PREMIUM", "").strip() or "openai:gpt@5.5"
 RUNWARE_TEXT_MODEL = RUNWARE_TEXT_MODEL_PREMIUM if MODEL_TIER == "customer" else _runware_eval_model
+# Structured text-only build work uses its own configurable order. Media adapters
+# retain their current provider, and explicit runtime calls disable this chain.
+BUILD_PROVIDERS = list(dict.fromkeys(p.strip().lower() for p in (os.getenv("BUILD_PROVIDERS", "").strip() or "gemini,claude,runware").split(",") if p.strip()))
+if not BUILD_PROVIDERS or set(BUILD_PROVIDERS) - {"gemini", "claude", "runware"}:
+    raise ValueError("BUILD_PROVIDERS must list gemini, claude and/or runware")
 # Runtime (the live demo — the customer is waiting): a provider order the user can flip and a short timeout per try.
 # Default Gemini first, then Claude, then Runware; the adapter owns each provider's bounded retry.
 RUNTIME_PROVIDERS = [p.strip() for p in os.getenv("RUNTIME_PROVIDERS", "gemini,claude,runware").split(",") if p.strip()]
@@ -88,5 +93,6 @@ def health() -> dict:
         "claude_model": CLAUDE_MODEL, "claude_plan_model": CLAUDE_PLAN_MODEL, "claude_lite_model": CLAUDE_LITE_MODEL, "gemini_image_model": GEMINI_IMAGE_MODEL,
         "gemini_model": GEMINI_MODEL, "gemini_text_model": GEMINI_TEXT_MODEL, "gemini_tts_model": GEMINI_TTS_MODEL,
         "runware_text_model": RUNWARE_TEXT_MODEL, "runware_text_model_premium": RUNWARE_TEXT_MODEL_PREMIUM,
+        "build_providers": BUILD_PROVIDERS,
         "runtime_providers": RUNTIME_PROVIDERS, "runtime_timeout": RUNTIME_TIMEOUT, "claude_runtime_model": CLAUDE_RUNTIME_MODEL, "gemini_runtime_model": GEMINI_RUNTIME_MODEL,
     }
