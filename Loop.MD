@@ -3,6 +3,14 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Bounded runtime repair and honest response cohorts — 2026-09-19
+
+Authorized finite validation; Loop remains off. `MOCK_LLM=1 CLOUD_SYNC=0 PYTHONPATH=.:evals .venv/bin/python evals/runtime_repair_contract.py` passes77 actual recorded-draft controls with fake composition and blocked sockets. It preserves safe requested-detail limitations, same evidence/language/profile, one repair only, strict no-tool/no-CTA schema, unchanged validation, cancellation and the shared deadline. Graph130 and saved trace36 remain green. Passing fixtures is not live semantic acceptance.
+
+`evals/runtime_tools_replay_contract.py`13 controls preserve quoted inputs/monthly-rate math and exact page passages while ranking topic-bearing bodies ahead of navigation/FAQ questions; hyphenated model slugs and answer paragraphs ending in questions are covered. `evals/runtime_metrics_contract.py`15 separates answer/clarification/decline/legacy and excludes failed/cancelled/missing clocks. `evals/live_voice_contract.mjs`56 and real DOM player41 verify250ms acknowledgement grace, shortest compatible reviewed filler, ready-answer preemption and persisted response classification. The ADAS-only paid harness preserves cumulative budgets and keeps semantic failures failed while finishing collection.
+
+Corrective Creta publications retain history: v3 source corrections, v4 one short Priya acknowledgement, v5 exact manufacturer E/EX roof/camera applicability. Source mutation uses new assertion IDs and normal review approvals. Independent v5 retrieval/negative-answer/inverted-positive controls pass6/6; old snapshot bytes and all narration/media remain identical. These are separate from runtime quality scores.
+
 ## 2026-09-19 — Provider readiness boundary
 
 `evals/readiness_contract.py`: 10/10 pass for actual Read/Build API queries, missing/expired/mock/failed checks, selected speech identity, explicit override and mock bypass; sockets blocked. `evals/readiness_ui_contract.mjs`: 5/5 pass for read-only panel mount, explicit credit-using probe, demo-scoped override and revocation. These validate orchestration, not live service availability. Loop remains off.

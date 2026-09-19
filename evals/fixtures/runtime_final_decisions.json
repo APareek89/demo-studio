@@ -1,0 +1,4047 @@
+{
+  "source_commit": "2a07c750b52e95750d7d09531c5e2b7f9433ca7d",
+  "snapshot_id": "kb_c70af9b392163108dee4eb7a",
+  "source": "Immutable final100 and safety-attempt03 decisions. Mock repaired responses in tests verify mechanics only, never claim live semantic success.",
+  "cases": {
+    "q024": {
+      "question": "What audio system is available?",
+      "requested_scope": {},
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "The CRETA offers a Bose premium eight-speaker sound system with a front central speaker and sub-woofer on higher trims like the SX Premium and above.",
+            "fact_ids": [
+              "F164",
+              "F047"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "It pairs with either an eight-inch touchscreen or a larger 10.25-inch infotainment display, depending on the variant you choose.",
+            "fact_ids": [
+              "F162",
+              "F181"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": true,
+        "topic": "audio_system",
+        "cta": ""
+      },
+      "evidence": [
+        {
+          "id": "F198",
+          "kind": "feature",
+          "claim": "Audio and connected car system",
+          "value": "Hyundai Bluelink connected car technology and Bose premium sound system",
+          "conditions": "Available on higher trims only",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) \u00b7 block 13"
+          }
+        },
+        {
+          "id": "F164",
+          "kind": "feature",
+          "claim": "Audio system brand and configuration",
+          "value": "Bose premium sound 8 speaker system with front central speaker & sub-woofer",
+          "conditions": "Available on SX Premium, King, King Knight, and Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+          }
+        },
+        {
+          "id": "F240",
+          "kind": "feature",
+          "claim": "Driver assistance system",
+          "value": "Hyundai SmartSense-Level 2 ADAS",
+          "conditions": "Available on select trims (standard on King and King Knight)",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 7, Level 2 ADAS"
+          }
+        },
+        {
+          "id": "F181",
+          "kind": "feature",
+          "claim": "Display screen size and updates",
+          "value": "10.25-inch infotainment system and over-the-air infotainment updates",
+          "conditions": "Available on higher variants.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_4f8faaea5738",
+            "locator": "Hyundai Creta Car Price in Mumbai (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F202",
+          "kind": "feature",
+          "claim": "King Edition specifications",
+          "value": "Based on the Knight trim, offers exclusive accessories and is available with selected automatic petrol and diesel configurations",
+          "conditions": "Specific to King Edition trim",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King Edition",
+            "transmission": "automatic"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F045",
+          "kind": "feature",
+          "claim": "Advanced Driver Assistance System",
+          "value": "Hyundai SmartSense, Level 2 ADAS with 19 functions",
+          "conditions": "Fitted to King, King Knight, and Lounge Edition; Smart Cruise Control with Stop and Go is on automatic variants only",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 4 & page 22"
+          }
+        },
+        {
+          "id": "F036",
+          "kind": "spec",
+          "claim": "Overall height",
+          "value": "1,635 mm",
+          "conditions": "Height is quoted with roof rails across all engines",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 29, Technical specifications"
+          }
+        },
+        {
+          "id": "F139",
+          "kind": "feature",
+          "claim": "Sound system",
+          "value": "Bose premium sound system (8 speakers)",
+          "conditions": "Top trims / equipped variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_46192070f7b0",
+            "locator": "Bose premium sound system (8 speakers) \u00b7 block 26"
+          }
+        },
+        {
+          "id": "F134",
+          "kind": "feature",
+          "claim": "Tyre pressure monitoring system",
+          "value": "Highline Tyre Pressure Monitoring System displays real-time pressure levels for all tyres",
+          "conditions": "Select variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_93e5ef21c73e",
+            "locator": "Tyre pressure monitoring system: Highline \u00b7 blocks 33, 34"
+          }
+        },
+        {
+          "id": "F047",
+          "kind": "feature",
+          "claim": "Premium sound system",
+          "value": "Bose premium 8-speaker system with sub-woofer",
+          "conditions": "Fitted on SX Premium and above trims",
+          "scope": {
+            "model": "CRETA",
+            "variant": "SX Premium and above"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 25, Infotainment and connected services"
+          }
+        },
+        {
+          "id": "F245",
+          "kind": "policy",
+          "claim": "Extended warranty limit",
+          "value": "Upto 7 years extended warranty is applicable only for petrol variants",
+          "conditions": "Payable basis, applicable only to petrol variants",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "Petrol",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 16, Peace of mind"
+          }
+        },
+        {
+          "id": "F163",
+          "kind": "feature",
+          "claim": "Rear seat entertainment system",
+          "value": "29.46 cm (11.6\") Touchscreen Rear Seat Entertainment System on Passenger Side",
+          "conditions": "Exclusive to Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+          }
+        },
+        {
+          "id": "F162",
+          "kind": "feature",
+          "claim": "Infotainment display size",
+          "value": "20.32 cm (8.0\") touchscreen on EX, EX(O), S(O), S(O) Knight; 26.03 cm (10.25\") HD audio video navigation on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "E trim has no standard infotainment screen",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+          }
+        },
+        {
+          "id": "F180",
+          "kind": "feature",
+          "claim": "Premium cabin and infotainment equipment",
+          "value": "panoramic sunroof, ventilated front seats, dual-zone automatic climate control, wireless charging, rear-seat recline function, digital instrument cluster, connected infotainment system, Bose premium sound system, and Hyundai Bluelink connected-car technology",
+          "conditions": "Varies depending on selected variant; Bose sound and Bluelink on higher variants.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        }
+      ],
+      "history": []
+    },
+    "q027": {
+      "question": "Does it have cruise control?",
+      "requested_scope": {},
+      "decision": {
+        "action": "answer",
+        "answered": true,
+        "topic": "cruise control",
+        "cta": "cta-test-drive"
+      },
+      "evidence": [
+        {
+          "id": "F132",
+          "kind": "feature",
+          "claim": "Smart Cruise Control with Stop & Go",
+          "value": "SCC with S&G",
+          "conditions": "Part of Hyundai SmartSense Level 2 ADAS",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_93e5ef21c73e",
+            "locator": "Smart Cruise Control with Stop & Go (SCC with S&G) \u00b7 block 66"
+          }
+        },
+        {
+          "id": "F154",
+          "kind": "feature",
+          "claim": "Smart Cruise Control with Stop & Go",
+          "value": "Standard on King, King Knight, Lounge Edition (IVT/AT/DCT only)",
+          "conditions": "IVT/AT/DCT transmissions only",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "transmission": "IVT, AT, DCT"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24 & block 33"
+          }
+        },
+        {
+          "id": "F196",
+          "kind": "feature",
+          "claim": "Advanced driver assistance systems (ADAS)",
+          "value": "Hyundai SmartSense Level 2 ADAS features including lane-keeping assist, forward collision avoidance assist, blind-spot collision warning, rear cross-traffic collision avoidance assist, and smart cruise control with stop-and-go",
+          "conditions": "Available on higher trims only",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F045",
+          "kind": "feature",
+          "claim": "Advanced Driver Assistance System",
+          "value": "Hyundai SmartSense, Level 2 ADAS with 19 functions",
+          "conditions": "Fitted to King, King Knight, and Lounge Edition; Smart Cruise Control with Stop and Go is on automatic variants only",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 4 & page 22"
+          }
+        },
+        {
+          "id": "F176",
+          "kind": "feature",
+          "claim": "Level 2 ADAS suite",
+          "value": "Hyundai SmartSense Level 2 ADAS features, including lane following assist, forward collision avoidance assist, blind-spot collision warning, rear cross-traffic collision avoidance assist, and smart cruise control with stop-and-go",
+          "conditions": "Offered on higher trims only.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F140",
+          "kind": "feature",
+          "claim": "Climate control",
+          "value": "Dual zone automatic temperature control",
+          "conditions": "Equipped variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_46192070f7b0",
+            "locator": "Dual zone automatic temperature control \u00b7 block 37"
+          }
+        },
+        {
+          "id": "F143",
+          "kind": "feature",
+          "claim": "Drive modes and traction control modes",
+          "value": "Drive modes: Eco, Normal, and Sport; Traction control modes: Snow, Mud, and Sand",
+          "conditions": "Traction control modes available on higher trims",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_46192070f7b0",
+            "locator": "6.Does CRETA support different drive modes for different driving conditions? \u00b7 block 94"
+          }
+        },
+        {
+          "id": "F174",
+          "kind": "feature",
+          "claim": "Standard safety equipment",
+          "value": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors",
+          "conditions": "Standard equipment across the range.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F195",
+          "kind": "feature",
+          "claim": "Standard safety equipment across all variants",
+          "value": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system",
+          "conditions": "Equipped across all variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F169",
+          "kind": "feature",
+          "claim": "Drive modes and traction control modes",
+          "value": "Drive mode select (Eco, Normal, Sport) and Traction control modes (Snow, Mud, Sand)",
+          "conditions": "IVT/AT/DCT variants only across S(O), S(O) Knight, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "transmission": "IVT, AT, DCT"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30 & block 33"
+          }
+        },
+        {
+          "id": "F159",
+          "kind": "feature",
+          "claim": "Air conditioning system",
+          "value": "Manual on E, EX, EX(O); Dual zone automatic temperature control (DATC) on S(O) and above",
+          "conditions": "DATC on S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30"
+          }
+        },
+        {
+          "id": "F197",
+          "kind": "feature",
+          "claim": "Interior comfort and convenience features",
+          "value": "Ventilated front seats, panoramic sunroof, wireless charging, dual-zone automatic climate control, D-cut steering wheel, 60:40 split rear seats, rear-seat recline function, and digital instrument cluster",
+          "conditions": "Availability depends on selected variant",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) \u00b7 block 13"
+          }
+        },
+        {
+          "id": "F158",
+          "kind": "feature",
+          "claim": "Panoramic sunroof",
+          "value": "Smart panoramic on EX(O), S(O), S(O) Knight; Voice-enabled smart panoramic on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "Panoramic sunroof offered from EX(O) upwards; voice control on SX and above",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30"
+          }
+        },
+        {
+          "id": "F180",
+          "kind": "feature",
+          "claim": "Premium cabin and infotainment equipment",
+          "value": "panoramic sunroof, ventilated front seats, dual-zone automatic climate control, wireless charging, rear-seat recline function, digital instrument cluster, connected infotainment system, Bose premium sound system, and Hyundai Bluelink connected-car technology",
+          "conditions": "Varies depending on selected variant; Bose sound and Bluelink on higher variants.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        }
+      ],
+      "history": []
+    },
+    "q039": {
+      "question": "What is different between EX and EX(O)?",
+      "requested_scope": {
+        "variant": [
+          "EX",
+          "EX(O)"
+        ]
+      },
+      "decision": {
+        "action": "answer",
+        "answered": true,
+        "topic": "CRETA EX vs EX(O) differences",
+        "cta": "cta-download-brochure ready if requested by customer directly configured in catalog and user explicitly asks; otherwise leave blank or absent as required by schema context rules, let's omit cta property or leave empty string if not requested explicitly by customer per rule 'must be configured and explicitly requested by the customer'. We omit cta or leave empty string since customer did not request it. Let's omit or set empty string? Schema says string format. Let's not include cta if not asked, or omit property. Wait, let's look at schema: cta is optional string. We can omit it or omit optional fields. Wait, the prompt says 'Only generate a valid, parseable JSON.' Let's check required: ['action']. So cta is optional. Let's omit cta or leave empty string. Better omit or leave empty string. Let's omit cta or not provide it. Let's check sentences: 1-3 short sentences, max 75 words. Supporting fact IDs. F158 for panoramic sunroof on EX(O). F120/F049 for wheels: EX has steel wheels with wheel covers, whereas EX(O) gets dual tone styled steel wheels. Let's check facts: F158: 'Smart panoramic on EX(O), S(O), S(O) Knight'. F120: '205/65 R16(D=405.6mm)steel wheel with wheel cover(E,EX,EX,EX(O)); DT styled steel wheel(EX(O))', F049: 'R16 steel (E, EX); R16 styled steel (EX(O))'. Negative clauses support only absence; state projected positive and negative trim points in separate sentences. Let's state positive points for each variant."
+      },
+      "evidence": [
+        {
+          "id": "F122",
+          "kind": "spec",
+          "claim": "Spare wheel size",
+          "value": "205/65 R16(D=405.6mm)steel(E,EX,EX,EX(O),EX(O),S(O),S(O),SX,SX,SXPremium,SX Premium)",
+          "conditions": "Trim specific: E, EX, EX(O), S(O), SX, SX Premium",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX",
+                  "EX(O)",
+                  "EX(O)"
+                ],
+                "assertion": "205/65 R16(D=405.6mm)steel(E,EX,EX,EX(O),EX(O),S(O),S(O),SX,SX,SXPremium,SX Premium)",
+                "label": "205/65 R16(D=405.6mm)steel"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F120",
+          "kind": "spec",
+          "claim": "Wheel size 16-inch steel with wheel cover",
+          "value": "205/65 R16(D=405.6mm)steel wheel with wheel cover(E,EX,EX,EX(O)),DT styled steel wheel(EX(O))",
+          "conditions": "Trim specific: E, EX, EX(O)",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "205/65 R16(D=405.6mm)steel wheel with wheel cover(E,EX,EX,EX(O))",
+                "label": "205/65 R16(D=405.6mm)steel wheel with wheel cover"
+              },
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX(O)"
+                ],
+                "assertion": "DT styled steel wheel(EX(O))",
+                "label": "DT styled steel wheel"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F216",
+          "kind": "feature",
+          "claim": "Smartphone wireless connectivity requirement",
+          "value": "Wireless Android Auto & Apple CarPlay on EX, EX(O), S(O), S(O) Knight; requires wired-to-wireless adapter on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "E variant has no connectivity; ~ indicates higher trims require wired-to-wireless adapter for wireless operation",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 41, Infotainment and connectivity by variant table and footnotes"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Wireless Android Auto & Apple CarPlay on EX, EX(O), S(O), S(O) Knight",
+                "label": "Wireless Android Auto & Apple CarPlay"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F191",
+          "kind": "availability",
+          "claim": "Available variants in Hyderabad",
+          "value": "EX, EX(O), S(O), SX, SX Premium, Knight Edition, Summer Edition, and King Edition",
+          "conditions": "Market-specific availability",
+          "scope": {
+            "model": "CRETA",
+            "market": "Hyderabad, India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_47f417678071",
+            "locator": "What CRETA variants can I find in Hyderabad? \u00b7 block 37"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Available variants in Hyderabad: EX, EX(O), S(O), SX, SX Premium, Knight Edition, Summer Edition, and King Edition",
+                "label": "Available variants in Hyderabad"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F193",
+          "kind": "availability",
+          "claim": "National variant lineup options",
+          "value": "E, EX, EX(O), S(O), SX, SX Premium, Knight Edition, Summer Edition, and King Edition",
+          "conditions": "Available options across India",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Discover the Hyundai CRETA Price in your State \u00b7 block 15"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "National variant lineup options: E, EX, EX(O), S(O), SX, SX Premium, Knight Edition, Summer Edition, and King Edition",
+                "label": "National variant lineup options"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F158",
+          "kind": "feature",
+          "claim": "Panoramic sunroof",
+          "value": "Smart panoramic on EX(O), S(O), S(O) Knight; Voice-enabled smart panoramic on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "Panoramic sunroof offered from EX(O) upwards; voice control on SX and above",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX(O)"
+                ],
+                "assertion": "Smart panoramic on EX(O), S(O), S(O) Knight",
+                "label": "Smart panoramic"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F185",
+          "kind": "availability",
+          "claim": "Variant lineup names",
+          "value": "E, EX, EX(O), S(O), SX, SX Premium, Knight Edition, Summer Edition, and King Edition",
+          "conditions": "Availability subject to powertrain configuration and dealership stock.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Discover the Hyundai Creta Price in Jaipur \u00b7 block 16"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Variant lineup names: E, EX, EX(O), S(O), SX, SX Premium, Knight Edition, Summer Edition, and King Edition",
+                "label": "Variant lineup names"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F159",
+          "kind": "feature",
+          "claim": "Air conditioning system",
+          "value": "Manual on E, EX, EX(O); Dual zone automatic temperature control (DATC) on S(O) and above",
+          "conditions": "DATC on S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Manual on E, EX, EX(O)",
+                "label": "Manual"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F070",
+          "kind": "feature",
+          "claim": "Driver power seat memory function",
+          "value": "Driver power seat memory function standard on King, King Knight, and Lounge Edition",
+          "conditions": "Excludes E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 38, Interior features by variant table"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "negative",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Excludes E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium",
+                "label": "Driver power seat memory function"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F214",
+          "kind": "feature",
+          "claim": "Child seat anchoring",
+          "value": "Child seat anchor (ISOFIX), standard across all listed variants",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition in the manufacturer India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "all variants"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F151",
+          "kind": "feature",
+          "claim": "Standard airbags",
+          "value": "Driver & passenger, side & curtain airbags standard across all trims",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F063",
+          "kind": "feature",
+          "claim": "Front row ventilated seats availability",
+          "value": "Standard on SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "Not available on E, EX, EX(O), S(O), S(O) Knight, SX",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 39, Comfort and convenience by variant table"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "negative",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "Not available on E, EX, EX(O), S(O), S(O) Knight, SX",
+                "label": "Front row ventilated seats availability"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F049",
+          "kind": "spec",
+          "claim": "Wheel size availability",
+          "value": "R16 steel (E, EX), R16 styled steel (EX(O)), R17 alloy (S(O), SX, SX Premium), R18 alloy (S(O) Knight, King, King Knight, Lounge Edition)",
+          "conditions": "Varies strictly by variant as specified in tyre chart",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 8 & page 30"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX"
+                ],
+                "assertion": "R16 steel (E, EX)",
+                "label": "R16 steel"
+              },
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX(O)"
+                ],
+                "assertion": "R16 styled steel (EX(O))",
+                "label": "R16 styled steel"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        },
+        {
+          "id": "F162",
+          "kind": "feature",
+          "claim": "Infotainment display size",
+          "value": "20.32 cm (8.0\") touchscreen on EX, EX(O), S(O), S(O) Knight; 26.03 cm (10.25\") HD audio video navigation on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "E trim has no standard infotainment screen",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "EX",
+                  "EX(O)"
+                ],
+                "assertion": "20.32 cm (8.0\") touchscreen on EX, EX(O), S(O), S(O) Knight",
+                "label": "20.32 cm (8.0\") touchscreen"
+              }
+            ],
+            "requested_variants": [
+              "EX",
+              "EX(O)"
+            ]
+          }
+        }
+      ],
+      "history": []
+    },
+    "q041": {
+      "question": "How is S(O) Knight different from S(O)?",
+      "requested_scope": {
+        "variant": [
+          "S(O) Knight",
+          "S(O)"
+        ]
+      },
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "The clear verified difference is the wheel setup: S(O) gets R17 alloy wheels, while S(O) Knight gets R18 alloy wheels.",
+            "fact_ids": [
+              "F049"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "Their spare wheels also differ: S(O) has a 205/65 R16 steel spare, while S(O) Knight has a 215/60 R17 steel spare.",
+            "fact_ids": [
+              "F122",
+              "F246"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "On features like panoramic sunroof, dash cam, wireless Android Auto and Apple CarPlay, auto AC, and the 8-inch touchscreen, both S(O) and S(O) Knight are listed the same.",
+            "fact_ids": [
+              "F158",
+              "F156",
+              "F216",
+              "F159",
+              "F162"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": true,
+        "topic": "Hyundai CRETA S(O) Knight versus S(O) comparison",
+        "cta": ""
+      },
+      "evidence": [
+        {
+          "id": "F156",
+          "kind": "feature",
+          "claim": "Dash cam",
+          "value": "Standard on S(O), S(O) Knight, SX, SX Premium, King, King Knight, and Lounge Edition",
+          "conditions": "Available from S(O) trim upwards",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Standard on S(O), S(O) Knight, SX, SX Premium, King, King Knight, and Lounge Edition",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F216",
+          "kind": "feature",
+          "claim": "Smartphone wireless connectivity requirement",
+          "value": "Wireless Android Auto & Apple CarPlay on EX, EX(O), S(O), S(O) Knight; requires wired-to-wireless adapter on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "E variant has no connectivity; ~ indicates higher trims require wired-to-wireless adapter for wireless operation",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 41, Infotainment and connectivity by variant table and footnotes"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Wireless Android Auto & Apple CarPlay on EX, EX(O), S(O), S(O) Knight",
+                "label": "Wireless Android Auto & Apple CarPlay"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F158",
+          "kind": "feature",
+          "claim": "Panoramic sunroof",
+          "value": "Smart panoramic on EX(O), S(O), S(O) Knight; Voice-enabled smart panoramic on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "Panoramic sunroof offered from EX(O) upwards; voice control on SX and above",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Smart panoramic on EX(O), S(O), S(O) Knight",
+                "label": "Smart panoramic"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F246",
+          "kind": "spec",
+          "claim": "Spare wheel size on S(O) Knight, King and King Knight",
+          "value": "215 / 60 R17 Steel (D=436.6 mm)",
+          "conditions": "Spare wheel only, not the fitted road wheels; S(O) Knight, King and King Knight in the manufacturer India brochure.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "S(O) Knight, King, King Knight"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Tyre / Spare wheel"
+          }
+        },
+        {
+          "id": "F122",
+          "kind": "spec",
+          "claim": "Spare wheel size",
+          "value": "205/65 R16(D=405.6mm)steel(E,EX,EX,EX(O),EX(O),S(O),S(O),SX,SX,SXPremium,SX Premium)",
+          "conditions": "Trim specific: E, EX, EX(O), S(O), SX, SX Premium",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O)"
+                ],
+                "assertion": "205/65 R16(D=405.6mm)steel(E,EX,EX,EX(O),EX(O),S(O),S(O),SX,SX,SXPremium,SX Premium)",
+                "label": "205/65 R16(D=405.6mm)steel"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F159",
+          "kind": "feature",
+          "claim": "Air conditioning system",
+          "value": "Manual on E, EX, EX(O); Dual zone automatic temperature control (DATC) on S(O) and above",
+          "conditions": "DATC on S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE \u00b7 block 30"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "DATC on S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+                "label": "DATC"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F064",
+          "kind": "feature",
+          "claim": "Electric parking brake with auto hold availability",
+          "value": "Standard on King, King Knight, Lounge Edition; IVT, AT or DCT only on S(O), S(O) Knight, SX Premium; not available on E, EX, EX(O), SX",
+          "conditions": "Asterisk denotes IVT, AT or DCT automatic transmissions only on S(O), S(O) Knight, SX Premium",
+          "scope": {
+            "model": "Hyundai CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 39, Comfort and convenience by variant table and page 41 footnote"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "IVT, AT or DCT only on S(O), S(O) Knight, SX Premium",
+                "label": "IVT, AT or DCT only"
+              },
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Asterisk denotes IVT, AT or DCT automatic transmissions only on S(O), S(O) Knight, SX Premium",
+                "label": "Asterisk denotes IVT, AT or DCT automatic transmissions only"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F063",
+          "kind": "feature",
+          "claim": "Front row ventilated seats availability",
+          "value": "Standard on SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "Not available on E, EX, EX(O), S(O), S(O) Knight, SX",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 39, Comfort and convenience by variant table"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "negative",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Not available on E, EX, EX(O), S(O), S(O) Knight, SX",
+                "label": "Front row ventilated seats availability"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F151",
+          "kind": "feature",
+          "claim": "Standard airbags",
+          "value": "Driver & passenger, side & curtain airbags standard across all trims",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F121",
+          "kind": "spec",
+          "claim": "Wheel size 17-inch alloy",
+          "value": "215/60 R17(D=436.6 mm) alloy (S(O),S(O),SX,SX ,SX Premium,SX Premium )",
+          "conditions": "Trim specific: S(O), SX, SX Premium",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O)"
+                ],
+                "assertion": "215/60 R17(D=436.6 mm) alloy (S(O),S(O),SX,SX ,SX Premium,SX Premium )",
+                "label": "215/60 R17(D=436.6 mm) alloy"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F070",
+          "kind": "feature",
+          "claim": "Driver power seat memory function",
+          "value": "Driver power seat memory function standard on King, King Knight, and Lounge Edition",
+          "conditions": "Excludes E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 38, Interior features by variant table"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "negative",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "Excludes E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium",
+                "label": "Driver power seat memory function"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F049",
+          "kind": "spec",
+          "claim": "Wheel size availability",
+          "value": "R16 steel (E, EX), R16 styled steel (EX(O)), R17 alloy (S(O), SX, SX Premium), R18 alloy (S(O) Knight, King, King Knight, Lounge Edition)",
+          "conditions": "Varies strictly by variant as specified in tyre chart",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 8 & page 30"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)"
+                ],
+                "assertion": "R17 alloy (S(O), SX, SX Premium)",
+                "label": "R17 alloy"
+              },
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O) Knight"
+                ],
+                "assertion": "R18 alloy (S(O) Knight, King, King Knight, Lounge Edition)",
+                "label": "R18 alloy"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F162",
+          "kind": "feature",
+          "claim": "Infotainment display size",
+          "value": "20.32 cm (8.0\") touchscreen on EX, EX(O), S(O), S(O) Knight; 26.03 cm (10.25\") HD audio video navigation on SX, SX Premium, King, King Knight, Lounge Edition",
+          "conditions": "E trim has no standard infotainment screen",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "S(O)",
+                  "S(O) Knight"
+                ],
+                "assertion": "20.32 cm (8.0\") touchscreen on EX, EX(O), S(O), S(O) Knight",
+                "label": "20.32 cm (8.0\") touchscreen"
+              }
+            ],
+            "requested_variants": [
+              "S(O) Knight",
+              "S(O)"
+            ]
+          }
+        },
+        {
+          "id": "F214",
+          "kind": "feature",
+          "claim": "Child seat anchoring",
+          "value": "Child seat anchor (ISOFIX), standard across all listed variants",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition in the manufacturer India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "all variants"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        }
+      ],
+      "history": []
+    },
+    "safety": {
+      "question": "What driver assistance features are available, and which variant conditions apply?",
+      "requested_scope": {
+        "variant": "conditions"
+      },
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "The CRETA comes standard across the range with active safety equipment, including electronic stability control, hill-start assist, a tyre pressure monitoring system, and rear parking sensors.",
+            "fact_ids": [
+              "F174",
+              "F195"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "I cannot verify details for higher-level driver assistance packages from my current records.",
+            "fact_ids": [],
+            "kind": "limitation"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": true,
+        "topic": "driver assistance features"
+      },
+      "evidence": [
+        {
+          "id": "F238",
+          "kind": "spec",
+          "claim": "Standard safety features count",
+          "value": "36 Standard safety features",
+          "conditions": "Standard on all trims",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 8, Protects what matters the most"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "36 Standard safety features; Standard on all trims",
+                "label": "Standard safety features count"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F237",
+          "kind": "feature",
+          "claim": "Standard airbags count",
+          "value": "six airbags, as standard",
+          "conditions": "Includes Driver & passenger, Side & curtain airbags across all trims",
+          "scope": {
+            "model": "CRETA",
+            "variant": "all variants",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 8, Protects what matters the most"
+          }
+        },
+        {
+          "id": "F214",
+          "kind": "feature",
+          "claim": "Child seat anchoring",
+          "value": "Child seat anchor (ISOFIX), standard across all listed variants",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition in the manufacturer India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "all variants"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F151",
+          "kind": "feature",
+          "claim": "Standard airbags",
+          "value": "Driver & passenger, side & curtain airbags standard across all trims",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "Driver & passenger, side & curtain airbags standard across all trims; Driver & passenger, side & curtain airbags standard across all trims",
+                "label": "Standard airbags"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F174",
+          "kind": "feature",
+          "claim": "Standard safety equipment",
+          "value": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors",
+          "conditions": "Standard equipment across the range.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors; Standard equipment across the range.",
+                "label": "Standard safety equipment"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F195",
+          "kind": "feature",
+          "claim": "Standard safety equipment across all variants",
+          "value": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system",
+          "conditions": "Equipped across all variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) \u00b7 block 14"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system; Equipped across all variants",
+                "label": "Standard safety equipment across all variants"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F032",
+          "kind": "spec",
+          "claim": "Body style and seating capacity",
+          "value": "Compact SUV, 5 doors, 5 seats",
+          "conditions": "Standard across all variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 3, Key facts"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "Compact SUV, 5 doors, 5 seats; Standard across all variants",
+                "label": "Body style and seating capacity"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F175",
+          "kind": "feature",
+          "claim": "Additional standard braking and stability systems",
+          "value": "vehicle stability management, rear disc brakes",
+          "conditions": "Stated as included across the lineup.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_b2c64631f8d7",
+            "locator": "Hyundai CRETA Car Price in Lucknow (Ex-showroom*) \u00b7 block 14"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "vehicle stability management, rear disc brakes; Stated as included across the lineup.",
+                "label": "Additional standard braking and stability systems"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F236",
+          "kind": "spec",
+          "claim": "Front and rear brake types",
+          "value": "Disc",
+          "conditions": "Standard across all variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Brakes"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "Disc; Standard across all variants",
+                "label": "Front and rear brake types"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F218",
+          "kind": "spec",
+          "claim": "Overall width",
+          "value": "1 790 mm",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "1 790 mm; All trims and powertrains",
+                "label": "Overall width"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F217",
+          "kind": "spec",
+          "claim": "Overall length",
+          "value": "4 330 mm",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "4 330 mm; All trims and powertrains",
+                "label": "Overall length"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F220",
+          "kind": "spec",
+          "claim": "Wheelbase",
+          "value": "2 610 mm",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "2 610 mm; All trims and powertrains",
+                "label": "Wheelbase"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F221",
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "50 l",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "50 l; All trims and powertrains",
+                "label": "Fuel tank capacity"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        },
+        {
+          "id": "F082",
+          "kind": "spec",
+          "claim": "Cylinder count",
+          "value": "4-cylinder engine across all variants",
+          "conditions": "Standard across all engine variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "FAQs \u00b7 3. Is CRETA a 3-cylinder or a 4-cylinder? \u00b7 block 87"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "conditions"
+                ],
+                "assertion": "4-cylinder engine across all variants; 4-cylinder engine across all variants",
+                "label": "Cylinder count"
+              }
+            ],
+            "requested_variants": [
+              "conditions"
+            ]
+          }
+        }
+      ],
+      "history": [
+        {
+          "role": "agent",
+          "text": "Welcome to Hyundai. I'm Priya. What matters most in your next car? You can also say, show me around."
+        },
+        {
+          "role": "user",
+          "text": "Safety and confidence on family highway trips matter most to me. I would like to understand the approved driver assistance features."
+        },
+        {
+          "role": "agent",
+          "text": "Thanks\u2014that helps me focus the demo. While I tailor it, here's a quick overview of the car."
+        },
+        {
+          "role": "agent",
+          "text": "Start with CRETA's cabin: a panoramic sunroof and front seats with ventilation on selected variants. Let's explore those details, then find what fits your everyday drives."
+        },
+        {
+          "role": "agent",
+          "text": "You said, \u201cSafety and confidence on family highway trips\u201d."
+        },
+        {
+          "role": "agent",
+          "text": "Six"
+        },
+        {
+          "role": "user",
+          "text": "What driver assistance features are available, and which variant conditions apply?"
+        }
+      ]
+    },
+    "q067": {
+      "question": "Using https://www.hyundai.com/in/en/find-a-car/creta/specification tell me what engine information the page actually provides.",
+      "requested_scope": {
+        "model": "CRETA"
+      },
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "The Creta specification page mentions headings for engine specifications and asks what engine options are available, but it does not list the actual engine details.",
+            "fact_ids": [
+              "W9f3ec622a256",
+              "Weddbe875563f",
+              "W7efdf6dc38a1"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "It advises consulting a Hyundai dealer for full engine and transmission specifications.",
+            "fact_ids": [
+              "W372d777afd19"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "Our other records show the Creta offers four-cylinder 1.5-litre petrol, 1.5-litre diesel, and 1.5-litre turbo petrol engines across Indian variants.",
+            "fact_ids": [
+              "F081",
+              "F082"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "clarification": "",
+        "answered": true,
+        "topic": "engine specifications"
+      },
+      "evidence": [
+        {
+          "id": "F125",
+          "kind": "spec",
+          "claim": "Transmission options across engines",
+          "value": "6-speed manual or an IVT automatic for the 1.5-litre petrol, a 6-speed manual or a 6-speed automatic for the diesel, and a 7-speed dual-clutch automatic for the turbo petrol variant",
+          "conditions": "Depending on engine option chosen",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "6.What is the gearbox of the Hyundai CRETA? \u00b7 block 83"
+          }
+        },
+        {
+          "id": "F081",
+          "kind": "spec",
+          "claim": "Engine options",
+          "value": "Three engine options: a 1.5-litre petrol, a 1.5-litre diesel, and a 1.5-litre turbo petrol",
+          "conditions": "Applicable across Indian market variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "FAQs \u00b7 1. What engine options are available for the CRETA? \u00b7 block 83"
+          }
+        },
+        {
+          "id": "F105",
+          "kind": "claim",
+          "claim": "Most powerful engine in lineup",
+          "value": "The 1.5-liter Turbo GDi petrol engine is the most powerful option in the CRETA lineup, delivering the highest power output among regular petrol and diesel engines and providing an exhilarating driving experience.",
+          "conditions": "Among regular petrol and diesel engines in CRETA lineup",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "1.5 l Turbo GDi petrol"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "5.Is the petrol-turbo engine the most powerful among the CRETA\u2019s lineup? \u00b7 block 91"
+          }
+        },
+        {
+          "id": "F055",
+          "kind": "spec",
+          "claim": "Engine cylinder configuration",
+          "value": "Straight engine (4-cylinder)",
+          "conditions": "Standard across all engine variants",
+          "scope": {
+            "model": "Hyundai CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_f5d3c8",
+            "locator": "block 23"
+          }
+        },
+        {
+          "id": "F171",
+          "kind": "spec",
+          "claim": "Engine powertrain lineup",
+          "value": "1.5-litre petrol, 1.5-litre diesel, and 1.5-litre turbo petrol",
+          "conditions": "Available options depend on the selected variant.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_4f8faaea5738",
+            "locator": "Hyundai Creta Car Price in Mumbai (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F085",
+          "kind": "spec",
+          "claim": "1.5L diesel transmissions",
+          "value": "6-speed manual or a 6-speed automatic",
+          "conditions": "1.5L U2 CRDi diesel engine",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "1.5L U2 CRDi diesel",
+            "transmission": "6MT / 6AT",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "FAQs \u00b7 2. What are the transmission choices for each CRETA engine variant? \u00b7 block 85"
+          }
+        },
+        {
+          "id": "F058",
+          "kind": "spec",
+          "claim": "1.5L Diesel transmission options",
+          "value": "6-speed manual or 6-speed automatic",
+          "conditions": "1.5-litre diesel engine",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "powertrain": "1.5L diesel"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 43, Specifications FAQ"
+          }
+        },
+        {
+          "id": "F172",
+          "kind": "spec",
+          "claim": "Transmission options",
+          "value": "manual, IVT, automatic, and dual-clutch transmissions",
+          "conditions": "Gearbox choices vary across variants and engine combinations.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F057",
+          "kind": "spec",
+          "claim": "1.5L Petrol transmission options",
+          "value": "6-speed manual or IVT automatic",
+          "conditions": "1.5-litre naturally aspirated petrol engine",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "powertrain": "1.5L naturally aspirated petrol"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 43, Specifications FAQ"
+          }
+        },
+        {
+          "id": "F173",
+          "kind": "spec",
+          "claim": "Turbo petrol gearbox",
+          "value": "7-speed DCT",
+          "conditions": "Specific to 1.5-litre turbo petrol engine.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India",
+            "powertrain": "1.5-litre turbo petrol",
+            "transmission": "7-speed DCT"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_b901153bfc2a",
+            "locator": "Hyundai CRETA Car Price in Ahmedabad (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F184",
+          "kind": "feature",
+          "claim": "Power seating and rear wireless charging",
+          "value": "power-adjustable front seats and rear wireless charging",
+          "conditions": "Depending on the selected trim.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_4f8faaea5738",
+            "locator": "Hyundai Creta Car Price in Mumbai (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F082",
+          "kind": "spec",
+          "claim": "Cylinder count",
+          "value": "4-cylinder engine across all variants",
+          "conditions": "Standard across all engine variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "FAQs \u00b7 3. Is CRETA a 3-cylinder or a 4-cylinder? \u00b7 block 87"
+          }
+        },
+        {
+          "id": "F189",
+          "kind": "spec",
+          "claim": "Engine options",
+          "value": "1.5L petrol, diesel, and turbo petrol",
+          "conditions": "Available options vary by selected variant",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Discover the Hyundai CRETA Price in Pune \u00b7 block 16"
+          }
+        },
+        {
+          "id": "F051",
+          "kind": "price",
+          "claim": "Starting price",
+          "value": "\u20b910,90,700",
+          "conditions": "Ex-showroom starting price in body text; page structured data lists \u20b910.79 lakh; excludes registration, road tax, and insurance which vary by state and city.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "price_basis": "ex-showroom"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 42, Price"
+          }
+        },
+        {
+          "id": "W105ff8253209",
+          "claim": "Customer-selected website passage",
+          "value": "Interested in a Hyundai? Share number to know more from us.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+            "locator": "Hyundai CRETA Specifications - Engine, Boot Space, Dimensions | Hyundai India \u00b7 block 2",
+            "quote": "Interested in a Hyundai? Share number to know more from us."
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "W9f3ec622a256",
+          "claim": "Customer-selected website passage",
+          "value": "New Hyundai CRETA Car Engine Specification",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+            "locator": "New Hyundai CRETA Car Engine Specification \u00b7 block 22",
+            "quote": "New Hyundai CRETA Car Engine Specification"
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "Weddbe875563f",
+          "claim": "Customer-selected website passage",
+          "value": "Explore specifications of the Hyundai CRETA Car, from its powerful engine options to boot space, precise dimensions, suspension, brakes, and fuel capacity etc.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+            "locator": "New Hyundai CRETA Car Engine Specification \u00b7 block 23",
+            "quote": "Explore specifications of the Hyundai CRETA Car, from its powerful engine options to boot space, precise dimensions, suspension, brakes, and fuel capacity etc."
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "W372d777afd19",
+          "claim": "Customer-selected website passage",
+          "value": "Disclaimer: ^^with roof rails Please consult your nearest Hyundai dealer for full information and specification regarding engine, transmission, wheels etc. Hyundai Motor India reserves the right to change specifications, colour, equipment and schemes at any time without prior notice",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+            "locator": "Wheels \u00b7 block 29",
+            "quote": "Disclaimer: ^^with roof rails Please consult your nearest Hyundai dealer for full information and specification regarding engine, transmission, wheels etc. Hyundai Motor India reserves the right to change specifications, colour, equipment and schemes at any time without prior notice"
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "We4bfddfc5738",
+          "claim": "Customer-selected website passage",
+          "value": "The Hyundai CRETA offers a well-designed ground clearance that allows it to handle typical urban road conditions, such as speed bumps and uneven surfaces, comfortably. This provides a balanced driving experience, ensuring confidence and stability while maintaining versatility for both city driving and occasional rough or uneven roads.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+            "locator": "3. What is the ground clearance of the CRETA? \u00b7 block 73",
+            "quote": "The Hyundai CRETA offers a well-designed ground clearance that allows it to handle typical urban road conditions, such as speed bumps and uneven surfaces, comfortably. This provides a balanced driving experience, ensuring confidence and stability while maintaining versatility for both city driving and occasional rough or uneven roads."
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "W7efdf6dc38a1",
+          "claim": "Customer-selected website passage",
+          "value": "5.What engine options are available for the Hyundai CRETA?",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/specification",
+            "locator": "5.What engine options are available for the Hyundai CRETA? \u00b7 block 76",
+            "quote": "5.What engine options are available for the Hyundai CRETA?"
+          },
+          "provenance": "live_web"
+        }
+      ],
+      "history": []
+    },
+    "q071": {
+      "question": "Use https://www.kia.com/in/our-vehicles/seltos/specs.html to check a Seltos engine specification. State the market and variant if available.",
+      "requested_scope": {
+        "variant": "if"
+      },
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "According to the Kia India page, the new Seltos comes with 1482 cc and 1497 cc petrol engines, as well as a 1493 cc diesel engine.",
+            "fact_ids": [
+              "W5487d71fd754"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "Specific trim details were not listed on that page.",
+            "fact_ids": [
+              "W5487d71fd754"
+            ],
+            "kind": "limitation"
+          }
+        ],
+        "answered": true,
+        "topic": "Seltos engine specification"
+      },
+      "evidence": [
+        {
+          "id": "F082",
+          "kind": "spec",
+          "claim": "Cylinder count",
+          "value": "4-cylinder engine across all variants",
+          "conditions": "Standard across all engine variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "FAQs \u00b7 3. Is CRETA a 3-cylinder or a 4-cylinder? \u00b7 block 87"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "4-cylinder engine across all variants; 4-cylinder engine across all variants",
+                "label": "Cylinder count"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F214",
+          "kind": "feature",
+          "claim": "Child seat anchoring",
+          "value": "Child seat anchor (ISOFIX), standard across all listed variants",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition in the manufacturer India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "all variants"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F175",
+          "kind": "feature",
+          "claim": "Additional standard braking and stability systems",
+          "value": "vehicle stability management, rear disc brakes",
+          "conditions": "Stated as included across the lineup.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_b2c64631f8d7",
+            "locator": "Hyundai CRETA Car Price in Lucknow (Ex-showroom*) \u00b7 block 14"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "vehicle stability management, rear disc brakes; Stated as included across the lineup.",
+                "label": "Additional standard braking and stability systems"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F195",
+          "kind": "feature",
+          "claim": "Standard safety equipment across all variants",
+          "value": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system",
+          "conditions": "Equipped across all variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) \u00b7 block 14"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system; Equipped across all variants",
+                "label": "Standard safety equipment across all variants"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F174",
+          "kind": "feature",
+          "claim": "Standard safety equipment",
+          "value": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors",
+          "conditions": "Standard equipment across the range.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors; Standard equipment across the range.",
+                "label": "Standard safety equipment"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F237",
+          "kind": "feature",
+          "claim": "Standard airbags count",
+          "value": "six airbags, as standard",
+          "conditions": "Includes Driver & passenger, Side & curtain airbags across all trims",
+          "scope": {
+            "model": "CRETA",
+            "variant": "all variants",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 8, Protects what matters the most"
+          }
+        },
+        {
+          "id": "F236",
+          "kind": "spec",
+          "claim": "Front and rear brake types",
+          "value": "Disc",
+          "conditions": "Standard across all variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Brakes"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "Disc; Standard across all variants",
+                "label": "Front and rear brake types"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F217",
+          "kind": "spec",
+          "claim": "Overall length",
+          "value": "4 330 mm",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "4 330 mm; All trims and powertrains",
+                "label": "Overall length"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F220",
+          "kind": "spec",
+          "claim": "Wheelbase",
+          "value": "2 610 mm",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "2 610 mm; All trims and powertrains",
+                "label": "Wheelbase"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F221",
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "50 l",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "50 l; All trims and powertrains",
+                "label": "Fuel tank capacity"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F218",
+          "kind": "spec",
+          "claim": "Overall width",
+          "value": "1 790 mm",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "1 790 mm; All trims and powertrains",
+                "label": "Overall width"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F235",
+          "kind": "spec",
+          "claim": "Rear suspension type",
+          "value": "Coupled torsion beam axle",
+          "conditions": "All variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Suspension"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "Coupled torsion beam axle; All variants",
+                "label": "Rear suspension type"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F234",
+          "kind": "spec",
+          "claim": "Front suspension type",
+          "value": "McPherson strut with coil spring",
+          "conditions": "All variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Suspension"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "McPherson strut with coil spring; All variants",
+                "label": "Front suspension type"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "F032",
+          "kind": "spec",
+          "claim": "Body style and seating capacity",
+          "value": "Compact SUV, 5 doors, 5 seats",
+          "conditions": "Standard across all variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 3, Key facts"
+          },
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "if"
+                ],
+                "assertion": "Compact SUV, 5 doors, 5 seats; Standard across all variants",
+                "label": "Body style and seating capacity"
+              }
+            ],
+            "requested_variants": [
+              "if"
+            ]
+          }
+        },
+        {
+          "id": "W5487d71fd754",
+          "claim": "Customer-selected website passage",
+          "value": "The new Kia Seltos is available with 1482 cc and 1497 cc petrol engines. In diesel, it comes with a 1493 cc engine.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+            "locator": "How many cc is a new Kia Seltos engine? \u00b7 block 260",
+            "quote": "The new Kia Seltos is available with 1482 cc and 1497 cc petrol engines. In diesel, it comes with a 1493 cc engine."
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "W992f57f2f10c",
+          "claim": "Customer-selected website passage",
+          "value": "What are the engine and transmission options available in the all-new Kia Seltos?",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.kia.com/in/our-vehicles/seltos/showroom.html",
+            "locator": "What are the engine and transmission options available in the all-new Kia Seltos? \u00b7 block 237",
+            "quote": "What are the engine and transmission options available in the all-new Kia Seltos?"
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "Wab211d8e5541",
+          "claim": "Customer-selected website passage",
+          "value": "The all-new Kia Seltos offers three engine choices: a Smartstream G1.5 petrol engine with 6 speed manual/IVT transmission, a Smartstream G1.5 T-GDi petrol engine with 6iMT/ 7DCT, and 1.5l CRDi VGT Diesel engine with 6MT/ 6 speed automatic transmission.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.kia.com/in/our-vehicles/seltos/showroom.html",
+            "locator": "What are the engine and transmission options available in the all-new Kia Seltos? \u00b7 block 238",
+            "quote": "The all-new Kia Seltos offers three engine choices: a Smartstream G1.5 petrol engine with 6 speed manual/IVT transmission, a Smartstream G1.5 T-GDi petrol engine with 6iMT/ 7DCT, and 1.5l CRDi VGT Diesel engine with 6MT/ 6 speed automatic transmission."
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "Wc860b473df68",
+          "claim": "Customer-selected website passage",
+          "value": "The New Seltos is available with tyre size of 205/65 R16 - 40.56 cm (16\u201d), 215/60 R17 - 43.66 cm (17\u201d), 215/55 R18 - 46.2 cm (18\u201d)",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+            "locator": "What is new Seltos tyre size? \u00b7 block 254",
+            "quote": "The New Seltos is available with tyre size of 205/65 R16 - 40.56 cm (16\u201d), 215/60 R17 - 43.66 cm (17\u201d), 215/55 R18 - 46.2 cm (18\u201d)"
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "W1ec0f45ad554",
+          "claim": "Customer-selected website passage",
+          "value": "The new Kia Seltos comes with a 47-litre fuel tank capacity for the Smartstream G1.5 petrol engine and the 1.5L CRDi VGT diesel engine. It offers a 50-litre fuel tank capacity for the Smartstream G1.5 T-GDi petrol engine.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+            "locator": "What is new Kia Seltos Fuel tank capacity? \u00b7 block 256",
+            "quote": "The new Kia Seltos comes with a 47-litre fuel tank capacity for the Smartstream G1.5 petrol engine and the 1.5L CRDi VGT diesel engine. It offers a 50-litre fuel tank capacity for the Smartstream G1.5 T-GDi petrol engine."
+          },
+          "provenance": "live_web"
+        },
+        {
+          "id": "Wdc34fbbbddb6",
+          "claim": "Customer-selected website passage",
+          "value": "How many cc is a new Kia Seltos engine?",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "scope": {},
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "https://www.kia.com/in/our-vehicles/seltos/specs.html",
+            "locator": "How many cc is a new Kia Seltos engine? \u00b7 block 259",
+            "quote": "How many cc is a new Kia Seltos engine?"
+          },
+          "provenance": "live_web"
+        }
+      ],
+      "history": []
+    },
+    "q025": {
+      "question": "Which connected-car features can I use?",
+      "requested_scope": {},
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "You can use Hyundai Bluelink connected-car technology, which offers over 70 features including over-the-air updates and Home-to-Car integration with Alexa.",
+            "fact_ids": [
+              "F046",
+              "F144",
+              "F168"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "This suite is available on the SX trim and above, and it comes with three years of complimentary service.",
+            "fact_ids": [
+              "F046"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "answered": true,
+        "topic": "connected_car_features"
+      },
+      "evidence": [
+        {
+          "id": "F144",
+          "kind": "feature",
+          "claim": "Connected car features",
+          "value": "Hyundai Bluelink app and Home-to-Car (H2C) with Alexa",
+          "conditions": "Equipped models/trims",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_46192070f7b0",
+            "locator": "New Hyundai CRETA Car Convenience: Always Forward Thinking. \u00b7 block 23"
+          }
+        },
+        {
+          "id": "F046",
+          "kind": "feature",
+          "claim": "Connected car suite complimentary subscription",
+          "value": "Hyundai Bluelink connected car technology with 70+ features, 3 years complimentary",
+          "conditions": "Available on SX trim and above; includes 3 years complimentary service",
+          "scope": {
+            "model": "CRETA",
+            "variant": "SX and above"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 25, Infotainment and connected services"
+          }
+        },
+        {
+          "id": "F198",
+          "kind": "feature",
+          "claim": "Audio and connected car system",
+          "value": "Hyundai Bluelink connected car technology and Bose premium sound system",
+          "conditions": "Available on higher trims only",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) \u00b7 block 13"
+          }
+        },
+        {
+          "id": "F168",
+          "kind": "feature",
+          "claim": "Connected car technology",
+          "value": "Hyundai Bluelink with Over-the-air (OTA) updates and Home to car (H2C) with Alexa",
+          "conditions": "Available on SX, SX Premium, King, King Knight, Lounge Edition; Alexa Echo device requires third-party purchase",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX, SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+          }
+        },
+        {
+          "id": "F180",
+          "kind": "feature",
+          "claim": "Premium cabin and infotainment equipment",
+          "value": "panoramic sunroof, ventilated front seats, dual-zone automatic climate control, wireless charging, rear-seat recline function, digital instrument cluster, connected infotainment system, Bose premium sound system, and Hyundai Bluelink connected-car technology",
+          "conditions": "Varies depending on selected variant; Bose sound and Bluelink on higher variants.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F199",
+          "kind": "feature",
+          "claim": "Exterior lighting and styling features",
+          "value": "Horizon LED positioning lamps, quad-beam LED headlamps, connected LED tail lamps, parametric radiator grille, alloy wheels, and dual-tone exterior colours",
+          "conditions": "Offered across selected trims and special editions",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) \u00b7 block 13"
+          }
+        },
+        {
+          "id": "F238",
+          "kind": "spec",
+          "claim": "Standard safety features count",
+          "value": "36 Standard safety features",
+          "conditions": "Standard on all trims",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 8, Protects what matters the most"
+          }
+        },
+        {
+          "id": "F051",
+          "kind": "price",
+          "claim": "Starting price",
+          "value": "\u20b910,90,700",
+          "conditions": "Ex-showroom starting price in body text; page structured data lists \u20b910.79 lakh; excludes registration, road tax, and insurance which vary by state and city.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "price_basis": "ex-showroom"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 42, Price"
+          }
+        },
+        {
+          "id": "F179",
+          "kind": "feature",
+          "claim": "King Edition specification",
+          "value": "based on the Knight trim, which includes exclusive accessories, King emblem detailing, and selected automatic petrol and diesel powertrain options",
+          "conditions": "Restricted to selected automatic petrol and diesel configurations.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "King Edition",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F239",
+          "kind": "claim",
+          "claim": "Total advanced safety features count",
+          "value": "70+ advanced safety features",
+          "conditions": "Inclusive of standard and optional safety equipment",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 8, Protects what matters the most"
+          }
+        },
+        {
+          "id": "F182",
+          "kind": "feature",
+          "claim": "Exterior lighting and front styling details",
+          "value": "horizon LED positioning lamps, quad-beam LED headlamps, connected LED tail lamps, and parametric radiator grille",
+          "conditions": "Available depending on selected trim.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_d3dd69f190f2",
+            "locator": "Hyundai CRETA Car Price in Delhi (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F072",
+          "kind": "feature",
+          "claim": "Dashcam feature",
+          "value": "Built-in dashcam records front and rear views",
+          "conditions": "Described under CRETA King features",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "King"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_f5d3c8",
+            "locator": "block 44-45"
+          }
+        },
+        {
+          "id": "F128",
+          "kind": "feature",
+          "claim": "Hyundai SmartSense Level 2 ADAS count",
+          "value": "19 features",
+          "conditions": "Equipped on new Hyundai CRETA",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_93e5ef21c73e",
+            "locator": "New Hyundai CRETA Car Safety: Protect what Matters the Most. \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F129",
+          "kind": "feature",
+          "claim": "Forward Collision Assist & Warning",
+          "value": "FCA-Car & FCW, FCA-Ped, FCA-Cyl, FCA-JT",
+          "conditions": "Part of Hyundai SmartSense Level 2 ADAS",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_93e5ef21c73e",
+            "locator": "Forward Collision Assist & Warning \u00b7 blocks 48, 50, 52, 54"
+          }
+        }
+      ],
+      "history": []
+    },
+    "q079": {
+      "question": "What guaranteed resale value will I get after seven years?",
+      "requested_scope": {},
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "I cannot guarantee a resale value for your car after seven years.",
+            "fact_ids": [],
+            "kind": "limitation"
+          },
+          {
+            "text": "Our available policies do cover an extended warranty of up to seven years for petrol models, but they do not set a guaranteed resale figure.",
+            "fact_ids": [
+              "F071",
+              "F245"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": true,
+        "topic": "resale_value"
+      },
+      "evidence": [
+        {
+          "id": "F046",
+          "kind": "feature",
+          "claim": "Connected car suite complimentary subscription",
+          "value": "Hyundai Bluelink connected car technology with 70+ features, 3 years complimentary",
+          "conditions": "Available on SX trim and above; includes 3 years complimentary service",
+          "scope": {
+            "model": "CRETA",
+            "variant": "SX and above"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 25, Infotainment and connected services"
+          }
+        },
+        {
+          "id": "F071",
+          "kind": "policy",
+          "claim": "Extended warranty policy limit",
+          "value": "Up to 7 years extended warranty applies to petrol variants only",
+          "conditions": "Applies strictly to petrol variants; packages payable separately",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "powertrain": "Petrol"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 49, Disclaimers"
+          }
+        },
+        {
+          "id": "F245",
+          "kind": "policy",
+          "claim": "Extended warranty limit",
+          "value": "Upto 7 years extended warranty is applicable only for petrol variants",
+          "conditions": "Payable basis, applicable only to petrol variants",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "Petrol",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 16, Peace of mind"
+          }
+        },
+        {
+          "id": "F243",
+          "kind": "offer",
+          "claim": "Bluelink complimentary subscription",
+          "value": "3 Years free Bluelink subscription with 70+ Bluelink features",
+          "conditions": "Available on trims equipped with Hyundai Bluelink (SX, SX Premium, King, King Knight)",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 6, Always forward thinking"
+          }
+        },
+        {
+          "id": "F087",
+          "kind": "feature",
+          "claim": "Paddle shifters",
+          "value": "Mounted behind the steering wheel",
+          "conditions": "Available on compatible automatic transmissions",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "Paddle shifters \u00b7 block 41-42"
+          }
+        },
+        {
+          "id": "F197",
+          "kind": "feature",
+          "claim": "Interior comfort and convenience features",
+          "value": "Ventilated front seats, panoramic sunroof, wireless charging, dual-zone automatic climate control, D-cut steering wheel, 60:40 split rear seats, rear-seat recline function, and digital instrument cluster",
+          "conditions": "Availability depends on selected variant",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) \u00b7 block 13"
+          }
+        },
+        {
+          "id": "F144",
+          "kind": "feature",
+          "claim": "Connected car features",
+          "value": "Hyundai Bluelink app and Home-to-Car (H2C) with Alexa",
+          "conditions": "Equipped models/trims",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_46192070f7b0",
+            "locator": "New Hyundai CRETA Car Convenience: Always Forward Thinking. \u00b7 block 23"
+          }
+        },
+        {
+          "id": "F194",
+          "kind": "spec",
+          "claim": "Turbo petrol transmission pairing",
+          "value": "7-speed DCT gearbox",
+          "conditions": "Applicable to turbo petrol variants",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "turbo petrol",
+            "transmission": "7-speed DCT"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a4a0ef2466f3",
+            "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) \u00b7 block 13"
+          }
+        },
+        {
+          "id": "F050",
+          "kind": "claim",
+          "claim": "June 2025 sales volume",
+          "value": "15,786 units",
+          "conditions": "Self-reported monthly sales volume for June 2025 in India",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 5, The record Hyundai publishes"
+          }
+        },
+        {
+          "id": "F134",
+          "kind": "feature",
+          "claim": "Tyre pressure monitoring system",
+          "value": "Highline Tyre Pressure Monitoring System displays real-time pressure levels for all tyres",
+          "conditions": "Select variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_93e5ef21c73e",
+            "locator": "Tyre pressure monitoring system: Highline \u00b7 blocks 33, 34"
+          }
+        },
+        {
+          "id": "F172",
+          "kind": "spec",
+          "claim": "Transmission options",
+          "value": "manual, IVT, automatic, and dual-clutch transmissions",
+          "conditions": "Gearbox choices vary across variants and engine combinations.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F177",
+          "kind": "feature",
+          "claim": "Knight Edition features",
+          "value": "black exterior styling elements, black alloy wheels, brass-coloured interior inserts, and exclusive Knight badging",
+          "conditions": "Applicable to Knight Edition trim.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "Knight Edition",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F173",
+          "kind": "spec",
+          "claim": "Turbo petrol gearbox",
+          "value": "7-speed DCT",
+          "conditions": "Specific to 1.5-litre turbo petrol engine.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India",
+            "powertrain": "1.5-litre turbo petrol",
+            "transmission": "7-speed DCT"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_b901153bfc2a",
+            "locator": "Hyundai CRETA Car Price in Ahmedabad (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F094",
+          "kind": "feature",
+          "claim": "Front radiator grille design",
+          "value": "Black chrome parametric radiator grille",
+          "conditions": "Stated exterior element",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a83d31f26e8f",
+            "locator": "Black chrome parametric radiator grille \u00b7 block 34"
+          }
+        }
+      ],
+      "history": []
+    },
+    "q028": {
+      "question": "What is covered by the standard warranty?",
+      "requested_scope": {},
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "I could not verify the specific coverage details for the standard warranty from my available records.",
+            "fact_ids": [],
+            "kind": "limitation"
+          },
+          {
+            "text": "I can share that an extended warranty of up to seven years is available on a payable basis strictly for petrol variants.",
+            "fact_ids": [
+              "F245",
+              "F071"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": true,
+        "topic": "warranty"
+      },
+      "evidence": [
+        {
+          "id": "F245",
+          "kind": "policy",
+          "claim": "Extended warranty limit",
+          "value": "Upto 7 years extended warranty is applicable only for petrol variants",
+          "conditions": "Payable basis, applicable only to petrol variants",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "Petrol",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 16, Peace of mind"
+          }
+        },
+        {
+          "id": "F071",
+          "kind": "policy",
+          "claim": "Extended warranty policy limit",
+          "value": "Up to 7 years extended warranty applies to petrol variants only",
+          "conditions": "Applies strictly to petrol variants; packages payable separately",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "powertrain": "Petrol"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 49, Disclaimers"
+          }
+        },
+        {
+          "id": "F105",
+          "kind": "claim",
+          "claim": "Most powerful engine in lineup",
+          "value": "The 1.5-liter Turbo GDi petrol engine is the most powerful option in the CRETA lineup, delivering the highest power output among regular petrol and diesel engines and providing an exhilarating driving experience.",
+          "conditions": "Among regular petrol and diesel engines in CRETA lineup",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "1.5 l Turbo GDi petrol"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_673bc558f396",
+            "locator": "5.Is the petrol-turbo engine the most powerful among the CRETA\u2019s lineup? \u00b7 block 91"
+          }
+        },
+        {
+          "id": "F202",
+          "kind": "feature",
+          "claim": "King Edition specifications",
+          "value": "Based on the Knight trim, offers exclusive accessories and is available with selected automatic petrol and diesel configurations",
+          "conditions": "Specific to King Edition trim",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King Edition",
+            "transmission": "automatic"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F104",
+          "kind": "policy",
+          "claim": "Specification and equipment modification disclaimer",
+          "value": "Hyundai Motor India reserves the right to change specifications, colour, equipment and schemes at any time without prior notice Colors availability may vary by trims.",
+          "conditions": "Manufacturer legal disclaimer",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "contractual",
+          "source": {
+            "ref": "src_a83d31f26e8f",
+            "locator": "Hyundai CRETA 360\u00b0 Exterior View Experience \u00b7 block 27"
+          }
+        },
+        {
+          "id": "F174",
+          "kind": "feature",
+          "claim": "Standard safety equipment",
+          "value": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors",
+          "conditions": "Standard equipment across the range.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_c27090234838",
+            "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F036",
+          "kind": "spec",
+          "claim": "Overall height",
+          "value": "1,635 mm",
+          "conditions": "Height is quoted with roof rails across all engines",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 29, Technical specifications"
+          }
+        },
+        {
+          "id": "F075",
+          "kind": "spec",
+          "claim": "Seating capacity",
+          "value": "5-seater SUV with spacious seating for five passengers",
+          "conditions": "Standard configuration across the model line",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_cb7525943988",
+            "locator": "FAQs \u00b7 1.Is CRETA a 4-seater or a 5-seater? \u00b7 block 95"
+          }
+        },
+        {
+          "id": "F175",
+          "kind": "feature",
+          "claim": "Additional standard braking and stability systems",
+          "value": "vehicle stability management, rear disc brakes",
+          "conditions": "Stated as included across the lineup.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_b2c64631f8d7",
+            "locator": "Hyundai CRETA Car Price in Lucknow (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F215",
+          "kind": "feature",
+          "claim": "Front parking sensors and camera views",
+          "value": "Front parking sensors, surround view monitor and blind-spot view monitor are standard on SX Premium, King, King Knight and Lounge Edition.",
+          "conditions": "Standard only on the named variants in the India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F189",
+          "kind": "spec",
+          "claim": "Engine options",
+          "value": "1.5L petrol, diesel, and turbo petrol",
+          "conditions": "Available options vary by selected variant",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Discover the Hyundai CRETA Price in Pune \u00b7 block 16"
+          }
+        },
+        {
+          "id": "F214",
+          "kind": "feature",
+          "claim": "Child seat anchoring",
+          "value": "Child seat anchor (ISOFIX), standard across all listed variants",
+          "conditions": "Standard on E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition in the manufacturer India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "all variants"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F238",
+          "kind": "spec",
+          "claim": "Standard safety features count",
+          "value": "36 Standard safety features",
+          "conditions": "Standard on all trims",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 8, Protects what matters the most"
+          }
+        },
+        {
+          "id": "F051",
+          "kind": "price",
+          "claim": "Starting price",
+          "value": "\u20b910,90,700",
+          "conditions": "Ex-showroom starting price in body text; page structured data lists \u20b910.79 lakh; excludes registration, road tax, and insurance which vary by state and city.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "price_basis": "ex-showroom"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 42, Price"
+          }
+        }
+      ],
+      "history": []
+    },
+    "q030": {
+      "question": "What fuel-economy figures are stated, and what test conditions apply?",
+      "requested_scope": {},
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "I do not have the verified fuel-economy figures or their test conditions in the available records.",
+            "fact_ids": [],
+            "kind": "limitation"
+          },
+          {
+            "text": "The details do confirm a 50-litre fuel tank capacity across the variants.",
+            "fact_ids": [
+              "F221",
+              "F038",
+              "F053"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": false,
+        "topic": "fuel_economy"
+      },
+      "evidence": [
+        {
+          "id": "F221",
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "50 l",
+          "conditions": "All trims and powertrains",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Dimensions"
+          }
+        },
+        {
+          "id": "F038",
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "50 l",
+          "conditions": "Applicable across all three engines",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 29, Technical specifications"
+          }
+        },
+        {
+          "id": "F053",
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "50 L",
+          "conditions": "All variants",
+          "scope": {
+            "model": "Hyundai CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_f5d3c8",
+            "locator": "block 23"
+          }
+        },
+        {
+          "id": "F215",
+          "kind": "feature",
+          "claim": "Front parking sensors and camera views",
+          "value": "Front parking sensors, surround view monitor and blind-spot view monitor are standard on SX Premium, King, King Knight and Lounge Edition.",
+          "conditions": "Standard only on the named variants in the India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24"
+          }
+        },
+        {
+          "id": "F102",
+          "kind": "feature",
+          "claim": "Inside rear view mirror and connectivity switches",
+          "value": "ECM mirror with telematics switches",
+          "conditions": "Stated interior equipment",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_cb7525943988",
+            "locator": "ECM mirror with telematics switches \u00b7 block 54"
+          }
+        },
+        {
+          "id": "F175",
+          "kind": "feature",
+          "claim": "Additional standard braking and stability systems",
+          "value": "vehicle stability management, rear disc brakes",
+          "conditions": "Stated as included across the lineup.",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_b2c64631f8d7",
+            "locator": "Hyundai CRETA Car Price in Lucknow (Ex-showroom*) \u00b7 block 14"
+          }
+        },
+        {
+          "id": "F115",
+          "kind": "spec",
+          "claim": "Fuel tank capacity",
+          "value": "50 l",
+          "conditions": "1.5 l U2 CRDi diesel specification table",
+          "scope": {
+            "model": "CRETA",
+            "powertrain": "1.5 l U2 CRDi diesel"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Performance \u00b7 block 28"
+          }
+        },
+        {
+          "id": "F091",
+          "kind": "feature",
+          "claim": "Rear spoiler and high mounted stop lamp",
+          "value": "Body-colour rear spoiler and an LED high-mounted stop lamp (HMSL) across its variants",
+          "conditions": "Stated across variants",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a83d31f26e8f",
+            "locator": "FAQs \u00b7 2. Does the CRETA come with a rear spoiler/high-mounted stop lamp? \u00b7 block 96"
+          }
+        },
+        {
+          "id": "F137",
+          "kind": "feature",
+          "claim": "Digital instrument cluster size",
+          "value": "26.03cm (10.25\u201d) digital cluster",
+          "conditions": "Stated feature",
+          "scope": {
+            "model": "CRETA"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_46192070f7b0",
+            "locator": "26.03cm (10.25\u201d) digital cluster \u00b7 block 25"
+          }
+        },
+        {
+          "id": "F089",
+          "kind": "feature",
+          "claim": "Exterior lighting setup",
+          "value": "Horizon LED positioning lamp & DRLs, quad beam LED headlamps in the front, and connecting LED tail lamps",
+          "conditions": "Stated exterior lighting features",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a83d31f26e8f",
+            "locator": "New Hyundai CRETA Car Exterior: What a legend looks like. \u00b7 block 23"
+          }
+        },
+        {
+          "id": "F100",
+          "kind": "feature",
+          "claim": "Glove box cooling",
+          "value": "Cooled glove box",
+          "conditions": "Stated interior feature",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_cb7525943988",
+            "locator": "Cooled glove box \u00b7 block 52"
+          }
+        },
+        {
+          "id": "F095",
+          "kind": "feature",
+          "claim": "Driver seat adjustment",
+          "value": "Power driver seat - 8 way",
+          "conditions": "Stated interior feature",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_cb7525943988",
+            "locator": "Power driver seat - 8 way \u00b7 block 37"
+          }
+        },
+        {
+          "id": "F094",
+          "kind": "feature",
+          "claim": "Front radiator grille design",
+          "value": "Black chrome parametric radiator grille",
+          "conditions": "Stated exterior element",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a83d31f26e8f",
+            "locator": "Black chrome parametric radiator grille \u00b7 block 34"
+          }
+        },
+        {
+          "id": "F092",
+          "kind": "feature",
+          "claim": "Puddle lamps",
+          "value": "Puddle lamps with welcome function that automatically illuminate the ground near the doors as you approach",
+          "conditions": "Stated convenience feature",
+          "scope": {
+            "model": "CRETA",
+            "market": "India"
+          },
+          "approved": true,
+          "truth": "stated",
+          "source": {
+            "ref": "src_a83d31f26e8f",
+            "locator": "Puddle lamps with welcome function \u00b7 block 46-47"
+          }
+        }
+      ],
+      "history": []
+    },
+    "q049": {
+      "question": "Are these features confirmed for the 2026 model year?",
+      "requested_scope": {
+        "model_year": "2026"
+      },
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "I could not verify the confirmed features for the 2026 model year from our available information.",
+            "fact_ids": [],
+            "kind": "limitation"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": false,
+        "topic": "2026 model year confirmation"
+      },
+      "evidence": [],
+      "history": []
+    }
+  }
+}

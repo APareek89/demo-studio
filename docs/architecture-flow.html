@@ -284,6 +284,8 @@ flowchart TD
   CHOICE{&quot;Decision action?&lt;br/&gt;[FUNCTION · after_reason]&quot;}:::dec
   TOOLS[&quot;Calculator or customer-selected public URL&lt;br/&gt;[FUNCTION · runtime_tools.py]&lt;br/&gt;exact operand units/basis + formula; safe source pages + whole table passages&lt;br/&gt;max 2 tool rounds / 4 calls; graph deadline 12 seconds&quot;]:::fn
   VALIDATE[&quot;Validate sentences; retain supported portion&lt;br/&gt;[FUNCTION · runtime_graph.validate]&lt;br/&gt;IDs, quantities, scope, policy relations, estimate/web qualification&lt;br/&gt;guard is not general semantic entailment&quot;]:::fn
+  REPAIR[&quot;One optional composition repair&lt;br/&gt;[AGENT · runtime_graph._repair_composition]&lt;br/&gt;same approved evidence + precise rejection feedback; no tools or CTA&lt;br/&gt;only if at least 3 seconds remain inside the same 12-second deadline&quot;]:::agent
+  RECHECK[&quot;Revalidate repaired sentences&lt;br/&gt;[FUNCTION · validate_decision]&lt;br/&gt;accept only a supported answer without validation errors&lt;br/&gt;otherwise retain original supported result; cancellation always wins&quot;]:::fn
   PLAN[&quot;Checkpoint a versioned DeliveryPlan&lt;br/&gt;[DATA · runtime_state.py]&lt;br/&gt;snapshot, turn/utterance ID, result, next interaction; no audio in graph&quot;]:::data
   VIEW[&quot;Evidence view: stay / jump / none&lt;br/&gt;[FUNCTION · deck.route_for + player.js]&lt;br/&gt;bridge respects turn ownership; return point stays stable&quot;]:::fn
   SPEAK[&quot;Request selected-voice streaming delivery&lt;br/&gt;[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]&lt;br/&gt;validated answer first, PCM chunks second; cancel closes its socket&quot;]:::data
@@ -304,6 +306,7 @@ flowchart TD
   STOP --&gt; RETRIEVE --&gt; REASON --&gt; CHOICE
   CHOICE -- &quot;tools within budget&quot; --&gt; TOOLS --&gt; REASON
   CHOICE -- &quot;answer or clarification&quot; --&gt; VALIDATE --&gt; PLAN
+  VALIDATE -- &quot;empty or rejected substantive draft; budget remains&quot; --&gt; REPAIR --&gt; RECHECK --&gt; PLAN
   REASON -- &quot;deadline or unavailable&quot; --&gt; FAIL --&gt; PLAN
   PLAN --&gt; VIEW --&gt; SPEAK --&gt; WAIT
   PLAY -- &quot;check-in&quot; --&gt; WAIT

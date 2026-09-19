@@ -1,5 +1,27 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-19 — A valid safety question became a nonexistent trim; rejected drafts lost useful answers
+
+**Five whys:** (1) The completed safety journey declined an answer supported by reviewed ADAS facts. (2) “Which variant conditions apply?” became a request for a trim named “conditions”. (3) The scope parser accepted a generic noun after “variant”. (4) The evidence filter then excluded the real higher-trim ADAS assertions. (5) The browser checked answer success, but earlier scope fixtures lacked this ordinary phrasing. Separate QA100 cases exposed empty structured answers and useful claims removed for bad citation/scope composition, with no opportunity to repair the draft.
+
+**Fix:** exclude generic scope nouns; supply precise row-level validation feedback; allow one optional composition repair against the same approved evidence. It retains customer language, audience and profile, cannot invoke tools/CTA, shares the twelve-second deadline, and must pass the same validator. Cancellation wins; failed repair retains the supported original result. Paid warranty and separate Echo purchase conditions are explicitly preserved. Prompts distinguish the requested unknown from an unrelated known feature.
+
+**Verification and limit:** recorded-draft repair and existing graph/trace contracts exercise the real validator with fake composition. They establish bounded behavior, not live conversational quality. The original failed safety answer and all QA100 cohorts remain unchanged; targeted paid replay is required after the final code is running.
+
+## 2026-09-19 — Quick declines polluted response timing; long filler prolonged an ordinary question
+
+**Five whys:** (1) A 2.585-second decline could be mistaken for useful answer latency. (2) The old roll-up mixed response kinds. (3) Delivery timestamps described playback, not answer success. (4) Legacy records lacked explicit classifications. (5) Timing checks focused on clock consistency without separate quality cohorts. The acknowledgement also used a long recorded sentence after a 500 ms grace period.
+
+**Fix:** persist answer/clarification/decline classification; keep old records in a labelled legacy cohort; exclude declines from answer-playback percentiles. Missing, failed and cancelled timing stays visible. Use a 250 ms grace period and the shortest compatible reviewed filler; Creta's four-word Priya clip is 1.365 seconds. A ready answer still preempts it.
+
+**Verification:** metrics15, voice-client56 and player41 free checks pass. A new actual typed ADAS probe is pending; the old failed answer remains a decline, not a latency success. Muted tests cannot establish perceived voice warmth or physical microphone quality.
+
+## 2026-09-19 — Lookup navigation outranked answers; table absence needed explicit evidence
+
+**Five whys:** (1) A requested engine page yielded weak generic evidence. (2) Navigation/FAQ questions repeated the search words. (3) Ranking counted headings like answer bodies and retained request verbs. (4) A first repair dropped every paragraph ending in a question and mishandled hyphenated model slugs. (5) Ranking fixtures did not include an answer paragraph followed by a question or a multiword URL model. **Fix:** rank answer-body topic overlap first, tokenize model slugs consistently, remove only question-only rows and irrelevant contact forms, preserve exact source quotes. Thirteen actual extraction/ranking regressions pass.
+
+**Source correction:** E/EX sunroof and rear-camera absence is supported by explicit brochure matrix cells and a matching guide legend, not inferred trim ordering. Versioned F247/F248 replace held/vague assertions; v5 retains all story/media and old snapshots. Independent retrieval/positive-inversion controls pass6/6. A missing retrieved fact still never proves absence across an entire website.
+
 ## 2026-09-19 — The second real answer batch still exposed coverage and delivery defects
 
 **Observed:** semantic review of the second100 found64 supported,23 partial,8 unhelpful,2 unsafe and3 provider failures. Scoped retrieval dropped approved inline wheel rows and universally available parking sensors; a model then incorrectly said the comparison was absent. Fresh webpage verification could be claimed using only a saved document citation. Lookup also wandered from Creta to Alcazar and general service pages on the same host. Strict negative-claim guards sometimes removed the actual refusal and left an orphan sentence.

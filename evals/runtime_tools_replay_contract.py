@@ -73,6 +73,54 @@ class RuntimeToolsReplay(unittest.TestCase):
         self.assertEqual(fetch.call_count, 1)
         self.assertEqual(len(result['pages']), 1)
 
+    def test_lookup_prefers_answer_body_over_titles_questions_and_contact_forms(self):
+        seed = 'https://www.hyundai.com/in/en/find-a-car/creta/specification'
+        sections = [{'heading': 'CRETA engine specification', 'text': 'CRETA engine specification', 'locator': 'title'},
+                    {'heading': 'CRETA engine specification', 'text': 'Interested in a Hyundai? Share number to know more from us.', 'locator': 'contact'},
+                    {'heading': 'Engine options', 'text': 'What engine options does the CRETA provide?', 'locator': 'question'},
+                    {'heading': 'Engine options', 'text': 'A 1.5-litre petrol and a 1.5-litre turbo petrol are listed for this model.', 'locator': 'answer'}]
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': sections}):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Using this page tell me what engine information it actually provides for Creta'}, 'Check ' + seed, [])
+        self.assertEqual([f['source']['locator'] for f in result['evidence']], ['answer', 'title'])
+
+    def test_model_name_alone_does_not_displace_topic_evidence(self):
+        seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
+        sections = [{'heading': 'CRETA', 'text': 'The CRETA name appears across the model family.', 'locator': f'generic{i}'} for i in range(8)]
+        sections.append({'heading': 'Cabin', 'text': 'A panoramic sunroof is available on selected trims.', 'locator': 'sunroof'})
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': sections}):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Can you verify whether the Creta page mentions a panoramic sunroof?'}, 'Check ' + seed, [])
+        self.assertEqual([f['source']['locator'] for f in result['evidence']], ['sunroof'])
+
+    def test_feature_heading_remains_evidence_that_page_mentions_feature(self):
+        seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
+        heading = 'Voice enabled smart panoramic sunroof'
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': [{'heading': heading, 'text': heading, 'locator': 'feature'}]}):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Does the page mention a panoramic sunroof?'}, 'Check ' + seed, [])
+        self.assertEqual(result['evidence'][0]['value'], heading)
+        self.assertTrue(result['evidence'][0]['scope_unverified'])
+
+    def test_answer_paragraph_with_trailing_question_is_not_dropped(self):
+        seed = 'https://example.com/car/specification'
+        passage = 'Fuel tank capacity is 50 litres. Want to know about fuel tank care?'
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': [{'heading': 'Fuel tank', 'text': passage, 'locator': 'answer'}]}):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'fuel tank capacity'}, 'Check ' + seed, [])
+        self.assertEqual(result['evidence'][0]['value'], passage)
+
+    def test_hyphenated_model_slug_is_tokenized_like_the_question(self):
+        seed = 'https://example.com/grand-vitara/highlights'
+        sections = [{'heading': 'Grand Vitara', 'text': 'The Grand Vitara name appears across this model family.', 'locator': f'generic{i}'} for i in range(8)]
+        sections.append({'heading': 'Cabin', 'text': 'A panoramic sunroof is available on selected trims.', 'locator': 'sunroof'})
+        with patch('server.crawl._model_tokens', return_value=['grand-vitara']), patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': sections}):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Grand Vitara panoramic sunroof'}, 'Check ' + seed, [])
+        self.assertEqual([f['source']['locator'] for f in result['evidence']], ['sunroof'])
+
+    def test_relevant_answer_with_contact_footer_keeps_its_full_quote(self):
+        seed = 'https://example.com/car/specification'
+        passage = 'Fuel tank capacity is 50 litres. Share your number to request a test drive.'
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': [{'heading': 'Fuel tank', 'text': passage, 'locator': 'answer'}]}):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'fuel tank capacity'}, 'Check ' + seed, [])
+        self.assertEqual(result['evidence'][0]['source']['quote'], passage)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

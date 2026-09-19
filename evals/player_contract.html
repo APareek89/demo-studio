@@ -136,11 +136,25 @@ const detail = () => ({ context: player?.context(), currentCitations: host.query
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
+test('A ready answer bypasses acknowledgment and persists its distinct answer classification', async () => {
+  const answer = 'The approved answer is already ready.', filler = 'Let me check that.';
+  await setup({ hold: text => text === answer, qa: async () => answered({ answer }), configure: b => ({ ...b, fillers: { hold_on_question: { text: filler, audio: audioURL(filler) } } }) });
+  await atProof(); await type('What does the approved source say?');
+  assert(env.played.includes(answer) && !env.played.includes(filler), 'Ready answer waited behind an unnecessary acknowledgment');
+  await clock.tick(1000);
+  assert(!env.played.includes(filler) && env.maxActive === 1, 'Expired grace timer started a late acknowledgment over the answer');
+  window.dispatchEvent(new Event('pagehide'));
+  const turn = env.beacons.at(-1).turns.at(-1);
+  assert(turn.response_kind === 'answer' && turn.answered === true && turn.answer_audio != null && turn.ack_audio == null, 'Saved session confused answer playback with acknowledgment');
+});
+
 test('An answer arriving during acknowledgment cuts only the filler and never overlaps voices', async () => {
   let release;
   const filler = 'Give me one moment while I check that for you.';
   await setup({ hold: text => text === filler, qa: () => new Promise(resolve => { release = resolve; }) });
-  await atProof(); await type('What does the approved source say?'); await clock.tick(701);
+  await atProof(); await type('What does the approved source say?'); await clock.tick(249);
+  assert(!env.played.includes(filler), 'Acknowledgment started before its fast-answer grace');
+  await clock.tick(1);
   const oldAudio = [...env.active].find(audio => audio.text === filler);
   assert(oldAudio && env.calls.length === 1, 'Fixture did not reach the in-flight acknowledgment');
   release(answered({ answer: 'The useful answer is ready now.' })); await flush();
@@ -202,6 +216,8 @@ test('A typed clarification is accepted once with conversation history', async (
   await setup({ qa: async (_, n) => n === 1 ? answered({ clarifying_question: 'Do you mean the manual or automatic?' }) : answered() });
   await atProof(); await type('Which transmission is that?');
   assert(env.played.includes('Do you mean the manual or automatic?'), 'Clarification was never asked');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(env.beacons.at(-1).turns.at(-1).response_kind === 'clarification', 'Clarification was saved as a factual answer');
   const clarificationRecognition = recentRecognizer();
   await type('The automatic, please.');
   assert(env.calls.length === 2 && env.calls[1].question === 'Which transmission is that?', 'Clarification did not retain the original question for QA');
@@ -240,6 +256,9 @@ test('An unknown answer holds the callback form without narration behind it', as
   await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
   await atProof(); await type('What exact EMI will the bank guarantee?');
   assert(host.querySelector('.pl-lead.open'), 'Unknown did not open callback form');
+  window.dispatchEvent(new Event('pagehide'));
+  const turn = env.beacons.at(-1).turns.at(-1);
+  assert(turn.response_kind === 'decline' && turn.answered === false && turn.answer_audio != null, 'Audible decline lost its separate classification or real playback stamp');
   const before = env.played.length; await clock.tick(30000);
   assert(player.context().slide === 'proof-one', 'Unknown answer advanced while the callback form was open');
   assert(env.played.length === before, 'Narration continued behind the callback form');

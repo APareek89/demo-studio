@@ -4,7 +4,7 @@
 
 ## Reviewed demo
 
-Hyundai CRETA `dm_41513908`, published version **2**, knowledge snapshot `kb_0aa4afd7c249769b1208267f`, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).
+Hyundai CRETA `dm_41513908`, published version **5**, knowledge snapshot `kb_5af02e3769b5c51a0b44f50e`, **181 approved facts**, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).
 
 The demo uses eleven selected official images and the supplied PDFs alongside model-scoped official India pages. Manufacturer engine-table figures were visually checked. Conflicting turbo displacement and airbag assertions were rejected; repaired assertions have new identities. Variant, market and optional-package conditions remain visible. A brochure publication date is not treated as a vehicle model year.
 
@@ -30,7 +30,21 @@ The browser replay passed **20 controlled interruptions**: four each during over
 
 The two completed typed answers measured first useful audio at **7.764 seconds for EMI** and **4.944 seconds for ADAS**; acknowledgement started at **734/761 ms**. These are small samples and do not establish reliable percentiles or meet every proposed latency target. [Pass 2 private evidence](../output/creta-runtime-2026-09-19/qa100-reviewed-v2-pass2/summary.json) and the immutable browser `attempt-03/` remain local.
 
-Follow-up repairs recover approved wheel and parking facts, preserve clear negative refusals, constrain live lookup to the selected model/market, support explicit monthly-rate EMI and improve recap resilience. A focused replay is pending. A third complete customer journey and final quality acceptance remain open.
+Follow-up repairs recover approved wheel and parking facts, preserve clear negative refusals, constrain live lookup to the selected model/market, support explicit monthly-rate EMI and improve recap resilience.
+
+## Focused replay and corrective publication
+
+The 24-case focused replay on `eb27b71` produced **14 supported, 3 partial, 2 unhelpful, 2 unsafe and 3 provider failures**. It is a deliberately difficult subset, not a replacement 100-case score. The two unsafe answers exposed an approved conflicting turbo displacement in the uploaded guide and an unqualified current-lineup claim from a Pune FAQ. Universal-feature projection and compound trim parsing also lost supported answers. Results and independent reviews remain unchanged under `qa-focused-pass2-repairs/`.
+
+The source audit rejected F056/F048/F076/F126 and replaced ambiguous F123 with F246, explicitly describing the manufacturer's spare wheel. Dependent citations were reviewed; all remaining references resolve to approved evidence. **Bundle v3 is a corrective publication beyond the two authored iterations.** It used deterministic assembly with no paid generation. Slides, narration, voice settings and audio references are unchanged; the original v2 snapshot is preserved. The old static score remains historical and its rehearsal stage is stale, not a fresh pass.
+
+Runtime repairs retain material market scope, preserve S(O) Knight, support valid safety subsets and dispatch explicit URL verification before model reasoning. The third unchanged 100-question pack completed on `2a07c75` against v3: **75 supported,18partial,6unhelpful,0unsafe flagged,1provider failure**. All-request HTTP text median was **2.353s**, p95 **6.953s**; the shared recorded usage delta was **$0.6635**, including concurrent browser activity. This still misses the quality target. Exact results and semantic reviews are preserved in `qa100-final-source-corrected/`.
+
+The safety journey completed every selected slide, explicit Not yet and recap, with no lead submission. It passed12/13 assertions: ADAS answering failed because ordinary “variant conditions” was parsed as a nonexistent trim. Its679ms acknowledgement and2.585s **decline** audio are not a successful useful-answer timing. The flow completion does not turn the failed answer into a pass.
+
+Bundle v4 replaces only the long acknowledgement with **“Let me check that.”**, recorded in locked Sarvam/Priya at **1.365s**. All other bundle content and the knowledge snapshot are identical. One short render added a recorded estimate of **$0.0003**; no new story or full voice stage ran. The parser correction, one bounded validation-repair composition, shorter acknowledgement grace and outcome-separated metrics are undergoing targeted validation before another live replay.
+
+Corrective v5 adds precise manufacturer-backed sunroof and rear-camera applicability: E/EX have explicit dashes in those rows, corroborated by the guide's symbol legend. NewF247/F248 preserve old assertion history. It contains181approved facts; all narration, slides and recordings remain unchanged. Six independent offline controls confirm retrieval, valid negative answers and rejection of inverted positive claims. These source checks do not replace live answer-quality testing.
 
 ## Repair details
 

@@ -143,6 +143,9 @@ check("capture preserves speech amplitude without sending audible output", packe
 const playerSource = fs.readFileSync(new URL("../web/player/player.js", import.meta.url), "utf8");
 const correctionSource = playerSource.slice(playerSource.indexOf("function explicitContextCorrection("), playerSource.indexOf("\nexport function mountPlayer"));
 const correction = vm.runInNewContext(correctionSource + "\nexplicitContextCorrection");
+const questionAckKey = vm.runInNewContext(correctionSource + "\nquestionAckKey");
+check("acknowledgment reuses the shorter reviewed clip without changing its wording", questionAckKey({ hold_on_question: { text: "Good question give me one moment please", audio: "/long.wav" }, hold_on_lookup: { text: "Let me check", audio: "/short.wav" } }) === "hold_on_lookup");
+check("unrecorded or longer alternatives never replace the reviewed acknowledgment", questionAckKey({ hold_on_question: { text: "Checking", audio: "/short.wav" }, hold_on_lookup: { text: "One moment while I look that up", audio: "/long.wav" } }) === "hold_on_question" && questionAckKey({ hold_on_lookup: { text: "Checking" } }) === "hold_on_question");
 check("explicit stated priority triggers refinement", correction("Actually, boot space matters more.") && correction("I care more about safety."));
 check("factual questions and hypotheticals cannot rewrite customer preference", !correction("Is boot space more important?") && !correction("For example, I prefer safety.") && !correction("Actually, the warranty is five years.") && !correction("What if I prefer safety?"));
 const resultSource = playerSource.slice(playerSource.indexOf("  async function questionResult("), playerSource.indexOf("  async function handleQuestion("));
@@ -170,7 +173,7 @@ const resultSource = playerSource.slice(playerSource.indexOf("  async function q
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 function questionHarness() {
   const state = { run: 1 }, qa = deferred(), filler = deferred(), calls = { cancel: 0, filler: 0, status: 0 };
-  const result = vm.runInNewContext(resultSource + "\nquestionResult", { S: state, withTimeout: async () => null,
+  const result = vm.runInNewContext(resultSource + "\nquestionResult", { S: state, bundle: {}, questionAckKey, withTimeout: async () => null,
     speakF() { calls.filler++; return filler.promise; }, cancelSpeech() { calls.cancel++; }, setStatus() { calls.status++; } });
   return { state, qa, filler, calls, result };
 }

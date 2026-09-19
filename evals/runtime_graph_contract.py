@@ -281,6 +281,17 @@ async def main():
         check("Actual graph invokes tool then recomposes",len(calls)==2 and len(final["result"]["tool_results"])==1 and final["result"]["answered"])
         check("Actual graph reports the provider that returned the answer",final["result"]["provider_used"]=="runware" and final["result"]["model_used"]=="contract-fallback")
         check("Tool result stays session scoped",all(f["id"]=="F001" for f in store.read_json(d,"understanding.json")["facts"]))
+        repair_calls=[]
+        def empty_then_compose(system,content,schema,**kwargs):
+            repair_calls.append(schema)
+            if schema is TurnDecision:
+                return TurnDecision(action="answer",answered=True)
+            return rg._CompositionRepair(sentences=[{"text":"Six airbags are standard.","fact_ids":["F001"],"kind":"fact"}])
+        with patch("server.llm.runtime.structured",side_effect=empty_then_compose):
+            final=await rg.run_turn(d,{"session_id":"s_repair","question":"How many airbags?"})
+        check("Actual graph performs one composition repair after an empty model answer",repair_calls==[TurnDecision,rg._CompositionRepair])
+        check("Actual graph publishes only revalidated repaired speech",final["result"]["answered"] and final["result"]["validation_repair"]["accepted"] and final["delivery"]["speech"]=="Six airbags are standard.")
+        check("Repair timing stays within the same pinned graph turn",final["delivery"]["snapshot_id"]==snap["id"] and "repair_ms" in final["result"]["graph_timings"])
         def failing(*a,**k):raise RuntimeError("outage")
         with patch("server.llm.runtime.structured",side_effect=failing):
             final=await rg.run_turn(d,{"session_id":"s_failure","question":"airbags"})

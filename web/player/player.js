@@ -34,6 +34,10 @@ function explicitContextCorrection(text) {
   if (/[?？]/.test(value) || /^(?:what if|if |suppose|imagine|for example|hypothetically)\b/i.test(value)) return false;
   return /^(?:actually[,\s]+)?(?:my (?:priority|main concern) is\b|i (?:care (?:most|more) about|want to focus on|would (?:rather|prefer)|prefer)\b|(?:boot(?: space)?|safety|comfort|range|space|ownership costs?|running costs?|performance|technology) (?:matters? more|is (?:my )?priority)\b)/i.test(value);
 }
+function questionAckKey(fillers = {}) {
+  const lookup = fillers.hold_on_lookup, question = fillers.hold_on_question;
+  return lookup?.audio && lookup.text && (!question?.audio || lookup.text.split(/\s+/).length < (question.text || "").split(/\s+/).length) ? "hold_on_lookup" : "hold_on_question";
+}
 
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
@@ -684,10 +688,10 @@ export function mountPlayer(host, bundle, api) {
 
   // ---------- questions, don't-guess, lead capture ----------
   async function questionResult(qaP, run, turn) {
-    const early = await withTimeout(qaP, 500);
+    const early = await withTimeout(qaP, 250);
     if (run !== S.run || early) return early;
     S.onFirstAudio = ts => { turn.ack_audio = ts; };
-    const filler = speakF("hold_on_question", "Give me one moment while I check that for you.", run);
+    const filler = speakF(questionAckKey(bundle.fillers), "Give me one moment while I check that for you.", run);
     const ready = qaP.then(result => ({ kind: "answer", result }), error => ({ kind: "error", error }));
     const winner = await Promise.race([ready, filler.then(ok => ({ kind: "filler", ok }))]);
     if (run !== S.run) return null;
@@ -740,6 +744,7 @@ export function mountPlayer(host, bundle, api) {
     }
     if (run !== S.run) return;
     turn.qa_done = Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered; turn.failed = !!(r.provider_failed || r.timed_out);
+    turn.response_kind = r.clarifying_question ? "clarification" : r.answered ? "answer" : "decline";
     turn.tool_count = r.tool_count || r.tool_results?.length || 0; turn.tool_results = (r.tool_results || []).map(tool => ({ type: tool.type || tool.tool, ok: tool.ok, source_url: tool.source_url, error: tool.error })); turn.graph_timings = r.graph_timings || {}; turn.answer_route = turn.tool_count ? "tool" : r.from_bank ? "cache" : "model";
     S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
     // A clarification is the answer for this turn. Do not speak a provisional claim or ask it twice.

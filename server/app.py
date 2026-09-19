@@ -1211,15 +1211,16 @@ def _pct(values: list[float], q: float) -> float | None:
 
 
 def _latency(demo_id: str) -> dict:
-    """p50 / p95 per stage over every stamped customer turn of this demo: voice ended → STT done → QA done → first answer
-    audio playing. Typed questions stamp voice and STT together (stt = 0). Turns that never produced audio only count
-    where they have both stamps."""
+    """Useful-answer latency, with an explicitly labelled legacy-only fallback."""
+    from .runtime_metrics import response_kind, _duration
     turns = [tn for s in storage.backend().iter_sessions(demo_id) for tn in (s.get("turns") or [])]
-    out = {"turns": len(turns), "sessions_with_turns": sum(1 for s in storage.backend().iter_sessions(demo_id) if s.get("turns")), "stages": {}}
+    classified = any(response_kind(tn) != "legacy_all_responses" for tn in turns)
+    eligible = [tn for tn in turns if not tn.get("failed") and not tn.get("cancelled") and (response_kind(tn) == "answer" if classified else True)]
+    out = {"turns": len(turns), "eligible_turns":len(eligible), "scope":"useful_answers" if classified else "legacy_all_responses", "response_counts":{kind:sum(response_kind(tn)==kind for tn in turns) for kind in ("answer","clarification","decline","legacy_all_responses")}, "sessions_with_turns": sum(1 for s in storage.backend().iter_sessions(demo_id) if s.get("turns")), "stages": {}}
     for name, a, b in STAGES_MS:
-        vals = [float(tn[b]) - float(tn[a]) for tn in turns if isinstance(tn.get(a), (int, float)) and isinstance(tn.get(b), (int, float)) and tn[b] >= tn[a]]
+        vals = [value for tn in eligible if (value := _duration(tn,a,b)) is not None]
         out["stages"][name] = {"n": len(vals), "p50": _pct(vals, 0.5), "p95": _pct(vals, 0.95)}
-    out["by_source"] = {k: sum(1 for tn in turns if (tn.get("from_bank") and k == "bank") or (not tn.get("from_bank") and k == "model")) for k in ("bank", "model")}
+    out["by_source"] = {k: sum(1 for tn in eligible if (tn.get("from_bank") and k == "bank") or (not tn.get("from_bank") and k == "model")) for k in ("bank", "model")}
     return out
 
 

@@ -128,7 +128,7 @@ FILLERS = {
     "ack_with_context": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
     "ack_no_context": "No problem — you can steer me at any time.",
     "bridge_to_custom": "Now, let me get to what you asked about.",
-    "hold_on_question": "Good question — give me one moment, please, while I check that for you.",
+    "hold_on_question": "Let me check that.",
     "hold_on_lookup": "Give me one moment, please, while I pull that up.",
     "back_to_demo": "Let's get back to where we were.",
     "nudge_continue": "I'll carry on — stop me whenever you like.",

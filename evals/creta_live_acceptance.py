@@ -8,8 +8,10 @@ A read-only observer is inserted into the served player module, never its file.
 Every paid outbound browser request checks recorded usage before forwarding.
 """
 import argparse
+import hashlib
 import json
 import signal
+import subprocess
 import time
 from pathlib import Path
 
@@ -20,11 +22,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--url', required=True)
 parser.add_argument('--authorized-real-batch', action='store_true')
 parser.add_argument('--safety-only', action='store_true', help='Authorized targeted full safety replay; preserves master counters and baseline')
+parser.add_argument('--adas-only', action='store_true', help='One Browse/typed ADAS question, no Explore or full tour; at most one reasoning and one answer TTS request')
 parser.add_argument('--mock-dry-run', action='store_true', help='Free isolated mock fixture on8897; never real providers')
 parser.add_argument('--mock-natural-only', action='store_true', help='With mock-dry-run, exercise natural completions without provider-latency interruption phases')
 parser.add_argument('--mock-pitch-failure', action='store_true', help='Free mock only: fail planning locally to prove honest fallback still completes')
 args = parser.parse_args()
 assert not args.safety_only or (args.authorized_real_batch and not args.mock_dry_run), 'Safety replay is an explicitly authorized real batch'
+assert not (args.safety_only and args.adas_only), 'Select one targeted mode'
 assert not args.mock_natural_only or args.mock_dry_run, 'Natural-only mode is restricted to the free mock fixture'
 assert not args.mock_pitch_failure or args.mock_dry_run, 'Planning fault injection is restricted to the free mock fixture'
 assert args.authorized_real_batch or args.mock_dry_run, 'Explicit parent authorization is required'
@@ -33,9 +37,10 @@ assert args.url.startswith(BASE + '/') and 'mute=1' in args.url
 DEMO = args.url.split('/play/')[-1]
 OUT = Path('output/playwright/creta-harness-free-natural' if args.mock_natural_only else 'output/playwright/creta-harness-free-v2' if args.mock_dry_run else 'output/playwright/creta-real-runtime')
 if args.mock_pitch_failure: OUT = Path('output/playwright/creta-harness-free-fallback')
+if args.mock_dry_run and args.adas_only: OUT = Path('output/playwright/creta-harness-free-adas')
 BATCH_OUT = OUT
-if args.safety_only:
-    replay = BATCH_OUT / 'safety-replay'
+if args.safety_only or args.adas_only:
+    replay = BATCH_OUT / ('adas-probe' if args.adas_only else 'safety-replay')
     attempt = 1
     while (replay / f'attempt-{attempt:02}').exists(): attempt += 1
     OUT = replay / f'attempt-{attempt:02}'
@@ -58,10 +63,13 @@ budget_file = BATCH_OUT / 'budget-state.json'
 budget = json.loads(budget_file.read_text()) if budget_file.exists() else {'usage_before': http.get(usage_path).raise_for_status().json(), 'counters': {'reasoning_requests': 0, 'tts_requests': 0}}
 usage_before = budget['usage_before']
 ledger, checks, scenarios, errors, journeys, planning_outcomes = [], [], [], [], [], []
+probe = {}; attempt_requests = {'reasoning': 0, 'tts': 0}
 counters = budget['counters']
 budget_file.write_text(json.dumps(budget, indent=2))
+(OUT/'run-metadata.json').write_text(json.dumps({'app_code_sha':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'harness_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'bundle_version':bundle.get('version'),'demo_id':DEMO,'mode':'focused_adas' if args.adas_only else 'safety_only' if args.safety_only else 'three_journeys','mock':args.mock_dry_run,'initial_counters':dict(counters),'baseline_usd':usage_before['total_usd']},indent=2))
+(OUT/'harness-uncommitted.diff').write_text(subprocess.check_output(['git','diff','--',__file__],text=True))
 started = time.time()
-interruptions_per_phase = 0 if args.mock_natural_only or args.safety_only else 4
+interruptions_per_phase = 0 if args.mock_natural_only or args.safety_only or args.adas_only else 4
 expected_interruptions = interruptions_per_phase * 5
 
 
@@ -73,6 +81,8 @@ def note(kind, **detail):
 
 def guard(kind):
     check_pause()
+    if args.adas_only and attempt_requests[kind] >= 1:
+        raise RuntimeError('Focused ADAS probe allows only one reasoning and one answer TTS request; no retry forwarded')
     guard_started = time.monotonic()
     current = http.get(usage_path).raise_for_status().json()
     delta = current['total_usd'] - usage_before['total_usd']
@@ -89,12 +99,13 @@ def guard(kind):
     if current['total_usd'] >= 19.5 or delta >= 6.0 or (kind == 'reasoning' and counters['reasoning_requests'] >= 32) or (kind == 'tts' and counters['tts_requests'] >= 32):
         raise RuntimeError('Authorized paid batch ceiling reached; no further paid request forwarded')
     counters['reasoning_requests' if kind == 'reasoning' else 'tts_requests'] += 1
+    attempt_requests[kind] += 1
     budget_file.write_text(json.dumps(budget, indent=2))
 
-def check(name, ok, detail=None):
+def check(name, ok, detail=None, fatal=True):
     checks.append({'name': name, 'passed': bool(ok), 'at_ms': stamp(), 'detail': detail})
     print(('PASS ' if ok else 'FAIL ') + name, flush=True)
-    if not ok: raise AssertionError(name)
+    if not ok and fatal: raise AssertionError(name)
 
 INSTRUMENT = r"""(() => {
 window.__wire=[];window.__audios=[];window.__sources=[];window.__captures=0;window.__tracks=[];window.__media=[];
@@ -232,7 +243,40 @@ with sync_playwright() as p:
         pause_reason=f'Parent requested cooperative pause with {signal.Signals(signum).name}; no further paid request forwarded'
     signal.signal(signal.SIGINT,request_pause); signal.signal(signal.SIGTERM,request_pause)
     try:
-        if not args.safety_only:
+        if args.adas_only:
+            page.goto(args.url)
+            page.get_by_role('button',name='Browse at my pace',exact=True).click()
+            wait('!!__liveSocket && __liveSocket.readyState===1')
+            text='What driver assistance features are available, and which variant conditions apply?'
+            question(text)
+            wait('__reviewSnapshot().waiting && !__reviewSnapshot().pending && !__reviewSnapshot().activeTurn && __reviewSnapshot().session.turns.length===1',timeout=60000)
+            state=snap(); turn=state['session']['turns'][-1]
+            answer=page.evaluate("__wire.filter(e=>e.type==='turn.result').at(-1)?.answer || null")
+            media=page.evaluate('__media')
+            ack=bundle.get('fillers',{}).get('hold_on_question',{})
+            ack_events=[event for event in media if ack.get('audio') and event.get('src','').endswith(ack['audio'])]
+            facts={fact['id']:fact for fact in bundle.get('facts',[])}
+            probe={'question':text,'turn':turn,'answer':answer,'acknowledgment':ack,'ack_events':ack_events,'snapshot':state,'cited_facts':[facts.get(fid,{'id':fid,'missing':True}) for fid in (answer or {}).get('fact_ids',[])],'context_note':'Browse starts with no intake. Exact previously failing question; same published product/trim scope. No profile mutation or paid Explore.'}
+            ack_ended=next((event['at_ms'] for event in ack_events if event['kind']=='ended'),None)
+            probe['timing']={'input_source':'typed','clock':'browser Date.now playback callbacks; no acoustic inference','submitted_at':turn['voice_ended'],'ack_audio_at':turn.get('ack_audio'),'ack_ended_at':ack_ended,'answer_audio_at':turn.get('answer_audio'),'delivery_done_at':turn.get('delivery_done'),'ack_ms':turn['ack_audio']-turn['voice_ended'] if turn.get('ack_audio') is not None else None,'answer_ms':turn['answer_audio']-turn['voice_ended'] if turn.get('answer_audio') is not None else None,'ack_completed_before_answer':ack_ended<=turn['answer_audio'] if ack_ended is not None and turn.get('answer_audio') is not None else None,'response_kind':turn.get('response_kind'),'answer_quality_separately_reviewed':False}
+            check('focused ADAS has one classified answer without provider failure',turn.get('answered') is True and turn.get('response_kind')=='answer' and not turn.get('failed'),turn,fatal=False)
+            check('focused ADAS has real answer audio and no physical microphone',turn.get('answer_audio') is not None and page.evaluate('__captures===0'),turn,fatal=False)
+            check('focused ADAS acknowledgment uses the reviewed clip'+('' if args.mock_dry_run else ' with four words'),(args.mock_dry_run or ack.get('text')=='Let me check that.') and (turn.get('ack_audio') is None or any(event['kind']=='playing' for event in ack_events)),ack_events,fatal=False)
+            check('focused ADAS retains citations for review',bool((answer or {}).get('fact_ids')) and not any(fact.get('missing') for fact in probe['cited_facts']),probe['cited_facts'],fatal=False)
+            if turn.get('ack_audio') is not None:
+                check('focused ADAS acknowledgment begins within700ms',0<=probe['timing']['ack_ms']<=700,probe['timing'],fatal=False)
+            page.screenshot(path=str(OUT/'answer.png'))
+            with page.expect_response(lambda response: response.url.endswith('/run/session') and response.request.method=='POST') as saved_response:
+                page.get_by_role('button',name='Stop and see the summary',exact=True).click()
+            check('focused ADAS session save succeeds',saved_response.value.ok)
+            expect(page.get_by_role('heading',name='Your recap',exact=True)).to_be_visible()
+            probe['recap']=snap();page.screenshot(path=str(OUT/'recap.png'))
+            probe['persisted_session']=http.get(f'/api/demos/{DEMO}/sessions/{state["session"]["id"]}').raise_for_status().json()
+            check('focused ADAS persists the actual response classification',probe['persisted_session']['turns'][-1].get('response_kind')==turn.get('response_kind'))
+            metrics=http.get(f'/api/demos/{DEMO}/trace?limit=1').raise_for_status().json()
+            probe['metrics']={'latency':metrics.get('latency'),'cohorts':metrics.get('runtime_metrics',{}).get('cohorts',[])}
+            (OUT/'adas-evidence.json').write_text(json.dumps(probe,indent=2))
+        if not args.safety_only and not args.adas_only:
             begin('I am exploring a family SUV. Rear-seat comfort and boot space matter most, and I want to understand the safety features.')
             for i in range(interruptions_per_phase):
                 wait("__reviewSnapshot().playback.phase==='overview' && !!__reviewSnapshot().speaking?.startedAt")
@@ -260,7 +304,7 @@ with sync_playwright() as p:
         for name,profile,text in [
             ('commute-calculation','I commute in the city and care most about everyday comfort and monthly ownership cost.','Calculate the illustrative monthly EMI on a loan of 10 lakh rupees at 9 percent annual interest over 5 years.'),
             ('safety-evidence','Safety and confidence on family highway trips matter most to me. I would like to understand the approved driver assistance features.','What driver assistance features are available, and which variant conditions apply?')]:
-            if args.safety_only and name != 'safety-evidence': continue
+            if args.adas_only or (args.safety_only and name != 'safety-evidence'): continue
             begin(profile)
             # A valid selected route may contain no authored check-in. Ask during
             # reviewed narration instead of assuming a question wait must exist.
@@ -274,7 +318,7 @@ with sync_playwright() as p:
             expected_slides=list(state['session']['slides'])
             question(text);wait('__reviewSnapshot().waiting && !__reviewSnapshot().pending && !__reviewSnapshot().activeTurn',timeout=45000)
             state=snap();check(name+' answer requires explicit continuation',state['waiting'] and bool(state['session']['turns']))
-            if not args.mock_dry_run:check(name+' receives an answer without provider failure',state['session']['turns'][-1].get('answered') and not state['session']['turns'][-1].get('failed'),state['session']['turns'][-1])
+            if not args.mock_dry_run:check(name+' receives an answer without provider failure',state['session']['turns'][-1].get('answered') and not state['session']['turns'][-1].get('failed'),state['session']['turns'][-1],fatal=False)
             if name=='commute-calculation' and not args.mock_natural_only:check('calculation result records tool provenance',state['session']['turns'][-1].get('tool_count',0)>0,state['session']['turns'][-1])
             finish_tour(name,expected_slides)
         check('no browser exception or guard violation',not errors,errors)
@@ -292,9 +336,12 @@ usage_after=http.get(usage_path).raise_for_status().json()
 result={'started_at_ms':round(started*1000),'finished_at_ms':stamp(),'bundle_version':bundle.get('version'),'demo_id':DEMO,'checks':checks,'interruptions':scenarios,'journeys':journeys,'errors':errors,'counters':counters,'usage_before':usage_before,'usage_after':usage_after,'batch_usd_recorded':round(usage_after['total_usd']-usage_before['total_usd'],4),'usage_attribution':'Dollar delta and provider completion counts share the demo ledger with separately authorized concurrent QA; may overestimate browser cost. Persistent outbound reasoning/TTS request counters apply only to this browser batch and are never reset between attempts.','boundary':'Isolated headless Chrome, all output muted. Actual prerecorded/WebAudio delivery and real backend reasoning/tools/TTS. Synthetic silent capture and injected STT onset/finals. Read-only observer only. No acoustic onset/STT accuracy/echo/human quality claim. Calculation-request-pending is browser state, not proof of active tool execution.'}
 result['budget_limits'] = {'shared_incremental_usd_stop':6.0,'shared_scope':'Separately authorized concurrent QA $3.50 plus browser $2.50 reserve; not browser-attributed spending.','overall_demo_usd_stop':19.5,'browser_reasoning_requests_cumulative':32,'browser_tts_requests_cumulative':32,'cap_authorization':'Parent raised TTS20 to24 during attempt03, then28 for targeted replay, then final TTS32/reasoning32 for corrected source publication v3; counters and original baseline preserved','baseline_and_counters_reset':False}
 result['targeted_safety_replay'] = args.safety_only
+result['targeted_adas_probe'] = args.adas_only
+result['attempt_requests'] = attempt_requests
+result['probe'] = probe
 result['planning_outcomes'] = planning_outcomes
 result['mock_planning_fault_injected'] = args.mock_pitch_failure
 result['evaluation_mode'] = 'mock_natural_completion_only_no_tool_accuracy_claim' if args.mock_natural_only else 'mock_interruption_dry_run' if args.mock_dry_run else 'real_provider_controlled_browser_acceptance'
 (OUT/'results.json').write_text(json.dumps(result,indent=2))
 print(json.dumps({'checks':f'{sum(c["passed"] for c in checks)}/{len(checks)}','interruptions':len(scenarios),'journeys':len(journeys),'planning_failures':sum(item['planning_failed'] for item in planning_outcomes),'errors':errors,'counters':counters,'batch_usd_recorded':result['batch_usd_recorded']},indent=2))
-raise SystemExit(1 if errors or len(scenarios)!=expected_interruptions or len(journeys)!=(1 if args.safety_only else 3) else 0)
+raise SystemExit(1 if errors or any(not item['passed'] for item in checks) or len(scenarios)!=expected_interruptions or len(journeys)!=(0 if args.adas_only else 1 if args.safety_only else 3) else 0)

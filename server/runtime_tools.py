@@ -181,12 +181,17 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
         raise ValueError("Provide the exact public website URL you want checked")
     started, deadline = time.monotonic(), time.monotonic() + min(max(float(timeout), .1), 5.0)
     query = re.sub(r"https?://\S+|www\.\S+", "", request.query or question)
-    stop = {"the", "and", "for", "are", "what", "which", "this", "that", "with", "from", "you", "your", "can", "could", "please", "check", "tell", "about", "website", "page", "url", "information", "official", "have", "has", "does", "compare", "comparison"}
+    stop = {"the", "and", "for", "are", "what", "which", "this", "that", "with", "from", "you", "your", "can", "could", "please", "check", "tell", "about", "website", "page", "url", "information", "official", "have", "has", "does", "compare", "comparison", "using", "use", "verify", "actually", "provide", "provides", "mention", "mentions", "whether", "details", "specific", "list", "lists", "says", "state", "states", "its"}
     terms = set(re.findall(r"[a-z0-9]{3,}", query.lower())) - stop
     if not terms:
         raise ValueError("Specify the product detail you want checked on that website")
     seed_host = urlsplit(url).hostname
     model_tokens = crawl._model_tokens({"url": url, "role": "competitor"}, {})
+    # The model name occurs in navigation, forms and every page title. When a
+    # topic exists, rank that topic rather than generic mentions of the car.
+    model_words = set(re.findall(r"[a-z0-9]{3,}", " ".join(model_tokens).lower()))
+    topic_terms = terms - model_words
+    terms = topic_terms or terms
     seed_path = urlsplit(url).path.rstrip("/")
     seed_locale = crawl._locale_prefix(url)
 
@@ -244,8 +249,22 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
             passage = str(section.get("text", "")).strip()
             if len(passage) < 20:
                 continue
-            searchable = " ".join((passage, str(section.get("heading", "")), str(section.get("locator", ""))))
-            overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", searchable.lower())))
+            heading = str(section.get("heading", ""))
+            normalized = lambda s: re.sub(r"\W+", " ", s.casefold()).strip()
+            heading_only = normalized(passage) == normalized(heading)
+            question_body = re.sub(r"^\s*(?:\d+[.)]|Q(?:uestion)?[:.])\s*", "", passage, flags=re.I)
+            question_only = (question_body.endswith("?")
+                and re.match(r"^(?:what|which|how|does|do|is|are|can|could|will|where|when|why)\b", question_body, re.I)
+                and not re.search(r"[.!?]\s+\S", question_body[:-1]))
+            if question_only:
+                continue  # A FAQ question is not its answer.
+            body_overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", passage.lower())))
+            heading_overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", heading.lower())))
+            if not body_overlap and re.search(r"\b(?:share (?:your )?number|enter your (?:email|mobile|phone))\b", passage, re.I):
+                continue  # A form's page heading cannot license an unrelated topic.
+            # Keep feature-bearing headings (e.g. a named panoramic sunroof)
+            # as page evidence, but prefer a complete answer over a section title.
+            overlap = heading_overlap if heading_only else 3 * body_overlap + 1.5 * heading_overlap
             if not overlap:
                 continue
             if len(passage) > 12000:
