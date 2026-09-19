@@ -1,10 +1,63 @@
 # Learning.MD — Demo Studio
+
+## 2026-09-19 — A short client timeout became an invalid provider deadline
+
+**Observed:** real Explore failed on Gemini before generation because its seven-second HTTP timeout became `X-Server-Timeout: 7`, below the service's ten-second minimum. Claude lacked credit and the remaining Runware attempt timed out. Fake adapter contracts had proved budget allocation without exercising the SDK's wire behavior.
+
+**Fix:** preserve the short local attempt timeout and overall twelve-second graph deadline, but explicitly set the Gemini server header to at least ten seconds. Disable hidden SDK retries for a one-attempt runtime call. Do not extend the customer's total wait to satisfy a provider header.
+
+**Verification:** installed-SDK/fake-HTTP contracts cover 0.75/7/12-second local budgets, accepted server headers and exactly one HTTP request on 503; eight schema/wire checks pass. A real Gemini probe with local7/server10 succeeded in1.912 seconds. That tiny probe proves transport compatibility, not full Explore speed or answer quality. Full replay remains separate.
+
+## 2026-09-19 — Explore inserted another opening and risked draft mixing
+
+**Observed:** after an eleven-second overview, the first actual Explore returned no personalized segments and played a long decision frame plus two optional batches before the route. Integration review also found copied relative audio paths and string check-ins mismatched the browser bundle shape, and live planning still read mutable draft files.
+
+**Five whys (delivery):** (1) a second opening delayed the slides; (2) the browser narrated legacy fields; (3) prompt/schema still requested2–3 optional batches; (4) personalized segments were optional with no reviewed replacement fallback; (5) tests proved grounding but did not exercise overview-to-slide composition. **Fix:** live-mode prompt/schema and player bypass the pre-roll; validated model selections or marked exact reviewed-route fallbacks replace slide speech. Only the first slide may carry a short verbatim customer preface. Never clip an arbitrary prefix from a longer reply.
+
+**Five whys (published boundary):** (1) a live route could contain unpublished wording; (2) pitch loaded draft understanding/plan/script and approvals; (3) its build-era input assembly was reused for live Explore; (4) fact snapshot checks did not cover speech/deck versions; (5) tests never edited Align while a built player remained open. **Fix:** live pitch exclusively uses the published bundle and verifies session snapshot plus demo version; the checkpoint retains the first version. Changed publication returns an honest refresh-required fallback without a provider-failure claim. No historical bundle archive is added.
+
+**Media/wait boundary:** copied reviewed audio paths are normalized to `/media/<demo>/...`; existing absolute paths survive and model-supplied media is ignored. Check-ins are exposed as `{text,audio}`, preserving the existing yes-continue/no-deeper wait. This was caught before paid revalidation.
+
+**Regression:** `evals/pitch_delivery_contract.py`16/16 covers actual pitch and runtime checkpoint behavior, including draft edits/false approvals and a new publication sharing the same evidence snapshot. Existing pitch grounding47 and speech27 remain. These free contracts do not certify live personalization quality, acoustic delivery or response latency; browser/paid acceptance is separate.
+
+## 2026-09-19 — A yes to more detail continued the demo
+
+**Observed:** curated check-ins asked “Would you like a closer look?” while the existing player's affirmative answer advances; a customer agreeing to more detail would get the opposite action.
+
+**Five whys:** (1) yes followed Continue, not deeper; (2) wording expressed an opt-in request for detail; (3) author instructions treated a check-in as any useful choice; (4) schema described a short question without its response mapping; (5) authoring contracts checked citation safety and waiting but not the meaning of affirmative/negative responses.
+
+**Fix:** keep the existing player and question cadence. Author/shared flow/schema instructions require confirmation of enough detail or readiness: yes continues, no opens detail. A bounded English lexical warning flags common opt-in-detail/open-choice phrasing without removing text/audio or marking factual narration unverified. Intake remains a separate open question. The actual three proposed prompt edits are a review patch, not automatic data mutation.
+
+**Regression:** `evals/speech_style_contract.py` covers the three observed questions plus opt-in variants, valid confirmations/empty fields, unchanged speech/audio, and intake independence (27 cases overall). The heuristic is not semantic proof or multilingual detection; human review and actual conversations remain required. No scorecard criteria or saved score were changed to improve the observed 11/20.
 > AGENT: add an entry whenever the basic flow changes, the user reports a bug or gives
 > corrective feedback, or something took real time to figure out. CHECK THIS FILE FIRST
 > before debugging — the answer may already be here. Plain language; first use of any
 > technical term gets a one-line bracket explanation.
 
 <!-- Newest first. -->
+
+
+## 2026-09-19 — Mandatory section questions conflicted with conversational pacing
+
+**Why1:** The curated Creta script's three relevant check-ins still produced warnings for every other proof/features section. **Why2:** the validator required a confirmation question after each section. **Why3:** author prompts, shared proof/flow guidance, scorecard and schema field description repeated that older cadence. **Why4:** conversational quality was equated with question frequency rather than useful decision points. **Why5:** tests lacked a deliberately sparse route.
+**Fix:** remove the mandatory per-section question check and align the prompts/field description. Two or three useful check-ins across a typical route is an editorial target, not a numeric requirement. Empty check-ins remain valid; any actual question must still use the explicit wait field, and uncited claims in that field are still rejected. Two real-function regressions take speech-style coverage to24; the real script is curated through the existing review API, without an additional model rewrite for this change.
+
+
+## 2026-09-19 — Re-entering Align lost visible work progress
+
+**Why1:** The in-app Align screen could reopen during a long stage with an empty progress overlay. **Why2:** mount and SSE hello did not restore retained stage messages. **Why3:** hello's current snapshot was ignored. **Why4:** polling tested whether any overlay node existed, but the hidden overlay is always mounted. **Why5:** earlier SSE tests covered replay suppression, not the actual screen's snapshot and visibility recovery.
+**Fix:** restore current running-stage progress in time order, consume hello snapshots and synchronize overlay visibility after reload; visible-tab polling and visibility return refresh state. `evals/align_progress_contract.mjs`9/9 exercises the actual Align module and actual SSE client with a DOM-shaped host: initial progress, done snapshot, reconnect, historical-completion rejection, fallback stage message, polling, live navigation and cleanup. These are local state/DOM contracts; the root's actual in-app reload check is separate visual evidence.
+
+
+## 2026-09-19 — A grounded draft still sounded technical and renamed the locked guide
+
+**Why1:** The real Creta draft led with millimetres, grille terminology and four cylinders, while presenting Karan over locked Priya audio. **Why2:** generic plain-language instructions did not cover these observed everyday register failures, and the planner never received the actual selected speaker. **Why3:** the validator covered familiar abbreviations but not ordinary-looking technical component labels. **Why4:** a stored persona could survive revision despite a different locked voice. **Why5:** fixture coverage proved speech identity but not its human-facing persona brief.
+**Fix:** Add grounded positive/negative examples, forbid unsupported felt benefits and engine/gearbox generalization in the author/planner brief, and warn on dimensions/component jargon in everyday main narration, check-ins, overview and closing. These editorial warnings never mark a sourced line unverified or censor technical/deeper answers. The planner receives actual voice configuration and deterministically keeps a locked speaker's display identity with a neutral description, including preserved revisions. Nine new actual-function cases bring speech-style contracts to22. This is authoring protection, not proof the next real script is excellent; the actual draft still needs explicit revision and human review.
+
+## 2026-09-19 — CTA labels promised destinations the planner had never been given
+
+**Why1:** Download Brochure, Locate Dealer and Book a Test Drive all pointed at the highlights URL. **Why2:** the planner received the product URL but not the action links already retained by source extraction. **Why3:** action labels were validated structurally, not against their destination purpose. **Why4:** absent links were treated as an opportunity to reuse the homepage. **Why5:** there was no negative fixture for a plausible but misleading target.
+**Fix:** Feed retained same-site/model/market action-link candidates to the planner; reject mismatched action destinations and use a clearly labelled local contact request when a link is missing. No destination is fetched by planning, and retained-link discovery is not a live-availability promise. Actual planner tests cover valid targets, rival/foreign-market/host rejection and missing-link fallback. A separate player review found URLs were ignored by its existing action handler; the player owner's explicit user-gesture link correction is tracked separately and must be tested before claiming download/navigation works.
 
 
 ## 2026-09-19 — Editing a fact must not change an old citation's meaning

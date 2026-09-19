@@ -11,6 +11,10 @@ from ..llm import runtime
 from .author import CLAIMISH, NUMBERISH
 from .principles import CUSTOMER_STATES, PRINCIPLES, audience_instruction, fact_context, language_instruction
 
+
+class PublishedDemoChanged(ValueError):
+    """A live player must refresh before using a newer published composition."""
+
 PITCH_SYSTEM = """You are {persona_name}, the voice guide in a live demo of {product_name}. An approved standard opening
 will play after the opening film. Plan the personalised route that follows it for THIS buyer.
 
@@ -18,12 +22,14 @@ will play after the opening film. Plan the personalised route that follows it fo
 
 {states}
 
+{delivery_rules}
+
 Your output:
 - customer_state: from their one context answer and any later clarification reply. Their name alone is not a buying need.
   Only raw why/followup wording establishes stated needs or priorities. Computed focus is a routing hint, never evidence
   that the buyer stated or ranked a preference. Do not turn a matching topic into their "main" or "stated" priority.
-- decision_frame: the ACKNOWLEDGEMENT, 1-2 spoken sentences that restate THIS buyer's need in their OWN words and promise
-  the order. It plays right after the overview. Warm, specific, zero product specs, no question. Copy any customer numbers
+- decision_frame: brief acknowledgement metadata that restates THIS buyer's need in their OWN words and the route order.
+  Live Explore does not narrate it after the overview; keep it within twelve words. Warm, specific, zero product specs, no question. Copy any customer numbers
   exactly from CUSTOMER; never invent a distance, budget, location or household from a persona or an example. If they gave no signal, say honestly
   that you'll give the balanced tour and they can steer at any pause. Keep this framing positive: never promise a section
   about gaps, unknowns, or "what I can't tell you"; written terms and open questions belong in the establish block.
@@ -47,7 +53,8 @@ Your output:
   segment's default narration; never repeat them as custom_batches or a bridge. Keep total proof to 28 words when
   adding personal framing; no question (the existing checkin still waits). For unknown context leave replacements empty.
 - usp_order: which USPs get covered, in order (every route step's usps).
-- custom_batches: when the buyer said something specific, select 2-3 relevant items from REVIEWED SPOKEN PROOF, in the
+- custom_batches: legacy recorded delivery only; LIVE ROUTE DELIVERY must return an empty list. For legacy delivery,
+  when the buyer said something specific, select 2-3 relevant items from REVIEWED SPOKEN PROOF, in the
   order that best serves their stated need. Copy each item's exact text and the complete fact_ids; never add a prefix,
   suffix, location, property or benefit, and never splice items. Keep the need-led connection in decision_frame and the
   route selection; do not append arbitrary fragments of the buyer's words to factual proof. Each item is ≤38 words and
@@ -218,12 +225,59 @@ def _reviewed_proofs(script: dict, facts: list[dict], *, approved: bool) -> list
     return proofs
 
 
+def _live_prompt_inputs(segments: list[dict], facts: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Send route choices and exact speech, not media or whole provenance tables.
+
+    The server retains the complete published snapshot for validation and copies
+    its immutable voice/visual metadata after choosing approved wording.
+    """
+    valid_ids = {fact["id"] for fact in facts}
+    needed = set()
+    compact = []
+    for segment in segments:
+        row = {key: segment[key] for key in ("id", "role", "title", "topic") if key in segment}
+        for field in ("lines", "deeper"):
+            row[field] = []
+            for line in segment.get(field, []):
+                ids = line.get("fact_ids") or []
+                if line.get("unverified") or not ids or not set(ids) <= valid_ids:
+                    continue
+                row[field].append({"text": line.get("text", ""), "fact_ids": ids})
+                needed.update(ids)
+        compact.append(row)
+    assertions = [{key: fact[key] for key in ("id", "kind", "claim", "value", "conditions", "scope", "truth") if key in fact}
+                  for fact in facts if fact["id"] in needed]
+    return compact, assertions
+
+
 def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: bool = True,
-               timeout_budget_s: float | None = None, seen_segment_ids: list[str] | None = None) -> dict:
-    und = store.read_json(demo_id, "understanding.json") or {}
-    plan = store.read_json(demo_id, "plan.json") or {}
-    script = store.read_json(demo_id, "script.json") or {}
-    demo = store.load(demo_id)
+               timeout_budget_s: float | None = None, seen_segment_ids: list[str] | None = None,
+               expected_snapshot_id: str | None = None, expected_demo_version: int | None = None) -> dict:
+    published = None
+    if not voice_it:
+        published = store.read_json(demo_id, "bundle.json") or {}
+        if not published.get("segments") or not published.get("knowledge_snapshot_id"):
+            raise ValueError("A published demo is required before Explore can plan its route.")
+        if ((expected_snapshot_id and published.get("knowledge_snapshot_id") != expected_snapshot_id)
+                or (expected_demo_version is not None and published.get("version") != expected_demo_version)):
+            raise PublishedDemoChanged("The published demo changed. Refresh to explore its new version; keep the current reviewed route for this visit.")
+        # Align edits belong to the next publication. A live visit must never
+        # combine draft facts, voice or script with its already-published player.
+        alternate = (published.get("alt_languages") or {}).get(profile.get("language"), {})
+        script = {"segments": copy.deepcopy(alternate.get("segments") or published["segments"])}
+        und = {"product": published.get("product", {}), "facts": copy.deepcopy(published.get("facts", [])),
+               "images": copy.deepcopy(published.get("media", {}).get("images", [])), "shots": []}
+        plan = {**copy.deepcopy(published.get("pitch") or {}), "voice": copy.deepcopy(published.get("voice", {}).get("persona") or {}),
+                "ctas": copy.deepcopy(published.get("ctas") or []), "segments": copy.deepcopy(script["segments"])}
+        demo = {"settings": {"language": profile.get("language") or published.get("language", "en-IN"),
+                              "audience": published.get("audience", "everyday")}, "approvals": {"script": True}}
+        route_slides = alternate.get("slides") or published.get("slides", [])
+    else:
+        und = store.read_json(demo_id, "understanding.json") or {}
+        plan = store.read_json(demo_id, "plan.json") or {}
+        script = store.read_json(demo_id, "script.json") or {}
+        demo = store.load(demo_id)
+        route_slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
     voice = plan.get("voice", {})
     seen = set(seen_segment_ids or [])
     segs = [s for s in script.get("segments", []) if s.get("id") not in seen and s.get("role") in ("proof", "features", "establish") and any(not l.get("unverified") for l in s["lines"])]
@@ -231,6 +285,10 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
     library = "\n".join(f"{s['id']} [{s['role']}] {s['title']} — outcome: {s.get('outcome') or plan_by_id.get(s['id'], {}).get('outcome','')} — topic {s['topic']} — usps {s.get('usp_ids') or plan_by_id.get(s['id'], {}).get('usp_ids', [])} — facts {sorted({f for l in s['lines'] for f in l.get('fact_ids', [])})}" for s in segs) or "(no proof blocks)"
     facts = [f for f in und.get("facts", []) if f.get("approved", True)]
     facts_txt = "\n".join(fact_context(f) for f in facts) or "(empty)"
+    prompt_segments = segs
+    if not voice_it:
+        prompt_segments, assertions = _live_prompt_inputs(segs, facts)
+        facts_txt = json.dumps(assertions, ensure_ascii=False, separators=(",", ":"))
     script_approved = (demo.get("approvals") or {}).get("script") is True
     proofs = _reviewed_proofs({"segments": segs}, facts, approved=script_approved)
     proof_keys = {_proof_key(item["text"], item["fact_ids"]) for item in proofs}
@@ -245,9 +303,18 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         focus=json.dumps(profile.get("focus") or []), library=library, usps=json.dumps(plan.get("usps", [])),
         ctas=json.dumps([{"id": c["id"], "label": c["label"], "kind": c["kind"]} for c in plan.get("ctas", [])]),
         primary=plan.get("primary_outcome", ""), supporting=plan.get("supporting_outcomes", []), advance=plan.get("advance", ""), dnr=plan.get("do_not_recommend_if", ""), facts=facts_txt,
-        proofs=json.dumps(proofs, ensure_ascii=False), neutral_cues=json.dumps(neutral_cues, ensure_ascii=False),
-        main_speech=json.dumps(main_speech, ensure_ascii=False),
-        segment_script=json.dumps(segs, ensure_ascii=False),
+        proofs=json.dumps(proofs if voice_it else [], ensure_ascii=False), neutral_cues=json.dumps(neutral_cues if voice_it else {}, ensure_ascii=False),
+        main_speech=json.dumps(main_speech if voice_it else {}, ensure_ascii=False),
+        segment_script=json.dumps(prompt_segments, ensure_ascii=False, separators=(",", ":")),
+        delivery_rules=("LIVE ROUTE DELIVERY: the short overview is already playing. Go directly into the selected slide route. "
+                        "Return personalized_segments for every selected segment when customer why/followup is present; "
+                        "choose complete exact reviewed main/deeper lines from each segment. Supply a short verbatim customer_quote "
+                        "only for the first selected segment. No spoken decision_frame, custom_batches, or route bridges: "
+                        "custom_batches must be []; bridge must be empty. Do not add a second opening or a separate explanation of the route. "
+                        "Copy only text and fact_ids from SEGMENT SCRIPT into replacement lines; code restores the approved visual, "
+                        "delivery and audio metadata. FACT REGISTRY contains only those reviewed lines' assertions; do not infer "
+                        "anything from an omitted fact. Existing check-in questions remain unchanged."
+                        if not voice_it else "LEGACY RECORDED DELIVERY: reviewed optional proof batches and route cues remain available."),
     )
     ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
     try:
@@ -257,6 +324,8 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
     except Exception as e:
         raise RuntimeError(str(e)[:300]) from e
     p = out.model_dump()
+    if published:
+        p["knowledge_snapshot_id"], p["demo_version"] = published["knowledge_snapshot_id"], published.get("version")
     # The field remains readable in old bundles, but new route planning never
     # adds a second intake, even when a provider ignores the prompt.
     p["follow_up_question"] = ""
@@ -331,7 +400,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
     from . import voice as _voice
     vis_ids = {x["id"] for x in und.get("images", [])} | {x["id"] for x in und.get("shots", [])}
     batches = []
-    for b in (p.get("custom_batches") or [])[:3]:
+    for b in (p.get("custom_batches") or [])[:3] if voice_it else []:
         proposed_ids = b.get("fact_ids", [])
         b["fact_ids"] = [x for x in proposed_ids if x in fact_ids]
         txt = (b.get("text") or "").strip()
@@ -404,14 +473,82 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
             continue
         quote = " ".join((proposed.get("customer_quote") or "").split())
         customer_words = [" ".join(str(profile.get(k) or "").split()) for k in ("why", "followup")]
-        if quote and len(quote.split()) <= 8 and any(quote.casefold() in value.casefold() for value in customer_words) and not re.search(r"[<>\[\]?？]", quote):
+        if voice_it and quote and len(quote.split()) <= 8 and any(quote.casefold() in value.casefold() for value in customer_words) and not re.search(r"[<>\[\]?？]", quote):
             preface = f'You mentioned “{quote}”. Let’s start there.'
             if len(preface.split()) + sum(len(line["text"].split()) for line in chosen) <= 38:
                 chosen.insert(0, {"id": f"{sid}-personal", "text": preface, "fact_ids": [], "step": "frame",
                                   "visual": copy.deepcopy(chosen[0].get("visual") or {"kind": "none", "ref": ""}),
                                   "delivery": {"tone": "warm", "pace": 1.0}, "audio": None, "base_line_index": None})
-        replacement = {**copy.deepcopy(base), "segment_id": sid, "lines": chosen, "personalized": True}
+        replacement = {**copy.deepcopy(base), "segment_id": sid, "lines": chosen, "personalized": True,
+                       "personalization_basis": "model_reviewed_selection"}
         replacements.append(replacement)
+    if not voice_it and has_context and script_approved:
+        # A model can omit the optional replacement field or propose wording that
+        # fails review. Keep its validated route, but never substitute an extra
+        # monologue. Each fallback copies complete approved main lines and media.
+        for step in route:
+            sid = step["segment_id"]
+            if any(item["segment_id"] == sid for item in replacements):
+                continue
+            base = by_segment[sid]
+            chosen = []
+            for index, line in enumerate(base.get("lines", [])):
+                ids = line.get("fact_ids") or []
+                if (line.get("unverified") or not ids or any(fid not in by_fact for fid in ids)
+                        or re.search(r"[?？]", line.get("text", ""))
+                        or _unsupported_addition(line.get("text", ""), [by_fact[fid] for fid in ids])):
+                    continue
+                chosen.append({**copy.deepcopy(line), "base_line_index": index})
+            if chosen and sum(len(line.get("text", "").split()) for line in chosen) <= 38:
+                replacements.append({**copy.deepcopy(base), "segment_id": sid, "lines": chosen,
+                                     "personalized": True, "personalization_basis": "reviewed_route_fallback"})
+        if route:
+            first = next((item for item in replacements if item["segment_id"] == route[0]["segment_id"]), None)
+            if first:
+                # Context is quoted once, not regenerated as a factual benefit.
+                words = " ".join(str(profile.get("why") or profile.get("followup") or "").split()).split()
+                # Do not clip a longer utterance: its contrast or negation may
+                # come later. A model can select a short verbatim subspan; the
+                # deterministic fallback may quote only a complete short reply.
+                quote = " ".join(words).rstrip(".,!;:") if len(words) <= 8 else ""
+                proposed = next((item for item in p.get("personalized_segments", []) if item.get("segment_id") == first["segment_id"]), {})
+                candidate = " ".join((proposed.get("customer_quote") or "").split())
+                customer_words = [" ".join(str(profile.get(k) or "").split()) for k in ("why", "followup")]
+                if candidate and len(candidate.split()) <= 8 and any(candidate.casefold() in value.casefold() for value in customer_words):
+                    quote = candidate
+                preface = f'You said, “{quote}”.'
+                if quote and not re.search(r"[<>\[\]?？]", quote) and len(preface.split()) + sum(len(line["text"].split()) for line in first["lines"]) <= 38:
+                    first["lines"].insert(0, {"id": f"{first['segment_id']}-personal", "text": preface,
+                        "fact_ids": [], "step": "frame", "visual": copy.deepcopy(first["lines"][0].get("visual") or {"kind": "none", "ref": ""}),
+                        "delivery": {"tone": "warm", "pace": 1.0}, "audio": None, "base_line_index": None})
+                else:
+                    first["context_preface_omitted"] = "unsafe_quote_or_segment_budget"
+        replacements.sort(key=lambda item: next(i for i, step in enumerate(route) if step["segment_id"] == item["segment_id"]))
+    if not voice_it:
+        p["decision_frame_audio"] = None
+        for step in route:
+            step["bridge"], step["bridge_audio"] = "", None
+        def client_audio(path):
+            if not isinstance(path, str) or not path:
+                return None
+            if path.startswith(f"/media/{demo_id}/"):
+                return path
+            if path.startswith("audio/") and ".." not in path.split("/"):
+                return f"/media/{demo_id}/{path}"
+            return None
+        def client_segment(segment):
+            # Only copied reviewed media reaches this boundary; model media was
+            # discarded above. Match the bundle's checkin/media shape so saved
+            # clips play and the existing answer wait survives route replacement.
+            for line in [*segment.get("lines", []), *segment.get("deeper", [])]:
+                line["audio"] = client_audio(line.get("audio"))
+            checkin = segment.get("checkin")
+            segment["checkin"] = ({"text": checkin.get("text", ""), "audio": client_audio(checkin.get("audio"))}
+                                  if isinstance(checkin, dict) else
+                                  {"text": checkin or "", "audio": client_audio(segment.get("checkin_audio"))})
+            return segment
+        replacements = [client_segment(segment) for segment in replacements]
+        p["script_segments"] = [client_segment(segment) for segment in p["script_segments"]]
     p["personalized_segments"] = replacements
     if replacements:
         # Replacements are the speech for their slides, not another pre-roll.
@@ -424,7 +561,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         prim = next((c for c in ctas.values() if c.get("primary")), next(iter(ctas.values()), None))
         p["advance_cta"] = prim["id"] if prim else ""
     # the route orders slides: each step names its slide (the player falls back to the segment id for a deck-less bundle)
-    by_seg = {s["segment_id"]: s["id"] for s in (store.read_json(demo_id, "deck.json") or {}).get("slides", []) if s.get("segment_id")}
+    by_seg = {s["segment_id"]: s["id"] for s in route_slides if s.get("segment_id")}
     for st in p["route"]:
         st["slide_id"] = by_seg.get(st["segment_id"])
     store.log(demo_id, "pitch", {"state": p["customer_state"], "route": [r["segment_id"] for r in p["route"]], "profile": profile})

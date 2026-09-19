@@ -160,6 +160,7 @@ def main():
         print(f"Prepared {len(cases)} cases; no API/model calls."); return
     assert args.authorized_real_batch, "Explicit parent authorization required"
     assert args.base == "http://127.0.0.1:8896", "This batch is authorized only for the local review server"
+    assert not (out / "results.jsonl").exists(), "Use a fresh output directory; never mix paid attempts"
     http = httpx.Client(base_url=args.base, timeout=35)
     bundle = http.get(f"/api/demos/{args.demo}/bundle").raise_for_status().json()
     assert bundle.get("runtime", {}).get("version") == 1 and bundle.get("knowledge_snapshot_id"), "Reviewed real bundle required"
@@ -172,9 +173,11 @@ def main():
         cost = current["total_usd"] - before["total_usd"]
         calls = current.get("by_stage", {}).get("runtime", {}).get("calls", 0) - before.get("by_stage", {}).get("runtime", {}).get("calls", 0)
         guards.append({"at": time.time(), "recorded_batch_usd": round(cost, 5), "runtime_completions": calls})
-        # Reserve six successful model completions and $0.60 for the next pair.
+        # Reserve twenty-four completions (three reasoning rounds, Gemini and
+        # Claude once plus Runware's possible two-generation JSON repair, two
+        # concurrent questions). Keep $1.50 headroom for premium fallback use.
         # Any other simultaneous runtime usage makes this guard more conservative.
-        if cost >= 2.90 or calls > 174:
+        if cost >= 2.00 or calls > 156:
             raise RuntimeError("Conservative batch budget guard reached; no more requests")
     def run_case(case):
         started = time.monotonic()
@@ -184,9 +187,9 @@ def main():
         try:
             response = http.post(f"/api/demos/{args.demo}/run/qa", json=body)
             response.raise_for_status(); result = response.json()
-            status = "provider_failure" if result.get("provider_failed") else "answered" if result.get("answered") else "clarification" if result.get("clarifying_question") else "limited_or_refused"
+            status = "provider_failure" if result.get("provider_failed") else "clarification" if result.get("clarifying_question") else "answered" if result.get("answered") else "limited_or_refused"
             return {**case, "session_id": session, "elapsed_ms": round((time.monotonic()-started)*1000), "status": status,
-                    "mechanics": {"no_audio": not result.get("audio"), "no_http_error": True, "citations_if_answered": not result.get("answered") or bool(result.get("fact_ids"))},
+                    "mechanics": {"no_audio": not result.get("audio"), "no_http_error": True, "citations_if_answered": not result.get("answered") or bool(result.get("clarifying_question")) or bool(result.get("fact_ids"))},
                     "result": result, "quality_review": {"answerability": "pending", "grounded_correct": None, "scope_correct": None, "human_helpfulness": None, "notes": ""}}
         except Exception as exc:
             return {**case, "elapsed_ms": round((time.monotonic()-started)*1000), "status": "transport_error", "error": str(exc)}

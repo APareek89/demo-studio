@@ -1,6 +1,21 @@
 # Demo Studio — pending tasks and challenges
 
-Reviewed 19 September 2026 against the current code, final Nexon evidence and earlier instructions. Anand selected **B · Atelier**; its visual system is now applied through four CSS files. Navigation, interactions, wording, runtime behaviour and existing functionality are preserved. This backlog is for sequencing next, not authorization to implement functional changes. [Atelier delivery](design/atelier-ui.md).
+**Current update:** Anand subsequently approved the [conversational runtime plan](plan-runtime-experience-2026-09-19.md). Implementation is on `codex/creta-conversational-demo`; Atelier remains. The original audit below is preserved as history and must not be read as the current capability list. [Current workflow and code map](DEMO_BUILD_AND_RUN.md) · [Creta acceptance in progress](CRETA_ACCEPTANCE.md).
+
+## Remaining now
+
+1. **Finish real runtime acceptance.** The first Creta QA100 exposed five unsafe responses, weak partial answers and five provider failures. The first browser run exposed an extra opening before the selected route. Repairs require a fresh semantic review and complete journey replay; mock passes cannot close this item.
+2. **Measure useful speech response and complete physical listening checks.** Metrics now distinguish cohorts, missing audio, failures and cancellations. Muted tests still cannot establish human microphone accuracy, acoustic interruption, echo cancellation or perceived naturalness. Observed percentiles must remain separate from targets.
+3. **Finish the TVS iQube artifact if selected next.** Nine supported FAQ texts were repaired without provider calls; eleven evidence gaps remain honest declines. Its speech, rehearsal and published bundle were not rebuilt. The legacy QA approval boundary is documented in Handoff.
+4. **Review remaining product and operations scope.** Image-only re-tagging, refresh-resume, any change to exact-line resumption, multi-worker coordination, deployment credentials and activation still need their own implementation/validation. Deployment has not occurred.
+
+## Implemented since the original audit
+
+Immutable evidence identity and published snapshots; scoped crawl/extraction with upload precedence; runtime LangGraph, calculator and customer-supplied URL lookup; continuous capture and cancellation; published Explore personalization; sparse real check-in waits; readiness probes and durable events; semantic speech/rehearsal reuse; Ready-to-Align event recovery; optional-media import and mock-provider guards. Their existence does not imply that all real acceptance targets have passed. See the current acceptance report for the boundary.
+
+## Historical audit before runtime approval
+
+Reviewed against the then-current code, final Nexon evidence and earlier instructions. This audit itself changed no functionality. Anand had selected **B · Atelier**; the visual system was applied through four CSS files. [Atelier delivery](design/atelier-ui.md).
 
 ## Recommended sequence
 

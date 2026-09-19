@@ -82,6 +82,10 @@ check("late chunks of interrupted utterance are discarded", Context.sources.leng
 const pending = client.ask({ question: "Long lookup" }).catch(e => e); await tick(); client.interrupt();
 check("interrupt rejects owned waiting question", (await pending).name === "AbortError");
 check("server cancellation takes the same new owner as client", client.socket.sent.filter(e => e.type === "turn.interrupt").at(-1).turn_id === client.turnId);
+client.interrupt({ preservePlanning: true });
+check("media-only cancellation explicitly preserves background planning", client.socket.sent.at(-1).type === "turn.interrupt" && client.socket.sent.at(-1).preserve_planning === true && !client.pending);
+client.interrupt();
+check("ordinary cancellation never implicitly preserves a planner", client.socket.sent.at(-1).preserve_planning === false);
 client.setMuted(true); check("review mute applies to streamed audio gain", client.gain.gain.value === 0);
 const racing = client.speak("Cancelled before asynchronous audio setup").catch(e => e); client.cancelAudio();
 check("cancel during audio initialization cannot start obsolete speech", (await racing).name === "AbortError" && !client.delivery);
@@ -167,11 +171,29 @@ function questionHarness() {
   const h = questionHarness(); const result = h.result(h.qa.promise, 1, {}).catch(error => error); await tick(); h.qa.reject(new Error("Provider failed"));
   check("question failure stops only acknowledgment before error recovery", (await result).message === "Provider failed" && h.calls.cancel === 1); h.filler.resolve(false);
 }
-const base = { id: "proof", segment_id: "boot", kind: "proof", lines: [{ text: "A" }, { text: "B" }], callouts: [{ id: "a", reveal_on_line: 0, placement: "overlay", x: 0.72 }, { id: "b", reveal_on_line: 1, placement: "panel" }, { id: "omitted", reveal_on_line: 2 }] };
+const base = { id: "proof", segment_id: "boot", kind: "proof", checkin: { text: "Enough detail for now?", audio: "/media/fixture/checkin.wav" }, lines: [{ text: "A" }, { text: "B" }], callouts: [{ id: "a", reveal_on_line: 0, placement: "overlay", x: 0.72 }, { id: "b", reveal_on_line: 1, placement: "panel" }, { id: "omitted", reveal_on_line: 2 }] };
 const routeState = { profile: { focus: [] } };
 const routeSource = playerSource.slice(playerSource.indexOf("  function buildRoute("), playerSource.indexOf("  function rememberContext("));
 const buildRoute = vm.runInNewContext(routeSource + "\nbuildRoute", { S: routeState, library: () => [base], topicOf: () => "boot", renderProgress() {}, prefetch() {} });
-buildRoute({ route: [{ slide_id: "proof" }], personalized_segments: [{ segment_id: "boot", lines: [{ text: "Your priority", base_line_index: null }, { text: "B", base_line_index: 1 }, { text: "A", base_line_index: 0 }] }] });
+buildRoute({ route: [{ slide_id: "proof" }], personalized_segments: [{ segment_id: "boot", checkin: "Enough detail for now?", lines: [{ text: "Your priority", base_line_index: null }, { text: "B", base_line_index: 1 }, { text: "A", base_line_index: 0 }] }] });
 check("personalized speech remaps callouts to their reviewed source line", JSON.stringify(routeState.plan[0].slide.callouts.map(c => [c.id, c.reveal_on_line])) === '[["a",2],["b",1]]');
 check("personalization preserves native geometry and stored master", routeState.plan[0].slide.callouts[0].x === 0.72 && base.callouts[0].reveal_on_line === 0 && base.lines.length === 2);
+check("legacy script checkin strings cannot erase the reviewed question wait", routeState.plan[0].slide.checkin === base.checkin);
+const startSource = playerSource.slice(playerSource.indexOf("  async function startAfterIntake("), playerSource.indexOf("  async function playCustomBatches("));
+async function routeAfterOverview(plan) {
+  const state = { run: 1, overviewPlayed: true, profile: { why: "Rear seat comfort matters", focus: [] }, pitchPromise: Promise.resolve(plan) }, heard = [], routed = [], notes = [];
+  const start = vm.runInNewContext(startSource + "\nstartAfterIntake", { S: state, live: {}, api: {}, library: () => [base], withTimeout: async promise => promise,
+    addMsg: (_, text) => notes.push(text), speak: async text => { heard.push(text); return true; }, speakF: async name => { heard.push(name); return true; },
+    buildRoute: chosen => routed.push(chosen), playFrom: () => {}, playCustomBatches: async () => { throw Error("Duplicate custom narration"); }, el: { cite: {} } });
+  await start(1, state.profile.why, { phase: "planning" }); return { state, heard, routed, notes };
+}
+{
+  const plan = { route: [{ slide_id: "proof" }], decision_frame: "A long redundant planning explanation.", custom_batches: [{ text: "An extra prelude." }], personalized_segments: [] };
+  const h = await routeAfterOverview(plan);
+  check("completed overview enters reviewed selected route even when personalized script falls back", h.heard.length === 0 && h.routed[0] === plan && h.state.personalized && h.notes.length === 0);
+}
+{
+  const h = await routeAfterOverview({ route: [{ slide_id: "not-reviewed" }], decision_frame: "Pretend this plan succeeded." });
+  check("unusable live plan reports stable fallback without claiming personalization", !h.state.personalized && h.state.pitch === null && h.routed[0] === null && h.heard.length === 1 && h.heard[0].includes("couldn't finish tailoring") && h.notes.length === 1);
+}
 console.log(`Live voice: ${passes}/${passes} passed (fake devices and transports only)`);

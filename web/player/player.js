@@ -25,6 +25,10 @@ const PHONE = /(?:\+?91[\s-]?)?([6-9]\d{9})/;
 const compact = (t, n) => String(t || "").split(/\s+/).slice(0, n).join(" ");
 const newSessionId = () => "s_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const CONSENT = "By sharing your number you agree the dealership may call you about this product. Nothing else is shared.";
+function ctaLink(cta) {
+  if (!["link", "contact", "book"].includes(cta?.kind) || typeof cta.url !== "string" || /[\u0000-\u0020\u007f]/.test(cta.url)) return null;
+  try { const url = new URL(cta.url); return url.protocol === "https:" && url.hostname && !url.username && !url.password ? url.href : null; } catch (_) { return null; }
+}
 function explicitContextCorrection(text) {
   const value = String(text || "").trim();
   if (/[?？]/.test(value) || /^(?:what if|if |suppose|imagine|for example|hypothetically)\b/i.test(value)) return false;
@@ -116,7 +120,7 @@ export function mountPlayer(host, bundle, api) {
         if (S.ended) return;
         S.inputMode = "voice"; S.speechDetectedAt = event.detected_at;
         if (S.intakeOpen || S.waiter || S.promptRun === S.run) cancelSpeech();
-        else { captureOrigin(); interruptAll(); holdConversation(newRun()); }
+        else { captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); holdConversation(newRun()); }
         S.interruptions.push({ detected_at: event.detected_at, stopped_at: Date.now(), phase: S.playback.phase, detection_source: event.source });
         setStatus("listening", "Listening"); el.live.textContent = "Listening…";
       },
@@ -418,7 +422,8 @@ export function mountPlayer(host, bundle, api) {
   }
 
   // ---------- flow primitives ----------
-  function interruptAll() { newRun(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt(); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} el.stage.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
+  function openingPlanPending() { return !!S.pitchPromise && !S.planningDecided && ["opening", "overview", "planning"].includes(S.playback.phase); }
+  function interruptAll({ preservePlanning = false } = {}) { newRun(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} el.stage.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
   function interpretReply(t, chips) {
     const s = t.toLowerCase().trim().replace(/[.!?,]+$/g, ""), has = (v) => chips.some((c) => c.value === v);
     if (has("callme") && PHONE.test(s.replace(/\s|-/g, ""))) return { value: "phone", text: t };
@@ -483,7 +488,8 @@ export function mountPlayer(host, bundle, api) {
         const index = segment.lines.findIndex(line => Number.isInteger(line.base_line_index) && line.base_line_index === callout.reveal_on_line);
         return index < 0 ? [] : [{ ...callout, reveal_on_line: index }];
       });
-      return { ...step, slide: { ...step.slide, lines: segment.lines, callouts, ...(segment.checkin ? { checkin: segment.checkin } : {}) } };
+      const checkin = segment.checkin && typeof segment.checkin === "object" && typeof segment.checkin.text === "string" ? segment.checkin : step.slide.checkin;
+      return { ...step, slide: { ...step.slide, lines: segment.lines, callouts, checkin } };
     });
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
@@ -500,7 +506,7 @@ export function mountPlayer(host, bundle, api) {
     const seen = [...new Set([...S.visited.map(visit => visit.slide_id), cur?.slide?.id].map(id => slides.find(slide => slide.id === id)?.segment_id).filter(Boolean))];
     const pending = { revision, afterSegment: ["route", "deeper"].includes(origin.phase) ? S.plan[origin.index]?.slide.segment_id : null, seen, status: "pending" };
     S.pendingRefinement = pending;
-    withTimeout(api.pitch({ profile: profileForServer(), refine: true, voice_it: false, session_id: sessionId, seen_segments: seen }).catch(() => null), 12000).then(plan => {
+    withTimeout(api.pitch({ profile: profileForServer(), refine: true, voice_it: false, session_id: sessionId, demo_version: bundle.version, seen_segments: seen }).catch(() => null), 12000).then(plan => {
       if (S.sessionId !== sessionId || S.pendingRefinement !== pending || S.ended) return;
       pending.status = plan?.route?.length ? "ready" : "failed"; pending.plan = plan;
     });
@@ -636,12 +642,14 @@ export function mountPlayer(host, bundle, api) {
     if (run !== S.run) return;
     const c = (bundle.ctas || []).find((x) => x.id === id); if (!c) return;
     S.cta = c.label;
-    const line = `You chose “${c.label}”. You can leave your details if you would like the dealership to follow up.`;
+    const line = ctaLink(c)
+      ? `You chose “${c.label}”. ${c.kind === "book" ? "You can open the booking link or request a dealership follow-up from your recap." : "You can open the link from your recap."}`
+      : `You chose “${c.label}”. You can leave your details if you would like the dealership to follow up.`;
     const ok = await speak(line, run); if (!ok) return; showHandoff(c);
   }
   function captureOrigin() { if (!S.conversationOrigin) S.conversationOrigin = { ...S.playback }; }
   async function listenForQuestion() {
-    captureOrigin(); interruptAll(); const run = newRun();
+    captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); const run = newRun();
     el.cite.textContent = "";
     el.cap.textContent = "What would you like to know?";
     const r = await waitFor([{ label: "Continue demo", value: "continue", primary: true }], 0, { openAnswer: true });
@@ -699,7 +707,7 @@ export function mountPlayer(host, bundle, api) {
       if (await speak("Thanks—I've noted that priority. I'll use it to tailor the remaining demo.", run)) await holdConversation(run);
       return;
     }
-    captureOrigin(); interruptAll(); const run = newRun(); let jumped = null;
+    captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); const run = newRun(); let jumped = null;
     el.cite.textContent = "";
     const customerQuestion = options.question || text;
     const last = S.transcript.at(-1); if (!(last?.role === "user" && last.text === text)) addMsg("user", text);
@@ -713,7 +721,7 @@ export function mountPlayer(host, bundle, api) {
     const turn = { question: customerQuestion, ...(S.lastListen || { voice_ended: Date.now(), stt_done: Date.now(), via: "unknown" }), qa_done: null, answer_audio: null }; S.lastListen = null; S.turns.push(turn); el.live.textContent = ""; setStatus("thinking", "Checking your question"); el.cap.textContent = "Checking the approved information…";
     S.activeTurn = turn; turn.input_source = turn.via; turn.cancelled = false;
     let r;
-    const questionPayload = { question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null, session_id: S.sessionId, voice_ended_at: turn.voice_ended, cursor: { ...S.playback }, ...(options.skipBank ? { skip_bank: true } : {}) };
+    const questionPayload = { question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null, session_id: S.sessionId, demo_version: bundle.version, voice_ended_at: turn.voice_ended, cursor: { ...S.playback }, ...(options.skipBank ? { skip_bank: true } : {}) };
     const qaP = live?.ready ? live.ask(questionPayload) : api.qa(questionPayload);
     try {
       r = await questionResult(qaP, run, turn);
@@ -873,7 +881,7 @@ export function mountPlayer(host, bundle, api) {
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
     const ack = live ? "Thanks—that helps me focus the demo. While I tailor it, here's a quick overview of the car." : a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
-    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
+    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
     S.playback = { phase: "opening", index: 0, line: 0 };
     const fa = live ? { text: ack, audio: bundle.runtime?.overview_ack?.audio } : a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     if (!live) { const okF = await playIntroFilm(run); if (!okF) return; }
@@ -881,7 +889,7 @@ export function mountPlayer(host, bundle, api) {
   }
   async function startAfterIntake(run = newRun(), a1 = S.profile.why, checkpoint = { phase: "opening", index: 0, line: 0 }) {
     // Keep the same planning request alive across questions during the opening.
-    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
+    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
     if (["opening", "intake", "overview"].includes(checkpoint.phase)) {
       const overview = live && !S.browseOnly ? bundle.runtime?.overview : null;
       if (overview?.text) {
@@ -902,10 +910,16 @@ export function mountPlayer(host, bundle, api) {
       if (!plan && !live) { if (!(await speakF("still_working", "One moment — I'm tailoring this to what you told me.", run))) return; plan = await withTimeout(S.pitchPromise, 2500); if (run !== S.run) return; }
     }
     S.planningDecided = true;
+    if (live && plan && !plan.route?.some(step => library().some(slide => step.slide_id === slide.id || step.segment_id === slide.segment_id))) plan = null;
     S.personalized = !!plan;
+    S.pitch = plan || null;
     if (!plan) addMsg("note", "personalisation was not ready in the opening window — continuing on the stable approved route");
     if (plan) {
-      S.pitch = plan; S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
+      S.profile.focus = [...new Set([...(plan.focus_topics || []), ...S.profile.focus])];
+      // Live Explore already introduced the product while the plan was prepared.
+      // Enter its approved route directly; validated replacement lines and inline
+      // bridges carry the context, without replaying a planning monologue or extras.
+      if (live) { buildRoute(plan); playFrom(0, 0); return; }
       if (!["custom", "plan_bridge"].includes(checkpoint.phase) && plan.decision_frame) {
         S.playback = { phase: "decision", line: 0 };
         showSlideView(transientSlide("df", "custom", plan.decision_frame, [], null, "Your demo, tailored"), { reveal: 0 }); el.cite.textContent = "";
@@ -966,6 +980,8 @@ export function mountPlayer(host, bundle, api) {
     const explored = [...new Set(session.slides_visited.map((visit) => slides.find((slide) => slide.id === visit.slide_id)).filter((slide) => slide && !["hero_open", "hero_close", "closing"].includes(slide.kind)).map((slide) => slide.title).filter(Boolean))];
     const openQuestions = [...S.openQuestions];
     const shared = [S.profile.why, S.profile.followup].filter(Boolean);
+    const actionUrl = ctaLink(c);
+    const externalAction = actionUrl ? h("div", {}, h("a", { class: "btn primary sm", href: actionUrl, target: "_blank", rel: "noopener noreferrer", "aria-label": `${c.label} (opens in a new tab)` }, c.label), h("p", { class: "sub" }, "Opens in a new tab.")) : null;
     const section = (title, children) => h("div", { class: "kvbox" }, h("h5", {}, title), ...children);
     el.handoffBox.replaceChildren(h("div", { class: "recap-mark" }, icon("check-circle", { size: 24 })), h("h2", {}, "Your recap"), h("p", { class: "sub" }, bundle.product?.name || bundle.name),
       h("div", { class: "grid2" },
@@ -973,8 +989,8 @@ export function mountPlayer(host, bundle, api) {
         section("What you explored", [explored.length ? h("ul", {}, explored.map((title) => h("li", {}, title))) : h("p", {}, "We haven't explored the details yet.")]),
         section("Questions still open", [openQuestions.length ? h("ul", {}, openQuestions.map((question) => h("li", {}, question))) : h("p", {}, S.questions.length ? "No unanswered questions noted." : "No questions raised yet.")]),
         section("Your next step", [S.leads.length ? h("p", {}, `You requested a dealership follow-up about “${S.leads.at(-1).question}”.`) : h("div", {},
-          c ? h("p", {}, `You selected “${c.label}”. You can leave your details if you would like the dealership to follow up.`) : h("p", {}, "Take your time. A dealership follow-up is optional."),
-          h("button", { class: "btn ghost sm", onclick: () => showLeadPrompt("requested", openQuestions[0] || S.questions.at(-1) || c?.label || "test drive") }, "Request dealership follow-up"))])),
+          c ? h("p", {}, `You selected “${c.label}”.${actionUrl ? "" : " You can leave your details if you would like the dealership to follow up."}`) : h("p", {}, "Take your time. A dealership follow-up is optional."),
+          actionUrl && c.kind === "link" ? null : h("button", { class: "btn ghost sm", onclick: () => showLeadPrompt("requested", openQuestions[0] || S.questions.at(-1) || c?.label || "test drive") }, "Request dealership follow-up")), externalAction])),
       h("div", { class: "actions", style: "display:flex;gap:10px;margin-top:14px" },
         h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); api.saveSession(sessionRecord()).catch(() => {}); const run = newRun(); speak("Thanks for your time. You can ask anything else whenever you are ready.", run); } }, "Done"),
         h("button", { class: "btn ghost", onclick: () => { resumeSession(); if (live) { startLive(); listenForQuestion(); } else { const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } } }, "Back to the demo")));
@@ -1016,7 +1032,7 @@ export function mountPlayer(host, bundle, api) {
   function togglePause() {
     if (S.paused) { resumeSession(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); const resume = S.resume; S.resume = null; if (resume) resume(); return; }
     const origin = { ...S.playback }, intake = S.intakeOpen, conversation = !!S.conversationOrigin;
-    interruptAll(); S.paused = true; el.pauseBtn.replaceChildren(icon("play", { size: 18 })); el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press play to continue.";
+    interruptAll({ preservePlanning: openingPlanPending() }); S.paused = true; el.pauseBtn.replaceChildren(icon("play", { size: 18 })); el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press play to continue.";
     S.resume = () => { if (intake) runIntake(); else if (conversation) holdConversation(newRun()); else resumePlayback({ ...origin, checkin: false }); };
   }
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }

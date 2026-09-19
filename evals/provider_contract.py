@@ -59,6 +59,49 @@ def run(check, demo_id: str) -> None:
         traced = stack.enter_context(patch.object(usage, "trace"))
         recorded = stack.enter_context(patch.object(usage, "record"))
 
+        # A deliberately stalled primary must leave a real fallback opportunity
+        # inside the same twelve-second graph clock. Fake time avoids sleeps.
+        budget_clock, attempts = {"now": 0.0}, []
+        def stalled_gemini(*args, **kwargs):
+            attempts.append(("gemini", kwargs["timeout_s"]))
+            budget_clock["now"] += kwargs["timeout_s"]
+            raise TimeoutError("primary stalled")
+        def unavailable_claude(*args, **kwargs):
+            attempts.append(("claude", kwargs["timeout"]))
+            budget_clock["now"] += .1
+            raise RuntimeError("credit unavailable")
+        def successful_runware(*args, **kwargs):
+            attempts.append(("runware", kwargs["timeout"]))
+            budget_clock["now"] += .2
+            return answer.model_copy(deep=True)
+        with patch.object(runtime.time, "monotonic", side_effect=lambda: budget_clock["now"]), \
+                patch.object(gemini, "text_structured", side_effect=stalled_gemini), \
+                patch.object(claude, "structured", side_effect=unavailable_claude), \
+                patch.object(runware, "structured", side_effect=successful_runware):
+            selected = runtime.structured("System", "Question", schemas.QAOut, timeout_budget_s=12)
+        check("providers: stalled primary reserves a bounded fallback budget", attempts[0]==("gemini",7.0) and attempts[-1][0]=="runware" and attempts[-1][1]>=2 and budget_clock["now"]<12)
+        check("providers: actual selected provider and model are recorded", getattr(selected,"_runtime_provider","")=="runware" and getattr(selected,"_runtime_model","")==config.RUNWARE_TEXT_MODEL)
+        check("providers: selection metadata never changes the provider schema", "_runtime_provider" not in selected.model_dump() and "_runtime_provider" not in schemas.QAOut.model_json_schema().get("properties",{}))
+        attempts.clear();budget_clock["now"]=0
+        def stalled_claude(*args, **kwargs):
+            attempts.append(("claude", kwargs["timeout"]))
+            budget_clock["now"] += kwargs["timeout"]
+            raise TimeoutError("fallback stalled")
+        def stalled_runware(*args, **kwargs):
+            attempts.append(("runware", kwargs["timeout"]))
+            budget_clock["now"] += kwargs["timeout"]
+            raise TimeoutError("last provider stalled")
+        with patch.object(runtime.time, "monotonic", side_effect=lambda: budget_clock["now"]), \
+                patch.object(gemini, "text_structured", side_effect=stalled_gemini), \
+                patch.object(claude, "structured", side_effect=stalled_claude), \
+                patch.object(runware, "structured", side_effect=stalled_runware):
+            error = failure(lambda: runtime.structured("System", "Question", schemas.QAOut, timeout_budget_s=12))
+        check("providers: successive stalls share rather than reset twelve seconds", bool(error) and [p for p,_ in attempts]==["gemini","claude","runware"] and budget_clock["now"]<=12)
+        attempts.clear()
+        with patch.object(gemini, "text_structured", side_effect=stalled_gemini):
+            error = failure(lambda: runtime.structured("System", "Question", schemas.QAOut, timeout_budget_s=.2))
+        check("providers: exhausted budget never starts a futile provider request", bool(error) and not attempts)
+
         # Exercise the real dispatcher and the real Claude/Runware adapters.
         calls, sent, claude_requests, gemini_requests = [], [], [], []
         succeed = {"provider": "runware"}

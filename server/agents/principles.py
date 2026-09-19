@@ -123,7 +123,7 @@ SCORECARD = [
     ("Decision frame", "Could the buyer repeat what decision is being made and what success looks like?"),
     ("Outcome first", "Was the desired result visible before setup steps or secondary features?"),
     ("Minimal proof", "One primary outcome and no more than two supporting proof areas?"),
-    ("Interaction", "One relevant checkin at a time, after a natural batch of at most twenty seconds?"),
+    ("Interaction", "A few relevant check-ins at useful decision points, one question at a time with an explicit wait, without interrogating after every section?"),
     ("Concrete language", "Reuses the buyer's route, numbers, situation and money assumptions?"),
     ("Visible contrast", "Current state versus desired state shown?"),
     ("Truth split", "Stated, certified, modeled, observed and contractual claims kept distinct, with relevant basis?"),
@@ -131,7 +131,7 @@ SCORECARD = [
     ("Advance", "A specific next action, owner, trigger and success condition?"),
 ]
 
-PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated → CONFIRM with one question about relevance or the next constraint."
+PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated. At a useful decision point, optionally CONFIRM enough detail or readiness to continue with one question and wait: yes continues, no opens more detail. Never ask whether they want more detail or an either/or choice in checkin. Do not append a question to every block; leave checkin empty when the narrative should continue."
 
 LANGUAGES = {
     "en-IN": "Indian English", "hinglish": "Hinglish — natural Hindi-English mix as spoken in Indian cities; write Hindi words in Devanagari and keep product names, numbers, units and technical terms in English",
@@ -148,8 +148,13 @@ def language_instruction(code: str) -> str:
 
 
 PITCH_SHAPE = """DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged). Every batch ≤ 20 seconds
-(≤ 38 spoken words) and ends at a pause point. Aim for a natural ten-to-twenty-second thought, not clipped labels or a list;
-do not pad a shorter useful thought. Real questions belong in `checkin`, never hidden in narration.
+(≤ 38 spoken words). Aim for a natural ten-to-twenty-second thought, not clipped labels or a list; do not pad a shorter
+useful thought. Use two or three deliberate, relevant check-ins across a typical route, not a question after every
+section. Other sections continue on audio completion. Real questions belong in `checkin` with an explicit wait,
+never hidden in narration. A segment check-in confirms enough detail or readiness: yes continues and no opens deeper
+detail. Use 'Is that enough detail for now?', never 'Would you like more detail?' or an open/either-or question.
+This meaning applies to segment check-ins, not the separate intake context question. The check-in target guides
+authoring; it is not a mandatory numeric quota.
 STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
   The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
@@ -161,10 +166,11 @@ STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three US
   Say they can steer the tour; do not ask another question.
 STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: the strongest supported standout feature first, then its adjacent
   everyday use, practical fit and relevant ownership questions. The route is a narrative, not a fixed exterior-to-engine
-  checklist. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check → CHECK with one
-  short question in `checkin`, separate from the spoken lines. The runtime reorders these per buyer; each must stand alone.
-STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive, ends by
-  inviting questions in `checkin`, not as a narration line.
+  checklist. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
+  decision points, add one short question in `checkin`, separate from spoken lines; otherwise leave it empty. The runtime
+  reorders these per buyer; each must stand alone.
+STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive.
+  An optional `checkin` confirms enough detail before continuing; never hide a question in narration.
 STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the
   two or three things the sources do not answer, with the appropriate next source or check to resolve each.
 STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: "the strongest fit is X, and the one thing we should still verify is Y" —

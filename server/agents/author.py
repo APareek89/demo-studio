@@ -40,8 +40,12 @@ Hard rules:
    - proof (4-6 segments, ≤ 38 words each): NOTICE one thing → the picture SHOWS it → RELEVANCE: the choice it informs
      or a useful fit-check. Explain a customer benefit only when the cited evidence establishes it; a specification
      need not become a promised performance, safety or practical outcome →
-     CHECK: one short question in `checkin` (never two). Technical detail goes to 2-3 `deeper` lines.
-   - features (≤ 40 words): one sentence per feature, no numbers unless decisive; invite questions in `checkin`.
+     CHECK only at a useful decision point: one short question in `checkin` (never two). Most sections can flow on
+     without a question; aim for two or three deliberate check-ins across a typical route, not a question after every
+     section. Leave other checkin fields empty. Technical detail goes to 2-3 `deeper` lines.
+     Check-ins must confirm enough detail or readiness: YES continues, NO opens more detail. Never ask whether the
+     buyer wants more detail, an either/or choice, or an open question in this field; those reverse or obscure its meaning.
+   - features (≤ 40 words): one sentence per feature, no numbers unless decisive; an optional check-in confirms readiness to continue.
    - establish (≤ 36 words): variant + written terms in one line each, then the top open questions declared honestly.
    - closing (2 lines, ≤ 45 words total): FIT SUMMARY — "the strongest fit is … and the one thing we should still verify
      is …" (the plan's decision_frame, in everyday nouns) — then the next step naming the CTA label.
@@ -56,6 +60,19 @@ Hard rules:
    try a feature; it does not recite the vehicle's dimensions or say every feature is exciting. Show standout features
    early; keep technical mechanics for a requested deeper answer. A transmission type alone never proves smooth,
    imperceptible or jerk-free shifts. A safety feature never promises that an accident cannot happen.
+   Examples are editorial patterns, NOT facts to copy: if approved evidence explicitly supports both on the same trims,
+   prefer "Start with the cabin: selected variants offer a panoramic sunroof and ventilated front seats. Then we'll
+   explore the choices that suit your routine." over "It measures 4,330 millimetres and has a parametric grille."
+   Do not make "four-cylinder", "quad-beam", "dual-clutch" or dimensions the everyday opening or a headline benefit.
+   Do not replace those with unsupported praise such as "responsive turbo", "assured stopping performance", "diesel
+   pulling power" or "extra pep". Equipment describes equipment; a felt result needs its own evidence.
+   Preserve engine/trim relationships: when reviewed facts pair petrol with manual or automatic and turbo with automatic
+   only, NEVER compress that into "each engine offers manual or automatic". Say "Gearbox choices depend on the engine"
+   and retain the exact pairings in deeper detail. No universal "each/all" unless every cited scope supports it.
+   A check-in confirms readiness, not a preference or knowledge quiz: prefer "Is that enough detail on the cabin for now?"
+   or "Are you ready to continue?" Never use "Would you like a closer look?", "Anything you'd like to check?" or
+   "Would you like to compare these options, or keep exploring?": a yes to these does not mean continue.
+   Do not ask again for context the customer already supplied. The intake's open context question is a separate flow.
 7. DELIVERY. Be a helpful, cheerful, attentive guide: gentle enthusiasm, a reassuring cadence for limitations, no
    theatrical excitement, repeated superlatives or forced fillers. Use punctuation for natural pauses. Set each line's
    delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9–1.08. Never put [emotion] or SSML in text.
@@ -84,8 +101,17 @@ LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
 ROUTE_LIMIT = 360  # ≈ 3 minutes at the measured ~1.9 words/s: intro + outcome + best 3 proof + features + establish + closing
-JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP)\b")
+JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP|\d[\d,.]*\s*(?i:mm|millimet(?:re|er)s?)|(?i:mm|millimet(?:re|er)s?|length|four[ -]cylinder|4[ -]cylinder|quad[ -]beam|parametric|dual[ -]clutch))\b")
 _SHIFT_PROMISE = re.compile(r"\b(?:imperceptible|seamless|jerk[- ]free)\s+(?:gear\s*)?(?:shifts?|changes?)\b|\b(?:won't|will not|cannot|can't)\s+(?:even\s+)?feel\s+(?:the\s+)?(?:gear\s*)?(?:shifts?|changes?)\b", re.I)
+# Editorial English-language guard, not a general semantic classifier. The existing
+# player's affirmative path continues; a negative opens deeper detail.
+_CHECKIN_OPT_IN = re.compile(
+    r"\b(?:would|do)\s+you\s+(?:like|want|need)\b[^?？]*\b(?:more|closer|details?|questions?|compare|comparison|explore|look|see)\b"
+    r"|\b(?:anything|any\s+questions)\b"
+    r"|\b(?:shall|should|can|could)\s+(?:we|I)\b[^?？]*\b(?:more|closer|details?|compare)\b"
+    r"|\b(?:want|need)\s+(?:some\s+)?(?:more\s+)?(?:details?|information)\b",
+    re.I,
+)
 
 
 def words(t: str) -> int:
@@ -105,6 +131,14 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     fact_ids = {f["id"] for f in und["facts"] if f.get("approved", True)}
     vis = {s["id"]: "shot" for s in und["shots"] if s.get("_allowed", True)} | {i["id"]: "image" for i in und["images"] if i.get("_allowed", True)}
     issues: list[str] = []
+
+    def register_warning(text: str, where: str):
+        # Editorial warning only: never suppress a sourced line, strip its unit,
+        # or police a requested technical/deeper answer.
+        if audience == "everyday":
+            m = JARGON.search(text or "")
+            if m:
+                issues.append(f"{where}: everyday register warning — jargon '{m.group(0)}' in the main narration; move the complete technical quantity to deeper unless explicitly requested, never keep a number while dropping its unit")
 
     def check(line: dict, where: str):
         prepared = speech_style.prepare(line.get("text", ""), line.get("delivery"))
@@ -135,6 +169,9 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
 
     for seg in script["segments"]:
         checkin = (seg.get("checkin") or "").strip()
+        register_warning(checkin, f"{seg['id']} checkin")
+        if _CHECKIN_OPT_IN.search(checkin):
+            issues.append(f"{seg['id']} checkin: response meaning warning — the player's yes continues and no opens more detail; use a confirmation such as 'Is that enough detail for now?' instead of opting into detail or asking an open choice")
         # Checkins have no citation field. Moving a claim out of a line cannot
         # exempt it from grounding: a question-only turn must remain claim-free.
         if NUMBERISH.search(checkin) or CLAIMISH.search(checkin):
@@ -150,19 +187,14 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
         lim = LIMITS.get(seg.get("role", "proof"), 165)
         if total > lim:
             issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, limit {lim} — shorten (P06)")
-        if seg.get("role") in ("proof", "features") and not (seg.get("checkin") or "").strip():
-            issues.append(f"{seg['id']}: {seg.get('role')} block needs a CONFIRM question in checkin (P06)")
-        if audience == "everyday":
-            for l in seg["lines"]:
-                m = JARGON.search(l["text"])
-                if m:
-                    issues.append(f"{seg['id']}: jargon '{m.group(0)}' in the main narration — move the complete technical quantity to deeper; never keep a number while dropping its unit")
-                    break
+        for n, line in enumerate(seg["lines"], 1):
+            register_warning(line.get("text", ""), f"{seg['id']} line {n}")
     intro_words = sum(words(l["text"]) for s in script["segments"] if s.get("role") in ("intro", "outcome") for l in s["lines"])
     if intro_words > 115:
         issues.append(f"opening (intro + outcome) is {intro_words} words; keep it under 115 (~45 s)")
     for n, ln in enumerate(script.get("closing", []), 1):
         check(ln, f"closing {n}")
+        register_warning(ln.get("text", ""), f"closing {n}")
         if re.search(r"[?？]", ln.get("text", "")) or ln.get("step") == "confirm":
             issues.append(f"closing line {n}: a question needs an explicit checkin; close with the next action instead")
     closing_words = sum(words(l["text"]) for l in script.get("closing", []))
@@ -182,8 +214,7 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
         if not overview.get("fact_ids") or re.search(r"[?？]", overview.get("text", "")):
             issues.append("Explore overview needs cited evidence and must not ask a question")
             overview["unverified"] = True
-        if audience == "everyday" and JARGON.search(overview.get("text", "")):
-            issues.append("Explore overview: move technical jargon to deeper detail")
+        register_warning(overview.get("text", ""), "Explore overview")
     return issues
 
 

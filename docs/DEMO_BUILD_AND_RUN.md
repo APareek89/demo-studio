@@ -1,6 +1,6 @@
 # Demo build and live conversation
 
-This describes the implementation on `codex/creta-conversational-demo`. Live acceptance results are recorded separately in `docs/issues/2026-09-19-creta.md`; implementation is not an acoustic-quality sign-off.
+This describes the implementation on `codex/creta-conversational-demo`. [Actual Creta acceptance](CRETA_ACCEPTANCE.md) and the [issue log](issues/2026-09-19-creta.md) separate measured outcomes from implementation; implementation is not an acoustic-quality sign-off.
 
 ## Build: prepare the knowledge and the reusable demo
 
@@ -30,11 +30,15 @@ For a question or interruption:
 6. Validation checks cited evidence IDs, quantities, selected scope, policy conditions and tool provenance. The graph creates a **delivery plan**; it does not speak inside replayable nodes.
 7. `runtime_delivery.py` and `llm/sarvam_stream.py` stream the selected voice. The browser owns playback and captions. A clarification waits for an answer; ordinary Q&A returns to the saved narration position. Cancelled or superseded output is ignored.
 
-For **Explore with me**, the customer's context starts personalization while the recorded, cited overview plays. `server/agents/pitch.py` reorders relevant unseen segments and supplies customer-context bridges around reviewed factual sentences. It does not freely rewrite unverified product claims. A changed priority can replan unseen material at a safe boundary. A slow or failed plan falls back honestly instead of claiming customization succeeded.
+For **Explore with me**, the customer's context starts personalization while the recorded, cited overview plays. `server/agents/pitch.py` reorders relevant unseen segments and composes exact reviewed factual sentences, with at most one short customer-context preface on the first slide. It does not freely rewrite unverified product claims. The overview leads directly into that slide speech, without an additional decision-frame or custom-batch opening. If model replacements are missing or invalid, the selected route uses explicitly marked reviewed narration and retains its recorded clips and check-ins. A changed priority can replan unseen material at a safe boundary. A slow or failed plan falls back honestly instead of claiming customization succeeded.
+
+Live personalization reads the published bundle, not mutable Align drafts. A session pins both the knowledge snapshot and published demo version. A newer publication requires a refresh before new personalization, even if the facts have not changed. Existing Q&A stays grounded in the pinned knowledge snapshot.
 
 ## How evidence, tools and the LLM fit together
 
-Retrieval currently uses local lexical and feature similarity over scoped evidence; it is not an external vector database. The LLM drafts conversational language. Tools perform arithmetic and fetch a supplied public source. Validators and reviewed evidence constrain the answer. None of those layers alone proves that every possible answer is correct; the real-question acceptance pack tests their combined behavior.
+Retrieval currently uses local lexical and feature similarity over scoped evidence; it is not an external vector database. The model receives compact approved claims, values, conditions and scope. A large original source quote is retained for audit, but its unrelated table cells do not become additional licensed claims. Exact negative applicability can explain an explicitly excluded trim; a missing retrieved fact does not prove that the entire source corpus lacks that feature.
+
+The LLM drafts conversational language. Tools perform arithmetic and fetch a supplied public source. A verified calculator result retains its derivation and can provide a deterministic response when model rendering fails; approximate currency wording permits bounded rounding. Validators and reviewed evidence constrain the answer. None of those layers alone proves that every possible answer is correct; the real-question acceptance pack tests their combined behavior.
 
 Live URL lookup is deliberately smaller than build-time crawling: up to three relevant same-host pages within a bounded fetch budget. It does not silently refresh the approved knowledge base. New web evidence remains attached to that turn with its source and applicability caveats. Private-network destinations and unsafe redirects are rejected.
 

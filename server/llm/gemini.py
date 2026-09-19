@@ -4,6 +4,7 @@ from __future__ import annotations
 import io
 import json
 import mimetypes
+import math
 import struct
 import re
 import threading
@@ -151,8 +152,18 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
     if thinking_level is not None and model == "gemini-3.8-flash":
         # Only this exact model's support is verified; unknown overrides retain their defaults.
         cfg["thinking_config"] = t.ThinkingConfig(thinking_level=thinking_level)
+    http_options = {}
     if timeout_s:
-        cfg["http_options"] = t.HttpOptions(timeout=int(timeout_s * 1000))
+        # genai otherwise copies the local HTTP timeout to X-Server-Timeout.
+        # Gemini rejects that server deadline below 10s. Keep our short local
+        # attempt budget (and the graph's whole-turn deadline) independent.
+        http_options.update(timeout=max(1, int(timeout_s * 1000)),
+                            headers={"X-Server-Timeout": str(max(10, math.ceil(timeout_s)))})
+    if tries == 1:
+        # A bounded runtime attempt must not trigger the SDK's five retries.
+        http_options["retry_options"] = t.HttpRetryOptions(attempts=1)
+    if http_options:
+        cfg["http_options"] = t.HttpOptions(**http_options)
     t0 = time.time()
     try:
         resp = _retry(lambda: client().models.generate_content(model=model, contents=prompt, config=t.GenerateContentConfig(**cfg)),

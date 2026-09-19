@@ -109,7 +109,7 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         line = {"text": "Take a look at the choices for your drive.", "visual": {"kind": "none"}, "fact_ids": []}
         technical = {"text": "The diesel automatic has peak torque of 250 Nm.", "visual": {"kind": "none"}, "fact_ids": ["F001"]}
         proposed_script = schemas.ScriptOut(segments=[schemas.SegmentOut(id="drive", title="Your drive", role="proof",
-            topic="performance", lines=[schemas.LineOut(**line)], checkin="What would you like to explore?",
+            topic="performance", lines=[schemas.LineOut(**line)], checkin="Is that enough detail for now?",
             deeper=[schemas.LineOut(**technical)])], closing=[], intake_q1="Welcome. Shall we explore?", intake_q2="")
         with patch.object(author.claude, "structured", return_value=proposed_script) as model:
             scripted = author.run(demo_id, lambda _msg: None)

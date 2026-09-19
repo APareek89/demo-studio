@@ -254,7 +254,7 @@ class SegmentOut(BaseModel):
     outcome: str = ""
     usp_ids: list[str] = Field(default_factory=list)
     lines: list[LineOut]
-    checkin: str = Field(description="ONE short question after proof/features, with an explicit wait for the answer; no claims or assumed customer details; empty for intro/outcome")
+    checkin: str = Field(description="Optional ONE short confirmation of enough detail or readiness, with an explicit wait: yes continues, no opens more detail. Example: 'Is that enough detail for now?' Never opt into more detail or ask an open/either-or question. No claims or assumed customer details. Leave empty when narration should continue; empty for intro/outcome. Not required after every proof/features section.")
     deeper: list[LineOut] = Field(description="2-3 lines for 'tell me more', grounded")
 
 
@@ -361,7 +361,7 @@ class PersonalizedSegment(BaseModel):
 
 class PitchPlan(BaseModel):
     customer_state: Literal["unknown", "stated_want", "stated_need"]
-    decision_frame: str = Field(description="brief acknowledgement of this buyer's actual words and the route order after the overview; no product specs, assumed details or question")
+    decision_frame: str = Field(description="Brief acknowledgement metadata, at most twelve words, using this buyer's actual words; no specs, assumed details or question. Live Explore does not narrate it after the overview.")
     follow_up_question: str = Field(description="always empty; the buyer already had one intake question")
     primary_outcome: str
     focus_topics: list[str] = Field(description="segment topics this buyer cares about, from their words (any language)")
@@ -370,8 +370,8 @@ class PitchPlan(BaseModel):
     usp_order: list[str] = Field(default_factory=list, description="usp ids in the order they will be covered")
     advance: str = Field(description="the closing advance for this buyer (P10), naming the CTA label")
     advance_cta: str = Field(default="", description="cta id")
-    custom_batches: list[CustomBatch] = Field(default_factory=list, description="2-3 batches spoken right after the standard opening, tying the product to what THIS buyer said; empty when the buyer said nothing specific")
-    personalized_segments: list[PersonalizedSegment] = Field(default_factory=list, description="Need-led replacements for selected unseen route segments. The runtime validates each factual clause and supplies a safe personal preface; invalid replacements fall back to reviewed speech.")
+    custom_batches: list[CustomBatch] = Field(default_factory=list, description="Legacy recorded-delivery proof batches only. For LIVE ROUTE DELIVERY always return []; the selected slide speech is personalized in place.")
+    personalized_segments: list[PersonalizedSegment] = Field(default_factory=list, description="For LIVE ROUTE DELIVERY with customer context, provide a reviewed-line replacement for each selected unseen route segment. Only the first segment may have a short verbatim customer_quote. Preserve factual sentences and citations exactly; invalid or omitted replacements use explicitly marked reviewed-route fallback speech.")
     do_not_recommend_if: str = Field(default="")
 
 

@@ -222,6 +222,60 @@ class KnowledgeContract(unittest.TestCase):
         self.assertFalse(knowledge.scope_matches(grouped, {"variant": "King"}))
         self.assertFalse(knowledge.scope_matches(grouped, {"variant": "SX"}))
 
+    def test_powertrain_family_retrieval_keeps_capacity_and_technology_strict(self):
+        turbo = fact(id="F001",claim="Maximum power",value="160 PS",scope={"model":"CRETA","powertrain":"1.5l Turbo GDi petrol"})
+        identity = knowledge._identity(turbo)
+        self.assertTrue(knowledge.scope_matches(turbo,{"powertrain":"turbo petrol"}))
+        self.assertTrue(knowledge.scope_matches(turbo,{"powertrain":"1.5-litre turbo petrol"}))
+        self.assertFalse(knowledge.scope_matches(turbo,{"powertrain":"2.0-litre turbo petrol"}))
+        self.assertFalse(knowledge.scope_matches(turbo,{"powertrain":"diesel"}))
+        self.assertFalse(knowledge.scope_matches(turbo,{"powertrain":"1.5-litre TSI turbo petrol"}))
+        self.assertEqual(knowledge._identity(turbo),identity)
+        store.write_json(self.did,"understanding.json",understanding([turbo]))
+        self.assertEqual([f["id"] for f in knowledge.retrieve(self.did,"turbo power",scope={"powertrain":"turbo petrol"})["evidence"]],["F001"])
+
+    def test_automatic_family_matches_explicit_transmission_only(self):
+        for value in ("7-speed DCT","IVT","6-speed automatic","6 AT"):
+            self.assertTrue(knowledge.scope_matches({"scope":{"transmission":value}},{"transmission":"automatic"}))
+        self.assertFalse(knowledge.scope_matches({"scope":{"transmission":"6-speed manual"}},{"transmission":"automatic"}))
+        self.assertFalse(knowledge.scope_matches({"scope":{}},{"transmission":"automatic"}))
+        self.assertFalse(knowledge.scope_matches({"scope":{"transmission":"7-speed DCT"}},{"transmission":"8-speed automatic"}))
+
+    def test_retrieval_deduplicates_identical_assertions_not_distinct_applicability(self):
+        first=fact(id="F001");duplicate=fact(id="F002",ref="web");other=fact(id="F003");other["scope"]["variant"]="E"
+        store.write_json(self.did,"understanding.json",understanding([first,duplicate,other]))
+        pack=knowledge.retrieve(self.did,"boot",scope={"variant":["SX","E"]})
+        self.assertEqual(len(pack["evidence"]),2)
+        self.assertEqual({f["scope"]["variant"] for f in pack["evidence"]},{"SX","E"})
+        self.assertEqual(len(store.read_json(self.did,"understanding.json")["facts"]),3)
+
+    def test_explicit_negative_applicability_is_retrieved_with_polarity(self):
+        row=fact(id="F001",claim="Panoramic sunroof",value="Standard on King",conditions="Excludes E and EX variants",scope={"model":"CRETA","variant":"King"})
+        store.write_json(self.did,"understanding.json",understanding([row]))
+        pack=knowledge.retrieve(self.did,"E sunroof",scope={"variant":"E"})
+        self.assertEqual(len(pack["evidence"]),1)
+        projected=pack["evidence"][0]
+        self.assertEqual(projected["scope"]["variant"],"King")
+        self.assertEqual(projected["applicability_projection"]["rows"][0]["polarity"],"negative")
+        self.assertFalse(knowledge.scope_matches(row,{"variant":"E"}))
+        self.assertEqual(knowledge.retrieve(self.did,"E sunroof",scope={"variant":"E","market":"India"})["evidence"],[])
+
+    def test_projection_uses_only_approved_literal_assertions_not_provenance_or_order(self):
+        row=fact(id="F001",conditions="Not available on SX and above")
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"SX"}))
+        row["conditions"]="";row["source"]["quote"]="Excludes E variants"
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"E"}))
+        row["conditions"]="Excludes E variants";row["approved"]=False
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"E"}))
+        store.write_json(self.did,"understanding.json",understanding([row]))
+        self.assertEqual(knowledge.retrieve(self.did,"E boot",scope={"variant":"E"})["evidence"],[])
+
+    def test_explicit_mixed_variant_clauses_never_expand_relative_order(self):
+        row=fact(id="F001",claim="Air conditioning",value="Manual on E, EX; Automatic on SX and above",conditions="DATC on King, King Knight",scope={"model":"CRETA"})
+        projection=knowledge.variant_projection(row,{"variant":["E","King","SX"]})
+        self.assertEqual([r["variants"] for r in projection["rows"]],[["E"],["King"]])
+        self.assertNotIn("SX",[v for r in projection["rows"] for v in r["variants"]])
+
     def test_old_html_cache_is_reparsed_without_overwriting_old_revision(self):
         src = store.load(self.did)["sources"][1]
         revision = "a" * 64

@@ -171,8 +171,8 @@ export class LiveVoiceClient {
     } else if (data.type === "audio.end") { active.ended = true; if (!active.sources.size) this.finishAudio(true); }
   }
   failPending(error) { if (this.pending) { const pending = this.pending; this.pending = null; clearTimeout(pending.timer); pending.reject(error); } }
-  interrupt() {
-    this.generation++; this.cancelAudio(); this.failPending(abortError()); this.turnId = `t_${++this.turn}`; this.send("turn.interrupt");
+  interrupt({ preservePlanning = false } = {}) {
+    this.generation++; this.cancelAudio(); this.failPending(abortError()); this.turnId = `t_${++this.turn}`; this.send("turn.interrupt", { preserve_planning: !!preservePlanning });
   }
   async ask(payload) {
     const generation = this.generation; await this.connect(); if (generation !== this.generation || this.closed) throw abortError(); this.failPending(abortError());

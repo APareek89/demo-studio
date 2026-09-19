@@ -35,7 +35,21 @@ export function renderSlide(slide, opts = {}) {
     el.append(h("div", {class: "slide-heading"}, h("div", {class: "slide-chapter"}, chapter),
       h("h2", {class: "slide-title"}, slide.title || "Explore the details")));
   }
-  el.append(pic, panel);
+  const scrollHint = opts.fit ? h("span", { class: "slide-scroll-hint", hidden: true, "aria-hidden": "true" }) : null;
+  el.append(pic, panel); if (scrollHint) el.append(scrollHint);
+
+  function updateScrollHint() {
+    if (!scrollHint) return;
+    const overflow = el.clientWidth < 700 && panel.clientHeight > 0 && panel.scrollWidth > panel.clientWidth + 2 && !el.closest(".pl-stage")?.querySelector(".pl-intake.open");
+    scrollHint.hidden = !overflow;
+    if (!overflow) return;
+    const before = panel.scrollLeft > 2, after = panel.scrollWidth - panel.clientWidth - panel.scrollLeft > 2;
+    scrollHint.textContent = `${before ? "← " : ""}Swipe for more${after ? " →" : ""}`;
+    // The cue floats above the measured rail; it never changes the image or card boxes.
+    scrollHint.style.right = Math.max(0, el.clientWidth - panel.offsetLeft - panel.clientWidth) + "px";
+    scrollHint.style.bottom = Math.max(0, el.clientHeight - panel.offsetTop + 7) + "px";
+  }
+  panel.addEventListener("scroll", updateScrollHint, { passive: true });
 
   function layout() {  // leader lines run from each chip's centre to its anchor; chip size is only known after layout
     if (opts.fit && img.naturalWidth && img.naturalHeight) {  // player: the picture box is the largest one of the image's ratio that fits the stage
@@ -90,6 +104,7 @@ export function renderSlide(slide, opts = {}) {
       }
     }
     for (const [id, chip] of chips) { const ln = lines.get(id); if (!ln) continue; ln.setAttribute("x1", String((chip.offsetLeft + chip.offsetWidth / 2) / W * 100)); ln.setAttribute("y1", String((chip.offsetTop + chip.offsetHeight / 2) / H * 100)); }
+    updateScrollHint();
   }
   function drag(chip, c) {
     let start = null;
@@ -105,7 +120,7 @@ export function renderSlide(slide, opts = {}) {
   }
   function highlight(id) { for (const [cid, chip] of chips) chip.classList.toggle("hot", cid === id); for (const it of panel.children) it.classList.toggle("hot", it.dataset.id === id); }
   function setImage(url, parts) { pic.classList.toggle("noimg", !url); img.src = url || ""; slide.image_parts = parts || []; }
-  const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(layout) : null; ro?.observe(pic); if (opts.fit) ro?.observe(el);
+  const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(layout) : null; ro?.observe(pic); if (opts.fit) { ro?.observe(el); ro?.observe(panel); }
   img.addEventListener("load", layout);
   requestAnimationFrame(layout);
   return { el, pic, img, layout, setRevealed, highlight, setImage, destroy: () => { ro?.disconnect(); el.remove(); } };

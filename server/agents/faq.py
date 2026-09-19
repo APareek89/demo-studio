@@ -1,10 +1,10 @@
 """FAQ bank — the questions customers actually ask, answered at build time from the registry and voiced in the
-persona's voice, so a known question is answered instantly at runtime with no model call and no voice change.
+persona's voice. Legacy QA can reuse a matching answer; the conversational runtime uses its reasoning graph.
 
 Questions come from two places: any uploaded FAQ document (role 'faq', or a document whose name contains 'faq';
 every line ending in '?' is taken), and generated likely questions (rehearsal.generate_questions) to fill up to
 settings.faq_questions (default 20). Every answer goes through qa.answer, so "no citation, no claim" holds; a question
-the sources cannot answer is kept with its decline-and-callback answer, which is also instant at runtime.
+the sources cannot answer is kept with its limitation and callback option for review and legacy QA.
 
 Runtime: match(demo_id, question) returns the bank entry when the customer's wording clearly means the same question."""
 from __future__ import annotations
@@ -125,7 +125,7 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
     out = {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(entries), "registry_hash": registry_hash, "partial": any(e.get("error") for e in entries)}
     store.write_json(demo_id, "faq.json", out)
     store.log(demo_id, "faq", {"answered": out["answered"], "total": out["total"], "from_document": len(docs), "questions": [e["question"] for e in entries]})
-    emit(f"FAQ bank ready: {out['answered']}/{out['total']} answered from the sources; the rest decline and offer a callback — all instant at runtime.")
+    emit(f"FAQ bank ready: {out['answered']}/{out['total']} answered from the sources; the remaining answers explain the gaps and offer follow-up.")
     return out
 
 

@@ -39,9 +39,9 @@ async def live(websocket: WebSocket, demo_id: str):
 
     delivery = DeliveryCoordinator(demo_id,send)
 
-    async def stop_turn():
+    async def stop_turn(*, preserve_planning=False):
         nonlocal turn_task
-        cancel_turn(demo_id,session_id)
+        cancel_turn(demo_id,session_id,preserve_planning=preserve_planning)
         await delivery.cancel()
         if turn_task:
             turn_task.cancel()
@@ -67,7 +67,9 @@ async def live(websocket: WebSocket, demo_id: str):
                 if adapter is not stt or generation != input_generation:
                     return
                 if event.get("type")=="input.speech_start":
-                    await stop_turn()
+                    # Speech onset stops sound immediately. Only the completed
+                    # customer turn can supersede a concurrent Explore plan.
+                    await stop_turn(preserve_planning=True)
                 if event.get("type")=="error":
                     await send({"type":"error","code":"microphone_stream","message":"Voice input disconnected. Retry the microphone or type your answer.","is_fatal":True,"input_generation":generation})
                     return
@@ -146,11 +148,11 @@ async def live(websocket: WebSocket, demo_id: str):
                     try: await stt.send_audio(data)
                     except Exception: await stop_mic(); await send({"type":"error","code":"microphone_stream","message":"Voice input disconnected. Please retry or type.","input_generation":input_generation})
             elif kind=="turn.interrupt":
-                await stop_turn()
+                await stop_turn(preserve_planning=message.get("preserve_planning") is True)
                 current_turn=safe_id(message.get("turn_id") or "t_"+str(time.time_ns()),"t")
                 await send({"type":"turn.cancelled","turn_id":current_turn})
             elif kind=="turn.ask":
-                await stop_turn()
+                await stop_turn(preserve_planning=True)
                 current_turn=safe_id(message.get("turn_id") or "t_"+str(time.time_ns()),"t")
                 message["turn_id"]=current_turn
                 turn_task=asyncio.create_task(answer(message))

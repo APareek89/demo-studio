@@ -57,6 +57,72 @@ def scope_values(value, key: str) -> set[str]:
     return {scope_value(v, key) for v in scope_atoms(value, key)}
 
 
+def _powertrain_match(actual: str, requested: str) -> bool:
+    """Match a requested engine family without equating different capacities.
+
+    This affects retrieval applicability only; it never changes fact identities
+    or declares differently qualified assertions to be the same evidence.
+    """
+    def parts(value):
+        words = set(scope_value(value, "powertrain").split())
+        family = "diesel" if "diesel" in words else "turbo petrol" if {"turbo","petrol"} <= words else "naturally aspirated petrol" if "petrol" in words and ("mpi" in words or {"naturally","aspirated"} <= words) else ""
+        capacity = re.search(r"(?<![\d.])(\d+(?:\.\d+)?)\s*[- ]?\s*(?:litres?|liters?|l)\b",str(value),re.I)
+        return family, float(capacity[1]) if capacity else None, words
+    family, capacity, words = parts(actual)
+    requested_family, requested_capacity, requested_words = parts(requested)
+    if not family or family != requested_family:
+        return False
+    if requested_capacity is not None and capacity != requested_capacity:
+        return False
+    if requested_capacity is None and scope_value(requested,"powertrain") not in {"diesel","turbo petrol","naturally aspirated petrol"}:
+        return False
+    technology = requested_words & {"gdi","crdi","mpi","u2","tsi","tdi"}
+    return technology <= words
+
+
+def variant_projection(fact: dict, requested: dict | None) -> dict | None:
+    """Project explicit reviewed variant clauses without inventing trim order.
+
+    Missing structured scope is not an all-trim claim. Only literal enumerations
+    in the approved assertion itself can supply this narrow runtime view; broad
+    source tables and relative descriptions such as 'SX and above' cannot.
+    """
+    if not fact.get("approved",True):
+        return None
+    wanted = scope_values((requested or {}).get("variant",""),"variant") - {"all","all variants","all trims"}
+    if not wanted:
+        return None
+    def names(text):
+        if re.search(r"\b(?:above|below|upwards|onwards|higher|lower|selected|certain|other|all|every)\b",text,re.I):
+            return []
+        text=re.sub(r"\s+(?:variants?|trims?)\s*$","",text.strip(),flags=re.I)
+        values=[v.strip() for v in re.split(r",|\s+(?:and|&)\s+",text) if v.strip()]
+        if not values or any(not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9() -]{0,45}",v) for v in values):
+            return []
+        return values
+    clauses=[]
+    for field in ("value","conditions"):
+        clauses += [v.strip() for v in re.split(r"[;\n]",str(fact.get(field,""))) if v.strip()]
+    rows=[]
+    for clause in clauses:
+        negative=re.fullmatch(r"(?:Excludes?|Not (?:available|offered|included) (?:on|in|for))\s+(.+?)[.]?",clause,re.I)
+        no_feature=re.fullmatch(r"(.+?)\s+(?:variant|trim)\s+has no\s+.+?[.]?",clause,re.I)
+        positive=re.fullmatch(r"(.+?)\s+on\s+(.+?)[.]?",clause,re.I)
+        polarity, variants = "", []
+        if negative or no_feature:
+            polarity="negative";variants=names((negative or no_feature)[1])
+        elif positive and not re.search(r"\b(?:no|not|excludes?)\b",positive[1],re.I):
+            polarity="positive";variants=names(positive[2])
+        if variants:
+            matched=[v for v in variants if scope_value(v,"variant") in wanted]
+            if matched:
+                rows.append({"polarity":polarity,"variants":matched,"assertion":clause,
+                             "label":positive[1] if polarity=="positive" else str(fact.get("claim",""))})
+    if not rows:
+        return None
+    return {"kind":"explicit_variant_clauses","rows":rows,"requested_variants":scope_atoms((requested or {}).get("variant",""),"variant")}
+
+
 def scope_matches(fact: dict, requested: dict | None) -> bool:
     """A comparison may request a list of canonical alternatives per dimension."""
     applicability = fact.get("scope") or {}
@@ -68,6 +134,10 @@ def scope_matches(fact: dict, requested: dict | None) -> bool:
             continue
         actual = scope_values(applicability.get(key, ""), key)
         if key == "variant" and actual & {"all", "all variants", "all trims"}:
+            continue
+        if key == "powertrain" and any(_powertrain_match(a,w) for a in scope_atoms(applicability.get(key,""),key) for w in scope_atoms(value,key)):
+            continue
+        if key == "transmission" and wanted == {"automatic"} and re.search(r"\b(?:automatic|IVT|CVT|DCT|AT)\b",str(applicability.get(key,"")),re.I):
             continue
         if not actual & wanted:
             return False
@@ -459,17 +529,28 @@ def retrieve(demo_id: str, query: str, *, snapshot_id: str | None = None, scope:
         if not fact.get("approved", True) or fact.get("knowledge", {}).get("excluded_by_precedence") or (owner and not competition):
             continue
         applicability = _scope(fact)
-        # Missing applicability cannot answer an explicitly scoped question.
+        projection = variant_projection(fact, requested)
+        # Preserve negative applicability and explicit per-trim assertion clauses
+        # without broadening any other scope dimension or changing the registry.
         if not scope_matches(fact, requested):
-            continue
+            if not projection or not scope_matches(fact,{k:v for k,v in requested.items() if k!="variant"}):
+                continue
         today = datetime.now(timezone.utc).date().isoformat()
         if (applicability.get("effective_to") and applicability["effective_to"] < today) or (applicability.get("effective_from") and applicability["effective_from"] > today):
             continue
         score = ranking.get((fact["id"], owner.get("name", "") if owner else ""), 0)
         if score <= 0:
             continue
+        wanted_variants = scope_values(requested.get("variant", ""), "variant")
+        fact_variants = scope_values(fact.get("scope", {}).get("variant", ""), "variant")
+        if wanted_variants and fact_variants & wanted_variants and not fact_variants & {"all","all variants","all trims"}:
+            # Named configuration details should not be crowded out by repeated
+            # all-trim assertions. This changes rank, never evidence eligibility.
+            score *= 1.2
         item = {**copy.deepcopy(fact), "score": round(score, 5), "entity": owner.get("name") if owner else snap.get("product", {}).get("name"),
                 "competition": bool(owner), "snapshot_id": snap["id"]}
+        if projection:
+            item["applicability_projection"] = projection
         source = next((s for s in snap.get("sources", []) if s["id"] == fact.get("source", {}).get("ref")), {})
         item["source_metadata"] = source
         if source.get("evidence_path"):
@@ -480,5 +561,10 @@ def retrieve(demo_id: str, query: str, *, snapshot_id: str | None = None, scope:
             item["context"] = matching[:2]
         evidence.append(item)
     evidence.sort(key=lambda row: (-row["score"], row["id"]))
-    return {"snapshot_id": snap["id"], "evidence": evidence[:max(1, min(30, limit))], "conflicts": snap.get("conflicts", []),
+    unique, seen = [], set()
+    for row in evidence:
+        key = (_norm(row.get("claim")), _norm(row.get("value")), _norm(row.get("conditions")), json.dumps(row.get("scope",{}),sort_keys=True), row.get("entity"))
+        if key not in seen:
+            unique.append(row); seen.add(key)
+    return {"snapshot_id": snap["id"], "evidence": unique[:max(1, min(30, limit))], "conflicts": snap.get("conflicts", []),
             "coverage": snap.get("coverage", {}), "method": index["method"]}

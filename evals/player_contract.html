@@ -275,6 +275,38 @@ test('A negated CTA mention at closing remains a question while an exact selecti
   await click('Yes, that helps', '.pl-chips button'); await type('Book a test drive');
   assert(host.querySelector('.pl-handoff.open') && env.saved.at(-1).cta === 'Book a test drive' && env.leadCalls.length === 0, 'Exact typed CTA selection stopped working or bypassed contact-form consent');
 });
+test('Brochure and dealer selections expose their exact HTTPS link only after customer selection', async () => {
+  for (const cta of [
+    { id: 'brochure', label: 'Download brochure', kind: 'link', url: 'https://www.hyundai.com/content/creta-brochure.pdf' },
+    { id: 'dealer', label: 'Find a dealer', kind: 'contact', url: 'https://www.hyundai.com/in/en/find-a-dealer?model=creta' },
+  ]) {
+    await setup({ configure: b => ({ ...b, ctas: [{ ...cta, when: 'always' }] }) }); await atProof();
+    let opens = 0; const originalOpen = window.open; window.open = () => { opens++; };
+    try {
+      assert(!host.querySelector('.pl-handoff a[href]'), 'An unselected action was rendered in an open recap');
+      await click(cta.label, '.pl-ctas button');
+      const link = host.querySelector('.pl-handoff.open a[href]');
+      assert(link?.getAttribute('href') === cta.url && link.textContent === cta.label && link.getAttribute('target') === '_blank', 'Configured action URL was discarded or relabelled');
+      assert(link.rel.includes('noopener') && link.rel.includes('noreferrer') && link.getAttribute('aria-label').includes('opens in a new tab'), 'External action lacks safe accessible link semantics');
+      assert(opens === 0 && !host.querySelector('.pl-lead.open') && env.leadCalls.length === 0, 'Selection or narration auto-opened a tab or submitted/opened a lead form');
+      let activated = false; link.addEventListener('click', event => { event.preventDefault(); activated = true; }); link.click();
+      assert(activated && env.leadCalls.length === 0, 'Link activation became a lead submission');
+      if (cta.kind === 'link') assert(!button('Request dealership follow-up', '.pl-handoff button'), 'Brochure download was replaced with a contact request');
+    } finally { window.open = originalOpen; }
+  }
+});
+test('Booking links retain optional consent and invalid CTA URLs never become active links', async () => {
+  await setup({ configure: b => ({ ...b, ctas: [{ id: 'book', label: 'Book a test drive', kind: 'book', when: 'always', url: 'https://www.hyundai.com/in/en/book-a-test-drive?model=creta' }] }) }); await atProof();
+  await click('Book a test drive', '.pl-ctas button');
+  assert(host.querySelector('.pl-handoff.open a[href]') && button('Request dealership follow-up', '.pl-handoff button'), 'Booking lost either its configured link or the consented follow-up option');
+  await click('Request dealership follow-up', '.pl-handoff button');
+  assert(host.querySelector('.pl-lead.open .consent') && env.leadCalls.length === 0, 'Booking link bypassed contact consent');
+  for (const url of ['javascript:alert(1)', 'data:text/html,example', 'http://example.com/a.pdf', '//example.com/a.pdf', 'https://user:secret@example.com/a.pdf', 'https://example.com/\nunsafe', '']) {
+    await setup({ configure: b => ({ ...b, ctas: [{ id: 'bad', label: 'Ask about a brochure', kind: 'link', when: 'always', url }] }) }); await atProof();
+    await click('Ask about a brochure', '.pl-ctas button');
+    assert(!host.querySelector('.pl-handoff.open a[href]') && button('Request dealership follow-up', '.pl-handoff button') && env.leadCalls.length === 0, 'Unsafe or absent URL became navigable or lost the optional contact fallback');
+  }
+});
 test('A late speech result cannot answer the wait after a slide skip', async () => {
   await setup(); await atProof(); const old = recentRecognizer();
   await click('proof-two', '.pl-progress button');
@@ -753,6 +785,25 @@ test('A tall native image stays above wrapped mobile evidence', async () => {
     assert(Math.abs(image.width / image.height - .6) < .015, 'Tall image lost its native aspect ratio');
     assert(image.bottom <= panel.y + 1, 'Wrapped mobile evidence covers the lower part of the tall image');
     assert(image.y >= stage.y - 1 && panel.bottom <= stage.bottom + 1 && frame.scrollWidth <= frame.clientWidth + 1, 'Tall image or evidence escapes the slide');
+  } finally { view.destroy(); frame.remove(); }
+});
+test('The mobile evidence cue follows actual overflow without changing slide geometry', async () => {
+  const callouts = [0, 1, 2].map(i => ({ id: 'scroll-' + i, text: 'Reviewed evidence point ' + (i + 1), fact_ids: ['f1'], placement: 'panel', reveal_on_line: i < 2 ? 0 : 1 }));
+  const saved = snapshot(callouts), { frame, view } = await renderFixture(390, { callouts });
+  try {
+    const hint = view.el.querySelector('.slide-scroll-hint'), panel = view.el.querySelector('.slide-panel');
+    assert(hint?.hidden, 'Cue appeared before any evidence was revealed');
+    view.setRevealed(0); const imageBefore = rect(view.img);
+    assert(hint.hidden && panel.scrollWidth <= panel.clientWidth + 2, 'Two fitting cards advertised nonexistent overflow');
+    view.setRevealed(1);
+    assert(!hint.hidden && hint.textContent === 'Swipe for more →' && panel.scrollWidth > panel.clientWidth + 2, 'A newly revealed offscreen card has no directional cue');
+    assert(JSON.stringify(rect(view.img)) === JSON.stringify(imageBefore), 'Cue changed the native image box');
+    const cue = rect(hint), rail = rect(panel), stage = rect(view.el);
+    assert(cue.bottom < rail.y && cue.x >= stage.x && cue.right <= stage.right + 1, 'Cue covers evidence or escapes the stage');
+    panel.scrollLeft = panel.scrollWidth; panel.dispatchEvent(new Event('scroll'));
+    assert(hint.textContent === '← Swipe for more', 'Cue points beyond the end of the evidence');
+    frame.style.width = '1000px'; view.layout();
+    assert(hint.hidden && panel.scrollWidth <= panel.clientWidth + 2 && JSON.stringify(callouts) === JSON.stringify(saved), 'Desktop retained a mobile cue or changed approved callouts');
   } finally { view.destroy(); frame.remove(); }
 });
 

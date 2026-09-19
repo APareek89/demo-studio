@@ -11,13 +11,19 @@ const CARD_DEFS = [
   { key: "persona", n: "5", title: "Persona & voice", icon: "agent" },
   { key: "ctas", n: "6", title: "Calls to action", icon: "arrow-right" },
 ];
-const PHASE_TITLES = { reading: ["Reading your sources…", "Gemini is watching the footage; Claude is building the fact registry."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
+const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and answers."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
 
 export function renderAlign(ctx) {
   const { demoId, area } = ctx;
   let state = ctx.state; let demo = state.demo; let cards = state.cards; let conversation = state.conversation || [];
   const seen = new Set(conversation.map((m) => m.t));
   let openCard = null;
+  const detached = new Set(), escapeHandlers = new Set();
+  function mountDetached(node) { detached.add(node); document.body.appendChild(node); }
+  function closeOnEscape(node) {
+    const handler = (event) => { if (event.key === "Escape") { node.remove(); document.removeEventListener("keydown", handler); escapeHandlers.delete(handler); } };
+    escapeHandlers.add(handler); document.addEventListener("keydown", handler);
+  }
 
   const overlay = h("div", { class: "overlay hidden" });
   const logEl = h("div", { class: "progress-log" });
@@ -55,6 +61,16 @@ export function renderAlign(ctx) {
     catch (e) { toast(e.message, true); }
   }
   function logLine(ev) { const d = h("div", {}, ev.stage ? h("span", { class: "stage" }, ev.stage + " · ") : null, ev.message); logEl.append(d); logEl.scrollTop = logEl.scrollHeight; }
+  function restoreProgress() {
+    const running = Object.entries(demo.stages || {}).filter(([, value]) => value.status === "running");
+    const rows = running.flatMap(([stage, value]) => (value.progress?.length ? value.progress : [{ message: value.message, t: value.updated_at }]).filter((row) => row.message).map((row) => ({ ...row, stage })));
+    logEl.replaceChildren(); rows.sort((a, b) => (a.t || 0) - (b.t || 0)).slice(-20).forEach(logLine);
+  }
+  function syncOverlay() {
+    if (demo.status === "reading" || demo.status === "building") { restoreProgress(); showOverlay(demo.status); }
+    else if (demo.status === "error") { const failed = Object.values(demo.stages || {}).find((s) => s.status === "error"); showOverlay("reading", failed?.error || "The current stage did not finish."); }
+    else hideOverlay();
+  }
 
   // ---------- cards ----------
   function renderCards() {
@@ -166,8 +182,7 @@ export function renderAlign(ctx) {
     const title = CARD_DEFS.find((c) => c.key === key)?.title || key;
     const box = h("div", { class: "preview" }, h("div", { class: "phead" }, h("h2", {}, title, h("span", { class: "muted small", style: "margin-left:10px" }, "full detail")), h("button", { class: "btn sm", onclick: () => bg.remove() }, "Close")), h("div", { class: "pbody" }, previewBody(key)));
     const bg = h("div", { class: "preview-bg", onclick: (e) => { if (e.target === bg) bg.remove(); } }, box);
-    document.body.appendChild(bg);
-    const esc = (e) => { if (e.key === "Escape") { bg.remove(); document.removeEventListener("keydown", esc); } }; document.addEventListener("keydown", esc);
+    mountDetached(bg); closeOnEscape(bg);
   }
   function previewBody(key) {
     const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
@@ -210,11 +225,11 @@ export function renderAlign(ctx) {
   function lightbox(node, cap) {
     const clone = node.cloneNode(true); clone.removeAttribute("style"); if (clone.tagName === "VIDEO") { clone.controls = true; clone.muted = false; }
     const lb = h("div", { class: "lightbox", onclick: () => lb.remove() }, clone, h("div", { class: "cap" }, cap || ""));
-    document.body.appendChild(lb);
+    mountDetached(lb);
   }
   function editor(title, content, saveLabel = "Save changes") {
     const bg = h("div", { class: "preview-bg" }, h("div", { class: "preview align-editor" }, h("div", { class: "phead" }, h("h2", {}, title), h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Close")), h("div", { class: "pbody" }, content.body), h("div", { class: "editor-actions" }, h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Cancel"), h("button", { class: "btn primary", onclick: async (e) => { e.currentTarget.disabled = true; try { await content.save(); bg.remove(); await reload(); } catch (err) { toast(err.message, true); e.currentTarget.disabled = false; } } }, saveLabel))));
-    document.body.appendChild(bg);
+    mountDetached(bg);
   }
   function editFaq(entry) {
     const answer = h("textarea", { rows: "5" }, entry.answer || "");
@@ -304,8 +319,7 @@ export function renderAlign(ctx) {
         h("div", { class: "editor-actions" }, h("span", { class: "small muted", style: "margin-right:auto" }, "Drag a callout to move it. Saving keeps your positions over any rebuild; an uncited figure or claim is refused."), h("button", { class: "btn", onclick: () => save(false).catch((e) => toast(e.message, true)) }, "Save"), h("button", { class: "btn primary", onclick: () => save(true).catch((e) => toast(e.message, true)) }, "Save & approve")));
       requestAnimationFrame(view.layout);
     }
-    draw(); document.body.appendChild(bg);
-    const esc = (e) => { if (e.key === "Escape") { bg.remove(); document.removeEventListener("keydown", esc); } }; document.addEventListener("keydown", esc);
+    draw(); mountDetached(bg); closeOnEscape(bg);
   }
   function evidenceReview(f) {
     const coverage = f.coverage || {}; const seeds = coverage.seeds || []; const conflicts = f.conflicts || [];
@@ -401,17 +415,23 @@ export function renderAlign(ctx) {
 
   const onVis = () => { if (document.visibilityState === "visible") reload().catch(() => {}); };
   document.addEventListener("visibilitychange", onVis);
-  const poll = setInterval(() => { if (document.visibilityState === "visible" && !document.querySelector(".overlay")) reload().catch(() => {}); }, 30000);
-  window.addEventListener("hashchange", () => { document.removeEventListener("visibilitychange", onVis); clearInterval(poll); }, { once: true });
+  const poll = setInterval(() => { if (document.visibilityState === "visible") reload().catch(() => {}); }, 30000);
+  window.addEventListener("hashchange", () => {
+    document.removeEventListener("visibilitychange", onVis); clearInterval(poll);
+    for (const node of detached) node.remove(); detached.clear();
+    for (const handler of escapeHandlers) document.removeEventListener("keydown", handler); escapeHandlers.clear();
+  }, { once: true });
   async function reload() {
     state = await api.get(`/api/demos/${demoId}`); demo = state.demo; cards = state.cards; conversation = state.conversation || [];
     renderCards(); renderThread(); ctx.setRailStatus(demo.status);
+    syncOverlay();
     if (demo.status === "ready") buildBar.classList.add("hidden");
   }
 
   // ---------- events ----------
   ctx.subscribe((type, ev) => {
-    if (type === "progress") logLine(ev);
+    if (type === "hello" && ev.snapshot) { demo = { ...demo, ...ev.snapshot }; syncOverlay(); reload().catch(() => {}); }
+    else if (type === "progress") logLine(ev);
     else if (type === "status") { demo.status = ev.status; ctx.setRailStatus(ev.status); if (ev.status === "reading" || ev.status === "building") showOverlay(ev.status); }
     else if (type === "message") addMsg(ev.message);
     else if (type === "phase_done") { if (ev.phase === "build") { hideOverlay(); reload().then(() => ctx.navigate(`#/studio/${demoId}/rehearse`)); } else { hideOverlay(); reload(); } }
@@ -420,6 +440,5 @@ export function renderAlign(ctx) {
 
   // initial
   renderCards(); renderThread();
-  if (demo.status === "reading" || demo.status === "building" || state.running) showOverlay(demo.status === "building" ? "building" : "reading");
-  else if (demo.status === "error") { const st = Object.values(demo.stages).find((s) => s.status === "error"); showOverlay(cards ? "building" : "reading", st?.error || "unknown error"); }
+  syncOverlay();
 }

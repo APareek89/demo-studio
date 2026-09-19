@@ -66,6 +66,7 @@ class DeliveryPlan(BaseModel):
 class TurnControl:
     deadline: float
     cancelled: threading.Event = field(default_factory=threading.Event)
+    kind: str = "qa"
 
     def remaining(self) -> float:
         if self.cancelled.is_set():
@@ -86,6 +87,7 @@ class RuntimeState(TypedDict, total=False):
     profile: dict
     slide_id: str | None
     snapshot_id: str
+    demo_version: int | None
     seen_segments: list[str]
     plan_revision: int
     control: TurnControl
@@ -112,33 +114,52 @@ def safe_id(value: str, prefix: str = "s") -> str:
 
 _guard = threading.Lock()
 _owners: dict[tuple[str, str], tuple[str, TurnControl]] = {}
+_planning: dict[tuple[str, str], tuple[str, TurnControl]] = {}
+_latest: dict[tuple[str, str], tuple[str, TurnControl]] = {}
 
 
-def claim_turn(demo_id: str, session_id: str, turn_id: str, budget: float = 12.0) -> TurnControl:
+def claim_turn(demo_id: str, session_id: str, turn_id: str, budget: float = 12.0, *, kind: str = "qa") -> TurnControl:
     with _guard:
         key = (demo_id, session_id)
-        previous = _owners.get(key)
+        owners = _planning if kind == "explore" else _owners
+        previous = owners.get(key)
         if previous:
             previous[1].cancelled.set()
-        control = TurnControl(time.monotonic() + budget)
-        _owners[key] = (turn_id, control)
+        if kind == "explore":
+            # New customer context supersedes both the old route and any answer.
+            previous_qa = _owners.pop(key, None)
+            if previous_qa:
+                previous_qa[1].cancelled.set()
+        control = TurnControl(time.monotonic() + budget, kind=kind)
+        owners[key] = (turn_id, control)
+        _latest[key] = (turn_id, control)
         return control
 
 
-def cancel_turn(demo_id: str, session_id: str) -> None:
+def cancel_turn(demo_id: str, session_id: str, *, preserve_planning: bool = False) -> None:
     with _guard:
-        previous = _owners.pop((demo_id, session_id), None)
+        key = (demo_id, session_id)
+        previous = _owners.pop(key, None)
         if previous:
             previous[1].cancelled.set()
+        # An ordinary question changes audible ownership, not route context.
+        # A new Explore/refine replaces the route; explicit Stop/end cancel both.
+        if not preserve_planning:
+            previous_plan = _planning.pop(key, None)
+            if previous_plan:
+                previous_plan[1].cancelled.set()
 
 
 def checkpoint(state: RuntimeState, phase: str) -> None:
     """Persist only if this turn still owns the session; never persist credentials/audio."""
     with _guard:
-        owner = _owners.get((state["demo_id"], state["session_id"]))
-        if not owner or owner[0] != state["turn_id"] or owner[1].cancelled.is_set():
+        key = (state["demo_id"], state["session_id"])
+        owner = (_planning if state.get("kind") == "explore" else _owners).get(key)
+        latest = _latest.get(key)
+        if (not owner or owner[0] != state["turn_id"] or owner[1].cancelled.is_set()
+                or not latest or latest[1] is not owner[1]):
             return
-        value = {k: state.get(k) for k in ("session_id", "turn_id", "kind", "question", "history", "profile", "snapshot_id", "plan_revision", "slide_id", "seen_segments", "delivery", "timings", "errors")}
+        value = {k: state.get(k) for k in ("session_id", "turn_id", "kind", "question", "history", "profile", "snapshot_id", "demo_version", "plan_revision", "slide_id", "seen_segments", "delivery", "timings", "errors")}
         value.update(phase=phase, updated_at=time.time(), version=1)
         rel = "runtime/" + safe_id(state["session_id"]) + ".json"
         store.write_json(state["demo_id"], rel, value)
