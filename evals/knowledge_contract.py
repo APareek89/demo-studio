@@ -362,6 +362,40 @@ class KnowledgeContract(unittest.TestCase):
         broad=knowledge.retrieve(self.did,"How is S(O) Knight different from S(O)?",scope={"variant":["S(O) Knight","S(O)"]},limit=14)
         self.assertIn("F049",{f["id"] for f in broad["evidence"]})
 
+    def test_comfort_comparison_retrieves_reviewed_seat_differences_without_reindexing(self):
+        registry=json.loads((Path(__file__).parent/"fixtures/runtime_v7_limits.json").read_text())["lineage_registry"]["facts"]
+        store.write_json(self.did,"understanding.json",understanding(registry))
+        snap=knowledge.snapshot(self.did)
+        snap_path=store.path(self.did,f"knowledge/snapshots/{snap['id']}.json")
+        index_path=store.path(self.did,f"knowledge/index/{snap['id']}.json")
+        before_snapshot,before_index=snap_path.read_bytes(),index_path.read_bytes()
+        pack=knowledge.retrieve(self.did,"Compare SX and SX Premium on comfort features.",snapshot_id=snap["id"],scope={"variant":["SX","SX Premium"]},limit=14)
+        rows={f["id"]:f for f in pack["evidence"]}
+        self.assertTrue({"F063","F160","F069","F159"}<=rows.keys())
+        self.assertLessEqual(len(rows),14)
+        projection=rows["F063"]["applicability_projection"]["rows"]
+        self.assertTrue(any(r["polarity"]=="negative" and "SX" in r["variants"] for r in projection))
+        self.assertTrue(any(r["polarity"]=="positive" and "SX Premium" in r["variants"] for r in projection))
+        self.assertEqual(before_snapshot,snap_path.read_bytes())
+        self.assertEqual(before_index,index_path.read_bytes())
+
+    def test_comfort_topic_expansion_does_not_change_eligibility_or_other_topics(self):
+        scope={"model":"Aster","market":"India","variant":"SX"}
+        rows=[fact(id="F001",claim="Front ventilated seats",value="Ventilated front seats",scope=scope),
+              fact(id="F002",claim="Climate control",value="Dual zone automatic climate control",scope=scope),
+              fact(id="F003",claim="Front ventilated seats",value="Ventilated front seats",scope=scope,approved=False),
+              fact(id="F004",claim="Front ventilated seats",value="Ventilated front seats",scope={**scope,"market":"Japan"}),
+              fact(id="F005",claim="Front ventilated seats",value="Ventilated front seats",scope={**scope,"variant":"SX(O)"}),
+              fact(id="F006",claim="Front ventilated seats",value="Ventilated front seats",scope=scope,knowledge={"excluded_by_precedence":True}),
+              fact(id="F007",claim="Engine torque",value="Engine torque 250 Nm",scope=scope),
+              fact(id="F008",claim="Front ventilated seats",value="Ventilated front seats",scope={**scope,"model":"Other"})]
+        store.write_json(self.did,"understanding.json",understanding(rows))
+        comfort=knowledge.retrieve(self.did,"Which comfort features does SX offer?",scope=scope,limit=14)
+        self.assertEqual({f["id"] for f in comfort["evidence"]},{"F001","F002"})
+        torque=knowledge.retrieve(self.did,"What engine torque does SX offer?",scope=scope,limit=1)
+        self.assertEqual([f["id"] for f in torque["evidence"]],["F007"])
+        self.assertEqual(knowledge._query_features("Compare SX on engine torque",scope),knowledge._features("engine torque"))
+
     def test_topic_ranking_does_not_relax_scope_or_merge_edition_names(self):
         rows=[fact(id="F001",claim="Rear parking sensors",value="Rear parking sensors",conditions="Standard on E",scope={"model":"Aster","market":"India","variant":"E"}),
               fact(id="F002",claim="Parking camera",value="Rear parking camera",scope={"model":"Aster","market":"India","variant":"E"},approved=False),

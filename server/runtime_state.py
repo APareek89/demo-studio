@@ -42,7 +42,7 @@ class ToolRequest(BaseModel):
 
 class TurnDecision(BaseModel):
     action: Literal["answer", "clarify", "tools"]
-    sentences: list[SpokenClaim] = Field(default_factory=list, description="Answer first, 1–3 short sentences, total at most75 words")
+    sentences: list[SpokenClaim] = Field(default_factory=list, description="Answer first, normally 1–3 short sentences and at most75 words; explicit lists/comparisons may use4 sentences and100 words to preserve all requested parts and conditions")
     clarification: str = Field(default="", description="Only ONE necessary question, no product claims; empty for ordinary answers")
     tool_calls: list[ToolRequest] = Field(default_factory=list, max_length=4)
     answered: bool = True

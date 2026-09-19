@@ -1166,3 +1166,14 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Correction in progress:** Normalize only bounded own-inability/interaction forms, preserve the requested unknown, retain authoritative empty scope decisions, distinguish descriptive hyphens from trim quantifiers, and require the actual feature plus same-clause transmission qualification. Preserve rejection of source-wide absence, unsupported publication statements, new quantities and positive causal claims. Existing one-repair/deadline/cancellation safeguards remain.
 
 **Separate lookup cause:** Model-wide city-price links tied on topic and sorted alphabetically, selecting Ahmedabad without a named city. Recognized price-in-city child pages now require the customer’s own named locality or explicit city seed. This is a narrow route-structure check, not a general location/alias/residence parser. Offline source-lookup20 controls pass; live verification remains separate.
+
+
+## 2026-09-19 — leave time to deliver verified work (CR35)
+
+**Observed:** Two real EMI turns completed the calculator correctly, then returned a provider failure with no tool results. Comfort comparisons missed relevant approved seats/climate facts. Other answers lost valid polarity, precise uncertainty or pricing qualifications.
+
+**Causes:** Each model call could consume the entire remaining outer deadline, so deterministic validation never ran. Comfort vocabulary was absent from query expansion. A narrowed assertion projection was mistaken for the full literal trim coverage. Currency-unit matching recognized spoken rupees but not ₹, and whole-answer acceptance discarded useful validated limits.
+
+**Correction:** Keep250ms for validation inside the same deadline; salvage only a completed audited calculator result and expose the failed composition separately. Do not revive cancelled turns. Expand explicit comfort queries at query time without changing eligibility or stored indexes. Revalidate independent clauses; expand scope only through the same assertion's literal projection. Pair adjacent currency normalization with independent requested-page attribution. Retain precise limits only if they survive final speech validation and do not erase original facts.
+
+**Limits:** Prompt changes for completeness and individual fit checks still need real replay. These English checks do not prove general entailment, perfect phrase coverage, microphone behavior or current external prices. The failed cohorts and source snapshots remain immutable.

@@ -74,6 +74,14 @@ All nine completed calculations independently recompute correctly; one calculati
 
 This score is below target. The new uncited guard stopped an unsupported future-lineup claim but discarded useful precise limits and benign interaction. The actual `all-black` adjective was mistaken for a universal-trim quantifier. A source-backed lineup-equivalence limit was checked as positive fitment. Price-page discovery picked an unrequested city by alphabetical order. These concrete causes are being repaired and retested; no score is retroactively improved. Private evidence: `qa100-v7-dependencies/`.
 
+## Focused limits replay on c7ec71a
+
+The next40-case subset returned **28 supported,7 partial,4 unhelpful,0 unsafe flagged,1 provider failure**. It contains the22 non-supported turns from the fifth full replay,15 positive controls and3 required context turns. HTTP text median **3.302s**, p95 **7.034s**; recorded estimate **$0.277**, no concurrent paid work or TTS. The cumulative estimate is **$8.1597**. Immutable answers and independent reviews are under `qa-focused-v7-limits/`; this is not a replacement100-case score.
+
+Specific limits, King Knight styling, source-lineage wording and future-offer/renewal uncertainty improved. City discovery no longer chose an arbitrary locality. The credit cooldown was exercised by actual provider failures; a subsequent Runware completion still failed semantic validation, so provider completion is not counted as useful delivery. Remaining issues include comfort retrieval, valid mixed-polarity comparisons, over-rejected clarification/assistant-behavior text and incomplete requested facets.
+
+Both the earlier full-run and this focused q052 timeout had already completed the audited EMI calculation correctly: ₹19,530.34/month on ₹800,000 at8% annual interest over4years. The second model composition used the remaining deadline, preventing validation/delivery and dropping that result from the failure response. This is an orchestration failure despite a correct tool result. A bounded reserve for validation is being tested; no elapsed deadline or cancelled turn may be revived.
+
 ## Repair details
 
 - The overview leads directly into selected slide narration. Missing model replacements use explicitly marked reviewed-route speech. Published inputs and demo-version checks prevent draft edits or a new publication from silently changing a running visit.

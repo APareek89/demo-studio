@@ -3,6 +3,12 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Useful answer delivery under the existing deadline — 2026-09-19
+
+Graph frozenbd1a3618: precise-limit/condition85, calculator-deadline17, actual-cohort93, repair106, graph130 and trace36 checks pass. Knowledge60/60 retrieves actual v7 comfort comparisons without modifying snapshots/indexes or unrelated query results. Currency-attribution15/15 pairs spoken rupees with adjacent ₹/INR and still rejects wrong-page attribution. Independent review includes six calculator ownership/cancellation controls and four currency/schema controls; final independent price-language review also passes.
+
+Required deck320/320, acceptance24/24 and both smoke phases passed on this frozen graph in separate temporary data/checkpoint stores with zero outbound attempts. Python AST95/95 and web JavaScript17/17 syntax pass; diff clean. Logs `final-gates/delivery-*.log`. These gates do not establish the live semantic target; the prior focused40 remains28/7/4/0/1. Commit/restart precedes another unchanged focused replay, with no speech calls or counter reset. Loop remains off.
+
 ## Precise uncertainty, scope metadata and fallback cooldown — 2026-09-19
 
 Graph frozen99719ad4: v7 limits58/58, actual-cohort93/93, repair106/106, graph130/130, trace36/36 and independent paired16/16 pass, zero outbound calls. The review caught and fixed two new overreach defects before live replay: literal same-selected live-page relations were incorrectly rejected, and an unrelated “, and automatic…” clause could qualify EPB. Independent report: `v7-limits-independent-review/final-gates.json`.

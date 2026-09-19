@@ -612,7 +612,14 @@ def _query_features(query: str, requested: dict) -> Counter:
     topic=" ".join(word for word in text.split() if word not in boilerplate)
     # Broad variant comparisons have no feature topic; preserve their original
     # query rather than making the scope itself imply a requested feature.
-    return _features(topic or query)
+    features = _features(topic or query)
+    if {"comfort", "comfortable"} & set(topic.split()):
+        # Comfort is a customer topic, while reviewed assertions often name the
+        # equipment directly. Expand only the query with indexed literal terms;
+        # no index/snapshot rewrite, eligibility change or inferred fitment.
+        for term in ("ventilated", "ventilation", "climate", "recline", "reclining", "seat", "seats", "adjustment", "conditioning"):
+            features[term] += 0.75
+    return features
 
 
 def _write_index(demo_id: str, snap: dict) -> dict:
