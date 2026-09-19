@@ -1,0 +1,5 @@
+The cabin earns the opening through visible roof and seat details; the rear-seat image then gives the buyer something concrete to inspect. Controls and gearbox choices follow as decisions, not performance promises. Standard airbags and ISOFIX are separated from trim-specific assistance, then connected extras and written ownership questions close the route. Each proof stop survives runtime reordering.
+
+The Planner selects evidence, story beats, visual subjects and emphasis. The Author supplies the actual spoken thought; segment goals carry no finished script. Technical values remain intact in deeper evidence rather than being replaced by invented benefits. Sales popularity, generic luxury claims and repeated fit-checks are deliberately omitted.
+
+This uses the existing Plan schema, existing segment IDs, approved v7 fact IDs, source-discovered CTA destinations and uploaded image identities. The draft is a session artifact only; it does not change Align approval, current publication, provider order or voice.

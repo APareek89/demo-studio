@@ -1262,3 +1262,735 @@ Why could a real build begin without a working runtime? Configuration presence w
 ## 2026-09-19 — launch intent is not provider dispatch (CR44)
 
 A fallback can log its launch intent and then see a winning primary before it reaches the provider adapter. Silent returns at that boundary leave audits unable to distinguish skipped dispatch from missing completion telemetry. Record an explicit terminal pre-dispatch retirement for each such exit; preserve actual winner/deadline/cost behavior. The controlled zero-adapter-call reproduction explains the historical shape, but cannot manufacture the missing observation retroactively. Preserve that caveat even when trace and usage tails are quiet.
+
+
+<!-- dated-issue-register:2026-09-19 -->
+## Dated issue register — consolidated 19 September 2026
+
+This register brings all 86 numbered Nexon and Creta issues into this file, including the second NX25 observation. Dates identify the original observation, not a new test. Historical verification limits and open statuses are retained; later five-whys entries and Handoff.MD describe superseding fixes. A proposed correction is never treated as a verified live result. The unnumbered historical five-whys above remain part of this learning record.
+
+### 2026-09-18 — NX01 — Follow-up question discarded as agreement
+
+**Reason / recorded failure:** short prefix-matching treats any short reply starting with yes as confirmation.
+
+**Solution and recorded verification:** fixed; browser regression passes.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX02 — The guide resumes behind a callback form
+
+**Reason / recorded failure:** unknown and dissatisfied paths immediately call resumeAfterQA.
+
+**Solution and recorded verification:** fixed; browser regression passes.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX03 — Questions can advance without an answer
+
+**Reason / recorded failure:** content/flow mismatch and timer-driven turn completion.
+
+**Solution and recorded verification:** countdown observed in browser; narration mismatch confirmed in code and iQube script.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX04 — A late transcript can resolve the wrong turn
+
+**Reason / recorded failure:** no turn ownership.
+
+**Solution and recorded verification:** fixed; synthetic late-speech cases after skip/restart pass. Real microphone quality remains untested.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX05 — Clarification and opening interruption lose continuity
+
+**Reason / recorded failure:** clarification is microphone-only; an opening interruption can restart the opening because the route has not been built.
+
+**Solution and recorded verification:** fixed; typed clarification and opening-return browser regressions pass.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX06 — Product is obscured at the first impression
+
+**Reason / recorded failure:** large mascot, blurred product and generic centred text. Long iQube takeaway fills the opening.
+
+**Solution and recorded verification:** redesigned and inspected on desktop/phone with mock content; final Nexon art direction awaits its permitted source pack.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX07 — Slides lack hierarchy and callout lines can point from the wrong place
+
+**Reason / recorded failure:** layout computed while callout hidden; no recompute after reveal.
+
+**Solution and recorded verification:** fixed; reveal geometry and native-aspect wide/narrow browser regressions pass.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX08 — Fallback labels are unfinished fragments
+
+**Reason / recorded failure:** blind word slicing.
+
+**Solution and recorded verification:** fallback fixed and covered by content regressions; new real Nexon deck still needs review.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX09 — Script ignores stated customer context
+
+**Reason / recorded failure:** old script reuse, unavailable runtime personalisation, conflicting schema/prompt wording and unlabelled assumptions.
+
+**Solution and recorded verification:** confirmed in session; align prompts and explicit interaction metadata, then verify new real script against actual customer profiles.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX10 — Input availability and state are unclear
+
+**Reason / recorded failure:** The capture UI exposed listening/transcribing state without a consistently visible typed alternative.
+
+**Solution and recorded verification:** Keep keyboard input available throughout intake and every reply turn; accurate listening/transcribing states and mic-denied recovery must be checked independently of real microphone recognition.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX11 — The customer sees internal sales scoring at the end
+
+**Reason / recorded failure:** the internal dealership/session view doubles as the customer ending.
+
+**Solution and recorded verification:** fixed; final buyer-recap and overlay browser regression passes. Internal session record remains intact; buyer recap uses actual conversation data.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX12 — Plain slides do not deliver the requested cinematic experience
+
+**Reason / recorded failure:** a light gallery with a reserved copy column.
+
+**Solution and recorded verification:** renderer updated with dark image-led composition, white headings, lime anchors, restrained motion and readable evidence rail; intake/dock/conversation retained. During validation, runtime labels could collide with a newly expanded fallback rail, and a global `.overlay` selector collapsed rail height. Fixed with a stable reserved band, unanimated heading bounds, native image geometry and explicitly in-flow evidence items. Mobile image space ends before wrapped evidence. Browser19/19 passed, including all original14 conversation/layout cases; actual Nexon visual review remains pending.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX13 — Rival documents and applicability can disappear before comparisons
+
+**Reason / recorded failure:** non-URL competitor sources were ignored; runtime competitor rows omitted conditions/truth/quote/date, and rejected facts could remain usable.
+
+**Solution and recorded verification:** bounded ingestion/provenance/approval fix passes39/39 source contracts and203/203 deck cases; all live comparisons still require source review and real question evidence. No product claim is approved merely because a provider returned it.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX14 — Cited clearance becomes an unsupported safety assurance
+
+**Reason / recorded failure:** existence of a citation is treated as enough to support an inferred benefit.
+
+**Solution and recorded verification:** corrected through Align before Build 1, but not closed. Raw iteration 2 removes the explicit flood/no-impact promise from plan/script, while its deck again says clearance “clears rough roads easily” and narration infers rough-road margin. Its new registry also restores the unsupported “unladen” qualifier. The frozen raw artifacts retain these failures; current-draft corrections use source review and product APIs. Prompt/context changes, including a later deck-specific change, do not demonstrate reliable generation or a passing live response.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX15 — Rival highlights lose applicability and cannot be reviewed in the Facts card
+
+**Reason / recorded failure:** some high-level C-facts omit conditions present in detailed sources; the Facts card and direct fact endpoints currently enumerate only product facts, so C-facts need file-level audit and have no direct review action.
+
+**Solution and recorded verification:** source audit and direct F/C-fact review support completed before Build 1; approved corrections were applied through product APIs. Positive real comparisons remain BLOCKED by NX19, not established by this source review.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX16 — Generated narration and FAQ infer promises beyond cited facts
+
+**Reason / recorded failure:** boot litres became a suitcase-fit promise; generic engine facts became highway/traffic performance promises; camera and front-sensor trim scope was blended; ordinary specs were called certified; introductory EMI was rounded and lost conditions; the FAQ computed a misleading petrol-to-CNG power drop using different engine columns.
+
+**Solution and recorded verification:** original artifacts preserved and manual Align corrections applied before Build 1. Raw iteration 2 still calls boot volume certified, generalizes five-star ratings across trims, makes CNG sound automatic, drops higher subsequent EMI from a deeper line, and adds handling/overtaking benefits unsupported by dimensions/torque. Its deck independently promises family luggage fit and lower fuel costs. The new finance FAQ preserves the full material offer conditions, which is an improvement; the old cross-engine delta question was not generated, so that case remains untested. Current-draft source, script and deck corrections are applied through the review/API workflow; FAQ corrections receive their own review. This is content recovery, not closure of the durable generation failure. Raw script `issues=[]` and valid citations did not establish semantic accuracy.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX17 — Spoken questions cannot be directly reviewed
+
+**Reason / recorded failure:** the editor and route accepted only narration/closing lines; correcting generated discovery required a full paid rewrite, while unsafe segment outcomes remained in runtime personalization.
+
+**Solution and recorded verification:** bounded direct-question and segment metadata support implemented and used through Align before Build 1, with focused free regressions. No workflow redesign.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX18 — Simplifying an answer removes the torque unit
+
+**Reason / recorded failure:** diesel torque is spoken as “pulling power is 260” with no unit. The number is sourced but the answer is unclear.
+
+**Solution and recorded verification:** plain-language and repair instructions now preserve a complete requested quantity. Raw iteration-2 script and FAQ Q06/Q07 retain 170 Nm/260 Nm and operating ranges; this is a positive generated result before manual polishing. Q07 nevertheless adds unsupported smooth-overtaking/relaxed-cruising prose, tracked under NX16. Live voice delivery and the customer-path question remain unverified here; the issue is not closed solely by manual copy review or mocked speech-seam checks.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX19 — First Build fails at voice and mixes recorded speakers
+
+**Reason / recorded failure:** three observed Sarvam 429 responses tripped the provider circuit, and the build-time fallback chain switched to Gemini despite the selected voice lock. The cache lookup happened after the circuit check, so even an existing selected-voice clip could be skipped. FAQ/filler reuse checked only whether an audio path existed, allowing a second-voice cached path to survive a retry. Gemini calls also produced input-block refusals and a closed-client failure.
+
+**Solution and recorded verification:** selected-voice/cache/rate-limit fix implemented; 27/27 focused contracts pass with fake transports and outbound sockets blocked. Independent review found and closed a locked Google Cloud mock-mode outbound-call gap, covered by a dedicated regression. No further scoped blocker found; the actual iteration-2 Build has not run.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX20 — Re-Read reassigns reviewed fact meaning and drops cockpit evidence
+
+**Reason / recorded failure:** extraction enumerates fact IDs again and its limited revision merge does not preserve the full reviewed record or C edits. Saved slide/callout overrides refer to those numeric IDs without a source-identity conflict check.
+
+**Solution and recorded verification:** the current draft is recovered through source audit and API edits: cockpit evidence is restored, dependent content/references are reconciled, and the stale rating citation is corrected. See iteration-2 `review-edits/applied.json` and the raw review. **Durable identity preservation is not implemented.** A later Read still requires a full reviewed snapshot, source/claim mapping and explicit reconciliation; old patch IDs must not be replayed blindly. The later deck prompt change does not solve this issue.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX21 — Read shows a mascot import warning
+
+**Reason / recorded failure:** The optional mascot path attempted an unavailable import during Read.
+
+**Solution and recorded verification:** The original Nexon record left this warning open; the later Creta optional-media correction restored the path and added the provider-boundary mock guard (CR03). This does not establish mascot or acoustic quality.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX22 — Align cannot directly correct a generated FAQ answer
+
+**Reason / recorded failure:** the bank could be previewed/approved, while answer correction required regeneration, which could repeat unsupported benefits. Four reviewed corrections (Q07, Q10, Q11, Q12) are prepared in `output/nexon-real-evidence/iteration-2/review-edits/faq-patches.json`.
+
+**Solution and recorded verification:** bounded direct-review route and labelled editor implemented. Every cited F/C id must be approved and comparison-eligible; empty/mixed-invalid citations, stale/partial banks and active graph/stage work reject without writes. Saving preserves exact wording/question/hash, clears old audio and clarification/callback metadata, excludes disabled visuals, derives the slide from current script citations, resets FAQ approval and invalidates voice/rehearsal/bundle while retaining the reviewed bank. Independent free gate: **41/41** API/cache contracts; actual FAQ voice helper also preserves reviewed text/hash through mocked synthesis and locked-cache reuse. All four real corrections are applied and read back exactly; Q12 was edited and saved through the labelled Studio form with initial textarea focus confirmed. Full keyboard-only navigation was not exercised. All six cards were approved individually; Build 2 has not run. Valid citations do not prove meaning: the edit still requires human source/scope review. This closes the missing editing mechanism at code/contract level, not the generation failures in NX14/NX16 or real customer acceptance.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX23 — Mobile labels hide but their leader line remains
+
+**Reason / recorded failure:** Mobile layout hid callout labels without hiding their associated leader lines.
+
+**Solution and recorded verification:** Hide or recalculate the leader with its owner; retain mobile layout regression and distinguish free visual checks from real customer playback.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX24 — Runtime Q&A routed through an obsolete script copy
+
+**Reason / recorded failure:** The runtime read a stale script copy after human review, so current citations and slide routing could disagree with the published experience.
+
+**Solution and recorded verification:** Use the reviewed current script as the routing source and invalidate/rebuild dependent artifacts; preserve the actual-function regression described earlier in this file.
+
+**Source record:** `Learning.MD`.
+
+### 2026-09-18 — NX25 follow-up — Full mobile qualifier overflows its evidence card
+
+**Reason / recorded failure:** The personalized frontend formatter clipped complete qualifiers and reused the current image when no topic-specific visual was supplied; narrow cards also failed to expand.
+
+**Solution and recorded verification:** Preserve complete labels/qualifiers and authoritative visual references, omit unsupported imagery, and let mobile cards accommodate wrapped evidence. Original and follow-up browser regressions are retained; no false acoustic pass.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX25 — Personalized boot evidence clipped its scope and inherited a cabin picture
+
+**Reason / recorded failure:** The personalized frontend formatter clipped complete qualifiers and reused the current image when no topic-specific visual was supplied; narrow cards also failed to expand.
+
+**Solution and recorded verification:** Preserve complete labels/qualifiers and authoritative visual references, omit unsupported imagery, and let mobile cards accommodate wrapped evidence. Original and follow-up browser regressions are retained; no false acoustic pass.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX26 — Slow customer provider work blocked cached media
+
+**Reason / recorded failure:** Synchronous provider work on the request event loop delayed unrelated audio/media delivery.
+
+**Solution and recorded verification:** Run blocking provider work outside the event loop and verify cached-media concurrency; keep API latency separate from audio delivery timing.
+
+**Source record:** `Learning.MD`.
+
+### 2026-09-18 — NX27 — Session clock continues after Stop and Done
+
+**Reason / recorded failure:** session snapshots used Date.now even after Stop, with no timing cutoff.
+
+**Solution and recorded verification:** freeze elapsed/current-slide dwell at first handoff, retain it through repeated Done/pagehide, and exclude inactive time when the customer explicitly returns. Restart resets the cutoff. Historical failed-run records remain intact. The refreshed browser contract passed30/30 for the primary paths; review subsequently extended an existing case to cover the top Pause/Resume return path. The final refreshed browser run verifies that extension:30/30 (`browser-30-contract-final.txt/png`). No source/data/provider changes or additional Build.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX28 — Correct answer slide appears without a spoken transition
+
+**Reason / recorded failure:** Legacy Q&A routing changed the slide without a conversational transition before the answer.
+
+**Solution and recorded verification:** The historical fix used an existing cached transition with cancellation and exact-return ownership. Later CR29 deliberately removes the redundant bridge for runtime-v1 direct answer delivery to avoid extra delay; legacy behavior remains separately documented.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX29 — Typed replies re-enabled ambient microphone capture
+
+**Reason / recorded failure:** automatic `waitFor` listening ignored the customer's chosen reply method.
+
+**Solution and recorded verification:** a typed input event or submit cancels current capture and chooses typing; all subsequent waits and Restart keep that preference. An explicit regular or intake mic tap restores voice mode. Initial spoken behavior, visible mic controls and permission policy remain unchanged. integrated with NX27/NX28; final refreshed CUA passes30/30. Actual B typed intake/Q&A and35.5-second clarification hold kept the mic closed; explicit real spoken input remains unverified. No provider call, source edit or third Build.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX30 — Live comparison response truncates before its citations
+
+**Reason / recorded failure:** Gemini returned only a 170-character JSON prefix ending “whereas the Venue HX10 turbo petrol DCT lists a 3”, with no complete answer or fact_ids field. Its schema validation failed; Claude lacked credits and Runware timed out, so the customer heard a decline after 22.0 seconds.
+
+**Solution and recorded verification:** implementation saved; the isolated deck gate passes 211/211 including all five new regressions. The actual focused rerun is pending. No extra Build or paid call belongs to this patch.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX31 — Concurrent Gemini cold initialization can close the active transport
+
+**Reason / recorded failure:** Concurrent cold Gemini initialization could replace and close a transport already used by another call.
+
+**Solution and recorded verification:** Synchronize cold client initialization and retain the active client; exercise concurrent calls with fake transports before relying on live recovery.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX32 — A stated traffic need becomes a decline and is absent from the buyer profile
+
+**Reason / recorded failure:** trace392 is a valid Gemini response with `answered=false` and no citations after9.784s; the player gives its generic unknown-answer/callback response. This is a semantic model decline, not a provider outage. The need survives in transcript, questions and summary, but the saved profile still has empty name/why/followup/focus. Consequently the buyer recap omits “What matters to you.” The distinction matters: context was not lost everywhere, but it was not retained in the structured path used by that recap.
+
+**Solution and recorded verification:** **targeted recovery verified.** Browser32/32 passes; actual C2 `s_mu74vi17dltu` retains the traffic statement once in profile.followup and the buyer recap, and answers with sourced gearbox options without promising stop-and-go assistance. The prompt does not guarantee semantic correctness. Neutral Browse and honest refusal alone still do not establish relevant guidance; preserve the failed C run and both completed Build attempts.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX33 — Internal follow-up summary promises unavailable price and EMI details
+
+**Reason / recorded failure:** The summary model proposed an opener promising quote/finance details even though the same session marked those requests unresolved.
+
+**Solution and recorded verification:** Enforce a neutral invitation to discuss outstanding questions independently of model wording; keep unanswered fields and the original failed session intact.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX34 — Personalized spoken proof invents a policy relation and practical benefits
+
+**Reason / recorded failure:** Personalized prose inferred policy relationships, practical benefits and equipment locations beyond the cited assertions.
+
+**Solution and recorded verification:** Preserve literal reviewed facts and mandatory qualifiers; reject unsupported policy/benefit relations and retain original failed responses. Later clause-level runtime guards provide additional bounded controls, not general semantic proof.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX35 — Background session summaries lack demo-scoped usage accounting
+
+**Reason / recorded failure:** Background summary work ran without the demo/stage usage context, leaving its cost unattributed.
+
+**Solution and recorded verification:** Capture and restore demo/stage context in the worker; preserve real repeated-call costs and test attribution.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX36 — Long live waits include reasoning exhaustion and fallbacks
+
+**Reason / recorded failure:** default hidden reasoning shares the JSON output budget; TTS and transition also add delay.
+
+**Solution and recorded verification:** explicit LOW thinking for live QA on supported Gemini3.8Flash; unchanged full facts, budget, models/order/timeouts. Other calls/unknown overrides unchanged. Provider48/48 passes; actual matched final sample pending. Do not describe filler or bank hits as faster reasoning.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX37 — Generic title words create a fictitious safety preference
+
+**Reason / recorded failure:** title word “with” matches the input, yielding focus=[safety]; trace335/TTS338 and transcript call it the buyer's “main priority.” B2's malformed trace376 proposal is not evidence of delivered recurrence.
+
+**Solution and recorded verification:** canonical topic/chip phrases and narrow topic aliases, no title-token matching; computed focus is explicitly a route hint distinct from raw statements. Actual-function regression4/12→12/12. Actual new B preference/pitch check pending. Direct warranty/comparison prompt scope was also tightened; delivered quality requires the predeclared sample.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX38 — Deeper narration shows stale answer source labels
+
+**Reason / recorded failure:** D1 caption says CNG321L/ISO V215 while dock retains cabin F020/F021.
+
+**Solution and recorded verification:** line-owned citations in deeper playback; empty citations on question/transition/check-in states, with run ownership for fillers. Actual synthetic browser32/33→33/33. Proof/deeper exact return itself passed in the real muted session; the label defect is kept separate and awaits the brief real post-fix check.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX39 — QA asks for a configuration already defined as the demo comparison example
+
+**Reason / recorded failure:** trace439 asks “Which specific Venue variant are you comparing with?” The intake only names Venue/Brezza, and the model input contains many rival trims. C7-001 proves the regular HX10 turbo-petrol seven-speed DCT pairing but does not mark it as the chosen demo example. The unique mapping exists in current plan.notes and was omitted from QA; settings have no selection field and bundle.pitch omits those notes too. This is a context-delivery gap, not proven disregard of a supplied unique selection.
+
+**Solution and recorded verification:** code/input contract fixed39/44→44/44; actual confirmation pending. No new selection field, source mutation, provider, Build or deterministic semantic-resolution claim.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX40 — Model recommendation becomes an unrequested selected action
+
+**Reason / recorded failure:** Direct `r.cta`→`ctaFlow` forwarding and substring choice matching treated a model recommendation as the customer's selected action.
+
+**Solution and recorded verification:** Show an optional proposal chip; require an exact, explicit choice of a known CTA in the current run, with honest optional-contact wording. Actual free browser checks improved33/36→36/36. The historical record marked actual recovery pending; this register does not create a new live pass. Evidence: completion-audit/nx40-cta-consent.md and L4-unrequested-cta-recap.*.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX41 — Warranty relation contradicts a cited explicit unknown
+
+**Reason / recorded failure:** Citation validity checked that evidence existed, but did not validate whether the warranty relationship contradicted that evidence.
+
+**Solution and recorded verification:** Reject the explicit policy contradiction before voice and use the ordinary honest limit/callback response, without labelling it a provider outage. Fake real-QA regressions passed12/12 after initial3/10 and an independent11/12 bypass finding. The guard covers bounded English patterns, not general entailment. The historical live recovery remained pending; original speech is retained.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-18 — NX42 — Final summary exhausts its structured-response budget
+
+**Reason / recorded failure:** The summary used default hidden reasoning inside its1200-token output budget. Changed ended-session records could also launch duplicate workers or allow a stale worker to overwrite a newer record.
+
+**Solution and recorded verification:** Set explicit LOW reasoning through the existing adapter while preserving the schema, budget and provider order. Revision hashing and worker coalescing prevent stale attachment to a changed record within the local process. Cross-process coordination remains a limitation. The original issue's bounded-repair confirmation was pending; later evidence remains separately dated in the five-whys/history. Duplicate historical calls and costs are retained.
+
+**Source record:** `docs/issues/2026-09-18-nexon.md`.
+
+### 2026-09-19 — CR01 — crawler crossed the market/model boundary
+
+**Reason / recorded failure:** loose model-token matches plus no inherited locale boundary.
+
+**Solution and recorded verification:** fixed and replayed. Exact model path and inherited locale checks kept the next two discovery runs within India Creta pages. Original run evidence remains in stage progress and coverage.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR02 — readiness sent an oversized realtime audio frame
+
+**Reason / recorded failure:** the one-second probe was rejected with `chunk_too_large`; the provider accepts ten smaller frames. Real browser frames were already small.
+
+**Solution and recorded verification:** pace/split the probe into small frames, defensively bound adapter frames, retain a redacted actionable error. fixed. Repeat preflight observed reasoning 1,819 ms, selected-voice stream 895 ms and bounded STT probe 1,585 ms. Three subsequent synthetic customer recordings retained family/boot intent, EMI inputs and a comfort/seats correction. Physical microphone and echo behavior remain untested.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR03 — mock mascot path could reach a real provider
+
+**Reason / recorded failure:** pre-existing image-generation code lacked a mock guard; the repaired import exposed it. Some intermediate logs show SDK activity. Deleted temporary trace stores prevent exact reconstruction of every attempt.
+
+**Solution and recorded verification:** guard both image-generation entry points; regression replaces the provider client with a raising stub. Final free gates additionally block outbound sockets and recorded zero attempts. fixed. Preserved evidence and accounting limits are under `output/creta-runtime-2026-09-19/mock-guard-audit/`.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR04 — calculator could borrow an unrelated unit
+
+**Reason / recorded failure:** broad quoted text could pair a five-year warranty with an unrelated months unit, or treat a monthly percentage as annual.
+
+**Solution and recorded verification:** bind each numeric occurrence to adjacent units; require explicit annual/monthly/per-litre basis; preserve lakh/crore scale. fixed; regression covers the failure and zero-interest EMI/fuel calculations.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR05 — stale transcription after microphone restart
+
+**Reason / recorded failure:** session/turn IDs did not distinguish two microphone capture generations.
+
+**Solution and recorded verification:** generation IDs on capture commands, PCM, ready events, transcripts and failures; ignore stale generations at both ends. implemented with transport/client regressions; real acoustic acceptance still pending.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR06 — brochure layout inflated and fragmented the feature matrix
+
+**Reason / recorded failure:** pypdf's layout mode expanded pages 13/14 to approximately 295k/261k characters, mostly spacing. Combined with the identical linked brochure, this produced 27 extraction batches and split column context. Read was stopped before publication.
+
+**Solution and recorded verification:** bounded coordinate-preserving PDF text extraction, preserved raw table cells, deduplicated identical uploaded/linked document content and versioned extraction separately from the original source hash. extraction replay passed. The brochure is approximately 48k characters; both PDFs fit three evidence batches rather than duplicating the brochure. All sources together create eight batches. Original PDFs remain unchanged. The next model call exposed CR07 before factual publication.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR07 — Gemini's legacy schema converter rejected flexible fields
+
+**Reason / recorded failure:** `response_schema` uses a legacy schema converter that rejects dictionary properties. The new evidence scope and delivery metadata contain dictionaries. Readiness's simpler schema did not exercise this shape.
+
+**Solution and recorded verification:** send the model's JSON Schema through `response_json_schema`, preserving constraints and validating the response with Pydantic. Separate build routing now tries Gemini first for text-only calls; explicit runtime routing and media calls keep their contracts. SDK wire regression 4/4; real extraction completed in eight batches and produced 203 candidate assertions. Later factual review is recorded in CR11. Official API reference: https://ai.google.dev/gemini-api/docs/generate-content/structured-output.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR08 — edited assertion retained a published identity
+
+**Reason / recorded failure:** edits could change the meaning associated with an existing ID.
+
+**Solution and recorded verification:** copy on meaningful edit, preserve lineage and old snapshots, reject edits through retired IDs, invalidate downstream approvals and update chat edit references. A no-op leaves identity unchanged. identity/scope regression 17/17 and existing Align regression 47/47.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR09 — real draft remained technical and generalized engine choices
+
+**Reason / recorded failure:** opening narration included dimensions and a parametric grille; the summary introduced cylinder counts; an engine line suggested every engine had both manual and automatic options. The turbo has its own automatic pairing. Some questions assumed a customer's commute or technical knowledge. FAQ Q02 added an unsupported stopping-performance benefit to equipment facts.
+
+**Solution and recorded verification:** preserve the first draft, repair evidence before rewriting, add concrete authoring examples and everyday-register warnings, and review the second story before voice generation. Equipment is not a demonstrated performance outcome. two model drafts reviewed; a final explicit edit corrected main narration, all 18 deeper lines, seven FAQ answers and slide labels. Three useful check-ins replace seven repetitive prompts. The authoring validator now permits this cadence. Playback acceptance remains separate; no first-draft bundle was published.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR10 — precise trim lists did not match individual trim questions
+
+**Reason / recorded failure:** an explicitly listed scope such as `King, King Knight` was treated as one variant name. Requests for King could miss valid evidence.
+
+**Solution and recorded verification:** safely split comma/semicolon variant lists and match exact alternatives. Opaque ordering such as `SX and above` is not expanded. knowledge 36 and runtime 51 checks pass, including preventing King evidence from leaking into E queries.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR11 — source disagreements and interleaved table quotes required review
+
+**Reason / recorded failure:** website FAQ claimed the turbo displacement was 1497 cc; the supplied manufacturer brochure states 1482 cc. A compiled-guide FAQ said six airbags in most variants, while the manufacturer's matrix states standard equipment. These differently worded claims did not enter the strict automatic-conflict matcher. Some accurate engine facts were held because generated quotes stitched together noncontiguous cells.
+
+**Solution and recorded verification:** visually checked the manufacturer engine table; replaced nine quote/locator pairs with a literal excerpt preserving all three headers; rejected the two conflicting FAQ assertions. Reviewed all-variant airbag/ISOFIX scope, parking-assistance scope and the wireless adapter footnote. Meaningful corrections received new assertion IDs. India market scope uses the publisher/footer and byte-identical official India brochure, not a guessed model year. curated through Align APIs; `ingestion-audit/applied-curation.json` and `india-scope-review.json` preserve the ID mappings. Zero automatic conflicts must not be presented as proof of no semantic disagreement. The first draft is preserved privately for comparison.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR12 — captions could masquerade as successful answer audio
+
+**Reason / recorded failure:** a speech failure's caption fallback stamped first audio; server/browser timestamp mixing could also distort latency.
+
+**Solution and recorded verification:** caption failures retain missing audio timestamps and failed-delivery state. Answer timing uses one browser clock; server receipt is separate provenance. Stale endpoint timestamps cannot leak into a later utterance. client 46/46 and muted mock browser 17/17. Real browser cohort replay pending.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR13 — CTA labels and locked persona did not match their behavior
+
+**Reason / recorded failure:** the planner named a male Karan persona despite locked Priya speech. Download Brochure and Locate Dealer pointed at the product homepage, and the player ignored configured URLs.
+
+**Solution and recorded verification:** enforce the selected voice's persona identity, supply real source-discovered action URLs, and honor safe external links through explicit customer interaction. No automatic form submission. locked identity and three real destinations confirmed in the second plan; player CTA regression 39/39. Official brochure, dealer finder and Creta test-drive destinations returned HTTP 200 on review. Real customer replay remains separate.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR14 — reconnecting to Align hid the running stage
+
+**Reason / recorded failure:** entering Align during a revision showed no progress. The client ignored the SSE hello snapshot; its polling condition looked for an absent overlay even though the overlay always exists in the DOM.
+
+**Solution and recorded verification:** restore current stage progress at entry and reconnect, hide it on completion, and poll while visible. Ignore historical completion events rather than navigating from stale history. full Align module/SSE client contract 9/9; Codex browser reload displayed live FAQ progress and returned to the review screen on completion.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR15 — a multi-variant comparison could overstate shared equipment
+
+**Reason / recorded failure:** a pure validation probe accepted “Both E and King have a panoramic sunroof” using a King-only fact. The comparison filter found an intersecting scope but did not prove the universal wording.
+- Related failures: an empty answered decision could show a limitation while retaining answered=true; the first provider could consume the entire turn deadline, preventing timeout fallback.
+
+**Solution and recorded verification:** implemented before the real batch; runtime 75/75 and provider 60/60. Explicit unlisted trim corrections clear stale scope; unknown model years stay restrictive; the first provider leaves fallback time; empty decisions are unanswered. Further actual-answer defects are tracked below.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR16 — an affirmative reply skipped requested detail
+
+**Reason / recorded failure:** a curated question offered a closer look, but the existing player mapped “yes” to Continue. The static model scorecard missed this semantic mismatch.
+
+**Solution and recorded verification:** three confirmation questions now mean yes=continue/no=more detail; authoring prompts, schema guidance and a warning enforce that convention. No new interaction type was introduced. speech-style 27/27; bundle v2 has three recorded, corrected prompts and zero author issues. Overview duration is 11.25 seconds; main narration and prompts total 131.5 seconds before customer pauses/deeper answers.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR17 — review overlays survived navigation
+
+**Reason / recorded failure:** navigating from an open Align script preview to the customer player left the detached preview covering the player.
+
+**Solution and recorded verification:** Align owns and removes its detached previews, editors, lightbox and Escape handlers on navigation. actual read-only muted browser replay passed; Align progress 9/9 remains green. An initial test selector error and a run attempted during the blocking Build overlay were corrected before the completed replay.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR18 — real Explore fallback delayed the selected tour
+
+**Reason / recorded failure:** the real planner returned in 4.038 seconds with no personalized segments, two custom batches and a 43-word decision frame. After the requested overview, the player prepended roughly 45 seconds of additional narration before showing the chosen route.
+
+**Solution and recorded verification:** first browser batch preserved; four controlled overview interruptions passed, then the journey timed out. Backend live delivery and player fallback are corrected; 18 pitch delivery contracts and 47 legacy grounding controls pass. The actual replay is pending; increasing the test timeout alone is not a fix.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR19 — calculation and qualification guards harmed valid answers
+
+**Reason / recorded failure:** the calculator produced correct EMI values, but nearest-rupee phrasing was rejected; caveat-only remnants still counted as answers. A zero-interest calculation succeeded but the model returned no sentences. Some rejected introductory clauses also removed the scope needed by a surviving feature list.
+
+**Solution and recorded verification:** original 100-question baseline retained. Bounded numeric rounding, verified calculation rescue, meaningful-answer flags and condition-preserving validation are implemented in the 127-case runtime contract. Actual repeat quality remains pending; mechanical citation checks alone are not semantic acceptance.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR20 — mobile evidence overflow lacked a visible cue
+
+**Reason / recorded failure:** three-card evidence strips showed almost no hint that another card was offscreen on a narrow viewport.
+
+**Solution and recorded verification:** show a directional swipe cue only for measured horizontal overflow, retaining image and card dimensions. all 12 slides reviewed at desktop and mobile widths; five mobile cues, none on desktop; player browser contract 40/40.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR21 — the local runtime timeout became an invalid Gemini server deadline
+
+**Reason / recorded failure:** the second browser attempt received a Gemini 400 before generation: its manually set seven-second server deadline was below the allowed ten-second minimum. Claude then reported insufficient credit and Runware timed out. The original first-provider budget regression used fake transports and missed this SDK behavior.
+
+**Solution and recorded verification:** explicitly supply a server deadline of at least ten seconds while preserving the shorter local HTTP timeout and the graph's twelve-second total deadline. A single runtime attempt also disables the SDK's internal five-attempt retry default.
+- Evidence: the installed Google SDK automatically derives `X-Server-Timeout` from the HTTP timeout unless explicitly set; its [upstream implementation](https://github.com/googleapis/python-genai/blob/main/google/genai/_api_client.py) documents the same behavior. Eight serialization/wire contracts now include real SDK requests through a fake HTTP transport, subsecond/seven/twelve-second budgets, and a one-request 503 case. The real local7/server10 probe succeeded in 1.912 seconds; full replay remains pending.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR22 — valid citations did not bind every feature, polarity or unit
+
+**Reason / recorded failure:** independent deterministic probes accepted a positive feature inside an uncited limitation clause, an unrelated feature under a negative trim projection, and 253 PS supported by a 253 Nm torque assertion. Follow-up probes also found positive safety assertions licensing their negative inverse, or an airbag count being borrowed for a gearbox count.
+
+**Solution and recorded verification:** bind negative projections to the named feature, reject clause continuations that introduce uncited claims, and validate feature families, polarity and measurement units/counts. These are bounded guards, not a general proof of semantic entailment. 127 runtime and 42 knowledge contracts pass. All 22 original and six supplemental adversarial controls were independently rechecked. These probes are not 28 additional failures observed in QA100, and do not establish universal semantic correctness.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR23 — stopping the overview cancelled background personalization
+
+**Reason / recorded failure:** the second browser attempt's overview interruption called the session-wide cancellation path while the HTTP Explore plan was still pending. The browser deliberately retained its planning promise, but the backend cancelled that work, leaving an accepted-only checkpoint.
+
+**Solution and recorded verification:** separate stopping current delivery/QA from cancelling an unrelated background Explore plan; new context, replanning and session closure must still supersede stale work. separate planning/QA ownership and a latest-accepted-turn checkpoint fence pass nine actual graph/socket controls. An ordinary question preserves valid background planning, while refinement and ending the session cancel stale work. A late plan cannot overwrite the latest question checkpoint or start browser narration. This is independent of CR21; the null plan cannot be attributed only to provider availability.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR24 — approved conflicting assertions survived source review
+
+**Reason / recorded failure:** focused q067 spoke 1497 cc for the turbo engine from uploaded F056, despite the original manufacturer table's reviewed F230 stating 1482 cm³. It made no lookup despite the explicit URL request. Exact-claim matching had missed the compound FAQ label. The audit also found an unqualified seven-variant count, a misleading all-standard 70+ safety count and a memory claim whose quote only supported power adjustment.
+
+**Solution and recorded verification:** reject F056/F048/F076/F126; retain their historical evidence. Replace ambiguous website F123 with F246, explicitly identifying the manufacturer brochure's 17-inch **spare** wheel. Remove obsolete dependent citations, review all remaining references, and publish immutable snapshot `kb_c70af9b392163108dee4eb7a` as bundle v3. Existing narration, slides and recordings are unchanged; deterministic assembly made no paid calls. Old v2 and its snapshot remain preserved. This is a corrective publication beyond the two authored iterations, not a third generated story.
+- Prevention: narrow dimensional conflict detection compares explicit same-engine cc/cm³ assertions across compound claim labels. Conflicting uploaded material remains reviewable; nominal engine names and unrelated quantities do not trigger this rule. Explicit supplied-URL checks dispatch the bounded lookup before model reasoning. Saved-decision tests preserve the actual failure.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR25 — scope and projection guards lost supported answers
+
+**Reason / recorded failure:** Scope parsing and applicability projection discarded valid exact trim facts and conservative limits while trying to prevent unsupported combinations.
+
+**Solution and recorded verification:** Preserve reviewed exact scope and qualified comparisons without expanding opaque trim ordering. Saved-draft and actual-question regressions distinguish retained useful facts from still-invalid claims.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR26 — the completed safety journey still declined available ADAS evidence
+
+**Reason / recorded failure:** the full safety route reached recap, but its required question failed; “variant conditions” was parsed as a trim named conditions. The run remains12/13, not a pass.
+
+**Solution and recorded verification:** generic scope nouns cannot become trim names. Empty/rejected factual drafts get at most one bounded composition repair, retaining the same evidence, language, profile, validator, cancellation and12-second deadline. Exact unknowns remain distinct from unrelated known facts. Drafts cannot use repair to request more tools or a CTA. offline regressions and independent review precede the paid targeted replay. The third complete100-question result remains75supported/18partial/6unhelpful/0unsafe flagged/1providerfailure until a separate cohort is reviewed.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR27 — declines were not a useful-answer latency cohort
+
+**Reason / recorded failure:** the failed safety answer's2.585-second playback start was a decline; aggregation did not keep it separate from answers. Its long acknowledgement also occupied unnecessary time.
+
+**Solution and recorded verification:** explicit answer/clarification/decline/legacy cohorts, truthful answer-playback labels,250ms acknowledgement grace and shortest compatible reviewed clip. Correctivev4 recorded only “Let me check that.” in Priya's voice (1.365s); existing story/media remained unchanged. metrics15/client56/player41 free checks pass. New real acknowledgement and successful answer timings remain to measure; no physical microphone claim.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR28 — explicit brochure fitment and lookup passage relevance
+
+**Reason / recorded failure:** held sunroof evidence and vague higher-variant camera wording left basic E/EX questions unhelpful. Web extraction ranked navigation/FAQ questions too highly; an initial filter then overreached on answer paragraphs ending with a question.
+
+**Solution and recorded verification:** visually verify exact manufacturer matrix cells and guide legend, publish newF247/F248 assertions as correctivev5 with181approved facts and immutable history. Prefer answer-bearing passages, retain full exact quotes and tokenize hyphenated model URLs consistently. No trim absence inferred from ordering. fitment6/6 and lookup13/13 isolated controls. All existing citations remain approved and all narration/slides/audio are identical across the fitment publication.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR29 — unnecessary transition audio and precise answer limits
+
+**Reason / recorded failure:** the successful ADAS probe returned text in2.271s, then played a2.442s generic jump bridge before requesting answer speech. The35-case focused replay also lost “SX trim and above” scope, specific economy/warranty/model-year uncertainty, and spent12s on an unsupported file-URL request.
+
+**Solution and recorded verification:** runtime-v1 jumps show evidence and start the substantive answer directly, with exact return/cancellation/wait preserved. Scope matching permits a grammatical trim/variant insertion without inferring ordering. Safe source-absence wording becomes a precise personal verification limit; unrelated tank facts cannot substitute for economy. Explicit local-file source requests bypass paid reasoning. A repaired refusal cannot erase a surviving useful factual answer, and source-check suggestions cannot license uncited claims. offline repair106/graph130/trace36 and actual DOM44/client56 pass; independent review precedes a fresh live100-case cohort and one bounded audio probe. Prior results remain retained.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR30 — flattened website wheel rows conflicted with manufacturer fitment
+
+**Reason / recorded failure:** q039 in the fourth full QA100 used approved F120 to offer EX(O) ordinary steel-with-cover road wheels alongside styled road wheels. The manufacturer explicitly assigns ordinary road wheels to E/EX and styled road wheels to EX(O); the separate EX(O) ordinary steel entry is a spare wheel.
+
+**Solution and recorded verification:** source-only v6 allocates F249/F250/F251 from visually checked manufacturer page 15, separating road and spare roles and exact named trims. All story/media/citations remain valid and unchanged; old snapshots and original failed answers are retained. No paid regeneration.
+- Related critical scope failure: q047 correctly mentions the Pune FAQ's SX(O) listing, then borrows VSM/rear-disc equipment from a Lucknow source without verified lineup equivalence. New F252 preserves the truthful listing with an explicit applicability limit. Runtime borrowing prevention is under independent review; same-source attributed safety facts are not automatically false. source publication complete; live repaired-answer verification pending. Fourth QA100 remains 83/9/3/2/3, not relabelled after correction.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR31 — exact unknowns and conditional comparisons were lost
+
+**Reason / recorded failure:** connected-car repair omitted the Echo purchase requirement, a two-trim wheel sentence pooled inapplicable citations, and model-year uncertainty was stripped while an unsupported future/current premise survived. A guarantee-plus-EMI question only asked inputs. These actual drafts remain fixtures.
+
+**Solution and recorded verification:** precise required-condition feedback for the existing single repair; independent validation of comparison clauses; direct unknown preservation; a safe first-person refusal before one waiting clarification. Source-specific trim matching excludes invalid anchors and rejects positive current-lineup claims. The literal transmission-only suffix is retained as a material condition.
+- Checks: actual-cohort54, repair106, graph130, trace36, knowledge56; independent seven-control graph review; required deck320/accept24/both smoke with blocked sockets. Live post-fix verification remains separate. General semantic entailment, all future table extraction and physical voice behavior are not proved.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR32 — useful repair clauses and mandatory device conditions
+
+**Reason / recorded failure:** A partly invalid optional repair discarded useful supported sentences; alternate citations could also lose the mandatory device-purchase condition.
+
+**Solution and recorded verification:** Keep independently revalidated repair subsets only under the preservation rules, bind own limits safely, and carry same-evidence positive prerequisite witnesses. No cited row grants unrelated benefits.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR33 — precise limits, lineage metadata and qualified projections were over-rejected
+
+**Reason / recorded failure:** Precise uncertainty was handled as an uncited world claim; uncertain source-specific trim identity and qualified projections were also over-rejected.
+
+**Solution and recorded verification:** Separate question-bound own limits from factual assertions, retain source-specific lineage metadata, and preserve literal selected-trim qualifications without inventing current-lineup equivalence.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR34 — repeated known credit failure consumed fallback time
+
+**Reason / recorded failure:** full100 traces show repeated Gemini timeouts followed by explicit Anthropic insufficient-credit400 errors, consuming0.4–0.7s each before Runware. Several Runware attempts then timed out within the remaining3.3–4.5s.
+
+**Solution and recorded verification:** short process-local cooldown for the observed non-retryable balance failure, with explicit trace provenance, expiry and credential/model identity isolation. Preserve configured provider order, ordinary transient retries and whole-turn deadline. No purchase, credit change or deadline extension. eight free controls passed and c7ec71a exercised the cooldown after a real credit failure. A later Runware call completed, but validation rejected its content. This proves the skip occurred, not useful answer recovery or a latency percentile gain.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR35 — completed calculations and valid answer details were discarded
+
+**Reason / recorded failure:** Final model composition exhausted the shared deadline after a successful calculation, while strict relation/quantity checks removed valid requested details.
+
+**Solution and recorded verification:** Reserve validation time and permit only a completed audited calculation to survive failed composition. Preserve supported exact quantities, scope and useful limits; never revive failed tools, cancelled turns or expired work.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR36 — clause ownership caused both unsafe claims and over-rejection
+
+**Reason / recorded failure:** Validation borrowed predicates, negatives or scope from elsewhere in a multi-clause answer; conversational text shared the same permissive paths.
+
+**Solution and recorded verification:** Check ownership within the actual clause, distinguish fact-free interaction from product assertions, and reject ambiguous semantic relationships conservatively. Keep actual saved-draft positive and negative controls.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR37 — cross-fact pairing, source coverage and operational fallbacks
+
+**Reason / recorded failure:** Individually true features did not prove their combination, exact lists did not prove relative ranges, and selected passages did not prove entire-source absence.
+
+**Solution and recorded verification:** Require joint assertion scope, preserve literal range provenance, reject unsupported source-coverage claims, and keep operational failures distinct from knowledge gaps. Provider races retain one winner and attributable late cost.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR38 — ordinal scope and conversational acts
+
+**Reason / recorded failure:** Ad hoc free-form conversational exceptions could discard helpful interaction or bypass factual validation; ordinal/count patterns lost feature ownership.
+
+**Solution and recorded verification:** Use closed, question-bound interaction acts with no arbitrary facts/citations; retain clause-owned exact scope and independently validated numerical modifiers. EMI completion may add only missing audited assumptions.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR39 — useful boundaries, safe clarification prefixes and feature-count binding
+
+**Reason / recorded failure:** Safe own-limit prefixes and bounded feature-count paraphrases were rejected or lost when conversational acts and facts shared validation paths.
+
+**Solution and recorded verification:** Preserve independently validated limits before one typed question; bind counted feature modifiers; retain all prior failed responses.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR40 — exhausted fallback window and discarded refusals
+
+**Reason / recorded failure:** Sequential provider timeouts left too little usable time for fallback; missing closed boundary acts also discarded helpful refusals.
+
+**Solution and recorded verification:** Keep the default provider order and bounded deadline, test configurable early overlap separately, and add question-bound lender/evidence limits. Recovery adds cost and is not a general latency pass.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR41 — repaired source-pronoun absence escaped validation
+
+**Reason / recorded failure:** Source absence validation lost ownership across a coordinated pronoun; a valid boot-measurement limit was also removed.
+
+**Solution and recorded verification:** Bind the source antecedent conservatively and add a closed, question-bound capacity/measurement limit; retain the source-policy distinction.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR42 — comma ranges, source pronouns and asymmetric digit grouping
+
+**Reason / recorded failure:** Clause splitting detached comma-coordinated ranges, source-pronoun binding used a small verb list, and digit grouping was normalized asymmetrically.
+
+**Solution and recorded verification:** Preserve relative range ownership, bind source pronouns independently of positive reporting verbs, normalize quantity typography symmetrically, and retain specific dealer/evidence limits.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR43 — remaining source-only and universal live-table claims
+
+**Reason / recorded failure:** A source-only restriction escaped through a new reporting verb; live table feature names were mistaken for universal fitment proof.
+
+**Solution and recorded verification:** Validate restrictive source ownership and require own-row descriptors, complete aligned headers, equal trim sets and explicit status meanings for universal live-table claims. Final unchanged100 scored95 supported/5 partial/0 unsafe; unknown wording remains conservatively rejected.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+### 2026-09-19 — CR44 — missing terminal event at pre-dispatch fallback retirement
+
+**Reason / recorded failure:** Three stop/budget returns after a launch-intent trace could exit before calling the provider adapter without recording a terminal event.
+
+**Solution and recorded verification:** Emit exactly one skipped_before_dispatch event with dispatched=false on those existing branches. Free race/configuration checks and independent AST comparison preserve dispatch behavior; the historical missing terminal remains an inference, never rewritten.
+
+**Source record:** `docs/issues/2026-09-19-creta.md`.
+
+
+## 2026-09-19 — CR45 — Planner and Author shared story design, producing repetitive delivery
+
+- Date: 2026-09-19, night session.
+- Where: `server/agents/plan.py`, `author.py` and their shared prompt inputs; reusable CRETA script preparation before Align.
+- Observed problem: Planner selected the segment structure while Author also received `PITCH_SHAPE` and `PROOF_BLOCK`. Existing plan goals often named an equipment category rather than the intended story beat, and `plan.notes` did not reach Author. The resulting division of work encouraged a second itinerary and repeated feature-list openings. In the first session candidate, five successive proof/feature blocks ended with a visit/try/check instruction; this was independently identified and revised before publication.
+- Expected: Planner chooses a concrete, supported buyer story, evidence emphasis and literal images. Author turns that outline into connected speech, retaining independent proof stops and all material evidence conditions.
+- Severity: customer-experience quality and role clarity. This is not a demonstrated runtime-provider, source-accuracy or acoustic failure.
+- Cause: overlapping prompt ownership plus a thin planning handoff. A requirement that every line stand alone encouraged conversational resets; fit-checks became a repeated substitute for an unsupported benefit. This is a code-and-artifact diagnosis, not a controlled causal experiment.
+- Implemented solution: Planner now owns three supported reasons to explore, segment ordering, spoken/deeper evidence, visual subjects and handoffs using the existing `goal` field. Its prompt receives `PITCH_SHAPE` and `PROOF_BLOCK`; it does not write final segment dialogue. Author receives those goals and `plan.notes`, uses separate `AUTHOR_CRAFT`, and preserves the planned IDs/roles/order while writing the final spoken delivery. A local rewrite preserves unaffected grounded lines. No new schema, graph node, provider or publication route was introduced.
+- Candidate correction: final speech explicitly distinguishes non-turbo petrol/diesel gearbox choices from turbo automatic-only; cockpit, gearbox and music blocks no longer all end in a future visit instruction. Personal seat/luggage checks remain where useful. Unseen engine, child-anchor, app and policy claims use no literal image rather than borrowing unrelated pictures.
+- Verification: `evals/narrative_roles_contract.py` passes six socket-blocked groups through actual Plan/Author payload construction and draft persistence, with the provider boundary replaced. It covers story/visual/notes handoff, approved-fact filtering, locked voice/single intake, rejected-citation rewrite and no approval/publication/audio generation. Independent review checked 46 candidate lines against 20 approved v7 assertions and inspected all ten assigned original images. Actual author validation reported no issues. These checks are not general semantic entailment or live story-quality proof.
+- Status at candidate freeze: prompt changes and a session-generated candidate are independently reviewed. No paid Plan/Author/Build provider call and no voice API test produced this candidate. Final stress-session, publication and any narration-render evidence must be appended separately; do not mark them passed from this record.
+- Provenance: plan `a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f`; final script `9d49a7b8f597cfe7d5874e2b97aa74d4cdff9dca8b4dcad71ba1ae9cad023b88`; independent Author review `a15e2b141a2d7975ba31d245ef02796b2f7a54298a7ff450a4ab152a867cc8cd`. Artifacts: `output/creta-night-final/plan.reasoning.md`, `plan.semantic-review.json`, `script.session.review.json`, `author-independent-review.json`.
+
+### Five whys — bounded diagnostic chain
+
+1. **Why did the tour feel repetitive?** Several blocks repeated a feature statement followed by a future visit or fit-check, rather than developing a distinct thought.
+2. **Why was that the easy composition path?** The Author had to invent the narrative connection while meeting short segment budgets and strict evidence limits; another fit-check was a safe but repetitive ending.
+3. **Why did the Author have to invent the connection?** The prior goals mainly specified topics/equipment, and editorial notes were dropped from its payload.
+4. **Why did it also redesign the route?** Both stages received flow/proof planning instructions, blurring ownership between selecting the story and delivering it.
+5. **Why was this not established by existing passing checks?** Citation, word-budget and structural checks do not measure narrative repetition or arbitrary claim entailment. The fix therefore pairs a clearer handoff contract with direct editorial review, without claiming the new offline checks prove persuasion or acoustic quality.
+
+Rejected alternative: relaxing grounding or inventing cooling, comfort, acceleration or safety benefits to make the script sound warmer. The accepted change uses the existing evidence, literal imagery and clearer writing responsibilities instead.

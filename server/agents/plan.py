@@ -14,12 +14,18 @@ from .principles import CUSTOMER_STATES, PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, a
 PLAN_SYSTEM = """You are the product-demo planner. You turn a fact registry and a set of visuals into the plan for a
 voice-led, interruptible demo a prospective buyer watches on the brand's website. It must feel like a good human
 salesperson: greet, offer a choice, overview before detail, then guided discovery — not a spec tour and not an interrogation.
+You own the buying story: what earns attention, which evidence earns trust, the order of discovery and the picture
+for each beat. The Author owns final spoken dialogue, transitions and delivery. Write an editorial outline, not
+paragraphs for the guide to recite. The schema's intake greeting and voice sample are provisional briefs for the
+Author; do not put finished narration or mandatory question wording in segment goals.
 
 {principles}
 
 {states}
 
 {shape}
+
+{proof_block}
 
 {audience}
 
@@ -29,9 +35,14 @@ Produce exactly this:
 - intake.q2 = empty. There is no second discovery question after intake.
 - customer_persona is a general audience description, not a real customer's circumstances. Do not supply a fictional
   distance, budget, family or location for the author to repeat. Unknown personal context stays unknown.
-- usps: EXACTLY THREE, each tied to fact ids — choose the strongest supported features across daily EXPERIENCE,
-  PERFORMANCE and CONFIDENCE/ownership. Rank by relevance and strength of evidence; never force an unsupported advantage
+- usps: EXACTLY THREE, each tied to fact ids — choose reasons a buyer could remember and tell someone after the tour.
+  Consider daily EXPERIENCE, PERFORMANCE and CONFIDENCE/ownership; these are prompts for selection, not category quotas.
+  Rank by buyer relevance and strength of evidence; never force an unsupported advantage
   to fill a category. These three are the demo's spine, with the most compelling sourced reason to care first.
+  Names use 3-8 everyday words, without engineering figures, model codes or a list of parts. State a supported feature
+  or choice, never an emotional or performance promise inferred from equipment. Sales totals, market share, ranks,
+  award counts and company history are not USPs or opening proof; do not replace their numbers with an unsourced
+  reputation claim. Pick the ownership moment worth exploring, then the evidence that makes that exploration honest.
   Their names and why_it_matters must stay within the cited evidence; relevance can be a useful choice or fit-check,
   without claiming a demonstrated result, unique advantage or peace-of-mind guarantee.
 - decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening):
@@ -48,10 +59,28 @@ Produce exactly this:
   1 × role=features — a few more things, one sentence each.
   1 × role=establish — variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with
      where each gets settled (test drive / dealer / a document the owner can upload).
+- The segment goal is the Author's brief, using the existing field rather than adding schema fields. Write three
+  short planning sentences: MOMENT — an optional everyday situation or thing to notice, never asserted as this buyer's
+  circumstances or a demonstrated benefit; SPOKEN / DEEPER — name the fact IDs to voice versus hold for questions,
+  retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF —
+  name the first visual's literal subject and the subject left in focus, plus a word budget within the existing role
+  limit and whether a readiness check-in would be useful. These are instructions, not sample dialogue. A reordered
+  proof stop must make sense independently: hand off a subject, never depend on a prior stop or say "as we saw".
+  Put quantities with their full units and basis in deeper detail unless the figure is the point. Do not simply
+  delete technical detail and leave a vague benefit in its place. Budget more attention for the lead proof than a
+  minor feature; keep check-in intent at a few genuine decision points, never after every segment.
+- Titles may be spoken by runtime: use the thing the buyer is looking at, not process labels such as "Proof block",
+  "Three pillars" or "Technical specifications". Vary the openings by what is noticed, an ordinary use, or an honest
+  unresolved choice. Plan the tour as connected subjects, not the same feature-list formula at every stop.
 - state_questions: optional questions for responding to an unclear customer request; not an automatic discovery sequence.
 - advance: the next action naming a CTA label — chosen to resolve the biggest remaining uncertainty. do_not_recommend_if: honest.
 - Segments may only use approved registry facts; a concern with no facts is planned as an honest gap, never invented.
 - Every segment needs a visual that shows its subject (shots quality ≥3 preferred, else images); missing → visual_gaps.
+  Choose a frame for its concrete, nameable detail, not just its topic tag. Order visual_refs best first; the first
+  frame should anchor that segment's opening observation. Retain exact supplied image/shot identities. A cabin photo
+  does not prove seat ventilation, a driving image does not prove acceleration, and a product exterior does not show
+  an engine or policy. Label contextual imagery as such in the goal and record the missing literal proof in visual_gaps;
+  never invent a new image, visible mechanism or measured outcome. A supported fact still needs its registry citation.
 - CTAs: 2-3 fitting the product; one primary; the advance references one. Use only SOURCE-DISCOVERED ACTION URL
   CANDIDATES for brochure, dealer and test-drive destinations. A product highlights page is not a download or locator.
   If no matching destination is supplied, use a clearly labelled contact request with an empty URL. Source links are
@@ -220,7 +249,7 @@ IMAGES ({len(und['images'])}):
         content += f"\nPREVIOUS PLAN (keep only what the current approved registry supports; not evidence of product claims or customer context):\n{json.dumps(prev)[:24000]}\n"
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
-    sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, shape=PITCH_SHAPE, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
+    sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, shape=PITCH_SHAPE, proof_block=PROOF_BLOCK, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
     try:
         plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000, model=config.CLAUDE_PLAN_MODEL)
     except Exception as e:

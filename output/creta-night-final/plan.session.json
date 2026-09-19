@@ -1,0 +1,379 @@
+{
+  "customer_persona": "An everyday buyer exploring a compact SUV, with no individual priorities supplied yet. Offer a concrete cabin-led tour, then adapt only to what the customer actually says.",
+  "decision_frame": "The strongest fit is a buyer who wants to compare available cabin equipment and rear-seat flexibility; the exact trim, personal seating fit and written on-road quote still need checking.",
+  "takeaway": "Start with the cabin and flexible rear seats, then choose the trim with the equipment you want.",
+  "primary_outcome": "Shortlist a CRETA trim by the cabin, seating and driving choices that matter to the buyer.",
+  "supporting_outcomes": [
+    "Separate equipment shared across trims from the extras that change the choice.",
+    "Know which personal checks and written terms remain before booking."
+  ],
+  "concerns": [
+    {
+      "topic": "cabin",
+      "why": "Which of the visible cabin features actually belongs to the trim being considered?",
+      "fact_ids": [
+        "F247",
+        "F063",
+        "F159",
+        "F162",
+        "F165"
+      ]
+    },
+    {
+      "topic": "space",
+      "why": "How can the rear seat be arranged, and what still needs a personal luggage and seating check?",
+      "fact_ids": [
+        "F032",
+        "F096",
+        "F097"
+      ]
+    },
+    {
+      "topic": "safety",
+      "why": "Which safety equipment is standard and which assistance features depend on trim or transmission?",
+      "fact_ids": [
+        "F237",
+        "F214",
+        "F153",
+        "F154"
+      ]
+    },
+    {
+      "topic": "powertrain",
+      "why": "Which engine and gearbox pairings are available without assuming driving feel or fuel economy?",
+      "fact_ids": [
+        "F225",
+        "F229",
+        "F233"
+      ]
+    },
+    {
+      "topic": "ownership",
+      "why": "The chosen trim needs a current written quote and its applicable warranty terms.",
+      "fact_ids": [
+        "F031",
+        "F245"
+      ]
+    }
+  ],
+  "usps": [
+    {
+      "id": "usp-cabin-comfort",
+      "name": "Choose the cabin you want",
+      "why_it_matters": "A panoramic roof and ventilated front seats are concrete equipment choices to compare on the named trims, without promising an individual comfort result.",
+      "fact_ids": [
+        "F247",
+        "F063"
+      ]
+    },
+    {
+      "id": "usp-space-flexibility",
+      "name": "Make room for changing plans",
+      "why_it_matters": "The split rear seat changes the passenger-and-luggage arrangement; selected trims also offer a reclining rear seat, while exact luggage volume remains unverified.",
+      "fact_ids": [
+        "F096",
+        "F097"
+      ]
+    },
+    {
+      "id": "usp-standard-safety",
+      "name": "Know what comes as standard",
+      "why_it_matters": "Six airbags and ISOFIX anchoring are listed across trims, so the buyer can distinguish standard equipment from trim-specific driver assistance.",
+      "fact_ids": [
+        "F237",
+        "F214",
+        "F153"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "id": "creta-cabin-intro",
+      "title": "Inside the CRETA",
+      "role": "intro",
+      "goal": "MOMENT: start beside the pictured front seats and look up at the glass roof, inviting exploration rather than assigning a routine. SPOKEN: name the available panoramic roof and ventilated front seats from F247/F063 with selected-higher-trim qualification; save exact trim lists for deeper detail and make no cooling or comfort promise. VISUAL / HANDOFF: im05 shows seats and roof, im01 isolates the roof; ventilation is cited equipment, not visually demonstrated; leave attention on which cabin equipment matters, budget 26-32 words, no check-in.",
+      "outcome": "",
+      "topic": "cabin",
+      "fact_ids": [
+        "F247",
+        "F063"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im05",
+        "im01"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "three-things",
+      "title": "Cabin, space and standard equipment",
+      "role": "outcome",
+      "goal": "MOMENT: turn the cabin opening into a short map of the choices, not another greeting or parts inventory. SPOKEN: summarize the three USPs as cabin choice, rear-seat flexibility and standard safety, using F247/F063, F096 and F237/F214; keep named-trim extras qualified and invite steering as a statement. VISUAL / HANDOFF: im05 cabin, im08 split seat and im09 airbag illustration in that order; carry the buyer into the feature they care about, budget 25-32 words, no question.",
+      "outcome": "Choose where to look more closely",
+      "topic": "summary",
+      "fact_ids": [
+        "F247",
+        "F063",
+        "F096",
+        "F237",
+        "F214"
+      ],
+      "usp_ids": [
+        "usp-cabin-comfort",
+        "usp-space-flexibility",
+        "usp-standard-safety"
+      ],
+      "visual_refs": [
+        "im05",
+        "im08",
+        "im09"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "cabin-comfort-proof",
+      "title": "The seat and the glass roof",
+      "role": "proof",
+      "goal": "MOMENT: if the cabin catches the buyer's eye, inspect the roof opening before returning to the front seats. SPOKEN: F247 panoramic roof and F063 ventilated front seats on selected higher trims, naming SX Premium and King as shared examples only if useful; DEEPER: preserve exact F247 roof types and E/EX absence, exact F063 ventilation list/absence, and F159 manual versus dual-zone climate by trim. VISUAL / HANDOFF: im01 roof opening, im05 front seats, im03 climate controls only when discussing climate; no demonstrated ventilation or claimed thermal result; leave attention on the chosen seat and trim, budget 34-38 words, optional readiness check-in here.",
+      "outcome": "Compare the cabin equipment by trim",
+      "topic": "cabin",
+      "fact_ids": [
+        "F247",
+        "F063",
+        "F159"
+      ],
+      "usp_ids": [
+        "usp-cabin-comfort"
+      ],
+      "visual_refs": [
+        "im01",
+        "im05",
+        "im03"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "seating-and-cargo",
+      "title": "When the rear seat folds",
+      "role": "proof",
+      "goal": "MOMENT: when people and bags share a trip, notice the pictured split seat with one part folded. SPOKEN: F096 split rear-seat arrangement, then F097 recline on selected trims; keep the split ratio and recline-step count in DEEPER with F032 seating count and an honest missing boot-volume/measurement-basis limit. VISUAL / HANDOFF: im08 proves the split arrangement, im06 shows the bench and im07 illustrates luggage only; never infer litres or guaranteed fit from bags in a photograph; leave attention on what the buyer would load, budget 31-36 words, no check-in.",
+      "outcome": "Explore the rear-seat arrangement",
+      "topic": "space",
+      "fact_ids": [
+        "F032",
+        "F096",
+        "F097"
+      ],
+      "usp_ids": [
+        "usp-space-flexibility"
+      ],
+      "visual_refs": [
+        "im08",
+        "im06",
+        "im07"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "driver-cockpit-tech",
+      "title": "The screen beside the wheel",
+      "role": "proof",
+      "goal": "MOMENT: from the driver's seat, notice the screen stretching beside the steering wheel. SPOKEN: F162/F165 distinguish the infotainment display and driver display shown on equipped higher trims, without a usability or reduced-distraction promise; DEEPER: exact display sizes and named trims, including E having no standard infotainment screen. VISUAL / HANDOFF: im04 literally shows the two display areas and wheel; leave attention on the controls the buyer would try, budget 27-32 words, no check-in.",
+      "outcome": "Compare the displays by trim",
+      "topic": "technology",
+      "fact_ids": [
+        "F162",
+        "F165"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im04"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "powertrain-choices",
+      "title": "Choosing the gearbox",
+      "role": "proof",
+      "goal": "MOMENT: before choosing a version to drive, separate the engine choice from the gearbox pairing. SPOKEN: petrol and diesel choices, with gearbox availability depending on the engine and trim; make clear the turbo petrol is automatic-only using F225/F229/F233, not a blanket each-engine choice. DEEPER / VISUAL / HANDOFF: retain all three exact engine-and-gearbox pairings and their full terminology; im02 is vehicle context only, not engine or driving-performance proof, and the literal engine/gearbox visual is a recorded gap; leave attention on the version to test, budget 31-36 words, no check-in.",
+      "outcome": "Choose an engine and gearbox pairing",
+      "topic": "powertrain",
+      "fact_ids": [
+        "F225",
+        "F229",
+        "F233"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im02"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "standard-safety-suite",
+      "title": "What comes across the range",
+      "role": "proof",
+      "goal": "MOMENT: when comparing trims, distinguish standard safety equipment from the additional assistance package. SPOKEN: F237 six airbags across trims, then F214 ISOFIX child-seat anchors; DEEPER: F153 named King/King Knight/Lounge assistance fitment and F154 automatic-transmission-only Smart Cruise Control, with no crash-proof or self-driving claim. VISUAL / HANDOFF: im09 is an airbag illustration only, not crash-test evidence or an ISOFIX/assistance demonstration; record those missing detail shots, leave attention on standard versus optional equipment, budget 30-36 words, optional readiness check-in here.",
+      "outcome": "Separate standard safety from trim extras",
+      "topic": "safety",
+      "fact_ids": [
+        "F237",
+        "F214",
+        "F153",
+        "F154"
+      ],
+      "usp_ids": [
+        "usp-standard-safety"
+      ],
+      "visual_refs": [
+        "im09"
+      ],
+      "priority_topic": true
+    },
+    {
+      "id": "convenience-features",
+      "title": "Music and connected features",
+      "role": "features",
+      "goal": "MOMENT: end the equipment tour with the things the buyer might choose to use between journeys. SPOKEN: F164 Bose audio on named higher trims and F168 Bluelink connected features with over-the-air updates on equipped trims; name Alexa only with the separately purchased Echo requirement in the same thought. DEEPER / VISUAL / HANDOFF: F243 three-year subscription and exact eligibility, F164 speaker count, F168 device purchase and named trim list; im10 shows speaker positions and im04 is display context rather than proof of an app or update, leave attention on which extras merit the trim, budget 30-38 words, no check-in.",
+      "outcome": "Choose the extras worth comparing",
+      "topic": "features",
+      "fact_ids": [
+        "F164",
+        "F243",
+        "F168"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im10",
+        "im04"
+      ],
+      "priority_topic": false
+    },
+    {
+      "id": "ownership-and-open-checks",
+      "title": "Before choosing your version",
+      "role": "establish",
+      "goal": "MOMENT: turn the shortlist into the details that must be settled before a purchase. SPOKEN: request the exact trim's written on-road quote and applicable warranty terms, and name unverified fuel-economy figures/test basis; DEEPER: F031 saved base ex-showroom price with exclusions, not a fresh quote, and F245 up-to-seven-year extension only for petrol on a payable basis, never standard coverage. VISUAL / HANDOFF: im02 identifies the car only, not prices or contracts; missing quote/warranty documents are gaps, the dealer supplies the written quote and terms while an official specification supplies economy/basis, budget 32-36 words, no check-in.",
+      "outcome": "Resolve price and written ownership terms",
+      "topic": "ownership",
+      "fact_ids": [
+        "F031",
+        "F245"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im02"
+      ],
+      "priority_topic": false
+    }
+  ],
+  "ctas": [
+    {
+      "id": "cta-test-drive",
+      "label": "Book a Test Drive",
+      "kind": "book",
+      "url": "https://www.hyundai.com/in/en/click-to-buy/creta-request-a-test-drive?id=creta&prod=creta",
+      "primary": true,
+      "when": "end"
+    },
+    {
+      "id": "cta-locate-dealer",
+      "label": "Locate Dealer",
+      "kind": "contact",
+      "url": "https://www.hyundai.com/in/en/click-to-buy/find-a-dealer-and-website",
+      "primary": false,
+      "when": "always"
+    },
+    {
+      "id": "cta-download-brochure",
+      "label": "Download Brochure",
+      "kind": "link",
+      "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/creta.pdf",
+      "primary": false,
+      "when": "always"
+    }
+  ],
+  "voice": {
+    "persona_name": "Priya",
+    "persona_description": "The guide notices concrete details and helps the buyer compare the choices. The guide is attentive, clear about limitations and unhurried when explaining trim differences.",
+    "tone": "Warm, cheerful and specific, with restrained enthusiasm and no pressure.",
+    "sample_line": "Hello, I'm Priya, your Hyundai guide. Let's take a closer look at the CRETA and the details you'd want to try for yourself.",
+    "suggested_voice": "priya",
+    "language": "en-IN"
+  },
+  "visual_gaps": [
+    {
+      "what": "Ventilated-seat control and operation",
+      "why": "im05 shows the seat appearance, not ventilation operation or its effect.",
+      "suggestion": "Use an authentic close-up of the exact-trim ventilation control; retain factual qualification until then."
+    },
+    {
+      "what": "Engine and gearbox for each paired choice",
+      "why": "im02 is an exterior context image and cannot show the cited powertrain pairings.",
+      "suggestion": "Upload correctly identified engine/gearbox images or a source-backed pairing card; do not relabel climate image im03 as a gearbox."
+    },
+    {
+      "what": "ISOFIX anchors and driver-assistance demonstration",
+      "why": "im09 shows an airbag illustration only.",
+      "suggestion": "Upload exact-trim anchor and assistance-control images; keep assistance in deeper detail without a simulated safety outcome."
+    },
+    {
+      "what": "Bluelink app and update interface",
+      "why": "im04 is an infotainment overview, not proof of the app, Alexa device or update workflow.",
+      "suggestion": "Use official exact-feature screenshots with source identity preserved; never imply the Echo device is included."
+    },
+    {
+      "what": "Current quote and applicable warranty documents",
+      "why": "The car exterior cannot verify current pricing, standard warranty or paid extension terms.",
+      "suggestion": "Request a dated dealer quote and the relevant warranty document for review."
+    }
+  ],
+  "intake": {
+    "q1": "Welcome to Hyundai. I'm Priya. What matters most in your next car, or shall we start inside the CRETA?",
+    "q2": "",
+    "chips": [
+      {
+        "key": "cabin",
+        "label": "Cabin features"
+      },
+      {
+        "key": "space",
+        "label": "Seats and luggage"
+      },
+      {
+        "key": "technology",
+        "label": "Screens and controls"
+      },
+      {
+        "key": "powertrain",
+        "label": "Driving choices"
+      },
+      {
+        "key": "safety",
+        "label": "Safety equipment"
+      },
+      {
+        "key": "ownership",
+        "label": "Price and terms"
+      }
+    ]
+  },
+  "state_questions": [
+    {
+      "state": "unknown",
+      "question": "Which part would you like to look at first?"
+    },
+    {
+      "state": "stated_want",
+      "question": "Which feature do you mean?"
+    },
+    {
+      "state": "stated_need",
+      "question": "What part of that situation matters most to you?"
+    }
+  ],
+  "do_not_recommend_if": "Do not recommend a trim until a feature the buyer requires is confirmed on that exact trim and their personal fit or written-price concern is resolved.",
+  "advance": "After the buyer has a shortlist, select Book a Test Drive to request a drive and try the seating and controls; the dealer confirms the exact variant, written quote and appointment rather than treating the click as completed booking.",
+  "notes": "Session-generated Planner candidate only; not a published or human-approved plan. The Author owns final dialogue and must preserve the fact-specific scope and purchase conditions above. Main story: notice the cabin, try the seat arrangement, compare controls and driving choices, distinguish standard equipment, then close the written-evidence gaps. All nine existing segment IDs and all CTA identities are retained. No sales statistics, claimed driving feel, thermal outcome, crash guarantee, invented customer routine or model year. Photos illustrate the supplied vehicle; metadata never establishes fitment on every trim."
+}

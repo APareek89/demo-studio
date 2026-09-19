@@ -7,14 +7,14 @@ import re
 from .. import schemas, store
 from ..llm import claude
 from . import speech_style, visuals
-from .principles import PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, SIGNPOSTS, audience_instruction, fact_context, language_instruction
+from .principles import AUTHOR_CRAFT, PRINCIPLES, audience_instruction, fact_context, language_instruction
 
-AUTHOR_SYSTEM = """You write the spoken script for a product demo delivered by a voice guide. The customer can interrupt at any
-moment, so every line and every segment must stand alone (no "as I said").
+AUTHOR_SYSTEM = """You are the Author: write the final spoken delivery of the Planner's product-demo outline. The customer
+can interrupt at any moment, so each segment must be intelligible on its own while the full tour flows as a conversation.
 
 {principles}
 
-{proof_block}
+{author_craft}
 
 Hard rules:
 1. GROUNDING (G2). Every sentence stating a spec, number, price, offer, policy or capability cites its fact ids in
@@ -22,34 +22,29 @@ Hard rules:
    prove an added benefit. Keep truth kinds distinct (G4): ordinary stated specifications stay stated; reserve
    certification language for explicit certified results with their basis. Name estimates, marketing and written
    terms where relevant, without a ritual evidence label on every line.
-2. HONESTY. Where the registry is silent, say so in the persona's voice and say where it gets settled ("boot litres
-   aren't in this brochure — one to check in person"). The establish segment DECLARES the top open questions; never
-   paper over a gap.
+2. HONESTY. Where the supplied facts do not settle a relevant question, state your verification limit in the persona's
+   voice and name the right next step. Say "I can't confirm the boot-capacity figure from these details" rather than
+   claiming a whole brochure omits it. A visit can check personal fit, not establish an undocumented specification or
+   policy. Use the plan's establish segment for remaining questions; never paper over a gap.
 3. VISUALS (G5). Every line binds to the visual that literally shows what it says (shot id or image id); 'focus' is a
    2-5 word on-screen label. When the subject changes, the picture changes.
-4. THE FLOW AND ITS BUDGETS (hard limits, validator-checked; one segment = one ≤20-second batch):
+4. DELIVERY FIELDS AND BUDGETS (hard limits, validator-checked; preserve the plan's segments and order):
    Aim for one natural ten-to-twenty-second thought, usually 19-38 words across the batch. Do not pad a short useful line,
    write sentence fragments, or recite a list. This reusable script knows no individual customer: never assign them a
    commute distance, budget, location or household. Plans, personas and earlier scripts are not customer testimony.
    - intake_q1 = the greeting + ONE context choice from the plan, polished: warm, names brand and product, easy to decline.
      This is the only intake question. Return intake_q2 as an empty string for schema compatibility.
-   - intro (1-2 segments, ≤ 38 words each): the quick overview — who it's for and the supported experience or choice. NO greeting,
-     no self-introduction (already done in intake), no spec list, no decision frame.
-   - outcome (≤ 38 words): the three things to remember — the plan's three USPs, plainly; the customer can steer the order.
-     Say this as an invitation, not another intake question.
-   - proof (4-6 segments, ≤ 38 words each): NOTICE one thing → the picture SHOWS it → RELEVANCE: the choice it informs
-     or a useful fit-check. Explain a customer benefit only when the cited evidence establishes it; a specification
-     need not become a promised performance, safety or practical outcome →
-     CHECK only at a useful decision point: one short question in `checkin` (never two). Most sections can flow on
+   - intro, outcome and proof: ≤ 38 words per segment. Render the planned moment in a connected thought rather than
+     restating the outline or listing the tour's sections. Intro has no greeting or self-introduction; intake handles it.
+     Explain a benefit only when its cited evidence establishes it. Keep the plan's selected technical detail in deeper.
+   - CHECK only at a useful planned decision point: one short question in `checkin` (never two). Most sections can flow on
      without a question; aim for two or three deliberate check-ins across a typical route, not a question after every
-     section. Leave other checkin fields empty. Technical detail goes to 2-3 `deeper` lines.
+     section. Leave other checkin fields empty. Supply 2-3 grounded `deeper` lines per segment.
      Check-ins must confirm enough detail or readiness: YES continues, NO opens more detail. Never ask whether the
      buyer wants more detail, an either/or choice, or an open question in this field; those reverse or obscure its meaning.
-   - features (≤ 40 words): one sentence per feature, no numbers unless decisive; an optional check-in confirms readiness to continue.
-   - establish (≤ 36 words): variant + written terms in one line each, then the top open questions declared honestly.
-   - closing (2 lines, ≤ 45 words total): FIT SUMMARY — "the strongest fit is … and the one thing we should still verify
-     is …" (the plan's decision_frame, in everyday nouns) — then the next step naming the CTA label.
-   Signposts, varied, in the persona's voice: {signposts}
+   - features: ≤ 40 words; establish: ≤ 36 words. Follow their planned emphasis, with relevant conditions kept attached.
+   - closing: 2 lines, ≤ 45 words total. Connect the explored choice to the most useful remaining check and the plan's
+     actual CTA label. Do not invent a personal fit verdict for an unknown buyer.
    card='contrast' where today meets after; 'price' only in a price block; 'facts' at most once; 'summary' in the closing.
    Every real question goes in `checkin`, where the player explicitly waits for an answer. Narration and closing lines
    contain no questions. Do not duplicate a checkin in a line. `step=confirm` is retained only for old script compatibility.
@@ -317,7 +312,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     facts_txt = "\n".join(fact_context(f) for f in und["facts"] if f.get("approved", True))
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
-    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance")}
+    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes")}
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND: {json.dumps(und['brand'])}
 PLAN: {json.dumps(plan_view)}
@@ -336,7 +331,7 @@ IMAGES:
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     audience = demo.get("settings", {}).get("audience", "everyday")
-    sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES + "\n\n" + PITCH_SHAPE, proof_block=PROOF_BLOCK, signposts=" | ".join(SIGNPOSTS), audience=audience_instruction(audience), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
+    sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES, author_craft=AUTHOR_CRAFT, audience=audience_instruction(audience), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
     try:
         out = claude.structured(sys, content, schemas.ScriptOut, max_tokens=40000)
     except Exception as e:
@@ -351,7 +346,7 @@ IMAGES:
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
         fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
-        fix += "\n\nVALIDATOR ISSUES — fix every one: cite the correct fact ids, or rewrite the line so it makes no unsupported claim (state the gap honestly); shorten where told. Return the full script.\n" + "\n".join("- " + i for i in issues)
+        fix += "\n\nVALIDATOR ISSUES — fix every one locally: cite the correct fact ids, or rewrite the affected claim within the evidence (state a relevant verification limit honestly). Shorten where told without removing material qualifiers. Preserve unaffected grounded lines, the Planner's structure and image subjects, and the Author's natural joins. Return the full script.\n" + "\n".join("- " + i for i in issues)
         try:
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)
             script = out2.model_dump()

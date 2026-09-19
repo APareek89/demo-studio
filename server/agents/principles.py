@@ -133,6 +133,30 @@ SCORECARD = [
 
 PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated. At a useful decision point, optionally CONFIRM enough detail or readiness to continue with one question and wait: yes continues, no opens more detail. Never ask whether they want more detail or an either/or choice in checkin. Do not append a question to every block; leave checkin empty when the narrative should continue."
 
+AUTHOR_CRAFT = """AUTHOR RESPONSIBILITY — turn the approved story outline into natural speech.
+- The Planner owns the selected story, segment order/ids/roles, proof priorities, spoken-versus-deeper evidence and
+  image plan. You own the final words, sentence rhythm, joins and useful confirmation questions. Follow that outline;
+  do not design a second itinerary, add proof areas, or read its planning labels aloud. Its proposed wording, intake
+  and voice sample are editorial context, not additional evidence. Preserve the configured guide's identity.
+- A segment must make sense when entered directly after a customer question, but it need not sound like a new demo.
+  Name its subject, then let the next sentence develop the same thought. Connect adjacent ideas through their actual
+  subjects: a view of the roof can lead into the cabin; seat layout can lead into packing. Avoid dependencies such as
+  'as we saw earlier', unexplained 'it/that', numbered tour instructions and a repeated 'let's look at' reset.
+- Warmth comes from clear observations, attentive phrasing and giving the buyer room to judge. Do not replace
+  unsupported benefits with a fit-check on every slide. Use a personal try/check suggestion only where it helps an
+  actual fit decision. Equipment alone does not establish cooling, comfort, driving feel, protection or ease of use.
+- Write the main thought first; keep exact technical detail and complete variant lists in deeper only when the main
+  qualification remains accurate. A selected-variant feature must stay qualified in the same spoken thought. Never
+  turn an exact list into 'and above', combine equipment on different trims, or drop a commercial dependency to save
+  words. A current price also needs its scope, basis and change/confirmation caveat; omit it if those cannot fit.
+- Use each planned image only for the subject it actually depicts. A front-seat photo can accompany a grounded seat
+  statement; it is not visual proof of airflow or its effect. A car exterior does not show an engine, and an airbag
+  image does not show a child-seat anchor. Use visual kind none when no planned image shows the claim, and keep its
+  grounded speech; do not invent a visual or an on-screen demonstration. Keep the picture stable within one subject.
+- Read the complete script as one conversation, then read each segment alone. Remove repetitive prefaces and generic
+  praise, retain every material qualifier, and make the final next step follow from the checks the tour leaves open.
+  Do not assign a strongest-fit variant or personal recommendation without actual customer evidence."""
+
 LANGUAGES = {
     "en-IN": "Indian English", "hinglish": "Hinglish — natural Hindi-English mix as spoken in Indian cities; write Hindi words in Devanagari and keep product names, numbers, units and technical terms in English",
     "hi-IN": "Hindi (Devanagari; keep product names, numbers and units as they are)", "ta-IN": "Tamil", "te-IN": "Telugu", "kn-IN": "Kannada",

@@ -1,0 +1,371 @@
+{
+  "kind": "session-authored offline candidate; not published or voiced",
+  "demo_id": "dm_41513908",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "snapshot_sha256": "fa8bfa54b9c1fd23e0f042b76d89b49efb35fc3b50f4ad04817f4856925f33fc",
+  "planner_sha256": "a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f",
+  "script_sha256": "9d49a7b8f597cfe7d5874e2b97aa74d4cdff9dca8b4dcad71ba1ae9cad023b88",
+  "script_content_hash": "fb3e325458ff3629ad4df0f2060fac87e30480924c35c59f865c512b1e9161db",
+  "schema": "ScriptOut validated, with runtime-compatible null audio and content hashes added",
+  "validator_issues": [],
+  "outbound_calls": 0,
+  "paid_calls": 0,
+  "audio_files_created": 0,
+  "voice": {
+    "name": "Priya",
+    "speaker": "priya",
+    "locked": true,
+    "language": "en-IN",
+    "all_audio": null
+  },
+  "estimated_timeline": {
+    "total_seconds": 149.4,
+    "batches": [
+      {
+        "id": "creta-cabin-intro",
+        "title": "Inside the CRETA",
+        "role": "intro",
+        "start": 0.0,
+        "duration": 12.1,
+        "spoken": 12.1,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "three-things",
+        "title": "Cabin, space and standard equipment",
+        "role": "outcome",
+        "start": 12.1,
+        "duration": 13.7,
+        "spoken": 13.7,
+        "checkin": -0.0,
+        "over_20s": false
+      },
+      {
+        "id": "cabin-comfort-proof",
+        "title": "The seat and the glass roof",
+        "role": "proof",
+        "start": 25.8,
+        "duration": 18.4,
+        "spoken": 13.7,
+        "checkin": 4.7,
+        "over_20s": false
+      },
+      {
+        "id": "seating-and-cargo",
+        "title": "When the rear seat folds",
+        "role": "proof",
+        "start": 44.2,
+        "duration": 14.8,
+        "spoken": 14.8,
+        "checkin": -0.0,
+        "over_20s": false
+      },
+      {
+        "id": "driver-cockpit-tech",
+        "title": "The screen beside the wheel",
+        "role": "proof",
+        "start": 59.0,
+        "duration": 15.8,
+        "spoken": 15.8,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "powertrain-choices",
+        "title": "Choosing the gearbox",
+        "role": "proof",
+        "start": 74.8,
+        "duration": 13.7,
+        "spoken": 13.7,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "standard-safety-suite",
+        "title": "What comes across the range",
+        "role": "proof",
+        "start": 88.5,
+        "duration": 16.3,
+        "spoken": 14.2,
+        "checkin": 2.1,
+        "over_20s": false
+      },
+      {
+        "id": "convenience-features",
+        "title": "Music and connected features",
+        "role": "features",
+        "start": 104.8,
+        "duration": 16.2,
+        "spoken": 16.2,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "ownership-and-open-checks",
+        "title": "Before choosing your version",
+        "role": "establish",
+        "start": 121.0,
+        "duration": 13.1,
+        "spoken": 13.1,
+        "checkin": 0.0,
+        "over_20s": false
+      }
+    ],
+    "exact": false
+  },
+  "overview_words": 23,
+  "overview_estimated_seconds": 12.1,
+  "checkins": [
+    "cabin-comfort-proof",
+    "standard-safety-suite"
+  ],
+  "line_content_hashes": [
+    {
+      "id": "runtime-overview",
+      "content_hash": "1758c4a11cf8e64bb1e03333daf8daa62f82700dbdb8ec72936d7ba0a15f34d9",
+      "audio": null
+    },
+    {
+      "id": "creta-cabin-intro-L1",
+      "content_hash": "068cc993f3d00099c3c8693d266261a95e993d26f1ab5c50a10cea05bf2cb40c",
+      "audio": null
+    },
+    {
+      "id": "creta-cabin-intro-L2",
+      "content_hash": "828e2af86e33b2ee29187bdcd48d3285c79ef4a3512ef1d9444566c51de159b4",
+      "audio": null
+    },
+    {
+      "id": "creta-cabin-intro-D1",
+      "content_hash": "bcabfbd977b83e89b368913bfa67866ce7d5f4524c2b7a7a066146f97de9b036",
+      "audio": null
+    },
+    {
+      "id": "creta-cabin-intro-D2",
+      "content_hash": "66a1ebd8c40e292b255b18a4b784497044ecc0bfaf63013e7ade7a478779ae74",
+      "audio": null
+    },
+    {
+      "id": "three-things-L1",
+      "content_hash": "7e5c37643f443596f6b4925ea39717da4ff88221e7bc69dd704e04f72cdbf130",
+      "audio": null
+    },
+    {
+      "id": "three-things-L2",
+      "content_hash": "f6319b1a2670cf068e3a99fbc58b7669c4241001bbe0cebce97d0768c2e76ec3",
+      "audio": null
+    },
+    {
+      "id": "three-things-L3",
+      "content_hash": "1b2116309e21fb893e5c304451dd4a71d16d0981834cbe5a69de268aa1647693",
+      "audio": null
+    },
+    {
+      "id": "three-things-D1",
+      "content_hash": "9274855c0ff00071140ee6e7ef9491911537ae34298e68d97aa92f4f2a06397c",
+      "audio": null
+    },
+    {
+      "id": "three-things-D2",
+      "content_hash": "0d906cee8e2ba24772e3eb6938234fba5b5c8126694c082ce221a336737bc1e6",
+      "audio": null
+    },
+    {
+      "id": "cabin-comfort-proof-L1",
+      "content_hash": "a11d2f7e02dfeaddefb1e7c9bd370d596f9723f3d2f41db67dd2ee7f44ba5a38",
+      "audio": null
+    },
+    {
+      "id": "cabin-comfort-proof-L2",
+      "content_hash": "8e477b889a77838dae198bbd3eb9908f3c8fe456e7ea12900d46efc9320f6a91",
+      "audio": null
+    },
+    {
+      "id": "cabin-comfort-proof-D1",
+      "content_hash": "06ec8a21a705ab647760aa541198f24e634906fd5f55da96d82f76dcf0a31da5",
+      "audio": null
+    },
+    {
+      "id": "cabin-comfort-proof-D2",
+      "content_hash": "619c693b4caa8fe7bdd290345e0d89169eb6df380a5b2c04505afe496046373a",
+      "audio": null
+    },
+    {
+      "id": "cabin-comfort-proof-D3",
+      "content_hash": "65667a98a94fd13965f500b7024983cc8223c49322793e9ff3e025d34dfd9f2d",
+      "audio": null
+    },
+    {
+      "id": "seating-and-cargo-L1",
+      "content_hash": "ba16f8204181c000061a4a84d68c6647cb32e3be02f399d3974a245b7a8952c5",
+      "audio": null
+    },
+    {
+      "id": "seating-and-cargo-L2",
+      "content_hash": "95a0d546a50f88bfddd9a5f9d80c9d2b774fa63cab48226cb48863d885317fc3",
+      "audio": null
+    },
+    {
+      "id": "seating-and-cargo-L3",
+      "content_hash": "cadb4ad01dc2d21dddb159f68f0697977bc16d9e75cd4b35cdc0575f06d4166f",
+      "audio": null
+    },
+    {
+      "id": "seating-and-cargo-D1",
+      "content_hash": "b9ec98ef8f0922c7c4e3bf6baeb0e12a67e6d69f610a25cd5a2f0074b31656b0",
+      "audio": null
+    },
+    {
+      "id": "seating-and-cargo-D2",
+      "content_hash": "aa1ef53e51884236bef6ac9ed8766786259e0c1dace3eaef5dec9a3f77cbf152",
+      "audio": null
+    },
+    {
+      "id": "seating-and-cargo-D3",
+      "content_hash": "562b245ca68ef2c3610c5a773f66ae22358d7d8f371e8ff1540578dc3bae1805",
+      "audio": null
+    },
+    {
+      "id": "driver-cockpit-tech-L1",
+      "content_hash": "9be5a0bf849ed1bd9842099d77c81488afac5c56fc046d486c7b5abe560db211",
+      "audio": null
+    },
+    {
+      "id": "driver-cockpit-tech-L2",
+      "content_hash": "cf62f048f962b585d976e5fdcf507a85c511a54f7a43b9d0f960518372d60b58",
+      "audio": null
+    },
+    {
+      "id": "driver-cockpit-tech-D1",
+      "content_hash": "d585832d3d97467ea39574b05d41fe50028eddac47ee3483f08a82674fecd0d3",
+      "audio": null
+    },
+    {
+      "id": "driver-cockpit-tech-D2",
+      "content_hash": "35537b584da3b905e0a2a3564d53745933fe727be559848b51afce750eb76b30",
+      "audio": null
+    },
+    {
+      "id": "powertrain-choices-L1",
+      "content_hash": "ca22b5262131441e9913d18252497badf9d1f0f61f39e49d45cf9e8e7bc452e7",
+      "audio": null
+    },
+    {
+      "id": "powertrain-choices-L2",
+      "content_hash": "89e72af836ec6ecd6a901385d7f2d4d7c6d3aa1348a4ca41e9a858b1a6225c09",
+      "audio": null
+    },
+    {
+      "id": "powertrain-choices-D1",
+      "content_hash": "46535e6925875ce47a7f021a9860a2b9631c0a3d0344b4a5b1b187c95276510e",
+      "audio": null
+    },
+    {
+      "id": "powertrain-choices-D2",
+      "content_hash": "8e2f3a532f947d08ab2b6c121728bababc7266aa0266dd9e54764ca558ccce98",
+      "audio": null
+    },
+    {
+      "id": "powertrain-choices-D3",
+      "content_hash": "50ef217ccb8b1324da21b73aeb66654899b40637f34f71be9dcb5c1a96b386e7",
+      "audio": null
+    },
+    {
+      "id": "standard-safety-suite-L1",
+      "content_hash": "2b759f0c45b91605185c363bd7c83a073d704b50b1f68823be13feec3fc0320b",
+      "audio": null
+    },
+    {
+      "id": "standard-safety-suite-L2",
+      "content_hash": "d24f35babd829b34a3120c1c153df9bfa770ef81180893174d7efb2d9c29c764",
+      "audio": null
+    },
+    {
+      "id": "standard-safety-suite-D1",
+      "content_hash": "e15737a383260d92dc2bdf7b9bb3285db7431d835848f5ab209ae22126d2a513",
+      "audio": null
+    },
+    {
+      "id": "standard-safety-suite-D2",
+      "content_hash": "d93e25709869c27011f3c46553e309f5ef88698461005d45baeddcc0cb7e74cf",
+      "audio": null
+    },
+    {
+      "id": "convenience-features-L1",
+      "content_hash": "f31bddb4ffb8b8fb3034f75de67ea11f1575eb67492abefc9db6597a2431cd55",
+      "audio": null
+    },
+    {
+      "id": "convenience-features-L2",
+      "content_hash": "39745867a553ac90494766c0535396c5e3a3984f61485721e95ddfb5a6cb32c8",
+      "audio": null
+    },
+    {
+      "id": "convenience-features-L3",
+      "content_hash": "24cab08ba25949a8f17efbafc5a8ece44af191ecb52a9d1358ac63323d3e376d",
+      "audio": null
+    },
+    {
+      "id": "convenience-features-D1",
+      "content_hash": "45a6fb94d188a87fd5e9daf6b23b3a2c98ea533f196582da6ae5b72240182663",
+      "audio": null
+    },
+    {
+      "id": "convenience-features-D2",
+      "content_hash": "9a26f84f4907f060cfabf8ae29eb643c676ac3b0375f0b0d11704c93b87f7250",
+      "audio": null
+    },
+    {
+      "id": "convenience-features-D3",
+      "content_hash": "f47d41b932654882f51b49deaa90c52cad99bc859c25e737341b7737e483c39a",
+      "audio": null
+    },
+    {
+      "id": "ownership-and-open-checks-L1",
+      "content_hash": "f8b15714039cd69d299c4e0202cfbff71ba59276d4727ed2d8e8fe744fd0e2d4",
+      "audio": null
+    },
+    {
+      "id": "ownership-and-open-checks-L2",
+      "content_hash": "5bd7904eed0f9b05731d88e04b9b5c8c732e86388bd10262eaa27ccd23718c0c",
+      "audio": null
+    },
+    {
+      "id": "ownership-and-open-checks-D1",
+      "content_hash": "4263db92a92387a8eab59bd215c58b84a74d9acd79645f658a8e286c142745a2",
+      "audio": null
+    },
+    {
+      "id": "ownership-and-open-checks-D2",
+      "content_hash": "765e9eb887ad6d35fccfc8596c4de37806b70246ba3bc6ff2def0335f654030c",
+      "audio": null
+    },
+    {
+      "id": "close-L1",
+      "content_hash": "2a4272f1ffbb33426ba4cb39b2fc9ed82b4cab65bd34c9b94845430319852c9f",
+      "audio": null
+    },
+    {
+      "id": "close-L2",
+      "content_hash": "6505e3aeb8a8097b4a5ce5aee85c33f4bd6ce1a48b9d977770d8101d332e8492",
+      "audio": null
+    }
+  ],
+  "visual_review": "Viewed original im01/im02/im03/im04/im05/im06/im07/im08/im09/im10. Literal subject only; none for engines, assistance, child anchors, connected apps and written terms. Excluded im12 never used.",
+  "editorial_decisions": [
+    "Planner owns story selection, order and planned images; Author owns actual speech and sentence joins.",
+    "Roof and ventilation share explicitly named examples without extending an exact trim list upward.",
+    "Seat photographs illustrate seats; no cooling, guaranteed comfort or luggage capacity inference.",
+    "Screen sizes and exact gearbox pairings remain deeper; no display/audio pairing inference.",
+    "Alexa's separate third-party Echo purchase stays with the Alexa claim; the three-year subscription names the manufacturer's exact equipped trims.",
+    "Current price is not asserted in the main tour. Deeper attributes the saved base ex-showroom amount and requests a current full quote.",
+    "Fuel economy and boot measurements are own verification limits, not claims of exhaustive document absence.",
+    "Two confirmation questions preserve yes=continue and no=deeper; no question is hidden in narration.",
+    "All audio is explicitly null, every content hash recomputed; no old audio reference carried to new wording."
+  ],
+  "limits": [
+    "Timings are estimates at 1.9 words per second, not measured speech.",
+    "The validator checks schema/citations/word budgets, not full entailment; editorial fact and image review is recorded separately."
+  ]
+}

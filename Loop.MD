@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Finite narrative-role checks — 2026-09-19 night session
+
+Loop remains off. Planner now supplies an evidence-grounded story outline and exact image selection; Author supplies the final spoken delivery without replanning the route. The session-generated CRETA candidates use the existing v7 facts, IDs and schema. No paid Plan/Author/Build call or voice test was used to create or review them. Six offline handoff groups pass with blocked sockets; they verify input wiring and review boundaries, not story-quality scores, publication or acoustic quality. Candidate provenance is under `output/creta-night-final/`. The separately authorized final stress session must be recorded on its own merits, with no paid retry after findings.
+
 ## Current finite checks — source restrictions and live-table proof
 
 Loop remains off. The settled `b01b0c6`/v7 cohort remains 97 supported, 1 partial, 2 unsafe and no unhelpful answers or whole-turn provider failures. Independently reviewed source-restriction and live-table guards preserve own-row feature modifiers, explicit cell semantics, aligned complete headers and matching trim universes. Cited context/limitation labels cannot bypass these checks. Final live-table 18, coverage 24, ordinal 21, grouped quantities 8, helper 29, conversation 18, schema 8, deck 320, acceptance 24 and both smoke phases pass with zero outbound attempts. Graph, repair, limits, cohort and clause contracts also pass. Logs/hashes: `final-gates/table-scope-final-*`. No source, story, speech or UI changes. The next unchanged live 100 is capped at $3.50/300 completions, baseline $15.1996, within the overall $20 ceiling. Free gates are not live acceptance.
@@ -257,6 +261,12 @@ Continued Nexon completion checks: `node evals/player_focus_contract.cjs` execut
 | 29 | Post-author visual audit with real Gemini (paid only when approved) | every allowed image ref and every script line id appears exactly once in the batch audit; image rows list visible features/limitations; concrete feature lines bind an image only on `coverage=full`; partial/missing lines have no image and fall back to the hero + cited card |
 | 37 | Part 1: `MOCK_LLM=1 .venv/bin/python evals/qa_deck.py` includes `evals/provider_contract.py`, using fake provider clients/HTTP and a blocked network | Runtime Gemini → Claude → Runware and build Claude → Gemini → Runware; all-down decline + callback; mock isolation; JSON repair, per-attempt billing/traces, shared timeout budget, duplicate-task rejection; grounding and text-only boundaries; tier defaults/overrides and unchanged media models; exact pricing, native cost and UTC promotion boundary; Gemini thought-token billing; extracted-PDF fallback and no repeated exhausted chain; read-key guards; Claude schema recovery preserves its model and limits. See `docs/runware-fallback.md`. |
 | 38 | Part 2 free customer contracts: `qa_deck.py` imports `customer_contract.py`; `python evals/player_browser.py` then Run checks in the in-app browser at desktop width (synthetic APIs/audio/speech, CSP blocks external connections) | Content29/29: one intake, no invented context, clarification-first grounding, complete qualified labels, stable reviewed overrides, old step metadata. Browser14/14: silence, yes-but, stale speech, typed clarification, callback hold, phase/jump return, late responses, legacy deeper question, consent decline/completion/session stamps, buyer-facing recap without internal scores, reveal geometry and native-aspect wide/narrow images. Actual speech recognition, source accuracy and paid latency require the real run; this free gate cannot certify customer readiness. |
+
+### Narrative role supplement — 2026-09-19
+
+| Contract | Expected and recorded result |
+|---|---|
+| `MOCK_LLM=1 CLOUD_SYNC=0 .venv/bin/python evals/narrative_roles_contract.py` | 6/6 groups: production Plan → Author payloads carry goals, exact visual order and editorial notes; distinct planning/delivery prompts; approved facts and complete conditions retained, held facts/hidden images filtered; locked voice and single intake preserved; an actual rejected-citation draft enters the local rewrite; draft persistence does not approve, publish or generate audio. Temporary storage, mocked provider boundary and zero outbound attempts. This is not model-entailment or live-quality proof. |
 
 ### Cinematic/source supplement — 2026-09-18
 

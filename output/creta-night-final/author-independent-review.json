@@ -1,0 +1,76 @@
+{
+  "type": "independent Planner review of Author session candidate",
+  "created_at": "2026-09-19T17:43:26.377105+00:00",
+  "script_sha256": "9d49a7b8f597cfe7d5874e2b97aa74d4cdff9dca8b4dcad71ba1ae9cad023b88",
+  "plan_sha256": "a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f",
+  "snapshot_sha256": "fa8bfa54b9c1fd23e0f042b76d89b49efb35fc3b50f4ad04817f4856925f33fc",
+  "author_source_sha256": "1f9f21a022965254326b1581a671dc80ce44cd05114e9539d1cfc6ae05d43a20",
+  "principles_sha256": "76338b350d1548150148985a43344dba9fb85d450efb6b1890c8db752530aa0e",
+  "schema_valid": true,
+  "actual_author_validator_issues": [],
+  "approved_fact_ids_checked": [
+    "F031",
+    "F032",
+    "F063",
+    "F096",
+    "F097",
+    "F153",
+    "F154",
+    "F159",
+    "F162",
+    "F164",
+    "F165",
+    "F168",
+    "F214",
+    "F225",
+    "F229",
+    "F233",
+    "F237",
+    "F243",
+    "F245",
+    "F247"
+  ],
+  "segment_ids_roles_order_match_plan": true,
+  "all_audio_null": true,
+  "image_identity_preserved": true,
+  "reviewed_image_ids": [
+    "im01",
+    "im02",
+    "im03",
+    "im04",
+    "im05",
+    "im06",
+    "im07",
+    "im08",
+    "im09",
+    "im10"
+  ],
+  "paid_calls": 0,
+  "outbound_calls": 0,
+  "material_blockers": [],
+  "boundary_review": "Planner retains story/evidence/visual selection and order. Author receives goals and editorial notes, keeps original shared grounding principles, and writes final dialogue with its own craft instructions; no second PITCH_SHAPE or PROOF_BLOCK injection. No provider, schema or publication behavior change.",
+  "resolved_editorial_findings": [
+    {
+      "initial": "Petrol-versus-turbo wording could blur the separate gearbox pairings.",
+      "final": "Main speech now explicitly names non-turbo petrol/diesel choices and turbo automatic-only."
+    },
+    {
+      "initial": "Five successive blocks ended with a future visit/try/check, making the tour repetitive.",
+      "final": "Cockpit ends on the two display subjects, gearbox on the pairing, Bose on its supported speaker configuration and equipped connected feature. Seat/luggage fit checks remain where they help the decision."
+    }
+  ],
+  "claim_review": [
+    "Roof and ventilated seats are offered together only as selected-trim equipment; deeper keeps exact overlap and exclusions. No cooling or comfort result is promised.",
+    "Rear split/recline descriptions match the viewed seat images; boot volume and measurement basis remain unverified, with no luggage-fit guarantee.",
+    "Screen locations and named functions match the viewed dashboard and F162/F165; exact size/trim lists remain in deeper.",
+    "F225/F229/F233 engine/gearbox pairings retain trim restrictions and turbo automatic-only, with no driving-feel inference.",
+    "Standard airbags and anchors remain distinct from trim/transmission-dependent assistance; airbag illustration never stands in for anchor or driver-assistance demonstration.",
+    "F164 speaker count/centre/subwoofer are supported; F168 updates do not imply included Alexa hardware. The Alexa deeper line retains separately purchased third-party Echo.",
+    "F031 is a saved base ex-showroom amount with exclusions/current-quote check, and F245 remains a paid petrol-only extension rather than standard coverage."
+  ],
+  "limits": [
+    "Session editorial review and lexical validator checks are not general semantic entailment proof.",
+    "Timings are estimates; no voice API or acoustic evaluation was performed.",
+    "Human Align review and root-controlled publication remain separate from this candidate."
+  ]
+}

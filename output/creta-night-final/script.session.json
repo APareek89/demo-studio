@@ -1,0 +1,1312 @@
+{
+  "overview": {
+    "text": "A panoramic roof above, ventilated seats up front—both on selected CRETA trims. Let's step inside, then find the features worth your closer look.",
+    "step": "show",
+    "visual": {
+      "kind": "image",
+      "ref": "im05",
+      "focus": "Front seats and roof"
+    },
+    "fact_ids": [
+      "F247",
+      "F063"
+    ],
+    "card": "none",
+    "delivery": {
+      "tone": "warm",
+      "pace": 1.0
+    },
+    "unverified": false,
+    "audio": null,
+    "id": "runtime-overview",
+    "content_hash": "1758c4a11cf8e64bb1e03333daf8daa62f82700dbdb8ec72936d7ba0a15f34d9"
+  },
+  "segments": [
+    {
+      "id": "creta-cabin-intro",
+      "title": "Inside the CRETA",
+      "role": "intro",
+      "topic": "cabin",
+      "outcome": "",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Look up at the panoramic roof: it's available on selected trims.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": "Panoramic roof opening"
+          },
+          "fact_ids": [
+            "F247"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "creta-cabin-intro-L1",
+          "content_hash": "068cc993f3d00099c3c8693d266261a95e993d26f1ab5c50a10cea05bf2cb40c",
+          "start": 0.0,
+          "duration": 5.8,
+          "exact": false
+        },
+        {
+          "text": "There's more to discover inside the CRETA, starting with the front seats.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "Front cabin seats"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "creta-cabin-intro-L2",
+          "content_hash": "828e2af86e33b2ee29187bdcd48d3285c79ef4a3512ef1d9444566c51de159b4",
+          "start": 5.8,
+          "duration": 6.3,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The brochure lists a panoramic sunroof on EX(O), S(O) and S(O) Knight. SX, SX Premium, King and King Knight add voice control.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": "Panoramic roof opening"
+          },
+          "fact_ids": [
+            "F247"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "creta-cabin-intro-D1",
+          "content_hash": "bcabfbd977b83e89b368913bfa67866ce7d5f4524c2b7a7a066146f97de9b036"
+        },
+        {
+          "text": "Ventilated front seats are listed on SX Premium, King, King Knight and Lounge Edition. The E and EX trims do not have a panoramic sunroof.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "Front cabin seats"
+          },
+          "fact_ids": [
+            "F063",
+            "F247"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "creta-cabin-intro-D2",
+          "content_hash": "66a1ebd8c40e292b255b18a4b784497044ecc0bfaf63013e7ade7a478779ae74"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 0.0,
+      "duration": 12.1,
+      "spoken": 12.1
+    },
+    {
+      "id": "three-things",
+      "title": "Cabin, space and standard equipment",
+      "role": "outcome",
+      "topic": "summary",
+      "outcome": "Choose where to look more closely",
+      "usp_ids": [
+        "usp-cabin-comfort",
+        "usp-space-flexibility",
+        "usp-standard-safety"
+      ],
+      "lines": [
+        {
+          "text": "Beyond the cabin, there's the split rear seat to explore.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": "Split rear seat"
+          },
+          "fact_ids": [
+            "F096"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "three-things-L1",
+          "content_hash": "7e5c37643f443596f6b4925ea39717da4ff88221e7bc69dd704e04f72cdbf130",
+          "start": 12.1,
+          "duration": 5.3,
+          "exact": false
+        },
+        {
+          "text": "Six airbags come as standard across the range.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im09",
+            "focus": "Airbag illustration"
+          },
+          "fact_ids": [
+            "F237"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "three-things-L2",
+          "content_hash": "f6319b1a2670cf068e3a99fbc58b7669c4241001bbe0cebce97d0768c2e76ec3",
+          "start": 17.4,
+          "duration": 4.2,
+          "exact": false
+        },
+        {
+          "text": "You can steer us towards what interests you.",
+          "step": "frame",
+          "visual": {
+            "kind": "image",
+            "ref": "im09",
+            "focus": "Airbag illustration"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "three-things-L3",
+          "content_hash": "1b2116309e21fb893e5c304451dd4a71d16d0981834cbe5a69de268aa1647693",
+          "start": 21.6,
+          "duration": 4.2,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The rear seat has a sixty-forty split. The picture shows one part of the backrest folded, while the other remains upright.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": "Split rear seat"
+          },
+          "fact_ids": [
+            "F096"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "three-things-D1",
+          "content_hash": "9274855c0ff00071140ee6e7ef9491911537ae34298e68d97aa92f4f2a06397c"
+        },
+        {
+          "text": "The standard airbags include driver, passenger, side and curtain airbags. Child-seat anchors are also standard across the listed trims.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F237",
+            "F214"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "three-things-D2",
+          "content_hash": "0d906cee8e2ba24772e3eb6938234fba5b5c8126694c082ce221a336737bc1e6"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 12.1,
+      "duration": 13.7,
+      "spoken": 13.7
+    },
+    {
+      "id": "cabin-comfort-proof",
+      "title": "The seat and the glass roof",
+      "role": "proof",
+      "topic": "cabin",
+      "outcome": "Compare the cabin equipment by trim",
+      "usp_ids": [
+        "usp-cabin-comfort"
+      ],
+      "lines": [
+        {
+          "text": "Up front, selected trims have ventilated seats beneath the panoramic roof.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "Front seats and roof"
+          },
+          "fact_ids": [
+            "F247",
+            "F063"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "cabin-comfort-proof-L1",
+          "content_hash": "a11d2f7e02dfeaddefb1e7c9bd370d596f9723f3d2f41db67dd2ee7f44ba5a38",
+          "start": 25.8,
+          "duration": 5.8,
+          "exact": false
+        },
+        {
+          "text": "It's a combination to spend a little time with when you sit in the car.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "Front cabin seats"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "cabin-comfort-proof-L2",
+          "content_hash": "8e477b889a77838dae198bbd3eb9908f3c8fe456e7ea12900d46efc9320f6a91",
+          "start": 31.6,
+          "duration": 7.9,
+          "exact": false
+        }
+      ],
+      "checkin": "Is that enough detail on the cabin for now?",
+      "deeper": [
+        {
+          "text": "Ventilated front seats are listed on SX Premium, King, King Knight and Lounge Edition, but not on E, EX, EX(O), S(O), S(O) Knight or SX.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im05",
+            "focus": "Front cabin seats"
+          },
+          "fact_ids": [
+            "F063"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "cabin-comfort-proof-D1",
+          "content_hash": "06ec8a21a705ab647760aa541198f24e634906fd5f55da96d82f76dcf0a31da5"
+        },
+        {
+          "text": "The brochure lists a voice-enabled panoramic roof on SX, SX Premium, King and King Knight. EX(O), S(O) and S(O) Knight have the panoramic roof without that listed voice-control feature.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": "Panoramic roof opening"
+          },
+          "fact_ids": [
+            "F247"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "cabin-comfort-proof-D2",
+          "content_hash": "619c693b4caa8fe7bdd290345e0d89169eb6df380a5b2c04505afe496046373a"
+        },
+        {
+          "text": "Climate control is manual on E, EX and EX(O). Dual-zone automatic temperature control is listed on S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im03",
+            "focus": "Climate control panel"
+          },
+          "fact_ids": [
+            "F159"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "cabin-comfort-proof-D3",
+          "content_hash": "65667a98a94fd13965f500b7024983cc8223c49322793e9ff3e025d34dfd9f2d"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": "26e236c2c153efd573701597a260444f2523be13376394d3177bdcf7bc946945",
+      "checkin_start": 39.5,
+      "checkin_duration": 4.7,
+      "start": 25.8,
+      "duration": 18.4,
+      "spoken": 13.7
+    },
+    {
+      "id": "seating-and-cargo",
+      "title": "When the rear seat folds",
+      "role": "proof",
+      "topic": "space",
+      "outcome": "Explore the rear-seat arrangement",
+      "usp_ids": [
+        "usp-space-flexibility"
+      ],
+      "lines": [
+        {
+          "text": "The split rear seat is shown with one part folded.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": "Split rear seat"
+          },
+          "fact_ids": [
+            "F096"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "seating-and-cargo-L1",
+          "content_hash": "ba16f8204181c000061a4a84d68c6647cb32e3be02f399d3974a245b7a8952c5",
+          "start": 44.2,
+          "duration": 5.3,
+          "exact": false
+        },
+        {
+          "text": "Selected trims also offer rear-seat recline.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im06",
+            "focus": "Rear seat recline"
+          },
+          "fact_ids": [
+            "F097"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "seating-and-cargo-L2",
+          "content_hash": "95a0d546a50f88bfddd9a5f9d80c9d2b774fa63cab48226cb48863d885317fc3",
+          "start": 49.5,
+          "duration": 3.2,
+          "exact": false
+        },
+        {
+          "text": "Bring your usual bags to check how the boot works for you.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im07",
+            "focus": "Luggage space"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "seating-and-cargo-L3",
+          "content_hash": "cadb4ad01dc2d21dddb159f68f0697977bc16d9e75cd4b35cdc0575f06d4166f",
+          "start": 52.7,
+          "duration": 6.3,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The CRETA has five seats and a sixty-forty split rear seat. Try the rear bench with the people who usually travel with you.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im08",
+            "focus": "Split rear seat"
+          },
+          "fact_ids": [
+            "F032",
+            "F096"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "seating-and-cargo-D1",
+          "content_hash": "b9ec98ef8f0922c7c4e3bf6baeb0e12a67e6d69f610a25cd5a2f0074b31656b0"
+        },
+        {
+          "text": "A two-step rear-seat recline is available on selected trims. Check that adjustment on the version you're considering.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im06",
+            "focus": "Rear seat recline"
+          },
+          "fact_ids": [
+            "F097"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "seating-and-cargo-D2",
+          "content_hash": "aa1ef53e51884236bef6ac9ed8766786259e0c1dace3eaef5dec9a3f77cbf152"
+        },
+        {
+          "text": "I can't confirm a boot-capacity figure or its seating and measurement basis from these details. The luggage photograph doesn't settle those measurements.",
+          "step": "establish",
+          "visual": {
+            "kind": "image",
+            "ref": "im07",
+            "focus": "Luggage space"
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "reassuring",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "seating-and-cargo-D3",
+          "content_hash": "562b245ca68ef2c3610c5a773f66ae22358d7d8f371e8ff1540578dc3bae1805"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 44.2,
+      "duration": 14.8,
+      "spoken": 14.8
+    },
+    {
+      "id": "driver-cockpit-tech",
+      "title": "The screen beside the wheel",
+      "role": "proof",
+      "topic": "technology",
+      "outcome": "Compare the displays by trim",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "From the driver's seat, the two display areas sit side by side on selected trims.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "Dashboard display areas"
+          },
+          "fact_ids": [
+            "F162",
+            "F165"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "driver-cockpit-tech-L1",
+          "content_hash": "9be5a0bf849ed1bd9842099d77c81488afac5c56fc046d486c7b5abe560db211",
+          "start": 59.0,
+          "duration": 7.9,
+          "exact": false
+        },
+        {
+          "text": "One is the screen for music and navigation; the other is the driver's instrument display.",
+          "step": "translate",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "Dashboard display areas"
+          },
+          "fact_ids": [
+            "F162",
+            "F165"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "driver-cockpit-tech-L2",
+          "content_hash": "cf62f048f962b585d976e5fdcf507a85c511a54f7a43b9d0f960518372d60b58",
+          "start": 66.9,
+          "duration": 7.9,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "SX, SX Premium, King, King Knight and Lounge Edition list a ten-point-two-five-inch infotainment screen and a ten-point-two-five-inch digital instrument display.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im04",
+            "focus": "Dashboard display areas"
+          },
+          "fact_ids": [
+            "F162",
+            "F165"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "driver-cockpit-tech-D1",
+          "content_hash": "d585832d3d97467ea39574b05d41fe50028eddac47ee3483f08a82674fecd0d3"
+        },
+        {
+          "text": "EX, EX(O), S(O) and S(O) Knight list an eight-inch touchscreen. E has no standard infotainment screen; its instrument display is a separate part of the dashboard.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F162",
+            "F165"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "driver-cockpit-tech-D2",
+          "content_hash": "35537b584da3b905e0a2a3564d53745933fe727be559848b51afce750eb76b30"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 59.0,
+      "duration": 15.8,
+      "spoken": 15.8
+    },
+    {
+      "id": "powertrain-choices",
+      "title": "Choosing the gearbox",
+      "role": "proof",
+      "topic": "powertrain",
+      "outcome": "Choose an engine and gearbox pairing",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "The non-turbo petrol and diesel each offer manual or automatic choices, depending on trim.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F225",
+            "F229"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "powertrain-choices-L1",
+          "content_hash": "ca22b5262131441e9913d18252497badf9d1f0f61f39e49d45cf9e8e7bc452e7",
+          "start": 74.8,
+          "duration": 7.4,
+          "exact": false
+        },
+        {
+          "text": "Turbo petrol is automatic only. Those are separate engine-and-gearbox combinations to compare.",
+          "step": "translate",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F233"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "powertrain-choices-L2",
+          "content_hash": "89e72af836ec6ecd6a901385d7f2d4d7c6d3aa1348a4ca41e9a858b1a6225c09",
+          "start": 82.2,
+          "duration": 6.3,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The one-point-five-litre MPi petrol offers a six-speed manual or Intelligent Variable Transmission, called iVT. Availability depends on the trim.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F225"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "powertrain-choices-D1",
+          "content_hash": "46535e6925875ce47a7f021a9860a2b9631c0a3d0344b4a5b1b187c95276510e"
+        },
+        {
+          "text": "The one-point-five-litre U2 CRDi diesel offers a six-speed manual or a six-speed automatic, depending on trim.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F229"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "powertrain-choices-D2",
+          "content_hash": "8e2f3a532f947d08ab2b6c121728bababc7266aa0266dd9e54764ca558ccce98"
+        },
+        {
+          "text": "The one-point-five-litre Turbo GDi petrol has a seven-speed dual-clutch automatic, called DCT.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F233"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "powertrain-choices-D3",
+          "content_hash": "50ef217ccb8b1324da21b73aeb66654899b40637f34f71be9dcb5c1a96b386e7"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 74.8,
+      "duration": 13.7,
+      "spoken": 13.7
+    },
+    {
+      "id": "standard-safety-suite",
+      "title": "What comes across the range",
+      "role": "proof",
+      "topic": "safety",
+      "outcome": "Separate standard safety from trim extras",
+      "usp_ids": [
+        "usp-standard-safety"
+      ],
+      "lines": [
+        {
+          "text": "Six airbags come as standard across the CRETA range.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im09",
+            "focus": "Airbag illustration"
+          },
+          "fact_ids": [
+            "F237"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "standard-safety-suite-L1",
+          "content_hash": "2b759f0c45b91605185c363bd7c83a073d704b50b1f68823be13feec3fc0320b",
+          "start": 88.5,
+          "duration": 4.7,
+          "exact": false
+        },
+        {
+          "text": "Child-seat anchors are standard too. Driver-assistance packages vary by trim, so they're a separate part of the comparison.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F214",
+            "F153",
+            "F154"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "standard-safety-suite-L2",
+          "content_hash": "d24f35babd829b34a3120c1c153df9bfa770ef81180893174d7efb2d9c29c764",
+          "start": 93.2,
+          "duration": 9.5,
+          "exact": false
+        }
+      ],
+      "checkin": "Shall we keep going?",
+      "deeper": [
+        {
+          "text": "King, King Knight and Lounge Edition list driver-assistance features including forward-collision warning and lane-departure warning.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F153"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "standard-safety-suite-D1",
+          "content_hash": "e15737a383260d92dc2bdf7b9bb3285db7431d835848f5ab209ae22126d2a513"
+        },
+        {
+          "text": "Smart cruise control with stop and go is listed on King, King Knight and Lounge Edition with automatic gearboxes only.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F154"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "standard-safety-suite-D2",
+          "content_hash": "d93e25709869c27011f3c46553e309f5ef88698461005d45baeddcc0cb7e74cf"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": "2ec47e6669969073c73285ad2ef0ffdf31d30f5e8fbe8c8fc8778a188650aed1",
+      "checkin_start": 102.7,
+      "checkin_duration": 2.1,
+      "start": 88.5,
+      "duration": 16.3,
+      "spoken": 14.2
+    },
+    {
+      "id": "convenience-features",
+      "title": "Music and connected features",
+      "role": "features",
+      "topic": "features",
+      "outcome": "Choose the extras worth comparing",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "And when it's time for music, selected trims have a Bose sound system.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im10",
+            "focus": "Speaker positions"
+          },
+          "fact_ids": [
+            "F164"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "convenience-features-L1",
+          "content_hash": "f31bddb4ffb8b8fb3034f75de67ea11f1575eb67492abefc9db6597a2431cd55",
+          "start": 104.8,
+          "duration": 6.8,
+          "exact": false
+        },
+        {
+          "text": "The eight-speaker setup includes a centre speaker and subwoofer.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im10",
+            "focus": "Speaker positions"
+          },
+          "fact_ids": [
+            "F164"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "convenience-features-L2",
+          "content_hash": "39745867a553ac90494766c0535396c5e3a3984f61485721e95ddfb5a6cb32c8",
+          "start": 111.6,
+          "duration": 4.7,
+          "exact": false
+        },
+        {
+          "text": "Equipped trims also offer Bluelink with wireless software updates.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F168"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "convenience-features-L3",
+          "content_hash": "24cab08ba25949a8f17efbafc5a8ece44af191ecb52a9d1358ac63323d3e376d",
+          "start": 116.3,
+          "duration": 4.7,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The Bose system has eight speakers, including a front centre speaker and subwoofer. It's listed on SX Premium, King, King Knight and Lounge Edition.",
+          "step": "show",
+          "visual": {
+            "kind": "image",
+            "ref": "im10",
+            "focus": "Speaker positions"
+          },
+          "fact_ids": [
+            "F164"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "convenience-features-D1",
+          "content_hash": "45a6fb94d188a87fd5e9daf6b23b3a2c98ea533f196582da6ae5b72240182663"
+        },
+        {
+          "text": "The brochure lists over seventy Bluelink features with a three-year complimentary subscription on equipped SX, SX Premium, King and King Knight trims.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F243"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "convenience-features-D2",
+          "content_hash": "9a26f84f4907f060cfabf8ae29eb643c676ac3b0375f0b0d11704c93b87f7250"
+        },
+        {
+          "text": "Home-to-car Alexa control is listed on SX, SX Premium, King, King Knight and Lounge Edition. An Alexa Echo device needs to be purchased separately from a third party.",
+          "step": "say",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F168"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "warm",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "convenience-features-D3",
+          "content_hash": "f47d41b932654882f51b49deaa90c52cad99bc859c25e737341b7737e483c39a"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 104.8,
+      "duration": 16.2,
+      "spoken": 16.2
+    },
+    {
+      "id": "ownership-and-open-checks",
+      "title": "Before choosing your version",
+      "role": "establish",
+      "topic": "ownership",
+      "outcome": "Resolve price and written ownership terms",
+      "usp_ids": [],
+      "lines": [
+        {
+          "text": "Before choosing, ask the dealer for a written on-road quote and warranty terms.",
+          "step": "establish",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "reassuring",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "ownership-and-open-checks-L1",
+          "content_hash": "f8b15714039cd69d299c4e0202cfbff71ba59276d4727ed2d8e8fe744fd0e2d4",
+          "start": 121.0,
+          "duration": 6.8,
+          "exact": false
+        },
+        {
+          "text": "I can't confirm fuel-economy figures or their test basis from these details.",
+          "step": "establish",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [],
+          "card": "none",
+          "delivery": {
+            "tone": "reassuring",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "ownership-and-open-checks-L2",
+          "content_hash": "5bd7904eed0f9b05731d88e04b9b5c8c732e86388bd10262eaa27ccd23718c0c",
+          "start": 127.8,
+          "duration": 6.3,
+          "exact": false
+        }
+      ],
+      "checkin": "",
+      "deeper": [
+        {
+          "text": "The saved base-variant price is ten lakh ninety thousand seven hundred rupees, ex-showroom. It excludes on-road charges, road tax and registration. Confirm today's full local quote with the dealer.",
+          "step": "establish",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F031"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "reassuring",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "ownership-and-open-checks-D1",
+          "content_hash": "4263db92a92387a8eab59bd215c58b84a74d9acd79645f658a8e286c142745a2"
+        },
+        {
+          "text": "A paid extended warranty of up to seven years is listed for petrol variants only. That's an extension, not a statement of standard warranty coverage; ask for the applicable written terms.",
+          "step": "establish",
+          "visual": {
+            "kind": "none",
+            "ref": "",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F245"
+          ],
+          "card": "none",
+          "delivery": {
+            "tone": "reassuring",
+            "pace": 1.0
+          },
+          "unverified": false,
+          "audio": null,
+          "id": "ownership-and-open-checks-D2",
+          "content_hash": "765e9eb887ad6d35fccfc8596c4de37806b70246ba3bc6ff2def0335f654030c"
+        }
+      ],
+      "checkin_audio": null,
+      "checkin_content_hash": null,
+      "start": 121.0,
+      "duration": 13.1,
+      "spoken": 13.1
+    }
+  ],
+  "closing": [
+    {
+      "text": "Keep the features that caught your attention in mind as you shortlist a trim.",
+      "step": "advance",
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "focus": "CRETA side profile"
+      },
+      "fact_ids": [],
+      "card": "summary",
+      "delivery": {
+        "tone": "warm",
+        "pace": 1.0
+      },
+      "unverified": false,
+      "audio": null,
+      "id": "close-L1",
+      "content_hash": "2a4272f1ffbb33426ba4cb39b2fc9ed82b4cab65bd34c9b94845430319852c9f",
+      "start": 134.1,
+      "duration": 7.4
+    },
+    {
+      "text": "Select Book a Test Drive to spend time with the seats, space and driving feel.",
+      "step": "advance",
+      "visual": {
+        "kind": "image",
+        "ref": "im02",
+        "focus": "CRETA side profile"
+      },
+      "fact_ids": [],
+      "card": "none",
+      "delivery": {
+        "tone": "warm",
+        "pace": 1.0
+      },
+      "unverified": false,
+      "audio": null,
+      "id": "close-L2",
+      "content_hash": "6505e3aeb8a8097b4a5ce5aee85c33f4bd6ce1a48b9d977770d8101d332e8492",
+      "start": 141.5,
+      "duration": 7.9
+    }
+  ],
+  "intake_q1": "Hello, I'm Priya, your Hyundai guide. What matters most in your next car? You can also say, show me around.",
+  "intake_q2": "",
+  "intake_audio": {
+    "q1": null,
+    "q2": null
+  },
+  "content_hash": "fb3e325458ff3629ad4df0f2060fac87e30480924c35c59f865c512b1e9161db",
+  "timeline": {
+    "total_seconds": 149.4,
+    "batches": [
+      {
+        "id": "creta-cabin-intro",
+        "title": "Inside the CRETA",
+        "role": "intro",
+        "start": 0.0,
+        "duration": 12.1,
+        "spoken": 12.1,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "three-things",
+        "title": "Cabin, space and standard equipment",
+        "role": "outcome",
+        "start": 12.1,
+        "duration": 13.7,
+        "spoken": 13.7,
+        "checkin": -0.0,
+        "over_20s": false
+      },
+      {
+        "id": "cabin-comfort-proof",
+        "title": "The seat and the glass roof",
+        "role": "proof",
+        "start": 25.8,
+        "duration": 18.4,
+        "spoken": 13.7,
+        "checkin": 4.7,
+        "over_20s": false
+      },
+      {
+        "id": "seating-and-cargo",
+        "title": "When the rear seat folds",
+        "role": "proof",
+        "start": 44.2,
+        "duration": 14.8,
+        "spoken": 14.8,
+        "checkin": -0.0,
+        "over_20s": false
+      },
+      {
+        "id": "driver-cockpit-tech",
+        "title": "The screen beside the wheel",
+        "role": "proof",
+        "start": 59.0,
+        "duration": 15.8,
+        "spoken": 15.8,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "powertrain-choices",
+        "title": "Choosing the gearbox",
+        "role": "proof",
+        "start": 74.8,
+        "duration": 13.7,
+        "spoken": 13.7,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "standard-safety-suite",
+        "title": "What comes across the range",
+        "role": "proof",
+        "start": 88.5,
+        "duration": 16.3,
+        "spoken": 14.2,
+        "checkin": 2.1,
+        "over_20s": false
+      },
+      {
+        "id": "convenience-features",
+        "title": "Music and connected features",
+        "role": "features",
+        "start": 104.8,
+        "duration": 16.2,
+        "spoken": 16.2,
+        "checkin": 0.0,
+        "over_20s": false
+      },
+      {
+        "id": "ownership-and-open-checks",
+        "title": "Before choosing your version",
+        "role": "establish",
+        "start": 121.0,
+        "duration": 13.1,
+        "spoken": 13.1,
+        "checkin": 0.0,
+        "over_20s": false
+      }
+    ],
+    "exact": false
+  }
+}

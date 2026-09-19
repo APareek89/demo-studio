@@ -1,0 +1,140 @@
+{
+  "type": "session Planner candidate semantic review",
+  "created_at": "2026-09-19T17:37:55.462979+00:00",
+  "published_snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "published_snapshot_sha256": "fa8bfa54b9c1fd23e0f042b76d89b49efb35fc3b50f4ad04817f4856925f33fc",
+  "published_bundle_sha256": "b7f3af73f3541f6fd95bcacf7339707b4eb543c9a48c7638fc1ce339463e774b",
+  "current_plan_sha256": "0ce1c24d1a851ac93d8412d8a4c6d1b3c7d60eb3a79ef35bdf3e5faa57f8fe3c",
+  "understanding_sha256": "79eb188d519ccc33df767f164c8e8b78846b2b28359a61ffca69ef9dc86bd452",
+  "planner_source_sha256": "4d26c6534e1e692dbafb42fdc0abae35778fddb0b7ef4ba985bc4dc36014d323",
+  "effective_prompt_sha256": "7a1407cc41472c6c689f749078a47482ed21c795fb44bcbd101969a683864b08",
+  "reference_doc_sha256": "c8bfa07101bacf62eaf7f5f12b1eaeffd24df42461b33eb63627a1ae37dffb4f",
+  "candidate_sha256": "a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f",
+  "schema": "server.schemas.Plan",
+  "outbound_calls": 0,
+  "paid_calls": 0,
+  "published": false,
+  "checks": {
+    "schema_valid": true,
+    "all_citations_approved_in_published_snapshot": true,
+    "no_precedence_excluded_citations": true,
+    "exact_image_identities_preserved": true,
+    "existing_segment_ids_preserved": true,
+    "cta_destinations_match_retained_source_links": true,
+    "locked_voice_identity_preserved": true,
+    "three_usps_and_five_independent_proof_stops": true,
+    "no_final_segment_dialogue": true,
+    "qualifiers_not_hidden_only_in_notes": true
+  },
+  "fact_count": 20,
+  "visual_ids": [
+    "im01",
+    "im02",
+    "im03",
+    "im04",
+    "im05",
+    "im06",
+    "im07",
+    "im08",
+    "im09",
+    "im10"
+  ],
+  "not_claimed": [
+    "No measured comfort, cooling, performance or safety result inferred from equipment.",
+    "No boot litres, mileage, current quote, stock or model-year assertion.",
+    "No source visual is replaced or used as proof of an unseen mechanism."
+  ],
+  "remaining_review": [
+    "Author must write and validate final dialogue against the same approved assertions.",
+    "Human Align review remains required before publication.",
+    "Missing literal visual evidence is declared; contextual pictures must not be presented as demonstrations."
+  ],
+  "actual_image_inspection": [
+    {
+      "id": "im01",
+      "source_id": "src_2c483f",
+      "path": "sources/src_2c483f_creta-convenience__Hyundai-creta-suv-convenience-small-800x530-4-_sunroof.jpg",
+      "sha256": "cf5d161b218ac156633bf0837db66c5c914f147b7cd9c408f336cee4b41cfb26",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im02",
+      "source_id": "src_04caa1",
+      "path": "sources/src_04caa1_creta-exterior-pc__Hyundai-creta-suv-exterior-big-1120x600-side-1.jpg",
+      "sha256": "245fbc093eada7070179836c1e70a41dbef5a538673af71026115c94d0f237f8",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im03",
+      "source_id": "src_35c597",
+      "path": "sources/src_35c597_creta-highlights__DualACcreta_Dual_zone_automatic_temperature_control.jpg",
+      "sha256": "c9cea6e125e48ed99cbe7a95d69484d3a1d1046778891174a4372839f0293d25",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im04",
+      "source_id": "src_8bbd0d",
+      "path": "sources/src_8bbd0d_creta-highlights__Hyundai-creta-suv-highlight-small-800x530-2-infotainment___Clu",
+      "sha256": "c24556ee69eb92f7044ea33d1700202e48781d838f37b56290fa0d1b2b4d41de",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im05",
+      "source_id": "src_58d99b",
+      "path": "sources/src_58d99b_creta-interior-pc__Hyundai-creta-suv-interior-big-1120x600-1.jpg",
+      "sha256": "514b5eefb3a784345d346bb4fb42b5c1c1fdd14b8ce07966969820c93d75e9cc",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im06",
+      "source_id": "src_84f80b",
+      "path": "sources/src_84f80b_creta-interior-pc__Hyundai-creta-suv-interior-big-1120x600-2.jpg",
+      "sha256": "d45bc9db0bd1f5856e3a376151338858a6d172835a82f2cfadf67b6aee3bb0c5",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im07",
+      "source_id": "src_e67b4e",
+      "path": "sources/src_e67b4e_creta-interior-pc__Hyundai-creta-suv-interior-small-830x530-2.jpg",
+      "sha256": "21edfcbf8a55d931fae210996e6727a729bbf57f2c3894d529681a726c18b14f",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im08",
+      "source_id": "src_646575",
+      "path": "sources/src_646575_creta-interior-pc__Hyundai-creta-suv-interior-small-830x530-6.jpg",
+      "sha256": "0c4581f1c3a71fe1ba49f4e6c08b1e767498634df6d71bd0dabd2b384740c302",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im09",
+      "source_id": "src_bf4d02",
+      "path": "sources/src_bf4d02_creta-safety-pc__Hyundai-creta-suv-safety-big-1120x600-3-six_airbag.jpg",
+      "sha256": "46c3e0244755ca69767e1d292dbce7d35b7226992f8f4685f39c630ed1364710",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    },
+    {
+      "id": "im10",
+      "source_id": "src_043e22",
+      "path": "sources/src_043e22_creta-convenience__Hyundai-creta-suv-convenience-big-1120x600-3-bose.jpg",
+      "sha256": "ccf7da14fe6ca2d9b0ac0476700c952d3087210349568901668eea01e9e13428",
+      "inspected_with": "view_image",
+      "scope": "appearance only; no inferred fitment or performance"
+    }
+  ],
+  "offline_handoff_contract": {
+    "file": "evals/narrative_roles_contract.py",
+    "groups_passed": 6,
+    "network_attempts": 0,
+    "scope": "Real Plan/Author payload construction, evidence filtering, locked voice and human-review boundary; not general semantic entailment proof."
+  }
+}

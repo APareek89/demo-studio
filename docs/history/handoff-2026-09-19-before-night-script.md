@@ -1,16 +1,6 @@
 # Handoff.MD — Demo Studio
 
-## Authorized night work — in progress, 19 September 2026
-
-Anand authorized one final customer stress session, with difficult/easy questions and repeated interruptions, then fixes and offline checks only. New incremental ceiling **less than $5**, baseline app estimate **$16.3976**. This is a new bounded authorization, not a reset or extension of the historical browser speech counters. No voice API testing. Matching narration for the new script is treated as a necessary one-pass build step within that cap; it has not yet run at this checkpoint. The one live caption session has not yet started.
-
-Planner now owns the supported buyer story, evidence emphasis and image selection; Author owns seamless final speech. Session agents used production-style prompts and existing session tokens, with no paid build LLM calls. Reviewed plan/script candidates are in `output/creta-night-final/`; final script SHA `9d49a7b8f597cfe7d5874e2b97aa74d4cdff9dca8b4dcad71ba1ae9cad023b88`. They retain the approved v7 evidence and original images. Candidate has two real waits, estimated149.4s main tour and12.1s overview; no audio yet. Six role-handoff groups,44 generation and27 delivery-style checks pass offline. Required pre/post deck320, acceptance24 and both smoke phases pass with zero outbound calls. Publication and live stress results remain pending.
-
-`Learning.MD` now consolidates every NX01–42 and CR01–44 issue with its date, reason and solution, preserving original five-whys and later verification status, and adds CR45 for role overlap/repetitive writing. A test harness uses the actual player with synthetic muted media/input; it cannot establish voice or acoustic KPIs. Its offline attempts are isolated from real customer sessions. The live run will be started once, saved once, and reviewed from immutable responses.
-
-The previous completed v7 checkpoint below is historical where this new authorization conflicts with its stop conditions. [Full pre-night handoff](docs/history/handoff-2026-09-19-before-night-script.md).
-
-## Previous completed checkpoint — 19 September 2026
+## Current checkpoint — 19 September 2026
 
 **Ready for Anand’s review after the finite build/fix/replay cycle.** Branch `codex/creta-conversational-demo`. The implementation and reviewed Creta demo exist; **the latest text-answer quality gate passes, while full response-speed and physical voice acceptance remain open**. No push, merge or deployment. Use Codex’s in-app browser, keep playback muted, leave native Chrome alone.
 
@@ -34,7 +24,6 @@ The previous completed v7 checkpoint below is historical where this new authoriz
 
 ## Decisions and invariants
 
-- 19 September night: Planner owns the story outline, evidence emphasis and literal image selection; Author owns final conversation and delivery. Preserve schema, grounding, independent stops, locked voice and Align. Reject relaxed grounding as a way to improve warmth. One paid caption stress session is authorized; subsequent checks use saved outputs/session agents with no paid retry.
 - Anand approved the [expanded runtime plan](docs/plan-runtime-experience-2026-09-19.md) and official Creta PDF/relevant images. Earlier UI-only/no-streaming restrictions are historical.
 - Keep Atelier/cinematic slides. Plain customer language, sourced feature-led opening, cheerful helpful persona, sparse confirmation questions. Yes means continue; no means more detail. Questions wait.
 - Build requires six reviewed approvals. Fact edits allocate new assertion IDs, retain historical meaning, invalidate affected review and publish a new immutable snapshot. Human edits must not silently regenerate.

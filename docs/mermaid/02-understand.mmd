@@ -13,7 +13,7 @@ flowchart TD
   COMP["competitor document facts<br/>[AGENT · same text fallback chain]<br/>official URL / PDF / doc / text → separate C-facts<br/>retain variant conditions, truth, source URL, locator, quote and read date"]:::agent
   FIDS["Immutable assertion IDs + source/evidence revisions<br/>[FUNCTION · knowledge.reconcile]<br/>uploaded document precedence only for genuine same-scope conflict; preserve both + review<br/>pinned snapshot + BM25/concept/character retrieval index"]:::fn
   UND["understanding.json<br/>[DATA]"]:::data
-  PLAN["demo plan (sales principles P01-P10 in prompt)<br/>[AGENT · Claude text tier]<br/>in: registry, shots, images, brand, URL, language (+ previous plan)<br/>out: Plan · decision frame, takeaway, primary + ≤2 supporting outcomes, USPs, segments with roles intro/outcome/proof/establish, CTAs, voice, state follow-up questions, advance, do-not-recommend-if"]:::agent
+  PLAN["Buyer story outline + literal image selection<br/>[AGENT · configured text tier · plan.py]<br/>in: approved registry, tagged shots/images, brand, language + previous plan<br/>out: existing Plan schema · 3 USPs; roles intro/outcome/proof/features/establish<br/>goal = moment + spoken/deeper IDs and conditions + visual/handoff + budget/check-in intent<br/>PITCH_SHAPE + PROOF_BLOCK; no final segment dialogue; preserve media identity"]:::agent
   PVAL["drop refs that don't exist<br/>[FUNCTION · plan.run]<br/>fact_ids ⊆ registry · visual_refs ⊆ shots∪images"]:::fn
   PJ["plan.json<br/>[DATA]"]:::data
   SAMPLE["voice sample<br/>[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]<br/>in: voice.sample_line · out: audio/hash.wav"]:::data
