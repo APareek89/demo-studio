@@ -1,0 +1,80 @@
+{
+  "source_run": "output/creta-runtime-2026-09-19/qa100-v7-early-fallback",
+  "source_commit": "60d3e60927f90335bcc330aabfaa8cd4583c805a",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "original_full_q073_fixture_sha256": "eb592853b2bfcb85a1e081ad6b963be3df546e9d18fdd897f83cfaee32dc4c19",
+  "purpose": "Immutable observed speech and selected evidence. Exact source/policy ownership regression; no provider or source mutation.",
+  "rows": [
+    {
+      "id": "q073",
+      "question": "Check https://www.hyundai.com/in/en/find-a-car/creta/highlights for warranty duration; if it is not there, tell me.",
+      "answer": "According to www.hyundai.com, the retrieved highlights page covers sales milestones and available variants, but it does not detail warranty terms. From our separate records, an extended warranty of up to seven years is offered on a payable basis, strictly for petrol variants.",
+      "fact_ids": [
+        "Wbe1c42d2a86f",
+        "W6afd67d2a31c",
+        "Wff28c84c46e4",
+        "F071",
+        "F245"
+      ],
+      "raw_row_sha256": "77882390d2bb6450974cc35db455a3736bf325e4c8b0b3e21d2f132985ebb5e0",
+      "source_claim": "According to www.hyundai.com, the retrieved highlights page covers sales milestones and available variants, but it does not detail warranty terms.",
+      "separate_warranty_claim": "From our separate records, an extended warranty of up to seven years is offered on a payable basis, strictly for petrol variants.",
+      "selected_passage_count": 3,
+      "coverage": [],
+      "selected_passages": [
+        {
+          "id": "Wbe1c42d2a86f",
+          "value": "Thank You, India. For 10 years, you’ve not just driven the Hyundai CRETA — you’ve lived with it, grown with it, and made it your own. You’ve taken it on first drives and road trips. You’ve brought home new memories, new milestones, and new beginnings — all with CRETA by your side. It’s a part of your journey. A symbol of ambition. A partner in progress. From quiet drives with loved ones to bold adventures across the country — CRETA has been the SUV of your life. From a Bold Debut to the Top of the Charts In July 2015, the Hyundai CRETA didn’t just enter the market — it made a statement. Confident, stylish, and ahead of its time, CRETA redefined what India expected from an SUV. A decade later, it stands tall — not just as the country’s #1 mid size SUV, but now also India’s highest-selling passenger vehicle in June 2025. With over 1.2 million customers, the Hyundai CRETA is more than a vehicle. It’s a symbol of trust, innovation, and ambition — an SUV that has grown with India, led from the front, and touched the lives of millions. A Legacy Built on Leadership Some cars make an impact. CRETA made history. For 10 consecutive years, it has defined the mid-size SUV segment — a space that many now fondly call the “CRETA segment.” •\t#1 Selling Car in India – June 2025 (15,786 units sold) •\t#1 Selling SUV in H1 2025 (Jan–June) •\tBest-selling model in March, April & June 2025 •\t#1 Mid-Size SUV every completed year since launch (2015–2024) •\tOver 2.87 lakh units exported to 13+ countries Looking Ahead with Purpose CRETA’s legacy is only the beginning. As we have enter the next chapter — with electric power, smarter mobility and bold innovation — the bond between India and CRETA is set to grow even stronger.",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/highlights",
+            "locator": "10 Years of CRETA · block 58",
+            "quote": "Thank You, India. For 10 years, you’ve not just driven the Hyundai CRETA — you’ve lived with it, grown with it, and made it your own. You’ve taken it on first drives and road trips. You’ve brought home new memories, new milestones, and new beginnings — all with CRETA by your side. It’s a part of your journey. A symbol of ambition. A partner in progress. From quiet drives with loved ones to bold adventures across the country — CRETA has been the SUV of your life. From a Bold Debut to the Top of the Charts In July 2015, the Hyundai CRETA didn’t just enter the market — it made a statement. Confident, stylish, and ahead of its time, CRETA redefined what India expected from an SUV. A decade later, it stands tall — not just as the country’s #1 mid size SUV, but now also India’s highest-selling passenger vehicle in June 2025. With over 1.2 million customers, the Hyundai CRETA is more than a vehicle. It’s a symbol of trust, innovation, and ambition — an SUV that has grown with India, led from the front, and touched the lives of millions. A Legacy Built on Leadership Some cars make an impact. CRETA made history. For 10 consecutive years, it has defined the mid-size SUV segment — a space that many now fondly call the “CRETA segment.” •\t#1 Selling Car in India – June 2025 (15,786 units sold) •\t#1 Selling SUV in H1 2025 (Jan–June) •\tBest-selling model in March, April & June 2025 •\t#1 Mid-Size SUV every completed year since launch (2015–2024) •\tOver 2.87 lakh units exported to 13+ countries Looking Ahead with Purpose CRETA’s legacy is only the beginning. As we have enter the next chapter — with electric power, smarter mobility and bold innovation — the bond between India and CRETA is set to grow even stronger."
+          }
+        },
+        {
+          "id": "W6afd67d2a31c",
+          "value": "CRETA offers 7 variants and comes in 6 mono-tone colors: Robust Emerald Pearl, Fiery Red, Ranger Khaki, Abyss Black, Atlas White, Titan Grey. There is also a dual-tone option available in Atlas White with a Black Roof.",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/highlights",
+            "locator": "3. Which variants and colour options are available for CRETA? · block 125",
+            "quote": "CRETA offers 7 variants and comes in 6 mono-tone colors: Robust Emerald Pearl, Fiery Red, Ranger Khaki, Abyss Black, Atlas White, Titan Grey. There is also a dual-tone option available in Atlas White with a Black Roof."
+          }
+        },
+        {
+          "id": "Wff28c84c46e4",
+          "value": "The Hyundai CRETA is available in 7 variants, catering to a range of preferences and needs in the mid-size SUV segment.",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/highlights",
+            "locator": "2. How many models are there in CRETA? · block 123",
+            "quote": "The Hyundai CRETA is available in 7 variants, catering to a range of preferences and needs in the mid-size SUV segment."
+          }
+        }
+      ],
+      "trace_rows": [
+        {
+          "trace_line": 4749,
+          "raw_trace_row_sha256": "5911b5b40703cf1df7367d0b5e027a0917f77d58166d6141b8f1b65c38b0af8f"
+        },
+        {
+          "trace_line": 4756,
+          "raw_trace_row_sha256": "9f912073257c2807c0dbc4c8ec408a22f2c6a45e87ea0b48c23aa60f264a09d4"
+        },
+        {
+          "trace_line": 4758,
+          "raw_trace_row_sha256": "e0786e07adae2d27e30f2a4e18c5e50495282746b4ba1c8e797ace160f1d7334"
+        }
+      ]
+    },
+    {
+      "id": "q079",
+      "question": "What guaranteed resale value will I get after seven years?",
+      "answer": "I cannot guarantee a future resale value. The available policies only cover an extended warranty of up to seven years for petrol variants, which is payable separately.",
+      "fact_ids": [
+        "F071",
+        "F245"
+      ],
+      "raw_row_sha256": "fa67cbbd2d5d6afd97a4a336f640dd4c9af0852330e311ad4a3596f27e778e05",
+      "known_gap": "Documented partial inventory overstatement; policies is ambiguous with genuine contract coverage, so no automatic normalization in this narrow guard."
+    }
+  ]
+}

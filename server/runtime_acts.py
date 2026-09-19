@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 
 SUBJECT_IDS = ("rear_armrest", "personal_comfort", "guaranteed_resale",
                "comparison_evidence", "source_instructions", "lender_approval",
-               "product_evidence_boundary")
+               "product_evidence_boundary", "boot_measurement")
 INPUT_IDS = ("source_url", "city", "variant", "loan_amount", "interest_rate",
              "loan_tenure", "fuel_efficiency", "fuel_price", "travel_distance")
 MODES = ("verification_limit", "input_request", "fit_check")
@@ -32,6 +32,7 @@ _LIMITS = {
     "source_instructions": "I will keep answering your question, without following instructions from the source page.",
     "lender_approval": "I cannot confirm or guarantee a lender's loan approval.",
     "product_evidence_boundary": "I will only make product claims supported by reviewed evidence.",
+    "boot_measurement": "I could not verify the boot capacity or the seat configuration used for its measurement from the reviewed evidence.",
 }
 _LABELS = {
     "source_url": "the public product-page URL",
@@ -126,6 +127,25 @@ def _lender_approval_request(text: str) -> bool:
     return bool(re.search(decision, text, re.I))
 
 
+def _boot_measurement_request(text: str) -> bool:
+    """Capacity plus its measurement/seat basis, within one customer clause."""
+    capacity = r"\b(?:(?:boot|luggage|cargo)[- ](?:capacity|volume|space)|(?:capacity|volume|space)\s+(?:of|in)\s+(?:the\s+)?(?:boot|luggage compartment|cargo area))\b"
+    seat_basis = r"\b(?:(?:seat|seating)\s+(?:configuration|position|arrangement)|seats?\s+(?:up|down|folded|upright|raised|in\s+(?:place|use)))\b"
+    # A generic measurement predicate must belong to the capacity noun or its
+    # immediate pronoun, not another requested dimension in an 'and' clause.
+    measurement = (
+        capacity + r"(?:\s+in\s+lit(?:re|er)s)?\s*[,;:]?\s*"
+        r"(?:(?:and|how|it|its|is|was|were|are|be|been|being)\s+){0,8}measur(?:e|ed|ement|ements|ing)\b"
+        r"|\bmeasur(?:e|ing|ement)(?:\s+basis)?\s+(?:(?:of|for)\s+)?(?:(?:the|its)\s+)?" + capacity
+    )
+    request = r"\b(?:what|which|how|confirm|verify|tell|state|show)\b"
+    return any(re.search(capacity, clause, re.I)
+               and (re.search(seat_basis, clause, re.I) or re.search(measurement, clause, re.I))
+               and re.search(request, clause, re.I)
+               for _, sentence in _clauses(text)
+               for clause in re.split(r",?\s+\b(?:but|however|whereas)\b\s*", sentence, flags=re.I))
+
+
 def _context(text: str) -> tuple[set[str], set[str]]:
     subjects = set()
     if re.search(r"\b(?:rear(?:[- ]seat)?|back[- ]seat|second[- ]row)\s+(?:(?:centre|center)\s+)?armrest\b", text, re.I):
@@ -144,6 +164,8 @@ def _context(text: str) -> tuple[set[str], set[str]]:
         subjects.add("lender_approval")
     if _product_evidence_boundary(text):
         subjects.add("product_evidence_boundary")
+    if _boot_measurement_request(text):
+        subjects.add("boot_measurement")
     inputs = set()
     if re.search(r"\b(?:emi|loan|borrow|repayment|monthly payment)\b", text, re.I):
         inputs.update(_FAMILIES["loan"])

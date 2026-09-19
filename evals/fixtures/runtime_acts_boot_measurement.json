@@ -1,0 +1,72 @@
+{
+  "source_run": "output/creta-runtime-2026-09-19/qa100-v7-early-fallback",
+  "code_commit": "60d3e60927f90335bcc330aabfaa8cd4583c805a",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "raw_row_sha256": "d57f9230d4900f078726801b1c6ba116618ed326eb280cab00354da385ffc45f",
+  "id": "q002",
+  "question": "How much boot space does it have, and under what seat configuration?",
+  "original_answer": "The CRETA comes standard with 60:40 split rear seats and a 5-seater configuration. You can check the official brochure or ask an authorised dealer to confirm.",
+  "validation_errors": [
+    "uncited_context"
+  ],
+  "drafts": [
+    {
+      "trace_line": 4156,
+      "raw_trace_row_sha256": "d69192cdde2f6fd4edf99847d6d3e70c471e186a6dca7e7b460205cb241a086a",
+      "draft": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "The CRETA comes standard with 60:40 split rear seats and a 5-seater configuration.",
+            "fact_ids": [
+              "F075",
+              "F096"
+            ],
+            "kind": "fact",
+            "interaction": null
+          },
+          {
+            "text": "However, the exact boot space volume and its specific measurement conditions are not verified in my current records.",
+            "fact_ids": [],
+            "kind": "limitation",
+            "interaction": null
+          },
+          {
+            "text": "You can check the official brochure or visit a dealership to verify the exact luggage capacity.",
+            "fact_ids": [],
+            "kind": "context",
+            "interaction": null
+          }
+        ],
+        "clarification": "",
+        "clarification_act": null,
+        "tool_calls": [],
+        "answered": true,
+        "topic": "boot space"
+      }
+    },
+    {
+      "trace_line": 4163,
+      "raw_trace_row_sha256": "d187ae8cd1db61d4d1f996c0383ca2bde8428ab953e75f27e50e4625172be7dd",
+      "draft": {
+        "sentences": [
+          {
+            "text": "The CRETA is a 5-seater SUV featuring a standard 60:40 split rear seat.",
+            "fact_ids": [
+              "F075",
+              "F096"
+            ],
+            "kind": "fact",
+            "interaction": null
+          },
+          {
+            "text": "I cannot verify the exact boot space volume or the specific seat measurement basis in the approved records.",
+            "fact_ids": [],
+            "kind": "limitation",
+            "interaction": null
+          }
+        ]
+      }
+    }
+  ]
+}

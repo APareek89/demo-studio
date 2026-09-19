@@ -25,6 +25,22 @@ _ACTIVE_ABSENCE = re.compile(
     r"\b" + _SOURCE + r"\s+" + _ADVERBS
     + r"(?:does not|do not|doesn't|don't|did not|didn't|never|has not|have not|hasn't|haven't)\s+"
     + _ADVERBS + r"(?:" + _REPORT + r"|" + _REPORTED + r")\b", re.I)
+# A directly coordinated 'page lists ..., but it does not mention ...' keeps
+# the page as its subject. Do not infer that ownership across sentences,
+# embedded clauses or a possible intervening singular product referent.
+_COORDINATED_SOURCE_ABSENCE = re.compile(
+    r"\b" + _SOURCE + r"\s+" + _ADVERBS + _REPORT
+    + r"\b(?P<object>[^.!?;]{0,180}?)\s*,?\s+(?:but|and|yet)\s+it\s+"
+    + _ADVERBS + r"(?:does not|doesn't|did not|didn't|never|has not|hasn't)\s+"
+    + _ADVERBS + r"(?P<negative_report>" + _REPORT + r"|" + _REPORTED + r")\b", re.I)
+_EMBEDDED_SOURCE_CLAUSE = re.compile(
+    r"\b(?:that|which|who|where|when|while|because|although|but)\b", re.I)
+_POSSIBLE_PRODUCT_REFERENT = re.compile(
+    r"\b(?:product|service|item|plan|package|policy|warranty|vehicle|car|trim|variant|model|feature)\b", re.I)
+_BARE_NAMED_REFERENT = re.compile(
+    r"\s*(?:[Tt]he\s+)?[A-Z][A-Za-z0-9()_-]*(?:\s+[A-Z][A-Za-z0-9()_-]*){0,2}\s*,?\s*")
+_PRODUCT_OR_REPORTING_PREDICATE = re.compile(
+    r"(?:includes?|included|covers?|covered|contains?|provides?|provided)", re.I)
 _PASSIVE_ABSENCE = re.compile(
     r"\b(?:not|never|isn't|aren't|wasn't|weren't)\s+" + _ADVERBS + _REPORTED
     + r"\s+" + _DESTINATION + r"\b", re.I)
@@ -113,7 +129,15 @@ def unsupported_coverage_claim(text: str) -> bool:
     if not isinstance(text, str):
         return False
     plain = " ".join(text.replace("’", "'").split())
-    return any(pattern.search(plain) for pattern in _PATTERNS)
+    return (any(pattern.search(plain) for pattern in _PATTERNS)
+            or any(not _EMBEDDED_SOURCE_CLAUSE.search(match["object"])
+                   # Bare names can own fitment ('SX ... it does not include').
+                   # Capitalized headings cannot bypass reporting-only absence
+                   # ('Highlights ... it does not detail warranty terms').
+                   and not (_PRODUCT_OR_REPORTING_PREDICATE.fullmatch(match["negative_report"])
+                            and (_POSSIBLE_PRODUCT_REFERENT.search(match["object"])
+                                 or _BARE_NAMED_REFERENT.fullmatch(match["object"])))
+                   for match in _COORDINATED_SOURCE_ABSENCE.finditer(plain)))
 
 
 def coverage_limitation(text: str, *, precise: bool = False) -> str:

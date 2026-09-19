@@ -12,6 +12,7 @@ BOUNDARIES = json.loads((Path(__file__).parent / "fixtures/runtime_acts_boundari
 BOUNDARY_QUESTIONS = {row["id"]: row["question"] for row in BOUNDARIES["rows"]}
 APPROVAL_EVIDENCE = json.loads((Path(__file__).parent / "fixtures/runtime_acts_approval_evidence.json").read_text())
 APPROVAL_QUESTIONS = {row["id"]: row["question"] for row in APPROVAL_EVIDENCE["rows"]}
+BOOT_MEASUREMENT = json.loads((Path(__file__).parent / "fixtures/runtime_acts_boot_measurement.json").read_text())
 
 
 def act(mode="input_request", subjects=None, inputs=None):
@@ -287,6 +288,53 @@ class RuntimeActsContract(unittest.TestCase):
             ):
                 with self.subTest(payload=payload):self.assertEqual(render_act(payload, question=question), "")
         self.assertEqual(render_act(act("verification_limit", ["lender_approval", "product_evidence_boundary"]), question=question), "")
+
+    def test_actual_boot_measurement_limit_preserves_both_requested_facets(self):
+        expected = "I could not verify the boot capacity or the seat configuration used for its measurement from the reviewed evidence."
+        for question in (
+            BOOT_MEASUREMENT["question"],
+            "What is the luggage capacity and how was it measured?",
+            "Confirm the cargo volume with the seats folded.",
+            "What is the capacity of the boot with seats upright?",
+            "Which seating configuration is used to measure the boot space?",
+            "How do you measure the cargo volume?",
+            "How is boot capacity in litres measured?",
+        ):
+            with self.subTest(question=question):
+                self.assertIn("boot_measurement", allowed_act_ids(question)["verification_limit"])
+                self.assertEqual(render_act(act("verification_limit", ["boot_measurement"]), question=question), expected)
+        self.assertFalse(any(c.isdigit() for c in expected))
+        self.assertNotIn("no records", expected)
+        self.assertNotIn("not available", expected)
+
+    def test_boot_measurement_limit_does_not_follow_unrelated_dimensions_or_preferences(self):
+        for question in (
+            "How wide is this car, measured with mirrors?",
+            "How much boot capacity does it have?",
+            "I prefer plenty of luggage space for my family.",
+            "Show me the rear seating configuration.",
+            "How is the fuel tank capacity measured?",
+            "I want luggage space. How is car width measured?",
+            "I prefer luggage space, but how is car width measured?",
+            "What boot space is available, and how is car width measured?",
+            "What is the boot loading height with seats folded?",
+            "How much boot space under which seat configuration?\nTell me the car width.",
+        ):
+            with self.subTest(question=question):
+                self.assertEqual(render_act(act("verification_limit", ["boot_measurement"]), question=question), "")
+
+    def test_boot_act_rejects_raw_values_claims_and_other_modes(self):
+        question = BOOT_MEASUREMENT["question"]
+        for payload in (
+            act("fit_check", ["boot_measurement"]),
+            act("verification_limit", ["boot_measurement", "rear_armrest"]),
+            act("verification_limit", ["boot_measurement"], ["variant"]),
+            {**act("verification_limit", ["boot_measurement"]), "text": "It has 500 litres of boot space."},
+            {**act("verification_limit", ["boot_measurement"]), "value": 500},
+            {**act("verification_limit", ["boot_measurement"]), "fact_ids": ["F075"]},
+            {**act("verification_limit", ["boot_measurement"]), "url": "https://example.com"},
+        ):
+            with self.subTest(payload=payload):self.assertEqual(render_act(payload, question=question), "")
 
 
 if __name__ == "__main__":

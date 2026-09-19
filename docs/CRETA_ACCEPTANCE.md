@@ -2,7 +2,15 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest provider-tail replay
+## Latest three-second fallback experiment
+
+On60d3e60/v7 the unchanged100 scored **94 supported,4partial,1unsafe,1provider failure**. The original run paused after88 at its conservative next-pair cost reserve; remaining12 completed separately with unchanged code/source/profile, within the original combined$2.50/300-completion cap. Both segments and the merged100 raw lines are preserved in `qa100-v7-early-fallback-combined/`.
+
+Text median **2.864s**, p95 **9.698s**, maximum11.837s. Recorded144 completions cost **$1.335835**; cumulative **$13.0652**. Thirty-one fallback lanes produced22 Gemini winners,7 Runware winners and2 deadlines (one optional repair, one whole turn). Losing returned completions cost$0.552898, included. Provider conditions, boundary-act changes and the pause prevent causal attribution against the prior sequential run. Observed failures fell8→1, while cost more than doubled; audio latency remains unmeasured.
+
+This still fails acceptance. q073's repaired “page covers … but it does not detail warranty terms” claims whole-page absence from three retrieved passages. Partials: lost precise boot limit(q002), positive roof availability(q013), connected functions(q025), and ambiguous policy-set exclusivity(q079). q099 is the whole-turn provider failure. q045 repairtimeout retains a useful answer; all10 calculations independently recompute. Both segments' launched requests have terminal outcomes and unchanged usage/trace tails. Next repairs do not alter these grades or original answers.
+
+## Earlier provider-tail replay
 
 Commit `9d46913`, unchanged v7 and100 questions: **87 supported, 3 partial, 2 unhelpful, 0 unsafe and 8 provider failures**. All-request REST text median **3.917s**, p95 **11.814s**; maximum11.921s. Recorded cost **$0.621665**, settled cumulative **$11.7293**. The100 exact row hashes and semantic reviews are preserved in `qa100-v7-conversation-final/`.
 

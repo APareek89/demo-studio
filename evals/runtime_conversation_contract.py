@@ -181,5 +181,17 @@ class ConversationContract(unittest.TestCase):
         self.assertNotIn("adapt your cargo",result["answer"])
         self.assertIn("60:40",result["answer"])
 
+    def test_boot_measurement_limit_keeps_the_known_seat_fact_without_inventing_volume(self):
+        decision=TurnDecision(action="answer",answered=True,sentences=[
+            SpokenClaim(text="The CRETA features a standard 60:40 split rear seat.",kind="fact",fact_ids=["F096"]),
+            SpokenClaim(kind="limitation",interaction=act("verification_limit",subject="boot_measurement"))])
+        result,errors=rg.validate_decision(decision.model_dump(),[SPLIT],"How much boot space does it have, and under what seat configuration?")
+        self.assertFalse(errors)
+        self.assertEqual(result["fact_ids"],["F096"])
+        self.assertIn("60:40",result["answer"])
+        self.assertIn("could not verify the boot capacity",result["answer"])
+        self.assertIn("seat configuration used for its measurement",result["answer"])
+        self.assertNotIn("litre",result["answer"])
+
 
 if __name__=="__main__":unittest.main(verbosity=2)

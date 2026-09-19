@@ -1,13 +1,70 @@
 """Offline source-coverage controls; no sources, snapshot writes or providers."""
+import json
+from pathlib import Path
 import unittest
 
 from server.runtime_coverage import coverage_limitation, unsupported_coverage_claim
 
 
 LIMIT = "I couldn't verify that from the retrieved evidence."
+COORDINATION = json.loads((Path(__file__).parent / "fixtures/runtime_coverage_coordination.json").read_text())
 
 
 class CoverageContract(unittest.TestCase):
+    def test_actual_coordinated_source_pronoun_is_not_complete_page_evidence(self):
+        original = COORDINATION["rows"][0]
+        self.assertEqual(original["id"], "q073")
+        self.assertEqual(original["selected_passage_count"], 3)
+        self.assertEqual(original["coverage"], [])
+        self.assertTrue(unsupported_coverage_claim(original["answer"]))
+        self.assertEqual(coverage_limitation(original["source_claim"]), LIMIT)
+        self.assertEqual(coverage_limitation(original["source_claim"], precise=True), LIMIT)
+        self.assertEqual(coverage_limitation(original["separate_warranty_claim"]), "")
+
+    def test_coordinated_source_reporting_is_generic_and_discards_the_whole_claim(self):
+        for text in (
+            "The document lists delivery dates and milestones, but it does not specify refund terms.",
+            "The website reports sales figures and it doesn't mention payment terms.",
+            "The brochure covers dimensions, yet it has not provided test conditions.",
+            "The page lists Highlights, but it does not detail warranty terms.",
+            "The document lists Product Overview, but it does not mention refund terms.",
+            "The page lists specifications, but it does not detail warranty terms, so every car has seven years free.",
+        ):
+            with self.subTest(text=text):
+                self.assertEqual(coverage_limitation(text, precise=True), LIMIT)
+                self.assertFalse(unsupported_coverage_claim(coverage_limitation(text)))
+
+    def test_source_pronoun_does_not_take_ownership_of_product_fitment(self):
+        for text in (
+            "The page covers sales milestones, but the E trim does not include ventilated seats.",
+            "According to the feature page, the E trim does not include ventilated seats.",
+            "The page states that the E trim has manual seats, but it does not include ventilated seats.",
+            "The page lists the E trim, but it does not include ventilated seats.",
+            "The page lists SX, but it does not include ventilated seats.",
+            "The page lists Aurora Premium, but it does not include heated seats.",
+            "The page lists S(O), but it does not include ventilated seats.",
+            "The page covers the warranty, but it does not cover wear and tear.",
+            "The page lists specifications, but the warranty policy only covers manufacturing defects.",
+            "The page lists specifications, and it includes tyre sizes.",
+            "I couldn't verify warranty duration from the retrieved page.",
+        ):
+            with self.subTest(text=text):
+                self.assertFalse(unsupported_coverage_claim(text))
+                self.assertEqual(coverage_limitation(text, precise=True), "")
+
+    def test_policy_catalogue_ambiguity_is_left_to_existing_grounding(self):
+        # Preserved observed noncritical gap: 'available policies' is not enough
+        # to distinguish a record inventory from a real contract's coverage.
+        policy_case = COORDINATION["rows"][1]
+        self.assertEqual(policy_case["id"], "q079")
+        self.assertFalse(unsupported_coverage_claim(policy_case["answer"]))
+        for text in (
+            "This warranty policy only covers manufacturing defects.",
+            "The available warranty policies only cover manufacturing defects.",
+            "The extended warranty is payable and applies only to petrol variants.",
+        ):
+            self.assertFalse(unsupported_coverage_claim(text))
+
     def test_global_source_origin_cannot_be_inferred_from_selected_citations(self):
         for text in (
             "All details and variant lineups provided here come directly from Hyundai Motor India.",

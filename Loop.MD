@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Current finite checks — source coverage and useful boot uncertainty
+
+Loop remains off. The settled three-second fallback cohort scored 94 supported, 4 partial, 1 unsafe and 1 provider failure; its two original budget segments remain preserved. The coordinated source-pronoun guard and question-bound boot-measurement limit have independent reviews. Final coverage 17, typed helper 24, conversation 17, schema 8, deck 320, acceptance 24 and both smoke phases pass in isolated storage with zero outbound attempts. Graph, repair, limits, cohort and clause controls also pass. Logs and frozen hashes are under `final-gates/coverage-boot-*`. No source, script, speech or UI changes. The next unchanged live 100 is separately capped at $3.50/300 completions; free checks do not replace live acceptance.
+
 ## Current finite checks — earlier fallback experiment
 
 Loop stays off. The settled9d46913/v7 cohort remains87supported/3partial/2unhelpful/0unsafe/8provider failures. Next code adds finite1–5s delay configuration(default5/off) and closed lender/product-evidence boundary acts. Required deck320/accept24/bothsmoke, schema8, conversation16, graph/repair/limits pass with sockets blocked. Typed-helper21, delay-config6 and hedge30 controls pass; independent review is clear. Final hashes/logs are recorded in `final-gates/early-fallback-final-manifest.json`. Paid3s-overlap replay is separately capped, retains the12s deadline and requires late-work settlement; no live benefit is claimed from free controls. The batch reserves32 possible completions per pair, including optional composition repair; dry preparation made no API calls.

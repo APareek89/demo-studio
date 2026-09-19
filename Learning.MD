@@ -1227,3 +1227,14 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Next bounded experiment:** Expose a finite1–5s hedge-delay configuration, retaining default5s/off. Test3s under the same turn deadline, fixed provider order, cancellation and one-winner rules. Multiple reasoning/repair phases can each overlap; cost and late usage must be attributed and settled. An earlier first structured result still needs ordinary validation. Observational cohorts do not establish a causal performance gain.
 
 **Conversation:** A bank-approval refusal packed into invalid clarification and a source-grounding refusal removed as uncited context both became unhelpful. Add only question-bound fact-free own-limit acts; do not allow raw claims or broaden product validation. Preserve original responses and grade them separately from provider status.
+
+
+## 2026-09-19 — source coverage must follow coordinated pronouns (CR41)
+
+**Observed:** The three-second fallback cohort reached94 supported answers, but q073's repaired sentence escaped a direct source-coverage guard: “the retrieved highlights page covers … but it does not detail warranty terms”. Three selected passages could not establish whole-page absence. The initial direct absence claim was rejected; one reworded pronoun clause was incorrectly accepted by the same repair validator.
+
+**Cause and correction:** The guard bound a negative reporting predicate only to an explicit source noun. Add a bounded same-sentence source-reporting antecedent check for its coordinated pronoun, while keeping explicitly named product subjects and nested product clauses outside this source-coverage rule. Never treat this as a general semantic proof. Retain an honest own verification limit; do not voice the positive premise or a successful-check implication from the rejected sentence.
+
+**Useful uncertainty:** q002 lost its precise capacity/measurement limit while retaining a split-seat fact. A closed boot-measurement own-limit act preserves both requested unknowns without inventing a number or assuming a seating basis. Its catalogue requires the capacity request and measurement/seating basis together, not an unrelated luggage preference and car-width question.
+
+**Boundary:** “Available policies only cover …” is a separate ambiguous policy-inventory overstatement, graded partial. Do not broaden source nouns to every contract policy and accidentally reject legitimate warranty exclusions. The observed result and all old hashes remain unchanged.
