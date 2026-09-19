@@ -112,6 +112,61 @@ for prefix in ("I cannot guarantee comfort because the cabin is bulletproof.","I
     answer,errors=rg.validate_decision({"action":"clarify","clarification":prefix+" "+clarify},[],q064)
     check("Clarification cannot wrap an unsupported claim: "+prefix,"invalid_clarification" in errors and not answer["clarifying_question"])
 
+answer,errors,feedback=validate("scope40_q001_repair")
+check("Actual family repair keeps validated safety/comfort rows but rejects luggage benefit",answer["answered"] and "F214" in answer["fact_ids"] and "F075" not in answer["fact_ids"] and "unsupported_assertion_feature" in errors)
+answer,errors,_=validate("scope40_q049")
+check("Actual future-publication claim cannot hide behind a limitation label","uncited_context" in errors and "have not been published" not in answer["answer"] and "I cannot guarantee or verify" in answer["answer"])
+for text,kind,customer in (
+    ("You mentioned you drive 1000 km per month.","context","I drive 1000 km per month."),
+    ("I cannot calculate your EMI without a loan amount, interest rate, or tenure.","limitation","What would the EMI be?"),
+    ("You can assess seat comfort during a test drive.","context","Would the seats suit me?"),
+):
+    r,e=rg.validate_decision({"action":"answer","answered":True,"sentences":[{"text":text,"kind":kind}]},[],customer,customer)
+    check("Specific customer context/own-input limit/fit-check remains usable: "+text,not e and text in r["answer"])
+for text in ("Banks evaluate every application carefully.","Official details for that future lineup have not been published yet.","You mentioned you drive 1000 km per month."):
+    r,e=rg.validate_decision({"action":"answer","answered":True,"sentences":[{"text":text,"kind":"context"}]},[],"Tell me about the car.")
+    check("Uncited context cannot assert world facts or invent customer input: "+text,bool(e) and text not in r["answer"])
+answer,errors,feedback=validate("scope40_q025_repair")
+check("Actual alternate-citation repair cannot escape a compatible purchase dependency","missing_required_condition" in errors and "F144" not in answer["fact_ids"] and any(c["fact_id"]=="F168" for row in feedback for c in row.get("required_conditions",[])))
+feature=copy.deepcopy(by_id["F144"]);donor=copy.deepcopy(by_id["F168"])
+conditioned={"action":"answer","sentences":[{"text":"Equipped models offer Home-to-Car with Alexa, which requires an Echo device bought separately.","kind":"fact","fact_ids":["F144"]}]}
+r,e=rg.validate_decision(conditioned,[feature,donor],"Which connected features can I use?")
+check("A correctly retained duplicate-feature dependency has visible condition provenance",not e and r["fact_ids"]==["F144"] and r["condition_fact_ids"]==["F168"] and any(f["id"]=="F168" and f.get("runtime_role")=="condition" for f in r["facts"]))
+direct=copy.deepcopy(conditioned);direct["sentences"][0].update(text="On selected variants, Home-to-Car with Alexa requires an Echo device bought separately.",fact_ids=["F168"])
+r,e=rg.validate_decision(direct,[feature,donor],"Which connected features can I use?")
+check("Direct dependency citation still works without duplicate facts",not e and r["fact_ids"]==["F168"] and len(r["facts"])==1)
+covered=copy.deepcopy(cases["focused_q025_repair"])
+r,e=rg.validate_decision(covered["decision"],covered["evidence"],covered["question"])
+check("A validated conditioned duplicate makes the rejected broad duplicate redundant",r["covered_condition_rejections"] and "F168" in r["condition_fact_ids"] and "third-party purchase" in r["answer"])
+invalid_witness={"action":"answer","sentences":[{"text":"Equipped models support Home-to-Car with Alexa.","kind":"fact","fact_ids":["F144"]},{"text":"Alexa requires an Echo device bought separately and includes twelve airbags.","kind":"fact","fact_ids":["F168"]}]}
+r,e=rg.validate_decision(invalid_witness,[feature,donor],"Which connected features can I use?")
+check("An invalid condition-bearing row cannot qualify a surviving broad duplicate",not r["covered_condition_rejections"] and not r["answered"] and "missing_required_condition" in e)
+for text,kind in (("Home-to-Car with Alexa is not available.","fact"),("I cannot verify Home-to-Car with Alexa availability.","limitation")):
+    negative_witness={"action":"answer","sentences":[{"text":"Equipped models support Home-to-Car with Alexa.","kind":"fact","fact_ids":["F144"]},{"text":text,"kind":kind,"fact_ids":["F144"]}]}
+    r,e=rg.validate_decision(negative_witness,[feature,donor],"Which connected features can I use?")
+    check("A negative/unverified row cannot prove a positive purchase condition: "+kind,not r["condition_fact_ids"] and not r["covered_condition_rejections"] and not r["answered"] and "missing_required_condition" in e)
+    if kind=="fact":check("Positive Home-to-Car evidence cannot license inverted absence","unsupported_assertion_polarity" in e and "is not available" not in r["answer"])
+check("The existing H2C alias retains the same explicit device dependency",[f["id"] for f in rg._condition_dependencies("Equipped models offer H2C.",[feature],[feature,donor])]==["F168"])
+check("Provider and repair payloads expose duplicate dependency provenance",any(row["assertion_id"]=="F144" and row["requirements"][0]["fact_id"]=="F168" for row in rg._dependency_payload([feature,donor])))
+for label,update in (
+    ("other model",{"scope":{"model":"VENUE"}}),
+    ("other market",{"scope":{"model":"CRETA","market":"Japan"}}),
+    ("other year",{"scope":{"model":"CRETA","model_year":"2020"}}),
+    ("other trim",{"scope":{"model":"CRETA","variant":"E"}}),
+    ("held",{"approved":False}),
+    ("suppressed",{"knowledge":{"conflict_status":"suppressed"}}),
+    ("precedence loser",{"knowledge":{"excluded_by_precedence":True}}),
+):
+    bad=copy.deepcopy(donor);bad.update(update)
+    req={"model":"CRETA","market":"India","model_year":"2026","variant":"King"}
+    check("A "+label+" donor cannot impose a duplicate dependency",not rg._condition_dependencies("Home-to-Car with Alexa",[feature],[feature,bad],req))
+check("A dependency for Alexa does not attach to unrelated OTA wording",not rg._condition_dependencies("Over-the-air updates are available.",[donor],[feature,donor]))
+warranty=copy.deepcopy(by_id["F245"])
+check("Optional extended-warranty payment is not a device prerequisite closure",not rg._condition_dependencies("Standard warranty coverage",[warranty],[warranty]))
+standard=copy.deepcopy(feature);standard.update(value="Standard warranty coverage",conditions="Included with the car")
+optional=copy.deepcopy(donor);optional.update(value="Optional extended warranty coverage",conditions="Extended warranty requires separate purchase",scope={"model":"CRETA"})
+check("Shared warranty wording cannot transfer optional-extension purchase to standard coverage",not rg._condition_dependencies("Standard warranty coverage is included.",[standard],[standard,optional]))
+
 async def run():
     state={"demo_id":"contract-unused","question":"What does the source say about SX(O)?","snapshot_id":fixture["v6_scope_registry"]["snapshot_id"],"profile":{},"history":[],"control":TurnControl(time.monotonic()+12)}
     pack={"snapshot_id":state["snapshot_id"],"evidence":[copy.deepcopy(by_id[fid]) for fid in ("F252","F195","F175","F082","F151")]}
@@ -130,6 +185,20 @@ async def run():
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured") as model,patch("server.runtime_graph.store.read_json",return_value={}):
         result=await rg.validate(state)
     check("An intact precise year limit needs no repair for removed unsupported context",not model.called and not result["result"]["answered"] and "2026" in result["result"]["answer"])
+    state={**copy.deepcopy(cases["scope40_q001"]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
+    saved=rg._CompositionRepair(sentences=cases["scope40_q001_repair"]["decision"]["sentences"])
+    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=saved) as model,patch("server.runtime_graph.store.read_json",return_value={}),patch("server.runtime_graph.usage.trace"):
+        result=await rg.validate(state)
+    repair=result["result"]["validation_repair"]
+    check("Actual empty family draft accepts a strictly validated repair subset once",model.call_count==1 and result["result"]["answered"] and repair["accepted"] and repair["partial"] and "unsupported_assertion_feature" in result["result"]["validation_errors"] and "F075" not in result["result"]["fact_ids"])
+    original={"answer":"An already validated answer.","answered":True,"fact_ids":["F075"]}
+    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=saved),patch("server.runtime_graph.usage.trace"):
+        retained,errors,repair=await rg._repair_composition(state,original,["original_error"],[],state["question"])
+    check("A partially invalid repair cannot replace an original supported answer",retained==original and not repair["accepted"])
+    state={**copy.deepcopy(cases["scope40_q049"]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
+    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured") as model,patch("server.runtime_graph.store.read_json",return_value={}):
+        result=await rg.validate(state)
+    check("The precise year limit survives removal of an invented publication claim without repair",not model.called and "published" not in result["result"]["answer"] and "2026" in result["result"]["answer"])
 asyncio.run(run())
 print(f"{len(checks)}/{len(checks)} final cohort contracts passed")
 for name in checks:print("PASS",name)

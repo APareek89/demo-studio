@@ -596,6 +596,25 @@ def _features(text: str) -> Counter:
     return bag
 
 
+def _query_features(query: str, requested: dict) -> Counter:
+    """Rank the requested topic, not repeated trim names already used as filters."""
+    text=" ".join(re.findall(r"[a-z0-9]+",query.casefold()))
+    names=[scope_value(value,key) for key in ("model","variant")
+           for value in scope_atoms(requested.get(key,""),key)]
+    for name in sorted(set(names),key=len,reverse=True):
+        if name:text=re.sub(r"\b"+re.escape(name)+r"\b"," ",text)
+    boilerplate={"a","an","the","what","which","how","where","when","who","is","are","was","does","do",
+                 "it","its","have","has","on","in","for","of","to","from","and","or","with","under",
+                 "only","compare","comparison","versus","vs","between","difference","differences","different",
+                 "tell","me","about","please","not","other","variant","variants","trim","trims","lineup","lineups","feature","features",
+                 "specific","specifically","can","you","confirm","your","source","say","says","listed","list","stated",
+                 "offer","offers","offered","available","availability","included","include","equipped","all","every","both"}
+    topic=" ".join(word for word in text.split() if word not in boilerplate)
+    # Broad variant comparisons have no feature topic; preserve their original
+    # query rather than making the scope itself imply a requested feature.
+    return _features(topic or query)
+
+
 def _write_index(demo_id: str, snap: dict) -> dict:
     docs = []
     for fact, owner in store.fact_entries(snap):
@@ -619,7 +638,13 @@ def retrieve(demo_id: str, query: str, *, snapshot_id: str | None = None, scope:
         snap = store.read_json(demo_id, f"knowledge/snapshots/{published['id']}.json") if published else None
         snap = snap or snapshot(demo_id)
     index = store.read_json(demo_id, f"knowledge/index/{snap['id']}.json") or _write_index(demo_id, snap)
-    docs, q = index["documents"], _features(query)
+    requested = {k: v for k, v in (scope or {}).items() if k in SCOPE_KEYS and v}
+    docs, q = index["documents"], _query_features(query,requested)
+    # If the remaining topic has no assertion/index match (for example
+    # 'lineup' versus a record labelled 'variants'), retain the prior query.
+    # Query cleanup must not hide a known record with a different topic label.
+    if not any(term in doc["features"] for term in q if not term.startswith("tri:") for doc in docs):
+        q=_features(query)
     df = Counter(t for doc in docs for t in doc["features"])
     avg = sum(doc["length"] for doc in docs) / max(1, len(docs)) or 1
     ranking = {}
@@ -635,7 +660,6 @@ def retrieve(demo_id: str, query: str, *, snapshot_id: str | None = None, scope:
         norm = math.sqrt(sum(v*v for v in q.values()) * sum(v*v for v in features.values())) or 1
         ranking[(doc["id"], doc["owner"])] = score + dot / norm
     evidence = []
-    requested = {k: v for k, v in (scope or {}).items() if k in SCOPE_KEYS and v}
     for fact, owner in store.fact_entries(snap):
         if not fact.get("approved", True) or fact.get("knowledge", {}).get("excluded_by_precedence") or (owner and not competition):
             continue

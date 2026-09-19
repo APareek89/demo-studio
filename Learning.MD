@@ -1144,3 +1144,14 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Fix:** Name the Audi Q5 consistently in sample data and dynamic labels. Compare every product card against the local asset provenance during browser review.
 
 **Eval:** Open all four workspace concepts, inspect the Audi card and its accessible image name, and compare with `docs/design/options-2026-09-18/assets/provenance.json`. Final Bluebird snapshot shows Audi Q5 and Control Room shows Audi Q5 / SUV. No A4/Q4/e-tron placeholder remains in the prototypes.
+
+
+## 2026-09-19 — Repair subsets, uncited context and prerequisite provenance (CR32)
+
+**Observed:** The immutable focused40 left q001 unhelpful despite valid child-seat/comfort sentences in its repair; q025 dropped the Alexa purchase caveat after choosing a broader citation; q049 added an unsupported future-lineup publication claim as “context”. Q044 and q050 missed relevant approved styling/parking facts.
+
+**Causes:** Repair acceptance required every candidate clause to pass; uncited screening looked for a short list of product phrases; material conditions were checked only on selected citations. Ranking repeated resolved trim words, crowding out topic facts, and one source-specific “edition” descriptor did not match the source’s own canonical trim.
+
+**Fix:** Retain only already-validated factual repair sentences when the original has no usable facts, with errors/partial status preserved. Restrict uncited context and limitations to bounded interaction, attributed customer input and own verification/input limits. Close explicit compatible device-purchase prerequisites across supplied evidence; preserve separate primary and condition-only provenance. Optional warranty policies are excluded. Rank the topic after resolving scope. Correct F080 to new F253 only after exact same-page source review; never strip “Edition” generically.
+
+**Limits:** These are narrow English checks, not universal entailment or multilingual validation. Source correction is a versioned publication, not silently rewritten history. The original failures and all prior scores remain unchanged. Independent adversarial controls and a new live cohort are required; fixtures alone do not establish acceptance.

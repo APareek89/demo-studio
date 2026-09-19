@@ -349,6 +349,32 @@ class KnowledgeContract(unittest.TestCase):
         self.assertEqual({f["scope"]["variant"] for f in pack["evidence"]},{"SX","E"})
         self.assertEqual(len(store.read_json(self.did,"understanding.json")["facts"]),3)
 
+    def test_parking_comparison_retrieves_standard_sensors_before_unrelated_trim_equipment(self):
+        registry=json.loads((Path(__file__).parent/"fixtures/runtime_final_decisions.json").read_text())["v6_scope_registry"]["facts"]
+        store.write_json(self.did,"understanding.json",understanding(registry))
+        pack=knowledge.retrieve(self.did,"Compare only E and King on parking features, not other variants.",scope={"variant":["E","King"]},limit=14)
+        ids={f["id"] for f in pack["evidence"]}
+        self.assertTrue(ids & {"F174","F195"},ids)
+        self.assertTrue({"F215","F248","F064"} <= ids,ids)
+        self.assertLessEqual(len(pack["evidence"]),14)
+        self.assertTrue(all(f.get("approved",True) and not f.get("knowledge",{}).get("excluded_by_precedence") for f in pack["evidence"]))
+        self.assertEqual(store.read_json(self.did,"understanding.json")["facts"],registry)
+        broad=knowledge.retrieve(self.did,"How is S(O) Knight different from S(O)?",scope={"variant":["S(O) Knight","S(O)"]},limit=14)
+        self.assertIn("F049",{f["id"] for f in broad["evidence"]})
+
+    def test_topic_ranking_does_not_relax_scope_or_merge_edition_names(self):
+        rows=[fact(id="F001",claim="Rear parking sensors",value="Rear parking sensors",conditions="Standard on E",scope={"model":"Aster","market":"India","variant":"E"}),
+              fact(id="F002",claim="Parking camera",value="Rear parking camera",scope={"model":"Aster","market":"India","variant":"E"},approved=False),
+              fact(id="F003",claim="Parking camera",value="Rear parking camera",scope={"model":"Aster","market":"Japan","variant":"E"}),
+              fact(id="F004",claim="Parking camera",value="Rear parking camera",scope={"model":"Aster","market":"India","variant":"Sport"}),
+              fact(id="F005",claim="Parking camera",value="Rear parking camera",scope={"model":"Aster","market":"India","variant":"E"},knowledge={"excluded_by_precedence":True})]
+        store.write_json(self.did,"understanding.json",understanding(rows))
+        pack=knowledge.retrieve(self.did,"Which parking features does the E variant offer?",scope={"variant":"E","market":"India"},limit=14)
+        self.assertEqual([f["id"] for f in pack["evidence"]],["F001"])
+        for left,right in [("Sport","Sport Edition"),("King","King Knight"),("SX","SX(O)"),("S(O)","S(O) Knight"),("Lounge","Lounge Edition")]:
+            self.assertFalse(knowledge.scope_matches({"scope":{"variant":left}},{"variant":right}),(left,right))
+            self.assertFalse(knowledge.scope_matches({"scope":{"variant":right}},{"variant":left}),(right,left))
+
     def test_explicit_negative_applicability_is_retrieved_with_polarity(self):
         row=fact(id="F001",claim="Panoramic sunroof",value="Standard on King",conditions="Excludes E and EX variants",scope={"model":"CRETA","variant":"King"})
         store.write_json(self.did,"understanding.json",understanding([row]))

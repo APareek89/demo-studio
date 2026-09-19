@@ -3,6 +3,12 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Repair preservation and condition provenance — 2026-09-19
+
+Frozen graph `05dc701d`: actual-cohort85/85, repair106/106, graph130/130, trace36/36; independent device-condition closure5/5. Knowledge58/58 and v7 source/retrieval7/7 pass. Real player DOM47/47 and client56/56 verify distinct primary/condition citations without routing changes; fake media, zero paid calls. Syntax94 Python/17 web JS is clean. Independent review excludes optional warranty transfer and negative/unverified condition witnesses. All provider-facing offline contracts use blocked sockets. Required final deck320/320, acceptance24/24 and both smoke phases also pass on this frozen graph, each with zero outbound attempts; logs `final-gates/final-*.log`.
+
+The original focused40 remains30 supported/7partial/1unhelpful/1unsafe/1provider failure on f06d8b9/v6. Corrections retain validated repair subsets only when the original has no facts, positively bound uncited interaction/limits, close mandatory compatible device prerequisites, and rank topic facts after scope resolution. Correctivev7 canonically identifies King Knight from the same source revision; no generic Edition alias. The next unchanged live100 is separate evidence. Browser remains capped at32TTS; Loop remains off.
+
 ## Final source and applicability repair — 2026-09-19
 
 Frozen graph `d93eaa78` and knowledge `fc9503e3`: new actual-cohort54, repair106, graph130, trace36, knowledge56; required deck320/320, acceptance24/24 and both smoke phases pass. Main gates used separate temporary data/checkpoint stores and blocked outbound sockets, with zero attempts. Syntax94 Python/17 web JavaScript files is clean. Independent graph review passes seven concrete controls plus the54-case contract. Results: `output/creta-runtime-2026-09-19/final-gates/source-scoped-*` and `player-independent-graph-review/`.

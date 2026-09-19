@@ -4,7 +4,7 @@
 
 ## Reviewed demo
 
-Hyundai CRETA `dm_41513908`, published version **6**, knowledge snapshot `kb_7812e2a0af909856a9301666`, **181 approved facts**, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).
+Hyundai CRETA `dm_41513908`, published version **7**, knowledge snapshot `kb_2d616ba1bcec1469e8c7ab40`, **181 approved facts**, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).
 
 The demo uses eleven selected official images and the supplied PDFs alongside model-scoped official India pages. Manufacturer engine-table figures were visually checked. Conflicting turbo displacement and airbag assertions were rejected; repaired assertions have new identities. Variant, market and optional-package conditions remain visible. A brochure publication date is not treated as a vehicle model year.
 
@@ -59,6 +59,12 @@ The wheel answer repeated a bad approved flattened website row: EX(O) styled roa
 The final direct-answer ADAS browser probe on `20649a4`/v5 passed **11/11**. Its acknowledgement began at **434 ms**, useful answer audio at **3.703 s**, and graph completion took **2.913 s**. Result-ready→audio fell from **3.110 s** in the earlier probe to **580 ms**, after removing the generic spoken jump bridge. Explicit Continue returned to the exact original sentence. This single typed/muted sample is separate from the earlier app revision; same-version dashboard aggregates mix those revisions and cannot establish the change's p95. Browser counters reached **25 reasoning / 32 TTS**; the finite speech cap is exhausted, with its original spend baseline preserved.
 
 The current code follow-up targets remaining precise-limit, completeness and source-scope failures. New source publication and passing offline regressions alone do not establish that the next live answers meet acceptance.
+
+## Focused source-scope replay
+
+The40-case difficult subset on `f06d8b9`/v6 produced **30 supported, 7 partial, 1 unhelpful, 1 unsafe and 1 provider failure**. HTTP text median2.531s,p957.493s; recorded estimate$0.2338 without concurrent paid work. Wheel comparisons and SX(O) source handling now work. Remaining failures include an unsupported “unpublished future lineup” sentence, a connected-car answer that switches citations to omit the Echo purchase dependency, and an entirely discarded repair despite valid surviving sentences. This is not a new full100 score. Original answers and independent reviews remain under `qa-focused-source-scope/`.
+
+Correctivev7 changes only F080→F253 canonical scope: the same official highlights page lists King Knight, labels its dedicated section King Knight and describes identical styling in the FAQ using “edition”. This is a reviewed product-specific identity decision, not a global rule that strips Edition from trim names. Existing narration, slides, audio, all six approvals and old snapshot bytes remain intact. Current graph/ranking/provenance-display repairs require independent checks and live verification.
 
 ## Repair details
 

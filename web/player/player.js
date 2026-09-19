@@ -201,23 +201,26 @@ export function mountPlayer(host, bundle, api) {
   // A line spoken outside the deck gets complete reviewed evidence, never a clipped fact or an unrelated current image.
   function transientSlide(id, kind, text, factIds, visual, title = "") {
     const facts = (bundle.facts || []).filter((f) => (factIds || []).includes(f.id) && f.approved !== false);
-    const allowed = new Set(facts.map((f) => f.id));
+    const primary = facts.filter((f) => f.runtime_role !== "condition");
+    const allowed = new Set(primary.map((f) => f.id));
     const complete = (label) => typeof label === "string" && label.trim() && wordsOf(label) <= 8;
     const reviewed = slides.map((slide) => ({ slide, callouts: (slide.callouts || []).filter((c) => complete(c.text) && c.fact_ids?.length && c.fact_ids.every((fid) => allowed.has(fid))) }));
-    const match = facts.length ? reviewed.find(({ slide, callouts }) => slide.image_url && facts.every((f) => callouts.some((c) => c.fact_ids.includes(f.id)))) : null;
+    const match = primary.length ? reviewed.find(({ slide, callouts }) => slide.image_url && primary.every((f) => callouts.some((c) => c.fact_ids.includes(f.id)))) : null;
     const candidates = [...(match?.callouts || []), ...reviewed.flatMap((s) => s.callouts)];
     const callouts = [], seen = new Set();
     for (const f of facts) {
       if (seen.has(f.id)) continue;
-      const saved = candidates.find((c) => c.fact_ids.includes(f.id) && c.fact_ids.every((fid) => !seen.has(fid)));
-      let label = saved?.text;
-      if (!label && f.claim != null && f.value != null) {
+      const conditionOnly = f.runtime_role === "condition";
+      const saved = !conditionOnly && candidates.find((c) => c.fact_ids.includes(f.id) && c.fact_ids.every((fid) => !seen.has(fid)));
+      // A prerequisite donor proves its conditions, not its product/trim claim.
+      let label = conditionOnly ? (f.conditions?.trim() ? `Conditions: ${f.conditions.trim()}` : "") : saved?.text;
+      if (!conditionOnly && !label && f.claim != null && f.value != null) {
         label = `${f.claim}: ${f.value}` + (f.conditions ? `; ${f.conditions}` : "");
         const truth = { certified: "Certified", modeled: "Estimate", observed: "Observed", contractual: "Written terms" }[f.truth];
         if (truth) label = `${truth} — ${label}`;
         label = label.trim().replace(/\s+/g, " ");
       }
-      if (!complete(label)) continue;
+      if (conditionOnly ? !label : !complete(label)) continue;
       const citations = saved ? [...saved.fact_ids] : [f.id];
       citations.forEach((fid) => seen.add(fid));
       callouts.push({ id: `${id}-c${callouts.length + 1}`, text: label, fact_ids: citations, placement: "panel", anchor: null, label_pos: null, reveal_on_line: 0 });
@@ -779,7 +782,8 @@ export function mountPlayer(host, bundle, api) {
       S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
     } else cur?.view.setRevealed(99);
     if (r.callout_id) cur?.view.highlight(r.callout_id);
-    el.cite.textContent = r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "";
+    const conditionIds = r.condition_fact_ids || r.condition_evidence?.map((f) => f.id) || r.facts?.filter((f) => f.runtime_role === "condition").map((f) => f.id) || [];
+    el.cite.textContent = [r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "", conditionIds.length ? "conditions: " + [...new Set(conditionIds)].join(", ") : ""].filter(Boolean).join(" · ");
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
     if (!(await speak(r.answer, run, r.audio, r))) return;

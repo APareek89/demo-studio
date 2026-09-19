@@ -48,6 +48,8 @@ Retrieval is a relevant subset, not an exhaustive inventory. Do not say a trim i
 features exist, or the full sources contain no value just because the retrieved assertions do not contain it.
 Only an assertion's claim, value, conditions and scope authorize product details under that ID. A source locator is
 provenance, not permission to borrow another fact from its table. Cite each separate feature's actual assertion.
+Mandatory dependencies stated in compatible supplied assertions still apply when a broader duplicate assertion
+describes the same feature. Switching citation IDs cannot remove a required purchase or prerequisite.
 An applicability_projection contains exact positive or negative variant clauses from the reviewed assertion.
 Negative clauses support only absence for those named trims; never turn them into a positive feature claim.
 State projected positive and negative trim points in separate sentences; do not mix opposing applicability in one sentence.
@@ -190,6 +192,10 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     """Narrow safe rewrites of observed refusals, never a positive-claim bypass."""
     plain = text.replace("’", "'")
     plain=re.sub(r"\s+yet\.$",".",plain,flags=re.I)
+    own_source_limit=re.fullmatch(r"(?:As a result,\s*)?(?:I|we)\s+(?:do not|don't)\s+have\s+(.+?\b(?:details|information|evidence|specifications|figures))\s+from\s+(?:that|the)\s+(?:link|page|source)(?:\s+to share(?: right now)?)?\.",plain,re.I)
+    if own_source_limit:
+        candidate="I couldn't verify "+own_source_limit[1]+"."
+        if _safe_limitation(candidate,customer_text):return candidate
     # Preserve the missing noun phrase, not an unsupported claim that a whole
     # source contains nothing. Only a single verification clause is normalized.
     source_suffix=r"(?:\s+(?:from|in)\s+(?:my|our|the)\s+(?:(?:available|current|reviewed)\s+)?(?:records|information|details|evidence))?"
@@ -235,6 +241,31 @@ def _verification_next_step(text: str) -> str:
     if re.search(r"\b(?:dealer|dealership)\b",plain,re.I):actions.append("ask an authorised dealer to confirm")
     if re.search(r"\bofficial updates\b",plain,re.I):actions.append("check official updates")
     return "You can "+" or ".join(actions)+"." if actions else ""
+
+
+def _safe_context(text: str, customer_text: str) -> bool:
+    """Uncited context is interaction or attributed customer input, not world facts."""
+    if re.fullmatch(r"(?:Hello(?:,? I'm ready to help)?|Hi|Thanks|Thank you|Got it|Understood|Sure|Of course|Happy to help|Let's explore that)[.!]?",text,re.I):return True
+    if re.fullmatch(r"Please share a public (?:HTTP or HTTPS product page|product URL)[.]?",text,re.I):return True
+    if re.fullmatch(r"(?:We|You) can (?:check|try|assess) (?:the |your )?(?:seating position|seat comfort|rear[- ]seat space|boot space) (?:during|on) a test drive[.]?",text,re.I):return True
+    stated=re.fullmatch(r"You (?:said|mentioned|told me)\s+(?:that\s+)?(.+?)[.]?",text,re.I)
+    if not stated or re.search(r"[;!?]|\.(?:\s|$)",stated[1]):return False
+    def normalized(value):
+        value=re.sub(r"\bI\b","you",value,flags=re.I)
+        value=re.sub(r"\bmy\b","your",value,flags=re.I)
+        value=re.sub(r"\bam\b","are",value,flags=re.I)
+        return " ".join(re.findall(r"[a-z0-9]+",value.casefold()))
+    subject=normalized(stated[1])
+    return len(subject.split())>=3 and subject in normalized(customer_text)
+
+
+def _safe_input_limit(text: str) -> bool:
+    """A missing calculator input is an own-capability limit, not a product claim."""
+    match=re.fullmatch(r"I (?:cannot|can't) (?:calculate|estimate) (?:the |your |an? )?(?:EMI|loan payment|fuel cost|running cost) without (.+?)[.]?",text,re.I)
+    if not match:return False
+    values=re.split(r",\s*|\s+(?:and|or)\s+",match[1])
+    allowed={"loan amount","principal","interest rate","loan term","tenure","distance","fuel efficiency","fuel price"}
+    return bool(values) and all(re.sub(r"^(?:(?:and|or)\s+)?(?:(?:a|an|the|your)\s+)?","",value.strip().casefold()) in allowed for value in values)
 
 
 def _global_coverage_claim(text: str) -> bool:
@@ -298,6 +329,7 @@ _FEATURE_PATTERNS = {
     "hill_assist":r"\bhill.start\b|\bHAC\b",
     "tyre_pressure":r"\btyre.pressure|\btire.pressure|\bTPMS\b",
     "phone_mirroring":r"\bAndroid Auto\b|\bCarPlay\b|\b(?:smartphone|phone) (?:mirroring|connectivity)\b",
+    "home_to_car":r"\bhome[- ]to[- ]car\b|\bH2C\b",
     "wireless_charging":r"\bwireless (?:charg\w*)\b",
     "rear_entertainment":r"\brear.seat entertainment\b|\brear (?:entertainment )?(?:screen|display)\b",
     "seat_memory":r"\b(?:seat|driver).{0,20}\bmemory\b|\bmemory (?:function|seat)\b",
@@ -359,6 +391,49 @@ def _missing_required_condition(text: str, facts: list[dict]) -> bool:
                 if not purchase or re.search(r"\b(?:no|not|without|don't|doesn't)\b",purchase.group(),re.I) or re.search(r"\b(?:no|not|without)\b[^,.;]{0,20}$",text[max(0,purchase.start()-25):purchase.start()],re.I):
                     return True
     return False
+
+
+def _condition_dependencies(text: str, cited: list[dict], evidence: list[dict], requested: dict | None = None) -> list[dict]:
+    """Close mandatory device-purchase constraints, never merge product assertions."""
+    from .knowledge import SCOPE_KEYS, scope_value, scope_values
+    if _negative_feature_claim(text) or re.match(r"^(?:I|we)\s+(?:cannot|can't|couldn't|could not|do not|don't)\s+(?:verify|confirm|guarantee|know)\b",text,re.I):return []
+    def eligible(fact):
+        meta=fact.get("knowledge",{})
+        return fact.get("approved",True) and not meta.get("excluded_by_precedence") and meta.get("conflict_status") not in {"suppressed","unresolved"} and fact.get("provenance") not in {"calculation","live_web"}
+    def tokens(value):
+        value=re.sub(r"\bhome[- ]to[- ]car\s*(?:\(H2C\))?|\bH2C\b","home to car",value,flags=re.I)
+        return [w for w in re.findall(r"[a-z0-9]+",value.casefold()) if w not in {"a","an","the","and","with","to","device","requires","require"}]
+    def compatible(left,right):
+        for key in SCOPE_KEYS:
+            if not left.get(key) or not right.get(key):continue
+            a,b=scope_values(left[key],key),scope_values(right[key],key)
+            if key=="variant" and (a|b)&{"all","all variants","all trims"}:continue
+            if not a&b:return False
+        return True
+    spoken=set(tokens(text));dependencies=[]
+    for donor in evidence:
+        if not eligible(donor):continue
+        match=re.search(r"(?:^|;)\s*([^;]+?)\s+requires?\s+(?:a\s+)?(?:third-party|separate)\s+purchase\b",str(donor.get("conditions","")),re.I)
+        if not match or not re.search(r"\b(?:device|hardware|adapter)\b",match[1],re.I):continue
+        subject=set(tokens(match[1]));subject-={"third","party","separate","purchase"}
+        if not subject&spoken and not ("alexa" in subject and re.search(r"\bH2C\b|home[- ]to[- ]car",text,re.I)):continue
+        donor_scope=donor.get("scope",{});model=scope_value(donor_scope.get("model",""),"model")
+        if not model or not compatible(donor_scope,requested or {}):continue
+        donor_words=tokens(str(donor.get("value","")))
+        donor_pairs={tuple(donor_words[i:i+2]) for i in range(len(donor_words)-1)}
+        for base in cited:
+            base_scope=base.get("scope",{})
+            if not eligible(base) or scope_value(base_scope.get("model",""),"model")!=model or not compatible(donor_scope,base_scope):continue
+            words=tokens(str(base.get("value","")))
+            shared=donor_pairs & {tuple(words[i:i+2]) for i in range(len(words)-1)}
+            if subject&set(words) and any(subject&set(pair) for pair in shared):
+                dependencies.append(donor);break
+    return list({f["id"]:f for f in dependencies}.values())
+
+
+def _dependency_payload(evidence: list[dict], requested: dict | None = None) -> list[dict]:
+    return [{"assertion_id":fact["id"],"requirements":[{"fact_id":donor["id"],"condition":donor.get("conditions",""),"scope":donor.get("scope",{}),"source":{k:v for k,v in donor.get("source",{}).items() if k!="quote"}} for donor in donors]}
+            for fact in evidence if (donors:=_condition_dependencies(str(fact.get("value","")),[fact],evidence,requested))]
 
 
 def _quantity_units(text: str) -> set[tuple[Decimal,str]]:
@@ -674,6 +749,7 @@ async def reason(state: RuntimeState) -> dict:
     settings = demo.get("settings", {})
     payload = {"question":state["question"],"customer":state.get("profile", {}),"conversation":state.get("history", [])[-12:],
                "evidence":[_reason_evidence(f) for f in state.get("evidence", [])],"requested_scope":state.get("requested_scope",{}),"conflicts":state.get("conflicts", []),
+               "mandatory_dependencies":_dependency_payload(state.get("evidence",[]),state.get("requested_scope")),
                "tools_so_far":state.get("tool_results", []),"tool_errors":state.get("errors", []),
                "tools_remaining":max(0,4-state.get("tool_count",0)) if state.get("tool_rounds",0)<2 else 0,
                "CUSTOMER_URLS":supplied_urls(state["question"],state.get("history", [])),
@@ -742,8 +818,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     proof. Quotes/scopes remain reviewable and semantic quality has separate evals.
     """
     requested_scope = requested_scope or explicit_scope(question, evidence)
-    by_id = {f["id"]:f for f in evidence if f.get("approved",True) and f.get("knowledge",{}).get("conflict_status") not in ("suppressed","unresolved")}
-    errors, sentences, used, substantive = [], [], [], []
+    by_id = {f["id"]:f for f in evidence if f.get("approved",True) and not f.get("knowledge",{}).get("excluded_by_precedence") and f.get("knowledge",{}).get("conflict_status") not in ("suppressed","unresolved")}
+    errors, sentences, used, substantive, condition_facts, condition_rejections = [], [], [], [], {}, []
     clarification = str(decision.get("clarification","")).strip()
     if decision.get("action")=="clarify" and clarification:
         limit="";parts=re.split(r"(?<=[.!])\s+",clarification,maxsplit=1)
@@ -757,6 +833,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         errors.append("invalid_clarification")
     for row in _atomic_answer_rows(decision.get("sentences",[]),evidence,requested_scope):
         text = str(row.get("text","")).strip()
+        row_dependencies=[]
         ids = list(dict.fromkeys(row.get("fact_ids",[])))
         def reject(code):
             errors.append(code)
@@ -811,9 +888,12 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 if not all(market.casefold() in text.casefold() for market in source_markets):
                     text="According to the reviewed "+" / ".join(sorted(source_markets))+" record, "+text
                 if not re.search(r"current.*(?:unverified|confirmation)",text,re.I):text+=" Current lineup equivalence remains unverified."
-            if _missing_required_condition(text,structured_facts):
+            row_dependencies=_condition_dependencies(text,structured_facts,list(by_id.values()),requested_scope)
+            required=list({f["id"]:f for f in [*structured_facts,*row_dependencies]}.values())
+            if _missing_required_condition(text,required):
                 reject("missing_required_condition")
-                if row_feedback is not None:row_feedback[-1]["required_conditions"]=[{"fact_id":f["id"],"condition":str(f.get("conditions",""))} for f in structured_facts if _missing_required_condition(text,[f])]
+                condition_rejections.append({f["id"] for f in required if _missing_required_condition(text,[f])})
+                if row_feedback is not None:row_feedback[-1]["required_conditions"]=[{"fact_id":f["id"],"condition":str(f.get("conditions","")),"scope":f.get("scope",{}),"source":{k:v for k,v in f.get("source",{}).items() if k!="quote"}} for f in required if _missing_required_condition(text,[f])]
                 continue
             market_records=[f for f in structured_facts if re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) and f.get("scope",{}).get("market")]
             if len(market_records)==1:
@@ -912,9 +992,12 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             product_assertion = re.search(r"\b(?:it|the car|this car|creta|the vehicle|this model)\s+(?:has|offers|comes with|is equipped|includes|gives|delivers|provides|can|will)|\b(?:standard|available|smoother|safer|cheaper|more efficient|best choice|perfect for)\b",text,re.I)
             if product_assertion:
                 reject("uncited_product_assertion"); continue
+        if not facts and not (kind=="limitation" and (_safe_limitation(text,customer_text or question) or _safe_input_limit(text))) and not (kind=="context" and _safe_context(text,customer_text or question)) and not next_step:
+            reject("uncited_context");continue
         if re.search(r"<[^>]+>|\[(?:happy|cheerful|pause|laugh|whisper)[^\]]*\]",text,re.I):
             reject("speech_markup"); continue
         sentences.append(text); used.extend(ids)
+        condition_facts.update({f["id"]:f for f in row_dependencies})
         if kind=="fact":
             substantive.extend(ids)
     used = list(dict.fromkeys(used))
@@ -931,9 +1014,10 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             used = list(dict.fromkeys([final_calc["id"],*used]))
             substantive.append(final_calc["id"])
     has_response = bool(sentences)
+    covered_conditions=bool(condition_rejections and set(errors)=={"missing_required_condition"} and all(ids<=set(condition_facts) for ids in condition_rejections))
     if not has_response:
         sentences = ["I don't have a supported answer to that yet. We can check it with a salesperson or carry on."]
-    elif errors and not set(errors)<={"unresponsive_attribute","unverified_model_availability"}:
+    elif errors and not covered_conditions and not set(errors)<={"unresponsive_attribute","unverified_model_availability","uncited_context"}:
         sentences.append("There's a part of that I couldn't verify, so I won't guess.")
     text = " ".join(sentences)
     # No word slicing: truncation could remove a material caveat.
@@ -943,7 +1027,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     answered = bool(set(substantive)&set(used)) or bool(has_response and decision.get("action")=="answer" and decision.get("answered") and not errors
                                 and any(row.get("kind")=="context" for row in decision.get("sentences",[]))
                                 and not any(row.get("kind")=="limitation" for row in decision.get("sentences",[])))
-    return {"answer":text,"fact_ids":used,"facts":[by_id[i] for i in used],"answered":answered,
+    condition_evidence=[{**f,"runtime_role":"condition"} for f in condition_facts.values()] if used else []
+    return {"answer":text,"fact_ids":used,"facts":[by_id[i] for i in used]+[f for f in condition_evidence if f["id"] not in used],"condition_fact_ids":[f["id"] for f in condition_evidence],"condition_evidence":condition_evidence,"covered_condition_rejections":covered_conditions,"answered":answered,
             "clarifying_question":"","offer_callback":not answered,"topic":decision.get("topic","other"),"cta":""},errors
 
 
@@ -955,9 +1040,11 @@ class _CompositionRepair(BaseModel):
 async def _repair_composition(state: RuntimeState, original: dict, original_errors: list[str], feedback: list[dict], customer_text: str) -> tuple[dict,list[str],dict]:
     decision=state.get("decision",{})
     empty=decision.get("action")=="answer" and not decision.get("sentences")
-    rejected_substantive=any(row.get("kind")=="fact" or (row.get("kind")=="limitation" and row.get("error") in {"uncited_claim","uncited_product_assertion","unverified_coverage_claim","unverified_model_availability"}) for row in feedback)
+    rejected_substantive=any(row.get("kind")=="fact" or (row.get("kind")=="limitation" and row.get("error") in {"uncited_claim","uncited_product_assertion","unverified_coverage_claim","unverified_model_availability","uncited_context"}) for row in feedback)
     precise_limit=any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in decision.get("sentences",[]))
-    if feedback and all(row.get("error") in {"unresponsive_attribute","unverified_model_availability"} for row in feedback) and precise_limit:
+    if original.get("covered_condition_rejections"):
+        return original,original_errors,{}  # The validated duplicate already states this prerequisite.
+    if feedback and all(row.get("error") in {"unresponsive_attribute","unverified_model_availability","uncited_context"} for row in feedback) and precise_limit:
         return original,original_errors,{}  # The exact missing detail is already explained.
     if config.MOCK_LLM or decision.get("action")!="answer" or "reasoning_unavailable" in state.get("errors",[]) or not (empty or rejected_substantive) or not state.get("control"):
         return original,original_errors,{}
@@ -974,7 +1061,7 @@ async def _repair_composition(state: RuntimeState, original: dict, original_erro
     payload={"question":state["question"],"conversation":state.get("history",[])[-8:],"requested_scope":state.get("requested_scope",{}),
              "customer":state.get("profile",{}),"guide":decision.get("response_guide",{}),
              "evidence":[_reason_evidence(f) for f in evidence],"original_sentences":decision.get("sentences",[]),
-             "validation_feedback":feedback or [{"error":"answer_missing_sentences"}],"tool_results":state.get("tool_results",[])}
+             "validation_feedback":feedback or [{"error":"answer_missing_sentences"}],"tool_results":state.get("tool_results",[]),"mandatory_dependencies":_dependency_payload(evidence,state.get("requested_scope"))}
     instructions=SYSTEM+"""\nCOMPOSITION REPAIR — one attempt only. The draft below failed validation or omitted its answer.
 Answer the customer's question naturally using the SAME approved assertions. This is composition only: no tools,
 new facts, invented assumptions, CTA, reasoning notes or internal drafting text. Return 1–3 short spoken sentences.
@@ -1005,8 +1092,10 @@ If a reliable answer is still unavailable, return one honest limitation sentence
         info.update(validation_errors=errors,provider_used=getattr(repaired,"_runtime_provider",""),model_used=getattr(repaired,"_runtime_model",""))
         clean_limit=any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in candidate["sentences"])
         loses_supported_facts=bool(original.get("fact_ids")) and not result.get("fact_ids")
-        if not errors and not loses_supported_facts and (result.get("answered") or (clean_limit and not original.get("answered"))):
+        validated_partial=bool(errors and not original.get("fact_ids") and result.get("fact_ids") and result.get("answered"))
+        if validated_partial or (not errors and not loses_supported_facts and (result.get("answered") or (clean_limit and not original.get("answered")))):
             info["accepted"]=True
+            info["partial"]=validated_partial
             original,original_errors=result,errors
     except InterruptedError:
         raise

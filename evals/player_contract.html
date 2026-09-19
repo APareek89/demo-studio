@@ -364,6 +364,22 @@ test('A superseded QA response cannot speak over the current answer', async () =
   assert(!env.played.includes('Obsolete answer.'), 'Superseded answer was played');
   assert(env.maxActive === 1 && env.active.size === 1, 'More than one narration audio played at once');
 });
+test('Q&A labels prerequisite citations separately and clears them when a new answer takes ownership', async () => {
+  const first = 'Wireless support requires a separately purchased adapter.', second = 'Six airbags are standard.';
+  const donor = { id: 'adapter', runtime_role: 'condition', claim: 'Unrequested trim equipment', value: 'Unrequested donor feature', conditions: 'Separate adapter purchase required', approved: true };
+  const result = answered({ answer: first, fact_ids: ['wireless'], condition_fact_ids: ['adapter'], condition_evidence: [donor], facts: [{ id: 'wireless', value: 'Wireless support' }, donor] });
+  const original = JSON.stringify(result); let release;
+  await setup({ hold: text => [first, second].includes(text), qa: async (_, n) => n === 1 ? result : new Promise(resolve => { release = resolve; }) });
+  await atProof(); await type('Does wireless support need an extra purchase?');
+  const citations = () => host.querySelector('.pl-cap .cite').textContent;
+  assert(citations() === 'sources: wireless · conditions: adapter', 'Condition provenance was omitted or presented as primary applicability');
+  const stale = [...env.active].find(a => a.text === first);
+  await type('Now tell me about airbags.'); stale.finish(); await flush();
+  assert(citations() === '' && !host.textContent.includes(donor.value), 'Old condition evidence survived cancellation or leaked its donor claim');
+  release(answered({ answer: second, fact_ids: ['airbags'] })); await flush();
+  assert(citations() === 'sources: airbags' && env.maxActive === 1, 'Legacy answer inherited a previous condition citation or overlapped audio');
+  assert(JSON.stringify(result) === original, 'Rendering mutated the returned prerequisite evidence');
+});
 test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
   await setup({
     hold: (text) => text === 'First proof interrupted detail.',
@@ -639,6 +655,24 @@ test('Personalized fallback retains complete conditions and truth, and excludes 
      { id: 'long-scope', claim: 'Charging', value: 'Quick', conditions: 'Only when every listed temperature and supply condition applies', approved: true }],
     ['range', 'held', 'long-scope']);
   assert(labels.length === 1 && labels[0].text === 'Estimate — Range: 100 km; Eco mode' && labels[0].citations === 'range', 'Fallback lost its scope/truth or displayed a rejected or overlong fact');
+});
+test('Condition-only evidence shows its full prerequisite and cannot reuse donor claims or imagery', async () => {
+  const conditions = 'A compatible adapter must be purchased separately before wireless operation is available.';
+  const { labels, imageURL } = await customLabels(
+    [{ id: 'adapter', runtime_role: 'condition', claim: 'Donor trim feature', value: 'Unrequested panoramic roof', conditions, approved: true },
+     { id: 'empty', runtime_role: 'condition', claim: 'Other donor', value: 'Unrequested automatic parking', approved: true }],
+    ['adapter', 'empty'], [{ id: 'donor-callout', text: 'Unrequested panoramic roof', fact_ids: ['adapter'], placement: 'panel', reveal_on_line: 0 }]);
+  assert(labels.length === 1 && labels[0].text === 'Conditions: ' + conditions && labels[0].citations === 'adapter', 'Prerequisite text was clipped, missing, or replaced with the donor value');
+  assert(imageURL === tallImageFixture, 'A condition-only donor selected an unrelated reviewed product image');
+});
+test('An explicitly primary fact still renders its reviewed claim beside condition-only evidence', async () => {
+  const { labels, imageURL } = await customLabels(
+    [{ id: 'wireless', claim: 'Wireless support', value: 'Available', approved: true },
+     { id: 'adapter', runtime_role: 'condition', claim: 'Donor trim feature', value: 'Unrequested panoramic roof', conditions: 'Separate adapter purchase required', approved: true }],
+    ['wireless', 'adapter'], [{ id: 'wireless-callout', text: 'Wireless support', fact_ids: ['wireless'], placement: 'panel', reveal_on_line: 0 },
+      { id: 'donor-callout', text: 'Unrequested panoramic roof', fact_ids: ['adapter'], placement: 'panel', reveal_on_line: 0 }]);
+  assert(labels.length === 2 && labels[0].text === 'Wireless support' && labels[1].text === 'Conditions: Separate adapter purchase required', 'Primary evidence was suppressed or the donor claim leaked');
+  assert(imageURL === imageFixture + '#reviewed-boot', 'Condition evidence prevented the primary fact from using its matching reviewed image');
 });
 
 const imageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#c9ddd2"/><rect x="8" y="8" width="984" height="584" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="640" cy="280" r="100" fill="#204d43"/><text x="45" y="540" font-family="sans-serif" font-size="32" fill="#173b32">Synthetic geometry fixture — 1000 × 600</text></svg>');
