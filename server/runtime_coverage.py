@@ -52,10 +52,14 @@ _EXHAUSTIVE_CHECK = re.compile(
     r"(?:(?:the|this|that|your|provided|supplied|linked)\s+){0,2}"
     r"(?:(?:entire|whole)\s+" + _SOURCE + r"|(?:all|every)\s+(?:sections?|parts?|contents?)\s+of\s+(?:the\s+)?" + _SOURCE + r")\b"
     r"|\b(?:entire|whole)\s+" + _SOURCE + r"\s+(?:was|were|has been|have been)\s+(?:checked|read|reviewed|searched|examined|scanned)\b", re.I)
+_GLOBAL_ORIGIN = re.compile(
+    r"\b(?:all|every)\s+(?:the\s+)?(?:details?|information|data|specifications?|descriptions?|content)\b"
+    r"[^.;!?]{0,85}\b(?:come|comes|came|originate|originates|sourced|taken|obtained)\s+"
+    r"(?:directly\s+)?from\b", re.I)
 
 _PATTERNS = (_ACTIVE_ABSENCE, _PASSIVE_ABSENCE, _MISSING_FROM,
              _NEGATIVE_SOURCE, _NO_SOURCE, _NO_MENTION, _ONLY_CONTENT,
-             _UNAVAILABLE_IN_SOURCE, _EXHAUSTIVE_CHECK)
+             _UNAVAILABLE_IN_SOURCE, _EXHAUSTIVE_CHECK, _GLOBAL_ORIGIN)
 
 # Optional precision for uncited interaction limits only. Each subject slot is
 # a requested attribute, not a value, fitment condition or finite product claim.

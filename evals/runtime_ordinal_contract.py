@@ -1,0 +1,149 @@
+"""No-network controls for literal feature-specific trim threshold licensing."""
+import copy
+import json
+import os
+from pathlib import Path
+import unittest
+
+os.environ.update(MOCK_LLM="1", CLOUD_SYNC="0")
+from server.runtime_facts import unsupported_ordinal_fitment as rejects
+
+
+def fact(value, conditions="", variant="", **scope):
+    return {"id":"Ftest", "approved":True, "claim":"Rear camera", "value":value,
+            "conditions":conditions, "scope":{"model":"Example", "market":"India", "variant":variant, **scope}}
+
+
+class OrdinalContract(unittest.TestCase):
+    def test_actual_sequential_and_hedged_answers(self):
+        fixture=json.loads((Path(__file__).parent / "fixtures/runtime_ordinal.json").read_text())
+        facts={f["id"]:f for f in fixture["facts"]}
+        for case in fixture["cases"]:
+            with self.subTest(case=case["id"]):
+                self.assertEqual(case["expected_rejected"], rejects(case["text"], [facts[i] for i in case["fact_ids"]]))
+
+    def test_exact_lists_cannot_be_sorted_into_thresholds(self):
+        f=fact("Rear camera on Nimbus, Aurora, Zenith", variant="Nimbus, Aurora, Zenith")
+        for text in ("Rear camera is available from Nimbus.", "Rear camera is available starting from the Nimbus trim upwards.",
+                     "Rear camera is standard on Nimbus and above.", "Rear camera is standard on Nimbus onwards.",
+                     "Rear camera is standard on trims up to Zenith.", "Rear camera is standard on Zenith and below.", "From Nimbus, rear camera is standard."):
+            with self.subTest(text=text): self.assertTrue(rejects(text,[f]))
+        self.assertFalse(rejects("Rear camera is standard on Nimbus, Aurora and Zenith.",[f]))
+        self.assertFalse(rejects("Rear camera is not available on Base.",[f]))  # polarity belongs to the other guard
+
+    def test_literal_same_feature_thresholds_remain_opaque(self):
+        f=fact("Rear camera available on Nimbus and above")
+        for text in ("Rear camera is available from Nimbus upwards.", "Rear camera is standard starting from the Nimbus trim.",
+                     "Rear camera is available on Nimbus trim and above."):
+            self.assertFalse(rejects(text,[f]))
+        for text in ("Rear camera is available from Aurora upwards.", "Rear camera is standard up to Nimbus.",
+                     "Front camera is standard from Nimbus upwards."):
+            self.assertTrue(rejects(text,[f]))
+        # This helper does not expand Nimbus into a claimed list of higher names.
+        self.assertFalse(rejects("Rear camera is available on Aurora.",[f]))
+
+    def test_conditions_and_literal_scope_bind_only_their_own_feature(self):
+        for f in (fact("Rear camera", "Available on Nimbus and above"),
+                  fact("Rear camera", variant="Nimbus and above")):
+            self.assertFalse(rejects("Rear camera is available on Nimbus trim and above.",[f]))
+            self.assertTrue(rejects("Heated seats are available on Nimbus and above.",[f]))
+        ordinary=fact("Rear camera", variant="Nimbus, Aurora, Zenith")
+        self.assertTrue(rejects("Rear camera is available from Nimbus upwards.",[ordinary]))
+
+    def test_mixed_features_cannot_borrow_another_clause_threshold(self):
+        f=fact("Rear camera on Nimbus and above; Heated seats on Aurora and above")
+        for text in ("Rear camera on Aurora and above.",
+                     "Rear camera on Nimbus and above; heated seats on Nimbus and above.",
+                     "Rear camera on Nimbus and above and heated seats on Nimbus and above.",
+                     "Rear camera and heated seats are available from Nimbus upwards."):
+            self.assertTrue(rejects(text,[f]))
+        for text in ("Rear camera on Nimbus and above; heated seats on Aurora and above.",
+                     "Rear camera on Nimbus and above and heated seats on Aurora and above."):
+            self.assertFalse(rejects(text,[f]))
+        f=fact("Panoramic sunroof on Nimbus, Aurora", "Panoramic sunroof from Nimbus upwards; voice control on Aurora and above")
+        self.assertTrue(rejects("Panoramic sunroof is available from Aurora upwards.",[f]))
+        self.assertFalse(rejects("Voice control is available from Aurora upwards.",[f]))
+
+    def test_quote_claim_or_table_is_not_threshold_proof(self):
+        f=fact("Rear camera on Nimbus, Aurora, Zenith")
+        f["source"]={"quote":"Rear camera on Nimbus and above"}
+        f["claim"]="Rear camera from Nimbus upwards"
+        self.assertTrue(rejects("Rear camera is available from Nimbus upwards.",[f]))
+        f["knowledge"]={"applicable_projection":{"rows":[{"assertion":"Rear camera on Nimbus and above"}]}}
+        self.assertTrue(rejects("Rear camera is available from Nimbus upwards.",[f]))
+
+    def test_held_conflicting_and_incompatible_scope_proof_is_excluded(self):
+        f=fact("Rear camera on Nimbus and above")
+        for change in ({"approved":False}, {"knowledge":{"excluded_by_precedence":True}},
+                       {"knowledge":{"conflict_status":"unresolved"}}, {"knowledge":{"conflict_status":"suppressed"}}):
+            changed={**f,**change}
+            self.assertTrue(rejects("Rear camera on Nimbus and above.",[changed]))
+        for key,value in (("market","Nigeria"),("model","Other"),("model_year","2025"),("generation","Previous")):
+            f2=copy.deepcopy(f);f2["scope"][key]=value
+            self.assertTrue(rejects("Rear camera on Nimbus and above.",[f2],{key:"2026" if key=="model_year" else "Current" if key=="generation" else "India" if key=="market" else "Example"}))
+
+    def test_negative_and_uncertain_thresholds_do_not_license_positive_fitment(self):
+        for text in ("Rear camera not available on Nimbus and above", "Rear camera unconfirmed on Nimbus and above",
+                     "Rear camera not yet verified on Nimbus and above"):
+            self.assertTrue(rejects("Rear camera available on Nimbus and above.",[fact(text)]))
+        self.assertTrue(rejects("Rear camera not available on Nimbus and above.",[fact("Rear camera available on Nimbus and above")]))
+        self.assertFalse(rejects("Rear camera not available on Nimbus and above.",[fact("Rear camera not available on Nimbus and above")]))
+        self.assertTrue(rejects("Rear camera available on Nimbus and above.",[fact("Rear camera not available", variant="Nimbus and above")]))
+        self.assertTrue(rejects("Rear camera available on Nimbus and above.",[fact("Rear camera", "Fitment pending confirmation", "Nimbus and above")]))
+        self.assertTrue(rejects("Rear camera available on Nimbus and above.",[fact("Rear camera on Nimbus and above", "Fitment pending confirmation")]))
+
+    def test_literal_threshold_exceptions_cannot_be_removed_or_invented(self):
+        f=fact("Rear camera on Nimbus and above, excluding Zenith")
+        self.assertFalse(rejects("Rear camera available from Nimbus upwards, except Zenith.",[f]))
+        self.assertTrue(rejects("Rear camera available from Nimbus upwards.",[f]))
+        self.assertTrue(rejects("Rear camera available from Nimbus upwards, except Aurora.",[f]))
+
+    def test_quantities_and_units_stay_bound_to_threshold_feature(self):
+        f=fact("12-inch display on Nimbus and above")
+        self.assertFalse(rejects("12-inch display available from Nimbus upwards.",[f]))
+        self.assertTrue(rejects("8-inch display available from Nimbus upwards.",[f]))
+        self.assertTrue(rejects("12-speaker display available from Nimbus upwards.",[f]))
+        f=fact("R16 spare wheel on Nimbus and below; R18 road wheel on Aurora and above")
+        self.assertTrue(rejects("R18 spare wheel on Nimbus and below.",[f]))
+        self.assertFalse(rejects("R16 spare wheel on Nimbus and below.",[f]))
+
+    def test_lookalike_names_and_direction_are_not_equated(self):
+        for a,b in (("Aurora","Aurora Sport"),("SX","SX(O)"),("Sport","Sport Edition")):
+            f=fact(f"Rear camera on {a} and above")
+            self.assertTrue(rejects(f"Rear camera on {b} and above.",[f]))
+        self.assertTrue(rejects("Rear camera from Nimbus and below.",[fact("Rear camera on Nimbus and below")]))
+        self.assertFalse(rejects("Rear camera up to Nimbus.",[fact("Rear camera on Nimbus and below")]))
+
+    def test_non_threshold_language_is_unchanged(self):
+        for text in ("This information comes from the brochure.", "Prices start from ₹10 lakh.",
+                     "An extended warranty of up to seven years is available on petrol models on a payable basis.",
+                     "From our separate records, an extended warranty of up to 7 years is available on petrol variants on a payable basis.",
+                     "The rear camera is shown above the tyre table.", "The higher trims named here are Aurora and Zenith.",
+                     "Rear camera on Nimbus; heated seats on Aurora."):
+            self.assertFalse(rejects(text,[fact("Rear camera on Nimbus, Aurora")]))
+
+    def test_actual_opaque_scope_keeps_spoken_numbers_and_determiner(self):
+        f={"id":"F046","approved":True,"claim":"Connected car suite complimentary subscription",
+           "value":"Hyundai Bluelink connected car technology with 70+ features, 3 years complimentary",
+           "conditions":"Available on SX trim and above; includes 3 years complimentary service",
+           "scope":{"model":"CRETA","variant":"SX and above"}}
+        text="On the SX trim and above, Hyundai Bluelink connected car technology includes over seventy features with three years of complimentary service."
+        self.assertFalse(rejects(text,[f]))
+        self.assertTrue(rejects(text.replace("SX trim", "King trim"),[f]))
+        self.assertTrue(rejects(text.replace("seventy", "eighty"),[f]))
+        self.assertTrue(rejects("Eight-inch display on Nimbus and above.",[fact("12-inch display on Nimbus and above")]))
+
+    def test_actual_graph_drops_unsupported_threshold_without_dropping_all_valid_facts(self):
+        from server.runtime_graph import validate_decision
+        fixture=json.loads((Path(__file__).parent / "fixtures/runtime_ordinal.json").read_text())
+        facts={f["id"]:f for f in fixture["facts"]}
+        decision={"intent":"qa","response_kind":"answer","sentences":[
+            {"text":"Rear parking sensors are standard across all variants.","fact_ids":["F174"],"kind":"fact"},
+            {"text":"A rear camera with dynamic guidelines is standard from EX(O) upwards.","fact_ids":["F248"],"kind":"fact"}],"followup":""}
+        result,errors=validate_decision(decision,[facts["F174"],facts["F248"]],"What parking assistance is offered?")
+        self.assertIn("unsupported_ordinal_fitment",errors)
+        self.assertIn("Rear parking sensors",result["answer"])
+        self.assertNotIn("EX(O) upwards",result["answer"])
+
+
+if __name__=="__main__": unittest.main()

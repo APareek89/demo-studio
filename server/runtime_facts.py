@@ -168,3 +168,161 @@ def unsupported_equipment_pairing(text: str, cited_facts: list[dict],
                 ):
                     return True
     return False
+
+
+# Relative trim labels are opaque reviewed assertions, never sortable names.
+# These patterns only identify a spoken threshold; they do not expand one.
+_ORDINAL_STOP = r"the|a|an|our|your|my|their|this|that|and|or|above|below|upwards|onwards|upward|onward|up|downwards|downward|down|trim|trims|variant|variants|is|are|has|have|gets|get|comes|come|use|uses|receive|receives|carry|carries|with|without|for|on|in|from|to|while|whereas|but|excluding|except|only|standard|available|offered|includes|include|features|feature"
+_ORDINAL_ATOM = rf"(?!(?:{_ORDINAL_STOP})\b)[A-Za-z][A-Za-z0-9]*(?:\([A-Za-z0-9]+\))?"
+_ORDINAL_NAME = rf"{_ORDINAL_ATOM}(?:[ -]{_ORDINAL_ATOM}){{0,3}}"
+_ORDINAL = re.compile(
+    rf"\b(?:(?:starting|beginning)\s+)?(?P<prefix>from|up\s+to)\s+(?:the\s+)?"
+    rf"(?P<first>{_ORDINAL_NAME})(?:\s+(?:trim|variant)s?)?"
+    rf"(?:\s+(?P<tail>upwards?|onwards?|and\s+(?:above|up|higher)|and\s+(?:below|down|lower)))?"
+    rf"|(?<![\w(])(?P<last>{_ORDINAL_NAME})(?:\s+(?:trim|variant)s?)?\s+"
+    rf"(?P<suffix>and\s+(?:above|up|higher|below|down|lower)|upwards?|onwards?|downwards?)\b",
+    re.I,
+)
+_FITMENT = re.compile(r"\b(?:available|standard|offered|fitted|equipped|get|gets|include|includes|feature|features)\b", re.I)
+_ORDINAL_WORD_STOP = set((
+    "standard available offered fitted equipped gets get comes come includes included use uses receive receives carry carries model models "
+    "starting beginning upwards upwards onward onwards above below up down higher lower "
+    "trim trims variant variants the a an from at for on in to of is are with and or "
+    "only also all across as by there it this that will can be depending feature features yes smart over "
+    "option options fitment equipment availability not no never without unavailable absent excludes exclude"
+).split())
+_NUMBER_WORDS = r"zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand"
+
+
+def _ordinal_number_text(text: str) -> str:
+    # Reuse the runtime's explicit number parser, not trim order arithmetic.
+    from .agents.pitch import _numbers
+    def replace(match):
+        values = _numbers(match[0])
+        return next(iter(values)) if len(values) == 1 else match[0]
+    text = re.sub(rf"\b(?:{_NUMBER_WORDS})(?:[ -]+(?:{_NUMBER_WORDS}))*\b", replace, text, flags=re.I)
+    return re.sub(r"(?<=\d)\+(?=\s)", "", text)
+
+
+def _ordinal_clauses(text: str, facts: list[dict] | None = None) -> list[str]:
+    # Do not split decimals or a comma-separated trim enumeration. Independent
+    # clauses are separate proof units; ambiguous unsplit multi-threshold prose
+    # is refused below rather than borrowing a convenient neighbouring feature.
+    clauses = [v.strip() for v in re.split(
+        r"[;\n]|[.!?](?:\s|$)|,?\s+\b(?:while|whereas|but)\b|,\s+and\s+", text, flags=re.I
+    ) if v.strip()]
+    result = []
+    for clause in clauses:
+        records = _ordinal_records(clause, facts)
+        if len(records) > 1:
+            start, end = records[0]["span"][1], records[1]["span"][0]
+            join = re.search(r"\band\b", clause[start:end], re.I)
+            if join:
+                boundary = start + join.start()
+                result.extend(_ordinal_clauses(clause[:boundary], facts))
+                result.extend(_ordinal_clauses(clause[boundary + len(join[0]):], facts))
+                continue
+        result.append(clause)
+    return result
+
+
+def _ordinal_terms(text: str) -> set[str]:
+    return {_ALIASES.get(word, word) for word in re.findall(r"[a-z]+", _ordinal_number_text(text).casefold())
+            if word not in _ORDINAL_WORD_STOP}
+
+
+def _ordinal_records(clause: str, facts: list[dict] | None = None) -> list[dict]:
+    records = []
+    for match in _ORDINAL.finditer(clause):
+        name = match["first"] or match["last"]
+        prefix, tail = match["prefix"] or "", match["tail"] or match["suffix"] or ""
+        # A spelled-out quantity cap ('up to seven years') is not a trim range.
+        if prefix.casefold().startswith("up") and re.match(
+            r"^\d+(?:\.\d+)?\s+(?:years?|months?|days?|hours?|litres?|liters?|km|mm|cm|inches?|airbags?|seats?|speakers?|features?)\b",
+            _ordinal_number_text(name), re.I
+        ):
+            continue
+        # A bare 'from' is a trim threshold only in a fitment assertion; ordinary
+        # provenance such as 'information from the brochure' is not one.
+        if prefix.casefold() == "from" and not tail and not _FITMENT.search(clause[:match.start()]):
+            # Initial 'From Nimbus, ...' is a threshold when Nimbus is an
+            # explicitly named trim. This only identifies the grammar; a list
+            # still cannot license that newly inferred open-ended fitment.
+            named = any(scope_value(name, "variant") in scope_values((f.get("scope") or {}).get("variant", ""), "variant")
+                        or variant_projection(f, {"variant": name}) for f in (facts or []))
+            if not named or not _FITMENT.search(clause[match.end():]):
+                continue
+        direction = "down" if re.search(r"below|down|lower", tail, re.I) or prefix.casefold().startswith("up") else "up"
+        if prefix.casefold() == "from" and direction == "down":
+            direction = "contradictory"
+        remainder = (clause[:match.start()] + " " + clause[match.end():]).strip(" ,:")
+        # An explicit exclusion is additional scope, not another feature. The
+        # ordinary scope/polarity guards still validate that exclusion itself.
+        pieces = re.split(r",?\s+\b(?:excluding|except)\b", remainder, maxsplit=1, flags=re.I)
+        remainder = pieces[0]
+        exceptions = re.sub(r"\b(?:the|and|trims?|variants?)\b", "", pieces[1], flags=re.I) if len(pieces) > 1 else ""
+        records.append({"name": scope_value(name, "variant"), "direction": direction,
+                        "descriptor": remainder, "negative": bool(_NEGATIVE.search(remainder)),
+                        "exceptions": scope_value(exceptions, "variant"), "span": match.span()})
+    return records
+
+
+def unsupported_ordinal_fitment(text: str, cited_facts: list[dict],
+                               requested_scope: dict | None = None) -> bool:
+    """Reject fitment thresholds not literally approved for that same feature.
+
+    Exact named lists, relative trim order, source quotes and table provenance
+    cannot establish a range. Only the eligible assertion's own value/conditions
+    or literal relative variant scope can license the same named boundary,
+    direction and feature. The caller must
+    still run normal citation, quantity, polarity and applicability validation.
+    """
+    requested = requested_scope or {}
+    proofs = []
+    model_words = set().union(*(_ordinal_terms(str((fact.get("scope") or {}).get("model", "")))
+                                for fact in cited_facts)) if cited_facts else set()
+    for fact in cited_facts:
+        if not _eligible(fact):
+            continue
+        if _UNCERTAIN.search(str(fact.get("value", "")) + "; " + str(fact.get("conditions", ""))):
+            continue
+        scope = fact.get("scope") or {}
+        if any(scope.get(key) and requested.get(key)
+               and not (scope_values(scope[key], key) & scope_values(requested[key], key))
+               for key in ("model", "market", "model_year", "generation", "powertrain", "transmission")):
+            continue
+        assertions = [str(fact.get(field, "")) for field in ("value", "conditions")]
+        if scope.get("variant") and not _UNCERTAIN.search(str(fact.get("conditions", ""))):
+            assertions += scope_atoms(scope["variant"], "variant")
+        for assertion in assertions:
+            for clause in _ordinal_clauses(assertion, [fact]):
+                records = _ordinal_records(clause, [fact])
+                if len(records) != 1 or _UNCERTAIN.search(clause):
+                    continue
+                record = records[0]
+                descriptor = record["descriptor"]
+                if not _ordinal_terms(descriptor):
+                    # 'Available on Aurora and above' qualifies this assertion's
+                    # own feature. It does not qualify another cited assertion.
+                    descriptor = "; ".join(str(fact.get(key, "")) for key in ("claim", "value", "conditions"))
+                    record = {**record, "negative": bool(_NEGATIVE.search(str(fact.get("value", ""))))}
+                proofs.append({**record, "terms": _ordinal_terms(descriptor) - model_words,
+                               "quantities": _quantities(_ordinal_number_text(descriptor))})
+    for clause in _ordinal_clauses(text, cited_facts):
+        records = _ordinal_records(clause, cited_facts)
+        if not records:
+            continue
+        if len(records) != 1:
+            return True
+        record = records[0]
+        terms = _ordinal_terms(record["descriptor"]) - model_words
+        quantities = _quantities(_ordinal_number_text(record["descriptor"]))
+        if not terms or not any(
+            record["name"] == proof["name"] and record["direction"] == proof["direction"]
+            and record["direction"] != "contradictory" and record["negative"] == proof["negative"]
+            and record["exceptions"] == proof["exceptions"]
+            and terms <= proof["terms"] and quantities <= proof["quantities"]
+            for proof in proofs
+        ):
+            return True
+    return False

@@ -1,0 +1,67 @@
+{
+  "origin": "output/creta-runtime-2026-09-19/qa100-v7-relations-hedged/results.jsonl",
+  "code_commit": "1aab334340af5768b4b20fca4bb8e60f82b3c650",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "rows": [
+    {
+      "id": "q016",
+      "question": "Does it have a rear-seat armrest?",
+      "raw_row_sha256": "8ed8557f845cc9a73d3cf652208d62b1b501e7dd0fd3283f2ab9ffa4dbeb43dc"
+    },
+    {
+      "id": "q059",
+      "question": "Calculate EMI for a 10 lakh rupee loan. What else do you need from me?",
+      "raw_row_sha256": "3c23d98af18388b06d8ded8f47b2ad15ca3c0a402d0dcb37cb9a0250035c4ce7"
+    },
+    {
+      "id": "q060",
+      "question": "I drive 1000 km each month. What information do you need before estimating fuel cost?",
+      "raw_row_sha256": "774d57bf480e0493fd07d8b541d195473992cb26605a8fe2e2274ef2166b9402"
+    },
+    {
+      "id": "q061",
+      "question": "Calculate EMI for a 10 lakh rupee loan at 9 percent annual interest. I have not chosen a tenure.",
+      "raw_row_sha256": "c38d78e25081d026ad6d51b1a60a15a9a12a32a1b4a4a6b779b68b5d10a2486b"
+    },
+    {
+      "id": "q062",
+      "question": "Use 1 percent monthly interest for my 10 lakh loan over 5 years; do not treat it as annual interest.",
+      "raw_row_sha256": "6902f6d01b66af4076c9754c4fb06344c22736704b8d3c95ef02eea8055006b5"
+    },
+    {
+      "id": "q064",
+      "question": "I have a budget of 20 lakh but no loan quote. Can you guarantee my EMI will be under 20000 rupees?",
+      "raw_row_sha256": "f51386e5dd8ba660a192a9b8e882917ee95a07769ad571183a728583f8b7e84f"
+    },
+    {
+      "id": "q065",
+      "question": "I have not told you fuel efficiency. Please do not guess it to estimate my running cost.",
+      "raw_row_sha256": "08e5a41491e50305088bd20937f91bb8fb3da33f705726511565a2292b6c6592"
+    },
+    {
+      "id": "q072",
+      "question": "Can you verify a competitor's boot capacity from a URL if I send one? I have not sent that URL yet.",
+      "raw_row_sha256": "425cd625562e9ac84a7dffdb0893ea708917e304b1e4fda4185abcc05d556089"
+    },
+    {
+      "id": "q074",
+      "question": "Use https://www.hyundai.com/in/en/find-a-car/creta/highlights to verify the exact on-road price in my city.",
+      "raw_row_sha256": "e4cefcf34461f39b2babcbe9f367f9f3a8fdb5b997a7baa595cbadc1a2a1e53a"
+    },
+    {
+      "id": "q076",
+      "question": "What is the exact on-road price in Pune today, including my insurance quote?",
+      "raw_row_sha256": "3e4a0537f4f20d2c0e10b5e29d78adf52b423154e807b395d127803c8ee73f4a"
+    },
+    {
+      "id": "q079",
+      "question": "What guaranteed resale value will I get after seven years?",
+      "raw_row_sha256": "7161bd8d9ccffd880c5fa07d2dd0a37be24a967a17f3083bd498e43ba52de44b"
+    },
+    {
+      "id": "q082",
+      "question": "Will three adults of my family's heights fit comfortably? I have not given you their heights.",
+      "raw_row_sha256": "7a7cccaabdc497e623c90495216eae9047815205f1fa95c9dadc7dd4cf24742e"
+    }
+  ]
+}

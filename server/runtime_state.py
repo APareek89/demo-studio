@@ -18,10 +18,19 @@ from pydantic import BaseModel, Field
 from . import store
 
 
+class InteractionAct(BaseModel):
+    """A closed assistant action, never a source of product facts or free speech."""
+    model_config = {"extra": "forbid"}
+    mode: Literal["verification_limit", "input_request", "fit_check"]
+    subject_ids: list[Literal["rear_armrest", "personal_comfort", "guaranteed_resale"]] = Field(default_factory=list, max_length=3)
+    input_ids: list[Literal["source_url", "city", "variant", "loan_amount", "interest_rate", "loan_tenure", "fuel_efficiency", "fuel_price", "travel_distance"]] = Field(default_factory=list, max_length=3)
+
+
 class SpokenClaim(BaseModel):
-    text: str = Field(max_length=900, description="One short natural spoken sentence. No markdown or speech tags.")
+    text: str = Field(default="", max_length=900, description="One short natural spoken sentence. Empty when interaction supplies a closed assistant act. No markdown or speech tags.")
     fact_ids: list[str] = Field(default_factory=list, description="Every evidence or calculated-result ID supporting this sentence")
     kind: Literal["fact", "context", "limitation"] = "fact"
+    interaction: InteractionAct | None = Field(default=None, description="Use only allowed_interactions IDs, never on a fact row or with citations. Backend supplies the wording.")
 
 
 class Operand(BaseModel):
@@ -44,6 +53,7 @@ class TurnDecision(BaseModel):
     action: Literal["answer", "clarify", "tools"]
     sentences: list[SpokenClaim] = Field(default_factory=list, description="Answer first, normally 1–3 short sentences and at most75 words; explicit lists/comparisons may use4 sentences and100 words to preserve all requested parts and conditions")
     clarification: str = Field(default="", description="Only ONE necessary question, no product claims; empty for ordinary answers")
+    clarification_act: InteractionAct | None = Field(default=None, description="For action=clarify, prefer an input_request using allowed_interactions. Backend asks only still-missing inputs. Leave clarification empty.")
     tool_calls: list[ToolRequest] = Field(default_factory=list, max_length=4)
     answered: bool = True
     topic: str = "other"

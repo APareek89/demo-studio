@@ -1,4 +1,11 @@
 # Loop.MD — Demo Studio
+
+## Current finite repair checks — typed conversation / ordinal scope
+
+Loop remains off. Required deck320, accept24 and both mock-smoke phases pass in isolated storage with sockets blocked. New typed-act13, graph integration11, ordinal14, EMI11 and coverage13 groups pass; Gemini SDK schema8 includes new optional model fields. Runtime graph130, repair106, limits118, final-cohort94, clause-delivery21, calculator-deadline17, operational13 and original media-delivery27 controls pass. Exact freeze/provenance and per-gate logs are under `output/creta-runtime-2026-09-19/final-gates/acts-*`.
+
+One historical q026 test expectation was corrected: its unchanged raw “up to SX Premium” assertion is unsupported by an exact trim list and must now be rejected. Its exact-name repaired spare answer and road-wheel controls remain required. No old live answer or grade changed. These checks do not establish live semantic acceptance or audio latency; the next full100 is a separately bounded text-only replay.
+
 status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.

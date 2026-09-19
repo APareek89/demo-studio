@@ -133,7 +133,12 @@ for text,ids,supported in (
     check("Each feature has its own polarity proof: "+text,answer["answered"]==supported and (not errors if supported else bool(errors)))
 for key in ("repairs40_q026","repairs40_q026_repair"):
     answer,errors,_=validate(key)
-    check(key+" retains grouped road sizes and distinct spare roles",not errors and all(t in answer["answer"] for t in ("215/60 R17 alloy","205/65 R16","steel spare")) and ("18-inch" in answer["answer"] or "R18" in answer["answer"]))
+    if key=="repairs40_q026":
+        # The saved original invents an ordinal spare range from F251's exact
+        # trim list. Keep that unsafe input unchanged, but require rejection.
+        check(key+" rejects inferred spare threshold while retaining road sizes","unsupported_ordinal_fitment" in errors and "up to SX Premium" not in answer["answer"] and "215/60 R17 alloy" in answer["answer"] and ("18-inch" in answer["answer"] or "R18" in answer["answer"]))
+    else:
+        check(key+" retains exact named trims and distinct spare roles",not errors and all(t in answer["answer"] for t in ("215/60 R17 alloy","205/65 R16","steel spare")) and ("18-inch" in answer["answer"] or "R18" in answer["answer"]))
     c=copy.deepcopy(cases[key]);c["decision"]["sentences"]=[{"text":"The S(O), SX, and SX Premium trims have R18 alloys, while King and King Knight have R17 alloys.","fact_ids":["F049"],"kind":"fact"}]
     answer,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
     check(key+" cannot swap wheel numbers across grouped trim rows",not answer["answered"] and bool(errors))

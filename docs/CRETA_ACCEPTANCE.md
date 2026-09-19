@@ -2,7 +2,15 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest unchanged full100 — clause ownership checkpoint
+## Latest same-code sequential and hedged comparison
+
+On commit `1aab334` and unchanged v7, sequential delivery scored **88 supported, 5 partial, 4 unhelpful, 3 unsafe, 0 provider failures**. Text median was **2.600 s**, p95 **6.391 s**; recorded estimate **$0.6301**. Experimental delayed fallback racing scored **88 supported, 4 partial, 5 unhelpful, 2 unsafe, 1 provider failure**. Text median was **3.8895 s**, p95 **9.868 s**; recorded estimate **$0.8387**. These are REST text measurements including failures, not useful-audio percentiles. Original 100 answers and exact raw-row hashes are preserved separately in `qa100-v7-relations-sequential/` and `qa100-v7-relations-hedged/`.
+
+Both fail acceptance. Remaining critical claims expand exact rear-camera trim lists into “EX(O) upwards”; the sequential wheel answer also invents an ordinal spare-wheel range. Missing-input and precise-limit wording is still sometimes discarded. Every completed numeric result in both runs independently recomputes. Hedged q052 delivered the audited EMI after composition timed out; q066 failed after source lookup and correctly described a temporary checking problem rather than a knowledge gap.
+
+All launched calls have terminal events and the usage/trace tail settled before further edits. Four losing Runware completions added **$0.099183**, included in the hedged total. Hedging stays **off by default**: it successfully exercised fallback and late-result accounting but this separate-run observational comparison establishes no aggregate benefit. Primary provider conditions differed materially. Cumulative app estimate is **$10.4626**, not a provider invoice; timed-out requests may incur unreported provider billing. No additional paid browser speech ran.
+
+## Earlier unchanged full100 — clause ownership checkpoint
 
 Commit `24736a0`, v7 snapshot: **73 supported,11partial,7unhelpful,2unsafe,7provider failures**. Delivered answers were graded individually by three reviewers against the saved assertions;100 raw-row hashes match. The unsafe answers imply an8-inch/Bose combination across incompatible trims and claim whole-page warranty absence from a selected-passage lookup. Neither passes the zero-critical-claim requirement. Missing limits and valid comparison/input-request clauses also remain over-rejected.
 

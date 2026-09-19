@@ -1,0 +1,490 @@
+{
+  "commit": "1aab334340af5768b4b20fca4bb8e60f82b3c650",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "cases": [
+    {
+      "id": "sequential_q009",
+      "question": "What parking assistance is offered?",
+      "text": "Rear parking sensors come standard across all variants. A rear camera with dynamic guidelines is standard from EX(O) upwards, excluding E and EX. Front parking sensors and a surround view monitor are standard on SX Premium, King, King Knight, and Lounge Edition.",
+      "fact_ids": [
+        "F174",
+        "F195",
+        "F248",
+        "F215"
+      ],
+      "expected_rejected": true,
+      "raw_row_sha256": "5e8a6e0d40e01872dc35469e3c2c9fc19c95967c272cfd0604bc3223989db3e2"
+    },
+    {
+      "id": "sequential_q013",
+      "question": "Is a panoramic sunroof available?",
+      "text": "Yes, a smart panoramic sunroof is available starting from the EX(O) trim. Higher trims like SX, SX Premium, King, and King Knight add voice control to the panoramic sunroof. It is not available on the base E and EX trims.",
+      "fact_ids": [
+        "F158",
+        "F247"
+      ],
+      "expected_rejected": false,
+      "raw_row_sha256": "5d5ee14d1fbd55c8ea1928ea222941c0efea84500ca4b16f2d19fe6fbc62666e"
+    },
+    {
+      "id": "sequential_q026",
+      "question": "What wheel and tyre choices are listed?",
+      "text": "For road wheels, the E and EX trims come with 205/65 R16 tyres on steel wheels with wheel covers. EX(O) gets that same tyre size with dual-tone styled steel wheels. Separately, spare wheels come in a 205/65 R16 steel size for trims up to SX Premium, and a 215/60 R17 steel size for S(O) Knight, King, and King Knight. There's a part of that I couldn't verify, so I won't guess.",
+      "fact_ids": [
+        "F249",
+        "F251",
+        "F246"
+      ],
+      "expected_rejected": true,
+      "raw_row_sha256": "05d7b7be5cd141b8995de887d6f6edb0f788b03fe0512f6c27f9d9730ec4f4b8"
+    },
+    {
+      "id": "sequential_q033",
+      "question": "Which features would help in a crowded city parking space?",
+      "text": "For city parking, rear parking sensors come standard across all variants of the Creta. A rear camera with dynamic guidelines is standard starting from the EX(O) trim upwards, while remaining unavailable on E and EX. Higher trims like SX Premium, King, King Knight, and Lounge Edition also include front parking sensors and a surround view monitor.",
+      "fact_ids": [
+        "F174",
+        "F195",
+        "F248",
+        "F215"
+      ],
+      "expected_rejected": true,
+      "raw_row_sha256": "894b53dfc76cbf47abb214c3f7d6fda059b827c9c29f0175183fa1a602c40ef1"
+    },
+    {
+      "id": "hedged_q009",
+      "question": "What parking assistance is offered?",
+      "text": "Rear parking sensors come standard across all variants. A rear camera with dynamic guidelines is standard from EX(O) upwards, excluding the E and EX trims. Front parking sensors, a surround view monitor, and a blind-spot view monitor are standard on SX Premium, King, King Knight, and Lounge Edition.",
+      "fact_ids": [
+        "F174",
+        "F195",
+        "F248",
+        "F215"
+      ],
+      "expected_rejected": true,
+      "raw_row_sha256": "34bd24a24d367e4c2bde4c166912217455314a8ef81a2cbcb611318fc9e1b032"
+    },
+    {
+      "id": "hedged_q013",
+      "question": "Is a panoramic sunroof available?",
+      "text": "Yes, a smart panoramic sunroof is available on the CRETA starting from the EX(O) trim upwards. Higher trims like SX, SX Premium, King, and King Knight upgrade to a voice-enabled smart panoramic sunroof. It is not available on the base E and EX trims.",
+      "fact_ids": [
+        "F158",
+        "F247"
+      ],
+      "expected_rejected": false,
+      "raw_row_sha256": "7ce75308d3a886c1c64494e41753fbf2eb0ca4a7ad5816e406530ab0dcabe74a"
+    },
+    {
+      "id": "hedged_q026",
+      "question": "What wheel and tyre choices are listed?",
+      "text": "For road wheels, E and EX feature 205/65 R16 tyres on steel wheels with covers. The EX(O) has dual-tone styled steel wheels. The S(O), SX, and SX Premium trims use 215/60 R17 alloys, and King features 18-inch alloys whose specific road tyre size is unverified. For spares, E, EX, EX(O), S(O), SX, and SX Premium receive a 205/65 R16 steel wheel. The S(O) Knight, King, and King Knight trims list a 215/60 R17 steel spare wheel.",
+      "fact_ids": [
+        "F249",
+        "F049",
+        "F074",
+        "F250",
+        "F251",
+        "F246"
+      ],
+      "expected_rejected": false,
+      "raw_row_sha256": "849e3a04f7af76ca171b98e053346486c004cb6fc0bf6d78fd791a440938aae0"
+    },
+    {
+      "id": "hedged_q033",
+      "question": "Which features would help in a crowded city parking space?",
+      "text": "Rear parking sensors come standard across all variants of the Hyundai CRETA. A rear camera with dynamic guidelines is standard starting from the EX(O) trim upwards, excluding the E and EX trims. For tighter spots, front parking sensors and a surround view monitor are standard on the SX Premium, King, King Knight, and Lounge Edition variants.",
+      "fact_ids": [
+        "F174",
+        "F195",
+        "F248",
+        "F215"
+      ],
+      "expected_rejected": true,
+      "raw_row_sha256": "59d3dfa43c87f5ad5f7b64b6268d9bc1eb413a7ab12c7aa7bf3f393b1e0f27e6"
+    }
+  ],
+  "facts": [
+    {
+      "id": "F049",
+      "kind": "spec",
+      "claim": "Wheel size availability",
+      "value": "R16 steel (E, EX), R16 styled steel (EX(O)), R17 alloy (S(O), SX, SX Premium), R18 alloy (S(O) Knight, King, King Knight, Lounge Edition)",
+      "conditions": "Varies strictly by variant as specified in tyre chart",
+      "scope": {
+        "model": "CRETA"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+        "assertion_hash": "1541740958614a6c8c469bb515c6334cdcab75580b5b02b3ca397de52e4e30cb",
+        "evidence_id": "ev_9b89f2365bdff520d172362d",
+        "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": ""
+      }
+    },
+    {
+      "id": "F074",
+      "kind": "spec",
+      "claim": "Alloy wheel sizing on King trim",
+      "value": "R18 (D=462 mm) Diamond cut alloys",
+      "conditions": "Equipped on CRETA King",
+      "scope": {
+        "model": "Hyundai CRETA",
+        "variant": "King"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "76ad693623b82a4c63cec438094bcc9949a0b61e01be451b4e7ddd4408380248",
+        "assertion_hash": "fcad9e92871f78459176cdf72ea058b136672d33a15c3ce26faa10f7cf39a6b1",
+        "evidence_id": "ev_49e0a9d1ae93d8473de27fe1",
+        "evidence_path": "knowledge/sources/src_f5d3c8/76ad693623b82a4c63cec438094bcc9949a0b61e01be451b4e7ddd4408380248.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/highlights",
+        "fetched_at": 1789816349.037982
+      }
+    },
+    {
+      "id": "F158",
+      "kind": "feature",
+      "claim": "Panoramic sunroof",
+      "value": "Smart panoramic on EX(O), S(O), S(O) Knight; Voice-enabled smart panoramic on SX, SX Premium, King, King Knight, Lounge Edition",
+      "conditions": "Panoramic sunroof offered from EX(O) upwards; voice control on SX and above",
+      "scope": {
+        "model": "CRETA",
+        "market": "India"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+        "assertion_hash": "a9977eabdedba1673d24e49768ffb0efdd9816be921bb1266218c41e2cd22679",
+        "evidence_id": "ev_136b67e5c030196357ea81f3",
+        "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+        "fetched_at": 1789816368.917721
+      }
+    },
+    {
+      "id": "F174",
+      "kind": "feature",
+      "claim": "Standard safety equipment",
+      "value": "six airbags, electronic stability control, hill-start assist control, tyre pressure monitoring system, and rear parking sensors",
+      "conditions": "Standard equipment across the range.",
+      "scope": {
+        "model": "Hyundai CRETA",
+        "market": "India"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "2ffe4ee7625afaa661751b44e2f1f8d292a6b3fd3c82feaa8efc95f996085809",
+        "assertion_hash": "73690e8983631dce46f0aa227cfce265d9183562dc74a715ffd69385184063bd",
+        "evidence_id": "ev_50d7401554cdcc2caaf38fbf",
+        "evidence_path": "knowledge/sources/src_c27090234838/2ffe4ee7625afaa661751b44e2f1f8d292a6b3fd3c82feaa8efc95f996085809.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-jaipur",
+        "fetched_at": 1789816384.600978
+      }
+    },
+    {
+      "id": "F195",
+      "kind": "feature",
+      "claim": "Standard safety equipment across all variants",
+      "value": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system",
+      "conditions": "Equipped across all variants",
+      "scope": {
+        "model": "CRETA"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+        "assertion_hash": "87034bde4d6c59273e22435d8013484d8ec9dcd7da51d5039c990ad8da1b746c",
+        "evidence_id": "ev_997a589b58d4380e079058cd",
+        "evidence_path": "knowledge/sources/src_91fa41526174/9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-pune",
+        "fetched_at": 1789816388.02736
+      }
+    },
+    {
+      "id": "F215",
+      "kind": "feature",
+      "claim": "Front parking sensors and camera views",
+      "value": "Front parking sensors, surround view monitor and blind-spot view monitor are standard on SX Premium, King, King Knight and Lounge Edition.",
+      "conditions": "Standard only on the named variants in the India feature matrix.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India",
+        "variant": "SX Premium, King, King Knight, Lounge Edition"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+        "assertion_hash": "a03a439649fd346ae5e3c444d98f41df6b4109c803f421f6721098c3d8b842fc",
+        "evidence_id": "ev_5c02fdd0fbae0b4f7b19dc22",
+        "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "website",
+        "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+        "fetched_at": 1789816368.917721,
+        "previous_id": "F155",
+        "supersedes": [
+          "F155"
+        ],
+        "override_of": "25f3afb6679431a01963c37bea908386e4edbbf240a98724a80a5c9ac2951127",
+        "override_evidence": {
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety \u00b7 block 24",
+            "quote": "Surround view monitor (SVM) | - | - | - | - | - | - | S | S | S | S Blind-spot view monitor (BVM) | - | - | - | - | - | - | S | S | S | S"
+          },
+          "scope": {
+            "model": "creta",
+            "market": "india",
+            "variant": "sx premium, king, king knight, lounge edition"
+          },
+          "conditions": "trims sx premium, king, king knight, and lounge edition only"
+        }
+      }
+    },
+    {
+      "id": "F246",
+      "kind": "spec",
+      "claim": "Spare wheel size on S(O) Knight, King and King Knight",
+      "value": "215 / 60 R17 Steel (D=436.6 mm)",
+      "conditions": "Spare wheel only, not the fitted road wheels; S(O) Knight, King and King Knight in the manufacturer India brochure.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India",
+        "variant": "S(O) Knight, King, King Knight"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "a7fb87763aa3df2b86c35afdb00dcb390442690270e3f42a42588b371bde9cec",
+        "evidence_id": "ev_b50be66c72ae2b5f5de0989b",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F123",
+        "supersedes": [
+          "F123"
+        ],
+        "override_of": "de8eb59f9db6713e8655ac575571dabd05acb8100bad7aea6952c8d0f3000070",
+        "override_evidence": {
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32",
+            "quote": "Tyre Type 215 / 60 R17 Steel (D=436.6 mm) (S(O) Knight, S(O) Knight , King, King Knight)"
+          },
+          "scope": {
+            "model": "creta"
+          },
+          "conditions": "trim specific: s(o) knight, king, king knight"
+        }
+      }
+    },
+    {
+      "id": "F247",
+      "kind": "feature",
+      "claim": "Sunroof variants availability",
+      "value": "Smart panoramic sunroof standard on EX(O), S(O), S(O) Knight; Voice enabled smart panoramic sunroof standard on SX, SX Premium, King, King Knight; Not available on E, EX",
+      "conditions": "Exact named India-market trims shown in the supplied manufacturer brochure matrix. E and EX have a dash in both sunroof rows. No model-year or current-stock guarantee.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "d454c6e02983af2d97ab76fe98c534a5f95a07b085c8dd84b74b6766af8d8849",
+        "evidence_id": "ev_90c3ed651f0e84991a5d8532",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F061",
+        "supersedes": [
+          "F061"
+        ],
+        "override_of": "75e1d4b33be5193943f2ad19aadeff1f2d00ffb862eca9dbda6e1b827d30ae4f",
+        "override_evidence": {
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 39, Comfort and convenience by variant table",
+            "quote": "Smart panoramic \u2013 \u2013 S S S \u2013 \u2013 \u2013 \u2013 \u2013 ; Voice enabled smart panoramic \u2013 \u2013 \u2013 \u2013 \u2013 S S S S S"
+          },
+          "scope": {
+            "model": "hyundai creta"
+          },
+          "conditions": "excludes e and ex variants"
+        }
+      }
+    },
+    {
+      "id": "F248",
+      "kind": "feature",
+      "claim": "Rear camera",
+      "value": "Rear camera with dynamic guidelines standard on EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight; Not available on E, EX",
+      "conditions": "Exact named India-market trims shown in the supplied manufacturer brochure matrix. Rear parking sensors are a separate row and are standard on E and EX. No model-year or current-stock guarantee.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "34d4a56126dc00f019a9c53f9f685f95bff5ee0cccf5c043cc569d2532f25742",
+        "evidence_id": "ev_4440bc1ab60888d82ae2bc56",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F136",
+        "supersedes": [
+          "F136"
+        ],
+        "override_of": "3bf6c7219f57c6bb39bdec36aae26ddf47decb997938a4cd4aa4576cf6d2cc6b",
+        "override_evidence": {
+          "source": {
+            "ref": "src_93e5ef21c73e",
+            "locator": "4.Does the Hyundai CRETA have a reversing camera? \u00b7 block 119",
+            "quote": "The higher variants of the Hyundai CRETA are equipped with a rear camera with dynamic guidelines to aid safe reversing and parking."
+          },
+          "scope": {
+            "model": "creta"
+          },
+          "conditions": "higher variants only"
+        }
+      }
+    },
+    {
+      "id": "F249",
+      "kind": "spec",
+      "claim": "Road tyre and wheel sizes on E, EX and EX(O)",
+      "value": "205/65 R16 (D=405.6 mm) steel wheel with wheel cover on E, EX; 205/65 R16 (D=405.6 mm) dual-tone styled steel wheel on EX(O)",
+      "conditions": "Fitted road wheels only; do not combine with the separate spare-wheel row. Exact named India-market trims in manufacturer brochure.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India",
+        "variant": "E, EX, EX(O)"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "ceec2449df2280e68156698a4fd5a90f1e79abd8d1696ec7e802825b0a32a86d",
+        "evidence_id": "ev_e1c9306b9b52725911598240",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F120",
+        "supersedes": [
+          "F120"
+        ],
+        "override_of": "e203ab2eae6f1a76bce84ead317090cfa00d8a363d1bfe818fb4e30ee3fe6e83",
+        "override_evidence": {
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32",
+            "quote": "205/65 R16(D=405.6mm)steel wheel with wheel cover(E,EX,EX,EX(O)),DT styled steel wheel(EX(O))"
+          },
+          "scope": {
+            "model": "creta"
+          },
+          "conditions": "trim specific: e, ex, ex(o)"
+        }
+      }
+    },
+    {
+      "id": "F250",
+      "kind": "spec",
+      "claim": "Road tyre and wheel size on S(O), SX and SX Premium",
+      "value": "215/60 R17 alloy wheels (D=436.6 mm)",
+      "conditions": "Fitted road wheels only, not spare wheels; exact S(O), SX and SX Premium applicability in manufacturer India brochure.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India",
+        "variant": "S(O), SX, SX Premium"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "ffe1e3934989ad9b4e9b36c5db0489272bbb53785cf3ecc88455c2b6eb668112",
+        "evidence_id": "ev_8e3f51122df8833422a9f9d0",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F121",
+        "supersedes": [
+          "F121"
+        ],
+        "override_of": "f65f7309c20a5104c5a88b421b358d7ade667013b7c750a0c6f15ef13a6a0956",
+        "override_evidence": {
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32",
+            "quote": "Front Tyres 215/60 R17(D=436.6 mm) alloy (S(O),S(O),SX,SX ,SX Premium,SX Premium )"
+          },
+          "scope": {
+            "model": "creta"
+          },
+          "conditions": "trim specific: s(o), sx, sx premium"
+        }
+      }
+    },
+    {
+      "id": "F251",
+      "kind": "spec",
+      "claim": "Spare tyre and wheel size on E, EX, EX(O), S(O), SX and SX Premium",
+      "value": "205/65 R16 steel (D=405.6 mm)",
+      "conditions": "Spare wheel only, not the fitted road-wheel style. Exact named India-market trims in manufacturer brochure; EX(O) road wheels are separately specified as dual-tone styled steel.",
+      "scope": {
+        "model": "CRETA",
+        "market": "India",
+        "variant": "E, EX, EX(O), S(O), SX, SX Premium"
+      },
+      "approved": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "05426c367d5d0ec300ea9b4388af6506f09e31f950b05934ae9aecadf54e56ea",
+        "evidence_id": "ev_3df3c5a3c699d95094c735fe",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F122",
+        "supersedes": [
+          "F122"
+        ],
+        "override_of": "8bb2ac48294b6445851d9ddb5f8e68068c3c3a7a04c4cda9410b2cd88f8a0364",
+        "override_evidence": {
+          "source": {
+            "ref": "src_fbd71842024b",
+            "locator": "Wheels \u00b7 block 32",
+            "quote": "Spare wheel 205/65 R16(D=405.6mm)steel(E,EX,EX,EX(O),EX(O),S(O),S(O),SX,SX,SXPremium,SX Premium)"
+          },
+          "scope": {
+            "model": "creta"
+          },
+          "conditions": "trim specific: e, ex, ex(o), s(o), sx, sx premium"
+        }
+      }
+    }
+  ]
+}

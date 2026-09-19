@@ -8,6 +8,16 @@ LIMIT = "I couldn't verify that from the retrieved evidence."
 
 
 class CoverageContract(unittest.TestCase):
+    def test_global_source_origin_cannot_be_inferred_from_selected_citations(self):
+        for text in (
+            "All details and variant lineups provided here come directly from Hyundai Motor India.",
+            "All the information is sourced from the manufacturer.",
+            "Every specification comes directly from the brochure.",
+        ):
+            self.assertEqual(coverage_limitation(text), LIMIT)
+        self.assertFalse(unsupported_coverage_claim("This particular fact comes from the uploaded brochure."))
+        self.assertFalse(unsupported_coverage_claim("Six airbags come standard on all variants."))
+
     def test_actual_q073_cannot_convert_three_unrelated_passages_into_absence(self):
         # Actual draft cited anniversary copy and two variant-count passages.
         # A successful fetch/empty warning list is not complete-page evidence.

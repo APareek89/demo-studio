@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 import struct
+from types import UnionType
 from typing import Any, Literal, Union, get_args, get_origin
 
 from pydantic import BaseModel
@@ -14,7 +15,7 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
     if name == "fact_ids":  # the mock registry always has F001-F003; grounded lines let the deck derive callouts
         return ["F001", "F002"][: 1 + (depth % 2)]
     origin = get_origin(ann)
-    if origin is Union or str(origin) == "types.UnionType":
+    if origin in (Union, UnionType):
         args = [a for a in get_args(ann) if a is not type(None)]
         return _fake_value(name, args[0], depth) if args else None
     if origin is Literal:
