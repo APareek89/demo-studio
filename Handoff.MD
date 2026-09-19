@@ -18,7 +18,7 @@
 
 **Budget settled:** new app estimate$0.4496 (<$5): one necessary matching-narration build about$0.1620, one stress session/summary about$0.2876. Baseline$16.3976 →final$16.8472. This is app accounting, not provider invoice. No paid retests after findings. Store comparison confirms exactly one new session; previous9 records remain. Historical QA10095/5 onv7 is separate, not superseded or regraded by this run.
 
-**Local server:** port8896, customer model tier, local storage, CLOUD_SYNC=0, hedge enabled with3s delay, no auto-reload. Final restart/source/accounting evidence is in `output/creta-night-final/final-server-checkpoint.json`. Do not disturb8893. The disposable8898live/8899offline harnesses must not be restarted for another paid session. Server is left at the updated code for Anand's own next demo.
+**Local server:** port8896 runs the checked code frombbcce93 (exec session2026), customer model tier, local storage, CLOUD_SYNC=0, hedge enabled with3s delay, no auto-reload. Final restart/source/accounting evidence is in `output/creta-night-final/final-server-checkpoint.json`. Do not disturb8893. The disposable8898live/8899offline harnesses must not be restarted for another paid session. Server is left at the updated code for Anand's own next demo.
 
 **Remaining limits:** acoustic/microphone recognition, echo/barge-in and warmth need a human run. New model choices are not live-retested after fixes. Boot measurement basis and uncaptured table legend remain evidence gaps; dealer/loan/individual-comfort promises are never fabricated. The report's stored98 intent score is an activity heuristic, not purchase probability. Response-time tail remains above the desired conversational pace. Cloud/deployment and old TVS audio rebuild remain separate.
 

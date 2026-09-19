@@ -1,0 +1,61 @@
+{
+  "checked_at_utc": "2026-09-19T18:20:37.896707+00:00",
+  "code_commit": "bbcce9362164dbceba68e0c526dca2b0c75642ed",
+  "exec_session_id": 2026,
+  "port": 8896,
+  "health_keys": [
+    "anthropic",
+    "gemini",
+    "runware",
+    "gcloud_tts",
+    "storage",
+    "sarvam",
+    "tts_provider",
+    "stt_provider",
+    "mock",
+    "model_tier",
+    "claude_model",
+    "claude_plan_model",
+    "claude_lite_model",
+    "gemini_image_model",
+    "gemini_model",
+    "gemini_text_model",
+    "gemini_tts_model",
+    "runware_text_model",
+    "runware_text_model_premium",
+    "build_providers",
+    "runtime_providers",
+    "runtime_timeout",
+    "runtime_hedge_enabled",
+    "runtime_hedge_delay_s",
+    "claude_runtime_model",
+    "gemini_runtime_model",
+    "cloud"
+  ],
+  "http_readback_only": true,
+  "bundle_version": 8,
+  "knowledge_snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "bundle_file_sha256": "1b36b7e990c1912ed4cb4aeeb443908fd15c7e7578a964affa5dda147be71c80",
+  "provider_usage_estimate_usd": 16.8472,
+  "incremental_estimate_usd": 0.4496,
+  "new_session_ids": [
+    "s_mu8ozv2etxtx"
+  ],
+  "original_session_unchanged": true,
+  "post_gate_source_hashes_unchanged": true,
+  "served_player_matches_checked_source": true,
+  "stopped_harness_ports": [
+    8898,
+    8899
+  ],
+  "browser_readonly_review": {
+    "browser": "Codex in-app",
+    "muted_demo_url": "http://127.0.0.1:8896/?mute=1&review=creta-morning#/play/dm_41513908",
+    "session_report_url": "http://127.0.0.1:8896/?mute=1#/share/dm_41513908/s_mu8ozv2etxtx/d84e8ade13167d008e4b",
+    "welcome_reviewed": true,
+    "report_reviewed": true,
+    "playback_started": false,
+    "post_navigation_session_count": 10,
+    "post_navigation_usage_usd": 16.8472
+  }
+}
