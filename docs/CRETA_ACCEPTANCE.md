@@ -46,6 +46,10 @@ Bundle v4 replaces only the long acknowledgement with **“Let me check that.”
 
 Corrective v5 adds precise manufacturer-backed sunroof and rear-camera applicability: E/EX have explicit dashes in those rows, corroborated by the guide's symbol legend. NewF247/F248 preserve old assertion history. It contains181approved facts; all narration, slides and recordings remain unchanged. Six independent offline controls confirm retrieval, valid negative answers and rejection of inverted positive claims. These source checks do not replace live answer-quality testing.
 
+The subsequent35-case difficult subset on `0f88ad1`/v5 returned **24 supported,3 partial,3 unhelpful,5 provider failures,0 unsafe flagged**. Two provider failures were repair timeouts that the raw API called limited/refused; semantic review retains their actual cause. HTTP text median3.351s,p9512.031s. Recorded shared cost delta$0.2164 includes the concurrent browser probe. This subset is not a new100-case score. ADAS, Bose, cruise, E-roof, EX-camera and several comparisons improved; connected-car scope phrasing, exact missing-detail wording and provider timeouts still needed work.
+
+The separate one-question ADAS browser probe passed8/8. It now answers with supported driver-assistance examples, King/King Knight/Lounge applicability and automatic-only stop-and-go. Acknowledgement began484ms after typed submission and its1.365s clip completed. Answer audio began5.320s after submission; the saved turn is explicitly an answer cohort. The graph took2.000s, but a generic spoken slide-jump bridge occupied2.442s before answer delivery. One sample establishes no percentile. The next bounded change removes that extra bridge only from runtime-v1 question jumps, retaining evidence display, interruption ownership and explicit return.
+
 ## Repair details
 
 - The overview leads directly into selected slide narration. Missing model replacements use explicitly marked reviewed-route speech. Published inputs and demo-version checks prevent draft edits or a new publication from silently changing a running visit.

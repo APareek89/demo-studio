@@ -18,7 +18,7 @@ flowchart TD
   REPAIR["One optional composition repair<br/>[AGENT · runtime_graph._repair_composition]<br/>same approved evidence + precise rejection feedback; no tools or CTA<br/>only if at least 3 seconds remain inside the same 12-second deadline"]:::agent
   RECHECK["Revalidate repaired sentences<br/>[FUNCTION · validate_decision]<br/>accept only a supported answer without validation errors<br/>otherwise retain original supported result; cancellation always wins"]:::fn
   PLAN["Checkpoint a versioned DeliveryPlan<br/>[DATA · runtime_state.py]<br/>snapshot, turn/utterance ID, result, next interaction; no audio in graph"]:::data
-  VIEW["Evidence view: stay / jump / none<br/>[FUNCTION · deck.route_for + player.js]<br/>bridge respects turn ownership; return point stays stable"]:::fn
+  VIEW["Evidence view: stay / jump / none<br/>[FUNCTION · deck.route_for + player.js]<br/>runtime-v1 answer starts directly on its evidence; no extra spoken bridge<br/>turn ownership and original return point stay stable"]:::fn
   SPEAK["Request selected-voice streaming delivery<br/>[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]<br/>validated answer first, PCM chunks second; cancel closes its socket"]:::data
   WAIT["Listen and wait<br/>[ASK · follow-up / reply / Continue / configured CTA]<br/>silence never resumes narration"]:::ask
   CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan unseen remainder; apply after current segment"]:::fn

@@ -769,9 +769,12 @@ export function mountPlayer(host, bundle, api) {
     const from = cur?.slide?.id || null;
     jumped = r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
     if (jumped) {
-      // A transition is heard before the view changes; it is not the first answer audio.
-      S.onFirstAudio = null;
-      if (!(await speakF("bridge_to_custom", "Let me show you where that is.", run))) return;
+      // Runtime answers start with their evidence. The slide heading explains
+      // the jump without adding a spoken prelude before useful answer audio.
+      if (bundle.runtime?.version !== 1) {
+        S.onFirstAudio = null;
+        if (!(await speakF("bridge_to_custom", "Let me show you where that is.", run))) return;
+      }
       showSlideView(jumped, { reveal: 99 }); S.covered.add(jumped.id); S.jumps.push({ from, to: jumped.id, question: text });
       S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
     } else cur?.view.setRevealed(99);

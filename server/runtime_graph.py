@@ -57,6 +57,8 @@ When the requested attribute is unknown, name the exact missing detail and its v
 useful next step. Keep fuel-economy figures and their test cycle distinct from tank capacity, standard-warranty terms
 distinct from an optional extension, and model-year applicability distinct from a publication date. A known but
 unrelated attribute is not an answer. For boot capacity, preserve the seat configuration and measurement basis.
+Answer every requested aspect, including questions joined by 'and'; identify the exact unverified part separately.
+Unknown model-year applicability does not imply a future release: never invent an approaching launch or release.
 A 'context' sentence contains only the customer's actual context, a greeting or a proposed fit-check, never product
 claims. A 'limitation' sentence describes missing evidence/tool failure, not a newly invented fact.
 For real same-scope conflicts uploaded documents beat website passages. Explicit conflicts in the evidence remain
@@ -73,6 +75,7 @@ Each input has name,value,unit,source_id and an exact quote containing that inpu
 customer inputs, otherwise a supplied evidence ID. Missing inputs → ask one necessary question; no default interest,
 fuel price, fuel efficiency, loan size or down payment. You may chain up to2 rounds/4calls using prior calculated IDs.
 An engine name alone does not supply a fuel-efficiency number: ask for an explicit reviewed or customer-supplied value.
+For running cost, obtain distance, efficiency AND fuel price; a suggestion to calculate it must name all missing inputs.
 Results marked estimates must be called illustrative; an EMI is not a lender quote. Retain all assumptions.
 Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
 source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
@@ -177,11 +180,23 @@ def _safe_limitation(text: str, customer_text: str) -> bool:
 def _reviewed_refusal(text: str, customer_text: str) -> str:
     """Narrow safe rewrites of observed refusals, never a positive-claim bypass."""
     plain = text.replace("’", "'")
-    source_limit=re.fullmatch(r"(?:I could not verify|I couldn't verify|I do not have (?:the )?verified)\s+([^.;!?]+?)\s+(?:from|in)\s+(?:my|our|the)\s+(?:available|current|reviewed)\s+(?:records|information|details|evidence)\.",plain,re.I)
-    if source_limit and not re.search(r"\b(?:has|have|offers|includes|comes|provides|delivers|can|will)\b",source_limit[1],re.I):
-        candidate="I couldn't verify "+source_limit[1]+"."
-        if _safe_limitation(candidate,customer_text):
-            return candidate
+    # Preserve the missing noun phrase, not an unsupported claim that a whole
+    # source contains nothing. Only a single verification clause is normalized.
+    source_suffix=r"(?:\s+(?:from|in)\s+(?:my|our|the)\s+(?:(?:available|current|reviewed)\s+)?(?:records|information|details|evidence))?"
+    patterns=(
+        r"(?:I|we)\s+(?:could not|couldn't|cannot|can't)\s+(?:verify|find)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
+        r"(?:I|we)\s+(?:do not|don't)\s+have\s+(?:the\s+)?(?:verified|exact)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
+        r"(?:The\s+)?(?:available|retrieved|reviewed)\s+(?:details|records|evidence|information)\s+(?:do not|does not|don't|doesn't)\s+(?:state|list|provide|include|mention|show)\s+(.+?)\.",
+    )
+    for pattern in patterns:
+        source_limit=re.fullmatch(pattern,plain,re.I)
+        if not source_limit:continue
+        subject=source_limit[1]
+        # 'terms and parts covered under warranty' is noun coordination. No
+        # finite product predicate or causal/relative clause can use this path.
+        if re.search(r"\b(?:has|have|offers|includes|comes|provides|delivers|can|will|is|are|was|were|does|gets|supports)\b",subject,re.I):continue
+        candidate="I couldn't verify "+re.sub(r"\band\b","or",subject,flags=re.I)+"."
+        if _safe_limitation(candidate,customer_text):return candidate
     if re.fullmatch(r"No car manufacturer can guarantee (?:a vehicle|a car) will never (?:experience a mechanical issue|have a mechanical fault)\.", plain, re.I):
         return "I cannot guarantee that this car will never have a mechanical fault."
     # Retain the direct refusal, not an unsupported claim about all records or a
@@ -190,6 +205,24 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     if match and _safe_limitation(match[1]+".", customer_text):
         return match[1]+"."
     return text
+
+
+def _verification_next_step(text: str) -> str:
+    """A checking suggestion must not assume a forthcoming release or promise its result."""
+    plain=re.sub(r"\s+as (?:that|the|its) release approaches\.$",".",text,flags=re.I)
+    if not re.match(r"^(?:You|We)\s+(?:can|could)\s+(?:check|ask|consult|speak|confirm)\b",plain,re.I):return ""
+    if not re.search(r"\b(?:brochure|manual|dealer|dealership)\b|\bofficial updates\b",plain,re.I):return ""
+    remainder=re.sub(r"^(?:You|We)\s+(?:can|could)\s+","",plain,flags=re.I)
+    if re.search(r"[;—–]|[.!?]\s+\w|\b(?:because|although|since|which|whose|has|have|is|are|will|can|guarantee|guaranteed|ensures?|provides?|offers?|comes|includes?|delivers?)\b",remainder,re.I):return ""
+    if NUMBERISH.search(plain) or re.search(r"\bstandard\b",plain,re.I):return ""
+    # Keep only the proposed verification resource/action. Arbitrary equipment
+    # descriptions after 'check ... for/about' are never carried into speech.
+    actions=[]
+    if re.search(r"\bbrochure\b",plain,re.I):actions.append("check the official brochure")
+    if re.search(r"\bmanual\b",plain,re.I):actions.append("check the owner manual")
+    if re.search(r"\b(?:dealer|dealership)\b",plain,re.I):actions.append("ask an authorised dealer to confirm")
+    if re.search(r"\bofficial updates\b",plain,re.I):actions.append("check official updates")
+    return "You can "+" or ".join(actions)+"." if actions else ""
 
 
 def _global_coverage_claim(text: str) -> bool:
@@ -345,6 +378,10 @@ def canonical_scope_matches(text: str, options: list[str], key: str) -> list[str
         for alias in aliases - {""}:
             separator=r"[\W_]+" if key=="variant" and re.search(r"[()]",option) else r"[\W_]*"
             pattern = r"(?<!\w)" + separator.join(re.escape(token) for token in alias.split()) + r"(?!\w)"
+            if key=="variant" and re.search(r"\band (?:above|below)\b",alias):
+                # Keep the relative scope opaque; tolerate only the grammatical
+                # noun in 'SX trim and above', never infer named higher trims.
+                pattern=pattern.replace(separator+"and",r"(?:[\W_]+(?:trim|variant))?"+separator+"and",1)
             if key == "variant":
                 pattern += r"(?!\s*\()"  # SX never qualifies an unknown SX(O).
             for match in re.finditer(pattern, text.casefold()):
@@ -497,9 +534,20 @@ def _verification_urls(question: str) -> list[str]:
     return urls if intent else []
 
 
+def _unsupported_file_request(question: str) -> bool:
+    # An explicit opening request only: quoted/negated examples in a real product
+    # question must not take over the turn. No local resource is ever accessed.
+    return bool(re.match(r"^\s*(?:please\s+)?(?:(?:can|could|would)\s+you\s+)?(?:use|fetch|read|check|open)\s+(?:the\s+)?(?:URL\s+|file\s+)?file://\S+",question,re.I))
+
+
 async def reason(state: RuntimeState) -> dict:
     started = time.monotonic()
     left = state["control"].remaining()
+    if _unsupported_file_request(state["question"]):
+        return {"decision":TurnDecision(action="answer",answered=False,sentences=[
+            {"text":"I can't access local files.","kind":"limitation"},
+            {"text":"Please share a public HTTP or HTTPS product page.","kind":"context"},
+        ]).model_dump(),"timings":{**state.get("timings",{}),"reason_ms":_elapsed(started)}}
     required=_verification_urls(state["question"])
     attempted={str(result.get("requested_url") or result.get("url","")) for result in state.get("tool_results",[]) if result.get("tool")=="source_lookup"}
     pending=[url for url in required if url not in attempted]
@@ -604,6 +652,10 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         kind = row.get("kind","fact")
         if kind=="limitation":
             text=_reviewed_refusal(text,customer_text or question)
+        next_step=_verification_next_step(text) if kind in {"context","limitation"} and not ids else ""
+        if next_step:text=next_step
+        if kind=="fact" and re.search(r"fuel[- ]economy|\bmileage\b|fuel[- ]efficiency",question,re.I) and not re.search(r"\btank\b",question,re.I) and re.search(r"\b(?:fuel\s+)?tank\s+(?:capacity|size)\b",text,re.I):
+            reject("unresponsive_attribute");continue
         if _global_coverage_claim(text):
             reject("unverified_coverage_claim")
             sentences.append("I couldn't verify that from the retrieved evidence.")
@@ -667,8 +719,10 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             # so a rejected lead sentence cannot orphan its material qualifier.
             if (scoped or restricted_condition) and not qualified and not requested_variants:
                 prefix = "On selected higher trims, " if re.search(r"\b(?:higher|top)\b",conditions,re.I) else "On selected variants, "
+                text = re.sub(r"^(?:Additionally|Also|Furthermore),?\s+", "", text, flags=re.I)
                 text = re.sub(r"^These include\b", "the listed features include", text)
-                text = prefix + text[:1].lower() + text[1:]
+                text = re.sub(r"^(?:The|This|It)\b",lambda match:match.group().lower(),text)
+                text = prefix + text
                 qualified = True
             if scoped and any(not scope_values(v, "variant") & exact_mentions for v in scoped):
                 if not (qualified and not requested_variants and not exact_mentions):
@@ -743,7 +797,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     has_response = bool(sentences)
     if not has_response:
         sentences = ["I don't have a supported answer to that yet. We can check it with a salesperson or carry on."]
-    elif errors:
+    elif errors and set(errors)!={"unresponsive_attribute"}:
         sentences.append("There's a part of that I couldn't verify, so I won't guess.")
     text = " ".join(sentences)
     # No word slicing: truncation could remove a material caveat.
@@ -751,7 +805,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         text,used = "That answer needs more checking before I can give you a reliable short explanation.",[]
         errors.append("answer_too_long")
     answered = bool(set(substantive)&set(used)) or bool(has_response and decision.get("action")=="answer" and decision.get("answered") and not errors
-                                and any(row.get("kind")=="context" for row in decision.get("sentences",[])))
+                                and any(row.get("kind")=="context" for row in decision.get("sentences",[]))
+                                and not any(row.get("kind")=="limitation" for row in decision.get("sentences",[])))
     return {"answer":text,"fact_ids":used,"facts":[by_id[i] for i in used],"answered":answered,
             "clarifying_question":"","offer_callback":not answered,"topic":decision.get("topic","other"),"cta":""},errors
 
@@ -764,8 +819,11 @@ class _CompositionRepair(BaseModel):
 async def _repair_composition(state: RuntimeState, original: dict, original_errors: list[str], feedback: list[dict], customer_text: str) -> tuple[dict,list[str],dict]:
     decision=state.get("decision",{})
     empty=decision.get("action")=="answer" and not decision.get("sentences")
-    rejected_fact=any(row.get("kind")=="fact" for row in feedback)
-    if config.MOCK_LLM or decision.get("action")!="answer" or "reasoning_unavailable" in state.get("errors",[]) or not (empty or rejected_fact) or not state.get("control"):
+    rejected_substantive=any(row.get("kind")=="fact" or (row.get("kind")=="limitation" and row.get("error") in {"uncited_claim","uncited_product_assertion","unverified_coverage_claim"}) for row in feedback)
+    precise_limit=any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in decision.get("sentences",[]))
+    if feedback and all(row.get("error")=="unresponsive_attribute" for row in feedback) and precise_limit:
+        return original,original_errors,{}  # The exact missing detail is already explained.
+    if config.MOCK_LLM or decision.get("action")!="answer" or "reasoning_unavailable" in state.get("errors",[]) or not (empty or rejected_substantive) or not state.get("control"):
         return original,original_errors,{}
     try:
         left=state["control"].remaining()
@@ -799,10 +857,12 @@ If a reliable answer is still unavailable, return one honest limitation sentence
         repaired=await asyncio.wait_for(asyncio.to_thread(runtime.structured,instructions,json.dumps(payload,ensure_ascii=False),_CompositionRepair,
                                                          max_tokens=1800,thinking_level="low",timeout_budget_s=budget),timeout=budget)
         state["control"].remaining()
-        candidate={"action":"answer","sentences":repaired.model_dump()["sentences"],"answered":True,"topic":decision.get("topic","other")}
+        candidate={"action":"answer","sentences":repaired.model_dump()["sentences"],"answered":bool(decision.get("answered")),"topic":decision.get("topic","other")}
         result,errors=validate_decision(candidate,evidence,state["question"],customer_text,state.get("requested_scope"))
         info.update(validation_errors=errors,provider_used=getattr(repaired,"_runtime_provider",""),model_used=getattr(repaired,"_runtime_model",""))
-        if result.get("answered") and not errors:
+        clean_limit=any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in candidate["sentences"])
+        loses_supported_facts=bool(original.get("fact_ids")) and not result.get("fact_ids")
+        if not errors and not loses_supported_facts and (result.get("answered") or (clean_limit and not original.get("answered"))):
             info["accepted"]=True
             original,original_errors=result,errors
     except InterruptedError:
@@ -827,7 +887,7 @@ async def validate(state: RuntimeState) -> dict:
         errors.append("requested_page_not_used")
     slides = (store.read_json(state["demo_id"],"bundle.json") or {}).get("slides",[])
     result.update(deck.route_for(slides,state.get("slide_id"),result.get("fact_ids"),state["question"]) if result.get("answered") and result.get("fact_ids") else {"slide_id":state.get("slide_id"),"route":"none","callout_id":None,"by":""})
-    result.update(audio=None,visual=None,from_bank=False,provider_failed="reasoning_unavailable" in state.get("errors",[]),tool_results=state.get("tool_results",[]),snapshot_id=state.get("snapshot_id",""),validation_errors=errors)
+    result.update(audio=None,visual=None,from_bank=False,provider_failed="reasoning_unavailable" in state.get("errors",[]),repair_failed=bool(repair.get("error")),tool_results=state.get("tool_results",[]),snapshot_id=state.get("snapshot_id",""),validation_errors=errors)
     result.update(provider_used=state.get("decision",{}).get("provider_used",""),model_used=state.get("decision",{}).get("model_used",""))
     if repair:
         result["validation_repair"]=repair

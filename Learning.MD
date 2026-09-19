@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-19 — The repaired draft still lost exact scope and verification limits
+
+**Five whys:** (1) The real connected-car repair was discarded despite two useful sentences. (2) Its remaining sentence said “SX trim and above”, while the evidence atom said “SX and above”. (3) Canonical matching treated that grammatical insertion as a different scope. (4) All-or-nothing repair correctly retained the original when one sentence failed. (5) Tests covered the original phrase, not the new live paraphrase. **Fix:** tolerate only trim/variant before the literal relative qualifier; never expand that qualifier into inferred named trims.
+
+**Unknown-detail failure:** real economy/model-year/warranty answers lost their specific missing attribute, retained unrelated facts, or introduced a future-release premise. Narrow evidence-absence normalization now preserves a safe noun phrase as a personal verification limit. Economy-only questions cannot count tank capacity as an answer; mixed requests retain it. A verification suggestion becomes a generic source-check next step, never a bypass for alleged product features. Rejected substantive limitations may receive the existing bounded repair, while limitation-only repairs cannot erase surviving supported facts. Independent review caught both of those potential regressions before live use.
+
+**Latency failure:** the successful ADAS answer was ready at2.271s but a generic bridge occupied2.442s before delivery. Runtime-v1 question jumps now display evidence and begin the actual answer directly; exact origin, interruption ownership and explicit Continue remain. Legacy transitions are unchanged. Explicit opening requests to use local file URLs receive a prompt unsupported-source explanation without model or file access; quoted/negated examples do not intercept real questions.
+
+**Checks:** repair106, graph130, trace36, actual DOM44 and voice-client56 pass. The original35-case cohort and5.320s answer onset stay unchanged. A fresh live cohort/probe remains necessary; no projected latency is reported as a measurement.
+
 ## 2026-09-19 — A valid safety question became a nonexistent trim; rejected drafts lost useful answers
 
 **Five whys:** (1) The completed safety journey declined an answer supported by reviewed ADAS facts. (2) “Which variant conditions apply?” became a request for a trim named “conditions”. (3) The scope parser accepted a generic noun after “variant”. (4) The evidence filter then excluded the real higher-trim ADAS assertions. (5) The browser checked answer success, but earlier scope fixtures lacked this ordinary phrasing. Separate QA100 cases exposed empty structured answers and useful claims removed for bad citation/scope composition, with no opportunity to repair the draft.

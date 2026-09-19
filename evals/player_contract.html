@@ -385,6 +385,46 @@ test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
   assert(env.played.filter((t) => t === 'First proof.').length === 1 && env.played.filter((t) => t === 'First proof interrupted detail.').length === 2, 'Return replayed a completed line or skipped the interrupted one');
   assert(env.maxActive === 1, 'Off-slide answer overlapped narration');
 });
+test('Runtime v1 jumps directly to evidence and returns to the exact interrupted line only on request', async () => {
+  const bridge = 'The generic transition must not delay this runtime answer.', answer = 'The third proof shows the requested evidence.';
+  await setup({ hold: text => text === 'First proof interrupted detail.', qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer }), configure: b => {
+    b.runtime = { version: 1 }; b.fillers.bridge_to_custom = { text: bridge, audio: audioURL(bridge) };
+    b.slides.find(s => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.'));
+    b.slides.find(s => s.id === 'proof-three').callouts.push({ id: 'target-f1', text: 'Cited detail', fact_ids: ['f1'], placement: 'panel', reveal_on_line: 0 }); return b;
+  } });
+  await click('Skip the intro'); await type('Please show the other evidence.');
+  assert(player.context().slide === 'proof-three' && env.played.includes(answer) && !env.played.includes(bridge) && !env.ttsCalls.includes(bridge), 'Runtime jump delayed the answer behind its generic bridge');
+  assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Immediate runtime answer lost its highlighted evidence');
+  await clock.tick(30000); window.dispatchEvent(new Event('pagehide'));
+  const turn = env.beacons.at(-1).turns.at(-1);
+  assert(player.context().slide === 'proof-three' && button('Yes, that helps') && turn.answer_audio === turn.qa_done, 'Runtime jump auto-returned or failed to stamp the direct answer');
+  await click('Yes, that helps');
+  assert(player.context().slide === 'proof-one' && player.context().line_index === 1 && env.played.filter(t => t === 'First proof.').length === 1 && env.played.filter(t => t === 'First proof interrupted detail.').length === 2, 'Runtime return lost its original line or replayed completed speech');
+  assert(env.maxActive === 1, 'Direct evidence jump overlapped voices');
+});
+test('A new question interrupts a direct runtime jump without stealing its original return point', async () => {
+  const first = 'First routed answer is still playing.', second = 'The second answer owns the conversation.';
+  await setup({ hold: text => [first, 'First proof interrupted detail.'].includes(text), qa: async (_, n) => n === 1 ? answered({ route: 'jump', slide_id: 'proof-three', answer: first }) : answered({ answer: second }), configure: b => {
+    b.runtime = { version: 1 }; b.slides.find(s => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.')); return b;
+  } });
+  await click('Skip the intro'); await type('Show the third proof.');
+  const stale = [...env.active].find(a => a.text === first);
+  assert(stale && player.context().slide === 'proof-three', 'Runtime answer did not begin on its evidence slide');
+  await type('Another question first.'); stale.finish(); await flush();
+  assert(stale.paused && env.played.includes(second) && player.context().slide === 'proof-three', 'Interrupted runtime answer retained playback or changed the newer view');
+  window.dispatchEvent(new Event('pagehide')); const turns = env.beacons.at(-1).turns;
+  assert(turns[0].cancelled && !turns[1].cancelled && env.maxActive === 1, 'Runtime interruption lost turn ownership or overlapped audio');
+  await click('Yes, that helps');
+  assert(player.context().slide === 'proof-one' && player.context().line_index === 1, 'New question replaced the original interrupted return point');
+});
+test('Explicit slide navigation cancels a direct runtime answer and cannot be undone by its late ending', async () => {
+  const answer = 'Routed answer to interrupt.';
+  await setup({ hold: text => text === answer, qa: async () => answered({ route: 'jump', slide_id: 'proof-three', answer }), configure: b => ({ ...b, runtime: { version: 1 } }) });
+  await atProof(); await type('Show the third proof.'); const stale = [...env.active].find(a => a.text === answer);
+  assert(stale, 'Runtime answer did not start');
+  await click('proof-two', '.pl-progress button'); stale.finish(); await flush(); await clock.tick(1000);
+  assert(stale.paused && player.context().slide === 'proof-two' && env.maxActive === 1, 'Late runtime answer overrode explicit navigation or overlapped its narration');
+});
 test('A cached jump transition completes before the view and answer-latency stamp change', async () => {
   const bridge = 'Now, let me get to what you asked about.';
   await setup({

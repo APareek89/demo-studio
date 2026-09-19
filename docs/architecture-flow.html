@@ -287,7 +287,7 @@ flowchart TD
   REPAIR[&quot;One optional composition repair&lt;br/&gt;[AGENT · runtime_graph._repair_composition]&lt;br/&gt;same approved evidence + precise rejection feedback; no tools or CTA&lt;br/&gt;only if at least 3 seconds remain inside the same 12-second deadline&quot;]:::agent
   RECHECK[&quot;Revalidate repaired sentences&lt;br/&gt;[FUNCTION · validate_decision]&lt;br/&gt;accept only a supported answer without validation errors&lt;br/&gt;otherwise retain original supported result; cancellation always wins&quot;]:::fn
   PLAN[&quot;Checkpoint a versioned DeliveryPlan&lt;br/&gt;[DATA · runtime_state.py]&lt;br/&gt;snapshot, turn/utterance ID, result, next interaction; no audio in graph&quot;]:::data
-  VIEW[&quot;Evidence view: stay / jump / none&lt;br/&gt;[FUNCTION · deck.route_for + player.js]&lt;br/&gt;bridge respects turn ownership; return point stays stable&quot;]:::fn
+  VIEW[&quot;Evidence view: stay / jump / none&lt;br/&gt;[FUNCTION · deck.route_for + player.js]&lt;br/&gt;runtime-v1 answer starts directly on its evidence; no extra spoken bridge&lt;br/&gt;turn ownership and original return point stay stable&quot;]:::fn
   SPEAK[&quot;Request selected-voice streaming delivery&lt;br/&gt;[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]&lt;br/&gt;validated answer first, PCM chunks second; cancel closes its socket&quot;]:::data
   WAIT[&quot;Listen and wait&lt;br/&gt;[ASK · follow-up / reply / Continue / configured CTA]&lt;br/&gt;silence never resumes narration&quot;]:::ask
   CORRECT[&quot;Explicit changed priority&lt;br/&gt;[FUNCTION · player.js]&lt;br/&gt;replan unseen remainder; apply after current segment&quot;]:::fn
