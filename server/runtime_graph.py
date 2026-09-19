@@ -67,6 +67,8 @@ An exact trim list never licenses 'from X upwards', 'up to X' or 'X and above'. 
 For a refusal, state your own limit directly: 'I cannot guarantee that' or 'I could not verify that offer'.
 Do not assert that no manufacturer can guarantee something, or that no record exists anywhere. Keep reasons separate.
 Never claim the provided page verified a detail when its citation is only a stored document or another linked page.
+Conditions are reviewed applicability constraints, not necessarily verbatim source wording. State what a reviewed
+record establishes; do not claim the original source explicitly says a caveat unless that wording is supplied.
 When a trim is unspecified, a qualified summary such as 'available on selected trims' is useful; never imply all trims.
 Give the useful supported part even when another part is unknown; a missing price does not erase known equipment.
 When the requested attribute is unknown, name the exact missing detail and its verification basis, then give one
@@ -1064,6 +1066,15 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 elif row.get("interaction") is None and row.get("kind")=="limitation" and not row.get("fact_ids"):
                     limit,_=_uncited_own_limit(str(row.get("text","")),customer_text or question)
                     if limit:limits.append(limit)
+            if not limits:
+                # The act owns the question. Only retain a separately validated
+                # own-limit prelude; never import the model's raw question.
+                parts=re.split(r"(?<=[.!;])\s+",clarification,maxsplit=1)
+                if len(parts)==2:
+                    limit,removed=_uncited_own_limit(parts[0].rstrip(";"),customer_text or question)
+                    if limit:
+                        limits.append(limit if limit.endswith((".","!","?")) else limit+".")
+                        if removed:errors.append("unsupported_limitation_premise")
             speech=" ".join([*limits[:1],rendered])
             return {"answer":speech,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":rendered,"offer_callback":False,"topic":decision.get("topic","other"),"cta":""},errors
         errors.append("invalid_interaction_act")

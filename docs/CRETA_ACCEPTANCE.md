@@ -2,7 +2,15 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest same-code sequential and hedged comparison
+## Latest typed-conversation replay
+
+On `7133f23` and the same v7 snapshot, the unchanged100 scored **93 supported, 4 partial, 2 unhelpful, 0 unsafe and 1 provider failure**. REST text median **2.7595s**, p95 **6.270s**, maximum11.822s. The cohort added an estimated **$0.6451** to a settled cumulative **$11.1077**;134 completions were recorded. No TTS or source changes ran.
+
+All100 answer hashes were verified against the raw JSONL. Independent review moved q095 from supported to partial: the answer attributed an applicability caveat from reviewed records to an explicit brochure statement. The original review is preserved. The other partials lost connected features(q025), spare-wheel detail(q026) or the EMI guarantee refusal(q064). q075/q092 gave generic fallbacks; q027 was a true provider failure. q056/q058 delivered correctly audited fuel-cost results after composition failed; q026 retained useful facts despite an optional repair timeout.
+
+This still misses95% usefulness. Current corrections target those specific conversational and validation failures; they do not change this observed score. Full evidence and provider settlement audit are under `qa100-v7-typed-acts/`. Physical listening, warmth and audio percentiles remain unverified.
+
+## Earlier same-code sequential and hedged comparison
 
 On commit `1aab334` and unchanged v7, sequential delivery scored **88 supported, 5 partial, 4 unhelpful, 3 unsafe, 0 provider failures**. Text median was **2.600 s**, p95 **6.391 s**; recorded estimate **$0.6301**. Experimental delayed fallback racing scored **88 supported, 4 partial, 5 unhelpful, 2 unsafe, 1 provider failure**. Text median was **3.8895 s**, p95 **9.868 s**; recorded estimate **$0.8387**. These are REST text measurements including failures, not useful-audio percentiles. Original 100 answers and exact raw-row hashes are preserved separately in `qa100-v7-relations-sequential/` and `qa100-v7-relations-hedged/`.
 

@@ -22,7 +22,7 @@ class InteractionAct(BaseModel):
     """A closed assistant action, never a source of product facts or free speech."""
     model_config = {"extra": "forbid"}
     mode: Literal["verification_limit", "input_request", "fit_check"]
-    subject_ids: list[Literal["rear_armrest", "personal_comfort", "guaranteed_resale"]] = Field(default_factory=list, max_length=3)
+    subject_ids: list[Literal["rear_armrest", "personal_comfort", "guaranteed_resale", "comparison_evidence", "source_instructions"]] = Field(default_factory=list, max_length=3)
     input_ids: list[Literal["source_url", "city", "variant", "loan_amount", "interest_rate", "loan_tenure", "fuel_efficiency", "fuel_price", "travel_distance"]] = Field(default_factory=list, max_length=3)
 
 

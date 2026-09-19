@@ -1,6 +1,10 @@
 # Loop.MD — Demo Studio
 
-## Current finite repair checks — typed conversation / ordinal scope
+## Current finite repair checks — conversational boundary follow-up
+
+Loop stays off. The last actual full100 scored93supported/4partial/2unhelpful/0unsafe/1provider failure on7133f23/v7. Original cohort and independent q095 adjudication remain preserved. Next corrections retain a validated own-limit prefix before a typed question, add closed comparison/source-instruction limits, and narrow feature-count paraphrase matching. Required deck320/accept24/both smoke, schema8, typed acts18 and conversation16 pass in isolated storage with sockets blocked. Runtime graph/repair/limits/cohort/pairing/clause controls also pass. Final ordinal17 checks pass, including same-first-modifier count swaps; independent review is clear. Frozen log/source hashes are in `final-gates/closure-final-manifest.json`. No paid speech or source change.
+
+## Earlier finite repair checks — typed conversation / ordinal scope
 
 Loop remains off. Required deck320, accept24 and both mock-smoke phases pass in isolated storage with sockets blocked. New typed-act13, graph integration11, ordinal14, EMI11 and coverage13 groups pass; Gemini SDK schema8 includes new optional model fields. Runtime graph130, repair106, limits118, final-cohort94, clause-delivery21, calculator-deadline17, operational13 and original media-delivery27 controls pass. Exact freeze/provenance and per-gate logs are under `output/creta-runtime-2026-09-19/final-gates/acts-*`.
 

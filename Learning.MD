@@ -1210,3 +1210,11 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Delivery and process:** Append only missing audited EMI terms; never rewrite a wrong claim into a correct one silently. Check whether proposed filenames already exist before adding files: this iteration briefly overwrote existing delivery files in the working tree, caught before any service/replay and restored exactly. New helpers now have unique paths. Optional model-schema changes must pass real SDK serialization and mock-pipeline tests.
 
 **Evidence limit:** The delayed fallback comparison established correct recovery/late accounting, not a performance benefit; it remains off by default. No new speech or acoustic validation ran. Original cohorts and source publications remain immutable.
+
+## 2026-09-19 — retain safe refusals and bind counted features (CR39)
+
+**Observed:** The next unchanged100 improved to93 supported,4partial,2unhelpful and1provider failure, with no unsupported critical claim found. A valid typed financing question discarded its independently safe guarantee refusal. Two task-specific limits became generic fallbacks. A valid SX-and-above Bluelink sentence was rejected because “provides/along with” and “70 connected features” did not match its literal reviewed boundary.
+
+**Correction:** Keep only an independently validated first own-limit prelude before the backend-generated question; ignore raw later questions/claims. Closed comparison-evidence and source-instruction acts remain question-bound and fact-free. Source-instruction speech states an action without yes/no polarity. Count normalization retains feature modifiers and distinguishes multiple quantities for the same counted noun; exact trim lists still cannot create an ordinal threshold.
+
+**Review findings:** A semicolon prefix needed a final sentence boundary. Collapsing two differently modified feature counts could exchange their quantities, caught by independent paired controls before replay. Reviewed applicability conditions must not be presented as an explicit source quotation. Preserve initial review records when adjudicating this distinction. Physical listening and speech percentiles remain outside muted evidence.

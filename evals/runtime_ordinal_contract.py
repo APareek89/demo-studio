@@ -145,5 +145,45 @@ class OrdinalContract(unittest.TestCase):
         self.assertIn("Rear parking sensors",result["answer"])
         self.assertNotIn("EX(O) upwards",result["answer"])
 
+    def test_actual_connected_feature_paraphrase_preserves_threshold_and_count(self):
+        case=json.loads((Path(__file__).parent / "fixtures/runtime_ordinal.json").read_text())["typed_q025_repair"]
+        feature=next(f for f in case["facts"] if f["id"]=="F046")
+        text=case["sentences"][1]["text"]
+        self.assertFalse(rejects(text,[feature]))
+        for changed in (
+            text.replace("SX trim", "King trim"),
+            text.replace("70 connected", "80 connected"),
+            text.replace("three years", "four years"),
+            text.replace("three years", "three months"),
+            text.replace("connected features", "safety features"),
+            text.replace("connected features", "connected cameras"),
+            text.replace("70 connected features", "70 years features"),
+            text.replace("complimentary service", "complimentary battery"),
+        ):
+            with self.subTest(text=changed): self.assertTrue(rejects(changed,[feature]))
+
+    def test_entire_saved_connected_repair_retains_independent_scope_and_purchase(self):
+        from server.runtime_graph import validate_decision
+        case=json.loads((Path(__file__).parent / "fixtures/runtime_ordinal.json").read_text())["typed_q025_repair"]
+        decision={"action":"answer","answered":True,"sentences":case["sentences"]}
+        result,errors=validate_decision(decision,case["facts"],case["question"])
+        self.assertFalse(errors)
+        self.assertEqual(set(result["fact_ids"]),{"F168","F046","F198"})
+        for phrase in ("over-the-air updates", "third-party Echo device purchase", "SX trim and above", "70 connected features", "three years", "Bose"):
+            self.assertIn(phrase,result["answer"])
+        for row in case["sentences"]:
+            result,errors=validate_decision({"action":"answer","answered":True,"sentences":[row]},case["facts"],case["question"])
+            self.assertFalse(errors)
+            self.assertIn(row["text"],result["answer"])
+
+    def test_distinct_feature_counts_cannot_exchange_their_modifiers(self):
+        for head in ("features", "functions"):
+            for shared_modifier in ("", "advanced "):
+                f=fact(f"70 {shared_modifier}connected {head} and 3 {shared_modifier}safety {head}","Available on Nimbus and above","Nimbus and above")
+                f["claim"]="Equipment suite"
+                for count,kind,rejected in ((70,"connected",False),(3,"safety",False),(3,"connected",True),(70,"safety",True)):
+                    text=f"{count} {shared_modifier}{kind} {head} are available on Nimbus and above."
+                    with self.subTest(text=text):self.assertEqual(rejects(text,[f]),rejected)
+
 
 if __name__=="__main__": unittest.main()

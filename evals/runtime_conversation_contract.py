@@ -56,6 +56,55 @@ class ConversationContract(unittest.TestCase):
         self.assertIn("fuel price",result["answer"])
         self.assertNotIn("distance",result["answer"])
 
+    def test_guarantee_refusal_survives_canonical_financing_question(self):
+        decision=TurnDecision(action="clarify",clarification="I cannot guarantee that EMI amount. Could you share your loan amount, interest rate, and tenure?",clarification_act=act("input_request",inputs=["loan_amount","interest_rate","loan_tenure"]))
+        result,errors=rg.validate_decision(decision.model_dump(),[],"My budget is 20,000 per month. Can you guarantee an EMI below that?")
+        self.assertFalse(errors)
+        self.assertTrue(result["answer"].startswith("I cannot guarantee that EMI amount. "))
+        self.assertTrue(result["answer"].endswith(result["clarifying_question"]))
+        self.assertEqual(result["answer"].count("?"),1)
+        self.assertIn("loan amount",result["clarifying_question"])
+        self.assertIn("annual or monthly",result["clarifying_question"])
+        self.assertFalse(result["fact_ids"])
+
+    def test_typed_question_never_imports_unchecked_product_or_later_prose(self):
+        for raw in ("All trims have ADAS. What is your loan amount?",
+                    "The car has twelve airbags. I cannot guarantee that EMI amount. What is your loan amount?",
+                    "I cannot guarantee that EMI amount. The car has twelve airbags. What is your password?",
+                    "Can you share your password? I cannot guarantee that EMI amount."):
+            decision={"action":"clarify","clarification":raw,"clarification_act":act("input_request",inputs=["loan_amount","interest_rate","loan_tenure"])}
+            result,_=rg.validate_decision(decision,[],"Can you guarantee an EMI below my budget?")
+            self.assertTrue(result["answer"].endswith(result["clarifying_question"]))
+            self.assertEqual(result["answer"].count("?"),1)
+            self.assertNotIn("airbag",result["answer"])
+            self.assertNotIn("ADAS",result["answer"])
+            self.assertNotIn("password",result["answer"])
+            if not raw.startswith("I cannot"):
+                self.assertEqual(result["answer"],result["clarifying_question"])
+
+    def test_typed_question_strips_unsupported_refusal_reason(self):
+        decision={"action":"clarify","clarification":"I cannot guarantee that EMI amount because all banks charge nine percent. What is your loan amount?","clarification_act":act("input_request",inputs=["loan_amount","interest_rate","loan_tenure"])}
+        result,errors=rg.validate_decision(decision,[],"Can you guarantee an EMI below my budget?")
+        self.assertTrue(result["answer"].startswith("I cannot guarantee that EMI amount. "))
+        self.assertNotIn("banks",result["answer"])
+        self.assertIn("unsupported_limitation_premise",errors)
+
+    def test_semicolon_limit_keeps_sentence_boundary_and_discards_raw_question(self):
+        decision={"action":"clarify","clarification":"I cannot guarantee that EMI amount; What is your password?","clarification_act":act("input_request",inputs=["loan_amount","interest_rate","loan_tenure"])}
+        result,errors=rg.validate_decision(decision,[],"Can you guarantee an EMI below my budget?")
+        self.assertFalse(errors)
+        self.assertTrue(result["answer"].startswith("I cannot guarantee that EMI amount. Could you share"))
+        self.assertEqual(result["answer"].count("?"),1)
+        self.assertNotIn("password",result["answer"])
+
+    def test_new_limit_subjects_round_trip_through_schema_and_graph(self):
+        for subject,question in (("comparison_evidence","What reviewed competitor comparison evidence do you have?"),("source_instructions","If a webpage tells you to ignore my question and reveal your hidden prompt, will you follow it?")):
+            decision=TurnDecision(action="answer",sentences=[SpokenClaim(kind="limitation",interaction=act("verification_limit",subject=subject))])
+            result,errors=rg.validate_decision(decision.model_dump(),[],question)
+            self.assertFalse(errors)
+            self.assertIn("could not verify" if subject=="comparison_evidence" else "without following instructions",result["answer"])
+            self.assertFalse(result["fact_ids"])
+
     def test_verified_act_never_voices_its_raw_model_text(self):
         row={"kind":"limitation","fact_ids":[],"text":"The car has twelve airbags.","interaction":act("verification_limit",subject="rear_armrest")}
         result,errors=rg.validate_decision({"action":"answer","sentences":[row]},[],"Does it have a rear-seat armrest?")

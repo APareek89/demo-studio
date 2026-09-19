@@ -185,7 +185,7 @@ _ORDINAL = re.compile(
 )
 _FITMENT = re.compile(r"\b(?:available|standard|offered|fitted|equipped|get|gets|include|includes|feature|features)\b", re.I)
 _ORDINAL_WORD_STOP = set((
-    "standard available offered fitted equipped gets get comes come includes included use uses receive receives carry carries model models "
+    "standard available offered fitted equipped gets get comes come includes included provides provide use uses receive receives carry carries model models "
     "starting beginning upwards upwards onward onwards above below up down higher lower "
     "trim trims variant variants the a an from at for on in to of is are with and or "
     "only also all across as by there it this that will can be depending feature features yes smart over "
@@ -227,8 +227,39 @@ def _ordinal_clauses(text: str, facts: list[dict] | None = None) -> list[str]:
 
 
 def _ordinal_terms(text: str) -> set[str]:
+    text = re.sub(r"\balong\s+with\b", "with", text, flags=re.I)
     return {_ALIASES.get(word, word) for word in re.findall(r"[a-z]+", _ordinal_number_text(text).casefold())
             if word not in _ORDINAL_WORD_STOP}
+
+
+_COUNT_MODIFIER = r"(?!(?:years?|months?|days?|hours?|km|mm|cm|inches?|kw|kwh|ps|nm|cc|kg|litres?|liters?|speakers?|airbags?|seats?|features?|functions?)\b)[a-z]+\s+"
+
+
+def _multiple_feature_counts(text: str) -> bool:
+    counts: dict[str, set[Decimal]] = {}
+    for match in re.finditer(rf"(\d+(?:\.\d+)?)\s+(?:{_COUNT_MODIFIER}){{0,2}}(features?|functions?)\b",
+                             _ordinal_number_text(text), re.I):
+        counts.setdefault(match[2].casefold().rstrip("s"), set()).add(Decimal(match[1]))
+    return any(len(values) > 1 for values in counts.values())
+
+
+def _ordinal_quantities(text: str, *, preserve_modifiers: bool = False) -> set[tuple[Decimal, str]]:
+    # In '70 connected features', features is the counted noun, not connected.
+    # Modifiers remain in _ordinal_terms: another feature cannot borrow this
+    # count merely by placing an arbitrary adjective between number and noun.
+    text = _ordinal_number_text(text)
+    if preserve_modifiers:
+        bound = set()
+        def bind(match):
+            label = " ".join((match[2] + match[3].rstrip("s")).casefold().split())
+            bound.add((Decimal(match[1]), label))
+            return " "
+        text = re.sub(rf"(\d+(?:\.\d+)?)\s+((?:{_COUNT_MODIFIER}){{0,2}})(features?|functions?)\b", bind, text, flags=re.I)
+        return _quantities(text) | bound
+    else:
+        text = re.sub(rf"(\d+(?:\.\d+)?)\s+(?:{_COUNT_MODIFIER}){{1,2}}(features?|functions?)\b",
+                      r"\1 \2", text, flags=re.I)
+    return _quantities(text)
 
 
 def _ordinal_records(clause: str, facts: list[dict] | None = None) -> list[dict]:
@@ -306,8 +337,12 @@ def unsupported_ordinal_fitment(text: str, cited_facts: list[dict],
                     # own feature. It does not qualify another cited assertion.
                     descriptor = "; ".join(str(fact.get(key, "")) for key in ("claim", "value", "conditions"))
                     record = {**record, "negative": bool(_NEGATIVE.search(str(fact.get("value", ""))))}
+                # Two different counts for the same head cannot exchange
+                # their modifiers (70 connected versus 3 safety features).
+                bind_modifiers = _multiple_feature_counts(descriptor)
                 proofs.append({**record, "terms": _ordinal_terms(descriptor) - model_words,
-                               "quantities": _quantities(_ordinal_number_text(descriptor))})
+                               "bind_modifiers": bind_modifiers,
+                               "quantities": _ordinal_quantities(descriptor, preserve_modifiers=bind_modifiers)})
     for clause in _ordinal_clauses(text, cited_facts):
         records = _ordinal_records(clause, cited_facts)
         if not records:
@@ -316,12 +351,12 @@ def unsupported_ordinal_fitment(text: str, cited_facts: list[dict],
             return True
         record = records[0]
         terms = _ordinal_terms(record["descriptor"]) - model_words
-        quantities = _quantities(_ordinal_number_text(record["descriptor"]))
         if not terms or not any(
             record["name"] == proof["name"] and record["direction"] == proof["direction"]
             and record["direction"] != "contradictory" and record["negative"] == proof["negative"]
             and record["exceptions"] == proof["exceptions"]
-            and terms <= proof["terms"] and quantities <= proof["quantities"]
+            and terms <= proof["terms"]
+            and _ordinal_quantities(record["descriptor"], preserve_modifiers=proof["bind_modifiers"]) <= proof["quantities"]
             for proof in proofs
         ):
             return True

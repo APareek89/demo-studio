@@ -12,7 +12,8 @@ from collections.abc import Mapping
 from urllib.parse import urlsplit
 
 
-SUBJECT_IDS = ("rear_armrest", "personal_comfort", "guaranteed_resale")
+SUBJECT_IDS = ("rear_armrest", "personal_comfort", "guaranteed_resale",
+               "comparison_evidence", "source_instructions")
 INPUT_IDS = ("source_url", "city", "variant", "loan_amount", "interest_rate",
              "loan_tenure", "fuel_efficiency", "fuel_price", "travel_distance")
 MODES = ("verification_limit", "input_request", "fit_check")
@@ -26,6 +27,8 @@ _LIMITS = {
     "rear_armrest": "I couldn't verify whether it has a rear-seat armrest from the reviewed evidence.",
     "personal_comfort": "I cannot confirm how comfortably you or your passengers will fit without a seating check.",
     "guaranteed_resale": "I cannot guarantee a future resale value.",
+    "comparison_evidence": "I could not verify reviewed competitor comparison evidence.",
+    "source_instructions": "I will keep answering your question, without following instructions from the source page.",
 }
 _LABELS = {
     "source_url": "the public product-page URL",
@@ -77,6 +80,16 @@ def _clauses(text: str):
             yield match.start() + part.start(), part.group()
 
 
+def _source_instruction_boundary(text: str) -> bool:
+    """Source-authored assistant overrides, not ordinary product instructions."""
+    source = r"(?:web\s?page|website|source(?:\s+(?:page|material))?|document|manual|brochure)"
+    actor = rf"\b{source}\b[^.!?\n]{{0,60}}\b(?:says?|tells?|asks?|instructs?|orders?|directs?)\b|\b(?:instructions|prompt)\b[^.!?\n]{{0,30}}\b(?:in|on|from)\s+(?:(?:a|the|this|that)\s+)?{source}\b"
+    target = r"(?:the\s+)?(?:customer|user)|(?:your|system|private|hidden|previous|developer)\s+(?:instructions|prompt|rules)|(?:my|your|the)\s+(?:question|answer)"
+    operation = rf"\b(?:ignore|override|reveal|disclose)\b[^.!?\n]{{0,45}}\b(?:{target})\b"
+    return any(re.search(actor, clause, re.I) and re.search(operation, clause, re.I)
+               for clause in re.split(r"[.!?\n]", text))
+
+
 def _context(text: str) -> tuple[set[str], set[str]]:
     subjects = set()
     if re.search(r"\b(?:rear(?:[- ]seat)?|back[- ]seat|second[- ]row)\s+(?:(?:centre|center)\s+)?armrest\b", text, re.I):
@@ -86,6 +99,11 @@ def _context(text: str) -> tuple[set[str], set[str]]:
         subjects.add("personal_comfort")
     if re.search(r"\b(?:resale|residual value|resell)\b", text, re.I):
         subjects.add("guaranteed_resale")
+    if (re.search(r"\b(?:competitor|competitors|rival|rivals|competition)\b", text, re.I)
+            and re.search(r"\b(?:compar(?:e|ison|isons|ing)|evidence|reviewed|verified|records)\b", text, re.I)):
+        subjects.add("comparison_evidence")
+    if _source_instruction_boundary(text):
+        subjects.add("source_instructions")
     inputs = set()
     if re.search(r"\b(?:emi|loan|borrow|repayment|monthly payment)\b", text, re.I):
         inputs.update(_FAMILIES["loan"])

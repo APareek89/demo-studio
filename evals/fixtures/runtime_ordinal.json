@@ -486,5 +486,106 @@
         }
       }
     }
-  ]
+  ],
+  "typed_q025_repair": {
+    "question": "Which connected-car features can I use?",
+    "source_commit": "7133f23bdca142d7a0ac0ca8ab0860f6ba0ce9a8",
+    "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+    "trace_timestamp": 1789834004.908936,
+    "trace_row_sha256": "65709dc6ee8e540037166fc8f9a3ce7e3d532bc1f35750bcfc589d0cc0c77d0b",
+    "sentences": [
+      {
+        "text": "On the SX, SX Premium, King, King Knight, and Lounge Edition trims, you get Hyundai Bluelink with over-the-air updates and Home-to-Car connectivity with Alexa, which requires a third-party Echo device purchase.",
+        "fact_ids": [
+          "F168"
+        ],
+        "kind": "fact",
+        "interaction": null
+      },
+      {
+        "text": "For the SX trim and above, Hyundai Bluelink provides over 70 connected features along with three years of complimentary service.",
+        "fact_ids": [
+          "F046"
+        ],
+        "kind": "fact",
+        "interaction": null
+      },
+      {
+        "text": "Higher trims also pair this Bluelink technology with a Bose premium sound system.",
+        "fact_ids": [
+          "F198"
+        ],
+        "kind": "fact",
+        "interaction": null
+      }
+    ],
+    "facts": [
+      {
+        "id": "F046",
+        "kind": "feature",
+        "claim": "Connected car suite complimentary subscription",
+        "value": "Hyundai Bluelink connected car technology with 70+ features, 3 years complimentary",
+        "conditions": "Available on SX trim and above; includes 3 years complimentary service",
+        "scope": {
+          "model": "CRETA",
+          "variant": "SX and above"
+        },
+        "approved": true,
+        "knowledge": {
+          "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+          "assertion_hash": "a6fc459f9cb14d38458b9682b68b8de8dfa58cc6740d16c721f6a3cc0e0caf81",
+          "evidence_id": "ev_01c8195f22c280ea2b5d12bf",
+          "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "uploaded",
+          "source_url": "",
+          "fetched_at": ""
+        }
+      },
+      {
+        "id": "F168",
+        "kind": "feature",
+        "claim": "Connected car technology",
+        "value": "Hyundai Bluelink with Over-the-air (OTA) updates and Home to car (H2C) with Alexa",
+        "conditions": "Available on SX, SX Premium, King, King Knight, Lounge Edition; Alexa Echo device requires third-party purchase",
+        "scope": {
+          "model": "CRETA",
+          "market": "India",
+          "variant": "SX, SX Premium, King, King Knight, Lounge Edition"
+        },
+        "approved": true,
+        "knowledge": {
+          "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+          "assertion_hash": "c788dc63b60d25a79258ce0cd65268644aa6a9277baf1f2ea084266cc7124ceb",
+          "evidence_id": "ev_2c0c0ea1cd1085add1c6dd7b",
+          "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "website",
+          "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+          "fetched_at": 1789816368.917721
+        }
+      },
+      {
+        "id": "F198",
+        "kind": "feature",
+        "claim": "Audio and connected car system",
+        "value": "Hyundai Bluelink connected car technology and Bose premium sound system",
+        "conditions": "Available on higher trims only",
+        "scope": {
+          "model": "CRETA"
+        },
+        "approved": true,
+        "knowledge": {
+          "source_revision": "4c0a99a892c18211584610936b1e1afff42f3d1f08067f8a3175083926968b72",
+          "assertion_hash": "a9d5ebcbbbb03ca4e146eca99cdcf35350aa6a2a106031f2fbe809038f019ff9",
+          "evidence_id": "ev_ce2211c7b6bdfb2c4789266b",
+          "evidence_path": "knowledge/sources/src_a4a0ef2466f3/4c0a99a892c18211584610936b1e1afff42f3d1f08067f8a3175083926968b72.extract-v2.json",
+          "extraction_version": 2,
+          "origin": "website",
+          "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price",
+          "fetched_at": 1789816388.377755
+        }
+      }
+    ]
+  }
 }
