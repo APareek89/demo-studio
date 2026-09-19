@@ -1,6 +1,7 @@
 """Central configuration. Keys come from .env (never from the browser)."""
 from __future__ import annotations
 
+import math
 import os
 from pathlib import Path
 
@@ -60,6 +61,12 @@ RUNTIME_PROVIDERS = [p.strip() for p in os.getenv("RUNTIME_PROVIDERS", "gemini,c
 RUNTIME_TIMEOUT = float(os.getenv("RUNTIME_TIMEOUT", "15"))
 # Experimental delayed fallback race; opt-in only after a separate paid comparison.
 RUNTIME_HEDGE_ENABLED = os.getenv("RUNTIME_HEDGE_ENABLED", "").strip() == "1"
+try:
+    RUNTIME_HEDGE_DELAY_S = float(os.getenv("RUNTIME_HEDGE_DELAY_S", "5"))
+except ValueError as exc:
+    raise ValueError("RUNTIME_HEDGE_DELAY_S must be finite and between 1 and 5 seconds") from exc
+if not math.isfinite(RUNTIME_HEDGE_DELAY_S) or not 1 <= RUNTIME_HEDGE_DELAY_S <= 5:
+    raise ValueError("RUNTIME_HEDGE_DELAY_S must be finite and between 1 and 5 seconds")
 CLAUDE_RUNTIME_MODEL = os.getenv("CLAUDE_RUNTIME_MODEL", "").strip() or CLAUDE_MODEL
 GEMINI_RUNTIME_MODEL = os.getenv("GEMINI_RUNTIME_MODEL", "").strip() or GEMINI_TEXT_MODEL
 STORAGE_BACKEND = (os.getenv("STORAGE_BACKEND", "local").strip().lower() or "local")  # local | aws — aws falls back to local without credentials
@@ -96,5 +103,7 @@ def health() -> dict:
         "gemini_model": GEMINI_MODEL, "gemini_text_model": GEMINI_TEXT_MODEL, "gemini_tts_model": GEMINI_TTS_MODEL,
         "runware_text_model": RUNWARE_TEXT_MODEL, "runware_text_model_premium": RUNWARE_TEXT_MODEL_PREMIUM,
         "build_providers": BUILD_PROVIDERS,
-        "runtime_providers": RUNTIME_PROVIDERS, "runtime_timeout": RUNTIME_TIMEOUT, "runtime_hedge_enabled": RUNTIME_HEDGE_ENABLED, "claude_runtime_model": CLAUDE_RUNTIME_MODEL, "gemini_runtime_model": GEMINI_RUNTIME_MODEL,
+        "runtime_providers": RUNTIME_PROVIDERS, "runtime_timeout": RUNTIME_TIMEOUT, "runtime_hedge_enabled": RUNTIME_HEDGE_ENABLED,
+        "runtime_hedge_delay_s": RUNTIME_HEDGE_DELAY_S,
+        "claude_runtime_model": CLAUDE_RUNTIME_MODEL, "gemini_runtime_model": GEMINI_RUNTIME_MODEL,
     }

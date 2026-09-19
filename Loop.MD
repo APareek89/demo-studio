@@ -1,6 +1,10 @@
 # Loop.MD — Demo Studio
 
-## Current finite repair checks — conversational boundary follow-up
+## Current finite checks — earlier fallback experiment
+
+Loop stays off. The settled9d46913/v7 cohort remains87supported/3partial/2unhelpful/0unsafe/8provider failures. Next code adds finite1–5s delay configuration(default5/off) and closed lender/product-evidence boundary acts. Required deck320/accept24/bothsmoke, schema8, conversation16, graph/repair/limits pass with sockets blocked. Typed-helper21, delay-config6 and hedge30 controls pass; independent review is clear. Final hashes/logs are recorded in `final-gates/early-fallback-final-manifest.json`. Paid3s-overlap replay is separately capped, retains the12s deadline and requires late-work settlement; no live benefit is claimed from free controls. The batch reserves32 possible completions per pair, including optional composition repair; dry preparation made no API calls.
+
+## Earlier finite repair checks — conversational boundary follow-up
 
 Loop stays off. The last actual full100 scored93supported/4partial/2unhelpful/0unsafe/1provider failure on7133f23/v7. Original cohort and independent q095 adjudication remain preserved. Next corrections retain a validated own-limit prefix before a typed question, add closed comparison/source-instruction limits, and narrow feature-count paraphrase matching. Required deck320/accept24/both smoke, schema8, typed acts18 and conversation16 pass in isolated storage with sockets blocked. Runtime graph/repair/limits/cohort/pairing/clause controls also pass. Final ordinal17 checks pass, including same-first-modifier count swaps; independent review is clear. Frozen log/source hashes are in `final-gates/closure-final-manifest.json`. No paid speech or source change.
 

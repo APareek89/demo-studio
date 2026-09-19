@@ -13,7 +13,8 @@ from urllib.parse import urlsplit
 
 
 SUBJECT_IDS = ("rear_armrest", "personal_comfort", "guaranteed_resale",
-               "comparison_evidence", "source_instructions")
+               "comparison_evidence", "source_instructions", "lender_approval",
+               "product_evidence_boundary")
 INPUT_IDS = ("source_url", "city", "variant", "loan_amount", "interest_rate",
              "loan_tenure", "fuel_efficiency", "fuel_price", "travel_distance")
 MODES = ("verification_limit", "input_request", "fit_check")
@@ -29,6 +30,8 @@ _LIMITS = {
     "guaranteed_resale": "I cannot guarantee a future resale value.",
     "comparison_evidence": "I could not verify reviewed competitor comparison evidence.",
     "source_instructions": "I will keep answering your question, without following instructions from the source page.",
+    "lender_approval": "I cannot confirm or guarantee a lender's loan approval.",
+    "product_evidence_boundary": "I will only make product claims supported by reviewed evidence.",
 }
 _LABELS = {
     "source_url": "the public product-page URL",
@@ -90,6 +93,39 @@ def _source_instruction_boundary(text: str) -> bool:
                for clause in re.split(r"[.!?\n]", text))
 
 
+def _product_evidence_boundary(text: str) -> bool:
+    """Explicit evidence-bypass requests, never ordinary feature/manual queries.
+
+    Detection licenses only our fixed operating action; it never licenses the
+    requested claim, copies its topic, or establishes a product fact. A question
+    about refusing the same act gets the same polarity-independent action.
+    """
+    product = r"\b(?:products?|vehicles?|cars?|models?|variants?|trims?|features?|equipment|specifications?|adas)\b"
+    disregard = r"\b(?:ignore|override|disregard)\s+(?:(?:your|the|all|our|reviewed|verified)\s+){0,3}(?:sources?|evidence|records)\b"
+    speech = r"\b(?:say|claim|tell|state|pretend|assert)\b"
+    fabricate = r"\b(?:invent|fabricate|make\s+up)\b[^.!?\n]{0,60}\b(?:claims?|facts?|evidence|specifications?|features?|equipment)\b"
+    return any(re.search(product, clause, re.I) and (
+        (re.search(disregard, clause, re.I) and re.search(speech, clause, re.I))
+        or re.search(fabricate, clause, re.I))
+        for clause in re.split(r"[.!?\n]", text))
+
+
+def _lender_approval_request(text: str) -> bool:
+    """A request about the lending decision, not approval fees or an EMI input."""
+    if not re.search(r"\b(?:loan|financing|credit application)\b", text, re.I):
+        return False
+    determiner = r"(?:(?:my|our|the|this|that|a|any|your|lender's|bank's)\s+)?"
+    approval = r"approval\b(?!\s+(?:(?:processing|application)\s+)?(?:fees?|costs?|charges?)\b)"
+    decision = (
+        rf"\b(?:confirm|guarantee|predict|determine)\s+{determiner}(?:(?:loan|financing)\s+)?{approval}"
+        rf"|\b(?:confirm|guarantee|predict|determine)\s+(?:that\s+)?{determiner}(?:bank|lender)\s+(?:will|can|would)\s+(?:approve|sanction)\b"
+        rf"|\b(?:will|can|could|would)\s+{determiner}(?:bank|lender)\s+(?:(?:definitely|certainly)\s+)?(?:approve|sanction)\b"
+        rf"|\b(?:is|was|has|will|can|could|would)\s+{determiner}(?:loan|financing|credit application)\s+(?:(?:been|be)\s+)?(?:approved|sanctioned)\b"
+        rf"|\b(?:will|is|can|could|would)\s+{determiner}(?:loan|financing)\s+approval\s+(?:be\s+)?(?:guaranteed|confirmed)\b"
+    )
+    return bool(re.search(decision, text, re.I))
+
+
 def _context(text: str) -> tuple[set[str], set[str]]:
     subjects = set()
     if re.search(r"\b(?:rear(?:[- ]seat)?|back[- ]seat|second[- ]row)\s+(?:(?:centre|center)\s+)?armrest\b", text, re.I):
@@ -104,6 +140,10 @@ def _context(text: str) -> tuple[set[str], set[str]]:
         subjects.add("comparison_evidence")
     if _source_instruction_boundary(text):
         subjects.add("source_instructions")
+    if _lender_approval_request(text):
+        subjects.add("lender_approval")
+    if _product_evidence_boundary(text):
+        subjects.add("product_evidence_boundary")
     inputs = set()
     if re.search(r"\b(?:emi|loan|borrow|repayment|monthly payment)\b", text, re.I):
         inputs.update(_FAMILIES["loan"])

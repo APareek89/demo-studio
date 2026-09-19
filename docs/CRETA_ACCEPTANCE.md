@@ -2,7 +2,15 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest typed-conversation replay
+## Latest provider-tail replay
+
+Commit `9d46913`, unchanged v7 and100 questions: **87 supported, 3 partial, 2 unhelpful, 0 unsafe and 8 provider failures**. All-request REST text median **3.917s**, p95 **11.814s**; maximum11.921s. Recorded cost **$0.621665**, settled cumulative **$11.7293**. The100 exact row hashes and semantic reviews are preserved in `qa100-v7-conversation-final/`.
+
+The remaining partials omit the R18 road-wheel category(q026), a precise standard-warranty limit(q028), or add an unsupported dealer-timeline assurance(q084). Two refusals became generic or irrelevant(q085/q086). All ten fully specified calculations independently recompute; a timed-out optional repair did not erase q052's completed EMI answer. The eight whole-turn outages are q027/037/040/044/048/066/067/095. Both q066/q067 fetched source information before composition failed. Runware successfully composed q063; its other late timeout outcomes remain in the audit.
+
+The trace and usage tails were unchanged for51.878s before code edits resumed. Sequential fallback often received less than4s after Gemini's7s timeout, shorter than the earlier successful Runware range3.316–5.563s. A separately bounded earlier-fallback experiment is being prepared with the same12s deadline; it may increase billed overlap and is not yet an established improvement. The default remains off. No source, authored story or speech changed.
+
+## Earlier typed-conversation replay
 
 On `7133f23` and the same v7 snapshot, the unchanged100 scored **93 supported, 4 partial, 2 unhelpful, 0 unsafe and 1 provider failure**. REST text median **2.7595s**, p95 **6.270s**, maximum11.822s. The cohort added an estimated **$0.6451** to a settled cumulative **$11.1077**;134 completions were recorded. No TTS or source changes ran.
 

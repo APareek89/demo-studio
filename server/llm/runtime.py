@@ -129,7 +129,7 @@ def _sequential(system: str, content: str, schema: type[T], *, history: list[dic
     raise RuntimeError("all runtime providers failed — " + " | ".join(errors))
 
 
-_HEDGE_DELAY_S = 5.0
+_HEDGE_DELAY_S = config.RUNTIME_HEDGE_DELAY_S
 _PRIMARY_CAP_S = 7.0
 _MIN_ATTEMPT_S = .4
 

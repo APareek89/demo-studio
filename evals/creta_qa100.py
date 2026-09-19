@@ -166,7 +166,7 @@ def main():
             last=max(case["id"] for case in requested_followups)
             prerequisites={case["id"] for case in cases if case["category"]=="followup" and case["id"]<=last}-requested
         cases=[case for case in cases if case["id"] in requested|prerequisites]
-    assert args.max_cost>0 and args.max_completions>=24,"Budget must reserve one complete next pair"
+    assert args.max_cost>0 and args.max_completions>=32,"Budget must reserve one complete next pair"
     reserve_cost=min(1.50,args.max_cost/2)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     (out / "case-pack.json").write_text(json.dumps(cases, indent=2))
@@ -187,12 +187,12 @@ def main():
         cost = current["total_usd"] - before["total_usd"]
         calls = current.get("by_stage", {}).get("runtime", {}).get("calls", 0) - before.get("by_stage", {}).get("runtime", {}).get("calls", 0)
         guards.append({"at": time.time(), "recorded_batch_usd": round(cost, 5), "runtime_completions": calls})
-        # Reserve twenty-four completions (three reasoning rounds, Gemini and
+        # Reserve thirty-two completions (three reasoning rounds plus repair, Gemini and
         # Claude once plus Runware's possible two-generation JSON repair, two
         # concurrent questions). Keep up to $1.50 headroom for fallback use;
         # smaller authorized batches reserve half their entire cost allowance.
         # Any other simultaneous runtime usage makes this guard more conservative.
-        if cost >= args.max_cost-reserve_cost or calls > args.max_completions-24:
+        if cost >= args.max_cost-reserve_cost or calls > args.max_completions-32:
             raise RuntimeError("Conservative batch budget guard reached; no more requests")
     def run_case(case):
         started = time.monotonic()
@@ -228,7 +228,7 @@ def main():
     times = sorted(row["elapsed_ms"] for row in results)
     summary = {"demo_id": args.demo, "snapshot_id": bundle["knowledge_snapshot_id"], "cases": len(cases), "completed": len(results),
                "requested_cases":sorted(requested),"context_prerequisites":sorted(prerequisites),
-               "budget":{"max_cost_estimate_usd":args.max_cost,"max_recorded_runtime_completions":args.max_completions,"reserved_next_pair_usd":reserve_cost,"reserved_next_pair_completions":24},
+               "budget":{"max_cost_estimate_usd":args.max_cost,"max_recorded_runtime_completions":args.max_completions,"reserved_next_pair_usd":reserve_cost,"reserved_next_pair_completions":32},
                "stopped_reason": error, "cost_estimate_usd": round(after["total_usd"]-before["total_usd"], 5),
                "statuses": {status: sum(row["status"] == status for row in results) for status in sorted({row["status"] for row in results})},
                "latency_ms": {"median": statistics.median(times) if times else None, "p95": times[max(0, math.ceil(len(times)*.95)-1)] if times else None},

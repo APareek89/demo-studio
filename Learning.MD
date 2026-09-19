@@ -1218,3 +1218,12 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Correction:** Keep only an independently validated first own-limit prelude before the backend-generated question; ignore raw later questions/claims. Closed comparison-evidence and source-instruction acts remain question-bound and fact-free. Source-instruction speech states an action without yes/no polarity. Count normalization retains feature modifiers and distinguishes multiple quantities for the same counted noun; exact trim lists still cannot create an ordinal threshold.
 
 **Review findings:** A semicolon prefix needed a final sentence boundary. Collapsing two differently modified feature counts could exchange their quantities, caught by independent paired controls before replay. Reviewed applicability conditions must not be presented as an explicit source quotation. Preserve initial review records when adjudicating this distinction. Physical listening and speech percentiles remain outside muted evidence.
+
+
+## 2026-09-19 — fallback needs usable time, not just a configured provider (CR40)
+
+**Observed:** A settled unchanged100 on9d46913/v7 scored87 supported with8 whole-turn provider failures. Sequential Gemini timeouts used7s; Claude credit failures/cooldown and Runware attempts often left less than4s. Earlier actual Runware successes took3.316–5.563s. Merely listing fallback providers cannot establish reliable recovery within12s.
+
+**Next bounded experiment:** Expose a finite1–5s hedge-delay configuration, retaining default5s/off. Test3s under the same turn deadline, fixed provider order, cancellation and one-winner rules. Multiple reasoning/repair phases can each overlap; cost and late usage must be attributed and settled. An earlier first structured result still needs ordinary validation. Observational cohorts do not establish a causal performance gain.
+
+**Conversation:** A bank-approval refusal packed into invalid clarification and a source-grounding refusal removed as uncited context both became unhelpful. Add only question-bound fact-free own-limit acts; do not allow raw claims or broaden product validation. Preserve original responses and grade them separately from provider status.
