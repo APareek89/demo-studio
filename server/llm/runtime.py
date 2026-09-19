@@ -166,6 +166,12 @@ def _hedged(system: str, content: str, schema: type[T], *, history: list[dict] |
                     response=json.dumps({"call_id":call_id,"attempt_id":call_id+":"+provider if provider else "",
                                          "event":event,**context,**details}),usd=0)
 
+    def skipped_before_dispatch(provider,reason):
+        # 'launch' is preparation intent. Close it explicitly when a later
+        # gate retires this lane before the provider adapter has been called.
+        trace("skipped_before_dispatch",provider,reason=reason,dispatched=False)
+        return None
+
     def invoke(provider,index):
         # This initial gate avoids preparation for an already-lost lane. The
         # dispatch gate below also covers retirement during tracing/history copy.
@@ -212,15 +218,15 @@ def _hedged(system: str, content: str, schema: type[T], *, history: list[dict] |
             # lane wins or this turn expires. Nothing expensive belongs between
             # this last check and the adapter boundary. Once transport starts it
             # may still complete and incur cost; its late result is ignored.
-            if stop.is_set():return None
+            if stop.is_set():return skipped_before_dispatch(provider,"stop_requested")
             remaining=deadline-time.monotonic()
             timeout=min(timeout,config.RUNTIME_TIMEOUT,remaining)
             if index==0:timeout=min(timeout,_PRIMARY_CAP_S)
             elif index<len(providers)-1:
                 timeout=min(timeout,remaining-min(2.0*(len(providers)-index-1),remaining*.45))
-            if timeout<_MIN_ATTEMPT_S:return None
+            if timeout<_MIN_ATTEMPT_S:return skipped_before_dispatch(provider,"insufficient_budget")
             kwargs[timeout_key]=timeout
-            if stop.is_set():return None
+            if stop.is_set():return skipped_before_dispatch(provider,"stop_requested")
             result=adapter(*args,**kwargs)
             if not isinstance(result,schema):raise TypeError("Provider did not return the requested structured schema")
             with lock:

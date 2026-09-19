@@ -220,6 +220,9 @@ with ExitStack() as stack:
     out=invoke()
     for worker in blocked_threads:worker.join(.3)
     check("Winner during fallback launch trace prevents late paid dispatch",winner.is_set() and out._runtime_provider=="gemini" and not c.called and not w.called and all(not t.is_alive() for t in blocked_threads))
+    events=[json.loads(t[2]["response"]) for t in traces if t[0]=="runtime-hedge"]
+    terminals=[e for e in events if e.get("attempt_id","").endswith(":claude") and e["event"] in {"skipped_before_dispatch","winner","attempt_failed","late_result_ignored","late_error_ignored"}]
+    check("Retired launch intent gets exactly one non-dispatched terminal",len(terminals)==1 and terminals[0]["event"]=="skipped_before_dispatch" and terminals[0]["dispatched"] is False and terminals[0]["reason"]=="stop_requested")
 
 # A customer's history may have a slow deep copy. Win/cancel/deadline during
 # that preparation must all prevent the eventual fallback adapter call.
@@ -258,6 +261,42 @@ for outcome in ("winner","cancel","deadline"):
             for worker in workers:worker.join(.3)
         expected=(result is not None and result._runtime_provider=="gemini") if outcome=="winner" else isinstance(failure,InterruptedError if outcome=="cancel" else TimeoutError)
         check("History preparation observes "+outcome+" before fallback dispatch",copying.is_set() and expected and not c.called and not w.called and all(not t.is_alive() for t in workers))
+        events=[json.loads(t[2]["response"]) for t in traces if t[0]=="runtime-hedge"]
+        terminals=[e for e in events if e.get("attempt_id","").endswith(":claude") and e["event"] in {"skipped_before_dispatch","winner","attempt_failed","late_result_ignored","late_error_ignored"}]
+        check("History "+outcome+" closes only its undispatched launch intent",len(terminals)==1 and terminals[0]["event"]=="skipped_before_dispatch" and terminals[0]["dispatched"] is False)
+
+# An attempt may still be before its deadline but lack the reserved minimum
+# dispatch budget after preparation. This is also a non-paid terminal outcome.
+with ExitStack() as stack:
+    traces,_=setup(stack)
+    stack.enter_context(patch.object(runtime,"_MIN_ATTEMPT_S",.10))
+    real_monotonic=time.monotonic;offset=[0.0]
+    stack.enter_context(patch.object(runtime.time,"monotonic",side_effect=lambda:real_monotonic()+offset[0]))
+    release=threading.Event();budget_winner=threading.Event();workers=[];copies=[]
+    class BudgetExhaustingHistory(list):
+        def __deepcopy__(self,memo):
+            copies.append(threading.current_thread())
+            if len(copies)==2:offset[0]+=.41
+            return [dict(item) for item in self]
+    capture=usage.trace
+    def release_after_skip(kind,model,**kw):
+        capture(kind,model,**kw)
+        if kind=="runtime-hedge":
+            event=json.loads(kw["response"])["event"]
+            if event=="winner":budget_winner.set()
+            if event=="skipped_before_dispatch":
+                release.set();assert budget_winner.wait(.3)
+    stack.enter_context(patch.object(usage,"trace",side_effect=release_after_skip))
+    def waiting_primary(*args,**kwargs):
+        workers.append(threading.current_thread());assert release.wait(.5)
+        return answer("primary after unused fallback")
+    stack.enter_context(patch.object(gemini,"text_structured",side_effect=waiting_primary))
+    c=stack.enter_context(patch.object(claude,"structured"));w=stack.enter_context(patch.object(runware,"structured"))
+    out=invoke(history=BudgetExhaustingHistory([{"role":"user","content":"History"}]))
+    for worker in workers:worker.join(.3)
+    events=[json.loads(t[2]["response"]) for t in traces if t[0]=="runtime-hedge"]
+    skipped=[e for e in events if e["event"]=="skipped_before_dispatch" and e.get("attempt_id","").endswith(":claude")]
+    check("Insufficient prepared budget emits one non-dispatched terminal",len(skipped)==1 and skipped[0]["reason"]=="insufficient_budget" and skipped[0]["dispatched"] is False and not c.called and not w.called and out._runtime_provider=="gemini")
 
 with ExitStack() as stack:
     traces,_=setup(stack)

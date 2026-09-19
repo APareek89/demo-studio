@@ -1,8 +1,24 @@
 # CRETA acceptance — 19 September 2026
 
-**Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
+**Status: implementation and the reviewed demo are built; the latest text-answer quality gate passes. Full response-speed and physical voice acceptance remain open.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest range, source and quantity replay
+## Latest source-restriction and live-table replay
+
+Frozen `0c47061`, unchanged v7, the same 100 questions: **95 supported, 5 partial, 0 unhelpful, 0 unsafe and 0 whole-turn provider failures**. All 100 exact raw-line hashes were checked. This meets the predefined ≥95% useful-supported / zero critical-unsupported-claim gate for this cohort. It does not prove general semantic correctness, customer conversion, perceived voice quality or acoustic interaction.
+
+All ten calculations independently recompute; all five contextual follow-ups are supported. q056 delivers the completed audited ₹7,000/month calculation after the final model composition times out. q080’s optional repair times out without discarding its surviving relevant facts. Neither is a successful reasoning call; neither prevented every useful part of the response. Five partials remain: q025 loses actual connected functions; q034 loses luggage/split-seat detail; q040 does not distinguish exclusive from shared S(O) features; q078 loses the precise current-dealer-discount limit; q080 loses the future-renewal-specific limit. These are not counted as supported.
+
+Text response median **3.563 s**, p95 **8.693 s**, maximum **11.814 s**. This is REST request-to-text, not customer speech-end-to-useful-audio. The long tail remains above the intended conversational experience. The recorded batch estimate is **$1.197981**, cumulative **$16.3976**, with no TTS calls. Original evidence is under `qa100-v7-table-scope-final/`; raw SHA256 `001e193d4c77016b2ebfa15d9e79ed060340a8995773137fb7bf0c4dc04136dd`.
+
+Useful supported non-tool text answers (57) had a **2.957 s median /8.693 s p95**; calculations (10), **4.292 s /11.793 s**; answers following web lookup (7), **4.288 s /7.925 s**. The latter includes honest lookup limits with separately sourced saved facts, not seven successful fresh-page verifications. Clarifications and declines are excluded from these useful-answer subsets; small tool groups do not establish reliable population percentiles.
+
+The final provider audit records151 returned completions;35 fallback races produce27 Gemini wins,7 Runware wins and1 no-winner reasoning deadline. Returned nonwinning usage costs$0.454023, included in the batch total. Trace, usage and results stay unchanged for83.982s, with last activity137.915s old. There are169 launch intents,168 explicit terminal outcomes and the one inferred pre-dispatch retirement described below; the missing terminal is not fabricated.
+
+q028 now gives an honest standard-warranty limit and paid petrol-only extension. q068 gives a supported website feature inventory without universal fitment. The current live draft does not exercise the new universal-table guard; saved actual-draft and negative/positive controls establish that specific repair. Old unsafe responses and original grades remain unchanged.
+
+The provider audit found one missing terminal event after a launch intent at a pre-dispatch winner race. A controlled reproduction makes zero fallback adapter calls and leaves no worker, but historical non-dispatch is an inference, not an observed terminal event. A telemetry-only fix closes future traces; it cannot repair the historical evidence or turn app estimates into provider invoices.
+
+## Earlier range, source and quantity replay
 
 On `b01b0c6` and unchanged v7, the same 100 questions scored **97 supported, 1 partial, 2 unsafe and no unhelpful answers or whole-turn provider failures**. Text median **3.167 s**, p95 **7.722 s**, maximum **11.797 s**. Recorded 147 completions cost **$1.053998**; cumulative estimate **$15.1996**. All 155 launched attempts are terminal; trace, usage and results remained unchanged for 35.931 seconds before edits. One optional repair timeout (q037) retained a supported answer. Twenty fallback races produced 17 Gemini wins, two Runware wins and one repair deadline. Losing returned completions remain included in cost.
 

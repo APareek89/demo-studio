@@ -1258,3 +1258,7 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Audit lesson:** A root review writer used integer override keys against q-prefixed IDs, retaining old rationale text despite new answers and grades. Independent review caught it. Archive the original rationale, correct only the explanations and verify raw hashes; require override keys to be actual current case IDs. No answer or verdict changed.
 
 **Review controls:** Shared word pools could swap front/rear qualifiers between features, and a negated quantifier could hide another positive universal. Require own-row descriptors and independently scoped quantifiers. Apply the guard to every cited claim kind, not only model-labelled facts. Multiple cited tables must share the same canonical trim-header set; never pool different trim universes. Full-validator and saved-source tests preserve ordinary selected-variant descriptions.
+
+## 2026-09-19 — launch intent is not provider dispatch (CR44)
+
+A fallback can log its launch intent and then see a winning primary before it reaches the provider adapter. Silent returns at that boundary leave audits unable to distinguish skipped dispatch from missing completion telemetry. Record an explicit terminal pre-dispatch retirement for each such exit; preserve actual winner/deadline/cost behavior. The controlled zero-adapter-call reproduction explains the historical shape, but cannot manufacture the missing observation retroactively. Preserve that caveat even when trace and usage tails are quiet.
