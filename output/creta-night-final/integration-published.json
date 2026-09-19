@@ -1,0 +1,574 @@
+{
+  "plan_sha256": "a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f",
+  "script_sha256": "6b6375e5e0c35bcc371d043bda8d10f01fd546572cef3d14b11d9a01255b9986",
+  "baseline_bundle_sha256": "b7f3af73f3541f6fd95bcacf7339707b4eb543c9a48c7638fc1ce339463e774b",
+  "baseline_faq_sha256": "9856c39c1de9d3d4189e7f00234b678fbdc104af8cfc51abf5b5418ddabf08aa",
+  "knowledge_snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "baseline_version": 7,
+  "new_version": 8,
+  "narration_estimate": {
+    "clip_count": 88,
+    "cached_clip_count": 0,
+    "new_clip_count": 88,
+    "new_characters": 9469,
+    "configured_inr_per_1000_characters": 1.5,
+    "configured_inr_per_usd": 84.0,
+    "estimated_usd": 0.169089,
+    "basis": "Configured usage-tracker estimate, not a fresh provider quote; excludes retry charges and the separate live stress session.",
+    "clips": [
+      {
+        "id": "creta-cabin-intro-L1",
+        "characters": 64,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "creta-cabin-intro-L2",
+        "characters": 73,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "creta-cabin-intro-D1",
+        "characters": 126,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "creta-cabin-intro-D2",
+        "characters": 138,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "three-things-L1",
+        "characters": 57,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "three-things-L2",
+        "characters": 46,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "three-things-L3",
+        "characters": 44,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "three-things-D1",
+        "characters": 122,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "three-things-D2",
+        "characters": 135,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "cabin-comfort-proof-L1",
+        "characters": 74,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "cabin-comfort-proof-L2",
+        "characters": 71,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "cabin-comfort-proof-D1",
+        "characters": 136,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "cabin-comfort-proof-D2",
+        "characters": 185,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "cabin-comfort-proof-D3",
+        "characters": 171,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "seating-and-cargo-L1",
+        "characters": 50,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "seating-and-cargo-L2",
+        "characters": 44,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "seating-and-cargo-L3",
+        "characters": 58,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "seating-and-cargo-D1",
+        "characters": 123,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "seating-and-cargo-D2",
+        "characters": 117,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "seating-and-cargo-D3",
+        "characters": 153,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "driver-cockpit-tech-L1",
+        "characters": 81,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "driver-cockpit-tech-L2",
+        "characters": 89,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "driver-cockpit-tech-D1",
+        "characters": 161,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "driver-cockpit-tech-D2",
+        "characters": 162,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "powertrain-choices-L1",
+        "characters": 90,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "powertrain-choices-L2",
+        "characters": 94,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "powertrain-choices-D1",
+        "characters": 145,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "powertrain-choices-D2",
+        "characters": 110,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "powertrain-choices-D3",
+        "characters": 94,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "standard-safety-suite-L1",
+        "characters": 52,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "standard-safety-suite-L2",
+        "characters": 123,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "standard-safety-suite-D1",
+        "characters": 132,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "standard-safety-suite-D2",
+        "characters": 118,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "convenience-features-L1",
+        "characters": 70,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "convenience-features-L2",
+        "characters": 64,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "convenience-features-L3",
+        "characters": 66,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "convenience-features-D1",
+        "characters": 148,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "convenience-features-D2",
+        "characters": 150,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "convenience-features-D3",
+        "characters": 166,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "ownership-and-open-checks-L1",
+        "characters": 79,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "ownership-and-open-checks-L2",
+        "characters": 76,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "ownership-and-open-checks-D1",
+        "characters": 197,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "ownership-and-open-checks-D2",
+        "characters": 187,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "close-L1",
+        "characters": 77,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "close-L2",
+        "characters": 78,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "runtime-overview",
+        "characters": 145,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "cabin-comfort-proof-checkin",
+        "characters": 43,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "standard-safety-suite-checkin",
+        "characters": 20,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "intake-q1",
+        "characters": 107,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q01",
+        "characters": 193,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q02",
+        "characters": 136,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q03",
+        "characters": 275,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q04",
+        "characters": 122,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q05",
+        "characters": 109,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q06",
+        "characters": 209,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q07",
+        "characters": 236,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q08",
+        "characters": 173,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q09",
+        "characters": 239,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q10",
+        "characters": 243,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q11",
+        "characters": 164,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q12",
+        "characters": 198,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q13",
+        "characters": 123,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q14",
+        "characters": 224,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q15",
+        "characters": 161,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q16",
+        "characters": 132,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q17",
+        "characters": 132,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q18",
+        "characters": 132,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q19",
+        "characters": 132,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "faq-Q20",
+        "characters": 132,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-ack_with_context",
+        "characters": 76,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-ack_no_context",
+        "characters": 42,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-bridge_to_custom",
+        "characters": 40,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-hold_on_question",
+        "characters": 18,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-hold_on_lookup",
+        "characters": 49,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-back_to_demo",
+        "characters": 32,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-nudge_continue",
+        "characters": 42,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-put_in_writing",
+        "characters": 70,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-still_working",
+        "characters": 73,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-good",
+        "characters": 17,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-glad",
+        "characters": 16,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-did_that_answer",
+        "characters": 19,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-clearer",
+        "characters": 16,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-lets_go",
+        "characters": 21,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-focus_first",
+        "characters": 67,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-how_i_go",
+        "characters": 28,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-no_guess",
+        "characters": 120,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-before_video",
+        "characters": 107,
+        "cached": false,
+        "cache_path": null
+      },
+      {
+        "id": "filler-after_video",
+        "characters": 40,
+        "cached": false,
+        "cache_path": null
+      }
+    ]
+  },
+  "deck_semantic_sha256": "f03024b9bc45f5b62cba9bbec64c93cd84dd9fd7d56b10105ec6a943dbba13bf",
+  "faq_semantic_sha256": "017c9852da20b1028e9d91e2f39460c3ca7389fd67b83900cdd739baa255b45d",
+  "bundle_sha256": "1b36b7e990c1912ed4cb4aeeb443908fd15c7e7578a964affa5dda147be71c80",
+  "script_version": 3,
+  "deck_version": 4,
+  "messages": [
+    "Laying out one slide per script segment…",
+    "Mock run — callouts come from each slide's cited facts.",
+    "Deck: 12 slides · 0 callouts (0 on the picture, 0 in the side panel).",
+    "Reviewed on-screen layer: 7 cited callouts; exact planned images and titles applied.",
+    "Recording narration with sarvam — 49 lines…",
+    "Recorded 8/49 lines…",
+    "Recorded 16/49 lines…",
+    "Recorded 24/49 lines…",
+    "Recorded 32/49 lines…",
+    "Recorded 40/49 lines…",
+    "Recorded 48/49 lines…",
+    "Narration ready.",
+    "Recording 39 FAQ answers and filler lines…",
+    "FAQ bank and fillers recorded (39/39).",
+    "Assembling the demo bundle…",
+    "Bundle v8: 12 slides (9 segments), 181 facts, 3 calls to action."
+  ],
+  "outbound_socket_attempts_in_dry_run": 0,
+  "mode": "published"
+}

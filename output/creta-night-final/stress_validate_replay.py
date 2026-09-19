@@ -31,6 +31,7 @@ def replay(path):
     for c in payload['decisions']:
         if c.get('provenance') not in {'captured_original_provider_decision','offline_agent_authored_decision'}:raise ValueError('Every decision needs explicit provenance')
         if c['provenance']=='captured_original_provider_decision' and not c.get('raw_trace_row_sha256'):raise ValueError('Captured decisions require original trace-row hash')
+        if c['decision'].get('action') not in {'answer','clarify'}:raise ValueError('This pure validator runner takes answer/clarify decisions only; audited tools must already be present as captured evidence, never silently executed')
         evidence=[]
         for f in c['evidence']:
             fact=copy.deepcopy(registry.get(f['id'],f))

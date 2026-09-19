@@ -1267,7 +1267,7 @@ A fallback can log its launch intent and then see a winning primary before it re
 <!-- dated-issue-register:2026-09-19 -->
 ## Dated issue register — consolidated 19 September 2026
 
-This register brings all 86 numbered Nexon and Creta issues into this file, including the second NX25 observation. Dates identify the original observation, not a new test. Historical verification limits and open statuses are retained; later five-whys entries and Handoff.MD describe superseding fixes. A proposed correction is never treated as a verified live result. The unnumbered historical five-whys above remain part of this learning record.
+This file now covers87 unique numbered Nexon and Creta issues (NX01–42 and CR01–45), plus a second NX25 observation. The original consolidated register below contains NX01–42 and CR01–44; CR45 and the separately identified harness findings follow it. Dates identify the original observation, not a new test. Historical verification limits and open statuses are retained; later five-whys entries and Handoff.MD describe superseding fixes. A proposed correction is never treated as a verified live result. The unnumbered historical five-whys above remain part of this learning record.
 
 ### 2026-09-18 — NX01 — Follow-up question discarded as agreement
 
@@ -1289,7 +1289,7 @@ This register brings all 86 numbered Nexon and Creta issues into this file, incl
 
 **Reason / recorded failure:** content/flow mismatch and timer-driven turn completion.
 
-**Solution and recorded verification:** countdown observed in browser; narration mismatch confirmed in code and iQube script.
+**Solution and recorded verification:** Replace countdown completion with explicit response waits and visible typed input; retain turn ownership through transcription, and require explicit Skip/Continue. The later second free Nexon iteration passed14/14 browser controls, including silence/late speech/clarification handling. This verifies mechanics with synthetic input, not physical microphone performance.
 
 **Source record:** `docs/issues/2026-09-18-nexon.md`.
 
@@ -1337,7 +1337,7 @@ This register brings all 86 numbered Nexon and Creta issues into this file, incl
 
 **Reason / recorded failure:** old script reuse, unavailable runtime personalisation, conflicting schema/prompt wording and unlabelled assumptions.
 
-**Solution and recorded verification:** confirmed in session; align prompts and explicit interaction metadata, then verify new real script against actual customer profiles.
+**Solution and recorded verification:** The later Nexon implementation aligned schema/prompts on one useful intake, removed repeated discovery, prohibited personalized batches after skipped intake, checked quantities against customer context/cited facts, and added grounded check-ins and clarification-only responses. Free content/browser checks establish containment, not full semantic entailment or natural speech. Later actual customer and Creta evidence remain separately dated.
 
 **Source record:** `docs/issues/2026-09-18-nexon.md`.
 
@@ -1455,9 +1455,9 @@ This register brings all 86 numbered Nexon and Creta issues into this file, incl
 
 ### 2026-09-18 — NX24 — Runtime Q&A routed through an obsolete script copy
 
-**Reason / recorded failure:** The runtime read a stale script copy after human review, so current citations and slide routing could disagree with the published experience.
+**Reason / recorded failure:** The reviewed script was correct, but /run/qa read stale raw deck-line citations. An obsolete cabin deeper-line citation made a correct boot answer stay on the cabin slide; Preview and bundle already hydrated from the current script.
 
-**Solution and recorded verification:** Use the reviewed current script as the routing source and invalidate/rebuild dependent artifacts; preserve the actual-function regression described earlier in this file.
+**Solution and recorded verification:** Hydrate saved slide design from current script lines/deeper citations through slides_with_script before bank or live routing. Do not mutate saved deck design. Actual-function regressions cover boot jump, correct stay, decline and no deck/script writes; the full earlier NX24 five-whys remain the authoritative detailed record.
 
 **Source record:** `Learning.MD`.
 
@@ -1983,7 +1983,7 @@ This register brings all 86 numbered Nexon and Creta issues into this file, incl
 - Candidate correction: final speech explicitly distinguishes non-turbo petrol/diesel gearbox choices from turbo automatic-only; cockpit, gearbox and music blocks no longer all end in a future visit instruction. Personal seat/luggage checks remain where useful. Unseen engine, child-anchor, app and policy claims use no literal image rather than borrowing unrelated pictures.
 - Verification: `evals/narrative_roles_contract.py` passes six socket-blocked groups through actual Plan/Author payload construction and draft persistence, with the provider boundary replaced. It covers story/visual/notes handoff, approved-fact filtering, locked voice/single intake, rejected-citation rewrite and no approval/publication/audio generation. Independent review checked 46 candidate lines against 20 approved v7 assertions and inspected all ten assigned original images. Actual author validation reported no issues. These checks are not general semantic entailment or live story-quality proof.
 - Status at candidate freeze: prompt changes and a session-generated candidate are independently reviewed. No paid Plan/Author/Build provider call and no voice API test produced this candidate. Final stress-session, publication and any narration-render evidence must be appended separately; do not mark them passed from this record.
-- Provenance: plan `a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f`; final script `9d49a7b8f597cfe7d5874e2b97aa74d4cdff9dca8b4dcad71ba1ae9cad023b88`; independent Author review `a15e2b141a2d7975ba31d245ef02796b2f7a54298a7ff450a4ab152a867cc8cd`. Artifacts: `output/creta-night-final/plan.reasoning.md`, `plan.semantic-review.json`, `script.session.review.json`, `author-independent-review.json`.
+- Provenance: plan `a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f`; first frozen spoken-text candidate `9d49a7b8f597cfe7d5874e2b97aa74d4cdff9dca8b4dcad71ba1ae9cad023b88` (the final pace-adjusted candidate is `6b6375e5e0c35bcc371d043bda8d10f01fd546572cef3d14b11d9a01255b9986`; words/citations/images are unchanged); independent Author review `a15e2b141a2d7975ba31d245ef02796b2f7a54298a7ff450a4ab152a867cc8cd`. Artifacts: `output/creta-night-final/plan.reasoning.md`, `plan.semantic-review.json`, `script.session.review.json`, `author-independent-review.json`.
 
 ### Five whys — bounded diagnostic chain
 
@@ -2044,3 +2044,16 @@ These were defects in the disposable test harness, not demonstrated application 
 **Solution:** Keep speech text/evidence unchanged and add sparse0.97–1.03 pace choices through the supported delivery field; never send emotion tags or SSML. Supply seven independently reviewed concise feature labels with citations and selected-trim qualifiers. Rebuild label placement from trusted image parts, replace positional overrides, and route the unchanged FAQ through production fact-based slide selection. Clear old audio and require each fresh clip to match the current text, voice and delivery identity before publication.
 
 **Verification:** Socket-blocked integration preserves all181 approved fact objects and the immutable v7 snapshot; candidate script validates with no issues. All changes remain pre-publication at this entry; narration and one live session are separately recorded when complete. First frozen candidate and failed harness attempts are preserved.
+
+
+### 2026-09-19 — H05 — synthetic control timings could enter real latency statistics
+
+**Reason:** The generic latency aggregator does not interpret the harness evaluation label. Synthetic interruption timestamps still matched its detected-to-stopped calculation; synthetic input clocks could also resemble measured STT.
+
+**Solution:** Sanitize the exact saved body at the proxy boundary before hashing or forwarding it. Clear voice-input, endpoint, audio and interruption timestamps; retain event counts, phases, response status and actual result-ready time. Store synthetic timing evidence separately under explicit evaluation metadata and in the browser sidecar.
+
+**Verification:** The production runtime_metrics.aggregate control first demonstrates a measured sample with the original fixture, then none with the exact sanitized forwarded body. All10 proxy guards pass with zero outbound calls, independently confirmed by two reviewers. No production app change, provider call or new real session was used for this fix.
+
+### 2026-09-19 — CR45 publication evidence
+
+The one matching-narration build completed without voice failures. Published local CRETA v8 contains12 slides,7 cited labels,9 segments and the unchanged181-fact snapshot kb_2d616ba1bcec1469e8c7ab40. Every expected audio reference matches its current text/voice/delivery cache identity. The overview is measured10.58s; full main narration plus the two spoken check-ins is114.0s before customer waits/deeper answers. Configured usage increased from$16.3976 to$16.5596 (about$0.162). This is narration assembly and file validation, not an acoustic or perceived-warmth test. The single live stress session is still pending at this checkpoint.

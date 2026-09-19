@@ -5,7 +5,7 @@ runtime socket/API. A durable one-run gate, single session ID and request/cost
 ceilings remain authoritative even if browser automation fails or reloads.
 """
 from __future__ import annotations
-import argparse, asyncio, base64, hashlib, json, subprocess, time
+import argparse, asyncio, base64, copy, hashlib, json, subprocess, time
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -24,6 +24,30 @@ OBSERVER = '''  window.__stressSnapshot = () => ({at_ms:Date.now(),context:conte
 
 def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,separators=(",",":")).encode()).hexdigest()
+
+def sanitize_caption_session(record, *, live):
+    """Keep review evidence, but never publish synthetic clocks as voice KPIs."""
+    result=copy.deepcopy(record)
+    result.setdefault('profile',{})['name']=NAME
+    evaluation=result.setdefault('evaluation',{})
+    evaluation.update(mode='live_caption_only' if live else 'offline_synthetic',
+        synthetic_audio=True,synthetic_speech_onsets=True,physical_microphone=False,
+        voice_provider_calls=0,audio_latency_valid=False,interruption_latency_valid=False,
+        harness='creta-night-final',real_runtime_answers=live)
+    # Production aggregate currently reads these top-level timestamps regardless
+    # of evaluation flags. Preserve phase/counts without supplying acoustic clocks.
+    evaluation.setdefault('synthetic_interruptions',copy.deepcopy(result.get('interruptions',[])))
+    for event in result.get('interruptions',[]):
+        event['detected_at']=None;event['stopped_at']=None;event['synthetic']=True
+    for turn in result.get('turns',[]):
+        clocks=turn.setdefault('synthetic_delivery_timestamps',{})
+        for key in ('voice_ended','stt_done','speech_detected','endpoint_received_at',
+                    'server_endpoint_received_at','ack_audio','answer_audio','delivery_done'):
+            clocks.setdefault(key,turn.get(key))
+            turn[key]=None
+        turn['speech_end_basis']='typed_or_synthetic_review'
+        turn['input_source']='caption_stress_review'
+    return result
 
 class RunGuard:
     def __init__(self, directory, live=False):
@@ -128,6 +152,7 @@ def create_app(*, live=False, upstream="http://127.0.0.1:8896", directory=None):
         if suffix=='run/session':
             if body.get('leads'):raise HTTPException(403,"No leads in this test")
             if not body.get('ended'):return {"ok":True,"deferred_until_ended":True}
+            body=sanitize_caption_session(body,live=live)
             if run.data['saved_digest']:
                 if digest(body)!=run.data['saved_digest']:raise HTTPException(409,"One frozen ended record only")
                 if run.data.get('save_failure'):raise HTTPException(502,run.data['save_failure'])

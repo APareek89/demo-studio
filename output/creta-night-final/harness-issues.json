@@ -29,6 +29,13 @@
       "evidence": "stress_contract.py::test_failed_upstream_save_stays_failed_on_duplicate_without_retry; fake failed upstream, two client saves, exactly one upstream POST.",
       "solution": "Persist the failed or unknown save outcome; duplicate requests return failure, and an in-progress save returns conflict instead of a fabricated success. No retry or extra summary is dispatched.",
       "status": "Corrected; focused guard contracts9/9 with0outbound. Existing44/44 browser success path unchanged."
+    },
+    {
+      "id": "H05",
+      "finding": "The client evaluation marker did not prevent synthetic interruption timestamps from entering the production interruption aggregate; synthetic input clocks could also look like measured STT.",
+      "evidence": "stress_contract.py::test_authoritative_save_excludes_synthetic_audio_and_interruption_kpis compares the exact forwarded record using production runtime_metrics.aggregate: original fixture supplies one audio and one interruption sample; sanitized record supplies neither.",
+      "solution": "The proxy authoritatively clears all voice-input, endpoint, audio and interruption timestamps before its one permitted save. Interruption counts, phases, response classification and actual qa_done remain; synthetic clock values are preserved in evaluation/turn evidence and the browser sidecar.",
+      "status": "Corrected prelive; guard contracts10/10 with zero outbound. No production app change or new customer session."
     }
   ]
 }

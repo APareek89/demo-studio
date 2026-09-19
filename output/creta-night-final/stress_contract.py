@@ -93,6 +93,42 @@ class Guards(unittest.TestCase):
             self.assertEqual(client.post(path,json=body).status_code,502)
             self.assertEqual(len(FailedHttp.calls),1)
             saved=json.loads((Path(d)/'stress-budget.json').read_text());self.assertEqual(saved['summary'],1);self.assertNotIn('save_response',saved)
+    def test_authoritative_save_excludes_synthetic_audio_and_interruption_kpis(self):
+        from server import runtime_metrics
+        from types import SimpleNamespace
+        body={'id':'one','ended':True,'profile':{},'leads':[],
+            'interruptions':[{'detected_at':1000,'stopped_at':1020,'phase':'answer','detection_source':'synthetic'}],
+            'turns':[{'question':'Test?','answered':True,'response_kind':'answer',
+                'voice_ended':2000,'stt_done':2050,'qa_done':2400,'speech_detected':1900,
+                'endpoint_received_at':2050,'server_endpoint_received_at':2040,
+                'ack_audio':2100,'answer_audio':2500,'delivery_done':3000}]}
+        original=json.loads(json.dumps(body));FakeHttp.calls=[]
+        with tempfile.TemporaryDirectory() as d, patch.object(m.httpx,'AsyncClient',FakeHttp), TestClient(m.create_app(live=True,directory=d)) as client:
+            client.post('/stress/start',json={})
+            path=f'/api/demos/{m.DEMO}/run/session'
+            self.assertEqual(client.post(path,json=body).status_code,200)
+            self.assertEqual(client.post(path,json=body).status_code,200)
+            forwarded=[r[2]['json'] for r in FakeHttp.calls if r[0]=='POST']
+            self.assertEqual(len(forwarded),1);saved=forwarded[0]
+            self.assertEqual(saved,json.loads((Path(d)/'stress-submitted-session.json').read_text()))
+        self.assertEqual(body,original)
+        self.assertEqual(saved['evaluation']['synthetic_interruptions'],original['interruptions'])
+        self.assertEqual(len(saved['interruptions']),1)
+        self.assertEqual(saved['interruptions'][0]['phase'],'answer')
+        self.assertEqual(saved['turns'][0]['qa_done'],2400)
+        self.assertEqual(saved['turns'][0]['synthetic_delivery_timestamps']['answer_audio'],2500)
+        self.assertIsNone(saved['turns'][0]['stt_done'])
+        self.assertEqual(m.sanitize_caption_session(saved,live=True),saved)
+        def aggregate(record):
+            with patch.object(runtime_metrics.storage,'backend',return_value=SimpleNamespace(iter_sessions=lambda _: [record])):
+                return runtime_metrics.aggregate('fixture')
+        before=aggregate(original);after=aggregate(saved)
+        self.assertEqual(before['interruption']['n'],1);self.assertEqual(before['cohorts'][0]['complete_timings'],1)
+        self.assertEqual(after['sessions'],1);self.assertEqual(after['cohorts'][0]['turns'],1)
+        self.assertEqual(after['interruption']['n'],0);self.assertIsNone(after['interruption']['p50_ms'])
+        self.assertEqual(after['cohorts'][0]['complete_timings'],0)
+        self.assertEqual(after['cohorts'][0]['measured_responses'],0)
+        self.assertEqual(after['cohorts'][0]['useful_answer_timings'],0)
     def test_synthetic_socket_never_uses_stt_or_tts(self):
         with tempfile.TemporaryDirectory() as d, patch.object(m.websockets,'connect',side_effect=AssertionError('Offline upstream forbidden')), TestClient(m.create_app(directory=d)) as client:
             client.post('/stress/start',json={})
