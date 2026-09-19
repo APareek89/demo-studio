@@ -1994,3 +1994,53 @@ This register brings all 86 numbered Nexon and Creta issues into this file, incl
 5. **Why was this not established by existing passing checks?** Citation, word-budget and structural checks do not measure narrative repetition or arbitrary claim entailment. The fix therefore pairs a clearer handoff contract with direct editorial review, without claiming the new offline checks prove persuasion or acoustic quality.
 
 Rejected alternative: relaxing grounding or inventing cooling, comfort, acceleration or safety benefits to make the script sound warmer. The accepted change uses the existing evidence, literal imagery and clearer writing responsibilities instead.
+
+
+## 2026-09-19 — final-session harness findings (H01–H03)
+
+These were defects in the disposable test harness, not demonstrated application or provider failures. No paid calls were made in these attempts. The original failed outputs remain preserved.
+
+### H01
+
+**Reason / recorded failure:** Programmatic root command is not a trusted autoplay gesture; Codex blocked AudioContext.resume before synthetic capture became ready.
+
+**Solution:** Eval-only AudioContext/worklet/stream clock fakes; physical microphone and browser audio device are never opened. Real LiveVoiceClient state and ownership remain under test.
+
+**Evidence:** `offline-initial/stress-browser-result.json: failed_preserved, Timed out: synthetic capture ready; one offline session still saved.`
+
+### H02
+
+**Reason / recorded failure:** Continue observer sampled the old playback index during the reviewed return bridge, before resumePlayback advanced the completed check-in.
+
+**Solution:** Wait until the bridge caption has ended; then assert the expected next route index or natural closing after the last check-in.
+
+**Evidence:** `offline-attempt02/stress-browser-result.json: 42/44 checks; s05 and final question return checks sampled identical old origin/playback while the final natural route check passed.`
+
+### H03
+
+**Reason / recorded failure:** The client wire observer counted the intentionally injected stale-result test packet among observed answers.
+
+**Solution:** Each response packet now has provenance live_api_result, offline_synthetic, or injected_stale_test; report totals distinguish these categories.
+
+**Evidence:** `offline-attempt02/stress-browser-result.json has14 session turns and15 observed response packets, including utterance_id stale-synthetic.`
+
+**Verification:** Offline-attempt03 completed14 questions,8 controlled interruptions, natural route end and one isolated saved recap. All44 flow assertions passed; every synthetic response is labelled as such. None of these offline records is a real customer session.
+
+**Five whys:** The automated run could not start because the command was not a trusted audio gesture; the harness had retained a browser audio dependency despite claiming synthetic capture; device-independent fakes were needed. Later false failures came from sampling during the real return bridge rather than after its completion. A final response-count mismatch came from mixing an intentionally injected stale packet with upstream results. The general correction is to keep synthetic transport, observation timing and response provenance explicit, while executing the real application state machine. This does not establish acoustic performance.
+
+
+### 2026-09-19 — H04 — duplicate save after an upstream failure looked successful
+
+**Reason:** The disposable session proxy cached only successful save responses. After a failed or unknown upstream save, an identical second request could return a fabricated success even though its first result was not known.
+
+**Solution:** Keep successful, in-progress and failed/unknown outcomes distinct. A duplicate of failed/unknown work returns502, in-progress returns409, and none triggers another upstream save or summary request.
+
+**Verification:** Independent fake-upstream guard proves one upstream POST; all9 proxy guards pass with zero outbound calls. This is a harness defect found before the single live session, not a demonstrated production session-save defect. Original failure evidence is retained.
+
+### 2026-09-19 — CR45 candidate integration refinements
+
+**Reason:** The first candidate set every explicit pace to1.0, so its warm/reassuring labels alone did not vary the provider's pace. Separately, deterministic callout derivation omitted all labels because the complete source assertions exceeded the short-label budget. Reordering proof stops also makes old positional slide overrides and FAQ routing unsuitable.
+
+**Solution:** Keep speech text/evidence unchanged and add sparse0.97–1.03 pace choices through the supported delivery field; never send emotion tags or SSML. Supply seven independently reviewed concise feature labels with citations and selected-trim qualifiers. Rebuild label placement from trusted image parts, replace positional overrides, and route the unchanged FAQ through production fact-based slide selection. Clear old audio and require each fresh clip to match the current text, voice and delivery identity before publication.
+
+**Verification:** Socket-blocked integration preserves all181 approved fact objects and the immutable v7 snapshot; candidate script validates with no issues. All changes remain pre-publication at this entry; narration and one live session are separately recorded when complete. First frozen candidate and failed harness attempts are preserved.

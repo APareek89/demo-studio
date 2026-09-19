@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-19",
+  "scope": "Test harness findings only. No demonstrated application/provider defect from these failures.",
+  "issues": [
+    {
+      "id": "H01",
+      "finding": "Programmatic root command is not a trusted autoplay gesture; Codex blocked AudioContext.resume before synthetic capture became ready.",
+      "evidence": "offline-initial/stress-browser-result.json: failed_preserved, Timed out: synthetic capture ready; one offline session still saved.",
+      "solution": "Eval-only AudioContext/worklet/stream clock fakes; physical microphone and browser audio device are never opened. Real LiveVoiceClient state and ownership remain under test.",
+      "status": "Corrected; offline-attempt02 reached all14 turns and natural recap."
+    },
+    {
+      "id": "H02",
+      "finding": "Continue observer sampled the old playback index during the reviewed return bridge, before resumePlayback advanced the completed check-in.",
+      "evidence": "offline-attempt02/stress-browser-result.json: 42/44 checks; s05 and final question return checks sampled identical old origin/playback while the final natural route check passed.",
+      "solution": "Wait until the bridge caption has ended; then assert the expected next route index or natural closing after the last check-in.",
+      "status": "Corrected; offline-attempt03 passed44/44, with separate14offline and1injected-stale response counts."
+    },
+    {
+      "id": "H03",
+      "finding": "The client wire observer counted the intentionally injected stale-result test packet among observed answers.",
+      "evidence": "offline-attempt02/stress-browser-result.json has14 session turns and15 observed response packets, including utterance_id stale-synthetic.",
+      "solution": "Each response packet now has provenance live_api_result, offline_synthetic, or injected_stale_test; report totals distinguish these categories.",
+      "status": "Corrected; offline-attempt03 passed44/44, with separate14offline and1injected-stale response counts."
+    },
+    {
+      "id": "H04",
+      "finding": "Review found a duplicate ended-save could claim success after the single upstream save failed, because only the attempted content digest existed.",
+      "evidence": "stress_contract.py::test_failed_upstream_save_stays_failed_on_duplicate_without_retry; fake failed upstream, two client saves, exactly one upstream POST.",
+      "solution": "Persist the failed or unknown save outcome; duplicate requests return failure, and an in-progress save returns conflict instead of a fabricated success. No retry or extra summary is dispatched.",
+      "status": "Corrected; focused guard contracts9/9 with0outbound. Existing44/44 browser success path unchanged."
+    }
+  ]
+}

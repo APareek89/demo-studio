@@ -1,0 +1,29 @@
+{
+  "plan_sha256": "a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f",
+  "script_sha256": "6b6375e5e0c35bcc371d043bda8d10f01fd546572cef3d14b11d9a01255b9986",
+  "baseline_bundle_sha256": "b7f3af73f3541f6fd95bcacf7339707b4eb543c9a48c7638fc1ce339463e774b",
+  "baseline_faq_sha256": "9856c39c1de9d3d4189e7f00234b678fbdc104af8cfc51abf5b5418ddabf08aa",
+  "knowledge_snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "baseline_version": 7,
+  "new_version": 8,
+  "deck_semantic_sha256": "f03024b9bc45f5b62cba9bbec64c93cd84dd9fd7d56b10105ec6a943dbba13bf",
+  "faq_semantic_sha256": "017c9852da20b1028e9d91e2f39460c3ca7389fd67b83900cdd739baa255b45d",
+  "reviewer": "Codex root with independent Planner/Author/installer reviews, under Anand’s explicit build and refinement authorization; not a claim that Anand personally auditioned this revision",
+  "approvals": {
+    "visuals": true,
+    "facts": true,
+    "script": true,
+    "faq": true,
+    "persona": true,
+    "ctas": true
+  },
+  "reviewed_at": 1789840473.602593,
+  "review_notes": [
+    "Facts: same 181 approved v7 assertions and immutable snapshot",
+    "Visuals: original official images; seven qualified labels reviewed; trusted boxes or panel only",
+    "Script: root read-through and independent semantic review; two real waits; technical detail in deeper; final pace-only delta reviewed",
+    "FAQ: original approved answers retained, routes recomputed against reordered slides; audio cleared",
+    "Persona: locked Sarvam/Priya/en-IN with restrained supported pace; no vendor emotion-control claim",
+    "CTAs: unchanged source-discovered destinations and separate contact consent"
+  ]
+}

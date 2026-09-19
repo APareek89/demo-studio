@@ -1,0 +1,278 @@
+{
+  "reviewed_at": "2026-09-19T17:54:09.677693+00:00",
+  "reviewer": "studio_ui Planner independent",
+  "verdict": "clear",
+  "scope": "Final pace, FAQ, seven callouts and installer publication integrity; no live execution or provider calls",
+  "files": {
+    "output/creta-night-final/install_reviewed_session.py": "977ddb114a40de011fd57831a90ef6ab3ca54876871f78c920a9e353ad602a02",
+    "output/creta-night-final/plan.session.json": "a4c38377bc7c27a674dfb42c847fc82a6734dfcace20049fcb02bcd0ec37086f",
+    "output/creta-night-final/script.session.json": "6b6375e5e0c35bcc371d043bda8d10f01fd546572cef3d14b11d9a01255b9986",
+    "output/creta-night-final/deck.session.preview.json": "d4ec6fcc0a89e45caaeb3d1f3f39a8c509577b1011bde78cea68e70c01fa4dbd",
+    "output/creta-night-final/bundle.session.preview.json": "9512f062f5dfd31eca6c44e7328d8df04c801c7ff1ff6bf48958f7a470b67011",
+    "output/creta-night-final/integration-dry-run.json": "88ea194dfd15ebf18f1d597c93ab40728b37e8ee342110495828f42c2851bd5a",
+    "data/demos/dm_41513908/bundle.json": "b7f3af73f3541f6fd95bcacf7339707b4eb543c9a48c7638fc1ce339463e774b"
+  },
+  "checks": {
+    "pace_only_delta_preserves_all_words_citations_images_order": true,
+    "author_validator_zero_issues": true,
+    "same_181_facts": true,
+    "same_snapshot_id": true,
+    "same_ctas": true,
+    "same_segment_order": true,
+    "one_slide_per_segment": true,
+    "seven_callouts_pass_scope_and_spoken_line_checks": true,
+    "max_two_callouts_per_slide": true,
+    "production_clean_place_roundtrip": true,
+    "only_visible_roof_rear_seat_anchored": true,
+    "faq_routes_match_current_production_router": true,
+    "faq_answer_citations_unchanged_and_audio_cleared": true
+  },
+  "callouts": [
+    {
+      "slide_id": "sl01",
+      "image_id": "im05",
+      "text": "Panoramic roof · selected trims",
+      "fact_ids": [
+        "F247"
+      ],
+      "part": "sunroof",
+      "reveal_on_line": 0,
+      "id": "sl01-reviewed-1",
+      "confidence": 0.9,
+      "part_box": {
+        "x": 0.23,
+        "y": 0.0,
+        "w": 0.668,
+        "h": 0.181
+      },
+      "placement": "overlay",
+      "anchor": {
+        "x": 0.564,
+        "y": 0.0905
+      },
+      "label_pos": {
+        "x": 0.23,
+        "y": 0.201
+      }
+    },
+    {
+      "slide_id": "sl03",
+      "image_id": "im01",
+      "text": "Panoramic roof · selected trims",
+      "fact_ids": [
+        "F247"
+      ],
+      "part": "sunroof",
+      "reveal_on_line": 0,
+      "id": "sl03-reviewed-1",
+      "confidence": 0.95,
+      "part_box": {
+        "x": 0.252,
+        "y": 0.261,
+        "w": 0.467,
+        "h": 0.231
+      },
+      "placement": "overlay",
+      "anchor": {
+        "x": 0.4855,
+        "y": 0.3765
+      },
+      "label_pos": {
+        "x": 0.252,
+        "y": 0.151
+      }
+    },
+    {
+      "slide_id": "sl03",
+      "image_id": "im01",
+      "text": "Ventilated front seats · selected trims",
+      "fact_ids": [
+        "F063"
+      ],
+      "part": "",
+      "reveal_on_line": 0,
+      "id": "sl03-reviewed-2",
+      "confidence": 0.0,
+      "part_box": null,
+      "placement": "panel",
+      "anchor": null,
+      "label_pos": null
+    },
+    {
+      "slide_id": "sl04",
+      "image_id": "im08",
+      "text": "Split rear seat",
+      "fact_ids": [
+        "F096"
+      ],
+      "part": "rear seat",
+      "reveal_on_line": 0,
+      "id": "sl04-reviewed-1",
+      "confidence": 0.95,
+      "part_box": {
+        "x": 0.099,
+        "y": 0.427,
+        "w": 0.882,
+        "h": 0.571
+      },
+      "placement": "overlay",
+      "anchor": {
+        "x": 0.54,
+        "y": 0.7125
+      },
+      "label_pos": {
+        "x": 0.099,
+        "y": 0.317
+      }
+    },
+    {
+      "slide_id": "sl05",
+      "image_id": "im04",
+      "text": "Two displays · selected trims",
+      "fact_ids": [
+        "F162",
+        "F165"
+      ],
+      "part": "",
+      "reveal_on_line": 0,
+      "id": "sl05-reviewed-1",
+      "confidence": 0.0,
+      "part_box": null,
+      "placement": "panel",
+      "anchor": null,
+      "label_pos": null
+    },
+    {
+      "slide_id": "sl07",
+      "image_id": "im09",
+      "text": "Six airbags as standard",
+      "fact_ids": [
+        "F237"
+      ],
+      "part": "",
+      "reveal_on_line": 0,
+      "id": "sl07-reviewed-1",
+      "confidence": 0.0,
+      "part_box": null,
+      "placement": "panel",
+      "anchor": null,
+      "label_pos": null
+    },
+    {
+      "slide_id": "sl08",
+      "image_id": "im10",
+      "text": "Bose audio · selected trims",
+      "fact_ids": [
+        "F164"
+      ],
+      "part": "",
+      "reveal_on_line": 0,
+      "id": "sl08-reviewed-1",
+      "confidence": 0.0,
+      "part_box": null,
+      "placement": "panel",
+      "anchor": null,
+      "label_pos": null
+    }
+  ],
+  "faq_routes": [
+    {
+      "id": "Q01",
+      "slide_id": null
+    },
+    {
+      "id": "Q02",
+      "slide_id": "sl02"
+    },
+    {
+      "id": "Q03",
+      "slide_id": "sl01"
+    },
+    {
+      "id": "Q04",
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q05",
+      "slide_id": "sl06"
+    },
+    {
+      "id": "Q06",
+      "slide_id": null
+    },
+    {
+      "id": "Q07",
+      "slide_id": "sl07"
+    },
+    {
+      "id": "Q08",
+      "slide_id": "sl04"
+    },
+    {
+      "id": "Q09",
+      "slide_id": "sl03"
+    },
+    {
+      "id": "Q10",
+      "slide_id": "sl08"
+    },
+    {
+      "id": "Q11",
+      "slide_id": "sl08"
+    },
+    {
+      "id": "Q12",
+      "slide_id": "sl09"
+    },
+    {
+      "id": "Q13",
+      "slide_id": null
+    },
+    {
+      "id": "Q14",
+      "slide_id": "sl05"
+    },
+    {
+      "id": "Q15",
+      "slide_id": null
+    },
+    {
+      "id": "Q16",
+      "slide_id": "sl04"
+    },
+    {
+      "id": "Q17",
+      "slide_id": null
+    },
+    {
+      "id": "Q18",
+      "slide_id": "sl03"
+    },
+    {
+      "id": "Q19",
+      "slide_id": null
+    },
+    {
+      "id": "Q20",
+      "slide_id": "sl10"
+    }
+  ],
+  "visual_review": "Actual im01/im05 roof and im08 split-seat photographs re-inspected with view_image. Three overlays indicate visible subjects. Four function/compound/count labels stay in panel. No cooling, personal comfort or performance claim added.",
+  "fitment_review": "Roof, ventilated seats, paired displays and Bose retain selected-trim qualification; six airbags retain approved standard status. Split seat label does not invent a capacity.",
+  "installer_review": [
+    "Existing author._assign_ids normalizes overview and all narration/check-in/intake audio is cleared before installation.",
+    "Old positional overrides are reset; new titles, exact image IDs and callout IDs attach to segment identities.",
+    "FAQ is rerouted after final callouts and cleared; filler audio is also cleared.",
+    "Hash-bound six-card receipt is explicit agent review under user authorization, not evidence that a human read the candidate. Empty template claims no approval.",
+    "One-shot marker and baseline JSON/knowledge backup precede live mutation.",
+    "Current text/persona/delivery cache checks, voice_input_hash, locked Priya, zero voice failures and measured overview10–15seconds precede publication.",
+    "Pinned v7 snapshot and protected sources remain unchanged in saved dryrun."
+  ],
+  "voice_estimate_artifact": "voice-estimate.independent.json",
+  "limitations": [
+    "No narration or live publication performed by this reviewer. Configured cost estimate excludes retries and stress.",
+    "Speech timing is still an estimate until actual recording; the installer requires measured overview timing."
+  ],
+  "paid_calls": 0,
+  "outbound_socket_attempts": 0
+}
