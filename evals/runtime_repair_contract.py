@@ -66,7 +66,6 @@ for extra in ({"tool_calls":[]},{"cta":"cta-test-drive"}):
 
 async def run():
     for key,phrases in (
-        ("focused_q025_repair",["SX trim and above","third-party purchase"]),
         ("focused_q030",["I couldn't verify specific fuel-economy figures or test conditions.","authorised dealer"]),
         ("focused_q049",["I couldn't verify feature details or confirmation for the 2026 model year.","official updates"]),
     ):
@@ -75,6 +74,12 @@ async def run():
         answer=result["result"]
         check(key+" recorded useful composition survives without another call",all(phrase in answer["answer"] for phrase in phrases) and not model.called)
         check(key+" no unrelated fact or invented release survives",(key!="focused_q030" or (not answer["answered"] and not answer["fact_ids"] and "50" not in answer["answer"])) and "release approaches" not in answer["answer"])
+    # The saved connected-car draft also loses its app feature; a separate
+    # purchase sentence is not proof that the omitted content is redundant.
+    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",side_effect=TimeoutError("bounded repair")) as model,patch("server.runtime_graph.usage.trace"),patch("server.runtime_graph.store.read_json",return_value={}):
+        result=await rg.validate(state_for("focused_q025_repair"))
+    check("Saved connected-car omission now gets one bounded repair",model.call_count==1 and result["result"]["validation_repair"]["attempted"])
+    check("Failed connected-car repair retains supported scope and purchase",all(t in result["result"]["answer"] for t in ("SX trim and above","third-party purchase")))
     state=state_for("focused_q030");state["question"]+=" Also tell me the fuel tank capacity."
     answer,errors=rg.validate_decision(state["decision"],state["evidence"],state["question"])
     check("An explicit mixed economy-and-tank question keeps its tank answer","50 litres" in answer["answer"] and "unresponsive_attribute" not in errors)
@@ -138,7 +143,7 @@ async def run():
     ):
         draft={"action":"answer","sentences":[{"text":text,"fact_ids":[],"kind":"limitation"}]}
         answer,errors=rg.validate_decision(draft,[],"What is the comfort like?")
-        check("Source-limitation normalization cannot admit a positive presupposition: "+text,text not in answer["answer"] and "uncited_product_assertion" in errors)
+        check("Source-limitation normalization cannot admit a positive presupposition: "+text,text not in answer["answer"] and "bulletproof" not in answer["answer"] and bool({"uncited_product_assertion","unsupported_limitation_premise"}&set(errors)))
     for key,rows in repairs.items():
         state=state_for(key);calls=[]
         state["profile"]={"language":"hi-IN","needs":"family","scope":state.get("requested_scope",{})}

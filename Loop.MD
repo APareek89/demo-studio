@@ -3,6 +3,12 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Clause ownership and bounded interaction — 2026-09-19
+
+Final graph2e54ec01/helper37c8543b independently reviewed. Limits118/118, helper7tests/32assertions and12 independent integration controls pass, including uncited/cited separation, customer-number bounds and real warranty condition preservation. Cohort94/repair106/graph130/trace36/currency15 passed immediately before the sole final removal of a redundant legacy assistant-act branch; affected118/helper checks were rerun. Knowledge/snapshot/source bytes remain unchanged.
+
+Required final deck320/320, acceptance24/24 and both smoke phases pass with isolated temporary storage and blocked sockets. Logs `final-gates/clauses-final-*.log`; earlier pre-cleanup logs retained. Syntax97 Python/17 web JavaScript and diff checks pass. Next is the unchanged full100 on committed/restarted code, not another narrow positive-only sample. The preceding focused40 remains30/4/3/2/1; no retroactive pass. Loop and paid browser speech remain off.
+
 ## Useful answer delivery under the existing deadline — 2026-09-19
 
 Graph frozenbd1a3618: precise-limit/condition85, calculator-deadline17, actual-cohort93, repair106, graph130 and trace36 checks pass. Knowledge60/60 retrieves actual v7 comfort comparisons without modifying snapshots/indexes or unrelated query results. Currency-attribution15/15 pairs spoken rupees with adjacent ₹/INR and still rejects wrong-page attribution. Independent review includes six calculator ownership/cancellation controls and four currency/schema controls; final independent price-language review also passes.

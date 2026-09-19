@@ -125,7 +125,7 @@ answer,errors=rg.validate_decision({"action":"clarify","clarification":clarify,"
 check("A separately generated atomic refusal is not discarded by clarify",not errors and answer["answer"].startswith("I cannot guarantee that EMI."))
 for prefix in ("I cannot guarantee comfort because the cabin is bulletproof.","I guarantee that EMI.","I cannot guarantee that EMI. This car has twelve airbags."):
     answer,errors=rg.validate_decision({"action":"clarify","clarification":prefix+" "+clarify},[],q064)
-    check("Clarification cannot wrap an unsupported claim: "+prefix,"invalid_clarification" in errors and not answer["clarifying_question"])
+    check("Clarification cannot wrap an unsupported claim: "+prefix,(not errors and answer["clarifying_question"]==clarify and "bulletproof" not in answer["answer"]) if "because" in prefix else ("invalid_clarification" in errors and not answer["clarifying_question"]))
 
 answer,errors,feedback=validate("scope40_q001_repair")
 check("Actual family repair keeps validated safety/comfort rows but rejects luggage benefit",answer["answered"] and "F214" in answer["fact_ids"] and "F075" not in answer["fact_ids"] and "unsupported_assertion_feature" in errors)
@@ -152,7 +152,10 @@ r,e=rg.validate_decision(direct,[feature,donor],"Which connected features can I 
 check("Direct dependency citation still works without duplicate facts",not e and r["fact_ids"]==["F168"] and len(r["facts"])==1)
 covered=copy.deepcopy(cases["focused_q025_repair"])
 r,e=rg.validate_decision(covered["decision"],covered["evidence"],covered["question"])
-check("A validated conditioned duplicate makes the rejected broad duplicate redundant",r["covered_condition_rejections"] and "F168" in r["condition_fact_ids"] and "third-party purchase" in r["answer"])
+check("A purchase witness cannot mark a lost app feature redundant",not r["covered_condition_rejections"] and "F168" in r["condition_fact_ids"] and "third-party purchase" in r["answer"])
+covered_only=copy.deepcopy(conditioned);covered_only["sentences"].insert(0,{"text":"Equipped models offer Home-to-Car with Alexa.","kind":"fact","fact_ids":["F144"]})
+r,e=rg.validate_decision(covered_only,[feature,donor],"Which connected features can I use?")
+check("A genuinely duplicated feature with its voiced prerequisite needs no repair",r["covered_condition_rejections"] and "F168" in r["condition_fact_ids"])
 invalid_witness={"action":"answer","sentences":[{"text":"Equipped models support Home-to-Car with Alexa.","kind":"fact","fact_ids":["F144"]},{"text":"Alexa requires an Echo device bought separately and includes twelve airbags.","kind":"fact","fact_ids":["F168"]}]}
 r,e=rg.validate_decision(invalid_witness,[feature,donor],"Which connected features can I use?")
 check("An invalid condition-bearing row cannot qualify a surviving broad duplicate",not r["covered_condition_rejections"] and not r["answered"] and "missing_required_condition" in e)

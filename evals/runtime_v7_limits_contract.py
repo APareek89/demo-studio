@@ -45,7 +45,7 @@ for key,phrase in (
 answer,errors,_=validate("q030")
 check("Missing economy cannot be replaced by tank capacity",not answer["answered"] and "50" not in answer["answer"] and "unresponsive_attribute" in errors)
 answer,errors,_=validate("q065")
-check("A non-estimation acknowledgement keeps all explicitly requested inputs",answer["answered"] and not errors and all(word in answer["answer"] for word in ("won't estimate","driving distance","fuel efficiency","fuel price")))
+check("A non-estimation acknowledgement keeps all explicitly requested inputs",answer["answered"] and not errors and all(word in answer["answer"] for word in ("won't estimate","distance","fuel efficiency","fuel price")))
 answer,errors,_=validate("q092")
 check("An instruction-attack refusal can remain ordinary assistant interaction",answer["answered"] and not errors and "No, that will not change my answer" in answer["answer"] and "Please let me know" in answer["answer"])
 for text in (
@@ -118,7 +118,73 @@ check("Actual automatic S(O) parking brake projection accepts its feature anchor
 for text in ("S(O) has an electric parking brake with auto hold.","Manual S(O) has an electric parking brake with auto hold.","S(O) has an electric parking brake with auto hold; automatic is another option.","S(O) has an electric parking brake with auto hold, and automatic is another option."):
     check("Transmission projection still rejects unqualified or unrelated automatic language: "+text,not rg._projected_support(feature,text,c["requested_scope"])[0])
 
+# 047f4e2 customer drafts: preserve each independent negative subject, grouped
+# comparison, and useful own limitation without accepting a world premise.
+answer,errors,feedback=validate("repairs40_q043")
+check("Actual comfort comparison keeps positive electric adjustment and negative ventilation",all(t in answer["answer"] for t in ("SX Premium has electric adjustment", "Front row ventilated seats are not available on the SX trim")) and "Electric adjustment for the driver's seat is not available" not in answer["answer"] and "uncited_fact" in errors)
+c=copy.deepcopy(cases["repairs40_q043"])
+for text,ids,supported in (
+    ("Electric adjustment for the driver's seat is not available on SX.",["F063"],False),
+    ("SX Premium has electric adjustment for the driver's seat.",["F069"],True),
+    ("Front row ventilated seats are not available on SX.",["F063"],True),
+):
+    decision={"action":"answer","answered":True,"sentences":[{"text":text,"fact_ids":ids,"kind":"fact"}]}
+    answer,errors=rg.validate_decision(decision,c["evidence"],c["question"],requested_scope=c["requested_scope"])
+    check("Each feature has its own polarity proof: "+text,answer["answered"]==supported and (not errors if supported else bool(errors)))
+for key in ("repairs40_q026","repairs40_q026_repair"):
+    answer,errors,_=validate(key)
+    check(key+" retains grouped road sizes and distinct spare roles",not errors and all(t in answer["answer"] for t in ("215/60 R17 alloy","205/65 R16","steel spare")) and ("18-inch" in answer["answer"] or "R18" in answer["answer"]))
+    c=copy.deepcopy(cases[key]);c["decision"]["sentences"]=[{"text":"The S(O), SX, and SX Premium trims have R18 alloys, while King and King Knight have R17 alloys.","fact_ids":["F049"],"kind":"fact"}]
+    answer,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
+    check(key+" cannot swap wheel numbers across grouped trim rows",not answer["answered"] and bool(errors))
+c=copy.deepcopy(cases["repairs40_q043"])
+c["decision"]["sentences"]=[{"text":"SX has electric adjustment for the driver's seat.","kind":"fact","fact_ids":["F069"],"_split_projections":{"F069":{"rows":[{"polarity":"positive","variants":["SX"],"assertion":"SX has electric adjustment for the driver's seat.","label":"electric adjustment"}]}}}]
+answer,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
+check("A model-supplied internal split projection cannot change approved fitment",not answer["answered"] and bool(errors))
+for key in ("repairs40_q065","repairs40_q092"):
+    answer,errors,_=validate(key)
+    check(key+" closed operating acts survive graph grounding",answer["answered"] and not errors)
+answer,errors,_=validate("repairs40_q065")
+check("Calculator input invitation retains every needed input without assuming values",all(t in answer["answer"] for t in ("will not guess","fuel efficiency","distance","fuel price")))
+mixed="I will not guess your fuel efficiency and distance or fuel price."
+answer,errors=rg.validate_decision({"action":"answer","answered":True,"sentences":[{"text":mixed,"kind":"context","fact_ids":[]}]},[],"Please do not assume my inputs.")
+check("Graph cannot flatten a mixed input alternative rejected by the closed helper",not answer["answered"] and bool(errors) and mixed not in answer["answer"] and not rg._assistant_behavior(mixed))
+answer,errors,_=validate("repairs40_q049")
+check("Model-year own limit survives but global publication and release premises do not",not answer["answered"] and "equipment details for the 2026 model year" in answer["answer"] and all(t not in answer["answer"] for t in ("not available", "release", "published")))
+for key,phrase in (("repairs40_q078","I cannot guarantee what discount your dealer will offer today."),("repairs40_q082","I cannot guarantee how three adults will feel across the rear seat."),("repairs40_q082_repair","I cannot guarantee personal comfort.")):
+    answer,errors,_=validate(key)
+    check(key+" retains an independently safe negative main clause",phrase in answer["answer"] and "because" not in answer["answer"].casefold() and "without knowing" not in answer["answer"])
+answer,errors,_=validate("repairs40_q076")
+check("Semicolon clarification preserves refusal and one customer question",not errors and answer["clarifying_question"]=="Could you tell me which Creta variant you are considering?" and answer["answer"].startswith("I cannot guarantee the exact on-road price.") and "charges vary" not in answer["answer"] and answer["answer"].count("?")==1)
+for text in (
+    "I cannot guarantee comfort: the car has bulletproof glass.",
+    "I cannot guarantee comfort as all trims have ADAS.",
+    "Because all trims have ADAS, I cannot guarantee comfort.",
+    "I cannot confirm 12 airbags because the records are incomplete.",
+    'The website says "I cannot guarantee comfort because all trims have ADAS."',
+    "I deny comfort because all trims have ADAS.",
+):
+    answer,errors=rg.validate_decision({"action":"answer","answered":True,"sentences":[{"text":text,"kind":"limitation","fact_ids":[]}]},[],"Can you guarantee comfort?")
+    check("Atomic own-limit extraction cannot emit a hidden world assertion: "+text,not answer["answered"] and bool(errors) and not any(t in answer["answer"] for t in ("bulletproof","ADAS","12 airbags")))
+# Citation-bearing statements cannot erase their conditions via this lane.
+text="I cannot guarantee comfort because all trims have ADAS."
+answer,errors=rg.validate_decision({"action":"answer","sentences":[{"text":text,"kind":"fact","fact_ids":["F032"]}]},[registry["F032"]],"Can you guarantee comfort?")
+check("Cited fact conditions are never stripped by own-limit normalization",not answer["answered"] and bool(errors) and text not in answer["answer"])
+answer,errors,_=validate("repairs40_q025")
+check("A purchase-only witness cannot suppress repair of omitted app and OTA features",not answer["covered_condition_rejections"] and "missing_required_condition" in errors)
+
 async def run():
+    for key in ("repairs40_q049","repairs40_q078","repairs40_q082","repairs40_q082_repair","repairs40_q065","repairs40_q092"):
+        state={**copy.deepcopy(cases[key]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
+        with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured") as model,patch("server.runtime_graph.store.read_json",return_value={}):
+            result=await rg.validate(state)
+        check(key+" preserves its safe limit without spending another model call",not model.called)
+    state={**copy.deepcopy(cases["repairs40_q025"]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
+    original,errors,feedback=validate("repairs40_q025")
+    replacement=rg._CompositionRepair(sentences=[{"text":"On equipped models, Hyundai Bluelink provides app connectivity, over-the-air updates, and Home-to-Car with Alexa, which requires a separately purchased Echo device.","kind":"fact","fact_ids":["F144","F168"]}])
+    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=replacement) as model,patch("server.runtime_graph.usage.trace"):
+        result,errors,repair=await rg._repair_composition(state,original,errors,feedback,state["question"])
+    check("Lost connected feature content still invokes the one bounded repair",model.call_count==1 and repair["attempted"])
     state={**copy.deepcopy(cases["limits40_q083"]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
     state["decision"]={"action":"answer","answered":False,"sentences":[]}
     saved=rg._CompositionRepair(sentences=cases["limits40_q083_repair"]["decision"]["sentences"])

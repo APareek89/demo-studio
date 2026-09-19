@@ -142,7 +142,7 @@ def _projected_support(fact: dict, text: str, requested: dict) -> tuple[bool, st
     if not projection:
         return None
     from .knowledge import scope_atoms, scope_values, variant_projection
-    options = scope_atoms(requested.get("variant",""),"variant")
+    options = scope_atoms(requested.get("variant",""),"variant") or list(dict.fromkeys(v for row in projection["rows"] for v in row["variants"]))
     # Retrieval narrows row.variants to the requested trim while retaining the
     # literal assertion. A comparison may explicitly name another trim in that
     # same assertion; use the same conservative parser, never quote/ordering data.
@@ -205,7 +205,7 @@ def _safe_limitation(text: str, customer_text: str) -> bool:
     # 'Without verified comparative evidence' limits a claim; it never asserts
     # equipment absence. No other 'without' complement receives this exception.
     text = re.sub(r"\s+without\s+(?:verified\s+)?(?:comparative\s+)?evidence[.!]?$", "", text, flags=re.I)
-    continuation = re.search(r"[;—–]|[.!?]\s+\w|\b(?:and|but|however|yet|plus|also|because|although|since|while|whereas|despite|which|whose|inside|within|with|from|in|without)\b",text,re.I)
+    continuation = re.search(r"[;:—–]|[.!?]\s+\w|\b(?:and|but|however|yet|plus|also|because|although|since|as|while|whereas|despite|which|whose|inside|within|with|from|in|without)\b",text,re.I)
     return bool(negative_check and not continuation and not (_numbers(text)-_numbers(customer_text)))
 
 
@@ -264,6 +264,38 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     if match and _safe_limitation(match[1]+".", customer_text):
         return match[1]+"."
     return plain if _safe_limitation(plain,customer_text) else text
+
+
+def _uncited_own_limit(text: str, customer_text: str) -> tuple[str, bool]:
+    """Keep a checked own negative clause, never its ungrounded causal premise.
+
+    Only uncited interaction rows/preludes call this. Cited claims retain every
+    condition and must pass normal evidence validation without this rewrite.
+    """
+    normalized = _reviewed_refusal(text, customer_text)
+    if _safe_limitation(normalized, customer_text) or _safe_input_limit(normalized):
+        return normalized, False
+    plain=text.replace("’", "'").strip()
+    # A fronted adjunct may explain the refusal but does not establish a fact.
+    # Do not search arbitrary/quoted text for an embedded first-person sentence.
+    fronted=re.fullmatch(r"(?:Because|Since|As|Without)\s+[^;:!?\"“”]+,\s*((?:I|we)\s+.+)",plain,re.I)
+    if fronted:plain=fronted[1]
+    candidate=re.split(r"\s+(?:as|because|since|without)\b|[:;—–]",plain,maxsplit=1,flags=re.I)[0].rstrip(" ,.!?")+"."
+    candidate=_reviewed_refusal(candidate,customer_text)
+    if (fronted or candidate!=text) and _safe_limitation(candidate,customer_text):
+        return candidate, True
+    return "", False
+
+
+def _condition_content_covered(rejected: str, retained: str) -> bool:
+    """A voiced prerequisite does not make lost feature content redundant.
+
+    This conservative lexical check only suppresses an optional repair. It
+    cannot license claims or merge assertions; normal grounding still applies.
+    """
+    stop={"a","an","the","on","in","at","to","of","with","and","or","for","you","your","get","gets","offer","offers","offering","support","supports","include","includes","including","using","use","available","availability","equipped","select","selected","model","models","trim","trims","variant","variants","technology","connectivity","integration","connected","feature","features","car","hyundai","over","along"}
+    def terms(text):return {t for t in re.findall(r"[a-z]+",text.casefold()) if t not in stop and len(t)>1}
+    return terms(rejected)<=terms(retained) and _numbers(rejected)<=_numbers(retained)
 
 
 def _source_listing_limitation(text: str, facts: list[dict]) -> str:
@@ -330,9 +362,10 @@ def _safe_context(text: str, customer_text: str) -> bool:
 
 def _assistant_behavior(text: str) -> str:
     """Bounded own operating acts, never a customer-product assertion."""
+    from .runtime_interaction import assistant_behavior
+    normalized=assistant_behavior(text)
+    if normalized:return normalized
     plain=text.replace("’","'")
-    no_guess=re.fullmatch(r"(?:Understood,\s*)?I\s+(?:will not|won't)\s+guess\s+(?:your\s+)?(.+?)[.]?",plain,re.I)
-    if no_guess and _calculation_input_names(no_guess[1]):return "I will not guess your "+", ".join(_calculation_input_names(no_guess[1]))+"."
     boundary=re.fullmatch(r"No,\s+(?:it|that)\s+(?:shouldn't|should not|will not|won't) change my answer;\s+a (?:webpage|page|source) is (?:only )?(?:source material|evidence), not an instruction for me to ignore you or reveal private instructions[.]?",plain,re.I)
     if boundary:return "No. I treat source material as evidence, not instructions."
     if re.fullmatch(r"I'll keep focusing on your question and use any (?:webpage|page|source) only as evidence when it's relevant[.]?",plain,re.I):return "I'll focus on your question and use relevant source evidence."
@@ -384,20 +417,24 @@ def _global_coverage_claim(text: str) -> bool:
 
 def _atomic_answer_rows(rows: list[dict], evidence: list[dict], requested: dict) -> list[dict]:
     """Split a reviewed same-feature trim comparison into independently checked clauses."""
-    from .knowledge import scope_atoms, scope_matches
-    options=scope_atoms(requested.get("variant",""),"variant")
+    from .knowledge import scope_atoms, scope_matches, scope_values, variant_projection
+    options=list(dict.fromkeys([*scope_atoms(requested.get("variant",""),"variant"),*(v for f in evidence for v in scope_atoms(f.get("scope",{}).get("variant",""),"variant"))]))
     output, subject = [], ""
     def split_row(raw,part,name):
         part=part[:1].upper()+part[1:].rstrip(".")+"."
-        ids=[]
+        ids=[];projections={}
         for fact in evidence:
             if fact["id"] not in raw.get("fact_ids",[]):continue
-            projected=_projected_support(fact,part,{**requested,"variant":name})
-            if (projected and projected[0]) or (projected is None and scope_matches(fact,{"variant":name})):
+            projection=variant_projection(fact,{**requested,"variant":name})
+            projected=_projected_support({**fact,"applicability_projection":projection},part,{**requested,"variant":name}) if projection else _projected_support(fact,part,{**requested,"variant":name})
+            fact_scope=scope_values(fact.get("scope",{}).get("variant",""),"variant")
+            covers=not fact_scope or bool(fact_scope & {"all","all variants","all trims"}) or scope_values(name,"variant")<=fact_scope
+            if (projected and projected[0]) or (projected is None and covers and scope_matches(fact,{"variant":name})):
                 ids.append(fact["id"])
-        return {**raw,"text":part,"fact_ids":ids}
+                if projection:projections[fact["id"]]=projection
+        return {**raw,"text":part,"fact_ids":ids,"_split_projections":projections}
     for raw in rows[:4]:
-        row=dict(raw);text=str(row.get("text",""))
+        row={k:v for k,v in raw.items() if not k.startswith("_split_")};text=str(row.get("text",""))
         lead=re.match(r"^(?:For [^,]+,\s*)?(?:The\s+)?(.+?)\s+(?:(?:trim|variant)\s+)?(?:comes|has|includes|offers|adds|shares)\b",text,re.I)
         if lead:
             named=canonical_scope_matches(lead[1],options,"variant")
@@ -406,11 +443,11 @@ def _atomic_answer_rows(rows: list[dict], evidence: list[dict], requested: dict)
         if subject and re.match(r"^It also\b",text):
             text=re.sub(r"^It",subject,text,count=1)
         row["text"]=text
-        clauses=re.split(r",\s+(?:whereas|while)\s+",text,maxsplit=1,flags=re.I)
+        clauses=re.split(r",\s+(?:whereas|while)\s+|,\s+and\s+(?=\d+(?:-inch|[ -]inch)\s+)",text,maxsplit=1,flags=re.I)
         named=[canonical_scope_matches(part,options,"variant") for part in clauses]
-        if row.get("kind","fact")=="fact" and len(clauses)==2 and all(len(names)==1 for names in named) and named[0]!=named[1] and not re.match(r"^(?:it|they)\b",clauses[1],re.I):
+        if row.get("kind","fact")=="fact" and len(clauses)==2 and all(named) and not set(named[0]) & set(named[1]) and not re.match(r"^(?:it|they)\b",clauses[1],re.I):
             for part,names in zip(clauses,named):
-                output.append(split_row(row,part,names[0]))
+                output.append(split_row(row,part,names))
             continue
         match=re.fullmatch(r"(.+?)\s+(?:comes standard with|includes|adds|has)\s+(.+?),\s+(?:(?:while they are|which is|which are)\s+not|neither of which is)\s+available on\s+(.+?)\.?",text,re.I)
         standard=re.fullmatch(r"(.+?)\s+is standard on\s+(.+?),\s+but it is not available on\s+(.+?)\.?",text,re.I)
@@ -423,7 +460,16 @@ def _atomic_answer_rows(rows: list[dict], evidence: list[dict], requested: dict)
         else:parts=[]
         named=[canonical_scope_matches(part,options,"variant") for part in parts]
         if parts and row.get("kind","fact")=="fact" and all(len(names)==1 for names in named) and named[0]!=named[1] and any(f.get("applicability_projection") for f in evidence if f.get("id") in row.get("fact_ids",[])):
-            output.extend(split_row(row,part,names[0]) for part,names in zip(parts,named))
+            for part,names in zip(parts,named):
+                negative=re.fullmatch(r"(.+?)\s+(?:is|are) not available on\s+(.+?)[.]?",part,re.I)
+                features=re.split(r"\s+and\s+",negative[1]) if negative else []
+                families=[_claim_features(feature) for feature in features]
+                if 1<len(features)<=3 and all(families) and len(set().union(*families))>=len(features):
+                    # Each absent feature needs its own negative assertion. A
+                    # ventilation exclusion cannot cover electric adjustment just
+                    # because the model coordinated both as one subject.
+                    output.extend(split_row(row,f"{feature} {'are' if feature.endswith('seats') else 'is'} not available on {negative[2].rstrip('.') }.",names[0]) for feature in features)
+                else:output.append(split_row(row,part,names[0]))
         else:
             output.append(row)
     return output
@@ -449,6 +495,7 @@ _FEATURE_PATTERNS = {
     "wireless_charging":r"\bwireless (?:charg\w*)\b",
     "rear_entertainment":r"\brear.seat entertainment\b|\brear (?:entertainment )?(?:screen|display)\b",
     "seat_memory":r"\b(?:seat|driver).{0,20}\bmemory\b|\bmemory (?:function|seat)\b",
+    "seat_adjustment":r"\b(?:electric|electrical|power)\s+adjust\w*\b[^.;,]{0,40}\bseat\b|\b(?:driver|passenger)(?:'s)?\s+seat\s+(?:electric|power)\s+adjust\w*\b|\b(?:electrically|power)\s+adjustable\s+(?:driver'?s?\s+|passenger'?s?\s+)?seats?\b",
     "rear_vents":r"\brear (?:AC|air.conditioning) vents?\b",
     "fuel_tank":r"\bfuel.tank\b",
     "boot":r"\bboot\b|\bcargo (?:space|volume|capacity)\b|\bluggage (?:space|capacity)\b",
@@ -956,10 +1003,11 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     errors, sentences, used, substantive, condition_facts, condition_rejections, accepted_kinds = [], [], [], [], {}, [], []
     clarification = str(decision.get("clarification","")).strip()
     if decision.get("action")=="clarify" and clarification:
-        limit="";parts=re.split(r"(?<=[.!])\s+",clarification,maxsplit=1)
-        prelude=_assistant_behavior(parts[0]) if len(parts)==2 else ""
-        if len(parts)==2 and (_safe_limitation(parts[0],customer_text or question) or (prelude and _safe_limitation(prelude,customer_text or question))):
-            limit,clarification=prelude or parts[0],parts[1]
+        limit="";parts=re.split(r"(?<=[.!;])\s+",clarification,maxsplit=1)
+        prelude=_assistant_behavior(parts[0].rstrip(";")) if len(parts)==2 else ""
+        own_limit,removed=_uncited_own_limit(parts[0].rstrip(";"),customer_text or question) if len(parts)==2 else ("",False)
+        if len(parts)==2 and (own_limit or (prelude and _safe_context(prelude,customer_text or question))):
+            limit,clarification=prelude or own_limit,parts[1][:1].upper()+parts[1][1:]
         elif len(parts)==1:
             limit=next((str(row.get("text","")).strip() for row in decision.get("sentences",[]) if row.get("kind")=="limitation" and not row.get("fact_ids") and _safe_limitation(str(row.get("text","")),customer_text or question)),"")
         speech=(limit+" "+clarification).strip()
@@ -977,12 +1025,18 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         if not text: continue
         if any(i not in by_id for i in ids):
             reject("unsupported_citation"); continue
-        facts = [by_id[i] for i in ids]
+        facts = [{**by_id[i], **({"applicability_projection":row["_split_projections"][i]} if i in row.get("_split_projections",{}) else {})} for i in ids]
         kind = row.get("kind","fact")
         behavior=_assistant_behavior(text) if not ids and kind in {"context","limitation"} else ""
         if behavior:text,kind=behavior,"context"
-        if kind=="limitation":
-            text=_reviewed_refusal(text,customer_text or question)
+        if not ids and not behavior and kind in {"limitation","context"}:
+            own_limit,removed=_uncited_own_limit(text,customer_text or question)
+            if own_limit:
+                text=own_limit
+                if not _safe_input_limit(text):kind="limitation"
+                if removed:
+                    reject("unsupported_limitation_premise")
+                    if row_feedback is not None:row_feedback[-1]["original_text"]=str(row.get("text",""))
         if kind=="context" and not ids and re.fullmatch(r"I am here to assist you with (?:genuine|reviewed) details about (?:the )?(?-i:[A-Z][A-Za-z0-9-]*(?: [A-Z][A-Za-z0-9-]*)*), so please let me know what you would like to explore[.]?",text,re.I):
             text="Please let me know what you would like to explore."
         next_step=_verification_next_step(text) if kind in {"context","limitation"} and not ids else ""
@@ -1040,7 +1094,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             required=list({f["id"]:f for f in [*structured_facts,*row_dependencies]}.values())
             if _missing_required_condition(text,required):
                 reject("missing_required_condition")
-                condition_rejections.append({f["id"] for f in required if _missing_required_condition(text,[f])})
+                condition_rejections.append({"ids":{f["id"] for f in required if _missing_required_condition(text,[f])},"text":text})
                 if row_feedback is not None:row_feedback[-1]["required_conditions"]=[{"fact_id":f["id"],"condition":str(f.get("conditions","")),"scope":f.get("scope",{}),"source":{k:v for k,v in f.get("source",{}).items() if k!="quote"}} for f in required if _missing_required_condition(text,[f])]
                 continue
             market_records=[f for f in structured_facts if re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) and f.get("scope",{}).get("market")]
@@ -1174,10 +1228,10 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             used = list(dict.fromkeys([final_calc["id"],*used]))
             substantive.append(final_calc["id"])
     has_response = bool(sentences)
-    covered_conditions=bool(condition_rejections and set(errors)=={"missing_required_condition"} and all(ids<=set(condition_facts) for ids in condition_rejections))
+    covered_conditions=bool(condition_rejections and set(errors)=={"missing_required_condition"} and all(row["ids"]<=set(condition_facts) and _condition_content_covered(row["text"]," ".join(sentences)) for row in condition_rejections))
     if not has_response:
         sentences = ["I don't have a supported answer to that yet. We can check it with a salesperson or carry on."]
-    elif errors and not covered_conditions and not set(errors)<={"unresponsive_attribute","unverified_model_availability","uncited_context"}:
+    elif errors and not covered_conditions and not set(errors)<={"unresponsive_attribute","unverified_model_availability","uncited_context","unsupported_limitation_premise"}:
         sentences.append("There's a part of that I couldn't verify, so I won't guess.")
     text = " ".join(sentences)
     # No word slicing: truncation could remove a material caveat.
@@ -1202,10 +1256,10 @@ async def _repair_composition(state: RuntimeState, original: dict, original_erro
     decision=state.get("decision",{})
     empty=decision.get("action")=="answer" and not decision.get("sentences")
     rejected_substantive=any(row.get("kind")=="fact" or (row.get("kind")=="limitation" and row.get("error") in {"uncited_claim","uncited_product_assertion","unverified_coverage_claim","unverified_model_availability","uncited_context"}) for row in feedback)
-    precise_limit=any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in decision.get("sentences",[]))
+    precise_limit=any(not row.get("fact_ids") and row.get("kind") in {"limitation","context"} and _uncited_own_limit(str(row.get("text","")),customer_text)[0] for row in decision.get("sentences",[]))
     if original.get("covered_condition_rejections"):
         return original,original_errors,{}  # The validated duplicate already states this prerequisite.
-    if feedback and all(row.get("error") in {"unresponsive_attribute","unverified_model_availability","uncited_context"} for row in feedback) and precise_limit:
+    if feedback and all(row.get("error") in {"unresponsive_attribute","unverified_model_availability","uncited_context","unsupported_limitation_premise"} for row in feedback) and precise_limit:
         return original,original_errors,{}  # The exact missing detail is already explained.
     if config.MOCK_LLM or decision.get("action")!="answer" or "reasoning_unavailable" in state.get("errors",[]) or not (empty or rejected_substantive) or not state.get("control"):
         return original,original_errors,{}

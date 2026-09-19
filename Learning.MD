@@ -1177,3 +1177,12 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Correction:** Keep250ms for validation inside the same deadline; salvage only a completed audited calculator result and expose the failed composition separately. Do not revive cancelled turns. Expand explicit comfort queries at query time without changing eligibility or stored indexes. Revalidate independent clauses; expand scope only through the same assertion's literal projection. Pair adjacent currency normalization with independent requested-page attribution. Retain precise limits only if they survive final speech validation and do not erase original facts.
 
 **Limits:** Prompt changes for completeness and individual fit checks still need real replay. These English checks do not prove general entailment, perfect phrase coverage, microphone behavior or current external prices. The failed cohorts and source snapshots remain immutable.
+
+
+## 2026-09-19 — preserve clause ownership instead of matching whole answers (CR36)
+
+**Observed:** The next unchanged40 improved to30 supported but still emitted two unsupported assertions. A ventilation absence supplied the polarity for a combined electric-seat absence. A first-person limitation admitted an unsupported causal statement about official model-year specifications. Correct grouped road-wheel and connected-feature drafts were also dropped.
+
+**Causes:** Related seat concepts were too broad for negative entailment. The own-limit guard omitted a causal connector. Grouped trim comparisons were validated as if every citation applied to every group. A condition-only sentence made a rejected richer feature sentence appear redundant, suppressing repair. Exact interaction phrase matching rejected harmless new wording and semicolon-separated clarification.
+
+**Correction in progress:** Independently validate each feature's polarity and each explicit trim group; preserve same-clause material conditions while checking whether the substantive requested claim survived. Normalize only bounded uncited assistant acts and literal negative main clauses, then apply normal validation. Never strip conditions from cited factual rows or turn missing retrieved evidence into whole-source absence. Original results and initial/adjudicated reviews remain saved.
