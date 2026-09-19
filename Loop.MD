@@ -3,6 +3,14 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Precise uncertainty, scope metadata and fallback cooldown — 2026-09-19
+
+Graph frozen99719ad4: v7 limits58/58, actual-cohort93/93, repair106/106, graph130/130, trace36/36 and independent paired16/16 pass, zero outbound calls. The review caught and fixed two new overreach defects before live replay: literal same-selected live-page relations were incorrectly rejected, and an unrelated “, and automatic…” clause could qualify EPB. Independent report: `v7-limits-independent-review/final-gates.json`.
+
+Lookup20/20 plus3 existing lookup controls cover recognized city-price paths, explicit seed/user locality and redirects. Provider cooldown8/8 uses installed SDK error objects, fake clocks/providers and blocked sockets. Only the observed explicit Anthropic insufficient-credit400 starts a60s process-local cooldown for budgeted runtime calls; transient errors and legacy calls retain behavior. No credit/account/configuration changes.
+
+Required final gates: deck320/320 (includes provider contracts), acceptance24/24, both smoke phases, generation44/44, FAQ42/42, Align47/47, voice27/27, customer29/29; isolated temporary data/checkpoints, zero outbound attempts. Syntax96 Python/17 web JS and diff clean. Logs `final-gates/v7-*.log`. New graph/tool/provider code is committed and restarted before the focused40: every non-supported case from full-v7 plus15 supported scope/tool/adversarial controls and required follow-up context. This subset is not a replacement100 score; no paid speech. Loop remains off.
+
 ## Repair preservation and condition provenance — 2026-09-19
 
 Frozen graph `05dc701d`: actual-cohort85/85, repair106/106, graph130/130, trace36/36; independent device-condition closure5/5. Knowledge58/58 and v7 source/retrieval7/7 pass. Real player DOM47/47 and client56/56 verify distinct primary/condition citations without routing changes; fake media, zero paid calls. Syntax94 Python/17 web JS is clean. Independent review excludes optional warranty transfer and negative/unverified condition witnesses. All provider-facing offline contracts use blocked sockets. Required final deck320/320, acceptance24/24 and both smoke phases also pass on this frozen graph, each with zero outbound attempts; logs `final-gates/final-*.log`.

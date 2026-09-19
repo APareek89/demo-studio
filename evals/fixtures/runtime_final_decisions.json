@@ -9317,6 +9317,961 @@
       "source_trace": 1789827069.896374,
       "source_commit": "f06d8b9c81ffb29844fbabaefe67316ceaef688f",
       "snapshot_id": "kb_7812e2a0af909856a9301666"
+    },
+    "v7_q044_repair": {
+      "question": "What is different between King and King Knight?",
+      "requested_scope": {
+        "variant": [
+          "King",
+          "King Knight"
+        ]
+      },
+      "decision": {
+        "sentences": [
+          {
+            "text": "The King Knight edition features an all-black exterior, black alloys with red calipers, and matte-black Hyundai and CRETA emblems.",
+            "fact_ids": [
+              "F253"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "Inside, the King Knight cabin adds exclusive brass inserts.",
+            "fact_ids": [
+              "F253"
+            ],
+            "kind": "fact"
+          }
+        ],
+        "action": "answer",
+        "answered": true
+      },
+      "evidence": [
+        {
+          "kind": "feature",
+          "claim": "Advanced Driver Assistance System",
+          "value": "Hyundai SmartSense, Level 2 ADAS with 19 functions",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 4 & page 22",
+            "quote": "Hyundai SmartSense, Level 2 ADAS, 19 functions on top trims"
+          },
+          "confidence": 1.0,
+          "conditions": "Fitted to King, King Knight, and Lounge Edition; Smart Cruise Control with Stop and Go is on automatic variants only",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F045",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+            "assertion_hash": "ea371a5d8254e0ee85269fbb5eb5095c1964be4c2c2ce0bbf16795a6c712ab46",
+            "evidence_id": "ev_f8ceb3fd7513e3b550690f1d",
+            "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false
+        },
+        {
+          "kind": "spec",
+          "claim": "Spare wheel size on S(O) Knight, King and King Knight",
+          "value": "215 / 60 R17 Steel (D=436.6 mm)",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 15, Technical specifications / Tyre / Spare wheel",
+            "quote": "215 / 60 R17 Steel (D=436.6 mm) (S(O) Knight, King, King Knight)"
+          },
+          "confidence": 1.0,
+          "conditions": "Spare wheel only, not the fitted road wheels; S(O) Knight, King and King Knight in the manufacturer India brochure.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "S(O) Knight, King, King Knight"
+          },
+          "truth": "stated",
+          "id": "F246",
+          "approved": true,
+          "edited": true,
+          "knowledge": {
+            "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+            "assertion_hash": "a7fb87763aa3df2b86c35afdb00dcb390442690270e3f42a42588b371bde9cec",
+            "evidence_id": "ev_b50be66c72ae2b5f5de0989b",
+            "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": "",
+            "previous_id": "F123",
+            "supersedes": [
+              "F123"
+            ],
+            "override_of": "de8eb59f9db6713e8655ac575571dabd05acb8100bad7aea6952c8d0f3000070",
+            "override_evidence": {
+              "source": {
+                "ref": "src_fbd71842024b",
+                "locator": "Wheels · block 32",
+                "quote": "Tyre Type 215 / 60 R17 Steel (D=436.6 mm) (S(O) Knight, S(O) Knight , King, King Knight)"
+              },
+              "scope": {
+                "model": "creta"
+              },
+              "conditions": "trim specific: s(o) knight, king, king knight"
+            }
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Passenger seat electric adjust and walk-in device",
+          "value": "Passenger seat electric 8-way adjust and Passenger seat walkin device standard on King, King Knight, and Lounge Edition",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INTERIOR · block 28",
+            "quote": "Passenger seat electric 8-way adjust | - | - | - | - | - | - | - | S | S | S Passenger seat walkin device | - | - | - | - | - | - | - | S | S | S"
+          },
+          "confidence": 1.0,
+          "conditions": "Available on King, King Knight, and Lounge Edition only",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F167",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+            "assertion_hash": "0ef5cea7160f395069917c0b31c510270b5885b393340f93cefff4186aac8522",
+            "evidence_id": "ev_6ed3f033ba0860fc500da2f1",
+            "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "fetched_at": 1789816368.917721
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Passenger seat electric 8-way adjust and Passenger seat walkin device standard on King, King Knight, and Lounge Edition",
+                "label": "Passenger seat electric 8-way adjust and Passenger seat walkin device standard"
+              },
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Available on King, King Knight, and Lounge Edition only",
+                "label": "Available"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Driver seat memory function",
+          "value": "Driver power seat memory function",
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 5, Discover spatial artistry",
+            "quote": "Driver power seat memory function"
+          },
+          "confidence": 1.0,
+          "conditions": "Standard on King and King Knight trims",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King, King Knight",
+            "market": "India"
+          },
+          "truth": "stated",
+          "id": "F241",
+          "approved": true,
+          "edited": true,
+          "knowledge": {
+            "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+            "assertion_hash": "3c0fb1e4710455e39964bf2cfa21753f393e9eb0972203b7a3719f75fef6716e",
+            "evidence_id": "ev_39fca8c709d01c8ec8706d4e",
+            "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": "",
+            "previous_id": "F025",
+            "supersedes": [
+              "F025"
+            ],
+            "override_of": "0f5d02a1c9ccfa197bd79b1291fe79b36707ed80eb9817a2430a36a17a84b7d5",
+            "override_evidence": {
+              "source": {
+                "ref": "src_22b687",
+                "locator": "page 5, Discover spatial artistry",
+                "quote": "Driver power seat memory function"
+              },
+              "scope": {
+                "model": "creta",
+                "variant": "king, king knight"
+              },
+              "conditions": "standard on king and king knight trims"
+            }
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Standard on King and King Knight trims",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Front row ventilated seats",
+          "value": "Available on SX Premium, King, King Knight, and Lounge Edition",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "COMFORT & CONVENIENCE · block 30",
+            "quote": "Front row ventilated seats | - | - | - | - | - | - | S | S | S | S"
+          },
+          "confidence": 1.0,
+          "conditions": "Offered only on higher trims",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F160",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+            "assertion_hash": "122408327ab1627db7778fbefe9037416cda2e360cd7614563f387c8afc76905",
+            "evidence_id": "ev_a413631664269c3d06142712",
+            "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "fetched_at": 1789816368.917721
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Available on SX Premium, King, King Knight, and Lounge Edition",
+                "label": "Available"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "King Knight edition unique styling elements",
+          "value": "All-black exterior and classy interiors featuring brass inserts, black alloys with red calipers, and matte-black Hyundai and CRETA emblems",
+          "source": {
+            "ref": "src_f5d3c8",
+            "locator": "FAQs · 1. What makes the CRETA King Knight edition unique? · block 121",
+            "quote": "The CRETA King Knight edition stands out with its all-black exterior and classy interiors featuring brass inserts. It combines sophisticated style with legendary performance, featuring black alloys with red calipers and matte-black Hyundai and CRETA emblems for a distinctive, bold look."
+          },
+          "confidence": 1.0,
+          "conditions": "Specific to King Knight",
+          "scope": {
+            "model": "CRETA",
+            "variant": "King Knight",
+            "market": "India"
+          },
+          "truth": "stated",
+          "id": "F253",
+          "approved": true,
+          "edited": true,
+          "knowledge": {
+            "source_revision": "76ad693623b82a4c63cec438094bcc9949a0b61e01be451b4e7ddd4408380248",
+            "assertion_hash": "6036ac22d41d2907e27a413d74e533e703a948a0d4a0ced0af9becba70509ac8",
+            "evidence_id": "ev_4749293766377257b3eb46ab",
+            "evidence_path": "knowledge/sources/src_f5d3c8/76ad693623b82a4c63cec438094bcc9949a0b61e01be451b4e7ddd4408380248.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/highlights",
+            "fetched_at": 1789816349.037982,
+            "previous_id": "F080",
+            "supersedes": [
+              "F080"
+            ],
+            "override_of": "e9956f43ffcac19f7bc8f09fe707cdcaca9417a3e82e58aab27686346126be27",
+            "override_evidence": {
+              "source": {
+                "ref": "src_f5d3c8",
+                "locator": "FAQs · 1. What makes the CRETA King Knight edition unique? · block 121",
+                "quote": "The CRETA King Knight edition stands out with its all-black exterior and classy interiors featuring brass inserts. It combines sophisticated style with legendary performance, featuring black alloys with red calipers and matte-black Hyundai and CRETA emblems for a distinctive, bold look."
+              },
+              "scope": {
+                "model": "creta",
+                "variant": "king knight edition",
+                "market": "india"
+              },
+              "conditions": "specific to king knight edition"
+            }
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false
+        },
+        {
+          "kind": "feature",
+          "claim": "Audio system brand and configuration",
+          "value": "Bose premium sound 8 speaker system with front central speaker & sub-woofer",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY · block 32",
+            "quote": "Bose premium sound 8 speaker system with front central speaker & sub-woofer | - | - | - | - | - | - | S | S | S | S"
+          },
+          "confidence": 1.0,
+          "conditions": "Available on SX Premium, King, King Knight, and Lounge Edition",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F164",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+            "assertion_hash": "e49297b88834a1874980bedaa4c77961510f5fec4b074d26599313a84e7c0dd5",
+            "evidence_id": "ev_c3438b76a9b919d1d66d29fb",
+            "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "fetched_at": 1789816368.917721
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Available on SX Premium, King, King Knight, and Lounge Edition",
+                "label": "Available"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Driver power seat memory function",
+          "value": "Driver power seat memory function standard on King, King Knight, and Lounge Edition",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 38, Interior features by variant table",
+            "quote": "Driver power seat memory function – – – – – – – S S S"
+          },
+          "confidence": 1.0,
+          "conditions": "Excludes E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F070",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+            "assertion_hash": "633a3c0e2bd638a5bcf853f71976e423e2a6ff49cc7171f5ef7ae9038c3ead26",
+            "evidence_id": "ev_a78d7333067d10ee925c6eb6",
+            "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Driver power seat memory function standard on King, King Knight, and Lounge Edition",
+                "label": "Driver power seat memory function standard"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Front parking sensors and camera views",
+          "value": "Front parking sensors, surround view monitor and blind-spot view monitor are standard on SX Premium, King, King Knight and Lounge Edition.",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety · block 24",
+            "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition Airbag | Driver & passenger | S | S | S | S | S | S | S | S | S | S Side & curtain | S | S | S | S | S | S | S | S | S | S ABS(Anti-lock braking system) with EBD | S | S | S | S | S | S | S | S | S | S Electronic stability control (ESC) | S | S | S | S | S | S | S | S | S | S Vehicle stability management (VSM) | S | S | S | S | S | S | S | S | S | S Hill start assist control (HAC) | S | S | S | S | S | S | S | S | S | S Tyre pressure monitoring system(TPMS) Highline | S | S | S | S | S | S | S | S | S | S Rear disc brakes | S | S | S | S | S | S | S | S | S | S Seat belt pretensioners - driver & passenger | S | S | S | S | S | S | S | S | S | S Driver anchor pretensioner | S | S | S | S | S | S | S | S | S | S Height adjustable front seat belts | S | S | S | S | S | S | S | S | S | S 3 Point seat belts (all seats) | S | S | S | S | S | S | S | S | S | S Seatbelt reminder (all seats) | S | S | S | S | S | S | S | S | S | S ISOFIX | S | S | S | S | S | S | S | S | S | S Emergency stop signal (ESS) | S | S | S | S | S | S | S | S | S | S Impact sensing auto door unlock | S | S | S | S | S | S | S | S | S | S Speed sensing auto door lock | S | S | S | S | S | S | S | S | S | S Inside door override (Driver only) | S | S | S | S | S | S | S | S | S | S Driver Power window with auto up down and safety | - | - | - | - | - | S | S | S | S | S Immobilizer | S | S | S | S | S | S | S | S | S | S Burglar alarm | S | S | S | S | S | S | S | S | S | S Central Locking | S | S | S | S | S | S | S | S | S | S Inside rear | Day and night mirror | S | S | S | S | S | - | - | - | - | - Day and night mirror with telematics switches | - | - | - | - | - | S | S | - | - | - Electro chromic mirror (ECM) with telematics switches | - | - | - | - | - | - | - | S | S | S Automatic headlamps | - | - | - | S | S | S | S | S | S | S Headlamp escort function | S | S | S | S | S | S | S | S | S | S Rear defogger with timer | - | - | - | S | S | S | S | S | S | S Puddle lamps with welcome function | Driver side | - | - | - | - | - | S | S | S | S | S Passenger side | - | - | - | - | - | - | - | S | S | S Parking assist | Rear parking sensors | S | S | S | S | S | S | S | S | S | S Rear camera with dynamic guidelines | - | - | S | S | S | S | S | S | S | S Front Parking sensors | - | - | - | - | - | - | S | S | S | S Driver rear view monitor (DRVM) | - | - | - | S | S | S | S | S | S | S Hyundai SmartSense (Advanced driver assistance system) | Forward Collision Warning (FCW) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Car (FCA-Car) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Pedestrian (FCA-Ped) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Cycle (FCA-Cyl) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Junction Turning (FCA-JT) | - | - | - | - | - | - | - | S | S | S Forward Collision - Avoidance Assist - Direct Oncoming (FCA-DO) | - | - | - | - | - | - | - | S | S | S Blind-spot Collision Warning (BCW) | - | - | - | - | - | - | - | S | S | S Blind-spot Collision - Avoidance Assist (BCA) | - | - | - | - | - | - | - | S | S | S Lane Keeping Assist (LKA) | - | - | - | - | - | - | - | S | S | S Lane Departure Warning (LDW) | - | - | - | - | - | - | - | S | S | S Driver Attention Warning (DAW) | - | - | - | - | - | - | - | S | S | S Safe Exit Warning (SEW) | - | - | - | - | - | - | - | S | S | S Smart Cruise Control with Stop & Go (SCC with S&G) | - | - | - | - | - | - | - | S* | S* | S* Lane Following Assist (LFA) | - | - | - | - | - | - | - | S | S | S High Beam Assist (HBA) | - | - | - | - | - | - | - | S | S | S Leading Vehicle Departure Alert (LVDA) | - | - | - | - | - | - | - | S | S | S Rear Cross - Traffic Collision Warning (RCCW) | - | - | - | - | - | - | - | S | S | S Rear Cross - Traffic Collision - Avoidance Assist (RCCA) | - | - | - | - | - | - | - | S | S | S Surround view monitor (SVM) | - | - | - | - | - | - | S | S | S | S Blind-spot view monitor (BVM) | - | - | - | - | - | - | S | S | S | S Dash cam | - | - | - | S | S | S | S | S | S | S"
+          },
+          "confidence": 1.0,
+          "conditions": "Standard only on the named variants in the India feature matrix.",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F215",
+          "approved": true,
+          "edited": true,
+          "knowledge": {
+            "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+            "assertion_hash": "a03a439649fd346ae5e3c444d98f41df6b4109c803f421f6721098c3d8b842fc",
+            "evidence_id": "ev_5c02fdd0fbae0b4f7b19dc22",
+            "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "fetched_at": 1789816368.917721,
+            "previous_id": "F155",
+            "supersedes": [
+              "F155"
+            ],
+            "override_of": "25f3afb6679431a01963c37bea908386e4edbbf240a98724a80a5c9ac2951127",
+            "override_evidence": {
+              "source": {
+                "ref": "src_962d2536a6b1",
+                "locator": "Safety · block 24",
+                "quote": "Surround view monitor (SVM) | - | - | - | - | - | - | S | S | S | S Blind-spot view monitor (BVM) | - | - | - | - | - | - | S | S | S | S"
+              },
+              "scope": {
+                "model": "creta",
+                "market": "india",
+                "variant": "sx premium, king, king knight, lounge edition"
+              },
+              "conditions": "trims sx premium, king, king knight, and lounge edition only"
+            }
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Front parking sensors, surround view monitor and blind-spot view monitor are standard on SX Premium, King, King Knight and Lounge Edition.",
+                "label": "Front parking sensors, surround view monitor and blind-spot view monitor are standard"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Front row ventilated seats availability",
+          "value": "Standard on SX Premium, King, King Knight, Lounge Edition",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 39, Comfort and convenience by variant table",
+            "quote": "Front row ventilated seats – – – – – – S S S S"
+          },
+          "confidence": 1.0,
+          "conditions": "Not available on E, EX, EX(O), S(O), S(O) Knight, SX",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F063",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+            "assertion_hash": "39c907a91b8d7e79f923ca0ce88463066218818de8b159d51ec1bb0102691ec4",
+            "evidence_id": "ev_fd6730cd53698a3718eabd87",
+            "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Standard on SX Premium, King, King Knight, Lounge Edition",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Hyundai SmartSense ADAS availability",
+          "value": "Includes FCW, FCA (Car, Pedestrian, Cycle, Junction Turning, Direct Oncoming), BCW, BCA, LKA, LDW, DAW, SEW, LFA, HBA, LVDA, RCCW, RCCA",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "Safety · block 24",
+            "quote": "Hyundai SmartSense (Advanced driver assistance system) | Forward Collision Warning (FCW) | - | - | - | - | - | - | - | S | S | S"
+          },
+          "confidence": 1.0,
+          "conditions": "Standard on King, King Knight, and Lounge Edition trims",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F153",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+            "assertion_hash": "8f99a9f958b34ed63b5b1cc2e6092b0cbfbd45cb9b34c149fc079063f4b72ecb",
+            "evidence_id": "ev_1b0180c2486f03db5f2f1098",
+            "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "fetched_at": 1789816368.917721
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Standard on King, King Knight, and Lounge Edition trims",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Connected car technology",
+          "value": "Hyundai Bluelink with Over-the-air (OTA) updates and Home to car (H2C) with Alexa",
+          "source": {
+            "ref": "src_962d2536a6b1",
+            "locator": "INFOTAINMENT AND CONNECTIVITY · block 32",
+            "quote": "Hyundai Bluelink (connected car technology) | - | - | - | - | - | S | S | S | S | S"
+          },
+          "confidence": 1.0,
+          "conditions": "Available on SX, SX Premium, King, King Knight, Lounge Edition; Alexa Echo device requires third-party purchase",
+          "scope": {
+            "model": "CRETA",
+            "market": "India",
+            "variant": "SX, SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F168",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495",
+            "assertion_hash": "c788dc63b60d25a79258ce0cd65268644aa6a9277baf1f2ea084266cc7124ceb",
+            "evidence_id": "ev_2c0c0ea1cd1085add1c6dd7b",
+            "evidence_path": "knowledge/sources/src_962d2536a6b1/389afe4c6dc7d6cc7df19e5ace57de646f9caf604ac0e8d6398a950ffbbe0495.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "fetched_at": 1789816368.917721
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Available on SX, SX Premium, King, King Knight, Lounge Edition",
+                "label": "Available"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Driver seat electric adjustment",
+          "value": "Electric 8 way driver seat adjustment",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 37, Interior features by variant table",
+            "quote": "Electric 8 way – – – – – – S S S S"
+          },
+          "confidence": 1.0,
+          "conditions": "Standard on SX Premium, King, King Knight, Lounge Edition; manual height adjustment on lower trims",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F069",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+            "assertion_hash": "8672ed41a5ca040224dde32953e85d1c44584747e30c6632d17812aecc0bc313",
+            "evidence_id": "ev_da629a24d008821b99e0a691",
+            "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "Standard on SX Premium, King, King Knight, Lounge Edition",
+                "label": "Standard"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Smartphone wireless connectivity requirement",
+          "value": "Wireless Android Auto & Apple CarPlay on EX, EX(O), S(O), S(O) Knight; requires wired-to-wireless adapter on SX, SX Premium, King, King Knight, Lounge Edition",
+          "source": {
+            "ref": "src_51f57f",
+            "locator": "page 41, Infotainment and connectivity by variant table and footnotes",
+            "quote": "Infotainment and connectivity by variant S(O) SX King Lounge Group Feature E EX EX(O) S(O) SX King Knight Premium Knight Edition Infotainment system 20.32 cm (8.0\") touchscreen infotainment system – S S S S – – – – – 26.03 cm (10.25\") HD audio video navigation – – – – – S S S S S system 29.46 cm (11.6\") Touchscreen Rear Seat – – – – – – – – – S Entertainment System (Passenger Side) Bose premium sound 8 speaker system with front – – – – – – S S S S central speaker & sub-woofer Smartphone connectivity Wireless Android Auto & Apple CarPlay – S S S S S~ S~ S~ S~ S~ Bluetooth connectivity – S S S S S S S S S JioSaavn music streaming – – – – – S S S S S Digital Cluster Digital cluster with color TFT MID S S S S S – – – – – 26.03 cm (10.25\") Multi display digital cluster – – – – – S S S S S Front & rear speakers – S S S S S S S S S Front tweeters – S S S S S S S S S Hyundai Bluelink (connected car technology) – – – – – S S S S S Voice recognition** – S S S S S S S S S Steering wheel with audio & bluetooth controls – S S S S S S S S S Over-the-air (OTA) updates for map and – – – – – S S S S S infotainment Home to car (H2C) with Alexa# – – – – – S S S S S Footnotes carried over from Hyundai’s matrix: leather items are leatherette; * denotes IVT, AT or DCT only; ** works with compatible smartphones only; # Alexa Echo is not a standard car accessory and must be bought separately; ~ wireless smartphone mirroring runs through a wired-to-wireless adapter. Hyundai adds that SX(O), SX Tech, King and King Knight with AT, DCT or IVT carry smart cruise control with stop and go in place of plain cruise control. Hyundai CRETA — compiled from hyundai.com/in/en 41"
+          },
+          "confidence": 1.0,
+          "conditions": "E variant has no connectivity; ~ indicates higher trims require wired-to-wireless adapter for wireless operation",
+          "scope": {
+            "model": "Hyundai CRETA",
+            "variant": "EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, Lounge Edition"
+          },
+          "truth": "stated",
+          "id": "F216",
+          "approved": true,
+          "edited": true,
+          "knowledge": {
+            "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+            "assertion_hash": "9cdca9906f24b29ba7859cef1a6fa7a0866a9e34d8923a6f252d0d954f8de3eb",
+            "evidence_id": "ev_ad230d3e499b90d96076ad86",
+            "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": "",
+            "previous_id": "F068",
+            "supersedes": [
+              "F068"
+            ],
+            "override_of": "72150a014f6ed1b1c8b740376beb5ae362fc3e11ff33543f190079f972988127",
+            "override_evidence": {
+              "source": {
+                "ref": "src_51f57f",
+                "locator": "page 41, Infotainment and connectivity by variant table and footnote",
+                "quote": "Wireless Android Auto & Apple CarPlay – S S S S S~ S~ S~ S~ S~ ; ~ wireless smartphone mirroring runs through a wired-to-wireless adapter"
+              },
+              "scope": {
+                "model": "hyundai creta"
+              },
+              "conditions": "e variant has no connectivity; ~ indicates higher trims require wired-to-wireless adapter for wireless operation"
+            }
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "King",
+                  "King Knight"
+                ],
+                "assertion": "requires wired-to-wireless adapter on SX, SX Premium, King, King Knight, Lounge Edition",
+                "label": "requires wired-to-wireless adapter"
+              }
+            ],
+            "requested_variants": [
+              "King",
+              "King Knight"
+            ]
+          }
+        }
+      ],
+      "source_commit": "0cd642cf6bb0d06be5ee5196acdccc303ee084f6",
+      "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+      "trace_t": 1789828146.983045
+    },
+    "v7_q047": {
+      "question": "What does your source say about SX(O)? Is that part of the same current lineup?",
+      "requested_scope": {
+        "variant": "SX(O)"
+      },
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "The Pune listing includes the SX(O) among its available Creta variants alongside E, EX, S, and SX.",
+            "fact_ids": [
+              "F252"
+            ],
+            "kind": "fact"
+          },
+          {
+            "text": "However, whether this matches the broader current lineup or brochure availability remains unverified in that source.",
+            "fact_ids": [
+              "F252"
+            ],
+            "kind": "limitation"
+          }
+        ],
+        "clarification": "",
+        "tool_calls": [],
+        "answered": true,
+        "topic": "SX(O) variant availability"
+      },
+      "evidence": [
+        {
+          "kind": "availability",
+          "claim": "Available variants listed in Pune FAQ",
+          "value": "E, EX, S, SX, and SX(O)",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Which CRETA variants are available in Pune? · block 37",
+            "quote": "Pune offers multiple CRETA variants, including E, EX, S, SX, and SX(O), with petrol, diesel, and turbo petrol options."
+          },
+          "confidence": 1.0,
+          "conditions": "Market-specific name listing in the reviewed Pune FAQ. Equivalence to the manufacturer brochure lineup/current availability and cross-source equipment fitment remain unverified. This listing alone does not establish equipment applicability.",
+          "scope": {
+            "model": "CRETA",
+            "market": "Pune, India"
+          },
+          "truth": "stated",
+          "id": "F252",
+          "approved": true,
+          "edited": true,
+          "knowledge": {
+            "source_revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+            "assertion_hash": "8de7814f77715328577b1f619cb5f7ec0ea48beee3fbf3877d267fa1ddfc4412",
+            "evidence_id": "ev_cf0d7fd536732b229fbbe35f",
+            "evidence_path": "knowledge/sources/src_91fa41526174/9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-pune",
+            "fetched_at": 1789816388.02736,
+            "previous_id": "F192",
+            "supersedes": [
+              "F192"
+            ],
+            "override_of": "f62c265d93577688fff479c1c432649cfe330436cea5aee9a2b045c5f9f7d085",
+            "override_evidence": {
+              "source": {
+                "ref": "src_91fa41526174",
+                "locator": "Which CRETA variants are available in Pune? · block 37",
+                "quote": "Pune offers multiple CRETA variants, including E, EX, S, SX, and SX(O), with petrol, diesel, and turbo petrol options."
+              },
+              "scope": {
+                "model": "creta",
+                "market": "pune, india"
+              },
+              "conditions": "market-specific variant listing in pune faq"
+            }
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "SX(O)"
+                ],
+                "assertion": "Available variants listed in Pune FAQ: E, EX, S, SX, and SX(O)",
+                "label": "Available variants listed in Pune FAQ"
+              }
+            ],
+            "requested_variants": [
+              "SX(O)"
+            ]
+          },
+          "runtime_variant_boundary": [
+            {
+              "variant": "SX(O)",
+              "sources": [
+                {
+                  "ref": "src_91fa41526174",
+                  "revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+                  "market": "Pune, India",
+                  "listing_id": "F252"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "feature",
+          "claim": "Standard safety equipment across all variants",
+          "value": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system",
+          "source": {
+            "ref": "src_91fa41526174",
+            "locator": "Hyundai CRETA Car Price in Pune (Ex-showroom*) · block 14",
+            "quote": "All variants of the Hyundai CRETA are equipped with a strong set of safety features. It includes six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system."
+          },
+          "confidence": 1.0,
+          "conditions": "Equipped across all variants",
+          "scope": {
+            "model": "CRETA"
+          },
+          "truth": "stated",
+          "id": "F195",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+            "assertion_hash": "87034bde4d6c59273e22435d8013484d8ec9dcd7da51d5039c990ad8da1b746c",
+            "evidence_id": "ev_997a589b58d4380e079058cd",
+            "evidence_path": "knowledge/sources/src_91fa41526174/9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "website",
+            "source_url": "https://www.hyundai.com/in/en/find-a-car/creta/price-in-pune",
+            "fetched_at": 1789816388.02736
+          },
+          "entity": "Hyundai CRETA",
+          "competition": false,
+          "applicability_projection": {
+            "kind": "explicit_variant_clauses",
+            "rows": [
+              {
+                "polarity": "positive",
+                "variants": [
+                  "SX(O)"
+                ],
+                "assertion": "Six airbags, electronic stability control, hill-start assist control, rear parking sensors, and a tyre pressure monitoring system; Equipped across all variants",
+                "label": "Standard safety equipment across all variants"
+              }
+            ],
+            "requested_variants": [
+              "SX(O)"
+            ]
+          },
+          "runtime_variant_boundary": [
+            {
+              "variant": "SX(O)",
+              "sources": [
+                {
+                  "ref": "src_91fa41526174",
+                  "revision": "9532c907923030539ef4fc01d3178a253377ebcf62ec7e54ff7e4f24c6cc18bc",
+                  "market": "Pune, India",
+                  "listing_id": "F252"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "source_commit": "0cd642cf6bb0d06be5ee5196acdccc303ee084f6",
+      "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+      "trace_t": 1789828168.103919
     }
   },
   "v6_scope_registry": {

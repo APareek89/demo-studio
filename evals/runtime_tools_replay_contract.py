@@ -58,6 +58,61 @@ class RuntimeToolsReplay(unittest.TestCase):
         self.assertEqual(result['scope']['model_tokens'], ['creta'])
         self.assertTrue(all('/creta/' in item['source']['ref'] for item in result['evidence']))
 
+    def city_price_lookup(self, question, *, seed=None, query='CRETA price', history=None):
+        root = 'https://www.hyundai.com/in/en/find-a-car/creta/'
+        seed = seed or root + 'highlights'
+        links = [root + suffix for suffix in ['price-in-ahmedabad', 'price', 'price-in-mumbai', 'price-in-new-delhi']]
+        calls = []
+        def fetch(url, **kwargs):
+            calls.append(url)
+            return {'final_url': url, 'sections': [{'text': 'CRETA price depends on the selected configuration and applicable charges.', 'locator': 'Price'}],
+                    'links': [{'url': child, 'label': 'CRETA price in ' + child.rsplit('/', 1)[-1]} for child in links]}
+        with patch('server.crawl.fetch_public', side_effect=fetch), patch('socket.socket.connect', side_effect=AssertionError('network forbidden')):
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': query}, question + ' ' + seed, history or [])
+        return calls, result
+
+    def test_model_wide_price_lookup_cannot_choose_a_city_from_menu_or_model_query(self):
+        for query in ['CRETA on road price', 'CRETA price Ahmedabad']:
+            with self.subTest(query=query):
+                calls, result = self.city_price_lookup('Verify the exact on-road price in my city.', query=query)
+                self.assertEqual([url.rsplit('/', 1)[-1] for url in calls], ['highlights', 'price'])
+                self.assertTrue(all('/price-in-' not in f['source']['ref'] for f in result['evidence']))
+
+    def test_customer_named_city_keeps_its_page_and_excludes_other_cities(self):
+        calls, result = self.city_price_lookup('Check the CRETA price in Mumbai.')
+        self.assertEqual([url.rsplit('/', 1)[-1] for url in calls], ['highlights', 'price', 'price-in-mumbai'])
+        self.assertEqual([p['url'] for p in result['pages']], calls)
+
+    def test_customer_history_can_name_a_multiword_city_but_assistant_history_cannot_add_one(self):
+        calls, _ = self.city_price_lookup('Check the price for my city.', history=[
+            {'role': 'user', 'text': 'I live in New Delhi.'},
+            {'role': 'agent', 'text': 'Let us use Ahmedabad as an example.'},
+        ])
+        self.assertEqual([url.rsplit('/', 1)[-1] for url in calls], ['highlights', 'price', 'price-in-new-delhi'])
+
+    def test_assistant_city_and_partial_word_are_not_customer_locality(self):
+        calls, _ = self.city_price_lookup('The Mumbaikar magazine mentioned this price.', history=[{'role': 'assistant', 'text': 'Check Mumbai.'}])
+        self.assertEqual([url.rsplit('/', 1)[-1] for url in calls], ['highlights', 'price'])
+
+    def test_directly_supplied_city_price_url_does_not_require_repeating_the_city(self):
+        seed = 'https://www.hyundai.com/in/en/find-a-car/creta/price-in-mumbai'
+        calls, result = self.city_price_lookup('Check the price at this exact page.', seed=seed)
+        self.assertEqual(calls[0], seed)
+        self.assertEqual(result['url'], seed)
+        self.assertFalse(any('ahmedabad' in url or 'new-delhi' in url for url in calls))
+
+    def test_model_wide_redirect_cannot_select_an_unsupplied_city(self):
+        seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed.rsplit('/', 1)[0] + '/price-in-ahmedabad', 'text': 'CRETA price in Ahmedabad is a city-specific price.'}):
+            with self.assertRaisesRegex(ValueError, 'No readable section'):
+                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'price'}, 'Check the price in my city at ' + seed, [])
+
+    def test_explicit_city_redirect_cannot_switch_to_another_city(self):
+        seed = 'https://www.hyundai.com/in/en/find-a-car/creta/price-in-mumbai'
+        with patch('server.crawl.fetch_public', return_value={'final_url': seed.replace('mumbai', 'ahmedabad'), 'text': 'CRETA price in Ahmedabad is a city-specific price.'}):
+            with self.assertRaisesRegex(ValueError, 'No readable section'):
+                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'price'}, 'Check this exact page ' + seed, [])
+
     def test_redirect_cannot_change_the_model(self):
         seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed.replace('/creta/', '/alcazar/'), 'text': 'Safety information about a different vehicle.'}):

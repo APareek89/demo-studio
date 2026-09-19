@@ -7,7 +7,7 @@ import math
 import re
 import time
 from decimal import Decimal, ROUND_HALF_UP
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 from .runtime_state import ToolRequest
 
@@ -194,12 +194,25 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
     terms = topic_terms or terms
     seed_path = urlsplit(url).path.rstrip("/")
     seed_locale = crawl._locale_prefix(url)
+    def price_locality(candidate: str) -> str:
+        match = re.search(r"(?:^|/)price-in-([a-z0-9]+(?:-[a-z0-9]+)*)/?$", unquote(urlsplit(candidate).path).casefold())
+        return match[1].replace("-", " ") if match else ""
+
+    seed_locality = price_locality(url)
+    # A generated search query or a page's city menu cannot supply the buyer's
+    # locality. Only their own words (or the explicitly selected city URL) can.
+    customer_text = " ".join([str(m.get("text", "")) for m in history if m.get("role") == "user"] + [question])
+    customer_text = re.sub(r"https?://\S+|www\.\S+", "", customer_text, flags=re.I)
+    customer_words = " " + re.sub(r"\W+", " ", customer_text.casefold()).strip() + " "
 
     def in_source_scope(candidate: str, label: str = "") -> bool:
         if urlsplit(candidate).hostname != seed_host:
             return False
         if crawl.canonical_url(candidate) == crawl.canonical_url(url):
             return True
+        locality = price_locality(candidate)
+        if locality and locality != seed_locality and f" {locality} " not in customer_words:
+            return False
         if model_tokens:
             return crawl._eligible(candidate, label, url, model_tokens)
         # A generic company homepage does not identify a model. Do not treat

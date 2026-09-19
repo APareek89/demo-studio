@@ -66,6 +66,14 @@ The40-case difficult subset on `f06d8b9`/v6 produced **30 supported, 7 partial, 
 
 Correctivev7 changes only F080→F253 canonical scope: the same official highlights page lists King Knight, labels its dedicated section King Knight and describes identical styling in the FAQ using “edition”. This is a reviewed product-specific identity decision, not a global rule that strips Edition from trim names. Existing narration, slides, audio, all six approvals and old snapshot bytes remain intact. Current graph/ranking/provenance-display repairs require independent checks and live verification.
 
+## Fifth full replay: stricter safety exposed over-rejection
+
+The unchanged100 cases on `0cd642c`/v7 returned **78 supported,9 partial,9 unhelpful,0 unsafe flagged,4 provider/deadline failures** after independent review. HTTP text median2.884s,p956.823s; estimate$0.5569 with no concurrent paid activity. Current cumulative app estimate$7.8827 is not a provider invoice. Independent review moved q076 from initially supported to partial because a today-price answer omitted its material current-validity caveat; the initial review and all original answers remain preserved. The API flagged only three provider failures: semantic review also counts q043’s repair timeout. Raw flags are not the acceptance score.
+
+All nine completed calculations independently recompute correctly; one calculation failed at the provider. Five of seven live-source checks verified the requested source, while two supported answers honestly reported verification limits and separated saved fallback facts. Zero flagged critical unsafe answers does not mean every statement was fully supported: two partial answers added unlicensed financial causal explanations. The `semantic-summary.json` also separates factual, calculation, source-check and clarification/limit expectations.
+
+This score is below target. The new uncited guard stopped an unsupported future-lineup claim but discarded useful precise limits and benign interaction. The actual `all-black` adjective was mistaken for a universal-trim quantifier. A source-backed lineup-equivalence limit was checked as positive fitment. Price-page discovery picked an unrequested city by alphabetical order. These concrete causes are being repaired and retested; no score is retroactively improved. Private evidence: `qa100-v7-dependencies/`.
+
 ## Repair details
 
 - The overview leads directly into selected slide narration. Missing model replacements use explicitly marked reviewed-route speech. Published inputs and demo-version checks prevent draft edits or a new publication from silently changing a running visit.

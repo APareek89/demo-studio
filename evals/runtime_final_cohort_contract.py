@@ -37,6 +37,21 @@ for key in ("final_q041","final_q041_repair"):
     c=copy.deepcopy(cases[key]);c["decision"]["sentences"]=[{"text":"The S(O) Knight has 17-inch alloy wheels, whereas the S(O) has 18-inch alloy wheels.","kind":"fact","fact_ids":["F049"]}]
     bad,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
     check(key+" clause splitting cannot swap the two trim quantities",not bad["answered"] and bool(errors))
+answer,errors,_=validate("v7_q044_repair")
+check("Actual King Knight all-black styling is not a universal trim quantifier",answer["answered"] and not errors and "all-black exterior" in answer["answer"] and "brass inserts" in answer["answer"])
+for sentence in ("Both trims feature an all-black exterior.","All variants feature an all-black exterior.","King and King Knight feature an all-black exterior."):
+    c=copy.deepcopy(cases["v7_q044_repair"]);c["decision"]["sentences"]=[{"text":sentence,"fact_ids":["F253"],"kind":"fact"}]
+    answer,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
+    check("Styling adjective does not excuse a real cross-trim claim: "+sentence,not answer["answered"] and bool(errors))
+answer,errors,_=validate("v7_q047")
+check("Actual source listing retains its precise lineup-equivalence limitation",answer["answered"] and not errors and answer["fact_ids"]==["F252"] and "current manufacturer lineup remains unverified" in answer["answer"] and "I cannot verify whether that source's listing" in answer["answer"])
+for suffix in (" and SX(O) has a panoramic sunroof."," because the current SX(O) is available nationwide."):
+    c=copy.deepcopy(cases["v7_q047"]);row=c["decision"]["sentences"][1];row["text"]=row["text"].rstrip('.')+suffix;c["decision"]["sentences"]=[row]
+    answer,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
+    check("Source-equivalence uncertainty cannot carry a hidden positive claim: "+suffix,not answer["fact_ids"] and bool(errors))
+c=copy.deepcopy(cases["v7_q047"]);c["evidence"][0]["conditions"]="Market-specific listing in Pune.";c["decision"]["sentences"]=c["decision"]["sentences"][1:]
+answer,errors=rg.validate_decision(c["decision"],c["evidence"],c["question"],requested_scope=c["requested_scope"])
+check("Source caveat preservation requires the explicit approved equivalence condition",not answer["fact_ids"] and bool(errors))
 answer,errors,_=validate("final_q049")
 check("Actual model-year limit survives terminal yet",not answer["answered"] and "couldn't verify feature details for the 2026 model year" in answer["answer"])
 check("Unsupported ongoing and approaching-model-year premises are removed","ongoing model" not in answer["answer"] and "closer" not in answer["answer"] and "unverified_model_availability" in errors)

@@ -42,22 +42,24 @@ Uncited lines are restricted to bounded interaction, exact attributed customer i
 
 The LLM drafts conversational language. Tools perform arithmetic and fetch a supplied public source. A verified calculator result retains its derivation and can provide a deterministic response when model rendering fails; approximate currency wording permits bounded rounding. Validators and reviewed evidence constrain the answer. None of those layers alone proves that every possible answer is correct; the real-question acceptance pack tests their combined behavior.
 
-Live URL lookup is deliberately smaller than build-time crawling: up to three relevant same-host, model/market-scoped pages within a bounded fetch budget. It does not silently refresh the approved knowledge base. New web evidence remains attached to that turn with its source and applicability caveats. A cited child page cannot impersonate the exact requested page. Private-network destinations and unsafe redirects are rejected.
+Live URL lookup is deliberately smaller than build-time crawling: up to three relevant same-host, model/market-scoped pages within a bounded fetch budget. Recognized `price-in-<city>` child pages require a locality named by the customer or an explicitly supplied city URL; a page menu or generated query cannot choose the customer’s city. This narrow rule does not infer residence or resolve arbitrary city aliases. It does not silently refresh the approved knowledge base. New web evidence remains attached to that turn with its source and applicability caveats. A cited child page cannot impersonate the exact requested page. Private-network destinations and unsafe redirects are rejected.
 
 Source approval is consequential: a model can accurately repeat a wrong approved assertion. The CRETA review found this in a compiled guide's turbo displacement. Reviewed corrections now include a narrow cross-label cc/cm³ conflict check, plus explicit source review. Source changes publish a new snapshot; they never rewrite old evidence or silently retarget a running session.
 
 ## Response metrics and their limits
 
-`server/runtime_metrics.py` aggregates session events; `web/observability.js` displays them. Compare the same demo version, voice, input mode, route and speech-end measurement basis. Typed requests, synthetic voice tests and human microphone sessions are different cohorts. Latency calculations use browser timestamps; a server endpoint timestamp is retained separately so clock skew cannot inflate or shrink response time.
+`server/runtime_metrics.py` aggregates session events; `web/observability.js` displays them. Compare the same demo version, voice, input mode, route and speech-end measurement basis. Typed input and realtime voice are separate automatic cohorts. Synthetic voice and human microphone sessions must additionally be distinguished through acceptance-run labels; they share the realtime input mode and are not automatically separated. Latency calculations use browser timestamps; a server endpoint timestamp is retained separately so clock skew cannot inflate or shrink response time.
 
 Answer, clarification and decline are separate response cohorts. Historical unclassified turns remain explicitly labelled legacy data. A quick decline cannot improve answer-playback percentiles, and `answered=true` is not a semantic quality grade. Actual useful-answer quality is reviewed separately against evidence.
 
-- **Endpoint delay:** estimated end of customer speech to final transcript.
+- **Endpoint delay:** estimated end of customer speech to endpoint-event receipt. Final-transcript receipt is recorded separately; this metric is not transcription completion.
 - **Response start:** customer speech end or typed submission to actual first answer audio. An acknowledgement is not the substantive answer.
-- **Reasoning and tools:** retrieval, model, tool and validation timings from the graph.
-- **Completion:** submission or speech end to completed answer playback.
-- **Interruption:** speech onset to the application's local stop request; this does not measure speaker echo or physical silence.
+- **Reasoning and tools:** retrieval, model, tool, optional repair and total graph timings. Deterministic validation has no separate timer.
+- **Completion:** submission or speech end to completed answer playback. Clarifications are excluded because their completion timestamp includes waiting for the customer.
+- **Interruption:** detected speech onset to the application's local stop request. This excludes detection delay and does not measure speaker echo or physical silence.
 - **Reliability:** failed and cancelled turns remain visible in counts and are excluded from successful latency percentiles. Missing measurements are absent, never zero. Small cohorts are labelled.
+
+The configured text order remains Gemini → Claude → Runware. An explicit Anthropic insufficient-credit400 starts a60-second process-local cooldown for that effective credential/endpoint/model. Later budgeted turns trace the skip and proceed to the next provider; expiry or an effective identity change permits retry. Ordinary timeouts, rate limits and other errors do not start this cooldown. Legacy calls without a turn deadline keep their original behavior. This avoids repeated known credit failures; it does not guarantee fallback availability.
 
 The twelve-second graph deadline is a configured bound, **not an observed response-time KPI**. Actual latency and failure rates must come from the acceptance report. Muted playback can validate timing, captions, state transitions and audio bytes; human listening, echo cancellation and perceived naturalness still require an audible microphone session.
 

@@ -1155,3 +1155,14 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Fix:** Retain only already-validated factual repair sentences when the original has no usable facts, with errors/partial status preserved. Restrict uncited context and limitations to bounded interaction, attributed customer input and own verification/input limits. Close explicit compatible device-purchase prerequisites across supplied evidence; preserve separate primary and condition-only provenance. Optional warranty policies are excluded. Rank the topic after resolving scope. Correct F080 to new F253 only after exact same-page source review; never strip “Edition” generically.
 
 **Limits:** These are narrow English checks, not universal entailment or multilingual validation. Source correction is a versioned publication, not silently rewritten history. The original failures and all prior scores remain unchanged. Independent adversarial controls and a new live cohort are required; fixtures alone do not establish acceptance.
+
+
+## 2026-09-19 — Strict guards removed the answer’s actual uncertainty (CR33)
+
+**Observed:** Fifth full100 fell to78 supported turns despite zero flagged critical unsafe claims. Nine turns were unhelpful; exact own-limit or interaction wording was frequently present in the model draft but lost by validation. The adjective “all-black” triggered a universal-trim check. A full-registry empty boundary result was lost and recomputed from a smaller retrieved pack, inventing uncertainty about SX. An automatic-only EPB projection used its qualifier as a feature label.
+
+**Cause:** Lexical guards treated source/missing-input adjuncts as positive claims; absence of boundary metadata was conflated with an authoritative empty boundary; component/feature identity was conflated with qualifier text. A source’s explicit lineage limitation also went through positive equipment validation. These are validation defects, not proof that the model lacked the answer.
+
+**Correction in progress:** Normalize only bounded own-inability/interaction forms, preserve the requested unknown, retain authoritative empty scope decisions, distinguish descriptive hyphens from trim quantifiers, and require the actual feature plus same-clause transmission qualification. Preserve rejection of source-wide absence, unsupported publication statements, new quantities and positive causal claims. Existing one-repair/deadline/cancellation safeguards remain.
+
+**Separate lookup cause:** Model-wide city-price links tied on topic and sorted alphabetically, selecting Ahmedabad without a named city. Recognized price-in-city child pages now require the customer’s own named locality or explicit city seed. This is a narrow route-structure check, not a general location/alias/residence parser. Offline source-lookup20 controls pass; live verification remains separate.

@@ -48,6 +48,8 @@ Retrieval is a relevant subset, not an exhaustive inventory. Do not say a trim i
 features exist, or the full sources contain no value just because the retrieved assertions do not contain it.
 Only an assertion's claim, value, conditions and scope authorize product details under that ID. A source locator is
 provenance, not permission to borrow another fact from its table. Cite each separate feature's actual assertion.
+Do not invent why a price, discount, availability or renewal varies. A 'depends on' relation needs its subject and
+determinants in the same approved assertion; stock-dependent availability does not establish stock-dependent discounts.
 Mandatory dependencies stated in compatible supplied assertions still apply when a broader duplicate assertion
 describes the same feature. Switching citation IDs cannot remove a required purchase or prerequisite.
 An applicability_projection contains exact positive or negative variant clauses from the reviewed assertion.
@@ -122,7 +124,7 @@ def _reason_evidence(f: dict) -> dict:
     if f.get("applicability_projection"):
         projection=f["applicability_projection"]
         result.update(value="; ".join(row["assertion"] for row in projection["rows"]), conditions=(str(f.get("conditions", ""))+" Use only the explicit projected clauses for this requested trim.").strip(),applicability_projection=projection)
-    if f.get("runtime_variant_boundary"):
+    if "runtime_variant_boundary" in f:
         result["runtime_variant_boundary"]=f["runtime_variant_boundary"]
     return result
 
@@ -160,7 +162,11 @@ def _projected_support(fact: dict, text: str, requested: dict) -> tuple[bool, st
         # sentence about just its airbags. It need not repeat the whole list.
         # Enumerated automatic transmissions may qualify a named feature rather
         # than be that feature. Keep its own label anchor for everyday wording.
-        automatic_qualifier=anchor_ok and projected_features=={"transmission"} and {"IVT","AT","DCT"}<=set(re.findall(r"\b(?:IVT|AT|DCT)\b",text_support)) and bool(re.search(r"\bautomatic\b",text,re.I))
+        claim_terms=terms(str(fact.get("claim","")))
+        feature_with_automatic=any(len(claim_terms & terms(clause))>=2 and re.search(r"\bautomatic\b",clause,re.I)
+                                   and not re.search(r"\bmanual\b|\ball (?:versions|transmissions)\b",clause,re.I)
+                                   for clause in re.split(r"[.;]|,\s*and\b|\b(?:but|whereas)\b",text))
+        automatic_qualifier=(anchor_ok or feature_with_automatic) and projected_features=={"transmission"} and {"IVT","AT","DCT"}<=set(re.findall(r"\b(?:IVT|AT|DCT)\b",text_support)) and feature_with_automatic
         anchor_ok=bool(projected_features & _claim_features(text)) or automatic_qualifier
     anchor_ok=anchor_ok or bool(_quantity_units(text) & _quantity_units(text_support))
     if len(targets)>1:
@@ -192,6 +198,28 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     """Narrow safe rewrites of observed refusals, never a positive-claim bypass."""
     plain = text.replace("’", "'")
     plain=re.sub(r"\s+yet\.$",".",plain,flags=re.I)
+    plain=re.sub(r"\b((?:\d+|one|two|three|four|five)\s+(?:years?|months?))\s+from now\b",r"\1 ahead",plain,flags=re.I)
+    # Evidence-location adjuncts explain our own verification limit. Remove
+    # only that grammar; an 'in the bulletproof cabin' assertion cannot match.
+    evidence=r"(?:from|in)\s+(?:my|our|the|these|those)\s+(?:(?:current|available|reviewed|provided|supplied|official)\s+)*(?:(?-i:[A-Z][A-Z0-9-]*)\s+)?(?:details|sources|records|documents|materials|specifications|evidence|information)"
+    own=re.match(r"^(?:I|we)\s+(?:cannot|can't|could not|couldn't|do not|don't)\s+(?:verify|confirm|find|have)\b",plain,re.I)
+    if own and not re.search(r"\b(?:because|as)\b",plain,re.I):
+        plain=re.sub(r"\s+"+evidence+r"(?=\s+whether\b|[.]?$)","",plain,flags=re.I)
+        plain=re.sub(r"\bin\s+(litres|liters|millimetres|millimeters)\b",r"(\1)",plain,flags=re.I)
+    absence=re.fullmatch(r"(.+?)(?:,?\s+(?:because|as))\s+(?:those|these|the) details\s+are not\s+(?:available\s+)?in\s+(?:my|our|the)\s+(?:reviewed|current|available)\s+(?:documents|evidence|records|details)[.]?",plain,re.I)
+    if absence and _safe_limitation(absence[1]+".",customer_text):return absence[1]+"."
+    passive=re.fullmatch(r"(?:Specific\s+)?(.+?)\s+(?:are|is) not (?:verified|detailed)\s+"+evidence+r"(?:, but checking the official brochure is a great next step)?[.]?",plain,re.I)
+    if passive and not re.search(r"\b(?:has|have|offers|includes|comes|provides|delivers|can|will|is|are|was|were|does|gets|supports)\b",passive[1],re.I):
+        subject=re.sub(r"\bin\s+(litres|liters|millimetres|millimeters)\b",r"(\1)",passive[1],flags=re.I)
+        candidate="I couldn't verify "+re.sub(r"\band\b","or",subject,flags=re.I)+"."
+        if _safe_limitation(candidate,customer_text):return candidate
+    # These subordinate phrases supply a missing input or a claimed evidence
+    # basis, not another product assertion. Keep the atomic refusal itself.
+    input_limit=re.fullmatch(r"(.+?)\s+without knowing\s+(?:their heights|your family's (?:exact )?heights)(?:\s+or having (?:exact )?rear legroom dimensions)?[.]?",plain,re.I)
+    if input_limit and _safe_limitation(input_limit[1]+".",customer_text):return input_limit[1]+"."
+    date_basis=re.fullmatch(r"(.+?)\s+just because\s+(?:a|the|its)\s+(?:start\s+)?date\s+(?:appears|is)\s+in\s+(?:a|the)\s+brochure[.]?",plain,re.I)
+    if date_basis and _safe_limitation(date_basis[1]+".",customer_text):return date_basis[1]+"."
+    if own and re.search(r"\bwhether\b",plain,re.I) and _safe_limitation(plain,customer_text):return plain
     own_source_limit=re.fullmatch(r"(?:As a result,\s*)?(?:I|we)\s+(?:do not|don't)\s+have\s+(.+?\b(?:details|information|evidence|specifications|figures))\s+from\s+(?:that|the)\s+(?:link|page|source)(?:\s+to share(?: right now)?)?\.",plain,re.I)
     if own_source_limit:
         candidate="I couldn't verify "+own_source_limit[1]+"."
@@ -201,7 +229,7 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     source_suffix=r"(?:\s+(?:from|in)\s+(?:my|our|the)\s+(?:(?:available|current|reviewed)\s+)?(?:records|information|details|evidence))?"
     patterns=(
         r"(?:I|we)\s+(?:could not|couldn't|cannot|can't)\s+(?:verify|find|confirm)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
-        r"(?:I|we)\s+(?:do not|don't)\s+have\s+(?:the\s+)?(?:verified|exact)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
+        r"(?:I|we)\s+(?:do not|don't)\s+have\s+(?:the\s+)?(?:verified|exact|specific|official)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
         r"(?:The\s+)?(?:available|retrieved|reviewed)\s+(?:details|records|evidence|information)\s+(?:do not|does not|don't|doesn't)\s+(?:state|list|provide|include|mention|show)\s+(.+?)\.",
     )
     for pattern in patterns:
@@ -220,12 +248,31 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     match = re.fullmatch(r"(.+?)\s+because\s+(?:there is no official record of that offer|only public web ports 80 and 443 are supported)\.", plain, re.I)
     if match and _safe_limitation(match[1]+".", customer_text):
         return match[1]+"."
-    return text
+    return plain if _safe_limitation(plain,customer_text) else text
+
+
+def _source_listing_limitation(text: str, facts: list[dict]) -> str:
+    """Preserve an explicit source-equivalence caveat, never equipment claims."""
+    if len(facts)!=1:return ""
+    fact=facts[0]
+    if fact.get("kind")!="availability" or not fact.get("scope",{}).get("market"):return ""
+    conditions=str(fact.get("conditions",""))
+    if not (re.search(r"\b(?:market|city)-specific\b",conditions,re.I)
+            and re.search(r"\bequivalence\b.*\blineup\b.*\bcurrent availability\b.*\bunverified\b",conditions,re.I)):return ""
+    # A finite uncertainty clause can repeat this reviewed condition. Causal,
+    # coordinated positive, equipment and current-membership claims cannot.
+    if not re.fullmatch(r"(?:However,\s*)?whether\s+(?:this|that|this listing|that listing)\s+(?:matches|is equivalent to)\s+(?:the\s+)?(?:broader\s+)?(?:current\s+)?lineup(?:\s+or\s+(?:brochure|current) availability)?\s+remains unverified(?:\s+in\s+(?:that|this|the reviewed) source)?[.]?",text,re.I):return ""
+    return "I cannot verify whether that source's listing matches the manufacturer brochure lineup or current availability."
 
 
 def _verification_next_step(text: str) -> str:
     """A checking suggestion must not assume a forthcoming release or promise its result."""
     plain=re.sub(r"\s+as (?:that|the|its) release approaches\.$",".",text,flags=re.I)
+    request=re.fullmatch(r"For ([^,]+), please (check|consult|ask) (.+)",plain,re.I)
+    if request and not re.search(r"\b(?:has|have|is|are|will|can|guarantees?|offers?|includes?)\b",request[1],re.I) and not NUMBERISH.search(request[1]):
+        plain="You can "+request[2]+" "+request[3]
+    if re.fullmatch(r"Trying the rear seat together during a trial run is the best way to check individual comfort[.]?",plain,re.I):
+        return "You can assess seat comfort during a test drive."
     if re.fullmatch(r"Please check back closer to (?:that|the) model year for official updates\.",plain,re.I):
         return "You can check official updates."
     if not re.match(r"^(?:You|We)\s+(?:can|could)\s+(?:check|ask|consult|speak|confirm)\b",plain,re.I):return ""
@@ -247,6 +294,11 @@ def _safe_context(text: str, customer_text: str) -> bool:
     """Uncited context is interaction or attributed customer input, not world facts."""
     if re.fullmatch(r"(?:Hello(?:,? I'm ready to help)?|Hi|Thanks|Thank you|Got it|Understood|Sure|Of course|Happy to help|Let's explore that)[.!]?",text,re.I):return True
     if re.fullmatch(r"Please share a public (?:HTTP or HTTPS product page|product URL)[.]?",text,re.I):return True
+    if re.fullmatch(r"No, that will not change my answer(?: at all)?[.]?",text,re.I):return True
+    if re.fullmatch(r"Please let me know what you would like to explore[.]?",text,re.I):return True
+    if _safe_input_limit(text):return True
+    request=re.fullmatch(r"(?:Whenever you'd like to calculate it,\s*)?(?:just\s+)?let me know\s+(.+?)[.]?",text,re.I)
+    if request and _calculation_input_names(request[1]):return True
     if re.fullmatch(r"(?:We|You) can (?:check|try|assess) (?:the |your )?(?:seating position|seat comfort|rear[- ]seat space|boot space) (?:during|on) a test drive[.]?",text,re.I):return True
     stated=re.fullmatch(r"You (?:said|mentioned|told me)\s+(?:that\s+)?(.+?)[.]?",text,re.I)
     if not stated or re.search(r"[;!?]|\.(?:\s|$)",stated[1]):return False
@@ -259,13 +311,39 @@ def _safe_context(text: str, customer_text: str) -> bool:
     return len(subject.split())>=3 and subject in normalized(customer_text)
 
 
+def _calculation_input_names(text: str) -> list[str]:
+    values=re.split(r",\s*|\s+(?:and|or)\s+",text)
+    aliases={"typical driving distance":"distance","driving distance":"distance","expected fuel efficiency":"fuel efficiency","fuel efficiency figure":"fuel efficiency","local fuel price":"fuel price"}
+    allowed={"loan amount","principal","interest rate","loan term","tenure","distance","fuel efficiency","fuel price"}
+    names=[aliases.get(value,value) for value in (re.sub(r"^(?:(?:and|or)\s+)?(?:(?:a|an|the|your)\s+)?","",v.strip().casefold()) for v in values)]
+    return names if names and all(value in allowed for value in names) else []
+
+
 def _safe_input_limit(text: str) -> bool:
     """A missing calculator input is an own-capability limit, not a product claim."""
-    match=re.fullmatch(r"I (?:cannot|can't) (?:calculate|estimate) (?:the |your |an? )?(?:EMI|loan payment|fuel cost|running cost) without (.+?)[.]?",text,re.I)
+    match=re.fullmatch(r"(?:Understood,\s*)?I (?:cannot|can't|won't|will not) (?:calculate|estimate) (?:the |your |an? )?(?:EMI|loan payment|fuel costs?|running costs?) without (.+?)[.]?",text,re.I)
     if not match:return False
-    values=re.split(r",\s*|\s+(?:and|or)\s+",match[1])
-    allowed={"loan amount","principal","interest rate","loan term","tenure","distance","fuel efficiency","fuel price"}
-    return bool(values) and all(re.sub(r"^(?:(?:and|or)\s+)?(?:(?:a|an|the|your)\s+)?","",value.strip().casefold()) in allowed for value in values)
+    return bool(_calculation_input_names(match[1]))
+
+
+def _unsupported_dependency_relation(text: str, facts: list[dict]) -> bool:
+    """Check explicit positive 'depends on' claims, not general entailment."""
+    stop={"the","a","an","exact","current","future","your","local","will","would","directly","on","and","or","by","of","to","in","its"}
+    def terms(value):return {w.rstrip("s") for w in re.findall(r"[a-z]+",value.casefold()) if w not in stop}
+    for clause in re.split(r"[.;]|,\s*(?:and\s+)?",text):
+        relation=re.fullmatch(r"\s*(.+?)\s+depends?\s+(?:directly\s+)?on\s+(.+?)\s*",clause,re.I)
+        if not relation:continue
+        if re.match(r"^(?:I|we)\s+(?:cannot|can't|couldn't|could not)\s+(?:verify|confirm|know)\s+whether\b",relation[1].strip(),re.I) and not re.search(r"\b(?:because|although|since|but)\b",relation[1],re.I):continue
+        subject,determinants=terms(relation[1]),terms(relation[2])
+        supported=False
+        for fact in facts:
+            if fact.get("provenance")=="calculation":continue
+            assertion=" ".join(str(fact.get(k,"")) for k in ("claim","value","conditions"))
+            words=terms(assertion)
+            if subject and determinants and subject<=words and determinants<=words and re.search(r"\bdepend\w*\s+on\b|\bsubject to\b|\bvar(?:y|ies)\s+(?:by|with)\b",assertion,re.I):
+                supported=True;break
+        if not supported:return True
+    return False
 
 
 def _global_coverage_claim(text: str) -> bool:
@@ -693,8 +771,9 @@ async def retrieve(state: RuntimeState) -> dict:
                                    snapshot_id=state.get("snapshot_id") or None,
                                    scope=requested, competition=demo.get("settings", {}).get("competition") == "on", limit=14)
     boundaries=_variant_boundaries([f for f,_ in store.fact_entries(registry)],requested)
-    if boundaries:
-        pack["evidence"]=[{**f,"runtime_variant_boundary":boundaries} for f in pack.get("evidence",[]) if len(knowledge.scope_atoms(requested.get("variant",""),"variant"))!=1 or _boundary_source(f,boundaries)[0]]
+    # An authoritative empty result from the whole pinned registry is meaningful:
+    # the reduced retrieval pack must not reclassify an established trim later.
+    pack["evidence"]=[{**f,"runtime_variant_boundary":boundaries} for f in pack.get("evidence",[]) if not boundaries or len(knowledge.scope_atoms(requested.get("variant",""),"variant"))!=1 or _boundary_source(f,boundaries)[0]]
     state["control"].remaining()
     return {"evidence":pack.get("evidence", []),"snapshot_id":pack.get("snapshot_id", ""),
             "conflicts":pack.get("conflicts", []),"coverage":pack.get("coverage", {}),"requested_scope":requested,
@@ -846,6 +925,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         kind = row.get("kind","fact")
         if kind=="limitation":
             text=_reviewed_refusal(text,customer_text or question)
+        if kind=="context" and not ids and re.fullmatch(r"I am here to assist you with (?:genuine|reviewed) details about (?:the )?(?-i:[A-Z][A-Za-z0-9-]*(?: [A-Z][A-Za-z0-9-]*)*), so please let me know what you would like to explore[.]?",text,re.I):
+            text="Please let me know what you would like to explore."
         next_step=_verification_next_step(text) if kind in {"context","limitation"} and not ids else ""
         if next_step:text=next_step
         if not ids and kind in {"limitation","context"} and not _safe_limitation(text,customer_text or question) and re.search(r"\b(?:verified|confirmed)\s+(?:specifications|features|details).*\b(?:ongoing|current)\s+(?:model|lineup)\b",text,re.I):
@@ -873,7 +954,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 text = "According to " + " and ".join(domains[:3]) + ", " + text[:1].lower() + text[1:]
             from .knowledge import scope_atoms, scope_matches, scope_values
             structured_facts = [f for f in facts if f.get("provenance") not in {"calculation", "live_web"}]
-            boundaries=next((f["runtime_variant_boundary"] for f in evidence if f.get("runtime_variant_boundary")),None)
+            boundaries=next((f["runtime_variant_boundary"] for f in evidence if "runtime_variant_boundary" in f),None)
             if boundaries is None and any(f.get("kind")=="availability" and re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) for f in evidence):
                 boundaries=_variant_boundaries(evidence,requested_scope)
             named_targets=canonical_scope_matches(text,[b["variant"] for b in boundaries or []],"variant")
@@ -881,6 +962,14 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             boundary_checks=[_boundary_source(f,boundaries or []) for f in structured_facts]
             if any(not allowed for allowed,_ in boundary_checks):
                 reject("unverified_lineup_applicability");continue
+            listing_limit=_source_listing_limitation(text,structured_facts) if kind=="limitation" else ""
+            if listing_limit and all(scope_matches(f,{k:v for k,v in requested_scope.items() if k!="variant"}) for f in structured_facts):
+                # This is the cited record's uncertainty about identity, not a
+                # positive fitment claim to test against its equipment projection.
+                sentences.append(listing_limit);used.extend(ids)
+                continue
+            if kind=="limitation" and any(f.get("kind")=="availability" and f.get("applicability_projection") and re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) for f in structured_facts):
+                reject("unsupported_projected_polarity");continue
             if boundaries and re.search(r"\b(?:is|are|remains?|belongs?)\s+(?:in\s+|part of\s+)?(?:the\s+)?current\b[^.;!?]{0,45}\blineup\b|\bcurrent\s+[^.;!?]{0,35}\b(?:trim|variant)\b|\b(?:currently|now)\s+(?:available|offered|sold)\b",text,re.I):
                 reject("unverified_lineup_identity");continue
             source_markets={market for _,market in boundary_checks if market}
@@ -898,12 +987,15 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             market_records=[f for f in structured_facts if re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) and f.get("scope",{}).get("market")]
             if len(market_records)==1:
                 record=market_records[0];market=str(record["scope"]["market"])
-                if re.search(r"\b(?:listing|listed|FAQ)\b",str(record.get("claim","")),re.I) and not re.search(r"\b(?:no|not|never|isn't|aren't)\b",text,re.I):
+                if kind!="limitation" and not _claim_features(text) and re.search(r"\b(?:listing|listed|FAQ)\b",str(record.get("claim","")),re.I) and not re.search(r"\b(?:no|not|never|isn't|aren't)\b",text,re.I):
                     options=[v for row in record.get("applicability_projection",{}).get("rows",[]) if row.get("polarity")=="positive" for v in row.get("variants",[])]
                     named=canonical_scope_matches(text,options,"variant")
                     if named:
                         label="FAQ" if "faq" in str(record.get("claim","")).casefold() else "record"
-                        text=f"The reviewed {market} {label} lists {', '.join(named)}. Current availability still needs confirmation."
+                        caveat="Current availability still needs confirmation."
+                        if re.search(r"\bequivalence\b.*\blineup\b.*\bunverified\b",str(record.get("conditions","")),re.I):
+                            caveat="Equivalence to the current manufacturer lineup remains unverified."
+                        text=f"The reviewed {market} {label} lists {', '.join(named)}. "+caveat
                 elif market.casefold() not in text.casefold():
                     text=f"According to the reviewed record for {market}, "+text[:1].lower()+text[1:]
             projected = {f["id"]:_projected_support(f,text,requested_scope) for f in structured_facts}
@@ -949,7 +1041,9 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             universal_source = bool(covered_variants & {"all", "all variants", "all trims"})
             comparison = requested_variants if len(requested_variants) > 1 else set()
             sentence_comparison = sentence_mentions if len(sentence_mentions) > 1 else set()
-            universal_comparison = comparison if re.search(r"\b(?:both|all|each|either|these|those)\b", text, re.I) else set()
+            # 'All-black' describes one trim's styling; its hyphenated adjective
+            # is not the quantifier in 'all trims' or 'both have black alloys'.
+            universal_comparison = comparison if re.search(r"\b(?:both|all|each|either|these|those)\b(?![-‐‑]\w)", text, re.I) else set()
             if scoped and not universal_source:
                 if (sentence_comparison | universal_comparison) - covered_variants:
                     reject("overgeneralized_variant_comparison"); continue
@@ -978,6 +1072,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 reject("unsupported_quantity_unit"); continue
             if policy_relation_conflict(text,facts):
                 reject("unsupported_policy_relation"); continue
+            if _unsupported_dependency_relation(text,facts):
+                reject("unsupported_dependency_relation");continue
             if any(f.get("provenance")=="calculation" and f.get("truth")=="modeled" for f in facts) and not re.search(r"estimat|illustrat|assum|using|based on|calculat",text,re.I):
                 reject("unqualified_calculation"); continue
         elif kind=="limitation" and _safe_limitation(text, customer_text or question):
