@@ -71,6 +71,8 @@ An engine name alone does not supply a fuel-efficiency number: ask for an explic
 Results marked estimates must be called illustrative; an EMI is not a lender quote. Retain all assumptions.
 Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
 source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
+When required_page_verification is present, answer what the retrieved website passages actually say. If you use
+stored facts instead, explicitly separate them from what could be verified on the requested page.
 When source access fails say what you couldn't verify and still answer the known part. Do not claim you checked a
 page that failed. Already-returned tool evidence is enough; don't call a tool again with identical inputs.
 No tools beyond the limit. Text provider failures are temporary, not knowledge gaps.
@@ -105,7 +107,7 @@ def _reason_evidence(f: dict) -> dict:
             "source_origin": f.get("knowledge",{}).get("origin","")}
     if f.get("applicability_projection"):
         projection=f["applicability_projection"]
-        result.update(value="; ".join(row["assertion"] for row in projection["rows"]), conditions="Use only the explicit projected clauses for this requested trim.",applicability_projection=projection)
+        result.update(value="; ".join(row["assertion"] for row in projection["rows"]), conditions=(str(f.get("conditions", ""))+" Use only the explicit projected clauses for this requested trim.").strip(),applicability_projection=projection)
     return result
 
 
@@ -135,10 +137,13 @@ def _projected_support(fact: dict, text: str, requested: dict) -> tuple[bool, st
             definition=re.search(r"(?:^|;)\s*([^;]+?)\s*\("+re.escape(label)+r"\)",str(fact.get("value","")))
             if definition:label=definition[1]
         labels.append(terms(label) or terms(str(fact.get("claim",""))))
-    projected_features=_claim_features(" ".join(row.get("label","") for row in rows))
+    projected_features=_claim_features(text_support)
     anchor_ok=bool(labels) and all(label & terms(text) for label in labels)
     if projected_features:
-        anchor_ok=anchor_ok and projected_features <= _claim_features(text)
+        # An assertion listing five standard safety features can support a
+        # sentence about just its airbags. It need not repeat the whole list.
+        anchor_ok=bool(projected_features & _claim_features(text))
+    anchor_ok=anchor_ok or bool(_quantity_units(text) & _quantity_units(text_support))
     if len(targets)>1:
         # A single universal comparison must be supported for each requested
         # trim. R18 in a Knight row cannot fund "both have R18" via pooled text.
@@ -192,18 +197,18 @@ def _atomic_answer_rows(rows: list[dict], evidence: list[dict], requested: dict)
     output, subject = [], ""
     for raw in rows[:4]:
         row=dict(raw);text=str(row.get("text",""))
-        lead=re.match(r"^(?:The\s+)?(.+?)\s+(?:trim|variant)\s+(?:comes|has|includes|offers)\b",text,re.I)
+        lead=re.match(r"^(?:For [^,]+,\s*)?(?:The\s+)?(.+?)\s+(?:trim|variant)\s+(?:comes|has|includes|offers|adds)\b",text,re.I)
         if lead:
             named=canonical_scope_matches(lead[1],options,"variant")
             subject=named[0] if len(named)==1 else ""
         if subject and re.match(r"^It also\b",text):
             text=re.sub(r"^It",subject,text,count=1)
         row["text"]=text
-        match=re.fullmatch(r"(.+?)\s+(?:comes standard with|includes|adds|has)\s+(.+?),\s+(?:while they are|which is)\s+not available on\s+(.+?)\.?",text,re.I)
+        match=re.fullmatch(r"(.+?)\s+(?:comes standard with|includes|adds|has)\s+(.+?),\s+(?:while they are|which is|which are)\s+not available on\s+(.+?)\.?",text,re.I)
         if match and row.get("kind","fact")=="fact" and any(f.get("applicability_projection") for f in evidence if f.get("id") in row.get("fact_ids",[])):
             positive,feature,target=match.groups()
             output.append({**row,"text":f"{positive} has {feature}."})
-            output.append({**row,"text":f"{feature[:1].upper()+feature[1:]} {'are' if feature.endswith('seats') else 'is'} not available on {target.rstrip('.')}."})
+            output.append({**row,"text":f"{feature[:1].upper()+feature[1:]} {'are' if feature.endswith('seats') or ' and ' in feature else 'is'} not available on {target.rstrip('.')}."})
         else:
             output.append(row)
     return output
@@ -350,6 +355,8 @@ def _requested_variants(question: str, options: list[str], prior: dict) -> list[
                 value = match.groupdict().get(name)
                 if not value or value.casefold() in rejected:
                     continue
+                if re.match(r"\s+(?:Knight|Premium|Plus|Pro|Edition|Lounge|Line)\b",question[match.end(name):],re.I):
+                    continue  # The parenthesized-code fallback must not shorten S(O) Knight.
                 prefix = question[max(0, match.start(name)-30):match.start(name)]
                 if re.search(r"\b(?:not|instead of|rather than)\s+(?:the\s+)?$", prefix, re.I):
                     continue
@@ -447,9 +454,27 @@ def _mock_decision(state: RuntimeState) -> TurnDecision:
     return TurnDecision(action="answer", answered=False, sentences=[{"text":"I don't have that information in the reviewed material.","kind":"limitation"}])
 
 
+def _verification_urls(question: str) -> list[str]:
+    if re.search(r"\b(?:don't|do not|no need to)\s+(?:check|fetch|look up|verify|use)\b",question,re.I):
+        return []
+    urls=supplied_urls(question,[])
+    intent=re.search(r"\b(?:check|fetch|verify|using|use|compare|look\s*up)\b|\bwhat\b.*\b(?:page|website|URL|link)\b.*\b(?:say|state|provide|list)",question,re.I)
+    return urls if intent else []
+
+
 async def reason(state: RuntimeState) -> dict:
     started = time.monotonic()
     left = state["control"].remaining()
+    required=_verification_urls(state["question"])
+    attempted={str(result.get("requested_url") or result.get("url","")) for result in state.get("tool_results",[]) if result.get("tool")=="source_lookup"}
+    pending=[url for url in required if url not in attempted]
+    if pending and state.get("tool_rounds",0)<2 and state.get("tool_count",0)<4:
+        # Deterministic intent dispatch saves an LLM round and prevents a stored
+        # assertion from standing in for an explicitly requested page check.
+        query=state["question"]
+        for url in required:query=query.replace(url,"")
+        return {"decision":TurnDecision(action="tools",tool_calls=[{"tool":"source_lookup","url":pending[0],"query":query.strip()}]).model_dump(),
+                "timings":{**state.get("timings",{}),"reason_ms":state.get("timings",{}).get("reason_ms",0)+_elapsed(started)}}
     demo = store.load(state["demo_id"])
     plan = store.read_json(state["demo_id"], "plan.json") or {}
     settings = demo.get("settings", {})
@@ -458,6 +483,7 @@ async def reason(state: RuntimeState) -> dict:
                "tools_so_far":state.get("tool_results", []),"tool_errors":state.get("errors", []),
                "tools_remaining":max(0,4-state.get("tool_count",0)) if state.get("tool_rounds",0)<2 else 0,
                "CUSTOMER_URLS":supplied_urls(state["question"],state.get("history", [])),
+               "required_page_verification":required,
                "guide":plan.get("voice", {}),"product":demo.get("product", {}),"ctas":plan.get("ctas", []),
                "reviewed_comparison_examples":plan.get("notes", "") if settings.get("competition")=="on" else ""}
     sys = SYSTEM + "\n" + audience_instruction(settings.get("audience","everyday")) + "\n" + language_instruction(state.get("profile",{}).get("language") or settings.get("language","en-IN"))
@@ -498,6 +524,7 @@ async def tools_node(state: RuntimeState) -> dict:
                 result = {"tool":"calculator","evidence":[f]}
             elif raw.get("tool") == "source_lookup":
                 result = await asyncio.wait_for(asyncio.to_thread(source_lookup,raw,state["question"],state.get("history",[]),min(5.0,left)),timeout=min(5.0,left))
+                result["requested_url"]=raw.get("url","")
             else:
                 raise ValueError("Unknown tool")
             evidence += [f for f in result.get("evidence",[]) if f["id"] not in {e["id"] for e in evidence}]
@@ -506,7 +533,7 @@ async def tools_node(state: RuntimeState) -> dict:
             raise
         except Exception as exc:
             errors.append(str(exc)[:250])
-            results.append({"tool":raw.get("tool"),"error":str(exc)[:250]})
+            results.append({"tool":raw.get("tool"),"requested_url":raw.get("url",""),"error":str(exc)[:250]})
     return {"evidence":evidence,"tool_results":results,"errors":errors,"tool_count":count,"tool_rounds":state.get("tool_rounds",0)+1,
             "timings":{**state.get("timings",{}),"tools_ms":state.get("timings",{}).get("tools_ms",0)+_elapsed(started)}}
 
@@ -556,6 +583,17 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 text = "According to " + " and ".join(domains[:3]) + ", " + text[:1].lower() + text[1:]
             from .knowledge import scope_atoms, scope_matches, scope_values
             structured_facts = [f for f in facts if f.get("provenance") not in {"calculation", "live_web"}]
+            market_records=[f for f in structured_facts if re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) and f.get("scope",{}).get("market")]
+            if len(market_records)==1:
+                record=market_records[0];market=str(record["scope"]["market"])
+                if re.search(r"\b(?:listing|listed|FAQ)\b",str(record.get("claim","")),re.I) and not re.search(r"\b(?:no|not|never|isn't|aren't)\b",text,re.I):
+                    options=[v for row in record.get("applicability_projection",{}).get("rows",[]) if row.get("polarity")=="positive" for v in row.get("variants",[])]
+                    named=canonical_scope_matches(text,options,"variant")
+                    if named:
+                        label="FAQ" if "faq" in str(record.get("claim","")).casefold() else "record"
+                        text=f"The reviewed {market} {label} lists {', '.join(named)}. Current availability still needs confirmation."
+                elif market.casefold() not in text.casefold():
+                    text=f"According to the reviewed record for {market}, "+text[:1].lower()+text[1:]
             projected = {f["id"]:_projected_support(f,text,requested_scope) for f in structured_facts}
             if any(value is not None and not value[0] for value in projected.values()):
                 errors.append("unsupported_projected_polarity"); continue
@@ -677,6 +715,12 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
 async def validate(state: RuntimeState) -> dict:
     customer_text = "\n".join([str(m.get("text","")) for m in state.get("history",[]) if m.get("role")=="user"]+[state["question"]])
     result, errors = validate_decision(state.get("decision",{}),state.get("evidence",[]),state["question"],customer_text,state.get("requested_scope"))
+    required_urls=_verification_urls(state["question"])
+    if required_urls and result.get("fact_ids") and not any(f.get("provenance")=="live_web" for f in result.get("facts",[])):
+        attempted={str(item.get("requested_url") or item.get("url","")) for item in state.get("tool_results",[]) if item.get("tool")=="source_lookup"}
+        prefix="I couldn't verify that from the requested page." if set(required_urls)&attempted else "I haven't checked that page."
+        result["answer"]=prefix+" From reviewed material, "+result["answer"][:1].lower()+result["answer"][1:]
+        errors.append("requested_page_not_used")
     slides = (store.read_json(state["demo_id"],"bundle.json") or {}).get("slides",[])
     result.update(deck.route_for(slides,state.get("slide_id"),result.get("fact_ids"),state["question"]) if result.get("answered") and result.get("fact_ids") else {"slide_id":state.get("slide_id"),"route":"none","callout_id":None,"by":""})
     result.update(audio=None,visual=None,from_bank=False,provider_failed="reasoning_unavailable" in state.get("errors",[]),tool_results=state.get("tool_results",[]),snapshot_id=state.get("snapshot_id",""),validation_errors=errors)

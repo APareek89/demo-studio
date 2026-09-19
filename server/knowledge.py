@@ -12,6 +12,7 @@ import math
 import re
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+from decimal import Decimal
 
 from . import store
 
@@ -212,6 +213,58 @@ def _same_scope(a: dict, b: dict) -> bool:
     return True
 
 
+def _displacement_assertion(fact: dict) -> str | None:
+    """One exact engine volume, from the assertion rather than its source table.
+
+    Nominal litre engine names are not measured displacement. A compound label
+    may also mention power, but PS, rpm and other quantities cannot be compared
+    with cc. Multiple capacities and ranges need human interpretation.
+    """
+    claim, value = _norm(fact.get("claim")), _norm(fact.get("value"))
+    if fact.get("kind") != "spec" or fact.get("truth", "stated") != "stated":
+        return None
+    if not re.search(r"\bengine\b", claim) or not re.search(r"\b(?:displacement|capacity)\b", claim):
+        return None
+    if re.search(r"\b(?:about|approximately|around|up to|less than|more than|between|range|not)\b|\d\s*[-–~]\s*\d", value):
+        return None
+    quantities = {str(Decimal(re.sub(r"[ ,]", "", m[1])).normalize()) for m in re.finditer(
+        r"(?<![\w.])([0-9]{1,3}(?:[ ,][0-9]{3})+|[0-9]+(?:\.[0-9]+)?)\s*(?:cc|cm(?:\^?3|³)|cubic centim(?:etres|eters))\b", value)}
+    return next(iter(quantities)) if len(quantities) == 1 else None
+
+
+def _displacement_conflict(a: dict, b: dict) -> dict | None:
+    """Flag incompatible cc assertions for one explicitly identified engine.
+
+    This is narrower than general same-scope precedence: a missing market or
+    gearbox does not prove equivalence, so this path holds both assertions unless
+    an unchanged human correction already exists. Explicitly different scopes
+    (including year, trim, market or gearbox) never enter this comparison.
+    """
+    av, bv = _displacement_assertion(a), _displacement_assertion(b)
+    if av is None or bv is None or av == bv:
+        return None
+    x, y = _scope(a), _scope(b)
+    if not x.get("model") or not y.get("model") or scope_value(x["model"], "model") != scope_value(y["model"], "model"):
+        return None
+    def engine(value):
+        text = re.sub(r"(?<![\w.])(\d+(?:\.\d+)?)\s*[- ]?\s*(?:litres?|liters?|l)\b", r"\1 l", value)
+        # Require an explicit capacity, fuel and engine family; bare 'petrol'
+        # cannot identify which of a model's engines an assertion describes.
+        if not re.search(r"\d+(?:\.\d+)? l\b", text) or not re.search(r"\b(?:petrol|diesel)\b", text):
+            return None
+        return scope_value(re.sub(r"\bengine\b", "", text), "powertrain")
+    ax, bx = engine(x.get("powertrain", "")), engine(y.get("powertrain", ""))
+    if not ax or ax != bx:
+        return None
+    for key in SCOPE_KEYS - {"model", "powertrain"}:
+        if x.get(key) and y.get(key) and scope_values(x[key], key) != scope_values(y[key], key):
+            return None
+        if key not in {"market", "transmission"} and bool(x.get(key)) != bool(y.get(key)):
+            return None
+    return {"predicate": "engine_displacement", "unit": "cm3", "values": {a["id"]: av, b["id"]: bv},
+            "scope_complete": _same_scope(a, b)}
+
+
 def _uploaded_document(src: dict) -> bool:
     return src.get("kind") in {"pdf", "doc", "text"} and src.get("origin", "uploaded") == "uploaded" and not src.get("crawl_parent")
 
@@ -391,27 +444,38 @@ def reconcile(demo_id: str, understanding: dict, previous: dict | None = None) -
                 continue
             if a.get("knowledge", {}).get("review_required") or b.get("knowledge", {}).get("review_required"):
                 continue
-            if _norm(a.get("claim")) != _norm(b.get("claim")) or _norm(a.get("value")) == _norm(b.get("value")) or not _same_scope(a, b):
+            dimensional = _displacement_conflict(a, b)
+            exact_conflict = (_norm(a.get("claim")) == _norm(b.get("claim"))
+                              and _norm(a.get("value")) != _norm(b.get("value")) and _same_scope(a, b))
+            if not exact_conflict and not dimensional:
                 continue
             sa, sb = sources.get(a.get("source", {}).get("ref"), {}), sources.get(b.get("source", {}).get("ref"), {})
             da, db = _uploaded_document(sa), _uploaded_document(sb)
             previous_decision = next((c for c in previous.get("knowledge", {}).get("conflicts", [])
                                       if c.get("resolution") == "human_review" and set(c.get("fact_ids", [])) == {a["id"], b["id"]}
                                       and c.get("preferred_fact_id") in {a["id"], b["id"]}), None)
-            preferred = (a if previous_decision["preferred_fact_id"] == a["id"] else b) if previous_decision else (a if da and not db else b if db and not da else None)
+            reviewed = [f for f in (a, b) if f.get("edited") and f.get("approved")]
+            human_edit = reviewed[0] if dimensional and len(reviewed) == 1 else None
+            if previous_decision:
+                preferred = a if previous_decision["preferred_fact_id"] == a["id"] else b
+            elif human_edit:
+                preferred = human_edit
+            else:
+                preferred = (a if da and not db else b if db and not da else None) if exact_conflict else None
             if preferred:
                 loser = b if preferred is a else a
                 loser["approved"] = False
                 loser.setdefault("knowledge", {})["excluded_by_precedence"] = preferred["id"]
                 preferred.setdefault("knowledge", {}).pop("excluded_by_precedence", None)
                 preferred["approved"] = True if previous_decision else preferred.get("approved", True)
-                resolution, status = ("human_review" if previous_decision else "uploaded_document"), "resolved"
+                resolution, status = ("human_review" if previous_decision else "human_edit" if human_edit else "uploaded_document"), "resolved"
             else:
                 a["approved"] = b["approved"] = False
                 resolution, status = "requires_review", "unresolved"
             conflicts.append({"id": "conf_" + _hash(sorted([a["id"], b["id"]]))[:16], "fact_ids": [a["id"], b["id"]],
                               "preferred_fact_id": preferred["id"] if preferred else None, "status": status, "resolution": resolution,
-                              "scope": _scope(a), "reason": "Preserved the explicit human decision for unchanged assertions." if previous_decision else "Conflicting exact values with matching explicit applicability.",
+                              "scope": _scope(a), "reason": "Preserved the explicit human decision for unchanged assertions." if previous_decision else "Conflicting engine displacement assertions for the same explicit model and engine; preserved reviewed correction or held for review." if dimensional else "Conflicting exact values with matching explicit applicability.",
+                              **({"dimensional_conflict": dimensional} if dimensional else {}),
                               **({k: previous_decision[k] for k in ("reviewed_at", "review_note") if k in previous_decision} if previous_decision else {})})
     removed = [f["id"] for f, _ in old_rows if f["id"] not in used_ids]
     und["knowledge"] = {"version": 1, "conflicts": conflicts, "decisions": previous.get("knowledge", {}).get("decisions", []), "coverage": store.read_json(demo_id, "knowledge/coverage.json") or {},

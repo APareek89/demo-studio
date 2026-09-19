@@ -97,6 +97,105 @@ class KnowledgeContract(unittest.TestCase):
         self.assertEqual(result["knowledge"]["conflicts"][0]["status"], "unresolved")
         self.assertFalse(knowledge._uploaded_document({"kind": "pdf", "origin": "website"}))
 
+    def displacement_rows(self):
+        # This reproduces the compound-label miss without a model/ID special case.
+        return [fact("1 482 cm3", claim="1.5l Turbo GDi petrol engine displacement",
+                     conditions="1.5l Turbo GDi petrol engine; 4 cylinders, 16 valves DOHC",
+                     scope={"model":"Aster", "market":"India", "powertrain":"1.5l Turbo GDi petrol"}),
+                fact("1497 cc Turbo GDi petrol engine delivering 160 PS", ref="web",
+                     claim="Turbo petrol engine displacement and power",
+                     conditions="1.5-litre Turbo GDi petrol paired with 7-speed DCT",
+                     scope={"model":"Aster", "powertrain":"1.5L Turbo GDi petrol", "transmission":"7-speed DCT"})]
+
+    def test_compound_engine_displacement_conflict_holds_unreviewed_values(self):
+        inputs = self.displacement_rows()
+        result = self.reconcile(inputs)
+        self.assertFalse(any(f["approved"] for f in result["facts"]))
+        conflict = result["knowledge"]["conflicts"][0]
+        self.assertEqual(conflict["status"], "unresolved")
+        self.assertEqual(conflict["dimensional_conflict"]["predicate"], "engine_displacement")
+        self.assertEqual(set(conflict["dimensional_conflict"]["values"].values()), {"1482", "1497"})
+        # Incomplete applicability cannot acquire automatic document precedence.
+        self.assertFalse(conflict["dimensional_conflict"]["scope_complete"])
+        self.assertEqual([f["value"] for f in result["facts"]], [f["value"] for f in inputs])
+        self.assertEqual([f["source"] for f in result["facts"]], [f["source"] for f in inputs])
+
+    def test_reviewed_displacement_stays_preferred_and_ids_survive_reread(self):
+        good, bad = self.displacement_rows()
+        first = self.reconcile([good])
+        first["facts"][0].update(edited=True, approved=True)
+        old_id = first["facts"][0]["id"]
+        second = self.reconcile([bad, good], first)
+        rows = {f["id"]: f for f in second["facts"]}
+        self.assertTrue(rows[old_id]["approved"])
+        self.assertFalse(next(f for fid, f in rows.items() if fid != old_id)["approved"])
+        conflict = next(c for c in second["knowledge"]["conflicts"] if c.get("dimensional_conflict"))
+        self.assertEqual((conflict["resolution"], conflict["preferred_fact_id"]), ("human_edit", old_id))
+        third = self.reconcile([good, bad], second)
+        self.assertEqual({f["id"] for f in second["facts"]}, {f["id"] for f in third["facts"]})
+        self.assertEqual(next(f for f in third["facts"] if f["id"] == old_id)["source"], good["source"])
+        self.assertTrue(next(f for f in third["facts"] if f["id"] == old_id)["approved"])
+
+    def test_two_reviewed_displacement_values_require_fresh_conflict_decision(self):
+        rows = self.displacement_rows()
+        previous = self.reconcile([rows[0]])
+        # Independently reviewed rows cannot silently choose one another's winner.
+        second = self.reconcile([rows[1]])
+        previous["facts"] += second["facts"]
+        for row in previous["facts"]:
+            row.update(edited=True, approved=True)
+        result = self.reconcile(rows, previous)
+        self.assertFalse(any(f["approved"] for f in result["facts"]))
+        self.assertEqual(result["knowledge"]["conflicts"][0]["status"], "unresolved")
+
+    def test_displacement_units_normalize_without_comparing_power_or_nominal_litres(self):
+        for value in ("1,482 cc", "1482 cm³", "1482 cubic centimeters", "1482 cc delivering 160 PS"):
+            with self.subTest(value=value):
+                a, b = self.displacement_rows()
+                b["value"] = value
+                self.assertEqual(self.reconcile([a, b])["knowledge"]["conflicts"], [])
+        for value in ("1.5 litres delivering 160 PS", "1497 PS", "1482–1497 cc", "approximately 1497 cc", "1482 cc or 1497 cc"):
+            with self.subTest(value=value):
+                a, b = self.displacement_rows()
+                b["value"] = value
+                self.assertEqual(self.reconcile([a, b])["knowledge"]["conflicts"], [])
+
+    def test_displacement_never_borrows_broad_quote_or_unrelated_claim(self):
+        a, b = self.displacement_rows()
+        b.update(value="160 PS", claim="Turbo engine power")
+        b["source"]["quote"] = "1497 cc petrol; 1482 cc turbo petrol; 160 PS"
+        self.assertEqual(self.reconcile([a, b])["knowledge"]["conflicts"], [])
+        b.update(value="1497 cc", claim="Fuel tank capacity")
+        self.assertEqual(self.reconcile([a, b])["knowledge"]["conflicts"], [])
+
+    def test_displacement_requires_explicit_compatible_engine_and_scope(self):
+        for key, a_value, b_value in (
+            ("model", "Aster", "Nova"), ("powertrain", "1.5l Turbo GDi petrol", "1.5l MPi petrol"),
+            ("powertrain", "1.5l Turbo GDi petrol", "2.0l Turbo GDi petrol"),
+            ("powertrain", "1.5l Turbo GDi petrol", "petrol"),
+            ("market", "India", "South Africa"), ("model_year", "2026", "2025"),
+            ("variant", "Entry", "Premium"), ("transmission", "6MT", "7DCT"),
+            ("test_basis", "standard", "modified"), ("generation", "second", "first"),
+            ("model_year", "2026", None), ("variant", "Entry", None)):
+            with self.subTest(key=key, value=b_value):
+                a, b = self.displacement_rows()
+                a["scope"][key] = a_value
+                if b_value is None:
+                    b["scope"].pop(key, None)
+                else:
+                    b["scope"][key] = b_value
+                self.assertEqual(self.reconcile([a, b])["knowledge"]["conflicts"], [])
+
+    def test_displacement_respects_explicit_human_resolution_on_unchanged_assertions(self):
+        inputs = self.displacement_rows()
+        initial = self.reconcile(inputs)
+        store.write_json(self.did, "understanding.json", initial)
+        winner = initial["facts"][1]["id"]
+        reviewed = knowledge.resolve_conflict(self.did, initial["knowledge"]["conflicts"][0]["id"], winner)["understanding"]
+        after = self.reconcile(inputs, reviewed)
+        self.assertTrue(next(f for f in after["facts"] if f["id"] == winner)["approved"])
+        self.assertEqual(after["knowledge"]["conflicts"][0]["resolution"], "human_review")
+
     def test_human_full_edit_preserved_on_same_evidence(self):
         first = self.reconcile([fact()])
         first["facts"][0].update(value="400 litres (reviewed)", edited=True, approved=False)

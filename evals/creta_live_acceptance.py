@@ -22,16 +22,23 @@ parser.add_argument('--authorized-real-batch', action='store_true')
 parser.add_argument('--safety-only', action='store_true', help='Authorized targeted full safety replay; preserves master counters and baseline')
 parser.add_argument('--mock-dry-run', action='store_true', help='Free isolated mock fixture on8897; never real providers')
 parser.add_argument('--mock-natural-only', action='store_true', help='With mock-dry-run, exercise natural completions without provider-latency interruption phases')
+parser.add_argument('--mock-pitch-failure', action='store_true', help='Free mock only: fail planning locally to prove honest fallback still completes')
 args = parser.parse_args()
 assert not args.safety_only or (args.authorized_real_batch and not args.mock_dry_run), 'Safety replay is an explicitly authorized real batch'
 assert not args.mock_natural_only or args.mock_dry_run, 'Natural-only mode is restricted to the free mock fixture'
+assert not args.mock_pitch_failure or args.mock_dry_run, 'Planning fault injection is restricted to the free mock fixture'
 assert args.authorized_real_batch or args.mock_dry_run, 'Explicit parent authorization is required'
 BASE = 'http://127.0.0.1:8897' if args.mock_dry_run else 'http://127.0.0.1:8896'
 assert args.url.startswith(BASE + '/') and 'mute=1' in args.url
 DEMO = args.url.split('/play/')[-1]
 OUT = Path('output/playwright/creta-harness-free-natural' if args.mock_natural_only else 'output/playwright/creta-harness-free-v2' if args.mock_dry_run else 'output/playwright/creta-real-runtime')
+if args.mock_pitch_failure: OUT = Path('output/playwright/creta-harness-free-fallback')
 BATCH_OUT = OUT
-if args.safety_only: OUT = BATCH_OUT / 'safety-replay'
+if args.safety_only:
+    replay = BATCH_OUT / 'safety-replay'
+    attempt = 1
+    while (replay / f'attempt-{attempt:02}').exists(): attempt += 1
+    OUT = replay / f'attempt-{attempt:02}'
 OUT.mkdir(parents=True, exist_ok=True)
 pause_file = OUT / 'pause-requested'
 pause_reason = ''
@@ -50,7 +57,7 @@ assert bundle.get('runtime', {}).get('version') == 1 and bundle['runtime']['over
 budget_file = BATCH_OUT / 'budget-state.json'
 budget = json.loads(budget_file.read_text()) if budget_file.exists() else {'usage_before': http.get(usage_path).raise_for_status().json(), 'counters': {'reasoning_requests': 0, 'tts_requests': 0}}
 usage_before = budget['usage_before']
-ledger, checks, scenarios, errors, journeys = [], [], [], [], []
+ledger, checks, scenarios, errors, journeys, planning_outcomes = [], [], [], [], [], []
 counters = budget['counters']
 budget_file.write_text(json.dumps(budget, indent=2))
 started = time.time()
@@ -76,10 +83,10 @@ def guard(kind):
     # The separately authorized concurrent QA batch shares this demo's usage ledger.
     # Parent authorized a combined $6 shared delta ($3.50 QA + $2.50 browser reserve)
     # after concurrent QA consumed the original browser-only shared-ledger ceiling.
-    # Parent authorized cumulative TTS cap28 after request21 hit the running literal20
-    # guard. This targeted natural safety replay shares every prior counter/baseline.
-    # Reasoning30, shared$6 and overall$19.50 guards remain unchanged.
-    if current['total_usd'] >= 19.5 or delta >= 6.0 or (kind == 'reasoning' and counters['reasoning_requests'] >= 30) or (kind == 'tts' and counters['tts_requests'] >= 28):
+    # Parent authorized final cumulative caps32/32 after the preserved harness and
+    # provider failures. Every prior request and the original baseline still count.
+    # The shared $6 and overall $19.50 guards remain unchanged.
+    if current['total_usd'] >= 19.5 or delta >= 6.0 or (kind == 'reasoning' and counters['reasoning_requests'] >= 32) or (kind == 'tts' and counters['tts_requests'] >= 32):
         raise RuntimeError('Authorized paid batch ceiling reached; no further paid request forwarded')
     counters['reasoning_requests' if kind == 'reasoning' else 'tts_requests'] += 1
     budget_file.write_text(json.dumps(budget, indent=2))
@@ -110,6 +117,8 @@ with sync_playwright() as p:
     def route_http(route):
         url = route.request.url
         if not url.startswith((BASE, 'data:', 'blob:')): route.abort(); return
+        if args.mock_pitch_failure and route.request.method == 'POST' and url.endswith('/run/pitch'):
+            route.fulfill(status=503,content_type='application/json',body=json.dumps({'detail':'Free local planning-failure regression'})); return
         if url.endswith('/web/player/player.js'):
             response = route.fetch(); source = response.text()
             needle = '  return { destroy, restart, pause, context };'
@@ -252,8 +261,16 @@ with sync_playwright() as p:
             ('commute-calculation','I commute in the city and care most about everyday comfort and monthly ownership cost.','Calculate the illustrative monthly EMI on a loan of 10 lakh rupees at 9 percent annual interest over 5 years.'),
             ('safety-evidence','Safety and confidence on family highway trips matter most to me. I would like to understand the approved driver assistance features.','What driver assistance features are available, and which variant conditions apply?')]:
             if args.safety_only and name != 'safety-evidence': continue
-            begin(profile);wait('__reviewSnapshot().waiting',timeout=75000)
-            state=snap();check(name+' preserves stated need and personalizes the reviewed route',state['session']['profile']['why']==profile and bool(state['context']['route']) and state['session']['personalized'])
+            begin(profile)
+            # A valid selected route may contain no authored check-in. Ask during
+            # reviewed narration instead of assuming a question wait must exist.
+            wait("__reviewSnapshot().playback.phase==='route' && (__reviewSnapshot().waiting || (!!__reviewSnapshot().speaking?.startedAt && !!__reviewSnapshot().speaking?.recorded))",timeout=75000)
+            state=snap()
+            check(name+' preserves the stated need and reaches a reviewed route',state['session']['profile']['why']==profile and bool(state['context']['route']))
+            disclosed = any("couldn't finish tailoring" in item.get('text', '') for item in state['session']['transcript'])
+            planning = {'journey':name,'personalized':bool(state['session']['personalized']),'fallback_disclosed':disclosed,'planning_failed':not bool(state['session']['personalized']),'status':'personalized' if state['session']['personalized'] else 'honest_fallback' if disclosed else 'unexplained_fallback','at_ms':stamp()}
+            planning_outcomes.append(planning); note('planning_outcome',**planning)
+            check(name+' either personalizes or explicitly discloses planning failure',planning['personalized'] or planning['fallback_disclosed'],planning)
             expected_slides=list(state['session']['slides'])
             question(text);wait('__reviewSnapshot().waiting && !__reviewSnapshot().pending && !__reviewSnapshot().activeTurn',timeout=45000)
             state=snap();check(name+' answer requires explicit continuation',state['waiting'] and bool(state['session']['turns']))
@@ -273,9 +290,11 @@ with sync_playwright() as p:
         context.close();browser.close()
 usage_after=http.get(usage_path).raise_for_status().json()
 result={'started_at_ms':round(started*1000),'finished_at_ms':stamp(),'bundle_version':bundle.get('version'),'demo_id':DEMO,'checks':checks,'interruptions':scenarios,'journeys':journeys,'errors':errors,'counters':counters,'usage_before':usage_before,'usage_after':usage_after,'batch_usd_recorded':round(usage_after['total_usd']-usage_before['total_usd'],4),'usage_attribution':'Dollar delta and provider completion counts share the demo ledger with separately authorized concurrent QA; may overestimate browser cost. Persistent outbound reasoning/TTS request counters apply only to this browser batch and are never reset between attempts.','boundary':'Isolated headless Chrome, all output muted. Actual prerecorded/WebAudio delivery and real backend reasoning/tools/TTS. Synthetic silent capture and injected STT onset/finals. Read-only observer only. No acoustic onset/STT accuracy/echo/human quality claim. Calculation-request-pending is browser state, not proof of active tool execution.'}
-result['budget_limits'] = {'shared_incremental_usd_stop':6.0,'shared_scope':'Separately authorized concurrent QA $3.50 plus browser $2.50 reserve; not browser-attributed spending.','overall_demo_usd_stop':19.5,'browser_reasoning_requests_cumulative':30,'browser_tts_requests_cumulative':28,'tts_cap_authorization':'Parent raised20 to24 during attempt03, then28 for targeted full safety replay; counters and original baseline preserved','baseline_and_counters_reset':False}
+result['budget_limits'] = {'shared_incremental_usd_stop':6.0,'shared_scope':'Separately authorized concurrent QA $3.50 plus browser $2.50 reserve; not browser-attributed spending.','overall_demo_usd_stop':19.5,'browser_reasoning_requests_cumulative':32,'browser_tts_requests_cumulative':32,'cap_authorization':'Parent raised TTS20 to24 during attempt03, then28 for targeted replay, then final TTS32/reasoning32 for corrected source publication v3; counters and original baseline preserved','baseline_and_counters_reset':False}
 result['targeted_safety_replay'] = args.safety_only
+result['planning_outcomes'] = planning_outcomes
+result['mock_planning_fault_injected'] = args.mock_pitch_failure
 result['evaluation_mode'] = 'mock_natural_completion_only_no_tool_accuracy_claim' if args.mock_natural_only else 'mock_interruption_dry_run' if args.mock_dry_run else 'real_provider_controlled_browser_acceptance'
 (OUT/'results.json').write_text(json.dumps(result,indent=2))
-print(json.dumps({'checks':f'{sum(c["passed"] for c in checks)}/{len(checks)}','interruptions':len(scenarios),'journeys':len(journeys),'errors':errors,'counters':counters,'batch_usd_recorded':result['batch_usd_recorded']},indent=2))
+print(json.dumps({'checks':f'{sum(c["passed"] for c in checks)}/{len(checks)}','interruptions':len(scenarios),'journeys':len(journeys),'planning_failures':sum(item['planning_failed'] for item in planning_outcomes),'errors':errors,'counters':counters,'batch_usd_recorded':result['batch_usd_recorded']},indent=2))
 raise SystemExit(1 if errors or len(scenarios)!=expected_interruptions or len(journeys)!=(1 if args.safety_only else 3) else 0)
