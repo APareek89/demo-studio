@@ -3,6 +3,20 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Atelier visual acceptance — 2026-09-19
+
+Authorized bounded checks for B Atelier's CSS-only integration; Loop remains off. No new product behaviour.
+
+| Check | Expected and observed |
+|---|---|
+| `git diff 47ac11b -- web server api`; CSS declaration audit | Only four presentation stylesheets change. Layout/display/visibility/overflow/action geometry preserved; decorative home-preview tilt removed. No JavaScript, HTML, SVG, API, data, dependency or runtime changes. |
+| Free gates before and after; final syntax | Deck307/307, acceptance 24/24, both smoke phases; 39 server/API Python and 14 web JS files parse. Isolated mock stores, cloud off. |
+| `evals/player_browser.py` at1440px; `/ui_contract.html` and `/` | Workspace5/5 and player 36/36 with Atelier CSS. Covers creation/navigation, preview reuse, interruption ownership, exact returns, consent and wide/narrow slide geometry. Fake APIs/media, not acoustic validation. |
+| Actual app1440×1000 and390×844; mock muted customer walkthrough | Home/library/Sources/Align/Rehearse/Sessions/share/Playground/Observability plus welcome/player/conversation/recap fit. Nine read-only phone routes measure width 390; tables scroll inside panels. Create Escape restores focus. |
+| Small-text and focus contrast review | New Insights tag corrected to 5.221:1 on sky; metadata 5.061:1 on white; slide index 4.789:1 on paper; opaque blue focus 4.678:1 on white. Targeted review, not whole-app accessibility certification. |
+
+Evidence: `output/atelier-ui/`; guide: `docs/design/atelier-ui.md`. No paid providers, real builds or real customer sessions. Native mic, acoustic voice quality and live latency remain unverified by this visual pass.
+
 ## Isolated HTML design review — 2026-09-19
 
 Authorized prototype-only delivery; Loop remains off. No production behaviour was changed.

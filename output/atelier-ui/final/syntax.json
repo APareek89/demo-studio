@@ -1,0 +1,80 @@
+{
+  "checked_at_utc": "2026-09-19T08:12:41.132119+00:00",
+  "python_files": 39,
+  "python_exit_code": 0,
+  "python_output": "",
+  "javascript_files": 14,
+  "javascript": [
+    {
+      "file": "web/api.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/app.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/demos.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/home.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/icons.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/observability.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/player/mascot.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/player/player.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/playground.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/slide.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/studio/align.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/studio/rehearse.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/studio/sessions.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "file": "web/studio/sources.js",
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "all_pass": true
+}

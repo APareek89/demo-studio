@@ -6,6 +6,16 @@
 
 <!-- Newest first. -->
 
+## 2026-09-19 — Atelier accent needed a darker small-text variant
+
+**Why 1:** The first Atelier Insights tag used 10px blue text with only 4.16:1 contrast on sky.
+**Why 2:** The brand accent was reused as a text colour without evaluating its actual background.
+**Why 3:** A colour that works for large accents and controls does not automatically meet small-text contrast needs.
+**Why 4:** The existing functional browser contracts validate actions and geometry, not text luminance.
+**Why 5:** A design-token change requires a targeted contrast check in addition to screenshots.
+**Fix:** Darkened the small Insights tag to `#0669a6`; metadata and slide indices use `--muted:#5e7180`. Focus outlines use opaque blue. No behaviour or layout change.
+**Prevention:** The bounded declaration/contrast audit in `output/atelier-ui/final/css-audit.json` verifies tag 5.221:1, metadata 5.061:1, slide index 4.789:1 and light-surface focus 4.678:1. Repeat these foreground/background checks when changing palette tokens; this does not claim a complete accessibility audit.
+
 ## 2026-09-18 — New library navigation and thumbnail reuse needed regression coverage
 
 **Why 1:** The legacy create handler navigated to a nonexistent `/visual` stage; the first card redesign also omitted View's fullscreen request and repeatedly loaded bundles as search text changed.

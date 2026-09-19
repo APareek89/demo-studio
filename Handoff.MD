@@ -2,7 +2,15 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
-## Design review checkpoint — 2026-09-19
+## Atelier checkpoint — 2026-09-19
+
+**Decision:** Anand chose **B · Atelier**, authorizing its UI/design system with **no UX or functionality changes**. Applied on `codex/atelier-ui`, based on `47ac11b`, through only `web/design-system.css`, `studio-ui.css`, `player-ui.css` and `insights-ui.css`. Paper/white surfaces, navy actions, blue accents, Georgia display headings and flat 3px components cover the existing app. Rejected copying the prototype's layout or sample workflows: the current page structure, actions, copy, runtime, source data and APIs remain intact. Existing Inter body text, SVGs and cinematic geometry stay; the decorative home-preview tilt is removed. [Open home](http://127.0.0.1:8893/?mute=1&ui=atelier#/home) · [Design guide](docs/design/atelier-ui.md) · [Evidence](output/atelier-ui/README.md).
+
+Before/after free gates: deck 307/307, acceptance 24/24, both smoke. Final syntax: 39 server/API Python files,14 web JS modules. Actual browser: workspace 5/5 and player 36/36. Desktop 1440×1000 and phone 390×844 reviewed; nine read-only phone routes have document width 390. Mock muted browse/pause/conversation/recap and create-dialog Escape/focus checked. Contrast findings corrected and independently rechecked. No paid calls, new real demo/session, third Build, merge or deployment. Native microphone/acoustic quality and response latency were not revalidated.
+
+**Next:** [12 pending tasks with evidence and challenges](docs/pending-tasks-2026-09-19.md). Recommend NX20 Re-Read evidence identity first, then actual voice validation and response waits. Runtime calculator/live competitor URL tools remain unbuilt; Part 3 and other functional changes await sequencing. Loop stays off.
+
+## Historical design review checkpoint — 2026-09-19 (selection superseded above)
 
 Four isolated HTML options are complete on `codex/design-options`, based on `f4863fa`. [Review gallery](http://127.0.0.1:8895/) · [Files and test boundaries](docs/design/options-2026-09-18/README.md). Bluebird, Atelier, Control Room and Panorama each cover workspace, Studio, customer and reporting treatments. Gallery has screenshot modes, live two-pane comparison, private shortlist/notes and download. Main `web/`, `server/`, `api/` code and real demos are unchanged.
 
@@ -10,7 +18,7 @@ Four isolated HTML options are complete on `codex/design-options`, based on `f48
 
 Verification: before/after deck307/307, acceptance24/24, both smoke; all prototype scripts parse; desktop and390px phone review with no whole-page overflow or broken images across16 main views. Gallery persistence/preview modes/comparison checked. Direct-file browser review was blocked by URL policy, so HTTP verification is the evidence; downloadable HTML/assets remain available. Optional Google Fonts on gallery/Panorama fall back to system fonts. Latest app implementation remains the professional UI checkpoint below.
 
-## Current checkpoint — 2026-09-18
+## Historical professional UI checkpoint — 2026-09-18
 
 Professional UI is complete on `codex/professional-ui`, based on the completed Nexon branch at `e89aa29`. [Open home](http://127.0.0.1:8893/?mute=1#/home). Shared blue/white design system and Inter typography now cover home, library, all Studio screens, player/recap/contact, Playground, Observability and share pages. Original SVG brand/agent/icon set, real bundle thumbnails, search/filter, keyboard-friendly create dialog and phone layouts. [Design/file guide](docs/design/professional-ui.md) · [Evidence](output/professional-ui/README.md).
 

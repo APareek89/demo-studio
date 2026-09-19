@@ -1,0 +1,10 @@
+{
+  "reference": "47ac11b",
+  "changed_tracked_app_files": [
+    "web/design-system.css",
+    "web/insights-ui.css",
+    "web/player-ui.css",
+    "web/studio-ui.css"
+  ],
+  "javascript_html_svg_server_api_base_styles_unchanged": true
+}

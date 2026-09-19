@@ -1,0 +1,70 @@
+{
+  "checked_at_utc": "2026-09-19T08:13:22.797104+00:00",
+  "gates": {
+    "deck": "307/307",
+    "acceptance": "24/24",
+    "smoke": "Both phases passed",
+    "all_exit_codes_zero": true
+  },
+  "syntax": {
+    "server_api_python": 39,
+    "web_javascript": 14,
+    "all_pass": true
+  },
+  "scope": {
+    "reference": "47ac11b",
+    "changed_tracked_app_files": [
+      "web/design-system.css",
+      "web/insights-ui.css",
+      "web/player-ui.css",
+      "web/studio-ui.css"
+    ],
+    "javascript_html_svg_server_api_base_styles_unchanged": true
+  },
+  "css_contract": {
+    "unintended_geometry_visibility_interaction_changes": [],
+    "accepted_visual_delta": ".home-preview transform rotate(-1deg) \u2192 none; parent explicitly approved",
+    "method": "Compared normalized per-selector declarations and media/container contexts across all four CSS files. Font, color, radius, shadow changes are visual; border thickness/style remained unchanged.",
+    "not_proven": "Static audit cannot prove rendered overflow, exact browser contrast over images or all focus states. Root owns browser QA."
+  },
+  "contrast_review": {
+    "previously_reported_findings": [
+      {
+        "issue": "Insights 10px tag text",
+        "status": "fixed",
+        "foreground": "#0669a6",
+        "background": "#eaf3f9",
+        "contrast": 5.221
+      },
+      {
+        "issue": "Small metadata",
+        "status": "fixed",
+        "foreground": "#5e7180",
+        "background": "#ffffff",
+        "contrast": 5.061
+      },
+      {
+        "issue": "Non-cinematic slide index",
+        "status": "fixed",
+        "foreground": "#5e7180",
+        "background": "#f8f9f6",
+        "contrast": 4.789
+      },
+      {
+        "issue": "Focus rings on light surfaces",
+        "status": "fixed",
+        "foreground": "#0879be",
+        "background": "#ffffff",
+        "contrast": 4.678
+      }
+    ],
+    "all_reported_findings_fixed": true
+  },
+  "stylesheet_sha256": {
+    "web/design-system.css": "b0d8d5879b4c577e0903f3391670d9057a7e00f3e85fa49d382c2c3b9faaa688",
+    "web/insights-ui.css": "32520739c1cff576c0a9c7c524f0d91732c676fdf573877d258c1aae53a96953",
+    "web/player-ui.css": "eb5c0cd8260866b8f6d172036769e66c582588379738b0e9aba998177b3e6aaa",
+    "web/studio-ui.css": "bd527404e06d0f82710dc85be7c94c4bab1bffda54f4f038dee8b505e4701019"
+  },
+  "boundaries": "No CUA, paid calls, app data mutation, code edit or commit by this verification. Free gates each used isolated temporary stores."
+}

@@ -1,0 +1,62 @@
+{
+  "checked_at_utc": "2026-09-19T08:12:45.359807+00:00",
+  "mock": true,
+  "cloud_sync": false,
+  "storage_backend": "local",
+  "results": [
+    {
+      "name": "qa_deck",
+      "exit_code": 0,
+      "seconds": 4.85,
+      "isolated_data": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/atelier-final-qa_deck-jb9_pi8m/demos",
+      "isolated_graph": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/atelier-final-qa_deck-jb9_pi8m/graph.sqlite",
+      "log": "/Users/macbook/Documents/demo-studio/output/atelier-ui/final/qa_deck.log",
+      "last_lines": [
+        "| policy: reversed distance/time order cannot bypass the guard | \u2705 |",
+        "| policy: spoken quantities cannot bypass the relation guard | \u2705 |",
+        "| policy: unrelated earlier uncertainty cannot excuse an assertion | \u2705 |",
+        "| policy: uncertainty attached to the actual limits remains usable | \u2705 |",
+        "| runtime provider order defaults Gemini \u2192 Claude \u2192 Runware | \u2705 |",
+        "| runtime timeout is short | \u2705 |",
+        "",
+        "307/307 deck cases pass"
+      ]
+    },
+    {
+      "name": "qa_accept",
+      "exit_code": 0,
+      "seconds": 2.84,
+      "isolated_data": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/atelier-final-qa_accept-cjhl6s_6/demos",
+      "isolated_graph": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/atelier-final-qa_accept-cjhl6s_6/graph.sqlite",
+      "log": "/Users/macbook/Documents/demo-studio/output/atelier-ui/final/qa_accept.log",
+      "last_lines": [
+        "| PDF (empty shell) | 200 \u00b7 accept | pdf:spec.pdf | \u2705 |",
+        "| TXT catalogue | 200 \u00b7 accept | text:cat.txt | \u2705 |",
+        "| DOCX (zip garbage) | 200 \u00b7 accept | doc:a.docx | \u2705 |",
+        "| Path traversal name | 200 \u00b7 accept | image:evil.jpg | \u2705 |",
+        "| READ STAGE with everything accepted above | align | no error | \u2705 |",
+        "| Path traversal stayed inside data/demos/<id> | checked | escaped files: none | \u2705 |",
+        "",
+        "24/24 cases behave as required"
+      ]
+    },
+    {
+      "name": "smoke_mock",
+      "exit_code": 0,
+      "seconds": 4.17,
+      "isolated_data": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/atelier-final-smoke_mock-ou0n7f_9/demos",
+      "isolated_graph": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/atelier-final-smoke_mock-ou0n7f_9/graph.sqlite",
+      "log": "/Users/macbook/Documents/demo-studio/output/atelier-ui/final/smoke_mock.log",
+      "last_lines": [
+        "roles ['intro', 'outcome', 'proof', 'features', 'establish']",
+        "SMOKE OK dm_6be3bbe3",
+        "settings ok ['en-IN', 'hi-IN'] everyday",
+        "multi-language bundle ok: hi-IN 5 segments, audio True",
+        "tts with language ok",
+        "trace ok: stages {'understand': 0.9, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': 0.0, 'bundle': 0.0} rows 16",
+        "jargon check ok: ['s1 line 1: states a figure or claim without a fact id \u2014 \u201cIt has a 3.4 kWh battery and 15A charging with IDC range.\u201d', \"s1: jargon 'kWh' in the main narration \u2014 move the complete technical quantity to deeper; never keep a number while dropping its unit\"]",
+        "SMOKE OK (phase 2) dm_6be3bbe3"
+      ]
+    }
+  ]
+}

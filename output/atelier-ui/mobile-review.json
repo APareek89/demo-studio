@@ -1,0 +1,55 @@
+[
+  {
+    "route": "#/home",
+    "scroll": 390,
+    "title": "Bring your productstory to life.",
+    "width": 390
+  },
+  {
+    "route": "#/demos",
+    "scroll": 390,
+    "title": "My demos",
+    "width": 390
+  },
+  {
+    "route": "#/studio/dm_36d47b86/sources",
+    "scroll": 390,
+    "title": "Give your demo a strong foundation",
+    "width": 390
+  },
+  {
+    "route": "#/studio/dm_36d47b86/align",
+    "scroll": 390,
+    "title": "Make it ready for customers",
+    "width": 390
+  },
+  {
+    "route": "#/studio/dm_36d47b86/rehearse",
+    "scroll": 390,
+    "title": "Experience your demo",
+    "width": 390
+  },
+  {
+    "route": "#/studio/dm_36d47b86/sessions",
+    "scroll": 390,
+    "title": "Turn conversations into next steps",
+    "width": 390
+  },
+  {
+    "route": "#/share/<demo>/<session>/<key>",
+    "scroll": 390,
+    "width": 390
+  },
+  {
+    "route": "#/playground/dm_36d47b86",
+    "scroll": 390,
+    "title": "Playground",
+    "width": 390
+  },
+  {
+    "route": "#/observability/dm_36d47b86",
+    "scroll": 390,
+    "title": "Observability",
+    "width": 390
+  }
+]

@@ -1,0 +1,13 @@
+- main:
+  - heading "Workspace UI contract" [level=1]
+  - paragraph: Real workspace modules and DOM events. Fake API and fullscreen implementations. No backend, data writes, external connections or paid calls.
+  - button "Run checks"
+  - status: 5/5 passed; 0 failed
+  - list:
+    - listitem: PASS — Concurrent and completed preview requests reuse one actual bundle lookup
+    - listitem: PASS — A failed preview lookup can recover on the next navigation request
+    - listitem: PASS — A rebuilt or updated demo refreshes its cached preview
+    - listitem: PASS — The real new-demo modal submits once and opens the Sources step
+    - listitem: PASS — View demo requests fullscreen and preserves its playback route
+  - generic "Evidence and test boundaries"
+  - generic "Workspace UI under test"

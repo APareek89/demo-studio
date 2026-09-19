@@ -1,5 +1,7 @@
 # Professional UI — 2026-09-18
 
+Historical baseline. The selected [B Atelier visual system](atelier-ui.md) supersedes this palette and typography as of 19 September; the underlying workflows/components described here remain.
+
 Anand requested a professional blue-and-white interface across the whole app, including a home page, a better agent mark and better demo cards. This is the current UI on `codex/professional-ui`. The visual reference is [Salesforce's website](https://www.salesforce.com/); the logo, agent mark and components are original Demo Studio assets.
 
 **Decision:** use one shared design system, Inter typography, restrained blue accents, white surfaces and navy headings. Keep the existing plain ES modules and CSS. Keep Sources → Align → Rehearse, all six approvals, runtime question handling, source validation, speech, provider selection and data storage unchanged. The previous cinematic slide composition remains; its accent and dark-stage palette now match the app.
