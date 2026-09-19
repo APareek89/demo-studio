@@ -1,0 +1,17 @@
+{
+  "local_document_links_checked": 62,
+  "missing_links": [],
+  "application_commit": "8a7aba5",
+  "live_read_only_check": {
+    "demo_id": "dm_36d47b86",
+    "status": "ready",
+    "version": 1,
+    "approvals": 6,
+    "slides": 12,
+    "bundle_available": true,
+    "build_running": false,
+    "voice": "sarvam/priya"
+  },
+  "walkthrough_review": "Independent build and run code review; corrections incorporated. No implementation edits.",
+  "canvas": "Existing workflow canvas content and code anchors refreshed; no fresh host render or TypeScript compiler validation (compiler not available in bundled Node dependencies)."
+}

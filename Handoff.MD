@@ -2,6 +2,16 @@
 
 > Read fully at session start. Keep this to one screen; history belongs in `Learning.MD` and git.
 
+## Ready for customer review and code walkthrough — 2026-09-19
+
+Latest app commit: **`8a7aba5`**, branch `codex/atelier-ui`. Read-only HTTP checks on local **8893** confirm Tata Nexon **`dm_36d47b86`**, status **ready**, version **1**, all **6 approvals true**, **12 bundled slides**, Sarvam/Priya voice, bundle available and no build running. [Run the existing demo, muted](http://127.0.0.1:8893/?mute=1&ui=atelier#/play/dm_36d47b86). No rebuild is needed to review it. Ready means the saved experience is playable; it does not certify microphone reliability, acoustic quality or live provider availability. Those checks remain open, and no new customer run was performed for this documentation update. Assistant review remains muted per Anand's instruction.
+
+**Current request:** update this handoff and explain the core build/run workflow with code references. [Core workflow walkthrough](docs/core-workflow-walkthrough.md) is verified against the current code. Build uses the checkpointed LangGraph graph; customer playback uses a separate browser state machine with bounded model calls. The AI proposes content; code owns validation, voice/slide sequencing, waits, interruption ownership, return points and consent. Runtime calculation and live competitor-URL tools remain unbuilt.
+
+Read in order: `server/app.py` (API wiring) → `server/graph.py` (Read/Align/Build/revise paths) → `server/orchestrator.py` (stage execution/invalidation) → `server/agents/*` (stage implementations). For runtime: `web/app.js` → `web/player/player.js` → `server/app.py:run_qa` → `server/agents/qa.py` → `server/agents/deck.py:route_for` → player return/session handlers. Normal Build requires all six approvals; revision requests of a previously-ready demo can automatically rebuild through voice→bundle and skip rehearsal, so do not describe every revision as a fresh approval pause.
+
+Documentation-only follow-up: no workflow, data, prompt, model or UI implementation changes. Verification is recorded in `output/workflow-handoff-2026-09-19/`. Functional next steps remain the [prioritized backlog](docs/pending-tasks-2026-09-19.md), awaiting Anand's sequence. Existing Atelier/Nexon checkpoints below retain the detailed evidence and limits.
+
 ## Atelier checkpoint — 2026-09-19
 
 **Decision:** Anand chose **B · Atelier**, authorizing its UI/design system with **no UX or functionality changes**. Applied on `codex/atelier-ui`, based on `47ac11b`, through only `web/design-system.css`, `studio-ui.css`, `player-ui.css` and `insights-ui.css`. Paper/white surfaces, navy actions, blue accents, Georgia display headings and flat 3px components cover the existing app. Rejected copying the prototype's layout or sample workflows: the current page structure, actions, copy, runtime, source data and APIs remain intact. Existing Inter body text, SVGs and cinematic geometry stay; the decorative home-preview tilt is removed. [Open home](http://127.0.0.1:8893/?mute=1&ui=atelier#/home) · [Design guide](docs/design/atelier-ui.md) · [Evidence](output/atelier-ui/README.md).

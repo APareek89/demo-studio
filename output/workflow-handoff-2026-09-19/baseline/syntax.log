@@ -1,0 +1,28 @@
+Python compile: 39 files; exit 0
+Node --check: web/api.js; exit 0
+
+Node --check: web/app.js; exit 0
+
+Node --check: web/demos.js; exit 0
+
+Node --check: web/home.js; exit 0
+
+Node --check: web/icons.js; exit 0
+
+Node --check: web/observability.js; exit 0
+
+Node --check: web/player/mascot.js; exit 0
+
+Node --check: web/player/player.js; exit 0
+
+Node --check: web/playground.js; exit 0
+
+Node --check: web/slide.js; exit 0
+
+Node --check: web/studio/align.js; exit 0
+
+Node --check: web/studio/rehearse.js; exit 0
+
+Node --check: web/studio/sessions.js; exit 0
+
+Node --check: web/studio/sources.js; exit 0

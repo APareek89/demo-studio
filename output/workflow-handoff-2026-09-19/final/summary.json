@@ -1,0 +1,62 @@
+{
+  "phase": "after documentation changes",
+  "checked_at_utc": "2026-09-19T09:12:27.429645+00:00",
+  "head": "8a7aba5436466cedad216632182def71d607ff1e",
+  "mock": true,
+  "cloud_sync": false,
+  "storage_backend": "local",
+  "gates": [
+    {
+      "name": "qa_deck",
+      "exit_code": 0,
+      "seconds": 4.62,
+      "isolated_data": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/workflow-handoff-after-qa_deck-r9nwms2c/demos",
+      "isolated_graph": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/workflow-handoff-after-qa_deck-r9nwms2c/graph.sqlite",
+      "last_lines": [
+        "| runtime timeout is short | \u2705 |",
+        "",
+        "307/307 deck cases pass"
+      ]
+    },
+    {
+      "name": "qa_accept",
+      "exit_code": 0,
+      "seconds": 2.59,
+      "isolated_data": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/workflow-handoff-after-qa_accept-n1fmdeg6/demos",
+      "isolated_graph": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/workflow-handoff-after-qa_accept-n1fmdeg6/graph.sqlite",
+      "last_lines": [
+        "| Path traversal stayed inside data/demos/<id> | checked | escaped files: none | \u2705 |",
+        "",
+        "24/24 cases behave as required"
+      ]
+    },
+    {
+      "name": "smoke_mock",
+      "exit_code": 0,
+      "seconds": 3.93,
+      "isolated_data": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/workflow-handoff-after-smoke_mock-c_le7inn/demos",
+      "isolated_graph": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/workflow-handoff-after-smoke_mock-c_le7inn/graph.sqlite",
+      "last_lines": [
+        "trace ok: stages {'understand': 0.9, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': 0.0, 'bundle': 0.0} rows 16",
+        "jargon check ok: ['s1 line 1: states a figure or claim without a fact id \u2014 \u201cIt has a 3.4 kWh battery and 15A charging with IDC range.\u201d', \"s1: jargon 'kWh' in the main narration \u2014 move the complete technical quantity to deeper; never keep a number while dropping its unit\"]",
+        "SMOKE OK (phase 2) dm_b8ff9dc0"
+      ]
+    }
+  ],
+  "counts": {
+    "deck": "307/307",
+    "acceptance": "24/24",
+    "smoke": "Both phases passed",
+    "python_files": 39,
+    "javascript_files": 14
+  },
+  "application_unchanged": {
+    "baseline_files": 60,
+    "final_files": 60,
+    "all_application_files_unchanged": true,
+    "changed": [],
+    "reference": "baseline/application-sha256.json"
+  },
+  "all_pass": true,
+  "boundaries": "No app edits, browser, paid calls or real data mutation. Separate throwaway data/graph per gate."
+}
