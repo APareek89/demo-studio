@@ -359,6 +359,15 @@ def render_act(act: Mapping[str, object], *, question: str) -> str:
     if mode in {"verification_limit", "fit_check"}:
         if inputs or len(subjects) != 1 or subjects[0] not in catalogue[mode]:
             return ""
+        if mode == "verification_limit" and subjects[0] == "lender_approval":
+            # One closed limit must cover both promises when the current request
+            # joins them. Historical EMI questions and separate calculations do
+            # not license an extra refusal; no customer wording is emitted.
+            current = _normal(question).strip().splitlines()[-1]
+            payment = r"(?:(?:that|the|this|my|our|your|same)\s+)?(?:EMI|monthly\s+(?:payment|instalment|installment))\b"
+            if re.search(r"\bguarantee\s+" + payment, current, re.I) or re.search(
+                    r"\bguarantee\b[^.!?\n]{0,160}\band\s+" + payment, current, re.I):
+                return "I cannot confirm or guarantee a lender's loan approval or a final EMI quote."
         return _LIMITS[subjects[0]] if mode == "verification_limit" else "You can check seat comfort together on a test drive."
     if subjects or not 1 <= len(inputs) <= 3:
         return ""

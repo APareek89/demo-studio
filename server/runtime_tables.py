@@ -9,7 +9,7 @@ import re
 
 
 _UNIVERSAL = re.compile(
-    r"\b(?:all|every|each)\s+(?:(?:the|current)\s+)?(?:trims?|variants?|versions?|models?)\b"
+    r"\b(?:all|every|each)\s+(?:(?:the|current)\s+)?(?:(?:listed|shown|named)\s+)?(?:trims?|variants?|versions?|models?)\b"
     r"|\b(?:across|throughout)\s+(?:(?:the|its|this|entire|whole|complete|full)\s+)*"
     r"(?:line[- ]?up|range)\b", re.I)
 _NEGATIVE = re.compile(r"\b(?:not|never|without|lacks?|absent|unavailable)\b|\b(?:doesn't|don't|isn't|aren't)\b", re.I)

@@ -532,7 +532,10 @@ export function mountPlayer(host, bundle, api) {
     if (pending.status === "failed") return speak("I couldn't finish updating the route just now. I'll continue with the reviewed demo, and you can ask about what matters to you.", run);
     const previous = S.plan; buildRoute(pending.plan);
     const seen = new Set([...pending.seen, ...prefix.map(step => step.slide.segment_id)]);
-    const future = S.plan.filter(step => !seen.has(step.slide.segment_id));
+    const selected = new Set((pending.plan.route || []).map(step => step.segment_id));
+    const revisits = new Set((pending.plan.revisit_segment_ids || []).filter(id => pending.seen.includes(id) && selected.has(id)));
+    const future = S.plan.filter(step => !seen.has(step.slide.segment_id) || revisits.has(step.slide.segment_id))
+      .map(step => ({ ...step, reviewedRevisit: revisits.has(step.slide.segment_id) }));
     S.plan = future.length ? [...prefix, ...future] : previous;
     S.seg = index; S.pitch = { ...S.pitch, ...pending.plan }; renderProgress();
     addMsg("note", "Updated the unplayed route from your stated priority; the current return point was retained.");
@@ -579,7 +582,7 @@ export function mountPlayer(host, bundle, api) {
       if (!(await applyUpcomingPlan(i, run))) return;
       const step = S.plan[i], sl = step.slide; S.seg = i; S.atCheckin = false; S.playback = { phase: "route", index: i, line: lineIdx, checkin: false, bridgeDone }; renderProgress();
       prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
-      const short = lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // seen during a question: title + first line, no check-in
+      const short = !step.reviewedRevisit && lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // ordinary question visits stay brief; an explicit reviewed revisit keeps its proof
       const view = showSlideView(sl, { reveal: short ? 99 : lineIdx - 1 });
       if (lineIdx === 0 && step.bridge && !bridgeDone) { el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; if (!(await speak(step.bridge, run, step.bridge_audio))) return; S.playback.bridgeDone = true; if (!(await waitForLineQuestion({ text: step.bridge }, run))) return; }
       if (!(await playLines(sl, run, view, lineIdx, short ? 1 : sl.lines.length))) return;
@@ -845,7 +848,17 @@ export function mountPlayer(host, bundle, api) {
     if (run !== S.run) return;
     if (origin.phase === "route") { playFrom(origin.index + (origin.checkin ? 1 : 0), origin.checkin ? 0 : origin.line, !origin.checkin && origin.bridgeDone); return; }
     if (origin.phase === "deeper") { resumeDeeper(origin, run); return; }
-    if (origin.phase === "closing") { closeFlow(run, origin.line); return; }
+    if (origin.phase === "closing") {
+      if (S.pendingRefinement?.status === "ready") {
+        const next = S.plan.length;
+        return applyUpcomingPlan(next, run).then(ok => {
+          if (!ok || run !== S.run) return;
+          if (S.plan.length > next) return playFrom(next, 0);
+          return closeFlow(run, origin.line);
+        });
+      }
+      closeFlow(run, origin.line); return;
+    }
     if (origin.phase === "intake") { runIntake(); return; }
     startAfterIntake(run, S.profile.why, origin);
   }

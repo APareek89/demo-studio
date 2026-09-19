@@ -35,7 +35,8 @@ Your output:
   about gaps, unknowns, or "what I can't tell you"; written terms and open questions belong in the establish block.
 - follow_up_question: always empty. They already had one useful intake; do not ask for their name, repeat discovery,
   or add a budget question. Later clarification belongs to Q&A in response to their question.
-- route: from the LIBRARY below — the buyer's strongest signal FIRST (a comfort need starts at the cabin, a performance
+- route: from the LIBRARY below — the buyer's strongest signal FIRST (match rear-seat needs to rear-seat proof,
+  front-seat needs to front-seat proof, and a performance
   want at the drive), then 1-2 supporting blocks, then the single features block, then establish last. Never more than 3 proof blocks: the whole demo must stay near three minutes; everything else
   is for questions. Each step may carry ONE bridge sentence. If a bridge states a product fact, copy one REVIEWED SPOKEN
   PROOF item's exact text and the complete fact_ids. Do not paraphrase, extend or combine that text. Without citations,
@@ -279,8 +280,11 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         demo = store.load(demo_id)
         route_slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
     voice = plan.get("voice", {})
-    seen = set(seen_segment_ids or [])
-    segs = [s for s in script.get("segments", []) if s.get("id") not in seen and s.get("role") in ("proof", "features", "establish") and any(not l.get("unverified") for l in s["lines"])]
+    previously_seen = set(seen_segment_ids or [])
+    # Only an explicit refinement may reconsider reviewed material already seen.
+    # A Q&A slide visit is not evidence that the buyer's revised need is settled.
+    allow_revisit = bool(refine and previously_seen)
+    segs = [s for s in script.get("segments", []) if (allow_revisit or s.get("id") not in previously_seen) and s.get("role") in ("proof", "features", "establish") and any(not l.get("unverified") for l in s["lines"])]
     plan_by_id = {s["id"]: s for s in plan.get("segments", [])}
     library = "\n".join(f"{s['id']} [{s['role']}] {s['title']} — outcome: {s.get('outcome') or plan_by_id.get(s['id'], {}).get('outcome','')} — topic {s['topic']} — usps {s.get('usp_ids') or plan_by_id.get(s['id'], {}).get('usp_ids', [])} — facts {sorted({f for l in s['lines'] for f in l.get('fact_ids', [])})}" for s in segs) or "(no proof blocks)"
     facts = [f for f in und.get("facts", []) if f.get("approved", True)]
@@ -316,7 +320,17 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
                         "anything from an omitted fact. Existing check-in questions remain unchanged."
                         if not voice_it else "LEGACY RECORDED DELIVERY: reviewed optional proof batches and route cues remain available."),
     )
-    ask = "Plan the route now." + (" This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route." if refine else "")
+    ask = "Plan the route now."
+    if allow_revisit:
+        ask += (" This is an explicit priority refinement. The latest raw followup takes precedence over earlier priorities. "
+                "Choose the smallest useful route for that revised need. Previously viewed segments remain eligible because "
+                "a question may have visited their slide without completing the relevant proof. Revisit only material that "
+                "directly serves the revised need; do not repeat unrelated proof, features or ownership blocks to fill a quota. "
+                "A rear-passenger request needs rear-passenger proof, not a generic front-cabin comfort substitute. "
+                "Select exact reviewed sentences and preserve their conditions. Leave follow_up_question empty. "
+                "Previously viewed segment IDs: " + json.dumps(sorted(previously_seen)))
+    elif refine:
+        ask += " This is a REFINE call: the follow-up has been answered — leave follow_up_question empty and finalise the route."
     try:
         # runtime providers in order, short timeout each: the plan must land while the standard opening plays
         budget = {"timeout_budget_s": timeout_budget_s} if timeout_budget_s is not None else {}
@@ -385,10 +399,12 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
     establish = [s["id"] for s in segs if s["role"] == "establish"]
     features = [s["id"] for s in segs if s["role"] == "features"]
     proof_route = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features][:3]
-    feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": features[0], "bridge": "", "bridge_fact_ids": []}] if features else [])
-    est = [r for r in route if r["segment_id"] in establish][:1] or ([{"segment_id": establish[0], "bridge": "", "bridge_fact_ids": []}] if establish else [])
+    default_features = [sid for sid in features if not allow_revisit or sid not in previously_seen]
+    default_establish = [sid for sid in establish if not allow_revisit or sid not in previously_seen]
+    feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": default_features[0], "bridge": "", "bridge_fact_ids": []}] if default_features else [])
+    est = [r for r in route if r["segment_id"] in establish][:1] or ([{"segment_id": default_establish[0], "bridge": "", "bridge_fact_ids": []}] if default_establish else [])
     if not proof_route:  # fallback: plan order, first 3 proof blocks
-        proof_route = [{"segment_id": s["id"], "bridge": "", "bridge_fact_ids": []} for s in segs if s["role"] == "proof"][:3]
+        proof_route = [{"segment_id": s["id"], "bridge": "", "bridge_fact_ids": []} for s in segs if s["role"] == "proof" and s["id"] not in previously_seen][:3]
     route = proof_route + feat + est
     scheduled_text = {" ".join(text.split()) for step in route for text in main_speech.get(step["segment_id"], [])}
     for step in route:
@@ -441,6 +457,10 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         b["visual"] = b["visual"] or {"kind": "none"}
     p["custom_batches"] = batches
     p["route"] = route
+    # Code-owned permission, derived only from validated selected published IDs.
+    # Model-supplied metadata cannot authorize an unrelated or nonexistent revisit.
+    p["revisit_segment_ids"] = [step["segment_id"] for step in route
+                                 if allow_revisit and step["segment_id"] in previously_seen]
     # Stream delivery can start with validated text without waiting for an entire
     # TTS batch. Factual speech remains reviewed copy, with its citations/style.
     by_segment = {s["id"]: s for s in segs}

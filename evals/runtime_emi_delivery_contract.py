@@ -23,6 +23,25 @@ def fact(principal=800000, rate=8, term=4, *, monthly=False, unit="years", condi
 
 
 class DeliveryContract(unittest.TestCase):
+    def test_captured_s08_illustrative_figure_already_excludes_costs(self):
+        # Single live night session s_mu8ozv2etxtx, s08; original model wording.
+        original = ["For a ten lakh rupee loan at one percent monthly interest over five years, the estimated EMI is approximately ₹22,244 per month.",
+                    "This is an illustrative figure that excludes taxes and fees, and it is not a formal lender quote."]
+        source = fact(1000000, 1, 5, monthly=True)
+        self.assertEqual(append_missing_emi_terms(original, source), original)
+        self.assertEqual(append_missing_emi_terms(original, source), original)
+
+    def test_illustrative_figure_subject_does_not_borrow_other_exclusions(self):
+        base = "For a loan of 10 lakh rupees at 1 percent monthly interest over five years, the estimated EMI is ₹22,244."
+        source = fact(1000000, 1, 5, monthly=True)
+        for clause in ("The showroom's illustrative figure excludes taxes and fees.",
+                       "This is an illustrative figure that does not exclude taxes and fees.",
+                       "This is an illustrative figure that excludes fees but taxes are included."):
+            result = append_missing_emi_terms([base, clause], source)
+            self.assertIn("taxes", result[-1])
+        partial = [base, "This is an illustrative figure that excludes fees, and it is not a lender quote."]
+        self.assertEqual(append_missing_emi_terms(partial, source)[2:], ["This estimate excludes taxes."])
+
     def test_actual_reordered_caveats_do_not_duplicate(self):
         # Actual accepted model text before the old graph appended its blanket
         # sentence, from qa100-v7-relations-{sequential,hedged} q051/52/55/62.

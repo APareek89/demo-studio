@@ -25,7 +25,7 @@ from .llm import runtime
 from .runtime_state import DeliveryPlan, RuntimeState, SpokenClaim, TurnDecision, checkpoint, claim_turn, previous_state, safe_id
 from .runtime_tools import _bound_unit, _numbers, calculate, source_lookup, supplied_urls
 from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
-from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment
+from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment, transmission_condition_dependencies
 from .runtime_acts import allowed_act_ids, render_act
 from .runtime_emi_delivery import append_missing_emi_terms
 from .runtime_tables import unsupported_live_table_universal
@@ -53,6 +53,9 @@ Retrieval is a relevant subset, not an exhaustive inventory. Do not say a trim i
 features exist, or the full sources contain no value just because the retrieved assertions do not contain it.
 Only an assertion's claim, value, conditions and scope authorize product details under that ID. A source locator is
 provenance, not permission to borrow another fact from its table. Cite each separate feature's actual assertion.
+Unexplained table marks do not establish standard equipment or absence. If the retrieved table's symbols have no
+verified meaning, name the requested features and state that you cannot verify the symbols or their fitment;
+do not replace that limitation with an unrelated feature or guess what a mark means.
 Do not invent why a price, discount, availability or renewal varies. A 'depends on' relation needs its subject and
 determinants in the same approved assertion; stock-dependent availability does not establish stock-dependent discounts.
 Mandatory dependencies stated in compatible supplied assertions still apply when a broader duplicate assertion
@@ -577,11 +580,11 @@ def _missing_required_condition(text: str, facts: list[dict]) -> bool:
         if transmission:
             allowed=set(re.findall(r"\b(?:IVT|AT|DCT|CVT|MT)\b",transmission[1].upper()))
             subject={word for word in re.findall(r"[a-z]+",str(fact.get("claim","")).casefold()) if len(word)>3 and word not in {"feature","system","availability","standard"}}
-            for clause in re.split(r"[;!?]|\.(?:\s|$)",text):
+            for clause in re.split(r"[;!?]|\.(?:\s|$)|\b(?:while|whereas|but)\b|,\s+and\s+(?=[^,.;!?]{0,70}\b(?:has|have|offers?|includes?|is|are|gets?|requires?)\b)",text,flags=re.I):
                 if len(subject & set(re.findall(r"[a-z]+",clause.casefold())))<min(2,len(subject)):continue
                 # Uppercase AT is a gearbox; the preposition 'at' is not.
                 stated=set(re.findall(r"\b(?:IVT|AT|DCT|CVT|MT)\b",clause))
-                automatic=bool(re.search(r"\bautomatic\b",clause,re.I)) and {"IVT","AT","DCT"}<=allowed
+                automatic=bool(re.search(r"\bautomatic\s+(?:gearboxes?|transmissions?|(?:(?!(?:and|or|with|in|on|for)\b)[\w()'-]+\s+){0,4}(?:variants?|versions?|models?|trims?))\b",clause,re.I)) and {"IVT","AT","DCT"}<=allowed
                 if (not stated and not automatic) or stated-allowed or ("MT" not in allowed and re.search(r"\bmanual\b",clause,re.I)):
                     return True
         if re.search(r"\bwarranty\b",str(fact.get("claim",""))+" "+str(fact.get("value","")),re.I) and re.search(r"\bwarranty\b",text,re.I) and re.search(r"payable|paid separately|extra cost|additional charge",condition,re.I):
@@ -604,7 +607,7 @@ def _missing_required_condition(text: str, facts: list[dict]) -> bool:
 
 
 def _condition_dependencies(text: str, cited: list[dict], evidence: list[dict], requested: dict | None = None) -> list[dict]:
-    """Close mandatory device-purchase constraints, never merge product assertions."""
+    """Close explicit feature constraints, never merge product assertions."""
     from .knowledge import SCOPE_KEYS, scope_value, scope_values
     if _negative_feature_claim(text) or re.match(r"^(?:I|we)\s+(?:cannot|can't|couldn't|could not|do not|don't)\s+(?:verify|confirm|guarantee|know)\b",text,re.I):return []
     def eligible(fact):
@@ -638,11 +641,13 @@ def _condition_dependencies(text: str, cited: list[dict], evidence: list[dict], 
             shared=donor_pairs & {tuple(words[i:i+2]) for i in range(len(words)-1)}
             if subject&set(words) and any(subject&set(pair) for pair in shared):
                 dependencies.append(donor);break
+    transmission_records=[*evidence,*[donor for base in cited for donor in base.get("runtime_transmission_conditions",[])]]
+    dependencies.extend(transmission_condition_dependencies(text,cited,transmission_records,requested))
     return list({f["id"]:f for f in dependencies}.values())
 
 
 def _dependency_payload(evidence: list[dict], requested: dict | None = None) -> list[dict]:
-    return [{"assertion_id":fact["id"],"requirements":[{"fact_id":donor["id"],"condition":donor.get("conditions",""),"scope":donor.get("scope",{}),"source":{k:v for k,v in donor.get("source",{}).items() if k!="quote"}} for donor in donors]}
+    return [{"assertion_id":fact["id"],"requirements":[{"fact_id":donor["id"],"feature":donor.get("claim",""),"condition":donor.get("conditions",""),"scope":donor.get("scope",{}),"source":{k:v for k,v in donor.get("source",{}).items() if k!="quote"}} for donor in donors]}
             for fact in evidence if (donors:=_condition_dependencies(str(fact.get("value","")),[fact],evidence,requested))]
 
 
@@ -798,6 +803,15 @@ def explicit_scope(question: str, facts: list[dict], profile: dict | None = None
     """
     from .knowledge import SCOPE_KEYS, scope_atoms, scope_values
     result = {key: value for key, value in ((profile or {}).get("scope") or {}).items() if key in SCOPE_KEYS}
+    universal = {"all", "all variants", "all trims"}
+    prior_variants = scope_values(result.get("variant", ""), "variant")
+    explicit_universal = bool(re.search(r"\b(?:all|every)\s+(?:variants?|trims?)\b|\bacross\s+(?:the\s+)?(?:whole\s+|entire\s+)?(?:range|lineup)\b", question, re.I))
+    # A universal quantifier describes this question, not the customer's chosen
+    # trim. Keep only an explicit quantified follow-up, never a later topic's
+    # inherited 'all variants' filter. Named trims/comparisons still persist.
+    universal_followup = bool(prior_variants and prior_variants <= universal and re.search(r"\b(?:all|each|every one)\s+of\s+(?:them|these|those)\b", question, re.I))
+    if prior_variants and prior_variants <= universal and not (explicit_universal or universal_followup):
+        result.pop("variant", None)
     for key in ("model", "variant", "generation", "model_year", "market", "powertrain", "transmission"):
         options = sorted({atom for f in facts for atom in scope_atoms(f.get("scope", {}).get(key, ""), key)} - {"", "all", "all variants", "all trims"}, key=len, reverse=True)
         selected = canonical_scope_matches(question, options, key)
@@ -822,7 +836,7 @@ def explicit_scope(question: str, facts: list[dict], profile: dict | None = None
                 for dependent in ("variant", "generation", "model_year", "powertrain", "transmission"):
                     result.pop(dependent, None)
             result[key] = selected[0] if len(selected) == 1 else selected
-        elif key == "variant" and re.search(r"\b(?:all|every) (?:variants?|trims?)\b", question, re.I):
+        elif key == "variant" and (explicit_universal or universal_followup):
             result[key] = "all variants"
     return result
 
@@ -918,6 +932,10 @@ async def retrieve(state: RuntimeState) -> dict:
     # An authoritative empty result from the whole pinned registry is meaningful:
     # the reduced retrieval pack must not reclassify an established trim later.
     pack["evidence"]=[{**f,"runtime_variant_boundary":boundaries} for f in pack.get("evidence",[]) if not boundaries or len(knowledge.scope_atoms(requested.get("variant",""),"variant"))!=1 or _boundary_source(f,boundaries)[0]]
+    # Condition-only closure uses the whole pinned registry independently of
+    # the 14-fact ranking boundary. Donors do not enter the citeable fact set.
+    registry_facts=[f for f,_ in store.fact_entries(registry)]
+    pack["evidence"]=[{**f,"runtime_transmission_conditions":transmission_condition_dependencies(str(f.get("value","")),[f],registry_facts,requested)} for f in pack["evidence"]]
     state["control"].remaining()
     return {"evidence":pack.get("evidence", []),"snapshot_id":pack.get("snapshot_id", ""),
             "conflicts":pack.get("conflicts", []),"coverage":pack.get("coverage", {}),"requested_scope":requested,
@@ -1191,7 +1209,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             if _missing_required_condition(text,required):
                 reject("missing_required_condition")
                 condition_rejections.append({"ids":{f["id"] for f in required if _missing_required_condition(text,[f])},"text":text})
-                if row_feedback is not None:row_feedback[-1]["required_conditions"]=[{"fact_id":f["id"],"condition":str(f.get("conditions","")),"scope":f.get("scope",{}),"source":{k:v for k,v in f.get("source",{}).items() if k!="quote"}} for f in required if _missing_required_condition(text,[f])]
+                if row_feedback is not None:row_feedback[-1]["required_conditions"]=[{"fact_id":f["id"],"feature":f.get("claim",""),"condition":str(f.get("conditions","")),"scope":f.get("scope",{}),"source":{k:v for k,v in f.get("source",{}).items() if k!="quote"}} for f in required if _missing_required_condition(text,[f])]
                 continue
             market_records=[f for f in structured_facts if re.search(r"\b(?:market|city)-specific\b",str(f.get("conditions","")),re.I) and f.get("scope",{}).get("market")]
             if len(market_records)==1:
@@ -1238,7 +1256,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 prefix = "On selected higher trims, " if re.search(r"\b(?:higher|top)\b",conditions,re.I) else "On selected variants, "
                 text = re.sub(r"^(?:Additionally|Also|Furthermore),?\s+", "", text, flags=re.I)
                 text = re.sub(r"^These include\b", "the listed features include", text)
-                text = re.sub(r"^(?:The|This|It)\b",lambda match:match.group().lower(),text)
+                text = re.sub(r"^(?:The|This|These|That|It)\b",lambda match:match.group().lower(),text)
                 text = prefix + text
                 qualified = True
             if scoped and any(not scope_values(v, "variant") & exact_mentions for v in scoped):
@@ -1395,8 +1413,10 @@ Answer the customer's question naturally using the SAME approved assertions. Thi
 new facts, invented assumptions, CTA, reasoning notes or internal drafting text. Return 1–4 short spoken sentences,
 normally at most75 words; use up to100 only to preserve requested comparison/list facets and material conditions.
 Correct the specific validation feedback: retain every material trim, market, engine and policy condition.
-When feedback includes required_conditions, express the exact commercial dependency in the SAME sentence as the
-feature. A device being 'your own' or 'third-party' does not say it must be purchased separately. State purchase,
+When feedback includes required_conditions, express the explicit purchase or transmission restriction in the SAME
+sentence as its feature. For IVT/AT/DCT-only availability, 'automatic versions only' preserves that restriction.
+Apply each requirement to its named feature, not every other feature in a broader package.
+A device being 'your own' or 'third-party' does not say it must be purchased separately. State purchase,
 buying or payable terms explicitly when required; or omit that feature and answer with another supported feature.
 Use only the assertion needed for each clause. Do not cite a subscription assertion for an unrelated device claim.
 For two-trim comparisons, put each trim's differing feature in its own sentence, citing only its applicable assertion.
@@ -1485,13 +1505,14 @@ async def validate(state: RuntimeState) -> dict:
 async def explore(state: RuntimeState) -> dict:
     left = state["control"].remaining()
     try:
-        result = await asyncio.wait_for(asyncio.to_thread(pitch.plan_pitch,state["demo_id"],state.get("profile",{}),False,voice_it=False,timeout_budget_s=left,seen_segment_ids=state.get("seen_segments",[]),expected_snapshot_id=state.get("snapshot_id"),expected_demo_version=state.get("demo_version")),timeout=left)
+        result = await asyncio.wait_for(asyncio.to_thread(pitch.plan_pitch,state["demo_id"],state.get("profile",{}),state.get("refine",False),voice_it=False,timeout_budget_s=left,seen_segment_ids=state.get("seen_segments",[]),expected_snapshot_id=state.get("snapshot_id"),expected_demo_version=state.get("demo_version")),timeout=left)
     except pitch.PublishedDemoChanged:
         return {"result":{"route":[],"personalized_segments":[],"custom_batches":[],"publication_changed":True,
                           "provider_failed":False,"answered":False,"decision_frame":"The published demo changed. Refresh to explore the new version; we can continue this reviewed visit."},
                 "errors":[*state.get("errors",[]),"publication_changed"]}
     seen = set(state.get("seen_segments",[]))
-    result["route"] = [row for row in result.get("route",[]) if row.get("segment_id") not in seen]
+    revisits = set(result.get("revisit_segment_ids",[])) if state.get("refine") else set()
+    result["route"] = [row for row in result.get("route",[]) if row.get("segment_id") not in seen or row.get("segment_id") in revisits]
     result["plan_revision"] = state.get("plan_revision",0)+1
     return {"result":result,"plan_revision":result["plan_revision"]}
 
@@ -1538,7 +1559,7 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
             history.append({"role":"user","text":previous["question"]})
     profile = {**(previous.get("profile") or {}), **(body.get("profile") or {})}
     state: RuntimeState = {"demo_id":demo_id,"session_id":sid,"turn_id":tid,"kind":kind,"question":str(body.get("question") or "")[:4000],
-             "profile":profile,"history":history[-16:],"slide_id":body.get("slide_id"),
+             "profile":profile,"history":history[-16:],"slide_id":body.get("slide_id"),"refine":kind=="explore" and body.get("refine") is True,
              "snapshot_id":previous.get("snapshot_id") or body.get("snapshot_id") or bundle.get("knowledge_snapshot_id") or "",
              "demo_version":previous.get("demo_version") if previous.get("demo_version") is not None else body.get("demo_version",bundle.get("version")),
              "plan_revision":int(previous.get("plan_revision") or 0),"seen_segments":body.get("seen_segments") or [],

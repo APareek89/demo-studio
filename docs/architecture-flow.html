@@ -274,23 +274,23 @@ flowchart TD
   STT[&quot;Realtime STT over private session WebSocket&lt;br/&gt;[LIBRARY · runtime_live.py / sarvam_stream.py]&lt;br/&gt;partials stop playback; stable final dispatches one question&quot;]:::data
   INTAKE[&quot;One needs question; wait for a real reply&lt;br/&gt;[FUNCTION · player.js runIntake]&lt;br/&gt;retain actual customer wording&quot;]:::fn
   OVERVIEW[&quot;Grounded overview in the selected voice&lt;br/&gt;[DATA · bundle.runtime.overview]&lt;br/&gt;10–15 second target measured from generated audio&quot;]:::data
-  PERSONALIZE[&quot;Explore graph node → pitch.plan_pitch&lt;br/&gt;[AGENT · Gemini → Claude → Runware]&lt;br/&gt;order unseen slides; customer framing + approved factual wording&quot;]:::agent
-  ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / player.js]&lt;br/&gt;exact cited proof; original line indices preserve callout timing; reviewed fallback&quot;]:::fn
+  PERSONALIZE[&quot;Explore graph node → pitch.plan_pitch&lt;br/&gt;[AGENT · Gemini → Claude → Runware]&lt;br/&gt;order reviewed slides; explicit priority revision may revisit selected seen proof&quot;]:::agent
+  ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / player.js]&lt;br/&gt;exact cited proof; bounded revisit permissions; original indices and audio retained&quot;]:::fn
   PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching callout with each line; spoken question owns its wait&quot;]:::fn
   STOP[&quot;Stop local audio and cancel old turn/delivery&lt;br/&gt;[FUNCTION · live-voice.js / runtime_live.py]&lt;br/&gt;save return point; discard stale turn/utterance/generation output&quot;]:::fn
   ACK[&quot;Short acknowledgement when useful&lt;br/&gt;[DATA · selected-voice filler]&lt;br/&gt;retrieval starts concurrently; filler is not useful-answer latency&quot;]:::data
-  RETRIEVE[&quot;Retrieve pinned approved evidence&lt;br/&gt;[FUNCTION · knowledge.retrieve]&lt;br/&gt;BM25 + local concept/character ranking; scope/date/conflict filters&quot;]:::fn
+  RETRIEVE[&quot;Retrieve pinned approved evidence&lt;br/&gt;[FUNCTION · knowledge.retrieve]&lt;br/&gt;BM25 + local ranking; request-local universal scope; pinned condition dependencies&quot;]:::fn
   REASON[&quot;Answer, clarify, or request bounded tool&lt;br/&gt;[AGENT · runtime_graph.reason]&lt;br/&gt;history + explicit profile + evidence + tool results&quot;]:::agent
   CHOICE{&quot;Decision action?&lt;br/&gt;[FUNCTION · after_reason]&quot;}:::dec
   TOOLS[&quot;Calculator or customer-selected public URL&lt;br/&gt;[FUNCTION · runtime_tools.py]&lt;br/&gt;exact operand units/basis + formula; safe source pages + whole table passages&lt;br/&gt;max 2 tool rounds / 4 calls; graph deadline 12 seconds&quot;]:::fn
   VALIDATE[&quot;Validate sentences; retain supported portion&lt;br/&gt;[FUNCTION · runtime_graph.validate]&lt;br/&gt;IDs, quantities, scope, policy relations, estimate/web qualification&lt;br/&gt;guard is not general semantic entailment&quot;]:::fn
   REPAIR[&quot;One optional composition repair&lt;br/&gt;[AGENT · runtime_graph._repair_composition]&lt;br/&gt;same approved evidence + precise rejection feedback; no tools or CTA&lt;br/&gt;only if at least 3 seconds remain inside the same 12-second deadline&quot;]:::agent
-  RECHECK[&quot;Revalidate repaired sentences&lt;br/&gt;[FUNCTION · validate_decision]&lt;br/&gt;accept only a supported answer without validation errors&lt;br/&gt;otherwise retain original supported result; cancellation always wins&quot;]:::fn
+  RECHECK[&quot;Revalidate repaired sentences&lt;br/&gt;[FUNCTION · validate_decision]&lt;br/&gt;accept fully checked useful content; partial repairs retain rejection telemetry&lt;br/&gt;otherwise retain original supported result; cancellation always wins&quot;]:::fn
   PLAN[&quot;Checkpoint a versioned DeliveryPlan&lt;br/&gt;[DATA · runtime_state.py]&lt;br/&gt;snapshot, turn/utterance ID, result, next interaction; no audio in graph&quot;]:::data
   VIEW[&quot;Evidence view: stay / jump / none&lt;br/&gt;[FUNCTION · deck.route_for + player.js]&lt;br/&gt;runtime-v1 answer starts directly on its evidence; no extra spoken bridge&lt;br/&gt;turn ownership and original return point stay stable&quot;]:::fn
   SPEAK[&quot;Request selected-voice streaming delivery&lt;br/&gt;[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]&lt;br/&gt;validated answer first, PCM chunks second; cancel closes its socket&quot;]:::data
   WAIT[&quot;Listen and wait&lt;br/&gt;[ASK · follow-up / reply / Continue / configured CTA]&lt;br/&gt;silence never resumes narration&quot;]:::ask
-  CORRECT[&quot;Explicit changed priority&lt;br/&gt;[FUNCTION · player.js]&lt;br/&gt;replan unseen remainder; apply after current segment&quot;]:::fn
+  CORRECT[&quot;Explicit changed priority&lt;br/&gt;[FUNCTION · player.js]&lt;br/&gt;replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing&quot;]:::fn
   RESUME[&quot;Continue → exact interrupted location&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
   CTA[&quot;Customer selects next step + separately consents to contact&lt;br/&gt;[ASK · existing lead form]&lt;br/&gt;no model-triggered submission&quot;]:::ask
   SAVE[&quot;Save heard transcript, timings, recap and consent&lt;br/&gt;[DATA · sessions / traces / runtime_metrics.py]&lt;br/&gt;missing/cancelled timings visible; small samples labelled&quot;]:::data

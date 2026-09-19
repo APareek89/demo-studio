@@ -85,3 +85,15 @@ The twelve-second graph deadline is a configured bound, **not an observed respon
 - Voice and interaction: `server/runtime_live.py`, `runtime_delivery.py`, `llm/sarvam_stream.py`, `web/player/player.js`, `live-voice.js`, `voice-worklet.js`.
 - API and telemetry: `server/app.py`, `readiness.py`, `runtime_metrics.py`, `usage.py`, `web/observability.js`.
 - Flow diagrams: `docs/architecture-flow.html`, especially diagrams 02, 04, 05 and 08.
+
+
+## Final night runtime corrections — 19 September 2026
+
+The one v8 stress session and original grades are in `CRETA_NIGHT_REVIEW.md`; follow-up fixes were checked offline only. Planner/Author candidates were published in v8, with measured114.0s main narration/check-ins and10.58s overview. No source registry changed during runtime fixes.
+
+- `server/runtime_graph.py:explicit_scope` separates a request's universal quantifier from a durable named trim. `retrieve` keeps the14 primary facts and adds compatible condition-only metadata from the pinned registry. `server/runtime_facts.py:transmission_condition_dependencies` and `_missing_required_condition` preserve feature-specific transmission constraints; donor values cannot fund extra claims.
+- `server/agents/pitch.py:plan_pitch` accepts the existing explicit refinement signal and derives selected reviewed revisit IDs. `runtime_graph.py:explore` preserves the flag; `web/player/player.js:applyUpcomingPlan`, `playFrom` and `resumePlayback` apply those exact revisits even after closing, retaining reviewed words/audio and run ownership. Ordinary continuation still avoids repeated material.
+- `server/runtime_tables.py` recognizes all listed/shown/named trims under the same full-table/legend rule. Composition and repair name a precise verification limit when symbol status is unknown; a linked page cannot impersonate the requested page.
+- `server/runtime_emi_delivery.py` recognizes a complete illustrative-figure exclusion clause without repeating it. `server/runtime_acts.py:render_act` produces a fixed combined lender/EMI limit only for a current combined guarantee request.
+
+The saved report is the original run, not a regenerated transcript. Its intent number measures activity heuristically, not purchase likelihood. New source evidence, voice acceptance and future live quality tests remain separate from these code fixes.

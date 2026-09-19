@@ -1267,7 +1267,7 @@ A fallback can log its launch intent and then see a winning primary before it re
 <!-- dated-issue-register:2026-09-19 -->
 ## Dated issue register — consolidated 19 September 2026
 
-This file now covers87 unique numbered Nexon and Creta issues (NX01–42 and CR01–45), plus a second NX25 observation. The original consolidated register below contains NX01–42 and CR01–44; CR45 and the separately identified harness findings follow it. Dates identify the original observation, not a new test. Historical verification limits and open statuses are retained; later five-whys entries and Handoff.MD describe superseding fixes. A proposed correction is never treated as a verified live result. The unnumbered historical five-whys above remain part of this learning record.
+This file now covers93 unique numbered Nexon and Creta issues (NX01–42 and CR01–51), plus a second NX25 observation. The original consolidated register below contains NX01–42 and CR01–44; CR45–51 and the separately identified harness findings follow it. Dates identify the original observation, not a new test. Historical verification limits and open statuses are retained; later five-whys entries and Handoff.MD describe superseding fixes. A proposed correction is never treated as a verified live result. The unnumbered historical five-whys above remain part of this learning record.
 
 ### 2026-09-18 — NX01 — Follow-up question discarded as agreement
 
@@ -2057,3 +2057,138 @@ These were defects in the disposable test harness, not demonstrated application 
 ### 2026-09-19 — CR45 publication evidence
 
 The one matching-narration build completed without voice failures. Published local CRETA v8 contains12 slides,7 cited labels,9 segments and the unchanged181-fact snapshot kb_2d616ba1bcec1469e8c7ab40. Every expected audio reference matches its current text/voice/delivery cache identity. The overview is measured10.58s; full main narration plus the two spoken check-ins is114.0s before customer waits/deeper answers. Configured usage increased from$16.3976 to$16.5596 (about$0.162). This is narration assembly and file validation, not an acoustic or perceived-warmth test. The single live stress session is still pending at this checkpoint.
+
+
+## 2026-09-19 — CR46 — a broad ADAS duplicate omitted Smart Cruise's transmission requirement
+
+- Actual single live session: `s_mu8ozv2etxtx`, question s01 / turn `t_7`, published bundle v8 with unchanged v7 snapshot `kb_2d616ba1bcec1469e8c7ab40`. The answer listed Smart Cruise Control with Stop & Go on selected higher trims but omitted its automatic-transmission condition. This is a material safety-equipment fitment omission, not evidence that the actual car lacks the feature. The later s02 / `t_9` answer correctly states automatic / IVT / AT / DCT, but does not replace or regrade s01.
+- Evidence: original event line28 SHA `07c2d975425750e7646dbb431eae90d316cf7ac1677aa57b37403aafc4a8dd13`; model trace line7355 SHA `b704587187a3f3a6c2a0325c9d0a6343228097a700ab86ce5eb3530146ba6e9a`. Full originals are retained in `cr46-smart-cruise-condition.fixture.json`; `cr46-baseline-reproduction.json` records the pre-fix acceptance with no validation errors and zero network calls.
+
+### Five whys
+
+1. Why was the spoken availability incomplete? The broad feature list did not carry Smart Cruise's automatic-only restriction.
+2. Why could that wording cite approved evidence? F176/F196 describe the larger suite with only a higher-trim condition; the precise F154 transmission restriction and corroborating F045 were absent from the actual 14-fact pack.
+3. Why did validation not use the known restriction? It checked conditions on cited facts. Its existing cross-assertion dependency closure handled explicit device-purchase prerequisites, not feature-specific transmission requirements. Merely adding F154 to the pack still accepted the original draft in the baseline probe.
+4. Why did retrieval and validation lose the relation? Relevance-ranked fact selection had no separate condition-only path from the pinned registry to a broad duplicate's explicitly named feature.
+5. Why did earlier checks miss it? Directly cited F154 tests already checked automatic phrasing. They did not reproduce an uncited, out-of-pack restriction on an otherwise approved broad duplicate.
+
+### Bounded correction
+
+Before the existing 14-fact ranking boundary can lose a requirement, derive condition-only records from the immutable registry for exact same-feature, scope-compatible, explicit enumerated transmission restrictions. Keep the primary citeable set unchanged. Carry the donor ID, named feature, condition and provenance in the initial prompt, validation feedback and existing one-attempt repair. Reject the missing-condition row; preserve other supported sentences. A qualified row retains the donor as separate condition evidence, not as a new product-fact citation. A manual customer profile cannot filter out the very transmission requirement being checked.
+
+The donor must be approved, not held/conflicted/suppressed, not a calculation or live-web record, and compatible with model/market/year/generation and other explicit identity dimensions. Matching uses assertion text, not quotes, table order or inferred trim ordering. Unrelated lane assistance and ordinary cruise do not inherit Smart Cruise's condition. The donor's unrelated values do not become licensed product claims. Existing device and warranty checks remain intact. Automatic headlamps do not satisfy an automatic-transmission condition.
+
+### Verification and limits
+
+`evals/runtime_transmission_conditions_contract.py` covers the immutable actual draft, its explicitly qualified positive, full-registry retrieval wiring without increasing 14 facts, one mocked repair with feature-owned feedback, manual profiles, scope/eligibility exclusions, quote-only/negative witnesses and no donor-value licensing. Existing runtime, repair and final-cohort contracts are rerun separately. All checks use blocked sockets and no providers.
+
+This is an offline fix and regression result, not another live answer or an acoustic acceptance result. The original session, grade and provider traces remain unchanged. The closure intentionally recognizes only explicit enumerated transmission-only conditions and distinctive literal feature phrases; it does not claim general semantic entailment, infer every natural-language prerequisite, or guarantee coverage of absent/unreviewed restrictions. No source record, snapshot, provider order, deadline, schema or publication is changed by CR46.
+
+
+## 2026-09-19 — CR47 — Explicit priority correction could not revisit relevant reviewed proof
+
+Date: 2026-09-19. Status: fixed and checked offline; not live retested.
+
+Observed in the sole final stress session `s_mu8ozv2etxtx`, app `274ed3d`, published version 8. The original safety-led route correctly began with standard safety and rear-seat proof. After the customer said, “Actually, comfort matters more. I want to focus on my parents in the rear seats,” the returned route began with front ventilated seats, screens and powertrains. The original requests, replies and saved session remain unchanged.
+
+## Root cause and five whys
+
+1. Why did the corrected rear-passenger priority start with front-cabin equipment? The rear-seat segment was no longer in the planner's available library.
+2. Why was it absent? A prior route or question visit had marked its slide as seen; the planner excluded every seen segment before composing the route.
+3. Why did explicit refinement not change that rule? The request's existing `refine` intent was not passed through the runtime graph, and both graph and client independently filtered seen IDs again.
+4. Why would making the segment eligible still fail at the actual return point? Continue from closing resumed closing without applying a ready revised route; the ordinary covered-slide shortcut could also play only its contextual first line and omit the factual proof.
+5. Why had the defect escaped checks? Earlier coverage verified profile preservation and non-repetition, but did not exercise a revised priority after a prior question visit through all three filters, closing continuation, and the reviewed speech sequence.
+
+## Implemented solution
+
+Explicit, request-local refinement can reconsider published reviewed segments. The planner derives `revisit_segment_ids` only from its validated selected route intersected with the request's seen IDs; model-supplied permission cannot authorize unrelated IDs. Ordinary continuation still excludes previously seen material. The prompt distinguishes rear-passenger needs from front-seat equipment, gives the latest raw correction priority, and requests the smallest useful route.
+
+The graph passes the explicit flag and permits only these selected revisits. The client intersects returned permissions with the pending request's seen IDs and chosen route. A ready refinement is applied when the customer continues from closing; authorized revisit steps retain all exact reviewed lines. Publication pins, cancellation/run checks, other continuation behavior and the ordinary brief covered-slide replay remain intact. Reviewed wording, factual conditions, citations, media identity and recorded audio are preserved.
+
+## Evidence and checks
+
+- Baseline: `live/cr47-baseline.json` reproduces the unavailable rear-seat selection through the real original planner with an offline selection boundary.
+- Immutable actual request/bundle fixture: `evals/fixtures/pitch_priority_revision.json`.
+- New controls: 7 Python pitch/graph groups and 10 JavaScript groups executing real route assembly/application, playback and continuation functions.
+- Existing controls: 18 pitch delivery, 47 pitch grounding and 6 narrative-role checks passed; JavaScript syntax and diff checks passed.
+- Candidate: `live/pitch.session-revision.json` selects only rear-seat proof and reuses its exact selected-trim recline sentence. Its provenance explicitly says offline session-token selection, no live result.
+- Frozen implementation/check hashes: `live/cr47-studio-frozen-review.json`.
+
+## Limits
+
+No paid API, source, publishing or voice test was performed after the issue was found. No production session was rewritten. The offline candidate demonstrates that a correct reviewed selection is now eligible and survives the actual functions; it does not establish that every future model selection will be relevant. Repeat permission is limited to an explicit refinement, not a guarantee of individual comfort or a general invitation to replay the whole demo. Independent Player review passed, including three additional controls executing real closing/session-save functions: one ended save, unchanged ordinary closing and stale-owner suppression.
+
+
+## 2026-09-19 — CR48 — supplied-table status and useful limitation
+
+19 September 2026. Original live session `s_mu8ozv2etxtx`, bundle v8, code `274ed3d`.
+
+The s10 lookup fetched the exact customer-selected Hyundai CRETA features page. Its comfort table contains complete trim headers and the wireless-charging/cruise rows, but the captured evidence has no readable S/– legend. The original and repaired drafts interpreted those symbols as standard/absent. Validation rejected the substantive clauses; the delivered answer retained a generic limitation and an unrequested Smart Cruise footnote. The original answer remains **partial**.
+
+The next question, s11, used “all listed trims,” which escaped the universal-fitment quantifier. Its rear-vent row is S in all ten named columns. Retain the independent **supported** semantic grade under the prior complete-table rubric, while explicitly recording the stricter missing-legend policy failure. These are separate assessments; neither silently changes the original answer or earlier grades.
+
+The bounded guard fix includes listed/shown/named trim qualifiers in the existing universal check. It does not reinterpret S/–, add source facts, infer trim order, or relax the requirement for an explicit legend. The exact original s10/s11 table and drafts are preserved in `live/source-table-actual-fixture.json` and `evals/fixtures/runtime_stress_source_table.json`. Twenty-one focused tests pass, including all three cited row labels, missing-legend rejection, an explicitly labelled synthetic legend positive, mixed-status rejection, and the new composer instruction.
+
+Five whys:
+
+1. Why was the answer incomplete? The two requested fitment clauses were rejected, leaving a generic limit plus a separate Stop & Go footnote.
+2. Why were those clauses rejected? They interpreted unlegend S/– marks as standard/absent; the first draft also turned exact table columns into trim ranges.
+3. Why did the repair still fail? It removed the range wording but retained the unsupported status interpretation.
+4. Why did composition miss the actual uncertainty? The instructions did not explicitly require an own-verification limit when table-symbol meaning was unverified, despite the guard already requiring it.
+5. Why did the adjacent s11 phrasing pass? The universal grammar and tests covered plain all/every/each trims but omitted the ordinary modifier “listed.” The new exact-session controls cover that gap without weakening symbol semantics.
+
+A separate offline agent-authored candidate, using the captured runtime instructions and evidence, says:
+
+> I couldn't verify the meaning of the table's symbols. I can't confirm whether wireless charging or cruise control is standard on every trim.
+
+The existing validator accepts that candidate with five assertions and zero outbound attempts. It is **not** a new live response or proof that the model will choose this wording. It improves specificity without asserting source-wide absence or inventing symbol definitions.
+
+The coordinated graph owner added composition guidance: unexplained source-table marks cannot establish standard/absent fitment. When this prevents the requested check, state the specific feature-status and symbol-meaning verification limit; do not substitute an unrelated feature detail. Both initial composition and repair inherit that instruction. The original source remains immutable. No additional source/provider/voice calls were made. Whether a future live model follows that instruction is unmeasured; the offline candidate proves validator acceptance only.
+
+
+## 2026-09-19 — CR49 — a complete illustrative EMI caveat was repeated
+
+**Observed:** In the single live session, s08 correctly calculated about₹22,244/month at1% monthly over5years. Its second sentence already said “This is an illustrative figure that excludes taxes and fees, and it is not a formal lender quote.” The delivery helper appended “This estimate excludes fees and taxes.” Original text, correct arithmetic and the redundant output remain preserved in `live/emi-duplicate-actual-fixture.json`.
+
+**Reason and five whys:** (1) The customer heard the same exclusion twice because the helper thought it was missing. (2) It ignored the model's exclusion because the clause subject was not recognized as the estimate. (3) Its recognized subjects covered estimate/EMI/loan and short this/it forms, not “This is an illustrative figure that.” (4) The exclusion parser intentionally requires ownership to avoid borrowing a warranty or unrelated fee clause; removing that check would be unsafe. (5) Earlier actual-output controls covered reordered exclusions but not this exact valid subject form.
+
+**Solution:** Add only the anchored this/it + is an illustrative figure + optional that/which form to estimate ownership. Keep original validated speech intact and append only genuinely missing terms; never alter the calculation or infer omitted inputs.
+
+**Verification:** The captured case and missing-tax counterpart fail before the change and pass after it. Thirteen delivery groups pass with blocked sockets, including negated/unrelated illustrative figures, wrong interest basis and idempotence. Two independent reviewers pass the frozen helper. No paid retry, voice call, source or original-session change. This improves duplicate delivery; it is not a new live response.
+
+
+## 2026-09-19 — CR50 — a prior universal-fitment filter hid relevant comfort facts
+
+- Actual session `s_mu8ozv2etxtx`, s14 / `t_39`: the customer asked which reviewed comfort features to check with their family and what could not be verified about personal comfort. The response gave a truthful fit-check limit but omitted known equipment. It remains an original partial answer, not a provider failure.
+- Preserved evidence: `live/comfort-retrieval-actual-fixture.json`, model trace line7476 SHA `e9e7c98eaec67009436a2d6a38b28ab5f59567d11d819115aeb2442ba36261c0`; final event line208 SHA `a6c67654950580da33448c943c2c8889a436ee1fb6ff9eacca31f1918b434893`. The actual pack contained only F214/F237, not rear-seat recline F097 or split-seat F096.
+
+### Five whys
+
+1. Why did the answer omit useful known comfort equipment? The model received only two universal safety assertions and correctly avoided inventing comfort claims.
+2. Why did relevant approved equipment disappear? Retrieval required the literal scope `all variants` inherited from an earlier all-trim equipment question.
+3. Why did that filter survive a topic change? `explicit_scope` treated every stored scope dimension as durable customer preference, including a question's universal quantifier.
+4. Why was that distinction missing? Named chosen trims/comparisons and universal question scope shared the same profile field without a lifetime distinction.
+5. Why did earlier checks not expose it? Topic-relevance checks exercised the comfort query without this real preceding universal filter. The new regression uses the captured profile/history through production scope inference and retrieval.
+
+### Bounded correction and limits
+
+Treat a stored all/all-variants/all-trims filter as request-local. Preserve it only when the current question explicitly asks across all trims or makes a quantified follow-up such as “all of them.” Named trims and explicit comparisons continue to persist; changing models still clears stale dependent configuration. `_requested_variants` continues to reject generic all/every/conditions words rather than inventing a trim name.
+
+The actual-input offline contract reproduces the original two-fact pack with the old explicit filter, then executes production retrieval after the corrected scope and recovers F097/F096 within the unchanged 14-fact limit. It uses the immutable v7 assertions and a disposable in-memory index; no source, snapshot, demo or provider is written. Paired checks retain explicit universal follow-ups, named trims/comparisons, restrictive unknown trims and model corrections. This is a retrieval fix and offline verification, not a regenerated live answer or proof of personal comfort. No topic classifier or inferred trim ordering is added.
+
+
+## 2026-09-19 — CR51 — a combined loan and EMI guarantee received only one limit
+
+**Observed:** Actual s12 asked whether the bank would approve the loan and guarantee that EMI if the customer decided today. The response stated only the loan-approval limit. It remains graded partial; it never approved the loan or promised an EMI. Original evidence is in `live/combined-guarantee-actual-fixture.json`.
+
+**Reason and five whys:** (1) Half the requested boundary was omitted because the selected lender-approval act rendered one fixed sentence. (2) The act's closed template covered approval but not the co-requested EMI promise. (3) The model could select only the available boundary ID and correctly avoided unsupported financial claims. (4) The backend did not specialize that safe act for two explicitly joined guarantees. (5) Prior controls tested loan guarantees and illustrative calculation disclaimers separately, not this actual joined request after a calculation.
+
+**Solution:** Retain the same closed act and render a fixed combined limit only when the current request explicitly joins the EMI guarantee: “I cannot confirm or guarantee a lender's loan approval or a final EMI quote.” No customer text, numbers or invented lender policy is emitted. A past EMI question, an approval-only question or a separate request to calculate EMI does not add this refusal.
+
+**Verification:** The exact live wording fails the new control before the change and passes afterward. All30 typed-act groups pass with blocked sockets; independent reviewers verify current-question ownership, fixed output and unchanged historical/unrelated behavior. No new schema, provider request, financial-data collection, live rewrite or fresh quality claim.
+
+
+
+### 2026-09-19 — CR46–51 final verification and evidence boundary
+
+All six corrections passed independent review and blocked-network regressions; required deck320/accept24/both smoke pass. Feature conditions17, priority revision7+client10, table21, EMI13, universal scope8 and typed acts30 pass. The corrected comfort candidate uses recovered F097/F096 with selected-trim wording and separate closed personal-fit limits; full validation reports zero errors. That candidate is session-token authored, not a new live response. CR46 additionally lowercases only grammatical That/These when prepending a qualifier; Hyundai and ADAS capitalization are preserved. No source/snapshot change or paid retest followed the single live session. Original grades9supported/3partial/1unsafe/1cancelled and their raw hashes remain intact. Final recorded increment$0.4496; physical microphone and acoustic performance remain unmeasured.

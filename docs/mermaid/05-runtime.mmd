@@ -5,23 +5,23 @@ flowchart TD
   STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>partials stop playback; stable final dispatches one question"]:::data
   INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual customer wording"]:::fn
   OVERVIEW["Grounded overview in the selected voice<br/>[DATA · bundle.runtime.overview]<br/>10–15 second target measured from generated audio"]:::data
-  PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order unseen slides; customer framing + approved factual wording"]:::agent
-  ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>exact cited proof; original line indices preserve callout timing; reviewed fallback"]:::fn
+  PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order reviewed slides; explicit priority revision may revisit selected seen proof"]:::agent
+  ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>exact cited proof; bounded revisit permissions; original indices and audio retained"]:::fn
   PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching callout with each line; spoken question owns its wait"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Short acknowledgement when useful<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data
-  RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local concept/character ranking; scope/date/conflict filters"]:::fn
+  RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local ranking; request-local universal scope; pinned condition dependencies"]:::fn
   REASON["Answer, clarify, or request bounded tool<br/>[AGENT · runtime_graph.reason]<br/>history + explicit profile + evidence + tool results"]:::agent
   CHOICE{"Decision action?<br/>[FUNCTION · after_reason]"}:::dec
   TOOLS["Calculator or customer-selected public URL<br/>[FUNCTION · runtime_tools.py]<br/>exact operand units/basis + formula; safe source pages + whole table passages<br/>max 2 tool rounds / 4 calls; graph deadline 12 seconds"]:::fn
   VALIDATE["Validate sentences; retain supported portion<br/>[FUNCTION · runtime_graph.validate]<br/>IDs, quantities, scope, policy relations, estimate/web qualification<br/>guard is not general semantic entailment"]:::fn
   REPAIR["One optional composition repair<br/>[AGENT · runtime_graph._repair_composition]<br/>same approved evidence + precise rejection feedback; no tools or CTA<br/>only if at least 3 seconds remain inside the same 12-second deadline"]:::agent
-  RECHECK["Revalidate repaired sentences<br/>[FUNCTION · validate_decision]<br/>accept only a supported answer without validation errors<br/>otherwise retain original supported result; cancellation always wins"]:::fn
+  RECHECK["Revalidate repaired sentences<br/>[FUNCTION · validate_decision]<br/>accept fully checked useful content; partial repairs retain rejection telemetry<br/>otherwise retain original supported result; cancellation always wins"]:::fn
   PLAN["Checkpoint a versioned DeliveryPlan<br/>[DATA · runtime_state.py]<br/>snapshot, turn/utterance ID, result, next interaction; no audio in graph"]:::data
   VIEW["Evidence view: stay / jump / none<br/>[FUNCTION · deck.route_for + player.js]<br/>runtime-v1 answer starts directly on its evidence; no extra spoken bridge<br/>turn ownership and original return point stay stable"]:::fn
   SPEAK["Request selected-voice streaming delivery<br/>[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]<br/>validated answer first, PCM chunks second; cancel closes its socket"]:::data
   WAIT["Listen and wait<br/>[ASK · follow-up / reply / Continue / configured CTA]<br/>silence never resumes narration"]:::ask
-  CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan unseen remainder; apply after current segment"]:::fn
+  CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing"]:::fn
   RESUME["Continue → exact interrupted location<br/>[FUNCTION · resumeAfterQA]"]:::fn
   CTA["Customer selects next step + separately consents to contact<br/>[ASK · existing lead form]<br/>no model-triggered submission"]:::ask
   SAVE["Save heard transcript, timings, recap and consent<br/>[DATA · sessions / traces / runtime_metrics.py]<br/>missing/cancelled timings visible; small samples labelled"]:::data

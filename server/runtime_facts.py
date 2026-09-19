@@ -25,6 +25,66 @@ def _eligible(fact: dict) -> bool:
             and knowledge.get("conflict_status") not in {"suppressed", "unresolved"})
 
 
+def transmission_condition_dependencies(text: str, cited: list[dict], registry: list[dict],
+                                        requested: dict | None = None) -> list[dict]:
+    """Carry explicit same-feature gearbox requirements, not additional offerings.
+
+    The caller supplies the pinned registry, or condition records derived from
+    it before retrieval truncation. A broad duplicate cannot erase the narrow
+    assertion's literal requirement. Source quotes and table order are not used.
+    """
+    requested = requested or {}
+    stop = {"a", "an", "the", "with", "and", "of", "availability", "feature", "features", "system"}
+
+    def words(value):
+        return [w for w in re.findall(r"[a-z0-9]+", str(value).casefold()) if w not in stop]
+
+    def contains(value, feature):
+        tokens = words(value)
+        return any(tokens[i:i + len(feature)] == feature for i in range(len(tokens) - len(feature) + 1))
+
+    def eligible(fact):
+        return _eligible(fact) and fact.get("provenance") not in {"calculation", "live_web"}
+
+    def compatible(donor, base):
+        a, b = donor.get("scope") or {}, base.get("scope") or {}
+        model = scope_value(a.get("model", ""), "model")
+        if not model or scope_value(b.get("model", ""), "model") != model:
+            return False
+        # Transmission is the requirement being checked, not a reason to hide
+        # it from a customer asking about a manual version of the same feature.
+        for key in ("model", "market", "variant", "model_year", "generation", "powertrain", "effective_from", "effective_to"):
+            values = [scope_values(scope[key], key) for scope in (a, b, requested) if scope.get(key)]
+            if key == "variant":
+                values = [v for v in values if not v & _UNIVERSAL]
+            if values and not set.intersection(*values):
+                return False
+            if key in {"model_year", "generation", "effective_from", "effective_to"} and a.get(key) and not (b.get(key) or requested.get(key)):
+                return False
+        return True
+
+    dependencies = []
+    for donor in registry:
+        if not eligible(donor):
+            continue
+        condition = str(donor.get("conditions", ""))
+        if not re.fullmatch(r"(?:IVT|AT|DCT|CVT|MT)(?:\s*[,/]\s*(?:IVT|AT|DCT|CVT|MT))*\s+transmissions?\s+only[.]?", condition, re.I):
+            continue
+        feature = words(donor.get("claim", ""))
+        if len(set(feature)) < 2 or _NEGATIVE.search(str(donor.get("value", ""))) or not contains(text, feature):
+            continue
+        for base in cited:
+            if not eligible(base) or not compatible(donor, base):
+                continue
+            # The duplicate must actually assert this feature. A locator or an
+            # unrelated word elsewhere in a suite cannot supply its identity.
+            assertions = re.split(r"[;!?]|\.(?:\s|$)", str(base.get("value", "")))
+            if any(contains(clause, feature) and not _NEGATIVE.search(clause) for clause in assertions):
+                dependencies.append(donor)
+                break
+    return list({fact["id"]: fact for fact in dependencies}.values())
+
+
 def _words(text: str) -> set[str]:
     return {_ALIASES.get(word, word) for word in re.findall(r"[a-z]+", text.casefold())
             if word not in _STOP and word not in {"inch", "inches", "cm", "mm"}}

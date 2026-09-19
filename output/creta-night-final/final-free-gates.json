@@ -1,0 +1,146 @@
+{
+  "boundary": "Post-fix offline regression only; no new paid acceptance",
+  "checks": [
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-pitch_priority_revision_contract.log",
+      "sha256": "af3147fceec31ed24f5bbb3c1c7a9bcf35b29dc72d680de6b801af0e556734ea",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "7"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-qa_accept.log",
+      "sha256": "2d83ddb53e59f1b75167d60cf416c2c2663e740e9ec6d183c72a462de1602a19",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-qa_deck.log",
+      "sha256": "6714add63221696cb91fa4b7bcfd2e28b9c67f923446ebe11d6ace8faa304589",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_acts_contract.log",
+      "sha256": "dab212cd51bcc9727fe25e2ab2a30756b675936efb82a9e8ff36ed26a7e81373",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "30"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_clause_delivery_contract.log",
+      "sha256": "ebd6e0672bd2fe39c6e652b4943bbad7384763643df85d91a0c0d4b3e61469cf",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "21"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_emi_delivery_contract.log",
+      "sha256": "702bc53123a51ad5d0424255e809969d2846b239f3c6d88126bd983b3d79cb0c",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "13"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_final_cohort_contract.log",
+      "sha256": "259652183e371076c4d381e42d8ac28783419af197a9d415efbd2feb7af3ea36",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 94,
+      "unittest_groups": [],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_graph_contract.log",
+      "sha256": "8d5d3b751613aff5a3b0270b30e2c548a7bd10b8b03340a9fd8940674de25247",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 130,
+      "unittest_groups": [],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_live_table_contract.log",
+      "sha256": "c8b5274c1494b878c4fc2e20ff19c8b565384b4460f25b934ca3a6ac882db9a9",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "21"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_repair_contract.log",
+      "sha256": "fd0461195232960fd32552f996e1235736d1e7b08df8b24dda66f34427a7183b",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 106,
+      "unittest_groups": [],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_transmission_conditions_contract.log",
+      "sha256": "54dc2a63c241240649e813591e03a3452f7f3138095d2dff7e02160bebbe15a3",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "17"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_universal_scope_contract.log",
+      "sha256": "8be00dfb623f6dc32f159faae6af4b4f6c5f5bdad243805701359026b775d53b",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [
+        "8"
+      ],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-runtime_v7_limits_contract.log",
+      "sha256": "5f6a07ac06a84edef202c5fb61d1634a71aac726f60f46a77b38e8fbac0f7b69",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 118,
+      "unittest_groups": [],
+      "passed": true
+    },
+    {
+      "log": "output/creta-runtime-2026-09-19/final-gates/night-stress-post-smoke_mock.log",
+      "sha256": "94f029760fc3be91bfb87900d0743220be88057b6f648cf29a6f26ca34c381a6",
+      "outbound_socket_attempts": 0,
+      "pass_lines": 0,
+      "unittest_groups": [],
+      "passed": true
+    }
+  ],
+  "production_source_sha256": {
+    "server/runtime_graph.py": "cb958cb125f0a788edbabf73928a0faddb3312668d09e513268b9339319c697b",
+    "server/runtime_facts.py": "c8c920ebbfc2a1e6128bd91d257fc7a7e2afb040ed7a8fb59b8b38c76e8967c2",
+    "server/runtime_state.py": "710cda33df9c56b74ce66ca967e0997013e93c2234d4f6ff58baf684d3c3877d",
+    "server/runtime_tables.py": "b8030941562404b83248998f28a06961c54b61990173777bbf2fb496d7a6a62f",
+    "server/runtime_acts.py": "5e888a6631aac014141990160119af3a6e40d74cd1433f77817e101f56152501",
+    "server/runtime_emi_delivery.py": "2f554585eb0a39e55c74306c42b2d721a788daa0adc79fd46c1286a51234c534",
+    "server/agents/pitch.py": "7cb64f2e2b58025b4fcef3196a973c39e93cdcb542bee33fd89cfb8b2eb386c7",
+    "web/player/player.js": "e88448e0000ec9ffb05fca015eec27e9e9dab03a24c03ba1f6727e3d13ad93c8"
+  },
+  "independent_reviews": [
+    "live/runtime-player-independent-review.json",
+    "live/cr47-player-independent-review.json",
+    "cr48-cr50-studio-independent-review.json"
+  ]
+}

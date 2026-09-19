@@ -92,6 +92,7 @@ class RuntimeState(TypedDict, total=False):
     session_id: str
     turn_id: str
     kind: str
+    refine: bool
     question: str
     history: list[dict]
     profile: dict

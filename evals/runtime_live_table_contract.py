@@ -20,10 +20,12 @@ socket.socket.connect = block
 socket.create_connection = block
 
 from server.runtime_tables import unsupported_live_table_universal as rejects
-from server.runtime_graph import validate_decision
+from server.runtime_graph import SYSTEM, validate_decision
 
 FIXTURE_BYTES = (Path(__file__).parent / "fixtures/runtime_live_table_universal.json").read_bytes()
 FIXTURE = json.loads(FIXTURE_BYTES)
+STRESS_BYTES = (Path(__file__).parent / "fixtures/runtime_stress_source_table.json").read_bytes()
+STRESS = json.loads(STRESS_BYTES)
 
 
 def table(rows=None, footnote="", header=None):
@@ -39,6 +41,11 @@ class LiveTableContract(unittest.TestCase):
     def tearDown(self):
         self.assertEqual(OUTBOUND, [])
 
+    def test_composer_policy_requires_precise_limit_for_unexplained_table_marks(self):
+        self.assertIn("Unexplained table marks do not establish standard equipment or absence", SYSTEM)
+        self.assertIn("name the requested features", SYSTEM)
+        self.assertIn("do not replace that limitation with an unrelated feature", SYSTEM)
+
     def test_exact_recorded_case_retains_hashes_and_scope_error(self):
         self.assertEqual(hashlib.sha256(FIXTURE_BYTES).hexdigest(),
                          "4515b0fa84caa9b1323ab248e10d6766fd488b935006688a3ed6e51e05cac23f")
@@ -50,6 +57,37 @@ class LiveTableContract(unittest.TestCase):
         self.assertIn("unsupported_live_table_universal", errors)
         self.assertNotIn("across the lineup", result["answer"])
         self.assertIn("front ventilated seats on select higher variants", result["answer"])
+
+    def test_actual_caption_session_listed_trims_requires_captured_status_semantics(self):
+        self.assertEqual(hashlib.sha256(STRESS_BYTES).hexdigest(),
+                         "6468d00275debb43de6f7da9770149056d8773bab1646a2f55fb60a29c149c37")
+        self.assertEqual(STRESS["source_session_id"], "s_mu8ozv2etxtx")
+        self.assertEqual(STRESS["table"]["context"]["footnote"], "")
+        # The observed repair used 'all listed trims'; its truthful row shape
+        # alone cannot silently define bare S as standard equipment.
+        text = STRESS["s11"]["delivered_answer"]
+        self.assertTrue(rejects(text, [STRESS["table"]]))
+        for kind in ("fact", "context", "limitation"):
+            result, errors = validate_decision({"action": "answer", "sentences": [{
+                "text": text, "fact_ids": [STRESS["table"]["id"]], "kind": kind}]},
+                [STRESS["table"]], "What does that page show about rear AC vents?")
+            with self.subTest(kind=kind):
+                self.assertIn("unsupported_live_table_universal", errors)
+                self.assertNotIn("standard across all listed trims", result["answer"])
+        # A separately labelled synthetic control has an explicit legend. The
+        # original captured page/row above remains untouched.
+        with_legend = copy.deepcopy(STRESS["table"])
+        with_legend["context"]["footnote"] = "S: Standard; -: Not available"
+        self.assertFalse(rejects("Rear AC vents are standard across all listed trims.", [with_legend]))
+        self.assertTrue(rejects("Wireless charging is standard across all listed trims.", [with_legend]))
+
+    def test_actual_negative_draft_cannot_invent_missing_mark_legend(self):
+        for row in STRESS["s10"]["repair_decision"]["sentences"][:2]:
+            result, errors = validate_decision({"action": "answer", "sentences": [row]},
+                [STRESS["table"]], "Are charging and cruise standard on every trim?")
+            with self.subTest(text=row["text"]):
+                self.assertFalse(result["answered"])
+                self.assertTrue(errors)
 
     def test_model_context_or_limitation_label_cannot_bypass_cited_claim_guard(self):
         row = FIXTURE["original_result_row"]
@@ -71,7 +109,8 @@ class LiveTableContract(unittest.TestCase):
         good = table()
         bad = table([["Rear AC vent", "Standard", "-", "Standard"]])
         for phrase in ("on all trims", "on every variant", "on each version", "across the lineup",
-                       "throughout the full range", "across the entire line-up"):
+                       "throughout the full range", "across the entire line-up", "across all listed trims",
+                       "on every shown variant", "on all the named versions"):
             text = "Rear air-conditioning vents are available " + phrase + "."
             with self.subTest(phrase=phrase):
                 self.assertFalse(rejects(text, [good]))

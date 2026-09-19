@@ -1,0 +1,626 @@
+{
+  "source_fixture_sha256": "cba7320bd04f0a3b3cf749fe0e073d7ef16d812e3480e343a50962d62c7628bd",
+  "source_session_id": "s_mu8ozv2etxtx",
+  "code_commit": "274ed3db942af5d4cbdbc5b10a08b21e73c6798a",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "table": {
+    "id": "W3f466061b6a1",
+    "claim": "Customer-selected website passage",
+    "value": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S",
+    "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+    "source": {
+      "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+      "locator": "COMFORT & CONVENIENCE · block 30",
+      "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S"
+    },
+    "scope": {},
+    "scope_unverified": true,
+    "context": {
+      "kind": "table",
+      "heading": "COMFORT & CONVENIENCE",
+      "rows": [
+        [
+          "Feature",
+          "E",
+          "EX",
+          "EX(O)",
+          "S(O)",
+          "S(O) Knight",
+          "SX",
+          "SX Premium",
+          "King",
+          "King Knight",
+          "Lounge Edition"
+        ],
+        [
+          "Sunroof",
+          "Smart panoramic",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "Voice enabled smart panoramic",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Air Conditioning",
+          "Manual",
+          "S",
+          "S",
+          "S",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "Dual zone automatic temperature control (DATC)",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Front row ventilated seats",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Electric parking brake with auto hold",
+          "-",
+          "-",
+          "-",
+          "S*",
+          "S*",
+          "-",
+          "S*",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Smartphone wireless charger**",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Drive mode select (Eco, Normal, Sport)",
+          "-",
+          "-",
+          "-",
+          "S*",
+          "S*",
+          "-",
+          "S*",
+          "S*",
+          "S*",
+          "S*"
+        ],
+        [
+          "Traction control modes (Snow, Mud, Sand)",
+          "-",
+          "-",
+          "-",
+          "S*",
+          "S*",
+          "-",
+          "S*",
+          "S*",
+          "S*",
+          "S*"
+        ],
+        [
+          "Paddle shifters",
+          "-",
+          "-",
+          "-",
+          "S*",
+          "S*",
+          "-",
+          "S*",
+          "S*",
+          "S*",
+          "S*"
+        ],
+        [
+          "Cruise control",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Keyless entry",
+          "Foldable key",
+          "S",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "Smart key with push button start and motion sensor",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Outside mirror",
+          "Electrically adjustable",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Auto fold",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Front console armrest with storage",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Remote engine Start with smart key",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rear center armrest with cup holders",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Electric tailgate release",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rear AC vent",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "USB Charger (C-Type)",
+          "Front",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rear(x1)",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "Rear(x2)",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Power outlet",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rear wiper and washer",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Motor driven power steering",
+          "Tilt Function",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Telescopic function",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Luggage Lamp",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Power Windows",
+          "Front",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rear",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Idle stop & go (ISG)",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Passenger vanity mirror",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Map lamps",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Room lamp",
+          "S",
+          "S",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "LED reading lamps (Rear)",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Sunglass holder",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Glove box cooling",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rear wireless charger",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "Rain sensing wiper",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S"
+        ]
+      ],
+      "footnote": ""
+    },
+    "fetched_at": 1789841016.999584,
+    "provenance": "live_web",
+    "approved": true,
+    "truth": "stated"
+  },
+  "s10": {
+    "event_raw_sha256": "40fab649728607ce988297be6ec8ac90fb523c82542b7fc9f4ae9536a7f86690",
+    "delivered_answer": "I couldn't verify that from the retrieved evidence. According to www.hyundai.com, additionally, the page notes that certain automatic trims such as SX (O), SX Tech, King, and King Knight get smart cruise control with stop and go instead of standard cruise control.",
+    "initial_decision": {
+      "action": "answer",
+      "sentences": [
+        {
+          "text": "According to Hyundai's features page, wireless phone charging is not standard on every trim, as the front charger is listed from SX onwards and the rear wireless charger only appears on King, King Knight, and Lounge Edition.",
+          "fact_ids": [
+            "W3f466061b6a1"
+          ],
+          "kind": "fact"
+        },
+        {
+          "text": "Standard cruise control is also not included on every trim; it is listed starting from S(O) up through Lounge Edition, while the E, EX, and EX(O) trims do not include it.",
+          "fact_ids": [
+            "W3f466061b6a1"
+          ],
+          "kind": "fact"
+        },
+        {
+          "text": "Additionally, the page notes that certain automatic trims such as SX (O), SX Tech, King, and King Knight get smart cruise control with stop and go instead of standard cruise control.",
+          "fact_ids": [
+            "Wf1855b97fce3",
+            "W80421b575cb8"
+          ],
+          "kind": "fact"
+        }
+      ],
+      "clarification": "",
+      "clarification_act": null,
+      "tool_calls": [],
+      "answered": true,
+      "topic": "feature_availability"
+    },
+    "repair_decision": {
+      "sentences": [
+        {
+          "text": "According to the Hyundai page, smartphone wireless charging is not standard on every trim, being listed as standard on SX, SX Premium, King, King Knight, and Lounge Edition.",
+          "fact_ids": [
+            "W3f466061b6a1"
+          ],
+          "kind": "fact",
+          "interaction": null
+        },
+        {
+          "text": "Cruise control is also not standard on every trim, as the page lists it as standard on S(O), S(O) Knight, SX, SX Premium, King, King Knight, and Lounge Edition.",
+          "fact_ids": [
+            "W3f466061b6a1"
+          ],
+          "kind": "fact",
+          "interaction": null
+        },
+        {
+          "text": "Additionally, the website notes that automatic versions of SX (O), SX Tech, King, and King Knight receive smart cruise control with stop and go instead of standard cruise control.",
+          "fact_ids": [
+            "Wf1855b97fce3"
+          ],
+          "kind": "fact",
+          "interaction": null
+        }
+      ]
+    }
+  },
+  "s11": {
+    "event_raw_sha256": "3eebf1d2f067b030c65306ad2881c8b707c7a51c8775ddeaffdaf72eed158a19",
+    "delivered_answer": "According to the features page on www.hyundai.com, rear AC vents are standard across all listed trims: E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium, King, King Knight, and Lounge Edition."
+  },
+  "boundary": "Exact captured live evidence. No legend inferred or introduced into the original table. Synthetic paired controls may supply an explicit legend separately."
+}

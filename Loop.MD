@@ -1,10 +1,30 @@
 # Loop.MD — Demo Studio
 
-## Finite narrative-role checks — 2026-09-19 night session
+## Final finite stress and offline fixes — 19 September 2026
+
+Loop stays off. One original live caption session on274ed3d/v8:41/41 controlled flow checks,14QA/13returned/1cancelled,8synthetic interruptions,one new saved recap. Original semantic review9supported/3partial/1unsafe; all3calculations correct. No voice API test. After findings, only captured fixtures and session agents; no paid retry. New incremental app estimate$0.4496.
+
+Offline behavioral evals after the fix freeze (all blocked-network):
+
+- `runtime_transmission_conditions_contract.py` —17 groups: uncited out-of-pack automatic requirement reaches broad duplicate, remains feature-owned and never licenses extra donor claims.
+- `pitch_priority_revision_contract.py` —7 groups, `player_priority_revision_contract.cjs` —10 groups: exact reviewed rear proof survives explicit changed priority, closing continuation and full playback. Independent real closing/save controls3/3.
+- `runtime_live_table_contract.py` —21 groups: all listed/shown/named enters unchanged explicit-legend policy; precise composition guidance and actual captured tables.
+- `runtime_emi_delivery_contract.py` —13 groups: complete illustrative-figure caveat is idempotent, negated/unrelated exclusions never count.
+- `runtime_universal_scope_contract.py` —8 groups: actual stale scope loses universal token and recovers F096/F097; named trims, comparisons and quantified follow-ups retain intended scope.
+- `runtime_acts_contract.py` —30 groups: actual combined guarantee yields fixed approval+EMI limit; unrelated/historical inputs do not expand it.
+
+Required deck320/320, acceptance24/24 and both smoke phases pass; graph130/repair106/cohort94/limits118 remain green. Python61/JS17 syntax checks pass. Logs `final-gates/night-stress-post-*` and `output/creta-night-final/`. These are deterministic regression checks, not a second live score, acoustic metric or persuasion result. Original v7 QA100 remains separate95/5.
+
+
+## Historical checkpoints below — no new paid authorization
+
+The following sections preserve earlier states and plans. References to “next” runs describe past bounded authorizations, now completed or superseded. Only the final night checkpoint above is current; no paid retry is authorized.
+
+## Historical narrative-role checks — 2026-09-19 night session
 
 Loop remains off. Planner now supplies an evidence-grounded story outline and exact image selection; Author supplies the final spoken delivery without replanning the route. The session-generated CRETA candidates use the existing v7 facts, IDs and schema. No paid Plan/Author/Build call or voice test was used to create or review them. Six offline handoff groups pass with blocked sockets; they verify input wiring and review boundaries, not story-quality scores, publication or acoustic quality. Candidate provenance is under `output/creta-night-final/`. The separately authorized final stress session must be recorded on its own merits, with no paid retry after findings.
 
-## Current finite checks — source restrictions and live-table proof
+## Historical finite checks — source restrictions and live-table proof
 
 Loop remains off. The settled `b01b0c6`/v7 cohort remains 97 supported, 1 partial, 2 unsafe and no unhelpful answers or whole-turn provider failures. Independently reviewed source-restriction and live-table guards preserve own-row feature modifiers, explicit cell semantics, aligned complete headers and matching trim universes. Cited context/limitation labels cannot bypass these checks. Final live-table 18, coverage 24, ordinal 21, grouped quantities 8, helper 29, conversation 18, schema 8, deck 320, acceptance 24 and both smoke phases pass with zero outbound attempts. Graph, repair, limits, cohort and clause contracts also pass. Logs/hashes: `final-gates/table-scope-final-*`. No source, story, speech or UI changes. The next unchanged live 100 is capped at $3.50/300 completions, baseline $15.1996, within the overall $20 ceiling. Free gates are not live acceptance.
 
@@ -14,11 +34,11 @@ Loop remains off. The settled `b01b0c6`/v7 cohort remains 97 supported, 1 partia
 
 Loop remains off. The settled `d7c4bbe`/v7 cohort remains 93 supported, 2 partial, 3 unhelpful, 2 unsafe and 0 provider failures. Bounded fixes preserve comma-coordinated ranges, source-pronoun ownership and symmetric numeric typography; closed dealer/evidence acts keep useful limits. Final ordinal 21, coverage 20, grouped quantities 8, typed helper 29, conversation 18, schema 8, deck 320, acceptance 24 and both smoke phases pass with isolated storage and zero outbound attempts. Graph, repair, limits, cohort and clause checks pass; independent pairing, calculator-deadline and currency checks also pass. Exact logs/hashes are under `final-gates/range-source-*`. No source, script, speech or UI changes. The next unchanged live 100 has a separate $3.50/300-completion cap within the overall $20 ceiling.
 
-## Current finite checks — source coverage and useful boot uncertainty
+## Historical finite checks — source coverage and useful boot uncertainty
 
 Loop remains off. The settled three-second fallback cohort scored 94 supported, 4 partial, 1 unsafe and 1 provider failure; its two original budget segments remain preserved. The coordinated source-pronoun guard and question-bound boot-measurement limit have independent reviews. Final coverage 17, typed helper 24, conversation 17, schema 8, deck 320, acceptance 24 and both smoke phases pass in isolated storage with zero outbound attempts. Graph, repair, limits, cohort and clause controls also pass. Logs and frozen hashes are under `final-gates/coverage-boot-*`. No source, script, speech or UI changes. The next unchanged live 100 is separately capped at $3.50/300 completions; free checks do not replace live acceptance.
 
-## Current finite checks — earlier fallback experiment
+## Historical finite checks — earlier fallback experiment
 
 Loop stays off. The settled9d46913/v7 cohort remains87supported/3partial/2unhelpful/0unsafe/8provider failures. Next code adds finite1–5s delay configuration(default5/off) and closed lender/product-evidence boundary acts. Required deck320/accept24/bothsmoke, schema8, conversation16, graph/repair/limits pass with sockets blocked. Typed-helper21, delay-config6 and hedge30 controls pass; independent review is clear. Final hashes/logs are recorded in `final-gates/early-fallback-final-manifest.json`. Paid3s-overlap replay is separately capped, retains the12s deadline and requires late-work settlement; no live benefit is claimed from free controls. The batch reserves32 possible completions per pair, including optional composition repair; dry preparation made no API calls.
 

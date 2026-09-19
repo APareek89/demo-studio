@@ -1,8 +1,16 @@
 # CRETA acceptance — 19 September 2026
 
-**Status: implementation and the reviewed demo are built; the latest text-answer quality gate passes. Full response-speed and physical voice acceptance remain open.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
+**Current status: v8 is built; the one newer stress session found defects that are now fixed offline. Full live acceptance of those fixes, response-speed and physical voice acceptance remain open.** The historical QA100 below passed onv7 and remains unchanged; it is not the latest stress result.
 
-## Latest source-restriction and live-table replay
+## One final night session and subsequent offline fixes
+
+See [the night review](CRETA_NIGHT_REVIEW.md). On274ed3d/v8,14QA requests/13results/one intentional cancellation produced9supported/3partial/1unsafe. All3calculations were correct;41/41 controlled flow checks and8synthetic interruptions passed, with one saved report. Synthetic timing is excluded from real audio/interruption metrics. Real mixed text request-to-result median3.605s,nearest-rank p95/max8.568s,n13. There is no new acoustic result.
+
+CR46–51 fix transmission-condition loss, changed-priority revisits, universal-table grammar/precise limits, duplicated EMI caveats, stale universal retrieval scope and combined guarantee completeness. Captured-fixture, production-function and independent checks pass without providers; no second paid quality result is claimed. Full reasons and controls are in Learning.MD and Loop.MD. Tomorrow's human run remains necessary for story appeal, mic/voice behavior and model choices after these fixes.
+
+Incremental app estimate$0.4496, below$5, including one matching narration assembly and one stress/summary. Report intent98 is an activity heuristic, not purchase probability.
+
+## Historical v7 source-restriction and live-table replay
 
 Frozen `0c47061`, unchanged v7, the same 100 questions: **95 supported, 5 partial, 0 unhelpful, 0 unsafe and 0 whole-turn provider failures**. All 100 exact raw-line hashes were checked. This meets the predefined ≥95% useful-supported / zero critical-unsupported-claim gate for this cohort. It does not prove general semantic correctness, customer conversion, perceived voice quality or acoustic interaction.
 

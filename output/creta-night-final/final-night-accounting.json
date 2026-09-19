@@ -1,0 +1,56 @@
+{
+  "generated_utc": "2026-09-19T18:13:20.842698+00:00",
+  "boundary": "One original live caption session; no voice API test; synthetic delivery/onsets excluded from latency; offline fixes not live-accepted",
+  "session_id": "s_mu8ozv2etxtx",
+  "new_session_ids": [
+    "s_mu8ozv2etxtx"
+  ],
+  "qa_requests": 14,
+  "returned_results": 13,
+  "flow_checks_passed": 41,
+  "flow_checks_total": 41,
+  "controlled_interruptions": 8,
+  "original_semantic_grades": {
+    "unsafe": 1,
+    "supported": 9,
+    "cancelled": 1,
+    "partial": 3
+  },
+  "real_qa_request_to_result_ms": {
+    "n": 13,
+    "median": 3605,
+    "p95_nearest_rank": 8568,
+    "max": 8568,
+    "samples": [
+      2401,
+      5562,
+      2247,
+      2370,
+      1867,
+      7897,
+      5534,
+      4476,
+      5128,
+      8568,
+      2216,
+      3605,
+      1805
+    ]
+  },
+  "cost": {
+    "baseline_usd": 16.3976,
+    "after_narration_usd": 16.5596,
+    "final_usd": 16.8472,
+    "incremental_usd": 0.4496,
+    "narration_usd": 0.162,
+    "stress_and_summary_usd": 0.2876,
+    "estimate_not_invoice": true
+  },
+  "original_artifacts_sha256": {
+    "live/stress-runtime-replay.json": "46b45ad661443a66821cfa6131da4e715de8ae99ae8aad1b32af0e2d36949c63",
+    "live/stress-browser-result.json": "90b533fa506b11b953204b2df72055c7e583bb33ad500a7272e15a0914ff57f8",
+    "live/stress-submitted-session.json": "d2c1b4eddebf1a9dcc34e152988843e4eb70bd2053e1f86f78dcccdb6bce69ea",
+    "live/runtime-semantic-review.json": "bcc1e2fb44ea79cbe5364ac148554238444f36a6961d179ea61c7997854bd82c",
+    "session-final.json": "e9d8e7b468acefe2529df498f713c10c6bdc03477151f56770b5be204a6011df"
+  }
+}

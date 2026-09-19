@@ -250,6 +250,21 @@ class RuntimeActsContract(unittest.TestCase):
             with self.subTest(question=question):
                 self.assertEqual(render_act(act("verification_limit", ["lender_approval"]), question=question), "")
 
+    def test_captured_combined_loan_and_emi_guarantee_names_both_limits(self):
+        question = "Can you guarantee the bank will approve my loan and that EMI if I decide today?"
+        expected = "I cannot confirm or guarantee a lender's loan approval or a final EMI quote."
+        self.assertEqual(render_act(act("verification_limit", ["lender_approval"]), question=question), expected)
+        self.assertEqual(render_act(act("verification_limit", ["lender_approval"]),
+                                   question="Can you confirm loan approval and guarantee the monthly payment?"), expected)
+        original = "I cannot confirm or guarantee a lender's loan approval."
+        for question in ("Can you guarantee loan approval?",
+                         "Can you guarantee my EMI?\nCan you confirm loan approval?",
+                         "Can you guarantee loan approval and calculate EMI using my inputs?",
+                         "Can you guarantee loan approval? My previous EMI was 99999 rupees."):
+            self.assertEqual(render_act(act("verification_limit", ["lender_approval"]), question=question), original)
+        self.assertEqual(render_act(act("verification_limit", ["lender_approval"]),
+                                   question=question + "\nDoes it have a sunroof?"), "")
+
     def test_actual_evidence_bypass_gets_only_fixed_operating_boundary(self):
         expected = "I will only make product claims supported by reviewed evidence."
         for question in (

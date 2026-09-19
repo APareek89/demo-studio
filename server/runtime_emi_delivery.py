@@ -56,7 +56,8 @@ def _excluded(text: str) -> set[str]:
 def _estimate_subject(text: str, start: int) -> bool:
     prefix = re.split(r"[.;!?]|\b(?:but|while|whereas|and)\b", text[:start], flags=re.I)[-1].strip()
     return (not prefix or bool(re.search(r"\b(?:estimate|calculation|EMI|loan|payment)\b", prefix, re.I))
-            or bool(re.fullmatch(r"(?:(?:that|which)\s+)?(?:this|it)(?:\s+is)?", prefix, re.I)))
+            or bool(re.fullmatch(r"(?:(?:that|which)\s+)?(?:this|it)(?:\s+is)?", prefix, re.I))
+            or bool(re.fullmatch(r"(?:this|it)\s+is\s+an\s+illustrative\s+figure(?:\s+(?:that|which))?", prefix, re.I)))
 
 
 def _not_lender_quote(text: str) -> bool:
