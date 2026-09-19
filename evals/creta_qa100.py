@@ -152,8 +152,22 @@ def main():
     parser.add_argument("--out", default="output/creta-runtime-2026-09-19/qa100")
     parser.add_argument("--run", action="store_true")
     parser.add_argument("--authorized-real-batch", action="store_true")
+    parser.add_argument("--only",default="",help="Comma-separated unchanged case IDs; prerequisite follow-ups are included automatically")
+    parser.add_argument("--max-cost",type=float,default=3.50,help="Estimated app-usage budget, with conservative next-pair reserve")
+    parser.add_argument("--max-completions",type=int,default=180)
     args = parser.parse_args()
     cases = case_pack()
+    requested={value.strip() for value in args.only.split(",") if value.strip()}
+    prerequisites=set()
+    if requested:
+        assert requested<={case["id"] for case in cases},"Unknown case ID in --only"
+        requested_followups=[case for case in cases if case["id"] in requested and case["category"]=="followup"]
+        if requested_followups:
+            last=max(case["id"] for case in requested_followups)
+            prerequisites={case["id"] for case in cases if case["category"]=="followup" and case["id"]<=last}-requested
+        cases=[case for case in cases if case["id"] in requested|prerequisites]
+    assert args.max_cost>0 and args.max_completions>=24,"Budget must reserve one complete next pair"
+    reserve_cost=min(1.50,args.max_cost/2)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     (out / "case-pack.json").write_text(json.dumps(cases, indent=2))
     if not args.run:
@@ -175,9 +189,10 @@ def main():
         guards.append({"at": time.time(), "recorded_batch_usd": round(cost, 5), "runtime_completions": calls})
         # Reserve twenty-four completions (three reasoning rounds, Gemini and
         # Claude once plus Runware's possible two-generation JSON repair, two
-        # concurrent questions). Keep $1.50 headroom for premium fallback use.
+        # concurrent questions). Keep up to $1.50 headroom for fallback use;
+        # smaller authorized batches reserve half their entire cost allowance.
         # Any other simultaneous runtime usage makes this guard more conservative.
-        if cost >= 2.00 or calls > 156:
+        if cost >= args.max_cost-reserve_cost or calls > args.max_completions-24:
             raise RuntimeError("Conservative batch budget guard reached; no more requests")
     def run_case(case):
         started = time.monotonic()
@@ -212,6 +227,8 @@ def main():
     after = http.get(usage_url).raise_for_status().json()
     times = sorted(row["elapsed_ms"] for row in results)
     summary = {"demo_id": args.demo, "snapshot_id": bundle["knowledge_snapshot_id"], "cases": len(cases), "completed": len(results),
+               "requested_cases":sorted(requested),"context_prerequisites":sorted(prerequisites),
+               "budget":{"max_cost_estimate_usd":args.max_cost,"max_recorded_runtime_completions":args.max_completions,"reserved_next_pair_usd":reserve_cost,"reserved_next_pair_completions":24},
                "stopped_reason": error, "cost_estimate_usd": round(after["total_usd"]-before["total_usd"], 5),
                "statuses": {status: sum(row["status"] == status for row in results) for status in sorted({row["status"] for row in results})},
                "latency_ms": {"median": statistics.median(times) if times else None, "p95": times[max(0, math.ceil(len(times)*.95)-1)] if times else None},

@@ -276,6 +276,59 @@ class KnowledgeContract(unittest.TestCase):
         self.assertEqual([r["variants"] for r in projection["rows"]],[["E"],["King"]])
         self.assertNotIn("SX",[v for r in projection["rows"] for v in r["variants"]])
 
+    def test_parenthetical_matrix_preserves_exact_variant_value_pairs(self):
+        row = fact(id="F049", claim="Wheel size availability", value="R16 steel (E, EX), R16 styled steel (EX(O)), R17 alloy (S(O), SX, SX Premium), R18 alloy (S(O) Knight, King, King Knight, Lounge Edition)",
+                   conditions="Varies strictly by variant", scope={"model":"CRETA","market":"India"})
+        identity = knowledge._identity(row)
+        projection = knowledge.variant_projection(row, {"variant":["S(O)","S(O) Knight"]})
+        self.assertEqual([(r["label"],r["variants"]) for r in projection["rows"]], [("R17 alloy",["S(O)"]),("R18 alloy",["S(O) Knight"])])
+        exact = knowledge.variant_projection(row,{"variant":"EX"})
+        self.assertEqual([r["label"] for r in exact["rows"]],["R16 steel"])
+        self.assertEqual(knowledge._identity(row), identity)
+        store.write_json(self.did,"understanding.json",understanding([row]))
+        retrieved = knowledge.retrieve(self.did,"How is S(O) Knight different from S(O)?",scope={"variant":["S(O) Knight","S(O)"]})["evidence"]
+        self.assertEqual([f["id"] for f in retrieved],["F049"])
+        self.assertEqual(retrieved[0]["value"],row["value"])
+
+    def test_matrix_projection_ignores_dimensions_held_rows_and_source_tables(self):
+        row = fact(id="F001",claim="Wheels",value="205/65 R16 (D=405.6 mm) steel (E, EX)",scope={"model":"CRETA"})
+        projected = knowledge.variant_projection(row,{"variant":"EX"})
+        self.assertEqual(projected["rows"][0]["label"],"205/65 R16 (D=405.6 mm) steel")
+        row["approved"] = False
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"EX"}))
+        row["approved"] = True; row["value"] = "Equipment not specified"
+        row["source"]["quote"] = "R18 alloy (E, EX)"
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"EX"}))
+
+    def test_explicit_universal_equipment_is_available_for_named_trim_retrieval(self):
+        row = fact(id="F174",claim="Standard safety equipment",value="six airbags and rear parking sensors",conditions="Standard equipment across the range.",scope={"model":"CRETA","market":"India"})
+        self.assertFalse(knowledge.scope_matches(row,{"variant":"SX"}))
+        projection = knowledge.variant_projection(row,{"variant":"SX"})
+        self.assertEqual(projection["rows"][0]["variants"],["SX"])
+        self.assertIn("rear parking sensors",projection["rows"][0]["assertion"])
+        store.write_json(self.did,"understanding.json",understanding([row]))
+        self.assertEqual([f["id"] for f in knowledge.retrieve(self.did,"SX parking assistance",scope={"variant":"SX","market":"India"})["evidence"]],["F174"])
+        self.assertEqual(knowledge.retrieve(self.did,"SX parking",scope={"variant":"SX","market":"Nigeria"})["evidence"],[])
+
+    def test_generic_or_qualified_availability_never_becomes_universal(self):
+        row = fact(id="F001",claim="Parking sensors",value="Rear parking sensors",scope={"model":"CRETA"})
+        for condition in ("Selected variants only", "Not standard on all variants", "Standard on most variants", "Across the range except E", "Available from SX and above"):
+            row["conditions"] = condition
+            self.assertIsNone(knowledge.variant_projection(row,{"variant":"E"}),condition)
+        row["conditions"] = "Standard across all variants"; row["scope"]["variant"] = "King"
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"E"}))
+
+    def test_lineup_membership_keeps_market_and_does_not_establish_equipment(self):
+        row = fact(id="F192",kind="availability",claim="Available variants listed in Pune FAQ",value="E, EX, S, SX, and SX(O)",conditions="Market-specific variant listing in Pune FAQ",scope={"model":"CRETA","market":"Pune, India"})
+        projection = knowledge.variant_projection(row,{"variant":"SX(O)"})
+        self.assertEqual(projection["rows"][0]["variants"],["SX(O)"])
+        self.assertIn("Pune FAQ",projection["rows"][0]["assertion"])
+        store.write_json(self.did,"understanding.json",understanding([row]))
+        found = knowledge.retrieve(self.did,"What does the source say about SX(O) lineup?",scope={"variant":"SX(O)"})["evidence"]
+        self.assertEqual([f["id"] for f in found],["F192"])
+        self.assertEqual(found[0]["scope"]["market"],"Pune, India")
+        self.assertEqual(knowledge.retrieve(self.did,"SX(O) lineup",scope={"variant":"SX(O)","model_year":"2026"})["evidence"],[])
+
     def test_old_html_cache_is_reparsed_without_overwriting_old_revision(self):
         src = store.load(self.did)["sources"][1]
         revision = "a" * 64

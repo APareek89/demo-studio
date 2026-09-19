@@ -118,6 +118,45 @@ def variant_projection(fact: dict, requested: dict | None) -> dict | None:
             if matched:
                 rows.append({"polarity":polarity,"variants":matched,"assertion":clause,
                              "label":positive[1] if polarity=="positive" else str(fact.get("claim",""))})
+        # Reviewed matrices also use ``R17 alloy (S(O), SX), R18 alloy
+        # (King, King Knight)``. Balance parentheses so EX and EX(O) remain
+        # distinct; only an explicit named group licenses its adjacent label.
+        depth, start, entry_start = 0, None, 0
+        for index, character in enumerate(clause):
+            if character == "(":
+                if depth == 0: start = index
+                depth += 1
+            elif character == ")" and depth:
+                depth -= 1
+                if depth == 0:
+                    variants = names(clause[start + 1:index])
+                    label = clause[entry_start:start].strip(" ,")
+                    matched = [v for v in variants if scope_value(v,"variant") in wanted]
+                    if matched and label and not re.search(r"\b(?:no|not|except|excludes?|excluding)\b", label, re.I):
+                        rows.append({"polarity":"positive","variants":matched,
+                                     "assertion":clause[entry_start:index + 1].strip(" ,"),"label":label})
+            elif character == "," and depth == 0:
+                entry_start = index + 1
+    # A named-trim filter must retain explicitly universal reviewed equipment,
+    # even when extraction did not duplicate that assertion in structured scope.
+    # Missing scope alone never means universal; restricted scopes still win.
+    if not (fact.get("scope") or {}).get("variant"):
+        universal = next((clause for clause in clauses
+                          if re.search(r"\b(?:all|every)\s+(?:listed\s+)?(?:variants?|trims?)\b|\bacross\s+(?:the\s+)?(?:range|lineup)\b",clause,re.I)
+                          and not re.search(r"\b(?:no|not|except|excluding|selected|some|most|certain)\b",clause,re.I)), None)
+        covered = {scope_value(v,"variant") for row in rows for v in row["variants"]}
+        remaining = [v for v in scope_atoms((requested or {}).get("variant",""),"variant") if scope_value(v,"variant") not in covered]
+        if universal and remaining:
+            rows.append({"polarity":"positive","variants":remaining,
+                         "assertion":str(fact.get("value",""))+"; "+universal,"label":str(fact.get("claim",""))})
+    # A lineup assertion establishes that the named variant is mentioned, not
+    # its equipment, model year, or equivalence to another market's lineup.
+    if fact.get("kind") == "availability" and re.search(r"\b(?:variants?|trims?|lineup)\b",str(fact.get("claim","")),re.I):
+        variants = names(str(fact.get("value","")))
+        matched = [v for v in variants if scope_value(v,"variant") in wanted]
+        if matched:
+            rows.append({"polarity":"positive","variants":matched,
+                         "assertion":str(fact.get("claim",""))+": "+str(fact.get("value","")),"label":str(fact.get("claim",""))})
     if not rows:
         return None
     return {"kind":"explicit_variant_clauses","rows":rows,"requested_variants":scope_atoms((requested or {}).get("variant",""),"variant")}

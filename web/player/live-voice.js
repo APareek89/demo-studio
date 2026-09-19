@@ -40,8 +40,12 @@ export class LiveVoiceClient {
       socket.onerror = () => reject(new Error("Live connection unavailable"));
       socket.onclose = () => {
         if (this.socket !== socket) return;
-        this.ready = false; this.connecting = null; reject(new Error("Live connection closed"));
-        this.failPending(new Error("Live connection closed")); this.cancelAudio(); this.stopCapture(false);
+        const error = new Error("Live connection closed");
+        this.ready = false; this.connecting = null; reject(error);
+        // A broken transport is a delivery failure, not a customer cancellation.
+        // Reject owned speech so its readable fallback can finish the same turn.
+        // Explicit interruption/end already invalidates its owner and resolves false.
+        this.audioEpoch++; this.failPending(error); this.finishAudio(false, error); this.stopCapture(false);
         if (!this.closed) { this.onState("unavailable"); this.onError("Connection lost. Type your reply, or tap the microphone to reconnect."); }
       };
     });

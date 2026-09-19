@@ -36,7 +36,7 @@ def _numbers(text: str) -> set[Decimal]:
     return found
 
 
-def _bound_unit(quote: str, value: Decimal, unit: str, *, annual: bool = False) -> bool:
+def _bound_unit(quote: str, value: Decimal, unit: str, *, annual: bool = False, monthly: bool = False) -> bool:
     """Bind a unit to this occurrence, never to an unrelated number in the quote.
 
     A short exact operand quote is preferable. Wider quotes are allowed, but the
@@ -80,6 +80,9 @@ def _bound_unit(quote: str, value: Decimal, unit: str, *, annual: bool = False) 
         if annual:
             valid = valid and bool(re.search(r"\b(?:annual(?:ly)?|yearly|per\s+(?:year|annum)|p\.?a\.?)\b", before + match.group() + after, re.I))
             valid = valid and not re.search(r"\b(?:monthly|per\s+month)\b", before + after, re.I)
+        if monthly:
+            valid = valid and bool(re.search(r"\b(?:monthly|per\s+month)\b", before + match.group() + after, re.I))
+            valid = valid and not re.search(r"\b(?:annual(?:ly)?|yearly|per\s+(?:year|annum))\b", before + after, re.I)
         if valid:
             return True
     return False
@@ -111,7 +114,8 @@ def calculate(request: ToolRequest | dict, evidence: list[dict], customer_text: 
         # A quoted number must actually carry the proposed unit/meaning. Avoid
         # accepting a five-year warranty as five months of loan tenure.
         if not _bound_unit(item.quote, Decimal(str(item.value)), unit,
-                           annual=request.operation == "emi" and item.name == "annual_rate"):
+                           annual=request.operation == "emi" and item.name == "annual_rate",
+                           monthly=request.operation == "emi" and item.name == "monthly_rate"):
             raise ValueError("Input unit must be explicit in the quoted input")
         values[item.name], units[item.name] = Decimal(str(item.value)), unit
         origins.append(item.model_dump())
@@ -121,15 +125,16 @@ def calculate(request: ToolRequest | dict, evidence: list[dict], customer_text: 
         if set(values) != set(names):
             raise ValueError("Required inputs: " + ", ".join(names))
     if op == "emi":
-        require(["principal", "annual_rate", "tenure"])
-        if units["principal"] != "inr" or units["annual_rate"] != "percent" or units["tenure"] not in ("months", "years"):
-            raise ValueError("EMI needs INR principal, annual interest percent and months/years tenure")
-        p, r = values["principal"], values["annual_rate"] / 1200
+        rate = "monthly_rate" if "monthly_rate" in values else "annual_rate"
+        require(["principal", rate, "tenure"])
+        if units["principal"] != "inr" or units[rate] != "percent" or units["tenure"] not in ("months", "years"):
+            raise ValueError("EMI needs INR principal, explicitly annual or monthly interest percent and months/years tenure")
+        p, r = values["principal"], values[rate] / (100 if rate == "monthly_rate" else 1200)
         n = values["tenure"] * (12 if units["tenure"] == "years" else 1)
         if not 0 < p <= 1e9 or not 0 <= r <= Decimal("0.1") or n != n.to_integral_value() or not 1 <= n <= 600:
             raise ValueError("EMI input range is invalid")
         result = p/n if r == 0 else p*r*(1+r)**int(n)/((1+r)**int(n)-1)
-        formula, result_unit = "P*r*(1+r)^n/((1+r)^n-1), r=annual percent/1200, n=months; at zero interest P/n", "INR/month"
+        formula, result_unit = "P*r*(1+r)^n/((1+r)^n-1), r=" + ("monthly percent/100" if rate == "monthly_rate" else "annual percent/1200") + ", n=months; at zero interest P/n", "INR/month"
     elif op == "fuel_cost":
         require(["distance", "efficiency", "fuel_price"])
         if units["distance"] not in ("km", "km/month") or units["efficiency"] != "km/litre" or units["fuel_price"] != "inr/litre":
@@ -181,6 +186,25 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
     if not terms:
         raise ValueError("Specify the product detail you want checked on that website")
     seed_host = urlsplit(url).hostname
+    model_tokens = crawl._model_tokens({"url": url, "role": "competitor"}, {})
+    seed_path = urlsplit(url).path.rstrip("/")
+    seed_locale = crawl._locale_prefix(url)
+
+    def in_source_scope(candidate: str, label: str = "") -> bool:
+        if urlsplit(candidate).hostname != seed_host:
+            return False
+        if crawl.canonical_url(candidate) == crawl.canonical_url(url):
+            return True
+        if model_tokens:
+            return crawl._eligible(candidate, label, url, model_tokens)
+        # A generic company homepage does not identify a model. Do not treat
+        # every car or service link on it as that customer's requested product.
+        parts = tuple(part for part in seed_path.split("/") if part)
+        if len(parts) <= len(seed_locale):
+            return False
+        path = urlsplit(candidate).path.rstrip("/")
+        return (not seed_locale or crawl._locale_prefix(candidate) == seed_locale) and path.startswith(seed_path + "/")
+
     queue, seen, pages, coverage = [(url, "customer URL")], set(), [], []
     candidates = []
     while queue and len(pages) < 3 and len(seen) < 3:
@@ -204,6 +228,13 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
         if urlsplit(final_url).hostname != seed_host:
             coverage.append(f"Redirect outside customer-selected host was excluded: {final_url}")
             continue
+        if not in_source_scope(final_url):
+            coverage.append(f"Redirect outside the customer-selected model or page scope was excluded: {final_url}")
+            continue
+        final_canonical = crawl.canonical_url(final_url)
+        if any(crawl.canonical_url(p["url"]) == final_canonical for p in pages):
+            continue
+        seen.add(final_canonical)
         pages.append({"url": final_url, "discovery": discovery, "fetched_at": page.get("fetched_at", time.time())})
         coverage.extend(str(w) for w in page.get("warnings", []))
         # Legacy adapters may supply paragraphs only. Never split table-like lines.
@@ -227,6 +258,8 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
             if urlsplit(child).hostname != seed_host or urlsplit(child).scheme not in {"http", "https"} or crawl.canonical_url(child) in seen:
                 continue
             if crawl.EXCLUDE.search(urlsplit(child).path):
+                continue
+            if not in_source_scope(child, link.get("label", "")):
                 continue
             score = len(terms & set(re.findall(r"[a-z0-9]{3,}", (urlsplit(child).path + " " + link.get("label", "")).lower())))
             if score:
@@ -256,4 +289,5 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
     if not evidence:
         raise ValueError("No readable section matched that question within the supplied-source lookup budget")
     return {"tool": "source_lookup", "url": pages[0]["url"] if pages else url, "evidence": evidence, "pages": pages,
+            "scope": {"model_tokens": model_tokens, "locale": list(seed_locale), "seed_url": url},
             "elapsed_ms": round((time.monotonic() - started) * 1000), "coverage": list(dict.fromkeys(coverage))}

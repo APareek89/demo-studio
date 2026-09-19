@@ -49,6 +49,18 @@ with sync_playwright() as p:
     context = browser.new_context(viewport={"width": 1440, "height": 1000})
     context.add_init_script(instrument)
     context.route("**/*", lambda route: route.continue_() if route.request.url.startswith(("http://127.0.0.1:", "data:", "blob:")) else route.abort())
+    farewell_faults = []
+    def fail_farewell_socket(route):
+        server = route.connect_to_server()
+        def outbound(raw):
+            event = json.loads(raw)
+            if event.get('type') == 'delivery.speak' and event.get('text', '').startswith("Fair enough. Here's a summary"):
+                farewell_faults.append(event['utterance_id'])
+                route.close(code=1011, reason='Free closing transport failure regression')
+                return
+            server.send(raw)
+        route.on_message(outbound)
+    context.route_web_socket('**/run/live*', fail_farewell_socket)
     page = context.new_page()
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
@@ -80,6 +92,8 @@ with sync_playwright() as p:
     page.get_by_role("button", name="Stop and see the summary", exact=True).click()
     expect(page.get_by_role("heading", name="Your recap", exact=True)).to_be_visible()
     check("recap keeps explicit customer wording and unresolved question", "boot space matters more" in page.locator(".pl-handoff").inner_text() and "What is the warranty?" in page.locator(".pl-handoff").inner_text())
+    needs = page.locator('.pl-handoff .kvbox').filter(has=page.get_by_role('heading', name='What matters to you', exact=True)).inner_text()
+    check("recap needs include intake and explicit refinement, not raw QA history", "family car" in needs and "Actually, boot space matters more." in needs and "What is the warranty?" not in needs)
     page.screenshot(path=str(output / "typed-recap.png"))
 
     # Same real player and worklet, synthetic microphone and STT events. No physical device.
@@ -109,9 +123,25 @@ with sync_playwright() as p:
     expect(page.get_by_role("button", name="Continue demo", exact=True)).to_be_visible()
     check("duplicate final creates exactly one question", page.evaluate("__wire.filter(e=>e.type==='turn.ask').length") == before + 1)
     check("answer and interruption leave the same capture running", page.evaluate("__captures===2 && __tracks[1].readyState==='live'"))
-    page.get_by_role("button", name="Stop and see the summary", exact=True).click()
-    expect(page.get_by_role("heading", name="Your recap", exact=True)).to_be_visible()
+    # Reach the natural closing with capture still active. Stop would set its own
+    # status and could hide a stale Listening label on the natural recap path.
+    for _ in range(20):
+        page.wait_for_function("!!document.querySelector('.pl-chips button')")
+        choices = page.locator('.pl-chips button').all_text_contents()
+        if 'Not yet' in choices:
+            page.get_by_role('button', name='Not yet', exact=True).click()
+            break
+        label = next((label for label in ['Continue demo', 'That settles it', 'Continue', 'Yes, continue'] if label in choices), None)
+        assert label, f'Unexpected route wait: {choices}'
+        page.locator('.pl-lead.open .lead-close').click() if page.locator('.pl-lead.open').count() else None
+        page.get_by_role('button', name=label, exact=True).click()
+    else:
+        raise AssertionError('Natural route did not reach its closing')
+    expect(page.get_by_role("heading", name="Your recap", exact=True)).to_be_visible(timeout=12000)
     check("ending visit releases microphone tracks", page.evaluate("__tracks.every(t=>t.readyState==='ended')"))
+    check("natural recap never claims to be listening after capture ends", page.locator('.pl-status').inner_text() == 'Demo complete')
+    check("explicit Not yet still reaches a readable recap when farewell transport fails", len(farewell_faults) == 1 and "The selected voice is unavailable" in page.locator('.pl-thread, .pl-drawer .body').inner_text())
+    check("failed farewell never records successful audio delivery", not page.evaluate("id=>__wire.some(e=>e.type==='delivery.start'&&e.utterance_id===id)", farewell_faults[0]))
     check("all audio remains muted", page.evaluate("__audios.every(a=>a.paused || a.muted)"))
     check("no browser runtime exception", not errors)
     page.screenshot(path=str(output / "voice-lifecycle-recap.png"))

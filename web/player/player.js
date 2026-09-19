@@ -38,7 +38,7 @@ function explicitContextCorrection(text) {
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
-    profile: { name: "", why: "", followup: "", focus: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
+    profile: { name: "", why: "", followup: "", focus: [], stated_needs: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, inputMode: "voice", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
     leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
     listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set(), interruptions: [] };
@@ -415,6 +415,10 @@ export function mountPlayer(host, bundle, api) {
       for (const button of [el.mic, el.inMic]) { button.title = on ? "Mute microphone" : "Enable microphone"; button.setAttribute("aria-label", button.title); button.setAttribute("aria-pressed", String(on)); }
       el.hint.textContent = on ? "Microphone on — speak any time to interrupt. Tap to mute." : "Microphone off — type below or tap to enable it.";
       if (S.intakeOpen) el.inState.textContent = on ? "Listening — take your time" : "Type your answer, or enable the microphone";
+      if (!on) {
+        el.live.textContent = "";
+        if (el.status.classList.contains("listening") || el.statusTxt.textContent === "Listening") setStatus("idle", S.ended ? "Demo complete" : "Microphone off");
+      }
       return;
     }
     if (on) { setStatus("listening", "Listening"); el.hint.textContent = "Listening… tap the mic when you are done, or type below."; if (S.intakeOpen) el.inState.textContent = "Listening — or type your answer below"; }
@@ -494,9 +498,10 @@ export function mountPlayer(host, bundle, api) {
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
   }
-  function rememberContext(text) {
+  function rememberContext(text, { statedNeed = false } = {}) {
     if (!text) return;
     S.profile.followup = [S.profile.followup, text].filter(Boolean).join("\n");
+    if (statedNeed && !S.profile.stated_needs.includes(text)) S.profile.stated_needs.push(text);
     S.profile.focus = [...new Set([...S.profile.focus, ...parseFocus(text)])];
   }
   function queueRefinement() {
@@ -702,7 +707,7 @@ export function mountPlayer(host, bundle, api) {
     if (live && !options.question && explicitContextCorrection(text)) {
       captureOrigin(); interruptAll(); const run = newRun();
       if (!(S.transcript.at(-1)?.role === "user" && S.transcript.at(-1)?.text === text)) addMsg("user", text);
-      rememberContext(text);
+      rememberContext(text, { statedNeed: true });
       S.profile.focus = [...new Set([...parseFocus(text), ...S.profile.focus])]; queueRefinement();
       if (await speak("Thanks—I've noted that priority. I'll use it to tailor the remaining demo.", run)) await holdConversation(run);
       return;
@@ -975,11 +980,12 @@ export function mountPlayer(host, bundle, api) {
     live?.stopCapture();
     if (S.endedAt === null) S.endedAt = Date.now();
     S.ended = true;
+    setStatus("idle", "Demo complete");
     el.lead.classList.remove("open");
     const session = sessionRecord();
     const explored = [...new Set(session.slides_visited.map((visit) => slides.find((slide) => slide.id === visit.slide_id)).filter((slide) => slide && !["hero_open", "hero_close", "closing"].includes(slide.kind)).map((slide) => slide.title).filter(Boolean))];
     const openQuestions = [...S.openQuestions];
-    const shared = [S.profile.why, S.profile.followup].filter(Boolean);
+    const shared = [...new Set([S.profile.why, ...S.profile.stated_needs].filter(Boolean))];
     const actionUrl = ctaLink(c);
     const externalAction = actionUrl ? h("div", {}, h("a", { class: "btn primary sm", href: actionUrl, target: "_blank", rel: "noopener noreferrer", "aria-label": `${c.label} (opens in a new tab)` }, c.label), h("p", { class: "sub" }, "Opens in a new tab.")) : null;
     const section = (title, children) => h("div", { class: "kvbox" }, h("h5", {}, title), ...children);
@@ -1038,7 +1044,7 @@ export function mountPlayer(host, bundle, api) {
   function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
-  function restart() { interruptAll(); live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   function pause() { if (!S.paused) togglePause(); }
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   const onHide = () => { live?.close(); if (S.transcript.length && api.beacon) { try { api.beacon(sessionRecord()); } catch (e) {} } };

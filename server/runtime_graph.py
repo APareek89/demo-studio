@@ -47,6 +47,9 @@ An applicability_projection contains exact positive or negative variant clauses 
 Negative clauses support only absence for those named trims; never turn them into a positive feature claim.
 State projected positive and negative trim points in separate sentences; do not mix opposing applicability in one sentence.
 Make each sentence stand on its own, with its material trim/engine qualifiers; avoid dangling 'These include' answers.
+For a refusal, state your own limit directly: 'I cannot guarantee that' or 'I could not verify that offer'.
+Do not assert that no manufacturer can guarantee something, or that no record exists anywhere. Keep reasons separate.
+Never claim the provided page verified a detail when its citation is only a stored document or another linked page.
 When a trim is unspecified, a qualified summary such as 'available on selected trims' is useful; never imply all trims.
 Give the useful supported part even when another part is unknown; a missing price does not erase known equipment.
 A 'context' sentence contains only the customer's actual context, a greeting or a proposed fit-check, never product
@@ -59,13 +62,14 @@ Do not infer a usage/time warranty relationship or 'whichever comes first' unles
 
 TOOLS
 Calculator does all arithmetic; never calculate a new figure yourself. Operations:
-emi(principal INR, annual_rate percent, tenure months|years), fuel_cost(distance km|km/month, efficiency km/litre,
+emi(principal INR, either annual_rate percent or monthly_rate percent, tenure months|years), fuel_cost(distance km|km/month, efficiency km/litre,
 fuel_price INR/litre), difference/sum/product/divide/percentage(a,b; b is percent for percentage).
 Each input has name,value,unit,source_id and an exact quote containing that input. source_id='customer' for explicit
 customer inputs, otherwise a supplied evidence ID. Missing inputs → ask one necessary question; no default interest,
 fuel price, fuel efficiency, loan size or down payment. You may chain up to2 rounds/4calls using prior calculated IDs.
 An engine name alone does not supply a fuel-efficiency number: ask for an explicit reviewed or customer-supplied value.
 Results marked estimates must be called illustrative; an EMI is not a lender quote. Retain all assumptions.
+Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
 source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
 When source access fails say what you couldn't verify and still answer the known part. Do not claim you checked a
 page that failed. Already-returned tool evidence is enough; don't call a tool again with identical inputs.
@@ -135,17 +139,74 @@ def _projected_support(fact: dict, text: str, requested: dict) -> tuple[bool, st
     anchor_ok=bool(labels) and all(label & terms(text) for label in labels)
     if projected_features:
         anchor_ok=anchor_ok and projected_features <= _claim_features(text)
+    if len(targets)>1:
+        # A single universal comparison must be supported for each requested
+        # trim. R18 in a Knight row cannot fund "both have R18" via pooled text.
+        for target in targets:
+            target_rows=[row for row in rows if target in scope_values(row["variants"],"variant")]
+            target_text=str(fact.get("claim",""))+" "+" ".join(row["assertion"] for row in target_rows)
+            if (_numbers(text) & _numbers(text_support))-_numbers(target_text):
+                return False,"",[]
     return bool(targets and targets <= supported and anchor_ok), text_support, [v for row in rows for v in row["variants"]]
 
 
 def _safe_limitation(text: str, customer_text: str) -> bool:
-    negative_check = re.match(r"^(?:I|we)\s+(?:can't|cannot|couldn't|don't|do not|won't|will not)\s+(?:(?:currently|reliably|honestly|yet)\s+)?(?:guarantee|verify|confirm|promise|predict|know|assume|guess|provide)\b", text, re.I)
+    text = text.replace("’", "'")
+    negative_check = re.match(r"^(?:I|we)\s+(?:can't|cannot|couldn't|could not|don't|do not|won't|will not)\s+(?:(?:currently|reliably|honestly|yet)\s+)?(?:guarantee|verify|confirm|promise|predict|know|assume|guess|provide|claim|access)\b", text, re.I)
     # This exemption is deliberately one negative clause. Any coordinated or
     # second sentence goes through ordinary grounding, regardless of subject
     # ('you', 'all variants', a named trim, etc.). A limitation label cannot lend
     # credibility to an appended positive claim.
-    continuation = re.search(r"[;—–]|[.!?]\s+\w|\b(?:and|but|however|yet|plus|also|because|although|since|while|whereas|despite|which|whose|inside|within|with|from|in)\b",text,re.I)
+    # 'Without verified comparative evidence' limits a claim; it never asserts
+    # equipment absence. No other 'without' complement receives this exception.
+    text = re.sub(r"\s+without\s+(?:verified\s+)?(?:comparative\s+)?evidence[.!]?$", "", text, flags=re.I)
+    continuation = re.search(r"[;—–]|[.!?]\s+\w|\b(?:and|but|however|yet|plus|also|because|although|since|while|whereas|despite|which|whose|inside|within|with|from|in|without)\b",text,re.I)
     return bool(negative_check and not continuation and not (_numbers(text)-_numbers(customer_text)))
+
+
+def _reviewed_refusal(text: str, customer_text: str) -> str:
+    """Narrow safe rewrites of observed refusals, never a positive-claim bypass."""
+    plain = text.replace("’", "'")
+    if re.fullmatch(r"No car manufacturer can guarantee (?:a vehicle|a car) will never (?:experience a mechanical issue|have a mechanical fault)\.", plain, re.I):
+        return "I cannot guarantee that this car will never have a mechanical fault."
+    # Retain the direct refusal, not an unsupported claim about all records or a
+    # technical implementation detail. The remaining clause is independently checked.
+    match = re.fullmatch(r"(.+?)\s+because\s+(?:there is no official record of that offer|only public web ports 80 and 443 are supported)\.", plain, re.I)
+    if match and _safe_limitation(match[1]+".", customer_text):
+        return match[1]+"."
+    return text
+
+
+def _global_coverage_claim(text: str) -> bool:
+    plain = text.replace("’", "'")
+    source = r"(?:page|website|sources?|records?|details|documents?|evidence)"
+    return bool(re.search(source+r".{0,70}\b(?:doesn't|don't|does not|do not|never)\s+(?:state|show|mention|list|include|cover|contain|provide)\b", plain,re.I)
+                or re.search(r"\b(?:aren't|isn't|are not|is not|not)\s+(?:covered|mentioned|listed|included|provided)\s+(?:in|by|anywhere)\b",plain,re.I)
+                or re.search(r"\b(?:no|none of the)\s+"+source+r"\b",plain,re.I))
+
+
+def _atomic_answer_rows(rows: list[dict], evidence: list[dict], requested: dict) -> list[dict]:
+    """Split a reviewed same-feature trim comparison into independently checked clauses."""
+    from .knowledge import scope_atoms
+    options=scope_atoms(requested.get("variant",""),"variant")
+    output, subject = [], ""
+    for raw in rows[:4]:
+        row=dict(raw);text=str(row.get("text",""))
+        lead=re.match(r"^(?:The\s+)?(.+?)\s+(?:trim|variant)\s+(?:comes|has|includes|offers)\b",text,re.I)
+        if lead:
+            named=canonical_scope_matches(lead[1],options,"variant")
+            subject=named[0] if len(named)==1 else ""
+        if subject and re.match(r"^It also\b",text):
+            text=re.sub(r"^It",subject,text,count=1)
+        row["text"]=text
+        match=re.fullmatch(r"(.+?)\s+(?:comes standard with|includes|adds|has)\s+(.+?),\s+(?:while they are|which is)\s+not available on\s+(.+?)\.?",text,re.I)
+        if match and row.get("kind","fact")=="fact" and any(f.get("applicability_projection") for f in evidence if f.get("id") in row.get("fact_ids",[])):
+            positive,feature,target=match.groups()
+            output.append({**row,"text":f"{positive} has {feature}."})
+            output.append({**row,"text":f"{feature[:1].upper()+feature[1:]} {'are' if feature.endswith('seats') else 'is'} not available on {target.rstrip('.')}."})
+        else:
+            output.append(row)
+    return output
 
 
 _FEATURE_PATTERNS = {
@@ -218,9 +279,16 @@ def _rounded_calculation_values(facts: list[dict], text: str) -> set[Decimal]:
 def _calculation_delivery(fact: dict) -> str:
     derivation = fact.get("derivation", {})
     inputs = {v["name"]: v for v in derivation.get("inputs", [])}
-    if derivation.get("operation")=="emi" and all(k in inputs for k in ("principal","annual_rate","tenure")):
-        p,r,n = (inputs[k] for k in ("principal","annual_rate","tenure"))
-        return (f"Using a loan of {p['value']:g} rupees at {r['value']:g}% annual interest over {n['value']:g} {n['unit']}, "
+    def plain(value):
+        number=Decimal(str(value))
+        if not number.is_finite():
+            raise ValueError("Non-finite calculated speech input")
+        return format(number,"f").rstrip("0").rstrip(".") if "." in format(number,"f") else format(number,"f")
+    rate_key="monthly_rate" if "monthly_rate" in inputs else "annual_rate"
+    if derivation.get("operation")=="emi" and all(k in inputs for k in ("principal",rate_key,"tenure")):
+        p,r,n = (inputs[k] for k in ("principal",rate_key,"tenure"))
+        basis="monthly" if rate_key=="monthly_rate" else "annual"
+        return (f"Using a loan of {plain(p['value'])} rupees at {plain(r['value'])}% {basis} interest over {plain(n['value'])} {n['unit']}, "
                 f"the illustrative EMI is {derivation['value']} rupees per month. This excludes fees and taxes and is not a lender quote.")
     unit = str(derivation.get("unit", "")).replace("INR/month", "rupees per month").replace("INR", "rupees")
     return f"Using the supplied inputs, the illustrative calculated result is {derivation.get('value', '')} {unit}."
@@ -235,7 +303,8 @@ def canonical_scope_matches(text: str, options: list[str], key: str) -> list[str
         if key == "model":
             aliases.add(scope_value(option, key))  # Hyundai CRETA and Creta share an explicit model identity.
         for alias in aliases - {""}:
-            pattern = r"(?<!\w)" + r"[\W_]*".join(re.escape(token) for token in alias.split()) + r"(?!\w)"
+            separator=r"[\W_]+" if key=="variant" and re.search(r"[()]",option) else r"[\W_]*"
+            pattern = r"(?<!\w)" + separator.join(re.escape(token) for token in alias.split()) + r"(?!\w)"
             if key == "variant":
                 pattern += r"(?!\s*\()"  # SX never qualifies an unknown SX(O).
             for match in re.finditer(pattern, text.casefold()):
@@ -456,7 +525,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         if len(clarification.split())<=40 and len(re.findall(r"[?？]",clarification))==1 and clarification.endswith(("?","？")) and not (NUMBERISH.search(clarification) or CLAIMISH.search(clarification)):
             return {"answer":clarification,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":clarification,"offer_callback":False,"topic":decision.get("topic","other"),"cta":""}, errors
         errors.append("invalid_clarification")
-    for row in decision.get("sentences",[])[:4]:
+    for row in _atomic_answer_rows(decision.get("sentences",[]),evidence,requested_scope):
         text = str(row.get("text","")).strip()
         ids = list(dict.fromkeys(row.get("fact_ids",[])))
         if not text: continue
@@ -464,9 +533,22 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             errors.append("unsupported_citation"); continue
         facts = [by_id[i] for i in ids]
         kind = row.get("kind","fact")
+        if kind=="limitation":
+            text=_reviewed_refusal(text,customer_text or question)
+        if _global_coverage_claim(text):
+            errors.append("unverified_coverage_claim")
+            sentences.append("I couldn't verify that from the retrieved evidence.")
+            continue
         if kind=="fact" and not ids:
             errors.append("uncited_fact"); continue
         if facts:
+            page_claim=bool(re.search(r"\b(?:page|website|webpage)\b.{0,50}\b(?:lists?|shows?|states?|confirms?|verif\w*|reports?|says?)\b|\baccording to\b.{0,50}\b(?:page|website|webpage)\b",text,re.I))
+            live=[f for f in facts if f.get("provenance")=="live_web"]
+            specific_page=bool(re.search(r"\b(?:provided|supplied|linked|highlights)\b.{0,25}\b(?:page|website|webpage)\b",text,re.I))
+            requested_urls={url.split("#")[0].rstrip("/") for url in supplied_urls(customer_text or question,[])}
+            source_urls={(f.get("source",{}).get("url") or f.get("source",{}).get("ref","")).split("#")[0].rstrip("/") for f in live}
+            if page_claim and (not live or (specific_page and requested_urls and not source_urls & requested_urls)):
+                errors.append("unverified_web_attribution"); continue
             if any(f.get("provenance")=="live_web" for f in facts) and not re.search(r"according to|\b(?:page|website|site|source)\b.*\b(?:says|lists|reports|states|shows)|\b(?:says|lists|reports|states)\b.*\b(?:page|website|site|source)\b",text,re.I):
                 domains = list(dict.fromkeys(urlsplit(f.get("source",{}).get("url") or f.get("source",{}).get("ref","")).hostname or "" for f in facts if f.get("provenance")=="live_web"))
                 if not domains or not all(domains):
@@ -490,9 +572,13 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             exact_mentions = scope_values(canonical_scope_matches(text + " " + question, all_variants, "variant"), "variant")
             exact_mentions |= requested_variants
             conditions = " ".join(str(f.get("conditions", "")) for f in structured_facts)
-            restricted_condition = bool(re.search(r"(?:selected?|higher|top|equipped|certain)\s+(?:\w+\s+)?(?:variants?|trims?|models?)|(?:availability|available|depends|vary|varies).*\b(?:variant|trim)\b", conditions,re.I))
-            qualified = bool(re.search(r"(?:selected?|higher|top|equipped|certain)\s+(?:\w+\s+)?(?:variants?|trims?|models?)|depending on.*\b(?:variant|trim)\b|\b(?:variant|trim).*(?:dependent|specific)",text,re.I)) or bool(sentence_mentions)
-            if restricted_condition and re.search(r"\b(?:every|all)\s+(?:variant|trim)|standard across",text,re.I):
+            restricted_condition = bool(re.search(r"(?:select(?:ed)?|higher|top|equipped|certain)\s+(?:\w+\s+)?(?:variants?|trims?|models?)|(?:availability|available|depends|vary|varies).*\b(?:variant|trim)\b", conditions,re.I))
+            qualified = bool(re.search(r"(?:select(?:ed)?|higher|top|equipped|certain)\s+(?:\w+\s+)?(?:variants?|trims?|models?)|depending on.*\b(?:variant|trim)\b|\b(?:variant|trim).*(?:dependent|specific)",text,re.I)) or bool(sentence_mentions)
+            universal_facts=[f for f in structured_facts if scope_values(f.get("scope",{}).get("variant",""),"variant") & {"all","all variants","all trims"}]
+            universal_features=set().union(*(_claim_features(_fact_text(f)) for f in universal_facts)) if universal_facts else set()
+            universal_text=" ".join(_fact_text(f) for f in universal_facts)
+            universal_licensed=bool(_claim_features(text)) and _claim_features(text)<=universal_features and not (_numbers(text)-_numbers(universal_text))
+            if restricted_condition and not universal_licensed and re.search(r"\b(?:every|all)\s+(?:variant|trim)|standard across",text,re.I):
                 errors.append("overgeneralized_variant"); continue
             # General discovery can describe availability without reciting a long
             # trim list. Carry the source restriction into each surviving sentence
@@ -505,7 +591,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             if scoped and any(not scope_values(v, "variant") & exact_mentions for v in scoped):
                 if not (qualified and not requested_variants and not exact_mentions):
                     errors.append("missing_variant_qualification"); continue
-            if scoped and re.search(r"all (?:variants|trims)|every (?:variant|trim)|standard across", text, re.I):
+            if scoped and not universal_licensed and re.search(r"all (?:variants|trims)|every (?:variant|trim)|standard across", text, re.I):
                 errors.append("overgeneralized_variant"); continue
             covered_variants = set().union(*(scope_values(v, "variant") for v in variants)) if variants else set()
             universal_source = bool(covered_variants & {"all", "all variants", "all trims"})

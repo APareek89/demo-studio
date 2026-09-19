@@ -19,22 +19,26 @@ from playwright.sync_api import sync_playwright, expect, TimeoutError as Playwri
 parser = argparse.ArgumentParser()
 parser.add_argument('--url', required=True)
 parser.add_argument('--authorized-real-batch', action='store_true')
+parser.add_argument('--safety-only', action='store_true', help='Authorized targeted full safety replay; preserves master counters and baseline')
 parser.add_argument('--mock-dry-run', action='store_true', help='Free isolated mock fixture on8897; never real providers')
 parser.add_argument('--mock-natural-only', action='store_true', help='With mock-dry-run, exercise natural completions without provider-latency interruption phases')
 args = parser.parse_args()
+assert not args.safety_only or (args.authorized_real_batch and not args.mock_dry_run), 'Safety replay is an explicitly authorized real batch'
 assert not args.mock_natural_only or args.mock_dry_run, 'Natural-only mode is restricted to the free mock fixture'
 assert args.authorized_real_batch or args.mock_dry_run, 'Explicit parent authorization is required'
 BASE = 'http://127.0.0.1:8897' if args.mock_dry_run else 'http://127.0.0.1:8896'
 assert args.url.startswith(BASE + '/') and 'mute=1' in args.url
 DEMO = args.url.split('/play/')[-1]
 OUT = Path('output/playwright/creta-harness-free-natural' if args.mock_natural_only else 'output/playwright/creta-harness-free-v2' if args.mock_dry_run else 'output/playwright/creta-real-runtime')
+BATCH_OUT = OUT
+if args.safety_only: OUT = BATCH_OUT / 'safety-replay'
 OUT.mkdir(parents=True, exist_ok=True)
 pause_file = OUT / 'pause-requested'
 pause_reason = ''
 
 
 def check_pause():
-    if pause_reason or pause_file.exists():
+    if pause_reason or pause_file.exists() or (BATCH_OUT / 'pause-requested').exists():
         raise RuntimeError(pause_reason or 'Parent requested pause via pause-requested file; no further paid request forwarded')
 
 
@@ -43,14 +47,14 @@ http = httpx.Client(base_url=BASE, timeout=12)
 usage_path = f'/api/demos/{DEMO}/usage'
 bundle = http.get(f'/api/demos/{DEMO}/bundle').raise_for_status().json()
 assert bundle.get('runtime', {}).get('version') == 1 and bundle['runtime']['overview'].get('audio'), 'Built runtime overview required'
-budget_file = OUT / 'budget-state.json'
+budget_file = BATCH_OUT / 'budget-state.json'
 budget = json.loads(budget_file.read_text()) if budget_file.exists() else {'usage_before': http.get(usage_path).raise_for_status().json(), 'counters': {'reasoning_requests': 0, 'tts_requests': 0}}
 usage_before = budget['usage_before']
 ledger, checks, scenarios, errors, journeys = [], [], [], [], []
 counters = budget['counters']
 budget_file.write_text(json.dumps(budget, indent=2))
 started = time.time()
-interruptions_per_phase = 0 if args.mock_natural_only else 4
+interruptions_per_phase = 0 if args.mock_natural_only or args.safety_only else 4
 expected_interruptions = interruptions_per_phase * 5
 
 
@@ -72,8 +76,10 @@ def guard(kind):
     # The separately authorized concurrent QA batch shares this demo's usage ledger.
     # Parent authorized a combined $6 shared delta ($3.50 QA + $2.50 browser reserve)
     # after concurrent QA consumed the original browser-only shared-ledger ceiling.
-    # Keep the $19.50 overall stop and the unchanged cumulative browser request caps.
-    if current['total_usd'] >= 19.5 or delta >= 6.0 or (kind == 'reasoning' and counters['reasoning_requests'] >= 30) or (kind == 'tts' and counters['tts_requests'] >= 20):
+    # Parent authorized cumulative TTS cap28 after request21 hit the running literal20
+    # guard. This targeted natural safety replay shares every prior counter/baseline.
+    # Reasoning30, shared$6 and overall$19.50 guards remain unchanged.
+    if current['total_usd'] >= 19.5 or delta >= 6.0 or (kind == 'reasoning' and counters['reasoning_requests'] >= 30) or (kind == 'tts' and counters['tts_requests'] >= 28):
         raise RuntimeError('Authorized paid batch ceiling reached; no further paid request forwarded')
     counters['reasoning_requests' if kind == 'reasoning' else 'tts_requests'] += 1
     budget_file.write_text(json.dumps(budget, indent=2))
@@ -217,33 +223,35 @@ with sync_playwright() as p:
         pause_reason=f'Parent requested cooperative pause with {signal.Signals(signum).name}; no further paid request forwarded'
     signal.signal(signal.SIGINT,request_pause); signal.signal(signal.SIGTERM,request_pause)
     try:
-        begin('I am exploring a family SUV. Rear-seat comfort and boot space matter most, and I want to understand the safety features.')
-        for i in range(interruptions_per_phase):
-            wait("__reviewSnapshot().playback.phase==='overview' && !!__reviewSnapshot().speaking?.startedAt")
-            row=barge(f'overview-{i+1}');check('overview return point retained',row['after']['origin']['phase']=='overview');continue_demo()
-        for i in range(interruptions_per_phase):
-            wait("__reviewSnapshot().playback.phase==='route' && !__reviewSnapshot().playback.checkin && !!__reviewSnapshot().speaking?.startedAt && !!__reviewSnapshot().speaking?.recorded && !__reviewSnapshot().waiting")
-            row=barge(f'narration-{i+1}');origin=row['after']['origin'];check('narration exact line return retained',origin['index']==row['before']['playback']['index'] and origin['line']==row['before']['playback']['line']);continue_demo()
-        wait('__reviewSnapshot().waiting')
-        faqs=[entry for entry in bundle.get('faq',[]) if entry.get('answered') and entry.get('question')]
-        bank_question=(faqs[0]['question'] if faqs else 'What safety equipment is included?')
-        for i in range(interruptions_per_phase):
-            question(bank_question)
-            wait("!!__reviewSnapshot().activeTurn?.qa_done && !!__reviewSnapshot().speaking?.startedAt && __reviewSnapshot().speaking.text===__wire.filter(e=>e.type==='turn.result').at(-1)?.answer?.answer")
-            barge(f'answer-{i+1}')
-        for i in range(interruptions_per_phase):
-            question(f'Estimate the monthly EMI for a loan of {10+i} lakh rupees at 9 percent annual interest over 5 years. Show the assumptions.')
-            wait("!!__reviewSnapshot().pending && /moment|check that|checking/i.test(__reviewSnapshot().speaking?.text||'') && !!__reviewSnapshot().speaking?.startedAt",timeout=18000)
-            barge(f'acknowledgment-filler-{i+1}')
-        for i in range(interruptions_per_phase):
-            question(f'Calculate the illustrative monthly EMI on a loan of {15+i} lakh rupees at 8 percent annual interest over 4 years.')
-            wait('__reviewSnapshot().pending')
-            barge(f'calculation-request-pending-{i+1}')
-        check(f'{expected_interruptions} controlled interruptions completed',len(scenarios)==expected_interruptions)
-        end_journey('family-comfort-interruptions-early-exit')
+        if not args.safety_only:
+            begin('I am exploring a family SUV. Rear-seat comfort and boot space matter most, and I want to understand the safety features.')
+            for i in range(interruptions_per_phase):
+                wait("__reviewSnapshot().playback.phase==='overview' && !!__reviewSnapshot().speaking?.startedAt")
+                row=barge(f'overview-{i+1}');check('overview return point retained',row['after']['origin']['phase']=='overview');continue_demo()
+            for i in range(interruptions_per_phase):
+                wait("__reviewSnapshot().playback.phase==='route' && !__reviewSnapshot().playback.checkin && !!__reviewSnapshot().speaking?.startedAt && !!__reviewSnapshot().speaking?.recorded && !__reviewSnapshot().waiting")
+                row=barge(f'narration-{i+1}');origin=row['after']['origin'];check('narration exact line return retained',origin['index']==row['before']['playback']['index'] and origin['line']==row['before']['playback']['line']);continue_demo()
+            wait('__reviewSnapshot().waiting')
+            faqs=[entry for entry in bundle.get('faq',[]) if entry.get('answered') and entry.get('question')]
+            bank_question=(faqs[0]['question'] if faqs else 'What safety equipment is included?')
+            for i in range(interruptions_per_phase):
+                question(bank_question)
+                wait("!!__reviewSnapshot().activeTurn?.qa_done && !!__reviewSnapshot().speaking?.startedAt && __reviewSnapshot().speaking.text===__wire.filter(e=>e.type==='turn.result').at(-1)?.answer?.answer")
+                barge(f'answer-{i+1}')
+            for i in range(interruptions_per_phase):
+                question(f'Estimate the monthly EMI for a loan of {10+i} lakh rupees at 9 percent annual interest over 5 years. Show the assumptions.')
+                wait("!!__reviewSnapshot().pending && /moment|check that|checking/i.test(__reviewSnapshot().speaking?.text||'') && !!__reviewSnapshot().speaking?.startedAt",timeout=18000)
+                barge(f'acknowledgment-filler-{i+1}')
+            for i in range(interruptions_per_phase):
+                question(f'Calculate the illustrative monthly EMI on a loan of {15+i} lakh rupees at 8 percent annual interest over 4 years.')
+                wait('__reviewSnapshot().pending')
+                barge(f'calculation-request-pending-{i+1}')
+            check(f'{expected_interruptions} controlled interruptions completed',len(scenarios)==expected_interruptions)
+            end_journey('family-comfort-interruptions-early-exit')
         for name,profile,text in [
             ('commute-calculation','I commute in the city and care most about everyday comfort and monthly ownership cost.','Calculate the illustrative monthly EMI on a loan of 10 lakh rupees at 9 percent annual interest over 5 years.'),
             ('safety-evidence','Safety and confidence on family highway trips matter most to me. I would like to understand the approved driver assistance features.','What driver assistance features are available, and which variant conditions apply?')]:
+            if args.safety_only and name != 'safety-evidence': continue
             begin(profile);wait('__reviewSnapshot().waiting',timeout=75000)
             state=snap();check(name+' preserves stated need and personalizes the reviewed route',state['session']['profile']['why']==profile and bool(state['context']['route']) and state['session']['personalized'])
             expected_slides=list(state['session']['slides'])
@@ -265,8 +273,9 @@ with sync_playwright() as p:
         context.close();browser.close()
 usage_after=http.get(usage_path).raise_for_status().json()
 result={'started_at_ms':round(started*1000),'finished_at_ms':stamp(),'bundle_version':bundle.get('version'),'demo_id':DEMO,'checks':checks,'interruptions':scenarios,'journeys':journeys,'errors':errors,'counters':counters,'usage_before':usage_before,'usage_after':usage_after,'batch_usd_recorded':round(usage_after['total_usd']-usage_before['total_usd'],4),'usage_attribution':'Dollar delta and provider completion counts share the demo ledger with separately authorized concurrent QA; may overestimate browser cost. Persistent outbound reasoning/TTS request counters apply only to this browser batch and are never reset between attempts.','boundary':'Isolated headless Chrome, all output muted. Actual prerecorded/WebAudio delivery and real backend reasoning/tools/TTS. Synthetic silent capture and injected STT onset/finals. Read-only observer only. No acoustic onset/STT accuracy/echo/human quality claim. Calculation-request-pending is browser state, not proof of active tool execution.'}
-result['budget_limits'] = {'shared_incremental_usd_stop':6.0,'shared_scope':'Separately authorized concurrent QA $3.50 plus browser $2.50 reserve; not browser-attributed spending.','overall_demo_usd_stop':19.5,'browser_reasoning_requests_cumulative':30,'browser_tts_requests_cumulative':20,'baseline_and_counters_reset':False}
+result['budget_limits'] = {'shared_incremental_usd_stop':6.0,'shared_scope':'Separately authorized concurrent QA $3.50 plus browser $2.50 reserve; not browser-attributed spending.','overall_demo_usd_stop':19.5,'browser_reasoning_requests_cumulative':30,'browser_tts_requests_cumulative':28,'tts_cap_authorization':'Parent raised20 to24 during attempt03, then28 for targeted full safety replay; counters and original baseline preserved','baseline_and_counters_reset':False}
+result['targeted_safety_replay'] = args.safety_only
 result['evaluation_mode'] = 'mock_natural_completion_only_no_tool_accuracy_claim' if args.mock_natural_only else 'mock_interruption_dry_run' if args.mock_dry_run else 'real_provider_controlled_browser_acceptance'
 (OUT/'results.json').write_text(json.dumps(result,indent=2))
 print(json.dumps({'checks':f'{sum(c["passed"] for c in checks)}/{len(checks)}','interruptions':len(scenarios),'journeys':len(journeys),'errors':errors,'counters':counters,'batch_usd_recorded':result['batch_usd_recorded']},indent=2))
-raise SystemExit(1 if errors or len(scenarios)!=expected_interruptions or len(journeys)!=3 else 0)
+raise SystemExit(1 if errors or len(scenarios)!=expected_interruptions or len(journeys)!=(1 if args.safety_only else 3) else 0)

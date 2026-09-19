@@ -120,6 +120,17 @@ const connecting = new LiveVoiceClient({ url: "/run/live", sessionId: "connectio
 const superseded = connecting.ask({ question: "Obsolete connection question" }).catch(e => e); connecting.interrupt();
 check("cancel during socket initialization fences the old request", (await superseded).name === "AbortError" && !connecting.socket.sent.some(e => e.type === "turn.ask"));
 connecting.close();
+const disconnected = new LiveVoiceClient({ url: "/run/live", sessionId: "farewell-disconnect", env });
+const failedFarewell = disconnected.speak("Your recap is ready.").catch(error => error); await tick();
+disconnected.socket.close();
+const farewellError = await failedFarewell;
+check("unexpected connection loss rejects farewell speech for readable fallback", farewellError instanceof Error && farewellError.name !== "AbortError" && !farewellError.audioStarted && !disconnected.delivery);
+disconnected.close();
+const cancelledFarewell = new LiveVoiceClient({ url: "/run/live", sessionId: "farewell-new-turn", env });
+const oldFarewell = cancelledFarewell.speak("An obsolete farewell."); await tick();
+cancelledFarewell.interrupt(); cancelledFarewell.socket.close();
+check("new turn before connection loss retains cancellation instead of reviving farewell", await oldFarewell === false);
+cancelledFarewell.close();
 let Capture; const packets = [];
 vm.runInNewContext(fs.readFileSync(new URL("../web/player/voice-worklet.js", import.meta.url), "utf8"), {
   AudioWorkletProcessor: class { constructor() { this.port = { postMessage: packet => packets.push(packet) }; } },
@@ -143,6 +154,18 @@ const resultSource = playerSource.slice(playerSource.indexOf("  async function q
   const shown = caption("The answer remains readable.", 1);
   check("caption fallback never fabricates first answer audio", audioStamp === 0 && state.onFirstAudio === null && state.activeTurn.answer_audio === null && state.activeTurn.failed && state.activeTurn.delivery_failed && state.activeTurn.caption_at > 0);
   finish(); await shown;
+}
+{
+  const captionSource = playerSource.slice(playerSource.indexOf("  function captionOnly("), playerSource.indexOf("  function speakBrowser("));
+  const closeSource = playerSource.slice(playerSource.indexOf("  async function closeFlow("), playerSource.indexOf("  function captureOrigin("));
+  const state = { run: 1, ttsToken: 0 }; let finish, recaps = 0;
+  const closing = vm.runInNewContext(captionSource + closeSource + "\nfunction speak(text, run) { return captionOnly(text, run); }\ncloseFlow", {
+    S: state, bundle: { ctas: [] }, el: { cite: {} }, closingSlide: () => null, heroClose: () => null, showSlideView() {},
+    waitFor: async () => ({ value: "notyet" }), showHandoff() { recaps++; }, wordsOf: text => text.split(" ").length,
+    setStatus() {}, logHeard() {}, setTimeout(fn) { finish = fn; return 1; }, clearTimeout() {},
+  });
+  const obsolete = closing(1); await tick(); state.run = 2; state.cancelVoice(); finish(); await obsolete;
+  check("interrupting a failed farewell caption cannot force the obsolete recap", recaps === 0);
 }
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 function questionHarness() {

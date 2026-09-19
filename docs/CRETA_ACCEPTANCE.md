@@ -22,7 +22,17 @@ The first real browser attempt passed four controlled overview interruptions, th
 
 Evidence remains in local `output/creta-runtime-2026-09-19/qa100-reviewed-v2/` and `output/playwright/creta-real-runtime/attempt-01/`. The original answers and failed run are preserved.
 
-## Repairs being revalidated
+## Second real test: improved, still below acceptance
+
+The second full batch ran on commit `24c2b76` and completed **100/100 requests**. Independent review found **64 supported, 23 partially correct, 8 unhelpful, 2 unsafe and 3 provider failures**. The unsafe cases were a false claim that a wheel comparison was absent despite an approved uploaded assertion, and a claim of fresh webpage price verification supported only by saved document facts. Neither is acceptable. Useful text response times were not isolated in this statistic: all-request HTTP median was **2.394 seconds**, p95 **8.959 seconds**. Shared recorded usage increased **$0.5932**, including concurrent browser activity.
+
+The browser replay passed **20 controlled interruptions**: four each during overview, reviewed narration, answer, acknowledgement and a pending calculation question. Sixteen had active audio; observed stopping across those samples was at most **253 ms**, measured from injected onset receipt rather than acoustic speech onset. The family journey intentionally exited early after these controls. The commute journey completed every selected slide, question wait, final choice and recap. The safety journey completed its route and final choice, but the test's speech-request cap blocked farewell request 21 before recap; this is retained as a harness-limited run, not a completed third journey.
+
+The two completed typed answers measured first useful audio at **7.764 seconds for EMI** and **4.944 seconds for ADAS**; acknowledgement started at **734/761 ms**. These are small samples and do not establish reliable percentiles or meet every proposed latency target. [Pass 2 private evidence](../output/creta-runtime-2026-09-19/qa100-reviewed-v2-pass2/summary.json) and the immutable browser `attempt-03/` remain local.
+
+Follow-up repairs recover approved wheel and parking facts, preserve clear negative refusals, constrain live lookup to the selected model/market, support explicit monthly-rate EMI and improve recap resilience. A focused replay is pending. A third complete customer journey and final quality acceptance remain open.
+
+## Repair details
 
 - The overview leads directly into selected slide narration. Missing model replacements use explicitly marked reviewed-route speech. Published inputs and demo-version checks prevent draft edits or a new publication from silently changing a running visit.
 - Runtime reasoning sees compact approved assertions and their conditions. Full provenance tables remain available for audit, but cannot serve as permission to borrow an unrelated feature from a large quote.
@@ -30,7 +40,7 @@ Evidence remains in local `output/creta-runtime-2026-09-19/qa100-reviewed-v2/` a
 - Selected-trim qualifications and exact negative applicability are preserved. Held or rejected assertions remain ineligible. Opaque ordering such as “SX and above” is not expanded into invented trim coverage.
 - Cancellation, stale output, real question waits and audio timing have separate checks. Caption-only fallback does not count as first answer audio. Align overlays are removed on navigation; mobile evidence overflow has a cue only when needed.
 
-The second real QA batch, full customer journeys and final required regression gates will be recorded here when complete. Additional deterministic grounding probes found unit/feature and negative-clause loopholes before the repeat batch; these are being repaired before further paid acceptance.
+Additional deterministic grounding probes found unit/feature and negative-clause loopholes before the repeat batch; 28 independent controls pass. Follow-up validation remains necessary for useful answers, source attribution and successful full journeys.
 
 ## What muted acceptance cannot prove
 

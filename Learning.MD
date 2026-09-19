@@ -1,5 +1,13 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-19 — The second real answer batch still exposed coverage and delivery defects
+
+**Observed:** semantic review of the second100 found64 supported,23 partial,8 unhelpful,2 unsafe and3 provider failures. Scoped retrieval dropped approved inline wheel rows and universally available parking sensors; a model then incorrectly said the comparison was absent. Fresh webpage verification could be claimed using only a saved document citation. Lookup also wandered from Creta to Alcazar and general service pages on the same host. Strict negative-claim guards sometimes removed the actual refusal and left an orphan sentence.
+
+**Fix and boundary:** project only literal approved applicability rows, retain complete direct refusals without allowing hidden positive claims, constrain lookup to the selected model/market, and keep fetched-page claims distinct from uploaded evidence. Explicit monthly-rate EMI now uses quoted monthly inputs directly. Do not revive held source assertions to improve a score. Several source-coverage gaps still require review; the uploaded wheel chart and a website assertion also disagree, with normal/spare applicability unclear. Published data is unchanged.
+
+**Verification:** exact saved model decisions are replayed in21 focused contracts; tools have7 new monthly-rate/source-scope controls; knowledge47 and runtime127 pass. The original22 plus six supplemental grounding controls were independently rechecked. These prove repairs to known examples, not final customer answer quality; fresh focused replay remains pending. Recap controls separately retain readable completion on speech disconnect, keep stopped capture status truthful and separate explicit needs from question history.
+
 ## 2026-09-19 — A short client timeout became an invalid provider deadline
 
 **Observed:** real Explore failed on Gemini before generation because its seven-second HTTP timeout became `X-Server-Timeout: 7`, below the service's ten-second minimum. Claude lacked credit and the remaining Runware attempt timed out. Fake adapter contracts had proved budget allocation without exercising the SDK's wire behavior.

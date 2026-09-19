@@ -212,7 +212,7 @@ test('A typed clarification is accepted once with conversation history', async (
   clarificationRecognition.deliver('The manual, stale speech'); await flush();
   assert(env.calls.length === 2, 'A stale recognition result reopened the settled typed clarification');
 });
-test('A direct customer statement survives later QA and the recap once, without inferring a preference', async () => {
+test('A direct customer statement survives later QA without turning question history into recap preferences', async () => {
   const intake = 'I drive five to ten kilometres a day.', statement = 'I am unsure about sitting in traffic every day.';
   await setup({ hold: (text) => text === 'First proof.' });
   await click('▶ Start');
@@ -231,7 +231,10 @@ test('A direct customer statement survives later QA and the recap once, without 
   assert(JSON.stringify(player.context().profile.focus) === JSON.stringify(originalFocus), 'Raw context storage inferred new customer preferences');
   await click('Yes, that helps'); host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
   const recap = host.querySelector('.pl-handoff.open')?.textContent || '', saved = env.saved.at(-1);
-  assert(recap.split(statement).length - 1 === 1 && saved.profile.followup.split('\n').filter(text => text === statement).length === 1, 'Buyer recap or saved session lost/duplicated the actual statement');
+  const needs = [...host.querySelectorAll('.pl-handoff .kvbox')].find(box => box.querySelector('h5')?.textContent === 'What matters to you')?.textContent || '';
+  assert(recap.includes(intake) && saved.profile.followup.split('\n').filter(text => text === statement).length === 1, 'Recap lost the explicit intake or saved context lost/duplicated the actual statement');
+  assert(!needs.includes(statement) && !needs.includes('What does the approved material say about the cabin?'), 'Recap inferred a preference from raw question history');
+  assert(host.querySelector('.pl-status').textContent === 'Demo complete', 'Ended recap still advertises an active listening state');
 });
 test('An unknown answer holds the callback form without narration behind it', async () => {
   await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
