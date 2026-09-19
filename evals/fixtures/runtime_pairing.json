@@ -1,0 +1,54 @@
+{
+  "case": "saved q024 on24736a0/v7",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "question": "What audio system is available?",
+  "sentences": [
+    {
+      "text": "The CRETA offers an 8-speaker Bose premium sound system with a front central speaker and sub-woofer on selected higher trims like SX Premium, King, King Knight, and Lounge Edition.",
+      "fact_ids": [
+        "F164"
+      ],
+      "kind": "fact"
+    },
+    {
+      "text": "Depending on the variant, it pairs with either an 8.0-inch touchscreen or a 10.25-inch navigation display, while the base E trim does not include a standard touchscreen.",
+      "fact_ids": [
+        "F162"
+      ],
+      "kind": "fact"
+    }
+  ],
+  "facts": [
+    {
+      "id": "F164",
+      "claim": "Audio system brand and configuration",
+      "value": "Bose premium sound 8 speaker system with front central speaker & sub-woofer",
+      "conditions": "Available on SX Premium, King, King Knight, and Lounge Edition",
+      "scope": {
+        "model": "CRETA",
+        "market": "India",
+        "variant": "SX Premium, King, King Knight, Lounge Edition"
+      },
+      "approved": true,
+      "source": {
+        "ref": "src_962d2536a6b1",
+        "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+      }
+    },
+    {
+      "id": "F162",
+      "claim": "Infotainment display size",
+      "value": "20.32 cm (8.0\") touchscreen on EX, EX(O), S(O), S(O) Knight; 26.03 cm (10.25\") HD audio video navigation on SX, SX Premium, King, King Knight, Lounge Edition",
+      "conditions": "E trim has no standard infotainment screen",
+      "scope": {
+        "model": "CRETA",
+        "market": "India"
+      },
+      "approved": true,
+      "source": {
+        "ref": "src_962d2536a6b1",
+        "locator": "INFOTAINMENT AND CONNECTIVITY \u00b7 block 32"
+      }
+    }
+  ]
+}

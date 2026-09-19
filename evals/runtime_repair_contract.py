@@ -182,6 +182,10 @@ async def run():
             await rg.validate(state)
         check("No repair for "+title,not model.called)
     state=state_for("q024")
+    # The saved audio/display pairing is now rejected correctly. Supply a
+    # separately grounded surviving row for these no-demotion controls; retain
+    # both original rejected rows to trigger the one repair.
+    state["decision"]["sentences"].append(repairs["q024"][0])
     baseline,_=rg.validate_decision(state["decision"],state["evidence"],state["question"])
     bad=rg._CompositionRepair(sentences=[response("The car has 999 airbags.",["F164"])])
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=bad) as model,patch("server.runtime_graph.store.read_json",return_value={}),patch("server.runtime_graph.usage.trace"):
@@ -190,14 +194,14 @@ async def run():
     check("Failed revalidation never starts a second repair",model.call_count==1)
     limited=rg._CompositionRepair(sentences=[{"text":"I cannot verify that detail.","kind":"limitation","fact_ids":[]}])
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=limited),patch("server.runtime_graph.store.read_json",return_value={}),patch("server.runtime_graph.usage.trace"):
-        result=await rg.validate(state_for("q024"))
+        result=await rg.validate({**state,"control":TurnControl(time.monotonic()+12)})
     check("A clean limitation repair cannot erase a surviving supported answer",baseline["answered"] and result["result"]["answer"]==baseline["answer"] and not result["result"]["validation_repair"]["accepted"])
     limited_with_next_step=rg._CompositionRepair(sentences=[
         {"text":"I cannot verify that detail.","kind":"limitation","fact_ids":[]},
         {"text":"You can check the brochure.","kind":"context","fact_ids":[]},
     ])
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=limited_with_next_step),patch("server.runtime_graph.store.read_json",return_value={}),patch("server.runtime_graph.usage.trace"):
-        result=await rg.validate(state_for("q024"))
+        result=await rg.validate({**state,"control":TurnControl(time.monotonic()+12)})
     check("Exact ops limitation-plus-context repair preserves original citations",bool(baseline["fact_ids"]) and result["result"]["fact_ids"]==baseline["fact_ids"] and result["result"]["answer"]==baseline["answer"] and not result["result"]["validation_repair"]["accepted"])
     decline,errors=rg.validate_decision({"action":"answer","answered":True,"sentences":limited_with_next_step.model_dump()["sentences"]},[],"What is that detail?")
     check("Limitation plus generic next step is a decline, despite model answered flag",not decline["answered"] and decline["offer_callback"] and not errors and not decline["fact_ids"])

@@ -2,6 +2,14 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
+## Latest unchanged full100 — clause ownership checkpoint
+
+Commit `24736a0`, v7 snapshot: **73 supported,11partial,7unhelpful,2unsafe,7provider failures**. Delivered answers were graded individually by three reviewers against the saved assertions;100 raw-row hashes match. The unsafe answers imply an8-inch/Bose combination across incompatible trims and claim whole-page warranty absence from a selected-passage lookup. Neither passes the zero-critical-claim requirement. Missing limits and valid comparison/input-request clauses also remain over-rejected.
+
+REST text median3.831s,p9511.802s (all requests), not first-useful-audio latency. Seven reasoning failures, two failed optional repairs, one successful Runware recovery, and one audited calculator rescue are distinguished. Ten numerical outcomes independently recompute correctly; q053 delivered the zero-interest EMI with its assumptions after second-round reasoning failed. Five fresh requested-source checks succeeded. Gemini had11 read timeouts; no quota/503 evidence. Claude returned explicit insufficient-credit errors. App recorded estimate increased$0.5773 to$8.9938; timeouts may have unreported billed work.
+
+Evidence: `qa100-v7-clause-ownership/` raw responses, three semantic reviews, consolidated summary and provider audit. Raw JSONL SHA256 `d1d8f0761a850ffea600b90974ce241b781cec3cf4e47af5505a17e6e22a53c2`. Ongoing fixes and diagnostic replays do not replace or rescore this observed cohort. The proposed delayed fallback race stays off by default until separately tested; no claimed latency gain yet.
+
 ## Reviewed demo
 
 Hyundai CRETA `dm_41513908`, published version **7**, knowledge snapshot `kb_2d616ba1bcec1469e8c7ab40`, **181 approved facts**, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).

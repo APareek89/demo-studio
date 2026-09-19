@@ -3,6 +3,14 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Equipment relationships, useful limits and provider ownership — 2026-09-19
+
+Graph frozen60846df6: required deck320/320, acceptance24/24 and both smoke phases pass in isolated temporary stores with sockets blocked, zero outbound attempts. Limits118, repair106, graph130, cohort94, calculation deadline17, currency/attribution15, operational failure13 and provider race30 pass. Pairing12, coverage12, interaction7 and final saved-draft21 test methods pass; independent final graph review is clear. Syntax104 Python/17 web JS and diff checks pass. Evidence `final-gates/relations-final-*.log` with source/log hashes in `relations-final-manifest.json`.
+
+Independent review caught and corrected a dispatch race after a hedge winner, before any live activation. Copied per-lane context, deadline recomputation, cancellation checks, one winner and late accounting/no-new-repair controls are tested. `RUNTIME_HEDGE_ENABLED` remains off by default. The sequential versus delayed fallback experiment must run the same cases on the same committed code/snapshot under separate finite cost caps; no claimed latency improvement from fake-clock tests.
+
+The last actual full100 remains73supported/11partial/7unhelpful/2unsafe/7providerfailure on24736a0/v7; initial last25 review is retained beside the q080 coverage-consistency adjudication. The122 recorded-draft replay is diagnostic, not a new cohort or rescore. No speech, source mutation or counter reset. Loop remains off.
+
 ## Clause ownership and bounded interaction — 2026-09-19
 
 Final graph2e54ec01/helper37c8543b independently reviewed. Limits118/118, helper7tests/32assertions and12 independent integration controls pass, including uncited/cited separation, customer-number bounds and real warranty condition preservation. Cohort94/repair106/graph130/trace36/currency15 passed immediately before the sole final removal of a redundant legacy assistant-act branch; affected118/helper checks were rerun. Knowledge/snapshot/source bytes remain unchanged.

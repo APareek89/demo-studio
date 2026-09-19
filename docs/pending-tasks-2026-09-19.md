@@ -1,5 +1,8 @@
 # Demo Studio — pending tasks and challenges
 
+**Latest runtime evidence:** unchanged full100 on24736a0/v7 scored73 supported/11partial/7unhelpful/2unsafe/7provider failures; text median3.831s,p9511.802s. Equipment pairing, whole-source absence claims, lost valid conversation/comparison clauses and provider availability are current blockers. Deterministic fixes and an off-default fallback-race experiment are in progress; quality and audio latency are not accepted. No new speech budget. Earlier audit sections below remain historical unless superseded by Handoff/acceptance.
+
+
 **Current update:** Anand subsequently approved the [conversational runtime plan](plan-runtime-experience-2026-09-19.md). Implementation is on `codex/creta-conversational-demo`; Atelier remains. The original audit below is preserved as history and must not be read as the current capability list. [Current workflow and code map](DEMO_BUILD_AND_RUN.md) · [Creta acceptance in progress](CRETA_ACCEPTANCE.md).
 
 ## Remaining now

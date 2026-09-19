@@ -137,7 +137,7 @@ def _trace(model: str, started: float, system: str, user: str, response: str = "
 
 
 def structured(system: str, content: list[dict] | str, schema: type[T], *, history: list[dict] | None = None,
-               max_tokens: int = 1500, timeout: float | None = None, model: str | None = None) -> T:
+               max_tokens: int = 1500, timeout: float | None = None, model: str | None = None, stop_event=None) -> T:
     """Return only a Pydantic-valid result; the consumers retain grounding checks.
 
 Timeout supplies a shared remaining budget to HTTPX's network-phase timeouts
@@ -176,6 +176,8 @@ JSON mode and local validation are always required.
         raise RunwareError(safe) from None
 
     for attempt in range(2):
+        if stop_event is not None and stop_event.is_set():
+            raise RunwareError("Runware request cancelled before generation")
         attempt_started = time.monotonic()
         text = ""
         inp = out = 0
@@ -210,6 +212,10 @@ JSON mode and local validation are always required.
                 result = matched[0]
                 inp, out, cost = _metrics(result)
                 text = result.get("text") if isinstance(result.get("text"), str) else ""
+            # Returned generations remain billable/observable even when this
+            # lane lost while HTTP was in flight. Never publish or repair them.
+            if stop_event is not None and stop_event.is_set():
+                raise RunwareError("Runware result ignored after cancellation")
             if response.status_code < 200 or response.status_code >= 300:
                 raise RunwareError(_api_error(body if isinstance(body, dict) else {}, response.status_code))
             if not isinstance(body, dict) or body.get("errors") or body.get("error"):

@@ -15,6 +15,8 @@ _INPUT_NAMES = {
     "fuel efficiency": "fuel efficiency", "expected fuel efficiency": "fuel efficiency",
     "fuel efficiency figure": "fuel efficiency",
     "fuel price": "fuel price", "local fuel price": "fuel price",
+    "current fuel price in your city": "fuel price",
+    "vehicle's expected fuel efficiency": "fuel efficiency",
 }
 _QUANTITY = re.compile(r"\d|\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
                        r"hundred|thousand|million|lakh|crore|percent)\b", re.I)
@@ -29,11 +31,22 @@ _REQUEST_INPUTS = re.compile(
     r"(?P<inputs>.+?)"
     r"(?:,\s+and we can (?:calculate|estimate) (?:it|them)(?: directly)?)?[.!]?", re.I)
 _KEEP_FOCUS = re.compile(
-    r"No,\s+(?:that|it)\s+(?:will not|won't|does not|doesn't) change my "
+    r"No,\s+(?:that|it)\s+(?:will not|won't|does not|doesn't|should not|shouldn't) change my "
     r"(?:answer|focus|response)(?: at all)?[.!]?", re.I)
 _HELP = re.compile(
     r"(?:I am|I'm) here to (?:assist|help) you(?: directly)? with your questions"
     r"(?: about (?P<topic>.+?))?[.!]?", re.I)
+_NEED_INPUTS = re.compile(
+    r"(?:(?:Since|Because|As)\s+[^;.!?]+,\s*)?"
+    r"I\s+(?:will\s+)?need\s+(?P<inputs>.+?)[.!]?", re.I)
+_URL_REQUEST = re.compile(
+    r"(?:Please\s+)?(?:share|provide|send)\s+(?:the|a|your)\s+"
+    r"(?:URL|web link|website link|public product URL)"
+    r"(?:\s+(?:whenever you are ready|when you are ready))?[.!]?", re.I)
+_SEATING_CHECK = re.compile(
+    r"(?:You can plan a seating fit-check with your family to see how comfortably everyone settles in|"
+    r"The best way to be sure is to bring them along for a quick seating fit-check|"
+    r"You might want to take a seat inside both models to see which fits you best)[.!]?", re.I)
 
 
 def _inputs(text: str) -> list[str]:
@@ -85,6 +98,15 @@ def assistant_behavior(text: str) -> str:
     match = _REQUEST_INPUTS.fullmatch(plain)
     if match and (names := _inputs(match["inputs"])):
         return "Please share your " + _list(names, match["inputs"]) + "."
+    # Only closed input slots survive; a leading explanation is never voiced or
+    # treated as evidence that the customer already provided anything.
+    match = _NEED_INPUTS.fullmatch(plain)
+    if match and (names := _inputs(match["inputs"])):
+        return "Please share your " + _list(names, match["inputs"]) + "."
+    if _URL_REQUEST.fullmatch(plain):
+        return "Please share a public HTTP or HTTPS product page."
+    if _SEATING_CHECK.fullmatch(plain):
+        return "You can check seat comfort on a test drive."
     if _KEEP_FOCUS.fullmatch(plain):
         return "No, that will not change my answer."
     match = _HELP.fullmatch(plain)

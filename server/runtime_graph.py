@@ -23,7 +23,9 @@ from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
 from .llm import runtime
 from .runtime_state import DeliveryPlan, RuntimeState, SpokenClaim, TurnDecision, checkpoint, claim_turn, previous_state, safe_id
-from .runtime_tools import _numbers, calculate, source_lookup, supplied_urls
+from .runtime_tools import _bound_unit, _numbers, calculate, source_lookup, supplied_urls
+from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
+from .runtime_facts import unsupported_equipment_pairing
 
 
 SYSTEM = """You are the helpful, warm guide in a live car demo. You have a real conversation: understand the current
@@ -56,6 +58,8 @@ An applicability_projection contains exact positive or negative variant clauses 
 Negative clauses support only absence for those named trims; never turn them into a positive feature claim.
 State projected positive and negative trim points in separate sentences; do not mix opposing applicability in one sentence.
 Make each sentence stand on its own, with its material trim/engine qualifiers; avoid dangling 'These include' answers.
+For equipment combinations, verify that both features share the same explicitly supported trim. A range-level
+list of screens does not establish which screen pairs with premium audio; name each feature's scope.
 For a refusal, state your own limit directly: 'I cannot guarantee that' or 'I could not verify that offer'.
 Do not assert that no manufacturer can guarantee something, or that no record exists anywhere. Keep reasons separate.
 Never claim the provided page verified a detail when its citation is only a stored document or another linked page.
@@ -92,6 +96,8 @@ customer inputs, otherwise a supplied evidence ID. Missing inputs → ask one ne
 fuel price, fuel efficiency, loan size or down payment. You may chain up to2 rounds/4calls using prior calculated IDs.
 An engine name alone does not supply a fuel-efficiency number: ask for an explicit reviewed or customer-supplied value.
 For running cost, obtain distance, efficiency AND fuel price; a suggestion to calculate it must name all missing inputs.
+Use action=clarify for missing inputs or a missing URL, with ONE direct question in clarification. Do not bury
+the request in an answer or promise what an unvisited website will contain.
 Results marked estimates must be called illustrative; an EMI is not a lender quote. Retain all assumptions.
 Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
 source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
@@ -213,6 +219,10 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     """Narrow safe rewrites of observed refusals, never a positive-claim bypass."""
     plain = text.replace("’", "'")
     plain=re.sub(r"\s+yet\.$",".",plain,flags=re.I)
+    plain=re.sub(r"^I (?:cannot|can't) make (that|this) claim\b",r"I cannot confirm \1 claim",plain,flags=re.I)
+    plain=re.sub(r"\bin your (preferred|chosen|selected) colou?r\b",r"for your \1 colour",plain,flags=re.I)
+    if re.fullmatch(r"I (?:do not|don't) have (?:any )?reviewed (?:competitor comparison evidence(?: available)?|comparison evidence for competitor models)[.]?",plain,re.I):
+        return "I couldn't verify competitor comparison evidence."
     plain=re.sub(r"\b((?:\d+|one|two|three|four|five)\s+(?:years?|months?))\s+from now\b",r"\1 ahead",plain,flags=re.I)
     # Evidence-location adjuncts explain our own verification limit. Remove
     # only that grammar; an 'in the bulletproof cabin' assertion cannot match.
@@ -243,6 +253,8 @@ def _reviewed_refusal(text: str, customer_text: str) -> str:
     # source contains nothing. Only a single verification clause is normalized.
     source_suffix=r"(?:\s+(?:from|in)\s+(?:my|our|the)\s+(?:(?:available|current|reviewed)\s+)?(?:records|information|details|evidence))?"
     patterns=(
+        r"I\s+(?:cannot|can't)\s+(?:quote or invent|invent or quote|quote|invent)\s+(.+?)\.",
+        r"(?:I|we)\s+(?:do not|don't)\s+have\s+a\s+verified listing\s+(?:here\s+)?for\s+(.+?)\.",
         r"(?:I|we)\s+(?:could not|couldn't|cannot|can't)\s+(?:verify|find|confirm)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
         r"(?:I|we)\s+(?:do not|don't)\s+have\s+(?:the\s+)?(?:verified|exact|specific|official)\s+(.+?)"+source_suffix+r"(?:\s+yet)?\.",
         r"(?:The\s+)?(?:available|retrieved|reviewed)\s+(?:details|records|evidence|information)\s+(?:do not|does not|don't|doesn't)\s+(?:state|list|provide|include|mention|show)\s+(.+?)\.",
@@ -280,7 +292,7 @@ def _uncited_own_limit(text: str, customer_text: str) -> tuple[str, bool]:
     # Do not search arbitrary/quoted text for an embedded first-person sentence.
     fronted=re.fullmatch(r"(?:Because|Since|As|Without)\s+[^;:!?\"“”]+,\s*((?:I|we)\s+.+)",plain,re.I)
     if fronted:plain=fronted[1]
-    candidate=re.split(r"\s+(?:as|because|since|without)\b|[:;—–]",plain,maxsplit=1,flags=re.I)[0].rstrip(" ,.!?")+"."
+    candidate=re.split(r"\s+(?:(?:just\s+)?because|as|since|without)\b|[:;—–]",plain,maxsplit=1,flags=re.I)[0].rstrip(" ,.!?")+"."
     candidate=_reviewed_refusal(candidate,customer_text)
     if (fronted or candidate!=text) and _safe_limitation(candidate,customer_text):
         return candidate, True
@@ -410,7 +422,7 @@ def _unsupported_dependency_relation(text: str, facts: list[dict]) -> bool:
 def _global_coverage_claim(text: str) -> bool:
     plain = text.replace("’", "'")
     source = r"(?:page|website|sources?|records?|details|documents?|evidence)"
-    return bool(re.search(source+r"[^.!?]*\b(?:doesn't|don't|does not|do not|never)\s+(?:state|show|mention|list|include|cover|contain|provide)\b", plain,re.I)
+    return bool(unsupported_coverage_claim(plain) or re.search(source+r"[^.!?]*\b(?:doesn't|don't|does not|do not|never)\s+(?:state|show|mention|list|include|cover|contain|provide)\b", plain,re.I)
                 or re.search(r"\b(?:aren't|isn't|are not|is not|were not|was not|not)\s+(?:covered|mentioned|listed|included|provided)\s+(?:in|on|by|anywhere)\b",plain,re.I)
                 or re.search(r"\b(?:no|none of the)\s+"+source+r"\b",plain,re.I))
 
@@ -450,10 +462,15 @@ def _atomic_answer_rows(rows: list[dict], evidence: list[dict], requested: dict)
                 output.append(split_row(row,part,names))
             continue
         match=re.fullmatch(r"(.+?)\s+(?:comes standard with|includes|adds|has)\s+(.+?),\s+(?:(?:while they are|which is|which are)\s+not|neither of which is)\s+available on\s+(.+?)\.?",text,re.I)
-        standard=re.fullmatch(r"(.+?)\s+is standard on\s+(.+?),\s+but it is not available on\s+(.+?)\.?",text,re.I)
+        standard=re.fullmatch(r"(.+?)\s+(?:is|are) standard on\s+(.+?),\s+but (?:it is|they are) not available on\s+(.+?)\.?",text,re.I)
+        relative=re.fullmatch(r"(.+?)\s+(?:also\s+)?(?:includes|offers|has)\s+(.+?),\s+which\s+(.+?)\s+does not (?:offer|include|have)\.?",text,re.I)
         if standard:
             feature,positive,target=standard.groups()
-            parts=[f"{feature} is standard on {positive}.",f"{feature} is not available on {target.rstrip('.')}."]
+            copula="are" if feature.endswith("seats") else "is"
+            parts=[f"{feature} {copula} standard on {positive}.",f"{feature} {copula} not available on {target.rstrip('.')}."]
+        elif relative:
+            positive,feature,target=relative.groups()
+            parts=[f"{positive} has {feature}.",f"{feature[:1].upper()+feature[1:]} is not available on {target.rstrip('.')}."]
         elif match:
             positive,feature,target=match.groups()
             parts=[f"{positive} has {feature}.",f"{feature[:1].upper()+feature[1:]} {'are' if feature.endswith('seats') or ' and ' in feature else 'is'} not available on {target.rstrip('.') }."]
@@ -495,7 +512,7 @@ _FEATURE_PATTERNS = {
     "wireless_charging":r"\bwireless (?:charg\w*)\b",
     "rear_entertainment":r"\brear.seat entertainment\b|\brear (?:entertainment )?(?:screen|display)\b",
     "seat_memory":r"\b(?:seat|driver).{0,20}\bmemory\b|\bmemory (?:function|seat)\b",
-    "seat_adjustment":r"\b(?:electric|electrical|power)\s+adjust\w*\b[^.;,]{0,40}\bseat\b|\b(?:driver|passenger)(?:'s)?\s+seat\s+(?:electric|power)\s+adjust\w*\b|\b(?:electrically|power)\s+adjustable\s+(?:driver'?s?\s+|passenger'?s?\s+)?seats?\b",
+    "seat_adjustment":r"\b(?:electric|electrical|power)\s+adjust\w*\b[^.;,]{0,40}\bseat\b|\b(?:driver|passenger)(?:'s)?\s+seat\s+(?:electric|power)\s+adjust\w*\b|\b(?:electric|power)(?:\s+\d+[- ]way)?\s+(?:driver|passenger)(?:'s)?\s+seat\s+adjust\w*\b|\b(?:electrically|power)\s+adjustable\s+(?:driver'?s?\s+|passenger'?s?\s+)?seats?\b",
     "rear_vents":r"\brear (?:AC|air.conditioning) vents?\b",
     "fuel_tank":r"\bfuel.tank\b",
     "boot":r"\bboot\b|\bcargo (?:space|volume|capacity)\b|\bluggage (?:space|capacity)\b",
@@ -638,7 +655,7 @@ def _rounded_calculation_values(facts: list[dict], text: str) -> set[Decimal]:
             for f in facts if f.get("provenance")=="calculation" and str(f.get("derivation",{}).get("unit","")).startswith("INR")}
 
 
-def _calculation_delivery(fact: dict) -> str:
+def _emi_terms(fact: dict) -> str:
     derivation = fact.get("derivation", {})
     inputs = {v["name"]: v for v in derivation.get("inputs", [])}
     def plain(value):
@@ -650,8 +667,15 @@ def _calculation_delivery(fact: dict) -> str:
     if derivation.get("operation")=="emi" and all(k in inputs for k in ("principal",rate_key,"tenure")):
         p,r,n = (inputs[k] for k in ("principal",rate_key,"tenure"))
         basis="monthly" if rate_key=="monthly_rate" else "annual"
-        return (f"Using a loan of {plain(p['value'])} rupees at {plain(r['value'])}% {basis} interest over {plain(n['value'])} {n['unit']}, "
-                f"the illustrative EMI is {derivation['value']} rupees per month. This excludes fees and taxes and is not a lender quote.")
+        return f"a loan of {plain(p['value'])} rupees at {plain(r['value'])}% {basis} interest over {plain(n['value'])} {n['unit']}"
+    return ""
+
+
+def _calculation_delivery(fact: dict) -> str:
+    derivation=fact.get("derivation",{})
+    if terms:=_emi_terms(fact):
+        return (f"Using {terms}, the illustrative EMI is {derivation['value']} rupees per month. "
+                "This excludes fees and taxes and is not a lender quote.")
     unit = str(derivation.get("unit", "")).replace("INR/month", "rupees per month").replace("INR", "rupees")
     return f"Using the supplied inputs, the illustrative calculated result is {derivation.get('value', '')} {unit}."
 
@@ -944,7 +968,8 @@ async def reason(state: RuntimeState) -> dict:
             budget=left-0.25  # Leave deterministic validation/delivery inside the same deadline.
             if budget<=0:raise TimeoutError("Reasoning budget exhausted; validating completed tools")
             decision = await asyncio.wait_for(asyncio.to_thread(runtime.structured,sys,json.dumps(payload,ensure_ascii=False),TurnDecision,
-                                                               max_tokens=2300,thinking_level="low",timeout_budget_s=budget),timeout=budget)
+                                                               max_tokens=2300,thinking_level="low",timeout_budget_s=budget,cancel_event=state["control"].cancelled,
+                                                               trace_context={"session_id":state.get("session_id",""),"turn_id":state.get("turn_id",""),"phase":"reason"}),timeout=budget)
         state["control"].remaining()
         serialized = decision.model_dump()
         serialized["provider_used"] = getattr(decision, "_runtime_provider", "mock" if config.MOCK_LLM else "")
@@ -957,7 +982,7 @@ async def reason(state: RuntimeState) -> dict:
     except Exception as exc:
         usage.trace("runtime-graph-reason","none",latency_ms=_elapsed(started),error=str(exc)[:240])
         return {"decision":TurnDecision(action="answer",answered=False,sentences=[{"text":"I'm having trouble checking that right now. You can ask again, or we can carry on.","kind":"limitation"}]).model_dump(),
-                "errors":[*state.get("errors",[]),"reasoning_unavailable"],"timings":{**state.get("timings",{}),"reason_ms":_elapsed(started)}}
+                "errors":[*state.get("errors",[]),"reasoning_unavailable"],"timings":{**state.get("timings",{}),"reason_ms":state.get("timings",{}).get("reason_ms",0)+_elapsed(started)}}
 
 
 def after_reason(state: RuntimeState) -> str:
@@ -1001,6 +1026,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     requested_scope = requested_scope or explicit_scope(question, evidence)
     by_id = {f["id"]:f for f in evidence if f.get("approved",True) and not f.get("knowledge",{}).get("excluded_by_precedence") and f.get("knowledge",{}).get("conflict_status") not in ("suppressed","unresolved")}
     errors, sentences, used, substantive, condition_facts, condition_rejections, accepted_kinds = [], [], [], [], {}, [], []
+    previous_claim=None
     clarification = str(decision.get("clarification","")).strip()
     if decision.get("action")=="clarify" and clarification:
         limit="";parts=re.split(r"(?<=[.!;])\s+",clarification,maxsplit=1)
@@ -1015,6 +1041,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             return {"answer":speech,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":clarification,"offer_callback":False,"topic":decision.get("topic","other"),"cta":""}, errors
         errors.append("invalid_clarification")
     for row in _atomic_answer_rows(decision.get("sentences",[]),evidence,requested_scope):
+        prior_claim,previous_claim=previous_claim,None
         text = str(row.get("text","")).strip()
         row_dependencies=[]
         ids = list(dict.fromkeys(row.get("fact_ids",[])))
@@ -1047,7 +1074,10 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             reject("unresponsive_attribute");continue
         if _global_coverage_claim(text):
             reject("unverified_coverage_claim")
-            sentences.append("I couldn't verify that from the retrieved evidence.")
+            limit=coverage_limitation(text,precise=not ids and kind in {"context","limitation"}) or "I couldn't verify that from the retrieved evidence."
+            sentences.append(limit)
+            accepted_kinds.append("limitation")
+            if validated_limits is not None and limit!="I couldn't verify that from the retrieved evidence.":validated_limits.append(limit)
             continue
         if kind=="fact" and not ids:
             reject("uncited_fact"); continue
@@ -1187,6 +1217,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 reject("unsupported_policy_relation"); continue
             if _unsupported_dependency_relation(text,facts):
                 reject("unsupported_dependency_relation");continue
+            if kind=="fact" and unsupported_equipment_pairing(text,facts,prior_claim,requested_scope):
+                reject("unsupported_equipment_pairing");continue
             if any(f.get("provenance")=="calculation" and f.get("truth")=="modeled" for f in facts) and not re.search(r"estimat|illustrat|assum|using|based on|calculat",text,re.I):
                 reject("unqualified_calculation"); continue
         elif kind=="limitation" and _safe_limitation(text, customer_text or question):
@@ -1214,6 +1246,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         condition_facts.update({f["id"]:f for f in row_dependencies})
         if kind=="fact":
             substantive.extend(ids)
+            previous_claim={"text":text,"facts":facts}
     used = list(dict.fromkeys(used))
     calculations = [f for f in by_id.values() if f.get("provenance")=="calculation" and f.get("derivation",{}).get("value")]
     # A successful tool result is already deterministic and checked against input
@@ -1227,11 +1260,26 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             sentences.insert(0,_calculation_delivery(final_calc))
             used = list(dict.fromkeys([final_calc["id"],*used]))
             substantive.append(final_calc["id"])
+        # These commercial qualifications are properties of the audited tool
+        # result, not optional model style. Preserve them even if generation
+        # placed the caveat in a separate row that the per-row guard removed.
+        if (final_calc["id"] in used and final_calc.get("derivation",{}).get("operation")=="emi"
+                and (terms:=_emi_terms(final_calc))):
+            stated=" ".join(sentences)
+            inputs=final_calc["derivation"]["inputs"]
+            if not all(_bound_unit(stated,Decimal(str(item["value"])),str(item["unit"]).lower(),
+                                   annual=item["name"]=="annual_rate",monthly=item["name"]=="monthly_rate") for item in inputs):
+                sentences.append("This estimate uses "+terms+".")
+        if (final_calc["id"] in used and final_calc.get("derivation",{}).get("operation")=="emi"
+                and not (re.search(r"excludes? (?:fees and taxes|fees/taxes)"," ".join(sentences),re.I)
+                         and re.search(r"not (?:a |a formal )?lender quote"," ".join(sentences),re.I))):
+            sentences.append("This illustrative estimate excludes fees and taxes and is not a lender quote.")
+    sentences=list(dict.fromkeys(sentences))
     has_response = bool(sentences)
     covered_conditions=bool(condition_rejections and set(errors)=={"missing_required_condition"} and all(row["ids"]<=set(condition_facts) and _condition_content_covered(row["text"]," ".join(sentences)) for row in condition_rejections))
     if not has_response:
         sentences = ["I don't have a supported answer to that yet. We can check it with a salesperson or carry on."]
-    elif errors and not covered_conditions and not set(errors)<={"unresponsive_attribute","unverified_model_availability","uncited_context","unsupported_limitation_premise"}:
+    elif errors and not covered_conditions and "I couldn't verify that from the retrieved evidence." not in sentences and not set(errors)<={"unresponsive_attribute","unverified_model_availability","uncited_context","unsupported_limitation_premise"}:
         sentences.append("There's a part of that I couldn't verify, so I won't guess.")
     text = " ".join(sentences)
     # No word slicing: truncation could remove a material caveat.
@@ -1301,7 +1349,8 @@ If a reliable answer is still unavailable, return one honest limitation sentence
     info={"attempted":True,"accepted":False,"budget_ms":round(budget*1000),"original_validation_errors":list(original_errors)}
     try:
         repaired=await asyncio.wait_for(asyncio.to_thread(runtime.structured,instructions,json.dumps(payload,ensure_ascii=False),_CompositionRepair,
-                                                         max_tokens=1800,thinking_level="low",timeout_budget_s=budget),timeout=budget)
+                                                         max_tokens=1800,thinking_level="low",timeout_budget_s=budget,cancel_event=state["control"].cancelled,
+                                                         trace_context={"session_id":state.get("session_id",""),"turn_id":state.get("turn_id",""),"phase":"repair"}),timeout=budget)
         state["control"].remaining()
         candidate={"action":"answer","sentences":repaired.model_dump()["sentences"],"answered":bool(decision.get("answered")),"topic":decision.get("topic","other")}
         accepted_limits=[]
@@ -1309,7 +1358,12 @@ If a reliable answer is still unavailable, return one honest limitation sentence
         info.update(validation_errors=errors,provider_used=getattr(repaired,"_runtime_provider",""),model_used=getattr(repaired,"_runtime_model",""))
         clean_limit=any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in candidate["sentences"])
         loses_supported_facts=bool(original.get("fact_ids")) and not result.get("fact_ids")
-        validated_partial=bool(errors and not original.get("fact_ids") and ((result.get("fact_ids") and result.get("answered")) or accepted_limits))
+        # A rejected optional sentence must not discard a checked repair that
+        # keeps every previously delivered fact and adds the precise own limit.
+        preserves_facts=set(original.get("fact_ids",[]))<=set(result.get("fact_ids",[]))
+        gains_limit=any(limit not in original.get("answer","") for limit in accepted_limits)
+        validated_partial=bool(errors and ((not original.get("fact_ids") and ((result.get("fact_ids") and result.get("answered")) or accepted_limits))
+                                          or (preserves_facts and gains_limit)))
         if validated_partial or (not errors and not loses_supported_facts and (result.get("answered") or (clean_limit and not original.get("answered")))):
             info["accepted"]=True
             info["partial"]=validated_partial
@@ -1334,7 +1388,10 @@ async def validate(state: RuntimeState) -> dict:
         # request, model-produced number, or failed lookup cannot be salvaged.
         evidence=[f for f in evidence if f.get("provenance")!="calculation" or f.get("id") in completed_calculations]
     feedback=[]
-    result, errors = validate_decision(state.get("decision",{}),evidence,state["question"],customer_text,state.get("requested_scope"),row_feedback=feedback)
+    # Failed reasoning owns no product prose; only completed audited arithmetic
+    # may survive it. The operational message below comes from runtime state.
+    decision={"action":"answer","answered":False,"sentences":[]} if reasoning_failed else state.get("decision",{})
+    result, errors = validate_decision(decision,evidence,state["question"],customer_text,state.get("requested_scope"),row_feedback=feedback)
     result,errors,repair=await _repair_composition(state,result,errors,feedback,customer_text)
     required_urls=_verification_urls(state["question"])
     if required_urls and result.get("fact_ids") and not any(f.get("provenance")=="live_web" for f in result.get("facts",[])):
@@ -1345,6 +1402,9 @@ async def validate(state: RuntimeState) -> dict:
     slides = (store.read_json(state["demo_id"],"bundle.json") or {}).get("slides",[])
     result.update(deck.route_for(slides,state.get("slide_id"),result.get("fact_ids"),state["question"]) if result.get("answered") and result.get("fact_ids") else {"slide_id":state.get("slide_id"),"route":"none","callout_id":None,"by":""})
     calculation_fallback=bool(reasoning_failed and result.get("answered") and set(result.get("fact_ids",[])) & completed_calculations)
+    if reasoning_failed and not calculation_fallback:
+        result.update(answer="I'm having trouble checking that right now. You can ask again, or we can carry on.",
+                      answered=False,offer_callback=False)
     result.update(audio=None,visual=None,from_bank=False,provider_failed=reasoning_failed and not calculation_fallback,reasoning_failed=reasoning_failed,calculation_fallback=calculation_fallback,repair_failed=bool(repair.get("error")),tool_results=state.get("tool_results",[]),snapshot_id=state.get("snapshot_id",""),validation_errors=errors)
     result.update(provider_used=state.get("decision",{}).get("provider_used",""),model_used=state.get("decision",{}).get("model_used",""))
     if repair:
