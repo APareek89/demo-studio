@@ -1,6 +1,10 @@
 # Loop.MD — Demo Studio
 
-## Current finite checks — ranges, source subjects and grouped quantities
+## Current finite checks — source restrictions and live-table proof
+
+Loop remains off. The settled `b01b0c6`/v7 cohort remains 97 supported, 1 partial, 2 unsafe and no unhelpful answers or whole-turn provider failures. Independently reviewed source-restriction and live-table guards preserve own-row feature modifiers, explicit cell semantics, aligned complete headers and matching trim universes. Cited context/limitation labels cannot bypass these checks. Final live-table 18, coverage 24, ordinal 21, grouped quantities 8, helper 29, conversation 18, schema 8, deck 320, acceptance 24 and both smoke phases pass with zero outbound attempts. Graph, repair, limits, cohort and clause contracts also pass. Logs/hashes: `final-gates/table-scope-final-*`. No source, story, speech or UI changes. The next unchanged live 100 is capped at $3.50/300 completions, baseline $15.1996, within the overall $20 ceiling. Free gates are not live acceptance.
+
+## Earlier finite checks — ranges, source subjects and grouped quantities
 
 Loop remains off. The settled `d7c4bbe`/v7 cohort remains 93 supported, 2 partial, 3 unhelpful, 2 unsafe and 0 provider failures. Bounded fixes preserve comma-coordinated ranges, source-pronoun ownership and symmetric numeric typography; closed dealer/evidence acts keep useful limits. Final ordinal 21, coverage 20, grouped quantities 8, typed helper 29, conversation 18, schema 8, deck 320, acceptance 24 and both smoke phases pass with isolated storage and zero outbound attempts. Graph, repair, limits, cohort and clause checks pass; independent pairing, calculator-deadline and currency checks also pass. Exact logs/hashes are under `final-gates/range-source-*`. No source, script, speech or UI changes. The next unchanged live 100 has a separate $3.50/300-completion cap within the overall $20 ceiling.
 

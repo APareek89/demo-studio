@@ -1248,3 +1248,13 @@ Why could a real build begin without a working runtime? Configuration presence w
 **Useful content:** Diesel power/torque failed because evidence normalized grouped digits while spoken comparison did not: “4 000” and “4000” were treated differently. Apply the same typography normalization to both sides, retaining wrong-value, wrong-unit and scope checks. Dealer-delivery uncertainty and fabricated-evidence requests need closed own-limit/operating acts, not copied raw claims or new invented quantities. Unfamiliar citation IDs alone are not fabrication requests.
 
 **Validation boundary:** q099's E/King climate contrast remains supported despite lost optional detail; do not redefine a broad comparison as exhaustive after seeing the answer. Original 93/2/3/2/0 grades remain unchanged. The next live replay is separate evidence.
+
+## 2026-09-19 — source restriction and live table scope need their own proof (CR43)
+
+**Why q028 escaped:** The direct-source “only” guard still depended on reporting verbs, despite the preceding source-pronoun fix. Initial “records only show” was caught; repaired “documents only note” was not. Bind restrictive source predicates generically while excluding source-identity restrictions, attributed product terms and explicit nested product subjects.
+
+**Why q068 escaped:** Live website passages were excluded from structured-assertion scope checks. Their table proved that feature names existed, not that a mixed list applied “across the lineup”; the universal-phrase detector also missed that wording. A bounded guard must check every claimed feature against aligned complete table headers and explicit positive cell meanings. Unknown marks, absent legends, conditional cells, malformed alignment and unrelated all-positive rows cannot license universal fitment. This does not create new approved facts or change the source snapshot.
+
+**Audit lesson:** A root review writer used integer override keys against q-prefixed IDs, retaining old rationale text despite new answers and grades. Independent review caught it. Archive the original rationale, correct only the explanations and verify raw hashes; require override keys to be actual current case IDs. No answer or verdict changed.
+
+**Review controls:** Shared word pools could swap front/rear qualifiers between features, and a negated quantifier could hide another positive universal. Require own-row descriptors and independently scoped quantifiers. Apply the guard to every cited claim kind, not only model-labelled facts. Multiple cited tables must share the same canonical trim-header set; never pool different trim universes. Full-validator and saved-source tests preserve ordinary selected-variant descriptions.

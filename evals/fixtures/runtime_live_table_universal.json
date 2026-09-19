@@ -1,0 +1,3333 @@
+{
+  "case_id": "q068",
+  "code_commit": "b01b0c66781388b8de363cd6f915e2e98facee72",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "raw_row_sha256": "b2733c21b2ea289d66be6547db21258fcf0b2e985a6523f974e67ba20af856f5",
+  "original_result_row": {
+    "id": "q068",
+    "category": "lookup",
+    "question": "Check https://www.hyundai.com/in/en/find-a-car/creta/features for the comfort features it lists.",
+    "review_expectation": "review against pinned evidence and stated inputs",
+    "session_id": "qa100_1789837395_q068",
+    "elapsed_ms": 3309,
+    "status": "answered",
+    "mechanics": {
+      "no_audio": true,
+      "no_http_error": true,
+      "citations_if_answered": true
+    },
+    "result": {
+      "answer": "The Creta features page lists comfort amenities including front ventilated seats on select higher variants, dual-zone automatic temperature control, and a panoramic sunroof. According to www.hyundai.com, it also highlights wireless smartphone charging, rear air-conditioning vents, cruise control, and a rear centre armrest with cup holders across the lineup.",
+      "fact_ids": [
+        "W3f466061b6a1",
+        "Wbb4dd8a91bec"
+      ],
+      "facts": [
+        {
+          "id": "W3f466061b6a1",
+          "claim": "Customer-selected website passage",
+          "value": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "locator": "COMFORT & CONVENIENCE · block 30",
+            "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S"
+          },
+          "scope": {},
+          "scope_unverified": true,
+          "context": {
+            "kind": "table",
+            "heading": "COMFORT & CONVENIENCE",
+            "rows": [
+              [
+                "Feature",
+                "E",
+                "EX",
+                "EX(O)",
+                "S(O)",
+                "S(O) Knight",
+                "SX",
+                "SX Premium",
+                "King",
+                "King Knight",
+                "Lounge Edition"
+              ],
+              [
+                "Sunroof",
+                "Smart panoramic",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-"
+              ],
+              [
+                "Voice enabled smart panoramic",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Air Conditioning",
+                "Manual",
+                "S",
+                "S",
+                "S",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-"
+              ],
+              [
+                "Dual zone automatic temperature control (DATC)",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Front row ventilated seats",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Electric parking brake with auto hold",
+                "-",
+                "-",
+                "-",
+                "S*",
+                "S*",
+                "-",
+                "S*",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Smartphone wireless charger**",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Drive mode select (Eco, Normal, Sport)",
+                "-",
+                "-",
+                "-",
+                "S*",
+                "S*",
+                "-",
+                "S*",
+                "S*",
+                "S*",
+                "S*"
+              ],
+              [
+                "Traction control modes (Snow, Mud, Sand)",
+                "-",
+                "-",
+                "-",
+                "S*",
+                "S*",
+                "-",
+                "S*",
+                "S*",
+                "S*",
+                "S*"
+              ],
+              [
+                "Paddle shifters",
+                "-",
+                "-",
+                "-",
+                "S*",
+                "S*",
+                "-",
+                "S*",
+                "S*",
+                "S*",
+                "S*"
+              ],
+              [
+                "Cruise control",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Keyless entry",
+                "Foldable key",
+                "S",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-"
+              ],
+              [
+                "Smart key with push button start and motion sensor",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Outside mirror",
+                "Electrically adjustable",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Auto fold",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Front console armrest with storage",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Remote engine Start with smart key",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rear center armrest with cup holders",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Electric tailgate release",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rear AC vent",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "USB Charger (C-Type)",
+                "Front",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rear(x1)",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "-",
+                "-",
+                "-"
+              ],
+              [
+                "Rear(x2)",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Power outlet",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rear wiper and washer",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Motor driven power steering",
+                "Tilt Function",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Telescopic function",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Luggage Lamp",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Power Windows",
+                "Front",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rear",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Idle stop & go (ISG)",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Passenger vanity mirror",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Map lamps",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Room lamp",
+                "S",
+                "S",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-"
+              ],
+              [
+                "LED reading lamps (Rear)",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Sunglass holder",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Glove box cooling",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rear wireless charger",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S"
+              ],
+              [
+                "Rain sensing wiper",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "S",
+                "S",
+                "S"
+              ]
+            ],
+            "footnote": ""
+          },
+          "fetched_at": 1789837542.306714,
+          "provenance": "live_web",
+          "approved": true,
+          "truth": "stated"
+        },
+        {
+          "id": "Wbb4dd8a91bec",
+          "claim": "Customer-selected website passage",
+          "value": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims.",
+          "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+          "source": {
+            "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "locator": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled? · block 83",
+            "quote": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims."
+          },
+          "scope": {},
+          "scope_unverified": true,
+          "context": {
+            "kind": "text",
+            "heading": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled?"
+          },
+          "fetched_at": 1789837542.306714,
+          "provenance": "live_web",
+          "approved": true,
+          "truth": "stated"
+        }
+      ],
+      "condition_fact_ids": [],
+      "condition_evidence": [],
+      "covered_condition_rejections": false,
+      "answered": true,
+      "clarifying_question": "",
+      "offer_callback": false,
+      "topic": "comfort_features",
+      "cta": "",
+      "slide_id": "sl07",
+      "route": "jump",
+      "callout_id": null,
+      "by": "topic",
+      "audio": null,
+      "visual": null,
+      "from_bank": false,
+      "provider_failed": false,
+      "reasoning_failed": false,
+      "calculation_fallback": false,
+      "repair_failed": false,
+      "tool_results": [
+        {
+          "tool": "source_lookup",
+          "url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+          "evidence": [
+            {
+              "id": "Wd1bad6c423ef",
+              "claim": "Customer-selected website passage",
+              "value": "Hyundai SmartSense, the Level 2 Advanced Driver Assistance System (ADAS) in the CRETA, includes forward-collision avoidance assist, lane-keeping assist, blind-spot collision avoidance, safe-exit warning, high-beam assist, and driver attention warning. These features enhance safety, reduce accident risk, and provide semi-autonomous driving assistance in select higher trims for added convenience and confidence.",
+              "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+              "source": {
+                "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "locator": "1. What is the ADAS feature in CRETA? · block 75",
+                "quote": "Hyundai SmartSense, the Level 2 Advanced Driver Assistance System (ADAS) in the CRETA, includes forward-collision avoidance assist, lane-keeping assist, blind-spot collision avoidance, safe-exit warning, high-beam assist, and driver attention warning. These features enhance safety, reduce accident risk, and provide semi-autonomous driving assistance in select higher trims for added convenience and confidence."
+              },
+              "scope": {},
+              "scope_unverified": true,
+              "context": {
+                "kind": "text",
+                "heading": "1. What is the ADAS feature in CRETA?"
+              },
+              "fetched_at": 1789837542.306714,
+              "provenance": "live_web",
+              "approved": true,
+              "truth": "stated"
+            },
+            {
+              "id": "Wbb4dd8a91bec",
+              "claim": "Customer-selected website passage",
+              "value": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims.",
+              "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+              "source": {
+                "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "locator": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled? · block 83",
+                "quote": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims."
+              },
+              "scope": {},
+              "scope_unverified": true,
+              "context": {
+                "kind": "text",
+                "heading": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled?"
+              },
+              "fetched_at": 1789837542.306714,
+              "provenance": "live_web",
+              "approved": true,
+              "truth": "stated"
+            },
+            {
+              "id": "W621ef4289269",
+              "claim": "Customer-selected website passage",
+              "value": "Engine & Trim Plan | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\n1.5 l Mpi Petrol | MT | ● | ● | ● | ● | ● | ● | ● | ● | - | -\nIVT | - | - | ● | ● | - | - | ● | ● | ● | ●\n1.5 l  U2 CRDi diesel | MT | ● | ● | ● | ● | ● | - | ● | ● | - | -\nAT | - | - | ● | ● | - | - | - | ● | ● | ●\n1.5 l turbo GDi petrol | DCT | - | - | - | - | - | - | - | ● | - | -",
+              "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+              "source": {
+                "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "locator": "New Hyundai CRETA Car Features · block 23",
+                "quote": "Engine & Trim Plan | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\n1.5 l Mpi Petrol | MT | ● | ● | ● | ● | ● | ● | ● | ● | - | -\nIVT | - | - | ● | ● | - | - | ● | ● | ● | ●\n1.5 l  U2 CRDi diesel | MT | ● | ● | ● | ● | ● | - | ● | ● | - | -\nAT | - | - | ● | ● | - | - | - | ● | ● | ●\n1.5 l turbo GDi petrol | DCT | - | - | - | - | - | - | - | ● | - | -"
+              },
+              "scope": {},
+              "scope_unverified": true,
+              "context": {
+                "kind": "table",
+                "heading": "New Hyundai CRETA Car Features",
+                "rows": [
+                  [
+                    "Engine & Trim Plan",
+                    "E",
+                    "EX",
+                    "EX(O)",
+                    "S(O)",
+                    "S(O) Knight",
+                    "SX",
+                    "SX Premium",
+                    "King",
+                    "King Knight",
+                    "Lounge Edition"
+                  ],
+                  [
+                    "1.5 l Mpi Petrol",
+                    "MT",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "IVT",
+                    "-",
+                    "-",
+                    "●",
+                    "●",
+                    "-",
+                    "-",
+                    "●",
+                    "●",
+                    "●",
+                    "●"
+                  ],
+                  [
+                    "1.5 l  U2 CRDi diesel",
+                    "MT",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "●",
+                    "-",
+                    "●",
+                    "●",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "AT",
+                    "-",
+                    "-",
+                    "●",
+                    "●",
+                    "-",
+                    "-",
+                    "-",
+                    "●",
+                    "●",
+                    "●"
+                  ],
+                  [
+                    "1.5 l turbo GDi petrol",
+                    "DCT",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "●",
+                    "-",
+                    "-"
+                  ]
+                ],
+                "footnote": ""
+              },
+              "fetched_at": 1789837542.306714,
+              "provenance": "live_web",
+              "approved": true,
+              "truth": "stated"
+            },
+            {
+              "id": "W3f466061b6a1",
+              "claim": "Customer-selected website passage",
+              "value": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S",
+              "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+              "source": {
+                "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "locator": "COMFORT & CONVENIENCE · block 30",
+                "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S"
+              },
+              "scope": {},
+              "scope_unverified": true,
+              "context": {
+                "kind": "table",
+                "heading": "COMFORT & CONVENIENCE",
+                "rows": [
+                  [
+                    "Feature",
+                    "E",
+                    "EX",
+                    "EX(O)",
+                    "S(O)",
+                    "S(O) Knight",
+                    "SX",
+                    "SX Premium",
+                    "King",
+                    "King Knight",
+                    "Lounge Edition"
+                  ],
+                  [
+                    "Sunroof",
+                    "Smart panoramic",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "Voice enabled smart panoramic",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Air Conditioning",
+                    "Manual",
+                    "S",
+                    "S",
+                    "S",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "Dual zone automatic temperature control (DATC)",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Front row ventilated seats",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Electric parking brake with auto hold",
+                    "-",
+                    "-",
+                    "-",
+                    "S*",
+                    "S*",
+                    "-",
+                    "S*",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Smartphone wireless charger**",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Drive mode select (Eco, Normal, Sport)",
+                    "-",
+                    "-",
+                    "-",
+                    "S*",
+                    "S*",
+                    "-",
+                    "S*",
+                    "S*",
+                    "S*",
+                    "S*"
+                  ],
+                  [
+                    "Traction control modes (Snow, Mud, Sand)",
+                    "-",
+                    "-",
+                    "-",
+                    "S*",
+                    "S*",
+                    "-",
+                    "S*",
+                    "S*",
+                    "S*",
+                    "S*"
+                  ],
+                  [
+                    "Paddle shifters",
+                    "-",
+                    "-",
+                    "-",
+                    "S*",
+                    "S*",
+                    "-",
+                    "S*",
+                    "S*",
+                    "S*",
+                    "S*"
+                  ],
+                  [
+                    "Cruise control",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Keyless entry",
+                    "Foldable key",
+                    "S",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "Smart key with push button start and motion sensor",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Outside mirror",
+                    "Electrically adjustable",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Auto fold",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Front console armrest with storage",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Remote engine Start with smart key",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rear center armrest with cup holders",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Electric tailgate release",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rear AC vent",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "USB Charger (C-Type)",
+                    "Front",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rear(x1)",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "-",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "Rear(x2)",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Power outlet",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rear wiper and washer",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Motor driven power steering",
+                    "Tilt Function",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Telescopic function",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Luggage Lamp",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Power Windows",
+                    "Front",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rear",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Idle stop & go (ISG)",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Passenger vanity mirror",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Map lamps",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Room lamp",
+                    "S",
+                    "S",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-"
+                  ],
+                  [
+                    "LED reading lamps (Rear)",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Sunglass holder",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Glove box cooling",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rear wireless charger",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S"
+                  ],
+                  [
+                    "Rain sensing wiper",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "S",
+                    "S",
+                    "S"
+                  ]
+                ],
+                "footnote": ""
+              },
+              "fetched_at": 1789837542.306714,
+              "provenance": "live_web",
+              "approved": true,
+              "truth": "stated"
+            },
+            {
+              "id": "W36ead563f19a",
+              "claim": "Customer-selected website passage",
+              "value": "New Hyundai CRETA Car Features",
+              "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+              "source": {
+                "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "locator": "New Hyundai CRETA Car Features · block 22",
+                "quote": "New Hyundai CRETA Car Features"
+              },
+              "scope": {},
+              "scope_unverified": true,
+              "context": {
+                "kind": "text",
+                "heading": "New Hyundai CRETA Car Features"
+              },
+              "fetched_at": 1789837542.306714,
+              "provenance": "live_web",
+              "approved": true,
+              "truth": "stated"
+            },
+            {
+              "id": "W333734838e85",
+              "claim": "Customer-selected website passage",
+              "value": "COMFORT & CONVENIENCE",
+              "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+              "source": {
+                "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "locator": "COMFORT & CONVENIENCE · block 29",
+                "quote": "COMFORT & CONVENIENCE"
+              },
+              "scope": {},
+              "scope_unverified": true,
+              "context": {
+                "kind": "text",
+                "heading": "COMFORT & CONVENIENCE"
+              },
+              "fetched_at": 1789837542.306714,
+              "provenance": "live_web",
+              "approved": true,
+              "truth": "stated"
+            }
+          ],
+          "pages": [
+            {
+              "url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "discovery": "customer URL",
+              "fetched_at": 1789837542.306714
+            }
+          ],
+          "scope": {
+            "model_tokens": [
+              "creta"
+            ],
+            "locale": [
+              "in",
+              "en"
+            ],
+            "seed_url": "https://www.hyundai.com/in/en/find-a-car/creta/features"
+          },
+          "elapsed_ms": 1084,
+          "coverage": [],
+          "requested_url": "https://www.hyundai.com/in/en/find-a-car/creta/features"
+        }
+      ],
+      "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+      "validation_errors": [],
+      "provider_used": "gemini",
+      "model_used": "gemini-3.8-flash",
+      "runtime_utterance_id": "u_8cb4e323ef571406c8fc",
+      "turn_id": "q068",
+      "timings": {
+        "retrieve_ms": 184,
+        "reason_ms": 1992,
+        "tools_ms": 1085,
+        "graph_ms": 3296
+      },
+      "graph_timings": {
+        "retrieve_ms": 184,
+        "reason_ms": 1992,
+        "tools_ms": 1085,
+        "graph_ms": 3296
+      }
+    },
+    "quality_review": {
+      "answerability": "pending",
+      "grounded_correct": null,
+      "scope_correct": null,
+      "human_helpfulness": null,
+      "notes": ""
+    }
+  },
+  "trace_path": "data/demos/dm_41513908/trace.jsonl",
+  "events": [
+    {
+      "trace_line": 6205,
+      "raw_trace_sha256": "e0ad0b3ca7a8771181892121dea19c0bb8902841a00f4c8c6d6ec298b4e35d25",
+      "timestamp": 1789837544.478601,
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "latency_ms": 1860,
+      "error": "",
+      "payload": {
+        "question": "Check https://www.hyundai.com/in/en/find-a-car/creta/features for the comfort features it lists.",
+        "customer": {
+          "scope": {
+            "model": "CRETA"
+          }
+        },
+        "conversation": [],
+        "evidence": [
+          {
+            "id": "F197",
+            "kind": "feature",
+            "claim": "Interior comfort and convenience features",
+            "value": "Ventilated front seats, panoramic sunroof, wireless charging, dual-zone automatic climate control, D-cut steering wheel, 60:40 split rear seats, rear-seat recline function, and digital instrument cluster",
+            "conditions": "Availability depends on selected variant",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_a4a0ef2466f3",
+              "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) · block 13"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F180",
+            "kind": "feature",
+            "claim": "Premium cabin and infotainment equipment",
+            "value": "panoramic sunroof, ventilated front seats, dual-zone automatic climate control, wireless charging, rear-seat recline function, digital instrument cluster, connected infotainment system, Bose premium sound system, and Hyundai Bluelink connected-car technology",
+            "conditions": "Varies depending on selected variant; Bose sound and Bluelink on higher variants.",
+            "scope": {
+              "model": "Hyundai CRETA",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_c27090234838",
+              "locator": "Hyundai Creta Car Price in Jaipur (Ex-showroom*) · block 14"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F097",
+            "kind": "feature",
+            "claim": "Rear seat recline",
+            "value": "2-step rear reclining seat in select trims",
+            "conditions": "Available in select trims only",
+            "scope": {
+              "model": "CRETA",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_cb[phone]",
+              "locator": "FAQs · 4.Does the CRETA have a rear-seat reclining function? · block 101"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F069",
+            "kind": "feature",
+            "claim": "Driver seat electric adjustment",
+            "value": "Electric 8 way driver seat adjustment",
+            "conditions": "Standard on SX Premium, King, King Knight, Lounge Edition; manual height adjustment on lower trims",
+            "scope": {
+              "model": "Hyundai CRETA",
+              "variant": "SX Premium, King, King Knight, Lounge Edition"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_51f57f",
+              "locator": "page 37, Interior features by variant table"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F142",
+            "kind": "feature",
+            "claim": "Front ventilated seats",
+            "value": "Ventilated front seats in select higher trims",
+            "conditions": "Select higher trims only",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_46192070f7b0",
+              "locator": "5.Are there ventilated front seats in the CRETA? · block 92"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F144",
+            "kind": "feature",
+            "claim": "Connected car features",
+            "value": "Hyundai Bluelink app and Home-to-Car (H2C) with Alexa",
+            "conditions": "Equipped models/trims",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_46192070f7b0",
+              "locator": "New Hyundai CRETA Car Convenience: Always Forward Thinking. · block 23"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F095",
+            "kind": "feature",
+            "claim": "Driver seat adjustment",
+            "value": "Power driver seat - 8 way",
+            "conditions": "Stated interior feature",
+            "scope": {
+              "model": "CRETA",
+              "market": "India"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_cb[phone]",
+              "locator": "Power driver seat - 8 way · block 37"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F198",
+            "kind": "feature",
+            "claim": "Audio and connected car system",
+            "value": "Hyundai Bluelink connected car technology and Bose premium sound system",
+            "conditions": "Available on higher trims only",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_a4a0ef2466f3",
+              "locator": "Check Hyundai CRETA Car Price (Ex-showroom*) · block 13"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F051",
+            "kind": "price",
+            "claim": "Starting price",
+            "value": "₹10,90,700",
+            "conditions": "Ex-showroom starting price in body text; page structured data lists ₹10.79 lakh; excludes registration, road tax, and insurance which vary by state and city.",
+            "scope": {
+              "model": "Hyundai CRETA",
+              "price_basis": "ex-showroom"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_51f57f",
+              "locator": "page 42, Price"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F063",
+            "kind": "feature",
+            "claim": "Front row ventilated seats availability",
+            "value": "Standard on SX Premium, King, King Knight, Lounge Edition",
+            "conditions": "Not available on E, EX, EX(O), S(O), S(O) Knight, SX",
+            "scope": {
+              "model": "Hyundai CRETA",
+              "variant": "SX Premium, King, King Knight, Lounge Edition"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_51f57f",
+              "locator": "page 39, Comfort and convenience by variant table"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F129",
+            "kind": "feature",
+            "claim": "Forward Collision Assist & Warning",
+            "value": "FCA-Car & FCW, FCA-Ped, FCA-Cyl, FCA-JT",
+            "conditions": "Part of Hyundai SmartSense Level 2 ADAS",
+            "scope": {
+              "model": "CRETA"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_93e5ef21c73e",
+              "locator": "Forward Collision Assist & Warning · blocks 48, 50, 52, 54"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F046",
+            "kind": "feature",
+            "claim": "Connected car suite complimentary subscription",
+            "value": "Hyundai Bluelink connected car technology with 70+ features, 3 years complimentary",
+            "conditions": "Available on SX trim and above; includes 3 years complimentary service",
+            "scope": {
+              "model": "CRETA",
+              "variant": "SX and above"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_51f57f",
+              "locator": "page 25, Infotainment and connected services"
+            },
+            "source_origin": "uploaded",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F168",
+            "kind": "feature",
+            "claim": "Connected car technology",
+            "value": "Hyundai Bluelink with Over-the-air (OTA) updates and Home to car (H2C) with Alexa",
+            "conditions": "Available on SX, SX Premium, King, King Knight, Lounge Edition; Alexa Echo device requires third-party purchase",
+            "scope": {
+              "model": "CRETA",
+              "market": "India",
+              "variant": "SX, SX Premium, King, King Knight, Lounge Edition"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_962d2536a6b1",
+              "locator": "INFOTAINMENT AND CONNECTIVITY · block 32"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "F160",
+            "kind": "feature",
+            "claim": "Front row ventilated seats",
+            "value": "Available on SX Premium, King, King Knight, and Lounge Edition",
+            "conditions": "Offered only on higher trims",
+            "scope": {
+              "model": "CRETA",
+              "market": "India",
+              "variant": "SX Premium, King, King Knight, Lounge Edition"
+            },
+            "truth": "stated",
+            "entity": "Hyundai CRETA",
+            "competition": false,
+            "source": {
+              "ref": "src_962d2536a6b1",
+              "locator": "COMFORT & CONVENIENCE · block 30"
+            },
+            "source_origin": "website",
+            "runtime_variant_boundary": []
+          },
+          {
+            "id": "Wd1bad6c423ef",
+            "claim": "Customer-selected website passage",
+            "value": "Hyundai SmartSense, the Level 2 Advanced Driver Assistance System (ADAS) in the CRETA, includes forward-collision avoidance assist, lane-keeping assist, blind-spot collision avoidance, safe-exit warning, high-beam assist, and driver attention warning. These features enhance safety, reduce accident risk, and provide semi-autonomous driving assistance in select higher trims for added convenience and confidence.",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "locator": "1. What is the ADAS feature in CRETA? · block 75",
+              "quote": "Hyundai SmartSense, the Level 2 Advanced Driver Assistance System (ADAS) in the CRETA, includes forward-collision avoidance assist, lane-keeping assist, blind-spot collision avoidance, safe-exit warning, high-beam assist, and driver attention warning. These features enhance safety, reduce accident risk, and provide semi-autonomous driving assistance in select higher trims for added convenience and confidence."
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "1. What is the ADAS feature in CRETA?"
+            },
+            "fetched_at": 1789837542.306714,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "Wbb4dd8a91bec",
+            "claim": "Customer-selected website passage",
+            "value": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims.",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "locator": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled? · block 83",
+              "quote": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims."
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled?"
+            },
+            "fetched_at": 1789837542.306714,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W621ef4289269",
+            "claim": "Customer-selected website passage",
+            "value": "Engine & Trim Plan | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\n1.5 l Mpi Petrol | MT | ● | ● | ● | ● | ● | ● | ● | ● | - | -\nIVT | - | - | ● | ● | - | - | ● | ● | ● | ●\n1.5 l  U2 CRDi diesel | MT | ● | ● | ● | ● | ● | - | ● | ● | - | -\nAT | - | - | ● | ● | - | - | - | ● | ● | ●\n1.5 l turbo GDi petrol | DCT | - | - | - | - | - | - | - | ● | - | -",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "locator": "New Hyundai CRETA Car Features · block 23",
+              "quote": "Engine & Trim Plan | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\n1.5 l Mpi Petrol | MT | ● | ● | ● | ● | ● | ● | ● | ● | - | -\nIVT | - | - | ● | ● | - | - | ● | ● | ● | ●\n1.5 l  U2 CRDi diesel | MT | ● | ● | ● | ● | ● | - | ● | ● | - | -\nAT | - | - | ● | ● | - | - | - | ● | ● | ●\n1.5 l turbo GDi petrol | DCT | - | - | - | - | - | - | - | ● | - | -"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "table",
+              "heading": "New Hyundai CRETA Car Features",
+              "rows": [
+                [
+                  "Engine & Trim Plan",
+                  "E",
+                  "EX",
+                  "EX(O)",
+                  "S(O)",
+                  "S(O) Knight",
+                  "SX",
+                  "SX Premium",
+                  "King",
+                  "King Knight",
+                  "Lounge Edition"
+                ],
+                [
+                  "1.5 l Mpi Petrol",
+                  "MT",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "-",
+                  "-"
+                ],
+                [
+                  "IVT",
+                  "-",
+                  "-",
+                  "●",
+                  "●",
+                  "-",
+                  "-",
+                  "●",
+                  "●",
+                  "●",
+                  "●"
+                ],
+                [
+                  "1.5 l  U2 CRDi diesel",
+                  "MT",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "●",
+                  "-",
+                  "●",
+                  "●",
+                  "-",
+                  "-"
+                ],
+                [
+                  "AT",
+                  "-",
+                  "-",
+                  "●",
+                  "●",
+                  "-",
+                  "-",
+                  "-",
+                  "●",
+                  "●",
+                  "●"
+                ],
+                [
+                  "1.5 l turbo GDi petrol",
+                  "DCT",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "●",
+                  "-",
+                  "-"
+                ]
+              ],
+              "footnote": ""
+            },
+            "fetched_at": 1789837542.306714,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W3f466061b6a1",
+            "claim": "Customer-selected website passage",
+            "value": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "locator": "COMFORT & CONVENIENCE · block 30",
+              "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "table",
+              "heading": "COMFORT & CONVENIENCE",
+              "rows": [
+                [
+                  "Feature",
+                  "E",
+                  "EX",
+                  "EX(O)",
+                  "S(O)",
+                  "S(O) Knight",
+                  "SX",
+                  "SX Premium",
+                  "King",
+                  "King Knight",
+                  "Lounge Edition"
+                ],
+                [
+                  "Sunroof",
+                  "Smart panoramic",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-"
+                ],
+                [
+                  "Voice enabled smart panoramic",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Air Conditioning",
+                  "Manual",
+                  "S",
+                  "S",
+                  "S",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-"
+                ],
+                [
+                  "Dual zone automatic temperature control (DATC)",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Front row ventilated seats",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Electric parking brake with auto hold",
+                  "-",
+                  "-",
+                  "-",
+                  "S*",
+                  "S*",
+                  "-",
+                  "S*",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Smartphone wireless charger**",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Drive mode select (Eco, Normal, Sport)",
+                  "-",
+                  "-",
+                  "-",
+                  "S*",
+                  "S*",
+                  "-",
+                  "S*",
+                  "S*",
+                  "S*",
+                  "S*"
+                ],
+                [
+                  "Traction control modes (Snow, Mud, Sand)",
+                  "-",
+                  "-",
+                  "-",
+                  "S*",
+                  "S*",
+                  "-",
+                  "S*",
+                  "S*",
+                  "S*",
+                  "S*"
+                ],
+                [
+                  "Paddle shifters",
+                  "-",
+                  "-",
+                  "-",
+                  "S*",
+                  "S*",
+                  "-",
+                  "S*",
+                  "S*",
+                  "S*",
+                  "S*"
+                ],
+                [
+                  "Cruise control",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Keyless entry",
+                  "Foldable key",
+                  "S",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-"
+                ],
+                [
+                  "Smart key with push button start and motion sensor",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Outside mirror",
+                  "Electrically adjustable",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Auto fold",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Front console armrest with storage",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Remote engine Start with smart key",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rear center armrest with cup holders",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Electric tailgate release",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rear AC vent",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "USB Charger (C-Type)",
+                  "Front",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rear(x1)",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "-",
+                  "-",
+                  "-"
+                ],
+                [
+                  "Rear(x2)",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Power outlet",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rear wiper and washer",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Motor driven power steering",
+                  "Tilt Function",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Telescopic function",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Luggage Lamp",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Power Windows",
+                  "Front",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rear",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Idle stop & go (ISG)",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Passenger vanity mirror",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Map lamps",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Room lamp",
+                  "S",
+                  "S",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-"
+                ],
+                [
+                  "LED reading lamps (Rear)",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Sunglass holder",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Glove box cooling",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rear wireless charger",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S"
+                ],
+                [
+                  "Rain sensing wiper",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "-",
+                  "S",
+                  "S",
+                  "S"
+                ]
+              ],
+              "footnote": ""
+            },
+            "fetched_at": 1789837542.306714,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W36ead563f19a",
+            "claim": "Customer-selected website passage",
+            "value": "New Hyundai CRETA Car Features",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "locator": "New Hyundai CRETA Car Features · block 22",
+              "quote": "New Hyundai CRETA Car Features"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "New Hyundai CRETA Car Features"
+            },
+            "fetched_at": 1789837542.306714,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          },
+          {
+            "id": "W333734838e85",
+            "claim": "Customer-selected website passage",
+            "value": "COMFORT & CONVENIENCE",
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {
+              "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+              "locator": "COMFORT & CONVENIENCE · block 29",
+              "quote": "COMFORT & CONVENIENCE"
+            },
+            "scope": {},
+            "scope_unverified": true,
+            "context": {
+              "kind": "text",
+              "heading": "COMFORT & CONVENIENCE"
+            },
+            "fetched_at": 1789837542.306714,
+            "provenance": "live_web",
+            "approved": true,
+            "truth": "stated"
+          }
+        ],
+        "requested_scope": {
+          "model": "CRETA"
+        },
+        "conflicts": [],
+        "mandatory_dependencies": [
+          {
+            "assertion_id": "F144",
+            "requirements": [
+              {
+                "fact_id": "F168",
+                "condition": "Available on SX, SX Premium, King, King Knight, Lounge Edition; Alexa Echo device requires third-party purchase",
+                "scope": {
+                  "model": "CRETA",
+                  "market": "India",
+                  "variant": "SX, SX Premium, King, King Knight, Lounge Edition"
+                },
+                "source": {
+                  "ref": "src_962d2536a6b1",
+                  "locator": "INFOTAINMENT AND CONNECTIVITY · block 32"
+                }
+              }
+            ]
+          },
+          {
+            "assertion_id": "F168",
+            "requirements": [
+              {
+                "fact_id": "F168",
+                "condition": "Available on SX, SX Premium, King, King Knight, Lounge Edition; Alexa Echo device requires third-party purchase",
+                "scope": {
+                  "model": "CRETA",
+                  "market": "India",
+                  "variant": "SX, SX Premium, King, King Knight, Lounge Edition"
+                },
+                "source": {
+                  "ref": "src_962d2536a6b1",
+                  "locator": "INFOTAINMENT AND CONNECTIVITY · block 32"
+                }
+              }
+            ]
+          }
+        ],
+        "tools_so_far": [
+          {
+            "tool": "source_lookup",
+            "url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+            "evidence": [
+              {
+                "id": "Wd1bad6c423ef",
+                "claim": "Customer-selected website passage",
+                "value": "Hyundai SmartSense, the Level 2 Advanced Driver Assistance System (ADAS) in the CRETA, includes forward-collision avoidance assist, lane-keeping assist, blind-spot collision avoidance, safe-exit warning, high-beam assist, and driver attention warning. These features enhance safety, reduce accident risk, and provide semi-autonomous driving assistance in select higher trims for added convenience and confidence.",
+                "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+                "source": {
+                  "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                  "locator": "1. What is the ADAS feature in CRETA? · block 75",
+                  "quote": "Hyundai SmartSense, the Level 2 Advanced Driver Assistance System (ADAS) in the CRETA, includes forward-collision avoidance assist, lane-keeping assist, blind-spot collision avoidance, safe-exit warning, high-beam assist, and driver attention warning. These features enhance safety, reduce accident risk, and provide semi-autonomous driving assistance in select higher trims for added convenience and confidence."
+                },
+                "scope": {},
+                "scope_unverified": true,
+                "context": {
+                  "kind": "text",
+                  "heading": "1. What is the ADAS feature in CRETA?"
+                },
+                "fetched_at": 1789837542.306714,
+                "provenance": "live_web",
+                "approved": true,
+                "truth": "stated"
+              },
+              {
+                "id": "Wbb4dd8a91bec",
+                "claim": "Customer-selected website passage",
+                "value": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims.",
+                "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+                "source": {
+                  "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                  "locator": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled? · block 83",
+                  "quote": "The voice-enabled smart panoramic sunroof is included in the SX (O), SX Tech, SX Premium, SX, King, and King Knight variants. This feature allows easy opening and closing via voice commands or controls, enhancing convenience and cabin experience. It provides additional natural light and a premium atmosphere, elevating passenger comfort and luxury in higher trims."
+                },
+                "scope": {},
+                "scope_unverified": true,
+                "context": {
+                  "kind": "text",
+                  "heading": "5.Which CRETA variants include a panoramic sunroof, and is it voice-enabled?"
+                },
+                "fetched_at": 1789837542.306714,
+                "provenance": "live_web",
+                "approved": true,
+                "truth": "stated"
+              },
+              {
+                "id": "W621ef4289269",
+                "claim": "Customer-selected website passage",
+                "value": "Engine & Trim Plan | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\n1.5 l Mpi Petrol | MT | ● | ● | ● | ● | ● | ● | ● | ● | - | -\nIVT | - | - | ● | ● | - | - | ● | ● | ● | ●\n1.5 l  U2 CRDi diesel | MT | ● | ● | ● | ● | ● | - | ● | ● | - | -\nAT | - | - | ● | ● | - | - | - | ● | ● | ●\n1.5 l turbo GDi petrol | DCT | - | - | - | - | - | - | - | ● | - | -",
+                "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+                "source": {
+                  "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                  "locator": "New Hyundai CRETA Car Features · block 23",
+                  "quote": "Engine & Trim Plan | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\n1.5 l Mpi Petrol | MT | ● | ● | ● | ● | ● | ● | ● | ● | - | -\nIVT | - | - | ● | ● | - | - | ● | ● | ● | ●\n1.5 l  U2 CRDi diesel | MT | ● | ● | ● | ● | ● | - | ● | ● | - | -\nAT | - | - | ● | ● | - | - | - | ● | ● | ●\n1.5 l turbo GDi petrol | DCT | - | - | - | - | - | - | - | ● | - | -"
+                },
+                "scope": {},
+                "scope_unverified": true,
+                "context": {
+                  "kind": "table",
+                  "heading": "New Hyundai CRETA Car Features",
+                  "rows": [
+                    [
+                      "Engine & Trim Plan",
+                      "E",
+                      "EX",
+                      "EX(O)",
+                      "S(O)",
+                      "S(O) Knight",
+                      "SX",
+                      "SX Premium",
+                      "King",
+                      "King Knight",
+                      "Lounge Edition"
+                    ],
+                    [
+                      "1.5 l Mpi Petrol",
+                      "MT",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "IVT",
+                      "-",
+                      "-",
+                      "●",
+                      "●",
+                      "-",
+                      "-",
+                      "●",
+                      "●",
+                      "●",
+                      "●"
+                    ],
+                    [
+                      "1.5 l  U2 CRDi diesel",
+                      "MT",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "●",
+                      "-",
+                      "●",
+                      "●",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "AT",
+                      "-",
+                      "-",
+                      "●",
+                      "●",
+                      "-",
+                      "-",
+                      "-",
+                      "●",
+                      "●",
+                      "●"
+                    ],
+                    [
+                      "1.5 l turbo GDi petrol",
+                      "DCT",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "●",
+                      "-",
+                      "-"
+                    ]
+                  ],
+                  "footnote": ""
+                },
+                "fetched_at": 1789837542.306714,
+                "provenance": "live_web",
+                "approved": true,
+                "truth": "stated"
+              },
+              {
+                "id": "W3f466061b6a1",
+                "claim": "Customer-selected website passage",
+                "value": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S",
+                "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+                "source": {
+                  "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                  "locator": "COMFORT & CONVENIENCE · block 30",
+                  "quote": "Feature | E | EX | EX(O) | S(O) | S(O) Knight | SX | SX Premium | King | King Knight | Lounge Edition\nSunroof | Smart panoramic | - | - | S | S | S | - | - | - | - | -\nVoice enabled smart panoramic | - | - | - | - | - | S | S | S | S | S\nAir Conditioning | Manual | S | S | S | - | - | - | - | - | - | -\nDual zone automatic temperature control (DATC) | - | - | - | S | S | S | S | S | S | S\nFront row ventilated seats | - | - | - | - | - | - | S | S | S | S\nElectric parking brake with auto hold | - | - | - | S* | S* | - | S* | S | S | S\nSmartphone wireless charger** | - | - | - | - | - | S | S | S | S | S\nDrive mode select (Eco, Normal, Sport) | - | - | - | S* | S* | - | S* | S* | S* | S*\nTraction control modes (Snow, Mud, Sand) | - | - | - | S* | S* | - | S* | S* | S* | S*\nPaddle shifters | - | - | - | S* | S* | - | S* | S* | S* | S*\nCruise control | - | - | - | S | S | S | S | S | S | S\nKeyless entry | Foldable key | S | - | - | - | - | - | - | - | - | -\nSmart key with push button start and motion sensor | - | S | S | S | S | S | S | S | S | S\nOutside mirror | Electrically adjustable | - | S | S | S | S | S | S | S | S | S\nAuto fold | - | - | - | S | S | S | S | S | S | S\nFront console armrest with storage | S | S | S | S | S | S | S | S | S | S\nRemote engine Start with smart key | - | - | - | - | - | S | S | S | S | S\nRear center armrest with cup holders | S | S | S | S | S | S | S | S | S | S\nElectric tailgate release | S | S | S | S | S | S | S | S | S | S\nRear AC vent | S | S | S | S | S | S | S | S | S | S\nUSB Charger (C-Type) | Front | S | S | S | S | S | S | S | S | S | S\nRear(x1) | S | S | S | S | S | S | S | - | - | -\nRear(x2) | - | - | - | - | - | - | - | S | S | S\nPower outlet | S | S | S | S | S | S | S | S | S | S\nRear wiper and washer | - | - | - | S | S | S | S | S | S | S\nMotor driven power steering | Tilt Function | S | S | S | S | S | S | S | S | S | S\nTelescopic function | S | S | S | S | S | S | S | S | S | S\nLuggage Lamp | - | - | - | S | S | S | S | S | S | S\nPower Windows | Front | S | S | S | S | S | S | S | S | S | S\nRear | S | S | S | S | S | S | S | S | S | S\nIdle stop & go (ISG) | S | S | S | S | S | S | S | S | S | S\nPassenger vanity mirror | S | S | S | S | S | S | S | S | S | S\nMap lamps | - | S | S | S | S | S | S | S | S | S\nRoom lamp | S | S | - | - | - | - | - | - | - | -\nLED reading lamps (Rear) | - | - | S | S | S | S | S | S | S | S\nSunglass holder | - | S | S | S | S | S | S | S | S | S\nGlove box cooling | - | - | - | S | S | S | S | S | S | S\nRear wireless charger | - | - | - | - | - | - | - | S | S | S\nRain sensing wiper | - | - | - | - | - | - | - | S | S | S"
+                },
+                "scope": {},
+                "scope_unverified": true,
+                "context": {
+                  "kind": "table",
+                  "heading": "COMFORT & CONVENIENCE",
+                  "rows": [
+                    [
+                      "Feature",
+                      "E",
+                      "EX",
+                      "EX(O)",
+                      "S(O)",
+                      "S(O) Knight",
+                      "SX",
+                      "SX Premium",
+                      "King",
+                      "King Knight",
+                      "Lounge Edition"
+                    ],
+                    [
+                      "Sunroof",
+                      "Smart panoramic",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "Voice enabled smart panoramic",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Air Conditioning",
+                      "Manual",
+                      "S",
+                      "S",
+                      "S",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "Dual zone automatic temperature control (DATC)",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Front row ventilated seats",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Electric parking brake with auto hold",
+                      "-",
+                      "-",
+                      "-",
+                      "S*",
+                      "S*",
+                      "-",
+                      "S*",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Smartphone wireless charger**",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Drive mode select (Eco, Normal, Sport)",
+                      "-",
+                      "-",
+                      "-",
+                      "S*",
+                      "S*",
+                      "-",
+                      "S*",
+                      "S*",
+                      "S*",
+                      "S*"
+                    ],
+                    [
+                      "Traction control modes (Snow, Mud, Sand)",
+                      "-",
+                      "-",
+                      "-",
+                      "S*",
+                      "S*",
+                      "-",
+                      "S*",
+                      "S*",
+                      "S*",
+                      "S*"
+                    ],
+                    [
+                      "Paddle shifters",
+                      "-",
+                      "-",
+                      "-",
+                      "S*",
+                      "S*",
+                      "-",
+                      "S*",
+                      "S*",
+                      "S*",
+                      "S*"
+                    ],
+                    [
+                      "Cruise control",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Keyless entry",
+                      "Foldable key",
+                      "S",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "Smart key with push button start and motion sensor",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Outside mirror",
+                      "Electrically adjustable",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Auto fold",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Front console armrest with storage",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Remote engine Start with smart key",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rear center armrest with cup holders",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Electric tailgate release",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rear AC vent",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "USB Charger (C-Type)",
+                      "Front",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rear(x1)",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "Rear(x2)",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Power outlet",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rear wiper and washer",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Motor driven power steering",
+                      "Tilt Function",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Telescopic function",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Luggage Lamp",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Power Windows",
+                      "Front",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rear",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Idle stop & go (ISG)",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Passenger vanity mirror",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Map lamps",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Room lamp",
+                      "S",
+                      "S",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    [
+                      "LED reading lamps (Rear)",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Sunglass holder",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Glove box cooling",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rear wireless charger",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S"
+                    ],
+                    [
+                      "Rain sensing wiper",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "S",
+                      "S",
+                      "S"
+                    ]
+                  ],
+                  "footnote": ""
+                },
+                "fetched_at": 1789837542.306714,
+                "provenance": "live_web",
+                "approved": true,
+                "truth": "stated"
+              },
+              {
+                "id": "W36ead563f19a",
+                "claim": "Customer-selected website passage",
+                "value": "New Hyundai CRETA Car Features",
+                "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+                "source": {
+                  "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                  "locator": "New Hyundai CRETA Car Features · block 22",
+                  "quote": "New Hyundai CRETA Car Features"
+                },
+                "scope": {},
+                "scope_unverified": true,
+                "context": {
+                  "kind": "text",
+                  "heading": "New Hyundai CRETA Car Features"
+                },
+                "fetched_at": 1789837542.306714,
+                "provenance": "live_web",
+                "approved": true,
+                "truth": "stated"
+              },
+              {
+                "id": "W333734838e85",
+                "claim": "Customer-selected website passage",
+                "value": "COMFORT & CONVENIENCE",
+                "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+                "source": {
+                  "ref": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                  "locator": "COMFORT & CONVENIENCE · block 29",
+                  "quote": "COMFORT & CONVENIENCE"
+                },
+                "scope": {},
+                "scope_unverified": true,
+                "context": {
+                  "kind": "text",
+                  "heading": "COMFORT & CONVENIENCE"
+                },
+                "fetched_at": 1789837542.306714,
+                "provenance": "live_web",
+                "approved": true,
+                "truth": "stated"
+              }
+            ],
+            "pages": [
+              {
+                "url": "https://www.hyundai.com/in/en/find-a-car/creta/features",
+                "discovery": "customer URL",
+                "fetched_at": 1789837542.306714
+              }
+            ],
+            "scope": {
+              "model_tokens": [
+                "creta"
+              ],
+              "locale": [
+                "in",
+                "en"
+              ],
+              "seed_url": "https://www.hyundai.com/in/en/find-a-car/creta/features"
+            },
+            "elapsed_ms": 1084,
+            "coverage": [],
+            "requested_url": "https://www.hyundai.com/in/en/find-a-car/creta/features"
+          }
+        ],
+        "tool_errors": [],
+        "tools_remaining": 3,
+        "CUSTOMER_URLS": [
+          "https://www.hyundai.com/in/en/find-a-car/creta/features"
+        ],
+        "required_page_verification": [
+          "https://www.hyundai.com/in/en/find-a-car/creta/features"
+        ],
+        "allowed_interactions": {
+          "verification_limit": [],
+          "input_request": [],
+          "fit_check": []
+        },
+        "guide": {
+          "persona_name": "Priya",
+          "persona_description": "A poised and welcoming Hyundai guide who explains automotive features with calm clarity. the guide focuses on real-world comfort and grounded facts without pushy sales talk.",
+          "tone": "Warm, reassuring, and attentive with measured enthusiasm for cabin craftsmanship.",
+          "sample_line": "Hello and welcome to Hyundai. I am Priya, and I am delighted to show you the thoughtful comfort and reassuring safety built into the CRETA.",
+          "suggested_voice": "priya",
+          "language": "en-IN"
+        },
+        "product": {
+          "name": "Hyundai CRETA",
+          "category": "Compact SUV",
+          "url": "https://www.hyundai.com/in/en/find-a-car/creta/highlights"
+        },
+        "ctas": [
+          {
+            "id": "cta-test-drive",
+            "label": "Book a Test Drive",
+            "kind": "book",
+            "url": "https://www.hyundai.com/in/en/click-to-buy/creta-request-a-test-drive?id=creta&prod=creta",
+            "primary": true,
+            "when": "end"
+          },
+          {
+            "id": "cta-locate-dealer",
+            "label": "Locate Dealer",
+            "kind": "contact",
+            "url": "https://www.hyundai.com/in/en/click-to-buy/find-a-dealer-and-website",
+            "primary": false,
+            "when": "always"
+          },
+          {
+            "id": "cta-download-brochure",
+            "label": "Download Brochure",
+            "kind": "link",
+            "url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/brochure/creta.pdf",
+            "primary": false,
+            "when": "always"
+          }
+        ],
+        "reviewed_comparison_examples": ""
+      },
+      "response": "{\n  \"action\": \"answer\",\n  \"sentences\": [\n    {\n      \"text\": \"The Creta features page lists comfort amenities including front ventilated seats on select higher variants, dual-zone automatic temperature control, and a panoramic sunroof.\",\n      \"fact_ids\": [\n        \"W3f466061b6a1\",\n        \"Wbb4dd8a91bec\"\n      ],\n      \"kind\": \"fact\",\n      \"interaction\": null\n    },\n    {\n      \"text\": \"It also highlights wireless smartphone charging, rear air-conditioning vents, cruise control, and a rear centre armrest with cup holders across the lineup.\",\n      \"fact_ids\": [\n        \"W3f466061b6a1\"\n      ],\n      \"kind\": \"fact\",\n      \"interaction\": null\n    }\n  ],\n  \"clarification\": \"\",\n  \"clarification_act\": null,\n  \"tool_calls\": [],\n  \"answered\": true,\n  \"topic\": \"comfort_features\"\n}"
+    },
+    {
+      "trace_line": 6207,
+      "raw_trace_sha256": "3ccd4417cf735b4116d157ffe202fe4b0b954b0d24f97f3b0acaf33e9645af93",
+      "timestamp": 1789837544.5671208,
+      "kind": "runtime-graph",
+      "model": "code",
+      "latency_ms": 3296,
+      "error": "",
+      "payload": null,
+      "response": "{\"turn_id\": \"q068\", \"snapshot_id\": \"kb_2d616ba1bcec1469e8c7ab40\", \"timings\": {\"retrieve_ms\": 184, \"reason_ms\": 1992, \"tools_ms\": 1085, \"graph_ms\": 3296}, \"answered\": true, \"provider_used\": \"gemini\", \"model_used\": \"gemini-3.8-flash\", \"errors\": []}"
+    }
+  ],
+  "verdict": "unsafe",
+  "adjudication": "Shared trailing across the lineup scopes a mixed list; wireless charging is standard in5/10 columns,cruise7/10,rear vents and armrest10/10. No qualifier preserves the restricted scopes.",
+  "independent_reviewer": "ops_ui_and_baseline",
+  "preserved_at": "2026-09-19T17:07:54.437259+00:00",
+  "original_artifacts_unchanged": true
+}

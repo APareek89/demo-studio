@@ -11,6 +11,63 @@ COORDINATION = json.loads((Path(__file__).parent / "fixtures/runtime_coverage_co
 
 
 class CoverageContract(unittest.TestCase):
+    def test_actual_source_only_repair_cannot_escape_through_another_predicate(self):
+        from server.runtime_graph import validate_decision
+        case=json.loads((Path(__file__).parent / "fixtures/runtime_coverage_restriction.json").read_text())
+        self.assertEqual(case["source_commit"],"b01b0c66781388b8de363cd6f915e2e98facee72")
+        for draft in case["drafts"]:
+            claim=draft["decision"]["sentences"][1]["text"]
+            self.assertEqual(coverage_limitation(claim,precise=True),LIMIT)
+            result,errors=validate_decision(draft["decision"],case["facts"],case["question"])
+            self.assertIn("unverified_coverage_claim",errors)
+            self.assertNotIn("only note",result["answer"])
+            self.assertNotIn("only show",result["answer"])
+            self.assertFalse(result["fact_ids"])
+        self.assertTrue(unsupported_coverage_claim(case["answer"]))
+
+    def test_restrictive_source_predicate_is_generic_and_owns_the_content(self):
+        for claim in (
+            "Our available documents only note the extended warranty terms.",
+            "The records note only the extended warranty terms.",
+            "The brochure exclusively describes the extension.",
+            "The source summarizes exclusively the listed terms.",
+            "The document currently only explains the petrol extension.",
+            "The records themselves summarize only the extension, so every car gets seven years free.",
+        ):
+            with self.subTest(claim=claim):
+                self.assertEqual(coverage_limitation(claim,precise=True),LIMIT)
+                self.assertFalse(unsupported_coverage_claim(LIMIT))
+
+    def test_source_identity_scope_and_nested_product_restrictions_are_not_inventories(self):
+        for claim in (
+            "Only the document from India mentions this warranty term.",
+            "Only the supplied records confirm this figure.",
+            "According to the document, only petrol variants qualify for the paid extension.",
+            "The document states that the warranty applies only to petrol variants.",
+            "The page describes a policy that only covers manufacturing defects.",
+            "The page explains that the E trim only has manual seats.",
+            "The document applies only to petrol variants.",
+            "The document is only available in India.",
+            "The document is available only in India.",
+            "The source not only describes the extension but also gives its price.",
+            "This warranty policy only covers manufacturing defects.",
+            "The reviewed petrol warranty is exclusively available on a payable basis.",
+        ):
+            with self.subTest(claim=claim):self.assertFalse(unsupported_coverage_claim(claim))
+
+    def test_attribution_does_not_require_a_comma_before_product_restriction(self):
+        from server.runtime_graph import validate_decision
+        case=json.loads((Path(__file__).parent / "fixtures/runtime_coverage_restriction.json").read_text())
+        for prefix in ("According to the document", "As per the supplied records"):
+            for comma in ("", ","):
+                text=prefix+comma+" only petrol variants qualify for the paid extended warranty of up to seven years."
+                self.assertFalse(unsupported_coverage_claim(text))
+                decision={"action":"answer","sentences":[{"text":text,"kind":"fact","fact_ids":["F071","F245"]}]}
+                result,errors=validate_decision(decision,case["facts"],case["question"])
+                self.assertFalse(errors)
+                self.assertEqual(set(result["fact_ids"]),{"F071","F245"})
+        self.assertTrue(unsupported_coverage_claim("According to the document, the records only note an extended warranty."))
+
     def test_actual_market_statement_does_not_license_page_absence(self):
         case=json.loads((Path(__file__).parent / "fixtures/runtime_guard_coordination.json").read_text())["q071"]
         claim=case["decision"]["sentences"][1]["text"]

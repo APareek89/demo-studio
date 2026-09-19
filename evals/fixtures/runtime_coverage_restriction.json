@@ -1,0 +1,153 @@
+{
+  "source_commit": "b01b0c66781388b8de363cd6f915e2e98facee72",
+  "snapshot_id": "kb_2d616ba1bcec1469e8c7ab40",
+  "original_private_fixture_sha256": "6049c634eb383ab8c6bc99eef62f4386f50eca2c4966787bd1f637504dfd55b5",
+  "raw_row_sha256": "d910ddbeaf1e68524c5a9fbaad4f0806d42ce5f1462890dd0104b4b408533d91",
+  "question": "What is covered by the standard warranty?",
+  "answer": "I cannot verify what is covered under the standard warranty. Our available documents only note that up to seven years of extended warranty is available on a payable basis strictly for petrol variants.",
+  "fact_ids": [
+    "F245",
+    "F071"
+  ],
+  "facts": [
+    {
+      "kind": "policy",
+      "claim": "Extended warranty policy limit",
+      "value": "Up to 7 years extended warranty applies to petrol variants only",
+      "source": {
+        "ref": "src_51f57f",
+        "locator": "page 49, Disclaimers",
+        "quote": "Up to 7 years extended warranty applies to petrol variants only."
+      },
+      "confidence": 1.0,
+      "conditions": "Applies strictly to petrol variants; packages payable separately",
+      "scope": {
+        "model": "Hyundai CRETA",
+        "powertrain": "Petrol"
+      },
+      "truth": "contractual",
+      "id": "F071",
+      "approved": true,
+      "edited": false,
+      "knowledge": {
+        "source_revision": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+        "assertion_hash": "e15119a0d20de9c5f5910e3305cbf03ddba15a28689b0539f83d0c6c10b3a556",
+        "evidence_id": "ev_d4a97022c80901c78dea860a",
+        "evidence_path": "knowledge/sources/src_51f57f/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": ""
+      }
+    },
+    {
+      "kind": "policy",
+      "claim": "Extended warranty limit",
+      "value": "Upto 7 years extended warranty is applicable only for petrol variants",
+      "source": {
+        "ref": "src_22b687",
+        "locator": "page 16, Peace of mind",
+        "quote": "Upto 7 years extended warranty is applicable only for petrol variants."
+      },
+      "confidence": 1.0,
+      "conditions": "Payable basis, applicable only to petrol variants",
+      "scope": {
+        "model": "CRETA",
+        "powertrain": "Petrol",
+        "market": "India"
+      },
+      "truth": "contractual",
+      "id": "F245",
+      "approved": true,
+      "edited": true,
+      "knowledge": {
+        "source_revision": "d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9",
+        "assertion_hash": "0f8f3aa43b380c3af650c590980e4e65dd82068e255054396b3fc996e8c6908c",
+        "evidence_id": "ev_cbfce95b06cecdf08df63005",
+        "evidence_path": "knowledge/sources/src_22b687/d9ad9205b7a12f06ef965b6c5ad5f638731a7805fa83db3de0c884adf8d4deb9.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded",
+        "source_url": "",
+        "fetched_at": "",
+        "previous_id": "F029",
+        "supersedes": [
+          "F029"
+        ],
+        "override_of": "6d33ac609a6f52731df17429b02c33d2bf30a7d99cd10ab379ca256006b4790c",
+        "override_evidence": {
+          "source": {
+            "ref": "src_22b687",
+            "locator": "page 16, Peace of mind",
+            "quote": "Upto 7 years extended warranty is applicable only for petrol variants."
+          },
+          "scope": {
+            "model": "creta",
+            "powertrain": "petrol"
+          },
+          "conditions": "payable basis, applicable only to petrol variants"
+        }
+      }
+    }
+  ],
+  "drafts": [
+    {
+      "trace_line": 5859,
+      "raw_trace_sha256": "8c478d288328214bc6d0aca9f7cf2f4307d0999f783a20843d0644a0be831a59",
+      "decision": {
+        "action": "answer",
+        "sentences": [
+          {
+            "text": "I could not find the exact coverage details for the standard warranty in the provided records.",
+            "fact_ids": [],
+            "kind": "limitation",
+            "interaction": null
+          },
+          {
+            "text": "Our records only show that an extended warranty of up to seven years is offered separately for petrol variants.",
+            "fact_ids": [
+              "F245",
+              "F071"
+            ],
+            "kind": "fact",
+            "interaction": null
+          },
+          {
+            "text": "You can check with an authorised dealer or review the official warranty booklet for standard coverage specifics.",
+            "fact_ids": [],
+            "kind": "context",
+            "interaction": null
+          }
+        ],
+        "clarification": "",
+        "clarification_act": null,
+        "tool_calls": [],
+        "answered": true,
+        "topic": "warranty"
+      }
+    },
+    {
+      "trace_line": 5863,
+      "raw_trace_sha256": "23821af06a0da8103067ca280956a25781c857aba14086eb4b32cbcd597c4c34",
+      "decision": {
+        "sentences": [
+          {
+            "text": "I cannot verify what is covered under the standard warranty from our current records.",
+            "fact_ids": [],
+            "kind": "limitation",
+            "interaction": null
+          },
+          {
+            "text": "Our available documents only note that up to seven years of extended warranty is available on a payable basis strictly for petrol variants.",
+            "fact_ids": [
+              "F245",
+              "F071"
+            ],
+            "kind": "fact",
+            "interaction": null
+          }
+        ]
+      }
+    }
+  ],
+  "purpose": "Immutable q028 initial and repaired source-restriction claims from the settled run. No model call or altered live answer."
+}

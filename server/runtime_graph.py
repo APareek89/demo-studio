@@ -28,6 +28,7 @@ from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
 from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment
 from .runtime_acts import allowed_act_ids, render_act
 from .runtime_emi_delivery import append_missing_emi_terms
+from .runtime_tables import unsupported_live_table_universal
 
 
 SYSTEM = """You are the helpful, warm guide in a live car demo. You have a real conversation: understand the current
@@ -1278,6 +1279,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             unit_pairs |= {(value,"currency") for value in _rounded_calculation_values(facts,text)}
             if _quantity_units(text)-unit_pairs:
                 reject("unsupported_quantity_unit"); continue
+            if unsupported_live_table_universal(text,facts):
+                reject("unsupported_live_table_universal");continue
             if policy_relation_conflict(text,facts):
                 reject("unsupported_policy_relation"); continue
             if _unsupported_dependency_relation(text,facts):

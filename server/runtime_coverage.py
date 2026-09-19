@@ -64,9 +64,23 @@ _NO_SOURCE = re.compile(r"\b(?:no|none of (?:the|these|those))\s+" + _SOURCE + r
 _NO_MENTION = re.compile(
     r"\b(?:no\s+(?:mention|reference|information|details|specifications|record|evidence)|nothing)\b"
     r"[^.!?;]{0,120}\b" + _DESTINATION + r"\b", re.I)
+# Restriction belongs to the source's content predicate, not a catalogue of
+# reporting verbs ('only note' and 'only show' make the same coverage claim).
+# Copular/source-location statements and a following prepositional scope are
+# not content inventories; neither are 'Only the document ...' or embedded
+# product assertions such as 'the document says petrol variants only ...'.
+_CONTENT_PREDICATE = (r"(?!(?:not|never|is|are|was|were|be|been|being)\b)"
+                      + _SOURCE_PREDICATE)
+_CONTENT_OBJECT = r"(?!(?:to|for|from|in|on|at|by|as|with|without|about|if|when)\b)\S"
 _ONLY_CONTENT = re.compile(
-    r"\b" + _SOURCE + r"\s+(?:(?:itself|currently)\s+)?(?:only\s+" + _REPORT
-    + r"|" + _REPORT + r"\s+only)\b", re.I)
+    r"\b" + _SOURCE + r"\s+" + _ADVERBS + r"(?:"
+    + r"(?:only|exclusively)\s+" + _ADVERBS + _CONTENT_PREDICATE + r"\s+"
+    + r"|" + _CONTENT_PREDICATE + r"\s+" + _ADVERBS + r"(?:only|exclusively)\s+)"
+    + _CONTENT_OBJECT, re.I)
+_SOURCE_ATTRIBUTION = re.compile(
+    r"\b(?:according\s+to|as\s+per)\s+"
+    r"(?:(?:the|this|that|these|those|our|your|provided|reviewed|supplied|"
+    r"available|retrieved|official|current)\s+){0,5}$", re.I)
 # 'Not available on E' is fitment, not document coverage. Availability absence
 # belongs here only when explicitly located in/from records or source material;
 # deictic 'there' alone could refer to a car or trim and is left to normal guards.
@@ -84,7 +98,7 @@ _GLOBAL_ORIGIN = re.compile(
     r"(?:directly\s+)?from\b", re.I)
 
 _PATTERNS = (_ACTIVE_ABSENCE, _PASSIVE_ABSENCE, _MISSING_FROM,
-             _NEGATIVE_SOURCE, _NO_SOURCE, _NO_MENTION, _ONLY_CONTENT,
+             _NEGATIVE_SOURCE, _NO_SOURCE, _NO_MENTION,
              _UNAVAILABLE_IN_SOURCE, _EXHAUSTIVE_CHECK, _GLOBAL_ORIGIN)
 
 # Optional precision for uncited interaction limits only. Each subject slot is
@@ -140,6 +154,12 @@ def unsupported_coverage_claim(text: str) -> bool:
         return False
     plain = " ".join(text.replace("’", "'").split())
     return (any(pattern.search(plain) for pattern in _PATTERNS)
+            # A comma is optional in 'According to the document only petrol
+            # variants ...'. The document is an attribution object, not the
+            # subject of a content restriction. A later source subject is still
+            # checked independently because this prefix must end at its start.
+            or any(not _SOURCE_ATTRIBUTION.search(plain[:match.start()])
+                   for match in _ONLY_CONTENT.finditer(plain))
             or any(not _EMBEDDED_SOURCE_CLAUSE.search(match["object"])
                    # Bare names can own fitment ('SX ... it does not include').
                    # Capitalized headings cannot bypass reporting-only absence

@@ -2,7 +2,13 @@
 
 **Status: implementation and the reviewed demo are built; runtime acceptance remains in progress.** A playable bundle is not proof of a reliable sales conversation. This report separates actual provider results, deterministic checks and the physical listening checks that muted testing cannot establish.
 
-## Latest coverage and boot replay
+## Latest range, source and quantity replay
+
+On `b01b0c6` and unchanged v7, the same 100 questions scored **97 supported, 1 partial, 2 unsafe and no unhelpful answers or whole-turn provider failures**. Text median **3.167 s**, p95 **7.722 s**, maximum **11.797 s**. Recorded 147 completions cost **$1.053998**; cumulative estimate **$15.1996**. All 155 launched attempts are terminal; trace, usage and results remained unchanged for 35.931 seconds before edits. One optional repair timeout (q037) retained a supported answer. Twenty fallback races produced 17 Gemini wins, two Runware wins and one repair deadline. Losing returned completions remain included in cost.
+
+The critical gate still fails: q028's “documents only note” statement invents exhaustive source coverage; q068 incorrectly applies wireless charging and cruise control across the lineup, although its cited table restricts both. q040's missing exclusivity limitation is partial. All ten calculations and five follow-ups are supported. Independent review accepts q080's variable-price caveat and q082's relevant seating check; neither invents a future quote or personal fit guarantee. Evidence is preserved in `qa100-v7-range-source-final/` with 100 verified raw-line hashes. Root review-rationale writer keys initially retained older explanations for eight last-quarter rows; independent review caught this, the initial artifact was archived, and current reasons were corrected without changing any grade, response or raw hash.
+
+## Earlier coverage and boot replay
 
 On `d7c4bbe` and unchanged v7, the same 100 questions scored **93 supported, 2 partial, 3 unhelpful, 2 unsafe and 0 provider failures**. Text median **2.616 s**, p95 **6.711 s**, maximum **11.827 s**. Recorded 141 completions cost **$1.080407**; cumulative estimate **$14.1456**. All 149 launches have terminal events, with unchanged trace/usage/results for 47.932 seconds before further edits. Thirteen late losing completions cost $0.42394, included. Optional repair timeouts on q026/q090 are not whole-turn outages. All ten calculations independently recompute.
 
