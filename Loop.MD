@@ -3,6 +3,14 @@ status: off
 > USER DECISION 2026-09-03: keep running FMEA per .power-coding/config.json; do NOT turn the Loop on in this project. Free evals may still be run on request; never automatically.
 > slides-v1 (2026-09-18): `evals/qa_visual_sync.py`, `qa_visual.py` and `qa_runware.py` are retired with the 3D path; `evals/qa_deck.py` replaces them and grows with each phase.
 
+## Final source and applicability repair — 2026-09-19
+
+Frozen graph `d93eaa78` and knowledge `fc9503e3`: new actual-cohort54, repair106, graph130, trace36, knowledge56; required deck320/320, acceptance24/24 and both smoke phases pass. Main gates used separate temporary data/checkpoint stores and blocked outbound sockets, with zero attempts. Syntax94 Python/17 web JavaScript files is clean. Independent graph review passes seven concrete controls plus the54-case contract. Results: `output/creta-runtime-2026-09-19/final-gates/source-scoped-*` and `player-independent-graph-review/`.
+
+New regressions cover exact conditional comparisons, precise model-year limits, safe refusal before a waiting clarification, excluded/negative/uncertain/foreign/historical trim anchors, current-lineup claim rejection and source-qualified own-record positives. Literal transmission suffix matching preserves the full assertion and automatic-only condition. One optional repair, cancellation, twelve-second budget and no-demotion behavior remain unchanged. These tests do not establish general semantic entailment or current-lineup identity.
+
+Current v6 source publication passes an independent24-check audit, including202 valid bundle citation occurrences and unchanged prior snapshot/media. Latest actual100 remains83 supported/9partial/3unhelpful/2unsafe/3providerfailure on the preceding code/v5; no relabel after fixes. A separate40-question focused live check follows the committed/restarted implementation. Browser cap stays25reasoning/32TTS; no new speech replay.
+
 ## Bounded runtime repair and honest response cohorts — 2026-09-19
 
 Follow-up after actual35-case replay: repair106, graph130, trace36, actual DOM44 and client56 pass. New actual-draft controls preserve opaque relative scopes with grammatical trim/variant insertion, exact missing attributes, economy-versus-tank relevance, no paid work for explicit local-file source requests, and safe verification suggestions. Negative controls reject hidden positive claims and prevent a limitation-only repair from replacing surviving facts. Runtime-v1 direct question jumps preserve exact return and cancellation through three new browser cases. Required blocked-egress deck/acceptance/smoke gates are rerun before the next paid cohort.

@@ -4,7 +4,7 @@
 
 ## Reviewed demo
 
-Hyundai CRETA `dm_41513908`, published version **5**, knowledge snapshot `kb_5af02e3769b5c51a0b44f50e`, **181 approved facts**, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).
+Hyundai CRETA `dm_41513908`, published version **6**, knowledge snapshot `kb_7812e2a0af909856a9301666`, **181 approved facts**, all six Studio approvals true. [Open muted in the local app](http://127.0.0.1:8896/?mute=1&review=creta-runtime#/play/dm_41513908).
 
 The demo uses eleven selected official images and the supplied PDFs alongside model-scoped official India pages. Manufacturer engine-table figures were visually checked. Conflicting turbo displacement and airbag assertions were rejected; repaired assertions have new identities. Variant, market and optional-package conditions remain visible. A brochure publication date is not treated as a vehicle model year.
 
@@ -49,6 +49,16 @@ Corrective v5 adds precise manufacturer-backed sunroof and rear-camera applicabi
 The subsequent35-case difficult subset on `0f88ad1`/v5 returned **24 supported,3 partial,3 unhelpful,5 provider failures,0 unsafe flagged**. Two provider failures were repair timeouts that the raw API called limited/refused; semantic review retains their actual cause. HTTP text median3.351s,p9512.031s. Recorded shared cost delta$0.2164 includes the concurrent browser probe. This subset is not a new100-case score. ADAS, Bose, cruise, E-roof, EX-camera and several comparisons improved; connected-car scope phrasing, exact missing-detail wording and provider timeouts still needed work.
 
 The separate one-question ADAS browser probe passed8/8. It now answers with supported driver-assistance examples, King/King Knight/Lounge applicability and automatic-only stop-and-go. Acknowledgement began484ms after typed submission and its1.365s clip completed. Answer audio began5.320s after submission; the saved turn is explicitly an answer cohort. The graph took2.000s, but a generic spoken slide-jump bridge occupied2.442s before answer delivery. One sample establishes no percentile. The next bounded change removes that extra bridge only from runtime-v1 question jumps, retaining evidence display, interruption ownership and explicit return.
+
+## Latest full review and current source correction
+
+The fourth unchanged 100-question pack, on `20649a4`/v5, produced **83 supported, 9 partial, 3 unhelpful, 2 unsafe and 3 provider failures**. All-request HTTP text median was **2.710 s**, p95 **9.736 s**. The shared recorded delta was **$0.6042**, including the concurrent browser probe. The independent reviews and original responses are retained in `qa100-repaired-final/`. The semantic target remains unmet; the increase in supported answers does not excuse either unsafe answer.
+
+The wheel answer repeated a bad approved flattened website row: EX(O) styled road wheels became both styled and ordinary steel-with-cover wheels. Manufacturer page 15 explicitly separates ordinary E/EX road wheels, styled EX(O) road wheels and spare wheels. Corrective **v6** introduces F249/F250/F251 from those exact rows. F252 retains the genuine Pune FAQ listing but makes its uncertain correspondence to the manufacturer lineup explicit. That listing cannot license equipment borrowed from a different city/source. V6 preserves 181 approved facts, all six approvals, all spoken content/media and the original v5 snapshot. Assembly blocked all outbound sockets. The earlier unsafe answers remain in their original cohort.
+
+The final direct-answer ADAS browser probe on `20649a4`/v5 passed **11/11**. Its acknowledgement began at **434 ms**, useful answer audio at **3.703 s**, and graph completion took **2.913 s**. Result-ready→audio fell from **3.110 s** in the earlier probe to **580 ms**, after removing the generic spoken jump bridge. Explicit Continue returned to the exact original sentence. This single typed/muted sample is separate from the earlier app revision; same-version dashboard aggregates mix those revisions and cannot establish the change's p95. Browser counters reached **25 reasoning / 32 TTS**; the finite speech cap is exhausted, with its original spend baseline preserved.
+
+The current code follow-up targets remaining precise-limit, completeness and source-scope failures. New source publication and passing offline regressions alone do not establish that the next live answers meet acceptance.
 
 ## Repair details
 

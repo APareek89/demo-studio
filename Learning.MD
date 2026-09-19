@@ -1,5 +1,25 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-19 — Source identity is not current trim applicability
+
+**Causes:** a city FAQ name allowed universal equipment from unrelated sources; an uploaded mention, including a negative/uncertain or precedence-excluded assertion, could appear to establish lineage. A caveat appended to an unsupported current-lineup claim merely contradicted it. At the other extreme, literal Lounge Edition fitment was lost because its transmission-only suffix became part of the trim name.
+
+**Fix:** filter ineligible anchors; require conservative affirmative, compatible fitment before cross-source transfer; retain literal or same-revision evidence with explicit source attribution and uncertain lineup correspondence. Reject unsupported current-lineup assertions rather than adding a disclaimer. Separate the exact trailing transmission restriction for variant matching only; retain it in the assertion and spoken qualification. Regression fixtures include observed failures, inversions and valid same-record controls.
+
+**Conversation:** exact unknowns should survive independently from unsupported reasons; one safe first-person limit can precede a single clarification without losing the wait. Required purchase terms are explicit repair feedback, not relaxed validation. Separate comparison clauses retain only applicable citations.
+
+**Limit:** this is conservative literal screening and scoped qualification, not a general semantic proof. Actual post-fix model answers still require review.
+
+
+## 2026-09-19 — A reviewed website row still mixed road wheels with spare wheels
+
+**Cause:** the manufacturer website's flattened specification row repeated trim names and blurred ordinary versus styled road wheels. Extraction faithfully copied it, approval let it outrank the distinction in the manufacturer's PDF, and runtime repeated the approved error. Valid citations were not proof that the underlying assertion was right.
+
+**Correction:** visually verify page 15; replace F120/F121/F122 with versioned manufacturer-backed assertions F249/F250/F251. Explicitly store road versus spare role and named trim applicability. Preserve old snapshots and failed answers, invalidate and re-review downstream approvals, publish v6 without regenerating unchanged content. A separate city-FAQ-only trim needs source-scoped interpretation; listing existence is not proof of equivalence to another source's lineup.
+
+**Limit:** this is a reviewed source correction, not proof that automatic extraction catches every flattened table conflict. Source-aware runtime checks and a fresh live cohort still need validation.
+
+
 ## 2026-09-19 — The repaired draft still lost exact scope and verification limits
 
 **Five whys:** (1) The real connected-car repair was discarded despite two useful sentences. (2) Its remaining sentence said “SX trim and above”, while the evidence atom said “SX and above”. (3) Canonical matching treated that grammatical insertion as a different scope. (4) All-or-nothing repair correctly retained the original when one sentence failed. (5) Tests covered the original phrase, not the new live paraphrase. **Fix:** tolerate only trim/variant before the literal relative qualifier; never expand that qualifier into inferred named trims.

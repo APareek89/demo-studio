@@ -247,6 +247,8 @@ with sync_playwright() as p:
             page.goto(args.url)
             page.get_by_role('button',name='Browse at my pace',exact=True).click()
             wait('!!__liveSocket && __liveSocket.readyState===1')
+            wait('!!__reviewSnapshot().speaking?.recorded && !!__reviewSnapshot().speaking?.startedAt')
+            before_question=snap()
             text='What driver assistance features are available, and which variant conditions apply?'
             question(text)
             wait('__reviewSnapshot().waiting && !__reviewSnapshot().pending && !__reviewSnapshot().activeTurn && __reviewSnapshot().session.turns.length===1',timeout=60000)
@@ -257,15 +259,26 @@ with sync_playwright() as p:
             ack_events=[event for event in media if ack.get('audio') and event.get('src','').endswith(ack['audio'])]
             facts={fact['id']:fact for fact in bundle.get('facts',[])}
             probe={'question':text,'turn':turn,'answer':answer,'acknowledgment':ack,'ack_events':ack_events,'snapshot':state,'cited_facts':[facts.get(fid,{'id':fid,'missing':True}) for fid in (answer or {}).get('fact_ids',[])],'context_note':'Browse starts with no intake. Exact previously failing question; same published product/trim scope. No profile mutation or paid Explore.'}
+            probe['before_question']=before_question
             ack_ended=next((event['at_ms'] for event in ack_events if event['kind']=='ended'),None)
             probe['timing']={'input_source':'typed','clock':'browser Date.now playback callbacks; no acoustic inference','submitted_at':turn['voice_ended'],'ack_audio_at':turn.get('ack_audio'),'ack_ended_at':ack_ended,'answer_audio_at':turn.get('answer_audio'),'delivery_done_at':turn.get('delivery_done'),'ack_ms':turn['ack_audio']-turn['voice_ended'] if turn.get('ack_audio') is not None else None,'answer_ms':turn['answer_audio']-turn['voice_ended'] if turn.get('answer_audio') is not None else None,'ack_completed_before_answer':ack_ended<=turn['answer_audio'] if ack_ended is not None and turn.get('answer_audio') is not None else None,'response_kind':turn.get('response_kind'),'answer_quality_separately_reviewed':False}
             check('focused ADAS has one classified answer without provider failure',turn.get('answered') is True and turn.get('response_kind')=='answer' and not turn.get('failed'),turn,fatal=False)
             check('focused ADAS has real answer audio and no physical microphone',turn.get('answer_audio') is not None and page.evaluate('__captures===0'),turn,fatal=False)
             check('focused ADAS acknowledgment uses the reviewed clip'+('' if args.mock_dry_run else ' with four words'),(args.mock_dry_run or ack.get('text')=='Let me check that.') and (turn.get('ack_audio') is None or any(event['kind']=='playing' for event in ack_events)),ack_events,fatal=False)
             check('focused ADAS retains citations for review',bool((answer or {}).get('fact_ids')) and not any(fact.get('missing') for fact in probe['cited_facts']),probe['cited_facts'],fatal=False)
+            if (answer or {}).get('route')=='jump':
+                bridge=bundle.get('fillers',{}).get('bridge_to_custom',{}).get('audio')
+                check('focused ADAS shows its evidence without a generic spoken jump bridge',state['context']['slide']==answer['slide_id'] and not any(event['kind']=='playing' and bridge and event['src'].endswith(bridge) for event in media if event['at_ms']>=turn['voice_ended']),fatal=False)
+                check('focused ADAS preserves the original paused location',state['origin']==before_question['playback'],{'before':before_question['playback'],'origin':state['origin']},fatal=False)
             if turn.get('ack_audio') is not None:
                 check('focused ADAS acknowledgment begins within700ms',0<=probe['timing']['ack_ms']<=700,probe['timing'],fatal=False)
             page.screenshot(path=str(OUT/'answer.png'))
+            if (answer or {}).get('answered'):
+                page.get_by_role('button',name='Continue demo',exact=True).click()
+                wait('!__reviewSnapshot().origin && !!__reviewSnapshot().speaking?.recorded && __reviewSnapshot().speaking.text!=='+json.dumps(bundle.get('fillers',{}).get('back_to_demo',{}).get('text','')),timeout=15000)
+                returned=snap();probe['explicit_return']=returned
+                check('focused ADAS explicit Continue resumes the exact interrupted recorded line',returned['playback']==before_question['playback'] and returned['context']['slide']==before_question['context']['slide'] and returned['speaking']['text']==before_question['speaking']['text'],{'before':before_question,'returned':returned},fatal=False)
+                page.screenshot(path=str(OUT/'explicit-return.png'))
             with page.expect_response(lambda response: response.url.endswith('/run/session') and response.request.method=='POST') as saved_response:
                 page.get_by_role('button',name='Stop and see the summary',exact=True).click()
             check('focused ADAS session save succeeds',saved_response.value.ok)

@@ -113,7 +113,13 @@ def variant_projection(fact: dict, requested: dict | None) -> dict | None:
         if negative or no_feature:
             polarity="negative";variants=names((negative or no_feature)[1])
         elif positive and not re.search(r"\b(?:no|not|excludes?)\b",positive[1],re.I):
-            polarity="positive";variants=names(positive[2])
+            variant_text=positive[2]
+            # The exact transmission restriction belongs to the assertion,
+            # not the final trim name. Only this explicit trailing grammar is
+            # separated for matching; the stored assertion remains untouched.
+            transmission_suffix=re.fullmatch(r"(.+?)\s+\((?:IVT|AT|DCT|CVT|MT)(?:\s*/\s*(?:IVT|AT|DCT|CVT|MT))*\s+only\)",variant_text,re.I)
+            if transmission_suffix:variant_text=transmission_suffix[1]
+            polarity="positive";variants=names(variant_text)
         if variants:
             matched=[v for v in variants if scope_value(v,"variant") in wanted]
             if matched:

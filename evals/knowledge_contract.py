@@ -400,6 +400,39 @@ class KnowledgeContract(unittest.TestCase):
         row["source"]["quote"] = "R18 alloy (E, EX)"
         self.assertIsNone(knowledge.variant_projection(row,{"variant":"EX"}))
 
+    def test_named_fitment_keeps_trailing_transmission_restriction(self):
+        row=fact(id="F001",claim="Smart Cruise Control with Stop & Go",
+                 value="Standard on King, S(O), Lounge Edition (IVT/AT/DCT only)",
+                 conditions="IVT/AT/DCT transmissions only",
+                 scope={"model":"Aster","market":"India","transmission":"IVT, AT, DCT"})
+        identity=knowledge._identity(row)
+        projection=knowledge.variant_projection(row,{"variant":"Lounge Edition"})
+        self.assertEqual([(r["variants"],r["polarity"]) for r in projection["rows"]],[( ["Lounge Edition"],"positive")])
+        self.assertEqual(projection["rows"][0]["assertion"],row["value"])
+        self.assertEqual(knowledge.variant_projection(row,{"variant":"S(O)"})["rows"][0]["variants"],["S(O)"])
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"S"}))
+        store.write_json(self.did,"understanding.json",understanding([row]))
+        pack=knowledge.retrieve(self.did,"Lounge Edition cruise control",scope={"variant":"Lounge Edition","transmission":"automatic"})
+        self.assertEqual([f["id"] for f in pack["evidence"]],["F001"])
+        self.assertEqual(pack["evidence"][0]["conditions"],row["conditions"])
+        self.assertEqual(pack["evidence"][0]["applicability_projection"]["rows"][0]["assertion"],row["value"])
+        self.assertEqual(knowledge.retrieve(self.did,"Lounge Edition cruise control",scope={"variant":"Lounge Edition","transmission":"manual"})["evidence"],[])
+        self.assertEqual(knowledge._identity(row),identity)
+
+    def test_transmission_suffix_never_licenses_negative_or_inferred_fitment(self):
+        row=fact(id="F001",claim="Cruise control",conditions="",scope={"model":"Aster"})
+        for value in ("Not standard on Lounge Edition (IVT/AT/DCT only)",
+                      "Not unavailable on Lounge Edition (IVT/AT/DCT only)",
+                      "Standard on Lounge Edition and above (IVT/AT/DCT only)",
+                      "Standard on Lounge Edition (not IVT/AT/DCT only)",
+                      "Standard on Lounge Edition (IVT/AT/DCT only) but not confirmed"):
+            row["value"]=value
+            self.assertIsNone(knowledge.variant_projection(row,{"variant":"Lounge Edition"}),value)
+        row["value"]="Standard on Lounge Edition (IVT/AT/DCT only)";row["approved"]=False
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"Lounge Edition"}))
+        row["approved"]=True;row["source"]["quote"]=row["value"];row["value"]="Fitment unknown"
+        self.assertIsNone(knowledge.variant_projection(row,{"variant":"Lounge Edition"}))
+
     def test_explicit_universal_equipment_is_available_for_named_trim_retrieval(self):
         row = fact(id="F174",claim="Standard safety equipment",value="six airbags and rear parking sensors",conditions="Standard equipment across the range.",scope={"model":"CRETA","market":"India"})
         self.assertFalse(knowledge.scope_matches(row,{"variant":"SX"}))
