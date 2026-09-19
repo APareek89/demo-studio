@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "gate": "qa_deck",
+      "exit": 0,
+      "tail": [
+        "| runtime timeout is short | \u2705 |",
+        "",
+        "307/307 deck cases pass"
+      ]
+    },
+    {
+      "gate": "qa_accept",
+      "exit": 0,
+      "tail": [
+        "| Path traversal stayed inside data/demos/<id> | checked | escaped files: none | \u2705 |",
+        "",
+        "24/24 cases behave as required"
+      ]
+    },
+    {
+      "gate": "smoke_mock",
+      "exit": 0,
+      "tail": [
+        "trace ok: stages {'understand': 1.9, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': 0.0, 'bundle': 0.0} rows 16",
+        "jargon check ok: ['s1 line 1: states a figure or claim without a fact id \u2014 \u201cIt has a 3.4 kWh battery and 15A charging with IDC range.\u201d', \"s1: jargon 'kWh' in the main narration \u2014 move the complete technical quantity to deeper; never keep a number while dropping its unit\"]",
+        "SMOKE OK (phase 2) dm_d2b1ffc1"
+      ]
+    }
+  ],
+  "python": 39,
+  "javascript": 14,
+  "application_diff_from_8b51916": "empty",
+  "paid_calls": 0
+}

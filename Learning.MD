@@ -6,6 +6,17 @@
 
 <!-- Newest first. -->
 
+## 2026-09-19 — A playable build did not satisfy the live-experience goal
+
+**Feedback:** Anand said yesterday's demo did not achieve the requested human-level runtime experience.
+**Why 1:** Listening, contextual conversation, response waits and natural interruptions did not meet his product bar.
+**Why 2:** The work established a built bundle, visual polish, typed paths and safety regressions, while native microphone and acoustic quality remained unverified.
+**Why 3:** Existing constraints excluded spoken barge-in/streaming/tools even though the intended customer experience increasingly required them.
+**Why 4:** Technical completion and a small muted scripted run were treated as stronger experience evidence than they warranted.
+**Why 5:** The acceptance boundary did not require an observed audible, multi-turn customer journey with measurable quality/latency gates before claiming the broader goal complete.
+**Correction:** Separate “playable” from “excellent live experience.” The new proposed runtime plan explicitly includes continuous voice, relevant evidence, bounded tools and personalized delivery. It is not implemented yet.
+**Prevention:** `docs/plan-runtime-experience-2026-09-19.md` defines three complete buyer journeys, real interruption/acoustic checks, a balanced question set, useful-answer metrics and zero-critical-error gates. Muted checks cannot sign off voice quality. Record failures, fix them and replay the scenario before the full journey; do not use another build or UI pass as a substitute.
+
 ## 2026-09-19 — Atelier accent needed a darker small-text variant
 
 **Why 1:** The first Atelier Insights tag used 10px blue text with only 4.16:1 contrast on sky.
