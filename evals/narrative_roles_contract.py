@@ -6,6 +6,7 @@ planning filters, Author validation/rewrite and draft persistence still run.
 from __future__ import annotations
 
 import copy
+import inspect
 import json
 import os
 from pathlib import Path
@@ -31,7 +32,8 @@ socket.create_connection = no_network
 
 from server import config, schemas, store
 from server.agents import author, plan as planner
-from server.agents.principles import PITCH_SHAPE, PROOF_BLOCK, fact_context
+from server.agents.principles import PITCH_SHAPE, PROOF_BLOCK, SIGNPOSTS, TRANSLATION_LADDER, fact_context
+from server.llm import mock
 
 
 def fixture_plan():
@@ -96,6 +98,14 @@ class NarrativeRolesContract(unittest.TestCase):
                        {"id": "im1", "source_id": "visible", "angle": "interior", "description": "A front seat", "parts": [{"name": "seat"}], "quality": 5},
                        {"id": "hidden-image", "source_id": "hidden", "angle": "detail", "description": "HIDDEN_VISUAL", "parts": [], "quality": 5}]}
         store.write_json(cls.did, "understanding.json", cls.und)
+        store.write_json(cls.did, "playbook.json", {
+            "category": "Fixture product", "category_source": "inferred", "library_version": "2026-09-23",
+            "stops": [{"id": "seat", "label": "The front seat", "kind": "fundamental",
+                       "why_here": "Begin with the everyday seating choice.", "fact_ids": ["F1"],
+                       "picture_ids": ["im1"], "must_cover": True, "gaps": []}],
+            "usps": [{"id": f"u{i}", "name": name, "fact_ids": ["F1"], "stop_id": "seat"}
+                     for i, name in enumerate(["Choose the seat equipment", "Know your seating choices", "Review the right trim"])],
+            "objections": [], "evidence_gaps": [], "notes": "", "issues": []})
         cls.calls = []
 
         def fake_provider(system, content, schema, **kwargs):
@@ -122,6 +132,51 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertNotIn(PITCH_SHAPE, self.author_calls[0]["system"])
         self.assertNotIn(PROOF_BLOCK, self.author_calls[0]["system"])
         self.assertEqual(self.provider_order, config.BUILD_PROVIDERS)
+
+    def test_author_formatter_has_no_planner_flow_injection(self):
+        formatter = inspect.getsource(author.run).split("sys = AUTHOR_SYSTEM.format", 1)[1].split("\n    try:", 1)[0]
+        self.assertNotIn("PITCH_SHAPE", formatter)
+        self.assertNotIn("proof_block", formatter)
+
+    def test_author_continuity_ladder_and_openings_reach_the_real_provider(self):
+        prompt = self.author_calls[0]["system"]
+        self.assertIn("CONTINUITY AND STANDING ALONE", prompt)
+        self.assertIn("TRANSLATION LADDER", prompt)
+        self.assertIn(TRANSLATION_LADDER, prompt)
+        self.assertIn("A FIT-CHECK IS A LAST RESORT", prompt)
+        self.assertLess(prompt.index("TRANSLATION LADDER"), prompt.index("A FIT-CHECK IS A LAST RESORT"))
+        self.assertIn("OPENINGS. Never open a segment with a stock signpost", prompt)
+        self.assertTrue(all(shape in prompt for shape in SIGNPOSTS))
+        self.assertNotIn("panoramic sunroof", author.AUTHOR_SYSTEM)
+        self.assertNotIn("Show standout features early", author.AUTHOR_SYSTEM)
+
+    def test_playbook_owns_order_while_author_follows_typed_budget(self):
+        self.assertNotIn("standout feature first", PITCH_SHAPE)
+        self.assertIn("the playbook's stops in order, spoken as a walk", PITCH_SHAPE)
+        self.assertIn("The first stop of the playbook, in everyday words", PITCH_SHAPE)
+        prompt = self.author_calls[0]["system"]
+        self.assertIn("4. THE PLAN IS SETTLED", prompt)
+        self.assertIn("a segment under its word_budget that flows", prompt)
+        self.assertIn("within the segment's word_budget", prompt)
+        self.assertIn("the first supported fundamental in the playbook", prompt)
+        self.assertIn("No greeting, question, decision frame, digits or dimensions. Delighters come later.", prompt)
+        self.assertTrue(all(isinstance(segment["word_budget"], int) and segment["word_budget"] > 0 for segment in self.author_plan["segments"]))
+        self.assertEqual(self.author_plan["total_words"], self.planned["total_words"])
+        self.assertEqual(self.author_plan["playbook_version"], "2026-09-23")
+
+    def test_mock_author_uses_the_actual_planned_stops(self):
+        draft = mock.fake(schemas.ScriptOut, "PRODUCT: {}\nPLAN: " + json.dumps(self.planned)).model_dump()
+        self.assertEqual([(segment["id"], segment["role"], segment["title"]) for segment in draft["segments"]],
+                         [(segment["id"], segment["role"], segment["title"]) for segment in self.planned["segments"]])
+        for segment, planned in zip(draft["segments"], self.planned["segments"]):
+            self.assertTrue(all(line["fact_ids"] == planned["fact_ids"] for line in segment["lines"]))
+
+    def test_rewrite_preserves_unflagged_lines_and_repairs_whole_ideas(self):
+        rewrite = self.author_calls[1]["content"]
+        self.assertIn("VALIDATOR ISSUES — each names a specific segment or line. Fix ONLY those.", rewrite)
+        self.assertIn("every unflagged line reproduced exactly as you wrote it", rewrite)
+        self.assertIn("CUT A WHOLE\nIDEA, DO NOT COMPRESS A SENTENCE", rewrite)
+        self.assertIn('Issues whose text contains the word "warning" are advisory', rewrite)
 
     def test_story_intent_visual_order_and_editorial_notes_reach_author(self):
         self.assertEqual(self.author_plan["segments"], self.planned["segments"])

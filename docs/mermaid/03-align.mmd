@@ -2,7 +2,7 @@
 flowchart TD
   N6["SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line"]:::data
   STORY["USER reviews Story order above script segments<br/>[ask · existing Script card]<br/>drag stops; review kind, fact/picture counts and gaps; Ask for this source"]:::ask
-  PBO["PATCH /align/playbook {stop_order, kinds}<br/>[FUNCTION · server/app.py]<br/>save playbook-overrides.json; revalidate effective playbook<br/>reset script + visuals approvals; dispatch existing revise plan path<br/>planner consumption of overrides follows in WP2"]:::fn
+  PBO["PATCH /align/playbook {stop_order, kinds}<br/>[FUNCTION · server/app.py]<br/>save playbook-overrides.json; revalidate effective playbook<br/>mark dependent work stale; reset script + visuals approvals; revise Plan<br/>Planner preserves reviewed stops, kinds, coverage and USPs"]:::fn
   MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
   ATT["attachments → sources<br/>[FUNCTION · app.align_message]<br/>files saved as role=product before the agent sees them"]:::fn
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec

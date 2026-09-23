@@ -6,7 +6,11 @@
 
 **WP1 correction:** add Coach with a versioned category library, evidence-backed stops, three USPs and explicit source/picture gaps. Validate the first fundamental and evidence identities, and expose its order for human review inside the existing Script card. Missing pictures remain gaps rather than silently determining the narrative.
 
-**Remaining work and verification:** this checkpoint establishes the playbook stage and review surface only. WP2 must bind Plan to the reviewed order and replace the old standout-first prompts before the roof-first behavior is fully fixed. Coach 20/20, Align API 18/18, UI 9/9, deck 320/320, acceptance 24/24 and both smoke phases pass; mock validation cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
+**WP2 correction:** bind Planner to the effective reviewed playbook: one proof segment per required stop, ordered by that stop, with missing coverage restored and diagnosed. Keep Coach's USPs, record fundamental flags and allocate typed word budgets. Remove the standout-first and sunroof example from the writing prompts; Author follows the settled plan with connected thoughts, varied openings and the translation ladder rather than choosing the itinerary again.
+
+**Verification and limits:** WP1 Coach 20/20, Align API 18/18, UI 9/9, deck 320/320, acceptance 24/24 and both smoke phases passed. WP2 Plan/playbook, narrative-role, speech-style and integration counts are pending. WP3 still adds author budget enforcement; WP7 changes runtime check-in behavior. Mock order/coverage checks cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
+
+**Cache lesson from WP1 review:** fact text alone does not identify Coach's input. A category edit with unchanged facts initially reused the previous category's playbook. Reuse now also checks category and the consumed evidence/picture inputs; the cache contract covers category/picture changes and preservation of the prior artifact on failure.
 
 ## 2026-09-19 — Source identity is not current trim applicability
 

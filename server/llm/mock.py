@@ -87,7 +87,29 @@ def fake_dict(schema: type[BaseModel], depth: int = 0) -> dict:
     return out
 
 
-def fake(schema: type[BaseModel]) -> BaseModel:
+def script_for_plan(schema: type[BaseModel], plan: dict) -> BaseModel:
+    """Keep a mock Author on the actual planned route instead of the generic five-role fixture."""
+    out = fake_dict(schema)
+    templates = {segment["role"]: segment for segment in out["segments"]}
+    out["segments"] = []
+    for stop in plan.get("segments", []):
+        segment = json.loads(json.dumps(templates.get(stop.get("role"), next(iter(templates.values())))))
+        for key in ("id", "title", "role", "topic", "outcome", "usp_ids"):
+            if key in stop:
+                segment[key] = stop[key]
+        refs = stop.get("visual_refs") or []
+        for line in segment.get("lines", []) + segment.get("deeper", []):
+            line["fact_ids"] = list(stop.get("fact_ids", []))
+            line["visual"] = {"kind": ("image" if refs[0].startswith("im") else "shot") if refs else "none",
+                              "ref": refs[0] if refs else "", "focus": ""}
+        out["segments"].append(segment)
+    return schema.model_validate(out)
+
+
+def fake(schema: type[BaseModel], content: str | list | None = None) -> BaseModel:
+    if {"segments", "intake_q1", "closing"}.issubset(schema.model_fields) and isinstance(content, str) and "\nPLAN: " in content:
+        plan, _ = json.JSONDecoder().raw_decode(content.split("\nPLAN: ", 1)[1])
+        return script_for_plan(schema, plan)
     d = fake_dict(schema)
     # keep AlignOut harmless
     if "actions" in d and "reply" in d:

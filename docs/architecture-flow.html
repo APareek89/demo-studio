@@ -127,13 +127,14 @@ flowchart TD
   FIDS[&quot;Immutable assertion IDs + source/evidence revisions&lt;br/&gt;[FUNCTION · knowledge.reconcile]&lt;br/&gt;uploaded document precedence only for genuine same-scope conflict; preserve both + review&lt;br/&gt;pinned snapshot + BM25/concept/character retrieval index&quot;]:::fn
   UND[&quot;understanding.json&lt;br/&gt;[DATA]&quot;]:::data
   LIB[&quot;Category sales order · version 2026-09-23&lt;br/&gt;[DATA · agents/playbooks.py]&lt;br/&gt;compact SUV / premium SUV / electric scooter / generic inferred order&quot;]:::data
-  CACHE{&quot;registry hash, library version and audience unchanged&lt;br/&gt;and no revision instruction?&lt;br/&gt;[FUNCTION · coach.run]&quot;}:::dec
+  CACHE{&quot;registry hash, library version, audience, category&lt;br/&gt;and consumed evidence/picture inputs unchanged; no instruction?&lt;br/&gt;[FUNCTION · coach.run]&quot;}:::dec
   COACH[&quot;Sales playbook&lt;br/&gt;[AGENT · configured text tier · coach.py]&lt;br/&gt;in: category order + approved registry, image evidence, unknowns and revision instruction&lt;br/&gt;out: ordered stops, three USPs, objections and evidence gaps&lt;br/&gt;MOCK_LLM=1 uses deterministic keyword assignment&quot;]:::agent
   CVAL[&quot;Validate playbook&lt;br/&gt;[FUNCTION · coach.validate / apply_overrides]&lt;br/&gt;approved fact / allowed picture ids only · unique stops · first stop fundamental&lt;br/&gt;exactly three USPs without digits/units · unsupported stops are optional with gaps&lt;br/&gt;must-cover stops have pictures or explicit picture gaps · retain issues&quot;]:::fn
-  PB[&quot;playbook.json&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;Story order review is available; planner binding follows in WP2&quot;]:::data
-  PLAN[&quot;Buyer story outline + literal image selection&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: approved registry, tagged shots/images, brand, language + previous plan&lt;br/&gt;out: existing Plan schema · 3 USPs; roles intro/outcome/proof/features/establish&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff + budget/check-in intent&lt;br/&gt;PITCH_SHAPE + PROOF_BLOCK; no final segment dialogue; preserve media identity&quot;]:::agent
-  PVAL[&quot;drop refs that don&#x27;t exist&lt;br/&gt;[FUNCTION · plan.run]&lt;br/&gt;fact_ids ⊆ registry · visual_refs ⊆ shots∪images&quot;]:::fn
-  PJ[&quot;plan.json&lt;br/&gt;[DATA]&quot;]:::data
+  PB[&quot;playbook.json + saved order/kind overrides&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;reviewed stops, three USPs and evidence gaps&quot;]:::data
+  PLAN[&quot;Evidence mapping, literal pictures and segment briefs&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: effective PLAYBOOK before approved registry, tagged media, brand, language + previous plan&lt;br/&gt;one proof segment per required stop; Coach&#x27;s order and USPs are settled&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff intent&lt;br/&gt;typed stop_id / fundamental / word_budget; no final dialogue&quot;]:::agent
+  PVAL[&quot;Enforce evidence and playbook coverage&lt;br/&gt;[FUNCTION · plan.run / _enforce_playbook]&lt;br/&gt;fact_ids ⊆ approved registry · visual_refs ⊆ allowed shots∪images&lt;br/&gt;map stop_id or fact overlap; drop unmapped/optional proof segments&lt;br/&gt;add missing required stops + issue; sort by role and stop order; inherit USPs/version&quot;]:::fn
+  BUDGET[&quot;Allocate segment word budgets&lt;br/&gt;[FUNCTION · plan._enforce_budget]&lt;br/&gt;total_words = round(pitch_minutes × 60 × WPS); reserve 45 for closing&lt;br/&gt;clamp each budget to 22–role ceiling; proportional rescale beyond 10% drift&lt;br/&gt;author enforcement and planned/measured timing follow in WP3&quot;]:::fn
+  PJ[&quot;plan.json&lt;br/&gt;[DATA · stop_id, fundamental, word_budget; total_words, playbook_version]&quot;]:::data
   SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
   OPEN[&quot;opening message&lt;br/&gt;[AGENT · Claude text tier · text]&lt;br/&gt;in: card summary · out: 3-5 sentences (template fallback on error)&quot;]:::agent
   CONV[&quot;conversation.json&lt;br/&gt;[DATA] + SSE &#x27;message&#x27;&quot;]:::data
@@ -150,9 +151,9 @@ flowchart TD
   LIB --&gt; CACHE
   CACHE -- &quot;yes: reuse unchanged&quot; --&gt; PB
   CACHE -- &quot;no&quot; --&gt; COACH --&gt; CVAL --&gt; PB
-  PB --&gt;|&quot;next graph stage; WP2 adds input binding&quot;| PLAN
+  PB --&gt;|&quot;revalidate overrides, then inline PLAYBOOK&quot;| PLAN
   UND --&gt; PLAN
-  PLAN --&gt; PVAL --&gt; PJ --&gt; SAMPLE --&gt; OPEN --&gt; CONV
+  PLAN --&gt; PVAL --&gt; BUDGET --&gt; PJ --&gt; SAMPLE --&gt; OPEN --&gt; CONV
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
@@ -166,7 +167,7 @@ flowchart TD
 flowchart TD
   N6[&quot;SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;Script includes Story order and Gemini full/partial/missing visual proof per line&quot;]:::data
   STORY[&quot;USER reviews Story order above script segments&lt;br/&gt;[ask · existing Script card]&lt;br/&gt;drag stops; review kind, fact/picture counts and gaps; Ask for this source&quot;]:::ask
-  PBO[&quot;PATCH /align/playbook {stop_order, kinds}&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;save playbook-overrides.json; revalidate effective playbook&lt;br/&gt;reset script + visuals approvals; dispatch existing revise plan path&lt;br/&gt;planner consumption of overrides follows in WP2&quot;]:::fn
+  PBO[&quot;PATCH /align/playbook {stop_order, kinds}&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;save playbook-overrides.json; revalidate effective playbook&lt;br/&gt;mark dependent work stale; reset script + visuals approvals; revise Plan&lt;br/&gt;Planner preserves reviewed stops, kinds, coverage and USPs&quot;]:::fn
   MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
   ATT[&quot;attachments → sources&lt;br/&gt;[FUNCTION · app.align_message]&lt;br/&gt;files saved as role=product before the agent sees them&quot;]:::fn
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec

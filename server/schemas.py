@@ -213,8 +213,9 @@ class Concern(BaseModel):
 class USP(BaseModel):
     id: str = Field(description="short slug, e.g. 'usp-warranty'")
     name: str = Field(description="the differentiated value, 3-8 words")
-    why_it_matters: str = Field(description="one concrete sentence of supported relevance; a choice or fit-check is valid when the source does not demonstrate a customer outcome")
+    why_it_matters: str = Field(default="", description="one concrete sentence of supported relevance; a choice or fit-check is valid when the source does not demonstrate a customer outcome")
     fact_ids: list[str] = Field(description="approved facts supporting the stated value and scope; no invented benefit or comparison; with no facts, describe the unresolved choice rather than asserting a product advantage")
+    stop_id: Optional[str] = None
 
 
 # Represent an optional clarification suggestion for a customer state.
@@ -239,6 +240,9 @@ class SegmentPlan(BaseModel):
     usp_ids: list[str] = Field(default_factory=list, description="USPs this segment covers")
     visual_refs: list[str] = Field(description="shot or image ids to use, best first")
     priority_topic: bool = Field(description="true if this addresses one of the top concerns")
+    stop_id: Optional[str] = None
+    fundamental: bool = False
+    word_budget: int = 0
 
 
 # Define a buyer action such as a test-drive request, contact or verified link.
@@ -337,6 +341,8 @@ class Playbook(BaseModel):
 # Input: structured Planner response. Output: a validated Plan, before its post-processing and save.
 # Linked: server/agents/plan.py:run saves plan.json; server/agents/author.py:run receives its editorial intent.
 class Plan(BaseModel):
+    total_words: int = 0
+    playbook_version: str = ""
     customer_persona: str = Field(description="general intended audience, 2 sentences; no invented individual distance, budget, location or household")
     decision_frame: str = Field(description="fit summary at the END: the strongest supported fit and what remains to verify; not an opening decision frame")
     takeaway: str = Field(description="the ONE sentence the buyer should be able to repeat after the demo")

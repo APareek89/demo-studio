@@ -162,7 +162,7 @@ def structured(system: str, content: list[dict] | str, schema: type[T], *, max_t
     soft=True skips constrained decoding (plain JSON + validation) — faster and immune to the grammar-size limit.
     fallback=False calls only Claude (runtime orders providers itself). Text-only build calls otherwise use BUILD_PROVIDERS."""
     if config.MOCK_LLM:
-        out = mock.fake(schema)
+        out = mock.fake(schema, content)
         usage.trace("claude", "mock", latency_ms=5, system=system, user=(content if isinstance(content, str) else json.dumps(content)[:4000]), response=out.model_dump_json()[:4000])
         return out
     msgs = list(history or [])

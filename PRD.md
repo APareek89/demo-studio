@@ -29,7 +29,8 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   never approves a card on its own.
 - **Review the sales playbook.** Coach runs after Understand, validates category order, approved
   evidence and explicit gaps, then exposes Story order inside the existing Script card. Reordering
-  resets Script/Visuals approval and requests Plan revision; planner enforcement follows in WP2.
+  resets Script/Visuals approval and requests Plan revision. Planner follows its required stops and
+  USPs, mapping evidence, pictures and typed word budgets; Author writes the speech.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
@@ -44,8 +45,10 @@ measurement, payments, 3D product visuals (removed 2026-09-18), unvalidated LLM-
 session resume after refresh and multi-worker runtime ownership.
 
 ## Approved runtime upgrade — 2026-09-19
-- Keep Atelier and the cinematic slides. Open with supported standout features in everyday language;
-  use a warm, cheerful guide with restrained pace and punctuation, never invented SSML/emotion controls.
+- Keep Atelier and the cinematic slides. Open with the category's fundamentals in everyday language,
+  in reviewed playbook order; delighters come after fundamentals. No decision frame or digits in the
+  first spoken line. This replaces the earlier supported-standout opening. Use a warm, cheerful guide
+  with restrained pace and punctuation, never invented SSML/emotion controls.
 - One initial microphone permission enables continuous listening. Speech onset cancels local audio;
   session, turn, utterance and capture-generation ownership reject stale output. Typed input remains available.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →

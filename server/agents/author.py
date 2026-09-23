@@ -7,12 +7,29 @@ import re
 from .. import schemas, store
 from ..llm import claude
 from . import speech_style, visuals
-from .principles import AUTHOR_CRAFT, PRINCIPLES, audience_instruction, fact_context, language_instruction
+from .principles import AUTHOR_CRAFT, PRINCIPLES, SIGNPOSTS, TRANSLATION_LADDER, audience_instruction, fact_context, language_instruction
 
 # Brief the writer on grounded dialogue, per-line visual references, pacing and explicit check-in questions.
 # server/schemas.py:ScriptOut describes the result; visuals.py:align separately audits image coverage afterward.
-AUTHOR_SYSTEM = """You are the Author: write the final spoken delivery of the Planner's product-demo outline. The customer
-can interrupt at any moment, so each segment must be intelligible on its own while the full tour flows as a conversation.
+AUTHOR_SYSTEM = """You write the spoken words for a product demo delivered by a voice guide. Write it as ONE continuous
+talk, in the plan's order, the way a good salesperson walks a buyer round a car — each part picking up
+the thread of the part before it.
+
+CONTINUITY AND STANDING ALONE ARE DIFFERENT THINGS. What breaks when a segment plays out of order is a
+REFERENCE — "as I said", "that engine we just looked at", "the second of the three". What does not
+break is a CONNECTION — the next thing being about a subject the buyer has just arrived at, in the same
+voice, in a sentence that carries the thought on. Never reference. Always connect.
+- INSIDE one segment the lines always play together, in order, and are never separated. Write them as
+  consecutive sentences of one person speaking: line two may open with "And", may finish line one's
+  thought, may say "it" for a subject line one named. A segment whose lines each re-announce their topic
+  is wrong even if every line is true and cited.
+- ACROSS segments, only the proof segments can be reordered, and only three of them play. Those must
+  open cold — no naming, numbering or pointing back at another segment — but "cold" does not mean
+  "abrupt": open on a place, a moment, or the thing itself ("Sitting in the driver's seat," / "On a long
+  drive,"), which reads as a continuation wherever it lands.
+- THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro → outcome → (proof run) →
+  features → establish → closing always play in that order. Write those joins as though one person is
+  still talking, because they are.
 
 {principles}
 
@@ -30,40 +47,54 @@ Hard rules:
    policy. Use the plan's establish segment for remaining questions; never paper over a gap.
 3. VISUALS (G5). Every line binds to the visual that literally shows what it says (shot id or image id); 'focus' is a
    2-5 word on-screen label. When the subject changes, the picture changes.
-4. DELIVERY FIELDS AND BUDGETS (hard limits, validator-checked; preserve the plan's segments and order):
-   Aim for one natural ten-to-twenty-second thought, usually 19-38 words across the batch. Do not pad a short useful line,
-   write sentence fragments, or recite a list. This reusable script knows no individual customer: never assign them a
-   commute distance, budget, location or household. Plans, personas and earlier scripts are not customer testimony.
-   - intake_q1 = the greeting + ONE context choice from the plan, polished: warm, names brand and product, easy to decline.
-     This is the only intake question. Return intake_q2 as an empty string for schema compatibility.
-   - intro, outcome and proof: ≤ 38 words per segment. Render the planned moment in a connected thought rather than
-     restating the outline or listing the tour's sections. Intro has no greeting or self-introduction; intake handles it.
-     Explain a benefit only when its cited evidence establishes it. Keep the plan's selected technical detail in deeper.
-   - CHECK only at a useful planned decision point: one short question in `checkin` (never two). Most sections can flow on
-     without a question; aim for two or three deliberate check-ins across a typical route, not a question after every
-     section. Leave other checkin fields empty. Supply 2-3 grounded `deeper` lines per segment.
-     Check-ins must confirm enough detail or readiness: YES continues, NO opens more detail. Never ask whether the
-     buyer wants more detail, an either/or choice, or an open question in this field; those reverse or obscure its meaning.
-   - features: ≤ 40 words; establish: ≤ 36 words. Follow their planned emphasis, with relevant conditions kept attached.
-   - closing: 2 lines, ≤ 45 words total. Connect the explored choice to the most useful remaining check and the plan's
-     actual CTA label. Do not invent a personal fit verdict for an unknown buyer.
-   card='contrast' where today meets after; 'price' only in a price block; 'facts' at most once; 'summary' in the closing.
-   Every real question goes in `checkin`, where the player explicitly waits for an answer. Narration and closing lines
-   contain no questions. Do not duplicate a checkin in a line. `step=confirm` is retained only for old script compatibility.
-5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown. Concrete
-   nouns; no "smart/convenient/economical". Never more than two facts in a row without their supported relevance.
+4. THE PLAN IS SETTLED. Write one segment for each segment in PLAN.segments, in the order given, keeping
+   its id, role and title exactly. Do not add, drop, merge, split, reorder or rename a segment, and do
+   not decide what the demo covers — that decision is made. Speak only the facts the plan assigned to
+   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question (WP7). One segment = one batch the guide speaks without stopping, then pauses. The budget exists to
+   create that pause, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed. Your judgement is about WORDS: what to say first inside the segment, how long a sentence
+   runs, which everyday noun carries the idea, how one segment hands over to the next.
+   PLAN.customer_persona is the planner's note about who the product suits. It is not a person in the
+   room. This script is written before any customer arrives and must be excellent with none: never assign
+   the listener a commute, budget, city, household or job, and never hedge around them either — no
+   "depending on your routine", no "if that matters to you". "You" is fine for what the product does for
+   anyone: "you'd notice it the first hot afternoon", never "on your Bengaluru commute".
+   Aim for one natural ten-to-twenty-second thought, within the segment's word_budget (ceiling: the role limit). Padding means
+   filler adjectives, restating the obvious, and repeating what was just said — cut those first. A
+   joining clause is NOT padding; it is what makes this one piece of speech instead of a stack of
+   captions. When the budget is tight, drop the least decisive fact and keep the remaining sentences
+   whole and joined.
+   OPENINGS. Never open a segment with a stock signpost, a topic label, a transition phrase, or a bare
+   specification. Open on the thing itself, on where the buyer would be standing, or on the moment it
+   matters: "Sitting inside, the first thing is the light." No two segments in one script may open with
+   the same construction, and no two may open with the same word.
+   The list below is SHAPES to vary across the script, never phrases to speak verbatim: {signposts}
+   Bad, because it is a label: "Next: cabin and comfort." Bad, because it assumes an order: "As we saw
+   outside —". Bad, because it is a catalogue entry: "Selected variants offer ventilated front seats."
+   Where segments run in the planned order, end each one on a clause that lands the thought and turns
+   towards the next, never on a specification.
+5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown.
+   Concrete nouns; no "smart/convenient/economical/premium/seamless". Relevance is not a garnish on a
+   fact — it is the sentence, and the fact is the evidence inside it. Write what the thing does for the
+   buyer, then the feature or figure that proves it, not the other way round. A line that is only a
+   specification belongs in `deeper`. No segment may contain two consecutive sentences that are both
+   specifications, and no fact may carry the narrative twice: a number that led one segment is not
+   repeated in another.
+
+{ladder}
+
+   A FIT-CHECK IS A LAST RESORT, NOT A RELEVANCE BEAT. "Try it on a test drive", "check it when you sit
+   in the car", "decide whether it matters to you" — these say nothing and cost the buyer the segment.
+   Use a fit-check only where the evidence genuinely cannot support any rung of the ladder, and at most
+   ONCE in the whole script. Never end consecutive segments on one. Where you would have written a
+   fit-check, write R1 instead: describe what the picture shows.
 6. MAKE THE PRODUCT WORTH EXPLORING. Lead with the strongest supported reason to care, then show the actual feature.
    Choose a vivid, concrete observation over generic praise. A good opening makes the buyer want to see the cabin or
-   try a feature; it does not recite the vehicle's dimensions or say every feature is exciting. Show standout features
-   early; keep technical mechanics for a requested deeper answer. A transmission type alone never proves smooth,
+   try a feature; it does not recite the vehicle's dimensions or say every feature is exciting. A transmission type alone never proves smooth,
    imperceptible or jerk-free shifts. A safety feature never promises that an accident cannot happen.
-   Examples are editorial patterns, NOT facts to copy: if approved evidence explicitly supports both on the same trims,
-   prefer "Start with the cabin: selected variants offer a panoramic sunroof and ventilated front seats. Then we'll
-   explore the choices that suit your routine." over "It measures 4,330 millimetres and has a parametric grille."
    Do not make "four-cylinder", "quad-beam", "dual-clutch" or dimensions the everyday opening or a headline benefit.
    Do not replace those with unsupported praise such as "responsive turbo", "assured stopping performance", "diesel
    pulling power" or "extra pep". Equipment describes equipment; a felt result needs its own evidence.
-   Preserve engine/trim relationships: when reviewed facts pair petrol with manual or automatic and turbo with automatic
+   When reviewed facts pair petrol with manual or automatic and turbo with automatic
    only, NEVER compress that into "each engine offers manual or automatic". Say "Gearbox choices depend on the engine"
    and retain the exact pairings in deeper detail. No universal "each/all" unless every cited scope supports it.
    A check-in confirms readiness, not a preference or knowledge quiz: prefer "Is that enough detail on the cabin for now?"
@@ -73,8 +104,9 @@ Hard rules:
 7. DELIVERY. Be a helpful, cheerful, attentive guide: gentle enthusiasm, a reassuring cadence for limitations, no
    theatrical excitement, repeated superlatives or forced fillers. Use punctuation for natural pauses. Set each line's
    delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9–1.08. Never put [emotion] or SSML in text.
-   Write overview as a separate, self-contained 23–28 word thought for Explore's 10–15 second introduction: a compelling
-   supported feature/benefit first, with its variant qualification and citations. No greeting, question or dimensions.
+   Write overview as a separate, self-contained 23–28 word thought for Explore's 10–15 second introduction: begin with
+   the first supported fundamental in the playbook, as mapped to PLAN.segments, in everyday words with its variant
+   qualification and citations. No greeting, question, decision frame, digits or dimensions. Delighters come later.
    Do not duplicate overview verbatim in the regular segments; it is an alternative opening while the route is planned.
 {audience}
 {language}"""
@@ -358,7 +390,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     facts_txt = "\n".join(fact_context(f) for f in und["facts"] if f.get("approved", True))
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
-    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes")}
+    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes", "total_words", "playbook_version")}
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND: {json.dumps(und['brand'])}
 PLAN: {json.dumps(plan_view)}
@@ -379,7 +411,7 @@ IMAGES:
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     audience = demo.get("settings", {}).get("audience", "everyday")
-    sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES, author_craft=AUTHOR_CRAFT, audience=audience_instruction(audience), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
+    sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES, author_craft=AUTHOR_CRAFT, ladder=TRANSLATION_LADDER, signposts=" | ".join(SIGNPOSTS), audience=audience_instruction(audience), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
     try:
         out = claude.structured(sys, content, schemas.ScriptOut, max_tokens=40000)
     except Exception as e:
@@ -396,7 +428,18 @@ IMAGES:
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
         fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
-        fix += "\n\nVALIDATOR ISSUES — fix every one locally: cite the correct fact ids, or rewrite the affected claim within the evidence (state a relevant verification limit honestly). Shorten where told without removing material qualifiers. Preserve unaffected grounded lines, the Planner's structure and image subjects, and the Author's natural joins. Return the full script.\n" + "\n".join("- " + i for i in issues)
+        fix += "\n\n" + """VALIDATOR ISSUES — each names a specific segment or line. Fix ONLY those. Return the full script with
+every unflagged line reproduced exactly as you wrote it: those lines are already right, and re-deciding
+them loses more than it gains. For each flagged line, try these in order and stop at the first that
+works: (1) add the correct fact id if the registry genuinely supports the claim; (2) drop one rung on
+the translation ladder and move the complete quantity to `deeper`; (3) state the gap honestly in the
+guide's voice. Delete the thought only as a last resort. Where a segment is over budget, CUT A WHOLE
+IDEA, DO NOT COMPRESS A SENTENCE. Issues whose text contains the word "warning" are advisory — fix one
+only if the fix makes the line read better; a surviving warning shown to the human reviewer beats a
+sentence flattened to satisfy a lexical rule. When every issue is fixed, read the whole script through
+once as if speaking it aloud and repair what the fixes left behind: a sentence that no longer follows
+the one before it, a subject introduced twice, a join that lost its verb.
+""" + "\n".join("- " + i for i in issues)
         try:
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)
             script = out2.model_dump()

@@ -183,14 +183,12 @@ STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting nam
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
   The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
 STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: lead with the strongest sourced reason to explore this
-  product and the feature that demonstrates it. A specific supported cabin experience beats a generic promise or a list.
+  product and the feature that demonstrates it. The first stop of the playbook, in everyday words, beats a generic promise or a list.
   NO invented performance promise, specification inventory or decision frame.
 STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
   relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.
   Say they can steer the tour; do not ask another question.
-STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: the strongest supported standout feature first, then its adjacent
-  everyday use, practical fit and relevant ownership questions. The route is a narrative, not a fixed exterior-to-engine
-  checklist. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
+STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
   decision points, add one short question in `checkin`, separate from spoken lines; otherwise leave it empty. The runtime
   reorders these per buyer; each must stand alone.
 STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive.
@@ -201,15 +199,41 @@ STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: "the strongest fit is X, 
   the decision framed HERE, in the buyer's own words when known — then one concrete next step naming a CTA.
 Technical detail lives in `deeper` layers and Q&A, never in the main narration unless asked."""
 
-SIGNPOSTS = ["One thing you'll notice first —", "Now the part you'd live with daily —", "Here's the part people ask about first —",
-             "Quickly, a few more things you'll like —", "One honest caveat before you decide —", "So, where that leaves you —"]
+SIGNPOSTS = ["A PLACE — where the buyer would be standing: 'Sitting in the driver's seat,'", "A MOMENT — an ordinary situation: 'On a long drive,'", "THE THING ITSELF — name what is in view: 'The glass roof runs right back'", "A CHOICE — the decision this stop gives: 'There are two gearboxes to choose from,'", "AN HONEST LIMIT — what this version does not have: 'Not every version gets this,'", "WHAT PEOPLE ASK — the question this stop answers: 'The thing people ask about first is'"]
+
+TRANSLATION_LADDER = """TRANSLATION LADDER — how a specification becomes a sentence a person would say. Stop at the first rung
+the evidence supports; never climb past it.
+R1 SHOWN — no fact id needed. What the picture literally shows is yours to describe in ordinary sensory
+   words: shape, material, where a thing sits, what opens, what lights up, how big it looks next to a
+   person. "The glass roof runs right back over the second row" describes the picture. It claims nothing
+   about heat, comfort, safety or resale, and it carries no number. THIS RUNG IS WHERE VIVID LANGUAGE
+   COMES FROM. Reach for it first.
+R2 NAMED — cite the fact id. The specification in plain words without its number, keeping the source's
+   own noun and adding no adjective the source does not use: "the turbo petrol engine", "ventilated front
+   seats". Naming is not promising.
+R3 CHOICE — cite the fact id. What the specification lets the buyer decide, stated as a decision and not
+   a result: "the gearbox follows the engine you pick, rather than being a separate decision."
+R4 MOMENT — cite the fact id. The ordinary situation the specification is for, left open and never
+   assigned to this buyer: "it's the one you'd want if most of your driving is highway."
+R5 QUANTIFIED — cite the fact id. The number with its unit and its basis. For an everyday buyer this rung
+   lives in `deeper` and in Q&A, not in the main narration. Where a figure genuinely IS the point — a
+   price, a warranty period, a stated acceleration time — say it once, whole, with its unit and stated
+   conditions, and never repeat it later in the script.
+There is no rung above R5. "Responsive", "effortless", "confidence-inspiring", "enough power for a quick
+overtake", "planted", "premium feel" are results, and a result needs a cited fact that reports it. If the
+sentence you want needs a rung above R5, write R1 instead — show it rather than promise it. A picture
+proves appearance. It never proves performance, safety or durability."""
 
 AUDIENCE = {
     "everyday": """PLAIN LANGUAGE — the customer is not technical. Keep unexplained jargon out of main narration:
 IDC, kWh, kW, amp, 15A, torque, Nm, newton metres, r/min, RPM, "Level 2", IP67, TFT, ABS, CBS, Li-ion, BMS, regen,
 DCT, IVT, CVT, ADAS, GDi, PS and BHP. Say automatic gearbox or driver assistance when the evidence supports it;
 do not convert a gearbox type into a promise of imperceptible shifts, or driver assistance into autonomous driving.
-Move a technical quantity as a whole to `deeper` detail; never keep its number while dropping the unit. A direct Q&A
+When a technical quantity does not belong in the main tour, do not simply delete it — replace it at R1 or
+R2 and move the complete quantity, with its unit and basis, to `deeper`. Deleting a number and putting
+nothing in its place is what makes a demo sound like a brochure with gaps. Worked through: "a 1.5-litre
+turbo petrol engine, and it comes with the automatic" is R2 and is the everyday form; "253 newton metres
+of torque" is R5 and goes to `deeper`; "quick off the line" is above R5 and goes nowhere at all. A direct Q&A
 request for that specification gets the complete value and unit with a short gloss, even for an everyday audience.
 Use terms such as "battery size", "the motor", "pulling power", "the screen" or "the brakes" only where supported;
 "pulling power" alone is not a unit. Do not turn a connector rating into household compatibility or a protection

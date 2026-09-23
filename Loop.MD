@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Sales Trainer WP2 — 23 September 2026
+
+Loop stays off. `evals/plan_playbook_contract.py` covers required-stop mapping/order, missing-stop insertion with issues, optional/unmapped-stop exclusion, fundamental flags, inherited USPs/version, clamped/rescaled budgets, pitch-minute totals and the mock Read path. Extended `evals/narrative_roles_contract.py` checks settled ownership, full briefs, continuity, the translation ladder and removal of standout-first examples; `evals/speech_style_contract.py` checks the mapped authoring changes. Plan/playbook 14/14, narrative roles 11/11, speech style 27/27, deck 320/320, acceptance 24/24 and both smoke phases pass with zero outbound attempts; compilation and diff checks pass. Mock Author follows the planned topology and the separate Explore opening is bound to the lead fundamental. Planner budgets are allocated here; WP3 adds validator/timeline checks. These free tests do not establish live writing quality, timing or acoustic performance.
+
 ## Sales Trainer WP1 — 23 September 2026
 
 Loop stays off. `evals/coach_contract.py` adds free coverage for category aliases/generic inference, fundamental opening, three nonnumeric USPs, unsupported-stop gaps, allowed evidence/pictures, cache reuse, revalidated overrides, progress-stage registration and isolated blocked-network execution. Coach 20/20, new Coach Align API 18/18 and UI 9/9, existing Align 47/47, deck 320/320, acceptance 24/24 and both smoke phases pass with zero outbound attempts. Category/picture cache changes and failure-preserved artifacts are included. Browser review verifies panel display and reorder→Plan revision→Align. Planner order/budget enforcement belongs to WP2. No real provider, voice or published-demo check is implied.

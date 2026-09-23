@@ -1,5 +1,13 @@
 # Handoff.MD — Demo Studio
 
+## Sales Trainer flow — 23 September 2026 · WP2
+
+Branch `codex/sales-trainer-flow`, following WP1 `f921305`. Planner now reads the validated playbook and saved overrides before the approved registry. It maps one proof segment to each required stop, restores missing stops with a visible issue, drops unsupported/unmapped proof stops, preserves reviewed order and USPs, and records `stop_id`, `fundamental`, `word_budget`, `total_words` and `playbook_version`. Coach owns order, coverage and winning points; Planner owns evidence, pictures, segment briefs and word allocation; Author owns the spoken delivery.
+
+The mapped 19 September prompt audit is applied: continuous speech with self-contained proof stops, varied openings, a translation ladder, useful joins and local repairs. Fundamentals replace the old standout-first example; no decision frame or digits in the first spoken line. Prompts place at most two one-line closing statements where a decision turns. This is an authoring change; runtime check-in handling remains for WP7. WP3 still owns budget enforcement and planned/measured timeline reporting. Additional audit schema fields remain deferred.
+
+**Verification:** Plan/playbook 14/14, narrative roles 11/11, speech style 27/27, deck 320/320, acceptance 24/24 and both smoke phases pass. Python compilation and diff checks pass. All runs used mock providers, blocked outbound sockets and temporary stores, with zero outbound attempts. The mock Author now mirrors the actual planned route; the separate Explore overview also follows the lead supported fundamental. Free checks do not establish real-model prose quality. Published CRETA v8, its original session and port 8896 remain unchanged. No paid Read is authorized; Loop remains off.
+
 ## Sales Trainer flow — 23 September 2026 · WP1
 
 Branch `codex/sales-trainer-flow`. WP1 adds Coach between Understand and Plan: a versioned category library, approved-evidence playbook, deterministic validation, registry/audience cache and saved order/kind overrides. The existing Script card contains Story order, evidence counts and gaps; reorder starts the existing Plan revision path and resets Script/Visuals approval, while gap requests use `request_upload`. There are still six cards. Planner consumption of the playbook and ordered segment enforcement are WP2 and are not yet implemented at this checkpoint.
@@ -52,10 +60,10 @@ Python ASTs and executable token sequences match baseline `ba448ff` for all 14 P
 
 ## Decisions and invariants
 
-- 23 September WP1: Coach owns a reviewed category playbook before Plan: fundamentals first, then delighters, with three supported buyer-language USPs and explicit evidence gaps. Reject picture availability as the owner of story order. This stage/review boundary is implemented in WP1; Planner evidence mapping, typed budgets and playbook enforcement follow in WP2, while Author continues to own speech.
-- 19 September night: Planner owns the story outline, evidence emphasis and literal image selection; Author owns final conversation and delivery. Preserve schema, grounding, independent stops, locked voice and Align. Reject relaxed grounding as a way to improve warmth. One paid caption stress session is authorized; subsequent checks use saved outputs/session agents with no paid retry.
+- 23 September D1–D2: Coach owns the reviewed category order, coverage, three USPs and evidence gaps; Planner maps evidence, pictures, segment briefs and word budgets to it; Author writes the speech. Fundamentals precede delighters. WP1 introduced the stage and review boundary; WP2 binds Plan to it. Reject picture availability as the owner of story order.
+- Historical 19 September ownership replaced by D2 above: Planner previously owned story order, evidence emphasis and literal image selection; Author owned final conversation and delivery. Grounding, independent proof stops, locked voice and Align still stand. Relaxed grounding was rejected as a way to improve warmth. The one paid caption stress authorization was completed and is not renewed.
 - Anand approved the [expanded runtime plan](docs/plan-runtime-experience-2026-09-19.md) and official Creta PDF/relevant images. Earlier UI-only/no-streaming restrictions are historical.
-- Keep Atelier/cinematic slides. Plain customer language, sourced feature-led opening, cheerful helpful persona, sparse confirmation questions. Yes means continue; no means more detail. Questions wait.
+- Keep Atelier/cinematic slides. Open with category fundamentals in everyday language and reviewed playbook order, then delighters; no decision frame or digits in the first spoken line. This replaces the historical sourced feature-led opening. Keep the cheerful helpful persona. Existing runtime confirmation handling remains until WP7: yes continues, no offers detail, questions wait.
 - Build requires six reviewed approvals. Fact edits allocate new assertion IDs, retain historical meaning, invalidate affected review and publish a new immutable snapshot. Human edits must not silently regenerate.
 - Uploaded sources win genuine same-scope conflicts; contradictions remain reviewable. Original media defines vehicle identity. No invented trim/model-year/current-stock applicability or product benefits.
 - Runtime LLM uses pinned evidence. Two tool rounds/four calls and one optional composition repair share twelve seconds. Calculator operands/basis are auditable. Live URL evidence stays turn-scoped with source attribution.
