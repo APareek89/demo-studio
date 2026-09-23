@@ -102,6 +102,7 @@ def new_demo(name: str) -> dict:
             "voice_name": config.GEMINI_TTS_VOICE if config.TTS_PROVIDER == "gemini" else config.GCLOUD_TTS_VOICE,
             "language": "en-IN",  # en-IN | hinglish | hi-IN | ta-IN | te-IN | kn-IN | mr-IN | bn-IN | gu-IN | ml-IN | pa-IN
             "competition": "off",  # off | on — compare only against competitor URLs the user added, always with a verify caveat
+            "runtime_default_sites": "off",  # customer sites only unless product URL sources are explicitly enabled
             "audience": "everyday",  # everyday | informed | expert — controls jargon and technical depth
             "pitch_minutes": 3,  # narration budget before Q&A
             "languages": ["en-IN"],  # additional demo languages are translated + voiced at build

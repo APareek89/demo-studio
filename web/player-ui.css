@@ -69,6 +69,8 @@
 .pl .pl-intake .q{font:400 clamp(20px,2vw,30px)/1.35 var(--serif,Georgia,serif);color:#08243c;letter-spacing:-.03em;margin:13px 0 18px}
 .pl .pl-intake .heard{font:400 13px/1.5 var(--disp);color:#5e7180}
 .pl .pl-intake .fallback input{font-size:14px}
+.pl .pl-customer-sites{display:flex;flex-direction:column;gap:6px;flex-basis:100%;min-width:0;font:500 11px/1.4 var(--disp);color:#5e7180}
+.pl .pl-intake .pl-customer-sites input{box-sizing:border-box;width:100%;font-size:12px}
 .pl .pl-intake .actions{gap:9px}
 .pl .pl-welcome .inner{background:transparent;border:0;box-shadow:none;border-radius:0;padding:0;width:36%;max-width:520px}
 .pl .welcome-guide{display:flex;align-items:center;gap:11px;margin-bottom:22px}

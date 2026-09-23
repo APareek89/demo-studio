@@ -58,14 +58,25 @@ function questionAckKey(fillers = {}) {
 
 function defaultVoiceMode(bundle, muted) { return bundle.runtime?.continuous_voice === true && !muted; }
 
+// Keep this expression aligned with server/runtime_tools.py:CUSTOMER_URL_PATTERN.
+// Collection grants no network access; the server still checks hosts and redirects.
+const CUSTOMER_URL_PATTERN = /(?<![\w@.-])(?:https?:\/\/[^\s<>"'\]\)]+|(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?::\d{1,5})?(?:[/?#][^\s<>"'\]\)]*)?)(?![\w@-])/gi;
+function customerUrls(text, limit = 8) {
+  const urls = [...String(text || "").matchAll(CUSTOMER_URL_PATTERN)].map(match => {
+    const url = match[0].replace(/[.,;!]+$/, "");
+    return /^https?:\/\//i.test(url) ? url : "https://" + url;
+  });
+  return [...new Set(urls)].slice(0, limit);
+}
+
 // Build one interactive demo from a host element, published bundle and API callbacks.
 // Return lifecycle methods for web/app.js:renderPlay; all visit state stays inside this player.
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   // Keep the current route, audio, customer input, timing and report fields together for this visit.
   // Run and listening counters identify the owner of asynchronous work; server/runtime_state.py:claim_turn uses matching session IDs.
-  const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
-    profile: { name: "", why: "", followup: "", focus: [], stated_needs: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
+  const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: null, intakeOpen: false,
+    profile: { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
     cta: null, started: Date.now(), micOn: false, micDenied: false, voiceMode: defaultVoiceMode(bundle, mutedByDefault), inputMode: defaultVoiceMode(bundle, mutedByDefault) ? "voice" : "typed", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
     leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
     listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set(), interruptions: [] };
@@ -164,7 +175,11 @@ export function mountPlayer(host, bundle, api) {
       el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
         // Submit typed intake text through the same answer handler used by the main reply box.
         // Its output fills local customer context before server/app.py:run_pitch is requested.
-        el.inFallback = h("form", { class: "fallback open", onsubmit: (e) => { e.preventDefault(); const t = el.inText.value.trim(); if (t) { el.inText.value = ""; acceptTypedAnswer(t); } } }, el.inText = h("input", { oninput: preferTyping, placeholder: "Type your answer…", "aria-label": "Your answer" }), h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
+        el.inFallback = h("form", { class: "fallback open", onsubmit: (e) => { e.preventDefault(); submitIntake(); } },
+          el.inText = h("input", { oninput: preferTyping, placeholder: "Type your answer…", "aria-label": "Your answer" }),
+          h("label", { class: "pl-customer-sites" }, h("span", {}, "Websites I can check (optional)"),
+            el.inSites = h("input", { type: "text", oninput: preferTyping, placeholder: "hyundai.com/in/en/find-a-car/creta", "aria-label": "Websites I can check (optional)", autocapitalize: "none", spellcheck: "false" })),
+          h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
         // Offer microphone intake or an explicit skip into browsing.
         // Clicks call intakeMic or skipIntake; neither adds product facts to the bundle from server/app.py:get_bundle.
         h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", title: "Answer by voice", "aria-label": "Answer by voice", onclick: () => intakeMic() }, icon("mic", { size: 21 })), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
@@ -259,7 +274,15 @@ export function mountPlayer(host, bundle, api) {
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   // Append a conversation message, scroll it into view and retain non-note text for the report.
   // Role, text and interruption details become history for server/app.py:run_qa and save_session.
-  function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  function addMsg(role, text, extra = {}) { if (role === "user") rememberCustomerUrls(text); const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  // Remember only customer-supplied sites, never URLs in the guide's answer.
+  function rememberCustomerUrls(text, limit = 8) { S.profile.customer_urls = [...new Set([...(S.profile.customer_urls || []), ...customerUrls(text, limit)])].slice(0, 8); }
+  function intakeSites() { rememberCustomerUrls(el.inSites.value, 5); }
+  function submitIntake() {
+    intakeSites();
+    const text = el.inText.value.trim();
+    if (text || S.profile.customer_urls.length) { el.inText.value = ""; acceptTypedAnswer(text); }
+  }
   // Mark the next input as typed and stop legacy listening if there is no live capture session.
   // Legacy typing pauses automatic listening while preserving the chosen visit mode.
   function preferTyping() { cancelPostAnswerListen(); if (!live) { S.inputMode = "typed"; stopListening(); } }
@@ -1180,7 +1203,7 @@ export function mountPlayer(host, bundle, api) {
   }
   // Build the compact customer profile sent with runtime requests.
   // Return stated text, focus, server customer state and language for server/app.py:run_qa and run_pitch.
-  function profileForServer() { return { name: S.profile.name, why: S.profile.why, followup: S.profile.followup, focus: S.profile.focus, customer_state: S.pitch?.customer_state, language: bundle.language }; }
+  function profileForServer() { return { name: S.profile.name, why: S.profile.why, followup: S.profile.followup, focus: S.profile.focus, customer_urls: [...(S.profile.customer_urls || [])], customer_state: S.pitch?.customer_state, language: bundle.language }; }
   // Wrap the supplied TTS callback so new audio follows the currently selected bundle language.
   // Return a URL promise or null; web/app.js:renderPlay provides the language-aware server/app.py:run_tts call.
   const _origTts = api.tts; api.tts = (text) => _origTts ? api.tts_lang ? api.tts_lang(text, bundle.language) : _origTts(text) : Promise.resolve(null);
@@ -1225,7 +1248,7 @@ export function mountPlayer(host, bundle, api) {
       // Finish intake once, clear its resolver and stop the legacy listening attempt.
       // The returned customer text later becomes profile input to server/app.py:run_pitch.
       let done = false; const fin = (t) => { if (done) return; done = true; S.intakeResolver = null; stopListening(); res(t); }; S.intakeResolver = fin; el.inHeard.textContent = "";
-      if (S.pendingIntakeAnswer) { const queued = S.pendingIntakeAnswer; S.pendingIntakeAnswer = ""; fin(queued); return; }
+      if (typeof S.pendingIntakeAnswer === "string") { const queued = S.pendingIntakeAnswer; S.pendingIntakeAnswer = null; fin(queued); return; }
       if (live) { setMicUI(live.mic); el.inFallback.classList.add("open"); if (!live.mic) setTimeout(() => el.inText.focus(), 50); return; }
       // For legacy voice intake, show interim text and accept a result only for this run.
       // Empty capture reveals typing instead; web/app.js:renderPlay supplies the optional server transcription callback.
@@ -1284,6 +1307,7 @@ export function mountPlayer(host, bundle, api) {
     el.inState.textContent = guide;
     const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok && (!live || run !== S.run)) return;
     const a1 = await intakeWait(run); if (run !== S.run) return;
+    intakeSites();
     if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
     el.intake.classList.remove("open"); S.intakeOpen = false;
     const ack = live ? "Thanks—that helps me focus the demo. While I tailor it, here's a quick overview of the car." : a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
@@ -1372,7 +1396,8 @@ export function mountPlayer(host, bundle, api) {
   // Skip preference intake and enter the reviewed browsing route.
   // This clears the old wait and skips personalization; content still comes from server/app.py:get_bundle.
   function skipIntake() {
-    interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = ""; S.browseOnly = true;
+    intakeSites();
+    interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = null; S.browseOnly = true;
     const run = newRun(); S.playback = { phase: "opening", index: 0, line: 0 }; showSlideView(heroOpen(), { reveal: 99 });
     playIntroFilm(run).then((ok) => { if (ok) startAfterIntake(run); });
   }
@@ -1495,7 +1520,7 @@ export function mountPlayer(host, bundle, api) {
   // ---------- lifecycle ----------
   // Start over with a fresh session ID, empty visit history and newly created live connection.
   // Destroy the old slide and capture before intake; live-voice.js:LiveVoiceClient.close ends the previous transport.
-  function restart() { interruptAll(); live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = ""; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [] }; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   // Expose a simple pause method for callers without toggling an already paused demo back on.
   // web/app.js:renderPlay receives this method from mountPlayer.
   function pause() { if (!S.paused) togglePause(); }

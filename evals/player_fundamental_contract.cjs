@@ -25,7 +25,7 @@ async function run() {
     const classes = {add() {}, remove() {}};
     const shared = {S, api: {pitch: async request => {calls.push(request); return {route: []};}}, bundle: {version: 1, intake: {}}, live: {}, guide: 'Guide',
       el: {intake: {classList: classes}, inFallback: {classList: classes}, cite: {}, inState: {}}, newRun: () => 1, showSlideView() {}, heroOpen: () => ({}), speak: async () => true,
-      intakeWait: async () => 'Cabin', addMsg() {}, parseName: () => '', parseFocus: () => ['screens'], profileForServer: () => S.profile, withTimeout: promise => promise, startAfterIntake: async () => {}, cur: null, slides: []};
+      intakeWait: async () => 'Cabin', intakeSites() {}, addMsg() {}, parseName: () => '', parseFocus: () => ['screens'], profileForServer: () => S.profile, withTimeout: promise => promise, startAfterIntake: async () => {}, cur: null, slides: []};
     const api = vm.runInNewContext(part('  async function runIntake() {', '  async function startAfterIntake(') + '\n' + part('  function queueRefinement() {', '  async function applyUpcomingPlan(') + '\n({runIntake,queueRefinement})', shared);
     await api.runIntake(); assert.equal(calls[0].refine, false);
     S.playback = {phase: 'route', index: 0}; S.plan = [];

@@ -4,17 +4,18 @@ flowchart TD
   MODE["Connect session socket for guide speech<br/>[FUNCTION · startLive / runtime_live.py]<br/>voice on: one capture request; off: mic.set false, no permission prompt<br/>player mic button toggles capture without reconnecting"]:::fn
   INPUT["Continuous PCM capture + local speech onset<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
   STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>partials stop playback; stable final dispatches one question"]:::data
-  INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual customer wording"]:::fn
+  INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual customer wording; optional website field, up to 5 URLs"]:::fn
   OVERVIEW["Grounded overview in the selected voice<br/>[DATA · bundle.runtime.overview]<br/>10–15 second target measured from generated audio"]:::data
   PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order reviewed slides; explicit priority revision may revisit selected seen proof"]:::agent
   ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>initial pitch: first unseen fundamental before three-proof limit<br/>player fallback mirrors one-stop move; refinements/revisits unchanged"]:::fn
   PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching callout with each line<br/>speak stop-closing checkin and continue without a wait"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Short acknowledgement when useful<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data
+  SITES["Session customer sites<br/>[DATA · profile + current turn + runtime checkpoint]<br/>deduplicate up to 8; later supplied URLs retained<br/>default sites off; opt-in adds enabled product URL sources only"]:::data
   RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local ranking; request-local universal scope; pinned condition dependencies"]:::fn
-  REASON["Answer, clarify, or request bounded tool<br/>[AGENT · runtime_graph.reason]<br/>history + explicit profile + evidence + tool results"]:::agent
+  REASON["Answer, clarify, or request bounded tool<br/>[AGENT · runtime_graph.reason]<br/>history + explicit profile + evidence + CUSTOMER_URLS + tool results<br/>empty evidence: one lookup before model; first decline: lookup before validation"]:::agent
   CHOICE{"Decision action?<br/>[FUNCTION · after_reason]"}:::dec
-  TOOLS["Calculator or customer-selected public URL<br/>[FUNCTION · runtime_tools.py]<br/>exact operand units/basis + formula; safe source pages + whole table passages<br/>max 2 tool rounds / 4 calls; graph deadline 12 seconds"]:::fn
+  TOOLS["Calculator or allowed session customer site<br/>[FUNCTION · runtime_tools.py]<br/>exact operand units/basis + formula; safe scoped pages + whole table passages<br/>live W facts require host attribution; never enter approved registry<br/>max 2 tool rounds / 4 calls; graph deadline 12 seconds"]:::fn
   VALIDATE["Validate sentences; retain supported portion<br/>[FUNCTION · runtime_graph.validate]<br/>grounding → everyday substitutions → rendered word cap<br/>unmapped blocked term: technical_term feedback; technical requests bypass register only"]:::fn
   REPAIR["One optional composition repair<br/>[AGENT · runtime_graph._repair_composition]<br/>same approved evidence + precise rejection feedback; no tools or CTA<br/>only if at least 3 seconds remain inside the same 12-second deadline"]:::agent
   RECHECK["Revalidate repaired sentences<br/>[FUNCTION · validate_decision]<br/>accept fully checked useful content; partial repairs retain rejection telemetry<br/>otherwise retain original supported result; cancellation always wins"]:::fn
@@ -31,6 +32,8 @@ flowchart TD
   START --> INTAKE
   START --> MODE
   MODE -- "voice on; capture permission granted" --> INPUT --> STT
+  INTAKE --> SITES
+  SITES -. "allowed URLs; same scope/network guards" .-> REASON
   INTAKE --> OVERVIEW
   INTAKE --> PERSONALIZE --> ROUTE
   OVERVIEW --> ROUTE --> PLAY
@@ -38,7 +41,7 @@ flowchart TD
   PLAY -- "typed interruption" --> STOP
   STOP --> ACK
   STOP --> RETRIEVE --> REASON --> CHOICE
-  CHOICE -- "tools within budget" --> TOOLS --> REASON
+  CHOICE -- "tools, or first decline with unused customer lookup; within budget" --> TOOLS --> REASON
   CHOICE -- "answer or clarification" --> VALIDATE --> PLAN
   VALIDATE -- "empty or rejected substantive draft; budget remains" --> REPAIR --> RECHECK --> PLAN
   REASON -- "deadline or unavailable" --> FAIL --> PLAN

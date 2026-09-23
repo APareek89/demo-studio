@@ -1,5 +1,17 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — Websites-only intake could lose its completion
+
+**Five whys:** (1) Submitting only websites while intake speech played left the customer waiting. (2) The queued reply was an empty string. (3) A truthiness check treated it as no reply. (4) The old intake assumed every submitted answer contained words. (5) The new optional field made an empty spoken-context answer valid before its waiter existed.
+
+**WP5 correction and verification:** use a distinct `null` no-reply sentinel, preserving accepted empty completion until the prompt finishes. Client site contracts pass 16/16 and actual browser contracts 70/70, including this timing case. The guide still asks only one spoken intake question; websites do not fabricate customer context.
+
+## 2026-09-23 — A declined answer carried unrelated tool calls
+
+**Five whys:** (1) Automatic lookup could execute an incidental calculator or stale URL instead of the selected customer site. (2) The tools node preferred any nonempty `tool_calls`. (3) A decline now enters that node through the new fallback route. (4) The node assumed reaching it meant the model had selected `action=tools`. (5) The schema permits answer and tool-call fields together, so that ownership assumption needed an explicit check.
+
+**WP5 correction and verification:** accept model tool calls only for `action=tools`; the decline fallback supplies exactly its deterministic allowed-site lookup. Independently reproduced the old mismatch without network or storage, then reran all 18/18 customer-site contracts after the fix. The stale-call case, allow-list, private-network, redirect, scope, cancellation and attribution checks remain bounded to fake pages and isolated storage.
+
 ## 2026-09-23 — A cancelled microphone start could outlive its visit
 
 **Five whys:** (1) A late permission grant could reconnect a closed player's socket. (2) Capture checked its owner only after connecting. (3) `AudioContext.resume()` and microphone permission were asynchronous boundaries without immediate ownership checks. (4) Stopping capture invalidated the generation but did not prevent those later side effects. (5) Existing late-permission coverage checked track release, without checking for an orphan socket or a prompt after cancellation.

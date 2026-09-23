@@ -16,10 +16,21 @@ def _normal(text: str) -> str:
     return " ".join(str(text).lower().replace("’", "'").split())
 
 
-def supplied_urls(question: str, history: list[dict] | None = None) -> list[str]:
-    text = "\n".join([str(m.get("text", "")) for m in (history or []) if m.get("role") == "user"] + [question])
-    urls = re.findall(r"(?:https?://|www\.)[^\s<>\"'\]\)]+", text, re.I)
-    return list(dict.fromkeys((u if u.startswith(("http://", "https://")) else "https://" + u).rstrip(".,;!") for u in urls))[:8]
+# Keep this source pattern in sync with web/player/player.js:CUSTOMER_URL_PATTERN.
+# Extraction grants no network permission: fetch_public still checks every hop.
+CUSTOMER_URL_PATTERN = r"""(?<![\w@.-])(?:https?://[^\s<>"'\]\)]+|(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?::\d{1,5})?(?:[/?#][^\s<>"'\]\)]*)?)(?![\w@-])"""
+CUSTOMER_URL_RE = re.compile(CUSTOMER_URL_PATTERN, re.I | re.ASCII)
+
+
+def _supplied_url(url: str) -> str:
+    url = url.rstrip(".,;!")
+    return url if re.match(r"https?://", url, re.I) else "https://" + url
+
+
+def supplied_urls(question: str, history: list[dict] | None = None, extra: list[str] | None = None) -> list[str]:
+    text = "\n".join([str(m.get("text", "")) for m in (history or []) if m.get("role") == "user"] + [str(question)])
+    texts = [*(value for value in (extra or []) if isinstance(value, str)), text]
+    return list(dict.fromkeys(_supplied_url(match.group()) for text in texts for match in CUSTOMER_URL_RE.finditer(text)))[:8]
 
 
 def _numbers(text: str) -> set[Decimal]:
@@ -165,7 +176,7 @@ def calculate(request: ToolRequest | dict, evidence: list[dict], customer_text: 
     return {"id":did,"kind":"calculation","claim":op.replace("_", " "),"value":f"{rounded} {result_unit}","conditions":qualifier,"truth":"modeled","approved":True,"source":{"ref":did,"locator":formula,"quote":json.dumps(payload,ensure_ascii=False)},"derivation":payload,"provenance":"calculation"}
 
 
-def source_lookup(request: ToolRequest | dict, question: str, history: list[dict], timeout: float = 5.0) -> dict:
+def source_lookup(request: ToolRequest | dict, question: str, history: list[dict], timeout: float = 5.0, *, extra: list[str] | None = None) -> dict:
     """Read explicit customer sources and up to two relevant same-host child pages.
 
     Whole sections preserve table headers/footnotes. Positive query overlap is
@@ -173,14 +184,12 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
     """
     from . import crawl
     request = request if isinstance(request, ToolRequest) else ToolRequest.model_validate(request)
-    allowed = supplied_urls(question, history)
-    url = request.url.strip()
-    if url.startswith("www."):
-        url = "https://" + url
+    allowed = supplied_urls(question, history, extra)
+    url = _supplied_url(request.url.strip())
     if url not in allowed:
         raise ValueError("Provide the exact public website URL you want checked")
     started, deadline = time.monotonic(), time.monotonic() + min(max(float(timeout), .1), 5.0)
-    query = re.sub(r"https?://\S+|www\.\S+", "", request.query or question)
+    query = CUSTOMER_URL_RE.sub("", request.query or question)
     stop = {"the", "and", "for", "are", "what", "which", "this", "that", "with", "from", "you", "your", "can", "could", "please", "check", "tell", "about", "website", "page", "url", "information", "official", "have", "has", "does", "compare", "comparison", "using", "use", "verify", "actually", "provide", "provides", "mention", "mentions", "whether", "details", "specific", "list", "lists", "says", "state", "states", "its"}
     terms = set(re.findall(r"[a-z0-9]{3,}", query.lower())) - stop
     if not terms:
@@ -202,7 +211,7 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
     # A generated search query or a page's city menu cannot supply the buyer's
     # locality. Only their own words (or the explicitly selected city URL) can.
     customer_text = " ".join([str(m.get("text", "")) for m in history if m.get("role") == "user"] + [question])
-    customer_text = re.sub(r"https?://\S+|www\.\S+", "", customer_text, flags=re.I)
+    customer_text = CUSTOMER_URL_RE.sub("", customer_text)
     customer_words = " " + re.sub(r"\W+", " ", customer_text.casefold()).strip() + " "
 
     def in_source_scope(candidate: str, label: str = "") -> bool:

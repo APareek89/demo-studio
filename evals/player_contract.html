@@ -142,6 +142,53 @@ const detail = () => ({ context: player?.context(), currentCitations: host.query
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
+test('Optional intake websites reach planning and remain available across later questions', async () => {
+  const pitches = [];
+  await setup({ voiceMode: false, pitch: async request => { pitches.push(snapshot(request)); return null; } });
+  await click('▶ Start');
+  const sites = host.querySelector('input[aria-label="Websites I can check (optional)"]');
+  assert(sites && sites.placeholder === 'hyundai.com/in/en/find-a-car/creta', 'Optional website field or its bare-domain example is missing');
+  sites.value = 'hyundai.com/in/en/find-a-car/creta, https://example.com/warranty';
+  const input = host.querySelector('.pl-intake .fallback input[aria-label="Your answer"]');
+  input.value = 'I need space for luggage.'; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  const expected = ['https://hyundai.com/in/en/find-a-car/creta', 'https://example.com/warranty'];
+  assert(JSON.stringify(pitches.at(-1)?.profile.customer_urls) === JSON.stringify(expected), 'Intake sites did not reach planning');
+  for (const question of ['What is the warranty?', 'How much luggage fits?', 'What is the ground clearance?']) await type(question);
+  assert(env.calls.length === 3 && env.calls.every(call => JSON.stringify(call.profile.customer_urls) === JSON.stringify(expected)), 'Intake sites were lost on a later question');
+  assert(env.played.filter(text => text === 'What matters to you?').length === 1, 'Optional sites added a spoken intake question');
+});
+test('Intake sites cap at five and later typed and spoken URLs append without duplicates', async () => {
+  await setup({ voiceMode: false }); await click('▶ Start');
+  host.querySelector('input[aria-label="Websites I can check (optional)"]').value = 'one.example, two.example, three.example, four.example, five.example, six.example';
+  await click('Skip, start the demo');
+  assert(player.context().profile.customer_urls.length === 5, 'Skipping intake did not retain its five-site limit');
+  await type('Check one.example and six.example for warranty.');
+  assert(env.calls.at(-1).profile.customer_urls.length === 6, 'Typed sites were duplicated or not appended');
+  host.querySelector('.pl-mic-row .mic').click(); await flush();
+  recentRecognizer().deliver('Check seven.example and eight.example and nine.example for service.'); await flush();
+  const urls = env.calls.at(-1).profile.customer_urls;
+  assert(urls.length === 8 && urls.includes('https://seven.example') && urls.includes('https://eight.example') && !urls.includes('https://nine.example'), 'Spoken sites did not obey the session limit');
+});
+test('Restart clears supplied sites and an email address never becomes lookup permission', async () => {
+  await setup({ voiceMode: false }); await atProof();
+  await type('My email is buyer@example.co.in; check hyundai.com/in/en/find-a-car/creta for warranty.');
+  assert(JSON.stringify(env.calls.at(-1).profile.customer_urls) === JSON.stringify(['https://hyundai.com/in/en/find-a-car/creta']), 'An email was treated as website permission');
+  host.querySelector('button[title="Restart"]').click(); await flush();
+  assert(player.context().profile.customer_urls.length === 0 && host.querySelector('input[aria-label="Websites I can check (optional)"]').value === '', 'A new session inherited old website permission');
+});
+test('Websites submitted during the intake prompt continue without inventing a customer answer', async () => {
+  await setup({ voiceMode: false, hold: text => text === 'What matters to you?' });
+  await click('▶ Start');
+  const sites = host.querySelector('input[aria-label="Websites I can check (optional)"]');
+  sites.value = 'hyundai.com/in/en/find-a-car/creta';
+  sites.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  await finishAudio('What matters to you?');
+  assert(!host.querySelector('.pl-intake:not(.pl-welcome)').classList.contains('open'), 'An early websites-only submission hung the intake');
+  assert(player.context().profile.why === '' && player.context().profile.customer_urls.length === 1, 'Websites became a fabricated customer preference');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(!env.beacons.at(-1).transcript.some(row => row.role === 'user'), 'An empty answer was fabricated in the transcript');
+});
+
 test('Voice mode welcome defaults follow continuous voice and muted automation', async () => {
   await setup({ voiceMode: null });
   assert(!host.querySelector('input[role="switch"]').checked, 'Legacy welcome unexpectedly requests voice');

@@ -298,17 +298,18 @@ flowchart TD
   MODE[&quot;Connect session socket for guide speech&lt;br/&gt;[FUNCTION · startLive / runtime_live.py]&lt;br/&gt;voice on: one capture request; off: mic.set false, no permission prompt&lt;br/&gt;player mic button toggles capture without reconnecting&quot;]:::fn
   INPUT[&quot;Continuous PCM capture + local speech onset&lt;br/&gt;[LIBRARY · live-voice.js / voice-worklet.js]&lt;br/&gt;AEC requested; capture generation owns ready/transcript/error events&quot;]:::data
   STT[&quot;Realtime STT over private session WebSocket&lt;br/&gt;[LIBRARY · runtime_live.py / sarvam_stream.py]&lt;br/&gt;partials stop playback; stable final dispatches one question&quot;]:::data
-  INTAKE[&quot;One needs question; wait for a real reply&lt;br/&gt;[FUNCTION · player.js runIntake]&lt;br/&gt;retain actual customer wording&quot;]:::fn
+  INTAKE[&quot;One needs question; wait for a real reply&lt;br/&gt;[FUNCTION · player.js runIntake]&lt;br/&gt;retain actual customer wording; optional website field, up to 5 URLs&quot;]:::fn
   OVERVIEW[&quot;Grounded overview in the selected voice&lt;br/&gt;[DATA · bundle.runtime.overview]&lt;br/&gt;10–15 second target measured from generated audio&quot;]:::data
   PERSONALIZE[&quot;Explore graph node → pitch.plan_pitch&lt;br/&gt;[AGENT · Gemini → Claude → Runware]&lt;br/&gt;order reviewed slides; explicit priority revision may revisit selected seen proof&quot;]:::agent
   ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / player.js]&lt;br/&gt;initial pitch: first unseen fundamental before three-proof limit&lt;br/&gt;player fallback mirrors one-stop move; refinements/revisits unchanged&quot;]:::fn
   PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching callout with each line&lt;br/&gt;speak stop-closing checkin and continue without a wait&quot;]:::fn
   STOP[&quot;Stop local audio and cancel old turn/delivery&lt;br/&gt;[FUNCTION · live-voice.js / runtime_live.py]&lt;br/&gt;save return point; discard stale turn/utterance/generation output&quot;]:::fn
   ACK[&quot;Short acknowledgement when useful&lt;br/&gt;[DATA · selected-voice filler]&lt;br/&gt;retrieval starts concurrently; filler is not useful-answer latency&quot;]:::data
+  SITES[&quot;Session customer sites&lt;br/&gt;[DATA · profile + current turn + runtime checkpoint]&lt;br/&gt;deduplicate up to 8; later supplied URLs retained&lt;br/&gt;default sites off; opt-in adds enabled product URL sources only&quot;]:::data
   RETRIEVE[&quot;Retrieve pinned approved evidence&lt;br/&gt;[FUNCTION · knowledge.retrieve]&lt;br/&gt;BM25 + local ranking; request-local universal scope; pinned condition dependencies&quot;]:::fn
-  REASON[&quot;Answer, clarify, or request bounded tool&lt;br/&gt;[AGENT · runtime_graph.reason]&lt;br/&gt;history + explicit profile + evidence + tool results&quot;]:::agent
+  REASON[&quot;Answer, clarify, or request bounded tool&lt;br/&gt;[AGENT · runtime_graph.reason]&lt;br/&gt;history + explicit profile + evidence + CUSTOMER_URLS + tool results&lt;br/&gt;empty evidence: one lookup before model; first decline: lookup before validation&quot;]:::agent
   CHOICE{&quot;Decision action?&lt;br/&gt;[FUNCTION · after_reason]&quot;}:::dec
-  TOOLS[&quot;Calculator or customer-selected public URL&lt;br/&gt;[FUNCTION · runtime_tools.py]&lt;br/&gt;exact operand units/basis + formula; safe source pages + whole table passages&lt;br/&gt;max 2 tool rounds / 4 calls; graph deadline 12 seconds&quot;]:::fn
+  TOOLS[&quot;Calculator or allowed session customer site&lt;br/&gt;[FUNCTION · runtime_tools.py]&lt;br/&gt;exact operand units/basis + formula; safe scoped pages + whole table passages&lt;br/&gt;live W facts require host attribution; never enter approved registry&lt;br/&gt;max 2 tool rounds / 4 calls; graph deadline 12 seconds&quot;]:::fn
   VALIDATE[&quot;Validate sentences; retain supported portion&lt;br/&gt;[FUNCTION · runtime_graph.validate]&lt;br/&gt;grounding → everyday substitutions → rendered word cap&lt;br/&gt;unmapped blocked term: technical_term feedback; technical requests bypass register only&quot;]:::fn
   REPAIR[&quot;One optional composition repair&lt;br/&gt;[AGENT · runtime_graph._repair_composition]&lt;br/&gt;same approved evidence + precise rejection feedback; no tools or CTA&lt;br/&gt;only if at least 3 seconds remain inside the same 12-second deadline&quot;]:::agent
   RECHECK[&quot;Revalidate repaired sentences&lt;br/&gt;[FUNCTION · validate_decision]&lt;br/&gt;accept fully checked useful content; partial repairs retain rejection telemetry&lt;br/&gt;otherwise retain original supported result; cancellation always wins&quot;]:::fn
@@ -325,6 +326,8 @@ flowchart TD
   START --&gt; INTAKE
   START --&gt; MODE
   MODE -- &quot;voice on; capture permission granted&quot; --&gt; INPUT --&gt; STT
+  INTAKE --&gt; SITES
+  SITES -. &quot;allowed URLs; same scope/network guards&quot; .-&gt; REASON
   INTAKE --&gt; OVERVIEW
   INTAKE --&gt; PERSONALIZE --&gt; ROUTE
   OVERVIEW --&gt; ROUTE --&gt; PLAY
@@ -332,7 +335,7 @@ flowchart TD
   PLAY -- &quot;typed interruption&quot; --&gt; STOP
   STOP --&gt; ACK
   STOP --&gt; RETRIEVE --&gt; REASON --&gt; CHOICE
-  CHOICE -- &quot;tools within budget&quot; --&gt; TOOLS --&gt; REASON
+  CHOICE -- &quot;tools, or first decline with unused customer lookup; within budget&quot; --&gt; TOOLS --&gt; REASON
   CHOICE -- &quot;answer or clarification&quot; --&gt; VALIDATE --&gt; PLAN
   VALIDATE -- &quot;empty or rejected substantive draft; budget remains&quot; --&gt; REPAIR --&gt; RECHECK --&gt; PLAN
   REASON -- &quot;deadline or unavailable&quot; --&gt; FAIL --&gt; PLAN
@@ -422,11 +425,11 @@ config:
 graph TD;
 	__start__([&lt;p&gt;__start__&lt;/p&gt;]):::first
 	retrieve(retrieve)
-	reason(reason)
-	tools(tools)
+	reason[&quot;reason&lt;br/&gt;[AGENT + FUNCTION · session CUSTOMER_URLS]&lt;br/&gt;empty evidence: bounded lookup before model; first decline: one lookup before validation&quot;]
+	tools[&quot;tools&lt;br/&gt;[FUNCTION · calculator / allowed customer-site lookup]&lt;br/&gt;same scope, network and budget gates; attributed turn-scoped W facts&quot;]
 	validate[&quot;validate&lt;br/&gt;[FUNCTION · grounded rows → plain terms → word cap]&lt;br/&gt;technical_term feedback uses existing bounded repair&quot;]
 	explore(explore)
-	delivery_plan[&quot;delivery_plan&lt;br/&gt;[DATA · result includes plain_language_substitutions]&lt;br/&gt;session checkpoint retains input_mode; capture stays outside graph&quot;]
+	delivery_plan[&quot;delivery_plan&lt;br/&gt;[DATA · result includes plain_language_substitutions]&lt;br/&gt;session checkpoint retains input_mode and customer_urls; capture stays outside graph&quot;]
 	__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last
 	__start__ -.-&gt; explore;
 	__start__ -.-&gt; retrieve;

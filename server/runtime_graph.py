@@ -23,7 +23,7 @@ from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
 from .llm import runtime
 from .runtime_state import DeliveryPlan, RuntimeState, SpokenClaim, TurnDecision, checkpoint, claim_turn, previous_state, safe_id
-from .runtime_tools import _bound_unit, _numbers, calculate, source_lookup, supplied_urls
+from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, calculate, source_lookup, supplied_urls
 from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
 from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment, transmission_condition_dependencies
 from .runtime_acts import allowed_act_ids, render_act
@@ -118,6 +118,7 @@ Use action=clarify for missing inputs or a missing URL, with ONE direct question
 the request in an answer or promise what an unvisited website will contain.
 Results marked estimates must be called illustrative; an EMI is not a lender quote. Retain all assumptions.
 Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
+If the evidence does not answer the question and CUSTOMER_URLS is non-empty, request source_lookup on the most relevant customer URL before declining. Never claim a page was checked unless a live_web fact from it is cited.
 source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
 When required_page_verification is present, answer what the retrieved website passages actually say. If you use
 stored facts instead, explicitly separate them from what could be verified on the requested page.
@@ -969,6 +970,39 @@ def _unsupported_file_request(question: str) -> bool:
     return bool(re.match(r"^\s*(?:please\s+)?(?:(?:can|could|would)\s+you\s+)?(?:use|fetch|read|check|open)\s+(?:the\s+)?(?:URL\s+|file\s+)?file://\S+",question,re.I))
 
 
+def _lookup_interaction(state: RuntimeState) -> bool:
+    question = state["question"].strip()
+    if not question or re.fullmatch(r"(?:hi|hello|hey|yes|no|okay|ok|thanks(?: you)?|thank you|please continue|continue(?: the demo)?|carry on|next|go on|goodbye|bye|stop|pause|resume|skip)[.!?\s]*", question, re.I):
+        return True
+    if re.search(r"\b(?:don't|do not|no need to)\s+(?:check|fetch|look up|verify|use)\b", question, re.I) or _unsupported_file_request(question):
+        return True
+    decision = state.get("decision", {})
+    if decision.get("action") == "clarify" or decision.get("clarification_act"):
+        return True
+    # A request for missing customer inputs or a personal fit check needs their
+    # reply, not a website. Verification limits may still need source evidence.
+    return any(isinstance(row.get("interaction"), dict) and row["interaction"].get("mode") in {"input_request", "fit_check"}
+               for row in decision.get("sentences", []))
+
+
+def _automatic_lookup(state: RuntimeState, *, decline: bool = False) -> dict | None:
+    urls = supplied_urls(state.get("question", ""), state.get("history", []), state.get("customer_urls", []))
+    if not urls or state.get("tool_rounds", 0) != 0 or state.get("tool_count", 0) >= 4 or _lookup_interaction(state):
+        return None
+    if any(result.get("tool") == "source_lookup" for result in state.get("tool_results", [])):
+        return None
+    if decline:
+        if state.get("decision", {}).get("answered") is not False:
+            return None
+    elif state.get("evidence"):
+        return None
+    demo = store.read_json(state["demo_id"], "demo.json") or {}
+    product = demo.get("product", {})
+    tokens = set(re.findall(r"[a-z0-9]{3,}", str(product.get("name") or demo.get("name") or "").lower()))
+    url = next((url for url in urls if any(token in (urlsplit(url).hostname or "").lower() for token in tokens)), urls[0])
+    return {"tool": "source_lookup", "url": url, "query": CUSTOMER_URL_RE.sub("", state["question"]).strip()}
+
+
 async def reason(state: RuntimeState) -> dict:
     started = time.monotonic()
     left = state["control"].remaining()
@@ -984,9 +1018,13 @@ async def reason(state: RuntimeState) -> dict:
         # Deterministic intent dispatch saves an LLM round and prevents a stored
         # assertion from standing in for an explicitly requested page check.
         query=state["question"]
-        for url in required:query=query.replace(url,"")
+        query=CUSTOMER_URL_RE.sub("",query)
         return {"decision":TurnDecision(action="tools",tool_calls=[{"tool":"source_lookup","url":pending[0],"query":query.strip()}]).model_dump(),
                 "timings":{**state.get("timings",{}),"reason_ms":state.get("timings",{}).get("reason_ms",0)+_elapsed(started)}}
+    automatic = _automatic_lookup(state)
+    if automatic:
+        return {"decision": TurnDecision(action="tools", tool_calls=[automatic]).model_dump(),
+                "timings": {**state.get("timings", {}), "reason_ms": state.get("timings", {}).get("reason_ms", 0) + _elapsed(started)}}
     demo = store.load(state["demo_id"])
     plan = store.read_json(state["demo_id"], "plan.json") or {}
     settings = demo.get("settings", {})
@@ -995,7 +1033,7 @@ async def reason(state: RuntimeState) -> dict:
                "mandatory_dependencies":_dependency_payload(state.get("evidence",[]),state.get("requested_scope")),
                "tools_so_far":state.get("tool_results", []),"tool_errors":state.get("errors", []),
                "tools_remaining":max(0,4-state.get("tool_count",0)) if state.get("tool_rounds",0)<2 else 0,
-               "CUSTOMER_URLS":supplied_urls(state["question"],state.get("history", [])),
+               "CUSTOMER_URLS":supplied_urls(state["question"],state.get("history", []),state.get("customer_urls", [])),
                "required_page_verification":required,
                "allowed_interactions":allowed_act_ids("\n".join([str(m.get("text","")) for m in state.get("history",[]) if m.get("role")=="user"]+[state["question"]])),
                "guide":plan.get("voice", {}),"product":demo.get("product", {}),"ctas":plan.get("ctas", []),
@@ -1027,7 +1065,9 @@ async def reason(state: RuntimeState) -> dict:
 
 
 def after_reason(state: RuntimeState) -> str:
-    return "tools" if (state.get("decision",{}).get("action")=="tools" and state.get("tool_rounds",0)<2 and state.get("tool_count",0)<4) else "validate"
+    if state.get("decision",{}).get("action")=="tools" and state.get("tool_rounds",0)<2 and state.get("tool_count",0)<4:
+        return "tools"
+    return "tools" if _automatic_lookup(state, decline=True) else "validate"
 
 
 async def tools_node(state: RuntimeState) -> dict:
@@ -1035,7 +1075,11 @@ async def tools_node(state: RuntimeState) -> dict:
     evidence, results, errors = list(state.get("evidence",[])), list(state.get("tool_results",[])), list(state.get("errors",[]))
     count = state.get("tool_count",0)
     customer_text = "\n".join([str(m.get("text","")) for m in state.get("history",[]) if m.get("role")=="user"] + [state["question"]])
-    for raw in state["decision"].get("tool_calls",[])[:4-count]:
+    requests = state["decision"].get("tool_calls", []) if state["decision"].get("action") == "tools" else []
+    if not requests:
+        automatic = _automatic_lookup(state, decline=True)
+        requests = [automatic] if automatic else []
+    for raw in requests[:4-count]:
         count += 1
         try:
             left = state["control"].remaining()
@@ -1043,10 +1087,11 @@ async def tools_node(state: RuntimeState) -> dict:
                 f = calculate(raw,evidence,customer_text)
                 result = {"tool":"calculator","evidence":[f]}
             elif raw.get("tool") == "source_lookup":
-                result = await asyncio.wait_for(asyncio.to_thread(source_lookup,raw,state["question"],state.get("history",[]),min(5.0,left)),timeout=min(5.0,left))
+                result = await asyncio.wait_for(asyncio.to_thread(source_lookup,raw,state["question"],state.get("history",[]),min(5.0,left),extra=state.get("customer_urls",[])),timeout=min(5.0,left))
                 result["requested_url"]=raw.get("url","")
             else:
                 raise ValueError("Unknown tool")
+            state["control"].remaining()
             evidence += [f for f in result.get("evidence",[]) if f["id"] not in {e["id"] for e in evidence}]
             results.append(result)
         except InterruptedError:
@@ -1170,7 +1215,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         if kind=="fact" and not ids:
             reject("uncited_fact"); continue
         if facts:
-            page_claim=bool(re.search(r"\b(?:page|website|webpage)\b.{0,50}\b(?:lists?|shows?|states?|confirms?|verif\w*|reports?|says?|mentions?|provides?)\b|\baccording to\b.{0,50}\b(?:page|website|webpage)\b",text,re.I))
+            page_claim=bool(re.search(r"\b(?:page|website|webpage)\b.{0,50}\b(?:lists?|shows?|states?|confirms?|verif\w*|reports?|says?|mentions?|provides?)\b|\b(?:according to|as per)\b.{0,50}\b(?:page|website|webpage|site)\b",text,re.I))
             live=[f for f in facts if f.get("provenance")=="live_web"]
             specific_page=bool(re.search(r"\b(?:provided|supplied|linked|highlights)\b.{0,25}\b(?:page|website|webpage)\b",text,re.I))
             requested_urls={url.split("#")[0].rstrip("/") for url in supplied_urls(customer_text or question,[])}
@@ -1581,10 +1626,19 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
         history = list(previous.get("history") or [])
         if previous.get("question"):
             history.append({"role":"user","text":previous["question"]})
-    profile = {**(previous.get("profile") or {}), **(body.get("profile") or {})}
+    previous_profile, incoming_profile = previous.get("profile") or {}, body.get("profile") or {}
+    profile = {**previous_profile, **incoming_profile}
+    demo = store.read_json(demo_id, "demo.json") or {}
+    defaults = [source.get("url", "") for source in demo.get("sources", [])
+                if source.get("kind") == "url" and source.get("role") == "product" and source.get("use_in_demo", True)
+                and not source.get("crawl_parent") and source.get("crawl_active", True)] if demo.get("settings", {}).get("runtime_default_sites") == "on" else []
+    extras = [value for values in (previous.get("customer_urls", []), previous_profile.get("customer_urls", []), incoming_profile.get("customer_urls", []), defaults)
+              if isinstance(values, list) for value in values]
+    customer_urls = supplied_urls(str(body.get("question") or ""), history, extras)
+    profile["customer_urls"] = customer_urls
     state: RuntimeState = {"demo_id":demo_id,"session_id":sid,"turn_id":tid,"kind":kind,"question":str(body.get("question") or "")[:4000],
              "input_mode":body.get("input_mode") if body.get("input_mode") in ("voice", "text") else previous.get("input_mode"),
-             "profile":profile,"history":history[-16:],"slide_id":body.get("slide_id"),"refine":kind=="explore" and body.get("refine") is True,
+             "profile":profile,"customer_urls":customer_urls,"history":history[-16:],"slide_id":body.get("slide_id"),"refine":kind=="explore" and body.get("refine") is True,
              "snapshot_id":previous.get("snapshot_id") or body.get("snapshot_id") or bundle.get("knowledge_snapshot_id") or "",
              "demo_version":previous.get("demo_version") if previous.get("demo_version") is not None else body.get("demo_version",bundle.get("version")),
              "plan_revision":int(previous.get("plan_revision") or 0),"seen_segments":body.get("seen_segments") or [],

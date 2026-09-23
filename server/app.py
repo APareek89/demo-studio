@@ -148,6 +148,9 @@ def duplicate(demo_id: str):
 async def patch_demo(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     body = await req.json()
+    settings = body.get("settings")
+    if isinstance(settings, dict) and "runtime_default_sites" in settings and settings["runtime_default_sites"] not in ("off", "on"):
+        raise HTTPException(400, "runtime_default_sites must be off or on")
 
     def fn(d):
         if "name" in body:
@@ -155,7 +158,7 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images", "faq_questions", "intro_video")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images", "faq_questions", "intro_video", "runtime_default_sites")}
             if "languages" in allowed:
                 allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
                 allowed["language"] = allowed["languages"][0]

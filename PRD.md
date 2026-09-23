@@ -69,6 +69,10 @@ session resume after refresh and multi-worker runtime ownership.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →
   validates → produces a delivery plan. Selected-voice streaming happens outside graph replay. Tools share
   two rounds/four calls and a 12-second foreground reasoning budget; failures are explicit.
+- Customer-supplied websites from optional intake or later turns remain available for session-scoped
+  lookup. With no evidence, or a first decline before any lookup, check one relevant supplied site within
+  the existing budget; attribute live facts and keep them outside the registry. Default product sites
+  are opt-in and use only enabled product URL sources; the setting defaults off.
 - Explore plays a grounded, measured 10–15-second overview while the LLM orders unseen slides and
   personalizes spoken framing. Explicit corrections affect the next safe boundary. The guide's
   clarifications wait; answers and declines allow three seconds for a reply, then resume narration.
