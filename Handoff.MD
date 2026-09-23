@@ -2,6 +2,8 @@
 
 ## Sales Trainer flow — 23 September 2026
 
+**Late orchestrator steering:** received after WP9 `b17014c`. The restored audit remains identical to `f62ef02`; WP2 §2.3 was checked against its exact verbatim blocks, mapped modifications, SIGNPOSTS and skipped items with no mismatch. WP1's wiring/mock/checklist is verified. Three unchanged input documents were mistakenly included in WP9 and were returned to untracked status without deleting their disk copies: the dated brief, core-flow explanation and sales-trainer proposal. `refine.MD` was edited for the required implementation log and remains tracked. Open question C2 there asks Claude to confirm two WP9 schema/Planner wording reconciliations that preceded the stricter exact-wording instruction. No further code or prompt edits accompany this correction.
+
 Implementation is complete on `codex/sales-trainer-flow`, in the brief's required order. Coach owns the reviewed category playbook; Planner binds its stops, evidence and word budgets; Author writes the speech. Slides support two pictures and explicit illustration proxies. Runtime adds plain-language answers, continuous check-ins with a three-second post-answer window, a persistent Voice mode choice and bounded lookup of customer-supplied websites. Six Align approvals, grounding and immutable publication boundaries remain intact.
 
 **Implementation checkpoints:** WP1 `f921305` → WP2 `5f2f8a4` → WP3 `21fa4ea` → WP4 `c7678b7` → WP6 `0b80ca7` → WP7 `6a498cd` → WP8 `906cfec` → WP5 `ab456d8`. WP9 closes the docs and reconciles the final D1 prompt/schema wording; the detailed dated checkpoints below retain their original implementation and verification state.

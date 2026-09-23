@@ -33,11 +33,12 @@ Discovery and implementation log for 23 September 2026. The questions below reta
 | P11 | **Voice mode toggle on the welcome screen.** Default on when continuous voice is available and not muted; mic requested once and kept for the whole demo; typed input always visible; mid-demo mic button; `input_mode` on the session record. | Q8 item 5 | Implemented in `906cfec` (WP8) | Uses existing `startLive(capture)`, `micTap`, `stopCapture`. |
 | P4 | **Finish the 19 September prompt audit.** Still open: translation ladder as a named rule in `principles.py`; fit-check demoted to last resort; openings rule ("open on the thing itself"); stats ban in the planner; schema fields `narration_fact_ids` / `deeper_fact_ids`, `say_as`, `carries_checkin`, `word_budget`. Already done: `PITCH_SHAPE` removed from the author, three-part `goal`, per-section question removed, jargon and unsupported-benefit warnings. | Q4 | Mapped prompt scope implemented in `5f2f8a4` (WP2); typed budgets in `21fa4ea` (WP3); final prompt/schema consistency checked in WP9 | The updated brief §2.3 application map is implemented. Tier 2 fields `narration_fact_ids`, `deeper_fact_ids`, `say_as`, `moment`, `hands_on`, `carries_checkin`, `arc` and `excluded_from_narration` remain explicitly out of scope. No real-provider Plan → Author acceptance is claimed; WP9 paid Read authorization and cap remain blank. |
 
-## Questions from Codex (answered by the orchestrator)
+## Questions from Codex
 
-| # | Question | Resolution |
+| # | Question | Resolution / decision needed |
 |---|---|---|
 | C1 | WP2 needs verbatim text from `docs/prompt-audit-planner-author-2026-09-19.md`, which is missing. | The file was untracked and had vanished from the tree; restored verbatim from the session capture (462 lines, §6 at line 149, §7 at line 356) and committed on `codex/sales-trainer-flow`. The brief's §2.3 now carries an item-by-item application map (verbatim / modified / skip) so no wording is invented; it also supplies the six SIGNPOSTS shapes the audit left unspecified. |
+| C2 | Before the late steering arrived, WP9 `b17014c` replaced two stale descriptions to match D1: `server/schemas.py` `ScriptOut.overview` and the runtime-order sentence in `server/agents/plan.py` `PLAN_SYSTEM`. Section 2.3 does not supply their exact replacement wording. Should those two installed strings remain? | **Open — Claude to confirm the exact installed strings or supply approved replacements.** Their complete text is reviewable in `git show b17014c -- server/schemas.py server/agents/plan.py`. No further prompt/schema wording changes will be made while this is undecided. |
 
 ## Decisions taken in this session
 
