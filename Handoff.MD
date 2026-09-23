@@ -1,5 +1,23 @@
 # Handoff.MD — Demo Studio
 
+## Sales Trainer flow — 23 September 2026
+
+Implementation is complete on `codex/sales-trainer-flow`, in the brief's required order. Coach owns the reviewed category playbook; Planner binds its stops, evidence and word budgets; Author writes the speech. Slides support two pictures and explicit illustration proxies. Runtime adds plain-language answers, continuous check-ins with a three-second post-answer window, a persistent Voice mode choice and bounded lookup of customer-supplied websites. Six Align approvals, grounding and immutable publication boundaries remain intact.
+
+**Implementation checkpoints:** WP1 `f921305` → WP2 `5f2f8a4` → WP3 `21fa4ea` → WP4 `c7678b7` → WP6 `0b80ca7` → WP7 `6a498cd` → WP8 `906cfec` → WP5 `ab456d8`. WP9 closes the docs and reconciles the final D1 prompt/schema wording; the detailed dated checkpoints below retain their original implementation and verification state.
+
+**Final verification:** required deck 364/364, acceptance 24/24 and both smoke phases pass. The final sweep covers Coach 20/20, Plan/playbook 15/15, narrative 12/12, generation 56/56, speech style 30/30, Align 51/51, runtime graph 130/130 and repair 106/106. Plain language passes 23/23, including exact live-host attribution before the final cap; sites pass 18/18, live voice 68/68 and actual browser contracts 70/70. The complete new-contract counts are in `Loop.MD`; earlier per-package receipts remain below. Python compilation, changed JavaScript syntax and diff checks pass, with zero outbound attempts from isolated backend checks. Mock/fake-provider checks and browser state tests do not establish fresh model-writing quality, public-site availability, physical-microphone behavior or acoustic quality.
+
+**Paid Read skipped:** the brief's authorization and cap fields remain blank. This implementation created no trial demo, paid Read, voice render or trial output artifacts and did not write the protected paths. It has not been pushed or deployed or restarted the existing server on port 8896. Loop stays off.
+
+**Concurrent live activity:** SHA comparison of all 7,764 baseline protected files found five changes and two additions, with no missing files or other changes. The published bundle, knowledge snapshot and original session hashes remain unchanged. The seven exceptions are:
+
+- Added `data/demos/dm_41513908/audio/43e4a0bd307bad80447a.wav` and `data/demos/dm_41513908/audio/ff38322746b7278ac818.wav`.
+- Changed `data/demos/dm_41513908/RUN.md`, `data/demos/dm_41513908/trace.jsonl`, `data/demos/dm_41513908/understanding.json` and `data/demos/dm_41513908/usage.jsonl`.
+- Changed `output/deploy-2026-09-23/local-server-final.log`.
+
+Their 16:15–16:17 modification times and the existing server log show concurrent live activity outside this implementation's isolated runs. These files were not restored over that activity; the whole protected tree is not claimed unchanged.
+
 ## Sales Trainer flow — 23 September 2026 · WP5
 
 Branch `codex/sales-trainer-flow`, following WP8 `906cfec`; the brief places WP5 here. Customers can add optional websites under the intake text field without another spoken intake question. The client retains up to five parsed sites and appends later customer-supplied URLs. The server merges those with the prior checkpoint and current turn, deduplicates to eight and persists `customer_urls` for the session.
@@ -116,9 +134,14 @@ Python ASTs and executable token sequences match baseline `ba448ff` for all 14 P
 
 ## Decisions and invariants
 
-- 23 September D4: allow up to two pictures per slide with line-driven emphasis and picture-owned callouts. When literal audited media is unavailable, use the closest trusted tagged image or hero as an illustration with a cited label; it is never visual proof. This replaces the single-picture slide limit, not the grounding or pixel-audit rules.
-- 23 September D3: Planner allocates typed segment word budgets against `settings.pitch_minutes`; Author validates those allocations and the shared role ceilings. The ceilings gain eight words for natural joins, closing remains 45, and route tolerance is the configured word target plus 40. Reject fixed per-role caps as the sole pacing control and reject word-count estimates as measured audio duration.
-- 23 September D1–D2: Coach owns the reviewed category order, coverage, three USPs and evidence gaps; Planner maps evidence, pictures, segment briefs and word budgets to it; Author writes the speech. Fundamentals precede delighters. WP1 introduced the stage and review boundary; WP2 binds Plan to it. Reject picture availability as the owner of story order.
+- D1: open on category fundamentals in reviewed playbook order and everyday words, with no decision frame or digits in the first spoken line; delighters follow fundamentals, replacing the historical supported-standout opening.
+- D2: Coach owns story order, coverage, three USPs and gaps; Planner owns evidence, pictures, briefs and budgets; Author owns speech. Reject picture availability as the owner of story order.
+- D3: Planner allocates typed budgets against pitch length; Author enforces them and the role ceilings raised by eight words. Recorded duration remains distinct from word estimates.
+- D4: allow up to two pictures with picture-owned labels; a nearby tagged image or hero may illustrate a cited fact, visibly marked illustration and never counted as proof.
+- D5: retain customer-supplied sites for bounded session lookup when evidence is missing; attribute live facts and keep them turn-scoped. Default product sites remain opt-in and off by default.
+- D6: everyday answers substitute reviewed neutral terms or receive precise repair feedback; explicit technical questions and expert audiences may retain cited exact terms without bypassing grounding.
+- D7: narration and check-ins never wait; answers and declines resume after three silent seconds unless the customer responds. Guide clarifications, closing, CTA and lead choices remain explicit.
+- D8: welcome Voice mode chooses continuous capture or text input without a microphone prompt; typing stays available, capture toggles preserve the speech socket, and sessions retain the mode.
 - Historical 19 September ownership replaced by D2 above: Planner previously owned story order, evidence emphasis and literal image selection; Author owned final conversation and delivery. Grounding, independent proof stops, locked voice and Align still stand. Relaxed grounding was rejected as a way to improve warmth. The one paid caption stress authorization was completed and is not renewed.
 - Anand approved the [expanded runtime plan](docs/plan-runtime-experience-2026-09-19.md) and official Creta PDF/relevant images. Earlier UI-only/no-streaming restrictions are historical.
 - Keep Atelier/cinematic slides. Open with category fundamentals in everyday language and reviewed playbook order, then delighters; no decision frame or digits in the first spoken line. This replaces the historical sourced feature-led opening. Keep the cheerful helpful persona. The guide's clarifications wait; answers and declines resume after three seconds of silence. Narration speaks stop-closing statements without pausing; closing, CTA and lead choices remain explicit.

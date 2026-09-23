@@ -1,6 +1,6 @@
 # Demo build and live conversation
 
-This describes the implementation on `codex/sales-trainer-flow`, through WP1–WP8 in the brief's specified order, with WP5 following WP8; WP9 closure remains outstanding. [Actual Creta acceptance](CRETA_ACCEPTANCE.md) and the [issue log](issues/2026-09-19-creta.md) describe the earlier published demo and separate measured outcomes from implementation; the new build flow has not rebuilt that demo or established acoustic quality.
+This describes the implementation on `codex/sales-trainer-flow`, with all work packages implemented in the brief's specified order, including WP5 after WP8 and the final D1 prompt reconciliation. The paid Read is skipped because authorization and cap remain blank. [Actual Creta acceptance](CRETA_ACCEPTANCE.md) and the [issue log](issues/2026-09-19-creta.md) describe the earlier published demo and separate measured outcomes from implementation; the new build flow has not rebuilt that demo or established acoustic quality.
 
 ## Build: prepare the knowledge and the reusable demo
 

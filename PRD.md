@@ -51,34 +51,25 @@ Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
 measurement, payments, 3D product visuals (removed 2026-09-18), unvalidated LLM-token speech,
 session resume after refresh and multi-worker runtime ownership.
 
-## Approved runtime upgrade — 2026-09-19
-- Keep Atelier and the cinematic slides. Open with the category's fundamentals in everyday language,
+## Approved runtime upgrade — 2026-09-19; D1–D8 reconciled 2026-09-23
+
+- D1: Keep Atelier and the cinematic slides. Open with the category's fundamentals in everyday language,
   in reviewed playbook order; delighters come after fundamentals. No decision frame or digits in the
   first spoken line. This replaces the earlier supported-standout opening. Use a warm, cheerful guide
   with restrained pace and punctuation, never invented SSML/emotion controls.
 - Initial Explore plans lead with the first unseen fundamental proof stop before the three-proof
   limit; the initial player fallback mirrors that one-stop move. Seen filtering, refinements and
   explicit revisits retain their existing behavior. The fundamental flag reaches the runtime library.
-- Slides allow up to two pictures. Where no literal audited picture is available, a nearby tagged
-  picture or the hero may illustrate a cited fact; mark it **illustration** and never count it as proof.
-- Welcome **Voice mode** defaults on only for continuous-voice demos without `?mute=1`. On requests
-  microphone access once for continuous listening; off keeps streamed guide speech without a microphone
-  prompt. The player mic button changes capture without reconnecting, and typing stays available in both
-  modes. Save `input_mode` and preserve each turn's actual input source for latency cohorts. Speech onset
-  cancels local audio; session, turn, utterance and capture-generation ownership reject stale output.
+- D4: slides allow up to two pictures; when no literal audited picture is available, use a nearby tagged image or hero with a cited label, mark it **illustration**, and never count it as proof.
+- D8: welcome **Voice mode** defaults on only for continuous-voice demos without `?mute=1`; on requests capture once, off keeps streamed speech without a microphone prompt, toggles never reconnect, and typing stays available. Save `input_mode`; actual turn source controls cohorts and ownership rejects stale output.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →
   validates → produces a delivery plan. Selected-voice streaming happens outside graph replay. Tools share
   two rounds/four calls and a 12-second foreground reasoning budget; failures are explicit.
-- Customer-supplied websites from optional intake or later turns remain available for session-scoped
-  lookup. With no evidence, or a first decline before any lookup, check one relevant supplied site within
-  the existing budget; attribute live facts and keep them outside the registry. Default product sites
-  are opt-in and use only enabled product URL sources; the setting defaults off.
+- D5: customer-supplied websites persist for bounded session lookup when evidence is absent or a first decline needs checking; attribute live facts and keep them outside the registry. Default sites use only enabled product URL sources and remain off unless explicitly enabled.
+- D6: everyday runtime answers use reviewed neutral substitutions for blocked engineering terms or trigger repair; common terms pass, while explicit technical requests and expert audiences may retain cited exact names. Grounding still applies.
 - Explore plays a grounded, measured 10–15-second overview while the LLM orders unseen slides and
-  personalizes spoken framing. Explicit corrections affect the next safe boundary. The guide's
-  clarifications wait; answers and declines allow three seconds for a reply, then resume narration.
-- Stop-closing check-ins are short statements and never pause narration. Speech onset, typing or a
-  chip choice cancels the post-answer timer. Automatic resumption keeps the saved position, using a return filler
-  only when its recorded clip exists. Closing, CTA and lead choices remain explicit customer actions.
+  personalizes spoken framing. Explicit corrections affect the next safe boundary.
+- D7: stop-closing check-ins never pause narration; answers and declines resume after three seconds of silence, using a recorded return clip or silence. Customer speech, typing or a chip cancels the timer; guide clarifications, closing, CTA and lead choices still wait.
 - Crawl only the intended model/market and relevant policies; retain page/table context and visible gaps.
   Uploaded documents win genuine same-scope conflicts. Immutable evidence IDs and published snapshots
   preserve old demos. Semantic relevance never proves a claim.

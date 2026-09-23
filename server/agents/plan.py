@@ -63,8 +63,8 @@ buyer's nouns — "The seat you'll sit in every day" — never a category label 
   1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling.
      No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1).
   1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question.
-  role=proof — GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order. One area per segment. The
-     runtime plays the buyer's strongest signal first, so each must stand alone.
+  role=proof — GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order. One area per segment.
+     The initial runtime route leads with the first unseen fundamental, then follows the buyer’s strongest signal; later refinements retain the buyer’s requested order, so each proof must stand alone.
   1 × role=features — a few more things, one sentence each.
   1 × role=establish — variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with
      where each gets settled (test drive / dealer / a document the owner can upload).

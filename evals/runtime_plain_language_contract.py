@@ -165,6 +165,88 @@ class PlainLanguageContract(unittest.TestCase):
         self.assertEqual(result["plain_language_substitutions"], [])
         self.assertNotIn("IVT", result["answer"])
 
+    def test_live_hostname_stays_exact_while_its_claim_is_plain(self):
+        evidence = [fact("ADAS is available.")]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})
+        result, errors = rg.validate_decision(decision(evidence[0]["value"]), evidence, "What driver assistance is listed?")
+        self.assertEqual(errors, [])
+        self.assertEqual(result["answer"], "According to adas.example, driver-assistance features is available.")
+        self.assertEqual(result["plain_language_substitutions"], [("adas", "driver-assistance features")])
+        self.assertEqual(result["fact_ids"], ["F1"])
+        self.assertEqual(result["facts"][0]["source"]["ref"], "https://adas.example/car")
+
+    def test_live_hostname_is_neither_product_claim_nor_unmapped_jargon(self):
+        evidence = [fact("Six airbags are available.")]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})
+        with patch.dict(plain_terms.JARGON, {"adas": None}):
+            result, errors = rg.validate_decision(decision(evidence[0]["value"]), evidence, "What safety equipment is listed?")
+        self.assertEqual(errors, [])
+        self.assertEqual(result["answer"], "According to adas.example, six airbags are available.")
+        self.assertTrue(result["answered"])
+        self.assertEqual(result["plain_language_substitutions"], [])
+
+    def test_model_leading_cited_hostname_is_protected_and_normalized(self):
+        evidence = [fact("ADAS is available.")]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})
+        for prefix in ("According to adas.example, ", "According to ADAS.EXAMPLE, ", "As per adas.example, "):
+            result, errors = rg.validate_decision(decision(prefix + evidence[0]["value"]), evidence, "What driver assistance is listed?")
+            self.assertEqual(errors, [])
+            self.assertEqual(result["answer"], "According to adas.example, driver-assistance features is available.")
+            self.assertEqual(result["plain_language_substitutions"], [("adas", "driver-assistance features")])
+
+    def test_model_leading_uncited_hostname_is_rejected_before_substitution(self):
+        evidence = [fact("ADAS is available.")]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})
+        for prefix in ("According to wrong.example, ", "According to adas.example and wrong.example, ", "As per wrong.example's page, "):
+            with patch.object(plain_terms, "substitute", wraps=plain_terms.substitute) as substitute:
+                result, errors = rg.validate_decision(decision(prefix + evidence[0]["value"]), evidence, "What driver assistance is listed?")
+            self.assertIn("unverified_web_attribution", errors)
+            self.assertFalse(result["answered"])
+            self.assertFalse(substitute.called)
+        evidence[0]["provenance"] = "uploaded"
+        result, errors = rg.validate_decision(decision("According to adas.example, ADAS is available."), evidence, "What driver assistance is listed?")
+        self.assertIn("unverified_web_attribution", errors)
+        self.assertFalse(result["answered"])
+
+    def test_live_attribution_counts_toward_final_word_cap(self):
+        text = " ".join(["suspension"] * 113) + "."
+        evidence = [fact(text)]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": text})
+        for model_text in (text, "According to adas.example, " + text):
+            result, errors = rg.validate_decision(decision(model_text), evidence, self.question)
+            self.assertLessEqual(len(text.split()), 115)
+            self.assertIn("answer_too_long", errors)
+            self.assertFalse(result["answered"])
+            self.assertEqual(result["fact_ids"], [])
+            self.assertNotIn("adas.example", result["answer"])
+
+    def test_repaired_live_claim_preserves_hostname_and_plain_metadata(self):
+        state = self.state("The front suspension uses double wishbone.")
+        state["evidence"] = [fact("The front suspension uses double wishbone or McPherson strut.")]
+        state["evidence"][0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": state["evidence"][0]["value"]})
+        repaired = rg._CompositionRepair(sentences=[{"text": "According to adas.example, " + self.text, "fact_ids": ["F1"], "kind": "fact"}])
+        with patch.dict(plain_terms.JARGON, {"double wishbone": None}), patch.object(config, "MOCK_LLM", False), \
+             patch.object(rg.runtime, "structured", return_value=repaired) as model, patch.object(rg.usage, "trace"):
+            output = asyncio.run(rg.validate(state))
+        self.assertEqual(model.call_count, 1)
+        self.assertTrue(output["result"]["validation_repair"]["accepted"])
+        self.assertEqual(output["result"]["answer"], "According to adas.example, the front suspension uses strut-type front suspension.")
+        self.assertEqual(output["result"]["plain_language_substitutions"], [("mcpherson strut", "strut-type front suspension")])
+        self.assertEqual(output["result"]["validation_errors"], [])
+
+    def test_live_hostname_and_plain_claim_reach_spoken_delivery_and_checkpoint(self):
+        evidence = [fact("ADAS is available.")]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})
+        pack = {"evidence": evidence, "snapshot_id": "", "coverage": {}, "conflicts": []}
+        with patch("server.knowledge.retrieve", return_value=pack), patch.object(rg.usage, "trace"):
+            final = asyncio.run(rg.run_turn(self.did, {"session_id": "live-plain-session", "turn_id": "live-plain-turn", "question": "What driver assistance is listed?"}))
+        expected = "According to adas.example, driver-assistance features is available."
+        self.assertEqual(final["delivery"]["speech"], expected)
+        self.assertEqual(final["result"]["plain_language_substitutions"], [("adas", "driver-assistance features")])
+        saved = store.read_json(self.did, "runtime/live-plain-session.json")
+        self.assertEqual(saved["delivery"]["speech"], expected)
+        self.assertEqual(saved["delivery"]["result"]["facts"][0]["source"]["ref"], "https://adas.example/car")
+
     def test_real_demo_audience_wins_over_customer_profile(self):
         state = self.state()
         state["profile"]["audience"] = "expert"

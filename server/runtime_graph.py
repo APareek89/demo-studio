@@ -1165,6 +1165,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     for row in _atomic_answer_rows(decision.get("sentences",[]),evidence,requested_scope):
         prior_claim,previous_claim=previous_claim,None
         text = str(row.get("text","")).strip()
+        web_attribution = ""
         row_dependencies=[]
         ids = list(dict.fromkeys(row.get("fact_ids",[])))
         def reject(code):
@@ -1222,11 +1223,25 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             source_urls={(f.get("source",{}).get("url") or f.get("source",{}).get("ref","")).split("#")[0].rstrip("/") for f in live}
             if page_claim and (not live or (specific_page and requested_urls and not source_urls & requested_urls)):
                 reject("unverified_web_attribution"); continue
-            if any(f.get("provenance")=="live_web" for f in facts) and not re.search(r"according to|\b(?:page|website|site|source)\b.*\b(?:says|lists|reports|states|shows)|\b(?:says|lists|reports|states)\b.*\b(?:page|website|site|source)\b",text,re.I):
-                domains = list(dict.fromkeys(urlsplit(f.get("source",{}).get("url") or f.get("source",{}).get("ref","")).hostname or "" for f in facts if f.get("provenance")=="live_web"))
-                if not domains or not all(domains):
-                    reject("unattributed_web_claim"); continue
-                text = "According to " + " and ".join(domains[:3]) + ", " + text[:1].lower() + text[1:]
+            domains = list(dict.fromkeys(urlsplit(f.get("source",{}).get("url") or f.get("source",{}).get("ref","")).hostname or "" for f in live))
+            if live and (not domains or not all(domains)):
+                reject("unattributed_web_claim"); continue
+            leading_attribution = re.match(r"^(?:according to|as per)\s+([^,\n]+),\s*(.+)$",text,re.I|re.S)
+            if leading_attribution:
+                named_sources = supplied_urls(leading_attribution[1],[])
+                if any(urlsplit(url).hostname not in domains for url in named_sources):
+                    reject("unverified_web_attribution"); continue
+                named_hosts = re.split(r"\s+and\s+",leading_attribution[1].strip(),flags=re.I)
+                if named_hosts and all(host.casefold() in domains for host in named_hosts):
+                    # Only an exact cited-host label becomes code-owned metadata.
+                    # Other model prose remains subject to the normal guards.
+                    web_attribution = "According to " + " and ".join(domains[:3]) + ", "
+                    text = leading_attribution[2]
+            if live and not web_attribution and not re.search(r"according to|\b(?:page|website|site|source)\b.*\b(?:says|lists|reports|states|shows)|\b(?:says|lists|reports|states)\b.*\b(?:page|website|site|source)\b",text,re.I):
+                # This prefix is code-owned source identity, not a product claim.
+                # Keep it out of grounding and everyday-word rewriting: a host
+                # such as adas.example must retain its exact cited spelling.
+                web_attribution = "According to " + " and ".join(domains[:3]) + ", "
             from .knowledge import scope_atoms, scope_matches, scope_values
             structured_facts = [f for f in facts if f.get("provenance") not in {"calculation", "live_web"}]
             boundaries=next((f["runtime_variant_boundary"] for f in evidence if "runtime_variant_boundary" in f),None)
@@ -1384,6 +1399,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                     row_feedback[-1]["instruction"] = "; ".join(f"replace '{term}' with everyday words or drop the sentence" for term in residual)
                 continue
             substitutions.extend(changed)
+        if web_attribution:
+            text = web_attribution + text[:1].lower() + text[1:]
         sentences.append(text); used.extend(ids)
         accepted_kinds.append(kind)
         if validated_limits is not None and kind=="limitation" and _safe_limitation(text,customer_text or question):

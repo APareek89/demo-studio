@@ -9,7 +9,7 @@ graph TD;
 	retrieve(retrieve)
 	reason["reason<br/>[AGENT + FUNCTION · session CUSTOMER_URLS]<br/>empty evidence: bounded lookup before model; first decline: one lookup before validation"]
 	tools["tools<br/>[FUNCTION · calculator / allowed customer-site lookup]<br/>same scope, network and budget gates; attributed turn-scoped W facts"]
-	validate["validate<br/>[FUNCTION · grounded rows → plain terms → word cap]<br/>technical_term feedback uses existing bounded repair"]
+	validate["validate<br/>[FUNCTION · grounded rows → plain terms → exact live host → word cap]<br/>technical_term feedback uses existing bounded repair"]
 	explore(explore)
 	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions]<br/>session checkpoint retains input_mode and customer_urls; capture stays outside graph"]
 	__end__([<p>__end__</p>]):::last

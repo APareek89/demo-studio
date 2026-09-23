@@ -1,5 +1,20 @@
 # Loop.MD — Demo Studio
 
+## Sales Trainer final checkpoint — 23 September 2026
+
+Loop stays **off**. WP1–WP8 are implemented in the required order; WP9 closes the documentation and aligns the remaining schema/Planner opening descriptions with D1. Paid Read is skipped because its authorization and cap are blank. Required deck 364/364, acceptance 24/24 and both smoke phases pass. Extended narrative 12/12, generation 56/56, speech style 30/30, Align 51/51, runtime graph 130/130, repair 106/106 and actual browser contracts 70/70 pass. Python compilation, changed JavaScript syntax and diff checks are clean; isolated backend checks record zero outbound attempts. The per-package receipts below retain their original historical counts.
+
+New and extended free contracts, with final counts:
+
+- Coach: `coach_contract.py` 20/20, `coach_align_contract.py` 18/18 and `coach_align_ui_contract.cjs` 9/9.
+- Planner/timing: `plan_playbook_contract.py` 15/15 and `align_timing_contract.cjs` 5/5.
+- Pictures and initial order: `deck_media_contract.py` 44/44, `deck_media_align_contract.py` 15/15, `pitch_fundamental_contract.py` 12/12, `player_fundamental_contract.cjs` 10/10 and `player_media_contract.cjs` 7/7.
+- Plain language: `runtime_plain_language_contract.py` 23/23, `faq_plain_language_contract.py` 21/21 and `cached_plain_language_contract.py` 9/9.
+- Return/input: `player_listen_contract.cjs` 15/15 and `session_input_mode_contract.py` 8/8; extended `live_voice_contract.mjs` 68/68, `live_transport_contract.py` 18/18, `player_focus_contract.cjs` 21/21 and `runtime_metrics_contract.py` 19/19.
+- Sites: `runtime_customer_sites_contract.py` 18/18, `runtime_site_settings_contract.py` 8/8 and `player_customer_sites_contract.cjs` 16/16.
+
+`narrative_roles_contract.py` 12/12 additionally checks that both the Author schema and Planner describe the initial fundamental opening. `player_priority_revision_contract.cjs` 11/11 retains customer-directed continuation. Plain-language checks preserve exact generated or matching leading live-host attribution without weakening claim grounding, and include it in the final spoken cap. Tests use isolated temporary storage, mock providers, fake pages/devices and blocked outbound sockets. Browser checks verify rendering and state transitions; none substitutes for a fresh provider or acoustic acceptance run.
+
 ## Sales Trainer WP5 — 23 September 2026
 
 Loop stays off. Customer-site contracts cover three-turn checkpoint persistence, empty-evidence and first-decline lookup, strong-evidence and interaction-act suppression, explicit verification, source attribution including “as per … website,” allowed hosts, scope/private-network/redirect checks, cancellation and the shared twelve-second budget. Default-site checks admit only enabled product URL source rows when the `off`-by-default setting is enabled. Player checks cover the optional intake field, five-site client cap, later URL additions and profile transport; the server retains a deduplicated eight-site session set. Settings API 8/8, runtime graph 130/130, repair 106/106, tool replay 20/20, conversation 18/18 and Explore cancellation 9/9 pass. Client sites 16/16, focus 21/21, listen-window ownership 15/15, priority 11/11, media 7/7, fundamental 10/10 and actual browser 70/70 pass, including early sites-only intake completion. Required deck 364/364, acceptance 24/24 and both smoke phases pass. Python compilation, changed JavaScript syntax and diff checks are clean, with zero outbound attempts. Runtime customer-site contracts pass 18/18, including default-site filtering, cancellation, attribution and the corrected post-decline tool choice. All lookup checks use fake fetchers and blocked sockets; no new public-page or paid-provider acceptance is implied.

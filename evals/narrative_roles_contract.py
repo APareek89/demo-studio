@@ -171,6 +171,16 @@ class NarrativeRolesContract(unittest.TestCase):
         for segment, planned in zip(draft["segments"], self.planned["segments"]):
             self.assertTrue(all(line["fact_ids"] == planned["fact_ids"] for line in segment["lines"]))
 
+    def test_overview_schema_and_runtime_plan_agree_on_fundamental_first(self):
+        description = schemas.ScriptOut.model_fields["overview"].description
+        self.assertIn("Lead with the first supported fundamental in the reviewed playbook, as mapped to PLAN.segments", description)
+        self.assertIn("retain variant qualifiers and cite facts", description)
+        self.assertIn("No greeting, question, decision frame, digits or spec list; delighters come later", description)
+        self.assertNotIn("standout", description)
+        prompt = " ".join(self.calls[0]["system"].split())
+        self.assertIn("The initial runtime route leads with the first unseen fundamental, then follows the buyer’s strongest signal; later refinements retain the buyer’s requested order, so each proof must stand alone.", prompt)
+        self.assertNotIn("runtime plays the buyer's strongest signal first", prompt)
+
     def test_rewrite_preserves_unflagged_lines_and_repairs_whole_ideas(self):
         rewrite = self.author_calls[1]["content"]
         self.assertIn("VALIDATOR ISSUES — each names a specific segment or line. Fix ONLY those.", rewrite)

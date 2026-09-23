@@ -1,4 +1,4 @@
-"""Free contracts for human fact provenance and spoken-question review."""
+"""Free contracts for human fact provenance, intake and narration review."""
 from __future__ import annotations
 
 import copy
@@ -130,19 +130,28 @@ def run(check, _demo_id=None):
         check("align review: chat rejection targets C storage and removes runtime eligibility", notes == [f"removed {corrected_id}"] and corrected_id not in qa.approved_fact_ids(store.read_json(did, "understanding.json"), True))
 
         approve_all()
-        result = api.patch(f"/api/demos/{did}/align/script", json={"intake_q1":"What would you like to explore?", "checkins":[{"segment_id":"proof", "text":"Does that suit your use?"}], "segments":[{"id":"proof", "title":"Dimensions", "outcome":""}], "realign_visuals":False})
+        result = api.patch(f"/api/demos/{did}/align/script", json={"intake_q1":"What would you like to explore?", "checkins":[{"segment_id":"proof", "text":"Keep that detail in mind."}], "segments":[{"id":"proof", "title":"Dimensions", "outcome":""}], "realign_visuals":False})
         saved_script = store.read_json(did, "script.json")
         check("align review: intake, checkin and metadata save without line edits or a paid call",
               result.status_code == 200 and saved_script["intake_q1"] == "What would you like to explore?"
-              and saved_script["segments"][0]["checkin"] == "Does that suit your use?"
+              and saved_script["segments"][0]["checkin"] == "Keep that detail in mind."
               and saved_script["segments"][0]["title"] == "Dimensions" and saved_script["segments"][0]["outcome"] == "" and not realign.called)
-        check("align review: question edits clear only their stale audio and disable the old second intake",
+        check("align review: intake and closing-statement edits clear only their stale audio and disable the old second intake",
               saved_script["intake_audio"] == {} and saved_script["intake_q2"] == "" and saved_script["segments"][0]["checkin_audio"] is None
               and saved_script["segments"][0]["lines"][0]["audio"] == "keep.wav")
         current = store.load(did)
-        check("align review: question review invalidates downstream audio/deck and requires script/visual approval",
+        check("align review: intake and checkin review invalidates downstream audio/deck and requires script/visual approval",
               current["stages"]["author"]["status"] == "done" and current["stages"]["voice"]["status"] == "stale"
               and current["stages"]["deck"]["status"] == "stale" and not current["approvals"]["script"] and not current["approvals"]["visuals"])
+        result = api.patch(f"/api/demos/{did}/align/script", json={"checkins":[{"segment_id":"proof", "text":"Does that suit your use?"}], "realign_visuals":False})
+        rejected_question = store.read_json(did, "script.json")
+        check("align review: question-shaped checkin is removed with an explicit validator issue",
+              result.status_code == 200 and rejected_question["segments"][0]["checkin"] == ""
+              and rejected_question["segments"][0]["checkin_audio"] is None
+              and any("proof checkin: must be a short closing statement, never a question" in issue for issue in result.json()["issues"])
+              and rejected_question["segments"][0]["lines"][0]["audio"] == "keep.wav"
+              and rejected_question["segments"][0]["title"] == "Dimensions"
+              and rejected_question["intake_q1"] == "What would you like to explore?")
         for label, payload, status in (
             ("uncited intake equipment count", {"intake_q1":"Would 6 airbags reassure you?"}, 400),
             ("uncited checkin claim", {"checkins":[{"segment_id":"proof", "text":"Does the best-in-class safety suit you?"}]}, 400),

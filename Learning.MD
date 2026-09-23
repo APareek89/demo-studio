@@ -1,5 +1,11 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — Plain-language rewriting changed a source hostname
+
+**Five whys:** (1) Live attribution to `adas.example` could become `driver-assistance features.example`. (2) The jargon substitution matched `ADAS` inside the generated hostname. (3) The validator prepended source identity before grounding and register checks. (4) Claim text and validator-owned attribution shared the same string. (5) Plain-language tests checked product terms without a source host containing one of those terms.
+
+**WP9 correction and verification:** keep validator-generated live attribution separate from the claim during grounding, reviewed substitutions and residual-jargon checks, then reattach the exact cited host before the final word cap. A model's exact leading “According to” or “As per” cited-host label becomes the same protected metadata; a leading explicit host absent from the cited live sources is rejected, and uploaded facts cannot license it. Runtime plain-language contracts pass 23/23 with zero outbound attempts, including ordinary claim substitution, unchanged host identity, residual jargon, repair, actual graph delivery/checkpoint and final-cap accounting. Source identity receives no exemption for the product claim itself. This tests fake live evidence, not a new public fetch or paid answer.
+
 ## 2026-09-23 — Websites-only intake could lose its completion
 
 **Five whys:** (1) Submitting only websites while intake speech played left the customer waiting. (2) The queued reply was an empty string. (3) A truthiness check treated it as no reply. (4) The old intake assumed every submitted answer contained words. (5) The new optional field made an empty spoken-context answer valid before its waiter existed.
@@ -46,9 +52,9 @@
 
 **WP2 correction:** bind Planner to the effective reviewed playbook: one proof segment per required stop, ordered by that stop, with missing coverage restored and diagnosed. Keep Coach's USPs, record fundamental flags and allocate typed word budgets. Remove the standout-first and sunroof example from the writing prompts; Author follows the settled plan with connected thoughts, varied openings and the translation ladder rather than choosing the itinerary again.
 
-**Follow-through:** WP3 enforces typed budgets and keeps the allocation intact across split continuations. WP4 carries the fundamental flag through Slide/bundle and reserves one unseen fundamental on initial pitch planning and player fallback; refinements retain customer-priority behavior.
+**Follow-through:** WP3 enforces typed budgets and keeps the allocation intact across split continuations. WP4 carries the fundamental flag through Slide/bundle and reserves one unseen fundamental on initial pitch planning and player fallback; refinements retain customer-priority behavior. WP9 removes the last contradictory instruction from `ScriptOut.overview` and aligns the Planner's description of the initial runtime route. Schema field descriptions reach the model too; testing only the main system prompt left the older “sourced standout features” direction unguarded. The narrative contract now checks both descriptions.
 
-**Verification and limits:** WP1 Coach 20/20, Align API 18/18, UI 9/9 and required free gates passed. WP2 Plan/playbook 14/14, narrative 11/11 and speech style 27/27 passed; WP3 generation 56/56 and Plan/playbook 15/15 passed. WP4 pitch/player fundamental 12/12 and 10/10 passed, with required deck 364/364, acceptance 24/24 and both smoke phases. WP7 still owns runtime check-in changes. Mock order/coverage checks cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
+**Verification and limits:** WP1 Coach 20/20, Align API 18/18, UI 9/9 and required free gates passed. WP2 Plan/playbook 14/14, narrative 11/11 and speech style 27/27 passed; WP3 generation 56/56 and Plan/playbook 15/15 passed. WP4 pitch/player fundamental 12/12 and 10/10 passed, with required deck 364/364, acceptance 24/24 and both smoke phases. WP7 completed the runtime check-in change. WP9 narrative 12/12 verifies the final schema/Planner reconciliation; generation 56/56, speech style 30/30 and Plan/playbook 15/15 pass in the final sweep. Mock order/coverage checks cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
 
 **Cache lesson from WP1 review:** fact text alone does not identify Coach's input. A category edit with unchanged facts initially reused the previous category's playbook. Reuse now also checks category and the consumed evidence/picture inputs; the cache contract covers category/picture changes and preservation of the prior artifact on failure.
 

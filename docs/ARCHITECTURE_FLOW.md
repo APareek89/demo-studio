@@ -6,6 +6,8 @@ Diagrams follow the Mindful Coding convention: one step per box, every box label
 edge; gates show the threshold. Source: `docs/mermaid/*.mmd` (authored by hand — update in the same
 session as any structural change). Viewer: `python3 docs/build_viewer.py` → `docs/architecture-flow.html`.
 
+The Sales Trainer implementation on `codex/sales-trainer-flow` includes Coach, bound word budgets, two-picture/proxy slides, customer sites, plain language, automatic answer return and Voice mode. The 23 September brief's paid Read remains skipped because authorization and cap are blank; these diagrams describe implemented control flow, not new live-provider or acoustic acceptance. Validator-generated live-site attribution, including a normalized exact leading cited-host label, stays outside claim grounding and plain-language rewriting, then joins the spoken answer before the final word cap. An explicit leading host absent from the cited live sources is rejected.
+
 Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦(cyan) question to the user · 🟪(violet) data/library.
 
 ## Gates at a glance

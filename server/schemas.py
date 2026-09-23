@@ -403,7 +403,7 @@ class SegmentOut(BaseModel):
 # Input: overview, segments, closing and intake words. Output: the validated draft response shape.
 # Linked: server/agents/author.py:_assign_ids names lines and moves overview into runtime_overview.
 class ScriptOut(BaseModel):
-    overview: Optional[LineOut] = Field(default=None, description="Standalone 23–28 word, 10–15 second opening for Explore while its route is planned. Lead with sourced standout features and their supported relevance, retain variant qualifiers, cite facts. No greeting/question/spec list; not a segment.")
+    overview: Optional[LineOut] = Field(default=None, description="Standalone 23–28 word, 10–15 second opening for Explore while its route is planned. Lead with the first supported fundamental in the reviewed playbook, as mapped to PLAN.segments, in everyday words; retain variant qualifiers and cite facts. No greeting, question, decision frame, digits or spec list; delighters come later. Not a segment.")
     segments: list[SegmentOut]
     closing: list[LineOut] = Field(description="two lines, at most 45 words total: fit summary then next step naming the CTA; statements, no questions")
     intake_q1: str = Field(description="warm greeting plus ONE useful context question; no name request stacked with it")
