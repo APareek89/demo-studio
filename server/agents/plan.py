@@ -11,6 +11,8 @@ from . import visuals
 from ..llm import claude
 from .principles import CUSTOMER_STATES, PITCH_SHAPE, PRINCIPLES, PROOF_BLOCK, audience_instruction, fact_context, language_instruction
 
+# Brief the planner on story structure, evidence limits, segment images and the configured guide identity.
+# server/agents/author.py:run turns this outline into dialogue; this prompt is not the finished narration.
 PLAN_SYSTEM = """You are the product-demo planner. You turn a fact registry and a set of visuals into the plan for a
 voice-led, interruptible demo a prospective buyer watches on the brand's website. It must feel like a good human
 salesperson: greet, offer a choice, overview before detail, then guided discovery — not a spec tour and not an interrogation.
@@ -105,6 +107,8 @@ Produce exactly this:
 Return exactly the schema."""
 
 
+# Load the latest explicitly supplied reviewed plan only as the stage's provider-unavailable fallback.
+# server/schemas.py:Plan checks its shape; server/store.py:path locates the uploaded manifest.
 def _verified_plan(demo_id: str, demo: dict) -> schemas.Plan | None:
     """Load a human-reviewed plan bundle when both reasoning providers are unavailable."""
     manifests = [s for s in demo.get("sources", []) if s.get("kind") == "text"
@@ -117,6 +121,8 @@ def _verified_plan(demo_id: str, demo: dict) -> schemas.Plan | None:
     return schemas.Plan.model_validate_json(raw)
 
 
+# Extract eligible brochure, dealer and test-drive destinations from already retained source links.
+# server/crawl.py:_model_tokens and _locale_prefix constrain model/market; no destination is fetched here.
 def _action_urls(demo_id: str, demo: dict) -> list[dict]:
     """Use retained extraction links only; this helper never fetches a destination."""
     from ..crawl import _locale_prefix, _model_tokens
@@ -133,6 +139,8 @@ def _action_urls(demo_id: str, demo: dict) -> list[dict]:
         links = list((evidence or {}).get("links") or [])
         if source.get("url"):
             links.append({"url": source["url"], "label": source.get("name", "")})
+        # Require the configured product host, compatible locale and any explicit model query to match.
+        # Only recognized destination paths become candidates; their labels never authorize an action.
         for link in links:
             url = str(link.get("url") or "")
             parsed = urlsplit(url)
@@ -161,6 +169,8 @@ def _action_urls(demo_id: str, demo: dict) -> list[dict]:
     return candidates
 
 
+# Bind recognized CTA categories to retained candidate URLs, mutating the planned actions in place.
+# Without a destination, keep a labelled contact request for server/agents/bundle.py:build to publish.
 def _ground_action_ctas(plan: dict, candidates: list[dict]) -> None:
     for cta in plan.get("ctas", []):
         label = cta.get("label", "")
@@ -179,6 +189,8 @@ def _ground_action_ctas(plan: dict, candidates: list[dict]) -> None:
                 plan["advance"] = plan.get("advance", "").replace(label, cta["label"])
 
 
+# Read the actual selected provider/speaker and whether its identity is locked in demo settings.
+# server/agents/voice.py:provider_for and voice_name_for supply the values sent to the planner.
 def _configured_voice(demo: dict) -> dict:
     from .voice import provider_for, voice_name_for
     provider = provider_for(demo)
@@ -188,6 +200,8 @@ def _configured_voice(demo: dict) -> dict:
             "display_name": speaker.rsplit("-", 1)[-1].title() if speaker else "Guide"}
 
 
+# Keep a locked speaker's selected identity even if the generated brief invents another persona name.
+# The edited voice brief and intake are later consumed by server/agents/author.py:run and voice.py:render_script.
 def _keep_locked_persona(plan: dict, configured: dict) -> None:
     """The creative brief may style a selected voice, not rename its identity."""
     if not configured["locked"]:
@@ -211,6 +225,8 @@ def _keep_locked_persona(plan: dict, configured: dict) -> None:
     plan["voice"] = brief
 
 
+# Read understanding.json and produce plan.json: the buying story, segment evidence, image choices and actions.
+# server/graph.py:plan invokes this stage; server/agents/author.py:run uses the result as its brief.
 def run(demo_id: str, emit, instruction: str = "") -> dict:
     und = store.read_json(demo_id, "understanding.json")
     if not und:
@@ -220,6 +236,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     configured_voice = _configured_voice(demo)
     action_urls = _action_urls(demo_id, demo)
     emit("Planning the pitch: decision frame, outcome, proof blocks…")
+    # Give the planner approved facts and text descriptions of allowed images/shots, not image pixels.
+    # Tags from server/agents/understand.py:run become segment visual_refs; author.py:run adds per-line refs later.
     facts = [f for f in und["facts"] if f.get("approved", True)]
     facts_txt = "\n".join(fact_context(f) for f in facts)
     vshots = [s for s in und["shots"] if store.visual_allowed(demo, s["source_id"])]
@@ -245,6 +263,8 @@ VIDEO SHOTS ({len(und['shots'])}):
 IMAGES ({len(und['images'])}):
 {imgs_txt or '(none)'}
 """
+    # Include prior planning and explicit revision direction without treating either as new factual evidence.
+    # server/llm/claude.py:structured returns the schema-shaped plan through the configured build provider path.
     if prev:
         content += f"\nPREVIOUS PLAN (keep only what the current approved registry supports; not evidence of product claims or customer context):\n{json.dumps(prev)[:24000]}\n"
     if instruction:
@@ -259,6 +279,8 @@ IMAGES ({len(und['images'])}):
         emit("Reasoning providers unavailable — using the explicit verified plan…")
         plan = manifest
 
+    # Remove fact, visual and USP references that are absent from the supplied allowed sets.
+    # This checks identities for server/agents/author.py:run; it is not a pixel-level proof of the chosen image.
     fact_ids = {f["id"] for f in facts}
     vis_ids = {s["id"] for s in vshots} | {i["id"] for i in vimgs}
     p = plan.model_dump()
@@ -272,6 +294,8 @@ IMAGES ({len(und['images'])}):
         seg["usp_ids"] = [x for x in seg.get("usp_ids", []) if x in usp_ids]
     for c in p["concerns"]:
         c["fact_ids"] = [x for x in c["fact_ids"] if x in fact_ids]
+    # Fill missing opening/features roles, sort existing segments by role and cap supporting outcomes.
+    # These structure repairs prepare the outline for author.py:run; they do not generate spoken lines.
     # structural guarantees: exactly one intro first, one outcome second, one establish last
     roles = [s["role"] for s in p["segments"]]
     if "intro" not in roles and p["segments"]:
@@ -284,6 +308,8 @@ IMAGES ({len(und['images'])}):
     order = {"intro": 0, "outcome": 1, "proof": 2, "features": 3, "establish": 4}
     p["segments"].sort(key=lambda s: order.get(s["role"], 2))
     p["supporting_outcomes"] = p["supporting_outcomes"][:2]
+    # Preserve reviewed CTA and voice choices during revisions that do not ask to change those fields.
+    # Then reapply the selected speaker and retained destination constraints before saving plan.json.
     if prev and instruction:
         low = instruction.lower()
         if "cta" not in low and "button" not in low and "call to action" not in low:

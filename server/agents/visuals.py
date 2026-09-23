@@ -14,6 +14,8 @@ from pydantic import BaseModel, Field
 from .. import config, media, store
 from ..llm import gemini
 
+# Ignore common words, positions and generic product terms when proposing visual matches.
+# These tokens support server/agents/deck.py:choose_image; they are not factual evidence or a pixel check.
 STOP = set("the a an and or of to in on at for with by from as is are was were be been it its this that these those you your we our they their he she i me my "
            "so if then than but not no yes can will would could should may might do does did done have has had into onto over under about across after before "
            "one two three four five six seven eight nine ten first second third also just only very more most less least much many any all some every each per "
@@ -23,6 +25,8 @@ STOP = set("the a an and or of to in on at for with by from as is are was were b
            "vehicle car scooter bike product model variant brochure page front rear side left right top high low angle detail lifestyle blue red black white "
            "colour color new".split())
 
+# Expand a limited set of feature words so related labels can propose the same picture.
+# server/agents/understand.py:run supplies the tags; the pixel audit still decides literal coverage when available.
 # feature-level synonyms only (generic words like front/back/drive are deliberately absent)
 SYNONYMS = {"gearbox": ["gear", "shifter", "transmission", "dct", "manual", "automatic", "paddle", "lever"], "gear": ["gearbox", "shifter", "transmission", "dct", "lever"],
             "transmission": ["gearbox", "gear", "dct", "shifter"], "dct": ["gearbox", "gear", "transmission", "automatic"], "shift": ["gearbox", "gear", "shifter", "lever"], "paddle": ["paddle", "shifter"],
@@ -35,16 +39,22 @@ SYNONYMS = {"gearbox": ["gear", "shifter", "transmission", "dct", "manual", "aut
             "engine": ["turbo", "motor"], "motor": ["engine", "hub"], "headlamp": ["headlight", "drl", "led"], "headlight": ["headlamp", "drl", "led"], "grille": ["bumper", "fascia"],
             "steering": ["wheel", "paddle"], "exhaust": ["muffler", "tailpipe"], "muffler": ["exhaust"], "mirror": ["orvm"]}
 
+# Exclude claim categories that a product photograph cannot establish from the fact-to-image suggestion map.
+# server/agents/understand.py:run uses build_map; this exclusion does not remove the underlying fact.
 NON_VISUAL_FACT = re.compile(
     r"\b(price|cost|warranty|roadside|service|capacity|boot space|litres?|expandable|efficiency|power|torque|"
     r"airbags?|isofix|anchorage|stability control|brakes?|brake assist|suspension|fuel type|transmissions?|"
     r"standard on|all variants?|not offered|availability|colou?rs?|foldable|seat split|rear bench)\b", re.I)
 
 
+# Apply a small plural normalization so labels such as seats can match seat.
+# Used by local matching helpers shared with server/agents/deck.py:choose_image, not a general language parser.
 def _stem(w: str) -> str:
     return w[:-1] if w.endswith("s") and len(w) > 4 and not w.endswith("ss") else w
 
 
+# Extract lowercase feature-like words, discard generic terms and normalize simple plurals.
+# Returns a set for matching tags from server/agents/understand.py:run against narration and slide topics.
 def _tokens(text: str) -> set[str]:
     out = set()
     for w in re.findall(r"[a-z][a-z0-9\-]+", (text or "").lower()):
@@ -54,6 +64,8 @@ def _tokens(text: str) -> set[str]:
     return out
 
 
+# Add the configured feature synonyms to a set of matching words without changing the original text.
+# The expanded set helps build_map and server/agents/deck.py:choose_image propose candidate visuals.
 def _expand(tokens: set[str]) -> set[str]:
     out = set(tokens)
     for t in tokens:
@@ -62,6 +74,8 @@ def _expand(tokens: set[str]) -> set[str]:
     return out
 
 
+# Read visible-part names from either older string tags or the newer boxed-part format.
+# server/agents/plan.py:run and author.py:run use the resulting labels in their visual catalogues.
 def part_names(img: dict) -> list[str]:
     """Part names of an image — tagged as {name, box, confidence} (slides-v1) or as plain strings (older demos)."""
     out = []
@@ -72,11 +86,15 @@ def part_names(img: dict) -> list[str]:
     return out
 
 
+# Return only part records that contain a box, leaving old name-only tags out of geometry work.
+# server/agents/deck.py:place_callouts and bundle.py:build use these records for labels and slide image parts.
 def part_boxes(img: dict) -> list[dict]:
     """Only the parts that carry a box: [{name, box:{x,y,w,h} in 0-1, confidence}]."""
     return [p for p in (img.get("parts") or []) if isinstance(p, dict) and isinstance(p.get("box"), dict)]
 
 
+# Prefer an explicitly selected hero; otherwise choose the highest-quality full-product image or available image.
+# Returns the image record used by server/agents/deck.py:build and bundle.py:build for opening/closing presentation.
 def pick_hero(demo: dict, images: list[dict]) -> dict | None:
     """The hero-role upload, else the best-quality full-product view, else the first image. First and last slide."""
     for s in reversed(demo.get("sources", [])):
@@ -88,6 +106,8 @@ def pick_hero(demo: dict, images: list[dict]) -> dict | None:
     return max(pool, key=lambda i: i.get("quality", 0)) if pool else None
 
 
+# Convert allowed image and shot tags into a shared matching catalogue with stronger part-name evidence.
+# server/store.py:visual_allowed filters inputs; server/agents/deck.py:choose_image consumes the catalogue too.
 def catalogue(demo_id: str, und: dict, demo: dict) -> list[dict]:
     items = []
     for i in und.get("images", []):
@@ -101,6 +121,8 @@ def catalogue(demo_id: str, und: dict, demo: dict) -> list[dict]:
             continue
         items.append({"ref": s["id"], "kind": "shot", "strong": _tokens(s.get("part", "")), "weak": _tokens(s.get("description", "")), "quality": s.get("quality", 3),
                       "label": f"{s['id']} · {s.get('start', 0):.0f}–{s.get('end', 0):.0f}s · {s.get('part', '')} · {s.get('description', '')}", "parts": [s.get("part", "")]})
+    # Mark less-common words so a generic cabin/vehicle tag cannot dominate every candidate's score.
+    # The returned distinct set changes relative matching strength; it does not certify visible equipment.
     # distinctiveness: a word that shows up in a third or more of the pictures says nothing about which one to pick
     n = max(1, len(items))
     df: dict[str, int] = {}
@@ -112,6 +134,8 @@ def catalogue(demo_id: str, und: dict, demo: dict) -> list[dict]:
     return items
 
 
+# Score matching words: distinctive part names count more than descriptions or common part names.
+# Return score plus matched terms for audit explanations and server/agents/deck.py:choose_image.
 def _score(line_tokens: set[str], item: dict) -> tuple[float, list[str]]:
     hits = []
     score = 0.0
@@ -125,6 +149,8 @@ def _score(line_tokens: set[str], item: dict) -> tuple[float, list[str]]:
     return score, sorted(set(hits))
 
 
+# Describe one model judgment linking a script line to an image, or to no suitable visual.
+# server/llm/gemini.py:structured fills this schema; align applies only accepted full-coverage choices.
 class Assignment(BaseModel):
     line_id: str
     visual: str = Field(description="an image ref supplied in this batch, 'keep' only for the current video shot, or 'none'")
@@ -136,6 +162,8 @@ class Assignment(BaseModel):
     reason: str = Field(description="one short, literal explanation of the coverage decision")
 
 
+# Describe what one inspected image shows and which supplied script lines it fully covers.
+# Saved with visual-audit.json through server/store.py:write_json so image limitations remain reviewable.
 class ImageAudit(BaseModel):
     visual: str
     visible_features: list[str] = Field(default_factory=list, description="specific product parts/features literally visible")
@@ -144,11 +172,15 @@ class ImageAudit(BaseModel):
     confidence: float = Field(default=0.5, ge=0, le=1)
 
 
+# Require both line assignments and per-image findings in one structured vision response.
+# server/llm/gemini.py:structured returns this shape; _vision_batches checks completeness and consistency.
 class VisualsOut(BaseModel):
     assignments: list[Assignment]
     images: list[ImageAudit]
 
 
+# Ask the auditor to inspect actual pixels against every visible feature named in the supplied lines.
+# The output uses VisualsOut; server/agents/author.py:run calls align after writing and validating the draft.
 MODEL_SYSTEM = """You are the final visual-proof auditor for a spoken product demo. You receive the REAL uploaded images first,
 in the exact order listed in image_part_order, then a JSON manifest containing the complete script and earlier metadata.
 Inspect the pixels, not just the metadata.
@@ -168,6 +200,8 @@ covers, and important limitations. Return one assignment for EVERY supplied line
 image_part_order, "keep", or "none"."""
 
 
+# Send each allowed image batch plus the line manifest for a real-pixel coverage audit.
+# server/media.py:model_image_path supplies image files; server/llm/gemini.py:structured returns assignments and image notes.
 def _vision_batches(demo_id: str, demo: dict, und: dict, cat: list[dict], rows: list[dict]) -> tuple[list[dict], list[dict]]:
     """Gemini-inspect every allowed image in batches, then retain the strongest full-coverage decision per line."""
     if config.MOCK_LLM:
@@ -177,6 +211,8 @@ def _vision_batches(demo_id: str, demo: dict, und: dict, cat: list[dict], rows: 
     image_cat = [c for c in cat if c.get("kind") == "image"]
     all_assignments: list[dict] = []
     image_audit: list[dict] = []
+    # Limit each vision request to twelve images and keep their transmitted order explicit.
+    # Images that cannot be decoded are omitted from this batch, never represented by invented pixel findings.
     for start in range(0, len(image_cat), 12):
         batch = image_cat[start:start + 12]
         refs: list[str] = []
@@ -193,6 +229,8 @@ def _vision_batches(demo_id: str, demo: dict, und: dict, cat: list[dict], rows: 
         if not refs:
             continue
         allowed = set(refs)
+        # Pair the image IDs with their bytes and supply each line's text/current choice/rule proposal.
+        # The model must decide coverage from the images, not simply approve the earlier metadata labels.
         payload = {
             "image_part_order": refs,
             "image_metadata": [{"ref": c["ref"], "tagged_as": c["label"], "parts": c["parts"]} for c in batch if c["ref"] in allowed],
@@ -202,6 +240,8 @@ def _vision_batches(demo_id: str, demo: dict, und: dict, cat: list[dict], rows: 
                        "rule_proposal": r["proposal"], "rule_matches": r["hits"] if r["proposal"] else []} for r in rows],
         }
         out = gemini.structured(MODEL_SYSTEM + "\n\nINPUT MANIFEST:\n" + json.dumps(payload, ensure_ascii=False), parts, VisualsOut, temperature=0.05)
+        # Reject incomplete or inconsistent audits before any assignment can modify the script.
+        # Unknown visual/line references cannot become trusted links for server/agents/bundle.py:build.
         expected_lines = {r["ln"]["id"] for r in rows}
         row_by_id = {r["ln"]["id"]: r for r in rows}
         if len(out.assignments) != len(expected_lines) or {a.line_id for a in out.assignments} != expected_lines:
@@ -226,12 +266,16 @@ def _vision_batches(demo_id: str, demo: dict, und: dict, cat: list[dict], rows: 
     return all_assignments, image_audit
 
 
+# Audit a written script against allowed media, update its line visual references and save the reasoning.
+# server/agents/author.py:run calls this before saving; server/agents/deck.py:build later selects slide-level imagery.
 def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
     demo = store.load(demo_id)
     cat = catalogue(demo_id, und, demo)
     if not cat:
         return script
     by_ref = {c["ref"]: c for c in cat}
+    # Compare each main/deeper line with tagged parts and descriptions to propose a stronger candidate.
+    # Keep the current choice and score alongside the proposal so the subsequent pixel check can disagree.
     rows: list[dict] = []  # per line working record
     for seg in script.get("segments", []):
         for ln in seg.get("lines", []) + seg.get("deeper", []):
@@ -242,6 +286,8 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
             cur_score, cur_hits = _score(lt, by_ref[cur]) if cur in by_ref else (0.0, [])
             proposal = best_ref if best_score >= 3.0 and best_ref != cur and best_score >= cur_score + 3.0 else None
             rows.append({"seg": seg, "ln": ln, "cur": cur, "cur_hits": cur_hits, "proposal": proposal, "hits": best_hits, "score": best_score, "deeper": ln in seg.get("deeper", [])})
+    # Include closing lines in the same proposal/audit process, with an explicit closing context.
+    # This changes line metadata only; web/player/player.js:slidesOf still uses the published slide structure.
     closing_seg = {"title": "Closing", "topic": "closing", "role": "outcome"}
     for ln in script.get("closing", []):
         lt = _expand(_tokens(ln.get("text", "")))
@@ -256,6 +302,8 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
     model_notes: list[dict] = []
     image_audit: list[dict] = []
     decided = False
+    # Prefer complete pixel findings over rule scores; only full coverage can retain a bound image.
+    # The audit can clear a current image, while eligible shot assignments may keep their existing reference.
     if not config.MOCK_LLM:
         try:
             assignments, image_audit = _vision_batches(demo_id, demo, und, cat, rows)
@@ -287,11 +335,15 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
             decided = bool(model_notes)
         except Exception as e:
             emit(f"Gemini visual-proof audit skipped ({str(e)[:80]}) — conservative rule proposals applied instead.")
+    # If no pixel decisions are available, apply only stronger rule proposals lacking a current feature match.
+    # This fallback is recorded as rules_fallback, not reported as a successful Gemini inspection.
     if not decided:
         for r in rows:
             if r["proposal"] and not r["cur_hits"]:
                 changes.append({"line_id": r["ln"]["id"], "from": r["cur"], "to": r["proposal"], "pass": "rules", "why": f"line mentions {', '.join(r['hits'][:4])}; {by_ref[r['proposal']]['label'][:100]}"})
                 r["ln"]["visual"] = {"ref": r["proposal"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
+    # In the rules-only path, try relevant unused quality images on non-opening main narration.
+    # A completed pixel audit bypasses this diversity pass, so it cannot resurrect an image rejected by vision.
     # Rules-only coverage guardrail. A successful Gemini audit is authoritative; do not override
     # pixel-level rejection merely to make an unused image appear.
     used = {(r["ln"].get("visual") or {}).get("ref") for r in rows}
@@ -312,6 +364,8 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
                 r["ln"]["visual"] = {"ref": c["ref"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
                 used.add(c["ref"])
     used = {(r["ln"].get("visual") or {}).get("ref") for r in rows}
+    # Save changed assignments, missing features, unused images and which audit method actually ran.
+    # server/store.py:write_json retains the detailed audit; the returned script carries a compact summary.
     audit = {"method": "gemini_pixels" if decided else "rules_fallback", "model": config.GEMINI_MODEL if decided else None,
              "lines": model_notes, "images": image_audit, "changes": changes, "catalogue": [c["label"] for c in cat],
              "unused_after": [c["ref"] for c in cat if c["ref"] not in used],
@@ -330,6 +384,8 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
 
 
 
+# Suggest up to three visually relevant media IDs for each fact using labels and distinctive-word scores.
+# server/agents/understand.py:run saves this lookup; photos are not accepted as proof of nonvisual quantities or terms.
 def build_map(und: dict, demo: dict) -> dict:
     """fact id → best picture refs (distinctive-subject match between the fact's claim/value and what each picture shows).
     Built at configure; used by the author, the runtime batches and the answers so the screen matches the words."""
@@ -349,6 +405,8 @@ def build_map(und: dict, demo: dict) -> dict:
     return out
 
 
+# Return the first suggestion available for the supplied cited fact IDs, or None when no map entry exists.
+# server/agents/qa.py:answer and pitch.py:plan_pitch use this fallback when choosing runtime visuals.
 def for_facts(und: dict, fact_ids: list[str]) -> str | None:
     m = und.get("image_map") or {}
     for fid in fact_ids or []:
@@ -357,6 +415,8 @@ def for_facts(und: dict, fact_ids: list[str]) -> str | None:
     return None
 
 
+# Rank cited-fact image suggestions against the actual spoken words, retaining an equally good current choice.
+# server/agents/pitch.py:plan_pitch uses this to avoid choosing a contradictory sibling image from a shared fact.
 def for_text_and_facts(demo_id: str, und: dict, text: str, fact_ids: list[str], current: str = "") -> str | None:
     """Pick the most literal cited visual when a runtime model chose a contradictory sibling.
 

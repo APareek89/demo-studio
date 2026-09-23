@@ -13,6 +13,9 @@ from . import cloud, events, media, store, usage, runlog
 from .agents import align, author, bundle, deck, faq, plan, rehearsal, understand, voice
 from .store import STAGES
 
+# Declare which outputs depend on a changed stage so reuse never assumes they are current.
+# Input: the name of the changed stage. Output: the stage names invalidate() marks stale.
+# Linked: server/graph.py node wrappers reuse only appropriate completed work; Deck changes need no new voice.
 DOWNSTREAM = {
     "understand": ["plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"],
     "plan": ["author", "deck", "voice", "rehearsal", "bundle"],
@@ -24,14 +27,26 @@ DOWNSTREAM = {
     "bundle": [],
 }
 
+# Ask the build graph whether this demo already has an active worker.
+# Input: demo ID. Output: true or false; this module does not maintain a second worker list.
+# Linked: server/graph.py:is_running is the source of worker state.
 def is_running(demo_id: str) -> bool:
     from . import graph
     return graph.is_running(demo_id)
 
 
+# Create a progress reporter bound to one demo and optional stage.
+# Input: demo ID/stage. Output: an emit(message) callback for agent functions.
+# Linked: server/agents/plan.py:run and other stage functions receive this callback from _run_stage.
 def emit_for(demo_id: str, stage: str | None = None):
+    # Save useful progress history and send each message to connected Studio clients.
+    # Input: an agent progress message. Output: updated stage notes and a progress event.
+    # Linked: server/store.py:update persists notes; server/events.py:publish sends the UI event.
     def emit(message: str):
         if stage:
+            # Keep the latest progress entries and a short list of warning-like messages.
+            # Input: mutable demo record and captured message. Output: changed stage metadata in that record.
+            # Linked: server/store.py:update saves this callback result under the per-demo write lock.
             def retain(d):
                 state = d["stages"].setdefault(stage, {})
                 entry = {"t": time.time(), "message": str(message)}
@@ -44,7 +59,13 @@ def emit_for(demo_id: str, stage: str | None = None):
     return emit
 
 
+# Track when a stage starts, finishes or fails and how long it took.
+# Input: demo ID, stage and status/error/message. Output: saved stage metadata and a stage event.
+# Linked: server/store.py:update and server/events.py:publish keep polling and streaming views aligned.
 def set_stage(demo_id: str, stage: str, status: str, error: str | None = None, message: str = "") -> None:
+    # Update one stage record while retaining its earlier timing information when appropriate.
+    # Input: mutable demo record. Output: stage state plus the current running-stage marker.
+    # Linked: server/store.py:update calls this callback while holding the demo lock.
     def fn(d):
         prev = d["stages"].get(stage, {})
         started = time.time() if status == "running" else prev.get("started_at")
@@ -59,7 +80,13 @@ def set_stage(demo_id: str, stage: str, status: str, error: str | None = None, m
     events.publish(demo_id, "stage", stage=stage, status=status, error=error)
 
 
+# Mark completed dependent stages stale when an upstream result changes.
+# Input: demo ID and changed stage. Output: updated status only; artifacts are not regenerated here.
+# Linked: server/graph.py nodes consult these states before reusing work.
 def invalidate(demo_id: str, stage: str) -> None:
+    # Apply the dependency list to a demo record without deleting previous outputs.
+    # Input: mutable demo record and captured stage. Output: downstream done states become stale.
+    # Linked: server/store.py:update persists the state; server/graph.py chooses when to rerun it.
     def fn(d):
         for s in DOWNSTREAM[stage]:
             if d["stages"][s]["status"] == "done":
@@ -72,6 +99,9 @@ _NON_SEMANTIC = {"audio", "checkin_audio", "intake_audio", "voice_sample_audio",
                  "duration_seconds", "duration_exact", "duration_in_range", "exact", "spoken", "checkin_start", "checkin_duration"}
 
 
+# Remove recording and bookkeeping fields before deciding whether review content changed.
+# Input: nested artifact data. Output: a comparable copy containing the review-relevant content.
+# Linked: server/agents/voice.py adds audio/timing; those additions alone should not revoke content approval.
 def semantic(value):
     """Keep approval content while excluding recording/version bookkeeping."""
     if isinstance(value, dict):
@@ -82,6 +112,9 @@ def semantic(value):
     return value
 
 
+# Decide which review cards need approval again after a stage rewrites an artifact.
+# Input: stage name and before/after JSON. Output: a set of affected card names.
+# Linked: server/store.py:CARDS defines the review cards used by server/graph.py:align_wait.
 def changed_cards(stage: str, before: dict | None, after: dict | None) -> set[str]:
     before, after = semantic(before or {}), semantic(after or {})
     if before == after:
@@ -101,14 +134,23 @@ def changed_cards(stage: str, before: dict | None, after: dict | None) -> set[st
     return {"author": {"script", "visuals"}, "deck": {"visuals"}, "faq": {"faq"}}.get(stage, set())
 
 
+# Run the agent behind one stage and record its outcome and downstream staleness.
+# Input: demo ID, stage and instruction. Output: agent return value plus saved artifacts/status/events.
+# Linked: server/agents/* stage functions do the work; server/graph.py calls this shared wrapper.
 def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
     usage.current_demo.set(demo_id)
     usage.current_stage.set(stage)
     set_stage(demo_id, stage, "running")
     emit = emit_for(demo_id, stage)
+    # Capture the old review artifact before a stage rewrites it.
+    # Input: stage name. Output: its previous JSON for changed_cards(), when the stage has a review file.
+    # Linked: server/store.py:read_json retrieves the agent output rather than LangGraph checkpoint state.
     output_file = {"understand": "understanding.json", "plan": "plan.json", "author": "script.json", "deck": "deck.json", "faq": "faq.json"}.get(stage)
     previous = store.read_json(demo_id, output_file) if output_file else None
     try:
+        # Dispatch to the actual implementation; graph nodes do not contain the product-generation logic.
+        # Input: stage and revision instruction. Output: the result returned by the corresponding agent.
+        # Linked: server/agents/understand.py:run through server/agents/bundle.py:build implement these branches.
         if stage == "understand":
             out = understand.run(demo_id, emit, instruction)
         elif stage == "plan":
@@ -127,6 +169,9 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
             out = bundle.build(demo_id, emit)
         else:
             raise ValueError(stage)
+        # Reconcile approvals and mark the successful stage complete before notifying dependent stages.
+        # Input: old/new artifacts and stage result. Output: updated review flags, status, timing and logs.
+        # Linked: server/runlog.py:stage_report records details; server/cloud.py helpers optionally mirror the result.
         cards = changed_cards(stage, previous, store.read_json(demo_id, output_file)) if output_file else set()
         if cards:
             store.update(demo_id, lambda d: d["approvals"].update({card: False for card in cards}))
@@ -144,11 +189,17 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         raise
 
 
+# Update the overall demo status and notify the UI.
+# Input: demo ID and status text. Output: changed demo.json and a status event.
+# Linked: server/store.py:update saves it; server/events.py:publish announces it.
 def _set_status(demo_id: str, status: str) -> None:
     store.update(demo_id, lambda d: d.__setitem__("status", status))
     events.publish(demo_id, "status", status=status)
 
 
+# Append one review-chat message with optional structured details.
+# Input: demo ID, role, text and extra fields. Output: the saved message and a UI message event.
+# Linked: server/store.py:write_json stores conversation.json; server/agents/align.py supplies review replies.
 def _append_conversation(demo_id: str, role: str, text: str, **extra) -> dict:
     conv = store.read_json(demo_id, "conversation.json", []) or []
     msg = {"role": role, "text": text, "t": time.time(), **extra}
@@ -160,6 +211,9 @@ def _append_conversation(demo_id: str, role: str, text: str, **extra) -> dict:
 
 # ---------- phases ----------
 
+# Prepare a mascot and short voice preview for the selected persona when providers are available.
+# Input: plan.json and demo voice settings. Output: mascot metadata and voice_sample_audio when successful.
+# Linked: server/media.py:generate_mascot and server/agents/voice.py:sample create the preview assets.
 def _persona_sample(demo_id: str) -> None:
     p = store.read_json(demo_id, "plan.json")
     if not p:
@@ -185,6 +239,9 @@ def _persona_sample(demo_id: str) -> None:
 
 # ---------- align: message → actions → effects ----------
 
+# Apply the Align agent choices and collect any requested build or revision.
+# Input: actions, attachments and review context. Output: notes plus requested routes and saved edits.
+# Linked: server/agents/align.py:respond proposes actions; server/store.py validates edits; server/graph.py routes work.
 def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], context: str, requests: dict | None = None) -> list[str]:
     """Execute the align agent's structured actions. Build / revise are *requests*: collected into `requests` when the
     graph is driving (it routes them), or handed to the graph when called from a plain API route."""
@@ -195,12 +252,18 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
     revise_stage, revise_instr = None, []
     for a in actions:
         t = a["type"]
+        # Accept a review card and show the next unresolved review topic.
+        # Input: the Align action card name. Output: saved approval and the next review prompt.
+        # Linked: server/agents/align.py:current_card and card_prompt choose that next prompt.
         if t == "approve" and a.get("card"):
             store.update(demo_id, lambda d, c=a["card"]: d["approvals"].__setitem__(c, True))
             notes.append(f"approved {a['card']}")
             runlog.event(demo_id, f"Card approved: {a['card']}")
             nxt = align.current_card(store.load(demo_id))
             _append_conversation(demo_id, "agent", align.card_prompt(demo_id, nxt) if nxt else align.card_prompt(demo_id, "done"), system=True)
+        # Validate a fact correction, then invalidate content that relied on the old assertion.
+        # Input: supplied fact edits. Output: a versioned fact or a refusal, plus refreshed review requirements.
+        # Linked: server/store.py:edit_fact preserves old assertion meaning; server/graph.py later reruns stale stages.
         elif t == "edit_fact" and a.get("fact_id"):
             edits = {field: a["fact_" + field] for field in ("value", "claim") if a.get("fact_" + field)}
             edits.update({field: a["fact_" + field] for field in ("conditions", "truth", "source", "scope") if a.get("fact_" + field) is not None})
@@ -217,6 +280,9 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
             set_stage(demo_id, "understand", "done", message="fact correction saved and validated")
             set_stage(demo_id, "faq", "stale", message="fact edited — bank re-answers on the next build")
             store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+        # Exclude a fact from approved content without deleting the historical assertion.
+        # Input: fact ID. Output: approval false, stale dependent work and cleared review cards.
+        # Linked: server/store.py:set_fact_approval updates the registry read by the author and runtime.
         elif t == "remove_fact" and a.get("fact_id"):
             try:
                 store.set_fact_approval(demo_id, a["fact_id"], False)
@@ -235,6 +301,9 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                     u["status"] = "resolved"
                     notes.append(f"resolved {u['id']}")
             store.write_json(demo_id, "understanding.json", und)
+        # Save the requested buyer actions and invalidate affected script/visual review.
+        # Input: replacement CTA list. Output: updated plan.json and downstream stale status.
+        # Linked: server/agents/bundle.py:build later includes these reviewed calls to action.
         elif t == "set_ctas":
             p = store.read_json(demo_id, "plan.json") or {}
             if a.get("ctas"):
@@ -243,6 +312,9 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                 invalidate(demo_id, "plan")
                 store.update(demo_id, lambda d: d["approvals"].update(ctas=False, script=False, visuals=False))
                 notes.append(f"ctas set ({len(a['ctas'])})")
+        # Save persona changes and lock an explicitly selected voice identity.
+        # Input: persona/tone/voice fields. Output: revised plan/settings and an attempted sample recording.
+        # Linked: server/agents/voice.py:sample generates the preview; failures become notes rather than a silent voice change.
         elif t == "set_voice":
             p = store.read_json(demo_id, "plan.json") or {}
             v = p.setdefault("voice", {})
@@ -276,6 +348,9 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                 notes.append("build requested")
             else:
                 notes.append("build refused: cards not all approved")
+    # Turn newly attached evidence into a source reread when no other revision was selected.
+    # Input: attachments, context and accumulated actions. Output: an Understand revision request.
+    # Linked: server/graph.py:start_revise sends the new evidence back through the review workflow.
     if attachments and revise_stage is None and context == "align":
         revise_stage, revise_instr = "understand", ["New sources were added: " + ", ".join(a["name"] for a in attachments) + ". Incorporate them into the registry and visuals."]
     if revise_stage:
@@ -294,6 +369,9 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
     return notes
 
 
+# Handle one complete human-review chat turn and record what happened.
+# Input: demo ID, message, attachments and context. Output: reply, actions, notes and requested routes.
+# Linked: server/agents/align.py:respond generates structured choices; server/runlog.py:chat records the turn.
 def respond(demo_id: str, message: str, attachments: list[dict], context: str = "align") -> tuple[str, list[dict], list[str], dict]:
     """One alignment turn: record the user message, ask the align agent, execute its actions, record the reply.
     Returns (reply, actions, notes, requests) — the graph routes on `requests`."""

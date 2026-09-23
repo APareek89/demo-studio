@@ -16,11 +16,15 @@ import re
 from .. import store
 from . import deck, qa, rehearsal
 
+# Remove common question words before comparing FAQ wording.
+# This supports the legacy match helper; runtime_graph.py:reason separately handles conversational answers.
 STOP = set("the a an and or of to in on at for with by from as is are was were be been it its this that these those you your we our they their i me my "
            "do does did can will would could should may might have has had what which who how why when where much many any some there here about please tell "
            "give get got know want need like also just only very really if then than so".split())
 
 
+# Extract one question from a document line, removing common numbering and Markdown prefixes.
+# Returns a question or None for doc_questions; understand.py:extract_text supplies non-text document content.
 def question_from_line(line: str) -> str | None:
     """Read both question-only lines and common inline `1. **Question?** Answer` FAQ rows."""
     clean = re.sub(r"^\s*#{1,6}\s*", "", line or "").strip()
@@ -34,6 +38,8 @@ def question_from_line(line: str) -> str | None:
     return q if 8 <= len(q) <= 200 else None
 
 
+# Turn a question into useful words for the older FAQ matching path.
+# Returns a word set for match; the conversational path is separate in runtime_graph.py.
 def _tokens(text: str) -> set[str]:
     out = set()
     for w in re.findall(r"[a-z0-9][a-z0-9\-\.]*", (text or "").lower()):
@@ -44,10 +50,14 @@ def _tokens(text: str) -> set[str]:
     return out
 
 
+# Read FAQ-labelled sources, extract their questions and remove repeated wording.
+# Returns question strings; store.py:load locates sources and understand.py:extract_text reads documents.
 def doc_questions(demo_id: str) -> list[str]:
     """Lines ending in '?' from uploaded FAQ documents (text/markdown; PDFs via the same extractor the registry uses)."""
     demo = store.load(demo_id)
     qs: list[str] = []
+    # Read only FAQ-labelled text or document sources, and skip unreadable files.
+    # understand.py:extract_text handles document conversion before question_from_line selects the questions.
     for s in demo.get("sources", []):
         is_faq = s.get("role") == "faq" or "faq" in (s.get("name") or "").lower()
         if not is_faq or s.get("kind") not in ("text", "pdf", "doc"):
@@ -64,6 +74,8 @@ def doc_questions(demo_id: str) -> list[str]:
             q = question_from_line(line)
             if q:
                 qs.append(q)
+    # Remove repeated question text while keeping the first occurrence and its order.
+    # The returned list becomes the document portion of run; qa.py:answer supplies each answer later.
     seen, out = set(), []
     for q in qs:
         k = q.lower()
@@ -73,6 +85,8 @@ def doc_questions(demo_id: str) -> list[str]:
     return out
 
 
+# Hash fact text, conditions, approval states and the competition setting for cache reuse.
+# Reads the registry saved by understand.py:run; run uses the hash to decide whether old FAQ answers still apply.
 def _registry_hash(demo_id: str) -> str:
     und = store.read_json(demo_id, "understanding.json") or {}
     rows = [(f.get("id"), f.get("claim"), f.get("value"), f.get("conditions"), f.get("approved", True)) for f in und.get("facts", [])]
@@ -81,11 +95,15 @@ def _registry_hash(demo_id: str) -> str:
     return hashlib.sha256(json.dumps({"facts": rows, "competition": competition}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
 
 
+# Combine document and generated questions, answer them from evidence and save faq.json.
+# qa.py:answer supplies unvoiced answers; deck.py:slide_for adds routes and voice.py:render_script records them later.
 def run(demo_id: str, emit, force: bool = False) -> dict:
     demo = store.load(demo_id)
     n = int(demo.get("settings", {}).get("faq_questions", 20) or 20)
     docs = doc_questions(demo_id)
     emit(f"FAQ bank: {len(docs)} question(s) from your FAQ document" + (f", generating {max(0, n - len(docs))} more" if n > len(docs) else "") + "…")
+    # Compare the current fact registry with the saved FAQ fingerprint before reusing generated questions.
+    # Changed facts or a forced run rebuild the bank; rehearsal.py:generate_questions supplies missing questions.
     registry_hash = _registry_hash(demo_id)
     previous = store.read_json(demo_id, "faq.json") or {}
     same_registry = not force and previous.get("registry_hash") == registry_hash
@@ -96,6 +114,8 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
         emit("FAQ bank: the sources have not changed — keeping the generated questions.")
     else:
         generated = rehearsal.generate_questions(demo_id, want, bias="answerable") if want else []
+    # Keep each question's origin and reuse successful answers only for the same registry.
+    # New or failed entries pass through qa.py:answer without recording speech at this stage.
     questions = [(q, "document") for q in docs] + [(q, "generated") for q in generated]
     reusable = {e.get("question"): e for e in previous.get("entries", [])} if same_registry else {}
     prev_by_q = {e.get("question"): e for e in previous.get("entries", [])}
@@ -116,9 +136,13 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
                             "visual": r.get("visual"), "offer_callback": r.get("offer_callback", False), "clarifying_question": r.get("clarifying_question", ""), "audio": None})
         except Exception as e:
             entries.append({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": "", "fact_ids": [], "answered": False, "visual": None, "offer_callback": True, "clarifying_question": "", "audio": None, "error": str(e)[:160]})
+        # Checkpoint the entries processed so far, marking unfinished work as partial.
+        # store.py:write_json preserves progress; voice.py:render_script records completed answer text later.
         store.write_json(demo_id, "faq.json", {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(questions), "registry_hash": registry_hash, "partial": len(entries) < len(questions)})
     # every entry names the slide that carries its facts (else the slide whose topic / title the question uses) — the runtime
     # re-derives the route against the customer's current slide, so a stale id only ever costs a "jump" that became a "stay"
+    # Route answers to the existing deck by cited facts or topic, then save final counts and errors.
+    # deck.py:slide_for computes these IDs; this is why Deck precedes FAQ in graph.py:build_graph.
     slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
     for e in entries:
         e["slide_id"] = deck.slide_for(slides, e.get("fact_ids"), e["question"])[0] if slides else None
@@ -129,12 +153,16 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
     return out
 
 
+# Find an existing non-error FAQ answer using word overlap with the incoming question.
+# Returns a bank entry or None for legacy use; runtime_graph.py owns the conversational reasoning path.
 def match(demo_id: str, question: str) -> dict | None:
     """The bank entry whose question clearly means the same as the customer's, else None."""
     bank = store.read_json(demo_id, "faq.json") or {}
     qt = _tokens(question)
     if not qt:
         return None
+    # Compare meaningful word overlap and coverage, ignoring entries that never built successfully.
+    # Return only the best passing legacy match; the current conversation uses runtime_graph.py:reason instead.
     best, best_score = None, 0.0
     for e in bank.get("entries", []):
         if e.get("error"):  # never built — the live model answers instead

@@ -14,6 +14,8 @@ from ..llm import claude, gemini
 from .principles import TRUTH_RULES
 
 
+# Reuse a successful extraction only when its source versions, prompt, schema and model settings match.
+# Returns the validated model result; server/store.py:read_json and write_json keep the saved copy.
 def _cached_extraction(demo_id, kind, system, content, schema, call, *, source_versions=None, emit=None):
     """Resume successful immutable extraction work after a later stage failure.
 
@@ -22,6 +24,8 @@ def _cached_extraction(demo_id, kind, system, content, schema, call, *, source_v
     """
     if config.MOCK_LLM:
         return call()
+    # Build a fingerprint of the extraction inputs, rather than caching by filename alone.
+    # server/sources.py:EXTRACTION_VERSION also invalidates older extraction formats.
     key = {"version": 1, "kind": kind, "system": system, "content": content,
            "schema": schema.model_json_schema(), "extractor_version": sources.EXTRACTION_VERSION,
            "source_versions": source_versions or [],
@@ -37,12 +41,16 @@ def _cached_extraction(demo_id, kind, system, content, schema, call, *, source_v
             return result
         except (KeyError, ValueError):
             pass
+    # A cache miss calls the supplied extractor; an exception leaves no successful cache entry.
+    # Save its structured output so a later stage failure need not repeat this extraction.
     result = call()
     store.write_json(demo_id, path, {"key_hash": digest, "created_at": store.now(), "extractor_version": sources.EXTRACTION_VERSION,
                                      "source_versions": source_versions or [], "models": key["models"], "result": result.model_dump()})
     return result
 
 
+# Ask vision to divide footage into visible shots with timestamps, parts and quality scores.
+# server/llm/gemini.py:structured returns server/schemas.py:ShotsOut; run adds local shot IDs.
 VIDEO_PROMPT = """You are indexing product footage so a demo can seek to the exact moment that shows a feature.
 Split this video into shots (a shot = one continuous camera view or one distinct subject). For EACH shot give
 start and end in seconds (floats, covering the whole video in order), what is visible, the product part shown,
@@ -51,12 +59,16 @@ Be concrete and literal about what is visible — never infer specifications fro
 Product hint: {hint}
 Cap at 60 shots; merge very short cuts of the same subject."""
 
+# Ask vision for literal image descriptions and visible-part boxes, not inferred specifications.
+# server/schemas.py:ImagesOut preserves batch positions; run connects them to uploaded source IDs.
 IMAGES_PROMPT = """These are product images in the order given (index 0 first). For each image describe what is visible,
 the camera angle, and a quality score 1-5 for use as a demo visual. List EVERY distinct product part you can actually see
 (headlamp, grille, alloy wheel, touchscreen, seat, boot, charging port, badge, mirror…), each with a TIGHT bounding box
 [ymin, xmin, ymax, xmax] on a 0-1000 grid of that image and your confidence 0-1 that the part is visible and the box is tight.
 Set full_product true only when the whole product is in frame. Be literal — never infer specifications. Product hint: {hint}"""
 
+# Tell the document reader to extract cited assertions, unresolved questions and product/brand context.
+# Text from server/sources.py:source_text becomes server/schemas.py:FactsOut, separate from image tags.
 FACTS_SYSTEM = """You build the FACT REGISTRY for a spoken product demo. The registry is the ONLY thing the demo
 agent will be allowed to say. Rules:
 - Extract every customer-relevant fact from the sources: specs, prices, offers, warranty/policies, features,
@@ -76,6 +88,8 @@ agent will be allowed to say. Rules:
 Return only what the schema asks for.""" + "\n\n" + TRUTH_RULES
 
 
+# Keep competitor extraction tied to that competitor's supplied source and stated applicability.
+# server/schemas.py:CompetitorsOut stays separate from the main product facts consumed by the planner.
 COMP_SYSTEM = """You extract ONLY stated facts from the supplied competitor source, for a strictly-cited comparison.
 Rules: one fact per row, value exactly as stated with units, a locator and a short exact quote; kinds spec/price/offer/policy/
 feature/availability; never infer or round; ignore marketing adjectives. Name the product as the source names it.
@@ -87,6 +101,8 @@ belongs to, omit that fact rather than reconstructing the columns. A URL or mark
 linked brochure's contents. An unavailable/empty source yields no facts.""" + "\n\n" + TRUTH_RULES
 
 
+# Convert one vision-model part box into the normalized coordinates used by slides.
+# server/agents/visuals.py:part_boxes later exposes these names, boxes and confidence values.
 def _part(p) -> dict:
     """Gemini's [ymin, xmin, ymax, xmax] on a 0-1000 grid → {x, y, w, h} in 0-1, clamped and ordered."""
     b = [v for v in (p.box_2d or [])][:4] + [0, 0, 0, 0]
@@ -99,6 +115,8 @@ def _part(p) -> dict:
             "confidence": round(min(1.0, max(0.0, float(p.confidence or 0.0))), 3)}
 
 
+# When footage is the only visual input, turn a bounded set of good shots into ordinary image sources.
+# server/media.py:extract_still captures each midpoint; server/store.py:add_file_source registers it.
 def _stills_from_shots(demo_id: str, demo: dict, shots: list[dict], emit, max_stills: int = 12) -> int:
     """A demo with video but no images gets one still per good shot, added as ordinary image sources
     (role product, derived_from = the shot) so tagging, the deck and the player treat them like uploads."""
@@ -125,11 +143,15 @@ def _stills_from_shots(demo_id: str, demo: dict, shots: list[dict], emit, max_st
     return n
 
 
+# Combine the demo name, product category and URL into a short orientation hint for extraction.
+# These values come from server/store.py:load; the returned hint is context, not a cited product fact.
 def _hint(demo: dict) -> str:
     p = demo.get("product", {})
     return f"{demo.get('name','')} — {p.get('category','')} {p.get('url','')}".strip(" —")
 
 
+# Read an explicitly supplied verified-facts.csv as a fallback to unavailable reasoning extraction.
+# Resolve its source names to existing uploads, then return server/schemas.py:FactsOut or no manifest.
 def _verified_manifest(demo_id: str, demo: dict) -> schemas.FactsOut | None:
     """Load an explicit human-reviewed fact manifest when reasoning providers are unavailable."""
     manifests = [s for s in demo.get("sources", []) if s.get("kind") == "text" and s.get("name", "").lower() == "verified-facts.csv"]
@@ -141,6 +163,8 @@ def _verified_manifest(demo_id: str, demo: dict) -> schemas.FactsOut | None:
     by_name.update({s.get("url"): s for s in demo.get("sources", []) if s.get("url")})
     product, brand = {}, {}
     facts, unknowns = [], []
+    # Separate the CSV's product, brand, unknown and fact rows into their schema fields.
+    # Fact rows must identify a real source other than the manifest itself before they are accepted.
     for row in rows:
         record_type = (row.get("record_type") or "").strip().lower()
         if record_type == "product":
@@ -173,6 +197,8 @@ def _verified_manifest(demo_id: str, demo: dict) -> schemas.FactsOut | None:
     return schemas.FactsOut(product=schemas.Product(**product), facts=facts, unknowns=unknowns, brand=schemas.Brand(**brand))
 
 
+# Turn uploaded media and source text into understanding.json: visual tags, cited facts and gaps.
+# server/graph.py:understand invokes this stage; server/agents/plan.py:run consumes its saved output.
 def run(demo_id: str, emit, instruction: str = "") -> dict:
     demo = store.load(demo_id)
     prev = store.read_json(demo_id, "understanding.json")
@@ -182,6 +208,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     video_summaries: dict[str, str] = {}
     n_shot = 0
 
+    # Prepare product footage and ask Gemini for shot boundaries and visible subjects.
+    # server/media.py:prepare_video provides the model file; source_id keeps each shot tied to its upload.
     # ---- visuals (Gemini) ----
     videos = [s for s in demo["sources"] if s["kind"] == "video" and s.get("role") != "intro_video"]
     imgs = [s for s in demo["sources"] if s["kind"] == "image"]
@@ -206,6 +234,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     if not imgs and shots and _stills_from_shots(demo_id, demo, shots, emit):
         demo = store.load(demo_id)
         imgs = [s for s in demo["sources"] if s["kind"] == "image"]
+    # Send actual image bytes in batches; retain each file hash so unchanged tagging can be reused.
+    # The returned descriptions and boxes feed server/agents/visuals.py:catalogue and the planner's choices.
     if imgs:
         emit(f"Looking at {len(imgs)} image{'s' if len(imgs) != 1 else ''}…")
         for i in range(0, len(imgs), 12):
@@ -229,6 +259,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 # Don't fail the whole read for a transient vision outage: keep the images untagged and say so.
                 emit(f"Image tagging unavailable ({gemini.describe_error(e)[:90]}) — keeping the images untagged; re-read later to tag them.")
                 by_index = {}
+            # Assign imNN identities in source order and attach each model result to its original upload.
+            # On a tagging outage the image remains available, explicitly untagged and without part boxes.
             for j, s in enumerate(batch):
                 im = by_index.get(j)
                 images.append({
@@ -238,6 +270,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                     "full_product": bool(im.full_product) if im else False,
                 })
 
+    # Discover bounded product pages, then choose active document sources for text extraction.
+    # server/crawl.py:ingest retains evidence; control manifests are not ordinary product evidence here.
     # ---- complete bounded source evidence, then fact extraction in bounded batches ----
     # MOCK_LLM performs no discovery/network requests, even if a fixture contains URLs.
     if not config.MOCK_LLM:
@@ -256,6 +290,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     # Identical uploaded/fetched brochures are extracted once. Both original source
     # records and revisions remain in the audit; the uploaded document is canonical.
     evidence_sources.sort(key=lambda s: (s["kind"] == "url" or s.get("origin") == "website",))
+    # Deduplicate identical bytes within the same product/competitor role and track extraction coverage.
+    # server/sources.py:source_text reads each retained source within shared document/page budgets.
     for source in evidence_sources:
         content_hash = source.get("revision")
         if source.get("path") and source["kind"] != "url":
@@ -287,6 +323,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 used["pages"] += len(st.get("pages") or [])
         extracted[source["id"]] = st
         extraction_coverage.append({"source_id": source["id"], "chunks": len(st.get("chunks", [])), "warnings": st.get("warnings", []), "error": st.get("error")})
+    # Persist extraction warnings, duplicates and used budgets beside the crawl coverage report.
+    # Warnings make coverage incomplete; they are not silently converted into an empty but complete source.
     coverage = store.read_json(demo_id, "knowledge/coverage.json") or {}
     coverage["extraction"] = extraction_coverage
     coverage["document_totals"] = document_budgets
@@ -298,6 +336,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     if any(row["warnings"] or row["error"] for row in extraction_coverage):
         coverage["complete"] = False
     store.write_json(demo_id, "knowledge/coverage.json", coverage)
+    # Group located source chunks into bounded reader inputs while retaining raw table cells.
+    # Source IDs and locators let server/knowledge.py:reconcile later track each extracted assertion.
     batches, current, size = [], [], 0
     for source in docs:
         st = extracted[source["id"]]
@@ -317,6 +357,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     outputs = []
     source_versions = [{"id": s["id"], "revision": s.get("revision"), "extraction_version": s.get("extraction_version", 1)}
                        for s in store.load(demo_id)["sources"] if s["id"] in extracted]
+    # Extract structured facts for each text batch, reusing successful exact-input results when possible.
+    # server/llm/claude.py:structured supplies FactsOut; only the explicit manifest handles eligible failures.
     for batch_number, batch in enumerate(batches, 1):
         emit(f"Extracting evidence batch {batch_number}/{len(batches)}…")
         prompt = f"PRODUCT HINT: {hint}\nVISUALS (context only, never factual evidence): {len(shots)} shots, {len(images)} images."
@@ -334,6 +376,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 outputs = [manifest]
                 break
             raise RuntimeError(f"Fact extraction failed in batch {batch_number}: {claude.describe_error(e)}") from e
+    # Combine batch facts and gaps, keeping the first result's product and brand description.
+    # Exact repeated assertions are deduplicated here before server/knowledge.py:reconcile assigns durable identity.
     # Exact duplicates across overlapping chunk boundaries are the same extraction.
     # Mock fixtures intentionally contain identical rows; retain their legacy contract.
     merged_facts, seen_facts, merged_unknowns = [], set(), []
@@ -348,6 +392,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 merged_unknowns.append(unknown)
     out = outputs[0].model_copy(update={"facts": merged_facts, "unknowns": merged_unknowns})
 
+    # Add working fact and gap IDs plus review fields to the model output.
+    # These fact IDs are reconciled with previous knowledge later; gaps start with status=open.
     facts = []
     for i, f in enumerate(out.facts, 1):
         d = f.model_dump()
@@ -358,6 +404,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         d = u.model_dump()
         d.update({"id": f"U{i:02d}", "status": "open", "origin": "extraction"})
         unknowns.append(d)
+    # Read competitor chunks into a separate competitor list, with their own citations and IDs.
+    # server/schemas.py:CompetitorsOut structures the response; a failed rival source is reported and skipped.
     # Rival documents use the same page-located text extractor, but never enter
     # the product registry. Uploaded sources can retain their official URL as
     # metadata; source_text still reads their local document, not that URL.
@@ -379,11 +427,15 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 length += len(text)
             if parts:
                 rival_batches.append("\n\n".join(parts))
+            # Extract each located competitor batch with its own source identity and reusable cache entry.
+            # server/llm/claude.py:structured returns competitor facts, never additions to the product registry.
             for text in rival_batches:
                 rival_prompt = f"=== SOURCE {s['id']} · competitor · {s['kind']} · {st['name']} ===\nSOURCE URL: {s.get('url') or '(not supplied; cite the uploaded document)'}\n{text}"
                 cout_parts.append(_cached_extraction(demo_id, "competitor", COMP_SYSTEM, {"prompt": rival_prompt, "max_tokens": 12000}, schemas.CompetitorsOut,
                                                       lambda: claude.structured(COMP_SYSTEM, rival_prompt, schemas.CompetitorsOut, max_tokens=12000),
                                                       source_versions=[row for row in source_versions if row["id"] == s["id"]], emit=emit))
+            # Join batches that describe the same named competitor before assigning its local fact IDs.
+            # The source locator/quote survives this merge for later cited comparison in server/agents/qa.py:answer.
             by_name = {}
             for part in cout_parts:
                 for competitor in part.competitors:
@@ -402,6 +454,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 d.update({"id": f"C{len(competitors)+1}-{fi:03d}", "approved": True, "edited": False})
                 cfacts.append(d)
             competitors.append({"name": comp.name, "url": s.get("url", ""), "source_id": s["id"], "facts": cfacts, "fetched_at": store.now()})
+    # Assemble the registry and visual catalogue, then preserve assertion identity across source revisions.
+    # server/knowledge.py:reconcile handles that history; server/agents/visuals.py:build_map suggests fact-image links.
     und = {
         "product": out.product.model_dump(), "shots": shots, "images": images,
         "facts": facts, "unknowns": unknowns, "brand": out.brand.model_dump(),
@@ -418,6 +472,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     store.write_json(demo_id, "understanding.json", und)
     store.log(demo_id, "understand", {"facts": len(facts), "unknowns": len(unknowns), "shots": len(shots), "images": len(images)})
 
+    # Refresh the demo's product label from the extracted product metadata and report the stage totals.
+    # server/media.py:enhance_images may prepare display assets; its failure does not discard the registry.
     def upd(d):
         d["product"]["name"] = out.product.name or d["product"]["name"]
         d["product"]["category"] = out.product.category

@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Comment-only study checks — 23 September 2026
+
+Loop remains off. The 15 annotated source files introduce no behavior or new eval cases. Against baseline `ba448ff`, all 14 Python ASTs/non-comment token streams and the player JavaScript AST/24,888 executable tokens are identical. Required deck 320/320, acceptance 24/24 and both mock-smoke phases pass before and after, using isolated temporary data/checkpoints and blocked outbound sockets (zero attempts). Python compilation, Node syntax and diff checks pass. These checks confirm preserved behavior; they are not a new live demo or provider-quality test. Local receipts are under `output/comment-guide-2026-09-23/`.
+
 ## Deployment checks — 23 September 2026
 
 Loop remains off. The user explicitly authorized local restart, GitHub master publication and existing-EC2 deployment; no paid reasoning/voice test is implied. Before the portability change: deck320, accept24, both smoke phases, transmission17, live-table21, pitch7 and client10 passed with0outbound. The new `evals/crawl_browser_contract.py` has9 groups covering valid/invalid operator paths, preserved Mac behavior, installed managed Chromium, no executable, sandbox launch flags and no unsafe launch fallback;7 existing crawl controls also pass. Final post-change gates and remote read-only/transport checks are recorded in the release report. Actual rendered extraction requires separately provisioned browser/OS libraries; mock selection tests cannot establish that capability.

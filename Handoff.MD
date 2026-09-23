@@ -1,5 +1,11 @@
 # Handoff.MD — Demo Studio
 
+## Code study annotations — 23 September 2026
+
+At Anand's request, the 15 source files from the build/playback walkthrough now have short, plain-English comments above functions, classes and meaningful internal blocks: purpose, inputs/outputs and related functions. Scope: `server/graph.py`, `orchestrator.py`, `store.py`, `schemas.py`; agents `understand`, `plan`, `author`, `visuals`, `deck`, `faq`, `voice`, `rehearsal`, `bundle`; `web/player/player.js`; and the reviewed CRETA installer `output/creta-night-final/install_reviewed_session.py`. Start with `server/graph.py`, then follow the named agent functions. References use function names so added comments do not make them stale.
+
+Python ASTs and executable token sequences match baseline `ba448ff` for all 14 Python files; the player JavaScript AST and 24,888 executable tokens also match. Prompts, schemas, defaults and application behavior are unchanged. Required free gates pass before and after: deck 320/320, acceptance 24/24 and both smoke phases, in isolated storage with zero outbound socket attempts. Python compilation, JavaScript syntax and diff checks pass. This is a local documentation commit on `codex/creta-conversational-demo`; the deployed release below remains unchanged. No demo rebuild, paid calls or new session.
+
 ## Deployed release — 23 September 2026
 
 **Local and AWS are running code `63abb8569eba605199e400aa6c7524b881609ff4`; it is published to the private `APareek89/demo-studio` default branch `master`.** Anand explicitly authorized this restart, publication and deployment, superseding the previous hold. No paid model/voice calls or new customer demo sessions were made.

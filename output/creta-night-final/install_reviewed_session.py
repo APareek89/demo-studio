@@ -19,6 +19,8 @@ from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import patch
 
+# Locate this historical integration tool and keep its storage and cloud behavior local.
+# The application modules loaded below use config.py settings; this file is not a graph.py:build_graph stage.
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
@@ -27,6 +29,8 @@ os.environ["STORAGE_BACKEND"] = "local"
 from server import config, knowledge, orchestrator, schemas, store, usage
 from server.agents import author, bundle, deck, speech_style, voice
 
+# Pin the reviewed Creta demo, immutable v7 knowledge snapshot and session-authored candidate files.
+# main validates these identities before store.py:write_json can replace any working content.
 DID = "dm_41513908"
 SID = "kb_2d616ba1bcec1469e8c7ab40"
 PLAN = OUT / "plan.session.json"
@@ -34,6 +38,8 @@ SCRIPT = OUT / "script.session.json"
 REAL_DATA = ROOT / "data/demos"
 # Session-authored, reviewed labels. Qualifiers fit intact; unseen functions and
 # compound/count claims stay in the panel rather than acquiring a guessed box.
+# Keep the reviewed short labels, citations, named parts and reveal lines for this specific installation.
+# deck.py:clean_callouts and deck.py:place_callouts still validate and lay out these labels.
 REVIEWED_CALLOUTS = {
     "creta-cabin-intro": [("Panoramic roof · selected trims", ["F247"], "sunroof", 0)],
     "cabin-comfort-proof": [("Panoramic roof · selected trims", ["F247"], "sunroof", 0),
@@ -44,16 +50,24 @@ REVIEWED_CALLOUTS = {
     "convenience-features": [("Bose audio · selected trims", ["F164"], "", 0)],
 }
 
+# Read one file and return its SHA-256 fingerprint for the review receipt.
+# Used around files written by store.py:write_json; hashing does not load application state.
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
+# Serialize a value consistently and return its SHA-256 fingerprint.
+# Used with orchestrator.py:semantic to bind reviewed deck and FAQ content without incidental timestamps.
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
+# Write a formatted JSON audit or preview file, creating its parent folder if needed.
+# Takes a path and value; production demo writes remain separate through store.py:write_json.
 def save(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
+# Fingerprint understanding, sources and knowledge files that this installation must preserve.
+# Returns relative-path hashes checked after bundle.py:build; it does not change those source files.
 def protected_hashes(base):
     files = [base / "understanding.json"]
     for name in ("sources", "knowledge/snapshots", "knowledge/sources"):
@@ -61,8 +75,12 @@ def protected_hashes(base):
         files += [p for p in folder.rglob("*") if p.is_file()] if folder.exists() else []
     return {str(p.relative_to(base)): sha(p) for p in files}
 
+# Validate the session-authored script, assign runtime IDs and clear every old audio reference.
+# Returns a runtime script using author.py:validate and author.py:timeline; it does not call Author generation.
 def runtime_candidate():
     old = store.read_json(DID, "script.json")
+    # Validate candidate content against the current approved registry before assigning runtime line IDs.
+    # author.py:validate checks the script and author.py:_assign_ids creates the IDs used by deck and audio joins.
     sc = schemas.ScriptOut.model_validate_json(SCRIPT.read_text()).model_dump()
     und = store.read_json(DID, "understanding.json")
     issues = author.validate(sc, und, store.load(DID)["settings"].get("audience", "everyday"))
@@ -70,6 +88,8 @@ def runtime_candidate():
         raise ValueError(issues)
     author._assign_ids(sc)
     sc.update(version=int(old.get("version", 0)) + 1, issues=[], intake_audio={"q1": None, "q2": None})
+    # Clear old narration and check-in audio so new words cannot inherit previous recordings.
+    # voice.py:render_script must supply matching clips later; author.py:timeline initially provides estimated timing.
     for seg in sc["segments"]:
         seg["checkin_audio"] = None
     for line in all_lines(sc):
@@ -79,9 +99,13 @@ def runtime_candidate():
     author.timeline(sc)
     return sc
 
+# Collect main, deeper, closing and overview line objects from a candidate script.
+# Returns the recording set shared with voice.py:render_script expectations; check-ins are handled separately.
 def all_lines(sc):
     return [l for s in sc["segments"] for l in s["lines"] + s.get("deeper", [])] + sc["closing"] + [sc["runtime_overview"]]
 
+# List candidate narration, check-ins, intake, existing FAQ answers and standard fillers.
+# Returns IDs, text and delivery for estimate and require_matching_voice; voice.py:render_script records these categories.
 def speech_items(sc):
     rows = [(l["id"], l["text"], l.get("delivery")) for l in all_lines(sc) if not l.get("unverified")]
     rows += [(s["id"] + "-checkin", s["checkin"], None) for s in sc["segments"] if s.get("checkin")]
@@ -90,17 +114,25 @@ def speech_items(sc):
     rows += [("filler-" + k, t, None) for k, t in voice.FILLERS.items() if t]
     return rows
 
+# Check candidate-persona cache matches and estimate the configured cost of missing clips.
+# Returns clip counts and estimated spend using voice.py:_cached; this is not a provider quote or a speech request.
 def estimate(sc, plan):
     demo = store.load(DID)
     original_read = store.read_json
+    # Substitute only the candidate Plan during cache estimation without writing it to demo storage.
+    # voice.py:_delivery_identity reads that Plan to include the candidate persona in each cache key.
     def candidate_read(did, name, *args, **kwargs):
         return plan if did == DID and name == "plan.json" else original_read(did, name, *args, **kwargs)
     rows = []
+    # Inspect cache hits for every prepared speech item, using the candidate voice identity.
+    # voice.py:_cached reads existing files only; speech_style.py:prepare supplies the character-count text.
     with patch.object(store, "read_json", side_effect=candidate_read):
         for identifier, text, delivery in speech_items(sc):
             normalized = speech_style.prepare(text, delivery)["text"]
             cached = voice._cached(DID, text, demo, delivery=delivery)
             rows.append({"id": identifier, "characters": len(normalized), "cached": bool(cached), "cache_path": cached})
+    # Estimate missing-clip spend using configured character pricing and exchange rate.
+    # usage.py price constants are the accounting basis; this does not query provider pricing or include stress-session cost.
     chars = sum(row["characters"] for row in rows if not row["cached"])
     rate = usage.PRICES["sarvam-tts"]["per_1k_chars_inr"]
     return {"clip_count": len(rows), "cached_clip_count": sum(row["cached"] for row in rows),
@@ -110,8 +142,12 @@ def estimate(sc, plan):
             "basis": "Configured usage-tracker estimate, not a fresh provider quote; excludes retry charges and the separate live stress session.",
             "clips": rows}
 
+# Install the reviewed Plan/script and build a deterministic deck with explicitly pinned images.
+# Uses deck.py:build and deck.py:clean_callouts, then reroutes FAQ entries; no Planner, Author or image model is run.
 def install(plan, sc, emit):
     # Match Align's invalidation semantics without its partial-edit limitations.
+    # Save the reviewed content and reset downstream stage/approval state before rebuilding its deck.
+    # orchestrator.py:invalidate supplies normal dependency invalidation without rerunning plan.py:run or author.py:run.
     store.write_json(DID, "plan.json", plan)
     store.write_json(DID, "script.json", sc)
     orchestrator.invalidate(DID, "plan")
@@ -122,6 +158,8 @@ def install(plan, sc, emit):
     # Old overrides use positional slide IDs; reordered proof blocks must never
     # inherit an old safety image/title/callout at the new cockpit's position.
     store.write_json(DID, "deck-overrides.json", {"slides": []})
+    # Build a baseline deck without asking the title/callout model, after clearing old positional overrides.
+    # deck.py:build supplies the normal structure; the next block deliberately replaces automatic image scoring.
     with patch.object(config, "MOCK_LLM", True):
         de = deck.build(DID, emit)
     de["method"] = "derived; reviewed session image plan"
@@ -131,6 +169,8 @@ def install(plan, sc, emit):
     images = {i["id"]: i for i in und["images"] if store.visual_allowed(demo, i["source_id"])}
     allowed = {f["id"] for f in und["facts"] if f.get("approved", True)}
     overrides = []
+    # Pin each content slide to the first allowed reviewed Plan image and its reviewed script title.
+    # This is specific to the approved session install; normal deck.py:choose_image scores tags and Author references.
     for slide in de["slides"]:
         planned = plans.get(slide.get("segment_id"))
         if planned:
@@ -140,6 +180,8 @@ def install(plan, sc, emit):
             slide["title"] = next(s["title"] for s in sc["segments"] if s["id"] == planned["id"])
             if author.words(slide["title"]) > deck.MAX_TITLE_WORDS:
                 raise ValueError("Reviewed title exceeds deck budget")
+            # Check reviewed labels against their exact spoken-line citations, then apply production cleanup and placement.
+            # deck.py:clean_callouts filters text and deck.py:place_callouts uses real boxes or a side panel.
             raw = [{"text": text, "fact_ids": ids, "part": part, "reveal_on_line": index}
                    for text, ids, part, index in REVIEWED_CALLOUTS.get(planned["id"], [])]
             for callout in raw:
@@ -153,11 +195,15 @@ def install(plan, sc, emit):
             deck.place_callouts(slide, images.get(slide["image_id"]))
         overrides.append({"slide_id": slide["id"], "title": slide["title"], "image_id": slide["image_id"],
                           "callouts": [{k: c[k] for k in ("id", "text", "fact_ids", "part", "reveal_on_line")} for c in slide["callouts"]]})
+    # Save the reviewed deck plus fresh overrides tied to its new slide ordering.
+    # schemas.py:Deck validates the structure; deck.py:apply_overrides can preserve these choices on later rebuilds.
     schemas.Deck.model_validate(de)
     store.write_json(DID, "deck.json", de)
     store.write_json(DID, "deck-overrides.json", {"slides": overrides})
     emit(f"Reviewed on-screen layer: {sum(len(s['callouts']) for s in de['slides'])} cited callouts; exact planned images and titles applied.")
     orchestrator.set_stage(DID, "deck", "done", message="Deterministic layout of reviewed script and image plan; no model calls")
+    # Keep the existing approved FAQ text, but recompute slide routes and clear all old answer/filler audio.
+    # deck.py:slide_for replaces stale positional routes; voice.py:render_script will record matching clips.
     bank = store.read_json(DID, "faq.json") or {}
     for entry in bank.get("entries", []):
         if set(entry.get("fact_ids", [])) - allowed:
@@ -170,10 +216,14 @@ def install(plan, sc, emit):
     store.write_json(DID, "fillers.json", {k: {"text": text, "audio": None} for k, text in voice.FILLERS.items()})
     return de
 
+# Require every assigned clip to match current text, identity and delivery before publication.
+# Uses voice.py:_cached and voice.py:input_hash; also requires an actually measured 10-15 second overview.
 def require_matching_voice():
     sc, demo = store.read_json(DID, "script.json"), store.load(DID)
     if not demo["settings"].get("voice_locked") or sc.get("voice_provider") != "sarvam" or sc.get("voice_name") != "priya":
         raise RuntimeError("Publication requires the locked Sarvam/Priya voice")
+    # Compare every required assigned clip with its exact current-content cache entry.
+    # voice.py:_cached checks text, provider, speaker and delivery; voice.py:input_hash also checks the whole voice stage.
     assigned = {l["id"]: l.get("audio") for l in all_lines(sc)}
     assigned.update({s["id"] + "-checkin": s.get("checkin_audio") for s in sc["segments"] if s.get("checkin")})
     assigned["intake-q1"] = sc.get("intake_audio", {}).get("q1")
@@ -185,11 +235,17 @@ def require_matching_voice():
         raise RuntimeError("Missing or mismatched current-content audio: " + ", ".join(bad))
     if sc.get("voice_failures"):
         raise RuntimeError("Voice stage recorded failures; publication withheld")
+    # Require an actually measured overview within the agreed duration range, not a word-count estimate.
+    # voice.py:_render_one records these measurement flags; failure stops publication without an automatic rerun.
     overview = sc["runtime_overview"]
     if not overview.get("duration_exact") or not overview.get("duration_in_range"):
         raise RuntimeError("Recorded overview must actually meet the 10–15 second target; no automatic retry")
 
+# Run an isolated preview by default, or the separately authorized one-shot narration/publication path.
+# Checks a hash-bound receipt before voice.py:render_script and bundle.py:build; this historical tool is not the normal graph entry point.
 def main():
+    # Parse preview versus publication mode and verify the immutable v7 starting bundle.
+    # schemas.py:Plan validates the candidate; the tool refuses another baseline instead of silently adapting.
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--render-publish", action="store_true")
     parser.add_argument("--review-receipt", type=Path)
@@ -204,17 +260,25 @@ def main():
     plan["voice_sample_audio"] = None
     if plan["voice"]["suggested_voice"] != "priya":
         raise RuntimeError("Candidate changed the locked voice")
+    # Capture protected source hashes and bind candidate files and baseline content into a manifest.
+    # The receipt later checks these exact hashes; knowledge.py:snapshot must keep the existing evidence identity.
     before = protected_hashes(base)
     manifest = {"plan_sha256": sha(PLAN), "script_sha256": sha(SCRIPT), "baseline_bundle_sha256": original_bundle_sha,
                 "baseline_faq_sha256": sha(base / "faq.json"),
                 "knowledge_snapshot_id": SID, "baseline_version": 7, "new_version": 8}
     messages = []
+    # Collect progress messages for the final manifest while also printing them.
+    # Passed into deck.py:build, voice.py:render_script and bundle.py:build as their progress callback.
     def emit(message):
         messages.append(str(message)); print(message, flush=True)
     blocked_calls = []
+    # Count and reject any attempted network connection in the isolated preview.
+    # The socket patches below enforce this even if a called application helper unexpectedly tries a provider.
     def blocked(*a, **kw):
         blocked_calls.append(True); raise AssertionError("No network permitted in deterministic integration")
     with ExitStack() as stack:
+        # For preview, copy working JSON and knowledge into a temporary demo folder and block sockets.
+        # Source/audio symlinks are read-only by this branch's behavior; config.py:DATA_DIR redirects store.py reads and writes.
         if not live:
             sandbox = Path(tempfile.mkdtemp(prefix="session-dry-run-", dir=OUT))
             clone = sandbox / "demos" / DID
@@ -231,6 +295,8 @@ def main():
             for name in ("socket.create_connection", "socket.socket.connect", "socket.socket.connect_ex"):
                 stack.enter_context(patch(name, side_effect=blocked))
         else:
+            # For live installation, require real local storage and a receipt for these exact candidate hashes.
+            # All six store.py card approvals must be true in the receipt; this check does not claim the user personally read them.
             if config.DATA_DIR.resolve() != REAL_DATA.resolve() or config.MOCK_LLM:
                 raise RuntimeError("Live mode requires real local storage and non-mock speech")
             if not args.review_receipt:
@@ -240,14 +306,20 @@ def main():
                 raise RuntimeError("Review receipt does not approve these exact candidates and v7 baseline")
 
         # These paths are forbidden even in the paid narration mode.
+        # Block generation, model-written deck content, Rehearsal and image enhancement in both modes.
+        # This path installs reviewed session work rather than calling author.py:run or rehearsal.py:run.
         for name in ("server.llm.claude.structured", "server.agents.deck._ask_model", "server.agents.rehearsal.run", "server.media.enhance_images"):
             stack.enter_context(patch(name, side_effect=AssertionError("No model/rehearsal/image generation in reviewed integration")))
+        # Prepare the candidate and estimate missing narration before changing working content.
+        # voice.py:_cached provides cache evidence; the configured estimate must fit the tool's narration reserve.
         sc = runtime_candidate()
         cost = estimate(sc, plan)
         manifest["narration_estimate"] = cost
         save(OUT / "integration-voice-estimate.json", cost)
         if cost["estimated_usd"] > 1.50:
             raise RuntimeError("Configured narration estimate exceeds the $1.50 reserve")
+        # Create a one-shot marker and back up working JSON plus knowledge before the live installation.
+        # The baseline bundle hash must match the backup before store.py-backed mutations begin.
         if live:
             marker = OUT / "render-publish.started.json"
             with marker.open("x") as handle:
@@ -261,6 +333,8 @@ def main():
             if sha(backup / "bundle.json") != original_bundle_sha:
                 raise RuntimeError("Baseline backup mismatch")
 
+        # Install the candidate, then compare deck and FAQ semantics with the reviewed preview receipt.
+        # orchestrator.py:semantic removes incidental fields; mismatches stop before narration or publication.
         de = install(plan, sc, emit)
         manifest["deck_semantic_sha256"] = digest(orchestrator.semantic(de))
         manifest["faq_semantic_sha256"] = digest(orchestrator.semantic(store.read_json(DID, "faq.json")))
@@ -268,10 +342,14 @@ def main():
             raise RuntimeError("Deterministic deck differs from the reviewed dry-run deck; no narration or publication")
         if live and receipt.get("faq_semantic_sha256") != manifest["faq_semantic_sha256"]:
             raise RuntimeError("FAQ routing differs from reviewed dry run; no narration or publication")
+        # Apply six-card approvals to the selected store; live mode has already checked the receipt.
+        # orchestrator.py:apply_actions records these approvals before the final bundle can pin its snapshot.
         orchestrator.apply_actions(DID, [{"type": "approve", "card": c} for c in store.CARDS], [], "align")
         if not all(store.load(DID)["approvals"].get(c) for c in store.CARDS):
             raise RuntimeError("All six cards must be approved")
 
+        # Only live mode records narration once and verifies every required matching clip.
+        # voice.py:render_script writes audio; any failure leaves the old published bundle intact and marks the stage failed.
         if live:
             usage.current_demo.set(DID); usage.current_stage.set("voice")
             orchestrator.set_stage(DID, "voice", "running", message="One authorized matching-narration pass; no voice tests or automatic rerun")
@@ -284,6 +362,8 @@ def main():
                     raise AssertionError("Failed voice changed the published bundle") from exc
                 raise
             orchestrator.set_stage(DID, "voice", "done", message="Exact current-content Priya clips verified")
+        # The preview deliberately proves that cleared candidate audio cannot pass the publication guard.
+        # No voice.py:render_script call occurs here; the generated bundle remains confined to sandbox storage.
         else:
             try:
                 require_matching_voice()
@@ -295,6 +375,8 @@ def main():
 
         # The dry-run bundle is a sandbox preview only; the actual branch cannot
         # reach this point until the matching-audio guard has passed.
+        # Assemble either the sandbox preview or the guarded live v8 bundle, keeping the same evidence snapshot.
+        # bundle.py:build joins deck IDs and current audio; this tool does not run a new live customer stress session.
         built = bundle.build(DID, emit)
         assert built["version"] == 8 and built["knowledge_snapshot_id"] == SID
         assert [s["id"] for s in built["segments"]] == [s["id"] for s in sc["segments"]]
@@ -306,6 +388,8 @@ def main():
         manifest["messages"] = messages
         manifest["outbound_socket_attempts_in_dry_run"] = len(blocked_calls)
         manifest["mode"] = "published" if live else "sandbox preview, not published"
+        # Mark a successful live publication ready, or save preview files and an unsigned receipt template.
+        # orchestrator.py:_set_status changes live status only after the matching-audio and bundle checks pass.
         if live:
             orchestrator.set_stage(DID, "bundle", "done", message="Reviewed session v8; immutable v7 evidence preserved")
             orchestrator._set_status(DID, "ready")
@@ -315,6 +399,8 @@ def main():
             template = {**{k:manifest[k] for k in ("plan_sha256", "script_sha256", "baseline_bundle_sha256", "baseline_faq_sha256", "knowledge_snapshot_id", "baseline_version", "new_version", "deck_semantic_sha256", "faq_semantic_sha256")},
                         "reviewer": "", "approvals": {c: False for c in store.CARDS}}
             save(OUT / "integration-review.template.json", template)
+        # Check that sources, understanding and immutable knowledge remain unchanged, then save the audit manifest.
+        # This verifies protected files around bundle.py:build; it does not turn an offline preview into live test evidence.
         if protected_hashes(base) != before:
             raise AssertionError("Original sources, understanding or immutable knowledge snapshots changed")
         if not live and sha(base / "bundle.json") != original_bundle_sha:
@@ -322,5 +408,7 @@ def main():
         save(OUT / ("integration-published.json" if live else "integration-dry-run.json"), manifest)
         print(json.dumps({"mode":manifest["mode"], "version":built["version"], "estimated_voice_usd":cost["estimated_usd"], "new_clips":cost["new_clip_count"], "outbound_dry_run":len(blocked_calls)}))
 
+# Run this one-shot installer only when the file is launched directly.
+# Normal builds instead enter graph.py:build_graph; reading this script is not an authorization to execute it.
 if __name__ == "__main__":
     main()

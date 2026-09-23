@@ -9,6 +9,8 @@ from ..llm import claude
 from . import speech_style, visuals
 from .principles import AUTHOR_CRAFT, PRINCIPLES, audience_instruction, fact_context, language_instruction
 
+# Brief the writer on grounded dialogue, per-line visual references, pacing and explicit check-in questions.
+# server/schemas.py:ScriptOut describes the result; visuals.py:align separately audits image coverage afterward.
 AUTHOR_SYSTEM = """You are the Author: write the final spoken delivery of the Planner's product-demo outline. The customer
 can interrupt at any moment, so each segment must be intelligible on its own while the full tour flows as a conversation.
 
@@ -78,6 +80,8 @@ Hard rules:
 {language}"""
 
 
+# Read an explicitly supplied reviewed script when the stage's reasoning providers are unavailable.
+# server/schemas.py:ScriptOut validates its structure; the normal checks still run on the returned draft.
 def _verified_script(demo_id: str, demo: dict) -> schemas.ScriptOut | None:
     """Load a human-reviewed script bundle when both reasoning providers are unavailable."""
     manifests = [s for s in demo.get("sources", []) if s.get("kind") == "text"
@@ -90,12 +94,18 @@ def _verified_script(demo_id: str, demo: dict) -> schemas.ScriptOut | None:
     return schemas.ScriptOut.model_validate_json(raw)
 
 
+# Recognize common figures/claims so uncited lines can be flagged; these patterns are not full entailment tests.
+# The shared ungrounded check is also used by server/agents/deck.py:clean_callouts for on-screen text.
 NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|gb|mb|tb|mah|w\b|v\b|cc\b|mm|cm|inch|inches|₹|rs\.?|rupees|usd|\$|€)|₹\s*\d|\$\s*\d|\d{2,}|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|\d+)(?:\s+|-)?(?:airbags?|stars?|seats?|seaters?|speakers?|colou?r options?|apps?|variants?|years?|months?)\b)", re.I)
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
+# Set word budgets and an estimated speaking speed before real audio durations are available.
+# server/agents/voice.py:render_script later calls timeline with recorded audio; estimates are not playback guarantees.
 LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 36}  # ≤ 20 s per batch at the measured ~1.9 words/s of the recorded voice
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
 ROUTE_LIMIT = 360  # ≈ 3 minutes at the measured ~1.9 words/s: intro + outcome + best 3 proof + features + establish + closing
+# Flag technical register and unsupported shift promises without inventing replacement benefits.
+# Check-in wording must fit web/player/player.js:waitFor's continue-or-detail interaction, not reverse it.
 JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP|\d[\d,.]*\s*(?i:mm|millimet(?:re|er)s?)|(?i:mm|millimet(?:re|er)s?|length|four[ -]cylinder|4[ -]cylinder|quad[ -]beam|parametric|dual[ -]clutch))\b")
 _SHIFT_PROMISE = re.compile(r"\b(?:imperceptible|seamless|jerk[- ]free)\s+(?:gear\s*)?(?:shifts?|changes?)\b|\b(?:won't|will not|cannot|can't)\s+(?:even\s+)?feel\s+(?:the\s+)?(?:gear\s*)?(?:shifts?|changes?)\b", re.I)
 # Editorial English-language guard, not a general semantic classifier. The existing
@@ -109,10 +119,14 @@ _CHECKIN_OPT_IN = re.compile(
 )
 
 
+# Count whitespace-separated words for draft budgets and estimated durations.
+# server/agents/deck.py uses this helper for compact titles and labels; no model call is involved.
 def words(t: str) -> int:
     return len(re.findall(r"\S+", t or ""))
 
 
+# Filter citations against the allowed IDs and flag recognizable claims when no valid citation remains.
+# Returns the retained IDs plus a warning flag; server/agents/deck.py:clean_callouts reuses this minimum check.
 def ungrounded(text: str, fact_ids: list[str] | None, allowed: set[str]) -> tuple[list[str], bool]:
     """The one rule every spoken or shown line obeys — script lines, runtime bridges, custom batches, slide callouts:
     keep only the fact ids that exist; if none are left and the text states a figure or claim, it is ungrounded."""
@@ -120,6 +134,8 @@ def ungrounded(text: str, fact_ids: list[str] | None, allowed: set[str]) -> tupl
     return valid, bool(not valid and (NUMBERISH.search(text or "") or CLAIMISH.search(text or "")))
 
 
+# Check and normalize a draft in place, returning issues for the writer's repair pass.
+# Uses approved understanding facts and allowed visuals; server/agents/bundle.py:build omits unverified main lines.
 def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     # A human rejection in Align is a hard boundary: rejected facts must not
     # survive as citations merely because they still exist in the registry.
@@ -127,6 +143,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     vis = {s["id"]: "shot" for s in und["shots"] if s.get("_allowed", True)} | {i["id"]: "image" for i in und["images"] if i.get("_allowed", True)}
     issues: list[str] = []
 
+    # Add a readable editorial warning when main narration is too technical for the everyday audience.
+    # The warning informs the rewrite prompt; it does not remove a sourced quantity or its unit itself.
     def register_warning(text: str, where: str):
         # Editorial warning only: never suppress a sourced line, strip its unit,
         # or police a requested technical/deeper answer.
@@ -135,6 +153,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
             if m:
                 issues.append(f"{where}: everyday register warning — jargon '{m.group(0)}' in the main narration; move the complete technical quantity to deeper unless explicitly requested, never keep a number while dropping its unit")
 
+    # Normalize one line's delivery, citations and visual ID, then mark detected unsupported claims.
+    # server/agents/speech_style.py:prepare cleans speech markup; pixel coverage is checked later by visuals.py:align.
     def check(line: dict, where: str):
         prepared = speech_style.prepare(line.get("text", ""), line.get("delivery"))
         if prepared["plain_text"] != line.get("text", "").strip():
@@ -148,6 +168,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
         if _SHIFT_PROMISE.search(line.get("text", "")) and not _SHIFT_PROMISE.search(evidence):
             issues.append(f"{where}: transmission evidence does not establish an imperceptible or seamless shift outcome")
             bad = True
+        # Verify that the chosen image/shot exists and derive its correct kind from the catalogue.
+        # A valid ID only establishes identity here, not that the picture proves the spoken feature.
         v = line.get("visual") or {"kind": "none", "ref": "", "focus": ""}
         if v.get("ref") and v["ref"] not in vis:
             issues.append(f"{where}: visual '{v['ref']}' does not exist")
@@ -162,6 +184,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
         else:
             line["unverified"] = False
 
+    # Validate main and deeper lines, and keep uncited claims out of the separate check-in field.
+    # Questions belong in that field so web/player/player.js:waitFor can hold playback for a response.
     for seg in script["segments"]:
         checkin = (seg.get("checkin") or "").strip()
         register_warning(checkin, f"{seg['id']} checkin")
@@ -184,6 +208,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
             issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, limit {lim} — shorten (P06)")
         for n, line in enumerate(seg["lines"], 1):
             register_warning(line.get("text", ""), f"{seg['id']} line {n}")
+    # Check opening, closing and a representative route against their word budgets.
+    # These draft totals guide repair; server/agents/voice.py:render_script later supplies actual recording durations.
     intro_words = sum(words(l["text"]) for s in script["segments"] if s.get("role") in ("intro", "outcome") for l in s["lines"])
     if intro_words > 115:
         issues.append(f"opening (intro + outcome) is {intro_words} words; keep it under 115 (~45 s)")
@@ -201,6 +227,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     route = sum(by_role.get("intro", [0])) + sum(by_role.get("outcome", [0])) + sum(sorted(by_role.get("proof", []), reverse=True)[:3]) + sum(by_role.get("features", [0])) + sum(by_role.get("establish", [0])) + closing_words
     if route > ROUTE_LIMIT:
         issues.append(f"a full route would run {route} words (~{route/150:.1f} min); keep it under {ROUTE_LIMIT} (3 minutes) — cut, don't compress")
+    # Validate the separate Explore opening as cited, question-free narration with its own word budget.
+    # server/agents/bundle.py:build publishes it under runtime.overview for concurrent opening playback/planning.
     overview = script.get("overview") or script.get("runtime_overview")
     if overview:
         check(overview, "Explore overview")
@@ -213,6 +241,8 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     return issues
 
 
+# Read a stored WAV's frame count and sample rate to return its duration, or None if unavailable.
+# server/store.py:path resolves the audio written by server/agents/voice.py:render_script; no audio is played here.
 def _audio_seconds(demo_id: str | None, rel: str | None) -> float | None:
     if not demo_id or not rel:
         return None
@@ -224,11 +254,15 @@ def _audio_seconds(demo_id: str | None, rel: str | None) -> float | None:
         return None
 
 
+# Add starts and durations to narration/check-ins and return a script-level timing summary.
+# server/agents/voice.py:render_script can refresh word-based estimates with WAV durations before bundle.py:build reads them.
 def timeline(script: dict, demo_id: str | None = None) -> dict:
     """Per-line start/duration in seconds (estimated from words, exact from the audio when it exists) and per-batch totals.
     Stored on the script so the Align page and the bundle can show 'at 0:42 the guide says … and shows im04'."""
     t = 0.0
     batches = []
+    # Accumulate main narration and check-in audio in order; unverified main lines do not consume time.
+    # This is a content timeline, not the customer's runtime wall clock or their answer-wait duration.
     for seg in script.get("segments", []):
         b0 = t
         for ln in seg.get("lines", []):
@@ -244,6 +278,8 @@ def timeline(script: dict, demo_id: str | None = None) -> dict:
             t += dur
         seg["start"], seg["duration"], seg["spoken"] = round(b0, 1), round(t - b0, 1), spoken
         batches.append({"id": seg["id"], "title": seg.get("title"), "role": seg.get("role"), "start": round(b0, 1), "duration": round(t - b0, 1), "spoken": spoken, "checkin": round(t - b0 - spoken, 1), "over_20s": spoken > 20.5})
+    # Append closing durations, then record total/batch timings back onto the script.
+    # The existing exact flag means some main-line audio was measured, not that every duration is measured.
     for ln in script.get("closing", []):
         dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
         ln["start"], ln["duration"] = round(t, 1), dur
@@ -252,6 +288,8 @@ def timeline(script: dict, demo_id: str | None = None) -> dict:
     return script["timeline"]
 
 
+# Split oversized narration at existing line boundaries, keeping check-in/deeper material on the last piece.
+# Returns the added batch count; server/agents/deck.py:build later creates slides from the resulting segments.
 def split_long_batches(script: dict) -> int:
     """Hard guarantee for the 20-second rule: a segment whose spoken lines exceed its word budget is split at line
     boundaries into '… (cont.)' batches; the check-in and deeper lines stay with the last piece. Returns the number of
@@ -263,6 +301,8 @@ def split_long_batches(script: dict) -> int:
         if sum(words(l.get("text", "")) for l in lines) <= limit + 4 or len(lines) < 2:
             out.append(seg)
             continue
+        # Group whole verified lines within the role's word budget; never rewrite a sentence to make it fit.
+        # A single long line is not split internally, so measured audio length still needs later review.
         chunks, cur, n = [], [], 0
         for l in lines:
             w = words(l.get("text", ""))
@@ -283,6 +323,8 @@ def split_long_batches(script: dict) -> int:
     return created
 
 
+# Give main, deeper, closing and overview lines stable names within this script's segment structure.
+# server/agents/bundle.py:build joins deck line IDs back to script text, audio and timing using these names.
 def _assign_ids(script: dict) -> None:
     overview = script.pop("overview", None)
     if overview:
@@ -297,6 +339,8 @@ def _assign_ids(script: dict) -> None:
         ln["id"] = f"close-L{n}"
 
 
+# Turn the approved registry and planner's outline into script.json with narration and per-line visual references.
+# server/graph.py:author invokes this stage; server/agents/deck.py:build consumes its saved segments next.
 def run(demo_id: str, emit, instruction: str = "") -> dict:
     und = store.read_json(demo_id, "understanding.json")
     plan = store.read_json(demo_id, "plan.json")
@@ -309,6 +353,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         i["_allowed"] = store.visual_allowed(demo, i["source_id"])
     prev = store.read_json(demo_id, "script.json")
     emit("Writing the script…")
+    # Supply the outline plus approved facts and allowed visual descriptions to the writer.
+    # Segment choices from server/agents/plan.py:run become per-line visual.ref/focus fields; pixels come later.
     facts_txt = "\n".join(fact_context(f) for f in und["facts"] if f.get("approved", True))
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
@@ -326,6 +372,8 @@ VIDEO SHOTS:
 IMAGES:
 {imgs_txt or '(none)'}
 """
+    # A revision includes prior dialogue and the user's instruction; a fresh author run uses the current plan.
+    # server/llm/claude.py:structured returns ScriptOut through the build provider path, with an explicit manifest fallback.
     if prev and instruction:
         content += f"\nPREVIOUS SCRIPT (revise; keep segment ids, but remove any assumed individual customer circumstances):\n{json.dumps({'segments': prev['segments'], 'closing': prev['closing']})[:40000]}\n"
     if instruction:
@@ -342,6 +390,8 @@ IMAGES:
         out = manifest
     script = out.model_dump()
     script["intake_q2"] = ""
+    # Check the first draft and, when needed, make one repair request with its concrete validator issues.
+    # The repaired draft is checked again; remaining issues stay visible rather than triggering an endless loop.
     issues = validate(script, und, audience)
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
@@ -354,6 +404,8 @@ IMAGES:
             issues = validate(script, und, audience)
         except Exception:
             pass
+    # Assign line IDs, then audit actual image coverage before splitting batches and estimating their timeline.
+    # server/agents/visuals.py:align can change line visuals; deck.py:build later chooses one slide image per segment.
     _assign_ids(script)
     script["issues"] = issues
     script["version"] = (prev.get("version", 0) + 1) if prev else 1
