@@ -133,7 +133,7 @@ flowchart TD
   PB[&quot;playbook.json + saved order/kind overrides&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;reviewed stops, three USPs and evidence gaps&quot;]:::data
   PLAN[&quot;Evidence mapping, literal pictures and segment briefs&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: effective PLAYBOOK before approved registry, tagged media, brand, language + previous plan&lt;br/&gt;one proof segment per required stop; Coach&#x27;s order and USPs are settled&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff intent&lt;br/&gt;typed stop_id / fundamental / word_budget; no final dialogue&quot;]:::agent
   PVAL[&quot;Enforce evidence and playbook coverage&lt;br/&gt;[FUNCTION · plan.run / _enforce_playbook]&lt;br/&gt;fact_ids ⊆ approved registry · visual_refs ⊆ allowed shots∪images&lt;br/&gt;map stop_id or fact overlap; drop unmapped/optional proof segments&lt;br/&gt;add missing required stops + issue; sort by role and stop order; inherit USPs/version&quot;]:::fn
-  BUDGET[&quot;Allocate segment word budgets&lt;br/&gt;[FUNCTION · plan._enforce_budget]&lt;br/&gt;total_words = round(pitch_minutes × 60 × WPS); reserve 45 for closing&lt;br/&gt;clamp each budget to 22–role ceiling; proportional rescale beyond 10% drift&lt;br/&gt;author enforcement and planned/measured timing follow in WP3&quot;]:::fn
+  BUDGET[&quot;Allocate segment word budgets&lt;br/&gt;[FUNCTION · plan._enforce_budget]&lt;br/&gt;total_words = round(pitch_minutes × 60 × WPS); reserve 45 for closing&lt;br/&gt;clamp to 22–current Author role ceiling; proportional rescale beyond 10% drift&lt;br/&gt;infeasible requested totals stay visible as issues; Author validates the allocation&quot;]:::fn
   PJ[&quot;plan.json&lt;br/&gt;[DATA · stop_id, fundamental, word_budget; total_words, playbook_version]&quot;]:::data
   SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
   OPEN[&quot;opening message&lt;br/&gt;[AGENT · Claude text tier · text]&lt;br/&gt;in: card summary · out: 3-5 sentences (template fallback on error)&quot;]:::agent
@@ -235,20 +235,21 @@ flowchart TD
   classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
   classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
 </pre>
-<h2>04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle</h2>
-<pre class="mermaid">%% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
+<h2>04 · Build phase — Author (validated word budgets) → Voice (+ extra languages) → Rehearsal → Bundle</h2>
+<pre class="mermaid">%% 04 · Build phase — Author (validated word budgets) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
   N7[&quot;Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)&quot;]:::data
   GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness&lt;br/&gt;explicit operator override logged; mock bypass&quot;]:::fn
   AUTH[&quot;Final spoken delivery of the Planner outline&lt;br/&gt;[AGENT · configured text tier · author.py]&lt;br/&gt;in: plan goals/notes, approved registry, supplied visuals, voice, language/audience&lt;br/&gt;shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK&lt;br/&gt;out: existing ScriptOut · same segment ids/roles/order; connected speech, checkins, deeper, closing + 23–28 word Explore overview&quot;]:::agent
-  VAL[&quot;grounding + pacing + plain-language validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;approved citations and existing visual refs; unsupported uncited quantities/claims held&lt;br/&gt;intro/outcome/proof ≤38 words; features ≤40; establish ≤36; closing ≤45; route ≤360&lt;br/&gt;jargon warning in everyday main narration; no general semantic-entailment proof&quot;]:::fn
+  VAL[&quot;grounding + planned budget + plain-language validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;approved citations and existing visual refs; unsupported uncited quantities/claims held&lt;br/&gt;above word_budget +4: issue; below explicit budget −10: advisory warning&lt;br/&gt;hard ceilings: intro/outcome/proof 46; features 48; establish 44; closing 45&lt;br/&gt;route ≤ round(pitch_minutes × 60 × WPS) +40; legacy: ceiling upper check, no new under-budget warning&quot;]:::fn
   ISS{&quot;issues &gt; 0?&quot;}:::dec
   FIX[&quot;one local rewrite&lt;br/&gt;[AGENT · configured text tier]&lt;br/&gt;in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects&lt;br/&gt;out: full script, revalidated under the same evidence rules&quot;]:::agent
-  VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining offenders stay unverified → excluded from voice &amp; bundle, listed on Facts card&quot;]:::fn
+  VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining issues stay reviewable; ungrounded lines stay unverified and excluded from voice &amp; bundle&quot;]:::fn
   IDS[&quot;assign stable line ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;out: seg-L1.. plus closing ids&quot;]:::fn
   VAUD[&quot;visual-proof audit&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: real uploaded pixels in batches ≤12 + every scripted line&lt;br/&gt;out: every image&#x27;s visible features/limits + every line full/partial/none/not_visual&quot;]:::agent
   VGATE[&quot;accept audit only when complete&lt;br/&gt;[FUNCTION · visuals.py]&lt;br/&gt;all line ids + all image refs required; full coverage may bind image&lt;br/&gt;partial/missing visible feature → no image → hero + cited card&lt;br/&gt;Gemini failure → conservative tag rules&quot;]:::fn
   AUDIT[&quot;visual-audit.json&lt;br/&gt;[DATA]&lt;br/&gt;line reasons, image feature inventory, missing features, changes&quot;]:::data
+  TIMING[&quot;Whole-line splitting and content timeline&lt;br/&gt;[FUNCTION · author.split_long_batches / timeline]&lt;br/&gt;split only above role ceiling +4; retain original allocation across continuations&lt;br/&gt;planned seconds from word_budget / WPS; draft duration estimated until recorded&lt;br/&gt;word ceilings are not a measured twenty-second guarantee&quot;]:::fn
   SJ[&quot;script.json&lt;br/&gt;[DATA] visual refs + audit summary · version++&quot;]:::data
   DPIC[&quot;one slide per segment · picture per slide&lt;br/&gt;[FUNCTION · deck.choose_image]&lt;br/&gt;tagged parts vs. the slide&#x27;s words (+2 for the script&#x27;s own pick); score ≥ 3 else the hero&lt;br/&gt;hero_open / intro / outcome / proof… / establish / closing / hero_close&quot;]:::fn
   DCALL[&quot;titles + callouts&lt;br/&gt;[AGENT · Gemini → Claude → Runware text tier · deck.DeckOut]&lt;br/&gt;in: per slide its lines, fact ids and the PARTS on its picture; the registry&lt;br/&gt;out: ≤ 6-word title, ≤ 3 callouts of ≤ 8 words each citing fact ids and naming a listed part&quot;]:::agent
@@ -258,6 +259,7 @@ flowchart TD
   DJ[&quot;deck.json&lt;br/&gt;[DATA] slides · version++ · method model|derived&quot;]:::data
   PROV{&quot;tts provider chain?&lt;br/&gt;[FUNCTION · voice.provider_chain]&lt;br/&gt;locked: configured provider only&lt;br/&gt;unlocked: sarvam → gemini → gcloud → browser (no key)&quot;}:::dec
   TTS[&quot;render every line (main language)&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]&lt;br/&gt;cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3&lt;br/&gt;VOICE_WORKERS=3 · cache checked before circuit&lt;br/&gt;locked: matching provider/speaker clips only; no alternate voice&lt;br/&gt;Sarvam starts paced at 2.1s; 429-only retry ≤3 attempts, bounded wait, Retry-After honored&lt;br/&gt;partial audio checkpointed; any missing required narration/FAQ/filler stops Build&lt;br/&gt;policy refusal is not retried or routed around&quot;]:::data
+  MEASURE[&quot;Refresh durations from recorded audio&lt;br/&gt;[FUNCTION · author.timeline via voice.py]&lt;br/&gt;retain planned seconds and planned total; measure WAV duration where present&lt;br/&gt;legacy exact means any measured main line; incomplete/mixed coverage stays labelled&lt;br/&gt;Align compares planned / recorded or estimated time with pitch_minutes&quot;]:::fn
   BROWSER[&quot;voice_provider=browser&lt;br/&gt;[term] player speaks with Web Speech&quot;]:::term
   LANGS{&quot;settings.languages&lt;br/&gt;has extra languages?&quot;}:::dec
   TRANS[&quot;translate script per extra language&lt;br/&gt;[AGENT · configured text tier · translate.py · stage &#x27;translate&#x27;]&lt;br/&gt;in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&amp;lt;lang&amp;gt;.json&quot;]:::agent
@@ -272,11 +274,11 @@ flowchart TD
   GO --&gt; AUTH --&gt; VAL --&gt; ISS
   ISS -- &quot;yes&quot; --&gt; FIX --&gt; VAL2 --&gt; IDS
   ISS -- &quot;no&quot; --&gt; IDS
-  IDS --&gt; VAUD --&gt; VGATE --&gt; AUDIT --&gt; SJ
+  IDS --&gt; VAUD --&gt; VGATE --&gt; AUDIT --&gt; TIMING --&gt; SJ
   SJ --&gt; DPIC --&gt; DCALL --&gt; DVAL --&gt; DLAY --&gt; DJ
   DOVR -.-&gt; DLAY
   DJ --&gt; PROV
-  PROV -- &quot;sarvam / gemini / gcloud&quot; --&gt; TTS --&gt; LANGS
+  PROV -- &quot;sarvam / gemini / gcloud&quot; --&gt; TTS --&gt; MEASURE --&gt; LANGS
   PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; QGEN
   LANGS -- &quot;yes&quot; --&gt; TRANS --&gt; TTS2 --&gt; QGEN
   LANGS -- &quot;no&quot; --&gt; QGEN

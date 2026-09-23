@@ -1,5 +1,13 @@
 # Handoff.MD — Demo Studio
 
+## Sales Trainer flow — 23 September 2026 · WP3
+
+Branch `codex/sales-trainer-flow`, following WP2 `5f2f8a4`. Author validation now uses each planned word allocation: more than four words over budget is an issue, more than ten under an explicit allocation is an advisory warning, and the role ceilings remain hard checks. Legacy drafts without a budget use the ceiling for upper checks and receive no new under-budget warning. Ceilings are 46 words for intro/outcome/proof, 48 for features and 44 for establish; closing stays 45. The representative route limit is the configured pitch-minute word target plus 40, replacing the fixed 360-word cap. Planner uses these same ceilings without adding the eight-word increase twice.
+
+Script timelines carry planned seconds per segment and a planned total beside actual recorded or estimated duration. Align compares each segment's main narration with its planned allowance, and the full content total (including spoken check-ins and closing) with `pitch_minutes`. Word estimates are not measured speech or a promise that every batch lasts twenty seconds. The historical top-level `exact` flag still means some main-line audio was measured; a complete measured label requires all relevant audio. Split continuations retain shared budget provenance so later edits preserve the original allocation.
+
+**Verification:** generation/budget 56/56 (including unchanged legacy CRETA validation on a temporary copy), Plan/playbook 15/15, narrative 11/11, speech style 27/27, Align API 50/50, timing UI 5/5 and Story order UI 9/9 pass. Required deck 320/320, acceptance 24/24 and both smoke phases pass, as do Python compilation, changed JavaScript syntax and diff checks. Backend checks use mock providers, blocked outbound sockets and isolated temporary stores, with zero outbound attempts; published CRETA v8, its original session and port 8896 remain untouched. No paid Read is authorized; Loop remains off.
+
 ## Sales Trainer flow — 23 September 2026 · WP2
 
 Branch `codex/sales-trainer-flow`, following WP1 `f921305`. Planner now reads the validated playbook and saved overrides before the approved registry. It maps one proof segment to each required stop, restores missing stops with a visible issue, drops unsupported/unmapped proof stops, preserves reviewed order and USPs, and records `stop_id`, `fundamental`, `word_budget`, `total_words` and `playbook_version`. Coach owns order, coverage and winning points; Planner owns evidence, pictures, segment briefs and word allocation; Author owns the spoken delivery.
@@ -60,6 +68,7 @@ Python ASTs and executable token sequences match baseline `ba448ff` for all 14 P
 
 ## Decisions and invariants
 
+- 23 September D3: Planner allocates typed segment word budgets against `settings.pitch_minutes`; Author validates those allocations and the shared role ceilings. The ceilings gain eight words for natural joins, closing remains 45, and route tolerance is the configured word target plus 40. Reject fixed per-role caps as the sole pacing control and reject word-count estimates as measured audio duration.
 - 23 September D1–D2: Coach owns the reviewed category order, coverage, three USPs and evidence gaps; Planner maps evidence, pictures, segment briefs and word budgets to it; Author writes the speech. Fundamentals precede delighters. WP1 introduced the stage and review boundary; WP2 binds Plan to it. Reject picture availability as the owner of story order.
 - Historical 19 September ownership replaced by D2 above: Planner previously owned story order, evidence emphasis and literal image selection; Author owned final conversation and delivery. Grounding, independent proof stops, locked voice and Align still stand. Relaxed grounding was rejected as a way to improve warmth. The one paid caption stress authorization was completed and is not renewed.
 - Anand approved the [expanded runtime plan](docs/plan-runtime-experience-2026-09-19.md) and official Creta PDF/relevant images. Earlier UI-only/no-streaming restrictions are historical.

@@ -8,7 +8,10 @@ from __future__ import annotations
 
 import copy
 import json
+import hashlib
+import shutil
 import sys
+import tempfile
 from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import patch
@@ -126,6 +129,60 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         issues = author.validate(jargon, und)
         check("generation: a jargon repair requests moving the whole quantity, never deleting its unit",
               any("complete technical quantity" in issue and "never keep a number while dropping its unit" in issue for issue in issues))
+
+        def timed_script(count, role="proof"):
+            return {"segments": [{"id": "timed", "title": "A useful stop", "role": role,
+                                  "lines": [{"text": " ".join(["Look"] * count), "fact_ids": []}],
+                                  "deeper": [], "checkin": ""}], "closing": []}
+        timing_plan = {"segments": [{"id": "timed", "word_budget": 30, "stop_id": "engine", "fundamental": True}]}
+        longer = timed_script(35)
+        issues = author.validate(longer, und, timing_plan, demo)
+        check("generation: Author enforces the planner allowance plus four words", any("over its budget of 30" in issue for issue in issues) and not any("over its budget" in issue for issue in author.validate(timed_script(34), und, timing_plan, demo)))
+        issues = author.validate(timed_script(19), und, timing_plan, demo)
+        check("generation: an explicit short allocation gets an advisory join warning", any("warning" in issue and "well under budget; add the join or the moment" in issue for issue in issues))
+        check("generation: missing legacy budgets do not invent under-budget warnings", not any("well under budget" in issue for issue in author.validate(timed_script(10), und)))
+        ceiling = author.validate(timed_script(47), und, {"segments": [{"id": "timed", "word_budget": 46}]}, demo)
+        check("generation: role ceiling remains hard inside the budget tolerance", any("limit 46" in issue for issue in ceiling) and not any("over its budget" in issue for issue in ceiling))
+        route = {"segments": [], "closing": [{"text": " ".join(["Look"] * 45), "fact_ids": []}]}
+        for index, (role, count) in enumerate([("intro", 40), ("outcome", 40), ("proof", 46), ("proof", 46), ("proof", 46), ("features", 48), ("establish", 44)]):
+            segment = timed_script(count, role)["segments"][0]; segment["id"] = f"route-{index}"; route["segments"].append(segment)
+        two, four = {"settings": {"pitch_minutes": 2}}, {"settings": {"pitch_minutes": 4}}
+        check("generation: route ceiling follows two-minute and four-minute settings", author.route_limit(two) == 268 and author.route_limit(four) == 496 and any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, two)) and not any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, four)))
+        timing = author.timeline(longer)
+        check("generation: timing carries planned duration separately from estimates", longer["segments"][0]["word_budget"] == 30 and longer["segments"][0]["stop_id"] == "engine" and longer["segments"][0]["fundamental"] and longer["segments"][0]["planned_seconds"] == 15.8 and timing["planned_total_seconds"] == 39.5 and not timing["measured"] and not timing["exact"])
+        unplanned = timed_script(20)
+        check("generation: legacy timing leaves absent planned durations unknown", author.timeline(unplanned)["planned_total_seconds"] is None and unplanned["segments"][0]["planned_seconds"] is None)
+        split = timed_script(20)
+        split["segments"][0]["lines"] *= 3
+        split_plan = {"segments": [{"id": "timed", "word_budget": 44, "stop_id": "engine", "fundamental": True}]}
+        author.validate(split, und, split_plan, demo)
+        added = author.split_long_batches(split)
+        before_recheck = [segment["word_budget"] for segment in split["segments"]]
+        author.validate(split, und, split_plan, demo)
+        split_timing = author.timeline(split)
+        check("generation: split and revalidation preserve one original planned allowance", added == 1 and before_recheck == [29, 15] and [segment["word_budget"] for segment in split["segments"]] == before_recheck and split_timing["planned_total_seconds"] == round(89 / author.WPS, 1) and all(segment["budget_source_id"] == "timed" for segment in split["segments"]))
+        measured = timed_script(20)
+        measured["segments"][0]["lines"][0]["audio"] = "main.wav"
+        measured["segments"][0].update(word_budget=30, checkin="Ready to continue?", checkin_audio="checkin.wav")
+        measured["closing"] = [{"text": "Take the next step.", "fact_ids": [], "audio": "closing.wav"}]
+        with patch.object(author, "_audio_seconds", side_effect=lambda _did, rel: {"main.wav": 10.0}.get(rel)):
+            mixed = author.timeline(measured, "fixture")
+        check("generation: any measured main line keeps exact but incomplete checkin and closing stay mixed", mixed["exact"] and not mixed["measured"] and not measured["segments"][0]["measured"])
+        with patch.object(author, "_audio_seconds", side_effect=lambda _did, rel: {"main.wav": 10.0, "checkin.wav": 1.0, "closing.wav": 2.0}.get(rel)):
+            complete = author.timeline(measured, "fixture")
+        check("generation: fully recorded narration checkin and closing are measured", complete["exact"] and complete["measured"] and measured["segments"][0]["measured"] and complete["total_seconds"] == 13.0)
+
+        legacy_root = Path(__file__).resolve().parents[1] / "data/demos/dm_41513908"
+        legacy_names = ("script.json", "plan.json", "understanding.json", "demo.json")
+        if all((legacy_root / name).is_file() for name in legacy_names):
+            before_hashes = {name: hashlib.sha256((legacy_root / name).read_bytes()).hexdigest() for name in legacy_names}
+            with tempfile.TemporaryDirectory(prefix="legacy-creta-budget-") as tmp:
+                for name in legacy_names:
+                    shutil.copy2(legacy_root / name, Path(tmp) / name)
+                copies = {name: json.loads((Path(tmp) / name).read_text()) for name in legacy_names}
+                legacy_issues = author.validate(copies["script.json"], copies["understanding.json"], copies["plan.json"], copies["demo.json"])
+            check("generation: isolated legacy Creta draft still validates without issues", legacy_issues == [])
+            check("generation: legacy Creta source artifacts remain byte-identical", before_hashes == {name: hashlib.sha256((legacy_root / name).read_bytes()).hexdigest() for name in legacy_names})
 
         slide = {"id": "sl01", "kind": "proof", "title": "Driving choices", "image_id": None,
                  "lines": [{"text": technical["text"], "fact_ids": ["F001"]}]}

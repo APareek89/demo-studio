@@ -60,7 +60,7 @@ the cars you see most on Indian roads" — still citing the fact id it rests on.
 - At most two segments end on a one-line closing statement, never a question, placed where a decision turns; name them in the goal. A question after every section is an interrogation, not a conversation.
 - Titles are sometimes SPOKEN at runtime as "Next: <title>." Write each title as the thing itself in a
 buyer's nouns — "The seat you'll sit in every day" — never a category label such as "Interior features".
-  1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice. ≤ 38 words each.
+  1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling.
      No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1).
   1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question.
   role=proof — GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order. One area per segment. The
@@ -315,7 +315,7 @@ def _enforce_budget(p: dict, demo: dict) -> None:
     total = round(float(demo.get("settings", {}).get("pitch_minutes", 2) or 2) * 60 * author.WPS)
     target = max(0, total - 45)
     segments = p.get("segments", [])
-    ceilings = [author.LIMITS.get(segment.get("role"), author.LIMITS["proof"]) + 8 for segment in segments]
+    ceilings = [author.LIMITS.get(segment.get("role"), author.LIMITS["proof"]) for segment in segments]
     lead = next((segment for segment in segments if segment.get("role") == "proof" and segment.get("fundamental")), None)
     weights = []
     for segment, ceiling in zip(segments, ceilings):
@@ -381,7 +381,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     from . import author
     timing = {"pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 2),
               "total_words": round(float(demo.get("settings", {}).get("pitch_minutes", 2) or 2) * 60 * author.WPS),
-              "closing_words": 45, "role_ceilings": {role: limit + 8 for role, limit in author.LIMITS.items()}}
+              "closing_words": 45, "role_ceilings": dict(author.LIMITS)}
     playbook_view = {key: playbook.get(key) for key in ("stops", "usps", "objections", "evidence_gaps")} if playbook else None
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND PROFILE: {json.dumps(und['brand'])}

@@ -218,6 +218,21 @@ def run(check, _demo_id=None):
               and built["slides"][1]["lines"][0]["fact_ids"] == [] and built["slides"][1]["fact_ids"] == []
               and built["slides"][1]["checkin"]["text"] == "" and len(built["slides"][1]["lines"]) == 1
               and built["slides"][1]["title"] == "Final reviewed heading" and built["slides"][1]["callouts"] == cards["deck"]["slides"][1]["callouts"])
+        # Direct script edits use the same reviewed allocation as generated speech.
+        budget_plan = store.read_json(did, "plan.json")
+        budget_plan["segments"] = [{"id": "proof", "title": "Product", "visual_refs": [], "word_budget": 22}]
+        store.write_json(did, "plan.json", budget_plan)
+        result = api.patch(f"/api/demos/{did}/align/script", json={"lines": [
+            {"id": "proof-L1", "text": "Look closer. " * 15, "fact_ids": []}], "realign_visuals": False})
+        timing_card = result.json()["cards"]["script"]
+        timing_segment = next(row for row in timing_card["segments"] if row["id"] == "proof")
+        check("align timing: direct edits are checked against the reviewed plan budget",
+              result.status_code == 200 and any("over its budget of 22" in issue for issue in result.json()["issues"]))
+        check("align timing: review exposes planned seconds and the requested pitch duration",
+              timing_segment["word_budget"] == 22 and timing_segment["planned_seconds"] == 11.6
+              and timing_card["pitch_minutes"] == store.load(did)["settings"]["pitch_minutes"])
+        check("align timing: edited unvoiced words never claim measured audio",
+              timing_segment["measured"] is False and timing_segment["lines"][0]["exact"] is False)
         check("align review: no model, speech or outbound network calls", not any(mock.called for mock in blocked))
 
 

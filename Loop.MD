@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Sales Trainer WP3 — 23 September 2026
+
+Loop stays off. Extended `evals/generation_contract.py` covers over-budget issues, advisory warnings only for explicit under-budget allocations, unchanged hard ceiling checks, pitch-minute route limits and planned timeline seconds. Speech-style and Plan/playbook regressions must remain green, including shared Planner/Author ceilings; Align timing checks distinguish estimated, mixed and fully recorded values. Legacy CRETA without typed budgets is checked only from a temporary copy and gets no new under-budget warning. Generation 56/56, Plan/playbook 15/15, narrative 11/11, speech style 27/27, Align API 50/50, timing UI 5/5 and Story order UI 9/9 pass. Deck 320/320, acceptance 24/24, both smoke phases, Python compilation, changed JavaScript syntax and diff checks pass; backend outbound attempts are zero. No paid voice render or new live duration measurement is implied.
+
 ## Sales Trainer WP2 — 23 September 2026
 
 Loop stays off. `evals/plan_playbook_contract.py` covers required-stop mapping/order, missing-stop insertion with issues, optional/unmapped-stop exclusion, fundamental flags, inherited USPs/version, clamped/rescaled budgets, pitch-minute totals and the mock Read path. Extended `evals/narrative_roles_contract.py` checks settled ownership, full briefs, continuity, the translation ladder and removal of standout-first examples; `evals/speech_style_contract.py` checks the mapped authoring changes. Plan/playbook 14/14, narrative roles 11/11, speech style 27/27, deck 320/320, acceptance 24/24 and both smoke phases pass with zero outbound attempts; compilation and diff checks pass. Mock Author follows the planned topology and the separate Explore opening is bound to the lead fundamental. Planner budgets are allocated here; WP3 adds validator/timeline checks. These free tests do not establish live writing quality, timing or acoustic performance.

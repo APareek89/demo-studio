@@ -31,6 +31,9 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   evidence and explicit gaps, then exposes Story order inside the existing Script card. Reordering
   resets Script/Visuals approval and requests Plan revision. Planner follows its required stops and
   USPs, mapping evidence, pictures and typed word budgets; Author writes the speech.
+- **Budget the speech.** Planner allocates typed segment word budgets for `settings.pitch_minutes`;
+  Author checks each budget within shared role ceilings raised by eight words for natural joins.
+  Align distinguishes planned, estimated and recorded durations; a word target is not measured audio.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes

@@ -1,16 +1,17 @@
-%% 04 · Build phase — Author (validated, 3-minute shape) → Voice (+ extra languages) → Rehearsal → Bundle
+%% 04 · Build phase — Author (validated word budgets) → Voice (+ extra languages) → Rehearsal → Bundle
 flowchart TD
   N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
   GO["POST /api/demos/id/build<br/>[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness<br/>explicit operator override logged; mock bypass"]:::fn
   AUTH["Final spoken delivery of the Planner outline<br/>[AGENT · configured text tier · author.py]<br/>in: plan goals/notes, approved registry, supplied visuals, voice, language/audience<br/>shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK<br/>out: existing ScriptOut · same segment ids/roles/order; connected speech, checkins, deeper, closing + 23–28 word Explore overview"]:::agent
-  VAL["grounding + pacing + plain-language validator<br/>[FUNCTION · author.validate]<br/>approved citations and existing visual refs; unsupported uncited quantities/claims held<br/>intro/outcome/proof ≤38 words; features ≤40; establish ≤36; closing ≤45; route ≤360<br/>jargon warning in everyday main narration; no general semantic-entailment proof"]:::fn
+  VAL["grounding + planned budget + plain-language validator<br/>[FUNCTION · author.validate]<br/>approved citations and existing visual refs; unsupported uncited quantities/claims held<br/>above word_budget +4: issue; below explicit budget −10: advisory warning<br/>hard ceilings: intro/outcome/proof 46; features 48; establish 44; closing 45<br/>route ≤ round(pitch_minutes × 60 × WPS) +40; legacy: ceiling upper check, no new under-budget warning"]:::fn
   ISS{"issues > 0?"}:::dec
   FIX["one local rewrite<br/>[AGENT · configured text tier]<br/>in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects<br/>out: full script, revalidated under the same evidence rules"]:::agent
-  VAL2["re-validate<br/>[FUNCTION] remaining offenders stay unverified → excluded from voice & bundle, listed on Facts card"]:::fn
+  VAL2["re-validate<br/>[FUNCTION] remaining issues stay reviewable; ungrounded lines stay unverified and excluded from voice & bundle"]:::fn
   IDS["assign stable line ids<br/>[FUNCTION]<br/>out: seg-L1.. plus closing ids"]:::fn
   VAUD["visual-proof audit<br/>[AGENT · Gemini 3.6 Flash]<br/>in: real uploaded pixels in batches ≤12 + every scripted line<br/>out: every image's visible features/limits + every line full/partial/none/not_visual"]:::agent
   VGATE["accept audit only when complete<br/>[FUNCTION · visuals.py]<br/>all line ids + all image refs required; full coverage may bind image<br/>partial/missing visible feature → no image → hero + cited card<br/>Gemini failure → conservative tag rules"]:::fn
   AUDIT["visual-audit.json<br/>[DATA]<br/>line reasons, image feature inventory, missing features, changes"]:::data
+  TIMING["Whole-line splitting and content timeline<br/>[FUNCTION · author.split_long_batches / timeline]<br/>split only above role ceiling +4; retain original allocation across continuations<br/>planned seconds from word_budget / WPS; draft duration estimated until recorded<br/>word ceilings are not a measured twenty-second guarantee"]:::fn
   SJ["script.json<br/>[DATA] visual refs + audit summary · version++"]:::data
   DPIC["one slide per segment · picture per slide<br/>[FUNCTION · deck.choose_image]<br/>tagged parts vs. the slide's words (+2 for the script's own pick); score ≥ 3 else the hero<br/>hero_open / intro / outcome / proof… / establish / closing / hero_close"]:::fn
   DCALL["titles + callouts<br/>[AGENT · Gemini → Claude → Runware text tier · deck.DeckOut]<br/>in: per slide its lines, fact ids and the PARTS on its picture; the registry<br/>out: ≤ 6-word title, ≤ 3 callouts of ≤ 8 words each citing fact ids and naming a listed part"]:::agent
@@ -20,6 +21,7 @@ flowchart TD
   DJ["deck.json<br/>[DATA] slides · version++ · method model|derived"]:::data
   PROV{"tts provider chain?<br/>[FUNCTION · voice.provider_chain]<br/>locked: configured provider only<br/>unlocked: sarvam → gemini → gcloud → browser (no key)"}:::dec
   TTS["render every line (main language)<br/>[LIBRARY · Sarvam Bulbul v3 / Gemini TTS / Cloud TTS]<br/>cache key sha1(provider|voice|lang|text) → audio/*.wav|mp3<br/>VOICE_WORKERS=3 · cache checked before circuit<br/>locked: matching provider/speaker clips only; no alternate voice<br/>Sarvam starts paced at 2.1s; 429-only retry ≤3 attempts, bounded wait, Retry-After honored<br/>partial audio checkpointed; any missing required narration/FAQ/filler stops Build<br/>policy refusal is not retried or routed around"]:::data
+  MEASURE["Refresh durations from recorded audio<br/>[FUNCTION · author.timeline via voice.py]<br/>retain planned seconds and planned total; measure WAV duration where present<br/>legacy exact means any measured main line; incomplete/mixed coverage stays labelled<br/>Align compares planned / recorded or estimated time with pitch_minutes"]:::fn
   BROWSER["voice_provider=browser<br/>[term] player speaks with Web Speech"]:::term
   LANGS{"settings.languages<br/>has extra languages?"}:::dec
   TRANS["translate script per extra language<br/>[AGENT · configured text tier · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent
@@ -34,11 +36,11 @@ flowchart TD
   GO --> AUTH --> VAL --> ISS
   ISS -- "yes" --> FIX --> VAL2 --> IDS
   ISS -- "no" --> IDS
-  IDS --> VAUD --> VGATE --> AUDIT --> SJ
+  IDS --> VAUD --> VGATE --> AUDIT --> TIMING --> SJ
   SJ --> DPIC --> DCALL --> DVAL --> DLAY --> DJ
   DOVR -.-> DLAY
   DJ --> PROV
-  PROV -- "sarvam / gemini / gcloud" --> TTS --> LANGS
+  PROV -- "sarvam / gemini / gcloud" --> TTS --> MEASURE --> LANGS
   PROV -- "browser" --> BROWSER --> QGEN
   LANGS -- "yes" --> TRANS --> TTS2 --> QGEN
   LANGS -- "no" --> QGEN

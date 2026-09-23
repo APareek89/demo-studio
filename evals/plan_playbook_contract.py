@@ -137,14 +137,14 @@ class PlanPlaybookContract(unittest.TestCase):
         self.assertEqual(self.plan["total_words"], 342)
         self.assertEqual(sum(s["word_budget"] for s in self.plan["segments"]), 297)
         self.assertGreater(len({s["word_budget"] for s in self.plan["segments"]}), 1)
-        self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] + 8 for s in self.plan["segments"]))
+        self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] for s in self.plan["segments"]))
 
     def test_budget_clamps_extremes_and_reports_unachievable_lengths(self):
         self.plan["segments"][0]["word_budget"] = -500
         self.plan["segments"][1]["word_budget"] = 9000
         plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 10}})
         self.assertEqual(self.plan["total_words"], round(10 * 60 * author.WPS))
-        self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] + 8 for s in self.plan["segments"]))
+        self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] for s in self.plan["segments"]))
         self.assertTrue(any("cannot fit" in issue for issue in self.plan["issues"]))
 
     def test_default_budget_emphasizes_lead_fundamental(self):
@@ -154,6 +154,21 @@ class PlanPlaybookContract(unittest.TestCase):
         plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 3}})
         proofs = [s for s in self.plan["segments"] if s["role"] == "proof"]
         self.assertGreater(proofs[0]["word_budget"], proofs[-1]["word_budget"])
+
+    def test_planner_and_author_share_exact_role_ceilings(self):
+        expected = {"intro": 46, "outcome": 46, "proof": 46, "features": 48, "establish": 44}
+        self.assertEqual(author.LIMITS, expected)
+        for seg in self.plan["segments"]:
+            seg["word_budget"] = 500
+        plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 4}})
+        for seg in self.plan["segments"]:
+            self.assertEqual(seg["word_budget"], author.LIMITS[seg["role"]])
+        with patch.object(plan.claude, "structured", return_value=schemas.Plan.model_validate(self.plan)) as model:
+            plan.run(self.did, lambda _: None)
+        content = model.call_args.args[1]
+        timing = json.loads(content.split("DEMO WORD BUDGET: ", 1)[1].split("\n", 1)[0])
+        self.assertEqual(timing["role_ceilings"], author.LIMITS)
+        self.assertNotIn("38 words each", plan.PLAN_SYSTEM)
 
     def test_playbook_overrides_and_registry_provenance_reach_model(self):
         store.update(self.did, lambda d: d["settings"].update(pitch_minutes=3))

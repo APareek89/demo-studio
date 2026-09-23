@@ -64,7 +64,7 @@ def fixture_plan():
 
 
 def fixture_script(plan, bad=False):
-    text = "The seat provides 999 kilometres of comfort." if bad else "Selected trims offer ventilated front seats. Take a closer look at the seat before choosing the equipment that matters to you."
+    text = "The seat provides 999 kilometres of comfort." if bad else "Selected trims offer ventilated front seats. Take a closer look at the seat before choosing the equipment that matters to you. Start with the seat in view, then compare its equipment against the exact trim you are considering today."
     line = {"text": text, "fact_ids": ["FH"] if bad else ["F1"], "visual": {"kind": "image", "ref": "im1", "focus": "Front seat"}}
     return schemas.ScriptOut.model_validate({
         "segments": [{**{k: s[k] for k in ("id", "title", "role", "topic", "outcome", "usp_ids")},

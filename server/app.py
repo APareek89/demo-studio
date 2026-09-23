@@ -678,7 +678,7 @@ async def edit_aligned_script(demo_id: str, req: Request):
                 if author.ungrounded(text, ids, approved_fact_ids)[1]:
                     raise HTTPException(400, "Segment metadata cannot introduce an uncited claim or figure")
                 seg[field] = text
-    issues = author.validate(script, und, demo.get("settings", {}).get("audience", "everyday"))
+    issues = author.validate(script, und, store.read_json(demo_id, "plan.json") or {}, demo)
     invalid = [line.get("id") for seg in script.get("segments", []) for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])] if line.get("id") in requested and line.get("unverified")]
     invalid += [line.get("id") for line in extra_lines if line.get("id") in requested and line.get("unverified")]
     if invalid:

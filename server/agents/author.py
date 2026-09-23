@@ -1,4 +1,4 @@
-"""Stage 3 — Author. Claude writes grounded, conversational batches of at most twenty seconds."""
+"""Author stage: write grounded, conversational batches within the reviewed word budgets."""
 from __future__ import annotations
 
 import json
@@ -132,10 +132,45 @@ NUMBERISH = re.compile(r"(\d[\d,\.]*\s*(%|km|kwh|kw|kg|hrs?|hours?|mins?|minutes
 CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|best[- ]in[- ]class|free|discount|offer|included|supports?|compatible|waterproof|ip6\d)\b", re.I)
 # Set word budgets and an estimated speaking speed before real audio durations are available.
 # server/agents/voice.py:render_script later calls timeline with recorded audio; estimates are not playback guarantees.
-LIMITS = {"intro": 38, "outcome": 38, "proof": 38, "features": 40, "establish": 36}  # ≤ 20 s per batch at the measured ~1.9 words/s of the recorded voice
+LIMITS = {"intro": 46, "outcome": 46, "proof": 46, "features": 48, "establish": 44}  # Room for natural joins; the planner allocates within these ceilings.
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
-ROUTE_LIMIT = 360  # ≈ 3 minutes at the measured ~1.9 words/s: intro + outcome + best 3 proof + features + establish + closing
+def route_limit(demo: dict | None = None) -> int:
+    """Derive the route ceiling from the selected duration, with room for joins."""
+    minutes = float((demo or {}).get("settings", {}).get("pitch_minutes", 3 if demo is None else 2) or 2)
+    return round(minutes * 60 * WPS) + 40
+
+
+def _carry_plan_metadata(script: dict, plan: dict | None) -> None:
+    """Carry the settled plan's timing and story identity through recording and splitting."""
+    by_id = {segment["id"]: segment for segment in (plan or {}).get("segments", [])}
+    groups = {}
+    for segment in script.get("segments", []):
+        source = segment.get("budget_source_id") or segment.get("id")
+        groups.setdefault(source, []).append(segment)
+    for source, segments in groups.items():
+        planned = by_id.get(source)
+        if not planned:
+            continue
+        for segment in segments:
+            for key in ("stop_id", "fundamental", "word_budget"):
+                if key in planned:
+                    segment[key] = planned[key]
+        if len(segments) > 1 and isinstance(planned.get("word_budget"), int) and planned["word_budget"] > 0:
+            weights = [sum(words(line.get("text", "")) for line in segment.get("lines", []) if not line.get("unverified")) for segment in segments]
+            for segment, budget in zip(segments, _allocate_words(planned["word_budget"], weights)):
+                segment["word_budget"] = budget
+
+
+def _allocate_words(total: int, weights: list[int]) -> list[int]:
+    """Share one stop's integer word allowance without increasing its total."""
+    weights = weights if sum(weights) else [1 for _ in weights]
+    raw = [total * weight / sum(weights) for weight in weights]
+    allocations = [int(value) for value in raw]
+    for index in sorted(range(len(raw)), key=lambda i: raw[i] - allocations[i], reverse=True)[:total - sum(allocations)]:
+        allocations[index] += 1
+    return allocations
+
 # Flag technical register and unsupported shift promises without inventing replacement benefits.
 # Check-in wording must fit web/player/player.js:waitFor's continue-or-detail interaction, not reverse it.
 JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP|\d[\d,.]*\s*(?i:mm|millimet(?:re|er)s?)|(?i:mm|millimet(?:re|er)s?|length|four[ -]cylinder|4[ -]cylinder|quad[ -]beam|parametric|dual[ -]clutch))\b")
@@ -168,7 +203,14 @@ def ungrounded(text: str, fact_ids: list[str] | None, allowed: set[str]) -> tupl
 
 # Check and normalize a draft in place, returning issues for the writer's repair pass.
 # Uses approved understanding facts and allowed visuals; server/agents/bundle.py:build omits unverified main lines.
-def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
+def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict | None = None,
+             audience: str | None = None) -> list[str]:
+    # Older callers pass the audience as argument three. Keep that contract while
+    # new authoring runs pass the actual plan and demo for typed timing checks.
+    if isinstance(plan, str):
+        audience, plan = plan, None
+    audience = audience or (demo or {}).get("settings", {}).get("audience", "everyday")
+    _carry_plan_metadata(script, plan)
     # A human rejection in Align is a hard boundary: rejected facts must not
     # survive as citations merely because they still exist in the registry.
     fact_ids = {f["id"] for f in und["facts"] if f.get("approved", True)}
@@ -236,6 +278,13 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
             check(ln, f"{seg['id']} deeper {n}")
         total = sum(words(l["text"]) for l in seg["lines"])
         lim = LIMITS.get(seg.get("role", "proof"), 165)
+        explicit_budget = seg.get("word_budget")
+        explicit_budget = explicit_budget if isinstance(explicit_budget, int) and not isinstance(explicit_budget, bool) and explicit_budget > 0 else None
+        budget = explicit_budget or lim
+        if total > budget + 4:
+            issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, over its budget of {budget} — cut a whole idea, keeping the joins")
+        if explicit_budget and total < budget - 10:
+            issues.append(f"{seg['id']} ({seg.get('role')}): warning — well under budget; add the join or the moment ({total} words, budget {budget})")
         if total > lim:
             issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, limit {lim} — shorten (P06)")
         for n, line in enumerate(seg["lines"], 1):
@@ -257,8 +306,9 @@ def validate(script: dict, und: dict, audience: str = "everyday") -> list[str]:
     for s in script["segments"]:
         by_role.setdefault(s.get("role", "proof"), []).append(sum(words(l["text"]) for l in s["lines"]))
     route = sum(by_role.get("intro", [0])) + sum(by_role.get("outcome", [0])) + sum(sorted(by_role.get("proof", []), reverse=True)[:3]) + sum(by_role.get("features", [0])) + sum(by_role.get("establish", [0])) + closing_words
-    if route > ROUTE_LIMIT:
-        issues.append(f"a full route would run {route} words (~{route/150:.1f} min); keep it under {ROUTE_LIMIT} (3 minutes) — cut, don't compress")
+    limit = route_limit(demo)
+    if route > limit:
+        issues.append(f"a full route would run {route} words (~{route / WPS / 60:.1f} min); keep it under {limit} for the selected demo length — cut, don't compress")
     # Validate the separate Explore opening as cited, question-free narration with its own word budget.
     # server/agents/bundle.py:build publishes it under runtime.overview for concurrent opening playback/planning.
     overview = script.get("overview") or script.get("runtime_overview")
@@ -291,39 +341,63 @@ def _audio_seconds(demo_id: str | None, rel: str | None) -> float | None:
 def timeline(script: dict, demo_id: str | None = None) -> dict:
     """Per-line start/duration in seconds (estimated from words, exact from the audio when it exists) and per-batch totals.
     Stored on the script so the Align page and the bundle can show 'at 0:42 the guide says … and shows im04'."""
+    if demo_id:
+        # Direct edits and older draft scripts may predate metadata carry-over.
+        # Recover only absent allowances; already split batches keep their shares.
+        missing = [segment for segment in script.get("segments", []) if not segment.get("word_budget")]
+        if missing:
+            _carry_plan_metadata({"segments": missing}, store.read_json(demo_id, "plan.json") or {})
     t = 0.0
     batches = []
+    all_measured = []
+    planned_budgets = []
     # Accumulate main narration and check-in audio in order; unverified main lines do not consume time.
     # This is a content timeline, not the customer's runtime wall clock or their answer-wait duration.
     for seg in script.get("segments", []):
         b0 = t
+        segment_measured = []
+        budget = seg.get("word_budget")
+        budget = budget if isinstance(budget, int) and not isinstance(budget, bool) and budget > 0 else None
+        planned_budgets.append(budget)
+        seg["planned_seconds"] = round(budget / WPS, 1) if budget else None
         for ln in seg.get("lines", []):
             if ln.get("unverified"):
                 continue
-            dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
-            ln["start"], ln["duration"], ln["exact"] = round(t, 1), dur, bool(_audio_seconds(demo_id, ln.get("audio")))
+            actual = _audio_seconds(demo_id, ln.get("audio"))
+            dur = actual or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
+            ln["start"], ln["duration"], ln["exact"] = round(t, 1), dur, bool(actual)
+            segment_measured.append(bool(actual))
             t += dur
         spoken = round(t - b0, 1)  # the batch itself: what the guide says before the pause point
         if seg.get("checkin"):
-            dur = _audio_seconds(demo_id, seg.get("checkin_audio")) or round(max(1.0, words(seg["checkin"]) / WPS), 1)
+            actual = _audio_seconds(demo_id, seg.get("checkin_audio"))
+            dur = actual or round(max(1.0, words(seg["checkin"]) / WPS), 1)
+            segment_measured.append(bool(actual))
             seg["checkin_start"], seg["checkin_duration"] = round(t, 1), dur
             t += dur
         seg["start"], seg["duration"], seg["spoken"] = round(b0, 1), round(t - b0, 1), spoken
-        batches.append({"id": seg["id"], "title": seg.get("title"), "role": seg.get("role"), "start": round(b0, 1), "duration": round(t - b0, 1), "spoken": spoken, "checkin": round(t - b0 - spoken, 1), "over_20s": spoken > 20.5})
+        seg["measured"] = bool(segment_measured) and all(segment_measured)
+        all_measured.extend(segment_measured)
+        batches.append({"id": seg["id"], "title": seg.get("title"), "role": seg.get("role"), "start": round(b0, 1), "duration": round(t - b0, 1), "spoken": spoken, "checkin": round(t - b0 - spoken, 1), "over_20s": spoken > 20.5,
+                        "planned_seconds": seg["planned_seconds"], "measured": seg["measured"]})
     # Append closing durations, then record total/batch timings back onto the script.
     # The existing exact flag means some main-line audio was measured, not that every duration is measured.
     for ln in script.get("closing", []):
-        dur = _audio_seconds(demo_id, ln.get("audio")) or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
-        ln["start"], ln["duration"] = round(t, 1), dur
+        actual = _audio_seconds(demo_id, ln.get("audio"))
+        dur = actual or round(max(1.0, words(ln.get("text", "")) / WPS), 1)
+        ln["start"], ln["duration"], ln["exact"] = round(t, 1), dur, bool(actual)
+        all_measured.append(bool(actual))
         t += dur
-    script["timeline"] = {"total_seconds": round(t, 1), "batches": batches, "exact": any(l.get("exact") for s in script.get("segments", []) for l in s.get("lines", []))}
+    planned_total = round((sum(planned_budgets) + CLOSING_LIMIT) / WPS, 1) if planned_budgets and all(budget is not None for budget in planned_budgets) else None
+    script["timeline"] = {"total_seconds": round(t, 1), "batches": batches, "exact": any(l.get("exact") for s in script.get("segments", []) for l in s.get("lines", [])),
+                          "planned_total_seconds": planned_total, "measured": bool(all_measured) and all(all_measured)}
     return script["timeline"]
 
 
 # Split oversized narration at existing line boundaries, keeping check-in/deeper material on the last piece.
 # Returns the added batch count; server/agents/deck.py:build later creates slides from the resulting segments.
 def split_long_batches(script: dict) -> int:
-    """Hard guarantee for the 20-second rule: a segment whose spoken lines exceed its word budget is split at line
+    """A segment whose spoken lines exceed its role ceiling is split at line
     boundaries into '… (cont.)' batches; the check-in and deeper lines stay with the last piece. Returns the number of
     new batches created."""
     out, created = [], 0
@@ -344,11 +418,20 @@ def split_long_batches(script: dict) -> int:
         if cur:
             chunks.append(cur)
         held = [l for l in seg.get("lines", []) if l.get("unverified")]
+        # One planned stop may need several delivery batches. Divide its budget
+        # by spoken word share; copying the full allowance would inflate the plan.
+        allocations = None
+        if isinstance(seg.get("word_budget"), int) and seg["word_budget"] > 0:
+            weights = [sum(words(line.get("text", "")) for line in chunk) for chunk in chunks]
+            allocations = _allocate_words(seg["word_budget"], weights)
         for k, ch in enumerate(chunks):
             last = k == len(chunks) - 1
             piece = {**seg, "id": seg["id"] if k == 0 else f"{seg['id']}-{k + 1}", "title": seg["title"] if k == 0 else f"{seg['title']} (cont.)",
                      "lines": ch + (held if last else []), "checkin": seg.get("checkin", "") if last else "", "checkin_audio": seg.get("checkin_audio") if last else None,
                      "deeper": seg.get("deeper", []) if last else []}
+            if allocations is not None:
+                piece["word_budget"] = allocations[k]
+                piece["budget_source_id"] = seg.get("budget_source_id") or seg["id"]
             out.append(piece)
             created += 0 if k == 0 else 1
     script["segments"] = out
@@ -424,7 +507,7 @@ IMAGES:
     script["intake_q2"] = ""
     # Check the first draft and, when needed, make one repair request with its concrete validator issues.
     # The repaired draft is checked again; remaining issues stay visible rather than triggering an endless loop.
-    issues = validate(script, und, audience)
+    issues = validate(script, und, plan, demo)
     if issues:
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
         fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
@@ -444,7 +527,7 @@ the one before it, a subject introduced twice, a join that lost its verb.
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)
             script = out2.model_dump()
             script["intake_q2"] = ""
-            issues = validate(script, und, audience)
+            issues = validate(script, und, plan, demo)
         except Exception:
             pass
     # Assign line IDs, then audit actual image coverage before splitting batches and estimating their timeline.
@@ -457,7 +540,7 @@ the one before it, a subject introduced twice, a join that lost its verb.
     script = visuals.align(demo_id, script, und, emit)
     n_split = split_long_batches(script)
     if n_split:
-        emit(f"{n_split} long batch(es) split at line boundaries so every batch stays under 20 seconds.")
+        emit(f"{n_split} long batch(es) divided at complete lines for clearer pacing.")
     timeline(script)
     store.write_json(demo_id, "script.json", script)
     n_lines = sum(len(s["lines"]) for s in script["segments"])

@@ -14,6 +14,14 @@ const CARD_DEFS = [
 const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and answers."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
 const STAGE_LABELS = { coach: "Sales playbook" };
 
+// Distinguish a reviewed allocation from estimated or partially recorded speech.
+export function scriptTiming(planned, actual, measured = false, anyMeasured = false) {
+  const plan = Number.isFinite(planned) ? `${Math.round(planned)} s planned` : "no planned time";
+  if (!Number.isFinite(actual)) return `${plan} / not voiced yet`;
+  const status = measured ? "measured" : anyMeasured ? "mixed measured/estimated" : "estimated";
+  return `${plan} / ${Math.round(actual)} s ${status}`;
+}
+
 // Keep the reviewed route editable without adding a seventh approval card.
 export function storyOrderPanel(playbook, draft, onSave, onRequestUpload) {
   if (!playbook?.stops?.length) return null;
@@ -182,10 +190,10 @@ export function renderAlign(ctx) {
       const version = JSON.stringify(pt.playbook || {});
       if (!storyDraft || version !== storyVersion) { storyVersion = version; storyDraft = { stops: (pt.playbook?.stops || []).map((stop) => ({ ...stop })), changed: false }; }
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
-      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = sg.spoken ?? sg.duration;
+      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact);
       return h("div", {},
         h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit the words"), dk.slides.length ? h("button", { class: "btn sm primary", onclick: () => openSlideEditor(dk.slides.length > 1 ? 1 : 0) }, "Review slides") : null),
-        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, `${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 2} min`)),
         pt.runtime_overview ? h("div", { class: "gap" }, h("b", {}, "Short customer overview"), h("p", {}, pt.runtime_overview.text), h("div", { class: "small muted" }, `Evidence: ${(pt.runtime_overview.fact_ids || []).join(", ") || "No factual claims"}`), h("button", { class: "btn sm ghost", onclick: openScriptEditor }, "Edit overview")) : null,
         storyOrderPanel(pt.playbook, storyDraft, async (payload) => {
           await api.patch(`/api/demos/${demoId}/align/playbook`, payload); storyDraft = null;
@@ -198,7 +206,7 @@ export function renderAlign(ctx) {
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Slides · ${dk.slides.length}${dk.method ? ` · callouts by ${dk.method}` : ""}`),
         h("div", { class: "deck-strip" }, ...dk.slides.map((s, i) => h("button", { class: "deck-thumb", title: s.title || s.kind, onclick: () => openSlideEditor(i) },
           s.image_url ? h("img", { src: s.image_url, alt: "" }) : h("div", { class: "noimg" }, "no picture"),
-          h("div", { class: "cap" }, h("b", {}, s.title || s.kind), h("span", {}, `${s.kind.replaceAll("_", " ")}${secs[s.segment_id] ? ` · ${Math.round(secs[s.segment_id])} s` : ""}${s.callouts?.length ? ` · ${s.callouts.length} callout${s.callouts.length === 1 ? "" : "s"}` : ""}`))))),
+          h("div", { class: "cap" }, h("b", {}, s.title || s.kind), h("span", {}, `${s.kind.replaceAll("_", " ")}${secs[s.segment_id] ? ` · ${secs[s.segment_id]}` : ""}${s.callouts?.length ? ` · ${s.callouts.length} callout${s.callouts.length === 1 ? "" : "s"}` : ""}`))))),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Winning points · ${(pt.usps || []).length}`),
         h("ul", { class: "gaplist", style: "color:var(--ink)" }, ...(pt.usps || []).map((u) => h("li", {}, h("b", {}, u.name), " — ", h("span", { class: "muted" }, u.why_it_matters)))),
         h("p", { class: "small muted", style: "margin:10px 0 0" }, "Click a slide to review it: drag a callout, swap the picture, edit its text. Positions you set are kept when the deck is rebuilt. Preview shows every slide with its words and seconds.")
@@ -266,12 +274,12 @@ export function renderAlign(ctx) {
     }
     if (key === "script") {
       const pt = cards.script || {}; const tl = pt.timeline || {}; const dk = cards.deck || { slides: [] };
-      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = { start: sg.start, spoken: sg.spoken ?? sg.duration, checkin: sg.checkin };
+      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = { start: sg.start, timing: scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact), checkin: sg.checkin };
       return h("div", {},
         h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Primary outcome"), h("span", {}, pt.primary_outcome || "—"), h("span", { class: "k" }, "Supporting"), h("span", {}, (pt.supporting_outcomes || []).join("; ") || "—"), h("span", { class: "k" }, "Not for"), h("span", {}, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Intake"), h("span", {}, pt.intake?.q1 || "—")),
-        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `${dk.slides.length} slides · ${mmss(tl.total_seconds || 0)} total${tl.exact ? "" : " (estimated until voiced)"}`),
+        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `${dk.slides.length} slides · ${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 2} min`),
         ...dk.slides.map((s, i) => { const view = renderSlide(s, { fit: true }); view.el.classList.add("on"); const tm = secs[s.segment_id] || {}; return h("div", { class: "slide-review" },
-          h("div", { class: "slide-review-head" }, h("span", { class: "id mono small", style: "color:var(--accent)" }, tm.start != null ? mmss(tm.start) : ""), h("b", {}, s.title || s.kind), h("span", { class: "muted small" }, s.kind.replaceAll("_", " "), tm.spoken ? ` · ${Math.round(tm.spoken)} s` : "", s.image_id ? ` · ${s.image_id}: ${s.image_reason || ""}` : ""), h("button", { class: "btn sm ghost", onclick: () => openSlideEditor(i) }, "Edit")),
+          h("div", { class: "slide-review-head" }, h("span", { class: "id mono small", style: "color:var(--accent)" }, tm.start != null ? mmss(tm.start) : ""), h("b", {}, s.title || s.kind), h("span", { class: "muted small" }, s.kind.replaceAll("_", " "), tm.timing ? ` · ${tm.timing}` : "", s.image_id ? ` · ${s.image_id}: ${s.image_reason || ""}` : ""), h("button", { class: "btn sm ghost", onclick: () => openSlideEditor(i) }, "Edit")),
           h("div", { class: "pl slide-review-stage" }, h("div", { class: "pl-stage" }, view.el)),
           s.lines?.length ? h("ol", { class: "slide-lines" }, ...s.lines.map((l) => h("li", {}, l.text, l.fact_ids?.length ? h("span", { class: "mono small muted" }, ` [${l.fact_ids.join(", ")}]`) : null))) : null,
           tm.checkin ? h("p", { class: "small muted", style: "margin:6px 0 0" }, h("i", {}, "pause: ", tm.checkin)) : null); }),
