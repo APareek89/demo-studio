@@ -14,7 +14,7 @@ import json
 import re
 
 from .. import store
-from . import deck, qa, rehearsal
+from . import deck, plain_terms, qa, rehearsal
 
 # Remove common question words before comparing FAQ wording.
 # This supports the legacy match helper; runtime_graph.py:reason separately handles conversational answers.
@@ -95,6 +95,23 @@ def _registry_hash(demo_id: str) -> str:
     return hashlib.sha256(json.dumps({"facts": rows, "competition": competition}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
 
 
+def normalize_entry(entry: dict, audience: str, question: str | None = None) -> dict:
+    """Apply the register rule to new and cached text; old audio owns old words."""
+    entry = dict(entry)
+    if audience != "everyday" or plain_terms.TECHNICAL_REQUEST.search(entry.get("question", "") if question is None else question):
+        return entry
+    text = entry.get("answer", "")
+    clean, substitutions = plain_terms.substitute(text)
+    if substitutions:
+        prior = [tuple(pair) for pair in entry.get("plain_language_substitutions", [])]
+        entry["plain_language_substitutions"] = prior + [pair for pair in substitutions if tuple(pair) not in prior]
+    if clean != text:
+        entry["answer"], entry["audio"] = clean, None
+        if entry.get("clarifying_question") == text:
+            entry["clarifying_question"] = clean
+    return entry
+
+
 # Combine document and generated questions, answer them from evidence and save faq.json.
 # qa.py:answer supplies unvoiced answers; deck.py:slide_for adds routes and voice.py:render_script records them later.
 def run(demo_id: str, emit, force: bool = False) -> dict:
@@ -120,22 +137,26 @@ def run(demo_id: str, emit, force: bool = False) -> dict:
     reusable = {e.get("question"): e for e in previous.get("entries", [])} if same_registry else {}
     prev_by_q = {e.get("question"): e for e in previous.get("entries", [])}
     entries = []
+    audience = demo.get("settings", {}).get("audience", "everyday")
+    def append_entry(entry):
+        entries.append(normalize_entry(entry, audience))
     for i, (q, origin) in enumerate(questions, 1):
         emit(f"FAQ {i}/{len(questions)}: “{q[:70]}”")
         if q in reusable and not reusable[q].get("error"):
-            entries.append({**reusable[q], "id": f"Q{i:02d}", "origin": origin})
+            append_entry({**reusable[q], "id": f"Q{i:02d}", "origin": origin})
             continue
         try:
             r = qa.answer(demo_id, q, [], None, voice_it=False)
             if r.get("provider_failed"):  # every provider down: keep the previous answer when the registry is unchanged, else mark the entry for a retry
                 old = prev_by_q.get(q) if same_registry else None
-                entries.append({**old, "id": f"Q{i:02d}", "origin": origin} if old and not old.get("error") else
+                append_entry({**old, "id": f"Q{i:02d}", "origin": origin} if old and not old.get("error") else
                                {"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": "", "fact_ids": [], "answered": False, "visual": None, "offer_callback": True, "clarifying_question": "", "audio": None, "error": "providers down at build — run the FAQ stage again"})
                 continue
-            entries.append({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": r["answer"], "fact_ids": r["fact_ids"], "answered": r["answered"],
-                            "visual": r.get("visual"), "offer_callback": r.get("offer_callback", False), "clarifying_question": r.get("clarifying_question", ""), "audio": None})
+            append_entry({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": r["answer"], "fact_ids": r["fact_ids"], "answered": r["answered"],
+                          "visual": r.get("visual"), "offer_callback": r.get("offer_callback", False), "clarifying_question": r.get("clarifying_question", ""), "audio": None,
+                          "plain_language_substitutions": r.get("plain_language_substitutions", [])})
         except Exception as e:
-            entries.append({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": "", "fact_ids": [], "answered": False, "visual": None, "offer_callback": True, "clarifying_question": "", "audio": None, "error": str(e)[:160]})
+            append_entry({"id": f"Q{i:02d}", "question": q, "origin": origin, "answer": "", "fact_ids": [], "answered": False, "visual": None, "offer_callback": True, "clarifying_question": "", "audio": None, "error": str(e)[:160]})
         # Checkpoint the entries processed so far, marking unfinished work as partial.
         # store.py:write_json preserves progress; voice.py:render_script records completed answer text later.
         store.write_json(demo_id, "faq.json", {"entries": entries, "answered": sum(1 for e in entries if e["answered"]), "total": len(questions), "registry_hash": registry_hash, "partial": len(entries) < len(questions)})

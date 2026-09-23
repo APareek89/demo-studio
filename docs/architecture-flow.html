@@ -308,10 +308,10 @@ flowchart TD
   REASON[&quot;Answer, clarify, or request bounded tool&lt;br/&gt;[AGENT · runtime_graph.reason]&lt;br/&gt;history + explicit profile + evidence + tool results&quot;]:::agent
   CHOICE{&quot;Decision action?&lt;br/&gt;[FUNCTION · after_reason]&quot;}:::dec
   TOOLS[&quot;Calculator or customer-selected public URL&lt;br/&gt;[FUNCTION · runtime_tools.py]&lt;br/&gt;exact operand units/basis + formula; safe source pages + whole table passages&lt;br/&gt;max 2 tool rounds / 4 calls; graph deadline 12 seconds&quot;]:::fn
-  VALIDATE[&quot;Validate sentences; retain supported portion&lt;br/&gt;[FUNCTION · runtime_graph.validate]&lt;br/&gt;IDs, quantities, scope, policy relations, estimate/web qualification&lt;br/&gt;guard is not general semantic entailment&quot;]:::fn
+  VALIDATE[&quot;Validate sentences; retain supported portion&lt;br/&gt;[FUNCTION · runtime_graph.validate]&lt;br/&gt;grounding → everyday substitutions → rendered word cap&lt;br/&gt;unmapped blocked term: technical_term feedback; technical requests bypass register only&quot;]:::fn
   REPAIR[&quot;One optional composition repair&lt;br/&gt;[AGENT · runtime_graph._repair_composition]&lt;br/&gt;same approved evidence + precise rejection feedback; no tools or CTA&lt;br/&gt;only if at least 3 seconds remain inside the same 12-second deadline&quot;]:::agent
   RECHECK[&quot;Revalidate repaired sentences&lt;br/&gt;[FUNCTION · validate_decision]&lt;br/&gt;accept fully checked useful content; partial repairs retain rejection telemetry&lt;br/&gt;otherwise retain original supported result; cancellation always wins&quot;]:::fn
-  PLAN[&quot;Checkpoint a versioned DeliveryPlan&lt;br/&gt;[DATA · runtime_state.py]&lt;br/&gt;snapshot, turn/utterance ID, result, next interaction; no audio in graph&quot;]:::data
+  PLAN[&quot;Checkpoint a versioned DeliveryPlan&lt;br/&gt;[DATA · runtime_state.py]&lt;br/&gt;snapshot, turn/utterance ID, result + plain_language_substitutions&lt;br/&gt;next interaction; no audio in graph&quot;]:::data
   VIEW[&quot;Evidence view: stay / jump / none&lt;br/&gt;[FUNCTION · deck.route_for + player.js]&lt;br/&gt;runtime-v1 answer starts directly on its evidence; no extra spoken bridge&lt;br/&gt;turn ownership and original return point stay stable&quot;]:::fn
   SPEAK[&quot;Request selected-voice streaming delivery&lt;br/&gt;[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]&lt;br/&gt;validated answer first, PCM chunks second; cancel closes its socket&quot;]:::data
   WAIT[&quot;Listen and wait&lt;br/&gt;[ASK · follow-up / reply / Continue / configured CTA]&lt;br/&gt;silence never resumes narration&quot;]:::ask
@@ -417,9 +417,9 @@ graph TD;
 	retrieve(retrieve)
 	reason(reason)
 	tools(tools)
-	validate(validate)
+	validate[&quot;validate&lt;br/&gt;[FUNCTION · grounded rows → plain terms → word cap]&lt;br/&gt;technical_term feedback uses existing bounded repair&quot;]
 	explore(explore)
-	delivery_plan(delivery_plan)
+	delivery_plan[&quot;delivery_plan&lt;br/&gt;[DATA · result includes plain_language_substitutions]&quot;]
 	__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last
 	__start__ -.-&gt; explore;
 	__start__ -.-&gt; retrieve;

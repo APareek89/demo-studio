@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 
 from .. import schemas, store, usage
 from ..llm import claude, runtime
+from . import plain_terms
 from .author import CLAIMISH, NUMBERISH
 from .principles import EVIDENCE_RULES, audience_instruction, fact_context, language_instruction, policy_relation_conflict
 
@@ -237,6 +238,11 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         ref = _vis.for_facts(und, valid)
         if ref:
             vis = {"kind": "image" if ref.startswith("im") else "shot", "ref": ref, "source_id": next((x.get("source_id") for x in und.get("images", []) + und.get("shots", []) if x["id"] == ref), None)}
+    substitutions = []
+    if store.load(demo_id).get("settings", {}).get("audience", "everyday") == "everyday" and not plain_terms.TECHNICAL_REQUEST.search(question):
+        text, substitutions = plain_terms.substitute(text)
+        if clarification:
+            clarification = text
     audio = None
     if voice_it and text:
         try:
@@ -247,7 +253,8 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
             audio = None
     return {"audio": audio, "answer": text, "fact_ids": valid, "facts": [{"id": f["id"], "claim": f["claim"], "value": f["value"], "source": f["source"], "truth": f.get("truth", "stated")} for f in facts],
             "visual": vis, "escalate": escalate, "topic": out.topic, "cta": cta, "answered": answered,
-            "clarifying_question": clarification if answered else "", "offer_callback": offer_callback, "provider_failed": provider_failed}
+            "clarifying_question": clarification if answered else "", "offer_callback": offer_callback, "provider_failed": provider_failed,
+            "plain_language_substitutions": substitutions}
 
 
 CATEGORY_RULES = [

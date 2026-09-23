@@ -34,6 +34,10 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 - **Budget the speech.** Planner allocates typed segment word budgets for `settings.pitch_minutes`;
   Author checks each budget within shared role ceilings raised by eight words for natural joins.
   Align distinguishes planned, estimated and recorded durations; a word target is not measured audio.
+- **Explain in everyday words.** Everyday answers use reviewed neutral terminology substitutions
+  after grounding and before word limits. Remaining blocked terms receive repair feedback; exact
+  cited names are allowed for explicit technical questions and expert audiences. FAQ answers use
+  the same map, Author warns on blocked terms, and saved turns record applied substitutions.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes

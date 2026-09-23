@@ -1,5 +1,13 @@
 # Handoff.MD — Demo Studio
 
+## Sales Trainer flow — 23 September 2026 · WP6
+
+Branch `codex/sales-trainer-flow`, following WP4 `c7678b7`; the brief schedules WP6 before WP5. Everyday answers now pass a shared plain-language check after grounding and before the word cap. Reviewed neutral whole-phrase substitutions render engineering names in ordinary words: “McPherson strut” becomes “strut-type front suspension.” Remaining blocked terms reject the sentence with `technical_term` feedback for the existing bounded repair. Common terms stay intact; expert audiences and explicit technical-specification questions may retain the exact cited terminology. Citation, quantity, scope and policy checks still apply.
+
+Everyday FAQ answers use the same substitutions, and Author warns on the shared blocked terms without turning the narration warning into a new hard rejection. Runtime, cached/legacy answers and player session records preserve `plain_language_substitutions`; when cached wording changes, old audio cannot be reused for the revised answer. This is the plain-language work package; customer-site discovery and lookup expansion remain WP5.
+
+**Verification:** runtime plain language 16/16, FAQ plain language 21/21, cached API 9/9, FAQ review 42/42, generation 56/56, speech style 27/27, runtime graph 130/130 and repair 106/106 pass. Actual browser contracts pass 51/51, including saved substitution metadata. Required deck 364/364, acceptance 24/24 and both smoke phases pass, with Python compilation, player JavaScript syntax and diff checks clean. Runs use isolated stores and blocked outbound sockets, with zero outbound attempts. Narrow substitution-boundary cleanup removes duplicated articles/suspension nouns without changing the reviewed map. No new paid provider, voice or customer acceptance is implied. Published CRETA v8, its original session, output artifacts and port 8896 remain untouched. No paid Read is authorized; Loop remains off.
+
 ## Sales Trainer flow — 23 September 2026 · WP4
 
 Branch `codex/sales-trainer-flow`, following WP3 `21fa4ea`. Slides now carry up to two allowed pictures, chosen from the first two distinct verified image bindings with full audit coverage (the Author binding is accepted when no audit exists). Each records its first line; audio-led line reveal changes emphasis without shifting layout. If no audited picture is available, Deck chooses a nearby trusted tagged part or the hero as a proxy, visibly marked **illustration**, and adds a cited fact label. Proxy images never enter `visual-audit.json` or increase proof coverage.

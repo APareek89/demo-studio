@@ -1069,6 +1069,7 @@ export function mountPlayer(host, bundle, api) {
     if (run !== S.run) return;
     turn.qa_done = Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered; turn.failed = !!(r.provider_failed || r.timed_out);
     turn.response_kind = r.clarifying_question ? "clarification" : r.answered ? "answer" : "decline";
+    turn.plain_language_substitutions = r.plain_language_substitutions || [];
     turn.tool_count = r.tool_count || r.tool_results?.length || 0; turn.tool_results = (r.tool_results || []).map(tool => ({ type: tool.type || tool.tool, ok: tool.ok, source_url: tool.source_url, error: tool.error })); turn.graph_timings = r.graph_timings || {}; turn.answer_route = turn.tool_count ? "tool" : r.from_bank ? "cache" : "model";
     // Attach the first-audio callback to this answer turn before presenting its result.
     // Only real audio calls it; server/runtime_metrics.py:aggregate keeps caption fallback separate.

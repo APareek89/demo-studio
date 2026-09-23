@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — Answers recited suspension component names
+
+**Example:** an everyday answer repeated “McPherson strut” instead of the reviewed neutral wording “strut-type front suspension.” A valid citation did not make the engineering name suitable for the listener.
+
+**Five whys:** (1) The runtime audience rule was only a prompt instruction. (2) Runtime had no shared jargon blocklist or deterministic substitution map. (3) The validator checked citations, quantities and scope, not the answer's register. (4) Composition repair received no register-specific feedback. (5) Tests covered narration language rather than customer answers.
+
+**WP6 correction:** use the reviewed `plain_terms.py` map after row grounding and before the word cap for everyday answers. Match whole phrases, longest first; keep ordinary allowed terms. Substitute only neutral approved renderings and retain citations. A remaining blocked term rejects its row with `technical_term` and precise repair feedback. Explicit technical requests and expert audiences may retain exact cited terminology. FAQ builds share substitutions; Author adds warnings rather than a new hard rejection. Preserve substitution metadata through cached/legacy results and session records, and do not play old cached audio for changed wording.
+
+**Verification and limits:** runtime plain language 16/16, FAQ plain language 21/21, cached API 9/9, runtime graph 130/130, repair 106/106 and browser 51/51 pass, alongside required deck 364/364, acceptance 24/24 and both smoke phases. Independent checks confirm unsupported citations/quantities reject before rewriting and repaired output retains substitution metadata. Narrow boundary cleanup avoids doubled articles or suspension nouns without changing the reviewed map. This finite map does not detect every possible engineering phrase or prove live answer quality. Grounding requirements remain unchanged; no paid customer or voice run is implied.
+
 ## 2026-09-23 — The story opened with the roof before the car's fundamentals
 
 **Five whys:** (1) A delighter such as the sunroof led the story. (2) The writing prompts named that example and rewarded standout features early. (3) The build had no category sales knowledge specifying the basic buying sequence. (4) Ranking was untethered to that sequence and skewed toward the pictures available. (5) Tests checked grounding, but a cited claim could still appear in the wrong order.
@@ -8,7 +18,9 @@
 
 **WP2 correction:** bind Planner to the effective reviewed playbook: one proof segment per required stop, ordered by that stop, with missing coverage restored and diagnosed. Keep Coach's USPs, record fundamental flags and allocate typed word budgets. Remove the standout-first and sunroof example from the writing prompts; Author follows the settled plan with connected thoughts, varied openings and the translation ladder rather than choosing the itinerary again.
 
-**Verification and limits:** WP1 Coach 20/20, Align API 18/18, UI 9/9, deck 320/320, acceptance 24/24 and both smoke phases passed. WP2 Plan/playbook, narrative-role, speech-style and integration counts are pending. WP3 still adds author budget enforcement; WP7 changes runtime check-in behavior. Mock order/coverage checks cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
+**Follow-through:** WP3 enforces typed budgets and keeps the allocation intact across split continuations. WP4 carries the fundamental flag through Slide/bundle and reserves one unseen fundamental on initial pitch planning and player fallback; refinements retain customer-priority behavior.
+
+**Verification and limits:** WP1 Coach 20/20, Align API 18/18, UI 9/9 and required free gates passed. WP2 Plan/playbook 14/14, narrative 11/11 and speech style 27/27 passed; WP3 generation 56/56 and Plan/playbook 15/15 passed. WP4 pitch/player fundamental 12/12 and 10/10 passed, with required deck 364/364, acceptance 24/24 and both smoke phases. WP7 still owns runtime check-in changes. Mock order/coverage checks cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
 
 **Cache lesson from WP1 review:** fact text alone does not identify Coach's input. A category edit with unchanged facts initially reused the previous category's playbook. Reuse now also checks category and the consumed evidence/picture inputs; the cache contract covers category/picture changes and preservation of the prior artifact on failure.
 

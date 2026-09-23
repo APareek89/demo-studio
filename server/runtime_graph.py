@@ -18,7 +18,7 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
 from . import config, store, usage
-from .agents import deck, pitch, qa
+from .agents import deck, pitch, plain_terms, qa
 from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
 from .llm import runtime
@@ -35,6 +35,8 @@ SYSTEM = """You are the helpful, warm guide in a live car demo. You have a real 
 question and its earlier context, answer directly in everyday language, and wait when clarification is necessary.
 Use a cheerful but restrained speaking style, contractions and short varied sentences. Do not sound like a brochure.
 Do not praise every question, repeat intake, append a ritual satisfaction question or invent customer preferences.
+
+PLAIN LANGUAGE. The listener is an everyday buyer. Use ordinary words. The only technical terms you may use are: cc, hp, turbo, diesel, petrol, automatic, manual, dual clutch, airbags, sunroof, touchscreen, cruise control, alloy wheels, ground clearance, suspension, torque, gearbox, range, battery. Never use component or engineering names such as McPherson strut, torsion beam, GDi, IVT, ADAS, ESC, TPMS, NVH; say what kind of thing it is in plain words instead (a strut-type front suspension, an automatic gearbox, driver-assistance features). If the customer explicitly asks for the technical specification, you may give the exact term with its citation.
 
 Return either:
 answer: normally 1–3 short sentences (75 words total), each with supporting fact_ids; or
@@ -1066,7 +1068,7 @@ def _typed_row_speech(row: dict, customer_text: str) -> tuple[str, str]:
     return render_act(act,question=customer_text),kind
 
 
-def validate_decision(decision: dict, evidence: list[dict], question: str, customer_text: str = "", requested_scope: dict | None = None, *, row_feedback: list[dict] | None = None, validated_limits: list[str] | None = None) -> tuple[dict,list[str]]:
+def validate_decision(decision: dict, evidence: list[dict], question: str, customer_text: str = "", requested_scope: dict | None = None, *, row_feedback: list[dict] | None = None, validated_limits: list[str] | None = None, audience: str = "everyday") -> tuple[dict,list[str]]:
     """Reject unsupported citations/numbers/relations, keep useful supported sentences.
 
     This deterministic guard is deliberately not labelled a general entailment
@@ -1075,6 +1077,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     requested_scope = requested_scope or explicit_scope(question, evidence)
     by_id = {f["id"]:f for f in evidence if f.get("approved",True) and not f.get("knowledge",{}).get("excluded_by_precedence") and f.get("knowledge",{}).get("conflict_status") not in ("suppressed","unresolved")}
     errors, sentences, used, substantive, condition_facts, condition_rejections, accepted_kinds = [], [], [], [], {}, [], []
+    substitutions = []
+    plain_language = audience == "everyday" and not plain_terms.TECHNICAL_REQUEST.search(question)
     previous_claim=None
     typed_question=""
     clarification = str(decision.get("clarification","")).strip()
@@ -1099,7 +1103,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                         limits.append(limit if limit.endswith((".","!","?")) else limit+".")
                         if removed:errors.append("unsupported_limitation_premise")
             speech=" ".join([*limits[:1],rendered])
-            return {"answer":speech,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":rendered,"offer_callback":False,"topic":decision.get("topic","other"),"cta":""},errors
+            return {"answer":speech,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":rendered,"offer_callback":False,"topic":decision.get("topic","other"),"cta":"","plain_language_substitutions":[]},errors
         errors.append("invalid_interaction_act")
     if decision.get("action")=="clarify" and clarification and act is None:
         limit="";parts=re.split(r"(?<=[.!;])\s+",clarification,maxsplit=1)
@@ -1111,7 +1115,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             limit=next((str(row.get("text","")).strip() for row in decision.get("sentences",[]) if row.get("kind")=="limitation" and not row.get("fact_ids") and _safe_limitation(str(row.get("text","")),customer_text or question)),"")
         speech=(limit+" "+clarification).strip()
         if len(speech.split())<=40 and len(re.findall(r"[?？]",clarification))==1 and clarification.endswith(("?","？")) and not re.search(r"[.!]\s+\w",clarification) and not (NUMBERISH.search(clarification) or CLAIMISH.search(clarification)):
-            return {"answer":speech,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":clarification,"offer_callback":False,"topic":decision.get("topic","other"),"cta":""}, errors
+            return {"answer":speech,"fact_ids":[],"facts":[],"answered":True,"clarifying_question":clarification,"offer_callback":False,"topic":decision.get("topic","other"),"cta":"","plain_language_substitutions":[]}, errors
         errors.append("invalid_clarification")
     for row in _atomic_answer_rows(decision.get("sentences",[]),evidence,requested_scope):
         prior_claim,previous_claim=previous_claim,None
@@ -1325,6 +1329,16 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
             reject("uncited_context");continue
         if re.search(r"<[^>]+>|\[(?:happy|cheerful|pause|laugh|whisper)[^\]]*\]",text,re.I):
             reject("speech_markup"); continue
+        grounded_text = text
+        if plain_language:
+            text, changed = plain_terms.substitute(text)
+            residual = plain_terms.find_jargon(text)
+            if residual:
+                reject("technical_term")
+                if row_feedback is not None:
+                    row_feedback[-1]["instruction"] = "; ".join(f"replace '{term}' with everyday words or drop the sentence" for term in residual)
+                continue
+            substitutions.extend(changed)
         sentences.append(text); used.extend(ids)
         accepted_kinds.append(kind)
         if validated_limits is not None and kind=="limitation" and _safe_limitation(text,customer_text or question):
@@ -1334,7 +1348,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
         condition_facts.update({f["id"]:f for f in row_dependencies})
         if kind=="fact":
             substantive.extend(ids)
-            previous_claim={"text":text,"facts":facts}
+            previous_claim={"text":grounded_text,"facts":facts}
     used = list(dict.fromkeys(used))
     calculations = [f for f in by_id.values() if f.get("provenance")=="calculation" and f.get("derivation",{}).get("value")]
     # A successful tool result is already deterministic and checked against input
@@ -1367,6 +1381,7 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
     # No word slicing: truncation could remove a material caveat.
     if len(text.split()) > 115:
         text,used = "That answer needs more checking before I can give you a reliable short explanation.",[]
+        substitutions = []
         errors.append("answer_too_long")
     if validated_limits is not None:
         validated_limits[:]=[limit for limit in validated_limits if limit in text]
@@ -1374,7 +1389,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                                 and "context" in accepted_kinds and "limitation" not in accepted_kinds)
     condition_evidence=[{**f,"runtime_role":"condition"} for f in condition_facts.values()] if used else []
     return {"answer":text,"fact_ids":used,"facts":[by_id[i] for i in used]+[f for f in condition_evidence if f["id"] not in used],"condition_fact_ids":[f["id"] for f in condition_evidence],"condition_evidence":condition_evidence,"covered_condition_rejections":covered_conditions,"answered":answered,
-            "clarifying_question":typed_question if typed_question in text else "","offer_callback":not answered and not typed_question,"topic":decision.get("topic","other"),"cta":""},errors
+            "clarifying_question":typed_question if typed_question in text else "","offer_callback":not answered and not typed_question,"topic":decision.get("topic","other"),"cta":"",
+            "plain_language_substitutions":substitutions},errors
 
 
 class _CompositionRepair(BaseModel):
@@ -1382,10 +1398,17 @@ class _CompositionRepair(BaseModel):
     sentences: list[SpokenClaim] = Field(min_length=1,max_length=4,description="A direct natural answer using only supplied approved assertions, one independently grounded claim per sentence. A fourth sentence may preserve a requested facet or condition. No tools or CTA.")
 
 
-async def _repair_composition(state: RuntimeState, original: dict, original_errors: list[str], feedback: list[dict], customer_text: str) -> tuple[dict,list[str],dict]:
+def _runtime_audience(state: RuntimeState) -> str:
+    """Audience is a reviewed demo setting, never a customer-profile override."""
+    demo = store.read_json(state["demo_id"], "demo.json") or {}
+    return demo.get("settings", {}).get("audience", "everyday")
+
+
+async def _repair_composition(state: RuntimeState, original: dict, original_errors: list[str], feedback: list[dict], customer_text: str, *, audience: str | None = None) -> tuple[dict,list[str],dict]:
+    audience = _runtime_audience(state) if audience is None else audience
     decision=state.get("decision",{})
     empty=decision.get("action")=="answer" and not decision.get("sentences")
-    rejected_substantive=any(row.get("kind")=="fact" or row.get("error")=="invalid_interaction_act" or (row.get("kind")=="limitation" and row.get("error") in {"uncited_claim","uncited_product_assertion","unverified_coverage_claim","unverified_model_availability","uncited_context"}) for row in feedback)
+    rejected_substantive=any(row.get("kind")=="fact" or row.get("error") in {"invalid_interaction_act","technical_term"} or (row.get("kind")=="limitation" and row.get("error") in {"uncited_claim","uncited_product_assertion","unverified_coverage_claim","unverified_model_availability","uncited_context"}) for row in feedback)
     precise_limit=any(not row.get("fact_ids") and row.get("kind") in {"limitation","context"} and _uncited_own_limit(str(row.get("text","")),customer_text)[0] for row in decision.get("sentences",[]))
     if original.get("covered_condition_rejections"):
         return original,original_errors,{}  # The validated duplicate already states this prerequisite.
@@ -1430,7 +1453,7 @@ substituting a list of shared equipment. Describe equipment, not promises such a
 If the question asks for a guarantee or unsupported superiority, retain a precise refusal. Do not invent a benefit.
 If a reliable answer is still unavailable, return one honest limitation sentence rather than a fact list.
 """
-    instructions += "\n" + (decision.get("response_style_instructions") or (audience_instruction("everyday")+"\n"+language_instruction(state.get("profile",{}).get("language") or "en-IN")))
+    instructions += "\n" + (decision.get("response_style_instructions") or (audience_instruction(audience)+"\n"+language_instruction(state.get("profile",{}).get("language") or "en-IN")))
     info={"attempted":True,"accepted":False,"budget_ms":round(budget*1000),"original_validation_errors":list(original_errors)}
     try:
         repaired=await asyncio.wait_for(asyncio.to_thread(runtime.structured,instructions,json.dumps(payload,ensure_ascii=False),_CompositionRepair,
@@ -1439,7 +1462,7 @@ If a reliable answer is still unavailable, return one honest limitation sentence
         state["control"].remaining()
         candidate={"action":"answer","sentences":repaired.model_dump()["sentences"],"answered":bool(decision.get("answered")),"topic":decision.get("topic","other")}
         accepted_limits=[]
-        result,errors=validate_decision(candidate,evidence,state["question"],customer_text,state.get("requested_scope"),validated_limits=accepted_limits)
+        result,errors=validate_decision(candidate,evidence,state["question"],customer_text,state.get("requested_scope"),validated_limits=accepted_limits,audience=audience)
         info.update(validation_errors=errors,provider_used=getattr(repaired,"_runtime_provider",""),model_used=getattr(repaired,"_runtime_model",""))
         clean_limit=bool(accepted_limits) or any(row.get("kind")=="limitation" and _safe_limitation(_reviewed_refusal(str(row.get("text","")),customer_text),customer_text) for row in candidate["sentences"])
         loses_supported_facts=bool(original.get("fact_ids")) and not result.get("fact_ids")
@@ -1460,7 +1483,7 @@ If a reliable answer is still unavailable, return one honest limitation sentence
     except Exception as exc:
         info["error"]="repair_timeout" if isinstance(exc,(TimeoutError,asyncio.TimeoutError)) else type(exc).__name__
     info["latency_ms"]=_elapsed(started)
-    usage.trace("runtime-validation-repair","code",latency_ms=info["latency_ms"],user=state["question"],response=json.dumps({**info,"original_sentences":decision.get("sentences",[]),"final_answer":original.get("answer","")},ensure_ascii=False))
+    usage.trace("runtime-validation-repair","code",latency_ms=info["latency_ms"],user=state["question"],response=json.dumps({**info,"original_sentences":decision.get("sentences",[]),"final_answer":original.get("answer",""),"plain_language_substitutions":original.get("plain_language_substitutions",[])},ensure_ascii=False))
     return original,original_errors,info
 
 
@@ -1478,8 +1501,9 @@ async def validate(state: RuntimeState) -> dict:
     # Failed reasoning owns no product prose; only completed audited arithmetic
     # may survive it. The operational message below comes from runtime state.
     decision={"action":"answer","answered":False,"sentences":[]} if reasoning_failed else state.get("decision",{})
-    result, errors = validate_decision(decision,evidence,state["question"],customer_text,state.get("requested_scope"),row_feedback=feedback)
-    result,errors,repair=await _repair_composition(state,result,errors,feedback,customer_text)
+    audience = _runtime_audience(state)
+    result, errors = validate_decision(decision,evidence,state["question"],customer_text,state.get("requested_scope"),row_feedback=feedback,audience=audience)
+    result,errors,repair=await _repair_composition(state,result,errors,feedback,customer_text,audience=audience)
     required_urls=_verification_urls(state["question"])
     if required_urls and result.get("fact_ids") and not any(f.get("provenance")=="live_web" for f in result.get("facts",[])):
         attempted={str(item.get("requested_url") or item.get("url","")) for item in state.get("tool_results",[]) if item.get("tool")=="source_lookup"}
@@ -1578,5 +1602,5 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
         final = await delivery_plan(state)
     final["result"].setdefault("timings",{})["graph_ms"] = _elapsed(started)
     final["result"]["graph_timings"] = dict(final["result"]["timings"])
-    usage.trace("runtime-graph","code",latency_ms=_elapsed(started),user=state["question"],response=json.dumps({"turn_id":tid,"snapshot_id":state["snapshot_id"],"timings":final["result"].get("timings"),"answered":final["result"].get("answered"),"provider_used":final["result"].get("provider_used",""),"model_used":final["result"].get("model_used",""),"errors":final.get("errors",[])},ensure_ascii=False))
+    usage.trace("runtime-graph","code",latency_ms=_elapsed(started),user=state["question"],response=json.dumps({"turn_id":tid,"snapshot_id":state["snapshot_id"],"timings":final["result"].get("timings"),"answered":final["result"].get("answered"),"provider_used":final["result"].get("provider_used",""),"model_used":final["result"].get("model_used",""),"errors":final.get("errors",[]),"plain_language_substitutions":final["result"].get("plain_language_substitutions",[])},ensure_ascii=False))
     return final

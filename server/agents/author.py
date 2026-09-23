@@ -6,7 +6,7 @@ import re
 
 from .. import schemas, store
 from ..llm import claude
-from . import speech_style, visuals
+from . import plain_terms, speech_style, visuals
 from .principles import AUTHOR_CRAFT, PRINCIPLES, SIGNPOSTS, TRANSLATION_LADDER, audience_instruction, fact_context, language_instruction
 
 # Brief the writer on grounded dialogue, per-line visual references, pacing and explicit check-in questions.
@@ -174,6 +174,8 @@ def _allocate_words(total: int, weights: list[int]) -> list[int]:
 # Flag technical register and unsupported shift promises without inventing replacement benefits.
 # Check-in wording must fit web/player/player.js:waitFor's continue-or-detail interaction, not reverse it.
 JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP|\d[\d,.]*\s*(?i:mm|millimet(?:re|er)s?)|(?i:mm|millimet(?:re|er)s?|length|four[ -]cylinder|4[ -]cylinder|quad[ -]beam|parametric|dual[ -]clutch))\b")
+# Extend the warning-only narration check without changing its existing matches.
+JARGON = re.compile(JARGON.pattern + r"|\b(?i:" + "|".join(re.escape(term) for term in sorted(plain_terms.JARGON, key=len, reverse=True)) + r")\b")
 _SHIFT_PROMISE = re.compile(r"\b(?:imperceptible|seamless|jerk[- ]free)\s+(?:gear\s*)?(?:shifts?|changes?)\b|\b(?:won't|will not|cannot|can't)\s+(?:even\s+)?feel\s+(?:the\s+)?(?:gear\s*)?(?:shifts?|changes?)\b", re.I)
 # Editorial English-language guard, not a general semantic classifier. The existing
 # player's affirmative path continues; a negative opens deeper detail.

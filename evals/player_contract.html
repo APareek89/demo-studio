@@ -136,9 +136,10 @@ const detail = () => ({ context: player?.context(), currentCitations: host.query
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
-test('A ready answer bypasses acknowledgment and persists its distinct answer classification', async () => {
+test('A ready answer bypasses acknowledgment and persists classification and plain-language substitutions', async () => {
   const answer = 'The approved answer is already ready.', filler = 'Let me check that.';
-  await setup({ hold: text => text === answer, qa: async () => answered({ answer }), configure: b => ({ ...b, fillers: { hold_on_question: { text: filler, audio: audioURL(filler) } } }) });
+  const substitutions = [['ivt', 'automatic gearbox']];
+  await setup({ hold: text => text === answer, qa: async () => answered({ answer, plain_language_substitutions: substitutions }), configure: b => ({ ...b, fillers: { hold_on_question: { text: filler, audio: audioURL(filler) } } }) });
   await atProof(); await type('What does the approved source say?');
   assert(env.played.includes(answer) && !env.played.includes(filler), 'Ready answer waited behind an unnecessary acknowledgment');
   await clock.tick(1000);
@@ -146,6 +147,7 @@ test('A ready answer bypasses acknowledgment and persists its distinct answer cl
   window.dispatchEvent(new Event('pagehide'));
   const turn = env.beacons.at(-1).turns.at(-1);
   assert(turn.response_kind === 'answer' && turn.answered === true && turn.answer_audio != null && turn.ack_audio == null, 'Saved session confused answer playback with acknowledgment');
+  assert(JSON.stringify(turn.plain_language_substitutions) === JSON.stringify(substitutions), 'Saved turn lost the reviewed speech substitutions');
 });
 
 test('An answer arriving during acknowledgment cuts only the filler and never overlaps voices', async () => {

@@ -1100,8 +1100,12 @@ async def run_qa(demo_id: str, req: Request):
         if set(hit.get("fact_ids") or []) - allowed:
             hit = None  # stale/rejected rival evidence must not bypass live QA
     if hit and not body.get("skip_bank"):
+        # Old banks may predate the reviewed everyday renderings. Normalize a
+        # response copy and retire mismatched audio without rewriting the bank.
+        hit = faq.normalize_entry(hit, demo.get("settings", {}).get("audience", "everyday"), q)
         r = {"from_bank": True, "bank_id": hit["id"], "audio": f"/media/{demo_id}/{hit['audio']}" if hit.get("audio") else None, "answer": hit["answer"], "fact_ids": hit["fact_ids"], "facts": [], "visual": hit.get("visual"),
-             "escalate": "", "topic": "", "cta": "", "answered": hit["answered"], "clarifying_question": hit.get("clarifying_question", ""), "offer_callback": hit.get("offer_callback", not hit["answered"])}
+             "escalate": "", "topic": "", "cta": "", "answered": hit["answered"], "clarifying_question": hit.get("clarifying_question", ""), "offer_callback": hit.get("offer_callback", not hit["answered"]),
+             "plain_language_substitutions": hit.get("plain_language_substitutions", [])}
         routed(r)
         runlog.runtime_qa(demo_id, q, {**r, "answer": "[bank " + hit["id"] + "] " + r["answer"]}, body.get("profile") or None)
         return r
