@@ -1059,7 +1059,7 @@ test('Dragging the second picture reports fractions of that picture', async () =
     assert(Math.abs(moved[0][1].x - expected.x) < .006 && Math.abs(moved[0][1].y - expected.y) < .006, 'Drag coordinates used the stage or first picture instead of the second');
   } finally { view.destroy(); frame.remove(); }
 });
-test('Revealing an overlay connects its leader to the visible chip centre', async () => {
+test('Revealing an overlay connects its leader at the visible label edge', async () => {
   const { frame, view } = await renderFixture(1000);
   try {
     assert(frame.clientWidth >= 700 && innerWidth > 620, 'Run the wide overlay check in a browser at least 748px wide');
@@ -1067,11 +1067,16 @@ test('Revealing an overlay connects its leader to the visible chip centre', asyn
     assert(chip.getBoundingClientRect().width === 0, 'Fixture overlay was not initially hidden');
     view.setRevealed(0);
     // Read immediately: relying on a later unrelated resize leaves the first spoken line mis-anchored.
-    const p = rect(view.pic), c = rect(chip), expected = { x: c.x + c.width / 2 - p.x, y: c.y + c.height / 2 - p.y };
-    const actual = { x: Number(leader.getAttribute('x1')) / 100 * p.width, y: Number(leader.getAttribute('y1')) / 100 * p.height };
-    env.geometry.push({ picture: p, chip: c, expectedLeaderOrigin: expected, actualLeaderOrigin: actual });
-    assert(c.width > 0 && c.height > 0 && actual.x > 1 && actual.y > 1, 'Visible overlay leader still originates at the picture corner');
-    assert(Math.abs(actual.x - expected.x) <= 1.5 && Math.abs(actual.y - expected.y) <= 1.5, 'Leader does not meet the actual visible chip centre');
+    const p = rect(view.pic), c = rect(chip);
+    const actual = { x: p.x + Number(leader.getAttribute('x1')) / 100 * p.width, y: p.y + Number(leader.getAttribute('y1')) / 100 * p.height };
+    const anchor = { x: p.x + Number(leader.getAttribute('x2')) / 100 * p.width, y: p.y + Number(leader.getAttribute('y2')) / 100 * p.height };
+    env.geometry.push({ picture: p, chip: c, actualLeaderOrigin: actual, anchor });
+    assert(c.width > 0 && c.height > 0 && actual.x > p.x + 1 && actual.y > p.y + 1, 'Visible overlay leader still originates at the picture corner');
+    const within = actual.x >= c.x - 1.5 && actual.x <= c.right + 1.5 && actual.y >= c.y - 1.5 && actual.y <= c.bottom + 1.5;
+    const edgeDistance = Math.min(Math.abs(actual.x - c.x), Math.abs(actual.x - c.right), Math.abs(actual.y - c.y), Math.abs(actual.y - c.bottom));
+    assert(within && edgeDistance <= 1.5, 'Leader must begin at the visible label edge without crossing its text');
+    const centre = { x: c.x + c.width / 2, y: c.y + c.height / 2 };
+    assert(Math.hypot(actual.x - anchor.x, actual.y - anchor.y) < Math.hypot(centre.x - anchor.x, centre.y - anchor.y), 'Leader begins on the wrong side of the label');
   } finally { view.destroy(); frame.remove(); }
 });
 test('Wide and narrow slides keep the native image ratio inside the stage', async () => {

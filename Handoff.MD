@@ -1,5 +1,15 @@
 # Handoff.MD — Demo Studio
 
+## WP11 presentation correction — slide-first layout · 23 September 2026
+
+**Decision:** Anand rejected the evidence side panel after reviewing the samples. Restore the previous cinematic slide composition: all feature text stays on the slide, dark header/slide and a white conversation area below. The slide occupies 75% of the player viewport at ordinary desktop/phone sizes; short windows reserve a fixed minimum conversation area so the composer and answer choices remain usable. This supersedes the WP11 layout choice below; the existing Visuals-card color options remain.
+
+Reviewed picture anchors and saved Align positions stay unchanged. Display labels move only to avoid the heading, other labels, anchor dots and crossed connectors; long connectors prefer a nearby position and start at the label edge. Labels without trusted anchors, and tight phone layouts, use the existing caption band inside the slide. CTA, capture, answers and contact forms do not resize the slide. The opening film keeps its separate video-and-Skip view.
+
+**Verification:** deck **365/365**, acceptance **24/24**, smoke **both phases + on-demand rehearsal**, UI layout **149/149**, browser player **76/76**, targeted Node player checks **84/84**, static samples **173/173** and real-media checks **6/6** pass. Tests use isolated mock storage and blocked outbound requests; syntax, whitespace and all nine Mermaid copies pass. No backend behavior, paid call, deployment, protected-demo write or port-8896 operation. Selective Align rebuilds remain pending.
+
+**Files:** `web/player-ui.css`, `web/player/player.js`, `web/slide.js`, `web/studio/align.js`; `evals/ui_layout_contract.py`, `evals/player_contract.html`; the three `docs/design/wp11-samples/*.html` files; `Handoff.MD`, `Learning.MD`, `Loop.MD`, `PRD.md`, `refine.MD`, `docs/ARCHITECTURE_FLOW.md`, `docs/mermaid/05-runtime.mmd` and its `docs/architecture-flow.html` copy. Existing untracked files remain untouched. Effort: implementation/review ~65%, verification/docs ~35%.
+
 ## WP11 — real customer learning and finishing changes · 23 September 2026
 
 Implemented on `codex/sales-trainer-flow`, after WP10 `da76db5`, as one `WP11:` package. Read answers only uploaded FAQ questions; empty Asked and answered auto-approves with the specified note. Runtime v1/live reuse clean snapshot-bound answers before reasoning, with scope/date/grounding checks and exact published voice/persona/language audio. Customer unknowns retain identity, counts and review state across Read; Coach exposes the gaps. Rejection is permanent, edits remain verbatim, and rehearsal runs only from its button.
@@ -170,6 +180,8 @@ Python ASTs and executable token sequences match baseline `ba448ff` for all 14 P
 **Learning:** `Learning.MD` contains93 unique NX/CR issues throughCR51, the secondNX25 observation, and H01–H05 separate harness findings, with dates/reasons/solutions and retained history. Runtime diagram05 and its embedded viewer copy match the corrections. Loop stays off.
 
 ## Decisions and invariants
+
+- 2026-09-23: restore the cinematic full-width slide with all feature details on-slide, 75% of the player viewport, dark upper area and white conversation dock; supersedes the WP11 evidence side panel.
 
 - D10 / WP11: Read answers uploaded FAQ documents only. Customer answers are cached after validation against the pinned snapshot; declines become counted unknowns, never facts. Exact human edits and permanent rejection remain reviewable; Build omits rehearsal, which runs on demand. Reject guessed question generation as a recurring build cost.
 - D11 / WP11: public-web search runs immediately when approved evidence cannot answer, with cited turn-local sources and existing tool limits. Customer-offer-first was not selected; web answers never enter the approved registry or customer cache.

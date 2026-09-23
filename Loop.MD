@@ -1,5 +1,18 @@
 # Loop.MD — Demo Studio
 
+## WP11 presentation correction — 23 September 2026
+
+Loop stays **off**. The latest user instruction supersedes the side-panel design: full-width cinematic slide, details on-slide, 75% player height at ordinary sizes, dark top and white lower area. Short windows retain a 112px minimum conversation dock; status/answer choices scroll above the fixed composer. Reviewed anchors and stored label positions remain intact.
+
+- Required free gates before and after: `qa_deck.py` **365/365**, `qa_accept.py` **24/24**, `smoke_mock.py` **both phases + on-demand rehearsal**; mock providers, isolated data/graph stores and zero outbound attempts.
+- `ui_layout_contract.py`: **149/149**; full width/proportion, no evidence sidebar, dark/white colors, collision-free on-slide labels, edge-origin connectors, true image ownership, stable CTA/capture/contact geometry, normal and short desktop/phone controls.
+- Existing player Node checks: media **7/7**, focus **21/21**, listen **16/16**, priority revision **11/11**, customer sites **19/19**, fundamental **10/10**.
+- Silent static design samples: **173/173** layout/state checks across all three palettes at 1440, 850 and 390px, including the embedded Rehearse preview.
+- Read-only real media: **6/6** checks for latest non-protected CRETA slides and Downloads video at desktop/phone; native ratios, 75% slide height, film-only view and separate Skip preserved.
+- `player_contract.html`: **76/76**, including immediate label-edge attachment after reveal; no browser exceptions or outbound requests. Changed Python/JavaScript syntax, diff whitespace and all nine embedded Mermaid copies pass.
+
+No paid generation, deployed update, protected-demo edit or port-8896 operation. These are UI/fixture checks, not acoustic or real-provider acceptance. Selective Align rebuild routing remains pending.
+
 ## WP11 — customer question cache and approved finishing changes · 23 September 2026
 
 Loop stays **off**. Read answers uploaded FAQ questions only; clean customer answers/audio are cached against pinned evidence, while declines become counted customer unknowns. Rehearsal is on demand. The package also implements transcript-confirmed interruption, automatic cited public search, measured three-minute default narration, citation retry/bulk restore, the approved Marine layout and Visuals-card palette approval.

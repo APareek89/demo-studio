@@ -53,8 +53,11 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   the same exact quote/locator rule. Restore all flagged facts is explicit owner approval; it preserves
   the failed-verification reason and excludes manual rejections and conflict/precedence exclusions.
 
-WP11 finishing decisions are approved in `refine.MD`: Marine with numbered picture anchors and an
-evidence rail; Marine/Sage/Graphite color selection reviewed in the existing Visuals card. Search the
+WP11 finishing decisions and the later presentation correction are recorded in `refine.MD`.
+The cinematic slide fills 75% of the player viewport, with feature details on the slide,
+reviewed anchors, a dark upper area and a white conversation dock. Short viewports reserve a
+minimum usable dock. This supersedes the separate evidence rail; Marine/Sage/Graphite color
+selection remains in the existing Visuals card. Search the
 public web immediately when approved evidence cannot answer, with cited, turn-local, uncached sources.
 The default guided tour extends through reviewed stops to at least 180 seconds of narration and publication
 blocks if supported narration falls short. Film and Q&A do not count; customers may explicitly shorten, skip or exit.

@@ -176,7 +176,7 @@ export function mountPlayer(host, bundle, api) {
         // Keep the guide, captions, citations and reply controls together in the bottom dock.
         // Narration and question callbacks update these elements; web/player/mascot.js:mascot animates the guide.
         h("div", { class: "pl-cap" }, (el.mascotStage = mascot({ size: 72, image: bundle.mascot })).el, h("div", { class: "who" }, guide), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
-        h("div", { class: "pl-controls" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }),
+        h("div", { class: "pl-controls" }, h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" })),
           // Submit the typed dock reply without reloading the page, then clear its input field.
           // acceptTypedAnswer routes it to the active wait or server/app.py:run_qa.
           h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: "Ask a question or type your answer…", "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 21 })), h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
@@ -205,12 +205,23 @@ export function mountPlayer(host, bundle, api) {
       // Questions use the API callbacks supplied by web/app.js:renderPlay, just like dock replies.
       h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { oninput: preferTyping, placeholder: "Type a question…", "aria-label": "Type a question" }), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 18 })))));
   host.replaceChildren(root);
-  // Watch the dock height and expose its measured size as a CSS variable.
-  // Resize events keep web/slide.js:renderSlide clear of the caption and input area.
-  const dockObserver = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
-    root.style.setProperty("--player-dock-height", Math.ceil(root.querySelector(".pl-dock").getBoundingClientRect().height) + "px");
-  }) : null;
-  dockObserver?.observe(root.querySelector(".pl-dock"));
+  // Keep the slide at 75% of the demo viewport. Captions and transient controls
+  // share the remaining white area without changing the slide's dimensions.
+  const sizePlayer = () => {
+    if (root.classList.contains("film-on") || !root.clientHeight) return;
+    const header = root.querySelector(".pl-top").getBoundingClientRect().height;
+    const actions = root.querySelector(".pl-ctas").getBoundingClientRect().height;
+    const minimumDock = 112;
+    const slideHeight = Math.max(0, Math.min(Math.round(root.clientHeight * .75), root.clientHeight - header - actions - minimumDock));
+    const dockHeight = root.clientHeight - header - actions - slideHeight;
+    root.style.setProperty("--player-slide-height", slideHeight + "px");
+    root.style.setProperty("--player-dock-size", dockHeight + "px");
+    root.style.setProperty("--player-dock-height", dockHeight + "px");
+  };
+  const dockObserver = typeof ResizeObserver === "function" ? new ResizeObserver(sizePlayer) : null;
+  dockObserver?.observe(root);
+  dockObserver?.observe(root.querySelector(".pl-top"));
+  sizePlayer();
 
   // A single capture session stays independent of each narration/question delivery.
   // Old bundles keep their recorded/manual path; runtime.version=1 opts into the new protocol.
@@ -370,7 +381,7 @@ export function mountPlayer(host, bundle, api) {
   function showSlideView(slide, { reveal = -1 } = {}) {
     if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); return cur.view; }
     if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
-    const view = renderSlide(slide, { fit: true, layout: "evidence", theme: visualTheme });
+    const view = renderSlide(slide, { fit: true, theme: visualTheme });
     view.setRevealed(reveal);
     el.stack.append(view.el);
     view.layout(); void view.el.offsetWidth; view.el.classList.add("on");  // a forced reflow starts the cross-fade; no animation frame needed (a hidden tab never gets one)

@@ -1,5 +1,11 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — Feature details moved away from the cinematic slide
+
+**Five whys:** (1) The revised demo no longer looked like the requested slide-first experience. (2) A separate evidence panel consumed picture width and split the content between the picture and a sidebar. (3) Removing crossing labels was solved by changing the composition. (4) A static sample approval was treated as approval to replace the existing cinematic layout. (5) Regression checks asserted the new rail rather than the user's intended emphasis on the slide.
+
+**Correction:** restore the previous cinematic composition, with all text on-slide and the slide at 75% of the player viewport. Keep the dark upper area and white conversation dock. Relocate display labels to avoid collisions while preserving reviewed anchors and stored coordinates; connect from the label edge and retain an on-slide fallback for unanchored facts. Pin the composer below a scrollable feedback area so answer choices, capture status and long replies cannot resize the picture. Short windows retain a minimum usable dock. Existing browser regressions now check these proportions, collision cases, anchor ownership and short-window input access. No new source interpretation, paid generation or protected-demo mutation.
+
 ## 2026-09-23 — WP11 connects real customer questions to review and removes presentation surprises
 
 **Five whys — unanswered learning:** (1) Builds spent calls on guessed questions while live customers received no bank reuse. (2) FAQ generation ran during Read/Build, but v1 bypassed it. (3) Question collection, approved knowledge and playback had separate lifecycles. (4) Cache identities and source review did not span the pinned snapshot, scope, dates, exact wording and selected voice. (5) Contracts tested generation and delivery separately, without a real ask → reuse → review → new Read journey. Integration review also reproduced loss of customer unknowns during Read and concurrent rejection of an answer being adopted after graph validation.
