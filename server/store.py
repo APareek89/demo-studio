@@ -5,6 +5,7 @@ Swapping in a database later means re-implementing this module only.
 """
 from __future__ import annotations
 
+import io
 import json
 import mimetypes
 import re
@@ -13,12 +14,12 @@ import shutil
 import threading
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO
 from urllib.parse import urlsplit
 
 from . import config, schemas
 
-_locks: dict[str, threading.Lock] = {}
+_locks: dict[str, threading.RLock] = {}
 _locks_guard = threading.Lock()
 
 # Name the persisted build stages and the human approval cards separately.
@@ -45,10 +46,10 @@ def now() -> float:
 # Return one shared thread lock for changes to a particular demo.
 # Input: demo ID. Output: that demo lock, creating it once if needed.
 # Linked: server/orchestrator.py uses update() so concurrent progress changes do not overwrite one another.
-def _lock(demo_id: str) -> threading.Lock:
+def _lock(demo_id: str) -> threading.RLock:
     with _locks_guard:
         if demo_id not in _locks:
-            _locks[demo_id] = threading.Lock()
+            _locks[demo_id] = threading.RLock()
         return _locks[demo_id]
 
 
@@ -398,6 +399,20 @@ def log(demo_id: str, stage: str, payload: Any) -> None:
 # Input: demo ID, filename, bytes and role. Output: a saved source file plus its demo.json source record.
 # Linked: server/app.py upload routes call this; server/agents/understand.py:run later consumes the source.
 def add_file_source(demo_id: str, filename: str, data: bytes, role: str = "product") -> dict:
+    return add_stream_source(demo_id, filename, io.BytesIO(data), role)
+
+
+class UploadTooLarge(ValueError):
+    """The source exceeds the configured upload limit before registration."""
+
+
+def add_stream_source(demo_id: str, filename: str, stream: BinaryIO,
+                      role: str = "product", *, max_bytes: int | None = None) -> dict:
+    """Copy a spooled upload in bounded chunks, then register the complete source.
+
+    A large film must not be loaded into the app's memory all at once. Failed,
+    empty or oversized copies leave neither a partial file nor a source record.
+    """
     ext = Path(filename).suffix.lower()
     kind = KIND_BY_EXT.get(ext, "text" if ext in (".txt", ".md") else "other")
     if kind == "other":
@@ -407,13 +422,34 @@ def add_file_source(demo_id: str, filename: str, data: bytes, role: str = "produ
     rel = f"sources/{sid}_{safe}"
     p = path(demo_id, rel)
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_bytes(data)
+    tmp = p.with_suffix(p.suffix + ".uploading")
+    size = 0
+    copying = False
+    try:
+        with tmp.open("xb") as target:
+            copying = True
+            while chunk := stream.read(1024 * 1024):
+                size += len(chunk)
+                if max_bytes is not None and size > max_bytes:
+                    raise UploadTooLarge(f"{filename} is larger than {config.MAX_UPLOAD_MB} MB")
+                target.write(chunk)
+        if not size:
+            raise ValueError(f"{filename} is empty (0 bytes) — export it again and re-upload")
+        tmp.replace(p)
+    except BaseException:
+        if copying:
+            tmp.unlink(missing_ok=True)
+        raise
     src = {
         "id": sid, "kind": kind, "name": Path(filename).name, "path": rel, "url": "",
         "mime": mimetypes.guess_type(filename)[0] or "application/octet-stream",
-        "size": len(data), "role": role, "added_at": now(), "use_in_demo": True,
+        "size": size, "role": role, "added_at": now(), "use_in_demo": True,
     }
-    update(demo_id, lambda d: d["sources"].append(src))
+    try:
+        update(demo_id, lambda d: d["sources"].append(src))
+    except BaseException:
+        p.unlink(missing_ok=True)
+        raise
     return src
 
 

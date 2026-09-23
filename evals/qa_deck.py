@@ -122,6 +122,8 @@ if _media.ffmpeg():
     check("video-only demo gets one still per good shot, tagged with its shot id", bool(stills) and all(s["derived_from"].startswith("sh") for s in stills))
     check("stills are tagged like uploaded images", bool(vund.get("images")) and all(im["source_id"] in {s["id"] for s in stills} for im in vund["images"]))
     from server.agents import bundle as _bundle
+    for card in store.CARDS:
+        assert c.post(f"/api/demos/{v}/approve/{card}").status_code == 200
     vb = _bundle.build(v, lambda m: None)
     full = [im for im in vund["images"] if im.get("full_product")]
     check("without a hero upload, hero_image is the best full-product still", bool(vb.get("hero_image")) and (not full or vb["hero_image"] == max(full, key=lambda x: x["quality"])["id"]))

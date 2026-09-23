@@ -55,7 +55,12 @@ async def until(predicate):
     raise AssertionError("Expected local event did not occur")
 
 async def main():
-    files = {"bundle.json": {"version": 2, "knowledge_snapshot_id": "kb_test"}}
+    # Valid pinned registry and reviewed settings keep this test on the real
+    # pre-graph cache/delivery path while the planner and socket are controlled.
+    snapshot_id = "kb_" + "a" * 24
+    demo = {"id": "dm_fea00001", "settings": {"audience": "everyday", "language": "en-IN", "competition": "off"}}
+    files = {"demo.json": demo, "bundle.json": {"version": 2, "knowledge_snapshot_id": snapshot_id},
+             f"knowledge/snapshots/{snapshot_id}.json": {"id": snapshot_id, "facts": [], "competitors": []}}
     starts, finishes = {}, {}
     qa_started, qa_release = asyncio.Event(), asyncio.Event()
     def plan(_demo, profile, *_args, **_kwargs):
@@ -74,6 +79,7 @@ async def main():
         for name in ("create_connection",): stack.enter_context(patch.object(socket, name, blocked))
         for name in ("connect", "connect_ex"): stack.enter_context(patch.object(socket.socket, name, blocked))
         stack.enter_context(patch.object(store, "exists", return_value=True))
+        stack.enter_context(patch.object(store, "load", side_effect=lambda _d: copy.deepcopy(demo)))
         stack.enter_context(patch.object(store, "read_json", side_effect=lambda _d, name: copy.deepcopy(files.get(name))))
         stack.enter_context(patch.object(store, "write_json", side_effect=lambda _d, name, value: files.__setitem__(name, copy.deepcopy(value))))
         stack.enter_context(patch.object(graph.pitch, "plan_pitch", side_effect=plan))
@@ -84,11 +90,11 @@ async def main():
         stack.enter_context(patch.object(runtime_live, "DeliveryCoordinator", Delivery))
         stack.enter_context(patch("server.llm.sarvam_stream.RealtimeSTT", Adapter))
         ws = Socket()
-        live = asyncio.create_task(runtime_live.live(ws, "fixture"))
+        live = asyncio.create_task(runtime_live.live(ws, "dm_fea00001"))
         await ws.put(type="session.start", mic=False)
         async def start(name):
             finishes[name] = threading.Event()
-            task = asyncio.create_task(graph.run_turn("fixture", {"session_id": "s_explore_race", "turn_id": name, "profile": {"why": name}}, kind="explore"))
+            task = asyncio.create_task(graph.run_turn("dm_fea00001", {"session_id": "s_explore_race", "turn_id": name, "profile": {"why": name}}, kind="explore"))
             await until(lambda: starts.get(name))
             return task
         async def cancelled(task):
@@ -98,7 +104,7 @@ async def main():
 
         pending = await start("overview_plan")
         await ws.put(type="turn.interrupt", turn_id="pause", preserve_planning=True)
-        control = runtime_state._planning[("fixture", "s_explore_race")][1]
+        control = runtime_state._planning[("dm_fea00001", "s_explore_race")][1]
         check("media-only pause preserves actual in-flight HTTP Explore", not control.cancelled.is_set() and Delivery.instances[-1].cancelled > 0)
         finishes["overview_plan"].set()
         completed = await pending
@@ -108,7 +114,7 @@ async def main():
         await ws.put(type="mic.set", enabled=True, input_generation=1)
         await Adapter.instances[-1].queue.put({"type": "input.speech_start"})
         await until(lambda: any(e["type"] == "input.speech_start" for e in ws.sent))
-        control = runtime_state._planning[("fixture", "s_explore_race")][1]
+        control = runtime_state._planning[("dm_fea00001", "s_explore_race")][1]
         check("actual STT onset preserves Explore before any browser preservation flag arrives", not control.cancelled.is_set())
         finishes["provider_onset"].set()
         await pending
@@ -132,7 +138,7 @@ async def main():
 
         await ws.put(type="turn.ask", turn_id="held_qa", question="hold")
         await qa_started.wait()
-        qa_control = runtime_state._owners[("fixture", "s_explore_race")][1]
+        qa_control = runtime_state._owners[("dm_fea00001", "s_explore_race")][1]
         await ws.put(type="turn.interrupt", turn_id="pause_qa", preserve_planning=True)
         qa_release.set()
         check("preservation flag never keeps a QA turn alive", qa_control.cancelled.is_set() and not any(e.get("turn_id") == "held_qa" and e["type"] == "turn.result" for e in ws.sent))

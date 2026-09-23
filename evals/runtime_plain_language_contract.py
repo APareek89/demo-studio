@@ -165,6 +165,39 @@ class PlainLanguageContract(unittest.TestCase):
         self.assertEqual(result["plain_language_substitutions"], [])
         self.assertNotIn("IVT", result["answer"])
 
+    def test_branded_adjacent_aliases_render_once_without_changing_scope(self):
+        for original in ("Hyundai SmartSense", "HYUNDAI SmartSense", "Hyundai's SmartSense",
+                         "Hyundai SmartSense Level 2 ADAS suite", "SmartSense ADAS package"):
+            text = f"On selected higher trims, {original} includes lane-keeping assist."
+            evidence = [fact(text)]
+            evidence[0]["conditions"] = "selected higher trims"
+            result, errors = rg.validate_decision(decision(text), evidence, "What driver assistance is listed?")
+            self.assertEqual(errors, [], original)
+            self.assertEqual(result["answer"], "On selected higher trims, Hyundai's driver-assistance package includes lane-keeping assist.")
+            self.assertEqual(result["fact_ids"], ["F1"])
+            self.assertEqual(result["facts"][0]["value"], text)
+            self.assertEqual(result["plain_language_substitutions"], [("smartsense", plain_terms.JARGON["smartsense"])])
+            technical, errors = rg.validate_decision(decision(text), evidence, "Give the exact technical specification.")
+            self.assertEqual(errors, [])
+            self.assertEqual(technical["answer"], text)
+            self.assertEqual(technical["plain_language_substitutions"], [])
+        for original in ("NotHyundai SmartSense", "Hyundai SmartSense and ADAS", "Hyundai SmartSense. Level 2 ADAS suite"):
+            rendered, _ = plain_terms.substitute(original)
+            self.assertIn("Hyundai's driver-assistance package", rendered)
+            if original.startswith("NotHyundai"):
+                self.assertTrue(rendered.startswith("NotHyundai "))
+            else:
+                self.assertIn("driver-assistance features", rendered)
+        for original in ("ISOFIX child seat anchors", "ISOFIX child-seat mounts"):
+            text = f"Selected variants have {original}."
+            result, errors = rg.validate_decision(decision(text), [fact(text)], "What child-seat equipment is listed?")
+            self.assertEqual(errors, [])
+            self.assertEqual(result["answer"], "Selected variants have child-seat mounts.")
+            self.assertEqual(result["fact_ids"], ["F1"])
+            self.assertEqual(result["plain_language_substitutions"], [("isofix", plain_terms.JARGON["isofix"])])
+        self.assertEqual(plain_terms.substitute("ISOFIX and child seat anchors")[0], "child-seat mounts and child seat anchors")
+        self.assertEqual(plain_terms.substitute("ISOFIX child seat storage")[0], "child-seat mounts child seat storage")
+
     def test_live_hostname_stays_exact_while_its_claim_is_plain(self):
         evidence = [fact("ADAS is available.")]
         evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})

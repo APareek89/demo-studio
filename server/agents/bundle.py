@@ -7,6 +7,10 @@ from .. import config, store, knowledge
 from . import visuals, faq, narration
 
 
+class ApprovalRequired(RuntimeError):
+    """A concurrent review change paused publication; the old bundle stays live."""
+
+
 # Turn a stored relative media path into a demo-scoped browser URL.
 # Returns a URL or None; voice.py:render_line supplies audio paths used by build.
 def media_url(demo_id: str, rel: str | None) -> str | None:
@@ -16,6 +20,16 @@ def media_url(demo_id: str, rel: str | None) -> str | None:
 # Assemble saved content, slide design, media paths and a knowledge snapshot into bundle.json.
 # Calls deck.py:slides_with_script to join narration by ID; it makes no new narration or image-generation request.
 def build(demo_id: str, emit) -> dict:
+    # FAQ learning and reviewer edits share this ownership boundary. Keep the
+    # approved inputs and the final publication in one transaction with respect
+    # to those writers; recording remains outside it.
+    with store._lock(demo_id):
+        if not all(store.load(demo_id).get("approvals", {}).get(card) for card in store.CARDS):
+            raise ApprovalRequired("Content changed during Build. Review and approve the changed Align cards before publishing.")
+        return _build_approved(demo_id, emit)
+
+
+def _build_approved(demo_id: str, emit) -> dict:
     emit("Assembling the demo bundle…")
     demo = store.load(demo_id)
     und = store.read_json(demo_id, "understanding.json") or {}
@@ -209,7 +223,7 @@ def build(demo_id: str, emit) -> dict:
             raise narration.NarrationTooShort(f"{language}: {exc}") from exc
     # Pin the knowledge snapshot and attach the overview to a suitable opening slide.
     # knowledge.py:snapshot publishes only with all approvals; the overview audio already came from voice.py:render_script.
-    snapshot = knowledge.snapshot(demo_id, publish=all(demo.get("approvals", {}).get(c) for c in store.CARDS))
+    snapshot = knowledge.snapshot(demo_id, publish=True)
     b["knowledge_snapshot_id"] = snapshot["id"]
     overview = script.get("runtime_overview") or {}
     if overview.get("unverified"):

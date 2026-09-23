@@ -1,5 +1,35 @@
 # Loop.MD — Demo Studio
 
+## WP11 release QA / FMEA · 23 September 2026
+
+Loop remains **off**. Full release review covers WP1–WP11 against deployed `63abb85`. All **95/95** script/harness entries pass (**94 executable**, plus the provider module exercised inside deck); **2,788** reported groups/cases/phases overlap where deck invokes another contract. Full per-file counts and evidence paths: `docs/wp11-release-gates-2026-09-23.json`. FMEA: `docs/wp11-release-fmea-2026-09-23.md`, **12/12 categories**, eight fixes and three inherited limitations.
+
+Required gates: deck **365/365**, acceptance **24/24**, smoke **both phases + on-demand rehearsal**. Full new-demo API→Read→six approvals→Voice→Bundle→runtime/cache/review/rehearsal→browser/session dry run **27/27**, **194.22s** measured silent fixture WAVs with the real **180s** gate active. All14 Node suites **209/209**; responsive/sample browser **193/193**, public-search UI **30/30**, navigation/persistence **22/22**, player HTML **78/78**. No paid calls, microphone capture or external browser requests. Backend sockets blocked, isolated data/graph storage, zero outbound attempts.
+
+Every contract changed in this release-fix commit:
+
+- `align_review_contract.py`: **51/51**.
+- `customer_contract.py`: **29/29**.
+- `deck_media_contract.py`: **45/45**.
+- `explore_cancellation_contract.py`: **9/9**.
+- `player_contract.html`: **78/78**.
+- `player_http_question_contract.cjs`: **6/6**.
+- `player_navigation_contract.py`: **22/22**.
+- `player_session_save_contract.cjs`: **7/7**.
+- `publication_approval_contract.py`: **8/8**.
+- `qa_deck.py`: **365/365**.
+- `release_mock_contract.py`: **27/27**.
+- `runtime_clause_delivery_contract.py`: **21/21**.
+- `runtime_final_cohort_contract.py`: **94/94**.
+- `runtime_pass2_contract.py`: **36/36**.
+- `runtime_plain_language_contract.py`: **25/25**.
+- `runtime_transmission_conditions_contract.py`: **17/17**.
+- `runtime_v7_limits_contract.py`: **118/118**.
+- `runtime_web_search_contract.py`: **37/37**.
+- `upload_stream_contract.py`: **19/19**.
+
+Syntax: 23 changed Python files and four JavaScript modules pass; nine Mermaid source/HTML copies match; diff checks clean. Exact technical-audience fixture expectations are explicit; small unit fixtures retain labelled narration stubs, while publication/minimum and full-release contracts enforce measured audio. GitHub/AWS authorization is recorded; staged-host and preservation receipts follow in `docs/aws/release-wp11-2026-09-23.md`. No protected local demo/output mutation or port8896 operation. Open C7 hosted access, C8 Cloud alternate-language voice, plus pilot capacity and existing scanned-PDF OCR limitations remain explicit. Selective Align rebuild routing is still pending.
+
 ## WP11 — production/reference parity · 23 September 2026
 
 Loop remains **off**. The exact Marine slide-first HTML is the canonical reference; production and Align previews share its compact heading, centered native picture, small feature cards, progress and white conversation/footer layout. All labels are planned together before reveal. Short windows retain 120px desktop / 132px phone conversation space; ordinary stages remain 75% of the player viewport.

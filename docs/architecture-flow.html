@@ -281,6 +281,8 @@ flowchart TD
   COV[&quot;Coverage + gaps&lt;br/&gt;[FUNCTION] → rehearsal.json&lt;br/&gt;diagnostics only; published bundle and approvals unchanged&quot;]:::fn
   SCORE[&quot;Demo scorecard&lt;br/&gt;[AGENT · configured text tier · judge]&lt;br/&gt;reuse by semantic script/fact/FAQ/prompt hash; count/audio-only changes ignored&lt;br/&gt;out: 10 criteria ×0–2 + gaps; prompt score is not a live acceptance test&quot;]:::agent
   BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script, deck (+ language variants)&lt;br/&gt;out: media URLs + picture-owned callouts; retain first image_url and existing line-audio joins&lt;br/&gt;renderer: native-fit halves at ≥700px, stacked below; line reveal activates matching picture&lt;br/&gt;proxy illustration badge; CTAs, facts, languages and version retained&quot;]:::fn
+  APPROVAL{&quot;All six approvals still current?&lt;br/&gt;[FUNCTION · shared per-demo publication lock]&lt;br/&gt;serialize input reads and final writes with customer FAQ changes&quot;}:::dec
+  REALIGN[&quot;Return to Align; preserve published bundle/version&lt;br/&gt;[HUMAN] review changed cards before another Build&quot;]:::ask
   MINIMUM{&quot;Publishable default narration in every language?&lt;br/&gt;[FUNCTION · narration.require_minimum]&lt;br/&gt;at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing&lt;br/&gt;exclude film, Q&amp;A, deeper-only and duplicates; estimates cannot pass&quot;}:::dec
   SHORT[&quot;Keep previous publication unchanged&lt;br/&gt;[FUNCTION · before snapshot/version/bundle writes]&lt;br/&gt;show deficit or missing-clip error; add distinct supported material and record it&lt;br/&gt;never pad, duplicate claims or slow voice&quot;]:::fn
   READY[&quot;status ready · durable SSE phase_done build&lt;br/&gt;[DATA · events.json + stage progress/warnings]&lt;br/&gt;fresh subscriber receives current baseline; valid cursor resumes bounded history&quot;]:::term
@@ -296,7 +298,9 @@ flowchart TD
   PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; BUN
   LANGS -- &quot;yes&quot; --&gt; TRANS --&gt; TTS2 --&gt; BUN
   LANGS -- &quot;no&quot; --&gt; BUN
-  BUN --&gt; MINIMUM
+  BUN --&gt; APPROVAL
+  APPROVAL -- &quot;yes, lock held through publication&quot; --&gt; MINIMUM
+  APPROVAL -- &quot;changed during Voice or before publication&quot; --&gt; REALIGN
   MINIMUM -- &quot;all measured and at least 180 seconds&quot; --&gt; READY
   MINIMUM -- &quot;short or missing/unreadable audio&quot; --&gt; SHORT
   READY -. &quot;optional, on demand&quot; .-&gt; REHEARSE --&gt; QBANK

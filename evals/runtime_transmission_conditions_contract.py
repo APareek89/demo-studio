@@ -41,7 +41,7 @@ def sample():
 class TransmissionConditions(unittest.TestCase):
     def test_actual_original_draft_rejected_without_losing_other_supported_sentences(self):
         feedback = []
-        result, errors = graph.validate_decision(FIXTURE["decision"], enriched(), FIXTURE["question"], row_feedback=feedback)
+        result, errors = graph.validate_decision(FIXTURE["decision"], enriched(), FIXTURE["question"], row_feedback=feedback, audience="technical")
         self.assertEqual(errors, ["missing_required_condition"])
         self.assertIn("six airbags", result["answer"])
         self.assertIn("Level 2 ADAS suite", result["answer"])
@@ -62,9 +62,11 @@ class TransmissionConditions(unittest.TestCase):
         self.assertNotIn("F154", result["fact_ids"])
 
     def test_qualification_prefix_preserves_proper_product_and_acronym_initials(self):
+        # These exact-wording checks use the reviewed technical audience; the
+        # everyday rendering is covered by runtime_plain_language_contract.
         for text in ("Hyundai SmartSense includes lane-keeping assist.", "ADAS includes lane-keeping assist."):
             decision = {"action": "answer", "sentences": [{"text": text, "fact_ids": ["F196"], "kind": "fact"}]}
-            result, errors = graph.validate_decision(decision, enriched(), "What lane assistance is offered?")
+            result, errors = graph.validate_decision(decision, enriched(), "What lane assistance is offered?", audience="technical")
             self.assertFalse(errors)
             self.assertIn("On selected higher trims, "+text, result["answer"])
 

@@ -49,7 +49,7 @@
         "prd_path": "PRD.md",
         "architecture_doc": "docs/ARCHITECTURE_FLOW.md",
         "known_incidents": "Learning.MD",
-        "infra_constraints": "local only; Gemini TTS free tier is tiny (few requests/day); Claude calls are paid; no Node/ffmpeg on the machine"
+        "infra_constraints": "Existing AWS EC2 t3.micro in ap-south-1: about 913 MiB RAM, 2 GiB swap, 20 GiB disk; one uvicorn worker, shared local demo data/SQLite, Caddy HTTPS. Paid providers remain configured; all release tests use MOCK_LLM=1, isolated storage and blocked sockets. Installed Chromium/Poppler are available; scanned-image OCR is unavailable. Local Node and ffmpeg are installed. Preserve protected demo and port 8896."
       },
       "output": {
         "format": "markdown_table",

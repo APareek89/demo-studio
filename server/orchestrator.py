@@ -211,6 +211,9 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         cloud.sync_demo_async(demo_id)
         return out
     except Exception as e:
+        if isinstance(e, bundle.ApprovalRequired):
+            set_stage(demo_id, stage, "pending", message=str(e))
+            raise
         store.log(demo_id, f"error-{stage}", {"error": str(e), "trace": traceback.format_exc()})
         set_stage(demo_id, stage, "error", error=str(e)[:400])
         runlog.stage_failed(demo_id, stage, str(e)[:2000])

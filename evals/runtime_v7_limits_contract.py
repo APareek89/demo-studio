@@ -188,7 +188,7 @@ async def run():
     original,errors,feedback=validate("repairs40_q025")
     replacement=rg._CompositionRepair(sentences=[{"text":"On equipped models, Hyundai Bluelink provides app connectivity, over-the-air updates, and Home-to-Car with Alexa, which requires a separately purchased Echo device.","kind":"fact","fact_ids":["F144","F168"]}])
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=replacement) as model,patch("server.runtime_graph.usage.trace"):
-        result,errors,repair=await rg._repair_composition(state,original,errors,feedback,state["question"])
+        result,errors,repair=await rg._repair_composition(state,original,errors,feedback,state["question"], audience="everyday")
     check("Lost connected feature content still invokes the one bounded repair",model.call_count==1 and repair["attempted"])
     state={**copy.deepcopy(cases["limits40_q083"]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
     state["decision"]={"action":"answer","answered":False,"sentences":[]}
@@ -196,19 +196,19 @@ async def run():
     original={"answer":"You can ask a dealer.","answered":False,"fact_ids":[]}
     feedback=[]
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=saved) as model,patch("server.runtime_graph.usage.trace"):
-        result,errors,repair=await rg._repair_composition(state,original,["uncited_context"],feedback,state["question"])
+        result,errors,repair=await rg._repair_composition(state,original,["uncited_context"],feedback,state["question"], audience="everyday")
     check("Actually validated precise limit survives a rejected extra repair row",model.call_count==1 and repair["accepted"] and repair["partial"] and "crash-test rating" in result["answer"] and "best next step" not in result["answer"] and not result["answered"])
     supported={"answer":"A supported original fact.","answered":True,"fact_ids":["F032"]}
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=saved),patch("server.runtime_graph.usage.trace"):
-        result,errors,repair=await rg._repair_composition(state,supported,["uncited_claim"],[{"kind":"fact","error":"uncited_claim"}],state["question"])
+        result,errors,repair=await rg._repair_composition(state,supported,["uncited_claim"],[{"kind":"fact","error":"uncited_claim"}],state["question"], audience="everyday")
     check("A partial precise-limit repair cannot demote existing facts",result==supported and not repair["accepted"])
     rejected=rg._CompositionRepair(sentences=[{"text":"I cannot verify the crash-test rating <script>bad</script>.","kind":"limitation","fact_ids":[]}])
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=rejected),patch("server.runtime_graph.usage.trace"):
-        result,errors,repair=await rg._repair_composition(state,original,["uncited_claim"],[{"kind":"fact","error":"uncited_claim"}],state["question"])
+        result,errors,repair=await rg._repair_composition(state,original,["uncited_claim"],[{"kind":"fact","error":"uncited_claim"}],state["question"], audience="everyday")
     check("A raw precise-looking limitation rejected by guards cannot fund partial repair",result==original and not repair["accepted"])
     overflow=rg._CompositionRepair(sentences=[{"text":"I cannot verify "+", ".join(["the rating"]*60)+".","kind":"limitation","fact_ids":[]}])
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=overflow),patch("server.runtime_graph.usage.trace"):
-        result,errors,repair=await rg._repair_composition(state,original,["uncited_claim"],[{"kind":"fact","error":"uncited_claim"}],state["question"])
+        result,errors,repair=await rg._repair_composition(state,original,["uncited_claim"],[{"kind":"fact","error":"uncited_claim"}],state["question"], audience="everyday")
     check("An overflow-replaced limitation cannot fund a partial repair",result==original and not repair["accepted"] and "answer_too_long" in repair["validation_errors"])
     for key in ("q016","q030","q083","q095"):
         state={**copy.deepcopy(cases[key]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}

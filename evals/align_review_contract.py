@@ -223,6 +223,7 @@ def run(check, _demo_id=None):
               and store.path(did, "deck.json").read_bytes() == deck_bytes and store.path(did, "deck-overrides.json").read_bytes() == override_bytes)
         # This one-line fixture proves reviewed content survives assembly. The
         # real recorded-duration publication boundary has its own contract.
+        store.update(did, lambda d: d["approvals"].update({card: True for card in store.CARDS}))
         with patch("server.agents.narration.require_minimum", return_value={"minimum_seconds":180,"seconds":180,"sufficient":True,"basis":"synthetic review fixture"}):
             built = bundle.build(did, lambda _message:None)
         check("align preview: bundle and review agree on current text, citations, empty questions and rejected-line filtering",

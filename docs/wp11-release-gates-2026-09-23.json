@@ -1,0 +1,1741 @@
+{
+  "note": "Working-tree release fixes based on the named parent; exact final commit is in the AWS receipt. Counts mix contract groups, unittest cases and smoke phases; qa_deck invokes some of these contracts, so totals are not unique assertions. Provider module is import-only and covered inside qa_deck.",
+  "scripts": 95,
+  "passed_scripts": 95,
+  "failed_scripts": [],
+  "executable_scripts": 94,
+  "reported_checks": 2788,
+  "passed_checks": 2788,
+  "network_attempts": 0,
+  "node_scripts": 14,
+  "node_checks": 209,
+  "python_scripts": 80,
+  "fixture_limits": [
+    "MOCK_LLM=1 with isolated data/graph per subprocess; socket guards reject outbound calls. Browser local assets/API fakes are isolated and muted.",
+    "Release journey uses canned provider decisions and actual silent WAVs measured by real publication gate; no duration bypass, no acoustic quality claim.",
+    "qa_deck/smoke and narrow unit fixtures use explicitly labelled duration plumbing stubs; minimum_narration_contract and release_mock_contract exercise real measured gate.",
+    "No real provider quality, microphone acoustic behavior, paid API or production load claim; staged deployment checks are recorded separately."
+  ],
+  "explicit_skips": {
+    "probe_keys.py": "paid provider readiness probe",
+    "qa_real.py": "real model/provider evaluation",
+    "qa_playground.py": "real provider model comparison",
+    "creta_live_acceptance.py": "protected real demo/live acceptance",
+    "creta_qa100.py": "protected real demo/provider batch",
+    "live_player_browser.py": "protected/live player flow",
+    "align_modal_browser.py": "defaults to protected8896/output",
+    "player_browser.py": "serves HTML browser harness; root runs final player_contract.html separately"
+  },
+  "rows": [
+    {
+      "name": "align_progress_contract.mjs",
+      "exit": 0,
+      "count": "9/9",
+      "seconds": 0.1,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/align_progress_contract.mjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 9,
+      "total_checks": 9,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "align_review_contract.py",
+      "exit": 0,
+      "count": "51/51",
+      "seconds": 1.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend-rerun/align_review_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 51,
+      "total_checks": 51,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "align_timing_contract.cjs",
+      "exit": 0,
+      "count": "11/11",
+      "seconds": 0.1,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/align_timing_contract.cjs.log",
+      "summary": [
+        "11/11 Align timing contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 11,
+      "total_checks": 11,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "build_hardening_contract.py",
+      "exit": 0,
+      "count": "28/28",
+      "seconds": 1.1,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/build_hardening_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 28,
+      "total_checks": 28,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "cached_plain_language_contract.py",
+      "exit": 0,
+      "count": "9/9",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/cached_plain_language_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 9,
+      "total_checks": 9,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "coach_align_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/coach_align_contract.py.log",
+      "summary": [
+        "21/21 coach Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 21,
+      "total_checks": 21,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "coach_align_ui_contract.cjs",
+      "exit": 0,
+      "count": "9/9",
+      "seconds": 0.1,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/coach_align_ui_contract.cjs.log",
+      "summary": [
+        "9/9 coach Align UI contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 9,
+      "total_checks": 9,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "coach_contract.py",
+      "exit": 0,
+      "count": "26/26",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/coach_contract.py.log",
+      "summary": [
+        "Ran 26 tests in 0.390s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 26,
+      "total_checks": 26,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "crawl_browser_contract.py",
+      "exit": 0,
+      "count": "9/9",
+      "seconds": 0.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/crawl_browser_contract.py.log",
+      "summary": [
+        "Ran 9 tests in 0.057s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 9,
+      "total_checks": 9,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "customer_contract.py",
+      "exit": 0,
+      "count": "29/29",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend-last/customer_contract.py.log",
+      "summary": [
+        "29/29 customer contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 29,
+      "total_checks": 29,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "deck_media_align_contract.py",
+      "exit": 0,
+      "count": "15/15",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/deck_media_align_contract.py.log",
+      "summary": [
+        "15/15 deck media Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 15,
+      "total_checks": 15,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "deck_media_contract.py",
+      "exit": 0,
+      "count": "45/45",
+      "seconds": 1.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend-rerun/deck_media_contract.py.log",
+      "summary": [
+        "Deck media: 45/45 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 45,
+      "total_checks": 45,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "explore_cancellation_contract.py",
+      "exit": 0,
+      "count": "9/9",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/explore_cancellation_contract.py.log",
+      "summary": [
+        "Explore cancellation: 9/9 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 9,
+      "total_checks": 9,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "fact_identity_contract.py",
+      "exit": 0,
+      "count": "17/17",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/fact_identity_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 17,
+      "total_checks": 17,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "fact_retry_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/fact_retry_contract.py.log",
+      "summary": [
+        "Ran 12 tests in 0.049s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 12,
+      "total_checks": 12,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "faq_cache_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/faq_cache_contract.py.log",
+      "summary": [
+        "Ran 27 tests in 0.700s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 27,
+      "total_checks": 27,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "faq_plain_language_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/faq_plain_language_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 21,
+      "total_checks": 21,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "faq_review_contract.py",
+      "exit": 0,
+      "count": "42/42",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/faq_review_contract.py.log",
+      "summary": [
+        "FAQ review: 42/42 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 42,
+      "total_checks": 42,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "faq_scope_contract.py",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 1.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/faq_scope_contract.py.log",
+      "summary": [
+        "Ran 19 tests in 0.459s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 19,
+      "total_checks": 19,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "gemini_client_contract.py",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/gemini_client_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 7,
+      "total_checks": 7,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "gemini_schema_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/gemini_schema_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "generation_contract.py",
+      "exit": 0,
+      "count": "58/58",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/generation_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 58,
+      "total_checks": 58,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "knowledge_contract.py",
+      "exit": 0,
+      "count": "60/60",
+      "seconds": 8.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/knowledge_contract.py.log",
+      "summary": [
+        "Ran 60 tests in 8.224s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 60,
+      "total_checks": 60,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "live_transport_contract.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/live_transport_contract.py.log",
+      "summary": [
+        "Live transport: 24/24 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 24,
+      "total_checks": 24,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "live_voice_contract.mjs",
+      "exit": 0,
+      "count": "74/74",
+      "seconds": 0.1,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/live_voice_contract.mjs.log",
+      "summary": [
+        "Live voice: 74/74 passed (fake devices and transports only)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 74,
+      "total_checks": 74,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "minimum_narration_contract.py",
+      "exit": 0,
+      "count": "25/25",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/minimum_narration_contract.py.log",
+      "summary": [
+        "25/25 minimum narration contracts pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 25,
+      "total_checks": 25,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "narrative_roles_contract.py",
+      "exit": 0,
+      "count": "14/14",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/narrative_roles_contract.py.log",
+      "summary": [
+        "Ran 14 tests in 0.066s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 14,
+      "total_checks": 14,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "overview_edit_contract.py",
+      "exit": 0,
+      "count": "9/9",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/overview_edit_contract.py.log",
+      "summary": [
+        "Overview editing: 9/9 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 9,
+      "total_checks": 9,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "pitch_delivery_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/pitch_delivery_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 18,
+      "total_checks": 18,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "pitch_fundamental_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/pitch_fundamental_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 12,
+      "total_checks": 12,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "pitch_grounding_contract.py",
+      "exit": 0,
+      "count": "47/47",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/pitch_grounding_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 47,
+      "total_checks": 47,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "pitch_priority_revision_contract.py",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/pitch_priority_revision_contract.py.log",
+      "summary": [
+        "Ran 7 tests in 0.052s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 7,
+      "total_checks": 7,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "plan_playbook_contract.py",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 1.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/plan_playbook_contract.py.log",
+      "summary": [
+        "Ran 19 tests in 0.700s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 19,
+      "total_checks": 19,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "player_contract.html",
+      "exit": 0,
+      "count": "78/78",
+      "passed_checks": 78,
+      "total_checks": 78,
+      "kind": "browser-contract-case",
+      "language": "browser",
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/demo-cinematic-player-final/report.json",
+      "summary": [
+        "78/78; no browser exceptions; zero external requests"
+      ]
+    },
+    {
+      "name": "player_customer_sites_contract.cjs",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_customer_sites_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 19,
+      "total_checks": 19,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_focus_contract.cjs",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_focus_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 21,
+      "total_checks": 21,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_fundamental_contract.cjs",
+      "exit": 0,
+      "count": "10/10",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_fundamental_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 10,
+      "total_checks": 10,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_http_question_contract.cjs",
+      "exit": 0,
+      "count": "6/6",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_http_question_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 6,
+      "total_checks": 6,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_listen_contract.cjs",
+      "exit": 0,
+      "count": "16/16",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_listen_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 16,
+      "total_checks": 16,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_media_contract.cjs",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_media_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 7,
+      "total_checks": 7,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_navigation_contract.py",
+      "exit": 0,
+      "count": "22/22",
+      "seconds": 38.9,
+      "outbound_attempts": [
+        "0",
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_navigation_contract.py.log",
+      "summary": [
+        "Player navigation contracts: 22/22; OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 22,
+      "total_checks": 22,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "player_priority_revision_contract.cjs",
+      "exit": 0,
+      "count": "11/11",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_priority_revision_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 11,
+      "total_checks": 11,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "player_session_save_contract.cjs",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/player_session_save_contract.cjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 7,
+      "total_checks": 7,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "provider_contract.py",
+      "exit": 0,
+      "count": "included in qa_deck",
+      "seconds": 0.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/provider_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": null,
+      "total_checks": null,
+      "kind": "import-only",
+      "language": "python"
+    },
+    {
+      "name": "public_search_ui_contract.py",
+      "exit": 0,
+      "count": "30/30",
+      "seconds": 12.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/public_search_ui_contract.py.log",
+      "summary": [
+        "Public search UI: 30/30 passed; isolated headless browser, zero outbound attempts",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 30,
+      "total_checks": 30,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "publication_approval_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/publication_approval_contract.py.log",
+      "summary": [
+        "Ran 8 tests in 0.186s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "qa_accept.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 2.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/demo-studio-wp11-release-20260923/qa_accept.final.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 24,
+      "total_checks": 24,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "qa_deck.py",
+      "exit": 0,
+      "count": "365/365",
+      "seconds": 5.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/demo-studio-wp11-release-20260923/qa_deck.final.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 365,
+      "total_checks": 365,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "qa_policy_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/qa_policy_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 12,
+      "total_checks": 12,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "readiness_contract.py",
+      "exit": 0,
+      "count": "10/10",
+      "seconds": 1.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/readiness_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 10,
+      "total_checks": 10,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "readiness_ui_contract.mjs",
+      "exit": 0,
+      "count": "5/5",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/readiness_ui_contract.mjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 5,
+      "total_checks": 5,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "release_mock_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 13.2,
+      "outbound_attempts": [
+        "0",
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/release_mock_contract.py.log",
+      "summary": [
+        "RELEASE JOURNEY: 27/27 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 27,
+      "total_checks": 27,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_acts_contract.py",
+      "exit": 0,
+      "count": "30/30",
+      "seconds": 0.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_acts_contract.py.log",
+      "summary": [
+        "Ran 30 tests in 0.060s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 30,
+      "total_checks": 30,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_calculation_deadline_contract.py",
+      "exit": 0,
+      "count": "17/17",
+      "seconds": 3.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_calculation_deadline_contract.py.log",
+      "summary": [
+        "17/17 calculation deadline contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 17,
+      "total_checks": 17,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_clause_delivery_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 1.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_clause_delivery_contract.py.log",
+      "summary": [
+        "Ran 21 tests in 0.203s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 21,
+      "total_checks": 21,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_conversation_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_conversation_contract.py.log",
+      "summary": [
+        "Ran 18 tests in 0.056s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 18,
+      "total_checks": 18,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_coverage_contract.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_coverage_contract.py.log",
+      "summary": [
+        "Ran 24 tests in 1.045s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 24,
+      "total_checks": 24,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_credit_cooldown_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_credit_cooldown_contract.py.log",
+      "summary": [
+        "Ran 8 tests in 0.014s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_currency_attribution_contract.py",
+      "exit": 0,
+      "count": "15/15",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_currency_attribution_contract.py.log",
+      "summary": [
+        "Currency and attribution contract: 15/15 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 15,
+      "total_checks": 15,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_customer_sites_contract.py",
+      "exit": 0,
+      "count": "20/20",
+      "seconds": 1.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_customer_sites_contract.py.log",
+      "summary": [
+        "Ran 20 tests in 0.455s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 20,
+      "total_checks": 20,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_delivery_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_delivery_contract.py.log",
+      "summary": [
+        "Runtime delivery: 27/27 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 27,
+      "total_checks": 27,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_emi_delivery_contract.py",
+      "exit": 0,
+      "count": "13/13",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_emi_delivery_contract.py.log",
+      "summary": [
+        "Ran 13 tests in 0.424s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 13,
+      "total_checks": 13,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_final_cohort_contract.py",
+      "exit": 0,
+      "count": "94/94",
+      "seconds": 1.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_final_cohort_contract.py.log",
+      "summary": [
+        "94/94 final cohort contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 94,
+      "total_checks": 94,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_graph_contract.py",
+      "exit": 0,
+      "count": "130/130",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_graph_contract.py.log",
+      "summary": [
+        "130/130 runtime graph contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 130,
+      "total_checks": 130,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_grouped_quantities_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_grouped_quantities_contract.py.log",
+      "summary": [
+        "Ran 8 tests in 0.057s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_hedge_config_contract.py",
+      "exit": 0,
+      "count": "6/6",
+      "seconds": 6.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_hedge_config_contract.py.log",
+      "summary": [
+        "Ran 6 tests in 5.857s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 6,
+      "total_checks": 6,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_hedge_contract.py",
+      "exit": 0,
+      "count": "35/35",
+      "seconds": 1.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_hedge_contract.py.log",
+      "summary": [
+        "35/35 hedge contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 35,
+      "total_checks": 35,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_interaction_contract.py",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 0.1,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_interaction_contract.py.log",
+      "summary": [
+        "Ran 7 tests in 0.002s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 7,
+      "total_checks": 7,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_live_table_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_live_table_contract.py.log",
+      "summary": [
+        "Ran 21 tests in 0.105s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 21,
+      "total_checks": 21,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_metrics_contract.py",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_metrics_contract.py.log",
+      "summary": [
+        "19/19 runtime metrics contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 19,
+      "total_checks": 19,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_operational_failure_contract.py",
+      "exit": 0,
+      "count": "13/13",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_operational_failure_contract.py.log",
+      "summary": [
+        "13/13 operational failure contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 13,
+      "total_checks": 13,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_ordinal_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_ordinal_contract.py.log",
+      "summary": [
+        "Ran 21 tests in 0.869s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 21,
+      "total_checks": 21,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_pairing_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_pairing_contract.py.log",
+      "summary": [
+        "Ran 12 tests in 0.802s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 12,
+      "total_checks": 12,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_pass2_contract.py",
+      "exit": 0,
+      "count": "36/36",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_pass2_contract.py.log",
+      "summary": [
+        "36/36 pass2 trace replay contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 36,
+      "total_checks": 36,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_plain_language_contract.py",
+      "exit": 0,
+      "count": "25/25",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_plain_language_contract.py.log",
+      "summary": [
+        "Ran 25 tests in 0.139s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 25,
+      "total_checks": 25,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_repair_contract.py",
+      "exit": 0,
+      "count": "106/106",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_repair_contract.py.log",
+      "summary": [
+        "106/106 runtime repair contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 106,
+      "total_checks": 106,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_site_settings_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_site_settings_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_tools_replay_contract.py",
+      "exit": 0,
+      "count": "20/20",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_tools_replay_contract.py.log",
+      "summary": [
+        "Ran 20 tests in 0.463s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 20,
+      "total_checks": 20,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_transmission_conditions_contract.py",
+      "exit": 0,
+      "count": "17/17",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_transmission_conditions_contract.py.log",
+      "summary": [
+        "Ran 17 tests in 0.122s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 17,
+      "total_checks": 17,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_universal_scope_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_universal_scope_contract.py.log",
+      "summary": [
+        "Ran 8 tests in 0.059s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "runtime_v7_limits_contract.py",
+      "exit": 0,
+      "count": "118/118",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_v7_limits_contract.py.log",
+      "summary": [
+        "118/118 v7 precise-limit contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 118,
+      "total_checks": 118,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "runtime_web_search_contract.py",
+      "exit": 0,
+      "count": "37/37",
+      "seconds": 2.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/runtime_web_search_contract.py.log",
+      "summary": [
+        "Ran 37 tests in 0.976s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 37,
+      "total_checks": 37,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "sarvam_stream_contract.py",
+      "exit": 0,
+      "count": "17/17",
+      "seconds": 0.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/sarvam_stream_contract.py.log",
+      "summary": [
+        "Sarvam streaming: 17/17 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 17,
+      "total_checks": 17,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "session_input_mode_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/session_input_mode_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "smoke_mock.py",
+      "exit": 0,
+      "count": "3/3 phases",
+      "seconds": 5.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/demo-studio-wp11-release-20260923/smoke_mock.final.log",
+      "summary": [
+        "SMOKE OK dm_fbd37290",
+        "SMOKE OK (phase 2) dm_fbd37290",
+        "SMOKE OK (on-demand rehearsal) dm_fbd37290",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 3,
+      "total_checks": 3,
+      "kind": "smoke-phase",
+      "language": "python"
+    },
+    {
+      "name": "source_contract.py",
+      "exit": 0,
+      "count": "39/39",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/source_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 39,
+      "total_checks": 39,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "speech_style_contract.py",
+      "exit": 0,
+      "count": "30/30",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/speech_style_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 30,
+      "total_checks": 30,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "sse_client_contract.mjs",
+      "exit": 0,
+      "count": "4/4",
+      "seconds": 0.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/sse_client_contract.mjs.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 4,
+      "total_checks": 4,
+      "kind": "reported-contract-check",
+      "language": "node"
+    },
+    {
+      "name": "summary_contract.py",
+      "exit": 0,
+      "count": "11/11",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/summary_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 11,
+      "total_checks": 11,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "summary_race_contract.py",
+      "exit": 0,
+      "count": "14/14",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/summary_race_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 14,
+      "total_checks": 14,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "summary_usage_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/summary_usage_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 8,
+      "total_checks": 8,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "ui_layout_contract.py",
+      "exit": 0,
+      "count": "193/193",
+      "seconds": 30.1,
+      "outbound_attempts": [
+        "0",
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-frontend-stable/ui_layout_contract.py.log",
+      "summary": [
+        "MOCK PARITY BUILD: real Bundle, measured WAV minimum, isolated storage, OUTBOUND_ATTEMPTS 0",
+        "UI layout: 193/193 passed; isolated headless browser, zero outbound attempts",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 193,
+      "total_checks": 193,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "upload_stream_contract.py",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/demo-studio-wp11-release-20260923/upload.final.log",
+      "summary": [
+        "19/19 groups passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 19,
+      "total_checks": 19,
+      "kind": "reported-contract-check",
+      "language": "python"
+    },
+    {
+      "name": "visual_theme_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 1.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/visual_theme_contract.py.log",
+      "summary": [
+        "Ran 12 tests in 0.089s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 12,
+      "total_checks": 12,
+      "kind": "unittest-case",
+      "language": "python"
+    },
+    {
+      "name": "voice_lock_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/demo-release-checks-vt921dy9/final-backend/voice_lock_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed_checks": 27,
+      "total_checks": 27,
+      "kind": "reported-contract-check",
+      "language": "python"
+    }
+  ],
+  "base_commit_before_release_fixes": "33b31af436bfb0a7e5706cca5203c525fef44d09"
+}

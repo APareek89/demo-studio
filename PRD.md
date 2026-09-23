@@ -27,7 +27,7 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   previous outputs intact and the UI shows the error with a retry.
 - **The user's approvals are honoured.** Cards require review again only when their content changes.
   An empty Asked and answered card auto-approves with “No questions yet; this card fills from customer questions”.
-  Answer counts and completed audio alone do not reset approval.
+  Answer counts and completed audio alone do not reset approval. Build rechecks all six approvals after Voice and under the final publication lock; a concurrent content change returns to Align and preserves the old bundle.
 - **Review the sales playbook.** Coach runs after Understand, validates category order, approved
   evidence and explicit gaps, then exposes Story order inside the existing Script card. Reordering
   resets Script/Visuals approval and requests Plan revision. Planner follows its required stops and

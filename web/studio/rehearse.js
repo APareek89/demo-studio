@@ -6,6 +6,8 @@ import { providerReadiness } from "/web/provider-readiness.js";
 export function renderRehearse(ctx) {
   const { demoId, area } = ctx;
   let state = ctx.state; let demo = state.demo; let player = null;
+  let disposed = false, mountEpoch = 0;
+  const active = () => !disposed && (!ctx.isCurrent || ctx.isCurrent());
   const overlay = h("div", { class: "overlay hidden" });
   const logEl = h("div", { class: "progress-log" });
   const host = h("div", { class: "player-host" });
@@ -59,13 +61,16 @@ export function renderRehearse(ctx) {
   }
 
   async function mount() {
+    if (!active()) return;
+    const epoch = ++mountEpoch;
     let bundle;
     try { bundle = await api.get(`/api/demos/${demoId}/bundle`); }
-    catch (e) { host.replaceChildren(h("div", { class: "studio-empty rehearse-empty" }, icon(demo.status === "building" ? "clock" : "play", { size: 30 }), h("h2", {}, demo.status === "building" ? "Your demo is being built" : "Your demo will appear here"), h("p", {}, demo.status === "building" ? "The preview becomes available when your build is complete." : "Approve the six cards in Align, then build your demo to start rehearsing."))); return; }
+    catch (e) { if (!active() || epoch !== mountEpoch) return; host.replaceChildren(h("div", { class: "studio-empty rehearse-empty" }, icon(demo.status === "building" ? "clock" : "play", { size: 30 }), h("h2", {}, demo.status === "building" ? "Your demo is being built" : "Your demo will appear here"), h("p", {}, demo.status === "building" ? "The preview becomes available when your build is complete." : "Approve the six cards in Align, then build your demo to start rehearsing."))); return; }
+    if (!active() || epoch !== mountEpoch) return;
     if (player) player.destroy();
     player = mountPlayer(host, bundle, {
       liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
-      qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),
+      qa: (body, options) => api.post(`/api/demos/${demoId}/run/qa`, body, options),
       tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
       tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),
       pitch: (body) => api.post(`/api/demos/${demoId}/run/pitch`, body),
@@ -76,7 +81,7 @@ export function renderRehearse(ctx) {
       onFullscreenRoute: () => { document.documentElement.requestFullscreen?.().catch(() => {}); location.hash = `#/play/${demoId}`; },
     });
   }
-  async function refreshState() { try { state = await api.get(`/api/demos/${demoId}`); demo = state.demo; renderCoverage(); renderScore(); renderLeads(); renderSessions(); } catch (e) {} }
+  async function refreshState() { if (!active()) return; try { const next = await api.get(`/api/demos/${demoId}`); if (!active()) return; state = next; demo = state.demo; renderCoverage(); renderScore(); renderLeads(); renderSessions(); } catch (e) {} }
 
   async function runRehearsal() {
     rehearseBtn.disabled = true; rehearseNote.textContent = "Starting rehearsal…";
@@ -93,6 +98,7 @@ export function renderRehearse(ctx) {
   }
 
   ctx.subscribe((type, ev) => {
+    if (!active()) return;
     if (type === "progress") { if (ev.stage === "rehearsal") rehearseNote.textContent = ev.message; else logLine(ev); }
     else if (type === "stage" && ev.stage === "rehearsal") rehearseBtn.disabled = ev.status === "running";
     else if (type === "status") { demo.status = ev.status; ctx.setRailStatus(ev.status); if (ev.status === "building" || ev.status === "reading") { logEl.replaceChildren(); showOverlay(ev.status === "reading" ? "Re-reading your sources…" : "Rebuilding your demo…"); if (player) player.pause(); } }
@@ -102,4 +108,5 @@ export function renderRehearse(ctx) {
 
   renderCoverage(); renderScore(); renderLeads(); renderSessions(); mount();
   if (demo.status === "building" || state.running && demo.running !== "rehearsal") showOverlay("Building your demo…");
+  return () => { if (disposed) return; disposed = true; mountEpoch++; player?.destroy(); player = null; };
 }

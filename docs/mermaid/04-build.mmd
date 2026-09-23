@@ -33,6 +33,8 @@ flowchart TD
   COV["Coverage + gaps<br/>[FUNCTION] → rehearsal.json<br/>diagnostics only; published bundle and approvals unchanged"]:::fn
   SCORE["Demo scorecard<br/>[AGENT · configured text tier · judge]<br/>reuse by semantic script/fact/FAQ/prompt hash; count/audio-only changes ignored<br/>out: 10 criteria ×0–2 + gaps; prompt score is not a live acceptance test"]:::agent
   BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script, deck (+ language variants)<br/>out: media URLs + picture-owned callouts; retain first image_url and existing line-audio joins<br/>renderer: native-fit halves at ≥700px, stacked below; line reveal activates matching picture<br/>proxy illustration badge; CTAs, facts, languages and version retained"]:::fn
+  APPROVAL{"All six approvals still current?<br/>[FUNCTION · shared per-demo publication lock]<br/>serialize input reads and final writes with customer FAQ changes"}:::dec
+  REALIGN["Return to Align; preserve published bundle/version<br/>[HUMAN] review changed cards before another Build"]:::ask
   MINIMUM{"Publishable default narration in every language?<br/>[FUNCTION · narration.require_minimum]<br/>at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing<br/>exclude film, Q&A, deeper-only and duplicates; estimates cannot pass"}:::dec
   SHORT["Keep previous publication unchanged<br/>[FUNCTION · before snapshot/version/bundle writes]<br/>show deficit or missing-clip error; add distinct supported material and record it<br/>never pad, duplicate claims or slow voice"]:::fn
   READY["status ready · durable SSE phase_done build<br/>[DATA · events.json + stage progress/warnings]<br/>fresh subscriber receives current baseline; valid cursor resumes bounded history"]:::term
@@ -48,7 +50,9 @@ flowchart TD
   PROV -- "browser" --> BROWSER --> BUN
   LANGS -- "yes" --> TRANS --> TTS2 --> BUN
   LANGS -- "no" --> BUN
-  BUN --> MINIMUM
+  BUN --> APPROVAL
+  APPROVAL -- "yes, lock held through publication" --> MINIMUM
+  APPROVAL -- "changed during Voice or before publication" --> REALIGN
   MINIMUM -- "all measured and at least 180 seconds" --> READY
   MINIMUM -- "short or missing/unreadable audio" --> SHORT
   READY -. "optional, on demand" .-> REHEARSE --> QBANK

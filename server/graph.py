@@ -195,9 +195,12 @@ def voice(state: DemoState) -> dict:
 # Assemble the reviewed content and recordings into the published player package.
 # Input: demo ID. Output: bundle.json with resolved media URLs and a pinned knowledge snapshot.
 # Linked: server/orchestrator.py:_run_stage calls server/agents/bundle.py:build.
-def bundle(state: DemoState) -> dict:
-    orch._run_stage(state["demo_id"], "bundle", "")
-    return {}
+def bundle(state: DemoState) -> Command:
+    try:
+        orch._run_stage(state["demo_id"], "bundle", "")
+    except orch.bundle.ApprovalRequired:
+        return Command(goto="align_enter")
+    return Command(goto="finish")
 
 
 # Mark a successfully published demo ready and tell the UI that Build finished.
@@ -252,7 +255,7 @@ def faq(state: DemoState) -> dict:
 
 # Publish voiced content; optional rehearsal is a separate explicit action.
 def after_voice(state: DemoState) -> str:
-    return "bundle"
+    return "bundle" if all(store.load(state["demo_id"])["approvals"].values()) else "align_enter"
 
 
 # Choose between publishing approved content and returning draft content for human review.
@@ -277,7 +280,7 @@ def build_graph() -> StateGraph:
     g.add_node("deck", deck)
     g.add_node("faq", faq)
     g.add_node("voice", voice)
-    g.add_node("bundle", bundle)
+    g.add_node("bundle", bundle, destinations=("finish", "align_enter"))
     g.add_node("finish", finish)
     g.add_edge(START, "router")
     g.add_edge("understand", "coach")
@@ -287,8 +290,7 @@ def build_graph() -> StateGraph:
     g.add_edge("author", "deck")
     g.add_conditional_edges("deck", after_author, {"voice": "voice", "faq": "faq"})
     g.add_conditional_edges("faq", after_faq, {"voice": "voice", "align_enter": "align_enter"})
-    g.add_conditional_edges("voice", after_voice, {"bundle": "bundle"})
-    g.add_edge("bundle", "finish")
+    g.add_conditional_edges("voice", after_voice, {"bundle": "bundle", "align_enter": "align_enter"})
     g.add_edge("finish", END)
     return g
 

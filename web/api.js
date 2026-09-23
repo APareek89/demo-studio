@@ -7,7 +7,7 @@ async function handle(r) {
 }
 export const api = {
   get: (p) => fetch(p).then(handle),
-  post: (p, body) => fetch(p, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body || {}) }).then(handle),
+  post: (p, body, { signal } = {}) => fetch(p, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body || {}), ...(signal ? { signal } : {}) }).then(handle),
   patch: (p, body) => fetch(p, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body || {}) }).then(handle),
   del: (p) => fetch(p, { method: "DELETE" }).then(handle),
   form: (p, fd) => fetch(p, { method: "POST", body: fd }).then(handle),

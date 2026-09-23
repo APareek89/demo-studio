@@ -154,6 +154,7 @@ def run(check):
             store.write_json(did, "deck.json", built)
             # This two-line media fixture tests packaging, not narration length.
             # Real-WAV minimum and atomic failure live in minimum_narration_contract.py.
+            store.update(did, lambda d: d["approvals"].update({card: True for card in store.CARDS}))
             with patch.object(bundle.narration, "require_minimum", return_value={"minimum_seconds": 180, "seconds": 180, "sufficient": True, "basis": "synthetic media fixture", "measured": False, "route": []}):
                 result = bundle.build(did, lambda _: None)
             published = next(s for s in result["slides"] if s.get("segment_id") == "engine")

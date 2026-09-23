@@ -79,7 +79,9 @@ check("A mixed comparison cannot universalize the other row's R18 quantity",not 
 focused=json.loads((Path(__file__).parent/"fixtures/runtime_focused_decisions.json").read_text())["cases"]
 def focused_replay(key):
     row=focused[key]
-    return rg.validate_decision(**{k:row[k] for k in ("decision","evidence","question","customer_text","requested_scope")})
+    # Replay original technical wording to isolate citation/trim safeguards.
+    # Everyday substitutions have their own end-to-end validator contract.
+    return rg.validate_decision(**{k:row[k] for k in ("decision","evidence","question","customer_text","requested_scope")}, audience="technical")
 row=focused["q041"]
 scope=rg.explicit_scope(row["question"],row["evidence"])
 check("Focused q041 parenthesized fallback never shortens S(O) Knight",set(scope["variant"])=={"S(O)","S(O) Knight"})

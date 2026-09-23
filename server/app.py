@@ -14,6 +14,7 @@ from pathlib import Path
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 
 from . import cloud, config, events, graph, orchestrator, runlog, schemas, storage, store, usage
 from .agents import align, author, coach, deck, faq, pitch, qa, rehearsal, summary as _summary, visuals, voice
@@ -185,21 +186,27 @@ async def patch_demo(demo_id: str, req: Request):
 
 # ---------- sources ----------
 
+async def _uploaded_source(demo_id: str, file: UploadFile, role: str) -> dict:
+    """Apply the same bounded source-copy policy in Sources and Align."""
+    limit = config.MAX_UPLOAD_MB * 1024 * 1024
+    if file.size is not None and file.size > limit:
+        raise HTTPException(413, f"{file.filename} is larger than {config.MAX_UPLOAD_MB} MB")
+    try:
+        return await run_in_threadpool(store.add_stream_source, demo_id,
+                                       file.filename or "file", file.file, role, max_bytes=limit)
+    except store.UploadTooLarge as e:
+        raise HTTPException(413, str(e))
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
 @app.post("/api/demos/{demo_id}/sources")
 async def add_sources(demo_id: str, files: list[UploadFile] = File(default=[]), role: str = Form(default="product"),
                       url: str = Form(default=""), text: str = Form(default=""), text_name: str = Form(default="brand-guidelines")):
     _demo_or_404(demo_id)
     added = []
     for f in files:
-        data = await f.read()
-        if not data:
-            raise HTTPException(400, f"{f.filename} is empty (0 bytes) — export it again and re-upload")
-        if len(data) > config.MAX_UPLOAD_MB * 1024 * 1024:
-            raise HTTPException(413, f"{f.filename} is larger than {config.MAX_UPLOAD_MB} MB")
-        try:
-            added.append(store.add_file_source(demo_id, f.filename or "file", data, role))
-        except ValueError as e:
-            raise HTTPException(400, str(e))
+        added.append(await _uploaded_source(demo_id, f, role))
     if role == "hero" and added:  # one hero at a time: the previous hero stays a normal product image
         keep = added[-1]["id"]
         store.update(demo_id, lambda d: [s.__setitem__("role", "product") for s in d["sources"] if s.get("role") == "hero" and s["id"] != keep])
@@ -448,11 +455,7 @@ async def align_message(demo_id: str, message: str = Form(default=""), files: li
     _demo_or_404(demo_id)
     attachments = []
     for f in files:
-        data = await f.read()
-        try:
-            attachments.append(store.add_file_source(demo_id, f.filename or "file", data, "product"))
-        except ValueError as e:
-            raise HTTPException(400, str(e))
+        attachments.append(await _uploaded_source(demo_id, f, "product"))
     if not message.strip() and not attachments:
         raise HTTPException(400, "Say something or attach a file")
     try:

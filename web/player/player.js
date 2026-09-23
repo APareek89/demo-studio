@@ -17,7 +17,7 @@
 // They are assembled below; the entry point that supplies this player is web/app.js:renderPlay.
 import { mascot } from "/web/player/mascot.js";
 import { renderSlide } from "/web/slide.js";
-import { h } from "/web/api.js";
+import { h, toast } from "/web/api.js";
 import { icon } from "/web/icons.js";
 import { LiveVoiceClient } from "/web/player/live-voice.js";
 import { renderPublicSearch } from "/web/player/public-search-ui.js";
@@ -124,7 +124,9 @@ export function mountPlayer(host, bundle, api) {
   // Keep preload objects alive for the full session: every recorded line, filler, FAQ answer and picture, plus the film.
   // Warm the browser cache with published audio, slide images and the optional opening film.
   // The delayed callback keeps preload objects alive; no new narration is requested from server/app.py:run_tts.
-  setTimeout(() => {
+  let destroyed = false;
+  const preloadTimer = setTimeout(() => {
+    if (destroyed) return;
     try {
       const urls = [];
       for (const v of Object.values(bundle.fillers || {})) if (v.audio) urls.push(v.audio);
@@ -759,7 +761,7 @@ export function mountPlayer(host, bundle, api) {
   function openingPlanPending() { return !!S.pitchPromise && !S.planningDecided && ["opening", "overview", "planning"].includes(S.playback.phase); }
   // Invalidate the old run and stop its speech, film, waits and unfinished answer delivery.
   // The optional planning flag is forwarded to live-voice.js:LiveVoiceClient.interrupt without resuming anything automatically.
-  function interruptAll({ preservePlanning = false } = {}) { newRun(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} root.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
+  function interruptAll({ preservePlanning = false } = {}) { newRun(); S.httpQuestion?.cancel(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} root.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
   // Interpret customer words only against choices offered by the current wait.
   // Return a selected value or a question; server/app.py:run_qa handles questions that do not match a choice.
   function interpretReply(t, chips) {
@@ -1084,6 +1086,25 @@ export function mountPlayer(host, bundle, api) {
   }
 
   // ---------- questions, don't-guess, lead capture ----------
+  // The HTTP fallback shares the live transport's bounded wait. Cancelling a
+  // player run aborts its fetch; even a callback that ignores abort cannot win later.
+  function questionHttp(payload) {
+    const controller = new AbortController();
+    const pending = { cancel: null };
+    return new Promise((resolve, reject) => {
+      let done = false;
+      const finish = (error, value) => {
+        if (done) return; done = true; clearTimeout(timer);
+        if (S.httpQuestion === pending) S.httpQuestion = null;
+        if (error) reject(error); else resolve(value);
+      };
+      pending.cancel = () => { finish(new DOMException("Question cancelled", "AbortError")); controller.abort(); };
+      const timer = setTimeout(() => { const error = new Error("Question timed out"); error.name = "TimeoutError"; finish(error); controller.abort(); }, 16000);
+      S.httpQuestion = pending;
+      try { Promise.resolve(api.qa(payload, { signal: controller.signal })).then(value => finish(null, value), error => finish(error)); }
+      catch (error) { finish(error); }
+    });
+  }
   // Give fast answers a short grace period before playing an acknowledgment.
   // Race that filler with the existing QA promise; server/runtime_graph.py:run_turn is not restarted.
   async function questionResult(qaP, run, turn) {
@@ -1136,14 +1157,14 @@ export function mountPlayer(host, bundle, api) {
     S.activeTurn = turn; turn.input_source = turn.via; turn.cancelled = false;
     let r;
     const questionPayload = { question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), input_mode: S.voiceMode ? "voice" : "text", slide_id: cur?.slide?.id || null, session_id: S.sessionId, demo_version: bundle.version, voice_ended_at: turn.voice_ended, cursor: { ...S.playback }, ...(options.skipBank ? { skip_bank: true } : {}) };
-    const qaP = live?.ready ? live.ask(questionPayload) : api.qa(questionPayload);
+    const qaP = live?.ready ? live.ask(questionPayload) : questionHttp(questionPayload);
     try {
       // Wait for that question result and convert transport failure into an honest, open customer turn.
       // The request belongs to server/runtime_graph.py:run_turn; cancelled runs must not narrate a late response.
       r = await questionResult(qaP, run, turn);
       if (run !== S.run || !r) return;
     } catch (e) {
-      turn.qa_done = Date.now(); if (run !== S.run || e.name === "AbortError") { turn.cancelled = true; return; } turn.error = true; turn.failed = true;
+      turn.qa_done = Date.now(); if (run !== S.run || e.name === "AbortError") { turn.cancelled = true; return; } turn.error = true; turn.failed = true; turn.timed_out = e.name === "TimeoutError";
       // Record when the transport-failure explanation actually starts playing.
       // The turn remains marked failed, so server/runtime_metrics.py:aggregate can separate it from useful answers.
       S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
@@ -1239,7 +1260,7 @@ export function mountPlayer(host, bundle, api) {
     const sessionId = S.sessionId, formId = S.leadFormId;
     const btn = el.leadForm.querySelector("button[type=submit]"); btn.disabled = true; el.leadError.textContent = "Saving…";
     let ok = true; try { await api.lead({ phone: m[1], question: S.leadQuestion || "test drive", profile: { ...profileForServer(), name: name || S.profile.name }, consent: true, consent_text: CONSENT, session_id: S.sessionId }); } catch (e) { ok = false; }
-    if (S.sessionId !== sessionId || S.leadFormId !== formId || !el.lead.classList.contains("open")) return;
+    if (destroyed || S.sessionId !== sessionId || S.leadFormId !== formId || !el.lead.classList.contains("open")) return;
     btn.disabled = false;
     if (!ok) { el.leadError.textContent = "Couldn't save that just now. Please try once more."; return; }
     if (name) S.profile.name = name; S.leads.push({ phone: m[1], question: S.leadQuestion || "test drive" }); S.escalations.push(`callback requested on ${m[1]}: "${S.leadQuestion || "test drive"}"`);
@@ -1450,6 +1471,21 @@ export function mountPlayer(host, bundle, api) {
   }
 
   // ---------- handoff ----------
+  // Keep retries immutable while serializing real revisions of the same visit.
+  // This also lets route teardown join an existing save without a duplicate POST.
+  const reportSaves = new Map();
+  function saveVisit(record) {
+    const snapshot = JSON.parse(JSON.stringify(record)), revision = JSON.stringify(snapshot);
+    let owner = reportSaves.get(snapshot.id);
+    if (!owner) { owner = { saved: null, pending: new Map(), tail: Promise.resolve() }; reportSaves.set(snapshot.id, owner); }
+    if (owner.pending.has(revision)) return owner.pending.get(revision);
+    if (owner.saved === revision && !owner.pending.size) return Promise.resolve();
+    const request = owner.tail.catch(() => {}).then(() => api.saveSession(snapshot)).then(result => { owner.saved = revision; return result; });
+    owner.tail = request; owner.pending.set(revision, request);
+    const clear = () => { if (owner.pending.get(revision) === request) owner.pending.delete(revision); };
+    request.then(clear, clear);
+    return request;
+  }
   // Calculate a bounded engagement score from local questions, progress and explicit next steps.
   // Return a rough score for server/app.py:save_session, not a verified prediction of customer purchase intent.
   function intentScore() { let s = 20; s += Math.min(30, S.questions.length * 8); s += S.resolved.size * 8; s += S.seg >= S.plan.length - 1 ? 15 : 0; if (S.cta && S.cta !== "summary") s += 30; if (S.leads.length) s += 10; s -= S.unresolved.size * 5; return Math.max(5, Math.min(98, s)); }
@@ -1477,7 +1513,27 @@ export function mountPlayer(host, bundle, api) {
     live?.stopCapture();
     setStatus("idle", "Demo complete");
     el.lead.classList.remove("open");
-    const session = sessionRecord();
+    // The recap reads this snapshot; Done captures any later lead/contact changes.
+    const session = JSON.parse(JSON.stringify(sessionRecord()));
+    let retryRecord = session, saveRequest = 0;
+    const saveNote = h("span", { role: "status" }, "Saving this visit…");
+    const retrySave = h("button", { class: "btn ghost sm hidden", onclick: () => saveReport(retryRecord) }, "Retry save");
+    async function saveReport(record = sessionRecord()) {
+      if (destroyed || S.sessionId !== session.id) return;
+      const request = ++saveRequest;
+      retryRecord = JSON.parse(JSON.stringify(record));
+      retrySave.classList.add("hidden"); saveNote.textContent = "Saving this visit…";
+      try {
+        await saveVisit(retryRecord);
+        if (request !== saveRequest || destroyed || S.sessionId !== session.id) return;
+        saveNote.textContent = "Visit saved.";
+      } catch (error) {
+        if (request !== saveRequest || destroyed || S.sessionId !== session.id) return;
+        saveNote.textContent = "Couldn't save this visit. You can retry without restarting the demo.";
+        retrySave.classList.remove("hidden");
+        if (!el.handoff.classList.contains("open")) toast("Couldn't save this visit. Use Stop to reopen the recap and retry.", true);
+      }
+    }
     const explored = [...new Set(session.slides_visited.map((visit) => slides.find((slide) => slide.id === visit.slide_id)).filter((slide) => slide && !["hero_open", "hero_close", "closing"].includes(slide.kind)).map((slide) => slide.title).filter(Boolean))];
     const openQuestions = [...S.openQuestions];
     const shared = [...new Set([S.profile.why, ...S.profile.stated_needs].filter(Boolean))];
@@ -1499,13 +1555,13 @@ export function mountPlayer(host, bundle, api) {
           // Clicking opens local consent fields; server/app.py:run_lead is still deferred until explicit submission.
           actionUrl && c.kind === "link" ? null : h("button", { class: "btn ghost sm", onclick: () => showLeadPrompt("requested", openQuestions[0] || S.questions.at(-1) || c?.label || "test drive") }, "Request dealership follow-up")), externalAction])),
       h("div", { class: "actions", style: "display:flex;gap:10px;margin-top:14px" },
-        // Wire Done to hide the recap, request another save and speak a closing acknowledgment.
-        // api.saveSession targets server/app.py:save_session; a caught save failure is not surfaced by this button.
-        h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); api.saveSession(sessionRecord()).catch(() => {}); const run = newRun(); speak("Thanks for your time. You can ask anything else whenever you are ready.", run); } }, "Done"),
+        // Done saves changed content; an equal in-flight/saved revision is reused.
+        h("button", { class: "btn primary", onclick: () => { el.handoff.classList.remove("open"); saveReport(); const run = newRun(); speak("Thanks for your time. You can ask anything else whenever you are ready.", run); } }, "Done"),
         // Wire Back to reopen this visit and invite further questions.
         // Live capture restarts through live-voice.js:LiveVoiceClient; the existing session ID is retained.
-        h("button", { class: "btn ghost", onclick: () => { resumeSession(); if (live) { startLive(); listenForQuestion(); } else { const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } } }, "Back to the demo")));
-    el.handoff.classList.add("open"); api.saveSession(session).catch(() => {});
+        h("button", { class: "btn ghost", onclick: () => { resumeSession(); if (live) { startLive(); listenForQuestion(); } else { const run = newRun(); speak("What else would you like to explore?", run).then((ok) => { if (ok) listenForQuestion(); }); } } }, "Back to the demo")),
+      h("div", { class: "small session-save-status", style: "margin-top:12px;display:flex;align-items:center;gap:10px" }, saveNote, retrySave));
+    el.handoff.classList.add("open"); saveReport(session);
   }
 
   // Use a parent fullscreen route if provided, otherwise toggle browser fullscreen for the player.
@@ -1578,7 +1634,7 @@ export function mountPlayer(host, bundle, api) {
   window.addEventListener("pagehide", onHide);
   // Remove observers and listeners, cancel active work, release preloads and destroy the player DOM.
   // web/app.js:renderPlay calls this lifecycle method when navigating away or mounting another demo.
-  function destroy() { dockObserver?.disconnect(); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
+  function destroy() { if (destroyed) return; destroyed = true; clearTimeout(preloadTimer); dockObserver?.disconnect(); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   // Initialize visible actions, mute state and the hero slide before starting any demo flow.
   // web/slide.js:renderSlide supplies the view; the welcome buttons below choose when interaction starts.

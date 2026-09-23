@@ -1,5 +1,17 @@
 # Handoff.MD — Demo Studio
 
+## Current snapshot — WP11 release QA · 23 September 2026
+
+**Authorized:** Anand asked to match the whole approved Marine slide-first HTML, perform a full mock dry run and detailed power-coding FMEA, then commit to private GitHub master and deploy to the existing AWS host. Stay on `codex/sales-trainer-flow`; preserve shared data/secrets, protected local demo/output and port8896. No paid tests.
+
+**Ready for release:** full 95-entry QA inventory (94 executable) green; deck365, acceptance24, smoke both phases + rehearsal, actual new-demo mock journey27 with194.22s measured WAVs/no duration bypass, Node209, browser78, navigation22, layout193, searchUI30. Twelve-category FMEA fixed final-approval publication races, lost partial search evidence, plain-wording duplication, upload memory, detached player work, silent session saves and unbounded HTTP fallback. Follow-up review verifies later lead details and active navigation transcripts survive ordered session revisions. Reports: `docs/wp11-release-{fmea,gates}-2026-09-23.*` and `Loop.MD`.
+
+**Release status:** committed-source staging and AWS cutover are the next steps; the final deployment receipt will be `docs/aws/release-wp11-2026-09-23.md`. Existing AWS instance/hostname, credentials and shared data stay in place. New code rollback uses a separate systemd override and stopped-service SQLite/data backup.
+
+**Pending:** C7 password protection for the inherited public builder is awaiting Anand; do not invent access policy. C8 Google Cloud alternate-language voice identity remains unimplemented (current Sarvam unaffected). Small-instance concurrency and missing scanned-PDF OCR remain known limits. Selective Align rebuild routing remains pending: wording-only edits start at Author/affected dependants; new facts/uploads require the earliest evidence stage with hash-based reuse and approval invalidation. This is proposed, not built.
+
+**Effort:** ~60% fixes/QA, ~30% deployment preparation, ~10% rework. Independent review caught persistence gaps that resource-cleanup tests alone missed. Older snapshots below retain their historical status; this snapshot supersedes their no-deployment hold and side-panel layout.
+
 ## WP11 — approved Marine sample in production · 23 September 2026
 
 **Decision:** after comparing the live demo with `http://127.0.0.1:8904/docs/design/wp11-samples/marine.html?revision=slide-first`, Anand asked for that whole design in the actual app. The unchanged HTML is now the visual regression reference. Production uses its compact top heading, centered native-aspect picture, small feature cards/anchor dots/thin leaders, slide counter/progress, white conversation area and fixed CTA footer. This supersedes the approximate cinematic implementation in the previous receipt. New bundles and existing demos use the shared renderer automatically; refresh the app to load the updated frontend. Marine/Sage/Graphite approval remains inside Visuals.

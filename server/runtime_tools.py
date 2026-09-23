@@ -423,10 +423,15 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
         raise ValueError("Specify the product detail to search for")
     started = time.monotonic()
     budget = min(max(float(timeout), .1), 5.0)
-    deadline = started + budget
-    def remaining():
+    # Leave room for assembling complete passages and returning through the
+    # caller's wait_for; an optional page must not consume a successful answer.
+    deadline = started + budget - min(.15, budget * .1)
+    def check_cancelled():
         if cancel_event is not None and cancel_event.is_set():
             raise InterruptedError("Turn cancelled")
+
+    def remaining():
+        check_cancelled()
         left = deadline - time.monotonic()
         if left <= .05:
             raise TimeoutError("Public search time budget exhausted")
@@ -439,12 +444,18 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
         raise ValueError("Public search returned no cited source pages")
     pages, coverage, candidates = [], [], []
     for url in urls:
-        left = remaining()
+        try:
+            left = remaining()
+        except TimeoutError:
+            if not candidates:
+                raise
+            coverage.append(f"Time budget reached before reading {url}; completed cited passages were retained.")
+            break
         try:
             # fetch_public validates and pins every DNS result and redirect hop.
             # Public search permits another public host; customer lookup remains exact-host.
             page = crawl.fetch_public(url, timeout=left, max_bytes=2_000_000)
-            remaining()
+            check_cancelled()
         except InterruptedError:
             raise
         except Exception as exc:
@@ -456,7 +467,9 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
         pages.append({"url": final_url, "discovery": "public search citation", "fetched_at": page.get("fetched_at", time.time())})
         coverage.extend(str(warning) for warning in page.get("warnings", []))
         candidates.extend(_page_candidates(page, final_url, terms, len(pages), coverage))
-    remaining()
+    check_cancelled()
+    if not candidates:
+        remaining()
     evidence = _web_evidence(candidates, coverage, claim="Public-search website passage")
     if not evidence:
         raise ValueError("No fetched public-search passage matched that question")

@@ -325,7 +325,7 @@ class ClauseDeliveryContract(unittest.TestCase):
                      "control": TurnControl(time.monotonic() + 12), "tool_results": []}
             response = graph._CompositionRepair.model_validate({"sentences": repaired["decision"]["sentences"]})
             with patch.object(graph.config, "MOCK_LLM", False), patch.object(graph.runtime, "structured", return_value=response) as model, patch.object(graph.usage, "trace"):
-                result, _, repair = await graph._repair_composition(state, original, errors, feedback, c["question"])
+                result, _, repair = await graph._repair_composition(state, original, errors, feedback, c["question"], audience="everyday")
             self.assertEqual(model.call_count, 1)
             self.assertTrue(repair["accepted"])
             self.assertTrue(repair["partial"])

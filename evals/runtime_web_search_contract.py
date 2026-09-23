@@ -136,6 +136,55 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(InterruptedError):
                 runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags",cancel_event=event)
 
+    def test_optional_timeout_retains_completed_cited_passage(self):
+        clock = [0.0]
+        def fetch(url, **kwargs):
+            if url == URL:
+                clock[0] += .1
+                return {"final_url": url, "text": QUOTE}
+            clock[0] += kwargs["timeout"]
+            raise TimeoutError("optional page timed out")
+        with patch.object(runtime_tools.time, "monotonic", side_effect=lambda: clock[0]), \
+             patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://slow.example/safety"]}), \
+             patch("server.crawl.fetch_public", side_effect=fetch):
+            result = runtime_tools.web_search({"tool": "web_search", "query": "airbags"}, "airbags")
+        self.assertEqual(result["evidence"][0]["source"]["ref"], URL)
+        self.assertEqual(result["evidence"][0]["source"]["quote"], QUOTE)
+        self.assertTrue(any("optional page timed out" in warning for warning in result["coverage"]))
+        self.assertLess(result["elapsed_ms"], 5000)
+
+    def test_cancelled_optional_timeout_discards_prior_page(self):
+        event = threading.Event()
+        def fetch(url, **kwargs):
+            if url == URL:
+                return {"text": QUOTE}
+            event.set()
+            raise TimeoutError("optional page timed out during cancellation")
+        with patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://slow.example/safety"]}), \
+             patch("server.crawl.fetch_public", side_effect=fetch):
+            with self.assertRaises(InterruptedError):
+                runtime_tools.web_search({"tool": "web_search", "query": "airbags"}, "airbags", cancel_event=event)
+
+    async def test_actual_dispatch_returns_partial_search_before_outer_deadline(self):
+        control = runtime_state.claim_turn(self.did, "s_partial", "t_partial", budget=.5)
+        state = {"demo_id": self.did, "question": "Search the web for airbags", "history": [], "evidence": [],
+                 "tool_results": [], "errors": [], "tool_count": 0, "tool_rounds": 0, "control": control,
+                 "decision": {"action": "tools", "tool_calls": [{"tool": "web_search", "query": "airbags"}]}}
+        def fetch(url, **kwargs):
+            if url == URL:
+                return {"final_url": url, "text": QUOTE}
+            time.sleep(kwargs["timeout"])
+            raise TimeoutError("optional page timed out")
+        with patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://slow.example/safety"]}), \
+             patch("server.crawl.fetch_public", side_effect=fetch):
+            result = await runtime_graph.tools_node(state)
+        self.assertGreater(control.remaining(), 0)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["tool_count"], 1)
+        self.assertEqual(result["tool_rounds"], 1)
+        self.assertEqual(result["evidence"][0]["source"]["quote"], QUOTE)
+        self.assertEqual(result["tool_results"][0]["pages"][0]["url"], URL)
+
     def test_official_sdk_contract_uses_only_cited_grounding_metadata(self):
         metadata=NS(grounding_chunks=[NS(web=NS(uri=URL)),NS(web=NS(uri="https://uncited.example/"))],
                     grounding_supports=[NS(grounding_chunk_indices=[0])],web_search_queries=["airbags"],search_entry_point=NS(rendered_content="widget"))

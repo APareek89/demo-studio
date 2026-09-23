@@ -12,7 +12,20 @@ import { renderObservability } from "/web/observability.js";
 import { mountPlayer } from "/web/player/player.js";
 
 const main = document.getElementById("main");
-let current = { unsub: null, demoId: null };
+let current = { unsub: null, dispose: null, demoId: null };
+let viewEpoch = 0;
+let viewHash = location.hash;
+const isCurrentView = epoch => epoch === viewEpoch && location.hash === viewHash;
+
+// A hash route owns its subscriptions, player and pending screen loads.
+function beginView() {
+  const epoch = ++viewEpoch;
+  viewHash = location.hash;
+  const { unsub, dispose } = current;
+  current.unsub = null; current.dispose = null;
+  try { unsub?.(); } finally { dispose?.(); }
+  return epoch;
+}
 
 async function health() {
   try {
@@ -41,14 +54,16 @@ function stepState(demo, key) {
   return {};
 }
 
-async function renderStudio(demoId, stage) {
+async function renderStudio(demoId, stage, epoch = beginView()) {
   if (!demoId) {
     const demos = await api.get("/api/demos");
+    if (!isCurrentView(epoch)) return;
     if (demos.length) return navigate(`#/studio/${demos[0].id}/sources`);
     return navigate("#/demos");
   }
   let state;
-  try { state = await api.get(`/api/demos/${demoId}`); } catch (e) { toast("Demo not found", true); return navigate("#/demos"); }
+  try { state = await api.get(`/api/demos/${demoId}`); } catch (e) { if (!isCurrentView(epoch)) return; toast("Demo not found", true); return navigate("#/demos"); }
+  if (!isCurrentView(epoch)) return;
   const demo = state.demo; demo.__bundle = state.bundle_ready;
   if (!stage) stage = demo.status === "sources" ? "sources" : demo.status === "ready" ? "rehearse" : "align";
   const rail = h("aside", { class: "rail" },
@@ -64,25 +79,27 @@ async function renderStudio(demoId, stage) {
   if (current.unsub) { current.unsub(); current.unsub = null; }
   current.demoId = demoId;
   const ctx = {
-    demoId, state, area, navigate, refresh: () => renderStudio(demoId, stage),
+    demoId, state, area, navigate, refresh: () => isCurrentView(epoch) ? renderStudio(demoId, stage) : undefined,
+    isCurrent: () => isCurrentView(epoch),
     setRailStatus: (t) => { const el = document.getElementById("railStatus"); if (el) el.textContent = t; },
     subscribe: (fn) => { current.unsub = api.subscribe(demoId, fn); return current.unsub; },
   };
   if (stage === "sources") renderSources(ctx);
   else if (stage === "align") renderAlign(ctx);
-  else if (stage === "rehearse") renderRehearse(ctx);
+  else if (stage === "rehearse") current.dispose = renderRehearse(ctx);
   else if (stage === "sessions") renderSessions(ctx);
 }
 
 async function route() {
+  const epoch = beginView();
   const parts = (location.hash || "#/home").slice(2).split("/");
   if (parts[0] === "home") { setTab("home"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderHome({ main, navigate }); }
-  if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2]); }
+  if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2], epoch); }
   if (parts[0] === "share" && parts[1] && parts[2]) { setTab(""); if (current.unsub) { current.unsub(); current.unsub = null; } return renderShare({ main, demoId: parts[1], sid: parts[2], key: parts[3] || "" }); }
   if (parts[0] === "play" && parts[1]) {
     setTab("");
     if (current.unsub) { current.unsub(); current.unsub = null; }
-    return renderPlay(parts[1]);
+    return renderPlay(parts[1], epoch);
   }
   if (parts[0] === "observability") { setTab("observability"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderObservability({ main, navigate, demoId: parts[1] }); }
   if (parts[0] === "playground") { setTab("playground"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderPlayground({ main, navigate, demoId: parts[1] }); }
@@ -92,27 +109,30 @@ async function route() {
 }
 
 let playInstance = null;
-async function renderPlay(demoId) {
+async function renderPlay(demoId, epoch = beginView()) {
   const main = document.getElementById("main");
   if (playInstance) { try { playInstance.destroy(); } catch (e) {} playInstance = null; }
   let bundle;
   try { bundle = await api.get(`/api/demos/${demoId}/bundle`); }
-  catch (e) { toast("This demo isn't built yet — open it in the studio and build it first.", true); navigate("#/demos"); return; }
+  catch (e) { if (!isCurrentView(epoch)) return; toast("This demo isn't built yet — open it in the studio and build it first.", true); navigate("#/demos"); return; }
+  if (!isCurrentView(epoch)) return;
   const host = h("div", { class: "play-page" });
   main.replaceChildren(host);
   playInstance = mountPlayer(host, bundle, {
     liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
-    qa: (body) => api.post(`/api/demos/${demoId}/run/qa`, body),
+    qa: (body, options) => api.post(`/api/demos/${demoId}/run/qa`, body, options),
     tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
     tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),
     pitch: (body) => api.post(`/api/demos/${demoId}/run/pitch`, body),
     lead: (body) => api.post(`/api/demos/${demoId}/run/lead`, body),
     stt: (blob, lang) => { const fd = new FormData(); fd.append("file", blob, "speech.wav"); fd.append("language", lang || "en-IN"); return api.form(`/api/demos/${demoId}/run/stt`, fd).then((r) => r.transcript || ""); },
-    saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s).catch(() => {}),
+    saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s),
     beacon: (s) => navigator.sendBeacon(`/api/demos/${demoId}/run/session`, new Blob([JSON.stringify(s)], { type: "application/json" })),
     downloadUrl: `/api/demos/${demoId}/export.mp4`,
     onClose: () => { try { playInstance.destroy(); } catch (e) {} playInstance = null; navigate("#/demos"); },
   });
+  const ownedPlayer = playInstance;
+  current.dispose = () => { ownedPlayer.destroy(); if (playInstance === ownedPlayer) playInstance = null; };
 }
 
 document.querySelector(".skip-link")?.addEventListener("click", e => { e.preventDefault(); main.focus(); });

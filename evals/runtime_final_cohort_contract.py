@@ -211,7 +211,7 @@ async def run():
     check("Actual empty family draft accepts a strictly validated repair subset once",model.call_count==1 and result["result"]["answered"] and repair["accepted"] and repair["partial"] and "unsupported_assertion_feature" in result["result"]["validation_errors"] and "F075" not in result["result"]["fact_ids"])
     original={"answer":"An already validated answer.","answered":True,"fact_ids":["F075"]}
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured",return_value=saved),patch("server.runtime_graph.usage.trace"):
-        retained,errors,repair=await rg._repair_composition(state,original,["original_error"],[],state["question"])
+        retained,errors,repair=await rg._repair_composition(state,original,["original_error"],[],state["question"], audience="everyday")
     check("A partially invalid repair cannot replace an original supported answer",retained==original and not repair["accepted"])
     state={**copy.deepcopy(cases["scope40_q049"]),"demo_id":"contract-unused","control":TurnControl(time.monotonic()+12),"errors":[],"tool_results":[]}
     with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.runtime.structured") as model,patch("server.runtime_graph.store.read_json",return_value={}):

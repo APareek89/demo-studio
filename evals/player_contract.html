@@ -857,7 +857,7 @@ test('Declining callback still permits completion and saves the finished session
   assert(player.context().slide === 'hero-end', 'Tour did not reach its final choice');
   await click('Not yet', '.pl-chips button'); await click('Done', '.pl-handoff button');
   const saved = env.saved.at(-1);
-  assert(env.saved.length >= 2 && saved.ended && new Set(env.saved.map((s) => s.id)).size === 1, 'Completion did not save one consistent ended session');
+  assert(env.saved.length === 1 && saved.ended && new Set(env.saved.map((s) => s.id)).size === 1, 'Completion did not coalesce the unchanged Stop/Done record into one ended session');
   assert(saved.questions.includes(question) && saved.unresolved.includes('finance') && saved.leads.length === 0 && env.leadCalls.length === 0, 'Saved session lost the unanswered concern or invented a lead');
   assert(saved.transcript.filter((x) => x.role === 'user' && x.text === question).length === 1, 'Saved transcript duplicated or lost the customer question');
   assert(['First proof.', 'Second proof.', 'Third proof.'].every((text) => saved.transcript.some((x) => x.role === 'agent' && x.text === text)), 'Finished transcript omitted heard proof lines');

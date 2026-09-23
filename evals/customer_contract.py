@@ -51,7 +51,8 @@ def run(check, demo_id: str) -> None:
           any("checkin contains a figure or claim" in issue for issue in issues)
           and not unsafe_script["segments"][0]["checkin"] and unsafe_script["segments"][0]["checkin_audio"] is None)
 
-    demo = {"name": "Fixture", "settings": {"audience": "everyday"}, "sources": []}
+    demo = {"name": "Fixture", "settings": {"audience": "everyday"}, "sources": [],
+            "approvals": {card: True for card in store.CARDS}}
     plan = {"voice": {}, "segments": [], "ctas": []}
     fact = {"id": "F1", "kind": "spec", "claim": "Lamp", "value": "LED", "source": {"ref": "fixture"}, "truth": "stated"}
     und["facts"] = [fact]
@@ -62,6 +63,7 @@ def run(check, demo_id: str) -> None:
         stack.enter_context(patch.object(store, "read_json", side_effect=lambda _id, name: copy.deepcopy(files.get(name))))
         stack.enter_context(patch.object(store, "write_json"))
         stack.enter_context(patch.object(store, "update"))
+        stack.enter_context(patch.object(store, "save"))  # FAQ learning shares this unit's in-memory store boundary.
         stack.enter_context(patch.object(store, "log"))
         stack.enter_context(patch.object(voice, "provider_for", return_value="browser"))
         voice_call = stack.enter_context(patch.object(voice, "render_line", side_effect=AssertionError("Unexpected voice call")))
@@ -234,7 +236,13 @@ def run(check, demo_id: str) -> None:
 
 if __name__ == "__main__":
     rows = []
-    run(lambda name, ok, detail="": rows.append((name, bool(ok), detail)), "fixture")
+    # This unit isolates legacy confirmation metadata, not publication eligibility.
+    # The release journey and minimum_narration_contract exercise the real gate.
+    with patch("server.agents.narration.require_minimum", return_value={
+        "minimum_seconds": 180.0, "seconds": 180.0, "sufficient": True,
+        "basis": "confirmation-metadata-unit-fixture", "measured": False,
+    }):
+        run(lambda name, ok, detail="": rows.append((name, bool(ok), detail)), "fixture")
     for name, ok, detail in rows:
         print(("PASS" if ok else "FAIL") + " " + name + (": " + detail if detail else ""))
     print(f"{sum(ok for _, ok, _ in rows)}/{len(rows)} customer contracts passed")

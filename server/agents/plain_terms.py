@@ -73,7 +73,24 @@ def substitute(text: str) -> tuple[str, list]:
                 prefix = prefix[:article.start()]
                 if article.group(1)[:1].isupper():
                     replacement = replacement[:1].upper() + replacement[1:]
+        # A branded technical name often follows the brand already present in
+        # its reviewed rendering: "Hyundai SmartSense" must say Hyundai once.
+        brand = re.match(r"([^\s]+)['’]s\s", replacement)
+        if brand:
+            repeated_brand = re.search(r"(?<!\w)" + re.escape(brand.group(1)) + r"(?:['’]s)?\s+$", prefix, re.I)
+            if repeated_brand:
+                prefix = prefix[:repeated_brand.start()]
         cursor = match.end()
+        if term == "smartsense":
+            # These immediately adjacent aliases name the same package, rather
+            # than two coordinated claims. Keep its exact reviewed rendering.
+            alias = re.match(r"\s+(?:level\s+2\s+)?ADAS\b(?:\s+(?:suite|package|features)\b)?", text[cursor:], re.I)
+            if alias:
+                cursor += alias.end()
+        if term == "isofix":
+            alias = re.match(r"\s+child[ -]seat\s+(?:anchors|mounts)\b", text[cursor:], re.I)
+            if alias:
+                cursor += alias.end()
         if replacement.endswith("suspension"):
             repeated = re.match(r"\s+" + (r"(?:front\s+)?" if replacement.endswith("front suspension") else r"(?:rear\s+)?") + r"suspension\b", text[cursor:], re.I)
             if repeated:
