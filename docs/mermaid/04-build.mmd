@@ -1,9 +1,9 @@
-%% 04 · Build phase — Author (validated word budgets) → Voice (+ extra languages) → Rehearsal → Bundle
+%% 04 · Build phase — Voice → Bundle; rehearsal on demand
 flowchart TD
-  N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
+  N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
   GO["POST /api/demos/id/build<br/>[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness<br/>explicit operator override logged; mock bypass"]:::fn
   AUTH["Final spoken delivery of the Planner outline<br/>[AGENT · configured text tier · author.py]<br/>in: plan goals/notes, approved registry, supplied visuals, voice, language/audience<br/>shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK<br/>same segment ids/roles/order; connected speech; checkin = closing statement, no question<br/>deeper, closing + 23–28 word Explore overview led by first supported fundamental"]:::agent
-  VAL["grounding + planned budget + plain-language validator<br/>[FUNCTION · author.validate]<br/>approved citations and existing visual refs; unsupported uncited quantities/claims held<br/>above word_budget +4: issue; below explicit budget −10: advisory warning<br/>hard ceilings: intro/outcome/proof 46; features 48; establish 44; closing 45<br/>route ≤ round(pitch_minutes × 60 × WPS) +40; legacy: ceiling upper check, no new under-budget warning"]:::fn
+  VAL["grounding + planned budget + plain-language validator<br/>[FUNCTION · author.validate]<br/>approved citations and existing visual refs; unsupported uncited quantities/claims held<br/>above word_budget +4: issue; below explicit budget −10: advisory warning<br/>hard ceilings: intro/outcome/proof 46; features 48; establish 44; closing 45<br/>route ≤ round(max(3,pitch_minutes) × 60 × WPS) +40<br/>new draft default narration deficit uses existing single repair; legacy validation unchanged"]:::fn
   ISS{"issues > 0?"}:::dec
   FIX["one local rewrite<br/>[AGENT · configured text tier]<br/>in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects<br/>out: full script, revalidated under the same evidence rules"]:::agent
   VAL2["re-validate<br/>[FUNCTION] remaining issues stay reviewable; ungrounded lines stay unverified and excluded from voice & bundle"]:::fn
@@ -26,11 +26,15 @@ flowchart TD
   LANGS{"settings.languages<br/>has extra languages?"}:::dec
   TRANS["translate script per extra language<br/>[AGENT · configured text tier · translate.py · stage 'translate']<br/>in: segments/closing/intake text only · out: same ids, translated text · skipped when source digest unchanged → script.&lt;lang&gt;.json"]:::agent
   TTS2["render every translated line<br/>[LIBRARY · same chain, lang override]"]:::data
-  QGEN["likely customer questions<br/>[AGENT · Claude text tier]<br/>in: product, persona, concerns, fact claims · out: N questions (settings.rehearsal_questions, default 12)"]:::agent
-  QA["answer each via qa.answer<br/>[AGENT · Claude text tier + FUNCTION validator]<br/>see diagram 05 · one paid call per question"]:::agent
-  COV["coverage = answered / N · gaps list<br/>[FUNCTION] → rehearsal.json"]:::fn
-  SCORE["demo scorecard<br/>[AGENT · Claude text tier · judge]<br/>reuse by semantic script/fact/FAQ/prompt hash; out: 10 criteria ×0–2 + gaps"]:::agent
+  REHEARSE["Run rehearsal · explicit operator action<br/>[ASK · POST /api/demos/id/rehearsal]<br/>serialized with Read/Build/revise; ready status and publication retained"]:::ask
+  QBANK{"Any non-rejected saved questions?<br/>[FUNCTION · rehearsal.run]<br/>customer questions first, then uploaded document questions"}:::dec
+  QGEN["At most five sample questions, only for an empty bank<br/>[AGENT · configured text tier · generate_questions]<br/>no generated FAQ quota; no automatic call during Read/Build"]:::agent
+  QA["Answer sample or stale-registry questions afresh<br/>[AGENT + FUNCTION · qa.answer]<br/>voice_it=false, learn=false; current approved evidence<br/>current eligible bank answers reused; no facts or customer questions invented"]:::agent
+  COV["Coverage + gaps<br/>[FUNCTION] → rehearsal.json<br/>diagnostics only; published bundle and approvals unchanged"]:::fn
+  SCORE["Demo scorecard<br/>[AGENT · configured text tier · judge]<br/>reuse by semantic script/fact/FAQ/prompt hash; count/audio-only changes ignored<br/>out: 10 criteria ×0–2 + gaps; prompt score is not a live acceptance test"]:::agent
   BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script, deck (+ language variants)<br/>out: media URLs + picture-owned callouts; retain first image_url and existing line-audio joins<br/>renderer: native-fit halves at ≥700px, stacked below; line reveal activates matching picture<br/>proxy illustration badge; CTAs, facts, languages and version retained"]:::fn
+  MINIMUM{"Publishable default narration in every language?<br/>[FUNCTION · narration.require_minimum]<br/>at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing<br/>exclude film, Q&A, deeper-only and duplicates; estimates cannot pass"}:::dec
+  SHORT["Keep previous publication unchanged<br/>[FUNCTION · before snapshot/version/bundle writes]<br/>show deficit or missing-clip error; add distinct supported material and record it<br/>never pad, duplicate claims or slow voice"]:::fn
   READY["status ready · durable SSE phase_done build<br/>[DATA · events.json + stage progress/warnings]<br/>fresh subscriber receives current baseline; valid cursor resumes bounded history"]:::term
 
   GO --> AUTH --> VAL --> ISS
@@ -41,10 +45,16 @@ flowchart TD
   DOVR -.-> DLAY
   DJ --> PROV
   PROV -- "sarvam / gemini / gcloud" --> TTS --> MEASURE --> LANGS
-  PROV -- "browser" --> BROWSER --> QGEN
-  LANGS -- "yes" --> TRANS --> TTS2 --> QGEN
-  LANGS -- "no" --> QGEN
-  QGEN --> QA --> COV --> SCORE --> BUN --> READY
+  PROV -- "browser" --> BROWSER --> BUN
+  LANGS -- "yes" --> TRANS --> TTS2 --> BUN
+  LANGS -- "no" --> BUN
+  BUN --> MINIMUM
+  MINIMUM -- "all measured and at least 180 seconds" --> READY
+  MINIMUM -- "short or missing/unreadable audio" --> SHORT
+  READY -. "optional, on demand" .-> REHEARSE --> QBANK
+  QBANK -- "yes" --> QA
+  QBANK -- "no" --> QGEN --> QA
+  QA --> COV --> SCORE
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

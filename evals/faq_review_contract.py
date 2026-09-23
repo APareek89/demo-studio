@@ -26,6 +26,7 @@ def run(check, _demo_id=None):
         demo = store.new_demo("FAQ review fixture"); did = demo["id"]
         source = store.add_text_source(did, "Product", "Length 3995 mm. Six airbags standard.", "product")
         rival = store.add_text_source(did, "Rival", "Rival length 4000 mm.", "competitor")
+        store.add_text_source(did, "Uploaded FAQ", "How many airbags are fitted?\nWhat is the vehicle length?", "faq")
         def fact(fid, value, approved=True, ref=None):
             return schemas.Fact(id=fid, kind="spec", claim=value, value=value, approved=approved,
                                 confidence=1, source=schemas.FactSource(ref=ref or source["id"], quote=value)).model_dump()
@@ -45,8 +46,8 @@ def run(check, _demo_id=None):
             d["running"] = None
             for stage in d["stages"].values():stage["status"] = "done"
         store.update(did, configure)
-        bank = {"entries":[{"id":"Q01", "question":"How many airbags are fitted?", "origin":"generated", "answer":"Old unsupported answer", "fact_ids":["F001"], "answered":False, "audio":"audio/old.wav", "visual":{"kind":"image", "ref":"old"}, "slide_id":"dimensions", "offer_callback":True, "clarifying_question":"Which version?", "error":"old generation error"},
-                           {"id":"Q02", "question":"What is the vehicle length?", "origin":"generated", "answer":"Length is 3995 mm.", "fact_ids":["F001"], "answered":True, "audio":"audio/keep.wav", "offer_callback":False, "clarifying_question":"", "slide_id":"dimensions"}],
+        bank = {"question_policy":faq.QUESTION_POLICY, "entries":[{"id":"Q01", "question":"How many airbags are fitted?", "origin":"document", "answer":"Old unsupported answer", "fact_ids":["F001"], "answered":False, "audio":"audio/old.wav", "visual":{"kind":"image", "ref":"old"}, "slide_id":"dimensions", "offer_callback":True, "clarifying_question":"Which version?", "error":"old generation error"},
+                           {"id":"Q02", "question":"What is the vehicle length?", "origin":"document", "answer":"Length is 3995 mm.", "fact_ids":["F001"], "answered":True, "audio":"audio/keep.wav", "offer_callback":False, "clarifying_question":"", "slide_id":"dimensions"}],
                 "answered":1, "total":2, "registry_hash":faq._registry_hash(did), "partial":False}
         store.write_json(did, "faq.json", bank)
         api = TestClient(app)

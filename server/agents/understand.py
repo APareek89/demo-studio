@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import hashlib
 
 from .. import config, crawl, knowledge, media, schemas, sources, store
@@ -469,7 +470,27 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         emit(f"Mapped {len(und['image_map'])} facts to the pictures that show them.")
     except Exception as e:
         emit(f"Picture map skipped ({str(e)[:60]}).")
-    store.write_json(demo_id, "understanding.json", und)
+    # Customer questions can arrive while source extraction is running. Merge
+    # from the latest registry under the same lock as FAQ learning, retaining
+    # reviewed gap status/counts and never reusing a customer's unknown ID.
+    from . import faq
+    with store._lock(demo_id):
+        latest = store.read_json(demo_id, "understanding.json") or {}
+        customers = [row for row in latest.get("unknowns", []) if row.get("source") == "customer"]
+        used = {row["id"] for row in customers}
+        next_unknown = max([int(match[1]) for row in latest.get("unknowns", []) + und["unknowns"]
+                            if (match := re.fullmatch(r"U(\d+)", str(row.get("id", ""))))], default=0) + 1
+        merged = []
+        for unknown in und["unknowns"]:
+            if any(faq.similarity(unknown["question"], customer["question"]) for customer in customers):
+                continue
+            if unknown["id"] in used:
+                unknown["id"] = f"U{next_unknown:02d}"
+                next_unknown += 1
+            used.add(unknown["id"])
+            merged.append(unknown)
+        und["unknowns"] = merged + customers
+        store.write_json(demo_id, "understanding.json", und)
     store.log(demo_id, "understand", {"facts": len(facts), "unknowns": len(unknowns), "shots": len(shots), "images": len(images)})
 
     # Refresh the demo's product label from the extracted product metadata and report the stage totals.

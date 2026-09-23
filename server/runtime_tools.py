@@ -1,4 +1,4 @@
-"""Two narrow tools: auditable arithmetic and customer-selected public sources."""
+"""Bounded arithmetic, customer-selected sources and fetched public-search evidence."""
 from __future__ import annotations
 
 import hashlib
@@ -189,6 +189,62 @@ def calculate(request: ToolRequest | dict, evidence: list[dict], customer_text: 
     return {"id":did,"kind":"calculation","claim":op.replace("_", " "),"value":f"{rounded} {result_unit}","conditions":qualifier,"truth":"modeled","approved":True,"source":{"ref":did,"locator":formula,"quote":json.dumps(payload,ensure_ascii=False)},"derivation":payload,"provenance":"calculation"}
 
 
+def _page_candidates(page: dict, final_url: str, terms: set[str], page_index: int, coverage: list[str]) -> list:
+    candidates = []
+    # Legacy adapters may supply paragraphs only. Never split table-like lines.
+    sections = page.get("sections") or [{"text": p.strip(), "locator": f"paragraph {i+1}", "kind": "text"}
+                for i, p in enumerate(re.split(r"\n\s*\n", str(page.get("text") or ""))) if p.strip()]
+    for section in sections:
+        passage = str(section.get("text", "")).strip()
+        if len(passage) < 20:
+            continue
+        heading = str(section.get("heading", ""))
+        normalized = lambda s: re.sub(r"\W+", " ", s.casefold()).strip()
+        heading_only = normalized(passage) == normalized(heading)
+        question_body = re.sub(r"^\s*(?:\d+[.)]|Q(?:uestion)?[:.])\s*", "", passage, flags=re.I)
+        question_only = (question_body.endswith("?")
+            and re.match(r"^(?:what|which|how|does|do|is|are|can|could|will|where|when|why)\b", question_body, re.I)
+            and not re.search(r"[.!?]\s+\S", question_body[:-1]))
+        if question_only:
+            continue  # A FAQ question is not its answer.
+        body_overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", passage.lower())))
+        heading_overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", heading.lower())))
+        if not body_overlap and re.search(r"\b(?:share (?:your )?number|enter your (?:email|mobile|phone))\b", passage, re.I):
+            continue  # A form's page heading cannot license an unrelated topic.
+        # Keep feature-bearing headings (e.g. a named panoramic sunroof)
+        # as page evidence, but prefer a complete answer over a section title.
+        overlap = heading_overlap if heading_only else 3 * body_overlap + 1.5 * heading_overlap
+        if not overlap:
+            continue
+        if len(passage) > 12000:
+            coverage.append(f"Section at {final_url} ({section.get('locator', 'document')}) exceeds the complete-section evidence limit; not quoted.")
+            continue
+        candidates.append((overlap, page_index, section, final_url, page.get("fetched_at", time.time())))
+    return candidates
+
+
+def _web_evidence(candidates: list, coverage: list[str], *, claim: str) -> list[dict]:
+    candidates.sort(key=lambda item: (-item[0], item[1]))
+    evidence, seen_quotes, used_chars = [], set(), 0
+    for _, _, section, final_url, fetched_at in candidates:
+        passage = str(section["text"]).strip()
+        if passage in seen_quotes:
+            continue
+        if len(evidence) >= 6 or used_chars + len(passage) > 18000:
+            coverage.append("Evidence pack limit reached; some matching sections were not included.")
+            break
+        seen_quotes.add(passage)
+        used_chars += len(passage)
+        locator = str(section.get("locator") or section.get("heading") or final_url)
+        wid = "W" + hashlib.sha256((str(final_url) + locator + passage).encode()).hexdigest()[:12]
+        evidence.append({"id": wid, "claim": claim, "value": passage,
+            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
+            "source": {"ref": str(final_url), "locator": locator, "quote": passage}, "scope": {}, "scope_unverified": True,
+            "context": {k: section[k] for k in ("kind", "heading", "rows", "footnote") if k in section},
+            "fetched_at": fetched_at, "provenance": "live_web", "approved": True, "truth": "stated"})
+    return evidence
+
+
 def source_lookup(request: ToolRequest | dict, question: str, history: list[dict], timeout: float = 5.0, *, extra: list[str] | None = None) -> dict:
     """Read explicit customer sources and up to two relevant same-host child pages.
 
@@ -277,35 +333,7 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
         seen.add(final_canonical)
         pages.append({"url": final_url, "discovery": discovery, "fetched_at": page.get("fetched_at", time.time())})
         coverage.extend(str(w) for w in page.get("warnings", []))
-        # Legacy adapters may supply paragraphs only. Never split table-like lines.
-        sections = page.get("sections") or [{"text": p.strip(), "locator": f"paragraph {i+1}", "kind": "text"}
-                    for i, p in enumerate(re.split(r"\n\s*\n", str(page.get("text") or ""))) if p.strip()]
-        for section in sections:
-            passage = str(section.get("text", "")).strip()
-            if len(passage) < 20:
-                continue
-            heading = str(section.get("heading", ""))
-            normalized = lambda s: re.sub(r"\W+", " ", s.casefold()).strip()
-            heading_only = normalized(passage) == normalized(heading)
-            question_body = re.sub(r"^\s*(?:\d+[.)]|Q(?:uestion)?[:.])\s*", "", passage, flags=re.I)
-            question_only = (question_body.endswith("?")
-                and re.match(r"^(?:what|which|how|does|do|is|are|can|could|will|where|when|why)\b", question_body, re.I)
-                and not re.search(r"[.!?]\s+\S", question_body[:-1]))
-            if question_only:
-                continue  # A FAQ question is not its answer.
-            body_overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", passage.lower())))
-            heading_overlap = len(terms & set(re.findall(r"[a-z0-9]{3,}", heading.lower())))
-            if not body_overlap and re.search(r"\b(?:share (?:your )?number|enter your (?:email|mobile|phone))\b", passage, re.I):
-                continue  # A form's page heading cannot license an unrelated topic.
-            # Keep feature-bearing headings (e.g. a named panoramic sunroof)
-            # as page evidence, but prefer a complete answer over a section title.
-            overlap = heading_overlap if heading_only else 3 * body_overlap + 1.5 * heading_overlap
-            if not overlap:
-                continue
-            if len(passage) > 12000:
-                coverage.append(f"Section at {final_url} ({section.get('locator', 'document')}) exceeds the complete-section evidence limit; not quoted.")
-                continue
-            candidates.append((overlap, len(pages), section, final_url, page.get("fetched_at", time.time())))
+        candidates.extend(_page_candidates(page, final_url, terms, len(pages), coverage))
         links = []
         for link in page.get("links", []):
             child = link.get("url", "")
@@ -322,26 +350,116 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
         queue.extend((child, f"relevant link from {final_url}") for _, child in links[:3])
     if queue:
         coverage.append(f"Bounded lookup read {len(pages)} pages; additional relevant links remain unvisited.")
-    candidates.sort(key=lambda item: (-item[0], item[1]))
-    evidence, seen_quotes, used_chars = [], set(), 0
-    for _, _, section, final_url, fetched_at in candidates:
-        passage = str(section["text"]).strip()
-        if passage in seen_quotes:
-            continue
-        if len(evidence) >= 6 or used_chars + len(passage) > 18000:
-            coverage.append("Evidence pack limit reached; some matching sections were not included.")
-            break
-        seen_quotes.add(passage)
-        used_chars += len(passage)
-        locator = str(section.get("locator") or section.get("heading") or final_url)
-        wid = "W" + hashlib.sha256((str(final_url) + locator + passage).encode()).hexdigest()[:12]
-        evidence.append({"id": wid, "claim": "Customer-selected website passage", "value": passage,
-            "conditions": "Fresh website passage, not an independently verified product assertion. Preserve model, variant, market, date, table headers and footnotes; attribute the source. Uploaded documents take precedence only for established same-scope conflicts.",
-            "source": {"ref": str(final_url), "locator": locator, "quote": passage}, "scope": {}, "scope_unverified": True,
-            "context": {k: section[k] for k in ("kind", "heading", "rows", "footnote") if k in section},
-            "fetched_at": fetched_at, "provenance": "live_web", "approved": True, "truth": "stated"})
+    evidence = _web_evidence(candidates, coverage, claim="Customer-selected website passage")
     if not evidence:
         raise ValueError("No readable section matched that question within the supplied-source lookup budget")
     return {"tool": "source_lookup", "url": pages[0]["url"] if pages else url, "evidence": evidence, "pages": pages,
             "scope": {"model_tokens": model_tokens, "locale": list(seed_locale), "seed_url": url},
             "elapsed_ms": round((time.monotonic() - started) * 1000), "coverage": list(dict.fromkeys(coverage))}
+
+
+def _search_sources(query: str, timeout: float) -> dict:
+    """Discover citation URLs with the configured Gemini SDK; never use its prose as evidence."""
+    from . import config, usage
+    from .llm import gemini
+    if config.MOCK_LLM:
+        raise ValueError("Public web search is unavailable in mock mode")
+    t = gemini._types()
+    started = time.monotonic()
+    model = config.GEMINI_RUNTIME_MODEL
+    prompt = "Search the public web for this question and cite relevant source pages. Use one search query.\n" + query
+    try:
+        response = gemini.client().models.generate_content(model=model, contents=prompt,
+            config=t.GenerateContentConfig(tools=[t.Tool(google_search=t.GoogleSearch())], temperature=0,
+                max_output_tokens=1200, http_options=t.HttpOptions(timeout=max(1, int(timeout * 1000)),
+                    headers={"X-Server-Timeout": str(max(10, math.ceil(timeout)))},
+                    retry_options=t.HttpRetryOptions(attempts=1))))
+    except Exception as exc:
+        usage.trace("runtime-web-search", model, latency_ms=(time.monotonic()-started)*1000,
+                    user=query, error=usage.redact(str(exc))[:250])
+        raise
+    metadata = (response.candidates or [None])[0]
+    metadata = getattr(metadata, "grounding_metadata", None)
+    chunks = getattr(metadata, "grounding_chunks", None) or []
+    supports = getattr(metadata, "grounding_supports", None) or []
+    cited = {index for support in supports for index in (getattr(support, "grounding_chunk_indices", None) or [])}
+    urls = []
+    for index, chunk in enumerate(chunks):
+        web = getattr(chunk, "web", None)
+        url = str(getattr(web, "uri", "") or "")
+        if index in cited and url.startswith(("https://", "http://")) and url not in urls:
+            urls.append(url)
+    entry_point = getattr(metadata, "search_entry_point", None)
+    result = {"urls": urls[:8], "search_queries": list(getattr(metadata, "web_search_queries", None) or []),
+              "search_entry_point": str(getattr(entry_point, "rendered_content", "") or ""),
+              "provider": "gemini", "model": model,
+              "cost_note": "Search query fees are additional to the recorded model token estimate."}
+    um = getattr(response, "usage_metadata", None)
+    inp = getattr(um, "prompt_token_count", 0) or 0
+    out = (getattr(um, "candidates_token_count", 0) or 0) + (getattr(um, "thoughts_token_count", 0) or 0)
+    usage.record("runtime-web-search", model, input_tokens=inp, output_tokens=out)
+    usage.trace("runtime-web-search", model, latency_ms=(time.monotonic()-started)*1000,
+                user=query, response=json.dumps({k:v for k,v in result.items() if k != "search_entry_point"}),
+                input_tokens=inp, output_tokens=out)
+    return result
+
+
+def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0, *, cancel_event=None) -> dict:
+    """One bounded public search plus at most two secured page fetches, scoped to this turn.
+
+    Search citations discover URLs only. Each evidence quote is an actual fetched
+    whole section, with the same relevance, table and size guards as source_lookup.
+    """
+    from . import crawl
+    request = request if isinstance(request, ToolRequest) else ToolRequest.model_validate(request)
+    query = (request.query or question).strip()
+    if not query:
+        raise ValueError("Specify the question to search for")
+    terms = set(re.findall(r"[a-z0-9]{3,}", CUSTOMER_URL_RE.sub("", query).lower())) - {
+        "the", "and", "for", "are", "what", "which", "this", "that", "with", "from", "you", "your",
+        "can", "could", "please", "check", "tell", "about", "website", "page", "search", "public", "web",
+        "internet", "online", "information", "official", "have", "has", "does", "using", "use", "verify"}
+    if not terms:
+        raise ValueError("Specify the product detail to search for")
+    started = time.monotonic()
+    budget = min(max(float(timeout), .1), 5.0)
+    deadline = started + budget
+    def remaining():
+        if cancel_event is not None and cancel_event.is_set():
+            raise InterruptedError("Turn cancelled")
+        left = deadline - time.monotonic()
+        if left <= .05:
+            raise TimeoutError("Public search time budget exhausted")
+        return left
+    # Reserve part of this tool's existing five-second allowance for source reads.
+    discovery = _search_sources(query, min(remaining(), budget * .65))
+    remaining()
+    urls = list(dict.fromkeys(discovery.get("urls", [])))[:2]
+    if not urls:
+        raise ValueError("Public search returned no cited source pages")
+    pages, coverage, candidates = [], [], []
+    for url in urls:
+        left = remaining()
+        try:
+            # fetch_public validates and pins every DNS result and redirect hop.
+            # Public search permits another public host; customer lookup remains exact-host.
+            page = crawl.fetch_public(url, timeout=left, max_bytes=2_000_000)
+            remaining()
+        except InterruptedError:
+            raise
+        except Exception as exc:
+            coverage.append(f"Could not read {url}: {str(exc)[:160]}")
+            continue
+        final_url = str(page.get("final_url") or page.get("url") or url)
+        if any(crawl.canonical_url(item["url"]) == crawl.canonical_url(final_url) for item in pages):
+            continue
+        pages.append({"url": final_url, "discovery": "public search citation", "fetched_at": page.get("fetched_at", time.time())})
+        coverage.extend(str(warning) for warning in page.get("warnings", []))
+        candidates.extend(_page_candidates(page, final_url, terms, len(pages), coverage))
+    remaining()
+    evidence = _web_evidence(candidates, coverage, claim="Public-search website passage")
+    if not evidence:
+        raise ValueError("No fetched public-search passage matched that question")
+    return {"tool": "web_search", "query": query, "evidence": evidence, "pages": pages,
+            "elapsed_ms": round((time.monotonic()-started)*1000), "coverage": list(dict.fromkeys(coverage)),
+            **{key:discovery[key] for key in ("search_queries", "search_entry_point", "provider", "model", "cost_note") if key in discovery}}

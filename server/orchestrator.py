@@ -24,7 +24,7 @@ DOWNSTREAM = {
     "deck": ["bundle"],  # audio is keyed by script text; a slide change only needs re-bundling
     "faq": ["voice", "rehearsal", "bundle"],
     "voice": ["bundle"],
-    "rehearsal": ["bundle"],
+    "rehearsal": [],  # on-demand diagnostics do not change the published demo
     "bundle": [],
 }
 
@@ -118,6 +118,11 @@ def semantic(value):
 # Linked: server/store.py:CARDS defines the review cards used by server/graph.py:align_wait.
 def changed_cards(stage: str, before: dict | None, after: dict | None) -> set[str]:
     before, after = semantic(before or {}), semantic(after or {})
+    if stage == "faq":
+        # Repeat asks are usage counts, not newly reviewed answer content.
+        for bank in (before, after):
+            for entry in bank.get("entries", []):
+                entry.pop("asked_count", None)
     if before == after:
         return set()
     if stage == "understand":
@@ -135,6 +140,22 @@ def changed_cards(stage: str, before: dict | None, after: dict | None) -> set[st
             cards.update(("script", "visuals"))
         return cards
     return {"author": {"script", "visuals"}, "deck": {"visuals"}, "faq": {"faq"}}.get(stage, set())
+
+
+def approve_empty_faq(demo_id: str) -> bool:
+    """An empty review card must not block Build, including a reused Read."""
+    with store._lock(demo_id):
+        bank = store.read_json(demo_id, "faq.json") or {}
+        und = store.read_json(demo_id, "understanding.json") or {}
+        has_questions = bool(faq.current_entries(bank)) or any(
+            unknown.get("source") == "customer" and unknown.get("status", "open") == "open"
+            for unknown in und.get("unknowns", []))
+        if has_questions:
+            return False
+        demo = store.load(demo_id)
+        demo["approvals"]["faq"] = True
+        store.save(demo_id, demo)
+        return True
 
 
 # Run the agent behind one stage and record its outcome and downstream staleness.
@@ -180,6 +201,8 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         cards = changed_cards(stage, previous, store.read_json(demo_id, output_file)) if output_file else set()
         if cards:
             store.update(demo_id, lambda d: d["approvals"].update({card: False for card in cards}))
+        if stage == "faq" and approve_empty_faq(demo_id):
+            emit("No questions yet; this card fills from customer questions")
         set_stage(demo_id, stage, "done")
         invalidate(demo_id, stage)
         st = store.load(demo_id)["stages"].get(stage, {})

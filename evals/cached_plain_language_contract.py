@@ -13,10 +13,12 @@ def run(check):
     from server.agents import faq, qa, voice
 
     demo_id = store.new_demo("Cached speech fixture")["id"]
+    store.update(demo_id, lambda demo: demo["settings"].update(tts_provider="sarvam", sarvam_speaker="priya", voice_locked=True, language="en-IN"))
     fact = {"id": "F1", "kind": "feature", "claim": "Front suspension", "value": "McPherson strut", "approved": True}
     store.write_json(demo_id, "understanding.json", {"facts": [fact], "competitors": []})
     entry = {"id": "Q01", "question": "Tell me about the suspension?", "answer": "It has McPherson strut front suspension.",
-             "fact_ids": ["F1"], "answered": True, "audio": "audio/old.wav"}
+             "fact_ids": ["F1"], "answered": True}
+    entry["audio"] = voice.save_streamed_clip(demo_id, entry["answer"], b"\0\0" * 2400, speaker="priya", language="en-IN")
     bank = {"entries": [entry]}
     store.write_json(demo_id, "faq.json", bank)
     with ExitStack() as stack:
@@ -39,15 +41,16 @@ def run(check):
         check("cached reply records substitutions", result["plain_language_substitutions"] == [["mcpherson strut", "strut-type front suspension"]])
         check("serving old speech leaves persisted bank intact", store.read_json(demo_id, "faq.json") == bank)
         result = ask("What is the exact type of suspension?")
-        check("explicit technical question retains exact cached speech", result["answer"] == entry["answer"] and result["audio"].endswith("audio/old.wav"))
+        check("explicit technical question retains exact cached speech", result["answer"] == entry["answer"] and result["audio"].endswith(entry["audio"]))
         store.update(demo_id, lambda demo: demo["settings"].update(audience="expert"))
         result = ask()
         check("expert audience bypasses cached substitution", result["answer"] == entry["answer"] and not result["plain_language_substitutions"])
         store.update(demo_id, lambda demo: demo["settings"].update(audience="everyday"))
-        entry.update(answer="It has strut-type front suspension.", audio="audio/reviewed.wav",
+        reviewed_audio = voice.save_streamed_clip(demo_id, "It has strut-type front suspension.", b"\1\0" * 2400, speaker="priya", language="en-IN")
+        entry.update(answer="It has strut-type front suspension.", audio=reviewed_audio,
                      plain_language_substitutions=[["mcpherson strut", "strut-type front suspension"]])
         result = ask()
-        check("already normalized speech keeps matching audio and provenance", result["audio"].endswith("audio/reviewed.wav")
+        check("already normalized speech keeps matching audio and provenance", result["audio"].endswith(reviewed_audio)
               and result["plain_language_substitutions"] == entry["plain_language_substitutions"])
         check("cached speech uses no network", not any(mock.called for mock in blocked))
 

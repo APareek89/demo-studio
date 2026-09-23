@@ -32,15 +32,20 @@ Discovery and implementation log for 23 September 2026. The questions below reta
 | P10 | **Check-ins never pause; 3-second listen after answers.** Player speaks a check-in and continues; after an answer, chips plus a 3000 ms timer cancelled by speech onset or typing, then `resumeAfterQA`; clarifications still wait; author check-in becomes a closing statement, never a question. | Q8 item 4b | Implemented in `6a498cd` (WP7) | Reverses the "questions wait; yes means continue" gate for narration; log in Handoff and the gate table. |
 | P11 | **Voice mode toggle on the welcome screen.** Default on when continuous voice is available and not muted; mic requested once and kept for the whole demo; typed input always visible; mid-demo mic button; `input_mode` on the session record. | Q8 item 5 | Implemented in `906cfec` (WP8) | Uses existing `startLive(capture)`, `micTap`, `stopCapture`. |
 | P4 | **Finish the 19 September prompt audit.** Still open: translation ladder as a named rule in `principles.py`; fit-check demoted to last resort; openings rule ("open on the thing itself"); stats ban in the planner; schema fields `narration_fact_ids` / `deeper_fact_ids`, `say_as`, `carries_checkin`, `word_budget`. Already done: `PITCH_SHAPE` removed from the author, three-part `goal`, per-section question removed, jargon and unsupported-benefit warnings. | Q4 | Mapped prompt scope implemented in `5f2f8a4` (WP2); typed budgets in `21fa4ea` (WP3); final prompt/schema consistency checked in WP9 | The updated brief §2.3 application map is implemented. Tier 2 fields `narration_fact_ids`, `deeper_fact_ids`, `say_as`, `moment`, `hands_on`, `carries_checkin`, `arc` and `excluded_from_narration` remain explicitly out of scope. No real-provider Plan → Author acceptance is claimed; WP9 paid Read authorization and cap remain blank. |
+| P12 | **Answer live; cache questions customers actually ask.** Build only uploaded FAQ questions; snapshot-bound customer answer/audio cache, customer unknown learning, Asked and answered review, and on-demand rehearsal. | WP11 request, 23 September | Implemented in WP11 | No guessed FAQ generation or automatic rehearsal in Build; exact approved scope follows below. |
 
 ## Questions from Codex
 
-No open Codex questions remain for WP10. C1 and C2 below are resolved; both C2 strings stay unchanged.
+WP10 questions C1 and C2 are resolved; both C2 strings stay unchanged. WP11 finishing decisions are recorded below.
 
 | # | Question | Resolution / decision needed |
 |---|---|---|
 | C1 | WP2 needs verbatim text from `docs/prompt-audit-planner-author-2026-09-19.md`, which is missing. | The file was untracked and had vanished from the tree; restored verbatim from the session capture (462 lines, §6 at line 149, §7 at line 356) and committed on `codex/sales-trainer-flow`. The brief's §2.3 now carries an item-by-item application map (verbatim / modified / skip) so no wording is invented; it also supplies the six SIGNPOSTS shapes the audit left unspecified. |
 | C2 | Before the late steering arrived, WP9 `b17014c` replaced two stale descriptions to match D1: `server/schemas.py` `ScriptOut.overview` and the runtime-order sentence in `server/agents/plan.py` `PLAN_SYSTEM`. Section 2.3 does not supply their exact replacement wording. Should those two installed strings remain? | **Resolved by the orchestrator: both installed strings are confirmed.** The overview description ("Lead with the first supported fundamental in the reviewed playbook… No greeting, question, decision frame, digits or spec list; delighters come later.") and the planner sentence ("The initial runtime route leads with the first unseen fundamental, then follows the buyer's strongest signal; later refinements retain the buyer's requested order, so each proof must stand alone.") match D1 and the runtime hoist. No change. |
+| C3 | Which production palette/layout should follow the HTML samples: Marine, Sage or Graphite, with numbered anchors and an evidence rail? | **Approved by Anand:** Marine with the numbered-anchor/evidence-rail layout; Marine, Sage and Graphite color approval belongs inside the existing Visuals card, preserving six cards. Samples are in `docs/design/wp11-samples/`. |
+| C4 | When approved evidence cannot answer, should public-web search happen immediately or only after the customer accepts an offer? | **Approved by Anand:** search immediately when approved demo evidence cannot answer, with cited public-web sources. Live evidence stays turn-local and is never cached as an approved answer or promoted to a fact. |
+| C5 | May the default guided route exceed three proof stops to reach 180 seconds of narration, and should publication block if supported narration still falls short? | **Approved by Anand:** extend the default guided tour beyond three proof stops and block publication if supported narration remains below 180 seconds. Count narration alone, excluding the film and customer Q&A; explicit shorter requests, skips and exits remain customer-controlled. |
+| C6 | Does a cache hit retain the runtime's existing scope, effective-date and grounding rules? | **Resolved in implementation.** Candidate hits pass the ordinary scoped/dated retrieval and deterministic claim validator before serving/counting; enriched applicability/condition evidence is retained. Reviewed wording stays exact. The requested similarity and snapshot/hash policy is unchanged; this is not a semantic guarantee for every conversational paraphrase. |
 
 ## Review of WP1–WP9 (orchestrator, with Agent A on build and Agent B on runtime)
 
@@ -79,3 +84,39 @@ The additional authorized opening-film correction uses a video-only view with Sk
 Passing checks: Coach 25/25, Plan/playbook 19/19, generation 58/58, speech style 30/30, narrative 14/14, Align 51/51, deck media 45/45, media Align 15/15, runtime sites 20/20, client sites 19/19, plain language 24/24, runtime graph 130/130, repair 106/106, listen 16/16, priority 11/11, focus 21/21, media 7/7, fundamental 10/10, live voice 68/68 and browser 73/73. Required deck 365/365, acceptance 24/24 and both smoke phases pass after the final Coach unit fix. Syntax checks pass for 16 Python and four JavaScript files, both C2 strings remain unchanged and diff checks are clean. All 7,766 protected-manifest files are byte-identical, with zero changes. No paid Read/voice call, port-8896 restart or protected-path write occurred.
 
 **Pending request: selective Align rebuilds.** This is not implemented. Proposed dependency approach: wording-only script edits start at Author and regenerate affected downstream artifacts; new facts/uploads start at the earliest affected stage, normally Understand → Coach → Plan → Author and its dependants. Reuse unchanged inputs/artifacts and retain approvals only while their reviewed content and dependencies remain valid. Routing, invalidation and approval acceptance checks remain to be implemented separately.
+
+
+## WP11 — approved implementation scope (P12)
+
+User-provided motivation: the v1 runtime does not read the FAQ bank, the reviewed Creta sessions have zero bank hits, and generated banks can cost up to twenty answer calls per build. Implement the following decisions in one `WP11:` package. Use `MOCK_LLM=1`, isolated data and graph storage, blocked outbound sockets and no paid calls. Never write `dm_41513908`, protected output artifacts or operate port 8896.
+
+1. Build: `faq.run` no longer generates questions (remove the `rehearsal.generate_questions` path and `settings.faq_questions`). It keeps only questions from uploaded FAQ documents (`doc_questions`), answered as today. An empty bank is valid: the FAQ card auto-approves on Read with the note "No questions yet; this card fills from customer questions", so Build is never blocked by it.
+2. Runtime cache: after validate, when the result has `answered=True`, no `clarifying_question`, no provider/repair failure and no `live_web` or calculation evidence, store it in `faq.json` as an entry `{id, question, answer, fact_ids, audio (the streamed clip saved through voice's text-hash cache), source:"customer", asked_count, snapshot_id, registry_hash, reviewed:false}`. Before the graph runs in `run_turn` (v1 path and `runtime_live`), call `faq.match` against entries whose `registry_hash` and `snapshot_id` match the session's pinned snapshot; a hit returns the cached answer and audio with `from_bank=True` and increments `asked_count`; `skip_bank` in the payload still bypasses it. A new snapshot invalidates customer entries; doc entries re-answer as today. Never cache declines, clarifications, tool-backed answers or failures.
+3. Learning loop: a declined or "I won't guess" question is appended to `understanding.json` unknowns as `{id U…, question, source:"customer", asked_count, session_id}`, deduped by `faq.match` similarity; it is NEVER a fact. The Coach reads customer unknowns into `evidence_gaps`; Align's `resolve_unknown` and `request_upload` work on them unchanged. Clarifications are not stored.
+4. Align FAQ card becomes "Asked and answered": doc entries, customer entries with `asked_count`, and customer unknowns with counts; approve/edit/reject through the existing `PATCH /align/faq`; rejected entries are never served again; edited wording is served verbatim with its audio re-rendered. Card approval resets only when entries change, as today.
+5. Rehearsal runs on demand (a button on the Rehearse tab), not inside Build; it uses customer entries first, then doc entries, then at most five generated questions only when the bank is empty.
+6. Plain-language substitution (WP6) applies to cached entries before they are stored.
+
+Acceptance: new `evals/faq_cache_contract.py` with at least twelve groups covering no generation at build, retained doc questions, empty card approval and Build continuation, clean-only cache write, hit before graph with `from_bank=True` and counts, skip bypass, snapshot invalidation, decline-to-unknown dedupe, unknown never becoming a fact, Coach gap, reject never served, on-demand rehearsal. All three free gates and touched contracts pass. Update Loop counts, Handoff/PRD/architecture gate rows, diagrams 02/03/05 and one Learning entry. Commit once with `WP11:`.
+
+### Additional finishing requests — 23 September
+
+- Reject incidental noise such as a cup impact as a voice interruption.
+- Offer web search for questions beyond the demo's evidence.
+- Minimum demo length: three minutes.
+- Repair crossed/overlapping vehicle tags; inspect the latest generated demo.
+- Add a bounded validation retry and bulk restore for crossed-out facts, preserving validation boundaries.
+- Finish the Align chat composer/upload alignment, using established chat interfaces as references.
+- Reduce the oversized Rehearse panel below the top navigation.
+- Keep the slide fixed when CTAs or voice-capture UI appear.
+- Remove the white gap below the player header; make its conversation/microphone area white; improve the demo presentation.
+- Provide theme color choices and an Align approval for the choice.
+- Produce several improved demo UI samples in HTML for Anand's design approval before selecting the final design.
+
+The additional presentation variants are design-review artifacts. Any unspecified behavior or approval-schema choice is recorded under Questions from Codex rather than silently replacing a product rule.
+
+**Additional scope confirmed by Anand:** public-web search with cited sources is allowed; the three-minute minimum counts spoken narration alone, excluding the opening film and customer Q&A.
+
+## Implementation closure — WP11
+
+P12 and the approved finishing requests are implemented. C3 (Marine/layout/Visuals color approval), C4 (immediate cited public search) and C5 (recorded three-minute default tour) were explicitly approved by Anand during implementation; C6 retains the existing scope/date/grounding boundary. No unanswered design questions remain. Selective Align rebuild routing stays pending in Handoff.MD. Full gate counts, files, protected-path comparison and verification limits are in `docs/wp11-implementation-report-2026-09-23.md`. No paid calls or deployment were performed.

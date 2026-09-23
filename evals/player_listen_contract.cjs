@@ -60,7 +60,7 @@ async function run() {
       ]}, spoken = [], prefetched = [], played = [];
       let closed = 0;
       const play = vm.runInNewContext(part('  async function playFrom(', '  // Play a slide\'s deeper') + '\nplayFrom', {
-        S, el: {cite: {}}, newRun: () => ++S.run, applyUpcomingPlan: async () => true, renderProgress() {},
+        S, bundle: {}, el: {cite: {}}, newRun: () => ++S.run, applyUpcomingPlan: async () => true, renderProgress() {},
         prefetch: items => prefetched.push(...items), showSlideView: () => ({}),
         playLines: async slide => {played.push(slide.id); return true;}, speak: async text => {spoken.push(text); return true;},
         waitForLineQuestion: () => {throw Error('Legacy check-in waited');}, closeFlow: async () => {closed++;}

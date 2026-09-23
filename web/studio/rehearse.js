@@ -16,11 +16,14 @@ export function renderRehearse(ctx) {
   const scoreBox = h("div", { class: "box" });
   const sessBox = h("div", { class: "box" });
   const leadBox = h("div", { class: "box" });
+  const rehearseNote = h("p", { class: "small muted", role: "status" }, "Review customer questions first, then uploaded questions. An empty bank uses at most five sample questions.");
+  const rehearseBtn = h("button", { class: "btn", "aria-label": "Run rehearsal", onclick: runRehearsal }, "Run rehearsal");
+  rehearseBtn.disabled = !!state.running;
 
   area.replaceChildren(overlay, h("header", { class: "studio-page-head rehearse-page-head" }, h("div", { class: "eyebrow" }, "Demo workspace / Rehearse"), h("h1", {}, "Experience your demo"), h("p", { class: "lede" }, "Explore it as a customer, ask questions and refine the details before sharing.")), h("div", { class: "rehearse" },
     h("div", { class: "rpanel" },
       h("div", { class: "box feedback-box" }, h("h3", {}, icon("message", { size: 18 }), "Feedback"), h("p", { class: "small muted", style: "margin:0 0 12px" }, "Tell your agent what needs work. It applies the feedback to the relevant part of your demo."), fb, h("div", { class: "feedback-actions", style: "margin-top:12px;display:flex;gap:8px" }, fbBtn, h("button", { class: "btn ghost", onclick: () => player && player.restart() }, "Restart demo")), fbReply),
-      providerReadiness(demoId), scoreBox, covBox, leadBox, sessBox,
+      providerReadiness(demoId), h("div", { class: "box rehearsal-action" }, h("h3", {}, "On-demand rehearsal"), rehearseNote, rehearseBtn), scoreBox, covBox, leadBox, sessBox,
       h("div", { class: "box upcoming-box" }, h("h3", {}, icon("globe", { size: 18 }), "Publish", h("span", { class: "pill" }, "Coming soon")), h("p", { class: "small muted", style: "margin:0" }, "Hosted publishing and an embed snippet are planned. Use this workspace to rehearse your demo."))),
     host));
 
@@ -35,13 +38,13 @@ export function renderRehearse(ctx) {
     const r = state.rehearsal;
     covBox.replaceChildren(h("h3", {}, icon("shield", { size: 18 }), "Question coverage"),
       !r || r.skipped ? h("p", { class: "small muted", style: "margin:0" }, "Not rehearsed yet.") :
-        h("div", {}, h("div", { class: "coverage" }, Math.round((r.coverage || 0) * 100), "%", h("small", {}, ` of ${r.questions.length} likely questions answered from the sources`)),
+        h("div", {}, h("div", { class: "coverage" }, Math.round((r.coverage || 0) * 100), "%", h("small", {}, ` of ${r.questions.length} reviewed questions answered from the sources`)),
           r.gaps.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:10px 0 0" }, "couldn't answer"), h("ul", { class: "gaplist" }, ...r.gaps.map((g) => h("li", {}, g)))) : h("p", { class: "small muted" }, "No gaps — every rehearsal question had a cited answer."),
           h("p", { class: "small muted", style: "margin:8px 0 0" }, "Gaps are also listed on the Facts card in Align — upload material there to close them.")));
   }
   function renderScore() {
     const sc = state.rehearsal?.scorecard;
-    scoreBox.replaceChildren(h("h3", {}, icon("chart", { size: 18 }), "Demo scorecard"), !sc ? h("p", { class: "small muted", style: "margin:0" }, "Scored at build time against the playbook (10 criteria × 0–2).") :
+    scoreBox.replaceChildren(h("h3", {}, icon("chart", { size: 18 }), "Demo scorecard"), !sc ? h("p", { class: "small muted", style: "margin:0" }, "Run a rehearsal to score the script against the playbook (10 criteria × 0–2).") :
       h("div", {}, h("div", { class: "coverage" }, sc.total, h("small", {}, " / 20 — ≥16 is a good first demo")),
         h("div", { style: "display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12.5px;margin-top:8px" }, ...sc.scores.map((s) => [h("span", { title: s.note }, s.criterion), h("b", { class: "mono", style: `color:${s.score === 2 ? "var(--accent)" : s.score === 1 ? "var(--warn)" : "var(--bad)"}` }, String(s.score))]).flat()),
         sc.weakest?.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:10px 0 4px" }, "fix first"), h("ul", { class: "gaplist" }, ...sc.weakest.map((w) => h("li", {}, w)))) : null));
@@ -75,6 +78,12 @@ export function renderRehearse(ctx) {
   }
   async function refreshState() { try { state = await api.get(`/api/demos/${demoId}`); demo = state.demo; renderCoverage(); renderScore(); renderLeads(); renderSessions(); } catch (e) {} }
 
+  async function runRehearsal() {
+    rehearseBtn.disabled = true; rehearseNote.textContent = "Starting rehearsal…";
+    try { await api.post(`/api/demos/${demoId}/rehearsal`, {}); }
+    catch (error) { rehearseBtn.disabled = false; rehearseNote.textContent = error.message; toast(error.message, true); }
+  }
+
   async function sendFeedback() {
     const msg = fb.value.trim(); if (!msg) return;
     fbBtn.disabled = true; fbReply.textContent = "thinking…";
@@ -84,12 +93,13 @@ export function renderRehearse(ctx) {
   }
 
   ctx.subscribe((type, ev) => {
-    if (type === "progress") logLine(ev);
+    if (type === "progress") { if (ev.stage === "rehearsal") rehearseNote.textContent = ev.message; else logLine(ev); }
+    else if (type === "stage" && ev.stage === "rehearsal") rehearseBtn.disabled = ev.status === "running";
     else if (type === "status") { demo.status = ev.status; ctx.setRailStatus(ev.status); if (ev.status === "building" || ev.status === "reading") { logEl.replaceChildren(); showOverlay(ev.status === "reading" ? "Re-reading your sources…" : "Rebuilding your demo…"); if (player) player.pause(); } }
-    else if (type === "phase_done") { if (ev.phase === "build") { overlay.classList.add("hidden"); refreshState().then(mount); } else if (ev.phase === "revise") { overlay.classList.add("hidden"); toast("Changes applied in Align — approve the affected cards and rebuild"); } }
-    else if (type === "phase_error") showOverlay("Rebuilding…", ev.error);
+    else if (type === "phase_done") { if (ev.phase === "rehearsal") { rehearseBtn.disabled = false; rehearseNote.textContent = "Rehearsal complete. Review the coverage and scorecard below."; refreshState(); } else if (ev.phase === "build") { overlay.classList.add("hidden"); rehearseBtn.disabled = false; refreshState().then(mount); } else if (ev.phase === "revise") { overlay.classList.add("hidden"); rehearseBtn.disabled = false; toast("Changes applied in Align — approve the affected cards and rebuild"); } }
+    else if (type === "phase_error") { if (ev.phase === "rehearsal") { rehearseBtn.disabled = false; rehearseNote.textContent = ev.error; toast(ev.error, true); } else showOverlay("Rebuilding…", ev.error); }
   });
 
   renderCoverage(); renderScore(); renderLeads(); renderSessions(); mount();
-  if (demo.status === "building" || state.running) showOverlay("Building your demo…");
+  if (demo.status === "building" || state.running && demo.running !== "rehearsal") showOverlay("Building your demo…");
 }

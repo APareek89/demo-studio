@@ -4,7 +4,7 @@ from __future__ import annotations
 import time
 
 from .. import config, store, knowledge
-from . import visuals
+from . import visuals, faq, narration
 
 
 # Turn a stored relative media path into a demo-scoped browser URL.
@@ -162,6 +162,7 @@ def build(demo_id: str, emit) -> dict:
     b = {
         "id": demo_id, "name": demo["name"], "version": demo.get("version", 0) + 1, "built_at": time.time(),
         "product": und.get("product", {}), "customer_persona": plan.get("customer_persona", ""),
+        "visual_theme": demo.get("settings", {}).get("visual_theme", "marine"),
         "voice": {"provider": script.get("voice_provider", "browser"), "name": script.get("voice_name", ""), "persona": plan.get("voice", {})},
         "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", ""), "audio": {k: media_url(demo_id, v) for k, v in (script.get("intake_audio") or {}).items()}, "chips": plan.get("intake", {}).get("chips", [])},
         "segments": segments,
@@ -172,7 +173,7 @@ def build(demo_id: str, emit) -> dict:
         "mascot": media_url(demo_id, demo.get("mascot")) if demo.get("mascot") else None,
         "intro_video": intro_video,
         "timeline": script.get("timeline"),
-        "faq": [{**e, "audio": media_url(demo_id, e.get("audio")), "visual": visual({"ref": (e.get("visual") or {}).get("ref")}) if e.get("visual") else {"kind": "none"}} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])],
+        "faq": [{**e, "audio": media_url(demo_id, e.get("audio")), "visual": visual({"ref": (e.get("visual") or {}).get("ref")}) if e.get("visual") else {"kind": "none"}} for e in faq.current_entries(store.read_json(demo_id, "faq.json") or {})],
         "fillers": {k: {"text": v.get("text"), "audio": media_url(demo_id, v.get("audio"))} for k, v in (store.read_json(demo_id, "fillers.json") or {}).items()},
         "image_map": und.get("image_map", {}),
         "stt": {"provider": config.STT_PROVIDER},
@@ -186,6 +187,26 @@ def build(demo_id: str, emit) -> dict:
         "brand": und.get("brand", {}),
         "guardrails": {"no_citation_no_claim": True, "escalate_on_unknown": True, "no_price_negotiation": True},
     }
+    # Check the speech the initial guided route can actually play before any
+    # snapshot publication, bundle write or version increment. Older published
+    # visits remain immutable when a replacement draft is too short.
+    playable_ids = {slide.get("segment_id") for slide in b["slides"]}
+    guided_script = {**script, "segments": [segment for segment in script.get("segments", [])
+                                           if segment.get("id") in playable_ids],
+                     "closing": next((slide.get("lines", []) for slide in b["slides"] if slide.get("kind") == "closing"), [])}
+    minimum = narration.require_minimum(guided_script, demo_id=demo_id, allowed_fact_ids=set(facts),
+                                        require_recorded=True)
+    for language in alt:
+        translated = store.read_json(demo_id, f"script.{language}.json") or {}
+        translated_ids = {slide.get("segment_id") for slide in alt[language].get("slides", [])}
+        translated = {**translated, "segments": [segment for segment in translated.get("segments", [])
+                                                 if segment.get("id") in translated_ids],
+                      "closing": next((slide.get("lines", []) for slide in alt[language].get("slides", []) if slide.get("kind") == "closing"), [])}
+        try:
+            alt[language]["narration_minimum"] = narration.require_minimum(translated, demo_id=demo_id, allowed_fact_ids=set(facts),
+                                                                          require_recorded=True)
+        except narration.NarrationTooShort as exc:
+            raise narration.NarrationTooShort(f"{language}: {exc}") from exc
     # Pin the knowledge snapshot and attach the overview to a suitable opening slide.
     # knowledge.py:snapshot publishes only with all approvals; the overview audio already came from voice.py:render_script.
     snapshot = knowledge.snapshot(demo_id, publish=all(demo.get("approvals", {}).get(c) for c in store.CARDS))
@@ -195,7 +216,7 @@ def build(demo_id: str, emit) -> dict:
         overview = {}
     intro_slide = next((s for s in b["slides"] if s.get("kind") == "intro"), next(iter(b["slides"]), {}))
     overview_slide = next((s for s in b["slides"] if s.get("image_id") == (overview.get("visual") or {}).get("ref") and s.get("kind") in ("intro", "outcome")), intro_slide)
-    b["runtime"] = {"version": 1, "continuous_voice": True, "tools": ["calculator", "source_lookup"], "knowledge_snapshot_id": snapshot["id"],
+    b["runtime"] = {"version": 1, "continuous_voice": True, "narration_minimum": minimum, "tools": ["calculator", "source_lookup", "web_search"], "knowledge_snapshot_id": snapshot["id"],
                     "overview": {"text": overview.get("text", ""), "audio": media_url(demo_id, overview.get("audio")), "fact_ids": overview.get("fact_ids", []),
                                  "slide_id": overview_slide.get("id"), "duration_seconds": overview.get("duration_seconds"), "duration_exact": overview.get("duration_exact", False), "delivery": overview.get("delivery", {})}}
     # Write the assembled bundle, update its version on the demo and report content counts.

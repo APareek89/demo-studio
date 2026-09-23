@@ -121,8 +121,8 @@ def run(check, demo_id: str = "generation-fixture") -> None:
               all(value in author_input for value in required))
         check("generation: planner and author both receive the evidence-to-relevance rules",
               principles.EVIDENCE_RULES in plan_system and principles.EVIDENCE_RULES in author_system)
-        check("generation: complete technical quantities survive in deeper detail without a jargon repair",
-              model.call_count == 1 and not scripted["issues"]
+        check("generation: complete technical quantities survive the bounded minimum-length repair without jargon issues",
+              model.call_count == 2 and scripted["issues"] and all("before publication" in issue for issue in scripted["issues"])
               and scripted["segments"][0]["deeper"][0]["text"] == technical["text"])
         jargon = copy.deepcopy(scripted)
         jargon["segments"][0]["lines"] = [copy.deepcopy(scripted["segments"][0]["deeper"][0])]
@@ -144,15 +144,15 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         ceiling = author.validate(timed_script(47), und, {"segments": [{"id": "timed", "word_budget": 46}]}, demo)
         check("generation: role ceiling remains hard inside the budget tolerance", any("limit 46" in issue for issue in ceiling) and not any("over its budget" in issue for issue in ceiling))
         route = {"segments": [], "closing": [{"text": " ".join(["Look"] * 45), "fact_ids": []}]}
-        for index, (role, count) in enumerate([("intro", 40), ("outcome", 40), ("proof", 46), ("proof", 46), ("proof", 46), ("features", 48), ("establish", 44)]):
+        for index, (role, count) in enumerate([("intro", 40), ("outcome", 40), ("proof", 70), ("proof", 70), ("proof", 70), ("features", 48), ("establish", 44)]):
             segment = timed_script(count, role)["segments"][0]; segment["id"] = f"route-{index}"; route["segments"].append(segment)
         two, four = {"settings": {"pitch_minutes": 2}}, {"settings": {"pitch_minutes": 4}}
-        check("generation: route ceiling follows two-minute and four-minute settings", author.route_limit(two) == 268 and author.route_limit(four) == 496 and any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, two)) and not any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, four)))
+        check("generation: route ceiling floors old two-minute settings at three and retains four-minute settings", author.route_limit(two) == 382 and author.route_limit(four) == 496 and any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, two)) and not any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, four)))
         default_plan = {"segments": [{"id": f"default-{index}", "role": role, "fundamental": role == "proof"}
-                                     for index, role in enumerate(["intro", "outcome", "proof", "proof", "proof", "features", "establish"])]}
+                                     for index, role in enumerate(["intro", "outcome", "proof", "proof", "proof", "proof", "proof", "features", "establish"])]}
         plan._enforce_budget(default_plan, {"settings": {}})
         check("generation: absent pitch duration defaults to 342 planned words and a 382-word route ceiling",
-              default_plan["total_words"] == 342 and sum(segment["word_budget"] for segment in default_plan["segments"]) + 45 == 342
+              default_plan["total_words"] == 342 and sum(segment["word_budget"] for segment in default_plan["segments"] if segment["role"] in {"proof", "features", "establish"}) + 23 + 45 == 342
               and all(author.route_limit(missing) == 382 for missing in (None, {}, {"settings": {}})))
         timing = author.timeline(longer)
         check("generation: timing carries planned duration separately from estimates", longer["segments"][0]["word_budget"] == 30 and longer["segments"][0]["stop_id"] == "engine" and longer["segments"][0]["fundamental"] and longer["segments"][0]["planned_seconds"] == 15.8 and timing["planned_total_seconds"] == 39.5 and not timing["measured"] and not timing["exact"])

@@ -68,7 +68,7 @@ def fixture_script(plan, bad=False):
     line = {"text": text, "fact_ids": ["FH"] if bad else ["F1"], "visual": {"kind": "image", "ref": "im1", "focus": "Front seat"}}
     return schemas.ScriptOut.model_validate({
         "segments": [{**{k: s[k] for k in ("id", "title", "role", "topic", "outcome", "usp_ids")},
-                      "lines": [copy.deepcopy(line)], "deeper": [], "checkin": "Shall we continue?" if bad and index == 2 else ""}
+                      "lines": [copy.deepcopy(line) if bad or s["role"] not in {"intro", "outcome"} else {**copy.deepcopy(line), "text": "Selected trims offer ventilated front seats. Look at the seat in view, then compare its equipment with the exact trim you are considering."}], "deeper": [], "checkin": "Shall we continue?" if bad and index == 2 else ""}
                      for index, s in enumerate(plan["segments"])],
         "closing": [], "intake_q1": "Welcome. What matters most, or shall we begin?", "intake_q2": ""
     })
@@ -231,7 +231,9 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertIn(self.planned["segments"][2]["goal"], rewrite)
         self.assertTrue(all("999" not in l["text"] and not l["unverified"]
                             for s in self.authored["segments"] for l in s["lines"]))
-        self.assertEqual(self.authored["issues"], [])
+        self.assertTrue(self.authored["issues"])
+        self.assertTrue(all("before publication" in issue for issue in self.authored["issues"]), self.authored["issues"])
+        self.assertFalse(self.authored["narration_minimum"]["sufficient"])
 
     def test_draft_persistence_does_not_publish_approve_or_generate_audio(self):
         self.assertEqual(store.load(self.did)["approvals"], self.approvals)

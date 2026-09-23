@@ -105,6 +105,7 @@ def new_demo(name: str) -> dict:
             "runtime_default_sites": "off",  # customer sites only unless product URL sources are explicitly enabled
             "audience": "everyday",  # everyday | informed | expert — controls jargon and technical depth
             "pitch_minutes": 3,  # narration budget before Q&A
+            "visual_theme": "marine",  # same reviewed layout, selected in the Visuals card
             "languages": ["en-IN"],  # additional demo languages are translated + voiced at build
             "rehearsal_questions": config.REHEARSAL_QUESTIONS,
         },

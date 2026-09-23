@@ -28,7 +28,7 @@ def _pdf(text: str) -> bytes:
 
 def run(check, _demo_id: str | None = None) -> None:
     from fastapi.testclient import TestClient
-    from server import config, media, schemas, sources, store
+    from server import config, knowledge, media, schemas, sources, store
     from server.agents import faq, qa, understand, visuals, voice
     from server.app import app
 
@@ -166,8 +166,10 @@ def run(check, _demo_id: str | None = None) -> None:
         rejected["approved"] = False; store.write_json(did, "understanding.json", und)
         check("sources: competitor approval changes invalidate the FAQ build cache", approved_hash != rejected_hash)
         bank_question = "Does the rival automatic have six speeds?"
+        snapshot_id = knowledge.snapshot(did)["id"]
         bank = {"id":"Q1", "question":bank_question, "answer":"The rival automatic has 6 speeds.", "fact_ids":[approved["id"]],
-                "answered":True, "audio":"old-bank.wav"}
+                "answered":True, "audio":"old-bank.wav", "source":"document", "origin":"document",
+                "snapshot_id":snapshot_id, "registry_hash":faq._registry_hash(did,snapshot_id=snapshot_id)}
         store.write_json(did, "faq.json", {"entries":[bank]})
         with patch.object(qa, "answer") as live:
             result = api.post(f"/api/demos/{did}/run/qa", json={"question":bank_question}).json()

@@ -8,9 +8,21 @@ os.environ.setdefault("DEMO_STUDIO_DATA", os.path.join(os.path.dirname(os.path.d
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi.testclient import TestClient
 from server.app import app
-from server import store, config
-from server.agents import qa
+from server import store, config, knowledge
+from server.agents import qa, faq as _faq
 from server.llm import runtime
+
+# This broad plumbing gate keeps its deliberately tiny generic mock script.
+# The real 180-second publication boundary (including missing/corrupt WAVs and
+# unchanged prior publication) is exercised in minimum_narration_contract.py.
+# Scope this synthetic duration to the test process; production has no MOCK bypass.
+from unittest.mock import patch as _duration_patch
+from server.agents import narration as _narration
+_duration_fixture = _duration_patch.object(_narration, "require_minimum", return_value={
+    "minimum_seconds": 180, "seconds": 180, "sufficient": True,
+    "measured": False, "basis": "synthetic plumbing fixture", "route": []})
+_duration_fixture.start()
+print("DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract")
 
 c = TestClient(app)
 rows: list[tuple[str, bool, str]] = []
@@ -33,7 +45,14 @@ r = c.post(f"/api/demos/{i}/sources", files=[("files", ("hero-front.webp", open(
 hero_src = r.json()["added"][0]["id"]
 r = c.post(f"/api/demos/{i}/sources", files=[("files", (n, open(f"samples/iqube/{n}", "rb"), "image/webp")) for n in imgs], data={"role": "product"}); assert r.status_code == 200, r.text
 r = c.post(f"/api/demos/{i}/sources", data={"role": "catalogue", "text": "Battery warranty: 3 years / 50,000 km. Ex-showroom price Rs 1,24,990.", "text_name": "spec"}); assert r.status_code == 200, r.text
+store.add_text_source(i, "Uploaded FAQ", "# FAQ\nHow far does it go on one charge?\nWhat is the battery warranty?", role="faq")
 c.post(f"/api/demos/{i}/read"); wait(i, "align")
+# The generic mock answerer declines. Review one real uploaded question into a
+# cited answer so the existing cache-hit checks exercise an eligible bank row.
+_initial_bank = store.read_json(i, "faq.json")
+_initial_fact = next(f for f in store.read_json(i, "understanding.json")["facts"] if f.get("approved", True))
+r = c.patch(f"/api/demos/{i}/align/faq/{_initial_bank['entries'][0]['id']}", json={"answer": f"{_initial_fact['claim']}: {_initial_fact['value']}", "fact_ids": [_initial_fact["id"]]})
+assert r.status_code == 200, r.text
 for card in c.get(f"/api/demos/{i}").json()["demo"]["approvals"]:
     c.post(f"/api/demos/{i}/approve/{card}")
 c.post(f"/api/demos/{i}/build"); wait(i, "ready")
@@ -261,13 +280,16 @@ tgt, other = content[0], content[1]
 import copy as _copy
 dk_orig = _copy.deepcopy(dk)
 und_orig = store.read_json(i, "understanding.json")
+bundle_orig = store.read_json(i, "bundle.json")
 und_route = _copy.deepcopy(und_orig)
 # A bank citation must be approved in the registry as well as present on its slide.
 und_route["facts"].append({**_copy.deepcopy(und_route["facts"][0]), "id": "FROUTE", "approved": True})
 store.write_json(i, "understanding.json", und_route)
 tgt["fact_ids"] = tgt["fact_ids"] + ["FROUTE"]; tgt["callouts"][0]["fact_ids"] = tgt["callouts"][0]["fact_ids"] + ["FROUTE"]  # mock slides all cite F001: give one slide a fact only it carries
 store.write_json(i, "deck.json", dk)
-seed = {"id": "Q99", "question": "how many kilometres on one full charge", "origin": "test", "answer": "The registry answer.", "fact_ids": ["FROUTE"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None, "slide_id": tgt["id"]}
+route_snapshot = knowledge.snapshot(i)["id"]
+store.write_json(i, "bundle.json", {**bundle_orig, "knowledge_snapshot_id": route_snapshot})
+seed = {"id": "Q99", "question": "how many kilometres on one full charge", "origin": "runtime", "source": "customer", "snapshot_id": route_snapshot, "registry_hash": _faq._registry_hash(i, snapshot_id=route_snapshot), "answer": "The registry answer.", "fact_ids": ["FROUTE"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None, "slide_id": tgt["id"]}
 store.write_json(i, "faq.json", {**fq, "entries": fq["entries"] + [seed]})
 try:
     r = c.post(f"/api/demos/{i}/run/qa", json={"question": seed["question"], "slide_id": other["id"]}).json()
@@ -275,13 +297,14 @@ try:
     check("/run/qa: the jump names the callout that cites the fact (mock callouts come from cited facts)", r.get("callout_id") in {x["id"] for x in tgt["callouts"]})
     r = c.post(f"/api/demos/{i}/run/qa", json={"question": seed["question"], "slide_id": tgt["id"]}).json()
     check("/run/qa: the same question asked on that slide → route stay", r["route"] == "stay" and r["slide_id"] == tgt["id"])
-    r = c.post(f"/api/demos/{i}/run/qa", json={"question": fq["entries"][0]["question"], "slide_id": other["id"]}).json()
+    r = c.post(f"/api/demos/{i}/run/qa", json={"question": next(e["question"] for e in fq["entries"] if not e.get("answered")), "slide_id": other["id"]}).json()
     check("/run/qa: a declined bank answer never moves the slide (route none)", r["answered"] is False and r["route"] == "none" and r["slide_id"] == other["id"])
     r = c.post(f"/api/demos/{i}/run/qa", json={"question": "what colours are there", "slide_id": other["id"], "skip_bank": True}).json()
     check("/run/qa: the model path carries slide_id + route too (mock declines → none)", "route" in r and r["route"] == "none" and r["slide_id"] == other["id"])
 finally:
     store.write_json(i, "faq.json", fq); store.write_json(i, "deck.json", dk_orig)
     store.write_json(i, "understanding.json", und_orig)
+    store.write_json(i, "bundle.json", bundle_orig)
 r = c.post(f"/api/demos/{i}/run/pitch", json={"profile": {"name": "Test", "why": "daily commute", "focus": []}, "refine": True})
 check("/run/pitch: every route step names its slide (personalisation orders slides)", r.status_code == 200 and bool(r.json()["route"]) and all(st.get("slide_id") in sids for st in r.json()["route"]), r.text[:120])
 pj = c.get("/web/player/player.js").text
@@ -357,18 +380,27 @@ check("Observability shows the percentiles", "p50" in c.get("/web/observability.
 _r = c.get("/web/observability.js")
 check("front-end files are served with Cache-Control: no-cache and revalidate to a 304; APIs untouched", _r.headers.get("cache-control") == "no-cache" and c.get("/web/observability.js", headers={"If-None-Match": _r.headers.get("etag", "")}).status_code == 304 and c.get("/").headers.get("cache-control") == "no-cache" and c.get("/api/health").headers.get("cache-control") is None)
 
-# ---- the FAQ bank on a rebuild: an unchanged registry means no model call for questions ----
+# ---- uploaded FAQ questions are reused without question generation, even on force ----
 from server.agents import faq as _faq, rehearsal as _reh
-_calls = {"n": 0}; _orig_gen = _reh.generate_questions
-_reh.generate_questions = lambda *a, **k: (_calls.__setitem__("n", _calls["n"] + 1), _orig_gen(*a, **k))[1]
+_calls = {"generated": 0, "answered": 0}; _orig_gen = _reh.generate_questions; _orig_answer = _faq.qa.answer
+def _count_generate(*a, **k):
+    _calls["generated"] += 1
+    raise AssertionError("FAQ build must not generate questions")
+def _count_answer(*a, **k):
+    _calls["answered"] += 1
+    return _orig_answer(*a, **k)
+_reh.generate_questions = _count_generate
+_faq.qa.answer = _count_answer
 try:
-    _f1 = _faq.run(i, lambda m: None); _n1 = _calls["n"]
-    _f2 = _faq.run(i, lambda m: None); _n2 = _calls["n"]
-    check("FAQ bank: a rebuild with the same registry keeps its questions and makes no question call (a deck-only revise must not depend on a model)", _n2 == _n1 and [e["question"] for e in _f2["entries"]] == [e["question"] for e in _f1["entries"]])
+    _f1 = _faq.run(i, lambda m: None); _n1 = _calls["answered"]
+    _f2 = _faq.run(i, lambda m: None); _n2 = _calls["answered"]
+    check("FAQ bank: a rebuild with the same registry keeps uploaded questions and makes no answer call", _n2 == _n1 and [e["question"] for e in _f2["entries"]] == [e["question"] for e in _f1["entries"]])
+    _unreviewed_docs = sum(not e.get("reviewed") for e in _f2["entries"] if e.get("source") == "document")
     _f3 = _faq.run(i, lambda m: None, force=True)
-    check("FAQ bank: force regenerates the questions", _calls["n"] == _n2 + 1)
+    check("FAQ bank: force reanswers uploaded questions without generating new questions", _calls["generated"] == 0 and _calls["answered"] == _n2 + _unreviewed_docs and [e["question"] for e in _f3["entries"] if e.get("source") == "document"] == _faq.doc_questions(i))
 finally:
     _reh.generate_questions = _orig_gen
+    _faq.qa.answer = _orig_answer
 
 # ---- Gemini quota cooldown is proportional to the error (a free-tier burst must not freeze builds for ten minutes) ----
 from server.llm import gemini as _gem
@@ -377,25 +409,24 @@ check("a burst-limit 429 without a hint cools down 30 s, a zero quota 600 s, a 5
 
 # ---- an outage never writes a decline into the FAQ bank ----
 _prev_bank = store.read_json(i, "faq.json") or {"entries": []}
-_good = {"id": "Q01", "question": "how far does it go on one charge", "origin": "generated", "answer": "It is 114 km on the certified cycle.", "fact_ids": ["F001"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None}
-store.write_json(i, "faq.json", {"entries": [_good], "answered": 1, "total": 1, "registry_hash": _faq._registry_hash(i), "partial": False})
+_good = {"id": "Q01", "question": "how far does it go on one charge", "origin": "document", "source": "document", "answer": "It is 114 km on the certified cycle.", "fact_ids": ["F001"], "answered": True, "visual": None, "offer_callback": False, "clarifying_question": "", "audio": None}
+store.write_json(i, "faq.json", {"entries": [_good], "answered": 1, "total": 1, "registry_hash": _faq._registry_hash(i), "question_policy": _faq.QUESTION_POLICY, "partial": False})
 _orig_cs = _faq.qa.claude.structured
+_orig_docs = _faq.doc_questions
+_faq.doc_questions = lambda *a, **k: [_good["question"]]
 def _down(*a, **k):
     raise RuntimeError("providers down")
 _faq.qa.claude.structured = _down
 try:
     _fb = _faq.run(i, lambda m: None)
     check("FAQ bank: every provider down at rebuild → a previously answered entry is kept, not overwritten with a decline", len(_fb["entries"]) == 1 and _fb["entries"][0]["answered"] is True and _fb["entries"][0]["answer"] == _good["answer"] and not _fb["partial"])
-    _orig_gen2 = _faq.rehearsal.generate_questions
-    _faq.rehearsal.generate_questions = lambda *a, **k: ["what colours does it come in"]  # generation itself is a model call; stub it to reach the answer path
-    try:
-        _fb2 = _faq.run(i, lambda m: None, force=True)
-    finally:
-        _faq.rehearsal.generate_questions = _orig_gen2
+    _faq.doc_questions = lambda *a, **k: ["what colours does it come in?"]  # new uploaded question reaches the provider-failure path
+    _fb2 = _faq.run(i, lambda m: None, force=True)
     check("FAQ bank: a question with no previous answer is marked for a retry (error), never a permanent decline; the bank is partial", bool(_fb2["entries"]) and all(e.get("error") and e["answered"] is False for e in _fb2["entries"]) and _fb2["partial"])
     check("FAQ bank: an unbuilt entry never matches at runtime (the live model answers instead)", _faq.match(i, _fb2["entries"][0]["question"]) is None)
 finally:
     _faq.qa.claude.structured = _orig_cs
+    _faq.doc_questions = _orig_docs
     store.write_json(i, "faq.json", _prev_bank)
 
 # ---- runtime config ----

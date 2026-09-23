@@ -18,12 +18,12 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
 from . import config, store, usage
-from .agents import deck, pitch, plain_terms, qa
+from .agents import deck, pitch, plain_terms, qa, voice
 from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
 from .llm import runtime
 from .runtime_state import DeliveryPlan, RuntimeState, SpokenClaim, TurnDecision, checkpoint, claim_turn, previous_state, safe_id
-from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, _supplied_url, calculate, source_lookup, supplied_urls
+from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, _supplied_url, calculate, source_lookup, supplied_urls, web_search
 from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
 from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment, transmission_condition_dependencies
 from .runtime_acts import allowed_act_ids, render_act
@@ -41,7 +41,7 @@ PLAIN LANGUAGE. The listener is an everyday buyer. Use ordinary words. The only 
 Return either:
 answer: normally 1–3 short sentences (75 words total), each with supporting fact_ids; or
 clarify: ONE useful question when a missing input/ambiguous scope changes the answer; or
-tools: only the calculator or source_lookup requests described below. No spoken answer until tools finish.
+tools: only the calculator, source_lookup or web_search requests described below. No spoken answer until tools finish.
 If a guarantee is requested but a calculation also needs inputs, put one direct first-person limitation before
 the question in clarification (40 words total). Refuse the guarantee, ask for missing inputs, then wait.
 
@@ -120,6 +120,7 @@ Results marked estimates must be called illustrative; an EMI is not a lender quo
 Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
 If the evidence does not answer the question and CUSTOMER_URLS is non-empty, request source_lookup on the most relevant customer URL before declining. Never claim a page was checked unless a live_web fact from it is cited.
 source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
+If approved demo evidence cannot answer, use web_search(query) immediately for public web sources with citations. Check customer-selected sources first when present. Use fetched live_web evidence, not search summaries. Explicit customer-selected URL checks take precedence. Do not search for greetings, demo controls, missing-input clarifications or provider failures; calculator-only turns do not need public search.
 When required_page_verification is present, answer what the retrieved website passages actually say. If you use
 stored facts instead, explicitly separate them from what could be verified on the requested page.
 When source access fails say what you couldn't verify and still answer the known part. Do not claim you checked a
@@ -946,6 +947,37 @@ async def retrieve(state: RuntimeState) -> dict:
             "timings":{**state.get("timings", {}),"retrieve_ms":_elapsed(started)}}
 
 
+async def _validated_bank_result(state: RuntimeState, entry: dict) -> tuple[dict, dict | None]:
+    """Reuse exact cached words only when this turn's existing evidence rules pass.
+
+    Snapshot identity alone does not check the requested trim or an offer's dates.
+    The ordinary retrieval path also supplies applicability and condition closure;
+    keep those enriched facts rather than replacing them with raw snapshot rows.
+    This is deterministic validation, with no model call or cache-count mutation.
+    """
+    if _verification_urls(state["question"]) or _explicit_web_search(state["question"]):
+        return {}, None  # A fresh source check must reach its tool, not a saved answer.
+    patch = await retrieve(state)
+    ids = entry.get("fact_ids") or []
+    eligible = {fact["id"] for fact in patch.get("evidence", [])}
+    if not ids or set(ids) - eligible:
+        return patch, None
+    customer_text = "\n".join([str(message.get("text", "")) for message in state.get("history", [])
+                               if message.get("role") == "user"] + [state["question"]])
+    result, errors = validate_decision(
+        {"action": "answer", "answered": True,
+         "sentences": [{"text": entry.get("answer", ""), "fact_ids": ids, "kind": "fact"}]},
+        patch["evidence"], state["question"], customer_text, patch.get("requested_scope"),
+        # Human-reviewed FAQ words are served verbatim, as normalize_entry also
+        # requires. This bypasses automatic register rewriting only; every scope,
+        # claim, condition and word-budget check still runs above/below it.
+        audience="expert" if entry.get("reviewed") else _runtime_audience(state))
+    state["control"].remaining()
+    if errors or not result.get("answered") or result.get("answer") != entry.get("answer"):
+        return patch, None
+    return patch, result
+
+
 def _mock_decision(state: RuntimeState) -> TurnDecision:
     # Mock exercises graph ownership and transport without paid calls. Deliberately
     # does not impersonate semantic intelligence or invent a product answer.
@@ -964,6 +996,75 @@ def _verification_urls(question: str) -> list[str]:
     return urls if intent else []
 
 
+_WEB_SEARCH_INTENT = re.compile(
+    r"(?:^|[.!?;]\s*)(?:please\s+)?(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?"
+    r"(?:search\s+(?:(?:the\s+)?(?:public\s+)?(?:web|internet)|online)|"
+    r"(?:look|check)\s+online|look\s+(?:it|this|that)\s+up\s+online)\b", re.I)
+
+
+def _web_search_negated(question: str) -> bool:
+    return bool(re.search(r"\b(?:don't|don’t|do not|never|no need to|without|avoid)\s+(?:\w+\s+){0,3}(?:search\w*|look\w*|check\w*|go\w*)\b", question, re.I))
+
+
+def _explicit_web_search(question: str) -> bool:
+    """A direct request, never a quoted example, negated search or implicit decline."""
+    if _web_search_negated(question):
+        return False
+    # Do not interpret a quoted command as the customer's instruction.
+    unquoted = re.sub(r'"[^"\n]*"|“[^”\n]*”|`[^`\n]*`', "", question)
+    return bool(_WEB_SEARCH_INTENT.search(unquoted))
+
+
+def _public_search_request(state: RuntimeState) -> dict:
+    query = _WEB_SEARCH_INTENT.sub(" ", state["question"]).strip(" .!?;:")
+    query = re.sub(r"^(?:for|about)\s+", "", query, flags=re.I)
+    if not query or re.fullmatch(r"(?:it|this|that|please)", query, re.I):
+        query = next((str(message.get("text", "")) for message in reversed(state.get("history", []))
+                      if message.get("role") == "user" and str(message.get("text", "")).strip()), "")
+    # Product identity is context already supplied to ordinary runtime reasoning.
+    demo = store.read_json(state["demo_id"], "demo.json") or {}
+    product = str((demo.get("product") or {}).get("name") or demo.get("name") or "").strip()
+    if product and product.casefold() not in query.casefold():
+        query = product + " " + query
+    return {"tool": "web_search", "query": query.strip()[:400]}
+
+
+def _public_search_available(state: RuntimeState) -> bool:
+    return (state.get("tool_rounds", 0) < 2 and state.get("tool_count", 0) < 4
+            and not _lookup_interaction(state) and "reasoning_unavailable" not in state.get("errors", [])
+            and not any(result.get("tool") == "web_search" for result in state.get("tool_results", [])))
+
+
+def _requested_web_search(state: RuntimeState) -> dict | None:
+    return _public_search_request(state) if _explicit_web_search(state["question"]) and _public_search_available(state) else None
+
+
+def _calculation_request(question: str) -> bool:
+    return bool(re.search(r"\b(?:calculate|compute|EMI|monthly (?:payments?|instalments?|installments?)|(?:fuel|running) costs?)\b|\d\s*[+*/×÷]\s*\d", question, re.I))
+
+
+def _automatic_public_search(state: RuntimeState, *, decline: bool = False) -> dict | None:
+    if not _public_search_available(state) or _calculation_request(state["question"]):
+        return None
+    results = state.get("tool_results", [])
+    if any(result.get("tool") == "calculator" for result in results):
+        return None
+    if supplied_urls(state["question"], state.get("history", []), state.get("customer_urls", [])) and not any(result.get("tool") == "source_lookup" for result in results):
+        return None  # The customer's selected source has the first attempt.
+    if decline:
+        decision = state.get("decision", {})
+        if decision.get("action") != "answer" or decision.get("answered") is not False:
+            return None
+    else:
+        if state.get("evidence"):
+            return None
+        customer_text = "\n".join([str(message.get("text", "")) for message in state.get("history", [])
+                                   if message.get("role") == "user"] + [state["question"]])
+        if set(allowed_act_ids(customer_text).get("input_request", [])) - {"source_url"}:
+            return None  # Let the existing missing-input decision run first.
+    return _public_search_request(state)
+
+
 def _unsupported_file_request(question: str) -> bool:
     # An explicit opening request only: quoted/negated examples in a real product
     # question must not take over the turn. No local resource is ever accessed.
@@ -974,10 +1075,12 @@ def _lookup_interaction(state: RuntimeState) -> bool:
     question = state["question"].strip()
     if not question or re.fullmatch(r"(?:hi|hello|hey|yes|no|okay|ok|thanks(?: you)?|thank you|please continue|continue(?: the demo)?|carry on|next|go on|goodbye|bye|stop|pause|resume|skip)[.!?\s]*", question, re.I):
         return True
-    if re.search(r"\b(?:don't|do not|no need to)\s+(?:check|fetch|look up|verify|use)\b", question, re.I) or _unsupported_file_request(question):
+    if re.match(r"^\s*(?:please\s+)?(?:(?:I(?:'d| would) like to|I want to|can I|could I)\s+)?(?:book|buy|reserve|call me|contact me|talk to (?:someone|a salesperson)|connect me)\b", question, re.I):
+        return True
+    if re.search(r"\b(?:don't|do not|no need to)\s+(?:check|fetch|look up|verify|use)\b", question, re.I) or _web_search_negated(question) or _unsupported_file_request(question):
         return True
     decision = state.get("decision", {})
-    if decision.get("action") == "clarify" or decision.get("clarification_act"):
+    if decision.get("action") == "clarify" or decision.get("clarification_act") or decision.get("cta"):
         return True
     # A request for missing customer inputs or a personal fit check needs their
     # reply, not a website. Verification limits may still need source evidence.
@@ -987,7 +1090,7 @@ def _lookup_interaction(state: RuntimeState) -> bool:
 
 def _automatic_lookup(state: RuntimeState, *, decline: bool = False) -> dict | None:
     urls = supplied_urls(state.get("question", ""), state.get("history", []), state.get("customer_urls", []))
-    if not urls or state.get("tool_rounds", 0) != 0 or state.get("tool_count", 0) >= 4 or _lookup_interaction(state):
+    if not urls or state.get("tool_rounds", 0) != 0 or state.get("tool_count", 0) >= 4 or _lookup_interaction(state) or "reasoning_unavailable" in state.get("errors", []):
         return None
     if any(result.get("tool") == "source_lookup" for result in state.get("tool_results", [])):
         return None
@@ -1021,7 +1124,11 @@ async def reason(state: RuntimeState) -> dict:
         query=CUSTOMER_URL_RE.sub("",query)
         return {"decision":TurnDecision(action="tools",tool_calls=[{"tool":"source_lookup","url":pending[0],"query":query.strip()}]).model_dump(),
                 "timings":{**state.get("timings",{}),"reason_ms":state.get("timings",{}).get("reason_ms",0)+_elapsed(started)}}
-    automatic = _automatic_lookup(state)
+    public_search = _requested_web_search(state)
+    if public_search:
+        return {"decision": TurnDecision(action="tools", tool_calls=[public_search]).model_dump(),
+                "timings": {**state.get("timings", {}), "reason_ms": state.get("timings", {}).get("reason_ms", 0) + _elapsed(started)}}
+    automatic = _automatic_lookup(state) or _automatic_public_search(state)
     if automatic:
         return {"decision": TurnDecision(action="tools", tool_calls=[automatic]).model_dump(),
                 "timings": {**state.get("timings", {}), "reason_ms": state.get("timings", {}).get("reason_ms", 0) + _elapsed(started)}}
@@ -1067,7 +1174,7 @@ async def reason(state: RuntimeState) -> dict:
 def after_reason(state: RuntimeState) -> str:
     if state.get("decision",{}).get("action")=="tools" and state.get("tool_rounds",0)<2 and state.get("tool_count",0)<4:
         return "tools"
-    return "tools" if _automatic_lookup(state, decline=True) else "validate"
+    return "tools" if _automatic_lookup(state, decline=True) or _automatic_public_search(state, decline=True) else "validate"
 
 
 async def tools_node(state: RuntimeState) -> dict:
@@ -1077,9 +1184,15 @@ async def tools_node(state: RuntimeState) -> dict:
     customer_text = "\n".join([str(m.get("text","")) for m in state.get("history",[]) if m.get("role")=="user"] + [state["question"]])
     requests = state["decision"].get("tool_calls", []) if state["decision"].get("action") == "tools" else []
     if not requests:
-        automatic = _automatic_lookup(state, decline=True)
+        automatic = _automatic_lookup(state, decline=True) or _automatic_public_search(state, decline=True)
         requests = [automatic] if automatic else []
     for raw in requests[:4-count]:
+        if raw.get("tool") == "web_search" and not _explicit_web_search(state["question"]):
+            # A model can identify insufficient retrieved evidence; the existing
+            # customer-source preference still owns its first lookup attempt.
+            preferred = _automatic_lookup({**state, "decision": {"action": "answer", "answered": False}}, decline=True)
+            if preferred:
+                raw = preferred
         count += 1
         try:
             left = state["control"].remaining()
@@ -1089,6 +1202,13 @@ async def tools_node(state: RuntimeState) -> dict:
             elif raw.get("tool") == "source_lookup":
                 result = await asyncio.wait_for(asyncio.to_thread(source_lookup,raw,state["question"],state.get("history",[]),min(5.0,left),extra=state.get("customer_urls",[])),timeout=min(5.0,left))
                 result["requested_url"]=raw.get("url","")
+            elif raw.get("tool") == "web_search":
+                if not _public_search_available(state) or (not _explicit_web_search(state["question"]) and
+                        (_calculation_request(state["question"]) or any(item.get("tool") == "calculator" for item in [*results, *requests]))):
+                    raise ValueError("Public search is not available for this interaction")
+                if any(item.get("tool") == "web_search" for item in results):
+                    raise ValueError("Public search already attempted for this turn")
+                result = await asyncio.wait_for(asyncio.to_thread(web_search,raw,state["question"],min(5.0,left),cancel_event=state["control"].cancelled),timeout=min(5.0,left))
             else:
                 raise ValueError("Unknown tool")
             state["control"].remaining()
@@ -1612,6 +1732,7 @@ async def delivery_plan(state: RuntimeState) -> dict:
     utterance = "u_"+hashlib.sha256((state["session_id"]+state["turn_id"]+text).encode()).hexdigest()[:20]
     result.update(runtime_utterance_id=utterance,turn_id=state["turn_id"],timings=state.get("timings",{}))
     delivery = DeliveryPlan(session_id=state["session_id"],turn_id=state["turn_id"],utterance_id=utterance,plan_revision=state.get("plan_revision",0),snapshot_id=state.get("snapshot_id",""),speech=text,result=result,next_interaction="clarify" if result.get("clarifying_question") else "listen").model_dump()
+    delivery["language"] = voice.runtime_demo(state["demo_id"], (state.get("profile") or {}).get("language"))["settings"]["language"]
     checkpoint({**state,"delivery":delivery},"ready_to_deliver")
     return {"delivery":delivery,"result":result}
 
@@ -1634,6 +1755,8 @@ graph = build_graph().compile()
 
 
 async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
+    from . import knowledge
+    from .agents import faq
     started = time.monotonic()
     sid = safe_id(body.get("session_id") or "http_"+str(time.time_ns()))
     tid = safe_id(body.get("turn_id") or "t_"+str(time.time_ns()),"t")
@@ -1664,7 +1787,77 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
              "control":control,"timings":{},"errors":[],"tool_results":[],"tool_rounds":0,"tool_count":0}
     checkpoint(state,"accepted")
     try:
-        final = await asyncio.wait_for(graph.ainvoke(state,{"recursion_limit":14}),timeout=12.0)
+        # Resolve the same immutable registry used by retrieval before cache lookup.
+        # The previous session pin wins over a new publication or caller override.
+        if not state["snapshot_id"]:
+            published = store.read_json(demo_id, "knowledge/published.json") or {}
+            state["snapshot_id"] = published.get("id") or knowledge.snapshot(demo_id)["id"]
+        registry_hash = faq._registry_hash(demo_id, snapshot_id=state["snapshot_id"])
+        hit = None if kind != "qa" or body.get("skip_bank") else faq.match(
+            demo_id, state["question"], snapshot_id=state["snapshot_id"], registry_hash=registry_hash)
+        control.remaining()
+        if hit:
+            retrieved, cached_result = await _validated_bank_result(state, hit)
+            if cached_result is not None:
+                hit = faq.match(demo_id, state["question"], snapshot_id=state["snapshot_id"],
+                                registry_hash=registry_hash, increment=True, expected=hit)
+                if hit:
+                    state.update(retrieved)
+            else:
+                hit = None
+        if hit:
+            cached_audio = voice._cached(demo_id, hit["answer"], voice.runtime_demo(demo_id, profile.get("language")))
+            result = {**cached_result,
+                      "answered": True, "clarifying_question": "", "offer_callback": False, "cta": "",
+                      "audio": f"/media/{demo_id}/{cached_audio}" if cached_audio else None,
+                      "from_bank": True, "bank_id": hit["id"], "faq_entry_id": hit["id"],
+                      "snapshot_id": state["snapshot_id"], "provider_failed": False, "repair_failed": False,
+                      "tool_results": [], "validation_errors": [], "topic": hit.get("topic", ""),
+                      "plain_language_substitutions": hit.get("plain_language_substitutions", [])}
+            result.update(deck.route_for(bundle.get("slides", []), state.get("slide_id"), result["fact_ids"], state["question"]))
+            state.update(result=result, timings={**state.get("timings", {}), "cache_ms": _elapsed(started)})
+            final = await delivery_plan(state)
+        else:
+            final = await asyncio.wait_for(graph.ainvoke(state,{"recursion_limit":14}),timeout=control.remaining())
+            control.remaining()
+            if kind == "qa":
+                result = final["result"]
+                pin = result.get("snapshot_id") or final.get("snapshot_id") or state["snapshot_id"]
+                try:
+                    entry = faq.cache_answer(demo_id, state["question"], result, snapshot_id=pin,
+                                             registry_hash=faq._registry_hash(demo_id, snapshot_id=pin), session_id=sid)
+                    accepted_facts = result.get("facts", [])
+                    if entry and (entry["answer"] != result.get("answer") or entry["fact_ids"] != result.get("fact_ids")):
+                        _, reviewed = await _validated_bank_result({**state, **final, "snapshot_id": pin}, entry)
+                        if reviewed is None:
+                            entry = None
+                        else:
+                            entry = faq.match(demo_id, state["question"], snapshot_id=pin,
+                                              registry_hash=faq._registry_hash(demo_id, snapshot_id=pin), expected=entry)
+                            if entry:
+                                accepted_facts = reviewed["facts"]
+                    if entry:
+                        # An exact human edit wins over a later draft. Its citations
+                        # and media must travel with its words as one reviewed answer.
+                        cached_audio = voice._cached(demo_id, entry["answer"], voice.runtime_demo(demo_id, profile.get("language")))
+                        result.update(faq_entry_id=entry["id"], answer=entry["answer"], fact_ids=entry["fact_ids"],
+                                      facts=accepted_facts,
+                                      visual=entry.get("visual"),
+                                      audio=f"/media/{demo_id}/{cached_audio}" if cached_audio else None,
+                                      plain_language_substitutions=entry.get("plain_language_substitutions", []))
+                        result.update(deck.route_for(bundle.get("slides", []), state.get("slide_id"), result["fact_ids"], state["question"]))
+                        final["delivery"]["speech"] = result["answer"]
+                        final["delivery"]["result"] = result
+                    elif (not result.get("clarifying_question") and
+                          (not result.get("answered") or re.search(r"\b(?:I|we) (?:won't|will not|won’t) guess\b", result.get("answer", ""), re.I))
+                          and not any(result.get(key) for key in ("provider_failed", "reasoning_failed", "repair_failed", "timed_out", "validation_errors"))
+                          and not ((result.get("validation_repair") or {}).get("attempted") and not (result.get("validation_repair") or {}).get("accepted"))):
+                        faq.record_unknown(demo_id, state["question"], session_id=sid)
+                except OSError:
+                    # Learning is an optional write after validation. A full disk
+                    # must not turn an already valid customer answer into a decline.
+                    usage.trace("runtime-faq-cache-error", "code", latency_ms=_elapsed(started), error="answer persistence failed")
+                checkpoint({**state, **final}, "ready_to_deliver")
     except asyncio.CancelledError:
         control.cancelled.set(); raise
     except InterruptedError:

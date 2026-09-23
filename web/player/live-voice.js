@@ -13,6 +13,13 @@ export function pcmToFloat(audio, decode = atob) {
 }
 function encodePCM(buffer) { const bytes = new Uint8Array(buffer); let binary = ""; for (const byte of bytes) binary += String.fromCharCode(byte); return btoa(binary); }
 
+// Level/VAD alone also detects cup impacts. Confirm words without waiting for
+// the final transcript; annotations and punctuation are not customer speech.
+export function meaningfulTranscript(text) {
+  const words = String(text || "").replace(/[\[<(](?:background\s+noise|noise|silence|music|laughter|cough|breathing|inaudible|unintelligible|unk)[\])>]/gi, "");
+  return /[\p{L}\p{N}]/u.test(words);
+}
+
 export class LiveVoiceClient {
   constructor({ url, sessionId, language = "en-IN", onSpeechStart = () => {}, onTranscript = () => {}, onState = () => {}, onError = () => {}, env = globalThis }) {
     Object.assign(this, { url, sessionId, language, onSpeechStart, onTranscript, onState, onError, env });
@@ -92,7 +99,7 @@ export class LiveVoiceClient {
       this.captureContext = context; this.stream = stream; this.input = context.createMediaStreamSource(stream);
       this.worklet = new this.env.AudioWorkletNode(context, "demo-capture"); this.silent = context.createGain(); this.silent.gain.value = 0;
       this.input.connect(this.worklet); this.worklet.connect(this.silent); this.silent.connect(context.destination);
-      this.inputMode = "voice"; this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003;
+      this.inputMode = "voice"; this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.speechCandidateAt = null; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003;
       this.send("mic.set", { enabled: true, input_generation: this.inputGeneration, input_mode: "voice" });
       this.micReadyTimer = setTimeout(() => { if (this.mic && !this.micReady && epoch === this.captureEpoch) { this.stopCapture(); this.onError("Voice input did not connect. Type below or tap the mic to retry."); } }, 9000);
       this.worklet.port.onmessage = ({ data }) => {
@@ -100,7 +107,7 @@ export class LiveVoiceClient {
         if (!this.ready || this.socket.bufferedAmount > 256000) { this.stopCapture(); this.onError("Listening connection is slow. Type your reply or tap the mic to reconnect."); return; }
         const threshold = Math.max(0.018, this.noise * 3.5);
         if (data.rms > threshold) { this.loudFrames++; this.quietFrames = 0; this.lastSpeechAt = Date.now(); } else { this.loudFrames = 0; this.quietFrames++; this.noise = this.noise * 0.98 + Math.min(data.rms, 0.02) * 0.02; }
-        if (this.loudFrames >= 4) this.speechStart({ source: "local", detected_at: Date.now() });
+        if (this.loudFrames === 1 && !this.speechActive) this.speechCandidateAt = Date.now();
         const frame = { audio: encodePCM(data.pcm), sample_rate: 16000, input_generation: this.inputGeneration };
         if (this.micReady) this.send("audio.input", frame);
         else if (this.preRoll.length < 400) this.preRoll.push(frame);
@@ -115,7 +122,7 @@ export class LiveVoiceClient {
     }
   }
   stopCapture(notify = true) {
-    this.captureEpoch++; this.captureStarting = null; this.mic = false; this.micReady = false; this.preRoll = []; this.speechActive = false; clearTimeout(this.micReadyTimer);
+    this.captureEpoch++; this.captureStarting = null; this.mic = false; this.micReady = false; this.preRoll = []; this.speechActive = false; this.speechCandidateAt = null; clearTimeout(this.micReadyTimer);
     if (notify || !this.closed) this.inputMode = "text";
     if (notify) this.send("mic.set", { enabled: false, input_generation: this.inputGeneration, input_mode: "text" });
     if (this.worklet) this.worklet.port.onmessage = null;
@@ -126,7 +133,9 @@ export class LiveVoiceClient {
   }
   speechStart(event) {
     if (!this.mic || this.speechActive) return;
-    this.speechActive = true; this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; this.speechStartedAt = event.detected_at || Date.now();
+    this.speechActive = true;
+    if (!event.preserve_endpoint) { this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; }
+    this.speechStartedAt = this.speechCandidateAt || event.detected_at || Date.now();
     this.cancelAudio(); // local stop precedes server cancellation and application work
     this.onSpeechStart(event);
   }
@@ -141,7 +150,7 @@ export class LiveVoiceClient {
       for (const frame of this.preRoll || []) this.send("audio.input", frame);
       this.preRoll = []; this.onState("listening"); return;
     }
-    if (data.type === "input.speech_start") { this.speechStart({ ...data, source: "provider", detected_at: Date.now() }); return; }
+    if (data.type === "input.speech_start") { if (!this.speechActive) this.speechCandidateAt = Date.now(); return; }
     if (data.type === "input.speech_end") {
       this.endpointAt = Date.now();
       this.serverEndpointAt = data.voice_ended || null;
@@ -154,14 +163,19 @@ export class LiveVoiceClient {
     if (data.type === "transcript.partial" || data.type === "transcript.final") {
       if (!this.mic) return;
       const final = data.type === "transcript.final";
-      if (!final && data.text) this.speechStart({ source: "partial", detected_at: Date.now() });
       if (final) {
         const key = data.input_id !== undefined || data.seq !== undefined ? `${this.inputGeneration}:${data.input_id ?? data.seq}` : null;
         // Without a provider identity, repeated wording can be a real new turn.
         // Do not permanently dedupe a customer's second "yes" or repeated question.
         if (key && this.seenInputs.has(key)) return;
         if (key) this.seenInputs.add(key); if (this.seenInputs.size > 256) this.seenInputs.delete(this.seenInputs.values().next().value);
-        this.speechActive = false; this.loudFrames = 0;
+      }
+      const meaningful = meaningfulTranscript(data.text);
+      if (meaningful) this.speechStart({ source: final ? "final" : "partial", detected_at: Date.now(), preserve_endpoint: final });
+      if (final) { this.speechActive = false; this.loudFrames = 0; this.speechCandidateAt = null; }
+      if (!meaningful) {
+        if (final) { this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; }
+        return;
       }
       this.onTranscript({ ...data, final, voice_ended: this.voiceEnded || Date.now(), endpoint_received_at: this.endpointAt, server_endpoint_received_at: this.serverEndpointAt, speech_end_basis: this.endpointBasis || "browser_transcript_receipt", stt_done: Date.now() });
       if (final) { this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; }

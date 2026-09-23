@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import time
+import wave
 
 from . import store, usage
-from .agents import voice
+from .agents import faq, voice
 
 
 class DeliveryCoordinator:
@@ -63,24 +65,67 @@ class DeliveryCoordinator:
     async def _stream(self, plan: dict, generation: int) -> None:
         from .llm.sarvam_stream import stream_tts
         from .agents.speech_style import prepare
-        demo = store.load(self.demo_id)
-        bundle = store.read_json(self.demo_id,"bundle.json") or {}
-        selected = bundle.get("voice",{})
-        if selected.get("provider") not in (None,"sarvam"):
+        demo = voice.runtime_demo(self.demo_id, plan.get("language"))
+        if voice.provider_for(demo) != "sarvam":
             await self.send({"type":"error","code":"voice_unavailable","message":"Live streaming requires this demo's selected Sarvam voice; use its recorded voice instead.","turn_id":plan["turn_id"],"utterance_id":plan["utterance_id"]})
             return
-        speaker = selected.get("name") or voice.voice_name_for(demo,"sarvam")
+        speaker = voice.voice_name_for(demo,"sarvam")
         lang = plan.get("language") or demo.get("settings",{}).get("language","en-IN")
         prepared = prepare(plan.get("speech", ""),plan.get("delivery"))
         envelope = {"turn_id":plan["turn_id"],"utterance_id":plan["utterance_id"]}
         seq, started = 0,time.monotonic()
+        entry_id = (plan.get("result") or {}).get("faq_entry_id")
+        chunks, byte_count = [], 0
         try:
             await self.send({"type":"audio.start",**envelope,"encoding":"linear16","sample_rate":24000,"seq":seq})
+            # A cached hit normally plays its recorded URL in the client. Direct
+            # delivery requests also reuse the exact text-and-selected-voice WAV.
+            key = voice._cache_key("sarvam", speaker, lang, prepared["text"], voice._delivery_identity(self.demo_id, plan.get("delivery"), demo=demo))
+            cached = store.path(self.demo_id, "audio", f"{key}.wav")
+            cached_pcm = None
+            if entry_id and cached.is_file():
+                try:
+                    with wave.open(str(cached), "rb") as wav:
+                        if wav.getnchannels() == 1 and wav.getsampwidth() == 2 and wav.getframerate() == 24000 and 0 < wav.getnframes() <= 12 * 1024 * 1024:
+                            candidate = wav.readframes(wav.getnframes())
+                            if len(candidate) == wav.getnframes() * 2:
+                                cached_pcm = candidate
+                except (OSError, EOFError, wave.Error):
+                    pass  # A missing/corrupt clip can be re-rendered from exact text.
+            if cached_pcm:
+                for offset in range(0, len(cached_pcm), 4800):
+                    if generation != self.generation: return
+                    seq += 1
+                    await self.send({"type":"audio.chunk",**envelope,"seq":seq,"audio":base64.b64encode(cached_pcm[offset:offset+4800]).decode(),"sample_rate":24000,"format":"pcm_s16le"})
+                    await asyncio.sleep(0)
+                if generation == self.generation:
+                    try:
+                        faq.update_audio(self.demo_id, entry_id, plan["speech"], f"audio/{key}.wav")
+                    except OSError:
+                        usage.trace("runtime-audio-cache-error", "code", latency_ms=(time.monotonic()-started)*1000, error="clip reference persistence failed")
+                    await self.send({"type":"audio.end",**envelope,"seq":seq+1})
+                return
             async for chunk in stream_tts(prepared["text"],speaker=speaker,language=lang,pace=prepared["pace"]):
                 if generation != self.generation: return
                 seq += 1
                 await self.send({"type":"audio.chunk",**envelope,"seq":seq,**chunk})
+                if entry_id:
+                    pcm = base64.b64decode(chunk.get("audio", ""), validate=True)
+                    byte_count += len(pcm)
+                    if byte_count <= 24 * 1024 * 1024 and chunk.get("sample_rate", 24000) == 24000 and chunk.get("format", "pcm_s16le") in {"pcm_s16le", "linear16"} and len(pcm) % 2 == 0:
+                        chunks.append(pcm)
+                    else:
+                        entry_id = None; chunks.clear()
             if generation==self.generation:
+                if entry_id and chunks:
+                    try:
+                        audio = voice.save_streamed_clip(self.demo_id, plan["speech"], b"".join(chunks), speaker=speaker,
+                                                        language=lang, delivery=plan.get("delivery"), demo=demo)
+                        if audio:
+                            faq.update_audio(self.demo_id, entry_id, plan["speech"], audio)
+                    except (OSError, ValueError):
+                        # A completed spoken answer remains valid if a cache write fails.
+                        usage.trace("runtime-audio-cache-error", "code", latency_ms=(time.monotonic()-started)*1000, error="clip persistence failed")
                 await self.send({"type":"audio.end",**envelope,"seq":seq+1})
         except asyncio.CancelledError:
             raise

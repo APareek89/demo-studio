@@ -13,11 +13,11 @@ from .bundle import media_url
 from .qa import classify
 from . import voice as voice_agent
 from . import deck as deck_agent
-from . import coach
+from . import coach, faq, narration
 from .visuals import part_boxes as visual_parts
 
 CARD_ORDER = ["visuals", "facts", "script", "faq", "persona", "ctas"]
-CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "script": "Script", "faq": "FAQ bank", "persona": "Persona & voice", "ctas": "Calls to action"}
+CARD_TITLES = {"visuals": "Visuals", "facts": "Facts", "script": "Script", "faq": "Asked and answered", "persona": "Persona & voice", "ctas": "Calls to action"}
 
 ALIGN_SYSTEM = """You are the alignment agent inside Demo Studio. A brand user is reviewing what the pipeline produced
 for their product demo, in six cards: Visuals (video shots + images the demo will use, and visual gaps),
@@ -37,7 +37,7 @@ You return ONE reply for the user and a list of ACTIONS for the orchestrator. Ac
 - request_upload(upload_kind, reason) — when the right fix is more material (a missing image, the spec sheet).
 - resolve_unknown(unknown_id) — when the user says an unknown is irrelevant or now answered (pair with edit_fact/revise as needed).
 - build() — only when all six cards are approved AND the user asks to build/proceed/finish.
-- The SCRIPT card is the full demo script, batch by batch (≤ 20 s each) mapped to seconds with the picture on screen per line; revise stage 'author' to change the words. Each batch is one SLIDE (deck.json: picture, ≤ 6-word title, ≤ 3 cited callouts); revise stage 'deck' to change pictures, titles or callouts without rewriting the script. The FAQ card is the bank of customer questions answered from the sources and voiced at build; revise stage 'faq' to regenerate it (after fact fixes).
+- The SCRIPT card is the full demo script, batch by batch (≤ 20 s each) mapped to seconds with the picture on screen per line; revise stage 'author' to change the words. Each batch is one SLIDE (deck.json: picture, ≤ 6-word title, ≤ 3 cited callouts); revise stage 'deck' to change pictures, titles or callouts without rewriting the script. The Asked and answered card contains uploaded FAQ questions, answers to real customer questions, and unanswered customer questions with ask counts. Uploaded questions are answered at build; no guessed questions are generated. Rejected answers are never served. Empty cards are approved automatically. Rehearsal is available only on demand in Rehearse.
 - answer — a question that changes nothing.
 Rules: never invent product facts yourself — route corrections through edit_fact/revise. If the user attached files,
 the orchestrator has ALREADY added them as sources; if they are meant to fix facts or visuals, emit revise('understand', …)
@@ -82,6 +82,9 @@ def cards(demo_id: str) -> dict:
     visual_audit = store.read_json(demo_id, "visual-audit.json") or {}
     deck = store.read_json(demo_id, "deck.json") or {}
     reh = store.read_json(demo_id, "rehearsal.json") or {}
+    bank = store.read_json(demo_id, "faq.json") or {}
+    active_answers = faq.current_entries(bank)
+    customer_unknowns = [unknown for unknown in und.get("unknowns", []) if unknown.get("source") == "customer" and unknown.get("status", "open") == "open"]
     src_by_id = {s["id"]: s for s in demo["sources"]}
     audit_images = {x.get("visual"): x for x in visual_audit.get("images", [])}
     audit_lines = {x.get("line_id"): x for x in visual_audit.get("lines", [])}
@@ -89,9 +92,12 @@ def cards(demo_id: str) -> dict:
     images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "original_url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "enhanced": src_by_id.get(i["source_id"], {}).get("enhanced"), "audit": audit_images.get(i["id"])} for i in und.get("images", [])]
     voice = plan.get("voice", {})
     actual_provider = voice_agent.provider_for(demo)
+    _, narration_minimum = narration.default_route(script, demo_id=demo_id,
+        allowed_fact_ids={fact["id"] for fact in und.get("facts", []) if fact.get("approved", True)})
     return {
         "product": und.get("product", {"name": demo["name"]}),
         "visuals": {"shots": shots, "images": images, "gaps": plan.get("visual_gaps", []), "video_summaries": und.get("video_summaries", {}),
+                    "visual_theme": demo.get("settings", {}).get("visual_theme", "marine"),
                     "audit": {"method": visual_audit.get("method"), "model": visual_audit.get("model"), "line_count": len(visual_audit.get("lines", [])), "image_count": len(visual_audit.get("images", [])), "missing_line_count": sum(1 for x in visual_audit.get("lines", []) if x.get("missing_features"))},
                     "segments": [{"id": s["id"], "title": s["title"], "visual_refs": s["visual_refs"]} for s in plan.get("segments", [])]},
         "facts": {"facts": [{**fact, "applicability": fact.get("scope", {}), "scope": "competitor" if owner is not None else "product",
@@ -108,7 +114,8 @@ def cards(demo_id: str) -> dict:
             "playbook": {"stops": playbook.get("stops", []), "usps": playbook.get("usps", []),
                          "gaps": playbook.get("evidence_gaps", []), "issues": playbook.get("issues", [])},
             "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard"), "timeline": script.get("timeline"),
-            "pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 2), "total_words": plan.get("total_words"),
+            "pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 3), "total_words": plan.get("total_words"),
+            "narration_minimum": narration_minimum,
             "written_at": (store.path(demo_id, "script.json").stat().st_mtime if store.path(demo_id, "script.json").exists() else None), "version": demo.get("version", 0),
             "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")},
             "runtime_overview": ({**script["runtime_overview"], "visual": (script["runtime_overview"].get("visual") or {}).get("ref")} if script.get("runtime_overview") else None),
@@ -124,7 +131,10 @@ def cards(demo_id: str) -> dict:
                              "media": [{**m, "image_url": _vis_url(demo_id, und, src_by_id, m.get("image_id")),
                                         "image_parts": visual_parts(next((image for image in und.get("images", []) if image["id"] == m.get("image_id")), {}))}
                                        for m in s.get("media", [])]} for s in deck_agent.slides_with_script(deck.get("slides", []), script)]},
-        "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "answered": (store.read_json(demo_id, "faq.json") or {}).get("answered", 0), "total": (store.read_json(demo_id, "faq.json") or {}).get("total", 0)},
+        "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in bank.get("entries", []) if e in active_answers or e.get("rejected")],
+                "answered": sum(bool(e.get("answered")) for e in active_answers), "total": len(active_answers),
+                "customer_unknowns": customer_unknowns, "customer_unknown_count": len(customer_unknowns),
+                "empty_note": "No questions yet; this card fills from customer questions" if not active_answers and not customer_unknowns else ""},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),
         "stages": demo.get("stages", {}),
@@ -156,7 +166,7 @@ def _cards_text(c: dict) -> str:
         f"SALES PLAYBOOK: {json.dumps(c['script'].get('playbook', {}), ensure_ascii=False)}",
         f"SCRIPT: {json.dumps({k: c['script'].get(k) for k in ('decision_frame','takeaway','primary_outcome','supporting_outcomes','advance','do_not_recommend_if')})} usps={[u['name'] for u in (c['script'].get('usps') or [])]} batches={[(s['id'], s['role'], s.get('duration')) for s in c['script']['segments']]} total_seconds={(c['script'].get('timeline') or {}).get('total_seconds')} language={c['script'].get('language')}",
         f"DECK: v{c['deck'].get('version')} · {len(c['deck'].get('slides', []))} slides · callouts by {c['deck'].get('method')} · " + "; ".join(f"{s['id']} {s['kind']} '{s.get('title', '')}' pic {s.get('image_id') or '—'} callouts {len(s.get('callouts', []))}" for s in c['deck'].get('slides', [])[:20]),
-        f"FAQ: {c['faq'].get('answered')}/{c['faq'].get('total')} answered; questions={[e['question'][:60] for e in c['faq'].get('entries', [])][:20]}",
+        f"ASKED AND ANSWERED: {c['faq'].get('answered')}/{c['faq'].get('total')} answered; questions={[e['question'][:60] for e in c['faq'].get('entries', [])][:20]}; customer unknowns={json.dumps(c['faq'].get('customer_unknowns', []))}",
         f"PLAN: persona={c['plan']['customer_persona']} segments={[s['id'] for s in c['plan']['segments']]} concerns={[x['topic'] for x in c['plan']['concerns']]}",
     ]
     if f.get("gaps"):
@@ -229,5 +239,5 @@ def card_prompt(demo_id: str, card: str) -> str:
         return "Last card: the calls to action shown during the demo — " + ", ".join(f"“{x['label']}”" for x in c["ctas"]) + ". Confirm these, or tell me the buttons and links you want."
     if card == "faq":
         f = c["faq"]
-        return f"Next, the FAQ bank: {f.get('total', 0)} questions customers ask, {f.get('answered', 0)} answered from your sources (the rest decline and offer a callback). At runtime these answer instantly in the guide's voice. Approve, or tell me questions to add or answers to fix."
-    return "All six cards are approved. Say “build the demo” and I'll record the narration, the FAQ answers and the filler lines, score the script and open the playground."
+        return f.get("empty_note") or f"Next, Asked and answered: {f.get('answered', 0)} sourced answers and {f.get('customer_unknown_count', 0)} unanswered customer questions. Review, edit or reject the saved answers, or upload evidence for the unknowns."
+    return "All six cards are approved. Say “build the demo” and I'll record the narration, uploaded FAQ answers and filler lines, then open the playground. Rehearsal is available there on demand."

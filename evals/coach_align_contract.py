@@ -78,6 +78,19 @@ def run(check):
         revise.side_effect = RuntimeError("Dispatch unavailable")
         response = api.patch(f"/api/demos/{did}/align/playbook", json=payload)
         check("story review: dispatch failure leaves all dependent artifacts stale", response.status_code == 409 and all(store.load(did)["stages"][stage]["status"] == "stale" for stage in ("plan", "author", "deck", "voice", "bundle")))
+        store.write_json(did, "faq.json", {"entries": []})
+        empty = align.cards(did)["faq"]
+        check("Asked and answered: empty review card shows the exact approved note", empty["empty_note"] == "No questions yet; this card fills from customer questions" and empty["total"] == 0 and empty["customer_unknown_count"] == 0)
+        und["unknowns"] = [{"id": "U1", "question": "Is doorstep servicing available?", "source": "customer", "status": "open", "asked_count": 3},
+                           {"id": "U2", "question": "An earlier resolved question?", "source": "customer", "status": "resolved", "asked_count": 2}]
+        store.write_json(did, "understanding.json", und)
+        store.write_json(did, "faq.json", {"entries": [
+            {"id": "Q1", "question": "Uploaded question?", "answer": "A sourced answer.", "answered": True, "source": "document", "asked_count": 0},
+            {"id": "Q2", "question": "Customer question?", "answer": "A sourced customer answer.", "answered": True, "source": "customer", "asked_count": 5, "reviewed": False},
+            {"id": "Q3", "question": "Rejected question?", "answer": "Rejected wording.", "answered": True, "rejected": True}]})
+        review = align.cards(did)
+        check("Asked and answered: source, ask counts and rejected audit rows remain reviewable",review["faq"]["answered"] == 2 and review["faq"]["total"] == 2 and len(review["faq"]["entries"]) == 3 and review["faq"]["entries"][1]["asked_count"] == 5 and review["faq"]["entries"][2]["rejected"])
+        check("Asked and answered: open customer unknowns appear with counts and Coach gaps", review["faq"]["customer_unknown_count"] == 1 and review["faq"]["customer_unknowns"][0]["asked_count"] == 3 and not review["faq"]["empty_note"] and any(gap.get("unknown_id") == "U1" for gap in review["script"]["playbook"]["gaps"]) and store.read_json(did,"understanding.json")["facts"] == und["facts"])
         check("story review: no outbound socket calls", not any(mock.called for mock in blocked))
 
 

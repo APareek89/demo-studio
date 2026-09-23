@@ -7,11 +7,11 @@ const CARD_DEFS = [
   { key: "visuals", n: "1", title: "Visuals", icon: "image" },
   { key: "facts", n: "2", title: "Facts", icon: "shield" },
   { key: "script", n: "3", title: "Script", icon: "layers" },
-  { key: "faq", n: "4", title: "FAQ bank", icon: "message" },
+  { key: "faq", n: "4", title: "Asked and answered", icon: "message" },
   { key: "persona", n: "5", title: "Persona & voice", icon: "agent" },
   { key: "ctas", n: "6", title: "Calls to action", icon: "arrow-right" },
 ];
-const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and answers."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
+const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and uploaded questions."], building: ["Building your demo…", "Recording narration and uploaded answers, then preparing your demo."] };
 const STAGE_LABELS = { coach: "Sales playbook" };
 
 // Distinguish a reviewed allocation from estimated or partially recorded speech.
@@ -76,11 +76,26 @@ export function storyOrderPanel(playbook, draft, onSave, onRequestUpload) {
   return panel;
 }
 
+function narrationMinimumPanel(minimum) {
+  if (!minimum || !Number.isFinite(minimum.seconds)) return null;
+  const required = Number.isFinite(minimum.minimum_seconds) ? minimum.minimum_seconds : 180;
+  const seconds = Math.max(0, minimum.seconds), deficit = Math.max(0, Math.ceil(required - seconds));
+  const time = value => `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
+  const basis = minimum.measured ? "measured" : minimum.basis === "mixed" ? "mixed measured/estimated" : "estimated";
+  const ready = !deficit && minimum.measured;
+  return h("div", { class: "narration-minimum " + (ready ? "ready" : "pending"), "aria-label": "Spoken narration minimum" },
+    h("b", {}, `Spoken narration: ${time(seconds)} ${basis} · minimum ${time(required)}`),
+    h("p", {}, deficit ? `${deficit} more seconds of supported narration are needed. ` : "",
+      ready ? "Recorded narration meets the minimum." : "Build records the narration; publication requires at least three measured minutes."),
+    h("p", { class: "small muted" }, "Opening film and customer questions do not count toward this minimum."));
+}
+
 export function renderAlign(ctx) {
   const { demoId, area } = ctx;
   let state = ctx.state; let demo = state.demo; let cards = state.cards; let conversation = state.conversation || [];
   const seen = new Set(conversation.map((m) => m.t));
   let openCard = null;
+  let factsReviewBusy = false, factsReviewMessage = "";
   let storyDraft = null, storyVersion = "";
   const detached = new Set(), escapeHandlers = new Set();
   function mountDetached(node) { detached.add(node); document.body.appendChild(node); }
@@ -150,7 +165,7 @@ export function renderAlign(ctx) {
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
             approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve"),
-            h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", script: "About the slides: ", faq: "About the FAQ bank: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key] || ""; dockTa.focus(); } }, "Give feedback")) : null));
+            h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", script: "About the slides: ", faq: "About Asked and answered: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key] || ""; dockTa.focus(); } }, "Give feedback")) : null));
       return el;
     }));
     buildBar.classList.toggle("hidden", !(cards && CARD_DEFS.every((c) => approvals[c.key]) && demo.status !== "ready"));
@@ -160,6 +175,8 @@ export function renderAlign(ctx) {
     if (key === "visuals") {
       const v = cards.visuals;
       return h("div", {},
+        h("section", { class: "visual-theme-review", "aria-label": "Demo palette" }, h("h4", {}, "Demo palette"), h("p", { class: "small muted" }, "One layout, three palettes. This choice is included in Visuals approval."),
+          h("div", { class: "visual-theme-options" }, ...["marine", "sage", "graphite"].map(value => h("button", { class: "visual-theme-option", "data-visual-theme": value, "aria-pressed": (demo.settings?.visual_theme || v.visual_theme || "marine") === value ? "true" : "false", onclick: async event => { if ((demo.settings?.visual_theme || v.visual_theme || "marine") === value) return; const button = event.currentTarget; button.disabled = true; try { await api.patch(`/api/demos/${demoId}`, { settings: { visual_theme: value } }); await reload(); toast(`${value[0].toUpperCase() + value.slice(1)} palette saved. Review Visuals before building.`); } catch (error) { toast(error.message, true); button.disabled = false; } } }, h("span", { class: "visual-theme-swatch", "aria-hidden": "true" }), value[0].toUpperCase() + value.slice(1))))),
         h("p", { class: "small muted", style: "margin:10px 0 0" }, `${v.shots.length} video shots · ${v.images.length} images · ${v.segments.length} planned segments`),
         v.shots.length ? h("div", { class: "thumbs" }, ...v.shots.map((s) => { const vid = h("video", { src: `${s.url}#t=${(s.start + 0.2).toFixed(1)}`, preload: "metadata", muted: true, playsinline: true }); return h("div", { class: "thumb", title: s.description, onclick: () => lightbox(vid, `${s.id} · ${s.start.toFixed(0)}–${s.end.toFixed(0)}s · ${s.description}`) }, vid, h("div", { class: "cap" }, `${s.id} · ${s.start.toFixed(0)}–${s.end.toFixed(0)}s · q${s.quality}`)); })) : null,
         v.images.length ? h("div", { class: "thumbs" }, ...v.images.map((i) => { const img = h("img", { src: i.url, alt: i.description }); return h("div", { class: "thumb", title: i.description, onclick: () => lightbox(img, `${i.id} · ${i.angle} · ${i.description}`) }, img, h("div", { class: "cap" }, `${i.id} · ${i.angle} · q${i.quality}`)); })) : null,
@@ -169,6 +186,9 @@ export function renderAlign(ctx) {
     }
     if (key === "facts") {
       const f = cards.facts;
+      const flagged = f.facts.filter(x => x.approved === false && x.knowledge?.review_required === "Citation quote/locator was not verified against this source revision.");
+      const conflictIds = new Set((f.conflicts || []).filter(c => ["unresolved", "suppressed"].includes(c.status)).flatMap(c => c.fact_ids || []));
+      const eligible = flagged.filter(x => !conflictIds.has(x.id) && !x.knowledge?.excluded_by_precedence && !["unresolved", "suppressed"].includes(x.knowledge?.conflict_status));
       const rows = f.facts.map((x) => h("tr", { class: (x.edited ? "edited" : "") + (x.approved === false ? " removed" : "") },
         h("td", { class: "id" }, x.id), h("td", {}, x.scope === "competitor" ? h("div", { class: "small muted" }, x.competitor_name || "Competitor") : null, h("b", {}, x.claim), h("br"), x.value, x.conditions ? h("span", { class: "muted" }, ` (${x.conditions})`) : null,
           Object.keys(x.applicability || {}).length ? h("div", { class: "small muted" }, Object.entries(x.applicability).map(([key, value]) => `${key.replaceAll("_", " ")}: ${value}`).join(" · ")) : null,
@@ -177,7 +197,14 @@ export function renderAlign(ctx) {
         h("td", {}, h("button", { class: "btn sm ghost", title: "Edit this information", onclick: () => editFact(x) }, "Edit"), " ", h("button", { class: "btn sm ghost", title: x.approved === false ? "Restore this information" : "Keep this information out of the demo", onclick: () => x.approved === false && f.conflicts?.some((c) => c.status !== "superseded" && c.fact_ids?.includes(x.id) && c.fact_ids.length > 1) ? resolveEvidence(f.conflicts.find((c) => c.status !== "superseded" && c.fact_ids?.includes(x.id) && c.fact_ids.length > 1), x) : setFactApproval(x, x.approved === false) }, x.approved === false ? (f.conflicts?.some((c) => c.status !== "superseded" && c.fact_ids?.includes(x.id) && c.fact_ids.length > 1) ? "Select evidence" : "Restore") : "Reject"))));
       const open = f.unknowns.filter((u) => u.status === "open");
       return h("div", {},
-        h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px" }, h("p", { class: "small muted", style: "margin:0" }, `${f.facts.length} facts from ${f.sources.length} source${f.sources.length === 1 ? "" : "s"}. The guide can only say what's in this table.`), h("button", { class: "btn sm", onclick: openProductEditor }, "Edit product summary")),
+        h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("p", { class: "small muted", style: "margin:0" }, `${f.facts.length} facts from ${f.sources.length} source${f.sources.length === 1 ? "" : "s"}. The guide only uses approved facts.`), h("button", { class: "btn sm", onclick: openProductEditor }, "Edit product summary")),
+        flagged.length || factsReviewMessage ? h("section", { class: "fact-validation-review", "aria-label": "Flagged fact review" },
+          flagged.length ? h("p", { class: "small" }, `${eligible.length} citation-held fact${eligible.length === 1 ? "" : "s"} can be reviewed together.`, flagged.length > eligible.length ? ` ${flagged.length - eligible.length} conflicting or lower-priority assertion(s) need separate review.` : "") : null,
+          flagged.length ? h("p", { class: "small muted" }, "Retry checks the retained source text again. Restore all flagged facts is your approval, not machine verification; other rejected facts and evidence conflicts stay excluded.") : null,
+          flagged.length ? h("div", { class: "fact-validation-actions" },
+            h("button", { class: "btn sm", disabled: factsReviewBusy || !eligible.length, onclick: () => reviewHeldFacts("retry") }, "Retry validation"),
+            h("button", { class: "btn sm", disabled: factsReviewBusy || !eligible.length, onclick: () => reviewHeldFacts("restore") }, "Restore all flagged facts")) : null,
+          h("p", { class: "small", role: "status" }, factsReviewBusy ? "Reviewing the flagged facts…" : factsReviewMessage)) : null,
         h("div", { style: "max-height:360px;overflow:auto" }, h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "id"), h("th", {}, "fact"), h("th", {}, "source"), h("th", {}, ""))), h("tbody", {}, ...rows))),
         evidenceReview(f),
         open.length ? h("div", {}, h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px;gap:8px;flex-wrap:wrap" }, h("p", { class: "eyebrow", style: "margin:0" }, `${open.length} questions the sources don't answer`), h("a", { class: "btn sm", href: `/api/demos/${demoId}/faq-template`, download: `FAQ-${demoId}.md`, title: "A Markdown file with every open question grouped by category — fill the answers and upload it here" }, "Download FAQ template")),
@@ -193,7 +220,8 @@ export function renderAlign(ctx) {
       const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact);
       return h("div", {},
         h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit the words"), dk.slides.length ? h("button", { class: "btn sm primary", onclick: () => openSlideEditor(dk.slides.length > 1 ? 1 : 0) }, "Review slides") : null),
-        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, `${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 2} min`)),
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, `${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 3} min`)),
+        narrationMinimumPanel(pt.narration_minimum),
         pt.runtime_overview ? h("div", { class: "gap" }, h("b", {}, "Short customer overview"), h("p", {}, pt.runtime_overview.text), h("div", { class: "small muted" }, `Evidence: ${(pt.runtime_overview.fact_ids || []).join(", ") || "No factual claims"}`), h("button", { class: "btn sm ghost", onclick: openScriptEditor }, "Edit overview")) : null,
         storyOrderPanel(pt.playbook, storyDraft, async (payload) => {
           await api.patch(`/api/demos/${demoId}/align/playbook`, payload); storyDraft = null;
@@ -214,11 +242,7 @@ export function renderAlign(ctx) {
     }
     if (key === "faq") {
       const f = cards.faq || { entries: [] };
-      return h("div", {},
-        h("p", { class: "small muted", style: "margin:10px 0 0" }, `${f.answered} of ${f.total} answered from your sources. Known questions answer instantly in the guide's voice; unknowns are admitted plainly and open the dealership follow-up form.`),
-        h("div", { class: "unknowns" }, ...f.entries.slice(0, 8).map((e) => h("div", { class: "unk" }, h("span", { class: "pill " + (e.answered ? "ok" : "warn") }, e.answered ? "answered" : "declines"), h("span", {}, h("b", {}, e.question), h("div", { class: "small muted" }, (e.answer || "").slice(0, 140), (e.answer || "").length > 140 ? "…" : "")), h("button", { class: "btn sm ghost", onclick: () => editFaq(e) }, "Edit answer"), e.audio ? h("button", { class: "btn sm ghost", title: "Play answer", "aria-label": "Play answer", onclick: () => new Audio(e.audio).play() }, icon("play", { size: 16 })) : null))),
-        f.entries.length > 8 ? h("p", { class: "small muted" }, `+ ${f.entries.length - 8} more — open Preview`) : null,
-        h("p", { class: "small muted", style: "margin:8px 0 0" }, "Edit an answer using approved facts, then approve the FAQ card again. Upload an FAQ document (name it with “FAQ”) to add your own questions."));
+      return faqReview(f, false);
     }
     if (key === "persona") {
       const p = cards.persona;
@@ -277,17 +301,18 @@ export function renderAlign(ctx) {
       const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = { start: sg.start, timing: scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact), checkin: sg.checkin };
       return h("div", {},
         h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Primary outcome"), h("span", {}, pt.primary_outcome || "—"), h("span", { class: "k" }, "Supporting"), h("span", {}, (pt.supporting_outcomes || []).join("; ") || "—"), h("span", { class: "k" }, "Not for"), h("span", {}, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Intake"), h("span", {}, pt.intake?.q1 || "—")),
-        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `${dk.slides.length} slides · ${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 2} min`),
-        ...dk.slides.map((s, i) => { const view = renderSlide(s, { fit: true }); view.el.classList.add("on"); const tm = secs[s.segment_id] || {}; return h("div", { class: "slide-review" },
+        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `${dk.slides.length} slides · ${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 3} min`),
+        narrationMinimumPanel(pt.narration_minimum),
+        ...dk.slides.map((s, i) => { const view = renderSlide(s, { fit: true, layout: "evidence", theme: demo.settings?.visual_theme || cards.visuals?.visual_theme }); view.el.classList.add("on"); const tm = secs[s.segment_id] || {}; return h("div", { class: "slide-review" },
           h("div", { class: "slide-review-head" }, h("span", { class: "id mono small", style: "color:var(--accent)" }, tm.start != null ? mmss(tm.start) : ""), h("b", {}, s.title || s.kind), h("span", { class: "muted small" }, s.kind.replaceAll("_", " "), tm.timing ? ` · ${tm.timing}` : "", s.image_id ? ` · ${s.image_id}: ${s.image_reason || ""}` : ""), h("button", { class: "btn sm ghost", onclick: () => openSlideEditor(i) }, "Edit")),
-          h("div", { class: "pl slide-review-stage" }, h("div", { class: "pl-stage" }, view.el)),
+          h("div", { class: "pl slide-review-stage", "data-visual-theme": demo.settings?.visual_theme || cards.visuals?.visual_theme || "marine" }, h("div", { class: "pl-stage" }, view.el)),
           s.lines?.length ? h("ol", { class: "slide-lines" }, ...s.lines.map((l) => h("li", {}, l.text, l.fact_ids?.length ? h("span", { class: "mono small muted" }, ` [${l.fact_ids.join(", ")}]`) : null))) : null,
           tm.checkin ? h("p", { class: "small muted", style: "margin:6px 0 0" }, h("i", {}, "pause: ", tm.checkin)) : null); }),
         pt.scorecard ? h("p", { class: "small muted", style: "margin:12px 0 0" }, `Scorecard ${pt.scorecard.total}/20 — weakest: ${(pt.scorecard.weakest || []).slice(0, 2).join("; ")}`) : null);
     }
     if (key === "faq") {
       const f = cards.faq || { entries: [] };
-      return h("table", { class: "facts-table" }, h("thead", {}, h("tr", {}, h("th", {}, "id"), h("th", {}, "question"), h("th", {}, "answer"), h("th", {}, "facts"), h("th", {}, ""))), h("tbody", {}, ...f.entries.map((e) => h("tr", { class: e.answered ? "" : "removed" }, h("td", { class: "id" }, e.id), h("td", {}, h("b", {}, e.question), h("div", { class: "small muted" }, e.origin)), h("td", {}, e.answer), h("td", { class: "mono small" }, (e.fact_ids || []).join(", ") || "—"), h("td", {}, h("button", { class: "btn sm ghost", onclick: (event) => { event.currentTarget.closest(".preview-bg")?.remove(); editFaq(e); } }, "Edit answer"), e.audio ? h("button", { class: "btn sm ghost", title: "Play answer", "aria-label": "Play answer", onclick: () => new Audio(e.audio).play() }, icon("play", { size: 16 })) : h("span", { class: "small muted" }, "voiced at build"))))));
+      return faqReview(f, true);
     }
     if (key === "persona") {
       const p = cards.persona;
@@ -305,14 +330,39 @@ export function renderAlign(ctx) {
     const bg = h("div", { class: "preview-bg" }, h("div", { class: "preview align-editor" }, h("div", { class: "phead" }, h("h2", {}, title), h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Close")), h("div", { class: "pbody" }, content.body), h("div", { class: "editor-actions" }, h("button", { class: "btn ghost", onclick: () => bg.remove() }, "Cancel"), h("button", { class: "btn primary", onclick: async (e) => { e.currentTarget.disabled = true; try { await content.save(); bg.remove(); await reload(); } catch (err) { toast(err.message, true); e.currentTarget.disabled = false; } } }, saveLabel))));
     mountDetached(bg);
   }
+  function faqReview(f, full) {
+    const entries = f.entries || [], unknowns = f.customer_unknowns || [];
+    const shown = full ? entries : entries.slice(0, 8);
+    return h("div", { class: "asked-answered" },
+      h("p", { class: "small muted" }, f.empty_note || `${f.answered || 0} sourced answers · ${unknowns.length} unanswered customer question${unknowns.length === 1 ? "" : "s"}.`),
+      h("div", { class: "unknowns" }, ...shown.map((entry) => h("div", { class: "unk" + (entry.rejected ? " removed" : "") },
+        h("span", { class: "pill " + (entry.rejected || !entry.answered ? "warn" : "ok") }, entry.rejected ? "rejected" : entry.reviewed ? "reviewed" : entry.answered ? "answered" : "unanswered"),
+        h("span", {}, h("b", {}, entry.question), h("div", { class: "small muted" }, `${entry.source === "customer" ? "Customer" : "Uploaded FAQ"} · asked ${entry.asked_count || 0} time${entry.asked_count === 1 ? "" : "s"}`),
+          h("div", { class: "small" }, full ? entry.answer || "" : `${(entry.answer || "").slice(0, 140)}${(entry.answer || "").length > 140 ? "…" : ""}`),
+          full ? h("div", { class: "mono small muted" }, (entry.fact_ids || []).join(", ") || "No cited facts") : null),
+        !entry.rejected ? h("div", {}, !entry.reviewed && entry.answered ? h("button", { class: "btn sm ghost", onclick: (event) => reviewFaq(entry, "approve", event) }, "Approve answer") : null,
+          h("button", { class: "btn sm ghost", onclick: (event) => { event.currentTarget.closest(".preview-bg")?.remove(); editFaq(entry); } }, "Edit answer"),
+          h("button", { class: "btn sm ghost", onclick: (event) => reviewFaq(entry, "reject", event) }, "Reject answer"),
+          entry.audio ? h("button", { class: "btn sm ghost", title: "Play answer", "aria-label": "Play answer", onclick: () => new Audio(entry.audio).play() }, icon("play", { size: 16 })) : null) : null))),
+      !full && entries.length > shown.length ? h("p", { class: "small muted" }, `+ ${entries.length - shown.length} more — open Preview`) : null,
+      unknowns.length ? h("section", { "aria-label": "Unanswered customer questions" }, h("h3", {}, "Customers still need answers"), ...unknowns.map((unknown) => h("div", { class: "unk" },
+        h("span", { class: "id" }, unknown.id), h("span", {}, h("b", {}, unknown.question), h("div", { class: "small muted" }, `Asked ${unknown.asked_count || 1} time${unknown.asked_count === 1 ? "" : "s"}`, unknown.suggested_document ? ` · ${unknown.suggested_document}` : "")),
+        h("button", { class: "btn sm ghost", onclick: async (event) => { const button = event.currentTarget; try { const result = await api.post(`/api/demos/${demoId}/align/request-upload`, { type: "request_upload", upload_kind: "document", reason: unknown.question }); if (result.message) addMsg(result.message); button.closest(".preview-bg")?.remove(); dockTa.value = `Adding a source for: ${unknown.question}`; dockTa.focus(); } catch (error) { toast(error.message, true); } } }, "Ask for a source")))) : null,
+      h("p", { class: "small muted" }, "Review saved answers against approved facts. Upload an FAQ document to add your own questions. Tell the agent when an unanswered question is resolved or irrelevant."));
+  }
+  async function reviewFaq(entry, action, event) {
+    const button = event.currentTarget; button.disabled = true;
+    try { await api.patch(`/api/demos/${demoId}/align/faq/${entry.id}`, { action }); button.closest(".preview-bg")?.remove(); await reload(); }
+    catch (error) { toast(error.message, true); button.disabled = false; }
+  }
   function editFaq(entry) {
     const answer = h("textarea", { rows: "5" }, entry.answer || "");
     const facts = h("input", { value: (entry.fact_ids || []).join(", "), placeholder: "F001, F002" });
     const eligible = (cards.facts?.facts || []).filter((f) => f.approved !== false && (f.scope !== "competitor" || demo.settings?.competition === "on"));
     const body = h("div", { class: "edit-form" }, h("p", {}, h("b", {}, entry.question)), h("label", {}, "Reviewed answer", answer), h("label", {}, "Supporting fact ids", facts),
       h("details", {}, h("summary", {}, "Review approved evidence"), ...eligible.map((f) => h("p", { class: "small" }, h("b", {}, `${f.id} · ${f.claim}: `), f.value, f.conditions ? ` (${f.conditions})` : ""))),
-      h("p", { class: "small muted" }, "Save a supported answer using the cited facts' exact scope. This clears its recording and requires FAQ approval again. Question wording stays the same."));
-    editor(`Edit answer ${entry.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/faq/${entry.id}`, { answer: answer.value, fact_ids: facts.value.split(/[,\s]+/).filter(Boolean) }) }, "Save reviewed answer");
+      h("p", { class: "small muted" }, "Save a supported answer using the cited facts' exact scope. The guide serves your reviewed wording, records matching audio, and requires this card's approval again. Question wording stays the same."));
+    editor(`Edit answer ${entry.id}`, { body, save: () => api.patch(`/api/demos/${demoId}/align/faq/${entry.id}`, { action: "edit", answer: answer.value, fact_ids: facts.value.split(/[,\s]+/).filter(Boolean) }) }, "Save reviewed answer");
     answer.focus();
   }
   function editFact(fact) {
@@ -340,6 +390,17 @@ export function renderAlign(ctx) {
   async function setFactApproval(fact, approved) {
     try { await api.post(`/api/demos/${demoId}/align/facts/${fact.id}/approval`, { approved }); toast(`${fact.id} ${approved ? "restored" : "rejected"}`); await reload(); }
     catch (e) { toast(e.message, true); }
+  }
+  async function reviewHeldFacts(action) {
+    if (factsReviewBusy) return;
+    factsReviewBusy = true; factsReviewMessage = ""; renderCards();
+    try {
+      const result = await api.post(`/api/demos/${demoId}/align/facts/review-held`, { action });
+      cards = result.cards; demo.approvals = result.approvals;
+      factsReviewMessage = `${result.changed_fact_ids.length} ${action === "retry" ? "verified and restored" : "restored by your approval"} · ${result.still_held.length} still held · ${result.skipped_conflicts.length} conflicts preserved.`;
+      renderThread();
+    } catch (error) { factsReviewMessage = error.message; toast(error.message, true); }
+    finally { factsReviewBusy = false; renderCards(); }
   }
   function openScriptEditor() {
     const all = [];
@@ -388,7 +449,7 @@ export function renderAlign(ctx) {
           } else if (moved[c.id]) c.label_pos = moved[c.id];
         }
         s.media = media; s.image_id = media[0]?.image_id || null; s.image_url = media[0]?.image_url || null;
-        view?.destroy(); view = renderSlide(s, { editable: true, onMove: (id, pos) => { moved[id] = pos; } });
+        view?.destroy(); view = renderSlide(s, { editable: true, theme: demo.settings?.visual_theme || cards.visuals?.visual_theme, onMove: (id, pos) => { moved[id] = pos; } });
         stage.replaceChildren(view.el); requestAnimationFrame(view.layout);
       }
       function refreshParts(row) {
@@ -507,7 +568,7 @@ export function renderAlign(ctx) {
     for (const u of open) out.push(`Missing ${String(u.category || "information").replaceAll("_", " ")}: ${u.question}`);
     for (const issue of cards.facts?.script_issues || []) out.push(`Script held back: ${issue}`);
     if (!out.length) out.push(`${cards.visuals?.images?.length || 0} images and ${cards.visuals?.shots?.length || 0} video shots are aligned.`);
-    if (out.length < 5) out.push(`${cards.faq?.answered || 0} of ${cards.faq?.total || 0} FAQ answers are grounded in the sources.`);
+    if (out.length < 5) out.push(`${cards.faq?.answered || 0} of ${cards.faq?.total || 0} saved answers are grounded in the sources.`);
     if (out.length < 5) out.push(`${cards.facts?.facts?.length || 0} sourced facts are available to the guide.`);
     return out.slice(0, 5);
   }

@@ -1,18 +1,30 @@
-%% 08 · Runtime graph nodes — exported from server/runtime_graph.py
+%% 08 · Runtime graph nodes and answer-cache wrapper — server/runtime_graph.py
 ---
 config:
   flowchart:
     curve: linear
 ---
 graph TD;
+	REQUEST["run_turn wrapper<br/>claim owned turn; pin snapshot and registry<br/>same entry point for REST and live socket"]
+	CACHE{"Eligible saved answer?<br/>faq.match before graph; skip_bank bypasses<br/>same pin/hash and approved citations; rejected tombstones excluded"}
+	CACHEVALID{"Exact cached words pass this turn?<br/>_validated_bank_result → ordinary scope/date-aware retrieval + validation<br/>eligible citations, conditions and word cap<br/>fresh URL verification / explicit public search bypass"}
+	HIT["Exact cached words + clip when available<br/>from_bank=true; increment asked_count<br/>unchanged validated words; current evidence view; no graph/model call"]
+	LEARN["run_turn wrapper after fresh validated result<br/>clean approved answer → source customer cache, reviewed=false<br/>decline / I-will-not-guess → deduplicated customer unknown, never fact<br/>no provider/repair failure, clarification, live-web or calculation answer cached"]
+	REVIEW["Asked and answered card + Coach evidence gaps<br/>content changes reset approval; count/audio-only changes do not<br/>approve/edit/reject through existing Align review API"]
+	DELIVER["Return owned DeliveryPlan<br/>streaming voice happens outside graph<br/>completed clip attaches only to same entry and exact answer"]
 	__start__([<p>__start__</p>]):::first
 	retrieve(retrieve)
-	reason["reason<br/>[AGENT + FUNCTION · session CUSTOMER_URLS]<br/>empty evidence: bounded lookup before model; first decline: one lookup before validation"]
-	tools["tools<br/>[FUNCTION · calculator / allowed customer-site lookup]<br/>same scope, network and budget gates; attributed turn-scoped W facts"]
+	reason["reason<br/>[AGENT + FUNCTION · session CUSTOMER_URLS]<br/>explicit URL verification first, then explicit public-web search<br/>empty evidence / first clean decline: customer site first, public search if still unanswered"]
+	tools["tools<br/>[FUNCTION · calculator / customer-site lookup / bounded public-web search]<br/>public search: one discovery + at most two secured page fetches, ≤5 seconds<br/>only fetched passages become attributed turn-scoped W facts<br/>one public search; greeting/control/CTA/clarify/calculator-only/outage fallback excluded<br/>negated/quoted search excluded; never writes facts or FAQ<br/>same scope, network, cancellation and turn-budget gates"]
 	validate["validate<br/>[FUNCTION · grounded rows → plain terms → exact live host → word cap]<br/>technical_term feedback uses existing bounded repair"]
-	explore(explore)
+	explore["explore<br/>[AGENT + FUNCTION · pitch.plan_pitch]<br/>new default: first fundamental, buyer order, enough reviewed stops for measured 180s<br/>pre-tour Q&A views cannot shorten counted speech; complete reviewed closing retained<br/>explicit short/refine exempt; legacy seen policy unchanged"]
 	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions]<br/>session checkpoint retains input_mode and customer_urls; capture stays outside graph"]
 	__end__([<p>__end__</p>]):::last
+	REQUEST --> CACHE;
+	CACHE -- "candidate" --> CACHEVALID;
+	CACHEVALID -- "valid unchanged answer" --> HIT --> DELIVER;
+	CACHEVALID -- "invalid / fresh check" --> __start__;
+	CACHE -- "miss / skip / explore" --> __start__;
 	__start__ -.-> explore;
 	__start__ -.-> retrieve;
 	explore --> delivery_plan;
@@ -22,6 +34,8 @@ graph TD;
 	tools --> reason;
 	validate --> delivery_plan;
 	delivery_plan --> __end__;
+	__end__ --> LEARN --> DELIVER;
+	LEARN -.-> REVIEW;
 	classDef default fill:#f2f0ff,line-height:1.2
 	classDef first fill-opacity:0
 	classDef last fill:#bfb6fc

@@ -23,7 +23,8 @@ voice, in a sentence that carries the thought on. Never reference. Always connec
   consecutive sentences of one person speaking: line two may open with "And", may finish line one's
   thought, may say "it" for a subject line one named. A segment whose lines each re-announce their topic
   is wrong even if every line is true and cited.
-- ACROSS segments, only the proof segments can be reordered, and only three of them play. Those must
+- ACROSS segments, only the proof segments can be reordered. The default guided tour plays enough supported
+  proof stops to provide at least three minutes of narration, excluding film and customer Q&A. Those stops must
   open cold — no naming, numbering or pointing back at another segment — but "cold" does not mean
   "abrupt": open on a place, a moment, or the thing itself ("Sitting in the driver's seat," / "On a long
   drive,"), which reads as a continuation wherever it lands.
@@ -135,7 +136,7 @@ WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-
 CLOSING_LIMIT = 45
 def route_limit(demo: dict | None = None) -> int:
     """Derive the route ceiling from the selected duration, with room for joins."""
-    minutes = float((demo or {}).get("settings", {}).get("pitch_minutes", 3) or 3)
+    minutes = max(3.0, float((demo or {}).get("settings", {}).get("pitch_minutes", 3) or 3))
     return round(minutes * 60 * WPS) + 40
 
 
@@ -299,6 +300,10 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
     for s in script["segments"]:
         by_role.setdefault(s.get("role", "proof"), []).append(sum(words(l["text"]) for l in s["lines"]))
     route = sum(by_role.get("intro", [0])) + sum(by_role.get("outcome", [0])) + sum(sorted(by_role.get("proof", []), reverse=True)[:3]) + sum(by_role.get("features", [0])) + sum(by_role.get("establish", [0])) + closing_words
+    if isinstance(plan, dict) and plan.get("guided_minimum_seconds") and demo is not None:
+        from . import narration
+        _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
+        route = guided["words"]
     limit = route_limit(demo)
     if route > limit:
         issues.append(f"a full route would run {route} words (~{route / WPS / 60:.1f} min); keep it under {limit} for the selected demo length — cut, don't compress")
@@ -313,6 +318,12 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
             issues.append("Explore overview needs cited evidence and must not ask a question")
             overview["unverified"] = True
         register_warning(overview.get("text", ""), "Explore overview")
+    if isinstance(plan, dict) and plan.get("guided_minimum_seconds") and demo is not None:
+        from . import narration
+        _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
+        script["narration_minimum"] = guided
+        if not guided["sufficient"]:
+            issues.append(narration.deficit_message(guided))
     return issues
 
 
@@ -455,6 +466,9 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     if not (und and plan):
         raise RuntimeError("Plan first, then author")
     demo = store.load(demo_id)
+    # New authoring/revision runs adopt the current minimum; read-only validation
+    # of a saved legacy plan keeps its historical issue contract.
+    plan = {**plan, "guided_minimum_seconds": 180}
     for s in und["shots"]:
         s["_allowed"] = store.visual_allowed(demo, s["source_id"])
     for i in und["images"]:
@@ -466,7 +480,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     facts_txt = "\n".join(fact_context(f) for f in und["facts"] if f.get("approved", True))
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
-    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes", "total_words", "playbook_version")}
+    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes", "total_words", "playbook_version", "guided_minimum_seconds", "guided_opening_words")}
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND: {json.dumps(und['brand'])}
 PLAN: {json.dumps(plan_view)}

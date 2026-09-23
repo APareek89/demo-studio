@@ -18,15 +18,16 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 
 ## Must never break
 - **No citation, no claim.** Authored speech uses the approved registry. Live answers use its pinned
-  snapshot, explicitly attributed customer-selected website evidence, or audited calculations from
+  snapshot, explicitly attributed public-web or customer-selected website evidence, or audited calculations from
   supplied inputs. Live evidence never silently updates the registry; promotion requires Align.
   An unanswerable question takes the "I won't guess" path and is escalated — never invented.
   Enforced deterministically at authoring (validator) and at runtime (server-side Q&A validator).
 - **Keys stay server-side.** API keys live in `.env`; the browser never sees them.
 - **A stage failure never corrupts a demo.** Each stage writes its own JSON; a failed run leaves the
   previous outputs intact and the UI shows the error with a retry.
-- **The user's approvals are honoured.** Cards re-approve only when their inputs changed; the agent
-  never approves a card on its own.
+- **The user's approvals are honoured.** Cards require review again only when their content changes.
+  An empty Asked and answered card auto-approves with “No questions yet; this card fills from customer questions”.
+  Answer counts and completed audio alone do not reset approval.
 - **Review the sales playbook.** Coach runs after Understand, validates category order, approved
   evidence and explicit gaps, then exposes Story order inside the existing Script card. Reordering
   resets Script/Visuals approval and requests Plan revision. Planner follows its required stops and
@@ -38,6 +39,25 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   after grounding and before word limits. Remaining blocked terms receive repair feedback; exact
   cited names are allowed for explicit technical questions and expert audiences. FAQ answers use
   the same map, Author warns on blocked terms, and saved turns record applied substitutions.
+- **Answer real questions.** Read answers only questions in uploaded FAQ documents. Runtime v1 and live
+  turns check a snapshot-bound FAQ cache before graph reasoning, retain existing scope/date/grounding
+  rules, and count accepted hits. Only clean validated registry answers and completed exact-text audio
+  enter the customer cache. Declines become counted customer unknowns, never facts; Coach exposes them
+  as evidence gaps. Asked and answered supports exact human edits, approval and permanent rejection.
+  New snapshots cannot serve old customer answers; already pinned visits retain their own evidence.
+- **Rehearse on demand.** Build ends with Voice → Bundle. The Rehearse button tests customer questions
+  first, then uploaded questions; at most five questions are generated only when the bank is empty.
+- **Interrupt on words.** Raw volume/VAD events do not stop the live guide. A meaningful partial or
+  final transcript confirms speech; explicit interrupt controls still stop immediately.
+- **Review held citations together.** Retry makes up to two reads of retained source evidence using
+  the same exact quote/locator rule. Restore all flagged facts is explicit owner approval; it preserves
+  the failed-verification reason and excludes manual rejections and conflict/precedence exclusions.
+
+WP11 finishing decisions are approved in `refine.MD`: Marine with numbered picture anchors and an
+evidence rail; Marine/Sage/Graphite color selection reviewed in the existing Visuals card. Search the
+public web immediately when approved evidence cannot answer, with cited, turn-local, uncached sources.
+The default guided tour extends through reviewed stops to at least 180 seconds of narration and publication
+blocks if supported narration falls short. Film and Q&A do not count; customers may explicitly shorten, skip or exit.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
@@ -46,6 +66,8 @@ prompt dock) → *Building your demo…* → Rehearse (voice intake, segments wi
 check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. `MOCK_LLM=1` exercises the
 same path without keys, including the Coach playbook and its review within the six Align cards.
 
+**WP11 gate receipt:** deck365/365, acceptance24/24, smoke both phases; cache27, scope19, public web34, minimum narration25, fact retry12, palette12, browser76, responsive UI103 and search UI30 all pass. Full counts and synthetic-fixture limits are in `Loop.MD`; no paid/acoustic acceptance or deployment is implied.
+
 ## Out of scope (for now)
 Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
 measurement, payments, 3D product visuals (removed 2026-09-18), unvalidated LLM-token speech,
@@ -53,13 +75,13 @@ session resume after refresh and multi-worker runtime ownership.
 
 ## Approved runtime upgrade — 2026-09-19; D1–D8 reconciled 2026-09-23
 
-- D1: Keep Atelier and the cinematic slides. Open with the category's fundamentals in everyday language,
+- D1: Use the approved Marine layout with supplied cinematic media. Open with the category's fundamentals in everyday language,
   in reviewed playbook order; delighters come after fundamentals. No decision frame or digits in the
   first spoken line. This replaces the earlier supported-standout opening. Use a warm, cheerful guide
   with restrained pace and punctuation, never invented SSML/emotion controls.
-- Initial Explore plans lead with the first unseen fundamental proof stop before the three-proof
-  limit; the initial player fallback mirrors that one-stop move. Seen filtering, refinements and
-  explicit revisits retain their existing behavior. The fundamental flag reaches the runtime library.
+- Initial Explore plans lead with the first unseen fundamental and extend through reviewed stops
+  to reach the approved three-minute narration minimum; the initial player fallback uses the same rule.
+  Seen filtering, explicit short requests, refinements and revisits retain customer control.
 - D4: slides allow up to two pictures; when no literal audited picture is available, use a nearby tagged image or hero with a cited label, mark it **illustration**, and never count it as proof.
 - D8: welcome **Voice mode** defaults on only for continuous-voice demos without `?mute=1`; on requests capture once, off keeps streamed speech without a microphone prompt, toggles never reconnect, and typing stays available. Save `input_mode`; actual turn source controls cohorts and ownership rejects stale output.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →

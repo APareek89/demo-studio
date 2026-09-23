@@ -159,10 +159,10 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
     async def test_default_sites_off_and_on_use_only_enabled_root_product_sources(self):
         self.demo["product"]["url"] = "https://unselected.example/car"
         self.demo["sources"] = [
-            {"kind":"url","role":"product","url":URL,"use_in_demo":True},
-            {"kind":"url","role":"competitor","url":"https://competitor.example/car"},
-            {"kind":"url","role":"product","url":"https://excluded.example/car","use_in_demo":False},
-            {"kind":"url","role":"product","url":"https://child.example/car","crawl_parent":"source-root"},
+            {"id":"source-root","kind":"url","role":"product","url":URL,"use_in_demo":True},
+            {"id":"source-rival","kind":"url","role":"competitor","url":"https://competitor.example/car"},
+            {"id":"source-excluded","kind":"url","role":"product","url":"https://excluded.example/car","use_in_demo":False},
+            {"id":"source-child","kind":"url","role":"product","url":"https://child.example/car","crawl_parent":"source-root"},
         ]
         store.save(self.demo_id, self.demo)
         await self.turn(session="s_off")

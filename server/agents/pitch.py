@@ -38,8 +38,9 @@ Your output:
 - route: from the LIBRARY below — on the initial plan, put the first fundamental proof first; on refinements, do not
   reserve a fundamental stop. Order the remaining proof by the buyer's strongest signal (match rear-seat needs to rear-seat proof,
   front-seat needs to front-seat proof, and a performance
-  want at the drive), then 1-2 supporting blocks, then the single features block, then establish last. Never more than 3 proof blocks: the whole demo must stay near three minutes; everything else
-  is for questions. Each step may carry ONE bridge sentence. If a bridge states a product fact, copy one REVIEWED SPOKEN
+  want at the drive), then supported proof blocks, then the single features block, then establish last. The default guided
+  tour must provide at least three minutes of narration and may need more than three proof stops. An explicit short-tour
+  request or later refinement can use fewer; never repeat speech or invent facts to fill time. Each step may carry ONE bridge sentence. If a bridge states a product fact, copy one REVIEWED SPOKEN
   PROOF item's exact text and the complete fact_ids. Do not paraphrase, extend or combine that text. Without citations,
   copy only the exact NEUTRAL ROUTE CUES entry for that segment_id, or leave the bridge empty: no other uncited prose.
   Keep the buyer's own situation in decision_frame and the selected route, not in added bridge wording.
@@ -266,7 +267,9 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         # Align edits belong to the next publication. A live visit must never
         # combine draft facts, voice or script with its already-published player.
         alternate = (published.get("alt_languages") or {}).get(profile.get("language"), {})
-        script = {"segments": copy.deepcopy(alternate.get("segments") or published["segments"])}
+        script = {"segments": copy.deepcopy(alternate.get("segments") or published["segments"]),
+                  "closing": copy.deepcopy(alternate.get("closing") if alternate else published.get("closing", [])),
+                  "runtime_overview": copy.deepcopy(alternate.get("runtime_overview") if alternate else (published.get("runtime") or {}).get("overview"))}
         und = {"product": published.get("product", {}), "facts": copy.deepcopy(published.get("facts", [])),
                "images": copy.deepcopy(published.get("media", {}).get("images", [])), "shots": []}
         plan = {**copy.deepcopy(published.get("pitch") or {}), "voice": copy.deepcopy(published.get("voice", {}).get("persona") or {}),
@@ -280,8 +283,14 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         script = store.read_json(demo_id, "script.json") or {}
         demo = store.load(demo_id)
         route_slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
+    from . import narration
+    duration_policy = ((published or {}).get("runtime") or {}).get("narration_minimum") or {}
+    default_guided = bool(duration_policy.get("minimum_seconds") == narration.MIN_SECONDS
+                          and not refine and not narration.explicit_short_tour(profile))
     voice = plan.get("voice", {})
-    previously_seen = set(seen_segment_ids or [])
+    # An initial default tour has not narrated these stops yet: pre-tour Q&A
+    # can visit their slides without completing any guided narration.
+    previously_seen = set() if default_guided else set(seen_segment_ids or [])
     # Only an explicit refinement may reconsider reviewed material already seen.
     # A Q&A slide visit is not evidence that the buyer's revised need is settled.
     allow_revisit = bool(refine and previously_seen)
@@ -417,6 +426,14 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         proof_route = [lead] + [step for step in proof_route if step["segment_id"] != first]
     proof_route = proof_route[:3]
     route = proof_route + feat + est
+    if default_guided:
+        # Extend the selected buyer order with distinct reviewed proof stops;
+        # the default route's duration is independent of the obsolete three cap.
+        expanded, _ = narration.default_route({**script, "segments": segs}, demo_id=demo_id,
+                                               preferred=[step["segment_id"] for step in route],
+                                               allowed_fact_ids=fact_ids)
+        chosen_steps = {step["segment_id"]: step for step in route}
+        route = [chosen_steps.get(sid, {"segment_id": sid, "bridge": "", "bridge_fact_ids": []}) for sid in expanded]
     scheduled_text = {" ".join(text.split()) for step in route for text in main_speech.get(step["segment_id"], [])}
     for step in route:
         if step.get("bridge") and " ".join(step["bridge"].split()) in scheduled_text:
@@ -555,6 +572,20 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
                 else:
                     first["context_preface_omitted"] = "unsafe_quote_or_segment_budget"
         replacements.sort(key=lambda item: next(i for i, step in enumerate(route) if step["segment_id"] == item["segment_id"]))
+    if default_guided:
+        duration = narration.report(script, demo_id=demo_id, route_ids=[step["segment_id"] for step in route],
+                                    replacements=replacements, allowed_fact_ids=fact_ids)
+        if not duration["sufficient"]:
+            # A relevance-focused subset may be shorter than the reviewed tour.
+            # Restore complete reviewed speech instead of padding or slowing it.
+            replacements = []
+            duration = narration.report(script, demo_id=demo_id, route_ids=[step["segment_id"] for step in route],
+                                        allowed_fact_ids=fact_ids)
+            duration["personalization_fallback"] = "complete_reviewed_narration"
+        p["narration_minimum"] = duration
+    elif duration_policy:
+        p["narration_minimum"] = {"minimum_seconds": narration.MIN_SECONDS, "exempt": True,
+                                  "reason": "refinement" if refine else "explicit_short_tour"}
     if not voice_it:
         p["decision_frame_audio"] = None
         for step in route:
@@ -580,6 +611,10 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
             return segment
         replacements = [client_segment(segment) for segment in replacements]
         p["script_segments"] = [client_segment(segment) for segment in p["script_segments"]]
+    if default_guided:
+        # The measured closing is part of the published minimum. A generated
+        # advance must not replace its first reviewed line with shorter speech.
+        p["advance"], p["advance_audio"] = "", None
     p["personalized_segments"] = replacements
     if replacements:
         # Replacements are the speech for their slides, not another pre-roll.

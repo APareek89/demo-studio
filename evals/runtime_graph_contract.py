@@ -288,13 +288,13 @@ async def main():
                 return TurnDecision(action="answer",answered=True)
             return rg._CompositionRepair(sentences=[{"text":"Six airbags are standard.","fact_ids":["F001"],"kind":"fact"}])
         with patch("server.llm.runtime.structured",side_effect=empty_then_compose):
-            final=await rg.run_turn(d,{"session_id":"s_repair","question":"How many airbags?"})
+            final=await rg.run_turn(d,{"session_id":"s_repair","question":"How many airbags?","skip_bank":True})
         check("Actual graph performs one composition repair after an empty model answer",repair_calls==[TurnDecision,rg._CompositionRepair])
         check("Actual graph publishes only revalidated repaired speech",final["result"]["answered"] and final["result"]["validation_repair"]["accepted"] and final["delivery"]["speech"]=="Six airbags are standard.")
         check("Repair timing stays within the same pinned graph turn",final["delivery"]["snapshot_id"]==snap["id"] and "repair_ms" in final["result"]["graph_timings"])
         def failing(*a,**k):raise RuntimeError("outage")
         with patch("server.llm.runtime.structured",side_effect=failing):
-            final=await rg.run_turn(d,{"session_id":"s_failure","question":"airbags"})
+            final=await rg.run_turn(d,{"session_id":"s_failure","question":"airbags","skip_bank":True})
         check("Outage is not cached as a knowledge gap",final["result"]["provider_failed"] and not final["result"]["fact_ids"])
     finally:config.MOCK_LLM=old
 

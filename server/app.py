@@ -151,6 +151,11 @@ async def patch_demo(demo_id: str, req: Request):
     settings = body.get("settings")
     if isinstance(settings, dict) and "runtime_default_sites" in settings and settings["runtime_default_sites"] not in ("off", "on"):
         raise HTTPException(400, "runtime_default_sites must be off or on")
+    if isinstance(settings, dict) and "visual_theme" in settings:
+        if settings["visual_theme"] not in ("marine", "sage", "graphite"):
+            raise HTTPException(400, "visual_theme must be marine, sage or graphite")
+        if graph.is_running(demo_id) or store.load(demo_id).get("running"):
+            raise HTTPException(409, "Wait for the current work to finish before changing the demo color")
 
     def fn(d):
         if "name" in body:
@@ -158,11 +163,18 @@ async def patch_demo(demo_id: str, req: Request):
         if "product" in body:
             d["product"].update({k: v for k, v in body["product"].items() if k in ("name", "category", "url")})
         if "settings" in body:
-            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images", "faq_questions", "intro_video", "runtime_default_sites")}
+            allowed = {k: v for k, v in body["settings"].items() if k in ("tts_provider", "voice_name", "sarvam_speaker", "language", "languages", "rehearsal_questions", "competition", "audience", "pitch_minutes", "enhance_images", "intro_video", "runtime_default_sites", "visual_theme")}
             if "languages" in allowed:
                 allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
                 allowed["language"] = allowed["languages"][0]
+            theme_changed = "visual_theme" in allowed and allowed["visual_theme"] != d["settings"].get("visual_theme", "marine")
             d["settings"].update(allowed)
+            if theme_changed:
+                d["approvals"]["visuals"] = False
+                if d["stages"]["bundle"]["status"] == "done":
+                    d["stages"]["bundle"]["status"] = "stale"
+                if d.get("status") == "ready":
+                    d["status"] = "align"
             if "voice_name" in allowed or "sarvam_speaker" in allowed:
                 d["settings"]["voice_locked"] = True
             runlog.settings_changed(demo_id, allowed)
@@ -533,6 +545,25 @@ async def set_aligned_fact_approval(demo_id: str, fact_id: str, req: Request):
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
 
 
+@app.post("/api/demos/{demo_id}/align/facts/review-held")
+async def review_held_facts(demo_id: str, req: Request):
+    """Retry saved evidence or explicitly restore citation-held facts as a group."""
+    from . import knowledge
+    demo = _demo_or_404(demo_id)
+    body = await req.json()
+    if not isinstance(body, dict) or set(body) != {"action"} or body.get("action") not in {"retry", "restore"}:
+        raise HTTPException(400, "Send action: retry or restore")
+    if graph.is_running(demo_id) or demo.get("running") or any(stage.get("status") == "running" for stage in demo.get("stages", {}).values()):
+        raise HTTPException(409, "Wait for the current stage to finish before reviewing facts")
+    result = knowledge.review_held_citations(demo_id, body["action"])
+    if result["changed_fact_ids"]:
+        orchestrator.invalidate(demo_id, "understand")
+        orchestrator.set_stage(demo_id, "understand", "done", message="citation-held facts reviewed together")
+        store.update(demo_id, lambda d: d["approvals"].update({key: False for key in store.CARDS}))
+    runlog.event(demo_id, "Citation-held facts reviewed", f"{body['action']}: {len(result['changed_fact_ids'])} restored; {len(result['still_held'])} still need matching evidence; {len(result['skipped_conflicts'])} conflicts preserved.")
+    return {"ok": True, **result, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
+
+
 @app.patch("/api/demos/{demo_id}/align/product")
 async def edit_aligned_product(demo_id: str, req: Request):
     """Direct correction for the extracted product framing shown across the demo."""
@@ -706,8 +737,23 @@ async def edit_aligned_faq(demo_id: str, question_id: str, req: Request):
     """Save a human-reviewed supported answer without regenerating the FAQ bank."""
     demo = _demo_or_404(demo_id)
     body = await req.json()
-    if not isinstance(body, dict) or set(body) != {"answer", "fact_ids"}:
-        raise HTTPException(400, "Send answer and fact_ids only; this editor saves supported answers")
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Send an FAQ review object")
+    action = body.get("action", "edit")
+    expected = ({"answer", "fact_ids"} | ({"action"} if "action" in body else set())) if action == "edit" else {"action"}
+    if action not in {"approve", "edit", "reject"} or set(body) != expected:
+        raise HTTPException(400, "Choose approve, edit or reject; edits need answer and fact_ids")
+    if action != "edit":
+        if graph.is_running(demo_id) or demo.get("running") or any(stage.get("status") == "running" for stage in demo.get("stages", {}).values()):
+            raise HTTPException(409, "Wait for the current stage to finish before reviewing an FAQ answer")
+        try:
+            faq.review_entry(demo_id, question_id, action=action)
+        except KeyError:
+            raise HTTPException(404, "FAQ question not found")
+        except ValueError as exc:
+            raise HTTPException(400, str(exc))
+        runlog.event(demo_id, f"FAQ {question_id} {action} reviewed", "Customer answers retain their reviewed wording; rejected answers are never served.")
+        return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
     text, ids = body["answer"], body["fact_ids"]
     if not isinstance(text, str) or not 1 <= len(text.strip()) <= 2000:
         raise HTTPException(400, "answer must contain 1–2000 characters")
@@ -747,12 +793,15 @@ async def edit_aligned_faq(demo_id: str, question_id: str, req: Request):
             break
     slides = deck.slides_with_script((store.read_json(demo_id, "deck.json") or {}).get("slides", []),
                                     store.read_json(demo_id, "script.json") or {})
-    entry.update({"answer": text, "fact_ids": valid, "answered": True, "audio": None,
-                  "visual": visual, "offer_callback": False, "clarifying_question": "",
-                  "slide_id": deck.slide_for(slides, valid, entry["question"])[0]})
-    entry.pop("error", None)
-    bank["answered"] = sum(bool(e.get("answered")) for e in bank.get("entries", []))
-    store.write_json(demo_id, "faq.json", bank)
+    try:
+        from . import knowledge
+        faq.review_entry(demo_id, question_id, action="edit", answer=text, fact_ids=valid,
+                         visual=visual, slide_id=deck.slide_for(slides, valid, entry["question"])[0],
+                         snapshot_id=knowledge.snapshot(demo_id)["id"])
+    except KeyError:
+        raise HTTPException(404, "FAQ question not found")
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
     orchestrator.invalidate(demo_id, "faq")
     orchestrator.set_stage(demo_id, "faq", "done", message="reviewed FAQ answer saved; recording requires rebuild")
     store.update(demo_id, lambda d: d["approvals"].update({"faq": False}))
@@ -1019,6 +1068,16 @@ def build(demo_id: str, override_readiness: bool = False):
     return {"ok": True}
 
 
+@app.post("/api/demos/{demo_id}/rehearsal")
+def run_rehearsal(demo_id: str):
+    _demo_or_404(demo_id)
+    try:
+        graph.start_rehearsal(demo_id)
+    except RuntimeError as error:
+        raise HTTPException(409, str(error))
+    return {"started": True}
+
+
 @app.post("/api/demos/{demo_id}/revise")
 async def revise(demo_id: str, req: Request):
     _demo_or_404(demo_id)
@@ -1075,13 +1134,17 @@ async def run_qa(demo_id: str, req: Request):
     # calls from tools/benchmarks without a browser.
     if body.get("runtime_version") == 1 or (body.get("session_id") and (store.read_json(demo_id, "bundle.json") or {}).get("runtime", {}).get("version") == 1):
         from .runtime_graph import run_turn
-        result = (await run_turn(demo_id, body))["result"]
+        turn = await run_turn(demo_id, body)
+        result = turn["result"]
         # HTTP is the typed/disconnected fallback. Live WS renders the validated
         # delivery plan only when the browser requests it after slide routing.
-        if body.get("voice_it", True) and result.get("answer"):
+        if body.get("voice_it", True) and result.get("answer") and not result.get("audio"):
             try:
-                rel = await asyncio.to_thread(voice.render_line, demo_id, result["answer"], strict=True)
+                rel = await asyncio.to_thread(voice.render_line, demo_id, result["answer"],
+                                              demo=voice.runtime_demo(demo_id, turn.get("delivery", {}).get("language")), strict=True)
                 result["audio"] = f"/media/{demo_id}/{rel}" if rel else None
+                if rel and result.get("faq_entry_id"):
+                    faq.update_audio(demo_id, result["faq_entry_id"], result["answer"], rel)
             except Exception:
                 result["audio"] = None
         runlog.runtime_qa(demo_id, q, result, body.get("profile") or None)
@@ -1106,7 +1169,8 @@ async def run_qa(demo_id: str, req: Request):
         # Old banks may predate the reviewed everyday renderings. Normalize a
         # response copy and retire mismatched audio without rewriting the bank.
         hit = faq.normalize_entry(hit, demo.get("settings", {}).get("audience", "everyday"), q)
-        r = {"from_bank": True, "bank_id": hit["id"], "audio": f"/media/{demo_id}/{hit['audio']}" if hit.get("audio") else None, "answer": hit["answer"], "fact_ids": hit["fact_ids"], "facts": [], "visual": hit.get("visual"),
+        audio = voice._cached(demo_id, hit["answer"], voice.runtime_demo(demo_id, (body.get("profile") or {}).get("language")))
+        r = {"from_bank": True, "bank_id": hit["id"], "audio": f"/media/{demo_id}/{audio}" if audio else None, "answer": hit["answer"], "fact_ids": hit["fact_ids"], "facts": [], "visual": hit.get("visual"),
              "escalate": "", "topic": "", "cta": "", "answered": hit["answered"], "clarifying_question": hit.get("clarifying_question", ""), "offer_callback": hit.get("offer_callback", not hit["answered"]),
              "plain_language_substitutions": hit.get("plain_language_substitutions", [])}
         routed(r)
@@ -1204,7 +1268,8 @@ async def run_tts(demo_id: str, req: Request):
     if not text:
         raise HTTPException(400, "text required")
     try:
-        rel = await asyncio.to_thread(voice.render_line, demo_id, text, lang=(body.get("language") or None), strict=True)
+        identity = voice.runtime_demo(demo_id, body.get("language") or None)
+        rel = await asyncio.to_thread(voice.render_line, demo_id, text, lang=identity.get("settings", {}).get("language"), demo=identity, strict=True)
     except Exception as e:
         raise HTTPException(502, str(e)[:300])
     return {"url": f"/media/{demo_id}/{rel}" if rel else None}

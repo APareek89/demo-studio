@@ -20,6 +20,7 @@ import { renderSlide } from "/web/slide.js";
 import { h } from "/web/api.js";
 import { icon } from "/web/icons.js";
 import { LiveVoiceClient } from "/web/player/live-voice.js";
+import { renderPublicSearch } from "/web/player/public-search-ui.js";
 
 // Read browser speech support once; the other constants describe text helpers and contact consent.
 // These are local defaults; server speech is connected through web/app.js:renderPlay.
@@ -156,7 +157,8 @@ export function mountPlayer(host, bundle, api) {
   const el = {};
   // Create the header, slide stage, caption dock, intake, contact form and conversation drawer.
   // Input events call the flow helpers below; web/api.js:h turns these descriptions into DOM elements.
-  const root = h("div", { class: "pl" },
+  const visualTheme = ["marine", "sage", "graphite"].includes(bundle.visual_theme) ? bundle.visual_theme : "marine";
+  const root = h("div", { class: "pl", "data-visual-theme": visualTheme },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
       // Wire header buttons to fullscreen, mute, pause, stop, conversation, restart and close actions.
@@ -177,10 +179,10 @@ export function mountPlayer(host, bundle, api) {
         h("div", { class: "pl-controls" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }),
           // Submit the typed dock reply without reloading the page, then clear its input field.
           // acceptTypedAnswer routes it to the active wait or server/app.py:run_qa.
-          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: "Ask a question or type your answer…", "aria-label": "Your question or answer" }), h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
-          // Wire the microphone button beside the status hint to the current listening flow.
+          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: "Ask a question or type your answer…", "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 21 })), h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
+          // Keep the status hint below the shared typed/voice composer.
           // micTap may call web/player/live-voice.js:LiveVoiceClient.startCapture or stopCapture.
-          h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Voice input needs Chrome or Safari — type your question below."), el.mic = h("button", { class: "mic", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 21 }))))),
+          h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Voice input needs Chrome or Safari — type your question below.")))),
       el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
         // Submit typed intake text through the same answer handler used by the main reply box.
         // Its output fills local customer context before server/app.py:run_pitch is requested.
@@ -284,6 +286,13 @@ export function mountPlayer(host, bundle, api) {
   // Append a conversation message, scroll it into view and retain non-note text for the report.
   // Role, text and interruption details become history for server/app.py:run_qa and save_session.
   function addMsg(role, text, extra = {}) { if (role === "user") rememberCustomerUrls(text); const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  // Keep source widgets beside the current caption and beside this question in
+  // the retained drawer. Provider markup never joins the spoken transcript.
+  function showPublicSearch(result) {
+    const caption = renderPublicSearch(result), retained = renderPublicSearch(result);
+    if (caption) el.cite.append(caption);
+    if (retained) { el.thread.append(h("div", { class: "m search-evidence" }, retained)); el.thread.scrollTop = el.thread.scrollHeight; }
+  }
   // Remember only customer-supplied sites, never URLs in the guide's answer.
   function rememberCustomerUrls(text, limit = 8) { S.profile.customer_urls = [...new Set([...(S.profile.customer_urls || []), ...customerUrls(text, limit)])].slice(0, 8); }
   function intakeSites() { rememberCustomerUrls(el.inSites.value, 5); }
@@ -361,7 +370,7 @@ export function mountPlayer(host, bundle, api) {
   function showSlideView(slide, { reveal = -1 } = {}) {
     if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); return cur.view; }
     if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
-    const view = renderSlide(slide, { fit: true });
+    const view = renderSlide(slide, { fit: true, layout: "evidence", theme: visualTheme });
     view.setRevealed(reveal);
     el.stack.append(view.el);
     view.layout(); void view.el.offsetWidth; view.el.classList.add("on");  // a forced reflow starts the cross-fade; no animation frame needed (a hidden tab never gets one)
@@ -934,7 +943,8 @@ export function mountPlayer(host, bundle, api) {
       const step = S.plan[i], sl = step.slide; S.seg = i; S.atCheckin = false; S.playback = { phase: "route", index: i, line: lineIdx, checkin: false, bridgeDone }; renderProgress();
       const legacyQuestion = /[?？]$/.test((sl.checkin?.text || "").trim());
       prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text && !legacyQuestion ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
-      const short = !step.reviewedRevisit && lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // ordinary question visits stay brief; an explicit reviewed revisit keeps its proof
+      const minimumGuided = bundle.runtime?.narration_minimum && !S.browseOnly && !S.pitch?.narration_minimum?.exempt;
+      const short = !minimumGuided && !step.reviewedRevisit && lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // Minimum tours retain speech counted before publication; exempt/legacy revisits stay brief.
       const view = showSlideView(sl, { reveal: short ? 99 : lineIdx - 1 });
       if (lineIdx === 0 && step.bridge && !bridgeDone) { el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; if (!(await speak(step.bridge, run, step.bridge_audio))) return; S.playback.bridgeDone = true; if (!(await waitForLineQuestion({ text: step.bridge }, run))) return; }
       if (!(await playLines(sl, run, view, lineIdx, short ? 1 : sl.lines.length))) return;
@@ -982,7 +992,8 @@ export function mountPlayer(host, bundle, api) {
     const cs = closingSlide();
     if (cs) {
       const view = showSlideView(cs, { reveal: line - 1 });
-      if (line === 0 && S.pitch?.advance) { view.setRevealed(0); el.cite.textContent = ""; if (!(await speak(S.pitch.advance, run, S.pitch.advance_audio))) return; S.playback.line = 1; if (!(await waitForLineQuestion({ text: S.pitch.advance }, run))) return; if (!(await playLines(cs, run, view, 1))) return; }
+      const minimumGuided = bundle.runtime?.narration_minimum && !S.browseOnly && !S.pitch?.narration_minimum?.exempt;
+      if (!minimumGuided && line === 0 && S.pitch?.advance) { view.setRevealed(0); el.cite.textContent = ""; if (!(await speak(S.pitch.advance, run, S.pitch.advance_audio))) return; S.playback.line = 1; if (!(await waitForLineQuestion({ text: S.pitch.advance }, run))) return; if (!(await playLines(cs, run, view, 1))) return; }
       else if (!(await playLines(cs, run, view, line))) return;
     }
     S.playback = { phase: "closing", line: cs?.lines?.length || 0 };
@@ -1147,6 +1158,7 @@ export function mountPlayer(host, bundle, api) {
       if (r.escalate) S.escalations.push(r.escalate);
       if (r.topic && r.topic !== "other") S.raised.add(r.topic);
       S.unresolved.add(r.topic || "question"); el.cite.textContent = "";
+      showPublicSearch(r);
       const decline = live && r.answer ? r.answer : "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.";
       if (!(await speak(decline, run, live ? r.audio : null, live ? r : null))) return;
       turn.delivery_done = Date.now(); S.activeTurn = null;
@@ -1173,6 +1185,7 @@ export function mountPlayer(host, bundle, api) {
     // Show primary citations separately from facts that only establish a required condition.
     // The IDs come from server/runtime_graph.py:run_turn; a condition donor does not become a product claim.
     el.cite.textContent = [r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "", conditionIds.length ? "conditions: " + [...new Set(conditionIds)].join(", ") : ""].filter(Boolean).join(" · ");
+    showPublicSearch(r);
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
     if (!(await speak(r.answer, run, r.audio, r))) return;
@@ -1335,7 +1348,10 @@ export function mountPlayer(host, bundle, api) {
     // Keep the same planning request alive across questions during the opening.
     if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
     if (["opening", "intake", "overview"].includes(checkpoint.phase)) {
-      const overview = live && !S.browseOnly ? bundle.runtime?.overview : null;
+      // New published minimums count this recorded overview, including embeds
+      // without a live transport. Keep older bundles' fixed opening unchanged.
+      const recordedMinimumOverview = bundle.runtime?.narration_minimum && bundle.runtime?.overview?.audio;
+      const overview = (live || recordedMinimumOverview) && !S.browseOnly ? bundle.runtime?.overview : null;
       // Show the overview once, using its cited slide and recorded speech while planning proceeds.
       // web/slide.js:renderSlide displays the selected image; completed audio determines when this overview finishes.
       if (overview?.text) {

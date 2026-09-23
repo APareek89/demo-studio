@@ -207,6 +207,19 @@ def apply_overrides(pb: dict, demo_id: str) -> dict:
         by_id[stop_id]["kind"] = kind
     und = _allowed_understanding(store.read_json(demo_id, "understanding.json") or {}, store.load(demo_id))
     result["issues"] = _unique([*result.get("issues", []), *validate(result, und)])
+    # Runtime questions are evidence requests, never product facts. Refresh this
+    # projection even before another paid Coach run so Align reflects new asks.
+    result["evidence_gaps"] = [gap for gap in result.get("evidence_gaps", []) if gap.get("source") != "customer"]
+    for unknown in und.get("unknowns", []):
+        if unknown.get("source") != "customer" or unknown.get("status", "open") != "open":
+            continue
+        question_key = unknown["question"].strip().casefold()
+        result["evidence_gaps"] = [gap for gap in result["evidence_gaps"] if gap.get("what", "").strip().casefold() != question_key]
+        result["evidence_gaps"].append({
+            "what": unknown["question"], "why_it_matters": "A customer asked; the approved sources do not answer this question.",
+            "suggested_source": unknown.get("suggested_document") or "An official source answering this question",
+            "source": "customer", "unknown_id": unknown.get("id"), "asked_count": unknown.get("asked_count", 1),
+        })
     return result
 
 
@@ -248,7 +261,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     facts_txt = "\n".join(rows) or "(empty)"
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und.get("shots", [])) or "(none)"
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und.get("images", [])) or "(none)"
-    unknowns = "\n".join(f"{u['id']} {u['question']}" for u in und.get("unknowns", []) if u.get("status") == "open") or "(none)"
+    unknowns = "\n".join(f"{u['id']} {u['question']}" + (f" (customer question; asked {u.get('asked_count', 1)} times; not a fact)" if u.get("source") == "customer" else "") for u in und.get("unknowns", []) if u.get("status") == "open") or "(none)"
     content = f"""PRODUCT: {json.dumps(product)}
 CATEGORY LIBRARY ORDER (version {playbooks.VERSION}): {json.dumps(entry['order'])}
 AUDIENCE: {audience}

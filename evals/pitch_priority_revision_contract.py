@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from server import schemas, store, runtime_graph as graph, runtime_state
-from server.agents import pitch, voice
+from server.agents import pitch, voice, faq
 
 FIXTURE = json.loads((Path(__file__).parent / 'fixtures/pitch_priority_revision.json').read_text())
 BUNDLE = FIXTURE['published_bundle']
@@ -106,6 +106,10 @@ class PriorityRevision(unittest.TestCase):
         async def invoke(state,*args): observed.append(state['refine']); return {'result':{}}
         with patch.object(graph,'previous_state',return_value={'refine':True}), \
              patch.object(graph,'checkpoint'), patch.object(graph.usage,'trace'), \
+             patch.object(faq,'_registry_hash',return_value='priority-contract-registry'), \
+             patch.object(faq,'match',return_value=None), \
+             patch.object(faq,'cache_answer',return_value=None), \
+             patch.object(faq,'record_unknown'), \
              patch.object(graph.graph,'ainvoke',side_effect=invoke):
             for kind,body in [('explore',{}),('explore',{'refine':'yes'}),('qa',{'refine':True}),('explore',{'refine':True})]:
                 asyncio.run(graph.run_turn('dm_41513908',{'session_id':'priority-contract',**body},kind=kind))

@@ -49,8 +49,9 @@ Produce exactly this:
   a stop. The intro segment previews stop 1 in everyday words; the outcome segment names the three USPs.
    Do not open two consecutive segments the same way: vary whether a segment opens on something noticed,
    on a doubt the previous one raised, on an ordinary situation, or on a short honest limitation.
-- WORD BUDGETS. Set word_budget for every segment so the total over intro, outcome, proof, features and establish equals
-  total_words minus 45 for the closing. Spend more on the lead fundamental stop (up to the role ceiling) and less on a
+- WORD BUDGETS. Set word_budget for every segment. The default guided tour must provide at least three minutes of
+  distinct supported narration: allocate total_words minus 23 for the Explore overview and 45 for closing across
+  proof, features and establish. Intro/outcome are a separate opening used by Browse and do not consume that guided budget. Spend more on the lead fundamental stop (up to the role ceiling) and less on a
   minor stop (never under 22). An even split is a catalogue.
 - Never build a USP or a narration line on a company or market statistic: units sold, monthly or annual
 sales figures, customer totals, market share, sales rank, years on sale, or award counts. These are the
@@ -322,9 +323,14 @@ def _enforce_playbook(p: dict, pb: dict) -> None:
 def _enforce_budget(p: dict, demo: dict) -> None:
     """Allocate requested speech length within role ceilings, recording infeasible totals."""
     from . import author
-    total = round(float(demo.get("settings", {}).get("pitch_minutes", 3) or 3) * 60 * author.WPS)
-    target = max(0, total - 45)
-    segments = p.get("segments", [])
+    from .narration import MIN_SECONDS, OVERVIEW_WORDS, ROLES
+    total = round(max(3.0, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3)) * 60 * author.WPS)
+    target = max(0, total - 45 - OVERVIEW_WORDS)
+    segments = [segment for segment in p.get("segments", []) if segment.get("role") in ROLES]
+    for segment in p.get("segments", []):
+        if segment.get("role") not in ROLES:
+            ceiling = author.LIMITS.get(segment.get("role"), author.LIMITS["proof"])
+            segment["word_budget"] = max(22, min(ceiling, int(segment.get("word_budget") or 28)))
     ceilings = [author.LIMITS.get(segment.get("role"), author.LIMITS["proof"]) for segment in segments]
     lead = next((segment for segment in segments if segment.get("role") == "proof" and segment.get("fundamental")), None)
     weights = []
@@ -351,8 +357,10 @@ def _enforce_budget(p: dict, demo: dict) -> None:
         segments[i]["word_budget"] += direction
         remaining -= direction
     p["total_words"] = total
+    p["guided_minimum_seconds"] = MIN_SECONDS
+    p["guided_opening_words"] = OVERVIEW_WORDS
     if feasible != target:
-        p.setdefault("issues", []).append(f"Requested {total} words cannot fit the current stops within role budgets; allocated {feasible} segment words plus 45 closing words.")
+        p.setdefault("issues", []).append(f"Requested {total} words cannot fit the current stops within role budgets; allocated {feasible} guided segment words plus {OVERVIEW_WORDS} overview and 45 closing words. More supported proof stops are needed; never invent or duplicate speech.")
 
 
 # Read understanding.json and produce plan.json: the buying story, segment evidence, image choices and actions.
@@ -390,7 +398,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     unk_txt = "\n".join(f"{u['id']} {u['question']}" for u in und["unknowns"] if u.get("status") == "open")
     from . import author
     timing = {"pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 3),
-              "total_words": round(float(demo.get("settings", {}).get("pitch_minutes", 3) or 3) * 60 * author.WPS),
+              "total_words": round(max(3.0, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3)) * 60 * author.WPS),
+              "minimum_narration_seconds": 180, "guided_overview_words": 23,
               "closing_words": 45, "role_ceilings": dict(author.LIMITS)}
     playbook_view = {key: playbook.get(key) for key in ("stops", "usps", "objections", "evidence_gaps")} if playbook else None
     content = f"""PRODUCT: {json.dumps(und['product'])}

@@ -10,16 +10,17 @@ flowchart TD
   READ["READ phase (thread)<br/>[FUNCTION · graph.py]<br/>Understand → Coach → Plan → Author → Deck → FAQ → opening message<br/>Coach progress label: Sales playbook · see diagrams 02 / 04"]:::fn
   SSE["GET /api/demos/id/events<br/>[FUNCTION · SSE, polls events.py every 0.35 s]<br/>out: progress / stage / status / message / phase_done"]:::fn
   OVER1["UI overlay<br/>'Reading your sources…'<br/>[FUNCTION · web/studio/align.js]"]:::term
-  CARDS["Align: 6 cards<br/>Visuals · Facts · Script (Story order + slides) · FAQ · Persona & voice · CTAs<br/>[DATA · understanding.json + playbook.json + plan.json + script.json + deck.json + faq.json]"]:::data
+  CARDS["Align: 6 cards<br/>Visuals · Facts · Script (Story order + slides) · Asked and answered · Persona & voice · CTAs<br/>[DATA · understanding.json + playbook.json + plan.json + script.json + deck.json + faq.json]"]:::data
   DOCK["USER speaks to the prompt dock<br/>[ask · text + optional files]"]:::ask
   ALIGN["Align loop<br/>[AGENT · Claude text tier → actions]<br/>see diagram 03"]:::agent
   APPR{"all 6 cards approved?<br/>[FUNCTION · demo.approvals]"}:::dec
-  BUILD["BUILD phase (thread)<br/>[FUNCTION · graph.py]<br/>Voice → Rehearsal → Bundle<br/>see diagram 04"]:::fn
+  BUILD["BUILD phase (thread)<br/>[FUNCTION · graph.py]<br/>Voice → Bundle<br/>see diagram 04"]:::fn
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data
   PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>continuous stop narration · answers resume after 3 s · clarifications wait<br/>owned voice/typed turns; see diagram 05"]:::fn
   FB["USER gives feedback<br/>[ask · Rehearse panel]"]:::ask
-  FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'coach'|'understand') → rebuild"]:::agent
+  FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'coach'|'understand') → human Align"]:::agent
+  REHEARSE["USER selects Run rehearsal<br/>[ASK · Rehearse panel]<br/>POST /api/demos/id/rehearsal · customer questions first, then uploaded questions<br/>empty bank only: at most five sample questions; diagnostics preserve publication"]:::ask
   HOME["Home workspace<br/>[FUNCTION · web/home.js · #/home default]<br/>real demo/session counts · recent demos · existing create/open actions"]:::fn
   LIB["My demos tab<br/>[DATA · list of data/demos/*/demo.json]<br/>search/filter · approved bundle thumbnails"]:::data
 
@@ -30,7 +31,8 @@ flowchart TD
   CARDS --> APPR
   APPR -- "no" --> DOCK
   APPR -- "yes · POST /build" --> BUILD --> OVER2 --> BUNDLE --> PLAY
-  PLAY --> FB --> FBA -.->|"status building → ready, player remounts"| BUILD
+  PLAY --> FB --> FBA -.->|"review changed cards before Build"| CARDS
+  PLAY -.-> REHEARSE
   LIB -.-> U
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;

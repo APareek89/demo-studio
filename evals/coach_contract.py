@@ -209,6 +209,26 @@ class CoachContract(unittest.TestCase):
         store.write_json(self.did, "playbook-overrides.json", {"stop_order": ["delighters", "powertrain"]})
         self.assertEqual(coach.apply_overrides(pb, self.did)["stops"][0]["kind"], "fundamental")
 
+    def test_customer_unknowns_are_live_evidence_gaps_never_facts(self):
+        pb = coach.run(self.did, self.events.append)
+        before_facts = copy.deepcopy(self.und["facts"])
+        self.und["unknowns"].append({"id": "U2", "question": "Is doorstep servicing available?", "source": "customer",
+                                     "status": "open", "asked_count": 4, "suggested_document": "Official service policy"})
+        pb["evidence_gaps"].append({"what": "Is doorstep servicing available?", "why_it_matters": "A model-proposed customer gap", "suggested_source": "Service policy"})
+        store.write_json(self.did, "understanding.json", self.und)
+        with patch.object(coach.claude, "structured", side_effect=AssertionError("Align gap refresh must be free")):
+            refreshed = coach.apply_overrides(pb, self.did)
+            gap = next(g for g in refreshed["evidence_gaps"] if g.get("unknown_id") == "U2")
+            self.assertEqual(gap["asked_count"], 4)
+            self.assertEqual(gap["what"], "Is doorstep servicing available?")
+            self.assertEqual(gap["suggested_source"], "Official service policy")
+            self.assertEqual(sum(g["what"] == gap["what"] for g in refreshed["evidence_gaps"]), 1)
+            self.assertEqual(store.read_json(self.did, "understanding.json")["facts"], before_facts)
+            self.assertEqual(coach.apply_overrides(refreshed, self.did)["evidence_gaps"], refreshed["evidence_gaps"])
+            self.und["unknowns"][-1]["status"] = "resolved"
+            store.write_json(self.did, "understanding.json", self.und)
+            self.assertFalse(any(g.get("unknown_id") == "U2" for g in coach.apply_overrides(refreshed, self.did)["evidence_gaps"]))
+
     def test_category_and_picture_changes_invalidate_cache_without_fact_changes(self):
         first = coach.run(self.did, self.events.append)
         store.update(self.did, lambda d: d["sources"].append({"id": "img", "kind": "image", "use_in_demo": False}))

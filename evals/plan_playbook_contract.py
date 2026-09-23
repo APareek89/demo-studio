@@ -163,7 +163,9 @@ class PlanPlaybookContract(unittest.TestCase):
             seg["word_budget"] = 22 + index
         plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 3}})
         self.assertEqual(self.plan["total_words"], 342)
-        self.assertEqual(sum(s["word_budget"] for s in self.plan["segments"]), 297)
+        self.assertEqual(sum(s["word_budget"] for s in self.plan["segments"] if s["role"] in {"proof", "features", "establish"}), 274)
+        self.assertEqual([s["word_budget"] for s in self.plan["segments"] if s["role"] in {"intro", "outcome"}], [22, 23])
+        self.assertEqual(self.plan["guided_minimum_seconds"], 180)
         self.assertGreater(len({s["word_budget"] for s in self.plan["segments"]}), 1)
         self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] for s in self.plan["segments"]))
 
@@ -186,6 +188,10 @@ class PlanPlaybookContract(unittest.TestCase):
 
     def test_default_budget_emphasizes_lead_fundamental(self):
         plan._enforce_playbook(self.plan, self.pb)
+        # Extra supported allocation slots give the writer room to vary attention;
+        # a nearly saturated four-proof plan must spend close to every hard ceiling.
+        for index in range(2):
+            self.plan["segments"].insert(-2, segment(f"budget-extra-{index}", fact_ids=["F3"]))
         for seg in self.plan["segments"]:
             seg["word_budget"] = 0
         plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 3}})

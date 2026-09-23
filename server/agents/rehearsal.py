@@ -1,4 +1,4 @@
-"""Stage 5 — Rehearsal.  Ask the demo what real buyers will ask; measure what it can't answer."""
+"""On-demand rehearsal: review real questions first, then bounded sample questions."""
 from __future__ import annotations
 
 import json
@@ -6,11 +6,11 @@ import hashlib
 
 from .. import schemas, store
 from ..llm import claude
-from . import qa
+from . import faq, qa
 from .principles import PRINCIPLES, SCORECARD
 
 # Describe the mix of likely buyer questions, including gaps in the supplied evidence.
-# generate_questions sends this prompt through llm/claude.py:structured for FAQ or rehearsal preparation.
+# generate_questions sends this prompt only for an explicit empty-bank rehearsal.
 QGEN_SYSTEM = """You generate the questions a real prospective buyer asks during a product demo. Mix: specs and
 numbers, price and offers, ownership and support, setup/usage in their situation, comparisons, risks and edge cases,
 and 2-3 questions the given sources clearly cannot answer. Short, natural, first person. No duplicates."""
@@ -39,16 +39,18 @@ def input_hash(demo_id: str) -> str:
     # The resulting hash controls run reuse; qa.py:QA_SYSTEM changes also require a fresh review.
     inputs = {"understanding": semantic({key: und.get(key) for key in ("product", "brand", "facts", "competitors", "unknowns")}),
               "plan": semantic(store.read_json(demo_id, "plan.json") or {}), "script": script_input,
-              "faq": semantic({"entries": bank.get("entries", []), "partial": bank.get("partial", False)})}
-    inputs["settings"] = {key: settings.get(key) for key in ("language", "audience", "competition", "rehearsal_questions")}
+              "faq": semantic({"entries": [{key: value for key, value in entry.items() if key != "asked_count"} for entry in bank.get("entries", [])], "partial": bank.get("partial", False)})}
+    inputs["settings"] = {key: settings.get(key) for key in ("language", "audience", "competition")}
+    inputs["question_policy"] = "customer-first-document-second-empty-bank-max-five-v1"
     inputs["prompts"] = {"questions": QGEN_SYSTEM, "score": SCORE_SYSTEM, "criteria": SCORECARD,
                          "qa": qa.QA_SYSTEM, "schema": schemas.Scorecard.model_json_schema()}
     return hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
 # Ask for likely buyer questions using the product, persona, concerns and available fact names.
-# Returns a bounded list through llm/claude.py:structured; faq.py:run also uses this helper before the Rehearsal stage.
-def generate_questions(demo_id: str, n: int = 12, bias: str | None = None) -> list[str]:
+# Returns at most five questions through llm/claude.py:structured.
+def generate_questions(demo_id: str, n: int = 5, bias: str | None = None) -> list[str]:
+    n = max(0, min(5, int(n)))
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
     content = "PRODUCT: " + json.dumps(und.get("product", {})) + "\nCUSTOMER: " + str(plan.get("customer_persona", "")) + "\nCONCERNS: " + json.dumps(plan.get("concerns", [])) + "\nFACT CLAIMS AVAILABLE: " + str([f["claim"] for f in und.get("facts", [])][:80]) + "\nGenerate " + str(n) + " questions."
@@ -59,7 +61,7 @@ def generate_questions(demo_id: str, n: int = 12, bias: str | None = None) -> li
 
 
 # Review the FAQ bank, or generate and answer questions, then save coverage and a script scorecard.
-# Writes rehearsal.json via qa.py:answer and score_script; this is build review, not an actual live customer test.
+# Writes rehearsal.json via qa.py:answer and score_script only when requested.
 def run(demo_id: str, emit) -> dict:
     fingerprint = input_hash(demo_id)
     # Reuse a completed review only when its semantic fingerprint still matches.
@@ -68,46 +70,47 @@ def run(demo_id: str, emit) -> dict:
     if previous.get("input_hash") == fingerprint and (previous.get("scorecard") is not None or previous.get("skipped")):
         emit("Rehearsal and scorecard reused: script, evidence, FAQ and review prompts are unchanged.")
         return previous
-    demo = store.load(demo_id)
-    und = store.read_json(demo_id, "understanding.json") or {}
-    plan = store.read_json(demo_id, "plan.json") or {}
-    n = int(demo.get("settings", {}).get("rehearsal_questions", 12) or 12)
-    if n <= 0:
-        emit("Rehearsal skipped (0 questions configured).")
-        out = {"questions": [], "coverage": None, "gaps": [], "skipped": True, "input_hash": fingerprint}
-        store.write_json(demo_id, "rehearsal.json", out)
-        return out
     # Prefer already-built FAQ answers as the rehearsal question set and compute their coverage.
     # faq.py:run owns those answers; this branch scores the script without replaying a customer session.
     bank = store.read_json(demo_id, "faq.json") or {}
-    if bank.get("entries"):
-        results = [{"question": e["question"], "answered": e["answered"], "fact_ids": e["fact_ids"], "answer": e["answer"], "escalate": ""} for e in bank["entries"]]
+    entries = [entry for entry in bank.get("entries", []) if not entry.get("rejected")]
+    entries.sort(key=lambda entry: entry.get("source") != "customer")
+    if entries:
+        fingerprint_now = faq._registry_hash(demo_id)
+        results = []
+        for entry in entries:
+            result = entry
+            # A customer answer may be retained for an older pinned visit. Its
+            # question is useful now; its old answer is not current evidence.
+            if entry.get("registry_hash", bank.get("registry_hash", fingerprint_now)) != fingerprint_now:
+                emit(f"Rechecking an earlier question against current evidence: “{entry['question'][:70]}”")
+                try:
+                    result = qa.answer(demo_id, entry["question"], [], None, voice_it=False, learn=False)
+                except Exception as exc:
+                    result = {"answered": False, "answer": "", "fact_ids": [], "escalate": f"error: {exc}"}
+            results.append({"question": entry["question"], "answered": bool(result.get("answered")), "fact_ids": result.get("fact_ids", []), "answer": result.get("answer", ""), "source": entry.get("source", entry.get("origin", "document")), "asked_count": entry.get("asked_count", 0), "escalate": result.get("escalate", "")})
         answered = sum(1 for r in results if r["answered"])
         gaps = [r["question"] for r in results if not r["answered"]]
         out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False, "from_bank": True, "input_hash": fingerprint}
-        emit(f"Rehearsal uses the FAQ bank: {answered}/{len(results)} answered from the sources — scoring the script…")
+        emit(f"Rehearsal uses customer questions first, then uploaded questions: {answered}/{len(results)} answered — scoring the script…")
         out["scorecard"] = score_script(demo_id, emit)
         store.write_json(demo_id, "rehearsal.json", out)
         store.log(demo_id, "rehearsal", {"coverage": out["coverage"], "gaps": gaps, "from_bank": True})
         return out
     # When no FAQ bank exists, generate questions and answer them one at a time.
     # qa.py:answer supplies each result; failures are kept as unanswered rows rather than hidden.
-    emit(f"Rehearsing: generating {n} likely customer questions…")
-    content = f"PRODUCT: {json.dumps(und.get('product', {}))}\nCUSTOMER: {plan.get('customer_persona','')}\nCONCERNS: {json.dumps(plan.get('concerns', []))}\nFACT CLAIMS AVAILABLE: {[f['claim'] for f in und.get('facts', [])][:80]}\nGenerate {n} questions."
-    try:
-        qs = claude.structured(QGEN_SYSTEM, content, schemas.RehearsalQuestions, max_tokens=4000).questions[:n]
-    except Exception as e:
-        raise RuntimeError(f"Rehearsal question generation failed: {claude.describe_error(e)}") from e
+    emit("Rehearsing: the bank is empty, so generating at most five sample questions…")
+    qs = generate_questions(demo_id, 5)[:5]
     results = []
     for i, q in enumerate(qs, 1):
         emit(f"Rehearsal {i}/{len(qs)}: “{q[:70]}”")
         try:
-            r = qa.answer(demo_id, q, [], None)
+            r = qa.answer(demo_id, q, [], None, voice_it=False, learn=False)
             results.append({"question": q, "answered": r["answered"], "fact_ids": r["fact_ids"], "answer": r["answer"], "escalate": r["escalate"]})
         except Exception as e:
             results.append({"question": q, "answered": False, "fact_ids": [], "answer": "", "escalate": f"error: {e}"})
     # Count answered questions and gaps, attach the script scorecard, then save the review.
-    # store.py:write_json writes rehearsal.json; bundle.py:build remains the following graph stage.
+    # These diagnostics do not change facts, the customer-question bank or the published bundle.
     answered = sum(1 for r in results if r["answered"])
     gaps = [r["question"] for r in results if not r["answered"]]
     out = {"questions": results, "coverage": round(answered / max(1, len(results)), 2), "gaps": gaps, "skipped": False, "input_hash": fingerprint}

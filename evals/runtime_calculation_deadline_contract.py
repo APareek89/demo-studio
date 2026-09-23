@@ -26,6 +26,9 @@ tool={"tool":"calculator","operation":"emi","inputs":[
     {"name":"tenure","value":4,"unit":"years","source_id":"customer","quote":"4 years"},
 ]}
 calculated=calculate(tool,[],question)
+SNAPSHOT_ID="kb_"+"1"*24
+def saved_artifact(demo_id,name,*args):
+    return {"id":SNAPSHOT_ID,"facts":[],"competitors":[]} if name==f"knowledge/snapshots/{SNAPSHOT_ID}.json" else {}
 
 async def graph_case(mode):
     control=TurnControl(time.monotonic()+0.75)
@@ -38,9 +41,9 @@ async def graph_case(mode):
             return TurnDecision(action="tools",tool_calls=[request])
         entered.set();release.wait(2)
         return TurnDecision(action="answer",answered=True,sentences=[{"text":"The payment is 999999 rupees.","fact_ids":[],"kind":"fact"}])
-    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.store.load",return_value={"settings":{}}),patch("server.runtime_graph.store.read_json",return_value={}),patch("server.knowledge.retrieve",return_value={"evidence":[],"snapshot_id":""}),patch("server.runtime_graph.previous_state",return_value={}),patch("server.runtime_graph.claim_turn",return_value=control),patch("server.runtime_graph.checkpoint",side_effect=lambda state,mark:marks.append(mark)),patch("server.runtime_graph.usage.trace"),patch("server.runtime_graph.runtime.structured",side_effect=provider):
-        started=time.monotonic();task=asyncio.create_task(rg.run_turn("contract-unused",{"session_id":"deadline","turn_id":mode,"question":question}))
-        while not entered.is_set():await asyncio.sleep(0.005)
+    with patch("server.runtime_graph.config.MOCK_LLM",False),patch("server.runtime_graph.store.load",return_value={"settings":{}}),patch("server.runtime_graph.store.read_json",side_effect=saved_artifact),patch("server.knowledge.retrieve",return_value={"evidence":[],"snapshot_id":SNAPSHOT_ID}),patch("server.runtime_graph.previous_state",return_value={}),patch("server.runtime_graph.claim_turn",return_value=control),patch("server.runtime_graph.checkpoint",side_effect=lambda state,mark:marks.append(mark)),patch("server.runtime_graph.usage.trace"),patch("server.runtime_graph.runtime.structured",side_effect=provider):
+        started=time.monotonic();task=asyncio.create_task(rg.run_turn("contract-unused",{"session_id":"deadline","turn_id":mode,"question":question,"snapshot_id":SNAPSHOT_ID,"skip_bank":True}))
+        while not entered.is_set() and not task.done():await asyncio.sleep(0.005)
         if mode=="cancel":control.cancelled.set()
         try:
             final=await task

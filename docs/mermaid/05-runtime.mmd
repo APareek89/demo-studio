@@ -2,28 +2,35 @@
 flowchart TD
   START["Customer starts Explore or Browse<br/>[ASK · welcome Voice mode switch]<br/>default on iff continuous voice and no mute=1; typing always available"]:::ask
   MODE["Connect session socket for guide speech<br/>[FUNCTION · startLive / runtime_live.py]<br/>voice on: one capture request; off: mic.set false, no permission prompt<br/>player mic button toggles capture without reconnecting"]:::fn
-  INPUT["Continuous PCM capture + local speech onset<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
-  STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>partials stop playback; stable final dispatches one question"]:::data
+  INPUT["Continuous PCM capture<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>raw levels/VAD only supply timing; cup impulses cannot stop narration<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
+  STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>meaningful partial/final confirms speech and stops playback<br/>empty, punctuation or noise annotations do not interrupt; stable final submits one question"]:::data
   INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual customer wording; optional website field, up to 5 URLs"]:::fn
   FILM["Optional opening film when selected by the existing flow<br/>[FUNCTION · playIntroFilm]<br/>native-fit video + Skip below; hide slide shell<br/>end/error/Skip restores player; obsolete run cannot resume"]:::fn
   OVERVIEW["Grounded overview in the selected voice<br/>[DATA · bundle.runtime.overview]<br/>10–15 second target measured from generated audio"]:::data
   PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order reviewed slides; explicit priority revision may revisit selected seen proof"]:::agent
-  ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>initial pitch: first unseen fundamental before three-proof limit<br/>player fallback mirrors one-stop move; refinements/revisits unchanged"]:::fn
+  ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>new default: first fundamental + buyer order, extend proofs to measured 180s<br/>pre-tour Q&A views do not shorten counted speech; reviewed closing stays intact<br/>explicit short/refine exempt; legacy seen policy unchanged; fallback keeps full route"]:::fn
   PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching callout with each line<br/>speak closing statements; skip legacy question checkins without speech or wait<br/>save checkin_skipped: legacy_question on the run"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Short acknowledgement when useful<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data
+  CACHE{"Candidate saved answer before graph?<br/>[FUNCTION · run_turn → faq.match]<br/>same pinned snapshot + registry hash; eligible citations<br/>skip_bank bypasses; rejected tombstones never match"}:::dec
+  CACHEVALID{"Cached words valid for this question?<br/>[FUNCTION · _validated_bank_result]<br/>ordinary scope/date-aware retrieval + exact-text grounding<br/>eligible citations, conditions and word cap; fresh URL/search requests bypass"}:::dec
+  HIT["Exact cached answer + available clip<br/>[DATA · faq.json]<br/>from_bank=true; increment asked_count<br/>unchanged validated words; derive current evidence view; no reasoning call"]:::data
   SITES["Session customer sites<br/>[DATA · profile + current turn + runtime checkpoint]<br/>bare domains require approved public suffix; document filenames excluded<br/>explicit scheme/www retain admission; deduplicate up to 8; later supplied URLs retained<br/>default sites off; opt-in adds enabled product URL sources only"]:::data
   RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local ranking; request-local universal scope; pinned condition dependencies"]:::fn
-  REASON["Answer, clarify, or request bounded tool<br/>[AGENT · runtime_graph.reason]<br/>history + explicit profile + evidence + CUSTOMER_URLS + tool results<br/>empty evidence: one lookup before model; first decline: lookup before validation"]:::agent
+  REASON["Answer, clarify, or request bounded tool<br/>[AGENT · runtime_graph.reason]<br/>history + explicit profile + evidence + CUSTOMER_URLS + tool results<br/>explicit URL verification first; explicit search remains available<br/>empty evidence / first clean decline: customer site first, public search if still unanswered"]:::agent
   CHOICE{"Decision action?<br/>[FUNCTION · after_reason]"}:::dec
-  TOOLS["Calculator or allowed session customer site<br/>[FUNCTION · runtime_tools.py]<br/>exact operand units/basis + formula; safe scoped pages + whole table passages<br/>live W facts require host attribution; never enter approved registry<br/>max 2 tool rounds / 4 calls; graph deadline 12 seconds"]:::fn
+  TOOLS["Dispatch bounded tool<br/>[FUNCTION · runtime_tools.py]<br/>calculator / allowed customer-site lookup / bounded public-web search<br/>max 2 tool rounds / 4 calls; graph deadline 12 seconds"]:::fn
+  WEB["Public-web search: explicit or approved-evidence fallback<br/>[FUNCTION + LIBRARY · web_search / Gemini discovery]<br/>one discovery call + at most two secured public page fetches, ≤5 seconds<br/>whole fetched passages become attributed turn-local W evidence; snippets/prose do not<br/>one public search; no greeting/control/CTA/clarify/calculator-only/outage fallback<br/>negated or quoted search excluded; no facts or FAQ mutation"]:::fn
+  LOCALTOOL["Calculator or allowed customer-site lookup<br/>[FUNCTION · calculate / source_lookup]<br/>exact operand units/basis + formula; scoped public pages and whole table passages<br/>live W facts require cited-host attribution; never enter approved registry"]:::fn
   VALIDATE["Validate sentences; retain supported portion<br/>[FUNCTION · runtime_graph.validate]<br/>grounding → everyday substitutions → exact live attribution → rendered word cap<br/>unmapped blocked term: technical_term feedback; technical requests bypass register only"]:::fn
   REPAIR["One optional composition repair<br/>[AGENT · runtime_graph._repair_composition]<br/>same approved evidence + precise rejection feedback; no tools or CTA<br/>only if at least 3 seconds remain inside the same 12-second deadline"]:::agent
   RECHECK["Revalidate repaired sentences<br/>[FUNCTION · validate_decision]<br/>accept fully checked useful content; partial repairs retain rejection telemetry<br/>otherwise retain original supported result; cancellation always wins"]:::fn
   PLAN["Checkpoint a versioned DeliveryPlan<br/>[DATA · runtime_state.py]<br/>snapshot, turn/utterance ID, result + plain_language_substitutions<br/>next interaction; no audio in graph"]:::data
+  LEARN["Learn only after validation<br/>[FUNCTION · faq.cache_answer / record_unknown]<br/>clean sourced answer: customer entry, reviewed=false, count + pin/hash<br/>decline or I-will-not-guess: deduplicated customer unknown, never a fact<br/>no clarification, provider/repair failure, live-web or calculation answer cached"]:::fn
+  BANK["Asked and answered review<br/>[DATA · faq.json + understanding.json unknowns]<br/>content change resets card approval; count/audio-only update does not<br/>Coach reads customer unknowns as evidence gaps"]:::data
   VIEW["Evidence view: stay / jump / none<br/>[FUNCTION · deck.route_for + player.js]<br/>runtime-v1 answer starts directly on its evidence; no extra spoken bridge<br/>turn ownership and original return point stay stable"]:::fn
-  SPEAK["Request selected-voice streaming delivery<br/>[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]<br/>validated answer first, PCM chunks second; cancel closes its socket"]:::data
-  LISTEN["Answer/decline reply window: 3000 ms<br/>[FUNCTION · holdConversation]<br/>chips + focused typing; voice-mode capture open<br/>speech onset, typing or a chip cancels the owned timer"]:::fn
+  SPEAK["Request selected-voice streaming delivery<br/>[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]<br/>validated answer first, PCM chunks second; cancel closes its socket<br/>completed customer answer clip saved through voice text-hash cache<br/>late clip can attach only to the same entry and exact words"]:::data
+  LISTEN["Answer/decline reply window: 3000 ms<br/>[FUNCTION · holdConversation]<br/>chips + focused typing; voice-mode capture open<br/>confirmed speech, typing or a chip cancels the owned timer"]:::fn
   WAIT["Clarification or active customer turn<br/>[ASK · reply / Continue / configured CTA]<br/>no silence timer; wait for customer action"]:::ask
   CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing"]:::fn
   RESUME["Resume saved narration; interrupted line starts again<br/>[FUNCTION · resumeAfterQA]<br/>automatic return: recorded back_to_demo only, else silence<br/>auto_resumed + listen window saved on the turn"]:::fn
@@ -43,18 +50,25 @@ flowchart TD
   STT --> STOP
   PLAY -- "typed interruption" --> STOP
   STOP --> ACK
-  STOP --> RETRIEVE --> REASON --> CHOICE
-  CHOICE -- "tools, or first decline with unused customer lookup; within budget" --> TOOLS --> REASON
+  STOP --> CACHE
+  CACHE -- "candidate" --> CACHEVALID
+  CACHEVALID -- "valid unchanged answer" --> HIT --> PLAN
+  CACHEVALID -- "invalid or fresh-check request" --> RETRIEVE
+  CACHE -- "miss or skip_bank" --> RETRIEVE --> REASON --> CHOICE
+  CHOICE -- "tools, empty evidence or first clean decline; within shared budget" --> TOOLS
+  TOOLS -- "explicit search or unanswered after customer site" --> WEB --> REASON
+  TOOLS -- "calculator / supplied site" --> LOCALTOOL --> REASON
   CHOICE -- "answer or clarification" --> VALIDATE --> PLAN
   VALIDATE -- "empty or rejected substantive draft; budget remains" --> REPAIR --> RECHECK --> PLAN
   REASON -- "deadline or unavailable" --> FAIL --> PLAN
+  PLAN -. "fresh validated question result" .-> LEARN --> BANK
   PLAN --> VIEW --> SPEAK
   SPEAK -- "clarification" --> WAIT
   SPEAK -- "answer or decline" --> LISTEN
   LISTEN -- "3 seconds of silence; same run/turn" --> RESUME
-  LISTEN -- "speech onset / typing / chip; cancel timer" --> WAIT
+  LISTEN -- "confirmed speech / typing / chip; cancel timer" --> WAIT
   PLAY -- "stop-closing text complete" --> PLAY
-  WAIT -- "question or reply" --> RETRIEVE
+  WAIT -- "question or reply" --> CACHE
   WAIT -- "changed priority" --> CORRECT --> PERSONALIZE
   WAIT -- "Continue" --> RESUME --> PLAY
   WAIT -- "next step" --> CTA --> SAVE

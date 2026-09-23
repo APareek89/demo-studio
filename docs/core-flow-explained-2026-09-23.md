@@ -7,6 +7,8 @@ Written for Anand by an orchestrator session that ran two read-only tracer agent
 
 Line numbers are from the working tree on branch `codex/creta-conversational-demo` at commit `ba448ff`. Where a doc and the code disagree, the code wins and the disagreement is named. This document explains existing behaviour and proposes two changes; it changes no code.
 
+> **WP11 current-flow note (23 September):** The trace below preserves the earlier implementation and Creta examples. Current code now follows Understand → Coach → Plan → Author → Deck → uploaded-question FAQ → Align, then Voice → Bundle; rehearsal runs only from the explicit Rehearse action. Asked and answered caches eligible customer answers against the pinned snapshot/registry, exposes customer unknowns as evidence gaps, and retains rejected-answer tombstones. Both REST and live runtime check this cache before graph reasoning. Raw level/VAD events no longer cancel live narration: meaningful partial/final transcript text confirms speech, so empty/noise-only events do not interrupt. See [the current build/run guide](DEMO_BUILD_AND_RUN.md) and [current diagrams](architecture-flow.html) for these implemented changes; the historical check-in and question-generation descriptions below are not the current player contract.
+
 ---
 
 ## 0. Three things to know before you read the Creta demo — [Orchestrator]

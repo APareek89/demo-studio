@@ -152,7 +152,10 @@ def run(check):
             store.write_json(did, "deck-overrides.json", {})
             store.write_json(did, "script.json", script)
             store.write_json(did, "deck.json", built)
-            result = bundle.build(did, lambda _: None)
+            # This two-line media fixture tests packaging, not narration length.
+            # Real-WAV minimum and atomic failure live in minimum_narration_contract.py.
+            with patch.object(bundle.narration, "require_minimum", return_value={"minimum_seconds": 180, "seconds": 180, "sufficient": True, "basis": "synthetic media fixture", "measured": False, "route": []}):
+                result = bundle.build(did, lambda _: None)
             published = next(s for s in result["slides"] if s.get("segment_id") == "engine")
             check("bundle: both media URLs and own part boxes are resolved", len(published["media"]) == 2 and all(m["image_url"].startswith(f"/media/{did}/") and m["image_parts"] for m in published["media"]))
             check("bundle: legacy image_url and new first media URL agree", published["image_url"] == published["media"][0]["image_url"])

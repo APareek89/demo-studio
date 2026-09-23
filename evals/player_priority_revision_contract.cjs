@@ -15,7 +15,7 @@ function setup(plan=selected, status='ready') {
   const previous = [{slide:bundle.slides.find(s=>s.segment_id==='standard-safety-suite')}];
   const S={plan:previous,seg:0,run:3,covered:new Set(bundle.slides.map(s=>s.id)),profile:{focus:[]},pitch:{},pendingRefinement:{status,afterSegment:null,seen:request.seen_segments,plan:structuredClone(plan)}};
   const calls={notes:[],spoken:[],closed:[],waits:0};
-  const api=vm.runInNewContext(code,{S,el:{cite:{textContent:'sources: fixture'}},waitFor:()=>{calls.waits++;throw new Error('Route narration must not wait');},library:()=>bundle.slides.filter(s=>s.segment_id),topicOf:s=>s.topics?.[0],renderProgress(){},prefetch(){},addMsg:(...v)=>calls.notes.push(v),speak:async text=>{calls.spoken.push(text);return true;},
+  const api=vm.runInNewContext(code,{S,bundle,el:{cite:{textContent:'sources: fixture'}},waitFor:()=>{calls.waits++;throw new Error('Route narration must not wait');},library:()=>bundle.slides.filter(s=>s.segment_id),topicOf:s=>s.topics?.[0],renderProgress(){},prefetch(){},addMsg:(...v)=>calls.notes.push(v),speak:async text=>{calls.spoken.push(text);return true;},
     newRun:()=>++S.run,showSlideView:()=>({setRevealed(){}}),
     playLines:async(sl,run,view,from,upto)=>{calls.spoken.push(...sl.lines.slice(from,upto).map(l=>l.text));return true;},closeFlow:async(run,line)=>calls.closed.push({run,line})});
   return {S,api,calls,previous};

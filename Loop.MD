@@ -1,5 +1,79 @@
 # Loop.MD — Demo Studio
 
+## WP11 — customer question cache and approved finishing changes · 23 September 2026
+
+Loop stays **off**. Read answers uploaded FAQ questions only; clean customer answers/audio are cached against pinned evidence, while declines become counted customer unknowns. Rehearsal is on demand. The package also implements transcript-confirmed interruption, automatic cited public search, measured three-minute default narration, citation retry/bulk restore, the approved Marine layout and Visuals-card palette approval.
+
+- `evals/qa_deck.py`: **365/365**.
+- `evals/qa_accept.py`: **24/24**.
+- `evals/smoke_mock.py`: **both phases + on-demand rehearsal**.
+- `evals/faq_cache_contract.py`: **27/27**.
+- `evals/faq_scope_contract.py`: **19/19**.
+- `evals/faq_review_contract.py`: **42/42**.
+- `evals/faq_plain_language_contract.py`: **21/21**.
+- `evals/cached_plain_language_contract.py`: **9/9**.
+- `evals/build_hardening_contract.py`: **28/28**.
+- `evals/coach_contract.py`: **26/26**.
+- `evals/coach_align_contract.py`: **21/21**.
+- `evals/plan_playbook_contract.py`: **19/19**.
+- `evals/generation_contract.py`: **58/58**.
+- `evals/align_review_contract.py`: **51/51**.
+- `evals/knowledge_contract.py`: **60/60**.
+- `evals/source_contract.py`: **39/39**.
+- `evals/fact_identity_contract.py`: **17/17**.
+- `evals/fact_retry_contract.py`: **12/12**.
+- `evals/voice_lock_contract.py`: **27/27**.
+- `evals/runtime_graph_contract.py`: **130/130**.
+- `evals/runtime_repair_contract.py`: **106/106**.
+- `evals/runtime_customer_sites_contract.py`: **20/20**.
+- `evals/runtime_plain_language_contract.py`: **24/24**.
+- `evals/runtime_web_search_contract.py`: **34/34**.
+- `evals/runtime_tools_replay_contract.py`: **20/20**.
+- `evals/runtime_delivery_contract.py`: **27/27**.
+- `evals/runtime_operational_failure_contract.py`: **13/13**.
+- `evals/runtime_calculation_deadline_contract.py`: **17/17**.
+- `evals/live_transport_contract.py`: **24/24**.
+- `evals/sarvam_stream_contract.py`: **17/17**.
+- `evals/runtime_conversation_contract.py`: **18/18**.
+- `evals/session_input_mode_contract.py`: **8/8**.
+- `evals/runtime_metrics_contract.py`: **19/19**.
+- `evals/deck_media_contract.py`: **45/45**.
+- `evals/deck_media_align_contract.py`: **15/15**.
+- `evals/speech_style_contract.py`: **30/30**.
+- `evals/narrative_roles_contract.py`: **14/14**.
+- `evals/visual_theme_contract.py`: **12/12**.
+- `evals/minimum_narration_contract.py`: **25/25**.
+- `evals/pitch_fundamental_contract.py`: **12/12**.
+- `evals/pitch_grounding_contract.py`: **47/47**.
+- `evals/pitch_priority_revision_contract.py`: **7/7**.
+- `evals/pitch_delivery_contract.py`: **18/18**.
+- `evals/qa_policy_contract.py`: **12/12**.
+- `evals/align_progress_contract.mjs`: **9/9**.
+- `evals/align_timing_contract.cjs`: **11/11**.
+- `evals/coach_align_ui_contract.cjs`: **9/9**.
+- `evals/live_voice_contract.mjs`: **74/74**.
+- `evals/player_customer_sites_contract.cjs`: **19/19**.
+- `evals/player_focus_contract.cjs`: **21/21**.
+- `evals/player_fundamental_contract.cjs`: **10/10**.
+- `evals/player_listen_contract.cjs`: **16/16**.
+- `evals/player_media_contract.cjs`: **7/7**.
+- `evals/player_priority_revision_contract.cjs`: **11/11**.
+- `evals/readiness_ui_contract.mjs`: **5/5**.
+- `evals/sse_client_contract.mjs`: **4/4**.
+- `evals/player_contract.html`: **76/76**.
+- `evals/ui_layout_contract.py`: **103/103**.
+- `evals/public_search_ui_contract.py`: **30/30**.
+
+Python compilation passes for 50 changed/new files; JavaScript syntax passes for 10; diff checks are clean. All nine Mermaid source/HTML copies agree. Full inventory and review limits: `docs/wp11-implementation-report-2026-09-23.md`.
+
+All backend checks used `MOCK_LLM=1`, isolated data/graph storage and blocked outbound sockets; recorded outbound attempts were zero. Browser runs used an isolated headless profile, muted audio, synthetic providers and blocked external requests. No paid Read, TTS, public-web lookup or physical microphone acceptance was performed. Loop remains off.
+
+The deliberately short generic fixtures in `qa_deck.py`, `smoke_mock.py`, `align_review_contract.py` and `deck_media_contract.py` supply a clearly labelled synthetic duration at their bundle-assembly boundary. The actual publication gate is tested separately in `minimum_narration_contract.py` with distinct cited passages, readable WAV recordings, short/missing/corrupt clips and unchanged prior bundle/snapshot/version on rejection. There is no production mock bypass. `visual_theme_contract.py` also publishes the real recorded-duration fixture.
+
+The approved Marine layout was checked at 1440, 850 and 390 px, including all three palettes. The latest non-protected CRETA slides sl04/sl08 and the authorized 854×480 Downloads video were inspected without altering source data. The video plays muted at desktop/390 px with only the film and Skip visible, 16 px apart. Mock/visual checks do not establish live prose quality, acoustic recognition or public-site availability.
+
+Protected-path comparison covers 7,766 files. All protected demo files are byte-identical, with no additions or removals. One pre-existing server log, `output/deploy-2026-09-23/local-server-final.log`, changed during concurrent activity (17:28 modification time, ordinary API/voice-list GETs). This implementation did not write or restore that log or operate port 8896. The whole output tree is therefore not claimed unchanged.
+
 ## Sales Trainer WP10 review fixes — 23 September 2026
 
 Loop stays **off**. WP10 covers nested origin tags, recoverable USP errors and first-stop deduplication, retained approved Planner references, preserved legacy check-in assets with silent playback skipping, the two cabin-first prompt fixes, complete proxy citations, three-minute defaults and customer-site filename filtering. The confirmed C2 strings remain unchanged and the four input/decision documents remain intentionally tracked. The separately authorized film change gives video its own view with Skip below it; selective Align rebuilds remain pending and are not part of these passes.

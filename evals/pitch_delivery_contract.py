@@ -23,7 +23,8 @@ lines=[{'id':'cabin-L1','text':'Selected variants offer ventilated front seats.'
        {'id':'safety-L1','text':'Six airbags come as standard across the range.','fact_ids':['F2'],'audio':'audio/safety-reviewed.wav','visual':{'kind':'image','ref':'im02'},'delivery':{'tone':'calm'}}]
 segments=[{'id':sid,'role':'proof','title':sid.title(),'topic':sid,'lines':[copy.deepcopy(line)],'deeper':[{**copy.deepcopy(line),'audio':'/media/fixture/audio/deeper-reviewed.wav'}],'checkin':'Is that enough detail for now?','checkin_audio':'audio/checkin-reviewed.wav'} for sid,line in zip(['cabin','safety'],lines)]
 files={'understanding.json':{'product':{'name':'Fixture'},'facts':facts,'images':[],'shots':[]},'plan.json':{'voice':{},'segments':[],'ctas':[]},'script.json':{'segments':segments},'deck.json':{'slides':[{'id':'sl-'+s['id'],'segment_id':s['id']} for s in segments]}}
-files['bundle.json']={'id':'fixture','version':2,'knowledge_snapshot_id':'kb_fixture','product':{'name':'Fixture'},'facts':copy.deepcopy(facts),'segments':copy.deepcopy(segments),'pitch':{},'voice':{'persona':{'persona_name':'Priya'}},'ctas':[],'slides':copy.deepcopy(files['deck.json']['slides']),'media':{'images':[]},'language':'en-IN'}
+files['bundle.json']={'id':'fixture','version':2,'knowledge_snapshot_id':'kb_111111111111111111111111','product':{'name':'Fixture'},'facts':copy.deepcopy(facts),'segments':copy.deepcopy(segments),'pitch':{},'voice':{'persona':{'persona_name':'Priya'}},'ctas':[],'slides':copy.deepcopy(files['deck.json']['slides']),'media':{'images':[]},'language':'en-IN'}
+files['knowledge/snapshots/kb_111111111111111111111111.json']={'id':'kb_111111111111111111111111','facts':copy.deepcopy(facts),'competitors':[]}
 profile={'why':'I care about family safety and warmer afternoons.'}
 proposal=schemas.PitchPlan(customer_state='stated_need',decision_frame='We will talk about your needs before we take a long tour through every area and explain all the options.',follow_up_question='',primary_outcome='Family safety',focus_topics=['safety'],route=[schemas.RouteStep(segment_id='safety',bridge='Next: Safety.'),schemas.RouteStep(segment_id='cabin')],advance='Review the choices.',custom_batches=[schemas.CustomBatch(text=lines[0]['text'],fact_ids=['F1'])])
 with ExitStack() as stack:
@@ -71,11 +72,11 @@ with ExitStack() as stack:
         uncut=pitch.plan_pitch('fixture',long_reply,voice_it=False)
     check('long customer reply is never arbitrarily clipped into a context claim',not any(line.get('step')=='frame' for segment in uncut['personalized_segments'] for line in segment['lines']) and uncut['personalized_segments'][0]['context_preface_omitted']=='unsafe_quote_or_segment_budget')
     with patch.object(pitch.runtime,'structured',return_value=proposal) as pinned_model:
-        before=pitch.plan_pitch('fixture',profile,voice_it=False,expected_snapshot_id='kb_fixture',expected_demo_version=2)
+        before=pitch.plan_pitch('fixture',profile,voice_it=False,expected_snapshot_id='kb_111111111111111111111111',expected_demo_version=2)
         prompt_before=pinned_model.call_args.args[0]
         files['understanding.json']['facts']=[];files['script.json']['segments']=[];files['plan.json']={'voice':{'persona_name':'Unpublished'}};files['deck.json']['slides']=[]
         with patch.object(store,'load',return_value={'approvals':{'script':False},'settings':{'language':'hi-IN'}}) as draft:
-            after=pitch.plan_pitch('fixture',profile,voice_it=False,expected_snapshot_id='kb_fixture',expected_demo_version=2)
+            after=pitch.plan_pitch('fixture',profile,voice_it=False,expected_snapshot_id='kb_111111111111111111111111',expected_demo_version=2)
         check('unpublished edits and false draft approval cannot alter live published pitch',before==after and prompt_before==pinned_model.call_args.args[0] and not draft.called and after['demo_version']==2)
     with patch.object(pitch.runtime,'structured',side_effect=AssertionError('Must reject before model')):
         blocked=[]

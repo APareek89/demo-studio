@@ -8,4 +8,14 @@ assert.equal(timing(24.2, 20.1, false, true), "24 s planned / 20 s mixed measure
 assert.equal(timing(24.2, 20.1), "24 s planned / 20 s estimated");
 assert.equal(timing(null, 0), "no planned time / 0 s estimated");
 assert.equal(timing(undefined, undefined), "no planned time / not voiced yet");
-console.log("5/5 Align timing contracts passed");
+const h = (tag, attrs, ...children) => ({tag,attrs,children});
+const panelCode = source.slice(source.indexOf("function narrationMinimumPanel"), source.indexOf("export function renderAlign"));
+const panel = vm.runInNewContext(panelCode + "; narrationMinimumPanel", {h});
+const text = node => typeof node === 'object' ? node.children.map(text).join('') : String(node);
+assert.equal(panel(undefined), null);
+assert.ok(text(panel({seconds:125,minimum_seconds:180,basis:'estimated',measured:false})).includes('55 more seconds'));
+assert.ok(text(panel({seconds:190,minimum_seconds:180,basis:'mixed',measured:false})).includes('mixed measured/estimated'));
+assert.ok(text(panel({seconds:190,minimum_seconds:180,basis:'estimated',measured:false})).includes('publication requires at least three measured minutes'));
+assert.ok(text(panel({seconds:180,minimum_seconds:180,basis:'measured',measured:true})).includes('Recorded narration meets the minimum.'));
+assert.ok(text(panel({seconds:180,measured:true})).includes('Opening film and customer questions do not count'));
+console.log("11/11 Align timing contracts passed");

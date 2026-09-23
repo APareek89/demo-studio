@@ -7,6 +7,18 @@ from fastapi.testclient import TestClient
 from server.app import app
 from server import store
 
+# This broad plumbing gate keeps its deliberately tiny generic mock script.
+# The real 180-second publication boundary (including missing/corrupt WAVs and
+# unchanged prior publication) is exercised in minimum_narration_contract.py.
+# Scope this synthetic duration to the test process; production has no MOCK bypass.
+from unittest.mock import patch as _duration_patch
+from server.agents import narration as _narration
+_duration_fixture = _duration_patch.object(_narration, "require_minimum", return_value={
+    "minimum_seconds": 180, "seconds": 180, "sufficient": True,
+    "measured": False, "basis": "synthetic plumbing fixture", "route": []})
+_duration_fixture.start()
+print("DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract")
+
 c = TestClient(app)
 def status(i): return c.get(f"/api/demos/{i}").json()["demo"]["status"]
 def wait(i, want, secs=90):
@@ -44,6 +56,7 @@ for card in c.get(f"/api/demos/{i}").json()["demo"]["approvals"].keys():
 assert all(c.get(f"/api/demos/{i}").json()["demo"]["approvals"].values()); print("approved all")
 r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready", 180); print("build → ready ok")
+assert c.get(f"/api/demos/{i}").json()["rehearsal"] is None, "Build must not run rehearsal"
 b = c.get(f"/api/demos/{i}/bundle").json()
 assert b["segments"], "no segments"; assert "visual_asset" not in b, "3D field should be gone"; assert b.get("slides") and b["slides"][0]["kind"] == "hero_open" and b["slides"][-1]["kind"] == "hero_close", "deck slides missing from bundle"; print("bundle v", b["version"], "segments", len(b["segments"]), "closing", len(b["closing"]), "ctas", [x["label"] for x in b["ctas"]])
 audio = [l["audio"] for s in b["segments"] for l in s["lines"]]; print("lines with audio", sum(1 for a in audio if a), "/", len(audio))
@@ -51,7 +64,9 @@ if audio and audio[0]:
     r = c.get(audio[0]); assert r.status_code == 200 and r.headers["content-type"].startswith("audio"), "audio not served"
 r = c.post(f"/api/demos/{i}/run/qa", json={"question": "what is the kerb weight?", "history": [], "profile": {"name": "Anand"}}); assert r.status_code == 200, r.text
 qa = r.json(); assert qa["answered"] is False and qa["fact_ids"] == [], qa; print("qa don't-guess ok:", qa["answer"][:50])
-und = store.read_json(i, "understanding.json"); assert any(u["origin"] == "runtime" for u in und["unknowns"]), "runtime unknown not recorded"
+und = store.read_json(i, "understanding.json")
+assert any(u.get("source") == "customer" and u.get("origin") == "runtime" and u.get("asked_count", 0) >= 1 for u in und["unknowns"]), "customer unknown/count not recorded"
+assert not c.get(f"/api/demos/{i}").json()["demo"]["approvals"]["faq"], "new customer evidence gap must require review"
 r = c.post(f"/api/demos/{i}/run/pitch", json={"profile": {"name": "Anand", "why": "replace my Activa for a 25 km commute", "focus": []}, "refine": False}); assert r.status_code == 200, r.text
 pp = r.json(); assert pp["route"] and all(s["segment_id"] for s in pp["route"]), pp; print("pitch route", [s["segment_id"] for s in pp["route"]], "state", pp["customer_state"])
 r = c.post(f"/api/demos/{i}/run/lead", json={"phone": "my number is 98765 43210", "question": "kerb weight", "profile": {"name": "Anand"}, "consent": True, "consent_text": "By sharing your number you agree the dealership may call you about this product."}); assert r.status_code == 200 and r.json()["lead"]["phone"] == "9876543210", r.text; print("lead saved")
@@ -69,12 +84,13 @@ r = c.post(f"/api/demos/{i}/evals", json={"questions": ["what is the kerb weight
 assert c.get(f"/api/demos/{i}/evals").json(), "evals not listed"
 r = c.post(f"/api/demos/{i}/run/session", json={"profile": {"name": "Anand"}, "questions": ["kerb weight"], "cta": "Book a test ride", "intent": 61}); assert r.status_code == 200
 r = c.post(f"/api/demos/{i}/feedback", json={"message": "say the warranty before the price", "context": {"segment": "x"}}); assert r.status_code == 200, r.text; print("feedback reply:", r.json()["reply"][:60])
-reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])), "scorecard", reh and reh.get("scorecard") and reh["scorecard"].get("total"))
+reh = c.get(f"/api/demos/{i}").json()["rehearsal"]; assert reh is None, "customer questions must not start rehearsal"; print("rehearsal coverage", reh and reh.get("coverage"), "gaps", reh and len(reh.get("gaps", [])), "scorecard", reh and reh.get("scorecard") and reh["scorecard"].get("total"))
 b2 = c.get(f"/api/demos/{i}/bundle").json(); assert b2.get("pitch") and "language" in b2, "bundle lacks pitch/language"; assert "fillers" in b2 and "faq" in b2 and b2.get("timeline"), "bundle lacks fillers/faq/timeline"; assert b2.get("intro_video") and b2["intro_video"]["enabled"], "intro film missing from bundle"; assert b2["fillers"].get("before_video", {}).get("audio") and b2["fillers"].get("after_video", {}).get("audio"), "film handoff audio missing"; assert not any(v["name"] == "opening.mp4" for v in b2["media"]["videos"]), "intro film leaked into the media pool"; r = c.patch(f"/api/demos/{i}", json={"settings": {"intro_video": "off"}}); assert r.status_code == 200; print("fillers", len(b2["fillers"]), "faq", len(b2["faq"]), "timeline", b2["timeline"]["total_seconds"]); roles = [s["role"] for s in b2["segments"]]; print("roles", roles)
 print("SMOKE OK", i)
 # --- settings, multi-language, observability (added 2026-09-03) ---
 r = c.patch(f"/api/demos/{i}", json={"settings": {"audience": "everyday", "languages": ["en-IN", "hi-IN"], "pitch_minutes": 3}}); assert r.status_code == 200, r.text
 st = c.get(f"/api/demos/{i}").json()["demo"]["settings"]; assert st["languages"] == ["en-IN", "hi-IN"] and st["language"] == "en-IN" and st["audience"] == "everyday", st; print("settings ok", st["languages"], st["audience"])
+r = c.post(f"/api/demos/{i}/approve/faq"); assert r.status_code == 200, r.text  # reviewed the new customer evidence gap
 r = c.post(f"/api/demos/{i}/build"); assert r.status_code == 200, r.text
 wait(i, "ready", 180)
 b3 = c.get(f"/api/demos/{i}/bundle").json(); assert b3.get("languages") == ["en-IN", "hi-IN"] and "hi-IN" in b3.get("alt_languages", {}), b3.get("languages"); alt = b3["alt_languages"]["hi-IN"]
@@ -85,3 +101,20 @@ from server.agents import author
 und = store.read_json(i, "understanding.json"); bad = {"segments": [{"id": "s1", "role": "intro", "title": "t", "topic": "t", "lines": [{"id": "l1", "text": "It has a 3.4 kWh battery and 15A charging with IDC range.", "fact_ids": [], "visual": None, "card": "none"}], "checkin": "", "deeper": []}], "closing": [], "intake_q1": "", "intake_q2": ""}
 iss = author.validate(bad, und, "everyday"); assert any("jargon" in x.lower() or "kwh" in x.lower() for x in iss), iss; print("jargon check ok:", iss[:2])
 print("SMOKE OK (phase 2)", i)
+
+# Rehearsal is an explicit diagnostic action and preserves the built publication.
+_before_rehearsal = c.get(f"/api/demos/{i}").json()
+assert _before_rehearsal["rehearsal"] is None, "second Build must not start rehearsal"
+_published = c.get(f"/api/demos/{i}/bundle").json()
+r = c.post(f"/api/demos/{i}/rehearsal"); assert r.status_code == 200 and r.json()["started"], r.text
+_deadline = time.monotonic() + 30
+while time.monotonic() < _deadline:
+    _after_rehearsal = c.get(f"/api/demos/{i}").json()
+    _stage = _after_rehearsal["demo"].get("stages", {}).get("rehearsal", {}).get("status")
+    if _stage == "done": break
+    assert _stage != "error", _after_rehearsal["demo"]["stages"]["rehearsal"]
+    time.sleep(.05)
+assert _stage == "done" and _after_rehearsal["rehearsal"]["scorecard"], _after_rehearsal
+assert _after_rehearsal["demo"]["status"] == "ready" and _after_rehearsal["demo"]["approvals"] == _before_rehearsal["demo"]["approvals"]
+assert c.get(f"/api/demos/{i}/bundle").json() == _published, "diagnostics republished the bundle"
+print("SMOKE OK (on-demand rehearsal)", i)

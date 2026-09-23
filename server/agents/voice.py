@@ -4,9 +4,12 @@ from __future__ import annotations
 import base64
 import contextvars
 import hashlib
+import io
 import json
 import os
 import threading
+import tempfile
+import wave
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
@@ -54,6 +57,9 @@ GCLOUD_LANG = {"hinglish": "hi-IN"}
 # Resolve a provider-compatible speaker name from the demo settings and language.
 # Returns a name used by render_line; llm/sarvam.py:tts or llm/gemini.py:tts receives it.
 def voice_name_for(demo: dict, provider: str) -> str:
+    selected = demo.get("_runtime_voice") or {}
+    if selected.get("provider") == provider and selected.get("name"):
+        return selected["name"]
     st = demo.get("settings", {})
     lang = st.get("language", "en-IN") or "en-IN"
     if provider == "sarvam":
@@ -70,14 +76,31 @@ def voice_name_for(demo: dict, provider: str) -> str:
     return v
 
 
+def runtime_demo(demo_id: str, language: str | None = None) -> dict:
+    """Resolve one runtime voice from the published bundle, never an unpublished edit."""
+    demo = store.load(demo_id)
+    bundle = store.read_json(demo_id, "bundle.json") or {}
+    selected = bundle.get("voice") or {}
+    settings = {**demo.get("settings", {})}
+    settings["language"] = language or bundle.get("language") or settings.get("language", "en-IN")
+    if selected:
+        alternate = (bundle.get("alt_languages") or {}).get(settings["language"]) or {}
+        provider = alternate.get("voice_provider") or selected.get("provider") or provider_for(demo)
+        settings.update(tts_provider=provider, voice_locked=True)
+        demo["_runtime_voice"] = {**selected, "provider": provider}
+        demo["_runtime_persona"] = selected.get("persona") or {}
+    demo["settings"] = settings
+    return demo
+
+
 # Read the Plan persona and language to build speech-style instructions.
 # Returns guidance for llm/gemini.py:tts; it does not rewrite the narration text.
-def _style(demo_id: str) -> str:
+def _style(demo_id: str, *, demo: dict | None = None) -> str:
     plan = store.read_json(demo_id, "plan.json") or {}
-    v = plan.get("voice", {})
+    demo = demo or store.load(demo_id)
+    v = demo.get("_runtime_persona", plan.get("voice", {}))
     if not v:
         return "Speak as a warm, welcoming product guide, natural conversational pace, Indian English:"
-    demo = store.load(demo_id)
     lang = demo.get("settings", {}).get("language", "en-IN")
     lang_note = "" if lang in ("", "en-IN") else f" The text is in {lang}; pronounce it natively."
     return f"Speak as {v.get('persona_description','a warm product guide')} Tone: {v.get('tone','warm and direct')}. Natural conversational pace, no rush.{lang_note}"
@@ -184,8 +207,11 @@ def _cache_key(provider: str, voice: str, lang: str, text: str, delivery_identit
 
 # Combine the Plan voice persona with normalized per-line delivery instructions.
 # Returns cache identity data using speech_style.py:normalize, so different delivery does not reuse stale audio.
-def _delivery_identity(demo_id: str, delivery: dict | None) -> dict | None:
-    persona = (store.read_json(demo_id, "plan.json") or {}).get("voice") or {}
+def _delivery_identity(demo_id: str, delivery: dict | None, *, demo: dict | None = None) -> dict | None:
+    if demo is not None and "_runtime_persona" in demo:
+        persona = demo["_runtime_persona"]
+    else:
+        persona = (store.read_json(demo_id, "plan.json") or {}).get("voice") or {}
     if not persona and not delivery:
         return None  # Existing unstyled caches remain compatible.
     return {"delivery": speech_style.normalize(delivery), "persona": persona}
@@ -196,12 +222,36 @@ def _delivery_identity(demo_id: str, delivery: dict | None) -> dict | None:
 def _cached(demo_id: str, text: str, demo: dict, lang: str | None = None, provider: str | None = None, *, delivery: dict | None = None) -> str | None:
     lang = lang or demo.get("settings", {}).get("language", "en-IN")
     provider = provider or provider_for(demo)
-    key = _cache_key(provider, voice_name_for(demo, provider), lang, speech_style.prepare(text, delivery)["text"], _delivery_identity(demo_id, delivery))
+    key = _cache_key(provider, voice_name_for(demo, provider), lang, speech_style.prepare(text, delivery)["text"], _delivery_identity(demo_id, delivery, demo=demo))
     for ext in ("wav", "mp3", "m4a"):
         path = store.path(demo_id, "audio", f"{key}.{ext}")
         if path.is_file() and path.stat().st_size:
             return f"audio/{key}.{ext}"
     return None
+
+
+def save_streamed_clip(demo_id: str, text: str, pcm: bytes, *, speaker: str, language: str,
+                       sample_rate: int = 24000, delivery: dict | None = None, demo: dict | None = None) -> str | None:
+    """Commit only a complete PCM utterance under the existing text/voice identity."""
+    if not pcm or len(pcm) % 2 or sample_rate != 24000:
+        return None
+    prepared = speech_style.prepare(text, delivery)
+    key = _cache_key("sarvam", speaker, language, prepared["text"], _delivery_identity(demo_id, delivery, demo=demo))
+    target = store.path(demo_id, "audio", f"{key}.wav")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    output = io.BytesIO()
+    with wave.open(output, "wb") as wav:
+        wav.setnchannels(1); wav.setsampwidth(2); wav.setframerate(sample_rate); wav.writeframes(pcm)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=target.parent, suffix=".tmp", delete=False) as handle:
+            temporary = handle.name
+            handle.write(output.getvalue())
+        os.replace(temporary, target)
+    finally:
+        if temporary and os.path.exists(temporary):
+            os.unlink(temporary)
+    return f"audio/{key}.wav"
 
 
 # Mark a speech content-policy refusal so it cannot be retried through another provider.
@@ -241,14 +291,14 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
         if _tripped(provider):
             last_err = RuntimeError(f"{provider} skipped: {_TRIPPED.get(provider, (0, 'provider cooldown'))[1]}")
             continue
-        key = _cache_key(provider, voice, lang, text, _delivery_identity(demo_id, delivery))
+        key = _cache_key(provider, voice, lang, text, _delivery_identity(demo_id, delivery, demo=demo))
         # Dispatch this line to the selected speech adapter with its supported voice and pacing controls.
         # llm/sarvam.py:tts and llm/gemini.py:tts return bytes; this function saves the successful clip locally.
         try:
             if provider == "sarvam":
                 data, ext = sarvam.tts(text, voice, lang, pace=prepared["pace"]) if prepared["pace"] != 1.0 else sarvam.tts(text, voice, lang)
             elif provider == "gemini":
-                style = _style(demo_id)
+                style = _style(demo_id, demo=demo)
                 if delivery:
                     style += f" Subtly {speech_style.normalize(delivery)['tone']}; pace {prepared['pace']}, never theatrical."
                 data, ext = gemini.tts(text, voice, style)
@@ -321,6 +371,7 @@ def render_script(demo_id: str, emit) -> dict:
 # Returns the value checked by graph.py:voice; image-only changes do not enter this hash.
 def input_hash(demo_id: str) -> str:
     """Identity/settings/text hash used only to skip an unchanged voice stage."""
+    from . import faq
     demo = store.load(demo_id)
     script = store.read_json(demo_id, "script.json") or {}
     # Keep only speech text, normalized delivery and verification status for each hash input.
@@ -336,7 +387,7 @@ def input_hash(demo_id: str) -> str:
     inputs = {"settings": {key: settings.get(key) for key in ("tts_provider", "voice_name", "sarvam_speaker", "voice_locked", "language", "languages")},
               "persona": (store.read_json(demo_id, "plan.json") or {}).get("voice"), "lines": spoken,
               "questions": [script.get("intake_q1", ""), *[segment.get("checkin", "") for segment in script.get("segments", [])]],
-              "faq": [entry.get("answer", "") for entry in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "fillers": FILLERS}
+              "faq": [entry.get("answer", "") for entry in faq.current_entries(store.read_json(demo_id, "faq.json") or {})], "fillers": FILLERS}
     return hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
@@ -349,7 +400,16 @@ def _render_bank_and_fillers(demo_id: str, emit, demo: dict) -> None:
         return
     # Read FAQ answers and replace locked-voice references with only exact cache matches.
     # faq.py:run provides the text; locked voices use _cached to reject audio for a different speaker or answer.
+    from . import faq
     bank = store.read_json(demo_id, "faq.json") or {}
+    bank["entries"] = faq.current_entries(bank)
+
+    def merge_audio():
+        # Runtime learning may add an entry while a slow voice render is running.
+        # Merge only completed audio for unchanged words, never replace its bank.
+        for entry in bank.get("entries", []):
+            if entry.get("audio"):
+                faq.update_audio(demo_id, entry["id"], entry.get("answer", ""), entry["audio"])
     locked = bool(demo.get("settings", {}).get("voice_locked"))
     if locked:
         for entry in bank.get("entries", []):
@@ -368,7 +428,7 @@ def _render_bank_and_fillers(demo_id: str, emit, demo: dict) -> None:
     if not todo:
         if locked:
             if bank:
-                store.write_json(demo_id, "faq.json", bank)
+                merge_audio()
             store.write_json(demo_id, "fillers.json", fill)
         return
     emit(f"Recording {len(todo)} FAQ answers and filler lines…")
@@ -387,7 +447,7 @@ def _render_bank_and_fillers(demo_id: str, emit, demo: dict) -> None:
                 obj[key] = None
                 errors.append(str(exc)[:180])
     if bank:
-        store.write_json(demo_id, "faq.json", bank)
+        merge_audio()
     store.write_json(demo_id, "fillers.json", fill)
     emit(f"FAQ bank and fillers recorded ({done}/{len(todo)}).")
     # Persist completed bank audio, then fail the stage if any required FAQ or filler clip is still missing.

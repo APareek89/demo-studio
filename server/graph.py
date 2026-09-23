@@ -2,7 +2,7 @@
 
     START ─▶ router ─▶ understand ─▶ coach ─▶ plan ─▶ author ─▶ deck ─▶ faq ─▶ align_enter ─▶ align_wait ◀─┐ (interrupt: waits for you)
                  │                                                                   │  message / approve / revise ─┘
-                 │                                                                   └─ build ─▶ voice ─▶ rehearsal ─▶ bundle ─▶ finish ─▶ END
+                 │                                                                   └─ build ─▶ voice ─▶ bundle ─▶ finish ─▶ END
                  ├─ build  ─▶ author (skips when done) ─▶ deck (skips when done) ─▶ faq …
                  └─ revise ─▶ understand | coach | plan | author | deck | faq (then back to align_wait)
 
@@ -104,6 +104,7 @@ def align_enter(state: DemoState) -> dict:
     d = state["demo_id"]
     orch._set_status(d, "align")
     if state.get("entry") == "read":
+        orch.approve_empty_faq(d)
         text = align.opening_message(d)
         orch._append_conversation(d, "agent", text)
         runlog.event(d, "Agent opening message", text)
@@ -158,7 +159,7 @@ def author(state: DemoState) -> dict:
     d = state["demo_id"]
     orch._set_status(d, "building" if state.get("entry") == "build" else "reading")
     if state.get("entry") == "build":
-        runlog.event(d, "BUILD started", "All six cards approved. Voice (narration + FAQ answers + fillers) → rehearsal → bundle.")
+        runlog.event(d, "BUILD started", "All six cards approved. Voice (narration + uploaded FAQ answers + fillers) → bundle. Rehearsal is available on demand.")
         if store.load(d)["stages"]["author"]["status"] == "done":
             return {}
     instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "author" else ""
@@ -188,14 +189,6 @@ def voice(state: DemoState) -> dict:
             and (store.read_json(state["demo_id"], "script.json") or {}).get("voice_input_hash") == orch.voice.input_hash(state["demo_id"])):
         return {}  # A visual-only revision does not re-record approved speech.
     orch._run_stage(state["demo_id"], "voice", "")
-    return {}
-
-
-# Run the build-time question coverage and script review step.
-# Input: demo ID. Output: rehearsal.json; this is not a live microphone/customer-session test.
-# Linked: server/orchestrator.py:_run_stage calls server/agents/rehearsal.py:run.
-def rehearsal(state: DemoState) -> dict:
-    orch._run_stage(state["demo_id"], "rehearsal", "")
     return {}
 
 
@@ -234,8 +227,14 @@ def after_plan(state: DemoState) -> str:
 def after_author(state: DemoState) -> str:
     if state.get("entry") == "build" and all(store.load(state["demo_id"])["approvals"].values()):
         d = state["demo_id"]
-        return "voice" if store.load(d)["stages"]["faq"]["status"] == "done" else "faq"  # a stale bank re-answers before voicing
+        return "voice" if _faq_current(d) else "faq"
     return "faq"
+
+
+def _faq_current(demo_id: str) -> bool:
+    """Legacy guessed-question banks reconcile once before current reuse."""
+    return (store.load(demo_id)["stages"]["faq"]["status"] == "done"
+            and (store.read_json(demo_id, "faq.json") or {}).get("question_policy") == orch.faq.QUESTION_POLICY)
 
 
 # Prepare likely questions and answers, reusing a completed bank unless explicitly retried.
@@ -244,18 +243,16 @@ def after_author(state: DemoState) -> str:
 def faq(state: DemoState) -> dict:
     d = state["demo_id"]
     explicit_retry = state.get("entry") == "revise" and state.get("revise_stage") == "faq"
-    if store.load(d)["stages"]["faq"]["status"] == "done" and not explicit_retry:
+    if _faq_current(d) and not explicit_retry:
         return {}
     orch._set_status(d, "building" if state.get("entry") == "build" else "reading")
     orch._run_stage(d, "faq", state.get("instruction", "") if explicit_retry else "")
     return {}
 
 
-# Send voiced content to build-time review; that review owns its own reuse check.
-# Input: graph state. Output: the Rehearsal node name.
-# Linked: server/agents/rehearsal.py:input_hash decides whether the earlier score can be reused.
+# Publish voiced content; optional rehearsal is a separate explicit action.
 def after_voice(state: DemoState) -> str:
-    return "rehearsal"  # Semantic input caching decides whether scoring is reusable.
+    return "bundle"
 
 
 # Choose between publishing approved content and returning draft content for human review.
@@ -280,7 +277,6 @@ def build_graph() -> StateGraph:
     g.add_node("deck", deck)
     g.add_node("faq", faq)
     g.add_node("voice", voice)
-    g.add_node("rehearsal", rehearsal)
     g.add_node("bundle", bundle)
     g.add_node("finish", finish)
     g.add_edge(START, "router")
@@ -291,8 +287,7 @@ def build_graph() -> StateGraph:
     g.add_edge("author", "deck")
     g.add_conditional_edges("deck", after_author, {"voice": "voice", "faq": "faq"})
     g.add_conditional_edges("faq", after_faq, {"voice": "voice", "align_enter": "align_enter"})
-    g.add_conditional_edges("voice", after_voice, {"rehearsal": "rehearsal", "bundle": "bundle"})
-    g.add_edge("rehearsal", "bundle")
+    g.add_conditional_edges("voice", after_voice, {"bundle": "bundle"})
     g.add_edge("bundle", "finish")
     g.add_edge("finish", END)
     return g
@@ -390,6 +385,29 @@ def start_build(demo_id: str) -> None:
         raise RuntimeError("This demo is already being processed — wait for it to finish")
     orch._set_status(demo_id, "building")
     _submit(demo_id, {"type": "build"}, {"entry": "build", "pending": None}, "build")
+
+
+def _run_rehearsal(demo_id: str) -> None:
+    """Review on request without replacing the build checkpoint or published status."""
+    try:
+        orch._run_stage(demo_id, "rehearsal", "")
+        runlog.phase_done(demo_id, "rehearsal")
+        events.publish(demo_id, "phase_done", phase="rehearsal")
+    except Exception as exc:
+        events.publish(demo_id, "phase_error", phase="rehearsal", error=str(exc)[:400])
+        store.log(demo_id, "error-rehearsal", {"error": str(exc)})
+
+
+def start_rehearsal(demo_id: str) -> None:
+    """Serialize an explicit rehearsal with Read/Build without resuming their graph."""
+    with _lock:
+        if is_running(demo_id):
+            raise RuntimeError("This demo is already being processed — wait for it to finish")
+        if not (store.read_json(demo_id, "script.json") or {}).get("segments"):
+            raise RuntimeError("Prepare a script before rehearsing")
+        worker = threading.Thread(target=_run_rehearsal, args=(demo_id,), daemon=True, name=f"rehearsal-{demo_id}")
+        _threads[demo_id] = worker
+        worker.start()
 
 
 # Send a requested stage revision back through the human review workflow.

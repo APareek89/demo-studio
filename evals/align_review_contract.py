@@ -221,7 +221,10 @@ def run(check, _demo_id=None):
         check("align preview: reading current narration drops unverified lines without rewriting design artifacts",
               [line["id"] for line in cards["deck"]["slides"][1]["lines"]] == ["proof-L1"]
               and store.path(did, "deck.json").read_bytes() == deck_bytes and store.path(did, "deck-overrides.json").read_bytes() == override_bytes)
-        built = bundle.build(did, lambda _message:None)
+        # This one-line fixture proves reviewed content survives assembly. The
+        # real recorded-duration publication boundary has its own contract.
+        with patch("server.agents.narration.require_minimum", return_value={"minimum_seconds":180,"seconds":180,"sufficient":True,"basis":"synthetic review fixture"}):
+            built = bundle.build(did, lambda _message:None)
         check("align preview: bundle and review agree on current text, citations, empty questions and rejected-line filtering",
               built["slides"][1]["lines"][0]["text"] == cards["deck"]["slides"][1]["lines"][0]["text"]
               and built["slides"][1]["lines"][0]["fact_ids"] == [] and built["slides"][1]["fact_ids"] == []

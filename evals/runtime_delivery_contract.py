@@ -17,8 +17,8 @@ def run(check, _demo_id=None):
         stack.enter_context(patch.dict(os.environ, {"MOCK_LLM":"1", "CLOUD_SYNC":"0", "STORAGE_BACKEND":"local",
                                                   "DEMO_STUDIO_DATA":str(Path(tmp)/"demos"), "DEMO_STUDIO_GRAPH_DB":str(Path(tmp)/"graph.sqlite")}))
         import httpx
-        from server import cloud, config, schemas, store, usage
-        from server.agents import deck, pitch, qa, voice
+        from server import cloud, config, knowledge, schemas, store, usage
+        from server.agents import deck, faq, pitch, qa, voice
         from server.app import app
         from server.llm import sarvam
         stack.enter_context(patch.multiple(config, MOCK_LLM=True, DATA_DIR=Path(tmp)/"demos", GRAPH_DB=Path(tmp)/"graph.sqlite"))
@@ -38,7 +38,11 @@ def run(check, _demo_id=None):
                             {"id":"boot","title":"Boot","topic":"boot","role":"proof","lines":[{"id":"boot-L1","text":"The boot is listed at 382 L.","fact_ids":["F014"]}],"deeper":[]}],"closing":[]}
         store.write_json(did,"deck.json",{"slides":raw_slides});store.write_json(did,"script.json",script)
         question="How much boot space is listed?";answer="The boot is listed at 382 L."
-        store.write_json(did,"faq.json",{"entries":[{"id":"Q01","question":question,"answer":answer,"fact_ids":["F014"],"answered":True,"audio":"audio/ack.wav","slide_id":"sl02"}]})
+        snapshot_id=knowledge.snapshot(did)["id"]
+        registry_hash=faq._registry_hash(did,snapshot_id=snapshot_id)
+        store.write_json(did,"faq.json",{"snapshot_id":snapshot_id,"registry_hash":registry_hash,
+            "entries":[{"id":"Q01","source":"document","snapshot_id":snapshot_id,"registry_hash":registry_hash,
+                        "question":question,"answer":answer,"fact_ids":["F014"],"answered":True,"audio":"audio/ack.wav","slide_id":"sl02"}]})
         audio=store.path(did,"audio/ack.wav");audio.parent.mkdir(exist_ok=True);media_bytes=b"recorded acknowledgement fixture";audio.write_bytes(media_bytes)
         originals={name:store.path(did,name).read_bytes() for name in ("deck.json","script.json")}
         check("runtime delivery: fixture reproduces old raw-deck stay versus reviewed-script jump",
@@ -85,7 +89,7 @@ def run(check, _demo_id=None):
                     check(f"runtime delivery: {endpoint} allows cached media and health on the same ASGI loop while provider waits",entered and delivered_while_pending and responses[0].status_code==200 and responses[0].content==media_bytes and responses[1].status_code==200)
                     check(f"runtime delivery: {endpoint} offloads provider and preserves tracing context",capture.get("thread")!=loop_thread and capture.get("demo")==did and capture.get("stage")=="runtime")
                     check(f"runtime delivery: {endpoint} response remains successful",response.status_code==200)
-                    if endpoint=="tts":check("runtime delivery: TTS retains chosen-voice strictness and language",capture["kwargs"]=={"lang":"hi-IN","strict":True})
+                    if endpoint=="tts":check("runtime delivery: TTS retains chosen-voice strictness and language",capture["kwargs"].get("lang")=="hi-IN" and capture["kwargs"].get("strict") is True and capture["kwargs"].get("demo",{}).get("id")==did)
                     if endpoint=="qa":check("runtime delivery: QA retains live-provider behavior",capture["kwargs"].get("live") is True)
                     if endpoint=="pitch":check("runtime delivery: pitch retains profile and refinement",capture["args"]==(did,{"why":"Room for family"},True))
                     if endpoint=="stt":check("runtime delivery: STT retains uploaded content and language",capture["args"]==(b"a"*1024,"input.wav","hi-IN","audio/wav"))

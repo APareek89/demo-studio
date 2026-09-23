@@ -42,7 +42,7 @@ class Operand(BaseModel):
 
 
 class ToolRequest(BaseModel):
-    tool: Literal["calculator", "source_lookup"]
+    tool: Literal["calculator", "source_lookup", "web_search"]
     operation: Literal["emi", "fuel_cost", "difference", "sum", "product", "divide", "percentage"] = "difference"
     inputs: list[Operand] = Field(default_factory=list)
     url: str = Field(default="", description="A URL explicitly supplied by the customer; relevant links within that source may be read")

@@ -330,6 +330,60 @@ def copy_on_edit(demo_id: str, previous_fact: dict, candidate: dict, *, competit
     return result
 
 
+CITATION_REVIEW_REQUIRED = "Citation quote/locator was not verified against this source revision."
+
+
+def citation_verified(demo_id: str, fact: dict, source: dict, *, attempts: int = 2) -> bool:
+    """Retry the retained-source read, without weakening the exact-quote rule."""
+    if not source.get("evidence_path"):
+        return False
+    quote = _norm(fact.get("source", {}).get("quote"))
+    if not quote or not fact.get("source", {}).get("locator"):
+        return False
+    for _ in range(min(2, max(1, attempts))):
+        extraction = store.read_json(demo_id, source["evidence_path"]) or {}
+        if quote in _norm(extraction.get("text")):
+            return True
+    return False
+
+
+def review_held_citations(demo_id: str, action: str) -> dict:
+    """Recheck or explicitly restore only citation-held rows, preserving other exclusions."""
+    if action not in {"retry", "restore"}:
+        raise ValueError("Choose retry or restore")
+    with store._lock(demo_id):
+        demo = store.load(demo_id)
+        sources = {source["id"]: source for source in demo.get("sources", [])}
+        und = store.read_json(demo_id, "understanding.json") or {}
+        conflict_ids = {fid for conflict in und.get("knowledge", {}).get("conflicts", [])
+                        if conflict.get("status") in {"unresolved", "suppressed"} for fid in conflict.get("fact_ids", [])}
+        changed, held, skipped = [], [], []
+        for fact, _ in store.fact_entries(und):
+            meta = fact.get("knowledge", {})
+            if fact.get("approved", True) or meta.get("review_required") != CITATION_REVIEW_REQUIRED:
+                continue
+            if fact["id"] in conflict_ids or meta.get("excluded_by_precedence") or meta.get("conflict_status") in {"unresolved", "suppressed"}:
+                skipped.append(fact["id"])
+                continue
+            source = sources.get(fact.get("source", {}).get("ref"), {})
+            same_revision = source.get("revision", "") == meta.get("source_revision", "")
+            if action == "retry" and (not same_revision or source.get("crawl_cached") or not citation_verified(demo_id, fact, source)):
+                held.append(fact["id"])
+                continue
+            fact["approved"] = True
+            if action == "retry":
+                meta.pop("review_required", None)
+            else:
+                # Human approval does not turn a mismatched citation into a
+                # machine-verified citation; preserve the reason and the override.
+                meta["citation_override"] = {"at": store.now(), "source": "owner_bulk_restore"}
+            changed.append(fact["id"])
+        if changed:
+            store.write_json(demo_id, "understanding.json", und)
+        return {"action": action, "changed_fact_ids": changed, "still_held": held, "skipped_conflicts": skipped,
+                "attempts_per_fact": 2 if action == "retry" else 0}
+
+
 def reconcile(demo_id: str, understanding: dict, previous: dict | None = None) -> dict:
     """Assign never-reused IDs and preserve reviewed corrections on identical evidence.
 
@@ -440,11 +494,9 @@ def reconcile(demo_id: str, understanding: dict, previous: dict | None = None) -
                 fact.setdefault("knowledge", {})["review_required"] = "Earlier source revision was not fetched this read; review freshness."
             if not src.get("evidence_path"):
                 continue
-            extraction = store.read_json(demo_id, src["evidence_path"]) or {}
-            quote = _norm(fact.get("source", {}).get("quote"))
-            if not quote or quote not in _norm(extraction.get("text")) or not fact.get("source", {}).get("locator"):
+            if not citation_verified(demo_id, fact, src):
                 fact["approved"] = False
-                fact.setdefault("knowledge", {})["review_required"] = "Citation quote/locator was not verified against this source revision."
+                fact.setdefault("knowledge", {})["review_required"] = CITATION_REVIEW_REQUIRED
     rows = list(store.fact_entries(und))
     for i, (a, owner_a) in enumerate(rows):
         for b, owner_b in rows[i + 1:]:

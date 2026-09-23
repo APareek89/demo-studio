@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
 const source = fs.readFileSync(new URL("../web/player/live-voice.js", import.meta.url), "utf8");
-const { LiveVoiceClient, pcmToFloat } = await import("data:text/javascript;base64," + Buffer.from(source).toString("base64"));
+const { LiveVoiceClient, pcmToFloat, meaningfulTranscript } = await import("data:text/javascript;base64," + Buffer.from(source).toString("base64"));
 const tick = () => new Promise(resolve => setTimeout(resolve, 0));
 let passes = 0;
 function check(name, condition) { assert.ok(condition, name); passes++; console.log("PASS", name); }
@@ -281,5 +281,36 @@ async function routeAfterOverview(plan) {
   const dropped = new LiveVoiceClient({url:"/run/live",sessionId:"capture-disconnected",env});
   await dropped.startCapture(); const track = dropped.stream.getTracks()[0]; dropped.socket.close();
   check("unexpected disconnect falls back to text mode while releasing active capture", dropped.inputMode === "text" && !dropped.mic && track.stopped && !dropped.ready); dropped.close();
+}
+{
+  const starts = [], heard = [];
+  const noise = new LiveVoiceClient({url:"/run/live",sessionId:"noise-guard",env,onSpeechStart:event=>{starts.push(event);noise.interrupt({preservePlanning:true});},onTranscript:event=>heard.push(event)});
+  await noise.startCapture(); noise.receive({type:"mic.ready",input_generation:noise.inputGeneration});
+  const reading = noise.speak("Keep this narration playing."); await tick(); const owner = noise.delivery;
+  noise.receive({type:"audio.chunk",turn_id:owner.turnId,utterance_id:owner.utteranceId,seq:0,audio});
+  const playing = Context.sources.at(-1), sentBefore = noise.socket.sent.filter(event=>event.type==="turn.interrupt").length;
+  for (let index=0;index<8;index++) noise.worklet.port.onmessage({data:{pcm:new Int16Array(320).buffer,rms:0.6}});
+  noise.worklet.port.onmessage({data:{pcm:new Int16Array(320).buffer,rms:0}});
+  noise.receive({type:"input.speech_start",input_generation:noise.inputGeneration,input_id:"impact"});
+  noise.receive({type:"input.speech_end",input_generation:noise.inputGeneration,input_id:"impact"});
+  noise.receive({type:"transcript.partial",input_generation:noise.inputGeneration,input_id:"impact",text:"[noise]"});
+  noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"impact",text:"..."});
+  check("cup impulse, raw VAD and noise-only transcripts preserve active narration",noise.delivery===owner && !playing.stopped && starts.length===0 && heard.length===0 && noise.socket.sent.filter(event=>event.type==="turn.interrupt").length===sentBefore);
+  noise.receive({type:"transcript.partial",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty"});
+  check("first meaningful partial interrupts immediately without waiting for a final",starts.length===1 && starts[0].source==="partial" && playing.stopped && noise.delivery===null && await reading===false && heard.at(-1).text==="Warranty");
+  noise.receive({type:"input.speech_start",input_generation:noise.inputGeneration,input_id:"question"});
+  noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty?"});
+  const nextReading = noise.speak("The next reviewed line."); await tick(); const nextOwner = noise.delivery;
+  noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty?"});
+  check("a duplicated final cannot interrupt the next owned narration",noise.delivery===nextOwner && starts.length===1);
+  noise.receive({type:"input.speech_start",input_generation:noise.inputGeneration,input_id:"short"});
+  noise.receive({type:"input.speech_end",input_generation:noise.inputGeneration,input_id:"short",voice_ended:456});
+  const endedAt = noise.endpointAt;
+  noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"short",text:"हाँ"});
+  check("short final-only speech interrupts and preserves its endpoint timing",starts.length===2 && starts.at(-1).source==="final" && await nextReading===false && heard.at(-1).text==="हाँ" && heard.at(-1).endpoint_received_at===endedAt && heard.at(-1).server_endpoint_received_at===456);
+  const explicit = noise.speak("Explicit controls remain immediate."); await tick(); noise.interrupt();
+  check("explicit interruption still cancels without transcript confirmation",await explicit===false && noise.mic);
+  check("speech confirmation keeps words and numbers while discarding annotations",["yes","हाँ","20","stop","[noise] warranty"].every(meaningfulTranscript) && ["","   ","...","[noise]","(silence)","<inaudible>","[background noise]"].every(text=>!meaningfulTranscript(text)));
+  noise.close();
 }
 console.log(`Live voice: ${passes}/${passes} passed (fake devices and transports only)`);

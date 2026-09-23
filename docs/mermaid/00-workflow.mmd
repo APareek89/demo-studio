@@ -16,7 +16,6 @@ graph TD;
 	deck(deck)
 	faq(faq)
 	voice(voice)
-	rehearsal(rehearsal)
 	bundle(bundle)
 	finish(finish)
 	__end__([<p>__end__</p>]):::last
@@ -35,7 +34,6 @@ graph TD;
 	faq -.-> align_enter;
 	faq -.-> voice;
 	plan -.-> author;
-	rehearsal --> bundle;
 	router -.-> align_wait;
 	router -.-> author;
 	router -.-> coach;
@@ -45,8 +43,7 @@ graph TD;
 	router -.-> understand;
 	understand --> coach;
 	coach --> plan;
-	voice -.-> bundle;
-	voice -.-> rehearsal;
+	voice --> bundle;
 	finish --> __end__;
 	align_wait -.-> align_wait;
 	classDef default fill:#f2f0ff,line-height:1.2

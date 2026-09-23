@@ -142,6 +142,47 @@ const detail = () => ({ context: player?.context(), currentCitations: host.query
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
+test('A minimum-duration bundle uses its recorded overview without live transport and resumes it after Q&A', async () => {
+  const overview = 'This is the published recorded overview counted in the narration minimum.';
+  await setup({ opening: true, voiceMode: false, hold: text => text === overview, configure: b => ({...b,
+    runtime: {version:1,narration_minimum:{minimum_seconds:180,seconds:185,measured:true,sufficient:true},overview:{text:overview,audio:audioURL(overview),slide_id:'opening',fact_ids:['f1']}}
+  }) });
+  await click('▶ Start'); await type('I need a family car.');
+  assert(env.played.at(-1) === overview && !env.played.includes('Opening first complete.'), 'No-transport mode replaced the counted overview with shorter legacy speech');
+  assert(!env.ttsCalls.includes(overview), 'Recorded overview requested new speech generation');
+  await type('What is the warranty?');
+  assert(env.calls[0].cursor.phase === 'overview', 'Question lost its overview checkpoint');
+  await click('Continue demo', '.pl-chips button');
+  assert(env.played.at(-1) === overview && env.played.filter(text=>text===overview).length===2, 'Answer did not return to the interrupted recorded overview exactly once');
+  await finishAudio(overview);
+  assert(player.context().slide === 'proof-one' && !env.played.includes('Opening first complete.') && !env.ttsCalls.includes(overview), 'Overview completion did not reach the route without legacy replay or new voice generation');
+  assert(env.maxActive===1, 'Overview return overlapped audio');
+});
+test('A legacy bundle without the narration minimum keeps its existing no-transport opening', async () => {
+  const overview = 'Legacy runtime overview.';
+  await setup({ opening:true, voiceMode:false, hold:text=>text==='Opening first complete.', configure:b=>({...b,
+    runtime:{version:1,overview:{text:overview,audio:audioURL(overview),slide_id:'opening',fact_ids:['f1']}}
+  }) });
+  await click('▶ Start'); await type('Family driving.');
+  assert(env.played.at(-1)==='Opening first complete.'&&!env.played.includes(overview),'Legacy no-transport opening changed');
+});
+
+test('Default minimum tour keeps complete Q&A-covered stops and both reviewed closing lines', async () => {
+  const overview='Recorded overview for this minimum tour.', detail='Second reviewed proof detail counted in the tour.', closingOne='The first complete reviewed closing line.', closingTwo='The second complete reviewed closing line.', advance='A shorter generated closing.';
+  await setup({opening:true,voiceMode:false,hold:text=>[overview,detail,closingOne,closingTwo].includes(text),
+    qa:async()=>answered({route:'jump',slide_id:'proof-two'}),
+    pitch:async()=>({route:['proof-one','proof-two','proof-three'].map(slide_id=>({slide_id})),advance,advance_audio:audioURL(advance),narration_minimum:{minimum_seconds:180,sufficient:true}}),
+    configure:b=>{b.runtime={version:1,narration_minimum:{minimum_seconds:180,seconds:185,measured:true},overview:{text:overview,audio:audioURL(overview),slide_id:'opening',fact_ids:['f1']}};b.slides.find(s=>s.id==='proof-two').lines.push(line('proof-two-detail',detail));const closing=slide('closing','closing',closingOne);closing.lines.push(line('closing-two',closingTwo));b.slides.splice(-1,0,closing);return b;}
+  });
+  await click('▶ Start');await type('Family driving.');await type('Show the second proof.');await click('Continue demo','.pl-chips button');await finishAudio(overview);
+  await finishAudio('First proof.');await finishAudio('Second proof.');
+  assert(env.played.at(-1)===detail,'Previously visited slide lost counted main narration');
+  await finishAudio(detail);await finishAudio('Third proof.');
+  assert(env.played.at(-1)===closingOne&&!env.played.includes(advance),'Generated advance replaced counted closing narration');
+  await finishAudio(closingOne);assert(env.played.at(-1)===closingTwo,'Second reviewed closing line was skipped');await finishAudio(closingTwo);
+  assert(button('Not yet','.pl-chips button')&&env.maxActive===1,'Complete tour lost its explicit end choice or overlapped audio');
+});
+
 test('Optional intake websites reach planning and remain available across later questions', async () => {
   const pitches = [];
   await setup({ voiceMode: false, pitch: async request => { pitches.push(snapshot(request)); return null; } });
@@ -164,7 +205,7 @@ test('Intake sites cap at five and later typed and spoken URLs append without du
   assert(player.context().profile.customer_urls.length === 5, 'Skipping intake did not retain its five-site limit');
   await type('Check one.example.com and six.example.com for warranty.');
   assert(env.calls.at(-1).profile.customer_urls.length === 6, 'Typed sites were duplicated or not appended');
-  host.querySelector('.pl-mic-row .mic').click(); await flush();
+  host.querySelector('.pl-reply .mic').click(); await flush();
   recentRecognizer().deliver('Check seven.example.com and eight.example.com and nine.example.com for service.'); await flush();
   const urls = env.calls.at(-1).profile.customer_urls;
   assert(urls.length === 8 && urls.includes('https://seven.example.com') && urls.includes('https://eight.example.com') && !urls.includes('https://nine.example.com'), 'Spoken sites did not obey the session limit');
@@ -221,7 +262,7 @@ test('Voice-mode visits still accept typed input and save the selected mode sepa
 });
 test('The player microphone button toggles mode during a text visit', async () => {
   await setup({ voiceMode: false }); await atProof();
-  let mic = host.querySelector('.pl-mic-row .mic');
+  let mic = host.querySelector('.pl-reply .mic');
   assert(mic.getAttribute('aria-pressed') === 'false', 'Text mode microphone button appears on');
   mic.click(); await flush();
   assert(mic.getAttribute('aria-pressed') === 'true' && recentRecognizer()?.started, 'Explicit microphone click did not enable voice');
@@ -303,7 +344,7 @@ test('Auto-resume uses only an existing back-to-demo clip and otherwise stays si
   }
 });
 test('Speech onset at 1200 ms cancels auto-resume and the spoken follow-up reaches QA', async () => {
-  await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush();
+  await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-reply .mic').click(); await flush();
   recentRecognizer().deliver('What is supported?'); await flush();
   const followup = recentRecognizer(); assert(followup?.started, 'Post-answer voice capture did not stay available');
   await clock.tick(1200); followup.speechStart(); await flush(); await clock.tick(4000);
@@ -344,7 +385,7 @@ test('A guide clarification keeps waiting beyond three seconds and an empty voic
   await setup({ qa: async () => answered({ next_interaction: 'clarify', clarifying_question: 'Which variant do you mean?' }) });
   await atProof(); await type('Does that feature apply?');
   assert(button('Skip this question'), 'Clarification did not expose its explicit wait');
-  host.querySelector('.pl-mic-row .mic').click(); await flush(); recentRecognizer().deliver(''); await flush();
+  host.querySelector('.pl-reply .mic').click(); await flush(); recentRecognizer().deliver(''); await flush();
   await clock.tick(30000); window.dispatchEvent(new Event('pagehide'));
   assert(button('Skip this question') && env.calls.length === 1 && env.played.filter(text => text === 'First proof.').length === 1, 'Clarification silence resumed narration or fabricated an answer');
   assert(!env.beacons.at(-1).turns[0].auto_resumed, 'Clarification was logged as an answer timeout');
@@ -424,7 +465,7 @@ test('Typing keeps later question waits closed to ambient speech until an explic
   const intake = host.querySelector('.pl-intake.open .fallback input');
   intake.value = 'I need room for our family.';
   intake.dispatchEvent(new Event('input', { bubbles: true })); await flush();
-  assert(first.aborted && !host.querySelector('.pl-mic-row .mic.on'), 'Starting to type left the existing microphone capture active');
+  assert(first.aborted && !host.querySelector('.pl-reply .mic.on'), 'Starting to type left the existing microphone capture active');
   first.deliver('Unrelated ambient media'); await flush();
   assert(env.calls.length === 0, 'Cancelled ambient speech became a customer question');
   intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
@@ -434,7 +475,7 @@ test('Typing keeps later question waits closed to ambient speech until an explic
   assert(env.calls.length === 1 && env.calls[0].question === 'What is the warranty?' && env.recognizers.length === 1, 'Typed Q&A or its confirmation reopened ambient capture');
   await click('Continue demo');
   assert(player.context().slide === 'proof-one' && env.played.filter(text => text === 'First proof.').length === 2 && env.recognizers.length === 1, 'Resuming after typed Q&A discarded its line or input preference');
-  const mic = host.querySelector('.pl-mic-row .mic');
+  const mic = host.querySelector('.pl-reply .mic');
   assert(mic && !mic.disabled, 'Typing hid or disabled the explicit microphone control');
   mic.click(); await flush(); const explicit = recentRecognizer();
   assert(explicit !== first && explicit.started, 'Explicit mic tap did not resume voice mode');
@@ -458,7 +499,7 @@ test('Typing preference survives Restart and intake microphone explicitly restor
 });
 
 test('Question mode holds its place after 30 seconds of silence', async () => {
-  await setup(); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush(); await clock.tick(30000);
+  await setup(); await atProof(); host.querySelector('.pl-reply .mic').click(); await flush(); await clock.tick(30000);
   assert(player.context().slide === 'proof-one', 'Question mode advanced the narrative without an explicit continue');
   assert(env.calls.length === 0, 'Silence was submitted as a question');
 });
@@ -473,7 +514,7 @@ test('A typed clarification is accepted once with conversation history', async (
   assert(env.played.includes('Do you mean the manual or automatic?'), 'Clarification was never asked');
   window.dispatchEvent(new Event('pagehide'));
   assert(env.beacons.at(-1).turns.at(-1).response_kind === 'clarification', 'Clarification was saved as a factual answer');
-  host.querySelector('.pl-mic-row .mic').click(); await flush();
+  host.querySelector('.pl-reply .mic').click(); await flush();
   const clarificationRecognition = recentRecognizer();
   await type('The automatic, please.');
   assert(env.calls.length === 2 && env.calls[1].question === 'Which transmission is that?', 'Clarification did not retain the original question for QA');
@@ -587,7 +628,7 @@ test('Booking links retain optional consent and invalid CTA URLs never become ac
   }
 });
 test('A late speech result cannot answer the wait after a slide skip', async () => {
-  await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush(); const old = recentRecognizer();
+  await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-reply .mic').click(); await flush(); const old = recentRecognizer();
   await click('proof-two', '.pl-progress button');
   assert(player.context().slide === 'proof-two', 'Fixture skip did not reach second proof');
   old.deliver('Yes'); await flush();

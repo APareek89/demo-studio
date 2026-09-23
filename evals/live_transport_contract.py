@@ -66,7 +66,7 @@ async def settle():
 
 async def main():
     socket = Socket()
-    with patch.object(runtime_live.store, "exists", return_value=True), patch.object(runtime_live, "DeliveryCoordinator", Delivery), patch.object(runtime_live, "cancel_turn"), patch.object(runtime_live, "run_turn", fake_turn), patch("server.llm.sarvam_stream.RealtimeSTT", Adapter), patch.object(runtime_live.usage, "trace"):
+    with patch.object(runtime_live.store, "exists", return_value=True), patch.object(runtime_live, "DeliveryCoordinator", Delivery), patch.object(runtime_live, "cancel_turn") as cancelled, patch.object(runtime_live, "run_turn", fake_turn), patch("server.llm.sarvam_stream.RealtimeSTT", Adapter), patch.object(runtime_live.usage, "trace"):
         task = asyncio.create_task(runtime_live.live(socket, "dm_test0001"))
         await socket.put(type="session.start", mic=False, input_mode="text")
         check("text session opens no provider", not Adapter.instances)
@@ -84,6 +84,24 @@ async def main():
             await socket.put(type="turn.ask", turn_id=f"voice_{index}", question=f"Voice question {index}")
         check("one voice adapter survives three independent runtime turns", len(Adapter.instances)==1 and not first.closed and all(body["input_mode"]=="voice" for body in turn_bodies[-3:]))
         check("voice selection persists in the actual latest checkpoint", runtime_state.previous_state("dm_test0001","s_capture_test").get("input_mode")=="voice")
+        before_cancel = cancelled.call_count
+        for event in ({"type":"input.speech_start","input_id":"impact"}, {"type":"input.speech_end","input_id":"impact"},
+                      {"type":"transcript.partial","input_id":"impact","text":"[noise]"}, {"type":"transcript.final","input_id":"impact","text":"..."}):
+            await first.queue.put(event)
+        await settle()
+        check("raw VAD and noise-only transcripts never cancel server delivery or planning",cancelled.call_count == before_cancel)
+        await first.queue.put({"type":"transcript.partial","input_id":"real","text":"Warranty"}); await settle()
+        check("meaningful partial cancels immediately while preserving pending planning",cancelled.call_count == before_cancel + 1 and cancelled.call_args.kwargs == {"preserve_planning":True})
+        await first.queue.put({"type":"input.speech_start","input_id":"real"})
+        await first.queue.put({"type":"transcript.partial","input_id":"real","text":"Warranty coverage"})
+        await first.queue.put({"type":"transcript.final","input_id":"real","text":"Warranty coverage?"})
+        await first.queue.put({"type":"transcript.final","input_id":"real","text":"Warranty coverage?"}); await settle()
+        check("confirmed utterance and duplicated final do not cancel twice",cancelled.call_count == before_cancel + 1)
+        await first.queue.put({"type":"transcript.final","input_id":"short","text":"हाँ"}); await settle()
+        check("final-only short multilingual reply still cancels promptly",cancelled.call_count == before_cancel + 2)
+        await socket.put(type="turn.interrupt",turn_id="manual_interrupt",preserve_planning=True)
+        check("explicit interruption still cancels immediately without speech evidence",cancelled.call_count == before_cancel + 3 and socket.sent[-1]["type"] == "turn.cancelled")
+        check("server confirmation ignores annotations but preserves real words and numbers",all(runtime_live.meaningful_transcript(text) for text in ("yes","हाँ","20","[noise] warranty")) and not any(runtime_live.meaningful_transcript(text) for text in (""," ","...","[noise]","(silence)","<inaudible>","[background noise]")))
         await first.queue.put({"type": "transcript.final", "text": "First answer", "input_id": "1"}); await settle()
         check("transcript carries adapter capture generation", socket.sent[-1]["input_generation"] == 1 and socket.sent[-1]["text"] == "First answer")
         await socket.put(type="mic.set", enabled=False, input_generation=1)

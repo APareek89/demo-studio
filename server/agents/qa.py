@@ -152,7 +152,7 @@ def _system(demo_id: str, profile: dict | None) -> tuple[str, dict, dict]:
     return sys, und, plan
 
 
-def answer(demo_id: str, question: str, history: list[dict] | None = None, profile: dict | None = None, voice_it: bool = True, live: bool = False) -> dict:
+def answer(demo_id: str, question: str, history: list[dict] | None = None, profile: dict | None = None, voice_it: bool = True, live: bool = False, *, learn: bool = True) -> dict:
     """live=True is the customer waiting (/run/qa, Playground evals): RUNTIME_PROVIDERS in order, RUNTIME_TIMEOUT each, one retry.
     live=False is build time (FAQ bank, rehearsal): the build model with its full retries and fallback.
     Either way, when every provider fails the guide declines and offers a callback — it never guesses."""
@@ -221,8 +221,9 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
         text = DONT_GUESS if not valid else text
         escalate = escalate or question
         offer_callback = True
-        _record_unknown(demo_id, question)
-    elif answered:
+        if learn and not provider_failed:
+            _record_unknown(demo_id, question)
+    elif answered and learn:
         _clear_runtime_unknown(demo_id, question)
     vis = None
     if out.visual_ref and not clarification and not policy_conflict:
@@ -247,7 +248,7 @@ def answer(demo_id: str, question: str, history: list[dict] | None = None, profi
     if voice_it and text:
         try:
             from . import voice as _voice
-            rel = _voice.render_line(demo_id, text, strict=True)
+            rel = _voice.render_line(demo_id, text, demo=_voice.runtime_demo(demo_id, (profile or {}).get("language")) if live else None, strict=True)
             audio = f"/media/{demo_id}/{rel}" if rel else None
         except Exception:
             audio = None
@@ -276,50 +277,13 @@ def classify(question: str) -> tuple[str, str]:
 
 
 def _record_unknown(demo_id: str, question: str) -> None:
-    und = store.read_json(demo_id, "understanding.json")
-    if not und:
-        return
-    q = question.strip()
-    qterms = _local_terms(q)
-    # Do not duplicate a source-extraction gap merely because the runtime
-    # phrased it more specifically (for example, "definitely" or a city).
-    covered = False
-    for u in und.get("unknowns", []):
-        if u.get("origin") == "runtime":
-            continue
-        uterms = _local_terms(u.get("question", ""))
-        if uterms and len(qterms & uterms) / len(uterms) >= 0.75:
-            covered = True
-            break
-    if covered:
-        before = len(und.get("unknowns", []))
-        und["unknowns"] = [u for u in und.get("unknowns", []) if not (
-            u.get("origin") == "runtime" and u.get("question", "").strip().lower() == q.lower()
-        )]
-        if len(und["unknowns"]) != before:
-            store.write_json(demo_id, "understanding.json", und)
-        return
-    for u in und.get("unknowns", []):
-        if u.get("question", "").strip().lower() == q.lower():
-            return
-    cat, doc = classify(q)
-    und.setdefault("unknowns", []).append({"id": f"U{len(und['unknowns'])+1:02d}", "question": q, "why_customers_ask": "asked during a demo", "status": "open", "origin": "runtime", "category": cat, "suggested_document": doc})
-    store.write_json(demo_id, "understanding.json", und)
+    from . import faq
+    faq.record_unknown(demo_id, question)
 
 
 def _clear_runtime_unknown(demo_id: str, question: str) -> None:
-    """Remove a stale runtime gap once the registry can answer it."""
-    und = store.read_json(demo_id, "understanding.json")
-    if not und:
-        return
-    q = question.strip().lower()
-    current = und.get("unknowns", [])
-    kept = [u for u in current if not (
-        u.get("origin") == "runtime" and u.get("question", "").strip().lower() == q
-    )]
-    if len(kept) != len(current):
-        und["unknowns"] = kept
-        store.write_json(demo_id, "understanding.json", und)
+    from . import faq
+    faq.clear_unknown(demo_id, question)
 
 
 PHONE = re.compile(r"(?:\+?91[\s-]?)?([6-9]\d{9})")
