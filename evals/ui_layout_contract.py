@@ -1,14 +1,29 @@
-"""Isolated headless UI geometry checks. No app, demo writes, provider calls or downloads."""
+"""Browser geometry and approved-sample parity; isolated fixtures, no live mutations or providers."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import argparse
+import json
 import mimetypes
+import os
+import socket
+import subprocess
+import sys
 import tempfile
 import threading
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
+REFERENCE = ROOT / 'docs/design/wp11-samples/marine.html'
+REFERENCE_IMAGE = ROOT / 'data/demos/dm_cc3d8fa7/sources/src_be8af6_creta-exterior-pc__Hyundai-creta-suv-exterior-big-1120x600-side-1.jpg'
+
+
+def reference_pixels():
+    if REFERENCE_IMAGE.is_file():
+        return REFERENCE_IMAGE.read_bytes(),'image/jpeg'
+    # The source photo is deliberately not committed. Clean checkouts still
+    # compare the very same native-size pixels on both sides of the contract.
+    return b'<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="600"><rect width="1120" height="600" fill="#91a8b4"/><rect x="160" y="210" width="800" height="210" rx="70" fill="#254152"/><circle cx="300" cy="435" r="65" fill="#14232b"/><circle cx="820" cy="435" r="65" fill="#14232b"/></svg>','image/svg+xml'
 HTML = r'''<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="/web/styles.css"><link rel="stylesheet" href="/web/design-system.css"><link rel="stylesheet" href="/web/studio-ui.css"><link rel="stylesheet" href="/web/player-ui.css">
 <style>body{display:block;margin:0}#fixture{height:100dvh;width:100%;display:flex;flex-direction:column;position:relative}*{animation:none!important;transition:none!important}</style><div id="fixture" class="stage-area"></div><div id="toasts"></div>
@@ -43,6 +58,14 @@ window.labelGeometry=()=>{const slide=document.querySelector('.cinematic'),stage
  const represented=approvedData.callouts.every(c=>labels.some(n=>n.dataset.id===c.id&&n.textContent.includes(c.text)));
  const ownership=approvedData.callouts.every(c=>{const dot=slide.querySelector(`.dot[data-id="${c.id}"]`),pic=dot?.closest('.slide-pic');if(!pic||pic.dataset.imageId!==c.image_id)return false;const p=pic.getBoundingClientRect(),d=dot.getBoundingClientRect();return Math.abs((d.left+d.width/2-p.left)/p.width-c.anchor.x)<.005&&Math.abs((d.top+d.height/2-p.top)/p.height-c.anchor.y)<.005;});
  return{bounded,clear,represented,ownership,overlayCount:chips.length,detailCount:details.length};};
+window.densePictures=async()=>{await approvedLayout('marine',true);const data=structuredClone(approvedData);data.callouts=['A','B'].flatMap((id,p)=>[[.2695,.7245],[.632,.4105],[.8785,.585]].map(([x,y],i)=>({id:`dense-${p}-${i}`,image_id:id,placement:'overlay',part:['Wheel','Mirror','Light'][i],text:`Reviewed picture ${id} detail ${i+1}`,anchor:{x,y},label_pos:{x:.1+i*.3,y:.15},reveal_on_line:0,fact_ids:['F1']})));window.approvedData=data;window.approvedSaved=JSON.stringify(data);view=renderSlide(data,{fit:true,theme:'marine'});view.el.classList.add('on');host.querySelector('.slide-stack').replaceChildren(view.el);await settle();view.setRevealed(99);await settle();view.layout();};
+window.anchorlessPicture=async()=>{await approvedLayout('marine');const data=structuredClone(approvedData);data.media=[{image_id:'A',image_url:image,from_line:0,proxy:true,proxy_reason:'This source illustrates the view.'}];data.callouts=[{id:'unknown',image_id:'A',placement:'overlay',label_pos:{x:.4,y:.2},anchor:null,text:'Reviewed detail with no trusted picture anchor',reveal_on_line:0,fact_ids:['F1']}];window.approvedData=data;window.approvedSaved=JSON.stringify(data);view=renderSlide(data,{fit:true,theme:'marine'});view.el.classList.add('on');host.querySelector('.slide-stack').replaceChildren(view.el);await settle();view.setRevealed(0);await settle();view.layout();};
+window.showSample=async({scene,size,built})=>{window.dispatchEvent(new Event('hashchange'));player?.destroy();player=null;host.replaceChildren();host.style.width=size.width+'px';host.style.height=size.height+'px';host.style.margin='0 auto';
+ const sample=built||{...structuredClone(bundle),name:'Hyundai CRETA',product:{name:'CRETA'},voice:{provider:'sarvam',persona:{persona_name:'Priya'}},visual_theme:'marine',slides:[scene]};
+ player=mountPlayer(host,sample,{});window.initialUsesSample=!!host.querySelector('.sample-layout');host.querySelectorAll('.pl-intake').forEach(n=>n.remove());const data=scene||sample.slides.find(s=>s.kind==='proof');window.approvedData=data;window.approvedSaved=JSON.stringify(data);
+ view=renderSlide(data,{fit:true,theme:sample.visual_theme||'marine',position:{index:3,total:7}});view.el.classList.add('on');host.querySelector('.slide-stack').replaceChildren(view.el);host.querySelector('.pl-cap .txt').textContent='From the side, you can see how the wheel design, mirrors and front lights sit together.';
+ host.querySelector('.pl-ctas').innerHTML='<button class="chip">View brochure ↗</button><button class="chip">Ask for a callback</button><button class="chip primary">Continue →</button>';
+ await settle();await settle();await Promise.all([...view.el.querySelectorAll('img')].map(i=>i.complete?Promise.resolve():new Promise(r=>i.addEventListener('load',r,{once:true}))));view.setRevealed(99);if(scene)view.highlight('sample-0');await settle();view.layout();await settle();};
 window.ready=true;
 </script>'''
 
@@ -54,6 +77,10 @@ class Handler(BaseHTTPRequestHandler):
         path = urlsplit(self.path).path
         if path == '/':
             data, mime = HTML.encode(), 'text/html'
+        elif path == '/reference/marine.html':
+            data, mime = REFERENCE.read_bytes(), 'text/html'
+        elif path == '/' + str(REFERENCE_IMAGE.relative_to(ROOT)) or path == '/reference-car.jpg' or (path.startswith('/media/dm_') and path.endswith('/sources/reference.jpg')):
+            data, mime = reference_pixels()
         elif path.startswith('/web/'):
             target = (ROOT / path.lstrip('/')).resolve()
             if not target.is_relative_to(ROOT / 'web') or not target.is_file():
@@ -67,10 +94,137 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers(); self.wfile.write(data)
 
 
+def build_mock_fixture(output):
+    """Run the real Bundle assembler against a new, fully isolated recorded fixture."""
+    assert not output.resolve().is_relative_to(ROOT)
+    attempts=[]
+    def blocked(*args, **kwargs):
+        attempts.append(True)
+        raise AssertionError('Outbound connection blocked in mock fixture build')
+    socket.create_connection=socket.socket.connect=socket.socket.connect_ex=blocked
+    with tempfile.TemporaryDirectory(prefix='sample-parity-build-') as tmp:
+        os.environ.update(MOCK_LLM='1',CLOUD_SYNC='0',STORAGE_BACKEND='local',DEMO_STUDIO_DATA=str(Path(tmp)/'demos'),DEMO_STUDIO_GRAPH_DB=str(Path(tmp)/'graph.sqlite'))
+        sys.path[:0]=[str(ROOT),str(ROOT/'evals')]
+        from server import store
+        from server.agents import bundle
+        from minimum_narration_contract import rich_fixture
+        did=store.new_demo('Sample parity isolated build')['id']
+        fixture=rich_fixture(did,recorded=True)
+        image=store.path(did,'sources/reference.jpg');image.parent.mkdir(parents=True,exist_ok=True);image.write_bytes(reference_pixels()[0])
+        fixture['understanding']['images']=[{'id':'im01','source_id':'fixture-reference','path':'sources/reference.jpg','angle':'side','quality':5,'full_product':True,'description':'Retained reference asset used only by this isolated layout fixture','parts':[]}]
+        store.update(did,lambda demo:demo['sources'].append({'id':'fixture-reference','kind':'image','path':'sources/reference.jpg','name':'reference.jpg','role':'product','use_in_demo':True}))
+        fixture['deck']['slides'][0].update(image_id='im01',media=[{'image_id':'im01','from_line':0}],title='A newly built reviewed view')
+        store.write_json(did,'understanding.json',fixture['understanding']);store.write_json(did,'deck.json',fixture['deck'])
+        built=bundle.build(did,lambda _:None)
+        assert built['runtime']['narration_minimum']['measured'] and built['runtime']['narration_minimum']['sufficient']
+        output.write_text(json.dumps(built))
+    assert not attempts
+    print('MOCK PARITY BUILD: real Bundle, measured WAV minimum, isolated storage, OUTBOUND_ATTEMPTS 0',flush=True)
+
+
+SAMPLE_METRICS = r'''() => {
+ const root=document.querySelector('#customer'),stage=root.querySelector('.stage'),header=root.querySelector('.player-header'),title=root.querySelector('.visual-heading h2'),picture=root.querySelector('.slide-scene>img'),dock=root.querySelector('.dock'),footer=root.querySelector('.action-bar');
+ const rect=(e,origin=stage)=>{const r=e.getBoundingClientRect(),o=origin.getBoundingClientRect();return {x:r.x-o.x,y:r.y-o.y,width:r.width,height:r.height};};
+ const style=e=>{const s=getComputedStyle(e);return {background:s.backgroundColor,gradient:s.backgroundImage,fontSize:s.fontSize,fontFamily:s.fontFamily,color:s.color};};
+ const img=picture.getBoundingClientRect();
+ return {size:{width:root.clientWidth,height:root.clientHeight},header:rect(header,root),stage:rect(stage,root),title:rect(title),picture:rect(picture),dock:rect(dock,root),footer:rect(footer,root),headerStyle:style(header),stageStyle:style(stage),titleStyle:style(title),dockStyle:style(dock),reply:rect(root.querySelector('.composer'),root),composerLabel:rect(root.querySelector('.composer-label'),root),composerHint:rect(root.querySelector('.composer-foot'),root),captionStyle:style(root.querySelector('.caption')),card:rect(root.querySelector('.slide-feature.active')),cardStyle:style(root.querySelector('.slide-feature.active')),cardTitleStyle:style(root.querySelector('.slide-feature.active strong')),image:picture.src,
+ scene:{id:'sample-reference',kind:'proof',title:title.textContent,image_id:'A',image_url:'/reference-car.jpg',callouts:[...root.querySelectorAll('.slide-feature')].map((c,i)=>{const r=c.getBoundingClientRect(),[x,y]=c.dataset.anchor.split(',').map(Number);return {id:'sample-'+i,image_id:'A',placement:'overlay',part:c.querySelector('strong').textContent,text:c.querySelector('small').textContent,anchor:{x,y},label_pos:{x:(r.x-img.x)/img.width,y:(r.y-img.y)/img.height},reveal_on_line:0,fact_ids:['F'+(i+1)]};}),lines:[]}};
+}'''
+
+
+ACTUAL_METRICS = r'''() => {
+ const root=document.querySelector('.pl'),stage=root.querySelector('.slide-stack'),header=root.querySelector('.pl-top'),title=root.querySelector('.slide-title'),picture=root.querySelector('.slide-pic img'),dock=root.querySelector('.pl-dock'),footer=root.querySelector('.pl-action-bar');
+ const rect=(e,origin=stage)=>{const r=e.getBoundingClientRect(),o=origin.getBoundingClientRect();return {x:r.x-o.x,y:r.y-o.y,width:r.width,height:r.height};};
+ const style=e=>{const s=getComputedStyle(e);return {background:s.backgroundColor,gradient:s.backgroundImage,fontSize:s.fontSize,fontFamily:s.fontFamily,color:s.color};};
+ return {size:{width:root.clientWidth,height:root.clientHeight},header:rect(header,root),stage:rect(stage,root),title:rect(title),picture:rect(picture),dock:rect(dock,root),footer:rect(footer,root),headerStyle:style(header),stageStyle:style(root.querySelector('.sample-layout')),titleStyle:style(title),dockStyle:style(dock),reply:rect(root.querySelector('.pl-reply'),root),composerLabel:rect(root.querySelector('.pl-composer-label'),root),composerHint:rect(root.querySelector('.pl-mic-row'),root),captionStyle:style(root.querySelector('.pl-cap .txt')),card:rect(root.querySelector('.callout')),cardStyle:style(root.querySelector('.callout')),cardTitleStyle:style(root.querySelector('.callout strong')),image:picture.src};
+}'''
+
+
+def run_sample_parity(browser,page,base,screenshots,check,live_url):
+    print('PARITY ASSET: '+('retained source photograph, read-only' if REFERENCE_IMAGE.is_file() else 'synthetic 1120x600 clean-checkout fallback; identical pixels on both sides'),flush=True)
+    reference=page.context.new_page()
+    reference.goto(base+'/reference/marine.html');reference.wait_for_function("document.querySelector('#customer .slide-scene img')?.complete")
+    for width in (1440,850,390):
+        viewport={'width':width,'height':1100}
+        reference.set_viewport_size(viewport);page.set_viewport_size(viewport)
+        reference.evaluate('() => new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))')
+        expected=reference.evaluate(SAMPLE_METRICS)
+        page.evaluate('showSample',{'scene':expected['scene'],'size':expected['size']})
+        actual=page.evaluate(ACTUAL_METRICS)
+        (screenshots/f'parity-metrics-{width}.json').write_text(json.dumps({'reference':expected,'actual':actual},indent=2))
+        reference.locator('#customer').screenshot(path=str(screenshots/f'reference-marine-{width}.png'))
+        page.locator('.pl').screenshot(path=str(screenshots/f'actual-marine-{width}.png'))
+        near=lambda a,b,tolerance=2:abs(a-b)<=tolerance
+        check(f'{width}px reference and app use the same image pixels and native ratio',page.evaluate("document.querySelector('.slide-pic img').naturalWidth===1120&&document.querySelector('.slide-pic img').naturalHeight===600") and near(actual['picture']['width']/actual['picture']['height'],1120/600,.01))
+        check(f'{width}px header height and 75 percent stage match the approved sample',near(actual['header']['height'],expected['header']['height']) and near(actual['stage']['height'],expected['stage']['height']))
+        check(f'{width}px exact dark header and stage gradient match the approved sample',actual['headerStyle']['background']==expected['headerStyle']['background'] and actual['stageStyle']['gradient']==expected['stageStyle']['gradient'])
+        check(f'{width}px compact heading matches sample type size and top position',actual['titleStyle']['fontSize']==expected['titleStyle']['fontSize'] and near(actual['title']['x'],expected['title']['x']) and near(actual['title']['y'],expected['title']['y'],3))
+        check(f'{width}px composer, label and hint heights match the approved sample',all(near(actual[k]['height'],expected[k]['height'],1) for k in ('reply','composerLabel','composerHint')))
+        check(f'{width}px caption type and feature card design match the approved sample',actual['captionStyle']['fontSize']==expected['captionStyle']['fontSize'] and actual['captionStyle']['fontFamily']==expected['captionStyle']['fontFamily'] and near(actual['card']['width'],expected['card']['width'],1) and actual['cardStyle']['background']==expected['cardStyle']['background'] and actual['cardTitleStyle']['fontSize']==expected['cardTitleStyle']['fontSize'])
+        check(f'{width}px image is centered below the heading at the approved size',near(actual['picture']['x']+actual['picture']['width']/2,actual['size']['width']/2) and near(actual['picture']['width'],expected['picture']['width'],2) and near(actual['picture']['y'],expected['picture']['y'],2))
+        check(f'{width}px white conversation and CTA footer follow the sample order',actual['dockStyle']['background']==expected['dockStyle']['background']=='rgb(255, 255, 255)' and actual['dock']['y']>=actual['stage']['y']+actual['stage']['height']-1 and actual['footer']['y']>=actual['dock']['y']+actual['dock']['height']-1 and near(actual['footer']['height'],expected['footer']['height']))
+        check(f'{width}px sample feature words and unchanged trusted anchors remain visible without overlaps',page.evaluate("(()=>{const g=labelGeometry();return g.represented&&g.bounded&&g.clear&&g.ownership&&JSON.stringify(approvedData)===approvedSaved})()"))
+        check(f'{width}px sample anchors are small unnumbered dots, not badges',page.locator('.sample-layout .dot').evaluate_all("nodes=>nodes.length===3&&nodes.every(n=>{const r=n.getBoundingClientRect();return r.width<=10&&r.height<=10&&(!n.querySelector('.num')||getComputedStyle(n.querySelector('.num')).display==='none')})"))
+        before=page.evaluate(ACTUAL_METRICS)
+        page.evaluate('stress()')
+        after=page.evaluate(ACTUAL_METRICS)
+        check(f'{width}px answer, listening and callback keep sample frame dimensions stable',all(before[k]==after[k] for k in ('header','stage','picture','dock','footer')))
+    reference.close()
+    with tempfile.TemporaryDirectory(prefix='sample-parity-bundle-') as tmp:
+        output=Path(tmp)/'bundle.json'
+        subprocess.run([sys.executable,str(Path(__file__).resolve()),'--build-mock-fixture',str(output)],cwd=ROOT,check=True)
+        built=json.loads(output.read_text())
+        page.set_viewport_size({'width':1440,'height':1100})
+        page.evaluate('showSample',{'built':built,'size':{'width':1374,'height':878}})
+        check('a newly built isolated mock bundle uses the same sample renderer and recorded publication gate',page.evaluate("initialUsesSample&&!!document.querySelector('.sample-player .sample-layout')") and built['runtime']['narration_minimum']['measured'] and built['visual_theme']=='marine')
+        page.locator('.pl').screenshot(path=str(screenshots/'new-built-mock-sample.png'))
+        page.evaluate("titles=>{const n=document.querySelector('.pl-progress');n.replaceChildren(...titles.map(t=>{const b=document.createElement('button');b.className='pp';b.textContent=t;return b}));n.scrollLeft=0;}",[slide['title'] for slide in built['slides']])
+        check('long reviewed routes keep the first navigation stop reachable',page.evaluate("(()=>{const n=document.querySelector('.pl-progress'),r=n.getBoundingClientRect(),f=n.firstElementChild.getBoundingClientRect();return f.left>=r.left-1&&f.right<=r.right+1})()"))
+        page.evaluate("document.querySelector('.pl-progress').lastElementChild.scrollIntoView({block:'nearest',inline:'end'})")
+        check('long reviewed routes keep the last navigation stop reachable',page.evaluate("(()=>{const n=document.querySelector('.pl-progress'),r=n.getBoundingClientRect(),f=n.lastElementChild.getBoundingClientRect();return f.left>=r.left-1&&f.right<=r.right+1})()"))
+    for width in (1440,390):
+        page.set_viewport_size({'width':width,'height':1100});page.evaluate("document.querySelector('#fixture').style.cssText='height:100dvh;width:100%;margin:0'")
+        page.evaluate('densePictures()')
+        check(f'{width}px two pictures keep all six reviewed labels and their original anchor owners',page.evaluate("document.querySelectorAll('.sample-layout .dot').length===6&&labelGeometry().represented&&labelGeometry().ownership&&JSON.stringify(approvedData)===approvedSaved"))
+        check(f'{width}px six-label picture layout has no overlapping text boxes',page.evaluate('labelGeometry().clear'))
+        page.locator('.pl').screenshot(path=str(screenshots/f'six-labels-{width}.png'))
+        page.evaluate('anchorlessPicture()')
+        check(f'{width}px missing anchor remains a visible on-slide detail without a guessed marker',page.evaluate("document.querySelectorAll('.sample-layout .dot,.sample-layout .leaders line').length===0&&labelGeometry().represented&&labelGeometry().bounded&&JSON.stringify(approvedData)===approvedSaved"))
+        check(f'{width}px proxy keeps its illustration label',page.locator('.slide-proxy-badge').is_visible())
+    if live_url:
+        parsed=urlsplit(live_url)
+        assert parsed.scheme=='http' and parsed.hostname in ('127.0.0.1','localhost') and parsed.port!=8896
+        rejected=[];live_errors=[]
+        context=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce')
+        def live_guard(route):
+            if route.request.url.startswith(live_url.rstrip('/')+'/') and route.request.method=='GET':
+                route.continue_()
+            elif route.request.url.startswith('https://fonts.googleapis.com/') and route.request.method=='GET':
+                # Both sides use the system font fallback; never fetch an external font.
+                route.fulfill(status=200,content_type='text/css',body='/* Offline parity font fallback. */')
+            else:
+                rejected.append(route.request.url);route.abort()
+        context.route('**/*',live_guard)
+        context.add_init_script("window.WebSocket=class{constructor(){throw new Error('Live capture disabled for read-only layout check')}};navigator.sendBeacon=()=>false;")
+        live=context.new_page();live.on('pageerror',lambda e:live_errors.append(str(e)))
+        live.goto(live_url.rstrip('/')+'/?mute=1#/play/dm_cc3d8fa7');live.wait_for_selector('.pl')
+        proof=live.evaluate("async()=>{const b=await(await fetch('/api/demos/dm_cc3d8fa7/bundle')).json(),s=b.slides.find(s=>s.kind==='proof'&&s.image_url);document.querySelectorAll('.pl-intake').forEach(n=>n.remove());const {renderSlide}=await import('/web/slide.js');const v=renderSlide(s,{fit:true,theme:b.visual_theme||'marine'});v.el.classList.add('on');document.querySelector('.slide-stack').replaceChildren(v.el);v.setRevealed(99);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));return {id:s.id,callouts:s.callouts?.length||0};}")
+        check('existing app on the requested local port renders its unchanged published bundle with the sample design',bool(proof['id']) and live.locator('.sample-player .sample-layout').count()==1)
+        if rejected or live_errors:
+            print('LIVE READONLY DIAGNOSTICS',json.dumps({'rejected':rejected,'errors':live_errors}),flush=True)
+        check('live app render is read-only with no customer turn, socket, provider or mutation request',not rejected and not live_errors)
+        live.locator('.pl').screenshot(path=str(screenshots/'live-app-readonly-sample.png'))
+        context.close()
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--live-url', help='Optional existing local app URL for a GET-only render check.')
+    parser.add_argument('--build-mock-fixture', help=argparse.SUPPRESS)
     parser.add_argument('--screenshots', help='Optional artifact folder outside the repository; otherwise temporary screenshots are removed.')
     args=parser.parse_args()
+    if args.build_mock_fixture:
+        build_mock_fixture(Path(args.build_mock_fixture)); return
     if args.screenshots:
         assert not Path(args.screenshots).resolve().is_relative_to(ROOT), 'Keep test artifacts outside the repository and protected outputs'
     results, errors, rejected = [], [], []
@@ -96,14 +250,14 @@ def main():
             for width in (1440, 850, 390):
                 page.set_viewport_size({'width':width,'height':1000})
                 page.evaluate("show('player')")
-                before=page.evaluate("Object.fromEntries(['.slide-stack','.slide-pic','.pl-dock','.pl-ctas'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return[s,[r.x,r.y,r.width,r.height]]}))")
+                before=page.evaluate("Object.fromEntries(['.slide-stack','.slide-pic','.pl-dock','.pl-action-bar'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return[s,[r.x,r.y,r.width,r.height]]}))")
                 check(f'{width}px dock is white',page.locator('.pl-dock').evaluate("el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)'"))
                 check(f'{width}px stage begins directly below header',page.evaluate("Math.abs(document.querySelector('.pl-top').getBoundingClientRect().bottom-document.querySelector('.pl-stage').getBoundingClientRect().top)<1"))
                 check(f'{width}px slide spans the full player width without a side rail',page.evaluate("(()=>{const s=document.querySelector('.slide-stack').getBoundingClientRect(),p=document.querySelector('.pl').getBoundingClientRect();return playerUsesCinematic&&!document.querySelector('.evidence-layout')&&Math.abs(s.left-p.left)<1&&Math.abs(s.width-p.width)<1})()"))
                 check(f'{width}px slide occupies 75 percent of the player viewport',page.evaluate("Math.abs(document.querySelector('.slide-stack').getBoundingClientRect().height/document.querySelector('.pl').getBoundingClientRect().height-.75)<.005"))
-                check(f'{width}px top bar and slide are dark above the white dock',page.evaluate("['.pl-top','.cinematic'].every(s=>{const rgb=getComputedStyle(document.querySelector(s)).backgroundColor.match(/[\d.]+/g).map(Number);return rgb.slice(0,3).every(n=>n<100)&&rgb[3]!==0})"))
+                check(f'{width}px top bar and slide are dark above the white dock',page.evaluate("['.pl-top','.cinematic'].every(s=>{const c=getComputedStyle(document.querySelector(s));if(c.backgroundImage!=='none')return c.backgroundImage.startsWith('radial-gradient');const rgb=c.backgroundColor.match(/[\d.]+/g).map(Number);return rgb.slice(0,3).every(n=>n<100)&&rgb[3]!==0})"))
                 page.evaluate('stress()')
-                after=page.evaluate("Object.fromEntries(['.slide-stack','.slide-pic','.pl-dock','.pl-ctas'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return[s,[r.x,r.y,r.width,r.height]]}))")
+                after=page.evaluate("Object.fromEntries(['.slide-stack','.slide-pic','.pl-dock','.pl-action-bar'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return[s,[r.x,r.y,r.width,r.height]]}))")
                 check(f'{width}px CTA, contact, long answer and capture leave picture and dock fixed', before==after)
                 check(f'{width}px caption remains scrollable',page.locator('.pl-cap').evaluate("el=>['auto','scroll'].includes(getComputedStyle(el).overflowY)&&el.clientHeight>0"))
                 check(f'{width}px microphone stays inside the visible dock',page.evaluate("document.querySelector('.pl-controls .mic').getBoundingClientRect().bottom<=document.querySelector('.pl-dock').getBoundingClientRect().bottom-8"))
@@ -145,7 +299,7 @@ def main():
                 for theme in ('marine','sage','graphite'):
                     page.evaluate('theme=>approvedLayout(theme)',theme)
                     check(f'{width}px {theme} is applied from the bundle',page.locator('.pl').get_attribute('data-visual-theme')==theme)
-                    check(f'{width}px {theme} keeps true numbered anchors on the picture',page.evaluate("document.querySelectorAll('.cinematic .dot:not(.hidden)').length===2&&labelGeometry().ownership"))
+                    check(f'{width}px {theme} keeps small trusted anchors on the picture',page.evaluate("document.querySelectorAll('.cinematic .dot:not(.hidden)').length===2&&labelGeometry().ownership"))
                     check(f'{width}px {theme} shows feature text on the slide without label collisions',page.evaluate("(()=>{const g=labelGeometry();return g.represented&&g.bounded&&g.clear})()"))
                     check(f'{width}px {theme} uses overlay labels when the slide has room',page.evaluate("document.querySelector('.cinematic').clientWidth<700||labelGeometry().overlayCount>0"))
                     check(f'{width}px {theme} visible connectors start at label edges, outside the text',page.evaluate("(()=>{if(document.querySelector('.cinematic').clientWidth<700)return true;const chips=[...document.querySelectorAll('.cinematic .callout')].filter(visible);return chips.length>0&&chips.every(chip=>{const pic=chip.closest('.slide-pic'),i=[...pic.querySelectorAll('.callout')].indexOf(chip),line=pic.querySelectorAll('.leaders line')[i];if(!line||line.classList.contains('rail-only'))return false;const x=Number(line.getAttribute('x1'))/100*pic.clientWidth,y=Number(line.getAttribute('y1'))/100*pic.clientHeight,l=chip.offsetLeft,t=chip.offsetTop,r=l+chip.offsetWidth,b=t+chip.offsetHeight;return x>=l-1&&x<=r+1&&y>=t-1&&y<=b+1&&Math.min(Math.abs(x-l),Math.abs(x-r),Math.abs(y-t),Math.abs(y-b))<1.5})})()"))
@@ -162,7 +316,7 @@ def main():
             check('short phone viewport keeps a full-width slide while reserving readable controls',page.evaluate("(()=>{const s=document.querySelector('.slide-stack').getBoundingClientRect(),p=document.querySelector('.pl').getBoundingClientRect();return s.height>0&&s.height<=p.height*.75+1&&Math.abs(s.width-p.width)<1&&p.bottom<=innerHeight+1})()"))
             check('short phone keeps its feature labels on the slide without overlaps',page.evaluate("(()=>{const g=labelGeometry();return g.represented&&g.bounded&&g.clear&&g.ownership})()"))
             page.set_viewport_size({'width':390,'height':400});page.evaluate("approvedLayout('marine')");page.evaluate('stress()')
-            check('very short viewport reserves non-overlapping header, slide, CTA and dock regions',page.evaluate("(()=>{const r=s=>document.querySelector(s).getBoundingClientRect(),p=r('.pl'),h=r('.pl-top'),s=r('.slide-stack'),c=r('.pl-ctas'),d=r('.pl-dock');return s.height>0&&s.height<=p.height*.75+1&&h.bottom<=s.top+1&&s.bottom<=c.top+1&&c.bottom<=d.top+1&&d.bottom<=p.bottom+1&&d.height>=111})()"))
+            check('very short viewport reserves non-overlapping header, slide, CTA and dock regions',page.evaluate("(()=>{const r=s=>document.querySelector(s).getBoundingClientRect(),p=r('.pl'),h=r('.pl-top'),s=r('.slide-stack'),c=r('.pl-action-bar'),d=r('.pl-dock');return s.height>0&&s.height<=p.height*.75+1&&h.bottom<=s.top+1&&s.bottom<=d.top+1&&d.bottom<=c.top+1&&c.bottom<=p.bottom+1&&d.height>0})()"))
             check('very short viewport keeps microphone and typed reply visible while feedback scrolls',page.evaluate("(()=>{const d=document.querySelector('.pl-dock').getBoundingClientRect();return ['.pl-controls .mic','.pl-reply input'].every(s=>{const r=document.querySelector(s).getBoundingClientRect();return r.top>=d.top&&r.bottom<=d.bottom&&r.left>=d.left&&r.right<=d.right})&&['auto','scroll'].includes(getComputedStyle(document.querySelector('.pl-feedback')).overflowY)})()"))
             check('very short phone keeps one readable caption line and reply feedback',page.evaluate("(()=>{const c=document.querySelector('.pl-cap'),t=getComputedStyle(document.querySelector('.pl-cap .txt'));return c.clientHeight>=parseFloat(t.lineHeight)&&document.querySelector('.pl-feedback').clientHeight>=22})()"))
             page.screenshot(path=str(screenshots/'player-short-390x400.png'))
@@ -180,6 +334,7 @@ def main():
             check('reselecting the saved palette sends no change',page.evaluate('reviewCalls.length')==calls)
             page.evaluate('window.reviewFailTheme=true');page.get_by_role('button',name='Graphite',exact=True).click()
             check('blocked palette save keeps selection and re-enables its button',page.get_by_role('button',name='Graphite',exact=True).is_enabled() and page.get_by_role('button',name='Sage',exact=True).get_attribute('aria-pressed')=='true' and 'Demo worker is busy' in page.locator('#toasts').inner_text())
+            run_sample_parity(browser, page, base, screenshots, check, args.live_url)
             check('no browser exceptions',not errors)
             check('no external request or mutation attempts',not rejected)
             browser.close()

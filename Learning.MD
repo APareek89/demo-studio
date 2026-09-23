@@ -1,5 +1,11 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — A live demo did not match the approved HTML sample
+
+**Five whys:** (1) The local player looked different from the approved Marine slide-first sample. (2) Production retained the older oversized title over a differently positioned image. (3) The sample and player had separate layout rules. (4) Regression checks verified general proportions and safety, not reference-to-player composition. (5) Approval of a specific visual artifact was reduced to a verbal description during implementation.
+
+**Correction:** keep the approved HTML unchanged and implement its compact heading, centered native picture, small feature cards, thin connectors, slide counter/progress and white conversation/CTA layout in the shared production renderer. Use reviewed part/text fields only; product names, navigation, guide identity, voice and CTAs retain their real behavior. Compare sample and app with the same image, labels and viewport, including type, colors, picture geometry and composer dimensions. Build and mount a fresh isolated mock bundle to prove this is the default product path. Measure all labels before reveal and reserve crowded-label space in the same layout pass, so later speech cannot move the picture. Voice-switch ownership, narrow labels, tall images and transient reply controls remain covered. No paid provider validation is implied.
+
 ## 2026-09-23 — Feature details moved away from the cinematic slide
 
 **Five whys:** (1) The revised demo no longer looked like the requested slide-first experience. (2) A separate evidence panel consumed picture width and split the content between the picture and a sidebar. (3) Removing crossing labels was solved by changing the composition. (4) A static sample approval was treated as approval to replace the existing cinematic layout. (5) Regression checks asserted the new rail rather than the user's intended emphasis on the slide.

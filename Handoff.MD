@@ -1,5 +1,17 @@
 # Handoff.MD — Demo Studio
 
+## WP11 — approved Marine sample in production · 23 September 2026
+
+**Decision:** after comparing the live demo with `http://127.0.0.1:8904/docs/design/wp11-samples/marine.html?revision=slide-first`, Anand asked for that whole design in the actual app. The unchanged HTML is now the visual regression reference. Production uses its compact top heading, centered native-aspect picture, small feature cards/anchor dots/thin leaders, slide counter/progress, white conversation area and fixed CTA footer. This supersedes the approximate cinematic implementation in the previous receipt. New bundles and existing demos use the shared renderer automatically; refresh the app to load the updated frontend. Marine/Sage/Graphite approval remains inside Visuals.
+
+Feature content comes only from reviewed part/text fields. All callouts are positioned before narration reveals them; crowded labels reserve their on-slide caption band immediately, and missing anchors retain text without a guessed marker. Resize/reveal never rewrites saved coordinates. The compact Voice mode switch uses the existing microphone lifecycle. Ordinary desktop/phone stages remain 75% of the player viewport; short windows retain 120px desktop / 132px phone conversation space. Film playback remains video plus Skip below it.
+
+**Verification:** deck **365/365**, acceptance **24/24**, smoke **both phases + on-demand rehearsal**, UI/reference parity **195/195**, browser player **78/78**, Node player **84/84**, live voice **74/74**, real images/Downloads video **6/6**. Reference checks compare the same picture, words and viewport at 1440/850/390px, including image placement within two pixels; they also assemble and mount a fresh isolated Bundle with real fixture WAVs satisfying the 180-second gate. Python/JavaScript syntax, diff whitespace and all nine embedded Mermaid copies pass. Mock providers, isolated data/graph storage and blocked outbound; no paid call or acoustic acceptance.
+
+**Local review:** `http://127.0.0.1:8905/#/play/dm_cc3d8fa7` serves the current frontend and an isolated copy under `/tmp/demo-studio-design-live/`; original recorded narration is retained and Q&A is mocked. The app sends `Cache-Control: no-cache` for changed assets. The separate static design server remains on 8904. No deployment, protected-demo mutation, output write or port-8896 operation.
+
+**Files:** `web/player/player.js`, `web/player-ui.css`, `web/slide.js`, `web/styles.css`, `web/studio/align.js`; `evals/player_contract.html`, `evals/ui_layout_contract.py`; `Handoff.MD`, `Learning.MD`, `Loop.MD`, `PRD.md`, `refine.MD`, `docs/ARCHITECTURE_FLOW.md`, `docs/mermaid/05-runtime.mmd` and its `docs/architecture-flow.html` copy. Approved samples and existing untracked files remain unchanged. No open design questions; selective Align rebuild routing remains pending. Effort: implementation/review ~55%, browser verification/docs ~45%.
+
 ## WP11 presentation correction — slide-first layout · 23 September 2026
 
 **Decision:** Anand rejected the evidence side panel after reviewing the samples. Restore the previous cinematic slide composition: all feature text stays on the slide, dark header/slide and a white conversation area below. The slide occupies 75% of the player viewport at ordinary desktop/phone sizes; short windows reserve a fixed minimum conversation area so the composer and answer choices remain usable. This supersedes the WP11 layout choice below; the existing Visuals-card color options remain.

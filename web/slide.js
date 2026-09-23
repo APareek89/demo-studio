@@ -1,5 +1,5 @@
 // One slide on a stage: the picture, callout chips on the slide, leader lines to the
-// anchored part, numbered dots for narrow screens. Positions are fractions of the picture, so the same numbers work
+// anchored part, small matching dots. Positions are fractions of the picture, so the same numbers work
 // in Align (editable: drag) and in the player (reveal per line). Plain DOM; no build step.
 import { h } from "/web/api.js";
 
@@ -23,18 +23,21 @@ function segmentHitsBox(line, box) {
 
 // Start at the label edge, keeping the pointer out of the label text.
 function labelEdge(box, anchor) {
-  const x = (box.left + box.right) / 2, y = (box.top + box.bottom) / 2;
-  const dx = anchor.x - x, dy = anchor.y - y;
-  const scale = Math.min(dx ? (box.right - box.left) / 2 / Math.abs(dx) : Infinity,
-    dy ? (box.bottom - box.top) / 2 / Math.abs(dy) : Infinity, 1);
-  return {x: x + dx * scale, y: y + dy * scale};
+  const inset = Math.min(12, (box.right - box.left) / 2);
+  if (anchor.y < box.top || anchor.y > box.bottom) return {
+    x: Math.max(box.left + inset, Math.min(box.right - inset, anchor.x)),
+    y: anchor.y < box.top ? box.top : box.bottom,
+  };
+  return {x: anchor.x < box.left ? box.left : box.right,
+    y: Math.max(box.top, Math.min(box.bottom, anchor.y))};
 }
 
 export function renderSlide(slide, opts = {}) {
   const callouts = slide.callouts || [];
   const kind = slide.kind || "proof";
+  const sampleLayout = !!opts.fit && !opts.editable;
   const theme = ["marine", "sage", "graphite"].includes(opts.theme) ? opts.theme : "marine";
-  const el = h("div", { class: `slide slide-${kind} motion-${slide.motion || "none"}${opts.fit ? " cinematic" : ""}${opts.editable ? " editable" : ""}`, "data-visual-theme": theme });
+  const el = h("div", { class: `slide slide-${kind} motion-${slide.motion || "none"}${opts.fit ? " cinematic" : ""}${sampleLayout ? " sample-layout" : ""}${opts.editable ? " editable" : ""}`, "data-visual-theme": theme });
   const entries = slide.media?.length ? slide.media.slice(0, 2) : [{ image_id: slide.image_id || "", image_url: slide.image_url, image_parts: slide.image_parts || [], from_line: 0 }];
   const media = h("div", { class: "slide-media" + (entries.length > 1 ? " multi" : "") });
   el.classList.toggle("has-multiple-media", entries.length > 1);
@@ -52,31 +55,55 @@ export function renderSlide(slide, opts = {}) {
   });
   const { pic, img } = pictures[0]; // Existing player/editor callers use the first-image aliases.
   const chips = new Map(), dots = new Map(), lines = new Map(), owners = new Map();
+  function featureText(c) {
+    const part = typeof c.part === "string" ? c.part.trim() : "";
+    // Both strings are existing reviewed content. No new feature claim is generated.
+    return sampleLayout && part && part.toLowerCase() !== c.text.toLowerCase()
+      ? h("span", {class: "txt"}, h("strong", {}, part), h("small", {}, c.text))
+      : h("span", {class: "txt"}, sampleLayout ? h("strong", {}, c.text) : c.text);
+  }
   callouts.forEach((c, k) => {
     const picture = pictures.find((item) => item.entry.image_id === c.image_id) || pictures[0];
     owners.set(c.id, picture);
     const { pic, leaders } = picture;
     const num = String(k + 1);
     if (c.placement === "overlay" && c.label_pos && c.anchor) {
-      const chip = h("div", { class: "callout", "data-id": c.id, style: `left:${c.label_pos.x * 100}%;top:${c.label_pos.y * 100}%` }, h("span", { class: "num" }, num), h("span", { class: "txt" }, c.text));
+      const chip = h("div", { class: "callout", "data-id": c.id, style: `left:${c.label_pos.x * 100}%;top:${c.label_pos.y * 100}%` }, h("span", { class: "num" }, num), featureText(c));
       const dot = h("div", { class: "dot", "data-id": c.id, style: `left:${c.anchor.x * 100}%;top:${c.anchor.y * 100}%` }, h("span", { class: "num" }, num));
       if (opts.fit && !opts.editable) { dot.setAttribute("role", "button"); dot.setAttribute("tabindex", "0"); dot.setAttribute("aria-label", `Detail ${num}: ${c.text}`); const focusDetail = () => { highlight(c.id); const item = panel.querySelector(`[data-id="${c.id}"]`); if (item?.offsetWidth) panel.scrollLeft = item.offsetLeft; }; dot.addEventListener("click", focusDetail); dot.addEventListener("keydown", event => { if (["Enter", " "].includes(event.key)) { event.preventDefault(); focusDetail(); } }); }
       const ln = document.createElementNS(SVG_NS, "line"); ln.setAttribute("x2", String(c.anchor.x * 100)); ln.setAttribute("y2", String(c.anchor.y * 100));
       leaders.append(ln); pic.append(dot, chip); chips.set(c.id, chip); dots.set(c.id, dot); lines.set(c.id, ln);
+      if (sampleLayout) {
+        chip.setAttribute("role", "button"); chip.setAttribute("tabindex", "0"); chip.setAttribute("aria-label", c.text);
+        chip.addEventListener("click", () => highlight(c.id));
+        chip.addEventListener("keydown", event => { if (["Enter", " "].includes(event.key)) { event.preventDefault(); highlight(c.id); } });
+      }
       if (opts.editable) drag(chip, c, pic);
     }
   });
-  const panel = h("div", { class: "slide-panel" }, ...callouts.map((c, k) => h("div", { class: "item " + (c.placement === "overlay" && c.label_pos ? "overlay" : "panel"), "data-id": c.id, "data-image-id": owners.get(c.id).entry.image_id || "" },
+  const panel = h("div", { class: "slide-panel" }, ...callouts.map((c, k) => h("div", { class: "item " + (c.placement === "overlay" && c.label_pos && c.anchor ? "overlay" : "panel"), "data-id": c.id, "data-image-id": owners.get(c.id).entry.image_id || "" },
     h("span", { class: "num" }, String(k + 1)), h("span", {}, c.text, c.fact_ids?.length ? h("div", { class: "cite" }, c.fact_ids.join(", ")) : null))));
   if (opts.fit) {
     const chapter = ({hero_open: "A closer look", intro: "Meet your next possibility", outcome: "Made for your everyday",
       proof: "Look a little closer", features: "The details that matter", establish: "Before you decide",
       closing: "Your next move", hero_close: "Make it yours", custom: "Chosen for you"})[kind] || "Explore the details";
-    el.append(h("div", {class: "slide-heading"}, h("div", {class: "slide-chapter"}, chapter),
-      h("h2", {class: "slide-title"}, slide.title || "Explore the details")));
+    el.append(h("div", {class: "slide-heading"}, h("div", {}, h("div", {class: "slide-chapter"}, chapter),
+      h("h2", {class: "slide-title"}, slide.title || "Explore the details")), h("span", {class: "slide-counter", hidden: true})));
   }
   const scrollHint = opts.fit ? h("span", { class: "slide-scroll-hint", hidden: true, "aria-hidden": "true" }) : null;
   el.append(media, panel); if (scrollHint) el.append(scrollHint);
+  const foot = sampleLayout ? h("div", {class: "slide-foot"}, h("span", {}, entries.some(entry => entry.proxy) ? "Illustrative product view" : "Product view"), h("span", {class: "slide-pagination", "aria-hidden": "true"})) : null;
+  if (foot) el.append(foot);
+  function setPosition(position) {
+    const index = Number(position?.index), total = Number(position?.total);
+    const counter = el.querySelector(".slide-counter"), progress = el.querySelector(".slide-pagination");
+    if (!counter || !progress) return;
+    const valid = Number.isInteger(index) && Number.isInteger(total) && total > 0 && index >= 1 && index <= total;
+    counter.hidden = !valid;
+    counter.textContent = valid ? `${String(index).padStart(2, "0")} / ${String(total).padStart(2, "0")}` : "";
+    progress.replaceChildren(...(valid ? Array.from({length: Math.min(total, 30)}, (_, i) => h("span", {class: i === index - 1 ? "current" : ""})) : []));
+  }
+  setPosition(opts.position);
 
   function updateScrollHint() {
     if (!scrollHint) return;
@@ -91,18 +118,39 @@ export function renderSlide(slide, opts = {}) {
   }
   panel.addEventListener("scroll", updateScrollHint, { passive: true });
 
-  function layout() {  // label edges connect to reviewed anchors after browser measurement
+  function layout() {
+    // Plan every reviewed label together, including labels not yet narrated.
+    // Reveal changes visibility only; it must not move the picture or its tags.
+    const hidden = sampleLayout ? [...chips.values(), ...panel.children].filter(node => node.classList.contains("hidden")) : [];
+    hidden.forEach(node => node.classList.remove("hidden"));
+    try {
+      const reserve = sampleLayout && callouts.some(c => c.placement !== "overlay" || !c.anchor || !c.label_pos) ? (el.clientWidth < 700 ? 86 : 68) : 0;
+      arrange(reserve);
+      // A crowded or tall picture may need a caption fallback. Reserve that band
+      // before returning the settled geometry, not on a later observer frame.
+      if (sampleLayout && !reserve && panel.querySelector(".rail-fallback")) arrange(el.clientWidth < 700 ? 86 : 68);
+    } finally {
+      hidden.forEach(node => node.classList.add("hidden"));
+    }
+    updateScrollHint();
+  }
+
+  function arrange(panelReserve) {  // label edges connect after browser measurement
     const SW = el.clientWidth || 1, SH = el.clientHeight || 1, small = SW < 700;
     media.classList.toggle("stacked", small);
     if (opts.fit) {
       const intake = !!el.closest(".pl-stage")?.querySelector(".pl-intake.open");
-      const area = pictures.length > 1
-        ? {x: 0, y: SH * .25, w: SW, h: SH * .50}
-        : intake ? (small
+      const heading = el.querySelector(".slide-heading");
+      const headingBottom = heading ? heading.offsetTop + heading.offsetHeight : 0;
+      // The approved sample puts the whole image below a compact heading and
+      // above its footer. Unanchored facts keep a fixed on-slide caption band.
+      el.style.setProperty("--slide-panel-space", panelReserve + "px");
+      const contentTop = headingBottom + (small ? 0 : 8), contentBottom = SH - (foot?.offsetHeight || 30) - panelReserve - (small ? 12 : 10);
+      const area = intake ? (small
           ? {x: 16, y: kind === "hero_open" ? 18 : SH * .23, w: SW - 32, h: SH * (kind === "hero_open" ? .55 : .57)}
           : {x: SW * .37, y: 18, w: SW * .60, h: SH - 36})
-        : small ? {x: 0, y: SH * .25, w: SW, h: SH * .50}
-        : {x: 0, y: 0, w: SW, h: SH};
+        : sampleLayout ? {x: small ? 0 : 30, y: contentTop, w: SW - (small ? 0 : 60), h: Math.max(1, contentBottom - contentTop)}
+        : {x: 0, y: SH * .25, w: SW, h: SH * .5};
       pictures.forEach(({ pic, img }, index) => {
         // Each annotation box fits its own native pixels into its allotted half.
         const R = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 4 / 3;
@@ -110,9 +158,10 @@ export function renderSlide(slide, opts = {}) {
         const slot = pair ? (small
           ? {x: area.x, y: area.y + index * (area.h + gap) / 2, w: area.w, h: (area.h - gap) / 2}
           : {x: area.x + index * (area.w + gap) / 2, y: area.y, w: (area.w - gap) / 2, h: area.h}) : area;
-        let w = slot.w, hh = w / R; if (hh > slot.h) { hh = slot.h; w = hh * R; }
+        const commonHeight = pair && !small ? Math.min(slot.h, ...pictures.map(({img: other}) => slot.w / (other.naturalWidth && other.naturalHeight ? other.naturalWidth / other.naturalHeight : 4 / 3))) : slot.h;
+        let w = Math.min(slot.w, sampleLayout && !intake ? 980 : slot.w), hh = w / R; if (hh > commonHeight) { hh = commonHeight; w = hh * R; }
         pic.style.width = Math.round(w) + "px"; pic.style.height = Math.round(hh) + "px";
-        pic.style.left = Math.round(slot.x + (slot.w - w) * (pair || small || intake ? .5 : 1)) + "px";
+        pic.style.left = Math.round(slot.x + (slot.w - w) * .5) + "px";
         pic.style.top = Math.round(slot.y + (slot.h - hh) / 2) + "px";
       });
     }
@@ -120,15 +169,16 @@ export function renderSlide(slide, opts = {}) {
       chips.get(c.id)?.classList.remove("rail-only"); lines.get(c.id)?.classList.remove("rail-only");
       panel.querySelector(`[data-id="${c.id}"]`)?.classList.remove("rail-fallback");
     }
-    if (opts.fit && !opts.editable && el.clientWidth >= 700 && !el.closest(".pl-stage")?.querySelector(".pl-intake.open")) {
+    if (opts.fit && !opts.editable && !el.closest(".pl-stage")?.querySelector(".pl-intake.open")) {
       // Saved Align positions are preferred. If cinematic overlay copy would cover a
       // label, move only its displayed box; the truthful anchor and saved data stay fixed.
       const stage = el.getBoundingClientRect(), heading = el.querySelector(".slide-heading");
-      // Reserve the whole evidence band, even before a fallback makes it visible.
-      // Use unanimated heading bounds so repeated layouts cannot move the labels.
-      const occupied = [{left: stage.left, right: stage.right, top: stage.top + el.clientHeight * .65, bottom: stage.bottom}];
-      if (heading) occupied.push({left: stage.left + heading.offsetLeft, right: stage.left + heading.offsetLeft + heading.offsetWidth,
-        top: stage.top + heading.offsetTop, bottom: stage.top + heading.offsetTop + heading.offsetHeight});
+      const headingBottom = heading ? stage.top + heading.offsetTop + heading.offsetHeight : stage.top;
+      const footerTop = stage.bottom - (foot?.offsetHeight || 28);
+      const panelSpace = Number.parseFloat(el.style.getPropertyValue("--slide-panel-space")) || 0;
+      const labelTop = headingBottom + 8, labelBottom = footerTop - panelSpace - 8;
+      const occupied = [{left: stage.left, right: stage.right, top: stage.top, bottom: headingBottom},
+        {left: stage.left, right: stage.right, top: footerTop - panelSpace, bottom: stage.bottom}];
       const overlaps = (a, b) => a.left < b.right + 12 && a.right > b.left - 12 && a.top < b.bottom + 12 && a.bottom > b.top - 12;
       const anchorBoxes = callouts.filter(c => c.anchor && dots.has(c.id)).map(c => {
         const owner = owners.get(c.id).pic, p = owner.getBoundingClientRect();
@@ -144,22 +194,26 @@ export function renderSlide(slide, opts = {}) {
         // Prefer the reviewed label, then nearby positions. Never move its true
         // image anchor; only the display label is adjusted for this viewport.
         const nearby = [
-          {x: c.anchor.x + .04, y: c.anchor.y - ch / H / 2},
-          {x: c.anchor.x - cw / W - .04, y: c.anchor.y - ch / H / 2},
-          {x: c.anchor.x - cw / W / 2, y: c.anchor.y - ch / H - .07},
-          {x: c.anchor.x - cw / W / 2, y: c.anchor.y + .07},
-          ...[.08, .28, .48].flatMap(y => [.08, .38, .68].map(x => ({x, y}))),
+          {x: c.anchor.x - cw / W / 2, y: c.anchor.y - ch / H - .14},
+          {x: c.anchor.x - cw / W / 2, y: c.anchor.y + .14},
+          {x: c.anchor.x + .08, y: c.anchor.y - ch / H / 2},
+          {x: c.anchor.x - cw / W - .08, y: c.anchor.y - ch / H / 2},
+          ...[-ch / H - .10, .07, .23, .5, .86, 1.10].flatMap(y => [.04, .38, .65, .84].map(x => ({x, y}))),
         ].sort((a, b) => Math.hypot(a.x + cw / W / 2 - c.anchor.x, a.y + ch / H / 2 - c.anchor.y) - Math.hypot(b.x + cw / W / 2 - c.anchor.x, b.y + ch / H / 2 - c.anchor.y));
-        const savedDistance = Math.hypot((c.label_pos.x + cw / W / 2 - c.anchor.x) * W, (c.label_pos.y + ch / H / 2 - c.anchor.y) * H);
-        const positions = savedDistance <= W * .3 ? [c.label_pos, ...nearby] : [...nearby, c.label_pos];
+        const phoneX = c.anchor.x < .4 ? .04 : c.anchor.x > .72 ? 1 - cw / W - .04 : c.anchor.x - cw / W / 2;
+        const phoneY = c.anchor.y < .52 ? -(ch + 32) / H : 1 + 23 / H;
+        const positions = small ? [{x: phoneX, y: phoneY}, ...nearby, c.label_pos] : [c.label_pos, ...nearby];
         let chosen = null;
         for (const pos of positions) {
-          if (cw + 16 > W || ch + 16 > H) break;
-          const x = Math.max(8, Math.min(W - cw - 8, pos.x * W)), y = Math.max(8, Math.min(H - ch - 8, pos.y * H));
+          if (cw + 24 > SW || ch > labelBottom - labelTop) break;
+          // Cards may sit above or below the picture on a phone, but always
+          // stay on the slide and connect to that picture's reviewed anchor.
+          const x = Math.max(stage.left + 12 - p.left, Math.min(stage.right - cw - 12 - p.left, pos.x * W));
+          const y = Math.max(labelTop - p.top, Math.min(labelBottom - ch - p.top, pos.y * H));
           const rect = {left: p.left + x, top: p.top + y, right: p.left + x + cw, bottom: p.top + y + ch};
           const anchor = {x: p.left + c.anchor.x * W, y: p.top + c.anchor.y * H};
           const line = [labelEdge(rect, anchor), anchor];
-          if (!anchorBoxes.some(o => overlaps(rect, o)) && !occupied.some((o, i) => overlaps(rect, o) || (i > 0 && segmentHitsBox(line, o))) &&
+          if (!anchorBoxes.some(o => overlaps(rect, o)) && !occupied.some((o, i) => overlaps(rect, o) || segmentHitsBox(line, o)) &&
               !placedLeaders.some(other => segmentsIntersect(line, other) || segmentHitsBox(other, rect))) { chosen = {x, y, rect, line}; break; }
         }
         // Tight stages keep the full label in the on-slide caption band.
@@ -193,7 +247,6 @@ export function renderSlide(slide, opts = {}) {
         panel.querySelector(`[data-id="${c.id}"]`)?.classList.add("rail-fallback");
       } else visible.push({rect, line});
     }
-    updateScrollHint();
   }
   function drag(chip, c, pic) {
     let start = null;
@@ -225,5 +278,5 @@ export function renderSlide(slide, opts = {}) {
   pictures.forEach(({ pic, img }) => { ro?.observe(pic); img.addEventListener("load", layout); });
   ro?.observe(el); if (opts.fit) ro?.observe(panel);
   requestAnimationFrame(layout);
-  return { el, pic, img, pics: pictures.map((item) => item.pic), images: pictures.map((item) => item.img), layout, setRevealed, highlight, setImage, destroy: () => { ro?.disconnect(); el.remove(); } };
+  return { el, pic, img, pics: pictures.map((item) => item.pic), images: pictures.map((item) => item.img), layout, setRevealed, highlight, setImage, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
 }

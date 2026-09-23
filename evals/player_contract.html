@@ -271,6 +271,44 @@ test('The player microphone button toggles mode during a text visit', async () =
   await type('What is the warranty?'); window.dispatchEvent(new Event('pagehide'));
   assert(env.beacons.at(-1).input_mode === 'text', 'Session did not save the toggled mode');
 });
+test('The visible conversation voice switch and microphone share real capture ownership', async () => {
+  await setup({ voiceMode: false }); await atProof();
+  const toggle = host.querySelector('.pl-voice-toggle'), mic = host.querySelector('.pl-reply .mic');
+  assert(toggle?.getBoundingClientRect().width > 0 && toggle.getAttribute('role') === 'switch' && toggle.getAttribute('aria-checked') === 'false', 'The visible conversation switch is missing or falsely enabled');
+  toggle.click(); await flush();
+  const first = recentRecognizer();
+  assert(first?.started && toggle.getAttribute('aria-checked') === 'true' && mic.getAttribute('aria-pressed') === 'true', 'Conversation switch changed appearance without starting capture');
+  mic.click(); await flush();
+  assert(first.aborted && toggle.getAttribute('aria-checked') === 'false' && mic.getAttribute('aria-pressed') === 'false', 'Microphone off did not stop the switch-owned capture');
+  mic.click(); await flush();
+  const second = recentRecognizer();
+  assert(second !== first && second.started && toggle.getAttribute('aria-checked') === 'true', 'Microphone retry did not update the conversation switch');
+  toggle.click(); await flush();
+  assert(second.aborted && mic.getAttribute('aria-pressed') === 'false' && env.calls.length === 0, 'Switch off retained capture or fabricated a question');
+  first.deliver('Stale first capture.'); second.deliver('Stale second capture.'); await flush();
+  assert(env.calls.length === 0, 'A stopped capture submitted a late question');
+  await type('What is the warranty?'); window.dispatchEvent(new Event('pagehide'));
+  assert(env.calls.at(-1).input_mode === 'text' && env.beacons.at(-1).input_mode === 'text', 'Visible switch did not persist the actual selected mode');
+});
+test('Narration, listening and an answer keep the slide, dock and CTA footer fixed', async () => {
+  await setup({ voiceMode: false, configure: b => ({...b, ctas: [{id:'brochure',label:'View brochure',kind:'link',when:'always'}, {id:'callback',label:'Ask for a callback',kind:'lead',when:'always'}]}) });
+  await atProof();
+  const settle = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  const regions = () => Object.fromEntries(['.slide-stack','.pl-dock','.pl-action-bar'].map(selector => [selector, rect(host.querySelector(selector))]));
+  await settle(); const before = regions();
+  assert(host.querySelectorAll('.pl-action-bar .pl-ctas button').length === 2, 'Configured CTA actions are missing from the footer');
+  host.querySelector('.pl-voice-toggle').click(); await flush(); await settle();
+  assert(JSON.stringify(regions()) === JSON.stringify(before), 'Listening changed slide, dock or footer dimensions');
+  host.querySelector('.pl-voice-toggle').click(); await flush(); await type('What is the warranty?'); await settle();
+  assert(button('Continue demo', '.pl-chips button') && JSON.stringify(regions()) === JSON.stringify(before), 'Answer choices moved the slide, dock or CTA footer');
+  const dock = before['.pl-dock'], footer = before['.pl-action-bar'];
+  assert(before['.slide-stack'].bottom <= dock.y + 1 && dock.bottom <= footer.y + 1, 'The fixed conversation regions overlap');
+  for (const action of host.querySelectorAll('.pl-action-bar .pl-ctas button')) {
+    const box = rect(action);
+    assert(box.width > 0 && box.y >= footer.y - 1 && box.bottom <= footer.bottom + 1, 'A configured CTA is clipped by its footer');
+  }
+  assert(env.leadCalls.length === 0 && env.saved.length === 0, 'Narration or answer state implicitly selected a CTA');
+});
 
 // Film controls are exercised with deterministic media events; a separate local review uses a real MP4.
 async function filmFixture() {
@@ -979,7 +1017,7 @@ const tallImageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns=
 async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture, media = null, editable = false, onMove = null } = {}) {
   player?.destroy(); player = null; host.replaceChildren();
   env = { calls: [], played: [], active: new Set(), maxActive: 0, geometry: [] };
-  const frame = document.createElement('div'); frame.className = 'pl render-contract';
+  const frame = document.createElement('div'); frame.className = 'pl render-contract'; frame.dataset.visualTheme = 'marine';
   frame.style.cssText = `position:relative;display:block;width:${width}px;max-width:100%;height:540px;overflow:visible`;
   const stage = document.createElement('div'); stage.className = 'pl-stage'; stage.style.cssText = 'position:absolute;inset:0;overflow:visible';
   const stack = document.createElement('div'); stack.className = 'slide-stack'; stack.style.inset = '0';
@@ -1114,45 +1152,58 @@ test('Resizing keeps the exact native-image anchor without changing saved callou
     }
   } finally { view.destroy(); frame.remove(); }
 });
-test('A narrow slide exposes numbered evidence without cropping the image or covering it with labels', async () => {
+test('A narrow slide shows complete feature cards with small trusted anchors and no layout mutation', async () => {
   const callouts = [
     { id: 'left-detail', text: 'First supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .22, y: .55 }, label_pos: { x: .08, y: .18 }, reveal_on_line: 0 },
     { id: 'right-detail', text: 'Second supported detail', fact_ids: ['f2'], placement: 'overlay', anchor: { x: .77, y: .45 }, label_pos: { x: .69, y: .78 }, reveal_on_line: 0 },
   ];
   const saved = snapshot(callouts), { frame, view, slide: sl } = await renderFixture(390, { callouts });
+  const visible = node => node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0 && getComputedStyle(node).visibility === 'visible' && Number(getComputedStyle(node).opacity) > 0;
+  const overlaps = (a, b) => a.x < b.right - 1 && a.right > b.x + 1 && a.y < b.bottom - 1 && a.bottom > b.y + 1;
+  const original = JSON.stringify(sl);
   try {
-    assert([...view.el.querySelectorAll('.slide-panel .item')].every((item) => item.getBoundingClientRect().height === 0), 'Unspoken narrow-screen evidence was already visible');
+    assert([...view.el.querySelectorAll('.callout,.slide-panel .item,.dot')].every(node => !visible(node)), 'Unspoken narrow-screen evidence was already visible');
     view.setRevealed(0); view.layout();
-    const stage = rect(view.el), image = rect(view.img), panel = view.el.querySelector('.slide-panel'), strip = rect(panel);
-    env.geometry.push({ stage, image, evidenceStrip: strip, railLayout: evidenceRailDetails(view) });
-    assert(strip.width > 0 && strip.height > 0 && strip.x >= stage.x - 1 && strip.right <= stage.right + 1 && strip.y >= stage.y - 1 && strip.bottom <= stage.bottom + 1, 'Narrow evidence strip is missing or outside the visible slide');
-    assert(image.bottom <= strip.y + 2 || image.y >= strip.bottom - 2, 'Narrow evidence strip covers the authentic image');
+    const stage = rect(view.el), image = rect(view.img), panel = view.el.querySelector('.slide-panel'), heading = rect(view.el.querySelector('.slide-heading')), foot = rect(view.el.querySelector('.slide-foot'));
+    const labels = [...view.el.querySelectorAll('.callout')].filter(visible).map(rect);
+    env.geometry.push({ stage, image, labels, heading, foot, railLayout: evidenceRailDetails(view) });
+    assert(image.width > 0 && image.height > 0 && Math.abs(image.width / image.height - view.img.naturalWidth / view.img.naturalHeight) < .015, 'Narrow product image was cropped or stretched');
+    assert(image.x >= stage.x - 1 && image.right <= stage.right + 1 && image.y >= stage.y - 1 && image.bottom <= stage.bottom + 1, 'Narrow image escapes the slide');
+    assert(labels.length === saved.length && labels.every((box, i) => box.x >= stage.x - 1 && box.right <= stage.right + 1 && box.y >= stage.y - 1 && box.bottom <= stage.bottom + 1 && !overlaps(box, heading) && !overlaps(box, foot) && !labels.slice(i + 1).some(other => overlaps(box, other))), 'Mobile feature cards are missing, overlap, or leave the slide');
     for (let i = 0; i < callouts.length; i++) {
       const c = saved[i], item = panel.querySelector(`[data-id="${c.id}"]`), dot = view.pic.querySelector(`.dot[data-id="${c.id}"]`), chip = view.pic.querySelector(`.callout[data-id="${c.id}"]`);
-      const d = rect(dot), itemBox = rect(item);
-      assert(itemBox.width > 0 && itemBox.height > 0 && item.textContent.includes(c.text) && item.querySelector('.num')?.textContent === String(i + 1), 'Narrow evidence lost its supported label or matching number');
-      assert(parseFloat(getComputedStyle(item).fontSize) >= 11, 'Narrow evidence became too small to read');
-      assert(chip.getBoundingClientRect().width === 0, 'Narrow layout still covers the product with an overlay label');
-      assert(d.width > 0 && d.height > 0 && dot.querySelector('.num')?.textContent === String(i + 1), 'Narrow image lost the evidence number');
-      assert(Math.abs(d.x + d.width / 2 - (image.x + image.width * c.anchor.x)) <= 1.5 && Math.abs(d.y + d.height / 2 - (image.y + image.height * c.anchor.y)) <= 1.5, 'Narrow evidence number points at the wrong image location');
+      const d = rect(dot);
+      assert(visible(chip) && chip.querySelector('.txt').textContent === c.text && !visible(item), 'Narrow feature text is missing, changed or duplicated in a caption strip');
+      assert(parseFloat(getComputedStyle(chip.querySelector('strong')).fontSize) >= 11 && chip.scrollWidth <= chip.clientWidth + 1, 'Mobile feature text is too small or clipped');
+      assert(visible(dot) && d.width <= 10 && d.height <= 10 && getComputedStyle(dot.querySelector('.num')).display === 'none', 'Narrow image did not retain the approved small unnumbered anchor');
+      assert(Math.abs(d.x + d.width / 2 - (image.x + image.width * c.anchor.x)) <= 1.5 && Math.abs(d.y + d.height / 2 - (image.y + image.height * c.anchor.y)) <= 1.5, 'Narrow feature points at the wrong image location');
     }
-    assert(frame.scrollWidth <= frame.clientWidth + 1 && JSON.stringify(sl.callouts) === JSON.stringify(saved), 'Narrow evidence caused overflow or rewrote saved coordinates');
+    assert(frame.scrollWidth <= frame.clientWidth + 1 && JSON.stringify(sl) === original, 'Narrow layout caused overflow or rewrote reviewed slide data');
   } finally { view.destroy(); frame.remove(); }
 });
-test('Narrow evidence hides leaders with their labels and restores them on a wide slide', async () => {
-  const { frame, view } = await renderFixture(1000);
+test('Feature leaders stay visible with their labels and disappear together only on fallback', async () => {
+  const { frame, view, slide: sl } = await renderFixture(1000), original = JSON.stringify(sl);
+  const painted = node => {
+    if (!node || (!rect(node).width && !rect(node).height)) return false;
+    for (let parent = node; parent && parent !== frame.parentElement; parent = parent.parentElement) {
+      const css = getComputedStyle(parent);
+      if (css.display === 'none' || css.visibility === 'hidden' || Number(css.opacity) === 0) return false;
+    }
+    return true;
+  };
   try {
     for (const width of [1000, 390, 304, 1000]) {
       frame.style.width = width + 'px'; view.setRevealed(0); view.layout();
       const leader = view.pic.querySelector('.leaders line'), chip = view.pic.querySelector('.callout'), dot = view.pic.querySelector('.dot');
-      const item = view.el.querySelector('.slide-panel .item'), narrow = frame.clientWidth <= 699;
+      const item = view.el.querySelector('.slide-panel .item'), labelVisible = painted(chip), leaderVisible = painted(leader), fallbackVisible = painted(item);
       env.geometry.push({ width: frame.clientWidth, leaderVisibility: getComputedStyle(leader).visibility, chip: rect(chip), dot: rect(dot), evidence: rect(item) });
-      if (narrow) {
-        assert(chip.getBoundingClientRect().width === 0 && getComputedStyle(leader).visibility === 'hidden', 'A hidden mobile label left its leader slicing across the image');
-        assert(rect(dot).width > 0 && getComputedStyle(dot).visibility === 'visible' && rect(item).height > 0, 'Hiding mobile leaders also hid the numbered dot or evidence rail');
-      } else {
-        assert(rect(chip).width > 0 && getComputedStyle(leader).visibility === 'visible', 'Wide slide did not restore its overlay label and leader');
-      }
+      assert(labelVisible === leaderVisible, 'A feature label and its leader have different visibility');
+      assert(labelVisible !== fallbackVisible && (labelVisible ? chip : item).textContent.includes(sl.callouts[0].text), 'Resizing lost or duplicated the complete reviewed feature');
+      assert(labelVisible || (chip.classList.contains('rail-only') && leader.classList.contains('rail-only')), 'A responsive style hid a feature instead of using collision fallback');
+      if (width === 1000) assert(labelVisible && leaderVisible, 'Wide slide did not restore its feature card and leader');
+      const image = rect(view.img), anchor = sl.callouts[0].anchor, d = rect(dot);
+      assert(painted(dot) && Math.abs(d.x + d.width / 2 - image.x - image.width * anchor.x) <= 1.5 && Math.abs(d.y + d.height / 2 - image.y - image.height * anchor.y) <= 1.5, 'Responsive fallback moved or hid the trusted image anchor');
+      assert(JSON.stringify(sl) === original, 'Responsive label layout changed reviewed slide data');
     }
   } finally { view.destroy(); frame.remove(); }
 });

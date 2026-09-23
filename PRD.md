@@ -54,9 +54,13 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   the failed-verification reason and excludes manual rejections and conflict/precedence exclusions.
 
 WP11 finishing decisions and the later presentation correction are recorded in `refine.MD`.
-The cinematic slide fills 75% of the player viewport, with feature details on the slide,
-reviewed anchors, a dark upper area and a white conversation dock. Short viewports reserve a
-minimum usable dock. This supersedes the separate evidence rail; Marine/Sage/Graphite color
+The canonical design is `docs/design/wp11-samples/marine.html?revision=slide-first`.
+The production player and Align preview use its compact top heading, centered native-aspect
+picture, small feature cards with thin leaders and reviewed anchor dots, counter and slide
+progress. The dark slide fills 75% of the player viewport above a white conversation dock;
+CTAs sit below the composer in a fixed footer. Short viewports reserve a minimum usable dock.
+All feature words come from reviewed callout content. This supersedes the separate evidence
+rail and the older oversized title over the picture; Marine/Sage/Graphite color
 selection remains in the existing Visuals card. Search the
 public web immediately when approved evidence cannot answer, with cited, turn-local, uncached sources.
 The default guided tour extends through reviewed stops to at least 180 seconds of narration and publication

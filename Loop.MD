@@ -1,5 +1,18 @@
 # Loop.MD — Demo Studio
 
+## WP11 — production/reference parity · 23 September 2026
+
+Loop remains **off**. The exact Marine slide-first HTML is the canonical reference; production and Align previews share its compact heading, centered native picture, small feature cards, progress and white conversation/footer layout. All labels are planned together before reveal. Short windows retain 120px desktop / 132px phone conversation space; ordinary stages remain 75% of the player viewport.
+
+- Free gates before and after: `qa_deck.py` **365/365**, `qa_accept.py` **24/24**, `smoke_mock.py` **both phases + on-demand rehearsal**. Final logs: `/tmp/demo-sample-final-{deck,accept,smoke}.log`; isolated mock storage, blocked sockets, zero outbound attempts.
+- `ui_layout_contract.py --live-url http://127.0.0.1:8905/ --screenshots /tmp/demo-sample-parity-final`: **195/195**. Same-asset unchanged-sample parity at 1440/850/390px, two-pixel picture-position tolerance, heading/feature/composer measurements, dark/white colors, six two-image labels, missing-anchor/proxy behavior, long-route reachability, short-window feedback, fixed transient geometry, palette review, fresh isolated mock Bundle publication with measured 180-second WAVs, and GET-only actual-app rendering. A labelled same-size SVG substitutes only when the local retained JPEG is absent on a clean checkout.
+- `player_contract.html`: **78/78**, including visible Voice mode switch/microphone ownership and narration → listening → answer frame stability. Mobile assertions now require complete on-slide cards, exact anchor positions and paired label/leader visibility; tall-image and crowded-fallback checks retain source immutability and readable text.
+- Player Node contracts: media **7/7**, focus **21/21**, listen **16/16**, priority revision **11/11**, customer sites **19/19**, fundamental **10/10**; live voice **74/74**.
+- Real retained CRETA images and Downloads MP4: **6/6**, muted and read-only at desktop/phone; native image ratios, 75% stage, video-only film with a separate Skip button 16px below it. Independent staged-reveal/resize probe confirms stable label/image geometry and unchanged source JSON.
+- Changed Python/JavaScript syntax, diff whitespace and all **9/9** embedded Mermaid copies pass.
+
+No paid generation, deployed update, protected-demo/output mutation or port-8896 operation. These checks prove local frontend composition and mocked lifecycle behavior, not acoustic or live-provider quality. Selective Align rebuild routing remains pending; no new open questions.
+
 ## WP11 presentation correction — 23 September 2026
 
 Loop stays **off**. The latest user instruction supersedes the side-panel design: full-width cinematic slide, details on-slide, 75% player height at ordinary sizes, dark top and white lower area. Short windows retain a 112px minimum conversation dock; status/answer choices scroll above the fixed composer. Reviewed anchors and stored label positions remain intact.

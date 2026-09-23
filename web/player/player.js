@@ -158,9 +158,12 @@ export function mountPlayer(host, bundle, api) {
   // Create the header, slide stage, caption dock, intake, contact form and conversation drawer.
   // Input events call the flow helpers below; web/api.js:h turns these descriptions into DOM elements.
   const visualTheme = ["marine", "sage", "graphite"].includes(bundle.visual_theme) ? bundle.visual_theme : "marine";
-  const root = h("div", { class: "pl", "data-visual-theme": visualTheme },
+  const productName = bundle.product?.name || bundle.name || "Product demo";
+  const productBrand = typeof bundle.product?.brand === "string" ? bundle.product.brand : "";
+  const root = h("div", { class: "pl sample-player", "data-visual-theme": visualTheme },
     h("div", { class: "pl-top" },
-      h("div", { class: "left" }, el.avatar = h("div", { class: "avatar" }), (el.mascotTop = mascot({ size: 34, image: bundle.mascot })).el, h("div", {}, h("div", { class: "pl-name" }, `${guide} · ${bundle.product?.name || bundle.name}`), el.status = h("div", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.progress = h("div", { class: "pl-progress" })),
+      h("div", { class: "left" }, h("div", { class: "pl-brand" }, h("div", { class: "pl-name", title: productBrand || productName }, productBrand || productName), h("div", { class: "pl-product" }, productBrand ? `${productName} · Guided demo` : "Guided demo"))),
+      el.progress = h("nav", { class: "pl-progress", "aria-label": "Tour progress" }),
       // Wire header buttons to fullscreen, mute, pause, stop, conversation, restart and close actions.
       // Clicks update this visit or call the parent callback provided by web/app.js:renderPlay.
       h("div", { class: "right" }, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", "aria-label": "Full screen", onclick: () => toggleFullscreen() }, icon("expand", { size: 18 })), el.muteBtn = h("button", { class: "icon-btn", title: "Mute audio", "aria-label": "Mute audio", "aria-pressed": "false", onclick: () => toggleMute() }, icon("volume", { size: 18 })), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", "aria-label": "Pause / resume", onclick: () => togglePause() }, icon("pause", { size: 18 })), h("button", { class: "icon-btn", title: "Stop and see the summary", "aria-label": "Stop and see the summary", onclick: () => stopDemo() }, icon("stop", { size: 18 })), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", "aria-label": "Conversation", onclick: () => toggleDrawer() }, icon("message", { size: 18 }), h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", "aria-label": "Restart", onclick: () => restart() }, icon("restart", { size: 18 })), api.onClose ? h("button", { class: "icon-btn", title: "Close", "aria-label": "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, icon("close", { size: 18 })) : null)),
@@ -169,20 +172,20 @@ export function mountPlayer(host, bundle, api) {
       el.skipFilm = h("button", { class: "btn ghost pl-film-skip", onclick: () => { S.skipFilm = true; } }, "Skip the film")),
     el.stage = h("div", { class: "pl-stage" },
       el.stack = h("div", { class: "slide-stack" }),
-      // Reserve a slide stack and action area beneath the player header.
-      // web/slide.js:renderSlide supplies one image per slide; fading old and new slides can briefly overlap.
-      el.ctas = h("div", { class: "pl-ctas" }),
+      // The slide, conversation and footer keep fixed positions across runtime states.
+      // web/slide.js:renderSlide supplies the fitted image and reviewed feature labels.
       h("div", { class: "pl-dock" },
         // Keep the guide, captions, citations and reply controls together in the bottom dock.
-        // Narration and question callbacks update these elements; web/player/mascot.js:mascot animates the guide.
-        h("div", { class: "pl-cap" }, (el.mascotStage = mascot({ size: 72, image: bundle.mascot })).el, h("div", { class: "who" }, guide), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
-        h("div", { class: "pl-controls" }, h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" })),
+        // Narration and question callbacks update these elements without remounting the controls.
+        h("div", { class: "pl-cap" }, h("div", { class: "pl-guide-line" }, el.avatar = h("span", { class: "pl-guide-avatar", "aria-hidden": "true" }, Array.from(guide)[0]), h("span", { class: "who" }, guide), el.status = h("span", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
+        h("div", { class: "pl-controls" }, h("div", { class: "pl-composer-label" }, h("span", {}, `Ask ${guide}`), el.voiceToggle = h("button", { class: "pl-voice-toggle", type: "button", role: "switch", "aria-checked": String(S.voiceMode), "aria-label": "Conversation voice mode", onclick: () => micTap() }, h("span", { class: "pl-toggle", "aria-hidden": "true" }), "Voice mode")), h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" })),
           // Submit the typed dock reply without reloading the page, then clear its input field.
           // acceptTypedAnswer routes it to the active wait or server/app.py:run_qa.
-          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: "Ask a question or type your answer…", "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 21 })), h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
+          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: `Ask ${guide} a question…`, "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 17 })), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 16 }))),
           // Keep the status hint below the shared typed/voice composer.
           // micTap may call web/player/live-voice.js:LiveVoiceClient.startCapture or stopCapture.
-          h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Tap to talk — I'll stop and listen." : "Voice input needs Chrome or Safari — type your question below.")))),
+          h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Microphone ready · or type" : "Type a question at any time"), h("span", { class: "pl-send-hint" }, "Enter to send")))),
+      h("div", { class: "pl-action-bar" }, h("span", { class: "pl-action-hint" }, "Explore at your own pace"), el.ctas = h("div", { class: "pl-ctas" })),
       el.intake = h("div", { class: "pl-intake" }, h("div", { class: "inner" }, el.orb = h("div", { class: "orb-slot" }, (el.mascotIntake = mascot({ size: 132, image: bundle.mascot })).el), el.inState = h("div", { class: "state" }, guide), el.inQ = h("p", { class: "q" }), el.inHeard = h("div", { class: "heard" }),
         // Submit typed intake text through the same answer handler used by the main reply box.
         // Its output fills local customer context before server/app.py:run_pitch is requested.
@@ -210,11 +213,12 @@ export function mountPlayer(host, bundle, api) {
   const sizePlayer = () => {
     if (root.classList.contains("film-on") || !root.clientHeight) return;
     const header = root.querySelector(".pl-top").getBoundingClientRect().height;
-    const actions = root.querySelector(".pl-ctas").getBoundingClientRect().height;
-    const minimumDock = 112;
-    const slideHeight = Math.max(0, Math.min(Math.round(root.clientHeight * .75), root.clientHeight - header - actions - minimumDock));
+    const actions = root.querySelector(".pl-action-bar").getBoundingClientRect().height;
+    const minimumDock = root.clientWidth <= 720 ? 132 : 120;
+    const slideHeight = Math.max(0, Math.min(root.clientHeight * .75, root.clientHeight - header - actions - minimumDock));
     const dockHeight = root.clientHeight - header - actions - slideHeight;
     root.style.setProperty("--player-slide-height", slideHeight + "px");
+    root.style.setProperty("--player-action-height", actions + "px");
     root.style.setProperty("--player-dock-size", dockHeight + "px");
     root.style.setProperty("--player-dock-height", dockHeight + "px");
   };
@@ -367,7 +371,7 @@ export function mountPlayer(host, bundle, api) {
   function newRun() { return ++S.run; }
   // Draw route progress buttons and wire each one to an explicit customer navigation action.
   // A click interrupts the old flow before playing the selected slide through web/slide.js:renderSlide.
-  function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.slide.kind, onclick: () => { resumeSession(); interruptAll(); S.conversationOrigin = null; playFrom(i, 0); } }, st.slide.title))); }
+  function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.slide.title, "aria-current": i === S.seg ? "step" : null, onclick: () => { resumeSession(); interruptAll(); S.conversationOrigin = null; playFrom(i, 0); } }, st.slide.title))); if (cur) cur.view.setPosition?.(slidePosition(cur.slide)); }
   // Render configured always-visible next-step actions from the published bundle.
   // A click starts ctaFlow; server/app.py:get_bundle supplies the configured actions rather than arbitrary model links.
   function renderCtas() { const ctas = (bundle.ctas || []).filter((c) => c.when === "always" || !c.when); el.ctas.replaceChildren(...ctas.map((c) => h("button", { class: "chip cta" + (c.primary ? " primary" : ""), onclick: () => { resumeSession(); interruptAll(); ctaFlow(c.id, newRun()); } }, c.label))); }
@@ -378,10 +382,15 @@ export function mountPlayer(host, bundle, api) {
   let cur = null;  // { slide, view, enteredAt }
   // Show the requested slide or update its reveal position if it is already on screen.
   // Return the controls from web/slide.js:renderSlide; a slide keeps one image while narration reveals its callouts.
+  function slidePosition(slide) {
+    const routeIndex = S.plan.findIndex(item => item.slide.id === slide.id);
+    const index = routeIndex >= 0 ? routeIndex : slides.findIndex(item => item.id === slide.id);
+    return index >= 0 ? { index: index + 1, total: routeIndex >= 0 ? S.plan.length : slides.length } : null;
+  }
   function showSlideView(slide, { reveal = -1 } = {}) {
-    if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); return cur.view; }
+    if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); cur.view.setPosition?.(slidePosition(slide)); return cur.view; }
     if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
-    const view = renderSlide(slide, { fit: true, theme: visualTheme });
+    const view = renderSlide(slide, { fit: true, theme: visualTheme, position: slidePosition(slide) });
     view.setRevealed(reveal);
     el.stack.append(view.el);
     view.layout(); void view.el.offsetWidth; view.el.classList.add("on");  // a forced reflow starts the cross-fade; no animation frame needed (a hidden tab never gets one)
@@ -725,6 +734,7 @@ export function mountPlayer(host, bundle, api) {
   // The boolean comes from capture state; live-voice.js:LiveVoiceClient reports live microphone changes.
   function setMicUI(on) {
     const enabled = live ? S.voiceMode : S.inputMode === "voice";
+    el.voiceToggle?.setAttribute("aria-checked", String(enabled));
     for (const button of [el.mic, el.inMic]) {
       button.classList.toggle("on", enabled);
       button.title = enabled ? "Turn voice mode off" : "Turn voice mode on";
