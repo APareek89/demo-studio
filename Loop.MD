@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Deployment checks — 23 September 2026
+
+Loop remains off. The user explicitly authorized local restart, GitHub master publication and existing-EC2 deployment; no paid reasoning/voice test is implied. Before the portability change: deck320, accept24, both smoke phases, transmission17, live-table21, pitch7 and client10 passed with0outbound. The new `evals/crawl_browser_contract.py` has9 groups covering valid/invalid operator paths, preserved Mac behavior, installed managed Chromium, no executable, sandbox launch flags and no unsafe launch fallback;7 existing crawl controls also pass. Final post-change gates and remote read-only/transport checks are recorded in the release report. Actual rendered extraction requires separately provisioned browser/OS libraries; mock selection tests cannot establish that capability.
+
 ## Final finite stress and offline fixes — 19 September 2026
 
 Loop stays off. One original live caption session on274ed3d/v8:41/41 controlled flow checks,14QA/13returned/1cancelled,8synthetic interruptions,one new saved recap. Original semantic review9supported/3partial/1unsafe; all3calculations correct. No voice API test. After findings, only captured fixtures and session agents; no paid retry. New incremental app estimate$0.4496.

@@ -1,4 +1,4 @@
-"""Bounded, model-scoped public-source discovery. No browser or hosted crawler.
+"""Bounded, model-scoped public-source discovery. No hosted crawler.
 
 Every network hop is checked and connected to its checked IP (including redirects).
 Coverage is an audit of the eligible frontier, never a promise of whole-site coverage.
@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import ipaddress
+import os
 from pathlib import Path
 import shutil
 import re
@@ -161,21 +162,36 @@ def fetch_public(url: str, *, timeout: float = 15, max_bytes: int = 12_000_000, 
     raise ValueError("Too many source redirects")
 
 
+def _render_executable(chromium) -> str:
+    """Select an installed executable; never install browsers or weaken launch flags."""
+    configured = os.environ.get("CRAWL_BROWSER_EXECUTABLE", "").strip()
+    if configured:
+        executable = Path(configured).expanduser()
+        if not executable.is_absolute() or not executable.is_file() or not os.access(executable, os.X_OK):
+            raise RuntimeError("CRAWL_BROWSER_EXECUTABLE must name an existing executable file by absolute path")
+        return str(executable)
+    mac_chrome = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+    if mac_chrome.is_file() and os.access(mac_chrome, os.X_OK):
+        return str(mac_chrome)
+    bundled = Path(chromium.executable_path)
+    if bundled.is_file() and os.access(bundled, os.X_OK):
+        return str(bundled)
+    raise RuntimeError("Rendered extraction unavailable: no installed Chromium browser. "
+                       "Configure CRAWL_BROWSER_EXECUTABLE or install Playwright Chromium and its OS dependencies for the service user.")
+
+
 def render_public(url: str, *, timeout: float = 25, max_requests: int = 60, fetcher=None) -> dict:
-    """Isolated local Chrome rendering, with all page HTTP fulfilled by safe fetch.
+    """Isolated local Chromium rendering, with all page HTTP fulfilled by safe fetch.
 
     No inherited cookies, service workers, downloads, sockets or private origins.
     This adapter is used only for authoring Read, never a customer browser session.
     """
     from playwright.sync_api import sync_playwright
     fetcher = fetcher or fetch_public
-    executable = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
-    if not executable.exists():
-        raise RuntimeError("Installed Google Chrome not found; rendered extraction unavailable")
     started, requests, blocked = time.monotonic(), [], []
     allowed_hosts = {urlsplit(url).hostname}
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(executable_path=str(executable), headless=True, chromium_sandbox=True, timeout=int(timeout * 1000),
+        browser = playwright.chromium.launch(executable_path=_render_executable(playwright.chromium), headless=True, chromium_sandbox=True, timeout=int(timeout * 1000),
                                               args=["--disable-background-networking", "--disable-sync", "--no-first-run", "--force-webrtc-ip-handling-policy=disable_non_proxied_udp"])
         context = browser.new_context(service_workers="block", accept_downloads=False, user_agent=UA)
         context.route_web_socket("**/*", lambda route: route.close())

@@ -1,6 +1,12 @@
 # Handoff.MD — Demo Studio
 
-## Current checkpoint — 19 September 2026 night
+## Release authorization — 23 September 2026
+
+Anand explicitly requested restarting the local app, updating the private `APareek89/demo-studio` GitHub default branch (`master`), and deploying this release to the existing AWS instance. This supersedes the earlier no-push/no-merge/no-deployment hold below; it does not authorize paid model/voice tests. Local8896 is running again after repairing the removed Anaconda interpreter target with a compatible Python3.11 installation. Source/model workflow, reviewed CRETA v8 and immutable evidence remain unchanged.
+
+Deployment stages new code and dependencies separately, preserves the remote `.env`, old code/venv, existing demos and a data rollback snapshot, then switches the service. CRETA plus its single reviewed stress session is copied as demo data; private local traces and other local sessions are excluded. Browser selection now supports an explicit installed executable or Playwright's installed Chromium while retaining the sandbox and public-source fetch guards. Runtime tier remains customer, cloud sync stays off and the tested3s fallback overlap remains enabled. Read the dated release report for final deployment SHA, URL and status.
+
+## Previous checked release — 19 September 2026 night
 
 **CRETA v8 is built. One final paid caption stress session is complete; its six findings are fixed and verified offline.** Do not run another paid test, regenerate narration, change source facts or overwrite the original session. Physical microphone, voice warmth and the buyer's judgement of the story remain unverified. No push, merge or deployment. Branch `codex/creta-conversational-demo`; keep Codex browser review muted and leave native Chrome alone.
 

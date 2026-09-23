@@ -2192,3 +2192,34 @@ The actual-input offline contract reproduces the original two-fact pack with the
 ### 2026-09-19 — CR46–51 final verification and evidence boundary
 
 All six corrections passed independent review and blocked-network regressions; required deck320/accept24/both smoke pass. Feature conditions17, priority revision7+client10, table21, EMI13, universal scope8 and typed acts30 pass. The corrected comfort candidate uses recovered F097/F096 with selected-trim wording and separate closed personal-fit limits; full validation reports zero errors. That candidate is session-token authored, not a new live response. CR46 additionally lowercases only grammatical That/These when prepending a qualifier; Hyundai and ADAS capitalization are preserved. No source/snapshot change or paid retest followed the single live session. Original grades9supported/3partial/1unsafe/1cancelled and their raw hashes remain intact. Final recorded increment$0.4496; physical microphone and acoustic performance remain unmeasured.
+
+
+## 2026-09-23 — DEP01 — local server could not start after base Python disappeared
+
+**Symptom:** Uvicorn exited126 before importing the app: its virtual-environment interpreter pointed to `/Users/macbook/anaconda3/bin/python3`, which no longer existed.
+
+**Five whys:** (1) The launcher could not find its interpreter. (2) The venv's python3 symlink referenced the removed Anaconda installation. (3) Virtual environments preserve an external base-interpreter relationship. (4) The previous successful server was not evidence that this path would survive a later machine change. (5) Startup instructions did not make base-interpreter availability an explicit check.
+
+**Reason:** local environment lifecycle, not an application regression. **Solution:** preserve the original pyvenv metadata/link receipt, point the environment to the installed compatible CPython3.11.13 x86_64, and update base metadata. Existing compiled3.11 x86_64 wheels are retained. Runtime imports and pip check pass; the real local health and unchanged12-slide CRETA v8 bundle load on8896. No source rebuild or paid model call.
+
+**Prevention:** check the interpreter path/version and pip consistency before restarting; rebuild a venv if major/minor or architecture changes rather than reusing incompatible wheels. Receipt: `output/deploy-2026-09-23/interpreter-repair.json`.
+
+## 2026-09-23 — DEP02 — source rendering assumed the developer's Mac browser path
+
+**Symptom:** EC2 has no `/Applications/Google Chrome.app/...`; rendered authoring extraction would always fail before browser launch even with Playwright installed.
+
+**Five whys:** (1) Rendering preflight required a Mac-only path. (2) Browser selection was an application constant. (3) Local development used one known installed browser. (4) No operator override or installed-managed-browser fallback existed. (5) Earlier contracts exercised source/network boundaries but not Linux executable selection.
+
+**Solution:** an absolute validated `CRAWL_BROWSER_EXECUTABLE` override, otherwise existing Mac Chrome, otherwise Playwright's installed Chromium. The application never downloads a browser, retries without sandbox, or accepts executable arguments from source/customer input. Missing executable or unsupported system dependencies remain explicit availability failures. Preserve all pinned public-host fetch, redirect, request-budget, worker/WebSocket and sandbox rules.
+
+**Verification:**9 new socket/subprocess-blocked selection/launch contracts plus7 existing public-source contracts pass; independent review is clear. The real EC2 browser dependency/launch outcome is separately recorded in the deployment report. These offline checks alone do not prove Linux browser availability. No source facts or published script changed.
+
+## 2026-09-23 — DEP03 — EC2 SSH allowed only previous laptop IP addresses
+
+**Symptom:** healthy EC2 and HTTPS, but SSH connection timed out. **Reason:** the security group allowed22 only from two prior /32 addresses; the current laptop egress address was different.
+
+**Five whys:** (1) SSH packets did not reach the permitted rule. (2) Current egress was not in its allowlist. (3) The laptop's public address changed. (4) Provisioning intentionally pins SSH to one laptop IP for narrow access. (5) The update path did not check current egress before attempting SSH.
+
+**Solution:** save the complete security-group snapshot and add only current121.241.7.122/32 to port22, preserving previous rules. AWS IAM permits adding rules but denies revocation, so this is recorded as current-laptop access, not falsely described as a temporary rule already cleaned up. First SSH host-key trust is explicitly TOFU for the AWS-account-verified instance/EIP; subsequent connections use the recorded task-specific key with strict checking. No mismatching key was accepted and SSH was never opened to the public internet.
+
+**Prevention:** verify instance/EIP/current allowlist before release; removal of obsolete /32 rules requires an operator with revoke permission. No IAM role/policy change was made.
