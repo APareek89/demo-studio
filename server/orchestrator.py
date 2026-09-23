@@ -10,14 +10,15 @@ import traceback
 import re
 
 from . import cloud, events, media, store, usage, runlog
-from .agents import align, author, bundle, deck, faq, plan, rehearsal, understand, voice
+from .agents import align, author, bundle, coach, deck, faq, plan, rehearsal, understand, voice
 from .store import STAGES
 
 # Declare which outputs depend on a changed stage so reuse never assumes they are current.
 # Input: the name of the changed stage. Output: the stage names invalidate() marks stale.
 # Linked: server/graph.py node wrappers reuse only appropriate completed work; Deck changes need no new voice.
 DOWNSTREAM = {
-    "understand": ["plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"],
+    "understand": ["coach", "plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"],
+    "coach": ["plan", "author", "deck", "voice", "rehearsal", "bundle"],
     "plan": ["author", "deck", "voice", "rehearsal", "bundle"],
     "author": ["deck", "voice", "rehearsal", "bundle"],
     "deck": ["bundle"],  # audio is keyed by script text; a slide change only needs re-bundling
@@ -122,6 +123,8 @@ def changed_cards(stage: str, before: dict | None, after: dict | None) -> set[st
     if stage == "understand":
         factual = ("facts", "competitors", "unknowns", "product", "brand")
         return set(store.CARDS) if any(before.get(k) != after.get(k) for k in factual) else {"visuals", "script"}
+    if stage == "coach":
+        return {"script", "visuals"} if any(before.get(k) != after.get(k) for k in ("stops", "usps", "evidence_gaps", "issues")) else set()
     if stage == "plan":
         cards = set()
         if before.get("voice") != after.get("voice"):
@@ -145,7 +148,7 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
     # Capture the old review artifact before a stage rewrites it.
     # Input: stage name. Output: its previous JSON for changed_cards(), when the stage has a review file.
     # Linked: server/store.py:read_json retrieves the agent output rather than LangGraph checkpoint state.
-    output_file = {"understand": "understanding.json", "plan": "plan.json", "author": "script.json", "deck": "deck.json", "faq": "faq.json"}.get(stage)
+    output_file = {"understand": "understanding.json", "coach": "playbook.json", "plan": "plan.json", "author": "script.json", "deck": "deck.json", "faq": "faq.json"}.get(stage)
     previous = store.read_json(demo_id, output_file) if output_file else None
     try:
         # Dispatch to the actual implementation; graph nodes do not contain the product-generation logic.
@@ -153,6 +156,8 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         # Linked: server/agents/understand.py:run through server/agents/bundle.py:build implement these branches.
         if stage == "understand":
             out = understand.run(demo_id, emit, instruction)
+        elif stage == "coach":
+            out = coach.run(demo_id, emit, instruction)
         elif stage == "plan":
             out = plan.run(demo_id, emit, instruction)
         elif stage == "author":
@@ -338,7 +343,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
         elif t == "request_upload":
             notes.append(f"upload requested: {a.get('upload_kind')} — {a.get('reason')}")
         elif t == "revise" and a.get("stage"):
-            order = {"understand": 0, "plan": 1, "author": 2, "deck": 3, "faq": 4}
+            order = {"understand": 0, "coach": 1, "plan": 2, "author": 3, "deck": 4, "faq": 5}
             if revise_stage is None or order[a["stage"]] < order[revise_stage]:
                 revise_stage = a["stage"]
             revise_instr.append(a.get("instruction", ""))

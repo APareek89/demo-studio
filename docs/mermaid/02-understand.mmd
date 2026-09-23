@@ -1,4 +1,4 @@
-%% 02 · Read phase — Understand (Gemini looks, Claude reads) then Plan
+%% 02 · Read phase — Understand → Coach sales playbook → Plan
 flowchart TD
   SRC["sources[]<br/>[DATA · demo.json]"]:::data
   ISV{"kind?<br/>[FUNCTION · understand.run]"}:::dec
@@ -13,6 +13,11 @@ flowchart TD
   COMP["competitor document facts<br/>[AGENT · same text fallback chain]<br/>official URL / PDF / doc / text → separate C-facts<br/>retain variant conditions, truth, source URL, locator, quote and read date"]:::agent
   FIDS["Immutable assertion IDs + source/evidence revisions<br/>[FUNCTION · knowledge.reconcile]<br/>uploaded document precedence only for genuine same-scope conflict; preserve both + review<br/>pinned snapshot + BM25/concept/character retrieval index"]:::fn
   UND["understanding.json<br/>[DATA]"]:::data
+  LIB["Category sales order · version 2026-09-23<br/>[DATA · agents/playbooks.py]<br/>compact SUV / premium SUV / electric scooter / generic inferred order"]:::data
+  CACHE{"registry hash, library version and audience unchanged<br/>and no revision instruction?<br/>[FUNCTION · coach.run]"}:::dec
+  COACH["Sales playbook<br/>[AGENT · configured text tier · coach.py]<br/>in: category order + approved registry, image evidence, unknowns and revision instruction<br/>out: ordered stops, three USPs, objections and evidence gaps<br/>MOCK_LLM=1 uses deterministic keyword assignment"]:::agent
+  CVAL["Validate playbook<br/>[FUNCTION · coach.validate / apply_overrides]<br/>approved fact / allowed picture ids only · unique stops · first stop fundamental<br/>exactly three USPs without digits/units · unsupported stops are optional with gaps<br/>must-cover stops have pictures or explicit picture gaps · retain issues"]:::fn
+  PB["playbook.json<br/>[DATA · library version / key, registry hash, audience, issues]<br/>Story order review is available; planner binding follows in WP2"]:::data
   PLAN["Buyer story outline + literal image selection<br/>[AGENT · configured text tier · plan.py]<br/>in: approved registry, tagged shots/images, brand, language + previous plan<br/>out: existing Plan schema · 3 USPs; roles intro/outcome/proof/features/establish<br/>goal = moment + spoken/deeper IDs and conditions + visual/handoff + budget/check-in intent<br/>PITCH_SHAPE + PROOF_BLOCK; no final segment dialogue; preserve media identity"]:::agent
   PVAL["drop refs that don't exist<br/>[FUNCTION · plan.run]<br/>fact_ids ⊆ registry · visual_refs ⊆ shots∪images"]:::fn
   PJ["plan.json<br/>[DATA]"]:::data
@@ -28,7 +33,13 @@ flowchart TD
   ISV -- "role=competitor: URL / PDF / doc / text" --> COMP --> UND
   IDS --> UND
   FIDS --> UND
-  UND --> PLAN --> PVAL --> PJ --> SAMPLE --> OPEN --> CONV
+  UND --> CACHE
+  LIB --> CACHE
+  CACHE -- "yes: reuse unchanged" --> PB
+  CACHE -- "no" --> COACH --> CVAL --> PB
+  PB -->|"next graph stage; WP2 adds input binding"| PLAN
+  UND --> PLAN
+  PLAN --> PVAL --> PJ --> SAMPLE --> OPEN --> CONV
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;

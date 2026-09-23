@@ -12,12 +12,68 @@ const CARD_DEFS = [
   { key: "ctas", n: "6", title: "Calls to action", icon: "arrow-right" },
 ];
 const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and answers."], building: ["Building your demo…", "Writing the script, recording narration, rehearsing it against likely questions."] };
+const STAGE_LABELS = { coach: "Sales playbook" };
+
+// Keep the reviewed route editable without adding a seventh approval card.
+export function storyOrderPanel(playbook, draft, onSave, onRequestUpload) {
+  if (!playbook?.stops?.length) return null;
+  const kinds = ["fundamental", "differentiator", "delighter", "hygiene", "ownership"];
+  const panel = h("section", { "aria-label": "Story order", style: "margin-top:16px" });
+  const list = h("ol", { class: "story-order", style: "list-style:none;padding:0;margin:10px 0" });
+  let dragged = null;
+  const save = h("button", { class: "btn sm primary", disabled: !draft.changed, onclick: async () => {
+    save.disabled = true;
+    try { await onSave({ stop_order: draft.stops.map((stop) => stop.id), kinds: Object.fromEntries(draft.stops.map((stop) => [stop.id, stop.kind])) }); }
+    catch (error) { toast(error.message, true); save.disabled = false; }
+  } }, "Save story order");
+  function change() { draft.changed = true; save.disabled = false; draw(); }
+  function move(from, to) {
+    if (from < 0 || to < 0 || from === to || to >= draft.stops.length) return;
+    const [stop] = draft.stops.splice(from, 1); draft.stops.splice(to, 0, stop); change();
+  }
+  function gapRow(gap, source = "") {
+    return h("div", { class: "gap small", style: "margin:6px 0" }, gap,
+      source ? h("div", { class: "muted" }, `Suggested source: ${source}`) : null,
+      h("button", { class: "btn sm ghost", onclick: async (event) => {
+        const button = event.currentTarget; button.disabled = true;
+        try { await onRequestUpload({ type: "request_upload", upload_kind: /photo|picture|image/i.test(`${gap} ${source}`) ? "image" : "document", reason: source ? `${gap} — ${source}` : gap }); }
+        catch (error) { toast(error.message, true); }
+        finally { button.disabled = false; }
+      } }, "Ask for this source"));
+  }
+  function draw() {
+    list.replaceChildren(...draft.stops.map((stop, index) => {
+      const badge = h("span", { class: "pill" }, stop.kind);
+      const kind = h("select", { "aria-label": `Kind for ${stop.label}`, onchange: (event) => { stop.kind = event.target.value; change(); } },
+        ...kinds.map((value) => h("option", { value, selected: value === stop.kind }, value)));
+      const row = h("li", { draggable: "true", "data-stop-id": stop.id, style: "border-bottom:1px solid var(--line);padding:10px 0",
+        ondragstart: (event) => { dragged = stop.id; event.dataTransfer?.setData("text/plain", stop.id); if (event.dataTransfer) event.dataTransfer.effectAllowed = "move"; },
+        ondragover: (event) => { if (dragged) { event.preventDefault(); if (event.dataTransfer) event.dataTransfer.dropEffect = "move"; } },
+        ondrop: (event) => { event.preventDefault(); const from = draft.stops.findIndex((item) => item.id === dragged); dragged = null; move(from, draft.stops.findIndex((item) => item.id === stop.id)); },
+        ondragend: () => { dragged = null; } },
+        h("div", { style: "display:flex;gap:8px;align-items:center;flex-wrap:wrap" }, h("span", { class: "muted", "aria-hidden": "true" }, "↕"), h("b", {}, `${index + 1}. ${stop.label}`), badge,
+          h("span", { class: "small muted" }, `${(stop.fact_ids || []).length} facts · ${(stop.picture_ids || []).length} pictures${stop.must_cover ? "" : " · awaiting evidence"}`),
+          kind,
+          h("button", { class: "btn sm ghost", "aria-label": `Move ${stop.label} up`, disabled: index === 0, onclick: () => move(index, index - 1) }, "↑"),
+          h("button", { class: "btn sm ghost", "aria-label": `Move ${stop.label} down`, disabled: index === draft.stops.length - 1, onclick: () => move(index, index + 1) }, "↓")),
+        stop.why_here ? h("p", { class: "small muted", style: "margin:5px 0" }, stop.why_here) : null,
+        ...(stop.gaps || []).map((gap) => gapRow(gap)));
+      return row;
+    }));
+  }
+  draw();
+  panel.append(h("h4", { style: "margin:0" }, "Story order"), h("p", { class: "small muted", style: "margin:5px 0" }, "Drag stops or use the arrows to arrange the story. Saving rebuilds the draft and asks you to review script and visuals again."), list,
+    ...(playbook.gaps || []).map((gap) => gapRow(gap.what, gap.suggested_source)),
+    ...(playbook.issues || []).map((issue) => h("p", { class: "small muted" }, issue)), save);
+  return panel;
+}
 
 export function renderAlign(ctx) {
   const { demoId, area } = ctx;
   let state = ctx.state; let demo = state.demo; let cards = state.cards; let conversation = state.conversation || [];
   const seen = new Set(conversation.map((m) => m.t));
   let openCard = null;
+  let storyDraft = null, storyVersion = "";
   const detached = new Set(), escapeHandlers = new Set();
   function mountDetached(node) { detached.add(node); document.body.appendChild(node); }
   function closeOnEscape(node) {
@@ -60,7 +116,7 @@ export function renderAlign(ctx) {
     try { if (demo.status === "error" && !cards) await api.post(`/api/demos/${demoId}/read`); else if (Object.values(demo.approvals).every(Boolean)) await api.post(`/api/demos/${demoId}/build${readinessQuery(demoId)}`); else await api.post(`/api/demos/${demoId}/read`); logEl.replaceChildren(); showOverlay(cards ? "building" : "reading"); }
     catch (e) { toast(e.message, true); }
   }
-  function logLine(ev) { const d = h("div", {}, ev.stage ? h("span", { class: "stage" }, ev.stage + " · ") : null, ev.message); logEl.append(d); logEl.scrollTop = logEl.scrollHeight; }
+  function logLine(ev) { const d = h("div", {}, ev.stage ? h("span", { class: "stage" }, (STAGE_LABELS[ev.stage] || ev.stage) + " · ") : null, ev.message); logEl.append(d); logEl.scrollTop = logEl.scrollHeight; }
   function restoreProgress() {
     const running = Object.entries(demo.stages || {}).filter(([, value]) => value.status === "running");
     const rows = running.flatMap(([stage, value]) => (value.progress?.length ? value.progress : [{ message: value.message, t: value.updated_at }]).filter((row) => row.message).map((row) => ({ ...row, stage })));
@@ -123,12 +179,22 @@ export function renderAlign(ctx) {
     }
     if (key === "script") {
       const pt = cards.script || {}; const tl = pt.timeline || {}; const dk = cards.deck || { slides: [] };
+      const version = JSON.stringify(pt.playbook || {});
+      if (!storyDraft || version !== storyVersion) { storyVersion = version; storyDraft = { stops: (pt.playbook?.stops || []).map((stop) => ({ ...stop })), changed: false }; }
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
       const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = sg.spoken ?? sg.duration;
       return h("div", {},
         h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit the words"), dk.slides.length ? h("button", { class: "btn sm primary", onclick: () => openSlideEditor(dk.slides.length > 1 ? 1 : 0) }, "Review slides") : null),
         h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, tl.total_seconds ? `${mmss(tl.total_seconds)} in ${(tl.batches || []).length} batches of ≤ 20 s${tl.exact ? "" : " (estimated until voiced)"}` : "not written yet")),
         pt.runtime_overview ? h("div", { class: "gap" }, h("b", {}, "Short customer overview"), h("p", {}, pt.runtime_overview.text), h("div", { class: "small muted" }, `Evidence: ${(pt.runtime_overview.fact_ids || []).join(", ") || "No factual claims"}`), h("button", { class: "btn sm ghost", onclick: openScriptEditor }, "Edit overview")) : null,
+        storyOrderPanel(pt.playbook, storyDraft, async (payload) => {
+          await api.patch(`/api/demos/${demoId}/align/playbook`, payload); storyDraft = null;
+          toast("Story order saved. Preparing the revised script and visuals."); await reload();
+        }, async (action) => {
+          const result = await api.post(`/api/demos/${demoId}/align/request-upload`, action);
+          if (result.message) addMsg(result.message);
+          dockTa.value = `Adding a source for: ${action.reason}`; dockTa.focus();
+        }),
         h("p", { class: "eyebrow", style: "margin:14px 0 4px" }, `Slides · ${dk.slides.length}${dk.method ? ` · callouts by ${dk.method}` : ""}`),
         h("div", { class: "deck-strip" }, ...dk.slides.map((s, i) => h("button", { class: "deck-thumb", title: s.title || s.kind, onclick: () => openSlideEditor(i) },
           s.image_url ? h("img", { src: s.image_url, alt: "" }) : h("div", { class: "noimg" }, "no picture"),

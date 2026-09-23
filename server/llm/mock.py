@@ -19,7 +19,7 @@ def _fake_value(name: str, ann: Any, depth: int = 0) -> Any:
         args = [a for a in get_args(ann) if a is not type(None)]
         return _fake_value(name, args[0], depth) if args else None
     if origin is Literal:
-        prefer = {"role": "proof", "step": "say", "customer_state": "unknown", "kind": "spec", "truth": "stated", "type": "answer", "card": "none", "category": "features"}
+        prefer = {"role": "proof", "step": "say", "customer_state": "unknown", "kind": "fundamental", "category_source": "library", "truth": "stated", "type": "answer", "card": "none", "category": "features"}
         if name in prefer and prefer[name] in get_args(ann):
             return prefer[name]
         return get_args(ann)[0]

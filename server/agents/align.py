@@ -13,6 +13,7 @@ from .bundle import media_url
 from .qa import classify
 from . import voice as voice_agent
 from . import deck as deck_agent
+from . import coach
 from .visuals import part_boxes as visual_parts
 
 CARD_ORDER = ["visuals", "facts", "script", "faq", "persona", "ctas"]
@@ -27,7 +28,8 @@ standard opening + proof blocks, advance, when-not-to-recommend — edits here a
 You return ONE reply for the user and a list of ACTIONS for the orchestrator. Actions:
 - approve(card) — ONLY when the user clearly approves that card ("looks good", "approve", "yes go ahead"). Never approve on your own.
 - revise(stage, instruction) — stage is 'understand' (re-read sources: wrong/missing facts, brand tone, visual tagging),
-  'plan' (segments, concerns, gaps, persona, intake, CTA proposals) or 'author' (script wording). Write the instruction as a precise
+  'coach' (story order, coverage, winning points and evidence gaps), 'plan' (evidence mapping, pictures, segments, persona,
+  intake, CTA proposals) or 'author' (script wording). Write the instruction as a precise
   brief for that stage — include the user's exact words and what must change. Prefer edit_fact for a single wrong value.
 - edit_fact(fact_id, fact_value[, fact_claim, fact_conditions, fact_truth, fact_source]) / remove_fact(fact_id) — direct corrections or rejection in either product F facts or competitor C facts. Optional fields change only when the user explicitly provides a correction. fact_source is the citation {{ref, locator, quote}}; ref must name an existing source. Keep competitor facts under their own competitor source. Never turn manufacturer-stated figures into certified test results without explicit evidence.
 - set_ctas(ctas) — the FULL new list when the user adds/changes/removes buttons (ids: short slugs; kinds: book|reserve|buy|contact|trial|link|custom).
@@ -73,6 +75,9 @@ def cards(demo_id: str) -> dict:
     demo = store.load(demo_id)
     und = store.read_json(demo_id, "understanding.json") or {}
     plan = store.read_json(demo_id, "plan.json") or {}
+    playbook = store.read_json(demo_id, "playbook.json") or {}
+    if playbook:
+        playbook = coach.apply_overrides(playbook, demo_id)
     script = store.read_json(demo_id, "script.json") or {}
     visual_audit = store.read_json(demo_id, "visual-audit.json") or {}
     deck = store.read_json(demo_id, "deck.json") or {}
@@ -100,6 +105,8 @@ def cards(demo_id: str) -> dict:
                     "provider": actual_provider, "voice_name": voice_agent.voice_name_for(demo, actual_provider)},
         "ctas": plan.get("ctas", []),
         "script": {k: plan.get(k) for k in ("decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "usps", "advance", "do_not_recommend_if", "state_questions", "customer_persona")} | {
+            "playbook": {"stops": playbook.get("stops", []), "usps": playbook.get("usps", []),
+                         "gaps": playbook.get("evidence_gaps", []), "issues": playbook.get("issues", [])},
             "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard"), "timeline": script.get("timeline"),
             "written_at": (store.path(demo_id, "script.json").stat().st_mtime if store.path(demo_id, "script.json").exists() else None), "version": demo.get("version", 0),
             "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")},
@@ -142,6 +149,7 @@ def _cards_text(c: dict) -> str:
         f"SOURCES: " + "; ".join(f"{s['id']} {s['kind']} {s['name']} role={s.get('role')}" for s in f["sources"]),
         f"PERSONA & VOICE: {json.dumps({k: p.get(k) for k in ('persona_name', 'persona_description', 'tone', 'suggested_voice', 'sample_line')})} provider={p.get('provider')} voice={p.get('voice_name')}",
         f"CTAS: {json.dumps(c['ctas'])}",
+        f"SALES PLAYBOOK: {json.dumps(c['script'].get('playbook', {}), ensure_ascii=False)}",
         f"SCRIPT: {json.dumps({k: c['script'].get(k) for k in ('decision_frame','takeaway','primary_outcome','supporting_outcomes','advance','do_not_recommend_if')})} usps={[u['name'] for u in (c['script'].get('usps') or [])]} batches={[(s['id'], s['role'], s.get('duration')) for s in c['script']['segments']]} total_seconds={(c['script'].get('timeline') or {}).get('total_seconds')} language={c['script'].get('language')}",
         f"DECK: v{c['deck'].get('version')} · {len(c['deck'].get('slides', []))} slides · callouts by {c['deck'].get('method')} · " + "; ".join(f"{s['id']} {s['kind']} '{s.get('title', '')}' pic {s.get('image_id') or '—'} callouts {len(s.get('callouts', []))}" for s in c['deck'].get('slides', [])[:20]),
         f"FAQ: {c['faq'].get('answered')}/{c['faq'].get('total')} answered; questions={[e['question'][:60] for e in c['faq'].get('entries', [])][:20]}",

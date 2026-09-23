@@ -1,5 +1,13 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — The story opened with the roof before the car's fundamentals
+
+**Five whys:** (1) A delighter such as the sunroof led the story. (2) The writing prompts named that example and rewarded standout features early. (3) The build had no category sales knowledge specifying the basic buying sequence. (4) Ranking was untethered to that sequence and skewed toward the pictures available. (5) Tests checked grounding, but a cited claim could still appear in the wrong order.
+
+**WP1 correction:** add Coach with a versioned category library, evidence-backed stops, three USPs and explicit source/picture gaps. Validate the first fundamental and evidence identities, and expose its order for human review inside the existing Script card. Missing pictures remain gaps rather than silently determining the narrative.
+
+**Remaining work and verification:** this checkpoint establishes the playbook stage and review surface only. WP2 must bind Plan to the reviewed order and replace the old standout-first prompts before the roof-first behavior is fully fixed. Coach 20/20, Align API 18/18, UI 9/9, deck 320/320, acceptance 24/24 and both smoke phases pass; mock validation cannot establish live sales-writing quality. Published CRETA speech and its prior evaluation remain unchanged.
+
 ## 2026-09-19 — Source identity is not current trim applicability
 
 **Causes:** a city FAQ name allowed universal equipment from unrelated sources; an uploaded mention, including a negative/uncertain or precedence-excluded assertion, could appear to establish lineage. A caveat appended to an unsupported current-lineup claim merely contradicted it. At the other extreme, literal Lounge Edition fitment was lost because its transmission-only suffix became part of the trim name.

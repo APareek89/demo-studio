@@ -291,6 +291,48 @@ class Intake(BaseModel):
     chips: list[IntakeChip] = Field(description="4-7 focus topics the customer might pick, matching segment topics")
 
 
+# Define the Coach's category story, its approved support and missing evidence.
+# The Planner maps these reviewed stops to segments; the Author writes speech.
+class PlaybookStop(BaseModel):
+    id: str = Field(description="slug, e.g. 'powertrain'")
+    label: str = Field(description="2-6 everyday words, the thing itself, no numbers")
+    kind: Literal["fundamental", "differentiator", "delighter", "hygiene", "ownership"]
+    why_here: str = Field(description="one sentence: why a trained salesperson covers this at this point")
+    fact_ids: list[str] = Field(description="approved registry ids that support this stop")
+    picture_ids: list[str] = Field(default_factory=list, description="image/shot ids that literally show this stop")
+    must_cover: bool = True
+    gaps: list[str] = Field(default_factory=list, description="what the library expects here that the registry lacks")
+
+
+class PlaybookUSP(BaseModel):
+    id: str
+    name: str = Field(description="3-8 everyday words, a promise in the buyer's language, no digits, units or model codes")
+    fact_ids: list[str]
+    stop_id: str
+
+
+class PlaybookObjection(BaseModel):
+    objection: str
+    fact_ids: list[str] = Field(default_factory=list)
+    status: Literal["supported", "unknown"]
+
+
+class EvidenceGap(BaseModel):
+    what: str
+    why_it_matters: str
+    suggested_source: str
+
+
+class Playbook(BaseModel):
+    category: str
+    category_source: Literal["library", "inferred"]
+    stops: list[PlaybookStop]
+    usps: list[PlaybookUSP] = Field(description="exactly three")
+    objections: list[PlaybookObjection] = Field(default_factory=list)
+    evidence_gaps: list[EvidenceGap] = Field(default_factory=list)
+    notes: str = ""
+
+
 # Define the complete story brief, chosen evidence/images and reviewable buyer actions.
 # Input: structured Planner response. Output: a validated Plan, before its post-processing and save.
 # Linked: server/agents/plan.py:run saves plan.json; server/agents/author.py:run receives its editorial intent.
@@ -549,7 +591,7 @@ class Scorecard(BaseModel):
 # Linked: server/agents/align.py:respond proposes it; server/orchestrator.py:apply_actions applies supported actions.
 class AlignAction(BaseModel):
     type: Literal["revise", "approve", "request_upload", "set_ctas", "set_voice", "edit_fact", "remove_fact", "build", "answer", "resolve_unknown"]
-    stage: Optional[Literal["understand", "plan", "author", "deck", "faq"]] = Field(default=None, description="for revise")
+    stage: Optional[Literal["understand", "coach", "plan", "author", "deck", "faq"]] = Field(default=None, description="for revise")
     card: Optional[Literal["visuals", "facts", "script", "faq", "persona", "ctas"]] = Field(default=None, description="for approve")
     instruction: str = Field(default="", description="for revise: precise instruction to the stage")
     ctas: list[CTA] = Field(default_factory=list, description="for set_ctas: the full new list")

@@ -22,6 +22,7 @@ graph TD;
 	__start__([&lt;p&gt;__start__&lt;/p&gt;]):::first
 	router(router)
 	understand(understand)
+	coach(coach)
 	plan(plan)
 	align_enter(align_enter)
 	align_wait(align_wait)
@@ -36,6 +37,7 @@ graph TD;
 	__start__ --&gt; router;
 	align_enter --&gt; align_wait;
 	align_wait -.-&gt; author;
+	align_wait -.-&gt; coach;
 	align_wait -.-&gt; deck;
 	align_wait -.-&gt; faq;
 	align_wait -.-&gt; plan;
@@ -50,11 +52,13 @@ graph TD;
 	rehearsal --&gt; bundle;
 	router -.-&gt; align_wait;
 	router -.-&gt; author;
+	router -.-&gt; coach;
 	router -.-&gt; deck;
 	router -.-&gt; faq;
 	router -.-&gt; plan;
 	router -.-&gt; understand;
-	understand --&gt; plan;
+	understand --&gt; coach;
+	coach --&gt; plan;
 	voice -.-&gt; bundle;
 	voice -.-&gt; rehearsal;
 	finish --&gt; __end__;
@@ -73,10 +77,10 @@ flowchart TD
   U[&quot;USER adds sources&lt;br/&gt;[ask · Studio › Sources]&lt;br/&gt;in: video, images, PDF/DOCX/TXT, product URL, pasted brand text&quot;]:::ask
   ING[&quot;store.add_*_source&lt;br/&gt;[FUNCTION · server/store.py]&lt;br/&gt;in: uploads / URL&lt;br/&gt;out: sources[] in data/demos/id/demo.json&quot;]:::fn
   READBTN[&quot;POST /api/demos/id/read&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;gate: ≥1 source · keys present or MOCK_LLM=1&quot;]:::fn
-  READ[&quot;READ phase (thread)&lt;br/&gt;[FUNCTION · graph.py]&lt;br/&gt;Understand → Plan → Author → Deck → FAQ → opening message&lt;br/&gt;see diagrams 02 / 04&quot;]:::fn
+  READ[&quot;READ phase (thread)&lt;br/&gt;[FUNCTION · graph.py]&lt;br/&gt;Understand → Coach → Plan → Author → Deck → FAQ → opening message&lt;br/&gt;Coach progress label: Sales playbook · see diagrams 02 / 04&quot;]:::fn
   SSE[&quot;GET /api/demos/id/events&lt;br/&gt;[FUNCTION · SSE, polls events.py every 0.35 s]&lt;br/&gt;out: progress / stage / status / message / phase_done&quot;]:::fn
   OVER1[&quot;UI overlay&lt;br/&gt;&#x27;Reading your sources…&#x27;&lt;br/&gt;[FUNCTION · web/studio/align.js]&quot;]:::term
-  CARDS[&quot;Align: 6 cards&lt;br/&gt;Visuals · Facts · Script (slides) · FAQ · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + plan.json + script.json + deck.json + faq.json]&quot;]:::data
+  CARDS[&quot;Align: 6 cards&lt;br/&gt;Visuals · Facts · Script (Story order + slides) · FAQ · Persona &amp; voice · CTAs&lt;br/&gt;[DATA · understanding.json + playbook.json + plan.json + script.json + deck.json + faq.json]&quot;]:::data
   DOCK[&quot;USER speaks to the prompt dock&lt;br/&gt;[ask · text + optional files]&quot;]:::ask
   ALIGN[&quot;Align loop&lt;br/&gt;[AGENT · Claude text tier → actions]&lt;br/&gt;see diagram 03&quot;]:::agent
   APPR{&quot;all 6 cards approved?&lt;br/&gt;[FUNCTION · demo.approvals]&quot;}:::dec
@@ -85,7 +89,7 @@ flowchart TD
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
   PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;cinematic slides · owned voice/typed turns · explicit Q&amp;A return&lt;br/&gt;see diagram 05&quot;]:::fn
   FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
-  FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
+  FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;coach&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
   HOME[&quot;Home workspace&lt;br/&gt;[FUNCTION · web/home.js · #/home default]&lt;br/&gt;real demo/session counts · recent demos · existing create/open actions&quot;]:::fn
   LIB[&quot;My demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&lt;br/&gt;search/filter · approved bundle thumbnails&quot;]:::data
 
@@ -106,8 +110,8 @@ flowchart TD
   classDef ask fill:#cffafe,stroke:#0891b2,color:#083344;
   classDef data fill:#ede9fe,stroke:#7c3aed,color:#2a0a4a;
 </pre>
-<h2>02 · Read phase — Understand (Gemini looks, Claude reads) then Plan</h2>
-<pre class="mermaid">%% 02 · Read phase — Understand (Gemini looks, Claude reads) then Plan
+<h2>02 · Read phase — Understand → Coach sales playbook → Plan</h2>
+<pre class="mermaid">%% 02 · Read phase — Understand → Coach sales playbook → Plan
 flowchart TD
   SRC[&quot;sources[]&lt;br/&gt;[DATA · demo.json]&quot;]:::data
   ISV{&quot;kind?&lt;br/&gt;[FUNCTION · understand.run]&quot;}:::dec
@@ -122,6 +126,11 @@ flowchart TD
   COMP[&quot;competitor document facts&lt;br/&gt;[AGENT · same text fallback chain]&lt;br/&gt;official URL / PDF / doc / text → separate C-facts&lt;br/&gt;retain variant conditions, truth, source URL, locator, quote and read date&quot;]:::agent
   FIDS[&quot;Immutable assertion IDs + source/evidence revisions&lt;br/&gt;[FUNCTION · knowledge.reconcile]&lt;br/&gt;uploaded document precedence only for genuine same-scope conflict; preserve both + review&lt;br/&gt;pinned snapshot + BM25/concept/character retrieval index&quot;]:::fn
   UND[&quot;understanding.json&lt;br/&gt;[DATA]&quot;]:::data
+  LIB[&quot;Category sales order · version 2026-09-23&lt;br/&gt;[DATA · agents/playbooks.py]&lt;br/&gt;compact SUV / premium SUV / electric scooter / generic inferred order&quot;]:::data
+  CACHE{&quot;registry hash, library version and audience unchanged&lt;br/&gt;and no revision instruction?&lt;br/&gt;[FUNCTION · coach.run]&quot;}:::dec
+  COACH[&quot;Sales playbook&lt;br/&gt;[AGENT · configured text tier · coach.py]&lt;br/&gt;in: category order + approved registry, image evidence, unknowns and revision instruction&lt;br/&gt;out: ordered stops, three USPs, objections and evidence gaps&lt;br/&gt;MOCK_LLM=1 uses deterministic keyword assignment&quot;]:::agent
+  CVAL[&quot;Validate playbook&lt;br/&gt;[FUNCTION · coach.validate / apply_overrides]&lt;br/&gt;approved fact / allowed picture ids only · unique stops · first stop fundamental&lt;br/&gt;exactly three USPs without digits/units · unsupported stops are optional with gaps&lt;br/&gt;must-cover stops have pictures or explicit picture gaps · retain issues&quot;]:::fn
+  PB[&quot;playbook.json&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;Story order review is available; planner binding follows in WP2&quot;]:::data
   PLAN[&quot;Buyer story outline + literal image selection&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: approved registry, tagged shots/images, brand, language + previous plan&lt;br/&gt;out: existing Plan schema · 3 USPs; roles intro/outcome/proof/features/establish&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff + budget/check-in intent&lt;br/&gt;PITCH_SHAPE + PROOF_BLOCK; no final segment dialogue; preserve media identity&quot;]:::agent
   PVAL[&quot;drop refs that don&#x27;t exist&lt;br/&gt;[FUNCTION · plan.run]&lt;br/&gt;fact_ids ⊆ registry · visual_refs ⊆ shots∪images&quot;]:::fn
   PJ[&quot;plan.json&lt;br/&gt;[DATA]&quot;]:::data
@@ -137,7 +146,13 @@ flowchart TD
   ISV -- &quot;role=competitor: URL / PDF / doc / text&quot; --&gt; COMP --&gt; UND
   IDS --&gt; UND
   FIDS --&gt; UND
-  UND --&gt; PLAN --&gt; PVAL --&gt; PJ --&gt; SAMPLE --&gt; OPEN --&gt; CONV
+  UND --&gt; CACHE
+  LIB --&gt; CACHE
+  CACHE -- &quot;yes: reuse unchanged&quot; --&gt; PB
+  CACHE -- &quot;no&quot; --&gt; COACH --&gt; CVAL --&gt; PB
+  PB --&gt;|&quot;next graph stage; WP2 adds input binding&quot;| PLAN
+  UND --&gt; PLAN
+  PLAN --&gt; PVAL --&gt; PJ --&gt; SAMPLE --&gt; OPEN --&gt; CONV
 
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;
   classDef fn fill:#dcfce7,stroke:#16a34a,color:#052e16;
@@ -149,7 +164,9 @@ flowchart TD
 <h2>03 · Align loop — one prompt dock, one agent, structured actions</h2>
 <pre class="mermaid">%% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6[&quot;SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;compact card column + detailed Preview; Script shows Gemini full/partial/missing visual proof per line&quot;]:::data
+  N6[&quot;SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;Script includes Story order and Gemini full/partial/missing visual proof per line&quot;]:::data
+  STORY[&quot;USER reviews Story order above script segments&lt;br/&gt;[ask · existing Script card]&lt;br/&gt;drag stops; review kind, fact/picture counts and gaps; Ask for this source&quot;]:::ask
+  PBO[&quot;PATCH /align/playbook {stop_order, kinds}&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;save playbook-overrides.json; revalidate effective playbook&lt;br/&gt;reset script + visuals approvals; dispatch existing revise plan path&lt;br/&gt;planner consumption of overrides follows in WP2&quot;]:::fn
   MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
   ATT[&quot;attachments → sources&lt;br/&gt;[FUNCTION · app.align_message]&lt;br/&gt;files saved as role=product before the agent sees them&quot;]:::fn
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
@@ -172,7 +189,8 @@ flowchart TD
   FAQSAVE[&quot;save exact reviewed answer, question identity and registry hash&lt;br/&gt;[FUNCTION · PATCH /align/faq/{question_id}]&lt;br/&gt;clear old audio/error/clarification/callback; recompute allowed visual + slide&lt;br/&gt;slide targeting joins current script to saved deck design; no model call&quot;]:::fn
   FAQBUILD[&quot;FAQ stays done; FAQ approval resets&lt;br/&gt;[FUNCTION · orchestrator.invalidate]&lt;br/&gt;voice / rehearsal / bundle become stale&lt;br/&gt;after approval, ordinary Build voices reviewed words without regenerating FAQ&quot;]:::fn
   REV{&quot;which stage?&lt;br/&gt;[FUNCTION · _revise thread]&quot;}:::dec
-  R1[&quot;understand(instr) → plan&lt;br/&gt;approvals visuals+facts reset&quot;]:::fn
+  R1[&quot;understand(instr) → coach → plan&lt;br/&gt;affected approvals reset&quot;]:::fn
+  RC[&quot;coach(instr) → plan&lt;br/&gt;changed stops, kinds or USPs reset script + visuals&quot;]:::fn
   R2[&quot;plan(instr) → voice sample&quot;]:::fn
   R3[&quot;author(instr)&quot;]:::fn
   RB{&quot;demo was ready, or context=rehearse?&quot;}:::dec
@@ -191,6 +209,7 @@ flowchart TD
   APPLY --&gt; A6
   APPLY --&gt; A7
   REV -- &quot;understand&quot; --&gt; R1 --&gt; RB
+  REV -- &quot;coach&quot; --&gt; RC --&gt; RB
   REV -- &quot;plan&quot; --&gt; R2 --&gt; RB
   REV -- &quot;author&quot; --&gt; R3 --&gt; RB
   RB -- &quot;yes&quot; --&gt; RBUILD
@@ -201,6 +220,9 @@ flowchart TD
   A7 --&gt; REPLY
   ATT -.-&gt;|&quot;files but no revise action → revise(&#x27;understand&#x27;)&quot;| A5
   N6 --&gt; EDIT --&gt; SAVEEDIT --&gt; N6
+  N6 --&gt; STORY
+  STORY -- &quot;save order / kinds&quot; --&gt; PBO --&gt; R2
+  STORY -- &quot;gap text: request_upload&quot; --&gt; A4
   N6 --&gt; FAQEDIT --&gt; FAQGATE
   FAQGATE -- &quot;no&quot; --&gt; FAQFAIL
   FAQGATE -- &quot;yes&quot; --&gt; FAQSAVE --&gt; FAQBUILD --&gt; N6

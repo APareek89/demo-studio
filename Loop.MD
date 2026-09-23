@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Sales Trainer WP1 — 23 September 2026
+
+Loop stays off. `evals/coach_contract.py` adds free coverage for category aliases/generic inference, fundamental opening, three nonnumeric USPs, unsupported-stop gaps, allowed evidence/pictures, cache reuse, revalidated overrides, progress-stage registration and isolated blocked-network execution. Coach 20/20, new Coach Align API 18/18 and UI 9/9, existing Align 47/47, deck 320/320, acceptance 24/24 and both smoke phases pass with zero outbound attempts. Category/picture cache changes and failure-preserved artifacts are included. Browser review verifies panel display and reorder→Plan revision→Align. Planner order/budget enforcement belongs to WP2. No real provider, voice or published-demo check is implied.
+
 ## Comment-only study checks — 23 September 2026
 
 Loop remains off. The 15 annotated source files introduce no behavior or new eval cases. Against baseline `ba448ff`, all 14 Python ASTs/non-comment token streams and the player JavaScript AST/24,888 executable tokens are identical. Required deck 320/320, acceptance 24/24 and both mock-smoke phases pass before and after, using isolated temporary data/checkpoints and blocked outbound sockets (zero attempts). Python compilation, Node syntax and diff checks pass. These checks confirm preserved behavior; they are not a new live demo or provider-quality test. Local receipts are under `output/comment-guide-2026-09-23/`.

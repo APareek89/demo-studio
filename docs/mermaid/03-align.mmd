@@ -1,6 +1,8 @@
 %% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6["SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs<br/>[DATA]<br/>compact card column + detailed Preview; Script shows Gemini full/partial/missing visual proof per line"]:::data
+  N6["SIX cards — Visuals · Facts · Script · FAQ bank · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line"]:::data
+  STORY["USER reviews Story order above script segments<br/>[ask · existing Script card]<br/>drag stops; review kind, fact/picture counts and gaps; Ask for this source"]:::ask
+  PBO["PATCH /align/playbook {stop_order, kinds}<br/>[FUNCTION · server/app.py]<br/>save playbook-overrides.json; revalidate effective playbook<br/>reset script + visuals approvals; dispatch existing revise plan path<br/>planner consumption of overrides follows in WP2"]:::fn
   MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
   ATT["attachments → sources<br/>[FUNCTION · app.align_message]<br/>files saved as role=product before the agent sees them"]:::fn
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec
@@ -23,7 +25,8 @@ flowchart TD
   FAQSAVE["save exact reviewed answer, question identity and registry hash<br/>[FUNCTION · PATCH /align/faq/{question_id}]<br/>clear old audio/error/clarification/callback; recompute allowed visual + slide<br/>slide targeting joins current script to saved deck design; no model call"]:::fn
   FAQBUILD["FAQ stays done; FAQ approval resets<br/>[FUNCTION · orchestrator.invalidate]<br/>voice / rehearsal / bundle become stale<br/>after approval, ordinary Build voices reviewed words without regenerating FAQ"]:::fn
   REV{"which stage?<br/>[FUNCTION · _revise thread]"}:::dec
-  R1["understand(instr) → plan<br/>approvals visuals+facts reset"]:::fn
+  R1["understand(instr) → coach → plan<br/>affected approvals reset"]:::fn
+  RC["coach(instr) → plan<br/>changed stops, kinds or USPs reset script + visuals"]:::fn
   R2["plan(instr) → voice sample"]:::fn
   R3["author(instr)"]:::fn
   RB{"demo was ready, or context=rehearse?"}:::dec
@@ -42,6 +45,7 @@ flowchart TD
   APPLY --> A6
   APPLY --> A7
   REV -- "understand" --> R1 --> RB
+  REV -- "coach" --> RC --> RB
   REV -- "plan" --> R2 --> RB
   REV -- "author" --> R3 --> RB
   RB -- "yes" --> RBUILD
@@ -52,6 +56,9 @@ flowchart TD
   A7 --> REPLY
   ATT -.->|"files but no revise action → revise('understand')"| A5
   N6 --> EDIT --> SAVEEDIT --> N6
+  N6 --> STORY
+  STORY -- "save order / kinds" --> PBO --> R2
+  STORY -- "gap text: request_upload" --> A4
   N6 --> FAQEDIT --> FAQGATE
   FAQGATE -- "no" --> FAQFAIL
   FAQGATE -- "yes" --> FAQSAVE --> FAQBUILD --> N6

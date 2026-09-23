@@ -1,5 +1,13 @@
 # Handoff.MD — Demo Studio
 
+## Sales Trainer flow — 23 September 2026 · WP1
+
+Branch `codex/sales-trainer-flow`. WP1 adds Coach between Understand and Plan: a versioned category library, approved-evidence playbook, deterministic validation, registry/audience cache and saved order/kind overrides. The existing Script card contains Story order, evidence counts and gaps; reorder starts the existing Plan revision path and resets Script/Visuals approval, while gap requests use `request_upload`. There are still six cards. Planner consumption of the playbook and ordered segment enforcement are WP2 and are not yet implemented at this checkpoint.
+
+**Verification:** deck 320/320, acceptance 24/24, both smoke phases, Coach 20/20, Coach Align API 18/18, Story order UI 9/9 and existing Align 47/47 pass. Python compilation, JavaScript syntax and diff checks pass. All backend runs use mock providers, blocked outbound sockets and isolated temporary storage, with zero outbound attempts. In-app browser review verified the panel, reorder, save and return from a real mock Plan revision. Cache reuse additionally checks category and consumed evidence/picture inputs to avoid stale playbooks. The published CRETA v8, its original session and the server on port 8896 remain untouched. WP9's paid Read has no written authorization or cap, so no paid run is authorized. Loop remains off.
+
+**Effort:** feature work ~75%; verification/docs ~25%; rework limited to cache and failed-revision edge cases.
+
 ## Code study annotations — 23 September 2026
 
 At Anand's request, the 15 source files from the build/playback walkthrough now have short, plain-English comments above functions, classes and meaningful internal blocks: purpose, inputs/outputs and related functions. Scope: `server/graph.py`, `orchestrator.py`, `store.py`, `schemas.py`; agents `understand`, `plan`, `author`, `visuals`, `deck`, `faq`, `voice`, `rehearsal`, `bundle`; `web/player/player.js`; and the reviewed CRETA installer `output/creta-night-final/install_reviewed_session.py`. Start with `server/graph.py`, then follow the named agent functions. References use function names so added comments do not make them stale.
@@ -44,6 +52,7 @@ Python ASTs and executable token sequences match baseline `ba448ff` for all 14 P
 
 ## Decisions and invariants
 
+- 23 September WP1: Coach owns a reviewed category playbook before Plan: fundamentals first, then delighters, with three supported buyer-language USPs and explicit evidence gaps. Reject picture availability as the owner of story order. This stage/review boundary is implemented in WP1; Planner evidence mapping, typed budgets and playbook enforcement follow in WP2, while Author continues to own speech.
 - 19 September night: Planner owns the story outline, evidence emphasis and literal image selection; Author owns final conversation and delivery. Preserve schema, grounding, independent stops, locked voice and Align. Reject relaxed grounding as a way to improve warmth. One paid caption stress session is authorized; subsequent checks use saved outputs/session agents with no paid retry.
 - Anand approved the [expanded runtime plan](docs/plan-runtime-experience-2026-09-19.md) and official Creta PDF/relevant images. Earlier UI-only/no-streaming restrictions are historical.
 - Keep Atelier/cinematic slides. Plain customer language, sourced feature-led opening, cheerful helpful persona, sparse confirmation questions. Yes means continue; no means more detail. Questions wait.

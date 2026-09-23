@@ -1,10 +1,10 @@
 """The demo-building workflow as ONE LangGraph graph.
 
-    START ─▶ router ─▶ understand ─▶ plan ─▶ author ─▶ deck ─▶ faq ─▶ align_enter ─▶ align_wait ◀─┐ (interrupt: waits for you)
+    START ─▶ router ─▶ understand ─▶ coach ─▶ plan ─▶ author ─▶ deck ─▶ faq ─▶ align_enter ─▶ align_wait ◀─┐ (interrupt: waits for you)
                  │                                                                   │  message / approve / revise ─┘
                  │                                                                   └─ build ─▶ voice ─▶ rehearsal ─▶ bundle ─▶ finish ─▶ END
                  ├─ build  ─▶ author (skips when done) ─▶ deck (skips when done) ─▶ faq …
-                 └─ revise ─▶ understand | plan | author | deck | faq (then back to align_wait, or on to the build chain when rebuilding)
+                 └─ revise ─▶ understand | coach | plan | author | deck | faq (then back to align_wait)
 
 Every node is one of the existing stage functions (server/agents/*) wrapped by orchestrator._run_stage, which keeps
 the stage bookkeeping, tracing and the run log. State is checkpointed in data/graph.sqlite after every node, so a
@@ -33,8 +33,8 @@ from .agents import align
 class DemoState(TypedDict, total=False):
     demo_id: str
     entry: str            # read | build | revise | message
-    instruction: str      # for understand / plan / author when revising
-    revise_stage: str     # understand | plan | author
+    instruction: str      # for understand / coach / plan / author when revising
+    revise_stage: str     # understand | coach | plan | author
     rebuild: bool         # revise and then run the build chain
     prev_ready: bool      # the demo was ready before this revision → rebuild after
     pending: Optional[dict]  # a user command carried in with the input (message/build/revise) instead of via interrupt
@@ -69,6 +69,18 @@ def understand(state: DemoState) -> dict:
             events.publish(d, "progress", stage="understand", message="Sources already read — reusing the registry and visuals.")
             return {}
     orch._run_stage(d, "understand", state.get("instruction", "") if state.get("entry") in ("read", "revise") else "")
+    return {}
+
+
+# Prepare the category playbook using only approved evidence.
+# Input: demo ID and any Coach revision. Output: playbook.json, reused when its inputs are unchanged.
+# Linked: server/agents/coach.py owns mapping, validation and caching.
+def coach(state: DemoState) -> dict:
+    """Map approved evidence to the category playbook before planning."""
+    d = state["demo_id"]
+    orch._set_status(d, "reading")
+    instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "coach" else ""
+    orch._run_stage(d, "coach", instr)
     return {}
 
 
@@ -258,11 +270,12 @@ def after_faq(state: DemoState) -> str:
 # Linked: node wrappers delegate to server/orchestrator.py:_run_stage rather than carrying artifacts in state.
 def build_graph() -> StateGraph:
     g = StateGraph(DemoState)
-    g.add_node("router", router, destinations=("understand", "author", "plan", "deck", "faq", "align_wait"))
+    g.add_node("router", router, destinations=("understand", "coach", "author", "plan", "deck", "faq", "align_wait"))
     g.add_node("understand", understand)
+    g.add_node("coach", coach)
     g.add_node("plan", plan)
     g.add_node("align_enter", align_enter)
-    g.add_node("align_wait", align_wait, destinations=("align_wait", "understand", "plan", "author", "deck", "faq"))
+    g.add_node("align_wait", align_wait, destinations=("align_wait", "understand", "coach", "plan", "author", "deck", "faq"))
     g.add_node("author", author)
     g.add_node("deck", deck)
     g.add_node("faq", faq)
@@ -271,7 +284,8 @@ def build_graph() -> StateGraph:
     g.add_node("bundle", bundle)
     g.add_node("finish", finish)
     g.add_edge(START, "router")
-    g.add_edge("understand", "plan")
+    g.add_edge("understand", "coach")
+    g.add_edge("coach", "plan")
     g.add_conditional_edges("plan", after_plan, {"author": "author"})
     g.add_edge("align_enter", "align_wait")
     g.add_edge("author", "deck")

@@ -137,8 +137,12 @@ def _inputs(demo_id: str, stage: str, demo: dict) -> str:
     if stage == "understand":
         rows += [[f"{s.get('kind')} · {s.get('name') or s.get('url')}", _size(demo_id, s.get("path")) if s.get("path") else "url", f"role {s.get('role')} · {'used in demo' if s.get('use_in_demo', True) else 'learn only'}"] for s in demo.get("sources", [])]
         rows.append(["product hint", "", f"{demo.get('product', {}).get('name', '')} · {demo.get('product', {}).get('url', '')}"])
-    if stage == "plan":
+    if stage in ("coach", "plan"):
         rows += [["understanding.json", _size(demo_id, "understanding.json"), "facts, unknowns, shots, images, brand"]]
+    if stage == "coach":
+        rows.append(["category library", "", "versioned story order; approved evidence and literal pictures only"])
+    if stage == "plan":
+        rows.append(["playbook.json", _size(demo_id, "playbook.json"), "reviewed story order, USPs and evidence gaps"])
     if stage == "author":
         rows += [["plan.json", _size(demo_id, "plan.json"), "decision frame, segments, USPs, CTAs, voice"], ["understanding.json", _size(demo_id, "understanding.json"), "fact registry (only these ids may be cited)"]]
         if store.path(demo_id, "script.json").exists():
@@ -155,7 +159,7 @@ def _inputs(demo_id: str, stage: str, demo: dict) -> str:
         rows += [["understanding.json + plan.json", "", "questions are generated from the product, persona, concerns and facts"], ["script.json", _size(demo_id, "script.json"), "scored against the playbook"]]
     if stage == "bundle":
         rows += [["understanding.json · plan.json · script.json" + (" · script.<lang>.json" if len(st.get("languages") or []) > 1 else ""), "", "assembled into bundle.json"]]
-    if stage in ("plan", "author", "deck", "voice", "rehearsal"):
+    if stage in ("coach", "plan", "author", "deck", "voice", "rehearsal"):
         rows.append(["settings", "", f"audience {st.get('audience')} · language {st.get('language')} · languages {st.get('languages')} · pitch minutes {st.get('pitch_minutes')} · voice {st.get('sarvam_speaker') or st.get('voice_name') or 'default'} · competition {st.get('competition')} · rehearsal questions {st.get('rehearsal_questions', 12)}"])
     return _table(["read", "size", "what for"], rows)
 
@@ -329,7 +333,17 @@ def _deck(demo_id: str) -> str:
     return head + "\n\n" + _table(["slide", "kind", "title", "picture", "why this picture", "lines", "callouts (text [facts] → part · placement)"], rows)
 
 
-_REPORTS = {"understand": _understand, "plan": _plan, "author": _author, "deck": _deck, "faq": _faq, "voice": _voice, "rehearsal": _rehearsal, "bundle": _bundle}
+def _coach(demo_id: str) -> str:
+    pb = store.read_json(demo_id, "playbook.json") or {}
+    rows = [[s.get("id"), s.get("label"), s.get("kind"), s.get("must_cover"),
+             ", ".join(s.get("fact_ids", [])), ", ".join(s.get("picture_ids", [])), "; ".join(s.get("gaps", []))]
+            for s in pb.get("stops", [])]
+    return (f"**Sales playbook · {pb.get('category', '')} · {pb.get('category_source', '')} · library {pb.get('library_version', '')}**\n\n"
+            + _table(["stop", "label", "kind", "must cover", "facts", "pictures", "gaps"], rows)
+            + "\n\n" + _details("playbook.json in full", _json(pb)))
+
+
+_REPORTS = {"understand": _understand, "coach": _coach, "plan": _plan, "author": _author, "deck": _deck, "faq": _faq, "voice": _voice, "rehearsal": _rehearsal, "bundle": _bundle}
 
 
 def stage_report(demo_id: str, stage: str, *, seconds: float | None = None, started_at: float | None = None, instruction: str = "") -> None:

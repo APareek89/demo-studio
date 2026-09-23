@@ -27,13 +27,16 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   previous outputs intact and the UI shows the error with a retry.
 - **The user's approvals are honoured.** Cards re-approve only when their inputs changed; the agent
   never approves a card on its own.
+- **Review the sales playbook.** Coach runs after Understand, validates category order, approved
+  evidence and explicit gaps, then exposes Story order inside the existing Script card. Reordering
+  resets Script/Visuals approval and requests Plan revision; planner enforcement follows in WP2.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
 end-to-end **locally**: Sources → *Reading your sources…* → Align (six cards approved through the
 prompt dock) → *Building your demo…* → Rehearse (voice intake, segments with visuals, grounded Q&A,
 check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. `MOCK_LLM=1` exercises the
-same path without keys.
+same path without keys, including the Coach playbook and its review within the six Align cards.
 
 ## Out of scope (for now)
 Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout

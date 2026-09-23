@@ -15,6 +15,8 @@ Legend: 🟦 agent (LLM) · 🟩 function · 🟪 decision · ⬜ result · 🟦
 | Read allowed | FUNCTION | ≥1 source and fresh observed non-mock reasoning success; explicit logged operator override; `MOCK_LLM=1` bypass | `server/app.py` `read_sources` |
 | One run per demo | FUNCTION | a second read/build/revise while a thread is alive → 409 | `orchestrator._spawn` |
 | Build allowed | FUNCTION | all 6 approvals true + observed reasoning/selected Sarvam speech readiness or explicit logged override | `orchestrator.start_build` |
+| Coach playbook | AGENT + FUNCTION | Understand → Coach → Plan. Category library order, approved evidence and explicit gaps produce `playbook.json`; approved fact/allowed picture ids only, unique stop ids, first stop fundamental, exactly three USPs without numeric names. Unsupported stops become optional; every required stop needs a picture or picture gap. Reuse only when registry hash, library version and audience match and no instruction is supplied; overrides are revalidated. Planner binding follows in WP2. | `agents/coach.py`, `agents/playbooks.py` |
+| Align Story order | FUNCTION + HUMAN | Existing Script card shows stops, kinds, fact/picture counts and gaps. Save persists `playbook-overrides.json`, resets Script/Visuals approvals and starts `revise plan`; Ask for this source emits existing `request_upload`. Six approvals remain. | `PATCH /align/playbook`, `agents/align.cards`, `web/studio/align.js` |
 | Grounding (authoring) | FUNCTION | `fact_ids ⊆ registry`; visual ref exists; text matching `NUMBERISH`/`CLAIMISH` with no fact id → `unverified` (excluded from voice + bundle) | `agents/author.validate` |
 | Script-image proof | AGENT + FUNCTION | after stable line ids: Gemini inspects every real image (batches ≤12) against every spoken line; every line and image must return; only `full` coverage binds an image to a concrete feature line; otherwise the hero + cited card; model failure uses conservative rules | `agents/visuals.py`, `visual-audit.json` |
 | Deck: picture per slide | FUNCTION | tagged parts vs. the slide's words, +2 for the script's own pick, score ≥ 3 else the hero | `agents/deck.choose_image` |
@@ -49,6 +51,7 @@ The professional UI adds `#/home` as the default entry, with real workspace coun
 | Shell, routes, SSE | `server/app.py`, `server/events.py`, `web/app.js`, `web/api.js` |
 | Store | `server/store.py` (`data/demos/<id>/…`) |
 | Understand | `server/agents/understand.py`, `server/crawl.py`, `server/knowledge.py`, `server/sources.py`, `server/llm/gemini.py`, `server/llm/claude.py`, `server/schemas.py` |
+| Coach / category library | `server/agents/coach.py`, `server/agents/playbooks.py`, `playbook.json`, `playbook-overrides.json` |
 | Plan | `server/agents/plan.py` |
 | Align | `server/agents/align.py`, `server/orchestrator.py` (`handle_message`, `apply_actions`, `_revise`), direct review routes in `server/app.py`, `web/studio/align.js` |
 | Author / validator / pixel audit | `server/agents/author.py`, `server/agents/visuals.py`, `visual-audit.json` |
@@ -72,7 +75,7 @@ The professional UI adds `#/home` as the default entry, with real workspace coun
 %% see docs/mermaid/01-master.mmd
 flowchart TD
   HOME["Home: workspace overview and existing demo actions"]:::fn --> U
-  U["USER adds sources"]:::ask --> READ["Read: Understand → Plan → Author → Deck → FAQ (02/04)"]:::fn --> CARDS["Align: 6 cards · editable script/facts · pixel coverage"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
+  U["USER adds sources"]:::ask --> READ["Read: Understand → Coach → Plan → Author → Deck → FAQ (02/04)"]:::fn --> CARDS["Align: 6 cards · Story order / script / facts · pixel coverage"]:::data --> ALIGN["Align loop (03)"]:::agent --> APPR{"all approved?"}:::dec
   APPR -- "yes" --> BUILD["Build: Voice → Rehearsal → Bundle (04)"]:::fn --> PLAY["Rehearse: one question → film → interactive player (05)"]:::fn --> FB["feedback → align agent → rebuild"]:::agent
   APPR -- "no" --> ALIGN
   classDef agent fill:#dbeafe,stroke:#2563eb,color:#0b2a5b;

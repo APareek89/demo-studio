@@ -24,7 +24,7 @@ _locks_guard = threading.Lock()
 # Name the persisted build stages and the human approval cards separately.
 # Input: these fixed lists. Output: initial status/approval entries when new_demo() creates a demo.
 # Linked: server/graph.py runs the stages; server/orchestrator.py:changed_cards decides which cards reopen.
-STAGES = ["understand", "plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"]
+STAGES = ["understand", "coach", "plan", "author", "deck", "faq", "voice", "rehearsal", "bundle"]
 CARDS = ["visuals", "facts", "script", "faq", "persona", "ctas"]  # what the user aligns on, in order
 
 KIND_BY_EXT = {

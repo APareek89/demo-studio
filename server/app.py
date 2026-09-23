@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Resp
 from fastapi.staticfiles import StaticFiles
 
 from . import cloud, config, events, graph, orchestrator, runlog, schemas, storage, store, usage
-from .agents import align, author, deck, faq, pitch, qa, rehearsal, summary as _summary, visuals, voice
+from .agents import align, author, coach, deck, faq, pitch, qa, rehearsal, summary as _summary, visuals, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -886,6 +886,74 @@ async def edit_aligned_plan(demo_id: str, req: Request):
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"]}
 
 
+@app.patch("/api/demos/{demo_id}/align/playbook")
+async def edit_aligned_playbook(demo_id: str, req: Request):
+    """Save a reviewed story order, revalidate it, then rebuild the draft from Plan."""
+    demo = _demo_or_404(demo_id)
+    body = await req.json()
+    if not isinstance(body, dict) or set(body) != {"stop_order", "kinds"}:
+        raise HTTPException(400, "Send stop_order and kinds only")
+    pb = store.read_json(demo_id, "playbook.json") or {}
+    stops = pb.get("stops", [])
+    if not stops:
+        raise HTTPException(409, "No sales playbook yet — read the sources first")
+    order, kinds = body["stop_order"], body["kinds"]
+    ids = [stop["id"] for stop in stops]
+    if (not isinstance(order, list) or any(not isinstance(sid, str) for sid in order)
+            or len(order) != len(ids) or len(set(order)) != len(order) or set(order) != set(ids)):
+        raise HTTPException(400, "stop_order must include every current stop exactly once")
+    allowed_kinds = {"fundamental", "differentiator", "delighter", "hygiene", "ownership"}
+    if (not isinstance(kinds, dict) or set(kinds) - set(ids)
+            or any(not isinstance(kind, str) or kind not in allowed_kinds for kind in kinds.values())):
+        raise HTTPException(400, "kinds must map current stop ids to a supported kind")
+    if graph.is_running(demo_id) or demo.get("running") or any(stage.get("status") == "running" for stage in demo.get("stages", {}).values()):
+        raise HTTPException(409, "Wait for the current stage to finish before editing story order")
+    by_id = {stop["id"]: stop for stop in stops}
+    pb["stops"] = [{**by_id[sid], "kind": kinds.get(sid, by_id[sid]["kind"])} for sid in order]
+    if not any(stop["kind"] == "fundamental" for stop in pb["stops"]):
+        raise HTTPException(400, "The story needs a fundamental stop to open with")
+    und = store.read_json(demo_id, "understanding.json") or {}
+    for field in ("images", "shots"):
+        und[field] = [item for item in und.get(field, []) if store.visual_allowed(demo, item.get("source_id"))]
+    try:
+        issues = coach.validate(pb, und)
+        schemas.Playbook.model_validate(pb)
+    except ValueError as exc:
+        raise HTTPException(400, "Invalid story order: " + str(exc)[:400])
+    pb["issues"] = list(dict.fromkeys([*pb.get("issues", []), *issues]))
+    overrides = {"stop_order": [stop["id"] for stop in pb["stops"]],
+                 "kinds": {stop["id"]: stop["kind"] for stop in pb["stops"]}}
+    store.write_json(demo_id, "playbook-overrides.json", overrides)
+    store.write_json(demo_id, "playbook.json", pb)
+    orchestrator.invalidate(demo_id, "coach")
+    store.update(demo_id, lambda d: d["approvals"].update(script=False, visuals=False))
+    runlog.event(demo_id, "Story order reviewed", "Saved validated playbook overrides; script and visuals require review after Plan runs again.")
+    try:
+        graph.start_revise(demo_id, "plan", "Follow the reviewed story order and kinds in playbook-overrides.json.")
+    except RuntimeError as exc:
+        raise HTTPException(409, str(exc))
+    return {"ok": True, "playbook": pb, "approvals": store.load(demo_id)["approvals"], "issues": issues}
+
+
+@app.post("/api/demos/{demo_id}/align/request-upload")
+async def request_aligned_upload(demo_id: str, req: Request):
+    """Execute the existing upload-request action directly from a reviewed evidence gap."""
+    _demo_or_404(demo_id)
+    body = await req.json()
+    if not isinstance(body, dict) or set(body) != {"type", "upload_kind", "reason"} or body.get("type") != "request_upload":
+        raise HTTPException(400, "Send one request_upload action")
+    if body.get("upload_kind") not in ("image", "video", "document"):
+        raise HTTPException(400, "upload_kind must be image, video or document")
+    reason = body.get("reason")
+    if not isinstance(reason, str) or not 1 <= len(reason.strip()) <= 2000:
+        raise HTTPException(400, "A source request needs a reason of 1–2000 characters")
+    action = {**body, "reason": reason.strip()}
+    notes = orchestrator.apply_actions(demo_id, [action], [], "align")
+    reply = f"Please attach a {action['upload_kind']} for: {action['reason']}"
+    message = orchestrator._append_conversation(demo_id, "agent", reply, actions=[action], notes=notes)
+    return {"ok": True, "reply": reply, "message": message, "actions": [action], "notes": notes}
+
+
 @app.post("/api/demos/{demo_id}/ctas")
 async def set_ctas(demo_id: str, req: Request):
     _demo_or_404(demo_id)
@@ -912,8 +980,8 @@ async def revise(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     body = await req.json()
     stage = body.get("stage")
-    if stage not in ("understand", "plan", "author", "deck", "faq"):
-        raise HTTPException(400, "stage must be understand | plan | author | deck | faq")
+    if stage not in ("understand", "coach", "plan", "author", "deck", "faq"):
+        raise HTTPException(400, "stage must be understand | coach | plan | author | deck | faq")
     try:
         graph.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
     except RuntimeError as e:
