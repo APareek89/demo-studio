@@ -1,10 +1,16 @@
 # Handoff.MD — Demo Studio
 
-## Release authorization — 23 September 2026
+## Deployed release — 23 September 2026
 
-Anand explicitly requested restarting the local app, updating the private `APareek89/demo-studio` GitHub default branch (`master`), and deploying this release to the existing AWS instance. This supersedes the earlier no-push/no-merge/no-deployment hold below; it does not authorize paid model/voice tests. Local8896 is running again after repairing the removed Anaconda interpreter target with a compatible Python3.11 installation. Source/model workflow, reviewed CRETA v8 and immutable evidence remain unchanged.
+**Local and AWS are running code `63abb8569eba605199e400aa6c7524b881609ff4`; it is published to the private `APareek89/demo-studio` default branch `master`.** Anand explicitly authorized this restart, publication and deployment, superseding the previous hold. No paid model/voice calls or new customer demo sessions were made.
 
-Deployment stages new code and dependencies separately, preserves the remote `.env`, old code/venv, existing demos and a data rollback snapshot, then switches the service. CRETA plus its single reviewed stress session is copied as demo data; private local traces and other local sessions are excluded. Browser selection now supports an explicit installed executable or Playwright's installed Chromium while retaining the sandbox and public-source fetch guards. Runtime tier remains customer, cloud sync stays off and the tested3s fallback overlap remains enabled. Read the dated release report for final deployment SHA, URL and status.
+**Open:** [local CRETA](http://localhost:8896/?mute=1#/play/dm_41513908) · [AWS CRETA](https://13-202-0-79.sslip.io/?mute=1#/play/dm_41513908) · [GitHub master](https://github.com/APareek89/demo-studio/tree/master) · [deployment receipt and rollback](docs/aws/release-2026-09-23.md). Both welcome screens were inspected muted in Codex. Historical localhost share tokens are host-specific; use the AWS app's report link on AWS.
+
+**Runtime:** customer tier, real configured providers, local storage, cloud sync off, fallback overlap enabled at 3 seconds. Local PID 88978 / exec session 24172, port 8896, no auto-reload. Its venv now uses compatible installed Python 3.11 after the Anaconda target disappeared. AWS uses `/opt/demo-studio-releases/20260923-creta-v8`, fresh Python 3.11 venv and existing data/credentials through symlinks; systemd and Caddy remain enabled. Cutover completed at 08:09:13 UTC / 13:39:13 IST.
+
+**Preservation and checks:** all 81 deployed source files match the committed archive; all 2,017 transferred CRETA files remain unchanged. The 12 prior AWS demos and all 10 published bundles are preserved; CRETA is the thirteenth demo and carries only the original stress-session report. Old code/venv, unchanged `.env`, service configuration and a stopped-service data/SQLite backup remain available. Free AWS deck, acceptance, smoke, runtime graph and browser contracts pass with zero outbound socket attempts. The real sandboxed source renderer passes an intercepted local fixture. Public HTTPS, exact v8 bundle, stored media byte ranges, host-specific report and microphone-off WebSocket readiness pass. Usage/session hashes are unchanged. These checks do not establish new live provider or acoustic performance.
+
+**Remaining deployment limits:** scanned-image OCR is unavailable on AWS (Tesseract absent from configured trusted repositories); PDF text extraction and stored demo media work. Browser rendering passes on the actual host, although Amazon Linux is not officially supported by Playwright. Current laptop SSH `/32` was added; IAM cannot remove obsolete rules. Detailed receipts, dependency versions and rollback are in the release report. Loop remains off.
 
 ## Previous checked release — 19 September 2026 night
 
@@ -40,7 +46,7 @@ Deployment stages new code and dependencies separately, preserves the remote `.e
 - Runtime LLM uses pinned evidence. Two tool rounds/four calls and one optional composition repair share twelve seconds. Calculator operands/basis are auditable. Live URL evidence stays turn-scoped with source attribution.
 - Browser owns playback, waits, interruption and exact return point. Mic begins after initial permission. Planning/QA ownership rejects stale work. No lead submission without explicit choice and separate consent.
 - Gemini→Claude→Runware is the text fallback chain. Locked speech stays Priya. Claude credit failure/provider timeouts have occurred; configuration is not readiness.
-- Loop stays off; authorized finite checks remain allowed. No secrets in git, no deployment/push. Legacy TVS text repairs exist but its recordings/bundle are not rebuilt.
+- Loop stays off; authorized finite checks remain allowed. No secrets in git. The 23 September GitHub/AWS release is authorized and complete; this does not authorize subsequent paid tests. Legacy TVS text repairs exist but its recordings/bundle are not rebuilt.
 
 
 - 19 September final stress: preserve original9/3/1/cancelled grades; no further paid retry. Permit only code-owned reviewed revisits for explicit priority corrections. Treat universal scope as a request quantifier, not a durable chosen trim. Conditions may cross the fact-ranking boundary without becoming new product claims. Keep missing table legends as an evidence limit.

@@ -2223,3 +2223,18 @@ All six corrections passed independent review and blocked-network regressions; r
 **Solution:** save the complete security-group snapshot and add only current121.241.7.122/32 to port22, preserving previous rules. AWS IAM permits adding rules but denies revocation, so this is recorded as current-laptop access, not falsely described as a temporary rule already cleaned up. First SSH host-key trust is explicitly TOFU for the AWS-account-verified instance/EIP; subsequent connections use the recorded task-specific key with strict checking. No mismatching key was accepted and SSH was never opened to the public internet.
 
 **Prevention:** verify instance/EIP/current allowlist before release; removal of obsolete /32 rules requires an operator with revoke permission. No IAM role/policy change was made.
+
+
+## 2026-09-23 — DEP04 — staged test archive omitted a documentation fixture
+
+**Symptom:** the first remote `qa_deck.py` stopped with `FileNotFoundError` for `docs/aws/instance-role-policy.json`, after reaching its deployment-policy assertion. No outbound socket was attempted; the old app was still serving.
+
+**Reason / five whys:** (1) The assertion loads a real policy fixture. (2) That fixture lives under `docs/aws`, outside `evals`. (3) The check archive contained only evals and samples. (4) Production packaging correctly excluded unrelated documentation, but the test package reused that narrower assumption. (5) Test packaging did not enumerate file dependencies outside the test folder.
+
+**Solution:** transfer the exact fixture from the same committed release, preserve the initial failure, then rerun the free remote gates with isolated data and blocked sockets. Deck 320, acceptance 24, both smoke phases, runtime graph 130 and browser-selection 9 passed. The failure was packaging, not an application or provider regression. Future staged checks must include their explicit non-code fixtures.
+
+### 2026-09-23 — deployment completion and remaining OCR limitation
+
+DEP02 is verified on the actual AWS host: installed Chromium 153 and trusted Amazon Linux libraries launch with the sandbox enabled, and the production source renderer executes an intercepted local JavaScript fixture. Poppler is installed for PDF rasterization; ordinary PDF text extraction is available. Tesseract is absent from the configured trusted repositories, so scanned-image OCR remains unavailable; do not claim exhaustive image-only PDF extraction on this host. No new repository, unsupported binary, unsandboxed browser or compile-from-source workaround was introduced.
+
+The service switched successfully, all prior AWS demo bundles and `.env` remain unchanged, and the 2,017 transferred CRETA files retain their hashes after HTTPS/media/report/WebSocket readback. The original session is the only CRETA session on AWS; no additional usage or session record was created. Deployment receipt and rollback: `docs/aws/release-2026-09-23.md`.
