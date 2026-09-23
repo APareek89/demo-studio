@@ -110,7 +110,7 @@ function bundle(opening = false) {
   return { name: 'Synthetic browser contract', language: 'en-IN', product: { name: 'Fixture car' }, voice: { provider: 'sarvam', persona: { persona_name: 'Test guide' } }, intake: { q1: 'What matters to you?', audio: { q1: audioURL('What matters to you?') } }, media: {}, slides, facts: [{ id: 'f1', claim: 'Fixture fact', value: 'Evidence' }], ctas: [], fillers: {} };
 }
 const answered = (extra = {}) => ({ answered: true, answer: 'The approved source answers this.', fact_ids: ['f1'], topic: 'safety', route: 'stay', from_bank: true, ...extra });
-async function setup({ opening = false, hold = () => false, holdProof = true, qa = async () => answered(), pitch = async () => null, lead = async () => ({}), configure = (b) => b } = {}) {
+async function setup({ opening = false, hold = () => false, holdProof = true, voiceMode = true, qa = async () => answered(), pitch = async () => null, lead = async () => ({}), configure = (b) => b } = {}) {
   player?.destroy(); await flush();
   env = { calls: [], saved: [], beacons: [], ttsCalls: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold: text => hold(text) || (holdProof && ['First proof.', 'Second proof.', 'Third proof.'].includes(text)) };
   clock = new Clock(); clock.install();
@@ -123,6 +123,9 @@ async function setup({ opening = false, hold = () => false, holdProof = true, qa
     saveSession: async (record) => { owner.saved.push(snapshot(record)); },
     beacon: (record) => { owner.beacons.push(snapshot(record)); },
   });
+  // Older interaction fixtures explicitly choose voice. Default-mode checks
+  // pass null so they inspect the actual welcome selection unchanged.
+  if (voiceMode !== null) host.querySelector('input[role="switch"]').checked = voiceMode;
   await flush();
 }
 function button(text, selector = 'button') {
@@ -138,6 +141,48 @@ const recentRecognizer = () => env.recognizers.at(-1);
 const detail = () => ({ context: player?.context(), currentCitations: host.querySelector('.pl-cap .cite')?.textContent, qa: env?.calls, audioStarted: env?.played, ttsRequests: env?.ttsCalls, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, beaconSessions: env?.beacons, leadRequests: env?.leadCalls });
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
+
+test('Voice mode welcome defaults follow continuous voice and muted automation', async () => {
+  await setup({ voiceMode: null });
+  assert(!host.querySelector('input[role="switch"]').checked, 'Legacy welcome unexpectedly requests voice');
+  assert(host.querySelector('.pl-voice-choice').textContent.includes('Talk to Test guide. You can also type at any time.'), 'Welcome omits its input choice explanation');
+  await setup({ voiceMode: null, configure: b => ({ ...b, runtime: { version: 1, continuous_voice: true } }) });
+  assert(host.querySelector('input[role="switch"]').checked, 'Continuous voice did not default on');
+  const original = location.href;
+  try {
+    const muted = new URL(original); muted.searchParams.set('mute', '1'); history.replaceState(null, '', muted);
+    await setup({ voiceMode: null, configure: b => ({ ...b, runtime: { version: 1, continuous_voice: true } }) });
+    assert(!host.querySelector('input[role="switch"]').checked, 'Muted automation enabled the microphone');
+  } finally { history.replaceState(null, '', original); }
+});
+test('Text mode starts and accepts intake and questions without a microphone prompt', async () => {
+  await setup({ voiceMode: false }); await click('▶ Start');
+  assert(env.recognizers.length === 0, 'Text start opened a microphone');
+  const input = host.querySelector('.pl-intake.open .fallback input');
+  input.value = 'I need space for luggage.'; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  await type('What is the warranty?');
+  assert(env.calls.length === 1 && env.calls[0].input_mode === 'text' && env.recognizers.length === 0, 'Text question enabled capture or lost its selected mode');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(env.beacons.at(-1).input_mode === 'text' && env.beacons.at(-1).turns.at(-1).input_source === 'typed', 'Saved session lost text mode or typed provenance');
+});
+test('Voice-mode visits still accept typed input and save the selected mode separately', async () => {
+  await setup({ voiceMode: true }); await atProof(); await type('What is the warranty?');
+  assert(env.calls.at(-1).input_mode === 'voice', 'Typing changed the chosen visit mode');
+  window.dispatchEvent(new Event('pagehide'));
+  const record = env.beacons.at(-1);
+  assert(record.input_mode === 'voice' && record.turns.at(-1).input_source === 'typed', 'Voice-mode session mislabelled the actual typed question');
+});
+test('The player microphone button toggles mode during a text visit', async () => {
+  await setup({ voiceMode: false }); await atProof();
+  let mic = host.querySelector('.pl-mic-row .mic');
+  assert(mic.getAttribute('aria-pressed') === 'false', 'Text mode microphone button appears on');
+  mic.click(); await flush();
+  assert(mic.getAttribute('aria-pressed') === 'true' && recentRecognizer()?.started, 'Explicit microphone click did not enable voice');
+  mic.click(); await flush();
+  assert(mic.getAttribute('aria-pressed') === 'false' && recentRecognizer().aborted, 'Explicit microphone off did not stop capture');
+  await type('What is the warranty?'); window.dispatchEvent(new Event('pagehide'));
+  assert(env.beacons.at(-1).input_mode === 'text', 'Session did not save the toggled mode');
+});
 
 test('Check-in text is spoken once and the next slide starts without a wait', async () => {
   await setup(); await atProof(); await finishAudio('First proof.');
@@ -170,7 +215,7 @@ test('Auto-resume uses only an existing back-to-demo clip and otherwise stays si
   }
 });
 test('Speech onset at 1200 ms cancels auto-resume and the spoken follow-up reaches QA', async () => {
-  await setup(); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush();
+  await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush();
   recentRecognizer().deliver('What is supported?'); await flush();
   const followup = recentRecognizer(); assert(followup?.started, 'Post-answer voice capture did not stay available');
   await clock.tick(1200); followup.speechStart(); await flush(); await clock.tick(4000);
@@ -454,7 +499,7 @@ test('Booking links retain optional consent and invalid CTA URLs never become ac
   }
 });
 test('A late speech result cannot answer the wait after a slide skip', async () => {
-  await setup(); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush(); const old = recentRecognizer();
+  await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush(); const old = recentRecognizer();
   await click('proof-two', '.pl-progress button');
   assert(player.context().slide === 'proof-two', 'Fixture skip did not reach second proof');
   old.deliver('Yes'); await flush();

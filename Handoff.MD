@@ -1,5 +1,13 @@
 # Handoff.MD — Demo Studio
 
+## Sales Trainer flow — 23 September 2026 · WP8
+
+Branch `codex/sales-trainer-flow`, following WP7 `6a498cd`. A welcome-screen **Voice mode** switch sets input mode before Explore or Browse starts. It defaults on only for a continuous-voice bundle when `?mute=1` is absent. Off connects the existing socket for streamed guide speech without requesting microphone access; on requests capture once and keeps it across turns. The player microphone button changes capture without reconnecting the socket. Typing remains available in both modes.
+
+Session records carry `input_mode: "voice" | "text"`, and runtime measurement preserves the actual source of each turn when separating typed and realtime cohorts. Capture generation and turn ownership still suppress late microphone/transcript events; turning capture off does not stop streamed guide playback. Ownership checks before permission and before connection prevent a cancelled start from prompting later or reconnecting an abandoned visit. Muted automation retains its microphone-off default.
+
+**Verification:** live-voice lifecycle 68/68, WebSocket transport/checkpoint 18/18, listen-window ownership 15/15, session input-mode API 8/8, runtime metrics 19/19, runtime graph 130/130 and summary-race 14/14 pass. Required deck 364/364, acceptance 24/24 and both smoke phases pass. Player focus/input mode 21/21 and actual browser contracts 66/66 pass. Python compilation, changed JavaScript syntax and diff checks are clean. Isolated backend runs block outbound sockets; no paid provider or acoustic acceptance is implied. Mock capture and muted playback cannot establish microphone recognition, echo cancellation or acoustic quality. Published CRETA v8, its original session, output artifacts and port 8896 remain untouched. WP5 customer-site lookup expansion remains pending. No paid Read is authorized; Loop remains off.
+
 ## Sales Trainer flow — 23 September 2026 · WP7
 
 Branch `codex/sales-trainer-flow`, following WP6 `0b80ca7`. Narration speaks any stop-closing `checkin` and continues immediately, without check-in chips or a response gate. Newly authored check-ins are short statements, never questions; the validator flags question marks and the old opt-in-question warning is removed. Existing published question-shaped check-ins can still play, then continue.

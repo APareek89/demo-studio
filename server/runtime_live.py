@@ -27,7 +27,7 @@ async def live(websocket: WebSocket, demo_id: str):
     await websocket.accept()
     session_id = safe_id(websocket.query_params.get("session_id") or "s_"+str(time.time_ns()))
     send_lock = asyncio.Lock()
-    current_turn, language = "", "en-IN"
+    current_turn, language, input_mode = "", "en-IN", "text"
     stt, stt_task, turn_task = None,None,None
     input_generation = 0
     closed = False
@@ -61,7 +61,7 @@ async def live(websocket: WebSocket, demo_id: str):
             stt=None
 
     async def consume_stt(adapter, generation):
-        nonlocal stt,stt_task
+        nonlocal stt,stt_task,input_mode
         try:
             async for event in adapter.events():
                 if adapter is not stt or generation != input_generation:
@@ -82,15 +82,17 @@ async def live(websocket: WebSocket, demo_id: str):
             await send({"type":"error","code":"microphone_stream","message":"Voice connection stopped. Retry the microphone or type your answer.","is_fatal":True,"input_generation":generation})
             usage.trace("runtime-stt-error","sarvam",latency_ms=0,error=type(exc).__name__)
         finally:
-            if stt is adapter: stt=None
+            if stt is adapter:
+                stt=None
+                if not closed: input_mode="text"
             if stt_task is asyncio.current_task(): stt_task=None
             await adapter.aclose()
 
     async def start_mic(generation):
-        nonlocal stt,stt_task,input_generation
+        nonlocal stt,stt_task,input_generation,input_mode
         if generation <= input_generation:
             if generation == input_generation and stt:
-                await send({"type":"mic.ready","input_generation":generation})
+                await send({"type":"mic.ready","input_generation":generation,"input_mode":"voice"})
             return
         await stop_mic()
         input_generation = generation
@@ -99,9 +101,11 @@ async def live(websocket: WebSocket, demo_id: str):
         try:
             await asyncio.wait_for(candidate.__aenter__(),timeout=8)
             stt = candidate
+            input_mode = "voice"
             stt_task = asyncio.create_task(consume_stt(candidate,generation))
-            await send({"type":"mic.ready","input_generation":generation})
+            await send({"type":"mic.ready","input_generation":generation,"input_mode":"voice"})
         except Exception as exc:
+            input_mode = "text"
             await candidate.aclose()
             await send({"type":"error","code":"microphone_unavailable","message":"I couldn't connect voice input. You can retry or type your answer.","input_generation":generation})
             usage.trace("runtime-stt-connect","sarvam",latency_ms=0,error=type(exc).__name__)
@@ -135,13 +139,17 @@ async def live(websocket: WebSocket, demo_id: str):
                 requested=message.get("session_id")
                 if requested and not current_turn: session_id=safe_id(requested)
                 language=str(message.get("language") or "en-IN")[:20]
-                await send({"type":"session.ready","runtime_version":1,"microphone":False})
+                input_mode = message.get("input_mode") if message.get("input_mode") in ("voice","text") else "voice" if message.get("mic") is True else "text"
+                await send({"type":"session.ready","runtime_version":1,"microphone":False,"input_mode":input_mode})
                 if message.get("mic") is True: await start_mic(1)
             elif kind=="mic.set":
                 generation=message.get("input_generation")
-                if type(generation) is not int or generation < 1: continue
-                if message.get("enabled"): await start_mic(generation)
-                elif generation == input_generation: await stop_mic()
+                if type(generation) is not int or generation < 0: continue
+                if message.get("enabled") is True:
+                    if generation > 0: await start_mic(generation)
+                elif message.get("enabled") is False and generation == input_generation:
+                    await stop_mic()
+                    input_mode = "text"
             elif kind=="audio.input":
                 data=message.get("audio","")
                 if stt and message.get("input_generation") == input_generation and isinstance(data,str) and len(data)<=90_000:
@@ -155,6 +163,7 @@ async def live(websocket: WebSocket, demo_id: str):
                 await stop_turn(preserve_planning=True)
                 current_turn=safe_id(message.get("turn_id") or "t_"+str(time.time_ns()),"t")
                 message["turn_id"]=current_turn
+                message["input_mode"]=input_mode
                 turn_task=asyncio.create_task(answer(message))
             elif kind=="delivery.request":
                 if message.get("turn_id")==current_turn:

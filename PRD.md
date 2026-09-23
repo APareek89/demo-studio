@@ -61,8 +61,11 @@ session resume after refresh and multi-worker runtime ownership.
   explicit revisits retain their existing behavior. The fundamental flag reaches the runtime library.
 - Slides allow up to two pictures. Where no literal audited picture is available, a nearby tagged
   picture or the hero may illustrate a cited fact; mark it **illustration** and never count it as proof.
-- One initial microphone permission enables continuous listening. Speech onset cancels local audio;
-  session, turn, utterance and capture-generation ownership reject stale output. Typed input remains available.
+- Welcome **Voice mode** defaults on only for continuous-voice demos without `?mute=1`. On requests
+  microphone access once for continuous listening; off keeps streamed guide speech without a microphone
+  prompt. The player mic button changes capture without reconnecting, and typing stays available in both
+  modes. Save `input_mode` and preserve each turn's actual input source for latency cohorts. Speech onset
+  cancels local audio; session, turn, utterance and capture-generation ownership reject stale output.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →
   validates → produces a delivery plan. Selected-voice streaming happens outside graph replay. Tools share
   two rounds/four calls and a 12-second foreground reasoning budget; failures are explicit.

@@ -294,7 +294,8 @@ flowchart TD
 <h2>05 · Conversation runtime — server/runtime_graph.py and event-driven player</h2>
 <pre class="mermaid">%% 05 · Conversation runtime — server/runtime_graph.py and event-driven player
 flowchart TD
-  START[&quot;Customer starts Explore or Browse&lt;br/&gt;[ASK · one initial microphone permission, or typed input]&quot;]:::ask
+  START[&quot;Customer starts Explore or Browse&lt;br/&gt;[ASK · welcome Voice mode switch]&lt;br/&gt;default on iff continuous voice and no mute=1; typing always available&quot;]:::ask
+  MODE[&quot;Connect session socket for guide speech&lt;br/&gt;[FUNCTION · startLive / runtime_live.py]&lt;br/&gt;voice on: one capture request; off: mic.set false, no permission prompt&lt;br/&gt;player mic button toggles capture without reconnecting&quot;]:::fn
   INPUT[&quot;Continuous PCM capture + local speech onset&lt;br/&gt;[LIBRARY · live-voice.js / voice-worklet.js]&lt;br/&gt;AEC requested; capture generation owns ready/transcript/error events&quot;]:::data
   STT[&quot;Realtime STT over private session WebSocket&lt;br/&gt;[LIBRARY · runtime_live.py / sarvam_stream.py]&lt;br/&gt;partials stop playback; stable final dispatches one question&quot;]:::data
   INTAKE[&quot;One needs question; wait for a real reply&lt;br/&gt;[FUNCTION · player.js runIntake]&lt;br/&gt;retain actual customer wording&quot;]:::fn
@@ -319,10 +320,11 @@ flowchart TD
   CORRECT[&quot;Explicit changed priority&lt;br/&gt;[FUNCTION · player.js]&lt;br/&gt;replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing&quot;]:::fn
   RESUME[&quot;Resume saved narration; interrupted line starts again&lt;br/&gt;[FUNCTION · resumeAfterQA]&lt;br/&gt;automatic return: recorded back_to_demo only, else silence&lt;br/&gt;auto_resumed + listen window saved on the turn&quot;]:::fn
   CTA[&quot;Customer selects next step + separately consents to contact&lt;br/&gt;[ASK · existing lead form]&lt;br/&gt;no model-triggered submission&quot;]:::ask
-  SAVE[&quot;Save heard transcript, timings, recap and consent&lt;br/&gt;[DATA · sessions / traces / runtime_metrics.py]&lt;br/&gt;missing/cancelled timings visible; small samples labelled&quot;]:::data
+  SAVE[&quot;Save heard transcript, timings, recap and consent&lt;br/&gt;[DATA · sessions / traces / runtime_metrics.py]&lt;br/&gt;input_mode saved; actual turn source controls cohorts&lt;br/&gt;missing/cancelled timings visible; small samples labelled&quot;]:::data
   FAIL[&quot;Supported partial answer or temporary limitation&lt;br/&gt;[FUNCTION · bounded failure]&lt;br/&gt;no outage cached as a knowledge gap&quot;]:::fn
   START --&gt; INTAKE
-  START --&gt; INPUT --&gt; STT
+  START --&gt; MODE
+  MODE -- &quot;voice on; capture permission granted&quot; --&gt; INPUT --&gt; STT
   INTAKE --&gt; OVERVIEW
   INTAKE --&gt; PERSONALIZE --&gt; ROUTE
   OVERVIEW --&gt; ROUTE --&gt; PLAY
@@ -424,7 +426,7 @@ graph TD;
 	tools(tools)
 	validate[&quot;validate&lt;br/&gt;[FUNCTION · grounded rows → plain terms → word cap]&lt;br/&gt;technical_term feedback uses existing bounded repair&quot;]
 	explore(explore)
-	delivery_plan[&quot;delivery_plan&lt;br/&gt;[DATA · result includes plain_language_substitutions]&quot;]
+	delivery_plan[&quot;delivery_plan&lt;br/&gt;[DATA · result includes plain_language_substitutions]&lt;br/&gt;session checkpoint retains input_mode; capture stays outside graph&quot;]
 	__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last
 	__start__ -.-&gt; explore;
 	__start__ -.-&gt; retrieve;

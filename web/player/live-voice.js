@@ -17,7 +17,7 @@ export class LiveVoiceClient {
   constructor({ url, sessionId, language = "en-IN", onSpeechStart = () => {}, onTranscript = () => {}, onState = () => {}, onError = () => {}, env = globalThis }) {
     Object.assign(this, { url, sessionId, language, onSpeechStart, onTranscript, onState, onError, env });
     this.socket = null; this.ready = false; this.closed = false; this.connecting = null; this.turn = 0; this.turnId = "t_0";
-    this.pending = null; this.delivery = null; this.mic = false; this.captureEpoch = 0; this.captureStarting = null;
+    this.pending = null; this.delivery = null; this.inputMode = "text"; this.mic = false; this.captureEpoch = 0; this.captureStarting = null;
     this.speechActive = false; this.seenInputs = new Set(); this.inputGeneration = 0; this.muted = false; this.generation = 0; this.audioEpoch = 0;
   }
   send(type, data = {}) { if (this.socket?.readyState === 1) this.socket.send(JSON.stringify({ type, session_id: this.sessionId, turn_id: this.turnId, ...data })); }
@@ -29,7 +29,7 @@ export class LiveVoiceClient {
       const url = new URL(this.url, this.env.location?.href || "http://localhost/"); url.protocol = url.protocol === "https:" ? "wss:" : url.protocol === "http:" ? "ws:" : url.protocol;
       url.searchParams.set("session_id", this.sessionId);
       const socket = new this.env.WebSocket(url.href); this.socket = socket;
-      socket.onopen = () => { if (this.socket === socket) this.send("session.start", { language: this.language, mic: false }); };
+      socket.onopen = () => { if (this.socket === socket) this.send("session.start", { language: this.language, mic: false, input_mode: this.inputMode }); };
       socket.onmessage = event => {
         if (this.socket !== socket) return;
         let data; try { data = JSON.parse(event.data); } catch { return; }
@@ -52,6 +52,18 @@ export class LiveVoiceClient {
     this.connecting = deadline(raw, 8000, "Live connection timed out").catch(error => { const socket = this.socket; this.socket = null; this.ready = false; this.connecting = null; socket?.close(); throw error; });
     return this.connecting;
   }
+  // Text mode retains the live socket for streamed speech without opening a device.
+  async setMicEnabled(enabled) {
+    if (enabled) return this.startCapture();
+    const wasReady = this.ready;
+    this.stopCapture();
+    const epoch = this.captureEpoch;
+    await this.connect();
+    if (!wasReady && epoch === this.captureEpoch && !this.closed && !this.mic) {
+      this.send("mic.set", { enabled: false, input_generation: this.inputGeneration, input_mode: "text" });
+    }
+    return true;
+  }
   async startCapture() {
     if (this.mic) return true;
     if (this.captureStarting) return this.captureStarting;
@@ -67,10 +79,12 @@ export class LiveVoiceClient {
       const Context = this.env.AudioContext || this.env.webkitAudioContext;
       if (!Context || !this.env.navigator?.mediaDevices?.getUserMedia) throw new Error("Microphone capture is unavailable in this browser");
       context = new Context(); await context.resume();
+      if (epoch !== this.captureEpoch || this.closed) { await context.close(); return false; }
       const permission = this.env.navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
       // A late permission grant after timeout/stop must release the device immediately.
       permission.then(value => { if (epoch !== this.captureEpoch) value.getTracks().forEach(track => track.stop()); }, () => {});
       stream = await deadline(permission, 8000, "Microphone permission timed out");
+      if (epoch !== this.captureEpoch || this.closed) { stream.getTracks().forEach(track => track.stop()); await context.close(); return false; }
       await this.connect();
       if (epoch !== this.captureEpoch || this.closed) { stream.getTracks().forEach(track => track.stop()); await context.close(); return false; }
       await deadline(context.audioWorklet.addModule("/web/player/voice-worklet.js"), 4000, "Microphone initialization timed out");
@@ -78,8 +92,8 @@ export class LiveVoiceClient {
       this.captureContext = context; this.stream = stream; this.input = context.createMediaStreamSource(stream);
       this.worklet = new this.env.AudioWorkletNode(context, "demo-capture"); this.silent = context.createGain(); this.silent.gain.value = 0;
       this.input.connect(this.worklet); this.worklet.connect(this.silent); this.silent.connect(context.destination);
-      this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003;
-      this.send("mic.set", { enabled: true, input_generation: this.inputGeneration });
+      this.inputMode = "voice"; this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003;
+      this.send("mic.set", { enabled: true, input_generation: this.inputGeneration, input_mode: "voice" });
       this.micReadyTimer = setTimeout(() => { if (this.mic && !this.micReady && epoch === this.captureEpoch) { this.stopCapture(); this.onError("Voice input did not connect. Type below or tap the mic to retry."); } }, 9000);
       this.worklet.port.onmessage = ({ data }) => {
         if (!this.mic || epoch !== this.captureEpoch) return;
@@ -95,19 +109,20 @@ export class LiveVoiceClient {
       for (const track of stream.getAudioTracks()) track.onended = () => { if (this.mic && epoch === this.captureEpoch) { this.stopCapture(); this.onError("Microphone disconnected. Type your reply or reconnect it and tap the mic."); } };
       return true;
     } catch (error) {
-      if (epoch === this.captureEpoch) { this.captureEpoch++; this.mic = false; this.onState("unavailable"); this.onError(error.name === "NotAllowedError" ? "Microphone permission was not granted. Type below, or allow access and tap the mic." : `${error.message}. You can type below.`); }
+      if (epoch === this.captureEpoch) { this.captureEpoch++; this.inputMode = "text"; this.mic = false; this.onState("unavailable"); this.onError(error.name === "NotAllowedError" ? "Microphone permission was not granted. Type below, or allow access and tap the mic." : `${error.message}. You can type below.`); }
       stream?.getTracks().forEach(track => track.stop()); if (context && context.state !== "closed") await context.close().catch(() => {});
       return false;
     }
   }
   stopCapture(notify = true) {
     this.captureEpoch++; this.captureStarting = null; this.mic = false; this.micReady = false; this.preRoll = []; this.speechActive = false; clearTimeout(this.micReadyTimer);
-    if (notify) this.send("mic.set", { enabled: false, input_generation: this.inputGeneration });
+    if (notify || !this.closed) this.inputMode = "text";
+    if (notify) this.send("mic.set", { enabled: false, input_generation: this.inputGeneration, input_mode: "text" });
     if (this.worklet) this.worklet.port.onmessage = null;
     for (const node of [this.input, this.worklet, this.silent]) { try { node?.disconnect(); } catch {} }
     this.stream?.getTracks().forEach(track => track.stop()); this.stream = null;
     this.captureContext?.close().catch(() => {}); this.captureContext = null;
-    this.onState("muted");
+    if (!this.closed) this.onState("muted");
   }
   speechStart(event) {
     if (!this.mic || this.speechActive) return;
@@ -227,7 +242,7 @@ export class LiveVoiceClient {
   cancelAudio() { this.audioEpoch++; if (this.delivery) this.send("delivery.cancel", { turn_id: this.delivery.turnId, utterance_id: this.delivery.utteranceId }); this.finishAudio(false); }
   setMuted(muted) { this.muted = muted; if (this.gain) this.gain.gain.value = muted ? 0 : 1; }
   close() {
-    this.closed = true; this.stopCapture(); this.interrupt(); this.send("session.end"); this.socket?.close(); this.socket = null; this.ready = false; this.connecting = null;
+    this.closed = true; this.stopCapture(false); this.interrupt(); this.send("session.end"); this.socket?.close(); this.socket = null; this.ready = false; this.connecting = null;
     this.outputContext?.close().catch(() => {}); this.outputContext = null;
   }
 }

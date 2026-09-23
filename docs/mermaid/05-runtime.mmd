@@ -1,6 +1,7 @@
 %% 05 · Conversation runtime — server/runtime_graph.py and event-driven player
 flowchart TD
-  START["Customer starts Explore or Browse<br/>[ASK · one initial microphone permission, or typed input]"]:::ask
+  START["Customer starts Explore or Browse<br/>[ASK · welcome Voice mode switch]<br/>default on iff continuous voice and no mute=1; typing always available"]:::ask
+  MODE["Connect session socket for guide speech<br/>[FUNCTION · startLive / runtime_live.py]<br/>voice on: one capture request; off: mic.set false, no permission prompt<br/>player mic button toggles capture without reconnecting"]:::fn
   INPUT["Continuous PCM capture + local speech onset<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
   STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>partials stop playback; stable final dispatches one question"]:::data
   INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual customer wording"]:::fn
@@ -25,10 +26,11 @@ flowchart TD
   CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing"]:::fn
   RESUME["Resume saved narration; interrupted line starts again<br/>[FUNCTION · resumeAfterQA]<br/>automatic return: recorded back_to_demo only, else silence<br/>auto_resumed + listen window saved on the turn"]:::fn
   CTA["Customer selects next step + separately consents to contact<br/>[ASK · existing lead form]<br/>no model-triggered submission"]:::ask
-  SAVE["Save heard transcript, timings, recap and consent<br/>[DATA · sessions / traces / runtime_metrics.py]<br/>missing/cancelled timings visible; small samples labelled"]:::data
+  SAVE["Save heard transcript, timings, recap and consent<br/>[DATA · sessions / traces / runtime_metrics.py]<br/>input_mode saved; actual turn source controls cohorts<br/>missing/cancelled timings visible; small samples labelled"]:::data
   FAIL["Supported partial answer or temporary limitation<br/>[FUNCTION · bounded failure]<br/>no outage cached as a knowledge gap"]:::fn
   START --> INTAKE
-  START --> INPUT --> STT
+  START --> MODE
+  MODE -- "voice on; capture permission granted" --> INPUT --> STT
   INTAKE --> OVERVIEW
   INTAKE --> PERSONALIZE --> ROUTE
   OVERVIEW --> ROUTE --> PLAY

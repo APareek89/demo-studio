@@ -11,7 +11,7 @@ graph TD;
 	tools(tools)
 	validate["validate<br/>[FUNCTION · grounded rows → plain terms → word cap]<br/>technical_term feedback uses existing bounded repair"]
 	explore(explore)
-	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions]"]
+	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions]<br/>session checkpoint retains input_mode; capture stays outside graph"]
 	__end__([<p>__end__</p>]):::last
 	__start__ -.-> explore;
 	__start__ -.-> retrieve;

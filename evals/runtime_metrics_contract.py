@@ -45,6 +45,23 @@ with patch('server.app.storage.backend',return_value=backend):
  old=_latency('demo')
 checks['legacy-only headline is labelled all responses']=old['scope']=='legacy_all_responses' and old['stages']['total']['p50']==2000 and old['response_counts']['decline']==0
 
+unlabelled={key:value for key,value in base.items() if key not in ('input_source','speech_end_basis')}
+backend.iter_sessions.return_value=[
+    {'input_mode':'voice','runtime_version':1,'turns':[{**base,'input_source':'typed'},unlabelled]},
+    {'input_mode':'text','turns':[unlabelled]},
+    {'input_mode':'voice','runtime_version':0,'turns':[unlabelled]},
+    {'turns':[unlabelled]},
+]
+with patch('server.runtime_metrics.storage.backend',return_value=backend):
+ mode_cohorts=aggregate('demo')['cohorts']
+counts={source:sum(row['turns'] for row in mode_cohorts if row['input']==source) for source in ('typed','realtime','voice','unknown')}
+checks.update({
+ 'typed turns in voice mode retain actual typed provenance':counts['typed']==2,
+ 'missing live turn source falls back to voice session mode':counts['realtime']==1,
+ 'legacy voice mode cannot invent realtime transport':counts['voice']==1,
+ 'missing historical mode stays unknown':counts['unknown']==1,
+})
+
 for name,ok in checks.items():print(('PASS ' if ok else 'FAIL ')+name)
 assert all(checks.values())
 print(f'{len(checks)}/{len(checks)} runtime metrics contracts passed')

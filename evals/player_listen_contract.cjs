@@ -16,7 +16,7 @@ function setup({leadOpen = false, drawerOpen = false} = {}) {
     drawer: {classList: {contains: () => drawerOpen}}, q: focus('drawer'), reply: focus('reply'), hint: {}, cite: {}, timer: {replaceChildren() {}}, live: {}};
   const context = {S, el, live: null, bundle: {ctas: [{id: 'book', label: 'Book a test drive'}]}, POST_ANSWER_LISTEN_MS: 3000,
     setTimeout: (fn, ms) => {const id = next++; timers.set(id, {at: now + ms, fn}); return id;}, clearTimeout: id => timers.delete(id), clearInterval: id => timers.delete(id), Date: {now: () => now},
-    setChips: list => {calls.choices = list;}, setStatus() {}, stopListening: () => calls.stopped++, listenForTurn: () => calls.listen++,
+    setChips: list => {calls.choices = list;}, setStatus() {}, setVoiceMode: enabled => { S.voiceMode = !!enabled; S.inputMode = enabled ? "voice" : "typed"; }, stopListening: () => calls.stopped++, listenForTurn: () => calls.listen++,
     addMsg() {}, replyForTurn: text => ({value: 'answer', text}), speakPrompt: async () => true,
     resumeAfterQA: options => calls.resumed.push(options), ctaFlow: async id => calls.selected.push(id),
     handleQuestion: text => calls.questions.push(text), listenForQuestion: () => calls.questions.push('__listen')};

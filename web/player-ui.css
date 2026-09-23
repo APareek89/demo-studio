@@ -77,6 +77,14 @@
 .pl .guide-caption{font:500 12px/1.3 var(--disp);color:#5e7180}
 .pl .pl-welcome h1{font:400 clamp(38px,5.25vw,80px)/1.05 var(--serif,Georgia,serif);letter-spacing:-.055em;color:#08243c;margin:20px 0}
 .pl .pl-welcome p{font:400 clamp(16px,1.35vw,20px)/1.6 var(--disp);color:#5e7180;letter-spacing:-.008em;max-width:29ch}
+.pl .pl-voice-choice{display:grid;grid-template-columns:1fr auto;align-items:center;gap:7px 14px;margin-top:22px;max-width:340px;cursor:pointer}
+.pl .pl-voice-choice-label{font:650 13px/1.4 var(--disp);color:#08243c}
+.pl .pl-voice-choice-caption{grid-column:1/-1;font:400 12px/1.5 var(--disp);color:#5e7180}
+.pl .pl-voice-choice input{appearance:none;-webkit-appearance:none;position:relative;width:42px;height:24px;min-width:42px;margin:0;padding:0;border:1px solid #8cabbc;border-radius:20px;background:#e3eaed;cursor:pointer;box-shadow:none}
+.pl .pl-voice-choice input::before{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #08243c30;transition:transform .15s}
+.pl .pl-voice-choice input:checked{background:#0879be;border-color:#0879be}
+.pl .pl-voice-choice input:checked::before{transform:translateX(18px)}
+.pl .pl-voice-choice input:focus-visible{outline:3px solid #0879be55;outline-offset:3px}
 .pl .pl-welcome .actions{gap:10px;margin-top:28px}
 .pl .pl-welcome .btn{border-radius:3px;padding:13px 16px;font-size:13px}
 .pl .pl-welcome .btn.ghost{background:#ffffffa6;border-color:#cbd9df;color:#0d426d}
@@ -180,5 +188,5 @@
   .pl .pl-stage:not(:has(.pl-intake.open)) .cinematic::after{background:linear-gradient(180deg,#08243c 12%,#08243c44 36%,transparent 60%,#08243c 83%)}
 }
 @media(prefers-reduced-motion:reduce){
-  .pl .btn,.pl .chip,.pl input{transition:none}
+  .pl .btn,.pl .chip,.pl input,.pl .pl-voice-choice input::before{transition:none}
 }

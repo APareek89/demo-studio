@@ -1,6 +1,6 @@
 # Demo build and live conversation
 
-This describes the implementation on `codex/sales-trainer-flow`, through WP4, WP6 and WP7 in the brief's specified order; WP8 input-mode controls and WP5 lookup expansion remain pending. [Actual Creta acceptance](CRETA_ACCEPTANCE.md) and the [issue log](issues/2026-09-19-creta.md) describe the earlier published demo and separate measured outcomes from implementation; the new build flow has not rebuilt that demo or established acoustic quality.
+This describes the implementation on `codex/sales-trainer-flow`, through WP4, WP6, WP7 and WP8 in the brief's specified order; WP5 lookup expansion remains pending. [Actual Creta acceptance](CRETA_ACCEPTANCE.md) and the [issue log](issues/2026-09-19-creta.md) describe the earlier published demo and separate measured outcomes from implementation; the new build flow has not rebuilt that demo or established acoustic quality.
 
 ## Build: prepare the knowledge and the reusable demo
 
@@ -32,7 +32,7 @@ The 2026-09-19 role-split exercise produced `output/creta-night-final/plan.sessi
 
 The new runtime **does use an LLM**. The prepared narration and FAQ remain useful build artifacts, but a new live question goes through a conversation graph. Legacy REST QA callers without a runtime session retain their earlier contract.
 
-`web/player/player.js` owns the customer's experience: the current slide, narration position, question wait, captions and resumption point. `live-voice.js` owns the WebSocket and microphone lifecycle; `voice-worklet.js` supplies PCM frames. The microphone remains active after the customer starts it and grants permission, until it is muted, stopped or the session ends. A browser cannot grant permission automatically.
+`web/player/player.js` owns the customer's experience: the current slide, narration position, question wait, captions and resumption point. `live-voice.js` owns the WebSocket and microphone lifecycle; `voice-worklet.js` supplies PCM frames. The welcome **Voice mode** switch defaults on only for continuous-voice bundles without `?mute=1`. Explore and Browse use that selection: off opens the socket for streamed guide speech without requesting microphone access; on requests capture once and keeps it across turns after permission is granted. The player mic button turns capture on or off without reconnecting the socket, and the typed field stays available in both modes. Capture stays active until switched off, stopped or the session ends. Permission denial leaves typing available; a browser cannot grant permission automatically.
 
 `web/slide.js` fits two pictures side by side at stage widths of at least 700 px and stacks them below that, preserving each image's native aspect. As audio advances the line index, `setRevealed` emphasizes the latest eligible picture and dims the other to0.55 without moving either. Callouts reveal within their owning picture, and a proxy retains its **illustration** badge. The player still follows audio events; picture changes do not introduce playback timers.
 
@@ -78,7 +78,7 @@ Source approval is consequential: a model can accurately repeat a wrong approved
 
 ## Response metrics and their limits
 
-`server/runtime_metrics.py` aggregates session events; `web/observability.js` displays them. Compare the same demo version, voice, input mode, route and speech-end measurement basis. Typed input and realtime voice are separate automatic cohorts. Synthetic voice and human microphone sessions must additionally be distinguished through acceptance-run labels; they share the realtime input mode and are not automatically separated. Latency calculations use browser timestamps; a server endpoint timestamp is retained separately so clock skew cannot inflate or shrink response time.
+`server/runtime_metrics.py` aggregates session events; `web/observability.js` displays them. Compare the same demo version, voice, input mode, route and speech-end measurement basis. Saved sessions carry `input_mode: "voice" | "text"`; actual turn input remains authoritative, so a typed question within a voice-mode visit stays in the typed cohort. Typed input and realtime voice are separate automatic cohorts. Synthetic voice and human microphone sessions must additionally be distinguished through acceptance-run labels; they share the realtime input mode and are not automatically separated. Latency calculations use browser timestamps; a server endpoint timestamp is retained separately so clock skew cannot inflate or shrink response time.
 
 Answer, clarification and decline are separate response cohorts. Historical unclassified turns remain explicitly labelled legacy data. A quick decline cannot improve answer-playback percentiles, and `answered=true` is not a semantic quality grade. Actual useful-answer quality is reviewed separately against evidence.
 

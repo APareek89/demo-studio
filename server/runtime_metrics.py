@@ -43,7 +43,12 @@ def aggregate(demo_id: str | None = None) -> dict:
                 if duration is not None:interruptions.append(duration)
             for turn in session.get("turns",[]):
                 route=turn.get("answer_route") or ("tool" if turn.get("tool_count") else "cache" if turn.get("from_bank") else "model")
-                source = str(turn.get("input_source",turn.get("via","unknown")))
+                source = str(turn.get("input_source") or turn.get("via") or "unknown")
+                if source == "unknown":
+                    # The actual turn source wins: typing remains typed even
+                    # when the customer kept Voice mode on for the visit.
+                    mode = turn.get("input_mode") or session.get("input_mode")
+                    source = "typed" if mode == "text" else "realtime" if mode == "voice" and session.get("runtime_version") == 1 else "voice" if mode == "voice" else "unknown"
                 basis = str(turn.get("speech_end_basis") or ("typed_submission" if source=="typed" else "unspecified"))
                 key=(did,str(session.get("bundle_version",session.get("version","unknown"))),str(session.get("voice_provider",session.get("provider","unknown"))),source,route,basis,response_kind(turn))
                 groups[key].append(turn)

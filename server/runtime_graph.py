@@ -1583,6 +1583,7 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
             history.append({"role":"user","text":previous["question"]})
     profile = {**(previous.get("profile") or {}), **(body.get("profile") or {})}
     state: RuntimeState = {"demo_id":demo_id,"session_id":sid,"turn_id":tid,"kind":kind,"question":str(body.get("question") or "")[:4000],
+             "input_mode":body.get("input_mode") if body.get("input_mode") in ("voice", "text") else previous.get("input_mode"),
              "profile":profile,"history":history[-16:],"slide_id":body.get("slide_id"),"refine":kind=="explore" and body.get("refine") is True,
              "snapshot_id":previous.get("snapshot_id") or body.get("snapshot_id") or bundle.get("knowledge_snapshot_id") or "",
              "demo_version":previous.get("demo_version") if previous.get("demo_version") is not None else body.get("demo_version",bundle.get("version")),

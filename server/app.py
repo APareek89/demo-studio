@@ -1241,6 +1241,13 @@ async def save_session(demo_id: str, req: Request):
     lock, _ = _session_work(demo_id, sid)
     with lock:
         prev = be.get_session(demo_id, sid) or {}
+        if body.get("input_mode") not in ("voice", "text"):
+            # Old clients may omit this field; retain a known selection without
+            # inventing a mode for historical sessions.
+            if prev.get("input_mode") in ("voice", "text"):
+                body["input_mode"] = prev["input_mode"]
+            else:
+                body.pop("input_mode", None)
         if prev.get("summary") and _session_revision(prev) == _session_revision(body):
             body["summary"] = prev["summary"]
         be.put_session(demo_id, body)

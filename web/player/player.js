@@ -56,6 +56,8 @@ function questionAckKey(fillers = {}) {
   return lookup?.audio && lookup.text && (!question?.audio || lookup.text.split(/\s+/).length < (question.text || "").split(/\s+/).length) ? "hold_on_lookup" : "hold_on_question";
 }
 
+function defaultVoiceMode(bundle, muted) { return bundle.runtime?.continuous_voice === true && !muted; }
+
 // Build one interactive demo from a host element, published bundle and API callbacks.
 // Return lifecycle methods for web/app.js:renderPlay; all visit state stays inside this player.
 export function mountPlayer(host, bundle, api) {
@@ -64,7 +66,7 @@ export function mountPlayer(host, bundle, api) {
   // Run and listening counters identify the owner of asynchronous work; server/runtime_state.py:claim_turn uses matching session IDs.
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: "", intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [], stated_needs: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, inputMode: "voice", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
+    cta: null, started: Date.now(), micOn: false, micDenied: false, voiceMode: defaultVoiceMode(bundle, mutedByDefault), inputMode: defaultVoiceMode(bundle, mutedByDefault) ? "voice" : "typed", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
     leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
     listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set(), interruptions: [] };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
@@ -196,7 +198,7 @@ export function mountPlayer(host, bundle, api) {
       // On detected speech, stop current output and preserve the return point when a conversation begins.
       // The event comes from live-voice.js:LiveVoiceClient.speechStart; local timing records when output was stopped.
       onSpeechStart: (event) => {
-        if (S.ended) return;
+        if (S.ended || !S.voiceMode) return;
         cancelPostAnswerListen();
         S.inputMode = "voice"; S.speechDetectedAt = event.detected_at;
         if (S.intakeOpen || S.waiter || S.promptRun === S.run) cancelSpeech();
@@ -207,7 +209,7 @@ export function mountPlayer(host, bundle, api) {
       // Show interim transcripts, then route final customer words to intake, a pending prompt or a question.
       // Input comes from live-voice.js:LiveVoiceClient.receive; only the current visit updates its wait and timing fields.
       onTranscript: (event) => {
-        if (S.ended) return;
+        if (S.ended || !S.voiceMode) return;
         const text = (event.text || "").trim();
         if (!event.final) { if (S.intakeOpen) el.inHeard.textContent = text; else el.live.textContent = text; return; }
         if (!text) return;
@@ -221,7 +223,9 @@ export function mountPlayer(host, bundle, api) {
       // Translate microphone connection states into button appearance and helpful status text.
       // This callback receives live-voice.js:LiveVoiceClient state changes; it does not submit a question.
       onState: (state) => {
-        S.micOn = state === "listening"; S.micOpening = state === "opening"; setMicUI(S.micOn);
+        S.micOn = state === "listening"; S.micOpening = state === "opening";
+        if (!S.ended && ["muted", "unavailable"].includes(state)) setVoiceMode(false);
+        setMicUI(S.micOn);
         if (state === "opening") { el.hint.textContent = "Opening microphone… You can type while it connects."; if (S.intakeOpen) el.inState.textContent = "Opening microphone — or type below"; }
       },
       // Display a live transport error in the hint, intake area and conversation notes.
@@ -233,12 +237,20 @@ export function mountPlayer(host, bundle, api) {
   createLive();
   // Unlock output, connect the live session and optionally begin microphone capture.
   // The capture flag selects voice or typing; live-voice.js:LiveVoiceClient owns the actual connection.
-  function startLive(capture = !mutedByDefault) {
+  function startLive(capture = S.voiceMode) {
     if (!live) return;
+    setVoiceMode(capture);
     live.unlockOutput().catch(() => {});
     live.connect().catch(() => { el.hint.textContent = "Live voice is unavailable. You can type your question below."; });
-    if (capture) { S.inputMode = "voice"; live.startCapture(); }
-    else S.inputMode = "typed";
+    if (capture) live.startCapture();
+    else live.setMicEnabled(false).catch(() => {});
+  }
+
+  // Voice mode is a visit preference; each typed/spoken turn keeps its own source.
+  function setVoiceMode(enabled) {
+    S.voiceMode = !!enabled; S.inputMode = S.voiceMode ? "voice" : "typed";
+    if (el.voiceMode) el.voiceMode.checked = S.voiceMode;
+    setMicUI(S.micOn);
   }
 
   // ---------- helpers ----------
@@ -249,8 +261,8 @@ export function mountPlayer(host, bundle, api) {
   // Role, text and interruption details become history for server/app.py:run_qa and save_session.
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
   // Mark the next input as typed and stop legacy listening if there is no live capture session.
-  // This updates local input mode; live-voice.js:LiveVoiceClient keeps its independent microphone session.
-  function preferTyping() { cancelPostAnswerListen(); S.inputMode = "typed"; if (!live) stopListening(); }
+  // Legacy typing pauses automatic listening while preserving the chosen visit mode.
+  function preferTyping() { cancelPostAnswerListen(); if (!live) { S.inputMode = "typed"; stopListening(); } }
   // Accept typed words, stamp their timing and deliver them to the current intake or reply wait.
   // If no wait owns the text, handleQuestion sends it through server/app.py:run_qa.
   function acceptTypedAnswer(text) {
@@ -660,9 +672,13 @@ export function mountPlayer(host, bundle, api) {
   // Show whether the microphone is enabled and explain the current input options.
   // The boolean comes from capture state; live-voice.js:LiveVoiceClient reports live microphone changes.
   function setMicUI(on) {
-    el.mic.classList.toggle("on", on); el.inMic.classList.toggle("on", on);
+    const enabled = live ? S.voiceMode : S.inputMode === "voice";
+    for (const button of [el.mic, el.inMic]) {
+      button.classList.toggle("on", enabled);
+      button.title = enabled ? "Turn voice mode off" : "Turn voice mode on";
+      button.setAttribute("aria-label", button.title); button.setAttribute("aria-pressed", String(enabled));
+    }
     if (live) {
-      for (const button of [el.mic, el.inMic]) { button.title = on ? "Mute microphone" : "Enable microphone"; button.setAttribute("aria-label", button.title); button.setAttribute("aria-pressed", String(on)); }
       el.hint.textContent = on ? "Microphone on — speak any time to interrupt. Tap to mute." : "Microphone off — type below or tap to enable it.";
       if (S.intakeOpen) el.inState.textContent = on ? "Listening — take your time" : "Type your answer, or enable the microphone";
       if (!on) {
@@ -819,7 +835,7 @@ export function mountPlayer(host, bundle, api) {
     const seen = [...new Set([...S.visited.map(visit => visit.slide_id), cur?.slide?.id].map(id => slides.find(slide => slide.id === id)?.segment_id).filter(Boolean))];
     const pending = { revision, afterSegment: ["route", "deeper"].includes(origin.phase) ? S.plan[origin.index]?.slide.segment_id : null, seen, status: "pending" };
     S.pendingRefinement = pending;
-    withTimeout(api.pitch({ profile: profileForServer(), refine: true, voice_it: false, session_id: sessionId, demo_version: bundle.version, seen_segments: seen }).catch(() => null), 12000).then(plan => {
+    withTimeout(api.pitch({ profile: profileForServer(), refine: true, voice_it: false, input_mode: S.voiceMode ? "voice" : "text", session_id: sessionId, demo_version: bundle.version, seen_segments: seen }).catch(() => null), 12000).then(plan => {
       if (S.sessionId !== sessionId || S.pendingRefinement !== pending || S.ended) return;
       pending.status = plan?.route?.length ? "ready" : "failed"; pending.plan = plan;
     });
@@ -974,11 +990,11 @@ export function mountPlayer(host, bundle, api) {
   // Use live-voice.js:LiveVoiceClient.startCapture/stopCapture when available; otherwise use the legacy listener.
   function micTap() {
     cancelPostAnswerListen();
-    if (live) { if (live.mic || S.micOpening) live.stopCapture(); else { resumeSession(); S.inputMode = "voice"; live.startCapture(); } return; }
-    S.inputMode = "voice";
+    const enabled = live ? !S.voiceMode : S.inputMode !== "voice"; setVoiceMode(enabled);
+    if (live) { if (!enabled) live.stopCapture(); else { resumeSession(); live.startCapture(); } return; }
+    if (!enabled) { stopListening(); return; }
     resumeSession();
-    if (S.micOn) { stopListening(false); return; }
-    if (S.intakeOpen) { intakeMic(); return; }
+    if (S.intakeOpen) { intakeMic(true); return; }
     if (S.waiter) { listenForTurn(S.waiter); return; }
     listenForQuestion();
   }
@@ -1054,7 +1070,7 @@ export function mountPlayer(host, bundle, api) {
     const turn = { question: customerQuestion, ...(S.lastListen || { voice_ended: Date.now(), stt_done: Date.now(), via: "unknown" }), qa_done: null, answer_audio: null }; S.lastListen = null; S.turns.push(turn); el.live.textContent = ""; setStatus("thinking", "Checking your question"); el.cap.textContent = "Checking the approved information…";
     S.activeTurn = turn; turn.input_source = turn.via; turn.cancelled = false;
     let r;
-    const questionPayload = { question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), slide_id: cur?.slide?.id || null, session_id: S.sessionId, demo_version: bundle.version, voice_ended_at: turn.voice_ended, cursor: { ...S.playback }, ...(options.skipBank ? { skip_bank: true } : {}) };
+    const questionPayload = { question: customerQuestion, history: S.transcript.slice(-8).map((t) => ({ role: t.role, text: t.text })), profile: profileForServer(), input_mode: S.voiceMode ? "voice" : "text", slide_id: cur?.slide?.id || null, session_id: S.sessionId, demo_version: bundle.version, voice_ended_at: turn.voice_ended, cursor: { ...S.playback }, ...(options.skipBank ? { skip_bank: true } : {}) };
     const qaP = live?.ready ? live.ask(questionPayload) : api.qa(questionPayload);
     try {
       // Wait for that question result and convert transport failure into an honest, open customer turn.
@@ -1219,7 +1235,7 @@ export function mountPlayer(host, bundle, api) {
   }
   // Handle the intake microphone button and deliver captured words only to the same pending intake.
   // Live sessions delegate to live-voice.js:LiveVoiceClient through micTap; legacy capture returns text here.
-  async function intakeMic() { if (live) { micTap(); return; } S.inputMode = "voice"; if (S.micOn) { stopListening(false); return; } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
+  async function intakeMic(alreadyEnabled = false) { if (live) { micTap(); return; } if (!alreadyEnabled) { const enabled = S.inputMode !== "voice"; setVoiceMode(enabled); if (!enabled) { stopListening(); return; } } if (!S.intakeResolver) return; cancelSpeech(); const fin = S.intakeResolver; el.inState.textContent = "Listening — just talk"; el.inState.className = "state listening"; const t = await listen({ timeout: 10000, onInterim: (x) => { el.inHeard.textContent = x; } }); if (t && S.intakeResolver === fin) fin(t); else if (S.intakeResolver === fin) { el.inState.textContent = "Tap the mic to try again, or type below"; el.inFallback.classList.add("open"); } }
   // Extract a name only from a few explicit self-introduction patterns in customer text.
   // Return a capitalized name or an empty string for the profile sent to server/app.py:run_pitch.
   function parseName(t) { let m = t.match(/(?:my name is|myself|name's|call me|mera naam|naam)\s+([A-Za-zऀ-ॿ][a-zऀ-ॿ]+)/i); if (m) return cap(m[1]); m = t.match(/^([A-Za-z][a-z]+)\s+(?:here|speaking|bol raha|bol rahi)\b/i); if (m) return cap(m[1]); return ""; }
@@ -1273,7 +1289,7 @@ export function mountPlayer(host, bundle, api) {
     const ack = live ? "Thanks—that helps me focus the demo. While I tailor it, here's a quick overview of the car." : a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
     // Start one version-pinned pitch request when intake provided usable context.
     // server/app.py:run_pitch runs in parallel with the opening; live mode requests text planning without extra voice generation.
-    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
+    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
     S.playback = { phase: "opening", index: 0, line: 0 };
     const fa = live ? { text: ack, audio: bundle.runtime?.overview_ack?.audio } : a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     if (!live) { const okF = await playIntroFilm(run); if (!okF) return; }
@@ -1283,7 +1299,7 @@ export function mountPlayer(host, bundle, api) {
   // Use the recorded overview or fixed opening, then accept a valid route from server/app.py:run_pitch or use the deck fallback.
   async function startAfterIntake(run = newRun(), a1 = S.profile.why, checkpoint = { phase: "opening", index: 0, line: 0 }) {
     // Keep the same planning request alive across questions during the opening.
-    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
+    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
     if (["opening", "intake", "overview"].includes(checkpoint.phase)) {
       const overview = live && !S.browseOnly ? bundle.runtime?.overview : null;
       // Show the overview once, using its cited slide and recorded speech while planning proceeds.
@@ -1371,7 +1387,7 @@ export function mountPlayer(host, bundle, api) {
     const now = sessionNow();
     const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((now - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { id: S.sessionId, ended: S.ended, profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
+    return { id: S.sessionId, ended: S.ended, input_mode: S.voiceMode ? "voice" : "text", profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
   }
   // Reopen a completed visit while excluding the idle recap interval from its duration.
   // Update local clocks and hide the recap; later server/app.py:save_session calls use the resumed record.
@@ -1384,9 +1400,9 @@ export function mountPlayer(host, bundle, api) {
   // Stop capture, freeze the visit clock, build a recap and request its save.
   // server/app.py:save_session receives the report through api.saveSession; local recap display does not prove server persistence.
   function showHandoff(c) {
-    live?.stopCapture();
     if (S.endedAt === null) S.endedAt = Date.now();
     S.ended = true;
+    live?.stopCapture();
     setStatus("idle", "Demo complete");
     el.lead.classList.remove("open");
     const session = sessionRecord();
@@ -1501,7 +1517,11 @@ export function mountPlayer(host, bundle, api) {
   showSlideView(heroOpen(), { reveal: 99 });
   // Offer guided Explore or self-paced Browse and start capture only after a welcome-button click.
   // Both paths use the API callbacks from web/app.js:renderPlay, then select intake or its explicit skip.
-  const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, "Take a closer look. Ask what matters to you."), h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { startBtn.remove(); startLive(); runIntake(); } }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => { startBtn.remove(); startLive(); skipIntake(); } }, "Browse at my pace"))));
+  const voiceChoice = h("label", { class: "pl-voice-choice" }, h("span", { class: "pl-voice-choice-label" }, "Voice mode"),
+    el.voiceMode = h("input", { type: "checkbox", role: "switch", checked: S.voiceMode, "aria-label": "Voice mode" }),
+    h("span", { class: "pl-voice-choice-caption" }, `Talk to ${guide}. You can also type at any time.`));
+  const begin = (browse) => { setVoiceMode(el.voiceMode.checked); startBtn.remove(); startLive(); if (browse) skipIntake(); else runIntake(); };
+  const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, "Take a closer look. Ask what matters to you."), voiceChoice, h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => begin(false) }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => begin(true) }, "Browse at my pace"))));
   el.stage.append(startBtn);
   // List alternate languages already included in the published bundle.
   // These controls switch existing content; they do not call server/agents/translate.py:translate to generate anything.

@@ -96,6 +96,7 @@ class RuntimeState(TypedDict, total=False):
     question: str
     history: list[dict]
     profile: dict
+    input_mode: str | None
     slide_id: str | None
     snapshot_id: str
     demo_version: int | None
@@ -170,7 +171,7 @@ def checkpoint(state: RuntimeState, phase: str) -> None:
         if (not owner or owner[0] != state["turn_id"] or owner[1].cancelled.is_set()
                 or not latest or latest[1] is not owner[1]):
             return
-        value = {k: state.get(k) for k in ("session_id", "turn_id", "kind", "question", "history", "profile", "snapshot_id", "demo_version", "plan_revision", "slide_id", "seen_segments", "delivery", "timings", "errors")}
+        value = {k: state.get(k) for k in ("session_id", "turn_id", "kind", "question", "history", "profile", "input_mode", "snapshot_id", "demo_version", "plan_revision", "slide_id", "seen_segments", "delivery", "timings", "errors")}
         value.update(phase=phase, updated_at=time.time(), version=1)
         rel = "runtime/" + safe_id(state["session_id"]) + ".json"
         store.write_json(state["demo_id"], rel, value)

@@ -1,5 +1,13 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — A cancelled microphone start could outlive its visit
+
+**Five whys:** (1) A late permission grant could reconnect a closed player's socket. (2) Capture checked its owner only after connecting. (3) `AudioContext.resume()` and microphone permission were asynchronous boundaries without immediate ownership checks. (4) Stopping capture invalidated the generation but did not prevent those later side effects. (5) Existing late-permission coverage checked track release, without checking for an orphan socket or a prompt after cancellation.
+
+**WP8 correction:** check capture generation and closed state immediately after audio-context resume and after permission, before requesting permission or connecting. A stale grant releases its track; a stopped initialization closes its context. Device capture and the speech socket have separate lifecycles: explicit capture toggles retain the same socket, while session teardown preserves the selected mode for the saved record.
+
+**Verification and limits:** independently reran the fake-device/transport contract: 68/68 pass, including no permission request after cancellation during resume, no orphan reconnect after a closed visit receives permission, three turns on one capture, capture toggles without reconnecting and streamed speech in text mode. Integration gates also pass: player focus/input mode 21/21, actual browser 66/66, transport/checkpoint 18/18, session input-mode API 8/8, metrics 19/19, runtime graph 130/130, summary-race 14/14, listen-window ownership 15/15, required deck 364/364, acceptance 24/24 and both smoke phases. Compilation, changed JavaScript syntax and diff checks are clean; backend runs are isolated with blocked outbound sockets. These checks do not establish physical microphone or acoustic performance.
+
 ## 2026-09-23 — Check-ins stopped the demo after every stop
 
 **Five whys:** (1) The guide paused where the story should have continued. (2) Authoring used a question-first check-in cadence. (3) `playFrom` opened a response gate after the check-in. (4) The post-answer conversation state had no silence timer to resume the saved narration. (5) Tests treated explicit confirmation as the normal path rather than checking uninterrupted stops and a bounded reply opportunity.

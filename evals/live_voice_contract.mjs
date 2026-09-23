@@ -204,7 +204,7 @@ const buildRoute = vm.runInNewContext(routeSource + "\nbuildRoute", { S: routeSt
 buildRoute({ route: [{ slide_id: "proof" }], personalized_segments: [{ segment_id: "boot", checkin: "Enough detail for now?", lines: [{ text: "Your priority", base_line_index: null }, { text: "B", base_line_index: 1 }, { text: "A", base_line_index: 0 }] }] });
 check("personalized speech remaps callouts to their reviewed source line", JSON.stringify(routeState.plan[0].slide.callouts.map(c => [c.id, c.reveal_on_line])) === '[["a",2],["b",1]]');
 check("personalization preserves native geometry and stored master", routeState.plan[0].slide.callouts[0].x === 0.72 && base.callouts[0].reveal_on_line === 0 && base.lines.length === 2);
-check("legacy script checkin strings cannot erase the reviewed question wait", routeState.plan[0].slide.checkin === base.checkin);
+check("legacy script checkin strings cannot erase the reviewed closing narration", routeState.plan[0].slide.checkin === base.checkin);
 const startSource = playerSource.slice(playerSource.indexOf("  async function startAfterIntake("), playerSource.indexOf("  async function playCustomBatches("));
 async function routeAfterOverview(plan) {
   const state = { run: 1, overviewPlayed: true, profile: { why: "Rear seat comfort matters", focus: [] }, pitchPromise: Promise.resolve(plan) }, heard = [], routed = [], notes = [];
@@ -221,5 +221,65 @@ async function routeAfterOverview(plan) {
 {
   const h = await routeAfterOverview({ route: [{ slide_id: "not-reviewed" }], decision_frame: "Pretend this plan succeeded." });
   check("unusable live plan reports stable fallback without claiming personalization", !h.state.personalized && h.state.pitch === null && h.routed[0] === null && h.heard.length === 1 && h.heard[0].includes("couldn't finish tailoring") && h.notes.length === 1);
+}
+// WP8: a selected text mode keeps streamed output while capture remains opt-in.
+{
+  const beforeCaptures = captures, beforeSockets = Socket.instances.length;
+  const textClient = new LiveVoiceClient({ url: "/run/live", sessionId: "text-mode", env });
+  await textClient.setMicEnabled(false);
+  const socket = textClient.socket;
+  check("Voice mode off explicitly connects text transport without requesting microphone", captures === beforeCaptures && textClient.ready && Socket.instances.length === beforeSockets + 1 && socket.sent.some(event => event.type === "session.start" && event.input_mode === "text") && socket.sent.some(event => event.type === "mic.set" && event.enabled === false && event.input_mode === "text"));
+  const speakAndFinish = async text => {
+    const promise = textClient.speak(text); await tick(); const delivery = textClient.delivery;
+    textClient.receive({type:"audio.chunk",turn_id:delivery.turnId,utterance_id:delivery.utteranceId,seq:0,audio,sample_rate:24000,format:"pcm_s16le"});
+    const source = Context.sources.at(-1); textClient.receive({type:"audio.end",turn_id:delivery.turnId,utterance_id:delivery.utteranceId}); source.onended();
+    return promise;
+  };
+  check("text mode plays streamed speech without capture", await speakAndFinish("The narrated detail remains available.") && captures === beforeCaptures && !textClient.mic);
+  await textClient.setMicEnabled(true); textClient.receive({type:"mic.ready",input_generation:textClient.inputGeneration});
+  const capture = textClient.stream;
+  for (let index=0; index<3; index++) {
+    const promise = textClient.ask({question:"Turn " + index}); await tick(); const owner = textClient.pending.turnId;
+    textClient.receive({type:"turn.result",turn_id:owner,answer:{answered:true,answer:"Reviewed answer " + index}}); await promise;
+    await speakAndFinish("Reviewed answer " + index);
+  }
+  check("Voice mode on opens one microphone and retains it across three full turns", captures === beforeCaptures + 1 && textClient.mic && textClient.stream === capture && !capture.getTracks()[0].stopped);
+  check("capture reports selected voice mode to the server", socket.sent.some(event => event.type === "mic.set" && event.enabled && event.input_mode === "voice") && textClient.inputMode === "voice");
+  textClient.stopCapture();
+  check("mid-demo Voice mode off releases capture and retains the same speech socket", capture.getTracks()[0].stopped && textClient.socket === socket && textClient.ready && textClient.inputMode === "text" && socket.sent.at(-1).input_mode === "text");
+  await speakAndFinish("The next detail still plays.");
+  await textClient.startCapture(); textClient.receive({type:"mic.ready",input_generation:textClient.inputGeneration});
+  check("mid-demo Voice mode on reacquires capture without reconnecting", captures === beforeCaptures + 2 && textClient.socket === socket && Socket.instances.length === beforeSockets + 1 && textClient.mic);
+  const offCommands = socket.sent.filter(event=>event.type === "mic.set" && !event.enabled).length;
+  textClient.close();
+  check("session teardown releases microphone without relabelling selected voice mode", textClient.inputMode === "voice" && !textClient.mic && socket.sent.filter(event=>event.type === "mic.set" && !event.enabled).length === offCommands);
+}
+{
+  const beforeCaptures = captures;
+  const muted = new LiveVoiceClient({url:"/run/live",sessionId:"muted-text",env}); muted.setMuted(true); await muted.setMicEnabled(false); await muted.unlockOutput();
+  check("muted review still opens no capture and keeps streamed output gain at zero", captures === beforeCaptures && muted.gain.gain.value === 0 && muted.ready && muted.inputMode === "text"); muted.close();
+}
+{
+  let resume; const beforeCaptures = captures, beforeSockets = Socket.instances.length;
+  class DeferredContext extends Context { resume() { return new Promise(resolve => {resume=resolve;}); } }
+  const stopped = new LiveVoiceClient({url:"/run/live",sessionId:"stopped-before-permission",env:{...env,AudioContext:DeferredContext}});
+  const pending = stopped.startCapture(); await tick(); stopped.stopCapture(); resume();
+  check("switching off before context resume prevents a later microphone permission request", await pending === false && captures === beforeCaptures && Socket.instances.length === beforeSockets); stopped.close();
+}
+{
+  let grant; const beforeSockets = Socket.instances.length;
+  const abandoned = new LiveVoiceClient({url:"/run/live",sessionId:"closed-permission",env:{...env,navigator:{mediaDevices:{getUserMedia:()=>new Promise(resolve=>{grant=resolve;})}}}});
+  const pending = abandoned.startCapture(); await tick(); abandoned.close(); const late = stream(); grant(late);
+  check("permission granted after close releases the track without reopening an orphan socket", await pending === false && late.getTracks()[0].stopped && Socket.instances.length === beforeSockets && abandoned.closed);
+}
+{
+  const denied = new LiveVoiceClient({url:"/run/live",sessionId:"permission-denied",env:{...env,navigator:{mediaDevices:{getUserMedia:async()=>{throw Object.assign(new Error("Denied"),{name:"NotAllowedError"});}}}}});
+  await denied.setMicEnabled(false); const socket = denied.socket;
+  check("denied microphone leaves the established text speech transport available", await denied.startCapture() === false && !denied.mic && denied.ready && denied.socket === socket && denied.inputMode === "text"); denied.close();
+}
+{
+  const dropped = new LiveVoiceClient({url:"/run/live",sessionId:"capture-disconnected",env});
+  await dropped.startCapture(); const track = dropped.stream.getTracks()[0]; dropped.socket.close();
+  check("unexpected disconnect falls back to text mode while releasing active capture", dropped.inputMode === "text" && !dropped.mic && track.stopped && !dropped.ready); dropped.close();
 }
 console.log(`Live voice: ${passes}/${passes} passed (fake devices and transports only)`);
