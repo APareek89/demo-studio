@@ -129,7 +129,7 @@ flowchart TD
   LIB[&quot;Category sales order · version 2026-09-23&lt;br/&gt;[DATA · agents/playbooks.py]&lt;br/&gt;compact SUV / premium SUV / electric scooter / generic inferred order&quot;]:::data
   CACHE{&quot;registry hash, library version, audience, category&lt;br/&gt;and consumed evidence/picture inputs unchanged; no instruction?&lt;br/&gt;[FUNCTION · coach.run]&quot;}:::dec
   COACH[&quot;Sales playbook&lt;br/&gt;[AGENT · configured text tier · coach.py]&lt;br/&gt;in: category order + approved registry, image evidence, unknowns and revision instruction&lt;br/&gt;out: ordered stops, three USPs, objections and evidence gaps&lt;br/&gt;MOCK_LLM=1 uses deterministic keyword assignment&quot;]:::agent
-  CVAL[&quot;Validate playbook&lt;br/&gt;[FUNCTION · coach.validate / apply_overrides]&lt;br/&gt;approved fact / allowed picture ids only · unique stops · first stop fundamental&lt;br/&gt;exactly three USPs without digits/units · unsupported stops are optional with gaps&lt;br/&gt;must-cover stops have pictures or explicit picture gaps · retain issues&quot;]:::fn
+  CVAL[&quot;Validate playbook&lt;br/&gt;[FUNCTION · coach.validate / apply_overrides]&lt;br/&gt;approved fact / allowed picture ids only · duplicate stops keep first · first stop fundamental&lt;br/&gt;USP count/name errors stay issues: first three, strip unsafe tokens or drop&lt;br/&gt;Planner inherits only three valid USPs, else keeps its own · unsupported stops optional with gaps&lt;br/&gt;must-cover stops have pictures or explicit picture gaps · retain issues&quot;]:::fn
   PB[&quot;playbook.json + saved order/kind overrides&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;reviewed stops, three USPs and evidence gaps&quot;]:::data
   PLAN[&quot;Evidence mapping, literal pictures and segment briefs&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: effective PLAYBOOK before approved registry, tagged media, brand, language + previous plan&lt;br/&gt;one proof segment per required stop; Coach&#x27;s order and USPs are settled&lt;br/&gt;intro previews the first supported fundamental in everyday words&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff intent&lt;br/&gt;typed stop_id / fundamental / word_budget; no final dialogue&quot;]:::agent
   PVAL[&quot;Enforce evidence and playbook coverage&lt;br/&gt;[FUNCTION · plan.run / _enforce_playbook]&lt;br/&gt;fact_ids ⊆ approved registry · visual_refs ⊆ allowed shots∪images&lt;br/&gt;map stop_id or fact overlap; drop unmapped/optional proof segments&lt;br/&gt;add missing required stops + issue; sort by role and stop order; inherit USPs/version&quot;]:::fn
@@ -183,7 +183,7 @@ flowchart TD
   A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 6 approved&quot;]:::fn
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
   EDIT[&quot;USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome&lt;br/&gt;[ask · edit modal]&quot;]:::ask
-  SAVEEDIT[&quot;validate schema, source ownership and grounding before save&lt;br/&gt;[FUNCTION · store.edit_fact / author.ungrounded / author.validate]&lt;br/&gt;question checkin text/audio cleared; affected approvals and downstream work stale&lt;br/&gt;script visual audit only when requested (Gemini vision)&quot;]:::fn
+  SAVEEDIT[&quot;validate schema, source ownership and grounding before save&lt;br/&gt;[FUNCTION · store.edit_fact / author.ungrounded / author.validate]&lt;br/&gt;question checkin issues preserve source text/audio for repair; affected approvals and downstream work stale&lt;br/&gt;script visual audit only when requested (Gemini vision)&quot;]:::fn
   FAQEDIT[&quot;USER edits a supported FAQ answer + fact ids&lt;br/&gt;[ask · card or Preview · labelled keyboard-focusable editor]&lt;br/&gt;question wording stays fixed; human checks meaning and scope&quot;]:::ask
   FAQGATE{&quot;finished current bank, no active run,&lt;br/&gt;and every citation approved + competition-eligible?&lt;br/&gt;[FUNCTION · app.edit_aligned_faq]&lt;br/&gt;reject empty citations and uncited claims&quot;}:::dec
   FAQFAIL[&quot;400 invalid answer/citations or 409 stale/partial/running&lt;br/&gt;[term] no artifacts changed&quot;]:::term
@@ -299,13 +299,14 @@ flowchart TD
   INPUT[&quot;Continuous PCM capture + local speech onset&lt;br/&gt;[LIBRARY · live-voice.js / voice-worklet.js]&lt;br/&gt;AEC requested; capture generation owns ready/transcript/error events&quot;]:::data
   STT[&quot;Realtime STT over private session WebSocket&lt;br/&gt;[LIBRARY · runtime_live.py / sarvam_stream.py]&lt;br/&gt;partials stop playback; stable final dispatches one question&quot;]:::data
   INTAKE[&quot;One needs question; wait for a real reply&lt;br/&gt;[FUNCTION · player.js runIntake]&lt;br/&gt;retain actual customer wording; optional website field, up to 5 URLs&quot;]:::fn
+  FILM[&quot;Optional opening film when selected by the existing flow&lt;br/&gt;[FUNCTION · playIntroFilm]&lt;br/&gt;native-fit video + Skip below; hide slide shell&lt;br/&gt;end/error/Skip restores player; obsolete run cannot resume&quot;]:::fn
   OVERVIEW[&quot;Grounded overview in the selected voice&lt;br/&gt;[DATA · bundle.runtime.overview]&lt;br/&gt;10–15 second target measured from generated audio&quot;]:::data
   PERSONALIZE[&quot;Explore graph node → pitch.plan_pitch&lt;br/&gt;[AGENT · Gemini → Claude → Runware]&lt;br/&gt;order reviewed slides; explicit priority revision may revisit selected seen proof&quot;]:::agent
   ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / player.js]&lt;br/&gt;initial pitch: first unseen fundamental before three-proof limit&lt;br/&gt;player fallback mirrors one-stop move; refinements/revisits unchanged&quot;]:::fn
-  PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching callout with each line&lt;br/&gt;speak stop-closing checkin and continue without a wait&quot;]:::fn
+  PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching callout with each line&lt;br/&gt;speak closing statements; skip legacy question checkins without speech or wait&lt;br/&gt;save checkin_skipped: legacy_question on the run&quot;]:::fn
   STOP[&quot;Stop local audio and cancel old turn/delivery&lt;br/&gt;[FUNCTION · live-voice.js / runtime_live.py]&lt;br/&gt;save return point; discard stale turn/utterance/generation output&quot;]:::fn
   ACK[&quot;Short acknowledgement when useful&lt;br/&gt;[DATA · selected-voice filler]&lt;br/&gt;retrieval starts concurrently; filler is not useful-answer latency&quot;]:::data
-  SITES[&quot;Session customer sites&lt;br/&gt;[DATA · profile + current turn + runtime checkpoint]&lt;br/&gt;deduplicate up to 8; later supplied URLs retained&lt;br/&gt;default sites off; opt-in adds enabled product URL sources only&quot;]:::data
+  SITES[&quot;Session customer sites&lt;br/&gt;[DATA · profile + current turn + runtime checkpoint]&lt;br/&gt;bare domains require approved public suffix; document filenames excluded&lt;br/&gt;explicit scheme/www retain admission; deduplicate up to 8; later supplied URLs retained&lt;br/&gt;default sites off; opt-in adds enabled product URL sources only&quot;]:::data
   RETRIEVE[&quot;Retrieve pinned approved evidence&lt;br/&gt;[FUNCTION · knowledge.retrieve]&lt;br/&gt;BM25 + local ranking; request-local universal scope; pinned condition dependencies&quot;]:::fn
   REASON[&quot;Answer, clarify, or request bounded tool&lt;br/&gt;[AGENT · runtime_graph.reason]&lt;br/&gt;history + explicit profile + evidence + CUSTOMER_URLS + tool results&lt;br/&gt;empty evidence: one lookup before model; first decline: lookup before validation&quot;]:::agent
   CHOICE{&quot;Decision action?&lt;br/&gt;[FUNCTION · after_reason]&quot;}:::dec
@@ -326,6 +327,8 @@ flowchart TD
   START --&gt; INTAKE
   START --&gt; MODE
   MODE -- &quot;voice on; capture permission granted&quot; --&gt; INPUT --&gt; STT
+  INTAKE -. &quot;optional film path&quot; .-&gt; FILM
+  FILM --&gt; PLAY
   INTAKE --&gt; SITES
   SITES -. &quot;allowed URLs; same scope/network guards&quot; .-&gt; REASON
   INTAKE --&gt; OVERVIEW

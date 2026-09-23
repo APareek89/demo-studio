@@ -181,8 +181,7 @@ Real clarifications belong to runtime Q&A, separate from the intake context ques
 STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
   The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
-STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the strongest sourced reason to explore this
-  product and the feature that demonstrates it. The first stop of the playbook, in everyday words, beats a generic promise or a list.
+STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the playbook's first stop, in everyday words, and the feature that demonstrates it. The first stop of the playbook, in everyday words, beats a generic promise or a list.
   NO invented performance promise, specification inventory or decision frame.
 STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
   relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.

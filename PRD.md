@@ -69,7 +69,7 @@ session resume after refresh and multi-worker runtime ownership.
 - D6: everyday runtime answers use reviewed neutral substitutions for blocked engineering terms or trigger repair; common terms pass, while explicit technical requests and expert audiences may retain cited exact names. Grounding still applies.
 - Explore plays a grounded, measured 10–15-second overview while the LLM orders unseen slides and
   personalizes spoken framing. Explicit corrections affect the next safe boundary.
-- D7: stop-closing check-ins never pause narration; answers and declines resume after three seconds of silence, using a recorded return clip or silence. Customer speech, typing or a chip cancels the timer; guide clarifications, closing, CTA and lead choices still wait.
+- D7: stop-closing check-ins never pause narration; legacy question-shaped check-ins retain their source text/audio and are skipped in playback with a run log; answers and declines resume after three seconds of silence, using a recorded return clip or silence. Customer speech, typing or a chip cancels the timer; guide clarifications, closing, CTA and lead choices still wait.
 - Crawl only the intended model/market and relevant policies; retain page/table context and visible gaps.
   Uploaded documents win genuine same-scope conflicts. Immutable evidence IDs and published snapshots
   preserve old demos. Semantic relevance never proves a claim.
@@ -84,7 +84,7 @@ session resume after refresh and multi-worker runtime ownership.
 
 ## Slides v1 (branch `slides-v1`, from 2026-09-18)
 - One script segment = one slide with up to two native-fit pictures and ≤3 grounded callouts per picture. Callouts and picture emphasis follow the matching spoken line; labels belong to their own picture and pass the same validator as speech. This supersedes the original single-picture limit.
-- The player has two stage modes, video and slide; sync is event-driven (audio leads, screen follows).
+- The player has two stage modes, video and slide; the opening film shows only native-fit video and a separate Skip button below, hiding the slide shell. Sync is event-driven (audio leads, screen follows).
 - Runtime model calls try providers in a configurable order (default Gemini → Claude → Runware) with a short per-provider timeout; when every provider fails the guide declines and offers a callback. `MODEL_TIER=eval` selects cheaper text defaults; `customer` opts into premium text models. Only `MOCK_LLM=1` avoids paid calls.
 - The transcript sent to Q&A holds only the words the customer actually heard.
 - Sessions, leads and a per-session summary live in DynamoDB; assets and audio in S3 via the instance role.

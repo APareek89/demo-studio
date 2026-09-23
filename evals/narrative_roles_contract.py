@@ -68,8 +68,8 @@ def fixture_script(plan, bad=False):
     line = {"text": text, "fact_ids": ["FH"] if bad else ["F1"], "visual": {"kind": "image", "ref": "im1", "focus": "Front seat"}}
     return schemas.ScriptOut.model_validate({
         "segments": [{**{k: s[k] for k in ("id", "title", "role", "topic", "outcome", "usp_ids")},
-                      "lines": [copy.deepcopy(line)], "deeper": [], "checkin": ""}
-                     for s in plan["segments"]],
+                      "lines": [copy.deepcopy(line)], "deeper": [], "checkin": "Shall we continue?" if bad and index == 2 else ""}
+                     for index, s in enumerate(plan["segments"])],
         "closing": [], "intake_q1": "Welcome. What matters most, or shall we begin?", "intake_q2": ""
     })
 
@@ -170,6 +170,19 @@ class NarrativeRolesContract(unittest.TestCase):
                          [(segment["id"], segment["role"], segment["title"]) for segment in self.planned["segments"]])
         for segment, planned in zip(draft["segments"], self.planned["segments"]):
             self.assertTrue(all(line["fact_ids"] == planned["fact_ids"] for line in segment["lines"]))
+
+    def test_opening_prompts_do_not_reintroduce_cabin_or_standout_first(self):
+        prompts = " ".join((author.AUTHOR_SYSTEM + "\n" + PITCH_SHAPE).split())
+        self.assertNotIn("A good opening makes the buyer want to see the cabin or try a feature", prompts)
+        self.assertNotIn("lead with the strongest sourced reason to explore this product and the feature that demonstrates it", prompts)
+        self.assertIn("lead with the playbook's first stop, in everyday words, and the feature that demonstrates it.", PITCH_SHAPE)
+
+    def test_new_draft_question_is_preserved_for_the_author_repair_pass(self):
+        rewrite = self.author_calls[1]["content"]
+        draft = json.loads(rewrite.split("\n\nYOUR DRAFT:\n", 1)[1].split("\n\nVALIDATOR ISSUES", 1)[0])
+        self.assertEqual(draft["segments"][2]["checkin"], "Shall we continue?")
+        self.assertIn("s2 checkin: must be a short closing statement, never a question", rewrite)
+        self.assertEqual(self.authored["segments"][2]["checkin"], "")
 
     def test_overview_schema_and_runtime_plan_agree_on_fundamental_first(self):
         description = schemas.ScriptOut.model_fields["overview"].description

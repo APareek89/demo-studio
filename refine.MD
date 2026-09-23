@@ -35,6 +35,8 @@ Discovery and implementation log for 23 September 2026. The questions below reta
 
 ## Questions from Codex
 
+No open Codex questions remain for WP10. C1 and C2 below are resolved; both C2 strings stay unchanged.
+
 | # | Question | Resolution / decision needed |
 |---|---|---|
 | C1 | WP2 needs verbatim text from `docs/prompt-audit-planner-author-2026-09-19.md`, which is missing. | The file was untracked and had vanished from the tree; restored verbatim from the session capture (462 lines, §6 at line 149, §7 at line 356) and committed on `codex/sales-trainer-flow`. The brief's §2.3 now carries an item-by-item application map (verbatim / modified / skip) so no wording is invented; it also supplies the six SIGNPOSTS shapes the audit left unspecified. |
@@ -65,3 +67,15 @@ The final updated-brief audit also removes two stale prompt instructions: the st
 Free test results and their limits are recorded in `Handoff.MD` and `Loop.MD`. All runs use mock providers, isolated data and blocked outbound sockets; browser audio/recognition/fetches are synthetic. Public-site availability, paid-model writing quality and physical microphone/acoustic quality remain unverified. Loop stays off; this work does not deploy or restart port 8896.
 
 Protected-path verification compared 7,764 baseline files: no files disappeared, and bundle, knowledge snapshots and original sessions retained their hashes. Seven paths changed through concurrent live activity (two new Creta audio files, four Creta runtime/source records and the existing deployment server log); exact paths are listed in `Handoff.MD`. This implementation did not write or restore them.
+
+## Implementation log — WP10
+
+The orchestrator's review fixes are implemented: nested origin tags in Coach/Planner; soft USP cleanup/count diagnostics and first-duplicate-stop retention; retained Planner USPs for incomplete playbooks; stop-first merging of approved extra facts/pictures; unchanged legacy question-check-in text/audio with runtime skipping and a saved diagnostic; removal of the two cabin-first prompt sentences; all line facts on proxy callouts; three-minute missing-setting defaults; and shared customer-site suffix/filename filtering. The brief, core-flow document, proposal and this file remain intentionally tracked. The two confirmed C2 strings remain installed without edits.
+
+The initial Explore call sends `refine:false`, so only the first plan receives the fundamental hoist and its prompt no longer says “This is a REFINE call…”. Live-web attribution normalises a model-written leading cited host and rejects an uncited one. These are recorded behavior changes, not new open decisions.
+
+The additional authorized opening-film correction uses a video-only view with Skip the film below it. The real 854×480 MP4 from Downloads plays muted on desktop and at 390 px width, preserving its native aspect ratio with only the video and separate Skip visible, 16 px apart. Final browser contracts pass 73/73.
+
+Passing checks: Coach 25/25, Plan/playbook 19/19, generation 58/58, speech style 30/30, narrative 14/14, Align 51/51, deck media 45/45, media Align 15/15, runtime sites 20/20, client sites 19/19, plain language 24/24, runtime graph 130/130, repair 106/106, listen 16/16, priority 11/11, focus 21/21, media 7/7, fundamental 10/10, live voice 68/68 and browser 73/73. Required deck 365/365, acceptance 24/24 and both smoke phases pass after the final Coach unit fix. Syntax checks pass for 16 Python and four JavaScript files, both C2 strings remain unchanged and diff checks are clean. All 7,766 protected-manifest files are byte-identical, with zero changes. No paid Read/voice call, port-8896 restart or protected-path write occurred.
+
+**Pending request: selective Align rebuilds.** This is not implemented. Proposed dependency approach: wording-only script edits start at Author and regenerate affected downstream artifacts; new facts/uploads start at the earliest affected stage, normally Understand → Coach → Plan → Author and its dependants. Reuse unchanged inputs/artifacts and retain approvals only while their reviewed content and dependencies remain valid. Routing, invalidation and approval acceptance checks remain to be implemented separately.

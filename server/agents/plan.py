@@ -259,9 +259,10 @@ def _enforce_playbook(p: dict, pb: dict) -> None:
             continue
         segment["stop_id"] = stop["id"]
         segment["fundamental"] = stop["kind"] == "fundamental"
-        allowed_facts, allowed_pictures = set(stop.get("fact_ids", [])), set(stop.get("picture_ids", []))
-        segment["fact_ids"] = [fid for fid in segment.get("fact_ids", []) if fid in allowed_facts] or list(stop.get("fact_ids", []))
-        segment["visual_refs"] = [ref for ref in segment.get("visual_refs", []) if ref in allowed_pictures] or list(stop.get("picture_ids", []))
+        # run() already filtered planner references against the approved registry
+        # and allowed visuals. Coach establishes the lead evidence, not a ceiling.
+        segment["fact_ids"] = list(dict.fromkeys([*stop.get("fact_ids", []), *segment.get("fact_ids", [])]))
+        segment["visual_refs"] = list(dict.fromkeys([*stop.get("picture_ids", []), *segment.get("visual_refs", [])]))
         proofs[stop["id"]] = segment
     for stop in required:
         if stop["id"] not in proofs:
@@ -278,9 +279,18 @@ def _enforce_playbook(p: dict, pb: dict) -> None:
                 "stop_id": stop["id"], "fundamental": stop["kind"] == "fundamental", "word_budget": 0,
             }
             issues.append(f"{stop['id']}: added missing must-cover proof segment from the playbook")
-    p["usps"] = copy.deepcopy(pb.get("usps", []))
+    usps = pb.get("usps", [])
+    complete_usps = len(usps) == 3 and all(
+        not coach._unsafe_usp_name(usp.get("name", "")) and usp.get("fact_ids")
+        and set(usp["fact_ids"]) <= set(by_id.get(usp.get("stop_id"), {}).get("fact_ids", []))
+        for usp in usps)
+    if complete_usps:
+        p["usps"] = copy.deepcopy(usps)
+    else:
+        issues.append("playbook USPs incomplete; planner USPs retained")
     for stop_id, segment in proofs.items():
-        segment["usp_ids"] = [usp["id"] for usp in p["usps"] if usp.get("stop_id") == stop_id]
+        segment["usp_ids"] = [usp["id"] for usp in p["usps"] if usp.get("stop_id") == stop_id or
+                              (not complete_usps and set(usp.get("fact_ids", [])) & set(segment.get("fact_ids", [])))]
     for segment in other:
         segment["usp_ids"] = [usp["id"] for usp in p["usps"] if set(usp.get("fact_ids", [])) & set(segment.get("fact_ids", []))]
     role_order = {"intro": 0, "outcome": 1, "proof": 2, "features": 3, "establish": 4}
@@ -312,7 +322,7 @@ def _enforce_playbook(p: dict, pb: dict) -> None:
 def _enforce_budget(p: dict, demo: dict) -> None:
     """Allocate requested speech length within role ceilings, recording infeasible totals."""
     from . import author
-    total = round(float(demo.get("settings", {}).get("pitch_minutes", 2) or 2) * 60 * author.WPS)
+    total = round(float(demo.get("settings", {}).get("pitch_minutes", 3) or 3) * 60 * author.WPS)
     target = max(0, total - 45)
     segments = p.get("segments", [])
     ceilings = [author.LIMITS.get(segment.get("role"), author.LIMITS["proof"]) for segment in segments]
@@ -371,16 +381,16 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         pictures = [ref for ref in (und.get("image_map") or {}).get(fact["id"], []) if ref in allowed_visuals]
         if pictures:
             row += f" (pictures: {', '.join(pictures)})"
-        if fact.get("origin"):
-            row += f" (origin: {fact['origin']})"
+        origin = (fact.get("knowledge") or {}).get("origin") or fact.get("origin") or "unknown"
+        row += f" (origin: {origin})"
         fact_rows.append(row)
     facts_txt = "\n".join(fact_rows)
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in vshots)
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in vimgs)
     unk_txt = "\n".join(f"{u['id']} {u['question']}" for u in und["unknowns"] if u.get("status") == "open")
     from . import author
-    timing = {"pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 2),
-              "total_words": round(float(demo.get("settings", {}).get("pitch_minutes", 2) or 2) * 60 * author.WPS),
+    timing = {"pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 3),
+              "total_words": round(float(demo.get("settings", {}).get("pitch_minutes", 3) or 3) * 60 * author.WPS),
               "closing_words": 45, "role_ceilings": dict(author.LIMITS)}
     playbook_view = {key: playbook.get(key) for key in ("stops", "usps", "objections", "evidence_gaps")} if playbook else None
     content = f"""PRODUCT: {json.dumps(und['product'])}

@@ -41,7 +41,7 @@ def segment(id, role="proof", fact_ids=None, stop_id=None, budget=30):
 
 
 def fixture():
-    facts = [{"id": fid, "claim": claim, "value": value, "kind": "feature", "approved": True, "origin": "uploaded",
+    facts = [{"id": fid, "claim": claim, "value": value, "kind": "feature", "approved": True, "knowledge": {"origin": "website" if fid == "F1" else "uploaded"},
               "source": {"ref": "spec", "locator": "page one", "quote": value}} for fid, claim, value in
              [("F1", "Engine and gearbox choice", "Engine options are listed"), ("F2", "Suspension and wheels", "Wheel options are listed"),
               ("F3", "Rear seat and boot", "Rear seats are shown"), ("F4", "Sunroof", "Available on selected variants")]]
@@ -129,6 +129,34 @@ class PlanPlaybookContract(unittest.TestCase):
         self.assertEqual(self.plan["playbook_version"], playbooks.VERSION)
         schemas.Plan.model_validate(self.plan)
 
+    def test_incomplete_or_invalid_playbook_usps_retain_planner_usps(self):
+        retained = [{"id": "planner-usp", "name": "Explore your engine choices", "why_it_matters": "An approved choice", "fact_ids": ["F1"]}]
+        for change in ("two", "unsafe", "unsupported"):
+            with self.subTest(change=change):
+                p, pb = copy.deepcopy(self.plan), copy.deepcopy(self.pb)
+                p["usps"] = copy.deepcopy(retained)
+                if change == "two": pb["usps"].pop()
+                elif change == "unsafe": pb["usps"][0]["name"] = "Power from 1500 cc"
+                else: pb["usps"][0]["fact_ids"] = []
+                plan._enforce_playbook(p, pb)
+                self.assertEqual(p["usps"], retained)
+                self.assertIn("playbook USPs incomplete; planner USPs retained", p["issues"])
+                self.assertEqual(next(s for s in p["segments"] if s["id"] == "engine")["usp_ids"], ["planner-usp"])
+
+    def test_stop_evidence_precedes_other_approved_planner_references(self):
+        self.und["facts"].append({**self.und["facts"][0], "id": "HOLD", "approved": False})
+        self.und["images"] += [{**self.und["images"][0], "id": "im2", "source_id": "img-two"},
+                               {**self.und["images"][0], "id": "im3", "source_id": "excluded"}]
+        store.write_json(self.did, "understanding.json", self.und)
+        store.update(self.did, lambda demo: demo["sources"].append({"id": "excluded", "kind": "image", "use_in_demo": False}))
+        engine = next(s for s in self.plan["segments"] if s["id"] == "engine")
+        engine.update(fact_ids=["F2", "F1", "F2", "HOLD", "invented"], visual_refs=["im2", "im1", "im2", "im3", "invented"])
+        with patch.object(plan.claude, "structured", return_value=schemas.Plan.model_validate(self.plan)):
+            result = plan.run(self.did, lambda _: None)
+        engine = next(s for s in result["segments"] if s["id"] == "engine")
+        self.assertEqual(engine["fact_ids"], ["F1", "F2"])
+        self.assertEqual(engine["visual_refs"], ["im1", "im2"])
+
     def test_budget_total_three_minutes_and_proportional_allocation(self):
         plan._enforce_playbook(self.plan, self.pb)
         for index, seg in enumerate(self.plan["segments"]):
@@ -138,6 +166,15 @@ class PlanPlaybookContract(unittest.TestCase):
         self.assertEqual(sum(s["word_budget"] for s in self.plan["segments"]), 297)
         self.assertGreater(len({s["word_budget"] for s in self.plan["segments"]}), 1)
         self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] for s in self.plan["segments"]))
+
+    def test_missing_duration_defaults_to_three_minutes_in_prompt_and_saved_plan(self):
+        store.update(self.did, lambda demo: demo["settings"].pop("pitch_minutes", None))
+        with patch.object(plan.claude, "structured", return_value=schemas.Plan.model_validate(self.plan)) as model:
+            result = plan.run(self.did, lambda _: None)
+        timing = json.loads(model.call_args.args[1].split("DEMO WORD BUDGET: ", 1)[1].split("\n", 1)[0])
+        self.assertEqual(timing["pitch_minutes"], 3)
+        self.assertEqual(timing["total_words"], 342)
+        self.assertEqual(result["total_words"], 342)
 
     def test_budget_clamps_extremes_and_reports_unachievable_lengths(self):
         self.plan["segments"][0]["word_budget"] = -500
@@ -180,6 +217,7 @@ class PlanPlaybookContract(unittest.TestCase):
         payload = json.loads(content.split("PLAYBOOK:\n", 1)[1].split("\n\nAPPROVED FACT REGISTRY", 1)[0])
         self.assertEqual(payload["stops"][0]["id"], "stance-and-ride")
         self.assertIn('(pictures: im1)', content)
+        self.assertIn('(origin: website)', content)
         self.assertIn('(origin: uploaded)', content)
         self.assertIn('"total_words": 342', content)
         self.assertIn('"role_ceilings"', content)
@@ -230,10 +268,35 @@ class PlanPlaybookContract(unittest.TestCase):
             self.assertEqual(saved["stages"]["plan"]["status"], "done")
             self.assertEqual([s["stop_id"] for s in planned["segments"] if s["role"] == "proof"], [s["id"] for s in pb["stops"] if s["must_cover"]])
             self.assertEqual(planned["playbook_version"], playbooks.VERSION)
-            self.assertEqual(planned["usps"], pb["usps"])
+            if all(usp["fact_ids"] for usp in pb["usps"]) and len(pb["usps"]) == 3:
+                self.assertEqual(planned["usps"], pb["usps"])
+            else:
+                self.assertIn("playbook USPs incomplete; planner USPs retained", planned["issues"])
             self.assertEqual([s["id"] for s in script["segments"]], [s["id"] for s in planned["segments"]])
             self.assertEqual([s["role"] for s in script["segments"]], [s["role"] for s in planned["segments"]])
         self.assertEqual(config.DATA_DIR, Path(_STORAGE.name).resolve())
+
+    def test_mock_read_with_incomplete_coach_usps_reaches_align(self):
+        from server.app import app
+        real_mock = coach.mock_playbook
+        def incomplete(und, entry):
+            pb = real_mock(und, entry)
+            pb["usps"] = pb["usps"][:2]
+            return pb
+        with patch.object(coach, "mock_playbook", side_effect=incomplete), TestClient(app) as api:
+            did = api.post("/api/demos", json={"name": "Incomplete Coach USP Read"}).json()["id"]
+            self.assertEqual(api.post(f"/api/demos/{did}/sources", data={"role": "catalogue", "text": "The product specification lists engine, wheels and rear seats."}).status_code, 200)
+            self.assertEqual(api.post(f"/api/demos/{did}/read").status_code, 200)
+            deadline = time.monotonic() + 45
+            while time.monotonic() < deadline:
+                saved = store.load(did)
+                if saved["status"] in ("align", "error"):
+                    break
+                time.sleep(.05)
+            self.assertEqual(saved["status"], "align", saved["stages"])
+            self.assertEqual(saved["stages"]["coach"]["status"], "done")
+            self.assertIn("coach returned 2 USPs", store.read_json(did, "playbook.json")["issues"])
+            self.assertIn("playbook USPs incomplete; planner USPs retained", store.read_json(did, "plan.json")["issues"])
 
 
 if __name__ == "__main__":

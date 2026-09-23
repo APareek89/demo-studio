@@ -1,5 +1,31 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — Review data shapes and recoverable Coach errors were treated as hard boundaries
+
+**Five whys:** (1) Source origin disappeared, a malformed USP stopped Read, and Planner lost approved extra evidence. (2) Prompt builders read a top-level origin, Coach raised on USP count/name errors, and Planner intersected references with each stop. (3) The implementation assumed flat provenance, a perfect three-USP response and exhaustive Coach evidence. (4) Model proposals were treated as final structure rather than repairable inputs. (5) Fixtures encoded those assumptions instead of nested registry facts, imperfect model output and additional approved Planner references.
+
+**WP10 correction:** read nested origin with legacy/unknown fallback; diagnose and retain fewer USPs, keep the first three of an oversized set, remove whole unsafe numeric/unit/code tokens (including standalone `PS` and `L`) and drop names still invalid. Keep the first duplicate stop. Planner retains its filtered USPs unless Coach supplies three valid ones, and puts stop evidence first without losing approved extras. Missing duration consistently means three minutes; proxy callouts cite the whole source line's fact list. Coach 25/25, Plan/playbook 19/19, generation 58/58 and deck media 45/45 pass; final integration receipts are recorded in `Loop.MD`.
+
+## 2026-09-23 — Legacy check-in validation erased reviewed speech and audio
+
+**Five whys:** (1) Validating a published question check-in removed its text and audio. (2) The new statement-only rule repaired data in place. (3) Validation combined diagnostics with destructive migration. (4) Existing published content was treated like a fresh model draft. (5) Tests checked the new rule without asserting that legacy assets remained unchanged.
+
+**WP10 correction:** preserve the check-in and its audio, retain the exact validator issue and let the Author repair pass fix new drafts. Playback skips legacy question-shaped check-ins without speaking or waiting and records `checkin_skipped: "legacy_question"`. A temporary CRETA copy still produces exactly the two question-check-in issues with unchanged check-in assets. Remove the two remaining cabin-first prompt sentences without changing the confirmed C2 strings.
+
+**Required behavior record:** initial Explore sends `refine:false`, so the fundamental hoist applies only to the first plan and its prompt no longer carries “This is a REFINE call…”. Live-web attribution normalises a model-written leading cited host and rejects an uncited one; the WP9 entry below preserves the original cause and its historical test receipt.
+
+## 2026-09-23 — Bare filename tokens entered the customer-site allow-list
+
+**Five whys:** (1) `creta.pdf`, `node.js` and `specs.xlsx` looked like supplied websites. (2) The bare-host pattern accepted any alphabetic final label. (3) URL syntax was treated as sufficient evidence of a public site. (4) File extensions and public suffixes shared that syntax. (5) Client/server parity tests omitted filename controls.
+
+**WP10 correction:** share the specified public suffix and document-extension lists, filtering only bare tokens while retaining explicit HTTP(S) and `www.` behavior. Keep the intake placeholder and the first-customer-URL fallback valid. Attribution checks still identify host-shaped text lexically, separately from the intake eligibility filter: excluding a suffix from customer-site intake must not let an uncited host pass the attribution guard. Runtime sites 20/20, client sites 19/19 and plain language 24/24 pass; public-site availability is not implied by fake-fetch tests.
+
+## 2026-09-23 — The opening film shared the slide and conversation view
+
+**Five whys:** (1) The opening video appeared with unrelated player content. (2) It was a layer inside the ordinary slide stage. (3) The film state did not own the whole visible view. (4) Skip used the conversation chip area rather than a control below the film. (5) Existing checks exercised completion and skip without proving a video-only layout using a real MP4.
+
+**Authorized correction:** give the opening film a dedicated view and a separate Skip the film button below it, restoring the normal player after completion, skip or interruption. The actual 854×480 Downloads MP4 plays muted on desktop and at 390 px width with its native aspect ratio, only the video and Skip visible, and a 16 px gap between them. Final browser contracts pass 73/73. No paid voice render, protected-demo edit or port-8896 restart occurred; the WP10 protected manifest is byte-identical across all 7,766 files.
+
 ## 2026-09-23 — Plain-language rewriting changed a source hostname
 
 **Five whys:** (1) Live attribution to `adas.example` could become `driver-assistance features.example`. (2) The jargon substitution matched `ADAS` inside the generated hostname. (3) The validator prepended source identity before grounding and register checks. (4) Claim text and validator-owned attribution shared the same string. (5) Plain-language tests checked product terms without a source host containing one of those terms.

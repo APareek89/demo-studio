@@ -27,7 +27,7 @@ socket.socket.connect_ex = no_network
 socket.create_connection = no_network
 
 from server import config, schemas, store
-from server.agents import coach, playbooks
+from server.agents import coach, plan, playbooks
 from server.llm import mock
 
 
@@ -36,7 +36,7 @@ def understanding(category="Compact SUV"):
               ("F3", "Rear seat and boot"), ("F4", "Sunroof"), ("HOLD", "Safety airbags")]
     return {"product": {"name": "Example", "category": category},
             "facts": [{"id": fid, "claim": claim, "value": "Shown in the specification", "kind": "feature", "approved": fid != "HOLD",
-                       "origin": "uploaded", "source": {"ref": "doc", "locator": "page one", "quote": claim}} for fid, claim in claims],
+                       "knowledge": {"origin": "website" if fid == "F1" else "uploaded"}, "source": {"ref": "doc", "locator": "page one", "quote": claim}} for fid, claim in claims],
             "shots": [], "images": [{"id": "im1", "source_id": "img", "quality": 4, "angle": "engine bay", "parts": [], "description": "Engine bay"},
                                        {"id": "im2", "source_id": "excluded", "quality": 4, "angle": "side", "parts": [], "description": "Wheels"}],
             "image_map": {"F1": ["im1"], "F2": ["im2"]},
@@ -92,16 +92,46 @@ class CoachContract(unittest.TestCase):
         self.assertTrue(all(set(u["fact_ids"]) <= set(stops[u["stop_id"]]["fact_ids"]) for u in pb["usps"]))
         self.assertGreaterEqual(sum(stops[u["stop_id"]]["kind"] == "fundamental" for u in pb["usps"]), 2)
 
-    def test_digit_usp_rejected_without_rewriting_the_promise(self):
+    def test_unsafe_usp_too_short_after_cleanup_is_dropped_without_aborting(self):
         pb = self.playbook()
         pb["usps"][0]["name"] = "Power from 1500 cc"
         issues = coach.validate(pb, self.und)
         self.assertTrue(any("rejected USP name" in issue for issue in issues))
-        self.assertEqual(pb["usps"][0]["name"], "Power from 1500 cc")
+        self.assertEqual(len(pb["usps"]), 2)
+        self.assertNotIn("usp-1", [u["id"] for u in pb["usps"]])
         with patch.object(config, "MOCK_LLM", False), patch.object(coach.claude, "structured", return_value=schemas.Playbook.model_validate(pb)):
-            with self.assertRaises(ValueError):
-                coach.run(self.did, self.events.append)
-        self.assertIsNone(store.read_json(self.did, "playbook.json"))
+            result = coach.run(self.did, self.events.append)
+        self.assertEqual(len(result["usps"]), 2)
+        self.assertEqual(store.read_json(self.did, "playbook.json"), result)
+
+    def test_unsafe_usp_cleanup_removes_whole_number_unit_and_code_tokens(self):
+        for unsafe in ("1500 cc", "SX1500", "100km", "six airbags", "7-seater", "50%", "₹ 12000", "32 GB", "2 years", "DCT", "hp"):
+            with self.subTest(unsafe=unsafe):
+                pb = self.playbook()
+                pb["usps"][0]["name"] = f"Comfort  {unsafe}  for your family"
+                issues = coach.validate(pb, self.und)
+                self.assertEqual(pb["usps"][0]["name"], "Comfort for your family")
+                self.assertEqual(pb["usps"][0]["fact_ids"], ["F1"])
+                self.assertTrue(any("stripped figures, units or model codes" in issue for issue in issues))
+                self.assertFalse(coach._unsafe_usp_name(pb["usps"][0]["name"]))
+
+    def test_unsafe_usp_still_over_word_limit_is_dropped(self):
+        pb = self.playbook()
+        pb["usps"][0]["name"] = "These many everyday words still make this selling promise too long"
+        self.assertTrue(any("rejected USP name" in issue for issue in coach.validate(pb, self.und)))
+        self.assertEqual(len(pb["usps"]), 2)
+
+    def test_power_and_capacity_units_do_not_survive_digit_cleanup(self):
+        for original, expected in (("150 PS for easy highway trips", "for easy highway trips"),
+                                   ("1.5 L engine for daily drives", "engine for daily drives")):
+            with self.subTest(name=original):
+                pb = self.playbook()
+                pb["usps"][0]["name"] = original
+                issues = coach.validate(pb, self.und)
+                self.assertEqual(pb["usps"][0]["name"], expected)
+                self.assertEqual(pb["usps"][0]["fact_ids"], ["F1"])
+                self.assertTrue(any("stripped figures, units or model codes" in issue for issue in issues))
+                self.assertFalse(coach._unsafe_usp_name(expected))
 
     def test_unsupported_stop_retained_with_gap(self):
         pb = self.playbook()
@@ -136,11 +166,15 @@ class CoachContract(unittest.TestCase):
             if stop["must_cover"]:
                 self.assertTrue(stop["picture_ids"] or any("picture" in gap.lower() for gap in stop["gaps"]))
 
-    def test_duplicate_stop_ids_rejected(self):
+    def test_duplicate_stop_ids_keep_first_occurrence_and_report_issue(self):
         pb = self.playbook()
-        pb["stops"].append(copy.deepcopy(pb["stops"][0]))
-        with self.assertRaisesRegex(ValueError, "Duplicate"):
-            coach.validate(pb, self.und)
+        first = copy.deepcopy(pb["stops"][0])
+        duplicate = {**first, "label": "Later duplicate", "fact_ids": ["F4"], "picture_ids": ["im2"]}
+        pb["stops"].append(duplicate)
+        issues = coach.validate(pb, self.und)
+        self.assertEqual(pb["stops"][0], first)
+        self.assertEqual(len([s for s in pb["stops"] if s["id"] == first["id"]]), 1)
+        self.assertTrue(any("duplicate stop ID; kept the first occurrence" in issue for issue in issues))
 
     def test_cache_returns_identical_artifact_without_model_or_write(self):
         first = coach.run(self.did, self.events.append)
@@ -200,15 +234,25 @@ class CoachContract(unittest.TestCase):
             coach.run(self.did, self.events.append)
         self.assertEqual(store.path(self.did, "playbook.json").read_bytes(), before)
 
-    def test_wrong_usp_count_preserves_previous_file(self):
+    def test_two_model_usps_are_saved_with_an_issue(self):
         first = coach.run(self.did, self.events.append)
-        before = store.path(self.did, "playbook.json").read_bytes()
         first["usps"].pop()
-        self.assertTrue(any("exactly three" in issue for issue in coach.validate(first, self.und)))
+        self.assertIn("coach returned 2 USPs", coach.validate(first, self.und))
         with patch.object(config, "MOCK_LLM", False), patch.object(coach.claude, "structured", return_value=schemas.Playbook.model_validate(first)):
-            with self.assertRaises(ValueError):
-                coach.run(self.did, self.events.append, "Revise this story")
-        self.assertEqual(store.path(self.did, "playbook.json").read_bytes(), before)
+            result = coach.run(self.did, self.events.append, "Revise this story")
+        self.assertEqual(len(result["usps"]), 2)
+        self.assertIn("coach returned 2 USPs", result["issues"])
+        self.assertEqual(store.read_json(self.did, "playbook.json"), result)
+
+    def test_four_model_usps_keep_the_first_three_and_save(self):
+        pb = self.playbook()
+        pb["usps"].append({**pb["usps"][0], "id": "usp-fourth", "name": "Additional approved selling promise"})
+        expected = copy.deepcopy(pb["usps"][:3])
+        with patch.object(config, "MOCK_LLM", False), patch.object(coach.claude, "structured", return_value=schemas.Playbook.model_validate(pb)):
+            result = coach.run(self.did, self.events.append)
+        self.assertEqual(result["usps"], expected)
+        self.assertIn("coach returned 4 USPs; kept the first three", result["issues"])
+        self.assertEqual(store.read_json(self.did, "playbook.json"), result)
 
     def test_coach_prompt_receives_registry_provenance_and_revision(self):
         pb = coach.run(self.did, self.events.append)
@@ -222,6 +266,20 @@ class CoachContract(unittest.TestCase):
                      "(pictures: im1)", "(origin: uploaded)", "PREVIOUS PLAYBOOK:", "REVISION INSTRUCTION FROM THE USER — follow it precisely"):
             self.assertIn(text, content)
         self.assertNotIn("HOLD [", content)
+
+    def test_nested_registry_origins_reach_coach_and_planner_prompts(self):
+        self.und["brand"] = {}
+        self.und["facts"][0]["origin"] = "legacy-ignored"
+        store.write_json(self.did, "understanding.json", self.und)
+        pb = coach.run(self.did, self.events.append)
+        with patch.object(config, "MOCK_LLM", False), patch.object(coach.claude, "structured", return_value=schemas.Playbook.model_validate(pb)) as coach_model:
+            coach.run(self.did, self.events.append, "Review source provenance")
+        with patch.object(plan.claude, "structured", return_value=mock.fake(schemas.Plan)) as plan_model:
+            plan.run(self.did, self.events.append)
+        for content in (coach_model.call_args.args[1], plan_model.call_args.args[1]):
+            self.assertIn("(origin: website)", content)
+            self.assertIn("(origin: uploaded)", content)
+            self.assertNotIn("(origin: legacy-ignored)", content)
 
     def test_progress_stage_schema_and_faker(self):
         from server import graph, runlog

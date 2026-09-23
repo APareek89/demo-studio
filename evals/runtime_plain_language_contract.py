@@ -208,6 +208,20 @@ class PlainLanguageContract(unittest.TestCase):
         self.assertIn("unverified_web_attribution", errors)
         self.assertFalse(result["answered"])
 
+    def test_filename_shaped_attribution_still_requires_the_exact_live_host(self):
+        evidence = [fact("ADAS is available.")]
+        evidence[0].update(provenance="live_web", source={"ref": "https://adas.example/car", "quote": evidence[0]["value"]})
+        for host in ("creta.pdf", "node.js", "specs.xlsx"):
+            with patch.object(plain_terms, "substitute", wraps=plain_terms.substitute) as substitute:
+                result, errors = rg.validate_decision(decision(f"According to {host}, ADAS is available."), evidence, "What driver assistance is listed?")
+            self.assertIn("unverified_web_attribution", errors)
+            self.assertFalse(result["answered"])
+            self.assertFalse(substitute.called)
+        evidence[0]["source"]["ref"] = "https://node.js/car"
+        result, errors = rg.validate_decision(decision("According to node.js, ADAS is available."), evidence, "What driver assistance is listed?")
+        self.assertEqual(errors, [])
+        self.assertEqual(result["answer"], "According to node.js, driver-assistance features is available.")
+
     def test_live_attribution_counts_toward_final_word_cap(self):
         text = " ".join(["suspension"] * 113) + "."
         evidence = [fact(text)]

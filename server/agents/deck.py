@@ -563,6 +563,7 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                     one = {**first, "fact_ids": [first_id]} if first else None
                     group = derive_callouts({**s, "lines": [one] if one else []}, facts_by_id, img)[:1]
                     for callout in group:
+                        callout["fact_ids"] = list(first.get("fact_ids", []))
                         callout["part"] = media.get("proxy_reason", "").removeprefix("closest by part: ") if media.get("proxy_reason", "").startswith("closest by part: ") else ""
                         callout["reveal_on_line"] = 0
                 else:

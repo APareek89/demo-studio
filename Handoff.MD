@@ -1,6 +1,27 @@
 # Handoff.MD — Demo Studio
 
-## Sales Trainer flow — 23 September 2026
+## Sales Trainer flow — 23 September 2026 · WP10
+
+WP10 implements the orchestrator's bounded review fixes on `codex/sales-trainer-flow`. Coach and Planner now show nested registry origin, Coach repairs or drops unsafe USPs without aborting Read, and duplicate stop IDs keep their first occurrence with an issue. Planner retains its approved USPs when Coach's set is incomplete, keeps approved extra facts/pictures after the stop's own references, and defaults missing duration to three minutes. Author validation reports legacy question check-ins without changing their text or audio; the player skips those questions, logs `checkin_skipped: "legacy_question"`, and continues. The two remaining cabin-first prompt sentences are corrected, illustration callouts retain every supporting line fact, and bare customer-site tokens use the agreed suffix rules so filenames are not treated as sites.
+
+**Current document decisions:** `docs/codex-brief-2026-09-23.md`, `docs/core-flow-explained-2026-09-23.md`, `docs/proposal-sales-trainer-flow-2026-09-23.md` and `refine.MD` are intentionally tracked. C2 is resolved: both installed `ScriptOut.overview` and `PLAN_SYSTEM` initial-route strings are confirmed and remain unchanged. This supersedes the older untracked-file and open-C2 status in the historical WP9 receipt below.
+
+**Recorded runtime decisions:** the initial Explore call sends `refine:false`, so the fundamental hoist applies only to the first plan; the first-plan prompt therefore no longer carries the “This is a REFINE call…” sentence. Live-web attribution normalises a model-written leading cited host and rejects an uncited one, while preserving claim grounding and counting attribution in the final spoken word cap.
+
+**Additional authorized film change:** the opening film has its own video-only view, with Skip the film below it; the normal slide and conversation controls return when it finishes or is skipped. The actual 854×480 MP4 from Downloads plays muted on desktop and at 390 px width, preserving its aspect ratio with only the video and a separate Skip control visible, 16 px apart. Final browser contracts pass 73/73. This is not a voice render or an acoustic test.
+
+**WP10 verification:** Coach 25/25, Coach Align 18/18, Plan/playbook 19/19, generation 58/58, speech style 30/30, narrative 14/14, Align 51/51, deck media 45/45, media Align 15/15, runtime sites 20/20, client sites 19/19, plain language 24/24, runtime graph 130/130, repair 106/106, player listen 16/16, priority 11/11, focus 21/21, media 7/7, fundamental 10/10, live voice 68/68 and final browser 73/73 pass. Required deck 365/365, acceptance 24/24 and both smoke phases pass after the final Coach unit fix. Syntax checks pass for 16 Python and four JavaScript files; both C2 strings remain unchanged and diff checks are clean. All 7,766 files in the WP10 protected-path manifest are byte-identical, with zero changes. Backend runs use isolated data and blocked outbound sockets, with zero outbound attempts. No paid Read or voice run, protected demo/output write or port-8896 restart occurred. Loop remains off.
+
+**WP10 changed-file inventory (33 tracked files):**
+
+- Server: `server/agents/author.py`, `server/agents/coach.py`, `server/agents/deck.py`, `server/agents/plan.py`, `server/agents/principles.py`, `server/runtime_graph.py`, `server/runtime_tools.py`.
+- Player: `web/player/player.js`, `web/styles.css`.
+- Contracts: `evals/align_review_contract.py`, `evals/coach_contract.py`, `evals/deck_media_contract.py`, `evals/generation_contract.py`, `evals/narrative_roles_contract.py`, `evals/plan_playbook_contract.py`, `evals/player_contract.html`, `evals/player_customer_sites_contract.cjs`, `evals/player_listen_contract.cjs`, `evals/player_priority_revision_contract.cjs`, `evals/runtime_customer_sites_contract.py`, `evals/runtime_plain_language_contract.py`, `evals/speech_style_contract.py`.
+- Documentation: `Handoff.MD`, `Learning.MD`, `Loop.MD`, `PRD.md`, `refine.MD`, `docs/ARCHITECTURE_FLOW.md`, `docs/DEMO_BUILD_AND_RUN.md`, `docs/architecture-flow.html`, `docs/mermaid/02-understand.mmd`, `docs/mermaid/03-align.mmd`, `docs/mermaid/05-runtime.mmd`.
+
+**Pending request — selective Align rebuilds:** not implemented in WP10. Proposed dependency approach: wording-only script changes start at Author and invalidate only affected downstream artifacts; new facts or uploads start at the earliest affected source stage, normally Understand → Coach → Plan → Author and its dependants. Reuse artifacts whose input hashes are unchanged, and retain an approval only while the content and dependencies it approved remain valid. The exact routing and approval behavior still need implementation and acceptance checks.
+
+## Sales Trainer flow — 23 September 2026 · WP9 historical checkpoint
 
 **Late orchestrator steering:** received after WP9 `b17014c`. The restored audit remains identical to `f62ef02`; WP2 §2.3 was checked against its exact verbatim blocks, mapped modifications, SIGNPOSTS and skipped items with no mismatch. WP1's wiring/mock/checklist is verified. Three unchanged input documents were mistakenly included in WP9 and were returned to untracked status without deleting their disk copies: the dated brief, core-flow explanation and sales-trainer proposal. `refine.MD` was edited for the required implementation log and remains tracked. Open question C2 there asks Claude to confirm two WP9 schema/Planner wording reconciliations that preceded the stricter exact-wording instruction. No further code or prompt edits accompany this correction.
 

@@ -42,11 +42,20 @@ Return JSON matching the schema exactly.
 """
 
 KINDS = {"fundamental", "differentiator", "delighter", "hygiene", "ownership"}
-_USP_UNITS = re.compile(r"\b(?:cc|hp|bhp|kw|kwh|mm|cm|km|kg|nm|litres?|liters?|dct|iv[t]|mpfi)\b", re.I)
+_USP_UNITS = re.compile(r"\b(?:cc|hp|bhp|ps|kw|kwh|mm|cm|km|kg|nm|hrs?|hours?|mins?|minutes?|years?|months?|days?|litres?|liters?|l|gb|mb|tb|mah|w|v|inch|inches|rs\.?|rupees|usd|dct|ivt|mpfi)\b|[%₹$€]", re.I)
 
 
 def _unsafe_usp_name(name: str) -> bool:
     return bool(author.NUMBERISH.search(name) or re.search(r"\d", name) or _USP_UNITS.search(name) or not 3 <= len(name.split()) <= 8)
+
+
+def _clean_usp_name(name: str) -> str:
+    # Remove the whole token, so an embedded model code cannot become a new
+    # word; NUMBERISH spans also catch written counts such as "six airbags".
+    unsafe = [match.span() for pattern in (author.NUMBERISH, _USP_UNITS) for match in pattern.finditer(name)]
+    return " ".join(match.group() for match in re.finditer(r"\S+", name)
+                    if not re.search(r"\d", match.group()) and re.search(r"\w", match.group())
+                    and not any(start < match.end() and end > match.start() for start, end in unsafe)).strip(" ,;:-")
 
 
 def _unique(values: list) -> list:
@@ -66,9 +75,14 @@ def validate(pb: dict, und: dict) -> list[str]:
     fact_ids = {f["id"] for f in und.get("facts", []) if f.get("approved", True)}
     pictures = {p["id"] for key in ("images", "shots") for p in und.get(key, [])}
     stops = pb.get("stops", [])
-    stop_ids = [stop.get("id") for stop in stops]
-    if len(set(stop_ids)) != len(stop_ids):
-        raise ValueError("Duplicate playbook stop IDs are not allowed")
+    seen, unique_stops = set(), []
+    for stop in stops:
+        if stop.get("id") in seen:
+            issues.append(f"{stop.get('id')}: duplicate stop ID; kept the first occurrence")
+            continue
+        seen.add(stop.get("id"))
+        unique_stops.append(stop)
+    stops[:] = unique_stops
     if not stops:
         raise ValueError("A playbook needs a fundamental stop")
     for stop in stops:
@@ -110,9 +124,13 @@ def validate(pb: dict, und: dict) -> list[str]:
         stops[after:after] = early_delighters
         issues.append("Moved delighters after the fundamentals")
     usps = pb.get("usps", [])
-    if len(usps) != 3:
-        issues.append(f"Playbook needs exactly three USPs; received {len(usps)}")
+    if len(usps) > 3:
+        issues.append(f"coach returned {len(usps)} USPs; kept the first three")
+        usps = usps[:3]
+    elif len(usps) < 3:
+        issues.append(f"coach returned {len(usps)} USPs")
     stop_by_id = {stop["id"]: stop for stop in stops}
+    kept_usps = []
     for usp in usps:
         stop = stop_by_id.get(usp.get("stop_id"), {})
         allowed = set(stop.get("fact_ids", [])) & fact_ids
@@ -124,8 +142,15 @@ def validate(pb: dict, und: dict) -> list[str]:
             issues.append(f"{usp.get('id')}: USP needs approved supporting evidence")
         name = usp.get("name", "")
         if _unsafe_usp_name(name):
-            issues.append(f"{usp.get('id')}: rejected USP name; use three to eight everyday words without figures, units or model codes")
-    if sum(bool(u.get("fact_ids")) and stop_by_id.get(u.get("stop_id"), {}).get("kind") == "fundamental" for u in usps) < 2:
+            cleaned = _clean_usp_name(name)
+            if _unsafe_usp_name(cleaned):
+                issues.append(f"{usp.get('id')}: rejected USP name; use three to eight everyday words without figures, units or model codes")
+                continue
+            usp["name"] = cleaned
+            issues.append(f"{usp.get('id')}: stripped figures, units or model codes from USP name")
+        kept_usps.append(usp)
+    pb["usps"] = kept_usps
+    if sum(bool(u.get("fact_ids")) and stop_by_id.get(u.get("stop_id"), {}).get("kind") == "fundamental" for u in kept_usps) < 2:
         issues.append("At least two supported USPs must sit on fundamental stops")
     for objection in pb.get("objections", []):
         objection["fact_ids"] = _unique([fid for fid in objection.get("fact_ids", []) if fid in fact_ids])
@@ -217,8 +242,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         pictures = [ref for ref in (und.get("image_map") or {}).get(fact["id"], []) if ref in allowed_pictures]
         if pictures:
             row += f" (pictures: {', '.join(pictures)})"
-        if fact.get("origin"):
-            row += f" (origin: {fact['origin']})"
+        origin = (fact.get("knowledge") or {}).get("origin") or fact.get("origin") or "unknown"
+        row += f" (origin: {origin})"
         rows.append(row)
     facts_txt = "\n".join(rows) or "(empty)"
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und.get("shots", [])) or "(none)"
@@ -249,8 +274,6 @@ IMAGES ({len(und.get('images', []))}):
     else:
         pb = claude.structured(COACH_SYSTEM.format(category=category), content, schemas.Playbook, max_tokens=12000).model_dump()
     pb["issues"] = validate(pb, und)
-    if len(pb.get("usps", [])) != 3 or any(_unsafe_usp_name(usp.get("name", "")) for usp in pb.get("usps", [])):
-        raise ValueError("Playbook requires exactly three USPs with safe everyday names: " + "; ".join(pb["issues"]))
     pb.update(library_version=playbooks.VERSION, library_key=library_key, registry_hash=registry_hash, audience=audience, input_hash=input_hash)
     pb = apply_overrides(pb, demo_id)
     schemas.Playbook.model_validate(pb)

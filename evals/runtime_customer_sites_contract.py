@@ -57,12 +57,33 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(runtime_tools.supplied_urls(text), ["https://hyundai.com/in/en/find-a-car/creta", "https://www.example.com/car", "HTTPS://EXAMPLE.ORG/car"])
         self.assertEqual(runtime_tools.supplied_urls("hyundai.com hyundai.com", [{"role":"assistant","text":"https://unrequested.example/car"}]), ["https://hyundai.com"])
 
+    def test_bare_filenames_and_unlisted_suffixes_are_not_customer_sites(self):
+        self.assertEqual(runtime_tools.supplied_urls("creta.pdf node.js specs.xlsx photos.JPG notes.md source.example/catalog"), [])
+        self.assertEqual(runtime_tools.supplied_urls(" ".join(f"file.{extension}" for extension in runtime_tools.DOC_EXTENSIONS)), [])
+        self.assertEqual(runtime_tools.supplied_urls("hyundai.com/in/en/find-a-car/creta www.carwale.com https://x.in"),
+                         ["https://hyundai.com/in/en/find-a-car/creta", "https://www.carwale.com", "https://x.in"])
+
+    def test_public_suffixes_two_level_forms_and_explicit_urls_keep_their_scope(self):
+        for suffix in runtime_tools.PUBLIC_TLDS | {"co.in", "gov.in", "nic.in", "ac.in", "co.uk", "com.au"}:
+            token = f"dealer.{suffix}:8443/car?trim=top#details"
+            self.assertEqual(runtime_tools.supplied_urls(token), ["https://" + token])
+        self.assertEqual(runtime_tools.supplied_urls("https://creta.pdf http://node.js www.specs.xlsx https://source.example/car www.source.example/car"),
+                         ["https://creta.pdf", "http://node.js", "https://www.specs.xlsx", "https://source.example/car", "https://www.source.example/car"])
+
     def test_shared_javascript_python_parser_parity_and_limits(self):
         cases = ['(hyundai.com/in/en/find-a-car/creta), www.example.com; HTTPS://EXAMPLE.ORG/car!',
                  'user@example.co.in foo.bar@example.com 1.5-litre petrol', '[https://example.com/car]. https://example.com/car',
-                 ' '.join(f"source{i}.example/car" for i in range(12))]
-        script = r'''const fs=require('node:fs'),vm=require('node:vm');const s=fs.readFileSync('web/player/player.js','utf8');const a=s.indexOf('const CUSTOMER_URL_PATTERN ='),b=s.indexOf('export function mountPlayer',a);const fn=vm.runInNewContext(s.slice(a,b)+'\ncustomerUrls');const cases=JSON.parse(fs.readFileSync(0,'utf8'));process.stdout.write(JSON.stringify(cases.map(t=>({all:fn(t),intake:fn(t,5)}))));'''
-        results = json.loads(subprocess.run(["node", "-e", script], input=json.dumps(cases), text=True, capture_output=True, check=True, cwd=Path(__file__).resolve().parents[1]).stdout)
+                 'creta.pdf node.js specs.xlsx source.example/catalog https://creta.pdf www.source.example/car',
+                 ' '.join(f"file.{suffix}" for suffix in runtime_tools.DOC_EXTENSIONS),
+                 *[f"dealer.{suffix}:8443/car?trim=top#details" for suffix in sorted(runtime_tools.PUBLIC_TLDS | {"co.in", "gov.in", "nic.in", "ac.in", "co.uk", "com.au"})],
+                 ' '.join(f"source{i}.example.com/car" for i in range(12))]
+        script = r'''const fs=require('node:fs'),vm=require('node:vm');const s=fs.readFileSync('web/player/player.js','utf8');const a=s.indexOf('const CUSTOMER_URL_PATTERN ='),b=s.indexOf('export function mountPlayer',a);const api=vm.runInNewContext(s.slice(a,b)+'\n({customerUrls,publicTlds:[...PUBLIC_TLDS].sort(),docExtensions:[...DOC_EXTENSIONS].sort()})');const cases=JSON.parse(fs.readFileSync(0,'utf8'));process.stdout.write(JSON.stringify({publicTlds:api.publicTlds,docExtensions:api.docExtensions,results:cases.map(t=>({all:api.customerUrls(t),intake:api.customerUrls(t,5)}))}));'''
+        parsed = json.loads(subprocess.run(["node", "-e", script], input=json.dumps(cases), text=True, capture_output=True, check=True, cwd=Path(__file__).resolve().parents[1]).stdout)
+        self.assertEqual(parsed["publicTlds"], sorted(runtime_tools.PUBLIC_TLDS))
+        self.assertEqual(parsed["docExtensions"], sorted(runtime_tools.DOC_EXTENSIONS))
+        self.assertEqual(runtime_tools.PUBLIC_TLDS, {"com","in","co","net","org","io","ai","info","biz","edu","gov","uk","de","jp","sg","ae","au","ca","us","eu"})
+        self.assertEqual(runtime_tools.DOC_EXTENSIONS, {"pdf","doc","docx","xls","xlsx","ppt","pptx","csv","txt","md","json","js","cjs","mjs","ts","py","html","css","png","jpg","jpeg","gif","webp","svg","mp4","mov","wav","mp3","zip"})
+        results = parsed["results"]
         for text, result in zip(cases, results):
             self.assertEqual(result["all"], runtime_tools.supplied_urls(text))
             self.assertEqual(result["intake"], runtime_tools.supplied_urls(text)[:5])
@@ -70,9 +91,9 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(results[-1]["intake"]), 5)
 
     async def test_intake_urls_persist_and_merge_across_three_actual_graph_turns(self):
-        await self.turn(evidence=[FACT], profile={"customer_urls":["hyundai.example/creta", URL]})
-        await self.turn("Airbags matter; I also supplied dealer.example/creta.", evidence=[FACT], turn="t_2", profile={"why":"Family travel"})
-        await self.turn(evidence=[FACT], turn="t_3", profile={"customer_urls":["specs.example/creta"]})
+        await self.turn(evidence=[FACT], profile={"customer_urls":[URL, URL]})
+        await self.turn("Airbags matter; I also supplied https://dealer.example/creta.", evidence=[FACT], turn="t_2", profile={"why":"Family travel"})
+        await self.turn(evidence=[FACT], turn="t_3", profile={"customer_urls":["https://specs.example/creta"]})
         saved = runtime_state.previous_state(self.demo_id, "s_sites")
         self.assertEqual(saved["customer_urls"], [URL, "https://dealer.example/creta", "https://specs.example/creta"])
         self.assertEqual(saved["profile"]["customer_urls"], saved["customer_urls"])
@@ -130,8 +151,8 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(result["answered"])
 
     async def test_explicit_check_bare_url_still_overrides_existing_registry_evidence(self):
-        final = await self.turn("Check hyundai.example/creta for airbags.", evidence=[FACT])
-        self.assertEqual([url for url, _ in self.fetched], [URL])
+        final = await self.turn("Check hyundai.com/creta for airbags.", evidence=[FACT])
+        self.assertEqual([url for url, _ in self.fetched], ["https://hyundai.com/creta"])
         self.assertEqual(final["tool_rounds"], 1)
         self.assertTrue(final["tool_results"][0]["evidence"][0]["id"].startswith("W"))
 

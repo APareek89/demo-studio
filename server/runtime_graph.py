@@ -23,7 +23,7 @@ from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
 from .llm import runtime
 from .runtime_state import DeliveryPlan, RuntimeState, SpokenClaim, TurnDecision, checkpoint, claim_turn, previous_state, safe_id
-from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, calculate, source_lookup, supplied_urls
+from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, _supplied_url, calculate, source_lookup, supplied_urls
 from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
 from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment, transmission_condition_dependencies
 from .runtime_acts import allowed_act_ids, render_act
@@ -1228,7 +1228,9 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 reject("unattributed_web_claim"); continue
             leading_attribution = re.match(r"^(?:according to|as per)\s+([^,\n]+),\s*(.+)$",text,re.I|re.S)
             if leading_attribution:
-                named_sources = supplied_urls(leading_attribution[1],[])
+                # Detect claimed hosts lexically; intake's suffix filter must not
+                # hide a false attribution or grant any new lookup permission.
+                named_sources = [_supplied_url(match.group()) for match in CUSTOMER_URL_RE.finditer(leading_attribution[1])]
                 if any(urlsplit(url).hostname not in domains for url in named_sources):
                     reject("unverified_web_attribution"); continue
                 named_hosts = re.split(r"\s+and\s+",leading_attribution[1].strip(),flags=re.I)

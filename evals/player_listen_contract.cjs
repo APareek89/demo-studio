@@ -52,6 +52,26 @@ async function run() {
       await resume({automatic:true});assert.equal(spoken.length,audio?1:0);assert.equal(resumed.length,1);assert.equal(resumed[0][0].line,2);assert.equal(S.conversationOrigin,null);
     }
   });
+  await check('legacy question check-in is not spoken and does not wait', async () => {
+    for (const text of ['Any questions?  ', 'Anything else？']) {
+      const S = {run: 0, covered: new Set(), plan: [
+        {slide: {id: 'old', lines: [{text: 'First proof.'}], checkin: {text, audio: 'old-question.wav'}}},
+        {slide: {id: 'next', lines: [{text: 'Next proof.'}], checkin: {text: 'That completes this stop.', audio: 'statement.wav'}}}
+      ]}, spoken = [], prefetched = [], played = [];
+      let closed = 0;
+      const play = vm.runInNewContext(part('  async function playFrom(', '  // Play a slide\'s deeper') + '\nplayFrom', {
+        S, el: {cite: {}}, newRun: () => ++S.run, applyUpcomingPlan: async () => true, renderProgress() {},
+        prefetch: items => prefetched.push(...items), showSlideView: () => ({}),
+        playLines: async slide => {played.push(slide.id); return true;}, speak: async text => {spoken.push(text); return true;},
+        waitForLineQuestion: () => {throw Error('Legacy check-in waited');}, closeFlow: async () => {closed++;}
+      });
+      await play(0);
+      assert.deepEqual(played, ['old', 'next']); assert.deepEqual(spoken, ['That completes this stop.']);
+      assert.equal(S.checkin_skipped, 'legacy_question'); assert.equal(closed, 1);
+      assert.equal(prefetched.some(item => item.text === text), false);
+      assert.equal(S.plan[0].slide.checkin.text, text); assert.equal(S.plan[0].slide.checkin.audio, 'old-question.wav');
+    }
+  });
   console.log(`Player listen contracts: ${count}/${count}; real functions, virtual time, no browser/network/provider`);
 }
 run().catch(error=>{console.error(error);process.exitCode=1;});

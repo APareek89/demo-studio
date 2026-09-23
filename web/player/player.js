@@ -61,11 +61,18 @@ function defaultVoiceMode(bundle, muted) { return bundle.runtime?.continuous_voi
 // Keep this expression aligned with server/runtime_tools.py:CUSTOMER_URL_PATTERN.
 // Collection grants no network access; the server still checks hosts and redirects.
 const CUSTOMER_URL_PATTERN = /(?<![\w@.-])(?:https?:\/\/[^\s<>"'\]\)]+|(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?::\d{1,5})?(?:[/?#][^\s<>"'\]\)]*)?)(?![\w@-])/gi;
+const PUBLIC_TLDS = new Set(["com","in","co","net","org","io","ai","info","biz","edu","gov","uk","de","jp","sg","ae","au","ca","us","eu"]);
+const DOC_EXTENSIONS = new Set(["pdf","doc","docx","xls","xlsx","ppt","pptx","csv","txt","md","json","js","cjs","mjs","ts","py","html","css","png","jpg","jpeg","gif","webp","svg","mp4","mov","wav","mp3","zip"]);
 function customerUrls(text, limit = 8) {
   const urls = [...String(text || "").matchAll(CUSTOMER_URL_PATTERN)].map(match => {
     const url = match[0].replace(/[.,;!]+$/, "");
+    if (!/^(?:https?:\/\/|www\.)/i.test(url)) {
+      const host = url.split(/[/?#]/, 1)[0].split(":", 1)[0];
+      const suffix = host.split(".").pop().toLowerCase();
+      if (!PUBLIC_TLDS.has(suffix) || DOC_EXTENSIONS.has(suffix)) return null;
+    }
     return /^https?:\/\//i.test(url) ? url : "https://" + url;
-  });
+  }).filter(Boolean);
   return [...new Set(urls)].slice(0, limit);
 }
 
@@ -155,11 +162,13 @@ export function mountPlayer(host, bundle, api) {
       // Wire header buttons to fullscreen, mute, pause, stop, conversation, restart and close actions.
       // Clicks update this visit or call the parent callback provided by web/app.js:renderPlay.
       h("div", { class: "right" }, el.fsBtn = h("button", { class: "icon-btn", title: "Full screen", "aria-label": "Full screen", onclick: () => toggleFullscreen() }, icon("expand", { size: 18 })), el.muteBtn = h("button", { class: "icon-btn", title: "Mute audio", "aria-label": "Mute audio", "aria-pressed": "false", onclick: () => toggleMute() }, icon("volume", { size: 18 })), el.pauseBtn = h("button", { class: "icon-btn", title: "Pause / resume", "aria-label": "Pause / resume", onclick: () => togglePause() }, icon("pause", { size: 18 })), h("button", { class: "icon-btn", title: "Stop and see the summary", "aria-label": "Stop and see the summary", onclick: () => stopDemo() }, icon("stop", { size: 18 })), el.chatBtn = h("button", { class: "icon-btn", title: "Conversation", "aria-label": "Conversation", onclick: () => toggleDrawer() }, icon("message", { size: 18 }), h("span", { class: "badge" })), h("button", { class: "icon-btn", title: "Restart", "aria-label": "Restart", onclick: () => restart() }, icon("restart", { size: 18 })), api.onClose ? h("button", { class: "icon-btn", title: "Close", "aria-label": "Close", onclick: () => { interruptAll(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); api.onClose(); } }, icon("close", { size: 18 })) : null)),
+    el.filmView = h("div", { class: "pl-film-view" },
+      el.film = h("video", { class: "pl-film", muted: true, playsinline: true, preload: "auto", "aria-label": "Opening film" }),
+      el.skipFilm = h("button", { class: "btn ghost pl-film-skip", onclick: () => { S.skipFilm = true; } }, "Skip the film")),
     el.stage = h("div", { class: "pl-stage" },
       el.stack = h("div", { class: "slide-stack" }),
-      // Reserve a slide stack, optional film and action area beneath the player header.
+      // Reserve a slide stack and action area beneath the player header.
       // web/slide.js:renderSlide supplies one image per slide; fading old and new slides can briefly overlap.
-      el.film = h("video", { class: "pl-film", muted: true, playsinline: true, preload: "auto" }),
       el.ctas = h("div", { class: "pl-ctas" }),
       h("div", { class: "pl-dock" },
         // Keep the guide, captions, citations and reply controls together in the bottom dock.
@@ -304,7 +313,7 @@ export function mountPlayer(host, bundle, api) {
   function updateMuteUi() { el.muteBtn.replaceChildren(icon(S.muted ? "volume-off" : "volume", { size: 18 })); el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio"; el.muteBtn.setAttribute("aria-label", el.muteBtn.title); el.muteBtn.setAttribute("aria-pressed", String(S.muted)); el.muteBtn.classList.toggle("on", S.muted); }
   // Toggle output mute across live speech, recorded audio, browser speech and the film.
   // The state is shared with live-voice.js:LiveVoiceClient.setMuted; microphone capture is separate.
-  function toggleMute() { S.muted = !S.muted; live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !el.stage.classList.contains("film-on"); updateMuteUi(); }
+  function toggleMute() { S.muted = !S.muted; live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !root.classList.contains("film-on"); updateMuteUi(); }
   // Turn reply choices into buttons that belong to the current wait object.
   // A stale click cannot resolve a newer wait; web/api.js:h creates the buttons and resolveWait delivers the value.
   function setChips(list) { const owner = S.waiter; el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => { if (S.waiter === owner) resolveWait(c.value); } }, c.label))); }
@@ -720,7 +729,7 @@ export function mountPlayer(host, bundle, api) {
   function openingPlanPending() { return !!S.pitchPromise && !S.planningDecided && ["opening", "overview", "planning"].includes(S.playback.phase); }
   // Invalidate the old run and stop its speech, film, waits and unfinished answer delivery.
   // The optional planning flag is forwarded to live-voice.js:LiveVoiceClient.interrupt without resuming anything automatically.
-  function interruptAll({ preservePlanning = false } = {}) { newRun(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} el.stage.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
+  function interruptAll({ preservePlanning = false } = {}) { newRun(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} root.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
   // Interpret customer words only against choices offered by the current wait.
   // Return a selected value or a question; server/app.py:run_qa handles questions that do not match a choice.
   function interpretReply(t, chips) {
@@ -923,15 +932,16 @@ export function mountPlayer(host, bundle, api) {
     for (let i = idx; i < S.plan.length; i++) {
       if (!(await applyUpcomingPlan(i, run))) return;
       const step = S.plan[i], sl = step.slide; S.seg = i; S.atCheckin = false; S.playback = { phase: "route", index: i, line: lineIdx, checkin: false, bridgeDone }; renderProgress();
-      prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
+      const legacyQuestion = /[?？]$/.test((sl.checkin?.text || "").trim());
+      prefetch([...sl.lines.slice(lineIdx), sl.checkin?.text && !legacyQuestion ? { text: sl.checkin.text, audio: sl.checkin.audio } : null].filter(Boolean));
       const short = !step.reviewedRevisit && lineIdx === 0 && S.covered.has(sl.id) && sl.lines.length > 1;  // ordinary question visits stay brief; an explicit reviewed revisit keeps its proof
       const view = showSlideView(sl, { reveal: short ? 99 : lineIdx - 1 });
       if (lineIdx === 0 && step.bridge && !bridgeDone) { el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; if (!(await speak(step.bridge, run, step.bridge_audio))) return; S.playback.bridgeDone = true; if (!(await waitForLineQuestion({ text: step.bridge }, run))) return; }
       if (!(await playLines(sl, run, view, lineIdx, short ? 1 : sl.lines.length))) return;
       lineIdx = 0; bridgeDone = false; if (run !== S.run) return;
-      // A stop's closing statement is narration. Legacy question-shaped check-ins
-      // still play, then the next slide starts without chips or a response wait.
+      // Preserve legacy source text, but skip questions without requesting audio or waiting.
       if (sl.checkin?.text && !short) {
+        if (legacyQuestion) { S.checkin_skipped = "legacy_question"; continue; }
         S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = "";
         if (!(await speak(sl.checkin.text, run, sl.checkin.audio))) return;
       }
@@ -1412,7 +1422,7 @@ export function mountPlayer(host, bundle, api) {
     const now = sessionNow();
     const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((now - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { id: S.sessionId, ended: S.ended, input_mode: S.voiceMode ? "voice" : "text", profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
+    return { id: S.sessionId, ended: S.ended, checkin_skipped: S.checkin_skipped, input_mode: S.voiceMode ? "voice" : "text", profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
   }
   // Reopen a completed visit while excluding the idle recap interval from its duration.
   // Update local clocks and hide the recap; later server/app.py:save_session calls use the resumed record.
@@ -1470,7 +1480,7 @@ export function mountPlayer(host, bundle, api) {
     else (target.requestFullscreen ? target.requestFullscreen() : Promise.reject()).catch(() => {});
   }
 
-  // ---------- intro film (skippable; the hero slide stays underneath) ----------
+  // ---------- intro film (video and a separate skip button) ----------
   // Play an optional opening film once, with explicit skip and interruption handling.
   // Return completion to the opening flow; its published URL comes from server/app.py:get_bundle.
   async function playIntroFilm(run) {
@@ -1479,11 +1489,9 @@ export function mountPlayer(host, bundle, api) {
     S.introPlayed = true;
     const ok = await speakF("before_video", "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.", run);
     if (!ok) return false;
-    const v = el.film; v.src = iv.url; v.muted = S.muted; v.currentTime = 0; el.stage.classList.add("film-on");
+    const v = el.film; v.src = iv.url; v.muted = S.muted; v.currentTime = 0; S.skipFilm = false; root.classList.add("film-on");
     setStatus("idle", "Playing the film"); el.cap.textContent = ""; el.cite.textContent = "";
-    // Show a film-skip button that sets a local flag for the playback guard.
-    // The button is built with web/api.js:h; it skips only this film rather than choosing a customer action.
-    el.chips.replaceChildren(h("button", { class: "chip", onclick: () => { S.skipFilm = true; } }, "Skip the film"));
+    setChips([]); el.skipFilm.focus({ preventScroll: true });
     const done = await new Promise((res) => {
       // Settle film playback once and clear its polling and duration guards.
       // The result returns to playIntroFilm; no narration is requested from server/app.py:run_tts by this helper.
@@ -1497,7 +1505,7 @@ export function mountPlayer(host, bundle, api) {
     });
     if (run !== S.run) return false;
     try { v.pause(); } catch (e) {}
-    v.muted = true; el.stage.classList.remove("film-on"); setChips([]);
+    v.muted = true; root.classList.remove("film-on"); setChips([]);
     if (!done) return false;
     return speakF("after_video", "Now, let's get into what matters to you.", run);
   }
@@ -1520,7 +1528,7 @@ export function mountPlayer(host, bundle, api) {
   // ---------- lifecycle ----------
   // Start over with a fresh session ID, empty visit history and newly created live connection.
   // Destroy the old slide and capture before intake; live-voice.js:LiveVoiceClient.close ends the previous transport.
-  function restart() { interruptAll(); live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   // Expose a simple pause method for callers without toggling an already paused demo back on.
   // web/app.js:renderPlay receives this method from mountPlayer.
   function pause() { if (!S.paused) togglePause(); }

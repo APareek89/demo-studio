@@ -145,8 +145,8 @@ def run(check, _demo_id=None):
               and current["stages"]["deck"]["status"] == "stale" and not current["approvals"]["script"] and not current["approvals"]["visuals"])
         result = api.patch(f"/api/demos/{did}/align/script", json={"checkins":[{"segment_id":"proof", "text":"Does that suit your use?"}], "realign_visuals":False})
         rejected_question = store.read_json(did, "script.json")
-        check("align review: question-shaped checkin is removed with an explicit validator issue",
-              result.status_code == 200 and rejected_question["segments"][0]["checkin"] == ""
+        check("align review: question-shaped checkin stays reviewable with an explicit validator issue and edited audio invalidation",
+              result.status_code == 200 and rejected_question["segments"][0]["checkin"] == "Does that suit your use?"
               and rejected_question["segments"][0]["checkin_audio"] is None
               and any("proof checkin: must be a short closing statement, never a question" in issue for issue in result.json()["issues"])
               and rejected_question["segments"][0]["lines"][0]["audio"] == "keep.wav"

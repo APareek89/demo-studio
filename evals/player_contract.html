@@ -159,15 +159,15 @@ test('Optional intake websites reach planning and remain available across later 
 });
 test('Intake sites cap at five and later typed and spoken URLs append without duplicates', async () => {
   await setup({ voiceMode: false }); await click('▶ Start');
-  host.querySelector('input[aria-label="Websites I can check (optional)"]').value = 'one.example, two.example, three.example, four.example, five.example, six.example';
+  host.querySelector('input[aria-label="Websites I can check (optional)"]').value = 'one.example.com, two.example.com, three.example.com, four.example.com, five.example.com, six.example.com';
   await click('Skip, start the demo');
   assert(player.context().profile.customer_urls.length === 5, 'Skipping intake did not retain its five-site limit');
-  await type('Check one.example and six.example for warranty.');
+  await type('Check one.example.com and six.example.com for warranty.');
   assert(env.calls.at(-1).profile.customer_urls.length === 6, 'Typed sites were duplicated or not appended');
   host.querySelector('.pl-mic-row .mic').click(); await flush();
-  recentRecognizer().deliver('Check seven.example and eight.example and nine.example for service.'); await flush();
+  recentRecognizer().deliver('Check seven.example.com and eight.example.com and nine.example.com for service.'); await flush();
   const urls = env.calls.at(-1).profile.customer_urls;
-  assert(urls.length === 8 && urls.includes('https://seven.example') && urls.includes('https://eight.example') && !urls.includes('https://nine.example'), 'Spoken sites did not obey the session limit');
+  assert(urls.length === 8 && urls.includes('https://seven.example.com') && urls.includes('https://eight.example.com') && !urls.includes('https://nine.example.com'), 'Spoken sites did not obey the session limit');
 });
 test('Restart clears supplied sites and an email address never becomes lookup permission', async () => {
   await setup({ voiceMode: false }); await atProof();
@@ -231,9 +231,50 @@ test('The player microphone button toggles mode during a text visit', async () =
   assert(env.beacons.at(-1).input_mode === 'text', 'Session did not save the toggled mode');
 });
 
-test('Check-in text is spoken once and the next slide starts without a wait', async () => {
+// Film controls are exercised with deterministic media events; a separate local review uses a real MP4.
+async function filmFixture() {
+  await setup({voiceMode: false, configure: b => ({...b, intro_video: {url: 'fake-film:local'}})});
+  const video = host.querySelector('.pl-film');
+  video.play = async () => {}; video.pause = () => {};
+  await click('Skip the intro');
+  return video;
+}
+test('Film view shows only native-fit video and a separate Skip control at desktop and mobile widths', async () => {
+  await filmFixture();
+  const pl = host.querySelector('.pl'), video = host.querySelector('.pl-film'), skip = host.querySelector('.pl-film-skip');
+  const oldWidth = host.style.width;
+  for (const width of [1000, 390]) {
+    host.style.width = width + 'px';
+    const v = video.getBoundingClientRect(), b = skip.getBoundingClientRect(), box = pl.getBoundingClientRect();
+    assert(pl.classList.contains('film-on'), 'Film did not activate its own view');
+    assert(getComputedStyle(host.querySelector('.pl-top')).display === 'none' && getComputedStyle(host.querySelector('.pl-stage')).display === 'none', 'Slide or header remained visible behind the film');
+    assert(getComputedStyle(video).objectFit === 'contain', 'Video can crop its native aspect ratio');
+    assert(b.top >= v.bottom + 15 && b.bottom <= box.bottom && v.width > 0 && v.height > 0, 'Skip overlaps video or leaves the player');
+    assert([...pl.querySelectorAll('button,input')].filter(e => e.getClientRects().length).length === 1, 'Film shows extra controls');
+  }
+  host.style.width = oldWidth;
+  await click('Skip the film'); await clock.tick(200);
+  assert(!pl.classList.contains('film-on') && player.context().slide === 'proof-one', 'Skip failed to restore narration');
+});
+test('Natural film completion and media error restore the slide player once', async () => {
+  for (const event of ['onended', 'onerror']) {
+    const video = await filmFixture(); video[event](); await flush();
+    assert(!host.querySelector('.pl').classList.contains('film-on'), 'Film view remained after ' + event);
+    assert(env.played.filter(t => t === 'First proof.').length === 1, 'Film did not return once after ' + event);
+  }
+});
+test('Destroy during a film suppresses its late completion', async () => {
+  const video = await filmFixture(), owner = env, ended = video.onended;
+  player.destroy(); ended(); await flush(); await clock.tick(500);
+  assert(!owner.played.includes('First proof.'), 'An abandoned film resumed narration');
+  assert(host.querySelector('.pl') === null, 'Destroyed film left its player attached');
+});
+
+test('Legacy question check-ins are skipped and logged without a wait', async () => {
   await setup(); await atProof(); await finishAudio('First proof.');
-  assert(env.played.filter(text => text === 'Any questions about the first proof?').length === 1, 'Legacy check-in text was dropped or repeated');
+  assert(!env.played.includes('Any questions about the first proof?'), 'Legacy question check-in was spoken');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(env.beacons.at(-1).checkin_skipped === 'legacy_question', 'Skipped legacy check-in was not saved on the run');
   assert(player.context().slide === 'proof-two' && env.played.at(-1) === 'Second proof.', 'Check-in blocked the next narration');
   assert(host.querySelectorAll('.pl-chips button').length === 0, 'Check-in rendered obsolete choices');
   assert(env.calls.length === 0, 'Narration manufactured a customer question');

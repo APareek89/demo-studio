@@ -20,6 +20,8 @@ def _normal(text: str) -> str:
 # Extraction grants no network permission: fetch_public still checks every hop.
 CUSTOMER_URL_PATTERN = r"""(?<![\w@.-])(?:https?://[^\s<>"'\]\)]+|(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?::\d{1,5})?(?:[/?#][^\s<>"'\]\)]*)?)(?![\w@-])"""
 CUSTOMER_URL_RE = re.compile(CUSTOMER_URL_PATTERN, re.I | re.ASCII)
+PUBLIC_TLDS = {"com", "in", "co", "net", "org", "io", "ai", "info", "biz", "edu", "gov", "uk", "de", "jp", "sg", "ae", "au", "ca", "us", "eu"}
+DOC_EXTENSIONS = {"pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv", "txt", "md", "json", "js", "cjs", "mjs", "ts", "py", "html", "css", "png", "jpg", "jpeg", "gif", "webp", "svg", "mp4", "mov", "wav", "mp3", "zip"}
 
 
 def _supplied_url(url: str) -> str:
@@ -30,7 +32,18 @@ def _supplied_url(url: str) -> str:
 def supplied_urls(question: str, history: list[dict] | None = None, extra: list[str] | None = None) -> list[str]:
     text = "\n".join([str(m.get("text", "")) for m in (history or []) if m.get("role") == "user"] + [str(question)])
     texts = [*(value for value in (extra or []) if isinstance(value, str)), text]
-    return list(dict.fromkeys(_supplied_url(match.group()) for text in texts for match in CUSTOMER_URL_RE.finditer(text)))[:8]
+    urls = []
+    for text in texts:
+        for match in CUSTOMER_URL_RE.finditer(text):
+            token = match.group().rstrip(".,;!")
+            if not re.match(r"(?:https?://|www\.)", token, re.I):
+                host = re.split(r"[/?#]", token, maxsplit=1)[0].split(":", 1)[0]
+                suffix = host.rsplit(".", 1)[-1].lower()
+                # The listed co.in/co.uk/com.au forms retain their public final label.
+                if suffix not in PUBLIC_TLDS or suffix in DOC_EXTENSIONS:
+                    continue
+            urls.append(_supplied_url(token))
+    return list(dict.fromkeys(urls))[:8]
 
 
 def _numbers(text: str) -> set[Decimal]:

@@ -91,6 +91,13 @@ def run(check):
             check("proxy: one complete cited label anchors on the matching bonnet", len(proxy_slide["callouts"]) == 1 and proxy_slide["callouts"][0]["fact_ids"] == ["F1"] and proxy_slide["callouts"][0]["part"] == "bonnet" and proxy_slide["callouts"][0]["placement"] == "overlay")
             check("proxy: illustrative label reveals at the start", proxy_slide["callouts"][0]["reveal_on_line"] == 0)
             check("proxy: building illustrations never changes the pixel audit", store.path(did, "visual-audit.json").read_bytes() == before_audit)
+            multi_cited = copy.deepcopy(script)
+            multi_cited["visual_audit"] = partial
+            multi_cited["segments"][0]["lines"][0]["fact_ids"] = ["F1", "F2"]
+            store.write_json(did, "script.json", multi_cited)
+            multi_proxy = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("proxy: derived illustration retains every citation from its source line", len(multi_proxy["callouts"]) == 1 and multi_proxy["callouts"][0]["fact_ids"] == ["F1", "F2"] and multi_proxy["callouts"][0]["text"] == proxy_slide["callouts"][0]["text"])
+            store.write_json(did, "script.json", {**script, "visual_audit": partial})
             scoped = copy.deepcopy(und)
             scoped["facts"][0]["conditions"] = "only on selected variants with the optional equipment package fitted"
             store.write_json(did, "understanding.json", scoped)

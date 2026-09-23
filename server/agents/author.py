@@ -88,8 +88,7 @@ Hard rules:
    ONCE in the whole script. Never end consecutive segments on one. Where you would have written a
    fit-check, write R1 instead: describe what the picture shows.
 6. MAKE THE PRODUCT WORTH EXPLORING. Lead with the strongest supported reason to care, then show the actual feature.
-   Choose a vivid, concrete observation over generic praise. A good opening makes the buyer want to see the cabin or
-   try a feature; it does not recite the vehicle's dimensions or say every feature is exciting. A transmission type alone never proves smooth,
+   Choose a vivid, concrete observation over generic praise. It does not recite the vehicle's dimensions or say every feature is exciting. A transmission type alone never proves smooth,
    imperceptible or jerk-free shifts. A safety feature never promises that an accident cannot happen.
    Do not make "four-cylinder", "quad-beam", "dual-clutch" or dimensions the everyday opening or a headline benefit.
    Do not replace those with unsupported praise such as "responsive turbo", "assured stopping performance", "diesel
@@ -136,7 +135,7 @@ WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-
 CLOSING_LIMIT = 45
 def route_limit(demo: dict | None = None) -> int:
     """Derive the route ceiling from the selected duration, with room for joins."""
-    minutes = float((demo or {}).get("settings", {}).get("pitch_minutes", 3 if demo is None else 2) or 2)
+    minutes = float((demo or {}).get("settings", {}).get("pitch_minutes", 3) or 3)
     return round(minutes * 60 * WPS) + 40
 
 
@@ -257,7 +256,8 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         register_warning(checkin, f"{seg['id']} checkin")
         if re.search(r"[?？]", checkin):
             issues.append(f"{seg['id']} checkin: must be a short closing statement, never a question")
-            seg["checkin"], seg["checkin_audio"] = "", None
+            # Preserve reviewed legacy words/audio. New drafts repair this issue;
+            # runtime skips a legacy question without rewriting its source.
         # Checkins have no citation field. Moving a claim out of a line cannot
         # exempt it from grounding: a closing statement must remain claim-free.
         if NUMBERISH.search(checkin) or CLAIMISH.search(checkin):

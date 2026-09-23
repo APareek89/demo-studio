@@ -148,6 +148,12 @@ def run(check, demo_id: str = "generation-fixture") -> None:
             segment = timed_script(count, role)["segments"][0]; segment["id"] = f"route-{index}"; route["segments"].append(segment)
         two, four = {"settings": {"pitch_minutes": 2}}, {"settings": {"pitch_minutes": 4}}
         check("generation: route ceiling follows two-minute and four-minute settings", author.route_limit(two) == 268 and author.route_limit(four) == 496 and any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, two)) and not any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, four)))
+        default_plan = {"segments": [{"id": f"default-{index}", "role": role, "fundamental": role == "proof"}
+                                     for index, role in enumerate(["intro", "outcome", "proof", "proof", "proof", "features", "establish"])]}
+        plan._enforce_budget(default_plan, {"settings": {}})
+        check("generation: absent pitch duration defaults to 342 planned words and a 382-word route ceiling",
+              default_plan["total_words"] == 342 and sum(segment["word_budget"] for segment in default_plan["segments"]) + 45 == 342
+              and all(author.route_limit(missing) == 382 for missing in (None, {}, {"settings": {}})))
         timing = author.timeline(longer)
         check("generation: timing carries planned duration separately from estimates", longer["segments"][0]["word_budget"] == 30 and longer["segments"][0]["stop_id"] == "engine" and longer["segments"][0]["fundamental"] and longer["segments"][0]["planned_seconds"] == 15.8 and timing["planned_total_seconds"] == 39.5 and not timing["measured"] and not timing["exact"])
         unplanned = timed_script(20)
@@ -180,9 +186,17 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                 for name in legacy_names:
                     shutil.copy2(legacy_root / name, Path(tmp) / name)
                 copies = {name: json.loads((Path(tmp) / name).read_text()) for name in legacy_names}
+                original_checkins = {segment["id"]: (segment.get("checkin"), segment.get("checkin_audio"))
+                                     for segment in copies["script.json"]["segments"]}
+                expected_question_issues = [f"{segment_id} checkin: must be a short closing statement, never a question"
+                                           for segment_id, (text, _audio) in original_checkins.items()
+                                           if "?" in (text or "") or "？" in (text or "")]
                 legacy_issues = author.validate(copies["script.json"], copies["understanding.json"], copies["plan.json"], copies["demo.json"])
-            check("generation: isolated legacy Creta retains its budget validity; only legacy question checkins require new-authoring repair",
-                  all("checkin: must be a short closing statement, never a question" in issue for issue in legacy_issues))
+            check("generation: isolated legacy Creta has exactly its two question-checkin repair issues",
+                  len(legacy_issues) == len(expected_question_issues) == 2 and legacy_issues == expected_question_issues)
+            check("generation: validation preserves every legacy Creta checkin and its reviewed audio",
+                  original_checkins == {segment["id"]: (segment.get("checkin"), segment.get("checkin_audio"))
+                                        for segment in copies["script.json"]["segments"]})
             check("generation: legacy Creta source artifacts remain byte-identical", before_hashes == {name: hashlib.sha256((legacy_root / name).read_bytes()).hexdigest() for name in legacy_names})
 
         slide = {"id": "sl01", "kind": "proof", "title": "Driving choices", "image_id": None,

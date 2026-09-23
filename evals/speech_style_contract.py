@@ -66,8 +66,8 @@ def run(check):
         for prompt in incompatible:
             trial=copy.deepcopy(script);trial['segments'][0].update(checkin=prompt,checkin_audio='audio/reviewed.wav')
             warnings=author.validate(trial,und);segment=trial['segments'][0]
-            meaning_warnings.append(any('never a question' in row for row in warnings) and segment['checkin']=='' and segment['checkin_audio'] is None and not segment['lines'][0]['unverified'])
-        check('author: question checkins are rejected and stale audio cleared without withholding grounded narration',all(meaning_warnings))
+            meaning_warnings.append(any('never a question' in row for row in warnings) and segment['checkin']==prompt and segment['checkin_audio']=='audio/reviewed.wav' and not segment['lines'][0]['unverified'])
+        check('author: question checkins require repair while reviewed text and audio remain unchanged',all(meaning_warnings))
         compatible=['Let’s keep exploring.', 'On to the next part.', 'That brings us to the next stop.', '']
         meaning_valid=[]
         for prompt in compatible:
@@ -75,7 +75,7 @@ def run(check):
             meaning_valid.append(not author.validate(trial,und))
         check('author: short closing statements and empty checkins remain valid',all(meaning_valid))
         trial=copy.deepcopy(script);trial['segments'][0].update(checkin='Ready to continue？',checkin_audio='audio/old.wav')
-        check('author: full-width question mark also rejects the closing statement',any('never a question' in row for row in author.validate(trial,und)) and trial['segments'][0]['checkin']=='' and trial['segments'][0]['checkin_audio'] is None)
+        check('author: full-width question mark requires repair without mutating reviewed text or audio',any('never a question' in row for row in author.validate(trial,und)) and trial['segments'][0]['checkin']=='Ready to continue？' and trial['segments'][0]['checkin_audio']=='audio/old.wav')
         trial=copy.deepcopy(script);trial['segments'][0]['checkin']='It includes six airbags.'
         check('author: a declarative checkin cannot bypass citation requirements',any('without citations' in row for row in author.validate(trial,und)) and trial['segments'][0]['checkin']=='')
         from server.agents import principles

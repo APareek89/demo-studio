@@ -1,5 +1,21 @@
 # Loop.MD — Demo Studio
 
+## Sales Trainer WP10 review fixes — 23 September 2026
+
+Loop stays **off**. WP10 covers nested origin tags, recoverable USP errors and first-stop deduplication, retained approved Planner references, preserved legacy check-in assets with silent playback skipping, the two cabin-first prompt fixes, complete proxy citations, three-minute defaults and customer-site filename filtering. The confirmed C2 strings remain unchanged and the four input/decision documents remain intentionally tracked. The separately authorized film change gives video its own view with Skip below it; selective Align rebuilds remain pending and are not part of these passes.
+
+**Final verified contracts:** the following free/backend and player contracts pass after the final WP10 changes.
+
+- Required free gates: `qa_deck.py` 365/365, `qa_accept.py` 24/24 and both `smoke_mock.py` phases. The deck increase is the proxy callout regression, taking media coverage from 44 to 45.
+- Coach and Planner: `coach_contract.py` 25/25, `coach_align_contract.py` 18/18 and `plan_playbook_contract.py` 19/19. Coverage includes a Read with incomplete Coach USPs reaching Align, whole-token cleanup including `PS`/`L`, and nested website/uploaded origins in both prompts.
+- Author and review: `generation_contract.py` 58/58, `speech_style_contract.py` 30/30, `narrative_roles_contract.py` 14/14 and `align_review_contract.py` 51/51. Temporary CRETA validation preserves question-check-in text/audio and reports only the two specified issues.
+- Media: `deck_media_contract.py` 45/45, including every fact from a two-fact illustration line, and `deck_media_align_contract.py` 15/15.
+- Runtime: `runtime_customer_sites_contract.py` 20/20, `runtime_plain_language_contract.py` 24/24, `runtime_graph_contract.py` 130/130 and `runtime_repair_contract.py` 106/106.
+- Player: `player_customer_sites_contract.cjs` 19/19, `player_listen_contract.cjs` 16/16, `player_priority_revision_contract.cjs` 11/11, `player_focus_contract.cjs` 21/21, `player_media_contract.cjs` 7/7, `player_fundamental_contract.cjs` 10/10 and `live_voice_contract.mjs` 68/68. Priority coverage now expects legacy question skipping and its saved diagnostic.
+- Browser/media: `player_contract.html` 73/73 after the final film layout adjustment. The real 854×480 MP4 from Downloads plays muted on desktop and at 390 px width, preserving its native aspect ratio with only the video and a separate Skip control visible, 16 px apart.
+
+Compilation/syntax checks pass for 16 Python and four JavaScript files; diff checks are clean and both C2 strings remain unchanged. All 7,766 protected-manifest files are byte-identical, with zero changes. Backend checks use mock/fake providers, isolated data and blocked outbound sockets, with zero outbound attempts. No paid Read, voice render, port-8896 restart or protected demo/output write occurred. Muted real-video playback proves rendering and media lifecycle only; it does not prove paid-model prose quality, public-site availability, microphone recognition or acoustic quality. Historical checkpoint counts below remain unchanged.
+
 ## Sales Trainer final checkpoint — 23 September 2026
 
 Loop stays **off**. WP1–WP8 are implemented in the required order; WP9 closes the documentation and aligns the remaining schema/Planner opening descriptions with D1. Paid Read is skipped because its authorization and cap are blank. Required deck 364/364, acceptance 24/24 and both smoke phases pass. Extended narrative 12/12, generation 56/56, speech style 30/30, Align 51/51, runtime graph 130/130, repair 106/106 and actual browser contracts 70/70 pass. Python compilation, changed JavaScript syntax and diff checks are clean; isolated backend checks record zero outbound attempts. The per-package receipts below retain their original historical counts.
