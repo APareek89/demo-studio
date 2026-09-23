@@ -287,7 +287,7 @@ check("/run/pitch: every route step names its slide (personalisation orders slid
 pj = c.get("/web/player/player.js").text
 check("player sends the current slide with every question", "slide_id: cur?.slide?.id" in pj)
 check("player: jump cross-fades to the target, lights the callout, marks it covered; stay reveals this slide's callouts", 'r.route === "jump"' in pj and "S.covered.add(jumped.id)" in pj and "highlight(r.callout_id)" in pj and "cur?.view.setRevealed(99)" in pj)
-check("player structure: Q&A keeps one playback checkpoint and resumes its phase (behavior checked in player_browser)", "S.conversationOrigin = { ...S.playback }" in pj and "resumePlayback(origin, run)" in pj and "origin.checkin ? 0 : origin.line" in pj and "S.seg = " not in _fn(pj, "handleQuestion"))
+check("player structure: Q&A keeps one playback checkpoint and resumes its phase (behavior checked in player_browser)", "S.conversationOrigin = { ...S.playback }" in pj and "resumePlayback(origin, run)" in pj and "playFrom(origin.index" in pj and "S.seg = " not in _fn(pj, "handleQuestion"))
 check("player: a covered slide plays its title + first line, no check-in", "short ? 1 : sl.lines.length" in pj and "sl.checkin?.text && !short" in pj)
 check("player: the pitch route is applied by slide id, segment id as fallback", "r.slide_id && lib.find" in pj)
 check("player: a decline stays on the current slide (no transient answer slide)", "transientSlide(`ans-" not in pj)

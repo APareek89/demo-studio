@@ -1,5 +1,13 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-23 — Check-ins stopped the demo after every stop
+
+**Five whys:** (1) The guide paused where the story should have continued. (2) Authoring used a question-first check-in cadence. (3) `playFrom` opened a response gate after the check-in. (4) The post-answer conversation state had no silence timer to resume the saved narration. (5) Tests treated explicit confirmation as the normal path rather than checking uninterrupted stops and a bounded reply opportunity.
+
+**WP7 correction:** write short stop-closing statements, flag question marks during Author validation and speak existing check-ins without a wait. After a delivered answer or decline, allow a three-second reply window and then resume the saved location once; interrupted lines restart. Speech onset, typing, chips and superseding runs cancel the pending timer. On automatic return, use an existing recorded clip or resume silently. Clarifications still need replies; closing, CTAs and lead submission still need customer action. Save `auto_resumed` and the window duration for review.
+
+**Verification and limits:** speech style 30/30, player focus 12/12, priority 11/11 and listen-window ownership 15/15 pass, alongside generation 56/56, narrative 11/11, Plan/playbook 15/15 and required deck 364/364, acceptance 24/24 and both smoke phases. Actual browser contracts pass 62/62, including unsent drafts, Stop cancellation and stale lead-save ownership. Independent review also fixed stale asynchronous lead-save completion with form/session ownership, preventing it from closing a newer form or starting its timer. Mock clocks establish state and timer behavior, not physical microphone onset or perceived pacing. The published CRETA script and original session remain unchanged.
+
 ## 2026-09-23 — Answers recited suspension component names
 
 **Example:** an everyday answer repeated “McPherson strut” instead of the reviewed neutral wording “strut-type front suspension.” A valid citation did not make the engineering name suitable for the listener.

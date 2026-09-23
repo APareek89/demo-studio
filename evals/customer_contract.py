@@ -40,8 +40,9 @@ def run(check, demo_id: str) -> None:
                             "lines": [line], "checkin": "Shall we look closer?", "deeper": []}], "closing": []}
     und = {"product": {"name": "Fixture product"}, "facts": [], "shots": [], "images": []}
     issues = author.validate(copy.deepcopy(script), und)
-    check("customer: narration cannot hide a question outside the explicit checkin",
-          any("checkin" in issue and "question" in issue and "line" in issue for issue in issues))
+    check("customer: narration cannot ask a question or move it into checkin",
+          any("narration must use statements, never a question" in issue for issue in issues)
+          and any("checkin: must be a short closing statement, never a question" in issue for issue in issues))
     unsafe_script = copy.deepcopy(script)
     unsafe_script["segments"][0]["checkin"] = "Does the free 30-year warranty settle that?"
     unsafe_script["segments"][0]["checkin_audio"] = "stale.wav"

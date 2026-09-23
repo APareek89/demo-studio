@@ -41,7 +41,7 @@ def run(check):
         und={'product':{'name':'Fixture'},'facts':[fact],'shots':[],'images':[]}
         line={'id':'cabin-L1','text':'Selected variants offer ventilated front seats.','fact_ids':['F1'],'visual':{'kind':'none','ref':''},'delivery':{'tone':'upbeat','pace':1.03}}
         overview={**copy.deepcopy(line),'text':'Start with the cabin: selected variants offer ventilated front seats. We can explore the seating first, then choose the details that matter most to you.'}
-        script={'segments':[{'id':'cabin','role':'proof','topic':'comfort','title':'Cabin','lines':[line],'deeper':[],'checkin':'Does that matter to you?'}],'closing':[],'intake_q1':'What would you like to explore?','intake_q2':'','overview':overview}
+        script={'segments':[{'id':'cabin','role':'proof','topic':'comfort','title':'Cabin','lines':[line],'deeper':[],'checkin':'Let’s keep exploring.'}],'closing':[],'intake_q1':'What would you like to explore?','intake_q2':'','overview':overview}
         issues=author.validate(script,und)
         author._assign_ids(script)
         check('overview: separately validated and assigned without inserting duplicate narration',not issues and script['runtime_overview']['id']=='runtime-overview' and len(script['segments'])==1 and script['runtime_overview']['fact_ids']==['F1'])
@@ -55,27 +55,37 @@ def run(check):
         check('author: everyday main speech flags automotive jargon',any('jargon' in item for item in author.validate(technical,und)))
         sparse=copy.deepcopy(script);sparse['segments']=[]
         for index in range(7):
-            segment=copy.deepcopy(script['segments'][0]);segment.update(id=f'part-{index}',role='features' if index==6 else 'proof',checkin='Is that enough detail for now?' if index in [0,3,6] else '')
+            segment=copy.deepcopy(script['segments'][0]);segment.update(id=f'part-{index}',role='features' if index==6 else 'proof',checkin='Let’s keep exploring.' if index in [0,3] else '')
             sparse['segments'].append(segment)
-        check('author: deliberate three-checkin cadence across seven sections passes without mandatory question warnings',not author.validate(sparse,und) and sum(bool(segment['checkin']) for segment in sparse['segments'])==3)
+        check('author: two closing statements across seven sections pass without a reply gate',not author.validate(sparse,und) and sum(bool(segment['checkin']) for segment in sparse['segments'])==2)
         unsafe=copy.deepcopy(sparse);unsafe['segments'][1]['lines'][0]['text']='Would you like to see more?';unsafe['segments'][2]['checkin']='Would you like six airbags?'
         sparse_issues=author.validate(unsafe,und)
-        check('author: sparse cadence still rejects hidden questions and uncited claims in checkins',any('move the question to checkin' in issue for issue in sparse_issues) and any('checkin contains a figure or claim' in issue for issue in sparse_issues) and unsafe['segments'][2]['checkin']=='')
+        check('author: sparse cadence still rejects hidden questions and uncited claims in checkins',any('narration must use statements' in issue for issue in sparse_issues) and any('checkin contains a figure or claim' in issue for issue in sparse_issues) and unsafe['segments'][2]['checkin']=='')
         incompatible=['Would you like a closer look here, or shall we continue?', "Anything you'd like to check about the seats or boot?", 'Would you like to compare these options, or keep exploring?', 'Do you need more detail?', 'Should we take a closer look?']
         meaning_warnings=[]
         for prompt in incompatible:
             trial=copy.deepcopy(script);trial['segments'][0].update(checkin=prompt,checkin_audio='audio/reviewed.wav')
             warnings=author.validate(trial,und);segment=trial['segments'][0]
-            meaning_warnings.append(any('response meaning warning' in row for row in warnings) and segment['checkin']==prompt and segment['checkin_audio']=='audio/reviewed.wav' and not segment['lines'][0]['unverified'])
-        check('author: opt-in detail and open choices warn without withholding grounded speech or changing reviewed checkin/audio',all(meaning_warnings))
-        compatible=['Is that enough detail on the cabin for now?', 'Is that enough detail on the seats and boot for now?', 'Are the engine and gearbox choices clear enough to continue?', 'Are you ready to continue?', '']
+            meaning_warnings.append(any('never a question' in row for row in warnings) and segment['checkin']=='' and segment['checkin_audio'] is None and not segment['lines'][0]['unverified'])
+        check('author: question checkins are rejected and stale audio cleared without withholding grounded narration',all(meaning_warnings))
+        compatible=['Let’s keep exploring.', 'On to the next part.', 'That brings us to the next stop.', '']
         meaning_valid=[]
         for prompt in compatible:
             trial=copy.deepcopy(script);trial['segments'][0]['checkin']=prompt
-            meaning_valid.append(not any('response meaning warning' in row for row in author.validate(trial,und)))
-        check('author: confirmation-style yes-continue/no-deeper prompts and empty checkins remain valid',all(meaning_valid))
+            meaning_valid.append(not author.validate(trial,und))
+        check('author: short closing statements and empty checkins remain valid',all(meaning_valid))
+        trial=copy.deepcopy(script);trial['segments'][0].update(checkin='Ready to continue？',checkin_audio='audio/old.wav')
+        check('author: full-width question mark also rejects the closing statement',any('never a question' in row for row in author.validate(trial,und)) and trial['segments'][0]['checkin']=='' and trial['segments'][0]['checkin_audio'] is None)
+        trial=copy.deepcopy(script);trial['segments'][0]['checkin']='It includes six airbags.'
+        check('author: a declarative checkin cannot bypass citation requirements',any('without citations' in row for row in author.validate(trial,und)) and trial['segments'][0]['checkin']=='')
+        from server.agents import principles
+        check('author: all active authoring instructions agree checkins never wait',
+              'one-line closing statement' in planner.PLAN_SYSTEM and 'one short closing statement' in author.AUTHOR_SYSTEM
+              and 'never a question' in schemas.SegmentOut.model_fields['checkin'].description
+              and 'Narration never waits' in principles.AUTHOR_CRAFT
+              and 'yes continues' not in '\n'.join([author.AUTHOR_SYSTEM, principles.PITCH_SHAPE, principles.PROOF_BLOCK]))
         trial=copy.deepcopy(script);trial['intake_q1']='Would you like to tell me what matters most, or shall we get started?'
-        check('author: segment response warning does not constrain the separate open intake flow',not any('response meaning warning' in row for row in author.validate(trial,und)) and trial['intake_q1'].startswith('Would you like'))
+        check('author: closing-statement rule does not constrain the separate open intake flow',not author.validate(trial,und) and trial['intake_q1'].startswith('Would you like'))
         everyday_phrases=['The body measures 4330 mm in length.', 'Dimensions: 4330mm.', 'A four-cylinder engine.', 'Quad-beam lamps and a parametric grille.', 'A dual-clutch automatic.']
         warned=[]
         for phrase in everyday_phrases:
@@ -86,9 +96,9 @@ def run(check):
         deeper=copy.deepcopy(script);deeper['segments'][0]['deeper']=[{**copy.deepcopy(line),'text':'A four-cylinder engine with a dual-clutch gearbox and 4330 mm length.'}]
         expert=copy.deepcopy(deeper);expert['segments'][0]['lines'][0]['text']=deeper['segments'][0]['deeper'][0]['text']
         check('author: requested technical audience and deeper lines retain complete quantities without register warnings',not any('register warning' in row for row in author.validate(deeper,und)) and not any('register warning' in row for row in author.validate(expert,und,'technical')) and not expert['segments'][0]['lines'][0]['unverified'])
-        anywhere=copy.deepcopy(script);anywhere['segments'][0]['checkin']='Would you like the dual-clutch details?';anywhere['closing']=[{**copy.deepcopy(line),'text':'Explore the parametric grille.'}];anywhere['runtime_overview']['text']='Start with the cabin and its parametric design: selected variants offer ventilated front seats. We can explore seating first, then the details you choose.'
+        anywhere=copy.deepcopy(script);anywhere['segments'][0]['checkin']='The dual-clutch details are available separately.';anywhere['closing']=[{**copy.deepcopy(line),'text':'Explore the parametric grille.'}];anywhere['runtime_overview']['text']='Start with the cabin and its parametric design: selected variants offer ventilated front seats. We can explore seating first, then the details you choose.'
         warnings=author.validate(anywhere,und)
-        check('author: overview closing and checkin receive the same warning-only register review',all(any(place in row and 'register warning' in row for row in warnings) for place in ['Explore overview','closing 1','checkin']) and not anywhere['runtime_overview']['unverified'] and anywhere['segments'][0]['checkin']=='Would you like the dual-clutch details?')
+        check('author: overview closing and checkin receive the same warning-only register review',all(any(place in row and 'register warning' in row for row in warnings) for place in ['Explore overview','closing 1','checkin']) and not anywhere['runtime_overview']['unverified'] and anywhere['segments'][0]['checkin']=='The dual-clutch details are available separately.')
         saved_plan=store.read_json(did,'plan.json')
         plan_und={**und,'brand':{},'unknowns':[]};store.write_json(did,'understanding.json',plan_und)
         authored=mock.fake(schemas.Plan);authored.voice.persona_name='Karan';authored.voice.persona_description='Karan is a helpful guide. He explains choices in his own words.';authored.voice.sample_line="Hi, I'm Karan. Let's explore.";authored.intake.q1="I'm Karan. What would you like to explore?"

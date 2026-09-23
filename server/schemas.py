@@ -377,7 +377,7 @@ class Visual(BaseModel):
 # Linked: server/agents/author.py:validate checks lines; server/agents/voice.py later records approved text.
 class LineOut(BaseModel):
     text: str = Field(description="one natural spoken thought, 1-2 short sentences; the whole batch fits 10-20 seconds, no padding, lists or questions")
-    step: Literal["frame", "say", "show", "translate", "confirm", "establish", "advance", "other"] = Field(default="other", description="proof-block step; confirm is legacy compatibility only, new questions go in SegmentOut.checkin")
+    step: Literal["frame", "say", "show", "translate", "confirm", "establish", "advance", "other"] = Field(default="other", description="proof-block step; confirm is legacy compatibility only; new narration and checkins use statements, not questions")
     visual: Visual
     fact_ids: list[str] = Field(description="every fact this line relies on; empty only for pure transition/opinion lines")
     card: Literal["none", "facts", "price", "summary", "contrast"] = "none"
@@ -395,7 +395,7 @@ class SegmentOut(BaseModel):
     outcome: str = ""
     usp_ids: list[str] = Field(default_factory=list)
     lines: list[LineOut]
-    checkin: str = Field(description="Optional ONE short confirmation of enough detail or readiness, with an explicit wait: yes continues, no opens more detail. Example: 'Is that enough detail for now?' Never opt into more detail or ask an open/either-or question. No claims or assumed customer details. Leave empty when narration should continue; empty for intro/outcome. Not required after every proof/features section.")
+    checkin: str = Field(description="Optional one short closing statement for the stop, never a question. Narration continues immediately after it, without waiting. No claims or assumed customer details. Leave empty unless the plan asks for one; empty for intro/outcome.")
     deeper: list[LineOut] = Field(description="2-3 lines for 'tell me more', grounded")
 
 

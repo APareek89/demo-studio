@@ -67,7 +67,11 @@ session resume after refresh and multi-worker runtime ownership.
   validates → produces a delivery plan. Selected-voice streaming happens outside graph replay. Tools share
   two rounds/four calls and a 12-second foreground reasoning budget; failures are explicit.
 - Explore plays a grounded, measured 10–15-second overview while the LLM orders unseen slides and
-  personalizes spoken framing. Explicit corrections affect the next safe boundary; questions wait for answers.
+  personalizes spoken framing. Explicit corrections affect the next safe boundary. The guide's
+  clarifications wait; answers and declines allow three seconds for a reply, then resume narration.
+- Stop-closing check-ins are short statements and never pause narration. Speech onset, typing or a
+  chip choice cancels the post-answer timer. Automatic resumption keeps the saved position, using a return filler
+  only when its recorded clip exists. Closing, CTA and lead choices remain explicit customer actions.
 - Crawl only the intended model/market and relevant policies; retain page/table context and visible gaps.
   Uploaded documents win genuine same-scope conflicts. Immutable evidence IDs and published snapshots
   preserve old demos. Semantic relevance never proves a claim.

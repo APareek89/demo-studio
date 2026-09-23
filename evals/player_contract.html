@@ -89,6 +89,7 @@ class FakeRecognition {
   start() { this.started = true; }
   stop() { this.onend?.(); }
   abort() { this.aborted = true; }
+  speechStart() { this.onspeechstart?.(); }
   deliver(text) { const result = [{ transcript: text }]; result.isFinal = true; this.onresult?.({ results: [result] }); this.onend?.(); }
 }
 window.Audio = FakeAudio;
@@ -109,16 +110,16 @@ function bundle(opening = false) {
   return { name: 'Synthetic browser contract', language: 'en-IN', product: { name: 'Fixture car' }, voice: { provider: 'sarvam', persona: { persona_name: 'Test guide' } }, intake: { q1: 'What matters to you?', audio: { q1: audioURL('What matters to you?') } }, media: {}, slides, facts: [{ id: 'f1', claim: 'Fixture fact', value: 'Evidence' }], ctas: [], fillers: {} };
 }
 const answered = (extra = {}) => ({ answered: true, answer: 'The approved source answers this.', fact_ids: ['f1'], topic: 'safety', route: 'stay', from_bank: true, ...extra });
-async function setup({ opening = false, hold = () => false, qa = async () => answered(), pitch = async () => null, configure = (b) => b } = {}) {
+async function setup({ opening = false, hold = () => false, holdProof = true, qa = async () => answered(), pitch = async () => null, lead = async () => ({}), configure = (b) => b } = {}) {
   player?.destroy(); await flush();
-  env = { calls: [], saved: [], beacons: [], ttsCalls: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold };
+  env = { calls: [], saved: [], beacons: [], ttsCalls: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold: text => hold(text) || (holdProof && ['First proof.', 'Second proof.', 'Third proof.'].includes(text)) };
   clock = new Clock(); clock.install();
   const owner = env;
   player = mountPlayer(host, configure(bundle(opening)), {
     qa: async (request) => { owner.calls.push(snapshot(request)); return qa(request, owner.calls.length); },
     tts: async (text) => { owner.ttsCalls.push(text); return audioURL(text); },
     pitch,
-    lead: async (request) => { owner.leadCalls.push(snapshot(request)); return {}; },
+    lead: async (request) => { owner.leadCalls.push(snapshot(request)); return lead(request, owner.leadCalls.length); },
     saveSession: async (record) => { owner.saved.push(snapshot(record)); },
     beacon: (record) => { owner.beacons.push(snapshot(record)); },
   });
@@ -130,11 +131,128 @@ function button(text, selector = 'button') {
 }
 async function click(text, selector) { const b = button(text, selector); assert(b, 'Missing button: ' + text); b.click(); await flush(); }
 async function type(text) { const input = host.querySelector('.composer input'); input.value = text; input.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); input.blur(); await flush(); }
-async function atProof() { await click('Skip the intro'); assert(player.context().slide === 'proof-one', 'Fixture did not reach first proof'); assert(button('I have a question'), 'Fixture did not reach the first check-in'); }
+async function atProof() { await click('Skip the intro'); assert(player.context().slide === 'proof-one', 'Fixture did not reach first proof'); assert([...env.active].some(audio => audio.text === 'First proof.'), 'Fixture did not hold first proof narration'); }
+async function finishAudio(text) { const audio = [...env.active].find(item => item.text === text); assert(audio, 'Missing held audio: ' + text); audio.finish(); await flush(); }
+async function finishTour() { for (const text of ['First proof.', 'Second proof.', 'Third proof.']) await finishAudio(text); }
 const recentRecognizer = () => env.recognizers.at(-1);
 const detail = () => ({ context: player?.context(), currentCitations: host.querySelector('.pl-cap .cite')?.textContent, qa: env?.calls, audioStarted: env?.played, ttsRequests: env?.ttsCalls, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, beaconSessions: env?.beacons, leadRequests: env?.leadCalls });
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
+
+test('Check-in text is spoken once and the next slide starts without a wait', async () => {
+  await setup(); await atProof(); await finishAudio('First proof.');
+  assert(env.played.filter(text => text === 'Any questions about the first proof?').length === 1, 'Legacy check-in text was dropped or repeated');
+  assert(player.context().slide === 'proof-two' && env.played.at(-1) === 'Second proof.', 'Check-in blocked the next narration');
+  assert(host.querySelectorAll('.pl-chips button').length === 0, 'Check-in rendered obsolete choices');
+  assert(env.calls.length === 0, 'Narration manufactured a customer question');
+});
+test('An answer listens for exactly 3000 ms then resumes its interrupted line once and logs it', async () => {
+  await setup(); await atProof(); await type('What is supported?');
+  assert(button('Ask another question') && button('Continue demo'), 'Answer did not expose the conversation choices');
+  assert(document.activeElement === host.querySelector('.composer input') || document.activeElement === host.querySelector('.pl-reply input'), 'Post-answer input was not focused');
+  await clock.tick(2999);
+  assert(env.played.filter(text => text === 'First proof.').length === 1, 'Answer resumed before 3000 ms');
+  await clock.tick(1);
+  assert(env.played.filter(text => text === 'First proof.').length === 2 && player.context().line_index === 0, 'Auto-resume skipped the interrupted line start');
+  await clock.tick(9000); window.dispatchEvent(new Event('pagehide'));
+  const turn = env.beacons.at(-1).turns.at(-1);
+  assert(turn.auto_resumed === true && turn.post_answer_listen_ms === 3000, 'Turn omitted its auto-resume flag or listen window');
+  assert(env.played.filter(text => text === 'First proof.').length === 2 && env.maxActive === 1, 'Answer timer resumed repeatedly or overlapped audio');
+});
+test('Auto-resume uses only an existing back-to-demo clip and otherwise stays silent', async () => {
+  for (const recorded of [false, true]) {
+    const filler = 'Back to this detail.';
+    await setup({ configure: b => ({ ...b, fillers: { back_to_demo: { text: filler, audio: recorded ? audioURL(filler) : null } } }) });
+    await atProof(); await type('What is supported?'); await clock.tick(3000);
+    assert(env.played.includes(filler) === recorded && !env.ttsCalls.includes(filler), 'Auto-resume generated a filler instead of using only the recorded clip');
+    assert(!env.played.includes("Let's return to where we paused."), 'Auto-resume spoke an unrecorded fallback');
+    assert(env.played.filter(text => text === 'First proof.').length === 2, 'Filler handling prevented the interrupted line replay');
+  }
+});
+test('Speech onset at 1200 ms cancels auto-resume and the spoken follow-up reaches QA', async () => {
+  await setup(); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush();
+  recentRecognizer().deliver('What is supported?'); await flush();
+  const followup = recentRecognizer(); assert(followup?.started, 'Post-answer voice capture did not stay available');
+  await clock.tick(1200); followup.speechStart(); await flush(); await clock.tick(4000);
+  assert(env.played.filter(text => text === 'First proof.').length === 1 && env.calls.length === 1, 'Speech onset lost its turn to the silence timer');
+  followup.deliver('What about the next detail?'); await flush();
+  assert(env.calls.length === 2 && env.calls[1].question === 'What about the next detail?', 'Spoken follow-up never entered the question path');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(!env.beacons.at(-1).turns[0].auto_resumed, 'Cancelled listen window was logged as automatic continuation');
+});
+test('One typed character cancels automatic continuation without submitting a partial question', async () => {
+  await setup(); await atProof(); await type('What is supported?'); await clock.tick(1200);
+  const input = host.querySelector('.composer input'); input.value = 'W'; input.dispatchEvent(new Event('input', { bubbles: true })); await flush();
+  await clock.tick(10000);
+  assert(env.calls.length === 1 && env.played.filter(text => text === 'First proof.').length === 1, 'Typing submitted partial input or lost its turn to the timer');
+  await type('What about ownership?');
+  assert(env.calls.length === 2 && env.calls[1].question === 'What about ownership?', 'Completed typed follow-up did not enter QA');
+});
+test('A draft typed during answer audio keeps its turn after the answer finishes', async () => {
+  const answer = 'The approved answer is still speaking.';
+  await setup({ hold: text => text === answer, qa: async () => answered({ answer }) });
+  await atProof(); await type('What is supported?');
+  const input = host.querySelector('.pl-reply input'); input.value = 'W'; input.dispatchEvent(new Event('input', { bubbles: true })); await flush();
+  await finishAudio(answer); await clock.tick(10000); window.dispatchEvent(new Event('pagehide'));
+  assert(input.value === 'W' && env.calls.length === 1 && env.played.filter(text => text === 'First proof.').length === 1, 'Answer completion discarded a draft or armed silence over ongoing typing');
+  assert(!env.beacons.at(-1).turns[0].auto_resumed, 'Unsent typed reply was recorded as automatic continuation');
+});
+test('Navigation and Stop cancel a pending post-answer timer', async () => {
+  for (const action of ['navigate', 'stop']) {
+    await setup(); await atProof(); await type('What is supported?'); await clock.tick(1200);
+    if (action === 'navigate') await click('proof-two', '.pl-progress button');
+    else { host.querySelector('button[title="Stop and see the summary"]').click(); await flush(); }
+    await clock.tick(10000); window.dispatchEvent(new Event('pagehide'));
+    assert(env.played.filter(text => text === 'First proof.').length === 1 && !env.beacons.at(-1).turns[0].auto_resumed, 'Obsolete answer timer resumed after ' + action);
+    assert(action === 'navigate' ? player.context().slide === 'proof-two' : !!host.querySelector('.pl-handoff.open'), 'Timer stole the current navigation or stopped state');
+  }
+});
+test('A guide clarification keeps waiting beyond three seconds and an empty voice attempt', async () => {
+  await setup({ qa: async () => answered({ next_interaction: 'clarify', clarifying_question: 'Which variant do you mean?' }) });
+  await atProof(); await type('Does that feature apply?');
+  assert(button('Skip this question'), 'Clarification did not expose its explicit wait');
+  host.querySelector('.pl-mic-row .mic').click(); await flush(); recentRecognizer().deliver(''); await flush();
+  await clock.tick(30000); window.dispatchEvent(new Event('pagehide'));
+  assert(button('Skip this question') && env.calls.length === 1 && env.played.filter(text => text === 'First proof.').length === 1, 'Clarification silence resumed narration or fabricated an answer');
+  assert(!env.beacons.at(-1).turns[0].auto_resumed, 'Clarification was logged as an answer timeout');
+});
+test('A declined answer defers its listen timer until the optional contact form is dismissed', async () => {
+  await setup({ qa: async () => ({ answered: false, topic: 'ownership', escalate: 'Dealer information needed' }) });
+  await atProof(); await type('Can the dealership confirm this?'); await clock.tick(10000);
+  assert(host.querySelector('.pl-lead.open') && env.played.filter(text => text === 'First proof.').length === 1, 'Contact form did not retain its explicit wait');
+  await click('Not now', '.pl-lead button'); await clock.tick(2999);
+  assert(env.played.filter(text => text === 'First proof.').length === 1, 'Decline resumed before the post-dismissal listen window');
+  await clock.tick(1); window.dispatchEvent(new Event('pagehide'));
+  const turn = env.beacons.at(-1).turns.at(-1);
+  assert(env.played.filter(text => text === 'First proof.').length === 2 && turn.auto_resumed === true && turn.post_answer_listen_ms === 3000, 'Decline did not resume once after the dismissed form and 3s silence');
+  assert(env.leadCalls.length === 0, 'Form dismissal invented contact consent');
+});
+test('A pending callback save cannot change a restarted session or its newer form', async () => {
+  let completeOldSave;
+  await setup({ qa: async () => ({ answered: false, topic: 'ownership', escalate: 'Dealer information needed' }), lead: () => new Promise(resolve => { completeOldSave = resolve; }) });
+  await atProof(); await type('My original dealership question.');
+  const form = host.querySelector('.pl-lead form');
+  form.querySelector('input[placeholder="Your name"]').value = 'Old Customer';
+  form.querySelector('input[placeholder="10-digit mobile number"]').value = '9876543210';
+  form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  assert(env.leadCalls.length === 1, 'Old consented callback did not enter its deferred save');
+  host.querySelector('button[title="Restart"]').click(); await flush(); await click('Skip, start the demo');
+  await type('My new dealership question.');
+  assert(host.querySelector('.pl-lead.open'), 'Restarted question did not open its own optional form');
+  const narrationCount = env.played.filter(text => text === 'First proof.').length;
+  completeOldSave({}); await flush(); await clock.tick(10000); window.dispatchEvent(new Event('pagehide'));
+  const current = env.beacons.at(-1);
+  assert(host.querySelector('.pl-lead.open') && env.played.filter(text => text === 'First proof.').length === narrationCount, 'Old save dismissed the new form or armed its narration timer');
+  assert(current.id !== env.leadCalls[0].session_id && current.leads.length === 0 && current.profile.name !== 'Old Customer', 'Old callback data leaked into the restarted session');
+  assert(!current.turns.at(-1).auto_resumed && current.questions.includes('My new dealership question.'), 'Old save mutated the newer question ownership');
+});
+test('Closing CTA choices require explicit customer selection after narration finishes', async () => {
+  await setup({ configure: b => ({ ...b, ctas: [{ id: 'book', label: 'Book a test drive', kind: 'book', when: 'always' }] }) });
+  await atProof(); await finishTour(); await clock.tick(30000);
+  assert(player.context().slide === 'hero-end' && button('Book a test drive', '.pl-chips button') && env.saved.length === 0 && env.leadCalls.length === 0, 'Closing silence selected a CTA or submitted a lead');
+  await click('Book a test drive', '.pl-chips button');
+  assert(env.saved.at(-1).cta === 'Book a test drive' && env.leadCalls.length === 0, 'Explicit CTA choice was lost or treated as contact consent');
+});
 
 test('A ready answer bypasses acknowledgment and persists classification and plain-language substitutions', async () => {
   const answer = 'The approved answer is already ready.', filler = 'Let me check that.';
@@ -177,12 +295,12 @@ test('Typing keeps later question waits closed to ambient speech until an explic
   first.deliver('Unrelated ambient media'); await flush();
   assert(env.calls.length === 0, 'Cancelled ambient speech became a customer question');
   intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
-  assert(player.context().slide === 'proof-one' && button('I have a question'), 'Typed intake did not reach its check-in');
+  assert(player.context().slide === 'proof-one' && env.played.at(-1) === 'First proof.', 'Typed intake did not reach its narration');
   assert(env.recognizers.length === 1, 'Typed intake automatically reopened the microphone at the check-in');
   await type('What is the warranty?');
   assert(env.calls.length === 1 && env.calls[0].question === 'What is the warranty?' && env.recognizers.length === 1, 'Typed Q&A or its confirmation reopened ambient capture');
-  await click('Yes, that helps');
-  assert(player.context().slide === 'proof-two' && env.recognizers.length === 1, 'Advancing after typed Q&A discarded the input preference');
+  await click('Continue demo');
+  assert(player.context().slide === 'proof-one' && env.played.filter(text => text === 'First proof.').length === 2 && env.recognizers.length === 1, 'Resuming after typed Q&A discarded its line or input preference');
   const mic = host.querySelector('.pl-mic-row .mic');
   assert(mic && !mic.disabled, 'Typing hid or disabled the explicit microphone control');
   mic.click(); await flush(); const explicit = recentRecognizer();
@@ -201,11 +319,13 @@ test('Typing preference survives Restart and intake microphone explicitly restor
   mic.click(); await flush(); const rec = recentRecognizer();
   assert(env.recognizers.length === before + 1 && rec.started, 'Intake mic tap did not explicitly resume listening');
   rec.deliver('I want an automatic.'); await flush();
-  assert(player.context().profile.why === 'I want an automatic.' && recentRecognizer() !== rec, 'Explicit intake speech did not restore the normal voice-led flow');
+  assert(player.context().profile.why === 'I want an automatic.' && env.played.at(-1) === 'First proof.', 'Explicit intake speech did not start the narration');
+  await finishTour();
+  assert(recentRecognizer() !== rec && recentRecognizer().started, 'Explicit intake speech did not restore voice capture at the next genuine customer wait');
 });
 
 test('Question mode holds its place after 30 seconds of silence', async () => {
-  await setup(); await atProof(); await click('I have a question'); await clock.tick(30000);
+  await setup(); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush(); await clock.tick(30000);
   assert(player.context().slide === 'proof-one', 'Question mode advanced the narrative without an explicit continue');
   assert(env.calls.length === 0, 'Silence was submitted as a question');
 });
@@ -220,6 +340,7 @@ test('A typed clarification is accepted once with conversation history', async (
   assert(env.played.includes('Do you mean the manual or automatic?'), 'Clarification was never asked');
   window.dispatchEvent(new Event('pagehide'));
   assert(env.beacons.at(-1).turns.at(-1).response_kind === 'clarification', 'Clarification was saved as a factual answer');
+  host.querySelector('.pl-mic-row .mic').click(); await flush();
   const clarificationRecognition = recentRecognizer();
   await type('The automatic, please.');
   assert(env.calls.length === 2 && env.calls[1].question === 'Which transmission is that?', 'Clarification did not retain the original question for QA');
@@ -240,14 +361,14 @@ test('A direct customer statement survives later QA without turning question his
   const originalFocus = snapshot(player.context().profile.focus);
   await type(statement);
   assert(env.calls[0].question === statement && env.calls[0].profile.followup === statement, 'Direct customer statement was not dispatched and retained verbatim');
-  await click('Yes, that helps'); await type('What does the approved material say about the cabin?');
+  await click('Continue demo'); await type('What does the approved material say about the cabin?');
   assert(env.calls[1].profile.followup.split('\n').filter(text => text === statement).length === 1, 'Next QA lost or duplicated the direct statement');
-  await click('Yes, that helps'); await type(intake);
+  await click('Continue demo'); await type(intake);
   assert(!env.calls[2].profile.followup.includes(intake) && env.calls[2].profile.why === intake, 'Intake wording was duplicated into followup');
-  await click('Yes, that helps'); await type(statement);
+  await click('Continue demo'); await type(statement);
   assert(env.calls[3].profile.followup.split('\n').filter(text => text === statement).length === 1, 'Repeating a customer turn duplicated stored context');
   assert(JSON.stringify(player.context().profile.focus) === JSON.stringify(originalFocus), 'Raw context storage inferred new customer preferences');
-  await click('Yes, that helps'); host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
+  await click('Continue demo'); host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
   const recap = host.querySelector('.pl-handoff.open')?.textContent || '', saved = env.saved.at(-1);
   const needs = [...host.querySelectorAll('.pl-handoff .kvbox')].find(box => box.querySelector('h5')?.textContent === 'What matters to you')?.textContent || '';
   assert(recap.includes(intake) && saved.profile.followup.split('\n').filter(text => text === statement).length === 1, 'Recap lost the explicit intake or saved context lost/duplicated the actual statement');
@@ -269,12 +390,13 @@ const withTestDrive = (b) => ({ ...b, ctas: [{ id: 'test-drive', label: 'Book a 
 test('A model-suggested CTA is not a customer selection or an automatic recap', async () => {
   const question = 'I mainly want help with stop-and-go traffic. How should I assess this selected automatic?';
   await setup({ configure: withTestDrive, qa: async () => answered({ cta: 'test-drive' }) });
-  await atProof(); await type(question); await clock.tick(30000);
+  await atProof(); await type(question);
+  assert(button('Continue demo', '.pl-chips button') && button('Book a test drive', '.pl-chips button'), 'Suggested CTA replaced the normal answer choices');
+  await clock.tick(30000);
   assert(!host.querySelector('.pl-handoff.open') && !host.querySelector('.pl-lead.open'), 'Model CTA ended the answer or opened a follow-up form without customer selection');
-  assert(button('Yes, that helps', '.pl-chips button') && button('Book a test drive', '.pl-chips button'), 'Suggested CTA replaced the normal answer-confirmation choices');
   assert(player.context().slide === 'proof-one' && env.saved.length === 0 && env.leadCalls.length === 0, 'Model CTA advanced, saved a handoff or submitted a lead');
-  await click('Yes, that helps', '.pl-chips button'); window.dispatchEvent(new Event('pagehide'));
-  assert(player.context().slide === 'proof-two' && env.beacons.at(-1).cta === null, 'Confirming the answer recorded consent to the unrelated suggested action');
+  window.dispatchEvent(new Event('pagehide'));
+  assert(player.context().slide === 'proof-one' && env.beacons.at(-1).cta === null, 'Resuming the answer recorded consent to the unrelated suggested action');
 });
 test('An explicitly chosen proposed CTA records the choice without claiming an unsent handoff', async () => {
   await setup({ configure: withTestDrive, qa: async () => answered({ answer: 'You can choose a test drive if you would like.', fact_ids: [], cta: 'test-drive' }) });
@@ -291,12 +413,12 @@ test('An explicitly chosen proposed CTA records the choice without claiming an u
 });
 test('A negated CTA mention at closing remains a question while an exact selection still works', async () => {
   await setup({ configure: withTestDrive }); await atProof();
-  for (let i = 0; i < 3; i++) await click('Continue', '.pl-chips button');
+  await finishTour();
   assert(player.context().slide === 'hero-end', 'Fixture did not reach its closing choices');
   const question = "Do not book a test drive; I still have a question.";
   await type(question);
   assert(env.calls.length === 1 && env.calls[0].question === question && !host.querySelector('.pl-handoff.open'), 'Mentioning a CTA inside a refusal was treated as selecting it');
-  await click('Yes, that helps', '.pl-chips button'); await type('Book a test drive');
+  await click('Continue demo', '.pl-chips button'); await type('Book a test drive');
   assert(host.querySelector('.pl-handoff.open') && env.saved.at(-1).cta === 'Book a test drive' && env.leadCalls.length === 0, 'Exact typed CTA selection stopped working or bypassed contact-form consent');
 });
 test('Brochure and dealer selections expose their exact HTTPS link only after customer selection', async () => {
@@ -332,7 +454,7 @@ test('Booking links retain optional consent and invalid CTA URLs never become ac
   }
 });
 test('A late speech result cannot answer the wait after a slide skip', async () => {
-  await setup(); await atProof(); const old = recentRecognizer();
+  await setup(); await atProof(); host.querySelector('.pl-mic-row .mic').click(); await flush(); const old = recentRecognizer();
   await click('proof-two', '.pl-progress button');
   assert(player.context().slide === 'proof-two', 'Fixture skip did not reach second proof');
   old.deliver('Yes'); await flush();
@@ -351,7 +473,7 @@ test('Opening Q&A resumes the interrupted line without replaying completed lines
   await setup({ opening: true, hold: (text) => text === 'Opening second detail.' });
   await click('Skip the intro');
   assert(env.played.at(-1) === 'Opening second detail.', 'Fixture did not stop in second opening line');
-  await type('What about safety?'); await click('Yes, that helps');
+  await type('What about safety?'); await click('Continue demo');
   assert(env.played.filter((t) => t === 'Opening first complete.').length === 1, 'Completed opening line replayed after Q&A');
   assert(env.played.filter((t) => t === 'Opening second detail.').length === 2, 'Interrupted opening line did not resume');
   assert(env.maxActive <= 1, 'Opening and answer audio overlapped');
@@ -384,7 +506,7 @@ test('Q&A labels prerequisite citations separately and clears them when a new an
 });
 test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
   await setup({
-    hold: (text) => text === 'First proof interrupted detail.',
+    holdProof: false, hold: (text) => text === 'First proof interrupted detail.',
     qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer: 'The target slide carries that evidence.' }),
     configure: (b) => {
       b.slides.find((s) => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.'));
@@ -398,14 +520,14 @@ test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
   assert(env.played.indexOf('Let me show you where that is.') < env.played.indexOf('The target slide carries that evidence.') && env.ttsCalls.includes('Let me show you where that is.'), 'An uncached jump did not speak its transition before the answer');
   assert(env.calls[0].slide_id === 'proof-one' && player.context().slide === 'proof-three', 'Routed question did not jump from its original slide to the answer slide');
   assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Routed answer did not highlight its cited detail');
-  await click('Yes, that helps');
+  await click('Continue demo');
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1 && player.context().line_text === 'First proof interrupted detail.', 'Return point changed during the off-slide answer');
   assert(env.played.filter((t) => t === 'First proof.').length === 1 && env.played.filter((t) => t === 'First proof interrupted detail.').length === 2, 'Return replayed a completed line or skipped the interrupted one');
   assert(env.maxActive === 1, 'Off-slide answer overlapped narration');
 });
-test('Runtime v1 jumps directly to evidence and returns to the exact interrupted line only on request', async () => {
+test('Runtime v1 jumps directly to evidence and auto-returns to the exact interrupted line', async () => {
   const bridge = 'The generic transition must not delay this runtime answer.', answer = 'The third proof shows the requested evidence.';
-  await setup({ hold: text => text === 'First proof interrupted detail.', qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer }), configure: b => {
+  await setup({ holdProof: false, hold: text => text === 'First proof interrupted detail.', qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer }), configure: b => {
     b.runtime = { version: 1 }; b.fillers.bridge_to_custom = { text: bridge, audio: audioURL(bridge) };
     b.slides.find(s => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.'));
     b.slides.find(s => s.id === 'proof-three').callouts.push({ id: 'target-f1', text: 'Cited detail', fact_ids: ['f1'], placement: 'panel', reveal_on_line: 0 }); return b;
@@ -413,16 +535,16 @@ test('Runtime v1 jumps directly to evidence and returns to the exact interrupted
   await click('Skip the intro'); await type('Please show the other evidence.');
   assert(player.context().slide === 'proof-three' && env.played.includes(answer) && !env.played.includes(bridge) && !env.ttsCalls.includes(bridge), 'Runtime jump delayed the answer behind its generic bridge');
   assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Immediate runtime answer lost its highlighted evidence');
-  await clock.tick(30000); window.dispatchEvent(new Event('pagehide'));
+  await clock.tick(2999); window.dispatchEvent(new Event('pagehide'));
   const turn = env.beacons.at(-1).turns.at(-1);
-  assert(player.context().slide === 'proof-three' && button('Yes, that helps') && turn.answer_audio === turn.qa_done, 'Runtime jump auto-returned or failed to stamp the direct answer');
-  await click('Yes, that helps');
+  assert(player.context().slide === 'proof-three' && button('Continue demo') && turn.answer_audio === turn.qa_done, 'Runtime jump returned before its listen window or failed to stamp the direct answer');
+  await clock.tick(1);
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1 && env.played.filter(t => t === 'First proof.').length === 1 && env.played.filter(t => t === 'First proof interrupted detail.').length === 2, 'Runtime return lost its original line or replayed completed speech');
   assert(env.maxActive === 1, 'Direct evidence jump overlapped voices');
 });
 test('A new question interrupts a direct runtime jump without stealing its original return point', async () => {
   const first = 'First routed answer is still playing.', second = 'The second answer owns the conversation.';
-  await setup({ hold: text => [first, 'First proof interrupted detail.'].includes(text), qa: async (_, n) => n === 1 ? answered({ route: 'jump', slide_id: 'proof-three', answer: first }) : answered({ answer: second }), configure: b => {
+  await setup({ holdProof: false, hold: text => [first, 'First proof interrupted detail.'].includes(text), qa: async (_, n) => n === 1 ? answered({ route: 'jump', slide_id: 'proof-three', answer: first }) : answered({ answer: second }), configure: b => {
     b.runtime = { version: 1 }; b.slides.find(s => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.')); return b;
   } });
   await click('Skip the intro'); await type('Show the third proof.');
@@ -432,7 +554,7 @@ test('A new question interrupts a direct runtime jump without stealing its origi
   assert(stale.paused && env.played.includes(second) && player.context().slide === 'proof-three', 'Interrupted runtime answer retained playback or changed the newer view');
   window.dispatchEvent(new Event('pagehide')); const turns = env.beacons.at(-1).turns;
   assert(turns[0].cancelled && !turns[1].cancelled && env.maxActive === 1, 'Runtime interruption lost turn ownership or overlapped audio');
-  await click('Yes, that helps');
+  await click('Continue demo');
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1, 'New question replaced the original interrupted return point');
 });
 test('Explicit slide navigation cancels a direct runtime answer and cannot be undone by its late ending', async () => {
@@ -514,10 +636,12 @@ test('Declining callback still permits completion and saves the finished session
   await click('Not now', '.pl-lead button');
   assert(!host.querySelector('.pl-lead.open') && env.leadCalls.length === 0, 'Declining consent created a callback request');
   await click('Continue demo', '.pl-chips button');
-  assert(player.context().slide === 'proof-two', 'Declining callback prevented the explicit return to the tour');
-  await click('Continue', '.pl-chips button');
+  assert(player.context().slide === 'proof-one', 'Declining callback prevented the exact interrupted return');
+  await finishAudio('First proof.');
+  assert(player.context().slide === 'proof-two', 'First proof did not complete');
+  await finishAudio('Second proof.');
   assert(player.context().slide === 'proof-three', 'Second proof did not complete');
-  await click('Continue', '.pl-chips button');
+  await finishAudio('Third proof.');
   assert(player.context().slide === 'hero-end', 'Tour did not reach its final choice');
   await click('Not yet', '.pl-chips button'); await click('Done', '.pl-handoff button');
   const saved = env.saved.at(-1);
@@ -527,57 +651,56 @@ test('Declining callback still permits completion and saves the finished session
   assert(['First proof.', 'Second proof.', 'Third proof.'].every((text) => saved.transcript.some((x) => x.role === 'agent' && x.text === text)), 'Finished transcript omitted heard proof lines');
   assert(saved.turns.length === 1 && saved.turns[0].qa_done != null && saved.turns[0].answer_audio != null, 'Completed session lost answer latency stamps');
 });
-test('Deeper narration owns its citations across Q&A return and clears them for question prompts', async () => {
+test('Reviewed detail owns its citations across Q&A return and clears them for question prompts', async () => {
   const first = 'CNG boot volume is 321 litres, measured to ISO V215.';
   const second = 'The reviewed second detail has a different source.';
   const answer = 'The cabin answer uses two other reviewed facts.';
   const citations = () => host.querySelector('.pl-cap .cite').textContent;
   const finish = async () => { assert(env.active.size === 1, 'Expected exactly one held audio'); [...env.active][0].finish(); await flush(); };
   await setup({
-    hold: (text) => [first, second, answer].includes(text),
+    hold: (text) => [first, second, answer, 'That completes this detail.'].includes(text),
     qa: async () => answered({ answer, fact_ids: ['F020', 'F021'], topic: 'comfort' }),
     configure: (b) => {
-      b.slides.find((s) => s.id === 'proof-one').deeper = [
+      b.slides.find((s) => s.id === 'proof-one').lines = [line('proof-one-l1', 'First proof.'),
         { ...line('boot-D1', first), fact_ids: ['F014'] },
         { ...line('boot-D2', second), fact_ids: ['F024'] },
       ];
+      b.slides.find(s => s.id === 'proof-one').checkin = { text: 'That completes this detail.', audio: audioURL('That completes this detail.') };
       return b;
     },
   });
   await atProof();
-  assert(citations() === '', 'Main check-in retained the preceding claim sources');
-  await click('Tell me more', '.pl-chips button');
+  await finishAudio('First proof.');
   assert(env.played.at(-1) === first && citations() === 'sources: F014', 'First deeper line did not show its own F014 citation');
   await type('What are the cabin features?');
   assert(env.played.at(-1) === answer && citations() === 'sources: F020, F021', 'Q&A did not show its own answer citations');
   await finish();
-  assert(button('Yes, that helps', '.pl-chips button') && citations() === '', 'Did-that-answer question retained the answer citations');
-  await click('Yes, that helps', '.pl-chips button');
+  assert(button('Continue demo', '.pl-chips button') && citations() === 'sources: F020, F021', 'Unspoken post-answer choices discarded the answer citations');
+  await click('Continue demo', '.pl-chips button');
   assert(env.played.at(-1) === first && citations() === 'sources: F014', 'Resumed deeper D1 retained the unrelated cabin answer citations');
   assert(env.played.filter((text) => text === first).length === 2, 'Deeper return skipped or repeatedly replayed D1');
   await finish();
   assert(env.played.at(-1) === second && citations() === 'sources: F024', 'Second deeper line retained D1 citations');
   await finish();
-  assert(button('Yes, continue', '.pl-chips button') && citations() === '', 'Deeper check-in retained the preceding claim sources');
+  assert(env.played.at(-1) === 'That completes this detail.' && citations() === '', 'Closing statement retained the preceding claim sources');
   assert(env.maxActive === 1, 'Citation lifecycle change overlapped narration');
 });
-test('A legacy deeper question waits until the customer explicitly skips it', async () => {
+test('Legacy reviewed questions continue as narration without a customer wait', async () => {
   await setup({
     hold: (text) => text === 'Next deeper detail.',
     configure: (b) => {
-      b.slides.find((s) => s.id === 'proof-one').deeper = [
+      b.slides.find((s) => s.id === 'proof-one').lines = [line('proof-one-l1', 'First proof.'),
         { ...line('deeper-one', 'Which seat would you use most?'), step: 'confirm' },
         line('deeper-two', 'Next deeper detail.'),
       ];
       return b;
     },
   });
-  await atProof(); await click('Tell me more', '.pl-chips button');
-  assert(env.played.includes('Which seat would you use most?') && button('Skip this question', '.pl-chips button'), 'Deeper question did not open an explicit answer wait');
+  await atProof(); await finishAudio('First proof.');
+  assert(env.played.includes('Which seat would you use most?') && !button('Skip this question', '.pl-chips button'), 'Legacy narration opened a question wait');
+  assert(env.played.filter(text => text === 'Next deeper detail.').length === 1 && env.calls.length === 0, 'Legacy question did not continue once into its next narration line');
   await clock.tick(30000);
-  assert(player.context().slide === 'proof-one' && !env.played.includes('Next deeper detail.'), 'Silence advanced past the deeper question');
-  await click('Skip this question', '.pl-chips button');
-  assert(env.played.filter((text) => text === 'Next deeper detail.').length === 1 && env.calls.length === 0, 'Explicit skip did not proceed exactly once without a fabricated QA turn');
+  assert(player.context().slide === 'proof-one' && env.calls.length === 0 && env.played.filter(text => text === 'Next deeper detail.').length === 1, 'Held audio fabricated a question or repeated narration');
 });
 test('Stopping with a callback open shows a buyer recap while retaining internal session detail', async () => {
   const need = 'I need space for a stroller.', question = 'Will the boot take my stroller?', topic = 'Everyday practicality';
@@ -590,7 +713,7 @@ test('Stopping with a callback open shows a buyer recap while retaining internal
   const intake = host.querySelector('.pl-intake.open .fallback input');
   assert(intake, 'Fixture intake did not open'); intake.value = need;
   intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
-  assert(player.context().slide === 'proof-one' && button('I have a question'), 'Known customer fixture did not reach its first proof');
+  assert(player.context().slide === 'proof-one' && env.played.at(-1) === 'First proof.', 'Known customer fixture did not reach its first proof');
   await type(question);
   assert(host.querySelector('.pl-lead.open'), 'Fixture callback form did not open');
   host.querySelector('button[title="Stop and see the summary"]').click(); await flush();

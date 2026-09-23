@@ -87,7 +87,7 @@ flowchart TD
   BUILD[&quot;BUILD phase (thread)&lt;br/&gt;[FUNCTION · graph.py]&lt;br/&gt;Voice → Rehearsal → Bundle&lt;br/&gt;see diagram 04&quot;]:::fn
   OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
-  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;cinematic slides · owned voice/typed turns · explicit Q&amp;A return&lt;br/&gt;see diagram 05&quot;]:::fn
+  PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;continuous stop narration · answers resume after 3 s · clarifications wait&lt;br/&gt;owned voice/typed turns; see diagram 05&quot;]:::fn
   FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
   FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;coach&#x27;|&#x27;understand&#x27;) → rebuild&quot;]:::agent
   HOME[&quot;Home workspace&lt;br/&gt;[FUNCTION · web/home.js · #/home default]&lt;br/&gt;real demo/session counts · recent demos · existing create/open actions&quot;]:::fn
@@ -240,7 +240,7 @@ flowchart TD
 flowchart TD
   N7[&quot;Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → rehearsal (scores the bank) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)&quot;]:::data
   GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness&lt;br/&gt;explicit operator override logged; mock bypass&quot;]:::fn
-  AUTH[&quot;Final spoken delivery of the Planner outline&lt;br/&gt;[AGENT · configured text tier · author.py]&lt;br/&gt;in: plan goals/notes, approved registry, supplied visuals, voice, language/audience&lt;br/&gt;shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK&lt;br/&gt;out: existing ScriptOut · same segment ids/roles/order; connected speech, checkins, deeper, closing + 23–28 word Explore overview&quot;]:::agent
+  AUTH[&quot;Final spoken delivery of the Planner outline&lt;br/&gt;[AGENT · configured text tier · author.py]&lt;br/&gt;in: plan goals/notes, approved registry, supplied visuals, voice, language/audience&lt;br/&gt;shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK&lt;br/&gt;same segment ids/roles/order; connected speech; checkin = closing statement, no question&lt;br/&gt;deeper, closing + 23–28 word Explore overview&quot;]:::agent
   VAL[&quot;grounding + planned budget + plain-language validator&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;approved citations and existing visual refs; unsupported uncited quantities/claims held&lt;br/&gt;above word_budget +4: issue; below explicit budget −10: advisory warning&lt;br/&gt;hard ceilings: intro/outcome/proof 46; features 48; establish 44; closing 45&lt;br/&gt;route ≤ round(pitch_minutes × 60 × WPS) +40; legacy: ceiling upper check, no new under-budget warning&quot;]:::fn
   ISS{&quot;issues &gt; 0?&quot;}:::dec
   FIX[&quot;one local rewrite&lt;br/&gt;[AGENT · configured text tier]&lt;br/&gt;in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects&lt;br/&gt;out: full script, revalidated under the same evidence rules&quot;]:::agent
@@ -301,7 +301,7 @@ flowchart TD
   OVERVIEW[&quot;Grounded overview in the selected voice&lt;br/&gt;[DATA · bundle.runtime.overview]&lt;br/&gt;10–15 second target measured from generated audio&quot;]:::data
   PERSONALIZE[&quot;Explore graph node → pitch.plan_pitch&lt;br/&gt;[AGENT · Gemini → Claude → Runware]&lt;br/&gt;order reviewed slides; explicit priority revision may revisit selected seen proof&quot;]:::agent
   ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / player.js]&lt;br/&gt;initial pitch: first unseen fundamental before three-proof limit&lt;br/&gt;player fallback mirrors one-stop move; refinements/revisits unchanged&quot;]:::fn
-  PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching callout with each line; spoken question owns its wait&quot;]:::fn
+  PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching callout with each line&lt;br/&gt;speak stop-closing checkin and continue without a wait&quot;]:::fn
   STOP[&quot;Stop local audio and cancel old turn/delivery&lt;br/&gt;[FUNCTION · live-voice.js / runtime_live.py]&lt;br/&gt;save return point; discard stale turn/utterance/generation output&quot;]:::fn
   ACK[&quot;Short acknowledgement when useful&lt;br/&gt;[DATA · selected-voice filler]&lt;br/&gt;retrieval starts concurrently; filler is not useful-answer latency&quot;]:::data
   RETRIEVE[&quot;Retrieve pinned approved evidence&lt;br/&gt;[FUNCTION · knowledge.retrieve]&lt;br/&gt;BM25 + local ranking; request-local universal scope; pinned condition dependencies&quot;]:::fn
@@ -314,9 +314,10 @@ flowchart TD
   PLAN[&quot;Checkpoint a versioned DeliveryPlan&lt;br/&gt;[DATA · runtime_state.py]&lt;br/&gt;snapshot, turn/utterance ID, result + plain_language_substitutions&lt;br/&gt;next interaction; no audio in graph&quot;]:::data
   VIEW[&quot;Evidence view: stay / jump / none&lt;br/&gt;[FUNCTION · deck.route_for + player.js]&lt;br/&gt;runtime-v1 answer starts directly on its evidence; no extra spoken bridge&lt;br/&gt;turn ownership and original return point stay stable&quot;]:::fn
   SPEAK[&quot;Request selected-voice streaming delivery&lt;br/&gt;[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]&lt;br/&gt;validated answer first, PCM chunks second; cancel closes its socket&quot;]:::data
-  WAIT[&quot;Listen and wait&lt;br/&gt;[ASK · follow-up / reply / Continue / configured CTA]&lt;br/&gt;silence never resumes narration&quot;]:::ask
+  LISTEN[&quot;Answer/decline reply window: 3000 ms&lt;br/&gt;[FUNCTION · holdConversation]&lt;br/&gt;chips + focused typing; voice-mode capture open&lt;br/&gt;speech onset, typing or a chip cancels the owned timer&quot;]:::fn
+  WAIT[&quot;Clarification or active customer turn&lt;br/&gt;[ASK · reply / Continue / configured CTA]&lt;br/&gt;no silence timer; wait for customer action&quot;]:::ask
   CORRECT[&quot;Explicit changed priority&lt;br/&gt;[FUNCTION · player.js]&lt;br/&gt;replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing&quot;]:::fn
-  RESUME[&quot;Continue → exact interrupted location&lt;br/&gt;[FUNCTION · resumeAfterQA]&quot;]:::fn
+  RESUME[&quot;Resume saved narration; interrupted line starts again&lt;br/&gt;[FUNCTION · resumeAfterQA]&lt;br/&gt;automatic return: recorded back_to_demo only, else silence&lt;br/&gt;auto_resumed + listen window saved on the turn&quot;]:::fn
   CTA[&quot;Customer selects next step + separately consents to contact&lt;br/&gt;[ASK · existing lead form]&lt;br/&gt;no model-triggered submission&quot;]:::ask
   SAVE[&quot;Save heard transcript, timings, recap and consent&lt;br/&gt;[DATA · sessions / traces / runtime_metrics.py]&lt;br/&gt;missing/cancelled timings visible; small samples labelled&quot;]:::data
   FAIL[&quot;Supported partial answer or temporary limitation&lt;br/&gt;[FUNCTION · bounded failure]&lt;br/&gt;no outage cached as a knowledge gap&quot;]:::fn
@@ -333,8 +334,12 @@ flowchart TD
   CHOICE -- &quot;answer or clarification&quot; --&gt; VALIDATE --&gt; PLAN
   VALIDATE -- &quot;empty or rejected substantive draft; budget remains&quot; --&gt; REPAIR --&gt; RECHECK --&gt; PLAN
   REASON -- &quot;deadline or unavailable&quot; --&gt; FAIL --&gt; PLAN
-  PLAN --&gt; VIEW --&gt; SPEAK --&gt; WAIT
-  PLAY -- &quot;check-in&quot; --&gt; WAIT
+  PLAN --&gt; VIEW --&gt; SPEAK
+  SPEAK -- &quot;clarification&quot; --&gt; WAIT
+  SPEAK -- &quot;answer or decline&quot; --&gt; LISTEN
+  LISTEN -- &quot;3 seconds of silence; same run/turn&quot; --&gt; RESUME
+  LISTEN -- &quot;speech onset / typing / chip; cancel timer&quot; --&gt; WAIT
+  PLAY -- &quot;stop-closing text complete&quot; --&gt; PLAY
   WAIT -- &quot;question or reply&quot; --&gt; RETRIEVE
   WAIT -- &quot;changed priority&quot; --&gt; CORRECT --&gt; PERSONALIZE
   WAIT -- &quot;Continue&quot; --&gt; RESUME --&gt; PLAY

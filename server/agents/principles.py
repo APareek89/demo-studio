@@ -113,7 +113,7 @@ REJECTED: opening with a decision frame or spec inventory before any greeting; f
 answering a stated want with a headline spec; a hard close.""" + "\n\n" + EVIDENCE_RULES
 
 CUSTOMER_STATES = """CUSTOMER STATES (route by the strongest signal in what they said):
-- unknown: nothing specific stated. Stance: transparent. Give a balanced short route and let the buyer steer at a relevant checkin. Do not repeat intake, pretend to personalise or interrogate.
+- unknown: nothing specific stated. Stance: transparent. Give a balanced short route and let the buyer interrupt to steer it. Do not repeat intake, pretend to personalise or interrogate.
 - stated_want: a specific attribute or feature asked for. Stance: request-led but not request-captive. Follow-up clarifies what the attribute must accomplish and under what conditions. Route: the route-specific outcome first, then the basis behind the number, then only the adjacent constraints that could invalidate the fit. Do not answer with the headline spec; do not treat a certified figure as a guarantee.
 - stated_need: an underlying job/outcome/risk stated. Stance: outcome-led, evidence-heavy. Reuse their actual words. Route: address that situation, show the supported outcome, then relevant economics and risk/terms. Do not restart generic discovery; features appear only as mechanisms.
 These states choose the route, not a second intake. Ask a follow-up only when responding to an unclear customer question."""
@@ -123,7 +123,7 @@ SCORECARD = [
     ("Decision frame", "Could the buyer repeat what decision is being made and what success looks like?"),
     ("Outcome first", "Was the desired result visible before setup steps or secondary features?"),
     ("Minimal proof", "One primary outcome and no more than two supporting proof areas?"),
-    ("Interaction", "A few relevant check-ins at useful decision points, one question at a time with an explicit wait, without interrogating after every section?"),
+    ("Interaction", "Does narration flow without waiting, with a brief follow-up window after answers and an explicit wait only for real clarifications and customer choices?"),
     ("Concrete language", "Reuses the buyer's route, numbers, situation and money assumptions?"),
     ("Visible contrast", "Current state versus desired state shown?"),
     ("Truth split", "Stated, certified, modeled, observed and contractual claims kept distinct, with relevant basis?"),
@@ -131,13 +131,15 @@ SCORECARD = [
     ("Advance", "A specific next action, owner, trigger and success condition?"),
 ]
 
-PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated. At a useful decision point, optionally CONFIRM enough detail or readiness to continue with one question and wait: yes continues, no opens more detail. Never ask whether they want more detail or an either/or choice in checkin. Do not append a question to every block; leave checkin empty when the narrative should continue."
+PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated. At a useful decision point, optionally close with one short statement in checkin, never a question. Narration continues immediately; leave checkin empty unless the plan calls for it."
 
 AUTHOR_CRAFT = """AUTHOR RESPONSIBILITY — turn the approved story outline into natural speech.
 - The Planner owns the selected story, segment order/ids/roles, proof priorities, spoken-versus-deeper evidence and
-  image plan. You own the final words, sentence rhythm, joins and useful confirmation questions. Follow that outline;
+  image plan. You own the final words, sentence rhythm, joins and short closing statements. Follow that outline;
   do not design a second itinerary, add proof areas, or read its planning labels aloud. Its proposed wording, intake
   and voice sample are editorial context, not additional evidence. Preserve the configured guide's identity.
+- Checkin is one short closing statement for the stop, never a question. Narration never waits for a reply; runtime
+  clarifications and the separate intake/CTA flows own real questions. Leave checkin empty unless the plan asks for one.
 - A segment must make sense when entered directly after a customer question, but it need not sound like a new demo.
   Name its subject, then let the next sentence develop the same thought. Connect adjacent ideas through their actual
   subjects: a view of the roof can lead into the cabin; seat layout can lead into packing. Avoid dependencies such as
@@ -171,28 +173,25 @@ def language_instruction(code: str) -> str:
     return f"LANGUAGE: write every spoken line in {name}. Product names, prices, units and fact ids stay exactly as in the registry. Spoken register, short clauses."
 
 
-PITCH_SHAPE = """DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged). Every batch ≤ 20 seconds
-(≤ 38 spoken words). Aim for a natural ten-to-twenty-second thought, not clipped labels or a list; do not pad a shorter
-useful thought. Use two or three deliberate, relevant check-ins across a typical route, not a question after every
-section. Other sections continue on audio completion. Real questions belong in `checkin` with an explicit wait,
-never hidden in narration. A segment check-in confirms enough detail or readiness: yes continues and no opens deeper
-detail. Use 'Is that enough detail for now?', never 'Would you like more detail?' or an open/either-or question.
-This meaning applies to segment check-ins, not the separate intake context question. The check-in target guides
-authoring; it is not a mandatory numeric quota.
+PITCH_SHAPE = """DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged).
+Keep each batch within its planned word budget and role ceiling. Aim for a natural ten-to-twenty-second thought,
+not clipped labels or a list; do not pad a shorter useful thought. At most two planned stops may carry a short
+closing statement in `checkin`, never a question. Narration continues on audio completion without a reply gate.
+Real clarifications belong to runtime Q&A, separate from the intake context question and the explicit CTA choice.
 STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
   The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened.
-STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, ≤ 38 words each]: lead with the strongest sourced reason to explore this
+STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the strongest sourced reason to explore this
   product and the feature that demonstrates it. The first stop of the playbook, in everyday words, beats a generic promise or a list.
   NO invented performance promise, specification inventory or decision frame.
 STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
   relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.
   Say they can steer the tour; do not ask another question.
 STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
-  decision points, add one short question in `checkin`, separate from spoken lines; otherwise leave it empty. The runtime
+  decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty. The runtime
   reorders these per buyer; each must stand alone.
 STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive.
-  An optional `checkin` confirms enough detail before continuing; never hide a question in narration.
+  An optional `checkin` closes the stop without waiting; never hide a question in narration.
 STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the
   two or three things the sources do not answer, with the appropriate next source or check to resolve each.
 STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: "the strongest fit is X, and the one thing we should still verify is Y" —

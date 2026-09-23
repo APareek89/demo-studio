@@ -14,8 +14,8 @@ const selected = {route:[{segment_id:rear.id}],revisit_segment_ids:[rear.id],per
 function setup(plan=selected, status='ready') {
   const previous = [{slide:bundle.slides.find(s=>s.segment_id==='standard-safety-suite')}];
   const S={plan:previous,seg:0,run:3,covered:new Set(bundle.slides.map(s=>s.id)),profile:{focus:[]},pitch:{},pendingRefinement:{status,afterSegment:null,seen:request.seen_segments,plan:structuredClone(plan)}};
-  const calls={notes:[],spoken:[],closed:[]};
-  const api=vm.runInNewContext(code,{S,library:()=>bundle.slides.filter(s=>s.segment_id),topicOf:s=>s.topics?.[0],renderProgress(){},prefetch(){},addMsg:(...v)=>calls.notes.push(v),speak:async text=>{calls.spoken.push(text);return true;},
+  const calls={notes:[],spoken:[],closed:[],waits:0};
+  const api=vm.runInNewContext(code,{S,el:{cite:{textContent:'sources: fixture'}},waitFor:()=>{calls.waits++;throw new Error('Route narration must not wait');},library:()=>bundle.slides.filter(s=>s.segment_id),topicOf:s=>s.topics?.[0],renderProgress(){},prefetch(){},addMsg:(...v)=>calls.notes.push(v),speak:async text=>{calls.spoken.push(text);return true;},
     newRun:()=>++S.run,showSlideView:()=>({setRevealed(){}}),
     playLines:async(sl,run,view,from,upto)=>{calls.spoken.push(...sl.lines.slice(from,upto).map(l=>l.text));return true;},closeFlow:async(run,line)=>calls.closed.push({run,line})});
   return {S,api,calls,previous};
@@ -33,6 +33,7 @@ async function run(){
   await check('ordinary covered slide still uses its original brief replay',async()=>{const t=setup();t.api.buildRoute(selected);t.S.pendingRefinement=null;await t.api.playFrom(0,0);assert.deepEqual(t.calls.spoken,[selected.personalized_segments[0].lines[0].text]);assert.equal(t.calls.closed.length,1);});
   await check('ordinary closing remains unchanged without ready refinement',async()=>{const t=setup(selected,'pending');await t.api.resumePlayback({phase:'closing',line:2},3);assert.deepEqual(t.calls.closed,[{run:3,line:2}]);assert.equal(t.calls.spoken.length,0);});
   await check('superseded closing continuation never delivers revised proof',async()=>{const t=setup();const pending=t.api.resumePlayback({phase:'closing',line:2},3);t.S.run++;await pending;assert.equal(t.calls.spoken.length,0);assert.equal(t.calls.closed.length,0);});
+  await check('a reviewed revisit keeps its legacy check-in speech without reopening a wait',async()=>{const t=setup();await t.api.applyUpcomingPlan(0,3);t.S.pendingRefinement=null;t.S.plan[0].slide={...t.S.plan[0].slide,checkin:{text:'Does that fit your needs?',audio:'reviewed-checkin-audio'}};await t.api.playFrom(0,0);assert.ok(t.calls.spoken.includes(exact.text));assert.ok(t.calls.spoken.includes('Does that fit your needs?'));assert.equal(t.calls.waits,0);assert.equal(t.calls.closed.length,1);});
   console.log(`Player priority revision contracts: ${count}/${count}; no browser/network/provider`);
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});

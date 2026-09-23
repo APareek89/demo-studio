@@ -9,7 +9,7 @@ from ..llm import claude
 from . import plain_terms, speech_style, visuals
 from .principles import AUTHOR_CRAFT, PRINCIPLES, SIGNPOSTS, TRANSLATION_LADDER, audience_instruction, fact_context, language_instruction
 
-# Brief the writer on grounded dialogue, per-line visual references, pacing and explicit check-in questions.
+# Brief the writer on grounded dialogue, per-line visuals and non-question closing statements.
 # server/schemas.py:ScriptOut describes the result; visuals.py:align separately audits image coverage afterward.
 AUTHOR_SYSTEM = """You write the spoken words for a product demo delivered by a voice guide. Write it as ONE continuous
 talk, in the plan's order, the way a good salesperson walks a buyer round a car — each part picking up
@@ -50,8 +50,8 @@ Hard rules:
 4. THE PLAN IS SETTLED. Write one segment for each segment in PLAN.segments, in the order given, keeping
    its id, role and title exactly. Do not add, drop, merge, split, reorder or rename a segment, and do
    not decide what the demo covers — that decision is made. Speak only the facts the plan assigned to
-   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question (WP7). One segment = one batch the guide speaks without stopping, then pauses. The budget exists to
-   create that pause, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed. Your judgement is about WORDS: what to say first inside the segment, how long a sentence
+   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question. One segment = one batch the guide speaks without stopping, then continues naturally. The budget exists to
+   keep the thought clear, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed. Your judgement is about WORDS: what to say first inside the segment, how long a sentence
    runs, which everyday noun carries the idea, how one segment hands over to the next.
    PLAN.customer_persona is the planner's note about who the product suits. It is not a person in the
    room. This script is written before any customer arrives and must be excellent with none: never assign
@@ -97,9 +97,8 @@ Hard rules:
    When reviewed facts pair petrol with manual or automatic and turbo with automatic
    only, NEVER compress that into "each engine offers manual or automatic". Say "Gearbox choices depend on the engine"
    and retain the exact pairings in deeper detail. No universal "each/all" unless every cited scope supports it.
-   A check-in confirms readiness, not a preference or knowledge quiz: prefer "Is that enough detail on the cabin for now?"
-   or "Are you ready to continue?" Never use "Would you like a closer look?", "Anything you'd like to check?" or
-   "Would you like to compare these options, or keep exploring?": a yes to these does not mean continue.
+   A check-in is one short closing statement for the stop, never a question. Narration continues immediately after it;
+   it does not ask for readiness, a preference or permission. Leave it empty unless the plan asks for a closing statement.
    Do not ask again for context the customer already supplied. The intake's open context question is a separate flow.
 7. DELIVERY. Be a helpful, cheerful, attentive guide: gentle enthusiasm, a reassuring cadence for limitations, no
    theatrical excitement, repeated superlatives or forced fillers. Use punctuation for natural pauses. Set each line's
@@ -172,20 +171,11 @@ def _allocate_words(total: int, weights: list[int]) -> list[int]:
     return allocations
 
 # Flag technical register and unsupported shift promises without inventing replacement benefits.
-# Check-in wording must fit web/player/player.js:waitFor's continue-or-detail interaction, not reverse it.
+# Check-ins are closing statements; real runtime clarifications own the waiting interaction.
 JARGON = re.compile(r"\b(IDC|kWh|kW|amp|15A|5A|torque|Nm|newton[ -]?met(?:re|er)s?|r/min|RPM|Level\s*[12]|IP6\d|TFT|ABS|CBS|Li-ion|BMS|regen|DCT|IVT|CVT|ADAS|GDi|PS|BHP|\d[\d,.]*\s*(?i:mm|millimet(?:re|er)s?)|(?i:mm|millimet(?:re|er)s?|length|four[ -]cylinder|4[ -]cylinder|quad[ -]beam|parametric|dual[ -]clutch))\b")
 # Extend the warning-only narration check without changing its existing matches.
 JARGON = re.compile(JARGON.pattern + r"|\b(?i:" + "|".join(re.escape(term) for term in sorted(plain_terms.JARGON, key=len, reverse=True)) + r")\b")
 _SHIFT_PROMISE = re.compile(r"\b(?:imperceptible|seamless|jerk[- ]free)\s+(?:gear\s*)?(?:shifts?|changes?)\b|\b(?:won't|will not|cannot|can't)\s+(?:even\s+)?feel\s+(?:the\s+)?(?:gear\s*)?(?:shifts?|changes?)\b", re.I)
-# Editorial English-language guard, not a general semantic classifier. The existing
-# player's affirmative path continues; a negative opens deeper detail.
-_CHECKIN_OPT_IN = re.compile(
-    r"\b(?:would|do)\s+you\s+(?:like|want|need)\b[^?？]*\b(?:more|closer|details?|questions?|compare|comparison|explore|look|see)\b"
-    r"|\b(?:anything|any\s+questions)\b"
-    r"|\b(?:shall|should|can|could)\s+(?:we|I)\b[^?？]*\b(?:more|closer|details?|compare)\b"
-    r"|\b(?:want|need)\s+(?:some\s+)?(?:more\s+)?(?:details?|information)\b",
-    re.I,
-)
 
 
 # Count whitespace-separated words for draft budgets and estimated durations.
@@ -261,21 +251,22 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
             line["unverified"] = False
 
     # Validate main and deeper lines, and keep uncited claims out of the separate check-in field.
-    # Questions belong in that field so web/player/player.js:waitFor can hold playback for a response.
+    # Only runtime clarifications wait; authored check-ins cannot request a reply.
     for seg in script["segments"]:
         checkin = (seg.get("checkin") or "").strip()
         register_warning(checkin, f"{seg['id']} checkin")
-        if _CHECKIN_OPT_IN.search(checkin):
-            issues.append(f"{seg['id']} checkin: response meaning warning — the player's yes continues and no opens more detail; use a confirmation such as 'Is that enough detail for now?' instead of opting into detail or asking an open choice")
+        if re.search(r"[?？]", checkin):
+            issues.append(f"{seg['id']} checkin: must be a short closing statement, never a question")
+            seg["checkin"], seg["checkin_audio"] = "", None
         # Checkins have no citation field. Moving a claim out of a line cannot
-        # exempt it from grounding: a question-only turn must remain claim-free.
+        # exempt it from grounding: a closing statement must remain claim-free.
         if NUMBERISH.search(checkin) or CLAIMISH.search(checkin):
-            issues.append(f"{seg['id']}: checkin contains a figure or claim without citations — ask only about relevance, and keep cited facts in narration")
+            issues.append(f"{seg['id']}: checkin contains a figure or claim without citations — use a claim-free closing statement and keep cited facts in narration")
             seg["checkin"], seg["checkin_audio"] = "", None
         for n, ln in enumerate(seg["lines"], 1):
             check(ln, f"{seg['id']} line {n}")
             if re.search(r"[?？]", ln.get("text", "")) or ln.get("step") == "confirm":
-                issues.append(f"{seg['id']} line {n}: move the question to checkin so the player explicitly waits; narration must not ask it again")
+                issues.append(f"{seg['id']} line {n}: narration must use statements, never a question; only runtime clarifications wait for a reply")
         for n, ln in enumerate(seg.get("deeper", []), 1):
             check(ln, f"{seg['id']} deeper {n}")
         total = sum(words(l["text"]) for l in seg["lines"])
@@ -300,7 +291,7 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         check(ln, f"closing {n}")
         register_warning(ln.get("text", ""), f"closing {n}")
         if re.search(r"[?？]", ln.get("text", "")) or ln.get("step") == "confirm":
-            issues.append(f"closing line {n}: a question needs an explicit checkin; close with the next action instead")
+            issues.append(f"closing line {n}: close with a next-action statement; the separate CTA choice waits for the customer")
     closing_words = sum(words(l["text"]) for l in script.get("closing", []))
     if closing_words > CLOSING_LIMIT:
         issues.append(f"closing is {closing_words} words, limit {CLOSING_LIMIT}")

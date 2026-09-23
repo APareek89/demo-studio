@@ -53,7 +53,7 @@ Your output:
   a new causal benefit or alter conditions. Supply customer_quote as at most eight consecutive words copied verbatim
   from their why/followup; code uses this to create a short personal introduction. The resulting lines REPLACE the
   segment's default narration; never repeat them as custom_batches or a bridge. Keep total proof to 28 words when
-  adding personal framing; no question (the existing checkin still waits). For unknown context leave replacements empty.
+  adding personal framing; no question (narration and closing statements never wait). For unknown context leave replacements empty.
 - usp_order: which USPs get covered, in order (every route step's usps).
 - custom_batches: legacy recorded delivery only; LIVE ROUTE DELIVERY must return an empty list. For legacy delivery,
   when the buyer said something specific, select 2-3 relevant items from REVIEWED SPOKEN PROOF, in the
@@ -320,7 +320,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
                         "custom_batches must be []; bridge must be empty. Do not add a second opening or a separate explanation of the route. "
                         "Copy only text and fact_ids from SEGMENT SCRIPT into replacement lines; code restores the approved visual, "
                         "delivery and audio metadata. FACT REGISTRY contains only those reviewed lines' assertions; do not infer "
-                        "anything from an omitted fact. Existing check-in questions remain unchanged."
+                        "anything from an omitted fact. Existing check-in text remains unchanged and never pauses playback."
                         if not voice_it else "LEGACY RECORDED DELIVERY: reviewed optional proof batches and route cues remain available."),
     )
     ask = "Plan the route now."

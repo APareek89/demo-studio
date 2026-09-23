@@ -2,8 +2,8 @@
 // Order: intake question (over the hero slide) → opening film (skippable) → the standard opening slides (unchanged) →
 // runtime pitch plan (decision frame · custom batches as slides · personalised order) → proof slides with check-ins →
 // establish → closing (fit summary) → hero close + CTA → handoff.
-// Sync is event-driven: audio leads, the screen follows. A line starting reveals its callouts; the last line's audio
-// ending moves to the next slide. No timer decides what is on screen.
+// Narration is event-driven: audio leads, the screen follows. A line starting reveals its callouts; its audio end
+// advances the narration. After Q&A, a short silent reply window returns to the saved narration checkpoint.
 // A question is routed by the server on fact ids and topics (stay on this slide · jump to the slide that carries the
 // facts, then return to the interrupted line · none): S.seg / S.line are never touched by a jump, so the return point is
 // always the interrupted line — a return stack of depth 1. A slide seen during a jump is covered: reached later, it plays
@@ -24,6 +24,7 @@ import { LiveVoiceClient } from "/web/player/live-voice.js";
 // Read browser speech support once; the other constants describe text helpers and contact consent.
 // These are local defaults; server speech is connected through web/app.js:renderPlay.
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const POST_ANSWER_LISTEN_MS = 3000;
 // Choose one wording from the supplied array and return it for a spoken acknowledgment.
 // This changes phrasing only; playback still goes through player.js:speak.
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
@@ -168,7 +169,7 @@ export function mountPlayer(host, bundle, api) {
       el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" })),
       // Build the optional contact form and its close buttons; submit calls saveLeadForm.
       // Only a validated, explicitly submitted form is sent to server/app.py:run_lead.
-      el.lead = h("div", { class: "pl-lead" }, h("div", { class: "lead-card" }, h("button", { class: "lead-close", title: "Not now", "aria-label": "Not now", onclick: () => el.lead.classList.remove("open") }, icon("close", { size: 18 })), h("div", { class: "eyebrow" }, "Optional · dealership follow-up"), h("h3", {}, "Would you like to try it in person?"), el.leadCopy = h("p", {}, "Share your details and the dealership can arrange a test drive."), el.leadForm = h("form", { onsubmit: (e) => { e.preventDefault(); saveLeadForm(); } }, el.leadName = h("input", { placeholder: "Your name", "aria-label": "Your name", autocomplete: "name" }), el.leadPhone = h("input", { placeholder: "10-digit mobile number", "aria-label": "10-digit mobile number", inputmode: "tel", autocomplete: "tel" }), el.leadError = h("div", { class: "lead-error" }), h("p", { class: "consent" }, CONSENT), h("button", { class: "btn primary", type: "submit" }, "Arrange a test drive")), h("button", { class: "btn ghost sm", onclick: () => el.lead.classList.remove("open") }, "Not now")))),
+      el.lead = h("div", { class: "pl-lead" }, h("div", { class: "lead-card" }, h("button", { class: "lead-close", title: "Not now", "aria-label": "Not now", onclick: dismissLeadPrompt }, icon("close", { size: 18 })), h("div", { class: "eyebrow" }, "Optional · dealership follow-up"), h("h3", {}, "Would you like to try it in person?"), el.leadCopy = h("p", {}, "Share your details and the dealership can arrange a test drive."), el.leadForm = h("form", { onsubmit: (e) => { e.preventDefault(); saveLeadForm(); } }, el.leadName = h("input", { placeholder: "Your name", "aria-label": "Your name", autocomplete: "name" }), el.leadPhone = h("input", { placeholder: "10-digit mobile number", "aria-label": "10-digit mobile number", inputmode: "tel", autocomplete: "tel" }), el.leadError = h("div", { class: "lead-error" }), h("p", { class: "consent" }, CONSENT), h("button", { class: "btn primary", type: "submit" }, "Arrange a test drive")), h("button", { class: "btn ghost sm", onclick: dismissLeadPrompt }, "Not now")))),
     // Create a separate conversation drawer with a close button and scrolling transcript area.
     // web/api.js:h builds the DOM; addMsg later retains non-note messages for the session report.
     el.drawer = h("div", { class: "pl-drawer" }, h("div", { class: "head" }, h("span", { class: "drawer-title" }, icon("message", { size: 19 }), "Conversation"), h("button", { class: "icon-btn", title: "Close conversation", "aria-label": "Close conversation", onclick: () => toggleDrawer(false) }, icon("close", { size: 18 }))), el.thread = h("div", { class: "body" }),
@@ -196,9 +197,10 @@ export function mountPlayer(host, bundle, api) {
       // The event comes from live-voice.js:LiveVoiceClient.speechStart; local timing records when output was stopped.
       onSpeechStart: (event) => {
         if (S.ended) return;
+        cancelPostAnswerListen();
         S.inputMode = "voice"; S.speechDetectedAt = event.detected_at;
         if (S.intakeOpen || S.waiter || S.promptRun === S.run) cancelSpeech();
-        else { captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); holdConversation(newRun()); }
+        else { captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); holdConversation(newRun(), { autoResume: false }); }
         S.interruptions.push({ detected_at: event.detected_at, stopped_at: Date.now(), phase: S.playback.phase, detection_source: event.source });
         setStatus("listening", "Listening"); el.live.textContent = "Listening…";
       },
@@ -248,7 +250,7 @@ export function mountPlayer(host, bundle, api) {
   function addMsg(role, text, extra = {}) { const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
   // Mark the next input as typed and stop legacy listening if there is no live capture session.
   // This updates local input mode; live-voice.js:LiveVoiceClient keeps its independent microphone session.
-  function preferTyping() { S.inputMode = "typed"; if (!live) stopListening(); }
+  function preferTyping() { cancelPostAnswerListen(); S.inputMode = "typed"; if (!live) stopListening(); }
   // Accept typed words, stamp their timing and deliver them to the current intake or reply wait.
   // If no wait owns the text, handleQuestion sends it through server/app.py:run_qa.
   function acceptTypedAnswer(text) {
@@ -271,9 +273,31 @@ export function mountPlayer(host, bundle, api) {
   // Turn reply choices into buttons that belong to the current wait object.
   // A stale click cannot resolve a newer wait; web/api.js:h creates the buttons and resolveWait delivers the value.
   function setChips(list) { const owner = S.waiter; el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => { if (S.waiter === owner) resolveWait(c.value); } }, c.label))); }
-  // Clear any stored wait interval and empty its visual container.
-  // This is local cleanup for reply controls created by web/api.js:h, not a customer-response deadline.
-  function clearTimer() { if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
+  // A customer starting to respond owns the turn, so silence can no longer resume it.
+  function cancelPostAnswerListen() { const pending = S.postAnswerListen; if (!pending) return; clearTimeout(pending.timer); S.postAnswerListen = null; }
+  // Lead forms keep their explicit choice boundary. Their close/save handlers
+  // start this same answer window only if it still belongs to the current wait.
+  function armPostAnswerListen() {
+    const pending = S.postAnswerListen;
+    if (!pending || pending.timer !== null || S.waiter !== pending.waiter || S.run !== pending.run || S.ended) return;
+    if (el.lead.classList.contains("open")) { pending.heldForLead = true; return; }
+    const reply = el.drawer.classList.contains("open") ? el.q : el.reply;
+    // Typing can begin while the answer is still speaking, before a timer exists.
+    if (reply.value) { cancelPostAnswerListen(); return; }
+    if (pending.heldForLead) { pending.heldForLead = false; listenForTurn(pending.waiter); }
+    if (pending.turn) { pending.turn.post_answer_listen_ms = POST_ANSWER_LISTEN_MS; pending.turn.auto_resumed = false; }
+    pending.timer = setTimeout(() => {
+      if (S.postAnswerListen !== pending || S.waiter !== pending.waiter || S.run !== pending.run || S.ended) return;
+      if (el.lead.classList.contains("open")) { pending.timer = null; return; }
+      if (pending.turn) { pending.turn.auto_resumed = true; pending.turn.auto_resumed_at = Date.now(); }
+      resolveWait({ value: "__auto_resume" });
+    }, POST_ANSWER_LISTEN_MS);
+    el.hint.textContent = "Ask another question, or I'll continue in a moment.";
+    reply.focus({ preventScroll: true });
+  }
+  function dismissLeadPrompt() { S.leadFormId = (S.leadFormId || 0) + 1; el.lead.classList.remove("open"); armPostAnswerListen(); }
+  // Clear reply timing on a new wait, an explicit choice or interruption.
+  function clearTimer() { cancelPostAnswerListen(); if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   // Increment and return the playback run number whenever a new flow takes ownership.
   // Async callbacks compare this number before continuing; live-voice.js:LiveVoiceClient has its own transport ownership.
   function newRun() { return ++S.run; }
@@ -575,7 +599,7 @@ export function mountPlayer(host, bundle, api) {
       proc.onaudioprocess = (e) => {
         if (!current() || !capturing) return;
         const d = e.inputBuffer.getChannelData(0); chunks.push(new Float32Array(d)); let sum = 0; for (const sample of d) sum += sample * sample;
-        const now = Date.now(); if (Math.sqrt(sum / d.length) > 0.012) { spoke = true; lastVoice = now; }
+        const now = Date.now(); if (Math.sqrt(sum / d.length) > 0.012) { if (!spoke) cancelPostAnswerListen(); spoke = true; lastVoice = now; }
         if ((spoke && now - lastVoice > 1300) || now - t0 > timeout || (!spoke && now - t0 > Math.min(timeout, 7000))) finish();
       };
       src.connect(proc); proc.connect(ctx.destination);
@@ -614,7 +638,8 @@ export function mountPlayer(host, bundle, api) {
       S.finishListen = () => { try { rec.stop(); } catch (e) { end(); } };
       // Combine final and interim recognition results and update the visible partial transcript.
       // Ignore stale events; final text is routed locally before any server/app.py:run_qa request.
-      rec.onresult = (e) => { if (ended || !current()) return; interim = ""; fin = ""; for (const r of e.results) { if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript; } onInterim((fin || interim).trim()); };
+      rec.onspeechstart = () => { if (!ended && current()) cancelPostAnswerListen(); };
+      rec.onresult = (e) => { if (ended || !current()) return; interim = ""; fin = ""; for (const r of e.results) { if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript; } if ((fin || interim).trim()) cancelPostAnswerListen(); onInterim((fin || interim).trim()); };
       // Remember denied microphone access and settle recognition when the browser reports an error.
       // The screen can then offer typing; this does not retry server/app.py:run_stt.
       rec.onerror = (e) => { if (!current() || ended) return; if (e.error === "not-allowed" || e.error === "service-not-allowed") S.micDenied = true; end(); };
@@ -819,28 +844,20 @@ export function mountPlayer(host, bundle, api) {
     addMsg("note", "Updated the unplayed route from your stated priority; the current return point was retained.");
     return run === S.run;
   }
-  // Pause after a narration line that is a confirmation or question.
-  // Return continuation only for the current run; new reply text may be answered by server/app.py:run_qa.
+  // Narration never opens a customer turn, including question-shaped legacy lines.
+  // Only runtime clarification, explicit questions and CTA choices own waits.
   async function waitForLineQuestion(line, run) {
-    if (line.step !== "confirm" && !/[?？]/.test(line.text || "")) return run === S.run;
-    if (run !== S.run) return false;
-    el.cite.textContent = "";
-    const r = await waitFor([{ label: "Skip this question", value: "continue" }], 0, { openAnswer: true });
-    if (run !== S.run) return false;
-    if (r.text) { rememberContext(r.text); handleQuestion(r.text); return false; }
-    return r.value === "continue";
+    return run === S.run;
   }
   // Play each narration line in order, revealing its callouts as the line starts.
-  // Await audio completion and any customer wait; web/slide.js:renderSlide never chooses the narration pace.
+  // Await audio completion; web/slide.js:renderSlide never chooses the narration pace.
   async function playLines(sl, run, view, from = 0, upto = sl.lines.length) {
     for (let j = from; j < upto; j++) {
       if (run !== S.run) return false;
       S.line = j; S.playback.line = j;
       const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : "";
-      const isQuestion = ln.step === "confirm" || /[?？]/.test(ln.text || "");
-      if (isQuestion) S.promptRun = run;
       const spoken = await speak(ln.text, run, ln.audio);
-      if (!spoken && !(live && isQuestion && run === S.run)) return false;
+      if (!spoken) return false;
       S.line = j + 1; S.playback.line = j + 1;
       if (!(await waitForLineQuestion(ln, run))) return false;
     }
@@ -873,25 +890,17 @@ export function mountPlayer(host, bundle, api) {
       if (lineIdx === 0 && step.bridge && !bridgeDone) { el.cite.textContent = step.bridge_fact_ids?.length ? "sources: " + step.bridge_fact_ids.join(", ") : ""; if (!(await speak(step.bridge, run, step.bridge_audio))) return; S.playback.bridgeDone = true; if (!(await waitForLineQuestion({ text: step.bridge }, run))) return; }
       if (!(await playLines(sl, run, view, lineIdx, short ? 1 : sl.lines.length))) return;
       lineIdx = 0; bridgeDone = false; if (run !== S.run) return;
-      const topic = topicOf(sl);
-      // Ask the slide check-in after its narration unless this is an ordinary shortened revisit.
-      // The answer selects continuation, deeper explanation or server/app.py:run_qa; silence does not select an option.
+      // A stop's closing statement is narration. Legacy question-shaped check-ins
+      // still play, then the next slide starts without chips or a response wait.
       if (sl.checkin?.text && !short) {
-        S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = ""; const ok = await speakPrompt(sl.checkin.text, run, sl.checkin.audio); if (!ok) return;
-        const conc = !!sl.priority || S.profile.focus.includes(topic);
-        const chips = conc ? [{ label: "That settles it", value: "yes", primary: true }, { label: "Still unsure", value: "deeper" }, { label: "I have a question", value: "question" }] : [{ label: "Continue", value: "continue", primary: true }, { label: "Tell me more", value: "deeper" }, { label: "I have a question", value: "question" }];
-        const r = await waitFor(chips); if (run !== S.run) return;
-        if (r.value === "yes") { S.resolved.add(topic); const ok2 = await speakF("good", "Good — moving on.", run); if (!ok2) return; }
-        else if (r.value === "deeper") { if (!(await playDeeper(sl, run, view))) return; }
-        else if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
-        else if (r.value === "__interrupted") return;
+        S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = "";
+        if (!(await speak(sl.checkin.text, run, sl.checkin.audio))) return;
       }
     }
     await closeFlow(run);
   }
 
-  // Play a slide's deeper reviewed explanation and ask whether it helped.
-  // Return true only when the customer chooses to continue; unresolved detail is saved by server/app.py:save_session.
+  // Play a slide's deeper reviewed explanation and continue after its audio.
   async function playDeeper(sl, run, view, from = 0) {
     S.raised.add(topicOf(sl)); prefetch(sl.deeper || []); view.setRevealed(99);
     const lines = sl.deeper || [];
@@ -906,17 +915,7 @@ export function mountPlayer(host, bundle, api) {
     S.playback = { phase: "route", index: S.seg, line: sl.lines.length, checkin: true, bridgeDone: true };
     el.cite.textContent = "";
     if (!lines.length && !(await speak("That's everything the material covers on this. Ask me anything specific and I'll check.", run))) return false;
-    const clearer = F("clearer", "Is that clearer?"); if (!(await speakPrompt(clearer.text, run, clearer.audio))) return false;
-    const r = await waitFor([{ label: "Yes, continue", value: "yes", primary: true }, { label: "Not really", value: "no" }, { label: "Question", value: "question" }]);
-    if (run !== S.run) return false;
-    if (r.value === "yes") { S.resolved.add(topicOf(sl)); S.unresolved.delete(topicOf(sl)); S.openQuestions.delete(`More clarity on ${sl.title}`); return true; }
-    if (r.value === "no") {
-      S.unresolved.add(topicOf(sl)); S.openQuestions.add(`More clarity on ${sl.title}`); S.escalations.push(`${topicOf(sl)} — still unsure after the deeper explanation`);
-      if (!(await speak("What would help make that clearer? You can ask something specific, or choose Continue when you are ready.", run))) return false;
-      captureOrigin(); await holdConversation(run);
-    } else if (r.text) handleQuestion(r.text);
-    else if (r.value === "question") listenForQuestion();
-    return false;
+    return run === S.run;
   }
   // Restore a deeper-explanation checkpoint on the correct slide and line.
   // Continue the route only after that explanation completes; web/slide.js:renderSlide restores the visual.
@@ -974,6 +973,7 @@ export function mountPlayer(host, bundle, api) {
   // Route a microphone click to live capture, intake, an existing wait or a new question.
   // Use live-voice.js:LiveVoiceClient.startCapture/stopCapture when available; otherwise use the legacy listener.
   function micTap() {
+    cancelPostAnswerListen();
     if (live) { if (live.mic || S.micOpening) live.stopCapture(); else { resumeSession(); S.inputMode = "voice"; live.startCapture(); } return; }
     S.inputMode = "voice";
     resumeSession();
@@ -982,15 +982,21 @@ export function mountPlayer(host, bundle, api) {
     if (S.waiter) { listenForTurn(S.waiter); return; }
     listenForQuestion();
   }
-  // Keep the conversation open after an answer and offer an explicit return to the demo.
-  // Customer choice may call server/app.py:run_qa again or choose a configured next step; no automatic return occurs.
-  async function holdConversation(run, { suggested = null } = {}) {
+  // Offer reply choices after an answer, then resume after a short silent window.
+  // Clarification and explicit question solicitation opt out of that deadline.
+  async function holdConversation(run, { suggested = null, turn = null, autoResume = true } = {}) {
     const cta = (bundle.ctas || []).find(item => item.id === suggested);
     const choices = [{ label: "Ask another question", value: "question" }, { label: "Continue demo", value: "continue", primary: true }];
     if (cta) choices.push({ label: cta.label, value: "cta:" + cta.id });
-    const r = await waitFor(choices);
+    const response = waitFor(choices), owner = S.waiter;
+    if (autoResume && owner?.run === run) {
+      S.postAnswerListen = { waiter: owner, run, turn, timer: null };
+      armPostAnswerListen();
+    }
+    (el.lead.classList.contains("open") ? el.leadName : el.drawer.classList.contains("open") ? el.q : el.reply).focus({ preventScroll: true });
+    const r = await response;
     if (run !== S.run) return;
-    if (r.value === "continue") { el.lead.classList.remove("open"); resumeAfterQA(); }
+    if (r.value === "continue" || r.value === "__auto_resume") { el.lead.classList.remove("open"); resumeAfterQA({ automatic: r.value === "__auto_resume" }); }
     else if (r.value.startsWith("cta:")) await ctaFlow(r.value.slice(4), run);
     else if (r.text) handleQuestion(r.text);
     else if (r.value === "question") listenForQuestion();
@@ -1029,7 +1035,7 @@ export function mountPlayer(host, bundle, api) {
       if (!(S.transcript.at(-1)?.role === "user" && S.transcript.at(-1)?.text === text)) addMsg("user", text);
       rememberContext(text, { statedNeed: true });
       S.profile.focus = [...new Set([...parseFocus(text), ...S.profile.focus])]; queueRefinement();
-      if (await speak("Thanks—I've noted that priority. I'll use it to tailor the remaining demo.", run)) await holdConversation(run);
+      if (await speak("Thanks—I've noted that priority. I'll use it to tailor the remaining demo.", run)) await holdConversation(run, { autoResume: false });
       return;
     }
     captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); const run = newRun(); let jumped = null;
@@ -1062,7 +1068,7 @@ export function mountPlayer(host, bundle, api) {
       S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
       if (!(await speak("I couldn't reach my notes just now. You can ask again, or choose Continue when you are ready.", run))) return;
       turn.delivery_done = Date.now(); S.activeTurn = null;
-      S.escalations.push(`error answering: "${customerQuestion}"`); S.unresolved.add("question"); await holdConversation(run); return;
+      S.escalations.push(`error answering: "${customerQuestion}"`); S.unresolved.add("question"); await holdConversation(run, { turn }); return;
     }
     // Store returned classification, tool and timing metadata without treating the flag as a quality grade.
     // server/runtime_graph.py:run_turn supplies these fields; server/runtime_metrics.py:aggregate later groups their latency.
@@ -1083,7 +1089,7 @@ export function mountPlayer(host, bundle, api) {
       if (run !== S.run) return;
       turn.delivery_done = Date.now(); S.activeTurn = null;
       if (a) { rememberContext(`${r.clarifying_question} ${a}`); handleQuestion(a, { question: customerQuestion, skipBank: true }); }
-      else await holdConversation(run);
+      else await holdConversation(run, { autoResume: false });
       return;
     }
     if (!r.answered) {
@@ -1095,7 +1101,7 @@ export function mountPlayer(host, bundle, api) {
       const decline = live && r.answer ? r.answer : "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.";
       if (!(await speak(decline, run, live ? r.audio : null, live ? r : null))) return;
       turn.delivery_done = Date.now(); S.activeTurn = null;
-      showLeadPrompt("unknown", customerQuestion); await holdConversation(run); return;
+      showLeadPrompt("unknown", customerQuestion); await holdConversation(run, { turn }); return;
     }
     const from = cur?.slide?.id || null;
     jumped = r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
@@ -1123,53 +1129,38 @@ export function mountPlayer(host, bundle, api) {
     if (!(await speak(r.answer, run, r.audio, r))) return;
     turn.delivery_done = Date.now(); S.activeTurn = null;
     if (r.offer_callback) showLeadPrompt("question", customerQuestion);
-    if (live) {
-      // After successful live answer delivery, wait for another question or explicit continuation.
-      // Legacy bundles keep their older satisfaction question; live-voice.js:LiveVoiceClient keeps capture independent.
-      S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion);
-      // No ritual satisfaction question: the customer owns the next turn and continuation.
-      await holdConversation(run, { suggested: r.cta }); return;
-    }
-    if (!(await speakF("did_that_answer", "Did that answer it?", run))) return;
-    // A model CTA is only a suggestion. Customer input must select a configured
-    // action; agreement that the answer helped never authorizes that action.
-    const suggested = (bundle.ctas || []).find((c) => c.id === r.cta);
-    const choices = [{ label: "Yes, that helps", value: "yes", primary: true }, { label: "Not quite", value: "no" }, { label: "Ask another question", value: "question" }];
-    if (suggested) choices.push({ label: suggested.label, value: "cta:" + suggested.id });
-    const r2 = await waitFor(choices);
-    if (run !== S.run) return;
-    if (r2.value.startsWith("cta:")) await ctaFlow(r2.value.slice(4), run);
-    else if (r2.value === "yes") { S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion); el.lead.classList.remove("open"); resumeAfterQA(); }
-    else if (r2.value === "no") {
-      S.unresolved.add(r.topic || "question"); S.escalations.push(`not satisfied: "${customerQuestion}"`);
-      if (!(await speak("What part is still unclear? Tell me a little more, or choose Continue when you are ready. I'll keep this question open.", run))) return;
-      await holdConversation(run);
-    } else if (r2.text) handleQuestion(r2.text);
-    else if (r2.value === "question") listenForQuestion();
+    S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion);
+    // A suggested CTA remains an explicit customer choice; silence only resumes narration.
+    await holdConversation(run, { suggested: r.cta, turn });
   }
   // Open the optional dealership contact form with wording appropriate to the reason.
   // Local fields are prefilled only; server/app.py:run_lead is called only after form submission.
   function showLeadPrompt(reason, question = "") {
     if (S.leads.length || (S.leadPromptShown && reason !== "unknown" && reason !== "requested")) return;
+    S.leadFormId = (S.leadFormId || 0) + 1;
     S.leadPromptShown = true; S.leadReason = reason; S.leadQuestion = question || "test drive";
     el.leadName.value = S.profile.name || ""; el.leadPhone.value = ""; el.leadError.textContent = "";
     const callback = reason === "unknown" || reason === "requested";
     el.lead.querySelector("h3").textContent = callback ? "Would you like the dealership to follow up?" : "Would you like to try it in person?";
     el.leadForm.querySelector("button[type=submit]").textContent = callback ? "Request a callback" : "Arrange a test drive";
+    el.leadForm.querySelector("button[type=submit]").disabled = false;
     el.leadCopy.textContent = reason === "unknown" ? "I don't have that answer in the approved sources. Leave your details and the dealership can answer it directly." : reason === "requested" ? "Share your details if you would like help with the questions we discussed." : "Share your details if you would like the dealership to arrange a test drive.";
     el.lead.classList.add("open");
+    if (S.postAnswerListen) { clearTimeout(S.postAnswerListen.timer); S.postAnswerListen.timer = null; S.postAnswerListen.heldForLead = true; }
   }
   // Validate a submitted contact form and save consent, the question and customer context.
   // web/app.js:renderPlay connects api.lead to server/app.py:run_lead; failures keep the form open for retry.
   async function saveLeadForm() {
     const name = el.leadName.value.trim(); const raw = el.leadPhone.value.replace(/[\s-]/g, ""); const m = raw.match(PHONE);
     if (!m) { el.leadError.textContent = "Enter a valid 10-digit Indian mobile number."; el.leadPhone.focus(); return; }
+    const sessionId = S.sessionId, formId = S.leadFormId;
     const btn = el.leadForm.querySelector("button[type=submit]"); btn.disabled = true; el.leadError.textContent = "Saving…";
     let ok = true; try { await api.lead({ phone: m[1], question: S.leadQuestion || "test drive", profile: { ...profileForServer(), name: name || S.profile.name }, consent: true, consent_text: CONSENT, session_id: S.sessionId }); } catch (e) { ok = false; }
+    if (S.sessionId !== sessionId || S.leadFormId !== formId || !el.lead.classList.contains("open")) return;
     btn.disabled = false;
     if (!ok) { el.leadError.textContent = "Couldn't save that just now. Please try once more."; return; }
     if (name) S.profile.name = name; S.leads.push({ phone: m[1], question: S.leadQuestion || "test drive" }); S.escalations.push(`callback requested on ${m[1]}: "${S.leadQuestion || "test drive"}"`);
-    el.lead.classList.remove("open"); addMsg("note", "Follow-up request saved for the dealership");
+    dismissLeadPrompt(); addMsg("note", "Follow-up request saved for the dealership");
   }
   // Build the compact customer profile sent with runtime requests.
   // Return stated text, focus, server customer state and language for server/app.py:run_qa and run_pitch.
@@ -1182,18 +1173,18 @@ export function mountPlayer(host, bundle, api) {
   function mediaUrlFor(v) { if (!v) return null; for (const im of bundle.media?.images || []) if (im.id === v.ref) return im.url; const src = v.source_id; for (const vid of bundle.media?.videos || []) if (v.kind === "shot" && src && vid.url.includes(src)) return null; return null; }
   // Clear question highlighting and return to the single saved playback checkpoint after a short bridge.
   // The bridge may use live-voice.js:LiveVoiceClient.speak; resumePlayback restores the route rather than the jump slide.
-  async function resumeAfterQA() {
+  async function resumeAfterQA({ automatic = false } = {}) {
     const origin = S.conversationOrigin || { ...S.playback }; S.conversationOrigin = null;
     if (cur) cur.view.highlight(null);
     const run = newRun();
-    if (!(await speakF("back_to_demo", "Let's return to where we paused.", run))) return;
+    if ((!automatic || bundle.fillers?.back_to_demo?.audio) && !(await speakF("back_to_demo", "Let's return to where we paused.", run))) return;
     resumePlayback(origin, run);
   }
   // Dispatch a saved phase and line checkpoint to its matching playback function.
   // Ready closing refinements may add reviewed steps from server/agents/pitch.py:plan_pitch before returning to closing.
   function resumePlayback(origin, run = newRun()) {
     if (run !== S.run) return;
-    if (origin.phase === "route") { playFrom(origin.index + (origin.checkin ? 1 : 0), origin.checkin ? 0 : origin.line, !origin.checkin && origin.bridgeDone); return; }
+    if (origin.phase === "route") { playFrom(origin.index, origin.checkin ? S.plan[origin.index]?.slide.lines.length || 0 : origin.line, origin.checkin || origin.bridgeDone); return; }
     if (origin.phase === "deeper") { resumeDeeper(origin, run); return; }
     if (origin.phase === "closing") {
       if (S.pendingRefinement?.status === "ready") {
@@ -1479,7 +1470,7 @@ export function mountPlayer(host, bundle, api) {
     interruptAll({ preservePlanning: openingPlanPending() }); S.paused = true; el.pauseBtn.replaceChildren(icon("play", { size: 18 })); el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press play to continue.";
     // Capture a resume action that returns to intake, conversation or the saved playback phase.
     // This closure runs only on explicit resume; live-voice.js:LiveVoiceClient does not advance the route itself.
-    S.resume = () => { if (intake) runIntake(); else if (conversation) holdConversation(newRun()); else resumePlayback({ ...origin, checkin: false }); };
+    S.resume = () => { if (intake) runIntake(); else if (conversation) holdConversation(newRun(), { autoResume: false }); else resumePlayback({ ...origin, checkin: false }); };
   }
   // Stop the active demo, clear intake and show a summary instead of continuing narration.
   // showHandoff requests persistence through server/app.py:save_session.

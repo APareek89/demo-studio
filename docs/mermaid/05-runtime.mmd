@@ -7,7 +7,7 @@ flowchart TD
   OVERVIEW["Grounded overview in the selected voice<br/>[DATA · bundle.runtime.overview]<br/>10–15 second target measured from generated audio"]:::data
   PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order reviewed slides; explicit priority revision may revisit selected seen proof"]:::agent
   ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>initial pitch: first unseen fundamental before three-proof limit<br/>player fallback mirrors one-stop move; refinements/revisits unchanged"]:::fn
-  PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching callout with each line; spoken question owns its wait"]:::fn
+  PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching callout with each line<br/>speak stop-closing checkin and continue without a wait"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Short acknowledgement when useful<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data
   RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local ranking; request-local universal scope; pinned condition dependencies"]:::fn
@@ -20,9 +20,10 @@ flowchart TD
   PLAN["Checkpoint a versioned DeliveryPlan<br/>[DATA · runtime_state.py]<br/>snapshot, turn/utterance ID, result + plain_language_substitutions<br/>next interaction; no audio in graph"]:::data
   VIEW["Evidence view: stay / jump / none<br/>[FUNCTION · deck.route_for + player.js]<br/>runtime-v1 answer starts directly on its evidence; no extra spoken bridge<br/>turn ownership and original return point stay stable"]:::fn
   SPEAK["Request selected-voice streaming delivery<br/>[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]<br/>validated answer first, PCM chunks second; cancel closes its socket"]:::data
-  WAIT["Listen and wait<br/>[ASK · follow-up / reply / Continue / configured CTA]<br/>silence never resumes narration"]:::ask
+  LISTEN["Answer/decline reply window: 3000 ms<br/>[FUNCTION · holdConversation]<br/>chips + focused typing; voice-mode capture open<br/>speech onset, typing or a chip cancels the owned timer"]:::fn
+  WAIT["Clarification or active customer turn<br/>[ASK · reply / Continue / configured CTA]<br/>no silence timer; wait for customer action"]:::ask
   CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing"]:::fn
-  RESUME["Continue → exact interrupted location<br/>[FUNCTION · resumeAfterQA]"]:::fn
+  RESUME["Resume saved narration; interrupted line starts again<br/>[FUNCTION · resumeAfterQA]<br/>automatic return: recorded back_to_demo only, else silence<br/>auto_resumed + listen window saved on the turn"]:::fn
   CTA["Customer selects next step + separately consents to contact<br/>[ASK · existing lead form]<br/>no model-triggered submission"]:::ask
   SAVE["Save heard transcript, timings, recap and consent<br/>[DATA · sessions / traces / runtime_metrics.py]<br/>missing/cancelled timings visible; small samples labelled"]:::data
   FAIL["Supported partial answer or temporary limitation<br/>[FUNCTION · bounded failure]<br/>no outage cached as a knowledge gap"]:::fn
@@ -39,8 +40,12 @@ flowchart TD
   CHOICE -- "answer or clarification" --> VALIDATE --> PLAN
   VALIDATE -- "empty or rejected substantive draft; budget remains" --> REPAIR --> RECHECK --> PLAN
   REASON -- "deadline or unavailable" --> FAIL --> PLAN
-  PLAN --> VIEW --> SPEAK --> WAIT
-  PLAY -- "check-in" --> WAIT
+  PLAN --> VIEW --> SPEAK
+  SPEAK -- "clarification" --> WAIT
+  SPEAK -- "answer or decline" --> LISTEN
+  LISTEN -- "3 seconds of silence; same run/turn" --> RESUME
+  LISTEN -- "speech onset / typing / chip; cancel timer" --> WAIT
+  PLAY -- "stop-closing text complete" --> PLAY
   WAIT -- "question or reply" --> RETRIEVE
   WAIT -- "changed priority" --> CORRECT --> PERSONALIZE
   WAIT -- "Continue" --> RESUME --> PLAY

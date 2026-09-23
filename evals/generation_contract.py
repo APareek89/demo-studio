@@ -112,7 +112,7 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         line = {"text": "Take a look at the choices for your drive.", "visual": {"kind": "none"}, "fact_ids": []}
         technical = {"text": "The diesel automatic has peak torque of 250 Nm.", "visual": {"kind": "none"}, "fact_ids": ["F001"]}
         proposed_script = schemas.ScriptOut(segments=[schemas.SegmentOut(id="drive", title="Your drive", role="proof",
-            topic="performance", lines=[schemas.LineOut(**line)], checkin="Is that enough detail for now?",
+            topic="performance", lines=[schemas.LineOut(**line)], checkin="Let’s keep exploring.",
             deeper=[schemas.LineOut(**technical)])], closing=[], intake_q1="Welcome. Shall we explore?", intake_q2="")
         with patch.object(author.claude, "structured", return_value=proposed_script) as model:
             scripted = author.run(demo_id, lambda _msg: None)
@@ -163,7 +163,7 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         check("generation: split and revalidation preserve one original planned allowance", added == 1 and before_recheck == [29, 15] and [segment["word_budget"] for segment in split["segments"]] == before_recheck and split_timing["planned_total_seconds"] == round(89 / author.WPS, 1) and all(segment["budget_source_id"] == "timed" for segment in split["segments"]))
         measured = timed_script(20)
         measured["segments"][0]["lines"][0]["audio"] = "main.wav"
-        measured["segments"][0].update(word_budget=30, checkin="Ready to continue?", checkin_audio="checkin.wav")
+        measured["segments"][0].update(word_budget=30, checkin="Let’s continue.", checkin_audio="checkin.wav")
         measured["closing"] = [{"text": "Take the next step.", "fact_ids": [], "audio": "closing.wav"}]
         with patch.object(author, "_audio_seconds", side_effect=lambda _did, rel: {"main.wav": 10.0}.get(rel)):
             mixed = author.timeline(measured, "fixture")
@@ -181,7 +181,8 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                     shutil.copy2(legacy_root / name, Path(tmp) / name)
                 copies = {name: json.loads((Path(tmp) / name).read_text()) for name in legacy_names}
                 legacy_issues = author.validate(copies["script.json"], copies["understanding.json"], copies["plan.json"], copies["demo.json"])
-            check("generation: isolated legacy Creta draft still validates without issues", legacy_issues == [])
+            check("generation: isolated legacy Creta retains its budget validity; only legacy question checkins require new-authoring repair",
+                  all("checkin: must be a short closing statement, never a question" in issue for issue in legacy_issues))
             check("generation: legacy Creta source artifacts remain byte-identical", before_hashes == {name: hashlib.sha256((legacy_root / name).read_bytes()).hexdigest() for name in legacy_names})
 
         slide = {"id": "sl01", "kind": "proof", "title": "Driving choices", "image_id": None,
@@ -255,7 +256,7 @@ def run(check, demo_id: str = "generation-fixture") -> None:
                 envelope = model.call_args.args[0]
                 check(f"generation: {'runtime' if live else 'build FAQ'} {label} envelope assigns questions to one owner",
                       model.call_args.args[1] == question and model.call_args.args[2] is schemas.QAOut
-                      and all(rule in envelope for rule in ("The player owns the satisfaction check", "Use statements for ordinary answers",
+                      and all(rule in envelope for rule in ("The player listens briefly after an ordinary answer", "Use statements for ordinary answers",
                           "Only clarifying_question may ask a question", "answer must be that identical single question",
                           "mention available technical detail as a statement"))
                       and "offer the technical detail rather than volunteering it" not in envelope)
