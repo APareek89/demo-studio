@@ -366,30 +366,74 @@ export function renderAlign(ctx) {
     function draw() {
       const orig = dk.slides[i]; const s = JSON.parse(JSON.stringify(orig)); const images = dk.images || []; const moved = {};
       const title = h("input", { value: s.title || "", maxlength: 80 });
-      const imgSel = h("select", {}, ...images.map((x) => h("option", { value: x.id, selected: x.id === s.image_id }, `${x.id} · ${x.angle || ""} · ${(x.description || "").slice(0, 48)}`)));
-      const partNames = () => (images.find((x) => x.id === imgSel.value)?.parts || []).map((p) => p.name);
-      const partSel = (c) => h("select", {}, h("option", { value: "" }, "— side panel —"), ...partNames().map((n) => h("option", { value: n, selected: n === c.part }, n)));
-      const rows = (s.callouts || []).map((c) => ({ c, text: h("input", { value: c.text, maxlength: 90 }), facts: h("input", { value: (c.fact_ids || []).join(", "), placeholder: "F001" }), part: partSel(c) }));
-      const view = renderSlide(s, { editable: true, onMove: (id, pos) => { moved[id] = pos; } });
-      imgSel.onchange = () => { const nx = images.find((x) => x.id === imgSel.value); view.setImage(nx?.url, nx?.parts || []); for (const r of rows) { const keep = r.part.value; r.part.replaceChildren(h("option", { value: "" }, "— side panel —"), ...partNames().map((n) => h("option", { value: n, selected: n === keep }, n))); } };
+      const initialMedia = s.media?.length ? s.media : (s.image_id ? [{ image_id: s.image_id, from_line: 0 }] : []);
+      const pickers = [0, 1].map((slot) => h("select", { "aria-label": `Picture ${slot + 1}` },
+        h("option", { value: "", selected: !initialMedia[slot] }, slot ? "— no second picture —" : "— no picture —"),
+        ...images.map((x) => h("option", { value: x.id, selected: x.id === initialMedia[slot]?.image_id }, `${x.id} · ${x.angle || ""} · ${(x.description || "").slice(0, 48)}`))));
+      let media = initialMedia.map((entry) => ({ ...entry }));
+      const partNames = (imageId) => (images.find((x) => x.id === imageId)?.parts || []).map((p) => p.name);
+      const pictureOptions = (selected) => media.map((entry, index) => h("option", { value: entry.image_id, selected: entry.image_id === selected }, `Picture ${index + 1} · ${entry.image_id}`));
+      const rows = (s.callouts || []).map((c) => {
+        const imageId = c.image_id || initialMedia[0]?.image_id || "";
+        return { c, originalImageId: imageId, image: h("select", { "aria-label": `Picture for callout ${c.id}` }, ...pictureOptions(imageId)),
+          text: h("input", { value: c.text, maxlength: 90 }), facts: h("input", { value: (c.fact_ids || []).join(", "), placeholder: "F001" }),
+          part: h("select", {}, h("option", { value: "" }, "— side panel —"), ...partNames(imageId).map((name) => h("option", { value: name, selected: name === c.part }, name))) };
+      });
+      const stage = h("div", {}); let view = null;
+      function refreshPreview() {
+        for (const row of rows) {
+          const c = row.c; c.image_id = row.image.value || media[0]?.image_id || null;
+          if (c.image_id !== row.originalImageId || row.part.value !== (c.part || "")) {
+            c.anchor = null; c.label_pos = null; c.placement = "panel";
+          } else if (moved[c.id]) c.label_pos = moved[c.id];
+        }
+        s.media = media; s.image_id = media[0]?.image_id || null; s.image_url = media[0]?.image_url || null;
+        view?.destroy(); view = renderSlide(s, { editable: true, onMove: (id, pos) => { moved[id] = pos; } });
+        stage.replaceChildren(view.el); requestAnimationFrame(view.layout);
+      }
+      function refreshParts(row) {
+        const keep = row.part.value;
+        row.part.replaceChildren(h("option", { value: "" }, "— side panel —"), ...partNames(row.image.value).map((name) => h("option", { value: name, selected: name === keep }, name)));
+      }
+      function refreshMedia() {
+        const previous = media;
+        media = pickers.map((picker, slot) => {
+          const image = images.find((item) => item.id === picker.value); if (!image) return null;
+          const original = initialMedia.find((entry) => entry.image_id === image.id);
+          return { ...(original || { proxy: true, proxy_reason: "chosen in Align — illustration" }), image_id: image.id,
+            from_line: initialMedia[slot]?.from_line ?? Math.min(slot, Math.max(0, (s.lines?.length || 1) - 1)), image_url: image.url, image_parts: image.parts || [] };
+        }).filter(Boolean);
+        for (const row of rows) {
+          const old = row.image.value, slot = Math.max(0, previous.findIndex((entry) => entry.image_id === old));
+          const selected = media.some((entry) => entry.image_id === old) ? old : media[slot]?.image_id || media[0]?.image_id || "";
+          row.image.replaceChildren(...pictureOptions(selected)); refreshParts(row);
+        }
+        refreshPreview();
+      }
+      pickers.forEach((picker) => { picker.onchange = refreshMedia; });
+      for (const row of rows) { row.image.onchange = () => { refreshParts(row); refreshPreview(); }; row.part.onchange = refreshPreview; }
+      refreshMedia();
       const form = h("div", { class: "slide-editor-form" },
         h("label", {}, "Title (≤ 6 words)", title),
-        images.length ? h("label", {}, "Picture", imgSel) : h("p", { class: "small muted" }, "No pictures in this demo."),
+        ...(images.length ? pickers.map((picker, slot) => h("label", {}, `Picture ${slot + 1}${slot ? " (optional)" : ""}`, picker,
+          initialMedia[slot]?.proxy ? h("small", { class: "muted" }, "illustration · ", initialMedia[slot].proxy_reason || "") : null)) : [h("p", { class: "small muted" }, "No pictures in this demo.")]),
         h("p", { class: "eyebrow", style: "margin:4px 0 0" }, `Callouts · ${rows.length}`),
-        ...rows.map((r, k) => h("div", { class: "callout-row" }, h("span", { class: "num" }, String(k + 1)), h("label", {}, "Text (≤ 8 words; a figure or claim needs a fact id)", r.text), h("label", {}, "Fact ids", r.facts), h("label", {}, "Points at", r.part), h("small", { class: "muted" }, r.c.placement === "overlay" ? `on the picture · part confidence ${r.c.confidence}` : (r.c.part ? `side panel · part confidence ${r.c.confidence} is below 0.6` : "side panel · no part named")))),
+        ...rows.map((r, k) => h("div", { class: "callout-row" }, h("span", { class: "num" }, String(k + 1)), h("label", {}, "Text (≤ 8 words; a figure or claim needs a fact id)", r.text), h("label", {}, "Fact ids", r.facts), h("label", {}, "Picture", r.image), h("label", {}, "Points at", r.part))),
         rows.length ? null : h("p", { class: "small muted" }, "No callouts on this slide."),
         s.lines?.length ? h("div", {}, h("p", { class: "eyebrow", style: "margin:4px 0 0" }, "The guide says"), h("ol", { class: "slide-lines" }, ...s.lines.map((l) => h("li", {}, l.text)))) : null);
       const save = async (approveAfter) => {
         const out = { slide_id: orig.id, callouts: [] };
         if (title.value.trim() !== (orig.title || "")) out.title = title.value.trim();
-        if (images.length && imgSel.value !== orig.image_id) out.image_id = imgSel.value;
-        for (const r of rows) { const co = { id: r.c.id }; if (r.text.value.trim() !== r.c.text) co.text = r.text.value.trim(); const f = r.facts.value.split(",").map((x) => x.trim()).filter(Boolean); if (f.join(",") !== (r.c.fact_ids || []).join(",")) co.fact_ids = f; if (r.part.value !== (r.c.part || "")) co.part = r.part.value; if (moved[r.c.id]) co.label_pos = moved[r.c.id]; if (Object.keys(co).length > 1) out.callouts.push(co); }
-        if (out.title !== undefined || out.image_id !== undefined || out.callouts.length) { await api.patch(`/api/demos/${demoId}/align/deck`, { slides: [out] }); await reload(); dk = cards.deck; toast("Slide saved"); }
+        const selected = media.map((entry) => entry.image_id);
+        if (new Set(selected).size !== selected.length) throw new Error("Choose two different pictures.");
+        if (selected.join(",") !== initialMedia.map((entry) => entry.image_id).join(",")) out.media = selected;
+        for (const r of rows) { const co = { id: r.c.id }; if ((r.image.value || null) !== (r.originalImageId || null)) co.image_id = r.image.value || null; if (r.text.value.trim() !== r.c.text) co.text = r.text.value.trim(); const f = r.facts.value.split(",").map((x) => x.trim()).filter(Boolean); if (f.join(",") !== (r.c.fact_ids || []).join(",")) co.fact_ids = f; if (r.part.value !== (r.c.part || "")) co.part = r.part.value; if (moved[r.c.id]) co.label_pos = moved[r.c.id]; if (Object.keys(co).length > 1) out.callouts.push(co); }
+        if (out.title !== undefined || out.media !== undefined || out.callouts.length) { await api.patch(`/api/demos/${demoId}/align/deck`, { slides: [out] }); await reload(); dk = cards.deck; toast("Slide saved"); }
         if (approveAfter) { await setApproval("script", true); bg.remove(); } else draw();
       };
       box.replaceChildren(
         h("div", { class: "phead" }, h("h2", {}, `Slide ${i + 1} of ${dk.slides.length}`, h("span", { class: "muted small", style: "margin-left:10px" }, orig.kind.replaceAll("_", " "))), h("div", { style: "display:flex;gap:6px" }, h("button", { class: "btn sm ghost", disabled: i === 0, onclick: () => { i--; draw(); } }, icon("arrow-left", { size: 15 }), "Prev"), h("button", { class: "btn sm ghost", disabled: i === dk.slides.length - 1, onclick: () => { i++; draw(); } }, "Next", icon("arrow-right", { size: 15 })), h("button", { class: "btn sm", onclick: () => bg.remove() }, "Close"))),
-        h("div", { class: "pbody slide-editor" }, h("div", {}, view.el), form),
+        h("div", { class: "pbody slide-editor" }, stage, form),
         h("div", { class: "editor-actions" }, h("span", { class: "small muted", style: "margin-right:auto" }, "Drag a callout to move it. Saving keeps your positions over any rebuild; an uncited figure or claim is refused."), h("button", { class: "btn", onclick: () => save(false).catch((e) => toast(e.message, true)) }, "Save"), h("button", { class: "btn primary", onclick: () => save(true).catch((e) => toast(e.message, true)) }, "Save & approve")));
       requestAnimationFrame(view.layout);
     }

@@ -52,6 +52,11 @@ session resume after refresh and multi-worker runtime ownership.
   in reviewed playbook order; delighters come after fundamentals. No decision frame or digits in the
   first spoken line. This replaces the earlier supported-standout opening. Use a warm, cheerful guide
   with restrained pace and punctuation, never invented SSML/emotion controls.
+- Initial Explore plans lead with the first unseen fundamental proof stop before the three-proof
+  limit; the initial player fallback mirrors that one-stop move. Seen filtering, refinements and
+  explicit revisits retain their existing behavior. The fundamental flag reaches the runtime library.
+- Slides allow up to two pictures. Where no literal audited picture is available, a nearby tagged
+  picture or the hero may illustrate a cited fact; mark it **illustration** and never count it as proof.
 - One initial microphone permission enables continuous listening. Speech onset cancels local audio;
   session, turn, utterance and capture-generation ownership reject stale output. Typed input remains available.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →
@@ -72,7 +77,7 @@ session resume after refresh and multi-worker runtime ownership.
 - Everything the agents do is observable per call (stage, model, latency, tokens, cost, prompt, response) inside the app.
 
 ## Slides v1 (branch `slides-v1`, from 2026-09-18)
-- One script segment = one slide: a still image chosen for the topic, ≤3 grounded callouts anchored on the tagged product part, revealed as the matching line plays. Callouts pass the same validator as script lines.
+- One script segment = one slide with up to two native-fit pictures and ≤3 grounded callouts per picture. Callouts and picture emphasis follow the matching spoken line; labels belong to their own picture and pass the same validator as speech. This supersedes the original single-picture limit.
 - The player has two stage modes, video and slide; sync is event-driven (audio leads, screen follows).
 - Runtime model calls try providers in a configurable order (default Gemini → Claude → Runware) with a short per-provider timeout; when every provider fails the guide declines and offers a callback. `MODEL_TIER=eval` selects cheaper text defaults; `customer` opts into premium text models. Only `MOCK_LLM=1` avoids paid calls.
 - The transcript sent to Q&A holds only the words the customer actually heard.

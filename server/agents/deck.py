@@ -1,8 +1,8 @@
 """Stage — Deck.  One script segment = one slide.
 
-Deterministic wherever a rule can decide: which picture a slide shows (tagged parts vs. the words), where a label sits
+Deterministic wherever a rule can decide: which two pictures a slide shows (audited bindings or marked illustration), where a label sits
 (outside the part box, inside the frame, never overlapping another label), and the fallback callouts (the slide's own
-cited facts). The model writes only what needs judgement — a ≤ 6-word title and ≤ 3 callouts of ≤ 8 words per slide,
+cited facts). The model writes only what needs judgement — a ≤ 6-word title and ≤ 3 callouts of ≤ 8 words per picture,
 each citing fact ids — and the same validator that guards script lines drops any callout that states a figure or claim
 without a citation. Positions are never guessed: no confident part, no anchor → the callout goes to a side panel.
 
@@ -28,6 +28,7 @@ MAX_CALLOUTS = 3
 MAX_CALLOUT_WORDS = 8
 MAX_TITLE_WORDS = 6
 PART_CONFIDENCE = 0.6          # below this the part is not trusted for a position: the callout goes to the panel
+PROXY_PARTS = {"engine": ["bonnet", "hood", "grille", "front bumper", "headlamp", "front"], "turbo": ["bonnet", "hood", "grille", "front"], "gearbox": ["gear lever", "gear selector", "gear knob", "centre console", "console"], "transmission": ["gear lever", "gear selector", "centre console", "console"], "suspension": ["wheel", "tyre", "wheel arch", "side profile", "side"], "ground clearance": ["wheel", "tyre", "side profile", "side", "underbody"], "tyre": ["wheel", "tyre"], "wheel": ["wheel", "alloy"], "boot": ["tailgate", "boot", "rear", "rear bumper"], "safety": ["airbag", "seat belt", "dashboard"], "price": [], "warranty": [], "efficiency": []}
 LABEL_W, LABEL_H = 0.30, 0.09  # a one-line chip's footprint as a fraction of the frame
 MARGIN, GAP = 0.02, 0.02
 
@@ -36,6 +37,7 @@ MARGIN, GAP = 0.02, 0.02
 # The parsed fields go to clean_callouts; bundle.py:build later carries accepted labels to the player.
 class CalloutOut(BaseModel):
     slide_id: str
+    image_id: str = Field(default="", description="ID of the picture this callout belongs to, from this slide's MEDIA list")
     text: str = Field(description="≤ 8 words: a complete source-supported label, neutral specification or fit-check; retain material scope and units, and omit the callout if they do not fit; never invent a benefit")
     fact_ids: list[str] = Field(description="every fact this callout relies on; a figure or claim with none is deleted")
     part: str = Field(default="", description="the product part it points at, spelled EXACTLY as in the slide's PARTS list, or empty")
@@ -58,7 +60,7 @@ class DeckOut(BaseModel):
 
 # Ask only for the on-screen layer, using approved fact text and the selected picture parts.
 # _ask_model sends this prompt to llm/claude.py:structured; spoken wording still comes from author.py:run.
-DECK_SYSTEM = """You write the on-screen layer of a spoken product demo: a short title and up to three callouts per slide.
+DECK_SYSTEM = """You write the on-screen layer of a spoken product demo: a short title and up to three callouts per picture.
 Help the buyer notice the supported detail or choice. Narration and existing slide titles are context, not evidence
 for extra claims; use the current fact registry and its conditions even when narration sounds more persuasive.
 - A callout is ≤ 8 words: a complete supported label, neutral specification or fit-check. A plain feature name with
@@ -66,10 +68,10 @@ for extra claims; use the current fact registry and its conditions even when nar
   qualifications. If they cannot fit, omit the callout rather than dropping a condition or inventing a shorter benefit.
 - Every figure or claim cites fact ids from the REGISTRY. A validator deletes an uncited claim, but an existing id
   does not establish that an added benefit is true. Do not infer room, road capability, savings or safety from a spec.
-- Point each callout at a part from that slide's PARTS list, spelled exactly; leave part empty when nothing fits — it is
+- Set image_id to one of the slide's MEDIA picture IDs. Point each callout at a part from THAT picture's PARTS list, spelled exactly; leave part empty when nothing fits — it is
   then shown in a side panel, which is fine. Never point at a part that is not listed.
 - reveal_on_line is the 0-based line the callout supports, so it appears as those words are spoken.
-- At most three per slide; none for the greeting and closing slides. Titles ≤ 6 words, plain, no marketing.
+- At most three per picture; none for the greeting and closing slides. A proxy picture is an illustration, never proof of its cited fact. Titles ≤ 6 words, plain, no marketing.
 {evidence}
 {audience}
 {language}
@@ -115,6 +117,79 @@ def choose_image(seg: dict, cat: dict[str, dict], script_refs: list[str], hero_i
     if script_refs:
         return script_refs[0], "the script's own picture"
     return hero_id, "hero — no picture matches this topic"
+
+
+def choose_proxy(seg_text: str, images: list[dict], hero_id: str | None) -> dict:
+    """Pick a confidently tagged related picture as illustration, never as proof."""
+    text = " ".join(re.findall(r"[a-z0-9]+", (seg_text or "").lower()))
+    key = next((key for key in PROXY_PARTS if re.search(r"\b" + re.escape(key) + r"s?\b", text)), None)
+    candidates = PROXY_PARTS.get(key, [])
+    best = None
+    for index, image in enumerate(images):
+        tags = [{"name": str(part.get("name") or "").lower(), "confidence": float(part.get("confidence") or 0)}
+                for part in image.get("parts", []) if isinstance(part, dict)]
+        matches = [part for part in tags if part["confidence"] >= PART_CONFIDENCE
+                   and any(re.search(r"\b" + re.escape(name) + r"s?\b", part["name"], re.I) for name in candidates)]
+        if matches:
+            part = max(matches, key=lambda item: item["confidence"])
+            score = (len(matches), part["confidence"], -index)
+            if best is None or score > best[0]:
+                best = (score, image["id"], part["name"])
+    if best:
+        return {"image_id": best[1], "from_line": 0, "proxy": True, "proxy_reason": f"closest by part: {best[2]}"}
+    allowed = {image["id"] for image in images}
+    if hero_id in allowed:
+        return {"image_id": hero_id, "from_line": 0, "proxy": True, "proxy_reason": "hero — no picture for this topic"}
+    return {}
+
+
+def choose_media(seg: dict, lines: list[dict], und: dict, script_audit: dict | None, hero_id: str | None) -> list[dict]:
+    """Use at most two distinct literal audited bindings in narration order, else an illustration."""
+    images = und.get("images", [])
+    allowed = {image["id"] for image in images}
+    audit_present = isinstance(script_audit, dict) and "lines" in script_audit
+    rows = {row.get("line_id"): row for row in (script_audit or {}).get("lines", [])}
+    media, seen = [], set()
+    for index, line in enumerate(line for line in lines if not line.get("unverified")):
+        visual = line.get("visual") or {}
+        ref = visual.get("ref")
+        # Older pixel-audit results kept ref/focus but omitted kind. The allowed
+        # catalogue can recover that type; an explicit none/shot is never changed.
+        kind = visual.get("kind", "image" if ref in allowed else "none")
+        if kind != "image" or ref not in allowed or ref in seen:
+            continue
+        audit = rows.get(line.get("id"), {})
+        if audit_present and (audit.get("coverage") != "full" or audit.get("visual", ref) not in (ref, "keep")):
+            continue
+        seen.add(ref)
+        media.append({"image_id": ref, "from_line": index, "proxy": False, "proxy_reason": ""})
+        if len(media) == 2:
+            break
+    if not media:
+        text = " ".join([seg.get("title", ""), seg.get("topic", ""), *[line.get("text", "") for line in lines if not line.get("unverified")]])
+        proxy = choose_proxy(text, images, hero_id)
+        if proxy:
+            media.append(proxy)
+    return media
+
+
+def slide_media(slide: dict) -> list[dict]:
+    """Read new media or adapt a single-picture legacy slide without mutating it."""
+    if "media" in slide:
+        return slide.get("media") or []
+    return [{"image_id": slide["image_id"], "from_line": 0, "proxy": False, "proxy_reason": ""}] if slide.get("image_id") else []
+
+
+def _place_media_callouts(slide: dict, images_by_id: dict) -> None:
+    if not slide_media(slide):
+        place_callouts(slide, None)
+        return
+    for media in slide_media(slide):
+        image_id = media["image_id"]
+        group = [callout for callout in slide.get("callouts", []) if (callout.get("image_id") or slide.get("image_id")) == image_id]
+        for callout in group:
+            callout["image_id"] = image_id
+        place_callouts({"callouts": group}, images_by_id.get(image_id))
 
 
 # ---------- label layout ----------
@@ -220,7 +295,11 @@ def clean_callouts(raw: list[dict], slide: dict, allowed: set[str], image: dict 
             continue
         part = (c.get("part") or "").strip().lower()
         line_max = max(0, len(slide["lines"]) - 1)
-        out.append({"text": text, "fact_ids": valid, "part": part if part in names else "", "reveal_on_line": max(0, min(int(c.get("reveal_on_line") or 0), line_max))})
+        image_id = c.get("image_id") or (image or {}).get("id") or slide.get("image_id")
+        if image_id and (image or {}).get("id") and image_id != image["id"]:
+            continue
+        out.append({"text": text, "fact_ids": valid, "part": part if part in names else "", "image_id": image_id,
+                    "reveal_on_line": max(0, min(int(c.get("reveal_on_line") or 0), line_max))})
         if len(out) >= MAX_CALLOUTS:
             break
     return out
@@ -234,8 +313,11 @@ def _ask_model(demo: dict, und: dict, plan: dict, slides: list[dict], images_by_
     for s in slides:
         if not s["lines"]:
             continue
-        parts = ", ".join(p["name"] for p in visuals.part_boxes(images_by_id.get(s["image_id"]) or {})) or "(none)"
-        rows.append(f"{s['id']} [{s['kind']}] title: {s['title']}\n  PARTS on its picture: {parts}\n" + "\n".join(f"  line {i}: {l['text']}  facts {l['fact_ids']}" for i, l in enumerate(s["lines"])))
+        pictures = []
+        for media in slide_media(s):
+            parts = ", ".join(p["name"] for p in visuals.part_boxes(images_by_id.get(media["image_id"]) or {})) or "(none)"
+            pictures.append(f"  {media['image_id']} from line {media['from_line']} · {'illustration, never proof' if media.get('proxy') else 'literal binding'} · PARTS: {parts}")
+        rows.append(f"{s['id']} [{s['kind']}] title: {s['title']}\n  MEDIA:\n" + "\n".join(pictures) + "\n" + "\n".join(f"  line {i}: {l['text']}  facts {l['fact_ids']}" for i, l in enumerate(s["lines"])))
     facts_txt = "\n".join(fact_context(f) for f in facts_by_id.values()) or "(empty)"
     st = demo.get("settings", {})
     sys = DECK_SYSTEM.format(evidence=EVIDENCE_RULES, audience=audience_instruction(st.get("audience", "everyday")), language=language_instruction(st.get("language", "en-IN")),
@@ -249,7 +331,7 @@ def _ask_model(demo: dict, und: dict, plan: dict, slides: list[dict], images_by_
 
 # Apply saved Align image, title and label edits to the newly built slides.
 # Mutates only matching slide entries; author.py:ungrounded checks edited text before bundle.py:build uses it.
-def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, allowed: set[str]) -> None:
+def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, allowed: set[str], *, strict: bool = True) -> None:
     """deck-overrides.json (written by Align): per slide an image, a title, and per callout text / fact ids / part /
     a dragged position. Text edits pass the same validator; a dragged label is trusted as given (inside the frame)."""
     # Match saved edits by slide ID, and accept replacement images only from the allowed catalogue.
@@ -259,17 +341,55 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
         o = by_slide.get(s["id"])
         if not o:
             continue
-        image_changed = o.get("image_id") in images_by_id and o["image_id"] != s["image_id"]
-        if image_changed:
-            s["image_id"], s["image_reason"] = o["image_id"], "chosen in Align"
+        before_media = slide_media(s)
+        requested = o.get("media") if "media" in o else None
+        if requested is None and "image_id" in o:
+            requested = [o["image_id"], *[m["image_id"] for m in before_media[1:] if m["image_id"] != o["image_id"]]]
+        if requested is not None and not strict:
+            # Saved edits can outlive a source exclusion. Rebuild only with
+            # still-allowed references; new API edits remain strictly checked.
+            raw = requested if isinstance(requested, list) else []
+            refs = [entry.get("image_id") if isinstance(entry, dict) else entry for entry in raw]
+            safe = list(dict.fromkeys(ref for ref in refs if isinstance(ref, str) and ref in images_by_id))[:2]
+            requested = safe if safe or raw == [] else None
+        image_changed = requested is not None
+        if requested is not None:
+            if not isinstance(requested, list) or len(requested) > 2:
+                raise ValueError("A slide may have at most two pictures")
+            ids = [entry.get("image_id") if isinstance(entry, dict) else entry for entry in requested]
+            if any(not isinstance(ref, str) or ref not in images_by_id for ref in ids) or len(set(ids)) != len(ids):
+                raise ValueError("Slide media must name distinct allowed pictures")
+            by_id = {media["image_id"]: media for media in before_media}
+            replacement = []
+            for index, ref in enumerate(ids):
+                old = by_id.get(ref)
+                slot = before_media[index] if index < len(before_media) else {}
+                replacement.append({**old} if old else {"image_id": ref, "from_line": slot.get("from_line", 0), "proxy": True,
+                                                       "proxy_reason": "chosen in Align — illustration until audited"})
+            s["media"] = replacement
+            s["image_id"] = ids[0] if ids else None
+            s["image_reason"] = "chosen in Align"
+            old_slots = {entry["image_id"]: index for index, entry in enumerate(before_media)}
+            for callout in s["callouts"]:
+                ref = callout.get("image_id") or (before_media[0]["image_id"] if before_media else None)
+                if ref not in ids:
+                    index = old_slots.get(ref, 0)
+                    callout["image_id"] = ids[min(index, len(ids) - 1)] if ids else None
         title = _compact(o.get("title", ""), MAX_TITLE_WORDS)
         if title:
             s["title"] = title
-        img = images_by_id.get(s["image_id"])
+        media_ids = {entry["image_id"] for entry in slide_media(s)}
         for oc in o.get("callouts", []):
             c = next((x for x in s["callouts"] if x["id"] == oc.get("id")), None)
             if not c:
                 continue
+            if "image_id" in oc:
+                ref = oc["image_id"] or s.get("image_id")
+                if ref is not None and ref not in media_ids:
+                    if strict:
+                        raise ValueError("A callout must belong to one of this slide's pictures")
+                    ref = c.get("image_id") if c.get("image_id") in media_ids else s.get("image_id")
+                c["image_id"] = ref
             if "text" in oc or "fact_ids" in oc:
                 text = (oc.get("text") if "text" in oc else c["text"]).strip()
                 valid, bad = ungrounded(text, oc.get("fact_ids", c["fact_ids"]), allowed)
@@ -279,8 +399,24 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
                 c["part"] = (oc.get("part") or "").strip().lower()
         # A changed image or part invalidates the old anchor, so recompute placement before applying drags.
         # visuals.py:part_boxes supplies the new geometry; the later position edit cannot invent a missing anchor.
-        if image_changed or any("part" in oc for oc in o.get("callouts", [])):
-            place_callouts(s, img)  # a new picture or part → recompute anchors and clear spots; unlisted parts go to the panel
+        if not media_ids and image_changed:
+            s["callouts"] = []
+        counts = {}
+        for callout in s["callouts"]:
+            ref = callout.get("image_id") or s.get("image_id")
+            counts[ref] = counts.get(ref, 0) + 1
+        if any(count > MAX_CALLOUTS for count in counts.values()):
+            if strict:
+                raise ValueError("A picture may have at most three callouts")
+            kept, counts = [], {}
+            for callout in s["callouts"]:
+                ref = callout.get("image_id") or s.get("image_id")
+                counts[ref] = counts.get(ref, 0) + 1
+                if counts[ref] <= MAX_CALLOUTS:
+                    kept.append(callout)
+            s["callouts"] = kept
+        if image_changed or any("part" in oc or "image_id" in oc for oc in o.get("callouts", [])):
+            _place_media_callouts(s, images_by_id)
         for oc in o.get("callouts", []):
             c = next((x for x in s["callouts"] if x["id"] == oc.get("id")), None)
             lp = oc.get("label_pos")
@@ -313,7 +449,7 @@ def slides_with_script(slides: list[dict], script: dict) -> list[dict]:
             slide["lines"] = lines(segment.get("lines", []))
             slide["deeper"] = lines(segment.get("deeper", []))
             slide["checkin"] = segment.get("checkin", "")
-            for field in ("role", "usp_ids", "outcome"):
+            for field in ("role", "usp_ids", "outcome", "fundamental"):
                 if field in segment:
                     slide[field] = copy.deepcopy(segment[field])
             if "topic" in segment:
@@ -340,12 +476,13 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
     demo = store.load(demo_id)
     prev = store.read_json(demo_id, "deck.json") or {}
     overrides = store.read_json(demo_id, "deck-overrides.json") or {}
+    inline_audit = script.get("visual_audit") or {}
+    script_audit = inline_audit if "lines" in inline_audit else store.read_json(demo_id, "visual-audit.json")
     # Build the allowed fact and image lookups from the saved understanding and source permissions.
     # visuals.py:catalogue supplies matching tags; unapproved facts and excluded images are left out.
     facts_by_id = {f["id"]: f for f in und.get("facts", []) if f.get("approved", True)}
     images = [i for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])]
     images_by_id = {i["id"]: i for i in images}
-    cat = {c["ref"]: c for c in visuals.catalogue(demo_id, und, demo) if c["kind"] == "image"}
     hero = visuals.pick_hero(demo, images)
     hero_id = hero["id"] if hero else None
     product = (und.get("product") or {}).get("name") or demo["name"]
@@ -358,8 +495,9 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                                                        "features": "A few more things", "establish": "Ownership and terms", "closing": "Your next step"}.get(kind, "")
         return {"id": sid, "segment_id": seg_id, "kind": kind, "title": safe_title, "topics": kw.get("topics", []),
                 "fact_ids": sorted({f for l in lines for f in l.get("fact_ids", [])}), "image_id": image_id, "image_reason": kw.get("reason", ""),
+                "media": kw.get("media", [{"image_id": image_id, "from_line": 0, "proxy": False, "proxy_reason": ""}] if image_id else []),
                 "motion": kw.get("motion", "zoom_in"), "callouts": [], "lines": lines, "checkin": kw.get("checkin", ""), "deeper": kw.get("deeper", []),
-                "usp_ids": kw.get("usp_ids", []), "priority": kw.get("priority", False), "role": kw.get("role", kind)}
+                "usp_ids": kw.get("usp_ids", []), "priority": kw.get("priority", False), "role": kw.get("role", kind), "fundamental": kw.get("fundamental", False)}
 
     # Keep only narration identity, text, citations and step in the deck record.
     # Audio and per-line visual references stay in the script until bundle.py:build joins what the slide needs.
@@ -372,17 +510,20 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
     slides = [slide("sl00", None, "hero_open", product, hero_id, [], reason="hero", motion="zoom_in")]
     n = 0
     for seg in script.get("segments", []):
-        lines = [strip(l) for l in seg["lines"] if not l.get("unverified")]
+        verified = [line for line in seg["lines"] if not line.get("unverified")]
+        lines = [strip(line) for line in verified]
         if not lines:
             continue
         n += 1
-        refs = [r for r in ((l.get("visual") or {}).get("ref") for l in seg["lines"]) if r in images_by_id]
-        image_id, reason = choose_image(seg, cat, list(dict.fromkeys(refs)), hero_id)
+        media = choose_media(seg, verified, {**und, "images": images}, script_audit, hero_id)
+        image_id = media[0]["image_id"] if media else None
+        reason = "; ".join(entry["proxy_reason"] if entry.get("proxy") else f"{entry['image_id']}: literal picture from line {entry['from_line']}" for entry in media)
         splan = plan_by_id.get(seg["id"], {})
         slides.append(slide(f"sl{n:02d}", seg["id"], KIND_BY_ROLE.get(seg.get("role", "proof"), "proof"), seg["title"], image_id, lines,
-                            topics=[t for t in [seg.get("topic", "")] if t], reason=reason, motion="pan_left" if n % 2 else "zoom_in",
+                            topics=[t for t in [seg.get("topic", "")] if t], reason=reason, media=media, motion="pan_left" if n % 2 else "zoom_in",
                             checkin=seg.get("checkin", ""), deeper=[strip(l) for l in seg.get("deeper", []) if not l.get("unverified")],
-                            usp_ids=seg.get("usp_ids") or splan.get("usp_ids", []), priority=bool(splan.get("priority_topic")), role=seg.get("role", "proof")))
+                            usp_ids=seg.get("usp_ids") or splan.get("usp_ids", []), priority=bool(splan.get("priority_topic")), role=seg.get("role", "proof"),
+                            fundamental=bool(seg.get("fundamental", splan.get("fundamental", False)))))
     closing = [strip(l) for l in script.get("closing", []) if not l.get("unverified")]
     if closing:
         n += 1
@@ -406,14 +547,34 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
     # Validate each slide's proposed labels, then derive labels when none survive.
     # author.py:ungrounded checks citation presence and IDs; this is not a second full semantic review.
     for s in slides:
-        img = images_by_id.get(s["image_id"])
         raw = [c.model_dump() for c in (out.callouts if out else []) if c.slide_id == s["id"]]
-        cleaned = clean_callouts(raw, s, allowed, img) if raw else []
-        if cleaned:
-            n_model += len(cleaned)
-        elif s["lines"] and s["kind"] not in ("hero_open", "hero_close"):
-            cleaned = derive_callouts(s, facts_by_id, img)
-            n_derived += len(cleaned)
+        cleaned = []
+        for media in slide_media(s) or [{"image_id": None, "proxy": False}]:
+            ref = media["image_id"]
+            img = images_by_id.get(ref)
+            proposals = [c for c in raw if (c.get("image_id") or s["image_id"]) == ref]
+            group = clean_callouts(proposals, s, allowed, img) if proposals and not media.get("proxy") else []
+            if group:
+                n_model += len(group)
+            elif s["lines"] and s["kind"] not in ("hero_open", "hero_close"):
+                if media.get("proxy"):
+                    first = next((line for line in s["lines"] if any(fid in allowed for fid in line.get("fact_ids", []))), None)
+                    first_id = next((fid for fid in (first or {}).get("fact_ids", []) if fid in allowed), None)
+                    one = {**first, "fact_ids": [first_id]} if first else None
+                    group = derive_callouts({**s, "lines": [one] if one else []}, facts_by_id, img)[:1]
+                    for callout in group:
+                        callout["part"] = media.get("proxy_reason", "").removeprefix("closest by part: ") if media.get("proxy_reason", "").startswith("closest by part: ") else ""
+                        callout["reveal_on_line"] = 0
+                else:
+                    original = next((seg for seg in script.get("segments", []) if seg["id"] == s.get("segment_id")), {})
+                    refs = {line["id"]: (line.get("visual") or {}).get("ref") for line in original.get("lines", [])}
+                    picture_lines = [line if ref is None or refs.get(line["id"], s["image_id"]) == ref else {**line, "fact_ids": []} for line in s["lines"]]
+                    group = derive_callouts({**s, "lines": picture_lines}, facts_by_id, img)
+                for callout in group:
+                    callout["image_id"] = ref
+                group = clean_callouts(group, s, allowed, img)
+                n_derived += len(group)
+            cleaned.extend(group)
         # Omitting a long fact must not move its old positional id onto a
         # different fact and silently reapply that fact's reviewed Align edit.
         # Reuse an id only for unambiguous matching evidence; keep orphaned
@@ -423,7 +584,7 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
         old_callouts = next((old.get("callouts", []) for old in prev.get("slides", []) if old.get("id") == s["id"]), [])
         old_overrides = next((old.get("callouts", []) for old in overrides.get("slides", []) if old.get("slide_id") == s["id"]), [])
         reserved = {c.get("id") for c in old_callouts + old_overrides if c.get("id")}
-        identity = lambda c: tuple(sorted(set(c.get("fact_ids", []))))
+        identity = lambda c: (c.get("image_id") or s["image_id"], tuple(sorted(set(c.get("fact_ids", [])))))
         reviewed = []
         for edit in old_overrides:
             old = next((c for c in old_callouts if c.get("id") == edit.get("id")), None)
@@ -436,12 +597,23 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
             # evidence is approved AND belongs to this slide.
             if not citations or not citations <= allowed.intersection(s["fact_ids"]):
                 continue
-            safe = clean_callouts([candidate], s, allowed, img)
+            ref = candidate.get("image_id") or s["image_id"]
+            if ref not in {entry["image_id"] for entry in slide_media(s)}:
+                ref = s["image_id"]
+                candidate["image_id"] = ref
+            safe = clean_callouts([candidate], s, allowed, images_by_id.get(ref))
             if safe:
                 reviewed.append({**safe[0], "id": old["id"]})
         if reviewed:
             reviewed_keys = {identity(c) for c in reviewed}
-            cleaned = (reviewed + [c for c in cleaned if identity(c) not in reviewed_keys])[:MAX_CALLOUTS]
+            combined = reviewed + [c for c in cleaned if identity(c) not in reviewed_keys]
+            cleaned = []
+            counts = {}
+            for callout in combined:
+                ref = callout.get("image_id") or s["image_id"]
+                counts[ref] = counts.get(ref, 0) + 1
+                if counts[ref] <= MAX_CALLOUTS:
+                    cleaned.append(callout)
         # Reuse a label ID only for one unambiguous citation match; otherwise allocate a fresh ID.
         # The stable IDs keep later overrides and bundle.py:build callout references attached to the right label.
         next_id = 1
@@ -450,6 +622,12 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                 continue
             key = identity(c)
             matches = [old for old in old_callouts if identity(old) == key]
+            if not matches:
+                facts_key = key[1]
+                # A reviewed picture swap does not change a uniquely cited
+                # label's identity. Repeated evidence on two pictures stays distinct.
+                if facts_key and sum(identity(new)[1] == facts_key for new in cleaned) == 1:
+                    matches = [old for old in old_callouts if identity(old)[1] == facts_key]
             if key and len(matches) == 1 and sum(identity(new) == key for new in cleaned) == 1 and matches[0].get("id"):
                 c["id"] = matches[0]["id"]
             else:
@@ -464,10 +642,10 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
             title = _compact(title, MAX_TITLE_WORDS)
             if title:
                 s["title"] = title
-        place_callouts(s, img)
+        _place_media_callouts(s, images_by_id)
     # Apply reviewed edits last, then validate and save the complete deck and its layout summary.
     # store.py:write_json writes deck.json; bundle.py:build resolves its media and narration into player data.
-    apply_overrides(slides, overrides, images_by_id, allowed)
+    apply_overrides(slides, overrides, images_by_id, allowed, strict=False)
     overlay = sum(1 for s in slides for c in s["callouts"] if c["placement"] == "overlay")
     panel = sum(1 for s in slides for c in s["callouts"] if c["placement"] == "panel")
     intro_src = next((src["id"] for src in reversed(demo["sources"]) if src["kind"] == "video" and src.get("role") == "intro_video"), None)

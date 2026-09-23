@@ -677,7 +677,7 @@ test('An explicitly primary fact still renders its reviewed claim beside conditi
 
 const imageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#c9ddd2"/><rect x="8" y="8" width="984" height="584" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="640" cy="280" r="100" fill="#204d43"/><text x="45" y="540" font-family="sans-serif" font-size="32" fill="#173b32">Synthetic geometry fixture — 1000 × 600</text></svg>');
 const tallImageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1000" viewBox="0 0 600 1000"><rect width="600" height="1000" fill="#c9ddd2"/><rect x="8" y="8" width="584" height="984" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="300" cy="800" r="100" fill="#204d43"/></svg>');
-async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture } = {}) {
+async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture, media = null, editable = false, onMove = null } = {}) {
   player?.destroy(); player = null; host.replaceChildren();
   env = { calls: [], played: [], active: new Set(), maxActive: 0, geometry: [] };
   const frame = document.createElement('div'); frame.className = 'pl render-contract';
@@ -686,9 +686,10 @@ async function renderFixture(width, { kind = 'proof', callouts = null, image = i
   const stack = document.createElement('div'); stack.className = 'slide-stack'; stack.style.inset = '0';
   stage.append(stack); frame.append(stage); host.append(frame);
   const sl = slide('geometry', kind, 'A supported point.'); sl.title = 'An exact product detail'; sl.image_url = image;
+  if (media) sl.media = media;
   sl.callouts = callouts ?? [{ id: 'geometry-callout', text: 'Supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .64, y: .47 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 0 }];
-  const view = renderSlide(sl, { fit: true }); view.setRevealed(-1); stack.append(view.el); view.el.classList.add('on');
-  await view.img.decode(); view.layout();
+  const view = renderSlide(sl, { fit: true, editable, onMove }); view.setRevealed(-1); stack.append(view.el); view.el.classList.add('on');
+  await Promise.all(view.images.map((image) => image.decode())); view.layout();
   return { frame, view, slide: sl };
 }
 const rect = (el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height, right: r.right, bottom: r.bottom }; };
@@ -702,6 +703,63 @@ const evidenceRailDetails = (view) => {
   };
   return { panel: measure(panel), items: [...panel.children].map(measure) };
 };
+const pairedMedia = () => [
+  { image_id: 'im-first', image_url: imageFixture, image_parts: [], from_line: 0, proxy: false },
+  { image_id: 'im-second', image_url: tallImageFixture, image_parts: [], from_line: 1, proxy: true, proxy_reason: 'closest by part: bonnet' },
+];
+const pairedCallouts = () => [
+  { id: 'first-evidence', text: 'First reviewed detail', fact_ids: ['f1'], image_id: 'im-first', placement: 'overlay', anchor: { x: .64, y: .47 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 0 },
+  { id: 'second-evidence', text: 'Second detail', fact_ids: ['f2'], image_id: 'im-second', placement: 'overlay', anchor: { x: .5, y: .8 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 1 },
+];
+test('Two pictures use separate native-aspect boxes side by side at one thousand pixels', async () => {
+  const { frame, view } = await renderFixture(1000, { media: pairedMedia(), callouts: pairedCallouts() });
+  try {
+    view.setRevealed(1);
+    assert(view.pics.length === 2 && view.images.length === 2 && view.pic === view.pics[0] && view.img === view.images[0], 'Two media entries lost their legacy first-image aliases');
+    const boxes = view.pics.map(rect), stage = rect(view.el);
+    assert(boxes[0].right < boxes[1].x && Math.abs(boxes[0].y - boxes[1].y) < 2, 'Wide pictures are not side by side');
+    view.images.forEach((image, index) => assert(Math.abs(boxes[index].width / boxes[index].height - image.naturalWidth / image.naturalHeight) < .015, 'A media box cropped or stretched its own picture'));
+    assert(boxes.every((box) => box.x >= stage.x && box.right <= stage.right + 1 && box.y >= stage.y && box.bottom <= stage.bottom + 1), 'A picture escapes the stage');
+    assert(view.pics[0].querySelector('.callout[data-id="first-evidence"]') && view.pics[1].querySelector('.callout[data-id="second-evidence"]'), 'Callouts are on the wrong pictures');
+    env.geometry.push({ stage, boxes });
+  } finally { view.destroy(); frame.remove(); }
+});
+test('Two pictures stack without distortion at four hundred pixels', async () => {
+  const { frame, view } = await renderFixture(400, { media: pairedMedia(), callouts: pairedCallouts() });
+  try {
+    view.setRevealed(1); const boxes = view.pics.map(rect);
+    assert(view.el.querySelector('.slide-media.stacked') && boxes[0].bottom < boxes[1].y, 'Narrow pictures did not stack');
+    view.images.forEach((image, index) => assert(Math.abs(boxes[index].width / boxes[index].height - image.naturalWidth / image.naturalHeight) < .015, 'Stacked picture lost its native ratio'));
+    assert(frame.scrollWidth <= frame.clientWidth + 1, 'Stacked media causes horizontal overflow');
+    env.geometry.push({ boxes });
+  } finally { view.destroy(); frame.remove(); }
+});
+test('Line emphasis changes picture opacity without moving media or misrepresenting a proxy', async () => {
+  const { frame, view } = await renderFixture(1000, { media: pairedMedia(), callouts: pairedCallouts() });
+  try {
+    view.setRevealed(0); const before = view.pics.map(rect);
+    assert(view.pics[0].classList.contains('active') && view.pics[1].classList.contains('dimmed'), 'The first spoken line did not activate its image');
+    view.setRevealed(1);
+    assert(view.pics[1].classList.contains('active') && Number(getComputedStyle(view.pics[0]).opacity) === .55, 'Second line did not activate the second picture and dim the first');
+    assert(JSON.stringify(before) === JSON.stringify(view.pics.map(rect)), 'Emphasis changed layout geometry');
+    assert(view.pics[1].querySelector('.slide-proxy-badge')?.textContent === 'illustration', 'Proxy picture is not labelled as illustration');
+    assert(view.pics.every((pic) => pic.querySelector('.leaders')), 'A picture is missing its own leader coordinates');
+  } finally { view.destroy(); frame.remove(); }
+});
+test('Dragging the second picture reports fractions of that picture', async () => {
+  const moved = [], { frame, view } = await renderFixture(1000, { media: pairedMedia(), callouts: pairedCallouts(), editable: true, onMove: (...args) => moved.push(args) });
+  try {
+    view.setRevealed(1); const picture = view.pics[1], chip = picture.querySelector('.callout');
+    const start = { left: chip.offsetLeft, top: chip.offsetTop }, box = rect(chip);
+    const dx = 12, dy = 15, base = { bubbles: true, cancelable: true, pointerId: 71, pointerType: 'mouse', isPrimary: true };
+    chip.dispatchEvent(new PointerEvent('pointerdown', { ...base, clientX: box.x + 2, clientY: box.y + 2 }));
+    chip.dispatchEvent(new PointerEvent('pointermove', { ...base, clientX: box.x + 2 + dx, clientY: box.y + 2 + dy }));
+    chip.dispatchEvent(new PointerEvent('pointerup', { ...base, clientX: box.x + 2 + dx, clientY: box.y + 2 + dy }));
+    const expected = { x: Math.min(picture.clientWidth - chip.offsetWidth, start.left + dx) / picture.clientWidth, y: Math.min(picture.clientHeight - chip.offsetHeight, start.top + dy) / picture.clientHeight };
+    assert(moved.length === 1 && moved[0][0] === 'second-evidence' && moved[0][2] === 'im-second', 'Drag lost the second image identity');
+    assert(Math.abs(moved[0][1].x - expected.x) < .006 && Math.abs(moved[0][1].y - expected.y) < .006, 'Drag coordinates used the stage or first picture instead of the second');
+  } finally { view.destroy(); frame.remove(); }
+});
 test('Revealing an overlay connects its leader to the visible chip centre', async () => {
   const { frame, view } = await renderFixture(1000);
   try {

@@ -464,6 +464,14 @@ class Callout(BaseModel):
     part_box: Optional[dict] = None    # {x, y, w, h} in 0-1
     reveal_on_line: int = 0
     confidence: float = 0.0
+    image_id: Optional[str] = None
+
+
+class SlideMedia(BaseModel):
+    image_id: str
+    from_line: int = 0
+    proxy: bool = False
+    proxy_reason: str = ""
 
 
 # Define one slide with its picture, narration, evidence and interaction details.
@@ -477,6 +485,7 @@ class Slide(BaseModel):
     topics: list[str] = []
     fact_ids: list[str] = []
     image_id: Optional[str] = None
+    media: list[SlideMedia] = Field(default_factory=list, max_length=2)
     image_reason: str = ""
     motion: Literal["zoom_in", "pan_left", "none"] = "zoom_in"
     callouts: list[Callout] = []
@@ -486,6 +495,7 @@ class Slide(BaseModel):
     usp_ids: list[str] = []
     priority: bool = False
     role: str = "proof"
+    fundamental: bool = False
 
 
 # Collect the slides and record which script/version produced them.

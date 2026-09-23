@@ -365,6 +365,14 @@ main{flex:1;min-height:0;display:flex}
 
 /* ---------- Slides (Align review; the player reuses the same renderer) ---------- */
 .slide{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;align-items:start}
+.slide-media{display:contents}
+.slide-media.multi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:center;min-width:0}
+.slide-media.multi.stacked{grid-template-columns:minmax(0,1fr)}
+.slide-media.multi .slide-pic{min-width:0;transition:opacity .25s ease}
+.slide-media .slide-pic.dimmed{opacity:.55}
+.slide-media .slide-pic.active{opacity:1}
+.slide-proxy-badge{position:absolute;left:8px;bottom:8px;z-index:5;background:#132019e8;color:#fff;border:1px solid #ffffff66;border-radius:3px;padding:4px 7px;font:500 10px/1.2 var(--disp);letter-spacing:.04em;pointer-events:none}
+.cinematic .slide-media.multi{position:absolute;inset:0;display:block}
 .slide-pic{position:relative;overflow:hidden;border-radius:10px;background:var(--panel-2);user-select:none;line-height:0}
 .slide-pic img{display:block;width:100%;height:auto;pointer-events:none}
 .slide-pic.noimg{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:var(--muted);font:11px var(--mono);line-height:1.4}
@@ -491,6 +499,12 @@ main{flex:1;min-height:0;display:flex}
 .pl-stage:not(:has(.pl-intake.open)) .cinematic .rail-only{visibility:hidden}
 .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-panel .item.rail-fallback:not(.hidden){display:flex}
 @media(prefers-reduced-motion:reduce){.pl-stage:not(:has(.pl-intake.open)) .cinematic.on .slide-heading{animation:none}}
+.pl-stage:not(:has(.pl-intake.open)) .cinematic.has-multiple-media::after{background:linear-gradient(180deg,#131917 0%,transparent 30%,transparent 70%,#131917 100%)}
+.pl-stage:not(:has(.pl-intake.open)) .cinematic.has-multiple-media .slide-heading{left:5.1%;top:4%;width:89.8%}
+.pl-stage:not(:has(.pl-intake.open)) .cinematic.has-multiple-media .slide-chapter{margin-bottom:8px}
+.pl-stage:not(:has(.pl-intake.open)) .cinematic.has-multiple-media .slide-title{font-size:clamp(24px,3.2cqw,48px)}
+.pl-stage:not(:has(.pl-intake.open)) .cinematic.has-multiple-media .slide-panel{bottom:4%;max-height:19%}
+.pl-stage:not(:has(.pl-intake.open)) .cinematic.has-multiple-media .slide-panel .item{flex:1 0 27%}
 @container (max-width:699px){
   .pl-stage:not(:has(.pl-intake.open)) .cinematic::after{background:linear-gradient(180deg,#131917 12%,#13191744 36%,transparent 60%,#131917 83%)}
   .pl-stage:not(:has(.pl-intake.open)) .cinematic .slide-heading,.pl-stage:not(:has(.pl-intake.open)) .cinematic.slide-hero_open .slide-heading,.pl-stage:not(:has(.pl-intake.open)) .cinematic.slide-hero_close .slide-heading{left:6%;top:6%;width:88%}

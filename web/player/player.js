@@ -81,7 +81,7 @@ export function mountPlayer(host, bundle, api) {
     const hero = b.media?.hero || null; const kindOf = (r) => ({ intro: "intro", outcome: "outcome", proof: "proof", features: "features", establish: "establish" })[r] || "proof";
     // Build one legacy slide from its ID, role, title, segment and narration lines.
     // Return one image URL and empty callouts so web/slide.js:renderSlide can show older bundles safely.
-    const mk = (id, kind, title, seg, lines) => ({ id, segment_id: seg?.id || null, kind, title, topics: seg?.topic ? [seg.topic] : [], image_url: (lines.map((l) => l.visual).find((v) => v?.kind === "image" && v.url) || {}).url || hero, image_parts: [], callouts: [], lines, checkin: seg?.checkin || { text: "" }, deeper: seg?.deeper || [], usp_ids: seg?.usp_ids || [], priority: !!seg?.priority, role: seg?.role || kind, motion: "zoom_in" });
+    const mk = (id, kind, title, seg, lines) => ({ id, segment_id: seg?.id || null, kind, title, topics: seg?.topic ? [seg.topic] : [], image_url: (lines.map((l) => l.visual).find((v) => v?.kind === "image" && v.url) || {}).url || hero, image_parts: [], callouts: [], lines, checkin: seg?.checkin || { text: "" }, deeper: seg?.deeper || [], usp_ids: seg?.usp_ids || [], priority: !!seg?.priority, fundamental: !!seg?.fundamental, role: seg?.role || kind, motion: "zoom_in" });
     const segs = (b.segments || []).map((s, i) => mk(`sl${i + 1}`, kindOf(s.role), s.title, s, s.lines || []));
     return [mk("sl00", "hero_open", b.product?.name || b.name, null, []), ...segs, mk("sl-close", "closing", "Where that leaves you", null, b.closing || []), mk("sl-end", "hero_close", b.product?.name || b.name, null, [])];
   }
@@ -731,6 +731,13 @@ export function mountPlayer(host, bundle, api) {
       // hit returns a routing preference only; server/agents/pitch.py:plan_pitch remains the source of server personalization.
       const focus = new Set(S.profile.focus); const hit = (s) => focus.has(topicOf(s)) || focus.has(s.segment_id); const proof = lib.filter((s) => s.kind !== "establish"); const est = lib.filter((s) => s.kind === "establish");
       steps = [...proof.filter(hit), ...proof.filter((s) => !hit(s)), ...est].map((slide) => ({ slide, bridge: "", bridge_fact_ids: [] }));
+      if (!S.plan.length) {
+        // Only the initial fallback reserves one unseen fundamental. Later route
+        // replacements and reviewed revisits keep their selected order.
+        const visited = new Set((S.visited || []).map(visit => visit.slide_id));
+        const first = lib.find(slide => slide.kind === "proof" && slide.fundamental && !visited.has(slide.id) && !S.covered?.has(slide.id));
+        if (first) steps = [steps.find(step => step.slide === first), ...steps.filter(step => step.slide !== first)];
+      }
     }
     // Apply selected personalized lines and remap callout reveals to their original reviewed line positions.
     // The pitch result changes visit-local speech, while web/slide.js:renderSlide keeps the reviewed visual layout.
@@ -739,12 +746,33 @@ export function mountPlayer(host, bundle, api) {
       const segment = personalized.get(step.slide.segment_id);
       if (!segment?.lines?.length) return step;
       // Keep the reviewed image/parts and citation geometry; only validated speech is visit-local.
+      const reviewedMedia = (step.slide.media || []).slice(0, 2);
+      const mediaByLine = segment.lines.map(line => {
+        if (Number.isInteger(line.base_line_index)) {
+          let owner = reviewedMedia[0], latest = -Infinity;
+          for (const entry of reviewedMedia) {
+            const from = Number(entry.from_line) || 0;
+            if (from <= line.base_line_index && from >= latest) { owner = entry; latest = from; }
+          }
+          return owner?.image_id || null;
+        }
+        return reviewedMedia.find(entry => entry.image_id === line.visual?.ref)?.image_id || null;
+      });
+      // An inserted customer preface inherits the next reviewed line's picture.
+      // Keep exact per-line ownership too: a reordered A/B/A sequence has two
+      // pictures but cannot be expressed by a single from_line for each one.
+      for (let index = 0; index < mediaByLine.length; index++) {
+        if (!mediaByLine[index]) mediaByLine[index] = mediaByLine.slice(index + 1).find(Boolean) || mediaByLine[index - 1] || reviewedMedia[0]?.image_id || null;
+      }
+      const usedMedia = [...new Set(mediaByLine.filter(Boolean))];
+      const media = usedMedia.map(imageId => ({ ...reviewedMedia.find(entry => entry.image_id === imageId), from_line: mediaByLine.indexOf(imageId) }));
       const callouts = (step.slide.callouts || []).flatMap(callout => {
         const index = segment.lines.findIndex(line => Number.isInteger(line.base_line_index) && line.base_line_index === callout.reveal_on_line);
-        return index < 0 ? [] : [{ ...callout, reveal_on_line: index }];
+        return index < 0 || (reviewedMedia.length && callout.image_id && !usedMedia.includes(callout.image_id)) ? [] : [{ ...callout, reveal_on_line: index }];
       });
       const checkin = segment.checkin && typeof segment.checkin === "object" && typeof segment.checkin.text === "string" ? segment.checkin : step.slide.checkin;
-      return { ...step, slide: { ...step.slide, lines: segment.lines, callouts, checkin } };
+      const mediaFields = media.length ? { media, media_by_line: mediaByLine, image_id: media[0].image_id, image_url: media[0].image_url, image_parts: media[0].image_parts } : {};
+      return { ...step, slide: { ...step.slide, ...mediaFields, lines: segment.lines, callouts, checkin } };
     });
     S.plan = steps; S.seg = 0; renderProgress();
     prefetch(steps.filter((s) => s.bridge).map((s) => ({ text: s.bridge })));
@@ -1253,7 +1281,7 @@ export function mountPlayer(host, bundle, api) {
     const ack = live ? "Thanks—that helps me focus the demo. While I tailor it, here's a quick overview of the car." : a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
     // Start one version-pinned pitch request when intake provided usable context.
     // server/app.py:run_pitch runs in parallel with the opening; live mode requests text planning without extra voice generation.
-    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
+    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
     S.playback = { phase: "opening", index: 0, line: 0 };
     const fa = live ? { text: ack, audio: bundle.runtime?.overview_ack?.audio } : a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
     if (!live) { const okF = await playIntroFilm(run); if (!okF) return; }
@@ -1263,7 +1291,7 @@ export function mountPlayer(host, bundle, api) {
   // Use the recorded overview or fixed opening, then accept a valid route from server/app.py:run_pitch or use the deck fallback.
   async function startAfterIntake(run = newRun(), a1 = S.profile.why, checkpoint = { phase: "opening", index: 0, line: 0 }) {
     // Keep the same planning request alive across questions during the opening.
-    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: true, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
+    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
     if (["opening", "intake", "overview"].includes(checkpoint.phase)) {
       const overview = live && !S.browseOnly ? bundle.runtime?.overview : null;
       // Show the overview once, using its cited slide and recorded speech while planning proceeds.

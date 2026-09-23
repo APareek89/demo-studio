@@ -121,7 +121,7 @@ check("every content slide has a picture and lines", all(s["image_id"] and s["li
 check("deck stage done; author stayed done", st_all["deck"]["status"] == "done" and st_all["author"]["status"] == "done")
 cos = [x for s in dk["slides"] for x in s["callouts"]]
 check("callouts exist (mock: derived from each slide's cited facts)", bool(cos) and dk["method"].startswith("derived"))
-check("≤ 3 callouts per slide, ≤ 8 words each, ≤ 6-word titles", all(len(s["callouts"]) <= 3 and len(s["title"].split()) <= 6 for s in dk["slides"]) and all(len(x["text"].split()) <= 8 for x in cos))
+check("≤ 3 callouts per picture, ≤ 8 words each, ≤ 6-word titles", all(all(sum((c.get("image_id") or s["image_id"]) == ref for c in s["callouts"]) <= 3 for ref in {c.get("image_id") or s["image_id"] for c in s["callouts"]}) and len(s["title"].split()) <= 6 for s in dk["slides"]) and all(len(x["text"].split()) <= 8 for x in cos))
 reg = {f["id"] for f in und["facts"]}
 check("every callout cites only registry facts", all(x["fact_ids"] and set(x["fact_ids"]) <= reg for x in cos))
 check("every callout has a placement; panel ones carry no position", all(x["placement"] in ("overlay", "panel") and (x["placement"] == "overlay" or (x["anchor"] is None and x["label_pos"] is None)) for x in cos))
@@ -413,6 +413,8 @@ from summary_race_contract import run as summary_race_contract
 summary_race_contract(check)
 from qa_policy_contract import run as qa_policy_contract
 qa_policy_contract(check)
+from deck_media_contract import run as deck_media_contract
+deck_media_contract(check)
 check("runtime provider order defaults Gemini → Claude → Runware", config.RUNTIME_PROVIDERS == ["gemini", "claude", "runware"])
 check("runtime timeout is short", 0 < config.RUNTIME_TIMEOUT <= 30)
 

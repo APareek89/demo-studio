@@ -35,7 +35,8 @@ Your output:
   about gaps, unknowns, or "what I can't tell you"; written terms and open questions belong in the establish block.
 - follow_up_question: always empty. They already had one useful intake; do not ask for their name, repeat discovery,
   or add a budget question. Later clarification belongs to Q&A in response to their question.
-- route: from the LIBRARY below — the buyer's strongest signal FIRST (match rear-seat needs to rear-seat proof,
+- route: from the LIBRARY below — on the initial plan, put the first fundamental proof first; on refinements, do not
+  reserve a fundamental stop. Order the remaining proof by the buyer's strongest signal (match rear-seat needs to rear-seat proof,
   front-seat needs to front-seat proof, and a performance
   want at the drive), then 1-2 supporting blocks, then the single features block, then establish last. Never more than 3 proof blocks: the whole demo must stay near three minutes; everything else
   is for questions. Each step may carry ONE bridge sentence. If a bridge states a product fact, copy one REVIEWED SPOKEN
@@ -286,7 +287,9 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
     allow_revisit = bool(refine and previously_seen)
     segs = [s for s in script.get("segments", []) if (allow_revisit or s.get("id") not in previously_seen) and s.get("role") in ("proof", "features", "establish") and any(not l.get("unverified") for l in s["lines"])]
     plan_by_id = {s["id"]: s for s in plan.get("segments", [])}
-    library = "\n".join(f"{s['id']} [{s['role']}] {s['title']} — outcome: {s.get('outcome') or plan_by_id.get(s['id'], {}).get('outcome','')} — topic {s['topic']} — usps {s.get('usp_ids') or plan_by_id.get(s['id'], {}).get('usp_ids', [])} — facts {sorted({f for l in s['lines'] for f in l.get('fact_ids', [])})}" for s in segs) or "(no proof blocks)"
+    fundamental_ids = [s["id"] for s in segs if s["role"] == "proof" and s["id"] not in previously_seen
+                       and s.get("fundamental", plan_by_id.get(s["id"], {}).get("fundamental", False))]
+    library = "\n".join(f"{s['id']} [{s['role']}] {s['title']} — fundamental: {bool(s.get('fundamental', plan_by_id.get(s['id'], {}).get('fundamental', False)))} — outcome: {s.get('outcome') or plan_by_id.get(s['id'], {}).get('outcome','')} — topic {s['topic']} — usps {s.get('usp_ids') or plan_by_id.get(s['id'], {}).get('usp_ids', [])} — facts {sorted({f for l in s['lines'] for f in l.get('fact_ids', [])})}" for s in segs) or "(no proof blocks)"
     facts = [f for f in und.get("facts", []) if f.get("approved", True)]
     facts_txt = "\n".join(fact_context(f) for f in facts) or "(empty)"
     prompt_segments = segs
@@ -398,13 +401,21 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         route.append(st)
     establish = [s["id"] for s in segs if s["role"] == "establish"]
     features = [s["id"] for s in segs if s["role"] == "features"]
-    proof_route = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features][:3]
+    proof_route = [r for r in route if r["segment_id"] not in establish and r["segment_id"] not in features]
     default_features = [sid for sid in features if not allow_revisit or sid not in previously_seen]
     default_establish = [sid for sid in establish if not allow_revisit or sid not in previously_seen]
     feat = [r for r in route if r["segment_id"] in features][:1] or ([{"segment_id": default_features[0], "bridge": "", "bridge_fact_ids": []}] if default_features else [])
     est = [r for r in route if r["segment_id"] in establish][:1] or ([{"segment_id": default_establish[0], "bridge": "", "bridge_fact_ids": []}] if default_establish else [])
-    if not proof_route:  # fallback: plan order, first 3 proof blocks
-        proof_route = [{"segment_id": s["id"], "bridge": "", "bridge_fact_ids": []} for s in segs if s["role"] == "proof" and s["id"] not in previously_seen][:3]
+    if not proof_route:  # fallback: reviewed plan order, before the same initial-only hoist
+        proof_route = [{"segment_id": s["id"], "bridge": "", "bridge_fact_ids": []} for s in segs if s["role"] == "proof" and s["id"] not in previously_seen]
+    if not refine and fundamental_ids:
+        # Reserve exactly one unseen fundamental, even when the model omitted it.
+        # Preserve an existing validated bridge and the buyer-led order after it.
+        first = fundamental_ids[0]
+        lead = next((step for step in proof_route if step["segment_id"] == first),
+                    {"segment_id": first, "bridge": "", "bridge_fact_ids": []})
+        proof_route = [lead] + [step for step in proof_route if step["segment_id"] != first]
+    proof_route = proof_route[:3]
     route = proof_route + feat + est
     scheduled_text = {" ".join(text.split()) for step in route for text in main_speech.get(step["segment_id"], [])}
     for step in route:

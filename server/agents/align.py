@@ -120,7 +120,10 @@ def cards(demo_id: str) -> dict:
         "deck": {"version": deck.get("version"), "method": deck.get("method"), "hero_image": deck.get("hero_image"),
                  "written_at": (store.path(demo_id, "deck.json").stat().st_mtime if store.path(demo_id, "deck.json").exists() else None),
                  "images": [{"id": i["id"], "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "angle": i.get("angle", ""), "description": i.get("description", ""), "parts": visual_parts(i), "full_product": bool(i.get("full_product"))} for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])],
-                 "slides": [{**s, "image_url": _vis_url(demo_id, und, src_by_id, s.get("image_id"))} for s in deck_agent.slides_with_script(deck.get("slides", []), script)]},
+                 "slides": [{**s, "image_url": _vis_url(demo_id, und, src_by_id, s.get("image_id")),
+                             "media": [{**m, "image_url": _vis_url(demo_id, und, src_by_id, m.get("image_id")),
+                                        "image_parts": visual_parts(next((image for image in und.get("images", []) if image["id"] == m.get("image_id")), {}))}
+                                       for m in s.get("media", [])]} for s in deck_agent.slides_with_script(deck.get("slides", []), script)]},
         "faq": {"entries": [{**e, "audio": media_url(demo_id, e.get("audio"))} for e in (store.read_json(demo_id, "faq.json") or {}).get("entries", [])], "answered": (store.read_json(demo_id, "faq.json") or {}).get("answered", 0), "total": (store.read_json(demo_id, "faq.json") or {}).get("total", 0)},
         "plan": {"customer_persona": plan.get("customer_persona", ""), "concerns": plan.get("concerns", []), "segments": plan.get("segments", []), "intake": plan.get("intake", {}), "notes": plan.get("notes", "")},
         "approvals": demo.get("approvals", {}),

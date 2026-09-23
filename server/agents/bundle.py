@@ -69,6 +69,7 @@ def build(demo_id: str, emit) -> dict:
             segs.append({
                 "id": seg["id"], "title": seg["title"], "topic": seg["topic"], "priority": bool(splan.get("priority_topic")),
                 "role": seg.get("role", "proof"), "outcome": seg.get("outcome") or splan.get("outcome", ""), "usp_ids": seg.get("usp_ids") or splan.get("usp_ids", []),
+                "fundamental": bool(seg.get("fundamental", splan.get("fundamental", False))),
                 "lines": [line(l) for l in seg["lines"] if not l.get("unverified")],
                 "checkin": {"text": seg.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))},
                 "deeper": [line(l) for l in seg.get("deeper", []) if not l.get("unverified")],
@@ -97,7 +98,7 @@ def build(demo_id: str, emit) -> dict:
             return {"id": l["id"], "text": src.get("text") or l["text"], "fact_ids": l.get("fact_ids", []), "audio": media_url(demo_id, src.get("audio")),
                     "start": src.get("start"), "duration": src.get("duration"), "step": src.get("step") or l.get("step", "other"), "delivery": src.get("delivery", {})}
         out = []
-        from .deck import slides_with_script
+        from .deck import slide_media, slides_with_script
         # Resolve each slide's selected image and part boxes, preserving its callouts and reveal indexes.
         # visuals.py:part_boxes supplies geometry; the browser receives one selected image for this slide.
         for s in slides_with_script(deck.get("slides", []), sc):
@@ -105,8 +106,12 @@ def build(demo_id: str, emit) -> dict:
             im = images.get(s.get("image_id") or "")
             o = ov.get(s["id"], {})
             ctext = {c["id"]: c["text"] for c in o.get("callouts", [])}
-            out.append({**{k: s.get(k) for k in ("id", "segment_id", "kind", "topics", "fact_ids", "image_id", "image_reason", "motion", "usp_ids", "priority", "role")},
+            media = [{**entry, "image_url": img_url(images[entry["image_id"]]),
+                      "image_parts": visuals.part_boxes(images[entry["image_id"]])}
+                     for entry in slide_media(s) if entry["image_id"] in images]
+            out.append({**{k: s.get(k) for k in ("id", "segment_id", "kind", "topics", "fact_ids", "image_id", "image_reason", "motion", "usp_ids", "priority", "role", "fundamental")},
                         "title": o.get("title") or s.get("title", ""), "image_url": img_url(im) if im else None, "image_parts": visuals.part_boxes(im) if im else [],
+                        "media": media,
                         "callouts": [{**c, "text": ctext.get(c["id"], c["text"])} for c in s.get("callouts", [])],
                         "lines": [sl_line(l) for l in s.get("lines", [])], "deeper": [sl_line(l) for l in s.get("deeper", [])],
                         "checkin": {"text": seg.get("checkin", s.get("checkin", "")), "audio": media_url(demo_id, seg.get("checkin_audio"))}})
@@ -135,6 +140,7 @@ def build(demo_id: str, emit) -> dict:
         segments.append({
             "id": seg["id"], "title": seg["title"], "topic": seg["topic"], "priority": bool(splan.get("priority_topic")),
             "role": seg.get("role", "proof"), "outcome": seg.get("outcome") or splan.get("outcome", ""), "usp_ids": seg.get("usp_ids") or splan.get("usp_ids", []),
+            "fundamental": bool(seg.get("fundamental", splan.get("fundamental", False))),
             "lines": [line(l) for l in seg["lines"] if not l.get("unverified")],
             "checkin": {"text": seg.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))},
             "deeper": [line(l) for l in seg.get("deeper", []) if not l.get("unverified")],

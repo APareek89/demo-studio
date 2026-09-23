@@ -6,7 +6,7 @@ flowchart TD
   INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual customer wording"]:::fn
   OVERVIEW["Grounded overview in the selected voice<br/>[DATA · bundle.runtime.overview]<br/>10–15 second target measured from generated audio"]:::data
   PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order reviewed slides; explicit priority revision may revisit selected seen proof"]:::agent
-  ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>exact cited proof; bounded revisit permissions; original indices and audio retained"]:::fn
+  ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / player.js]<br/>initial pitch: first unseen fundamental before three-proof limit<br/>player fallback mirrors one-stop move; refinements/revisits unchanged"]:::fn
   PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching callout with each line; spoken question owns its wait"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Short acknowledgement when useful<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data

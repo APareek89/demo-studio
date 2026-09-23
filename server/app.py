@@ -763,6 +763,8 @@ async def edit_aligned_deck(demo_id: str, req: Request):
     (kept over any rebuild) and applied to deck.json now, through the same validator as script lines. No model call."""
     demo = _demo_or_404(demo_id)
     body = await req.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Send slide edits as an object")
     edits = body.get("slides") or []
     if not isinstance(edits, list) or not edits or len(edits) > 60:
         raise HTTPException(400, "Send between 1 and 60 slide edits")
@@ -775,16 +777,46 @@ async def edit_aligned_deck(demo_id: str, req: Request):
     slides = {s["id"]: s for s in dk["slides"]}
     ov = store.read_json(demo_id, "deck-overrides.json") or {"slides": []}
     ov_by = {o["slide_id"]: o for o in ov.get("slides", []) if o.get("slide_id")}
+    # Source exclusions can retire old saved choices. Sanitize those old choices
+    # before applying new, strictly validated edits; never restore excluded media.
+    for sid, saved in ov_by.items():
+        current = slides.get(sid, {})
+        old_media = saved.get("media")
+        if isinstance(old_media, list) and old_media and any(ref not in images for ref in old_media):
+            saved["media"] = [ref for ref in old_media if ref in images] or [m["image_id"] for m in current.get("media", []) if m["image_id"] in images]
+        if saved.get("image_id") and saved["image_id"] not in images:
+            saved.pop("image_id")
+        for callout in saved.get("callouts", []):
+            if callout.get("image_id") and callout["image_id"] not in images:
+                callout.pop("image_id")
+                callout.pop("label_pos", None)
     for e in edits:
+        if not isinstance(e, dict):
+            raise HTTPException(400, "Each slide edit must be an object")
         sid = str(e.get("slide_id") or "")
         s = slides.get(sid)
         if not s:
             raise HTTPException(404, f"slide not found: {sid}")
         o = ov_by.setdefault(sid, {"slide_id": sid, "callouts": []})
+        if "media" in e:
+            media_ids = e["media"]
+            if not isinstance(media_ids, list) or len(media_ids) > 2 or any(not isinstance(ref, str) for ref in media_ids):
+                raise HTTPException(400, "media must contain at most two picture ids")
+            if len(set(media_ids)) != len(media_ids) or any(ref not in images for ref in media_ids):
+                raise HTTPException(400, "Pictures must be distinct and allowed in this demo")
+            if "image_id" in e and (not media_ids or e["image_id"] != media_ids[0]):
+                raise HTTPException(400, "image_id must match the first media picture")
+            o["media"] = list(media_ids)
+            o.pop("image_id", None)
         if "image_id" in e:
             if e["image_id"] not in images:
                 raise HTTPException(400, f"unknown or excluded picture: {e['image_id']}")
             o["image_id"] = e["image_id"]
+            if "media" in o and "media" not in e:
+                o["media"] = [e["image_id"], *o["media"][1:]]
+        selected_media = o.get("media", [m["image_id"] for m in s.get("media", [])] or ([o.get("image_id", s.get("image_id"))] if o.get("image_id", s.get("image_id")) else []))
+        if len(set(selected_media)) != len(selected_media):
+            raise HTTPException(400, "Pictures must be distinct")
         if "title" in e:
             title = (e.get("title") or "").strip()
             if not title or len(title) > 80:
@@ -792,6 +824,8 @@ async def edit_aligned_deck(demo_id: str, req: Request):
             o["title"] = title
         oc_by = {c["id"]: c for c in o.get("callouts", []) if c.get("id")}
         for ce in e.get("callouts") or []:
+            if not isinstance(ce, dict):
+                raise HTTPException(400, "Each callout edit must be an object")
             cid = str(ce.get("id") or "")
             cur = next((c for c in s["callouts"] if c["id"] == cid), None)
             if not cur:
@@ -811,6 +845,10 @@ async def edit_aligned_deck(demo_id: str, req: Request):
                 if author.words(text) > deck.MAX_CALLOUT_WORDS:
                     raise HTTPException(400, f"A callout is at most {deck.MAX_CALLOUT_WORDS} words")
                 oc["text"], oc["fact_ids"] = text, valid
+            if "image_id" in ce:
+                if ce["image_id"] is not None and ce["image_id"] not in selected_media:
+                    raise HTTPException(400, "A callout must refer to one of this slide's pictures")
+                oc["image_id"] = ce["image_id"]
             if "part" in ce:
                 oc["part"] = (ce.get("part") or "").strip().lower()
             if "label_pos" in ce:
@@ -826,9 +864,12 @@ async def edit_aligned_deck(demo_id: str, req: Request):
                 oc["placement"] = ce["placement"]
         o["callouts"] = list(oc_by.values())
     ov["slides"] = list(ov_by.values())
+    try:
+        deck.apply_overrides(dk["slides"], ov, images, allowed_facts)
+        schemas.Deck.model_validate(dk)
+    except (ValueError, TypeError) as error:
+        raise HTTPException(400, str(error)) from error
     store.write_json(demo_id, "deck-overrides.json", ov)
-    deck.apply_overrides(dk["slides"], ov, images, allowed_facts)
-    schemas.Deck.model_validate(dk)
     store.write_json(demo_id, "deck.json", dk)
     orchestrator.invalidate(demo_id, "deck")
     orchestrator.set_stage(demo_id, "deck", "done", message="slides edited in Align")
