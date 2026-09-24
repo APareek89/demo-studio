@@ -1,0 +1,806 @@
+[
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im01",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p15-i01.jpg",
+    "new_image_id": "im_pdf_2f931aad60c08d1f4a9b",
+    "new_source_id": "src_pdf_2f931aad60c08d1f4a9b",
+    "sha256": "d414983e0932cdc65053cba37097f10eb18e63ae6e25a00dbe4d080ffce1d687",
+    "occurrences": [
+      {
+        "page": 15,
+        "image_index": 1,
+        "resource": "/FormXob.f08be77af600104182302fa05d177b63"
+      }
+    ],
+    "description": "Front three-quarter view of the CRETA on a mountain road"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im02",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p07-i04.jpg",
+    "new_image_id": "im_pdf_689090f045758facf9e2",
+    "new_source_id": "src_pdf_689090f045758facf9e2",
+    "sha256": "8da2b42386d7f6231979650d7cda07b3663d0117fffc371218ee6ea73fa1f2ea",
+    "occurrences": [
+      {
+        "page": 7,
+        "image_index": 4,
+        "resource": "/FormXob.931e8266d9c6f0ec74b1662e7af3f87f"
+      }
+    ],
+    "description": "Whole CRETA side profile outdoors"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im03",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p27-i03.jpg",
+    "new_image_id": "im_pdf_fb2b4c4b8fb8583aaee6",
+    "new_source_id": "src_pdf_fb2b4c4b8fb8583aaee6",
+    "sha256": "e47bff24f9075603b02575013b7eb341b0c96024c8ed9f13190cdc00766fca9c",
+    "occurrences": [
+      {
+        "page": 27,
+        "image_index": 3,
+        "resource": "/FormXob.b0674c49c12c7087827290e8955b7a49"
+      }
+    ],
+    "description": "Whole CRETA King side profile on white background"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im04",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p16-i02.jpg",
+    "new_image_id": "im_pdf_87bac17ee980151549ba",
+    "new_source_id": "src_pdf_87bac17ee980151549ba",
+    "sha256": "d55f27c5462a1a8aaa1d2caa55b8af52a773b81c7d58f9a386d435312bb737a0",
+    "occurrences": [
+      {
+        "page": 16,
+        "image_index": 2,
+        "resource": "/FormXob.74a32d7a25ac78b2c1d2bb23f5c724cb"
+      }
+    ],
+    "description": "Turbo petrol engine illustration with printed power and torque labels"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im05",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p16-i01.jpg",
+    "new_image_id": "im_pdf_5cd207807990f4eea283",
+    "new_source_id": "src_pdf_5cd207807990f4eea283",
+    "sha256": "846c465d34a6e2347f7b65f97c178b3ccb6a93dde44960f9b585c741e556770e",
+    "occurrences": [
+      {
+        "page": 16,
+        "image_index": 1,
+        "resource": "/FormXob.6a7fff0f88a55eaa296fadf3b5fb7c19"
+      }
+    ],
+    "description": "Diesel engine illustration with printed power and torque labels"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im06",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p16-i03.jpg",
+    "new_image_id": "im_pdf_98cd4a320f9dbfd33bbd",
+    "new_source_id": "src_pdf_98cd4a320f9dbfd33bbd",
+    "sha256": "69bae84838eb80926b3f1b6a6a08fffa98de64963d1ff2b66960e3f9458a1643",
+    "occurrences": [
+      {
+        "page": 16,
+        "image_index": 3,
+        "resource": "/FormXob.a13e4967d95897e3b450f9787b6dadd9"
+      }
+    ],
+    "description": "Naturally aspirated petrol engine illustration with printed power and torque labels"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im07",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p17-i02.jpg",
+    "new_image_id": "im_pdf_3aa2ebf1c9ed94570455",
+    "new_source_id": "src_pdf_3aa2ebf1c9ed94570455",
+    "sha256": "e3a939d11c19859465c612738a2dc5aea16c2885b15258bdae62616e9e67607b",
+    "occurrences": [
+      {
+        "page": 17,
+        "image_index": 2,
+        "resource": "/FormXob.1fdfe9b2695aa8dff44c6ff039837367"
+      }
+    ],
+    "description": "Manual gear lever and centre console buttons"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im08",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p17-i04.jpg",
+    "new_image_id": "im_pdf_893405c770ce75e06502",
+    "new_source_id": "src_pdf_893405c770ce75e06502",
+    "sha256": "af0f87e5e6d22b91f7b2b51eb3a70bd23154f30495fdb9518a1ef11d89a36547",
+    "occurrences": [
+      {
+        "page": 17,
+        "image_index": 4,
+        "resource": "/FormXob.88c1585f6622a258fb239a8ec2ab6803"
+      }
+    ],
+    "description": "Steering wheel paddle marked plus"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im09",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p17-i03.jpg",
+    "new_image_id": "im_pdf_82c706fa06eadf9268f7",
+    "new_source_id": "src_pdf_82c706fa06eadf9268f7",
+    "sha256": "217a7cc8c80b20c7db64bc6bc8d6fef0dd65d28b495aa09984f19e48bf1fb845",
+    "occurrences": [
+      {
+        "page": 17,
+        "image_index": 3,
+        "resource": "/FormXob.616a42d0fdbab1c92590742292cfb9c1"
+      }
+    ],
+    "description": "Digital cluster displaying drive and traction menu with Eco selected"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im10",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p24-i02.jpg",
+    "new_image_id": "im_pdf_cf41d0e7be3699347595",
+    "new_source_id": "src_pdf_cf41d0e7be3699347595",
+    "sha256": "f1a86fec7bad02dbc7a0ab07af9dc386adef9aad3847181c377b7da762da5108",
+    "occurrences": [
+      {
+        "page": 24,
+        "image_index": 2,
+        "resource": "/FormXob.71f27ee28f62a3c0ef72936290b27184"
+      }
+    ],
+    "description": "Vehicle diagram on snow mud sand background with traction mode knob inset"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im11",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p19-i01.jpg",
+    "new_image_id": "im_pdf_e1266b7974b364c1c1ba",
+    "new_source_id": "src_pdf_e1266b7974b364c1c1ba",
+    "sha256": "3ef30fe37ee1a46348690fe76a4bb290244ad56734f5a2e90bced5bc78877675",
+    "occurrences": [
+      {
+        "page": 19,
+        "image_index": 1,
+        "resource": "/FormXob.1d1d945b3520cac88026cce67a87e961"
+      }
+    ],
+    "description": "Electronic parking brake and AUTO HOLD button"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im12",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p08-i06.jpg",
+    "new_image_id": "im_pdf_3706b9e10eac9af2dac8",
+    "new_source_id": "src_pdf_3706b9e10eac9af2dac8",
+    "sha256": "f7323ba15c324046d54f5ba682e6370a5095ec5ae64336f6d075c9c7867103c6",
+    "occurrences": [
+      {
+        "page": 27,
+        "image_index": 4,
+        "resource": "/FormXob.b1c43023cab07aba210928d531aa4cf0"
+      },
+      {
+        "page": 8,
+        "image_index": 6,
+        "resource": "/FormXob.b1c43023cab07aba210928d531aa4cf0"
+      }
+    ],
+    "description": "Alloy wheel and tyre close-up on car"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im13",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p13-i07.jpg",
+    "new_image_id": "im_pdf_adb415f161dfc9567dde",
+    "new_source_id": "src_pdf_adb415f161dfc9567dde",
+    "sha256": "9022b71bc3754899b61efe56985300625aca69cf3043a51d1820c119e56b56b0",
+    "occurrences": [
+      {
+        "page": 13,
+        "image_index": 7,
+        "resource": "/FormXob.f5a87b5f6d45afca129703eb810612fb"
+      }
+    ],
+    "description": "Rear seats shown with split seatbacks folded"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im14",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p12-i02.jpg",
+    "new_image_id": "im_pdf_74c2156461739f493698",
+    "new_source_id": "src_pdf_74c2156461739f493698",
+    "sha256": "1ba54c9848231d62014e8bcbe3bd95b23331f95dc244a41457ca5b3536a894e8",
+    "occurrences": [
+      {
+        "page": 12,
+        "image_index": 2,
+        "resource": "/FormXob.9bdce33e717c00a011daeb4ca1f4c72d"
+      }
+    ],
+    "description": "Panorama of cabin showing rear seats, fronts, roof and console"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im15",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p13-i01.jpg",
+    "new_image_id": "im_pdf_086219c79f5c77a4f468",
+    "new_source_id": "src_pdf_086219c79f5c77a4f468",
+    "sha256": "35edf30a41f488e193cf419ff286cf242c3f9cc0267e4183b19f9b5f80cf4028",
+    "occurrences": [
+      {
+        "page": 13,
+        "image_index": 1,
+        "resource": "/FormXob.0eb0147866b7b06b1e4b7503dbe9cabb"
+      }
+    ],
+    "description": "Open boot containing luggage and groceries"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im16",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p19-i04.jpg",
+    "new_image_id": "im_pdf_a54e8e56f4b50c2f5596",
+    "new_source_id": "src_pdf_a54e8e56f4b50c2f5596",
+    "sha256": "7b7d7ab6b66254d66d0b88642cd5118161dc869f43131a6fb1b16e63f4fd2c22",
+    "occurrences": [
+      {
+        "page": 19,
+        "image_index": 4,
+        "resource": "/FormXob.d80d4ae0b62242630ccd19ba47a1c047"
+      }
+    ],
+    "description": "Cabin cutaway showing deployed airbags around seats"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im17",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p20-i03.jpg",
+    "new_image_id": "im_pdf_97c32df6925fe7908b77",
+    "new_source_id": "src_pdf_97c32df6925fe7908b77",
+    "sha256": "1c7f3affccddd384d7e13d935ca0fe56b206c86e62be0e38d3f6d865899f8df3",
+    "occurrences": [
+      {
+        "page": 20,
+        "image_index": 3,
+        "resource": "/FormXob.ebea12e8acef38a49e4e98073b53c415"
+      }
+    ],
+    "description": "Comparison illustration of car paths with and without stability control"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im18",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p21-i07.jpg",
+    "new_image_id": "im_pdf_87d94ba1ddd0b388c716",
+    "new_source_id": "src_pdf_87d94ba1ddd0b388c716",
+    "sha256": "aec0be8bc24a6d80c83551f9574f00d5b7242f268a83ab958d6430e0b876dcf7",
+    "occurrences": [
+      {
+        "page": 21,
+        "image_index": 7,
+        "resource": "/FormXob.932f25c5c15e549232f3be008f296d9e"
+      }
+    ],
+    "description": "Collision assistance illustration showing detection cone toward car ahead"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im19",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p21-i05.jpg",
+    "new_image_id": "im_pdf_76820ef14d297cc607b5",
+    "new_source_id": "src_pdf_76820ef14d297cc607b5",
+    "sha256": "b61d0873556b0b5bca0c31e12e5465c3d7e813b92029c76782fa1dba471f7e6e",
+    "occurrences": [
+      {
+        "page": 21,
+        "image_index": 5,
+        "resource": "/FormXob.60f263fea9d7cc52182d91dc7dcbdc65"
+      }
+    ],
+    "description": "Collision assistance illustration showing detection cone toward cyclist"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im20",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p21-i02.jpg",
+    "new_image_id": "im_pdf_debec8d7db7aa667b035",
+    "new_source_id": "src_pdf_debec8d7db7aa667b035",
+    "sha256": "2e2ea56707eff7cd2671236dd47e1b2d4b1987fa60919792e0bc5fcedeb2c02e",
+    "occurrences": [
+      {
+        "page": 21,
+        "image_index": 2,
+        "resource": "/FormXob.15111b3e8e2826673356964d78bc4095"
+      }
+    ],
+    "description": "Top view illustration of lane detection and warning"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im21",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p12-i01.jpg",
+    "new_image_id": "im_pdf_498ba48d46b3d2258714",
+    "new_source_id": "src_pdf_498ba48d46b3d2258714",
+    "sha256": "722ecdf484acbf3f9c54fa13ec3f0b82cd4f0a435fd248afade2629d9fad3c16",
+    "occurrences": [
+      {
+        "page": 12,
+        "image_index": 1,
+        "resource": "/FormXob.6dc30745854d140cc460f606dc7eda13"
+      }
+    ],
+    "description": "Two front seats with airflow arrows through seat cushions"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im22",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p12-i03.jpg",
+    "new_image_id": "im_pdf_46a6d841c01356a2e42d",
+    "new_source_id": "src_pdf_46a6d841c01356a2e42d",
+    "sha256": "bc906c6a9238be0180debed71eeabcdb8faeb738ce64b5887923481410314291",
+    "occurrences": [
+      {
+        "page": 12,
+        "image_index": 3,
+        "resource": "/FormXob.d333f414a255442058803f2b225a7271"
+      }
+    ],
+    "description": "Whole dashboard with infotainment and instrument cluster and front console"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im23",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p25-i05.jpg",
+    "new_image_id": "im_pdf_f14b998cc020fdfef1d5",
+    "new_source_id": "src_pdf_f14b998cc020fdfef1d5",
+    "sha256": "ba5691ca604d5163663861f0294449959b27631d26d17bd8548f6d4cc16a8c0c",
+    "occurrences": [
+      {
+        "page": 25,
+        "image_index": 5,
+        "resource": "/FormXob.ef3d26203ce30d8c19f6a2af49930966"
+      }
+    ],
+    "description": "Dual-zone climate panel with two temperature values and buttons"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im24",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p14-i06.jpg",
+    "new_image_id": "im_pdf_1a3e6160f7990cbb647c",
+    "new_source_id": "src_pdf_1a3e6160f7990cbb647c",
+    "sha256": "a9c2e15619e8ae7543eef8ec2b3854e1caa31e34335cfafb0c7d0ba94b2424bc",
+    "occurrences": [
+      {
+        "page": 14,
+        "image_index": 6,
+        "resource": "/FormXob.d3a35d10e9bd16babc29cea75f9e68a2"
+      }
+    ],
+    "description": "Door mounted seat memory buttons"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im25",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p24-i03.jpg",
+    "new_image_id": "im_pdf_bb10676bf859267f1262",
+    "new_source_id": "src_pdf_bb10676bf859267f1262",
+    "sha256": "bf196663a5fa4eb0583dbc6087c44d82475bfc8d9db17e2616ced8d31c71d244",
+    "occurrences": [
+      {
+        "page": 24,
+        "image_index": 3,
+        "resource": "/FormXob.a9a952f33a527b678204bbf2dbe7fcf1"
+      }
+    ],
+    "description": "Top-down Bose audio illustration showing speaker positions around cabin"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im26",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p25-i03.jpg",
+    "new_image_id": "im_pdf_d3bdfccc9d80857379d1",
+    "new_source_id": "src_pdf_d3bdfccc9d80857379d1",
+    "sha256": "a0c05da3027ab3020c3bcbe99917638050511c97b37db5da009fe399fd192c12",
+    "occurrences": [
+      {
+        "page": 25,
+        "image_index": 3,
+        "resource": "/FormXob.56885e1dadffe06f4b446001b7e3ee44"
+      }
+    ],
+    "description": "Panoramic glass roof seen from above with open section"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im27",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p11-i01.jpg",
+    "new_image_id": "im_pdf_7df2ff055b2405e0a449",
+    "new_source_id": "src_pdf_7df2ff055b2405e0a449",
+    "sha256": "4f7f3fc3c47bc657a2ca77dce16a94176945ca9f3981899ad2540fd3d4e29911",
+    "occurrences": [
+      {
+        "page": 11,
+        "image_index": 1,
+        "resource": "/FormXob.bfec8d597662e97723f09aeccce3b210"
+      }
+    ],
+    "description": "Two front seats and panoramic roof seen from within cabin"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im28",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p08-i03.jpg",
+    "new_image_id": "im_pdf_7e1e6afe3e5807a60e62",
+    "new_source_id": "src_pdf_7e1e6afe3e5807a60e62",
+    "sha256": "43cbd26093e6bcef4d2c2ff515e83e2be2b16f9b36ad4ae3ba25d2aea82ce4e5",
+    "occurrences": [
+      {
+        "page": 8,
+        "image_index": 3,
+        "resource": "/FormXob.248e72cc5c32ea485532c89221bb3974"
+      }
+    ],
+    "description": "Light pool on ground beside door from puddle lamp"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im29",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p25-i06.jpg",
+    "new_image_id": "im_pdf_24feabbfd94164f32609",
+    "new_source_id": "src_pdf_24feabbfd94164f32609",
+    "sha256": "4a1f11c529bdca7e9b02baf81f55adf02f034e614726d53939ef12942901ec1d",
+    "occurrences": [
+      {
+        "page": 25,
+        "image_index": 6,
+        "resource": "/FormXob.f7095b2b432f4fee69c536361b726cf8"
+      }
+    ],
+    "description": "Phone on wireless charging pad"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im30",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p14-i02.jpg",
+    "new_image_id": "im_pdf_25b7515fe0c9e93714e1",
+    "new_source_id": "src_pdf_25b7515fe0c9e93714e1",
+    "sha256": "b3d567b1d5611da8dc4a9fbb51498dae6c70f850d839514cfa36889d5e383845",
+    "occurrences": [
+      {
+        "page": 14,
+        "image_index": 2,
+        "resource": "/FormXob.09a71db595447da61b8d8627dd08a789"
+      }
+    ],
+    "description": "Rear seat view with seatback table device holder and cup holder"
+  },
+  {
+    "origin": "original-source-audit",
+    "old_image_id": "im31",
+    "old_file": "/tmp/demo-script-source-audit-20260924/p13-i03.jpg",
+    "new_image_id": "im_pdf_06658fba292467f801c7",
+    "new_source_id": "src_pdf_06658fba292467f801c7",
+    "sha256": "e87a9e1cd9a996ba6ecc72af189337c20f1d51defce8821ee770e34010ee9601",
+    "occurrences": [
+      {
+        "page": 13,
+        "image_index": 3,
+        "resource": "/FormXob.5b1ce0771f0d81a5a404eef4224ce64c"
+      }
+    ],
+    "description": "Open front armrest storage and cup holder beside front seat"
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_77f29ef11432efa02248",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/36e34634b841bee6ff1b8475406cc48358e6d2fe14c0597004d5cc89cb540ff1.png",
+    "new_image_id": "im_pdf_2b5f7233516b8df21e48",
+    "new_source_id": "src_pdf_2b5f7233516b8df21e48",
+    "sha256": "36e34634b841bee6ff1b8475406cc48358e6d2fe14c0597004d5cc89cb540ff1",
+    "occurrences": [
+      {
+        "page": 1,
+        "image_index": 1,
+        "resource": "/FormXob.2c0cd050767f3f05387a65edabe711b1"
+      },
+      {
+        "page": 26,
+        "image_index": 1,
+        "resource": "/FormXob.2c0cd050767f3f05387a65edabe711b1"
+      }
+    ],
+    "description": "Whole CRETA viewed from the rear three-quarter angle in a dark setting; rear lamps, tailgate, side and wheels visible."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_d4a963886ae95c382800",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/2bbe6ccb6ede3460d0eb36e80ca9d31ea3aedc1d425c74a1561b2b952b342de7.png",
+    "new_image_id": "im_pdf_cba8789de09b20cb7670",
+    "new_source_id": "src_pdf_cba8789de09b20cb7670",
+    "sha256": "2bbe6ccb6ede3460d0eb36e80ca9d31ea3aedc1d425c74a1561b2b952b342de7",
+    "occurrences": [
+      {
+        "page": 7,
+        "image_index": 1,
+        "resource": "/FormXob.1128b259c895edb6fec3d9a4828218e5"
+      }
+    ],
+    "description": "Rear of CRETA with horizontal connected red lamps across the tailgate, rear window and badge."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_0cd521e94d9446fe391d",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/778619021dc6aae8f5a0e4e8cb423bf14af6aded054a182da41c11881b68f379.png",
+    "new_image_id": "im_pdf_018773f8e47087722c01",
+    "new_source_id": "src_pdf_018773f8e47087722c01",
+    "sha256": "778619021dc6aae8f5a0e4e8cb423bf14af6aded054a182da41c11881b68f379",
+    "occurrences": [
+      {
+        "page": 7,
+        "image_index": 2,
+        "resource": "/FormXob.11f3956088a3d5e3fe6b43360ed6879a"
+      }
+    ],
+    "description": "Front grille, badge, upper daytime lamp strip and lower headlamp units viewed from above at an angle."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_2969c91b38f8b4ee590e",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/e417292d6339045baae58605694356e6f9387e0a8a01324f730f1f9c751f8310.png",
+    "new_image_id": "im_pdf_a4463ebb4d4d6329f98a",
+    "new_source_id": "src_pdf_a4463ebb4d4d6329f98a",
+    "sha256": "e417292d6339045baae58605694356e6f9387e0a8a01324f730f1f9c751f8310",
+    "occurrences": [
+      {
+        "page": 8,
+        "image_index": 1,
+        "resource": "/FormXob.1d67f95e53a2d6df56f25f56869222e6"
+      },
+      {
+        "page": 28,
+        "image_index": 1,
+        "resource": "/FormXob.1d67f95e53a2d6df56f25f56869222e6"
+      }
+    ],
+    "description": "Black alloy wheel and tyre with a red brake caliper visible through the spokes; no wheel size can be measured from this photo."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_3d47d83af7c0c2af9a47",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/7ef6dd48ff1a4d9afceb13ae3017d8f29f3a385b6e1b11130713824b32cf201a.png",
+    "new_image_id": "im_pdf_69dbe03b1e714fcbba89",
+    "new_source_id": "src_pdf_69dbe03b1e714fcbba89",
+    "sha256": "7ef6dd48ff1a4d9afceb13ae3017d8f29f3a385b6e1b11130713824b32cf201a",
+    "occurrences": [
+      {
+        "page": 13,
+        "image_index": 2,
+        "resource": "/FormXob.4a0300851977ccc27718a793ca400a07"
+      }
+    ],
+    "description": "Passenger-side horizontal dashboard air vent, trim and storage recess beneath it."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_733c38766aaea2f5f14d",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/ad968635f225648bb186e92f94cf72f433f3da1253306b47cf2c85cbfc6996d7.png",
+    "new_image_id": "im_pdf_3674ecf9de31118cb325",
+    "new_source_id": "src_pdf_3674ecf9de31118cb325",
+    "sha256": "ad968635f225648bb186e92f94cf72f433f3da1253306b47cf2c85cbfc6996d7",
+    "occurrences": [
+      {
+        "page": 14,
+        "image_index": 1,
+        "resource": "/FormXob.0474b99b80cda60d5417c34ee31a661a"
+      }
+    ],
+    "description": "Rear cabin view showing a deployed front-seatback table holding a tablet and cup; rear seat and rear console visible."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_1a4ffa2486f85c84fd68",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/14ca4e47ecbf460f344ad882e939f19fb05abf81b02db6249fbf00f51e667bd3.png",
+    "new_image_id": "im_pdf_9ab718573a255fd9994a",
+    "new_source_id": "src_pdf_9ab718573a255fd9994a",
+    "sha256": "14ca4e47ecbf460f344ad882e939f19fb05abf81b02db6249fbf00f51e667bd3",
+    "occurrences": [
+      {
+        "page": 17,
+        "image_index": 1,
+        "resource": "/FormXob.005a17ad98422ebe1c8a39cb04c796f3"
+      }
+    ],
+    "description": "Digital instrument cluster with drive and traction menu and Sport selected in red; incidental display values are not measured performance evidence."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_de23ebb58f07bcd947ff",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/94697d5f66aa4f1e18e21edf55ca1d73c92e9816fd16853ba8a8a488960063cf.png",
+    "new_image_id": "im_pdf_c8743c0adbf32f9b7e56",
+    "new_source_id": "src_pdf_c8743c0adbf32f9b7e56",
+    "sha256": "94697d5f66aa4f1e18e21edf55ca1d73c92e9816fd16853ba8a8a488960063cf",
+    "occurrences": [
+      {
+        "page": 18,
+        "image_index": 1,
+        "resource": "/FormXob.1885f4be8cba2545a2b5b148ab12a809"
+      }
+    ],
+    "description": "Two-panel dashboard image: parking camera with guidelines and overhead car view on the left; a circular live side/rear camera view in the instrument cluster on the right."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_2b31273f2c5e812901f5",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/630cb336d74b015c6d03ae861a72ed0e11b2debfe9b13823a4ed7527629d760a.png",
+    "new_image_id": "im_pdf_11d7b41540b2776d6e24",
+    "new_source_id": "src_pdf_11d7b41540b2776d6e24",
+    "sha256": "630cb336d74b015c6d03ae861a72ed0e11b2debfe9b13823a4ed7527629d760a",
+    "occurrences": [
+      {
+        "page": 19,
+        "image_index": 2,
+        "resource": "/FormXob.2ebf4026ae6fb3b4d4560fd8d94ad79f"
+      }
+    ],
+    "description": "Digital instrument cluster showing a tyre pressure diagram with four wheel-position readings; screen values are illustrative."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_97d57ead2d14921e4dc7",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/d681dea303754ff505e5f7ded8c639709633d92a7033c31f36f47a05cfad58a7.png",
+    "new_image_id": "im_pdf_beece6d09d55074c47bb",
+    "new_source_id": "src_pdf_beece6d09d55074c47bb",
+    "sha256": "d681dea303754ff505e5f7ded8c639709633d92a7033c31f36f47a05cfad58a7",
+    "occurrences": [
+      {
+        "page": 21,
+        "image_index": 1,
+        "resource": "/FormXob.12804263347d8449f18b294a803c92cd"
+      }
+    ],
+    "description": "Top-down lane-keeping illustration showing a vehicle between road markings and a blue projected curved path; this is an assistance diagram, not a recorded road test."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_e15e4cb6fb3e6d7a0605",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/b82f31e692839ba4559820cb2da33be72511875e1662a47ae41d52521d043347.png",
+    "new_image_id": "im_pdf_497f55977a7d19718157",
+    "new_source_id": "src_pdf_497f55977a7d19718157",
+    "sha256": "b82f31e692839ba4559820cb2da33be72511875e1662a47ae41d52521d043347",
+    "occurrences": [
+      {
+        "page": 23,
+        "image_index": 1,
+        "resource": "/FormXob.0c2ff1639e31a505af7eac55b3c8ae7a"
+      },
+      {
+        "page": 24,
+        "image_index": 1,
+        "resource": "/FormXob.0c2ff1639e31a505af7eac55b3c8ae7a"
+      }
+    ],
+    "description": "Manufacturer Home-to-Car illustration of a woman beside a smart speaker and a car outside, with a speech bubble asking Alexa to turn on the car air conditioning."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_014a8596dc3f6260da3e",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/6e45b4d7379555c3ee34b3eea866ac94190281d161d1113d4726a4caecd11158.png",
+    "new_image_id": "im_pdf_74629d719ebbc53bbd9b",
+    "new_source_id": "src_pdf_74629d719ebbc53bbd9b",
+    "sha256": "6e45b4d7379555c3ee34b3eea866ac94190281d161d1113d4726a4caecd11158",
+    "occurrences": [
+      {
+        "page": 25,
+        "image_index": 2,
+        "resource": "/FormXob.115bafcfcf577f0c9c7fcb64af463d81"
+      }
+    ],
+    "description": "Centre-console charging panel with two USB-C ports and a covered twelve-volt socket, with port symbols and ratings printed on the panel."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_bdcc5f9c5cbf5a927ed0",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/e75d7a499d39498f33889778882d3d2bc5c64bdd584a11d7473b6075a9534826.png",
+    "new_image_id": "im_pdf_3724e1bd95c207fb5f23",
+    "new_source_id": "src_pdf_3724e1bd95c207fb5f23",
+    "sha256": "e75d7a499d39498f33889778882d3d2bc5c64bdd584a11d7473b6075a9534826",
+    "occurrences": [
+      {
+        "page": 27,
+        "image_index": 1,
+        "resource": "/FormXob.82b21e3ddf91df8488241eac31c026b8"
+      }
+    ],
+    "description": "Camera housing mounted near the upper windscreen and rear-view mirror area; only this front-mounted unit is pictured."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_828feada58b56a395c72",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/91d61edc975843a15d175ec3d51addffcb2dba0fb3e7c00df032ce1b9426afab.png",
+    "new_image_id": "im_pdf_719c076eb7882f731dcd",
+    "new_source_id": "src_pdf_719c076eb7882f731dcd",
+    "sha256": "91d61edc975843a15d175ec3d51addffcb2dba0fb3e7c00df032ce1b9426afab",
+    "occurrences": [
+      {
+        "page": 28,
+        "image_index": 2,
+        "resource": "/FormXob.a1cd7d09729f9cd731b44889d61248dd"
+      }
+    ],
+    "description": "Dark cabin with dashboard, steering wheel, seats and contrasting metallic-colour trim inserts; no material composition can be established visually."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_f895b83976327b540a59",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/66b6a8a7c2a6dbbddd0c40695bf7f26e37c6f2ac3561167b54fdb62e61caaf25.png",
+    "new_image_id": "im_pdf_31ed8989f6cc45b71b53",
+    "new_source_id": "src_pdf_31ed8989f6cc45b71b53",
+    "sha256": "66b6a8a7c2a6dbbddd0c40695bf7f26e37c6f2ac3561167b54fdb62e61caaf25",
+    "occurrences": [
+      {
+        "page": 13,
+        "image_index": 4,
+        "resource": "/FormXob.68441fdd5acd0d4b9be8e5ad14d946cf"
+      }
+    ],
+    "description": "Open empty boot with rear parcel tray spanning the luggage area and rear-seat head restraints above; rear seats are upright."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_dac71a4185c3931852f2",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/23a2ad55eff906146c53166c872915a2caa1e8120dcb928744852c0d38ac833a.png",
+    "new_image_id": "im_pdf_6fbbc0ada78471786303",
+    "new_source_id": "src_pdf_6fbbc0ada78471786303",
+    "sha256": "23a2ad55eff906146c53166c872915a2caa1e8120dcb928744852c0d38ac833a",
+    "occurrences": [
+      {
+        "page": 14,
+        "image_index": 3,
+        "resource": "/FormXob.219073a1f510a6753b8ded46670b41db"
+      }
+    ],
+    "description": "Side of a front seat with multiple electric adjustment switches visible on the seat base."
+  },
+  {
+    "origin": "additional-actual-pixels",
+    "old_image_id": "im_pdf_afa44398d4c4c7888313",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/df4412ac34a4c58e57b0cb9ca6b9fd00be5ad1508463a8c722d0268c5271a8ff.png",
+    "new_image_id": "im_pdf_b64c9a8093b659198cc1",
+    "new_source_id": "src_pdf_b64c9a8093b659198cc1",
+    "sha256": "df4412ac34a4c58e57b0cb9ca6b9fd00be5ad1508463a8c722d0268c5271a8ff",
+    "occurrences": [
+      {
+        "page": 14,
+        "image_index": 4,
+        "resource": "/FormXob.abfaabb566e14f8ac4363f1c6e982e34"
+      }
+    ],
+    "description": "Two seat movement buttons on the side of a front-seat backrest, with seat pictograms on their faces."
+  },
+  {
+    "origin": "corrected-actual-pixels",
+    "old_image_id": "im_pdf_21bb72b4fd2c922acfa9",
+    "old_file": "/private/tmp/demo-crack-script-20260924/pdf-production-fixture/demos/dm_88934fc5/derived/pdf-images/src_0cf1fd/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/b3d567b1d5611da8dc4a9fbb51498dae6c70f850d839514cfa36889d5e383845.png",
+    "new_image_id": "im_pdf_25b7515fe0c9e93714e1",
+    "new_source_id": "src_pdf_25b7515fe0c9e93714e1",
+    "sha256": "b3d567b1d5611da8dc4a9fbb51498dae6c70f850d839514cfa36889d5e383845",
+    "occurrences": [
+      {
+        "page": 14,
+        "image_index": 2,
+        "resource": "/FormXob.09a71db595447da61b8d8627dd08a789"
+      }
+    ],
+    "description": "Front seats and the closed centre-console armrest with adjacent cup holders; no rear seatback table or tablet appears."
+  }
+]

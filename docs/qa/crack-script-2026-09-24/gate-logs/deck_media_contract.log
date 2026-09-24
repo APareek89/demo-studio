@@ -1,0 +1,62 @@
+PASS media: audited bindings retain two picture IDs in spoken order
+PASS media: each picture retains its first spoken line index
+PASS media: audited pictures are not marked illustration
+PASS media: a third distinct picture is not added
+PASS media: repeated references collapse and retain first indexes
+PASS media: absent audit accepts the Author's actual binding
+PASS media: full audited legacy bindings recover only the missing image kind
+PASS media: explicit none is never promoted to audited picture proof
+PASS media: partial coverage cannot become literal evidence
+PASS media: stale audit for a different picture cannot approve its binding
+PASS media: unknown pictures and shots are not accepted as slide images
+PASS proxy: engine chooses the confidently tagged bonnet
+PASS proxy: weak part tags fall back to hero
+PASS proxy: a confident tag without a box still selects the illustration
+PASS proxy: a missing part box keeps its label in the panel
+PASS proxy: price has no visual proof and uses hero illustration
+PASS proxy: no allowed hero produces no invented picture
+PASS media: held lines do not consume the displayed line index
+PASS workbook media: saved full pixel coverage supplies a distinct second view
+PASS workbook media: additional view retains its supported narration timing
+PASS workbook media: one available supported view is not duplicated
+PASS workbook media: weak pixel evidence cannot supply the second picture
+PASS workbook media: absent visible features cannot supply the second picture
+PASS workbook media: excluded pictures cannot enter the second slot
+PASS workbook media: another segment's audit is not reused
+PASS workbook media: held narration cannot promote another view
+PASS workbook media: partial line coverage cannot promote another view
+PASS workbook media: explicit none cannot promote another view
+PASS workbook media: an existing pair keeps its reviewed narration order
+PASS workbook media: a repeated picture ID cannot fill the second slot
+PASS deck: media list persists and legacy image_id mirrors its first picture
+PASS deck: fundamental status survives media selection and script joins
+PASS deck: derived labels attach to the picture their source line uses
+PASS deck: second-picture geometry uses its own part box
+PASS workbook deck: audited alternative persists through the real deck build
+PASS workbook deck: alternative labels use only their audited line's citations
+PASS workbook deck: absent matching part uses a caption without a guessed marker
+PASS proxy: one complete cited label anchors on the matching bonnet
+PASS proxy: illustrative label reveals at the start
+PASS proxy: building illustrations never changes the pixel audit
+PASS proxy: derived illustration retains every citation from its source line
+PASS proxy: overlong scope is omitted whole instead of shortened
+PASS override: second-slot swap preserves timing and marks unaudited illustration
+PASS override: unchanged picture retains its audited metadata
+PASS override: moved callout uses new picture geometry and independent drag
+PASS override: null picture attachment means the first picture
+PASS override: removing both pictures accepts the editor's null attachments
+PASS override: rejects third picture
+PASS override: rejects excluded picture
+PASS override: rejects foreign callout attachment
+PASS deck: two pictures can each carry three independently validated callouts
+PASS override: moving a fourth label onto a picture is rejected
+PASS deck: model sees picture IDs with separate exact part lists
+PASS override: rebuild survives a later exclusion of the saved picture
+PASS override: stale callout attachments cannot restore an excluded picture
+PASS bundle: both media URLs and own part boxes are resolved
+PASS bundle: legacy image_url and new first media URL agree
+PASS bundle: callout picture identities survive publication
+PASS bundle: segments and slides preserve the lead-fundamental flag
+PASS media: no outbound requests and all storage is isolated
+Deck media: 60/60 passed
+OUTBOUND_ATTEMPTS 0

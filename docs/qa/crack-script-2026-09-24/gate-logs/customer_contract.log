@@ -1,0 +1,31 @@
+PASS customer: fallback callouts omit long facts instead of chopping a sentence
+PASS customer: a complete short fallback label survives unchanged
+PASS customer: fallback never drops a long applicability condition to fit a label
+PASS customer: short fallback retains its applicability condition
+PASS customer: an overlong title is omitted rather than cut mid-thought
+PASS customer: unsafe title override keeps the existing complete title
+PASS customer: narration cannot ask a question or move it into checkin
+PASS customer: moving an uncited claim into checkin cannot bypass grounding
+PASS customer: deck preserves an old script's explicit confirmation step
+PASS customer: main and translated bundle slides retain explicit question metadata
+PASS customer: omitting a long label preserves the surviving fact's reviewed callout id
+PASS customer: explicit reviewed short copy survives omission of its long generated fallback
+PASS customer: a reviewed label is omitted when its citation no longer belongs to the slide
+PASS customer: an orphaned Align edit never attaches to a new fact on a later rebuild
+PASS customer: clarification is spoken alone before an answer
+PASS customer: clarification carries no claim, visual, escalation or callback
+PASS customer: an explicit clarification is not converted into a callback refusal
+PASS customer: a clarification cannot smuggle uncited figures past grounding
+PASS customer: stacked clarification questions are rejected instead of opening a wait
+PASS customer: an explicit CTA does not also create a clarification wait
+PASS customer: clarified answer retains the original question and actual reply in model context
+PASS customer: route planning never adds a second intake question
+PASS customer: acknowledgement cannot invent a different customer distance
+PASS customer: a valid fact id cannot license an unrelated invented customer quantity
+PASS customer: a skipped intake cannot produce invented personal batches or bridges
+PASS customer: spelling an invented customer quantity does not evade the context guard
+PASS customer: the real customer's quantities survive spoken-number normalization
+PASS customer: a cited decimal survives natural spoken rendering
+PASS customer: content contracts made no network or voice calls
+29/29 customer contracts passed
+OUTBOUND_ATTEMPTS 0

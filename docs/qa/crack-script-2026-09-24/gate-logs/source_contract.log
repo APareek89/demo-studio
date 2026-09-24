@@ -1,0 +1,41 @@
+PASS sources: pdf upload keeps official URL without becoming a URL source
+PASS sources: text upload keeps official URL without becoming a URL source
+PASS sources: invalid URL javascript returns 400 without partial mutation
+PASS sources: invalid URL file returns 400 without partial mutation
+PASS sources: invalid URL /relative returns 400 without partial mutation
+PASS sources: invalid URL https returns 400 without partial mutation
+PASS sources: invalid URL https returns 400 without partial mutation
+PASS sources: invalid URL https returns 400 without partial mutation
+PASS sources: invalid URL https returns 400 without partial mutation
+PASS sources: invalid URL None returns 400 without partial mutation
+PASS sources: competitor PDF/text/URL content never enters product extraction
+PASS sources: PDF, text and URL each reach the separate competitor extractor
+PASS sources: uploaded origin metadata is not fetched instead of the uploaded document
+PASS sources: real PDF text keeps page markers, source id and official origin URL
+PASS sources: extracted competitor citations are bound to the actual supplied source
+PASS sources: competitor source URL, quote, locator and variant conditions survive storage
+PASS sources: runtime receives competitor variant condition, origin, exact quote and locator
+PASS sources: rejected competitor facts are absent from the model prompt
+PASS sources: an approved competitor fact can ground a runtime answer
+PASS sources: rejected competitor citation declines even alongside a valid citation
+PASS sources: rejected competitor citation declines even alongside a valid citation
+PASS sources: a CTA cannot preserve or speak a rejected competitor claim
+PASS sources: a CTA cannot preserve or speak a uncited competitor claim
+PASS sources: single-digit equipment count 1 declines without evidence
+PASS sources: single-digit equipment count 1 survives with evidence
+PASS sources: single-digit equipment count 2 declines without evidence
+PASS sources: single-digit equipment count 2 survives with evidence
+PASS sources: single-digit equipment count 3 declines without evidence
+PASS sources: single-digit equipment count 3 survives with evidence
+PASS sources: uncited single-digit equipment plus CTA declines before speech
+PASS sources: equipment-count guard does not classify every single digit as a product claim
+PASS sources: competitor approval changes invalidate the FAQ build cache
+PASS sources: an approved competitor FAQ remains an immediate bank response
+PASS sources: stale FAQ audio citing a rejected competitor cannot bypass runtime approval
+PASS sources: stale FAQ audio citing a rejected competitor cannot bypass runtime approval
+PASS sources: disabling comparison invalidates the FAQ build cache
+PASS sources: comparison-off blocks an otherwise approved competitor bank answer
+PASS sources: disabling comparison removes rival context and invalidates its citations
+PASS sources: all source contracts avoid provider and outbound network calls
+Source contracts: 39/39
+OUTBOUND_ATTEMPTS 0

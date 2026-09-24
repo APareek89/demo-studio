@@ -87,7 +87,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — \"one of the cars you see most on Indian roads\" — still citing the fact id it rests on."
+          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank \u2014 \"one of the cars you see most on Indian roads\" \u2014 still citing the fact id it rests on."
         },
         {
           "negative_bearing": true,
@@ -154,7 +154,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "GUIDELINES — give the writer a reason for each stop"
+          "text": "GUIDELINES \u2014 give the writer a reason for each stop"
         },
         {
           "negative_bearing": false,
@@ -294,7 +294,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — \"one of the cars you see most on Indian roads\" — still citing the fact id it rests on."
+          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank \u2014 \"one of the cars you see most on Indian roads\" \u2014 still citing the fact id it rests on."
         },
         {
           "negative_bearing": false,
@@ -355,7 +355,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "It must feel like a good human salesperson: greet, offer a choice, overview before detail, then guided discovery — not a spec tour and not an interrogation."
+          "text": "It must feel like a good human salesperson: greet, offer a choice, overview before detail, then guided discovery \u2014 not a spec tour and not an interrogation."
         },
         {
           "negative_bearing": false,
@@ -403,11 +403,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "intake.q1 = the GREETING + one context choice, in one breath: warm, names the brand and the product, then ONE low-pressure question that is easy to decline (\"…or shall we just get started?\")."
+          "text": "intake.q1 = the GREETING + one context choice, in one breath: warm, names the brand and the product, then ONE low-pressure question that is easy to decline (\"\u2026or shall we just get started?\")."
         },
         {
           "negative_bearing": true,
-          "text": "ONE question only — never name + something else stacked."
+          "text": "ONE question only \u2014 never name + something else stacked."
         },
         {
           "negative_bearing": false,
@@ -439,11 +439,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening): \"the strongest fit is … and the thing still to verify is …\". takeaway: one memorable plain-language sentence."
+          "text": "decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening): \"the strongest fit is \u2026 and the thing still to verify is \u2026\". takeaway: one memorable plain-language sentence."
         },
         {
           "negative_bearing": false,
-          "text": "primary_outcome + ≤2 supporting_outcomes: the supported result or buying decision to explore."
+          "text": "primary_outcome + \u22642 supporting_outcomes: the supported result or buying decision to explore."
         },
         {
           "negative_bearing": true,
@@ -535,7 +535,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — \"one of the cars you see most on Indian roads\" — still citing the fact id it rests on."
+          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank \u2014 \"one of the cars you see most on Indian roads\" \u2014 still citing the fact id it rests on."
         },
         {
           "negative_bearing": true,
@@ -547,11 +547,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "Titles are sometimes SPOKEN at runtime as \"Next: <title>.\" Write each title as the thing itself in a buyer's nouns — \"The seat you'll sit in every day\" — never a category label such as \"Interior features\". 1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling."
+          "text": "Titles are sometimes SPOKEN at runtime as \"Next: <title>.\" Write each title as the thing itself in a buyer's nouns \u2014 \"The seat you'll sit in every day\" \u2014 never a category label such as \"Interior features\". 1-2 \u00d7 role=intro \u2014 the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling."
         },
         {
           "negative_bearing": true,
-          "text": "No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1). 1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question. role=proof — GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order."
+          "text": "No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1). 1 \u00d7 role=outcome \u2014 THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question. role=proof \u2014 GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order."
         },
         {
           "negative_bearing": false,
@@ -559,7 +559,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "The initial runtime route leads with the first unseen fundamental, then follows the buyer’s strongest signal; later refinements retain the buyer’s requested order, so each proof must stand alone. 1 × role=features — a few more things, one sentence each. 1 × role=establish — variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with where each gets settled (test drive / dealer / a document the owner can upload)."
+          "text": "The initial runtime route leads with the first unseen fundamental, then follows the buyer\u2019s strongest signal; later refinements retain the buyer\u2019s requested order, so each proof must stand alone. 1 \u00d7 role=features \u2014 a few more things, one sentence each. 1 \u00d7 role=establish \u2014 variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with where each gets settled (test drive / dealer / a document the owner can upload)."
         },
         {
           "negative_bearing": false,
@@ -567,7 +567,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Write three short planning sentences: MOMENT — an optional everyday situation or thing to notice, never asserted as this buyer's circumstances or a demonstrated benefit; SPOKEN / DEEPER — name the fact IDs to voice versus hold for questions, retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF — name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and whether a one-line closing statement would be useful."
+          "text": "Write three short planning sentences: MOMENT \u2014 an optional everyday situation or thing to notice, never asserted as this buyer's circumstances or a demonstrated benefit; SPOKEN / DEEPER \u2014 name the fact IDs to voice versus hold for questions, retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF \u2014 name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and whether a one-line closing statement would be useful."
         },
         {
           "negative_bearing": false,
@@ -611,7 +611,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "advance: the next action naming a CTA label — chosen to resolve the biggest remaining uncertainty. do_not_recommend_if: honest."
+          "text": "advance: the next action naming a CTA label \u2014 chosen to resolve the biggest remaining uncertainty. do_not_recommend_if: honest."
         },
         {
           "negative_bearing": true,
@@ -619,7 +619,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Every segment needs a visual that literally shows its subject (shots quality ≥3 preferred, else images); missing → visual_gaps."
+          "text": "Every segment needs a visual that literally shows its subject (shots quality \u22653 preferred, else images); missing \u2192 visual_gaps."
         },
         {
           "negative_bearing": true,
@@ -703,7 +703,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Voice: a persona matching the brand — a warm, cheerful, attentive and honest product guide; subtle enthusiasm, plain language and restrained pauses, never theatrical excitement or pressure."
+          "text": "Voice: a persona matching the brand \u2014 a warm, cheerful, attentive and honest product guide; subtle enthusiasm, plain language and restrained pauses, never theatrical excitement or pressure."
         },
         {
           "negative_bearing": false,
@@ -725,8 +725,8 @@
     },
     "after": {
       "negative_bearing_units": 59,
-      "other_instruction_units": 62,
-      "all_units": 121,
+      "other_instruction_units": 70,
+      "all_units": 129,
       "units": [
         {
           "negative_bearing": false,
@@ -738,7 +738,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "It must feel like a good human salesperson: greet, offer a choice, overview before detail, then guided discovery — not a spec tour and not an interrogation."
+          "text": "It must feel like a good human salesperson: greet, offer a choice, overview before detail, then guided discovery \u2014 not a spec tour and not an interrogation."
         },
         {
           "negative_bearing": false,
@@ -762,7 +762,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "GUIDELINES — plan the words a buyer will remember"
+          "text": "GUIDELINES \u2014 plan the words a buyer will remember"
         },
         {
           "negative_bearing": false,
@@ -786,7 +786,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Each main delivery batch is one complete 26–33-word thought."
+          "text": "Each main delivery batch is one complete 26\u201333-word thought."
         },
         {
           "negative_bearing": true,
@@ -806,6 +806,22 @@
         },
         {
           "negative_bearing": false,
+          "text": "Reserve one distinct supported detail from the first fundamental for the short runtime overview."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Identify its fact IDs in notes and the first proof goal, and allocate different details to the later proof batches."
+        },
+        {
+          "negative_bearing": false,
+          "text": "The overview is part of the guided word target, so its claim earns that space once."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Intro/outcome are alternative opening material."
+        },
+        {
+          "negative_bearing": false,
           "text": "Use each segment's existing goal to specify its batch count, the assigned facts for each batch, its ordinary situation, exact trim qualification, literal picture subject and the subject it hands to next."
         },
         {
@@ -815,6 +831,18 @@
         {
           "negative_bearing": true,
           "text": "Listing equipment plus \"try it on a test drive\" is not an explanation."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Give each main batch one literal pictured subject."
+        },
+        {
+          "negative_bearing": true,
+          "text": "A second feature needing a different picture gets its own available batch or stays in deeper detail; two feature names in one sentence do not make one visual subject."
+        },
+        {
+          "negative_bearing": true,
+          "text": "A supplied composite picture can cover both only when both subjects are actually visible in it."
         },
         {
           "negative_bearing": false,
@@ -869,6 +897,10 @@
           "text": "The opening must also work after a customer interruption; a handoff supplies a subject, not a reference backward."
         },
         {
+          "negative_bearing": true,
+          "text": "Name the next batch's actual subject in each handoff brief; closing on the current equipment alone leaves no join."
+        },
+        {
           "negative_bearing": false,
           "text": "{principles}"
         },
@@ -894,11 +926,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "intake.q1 = the GREETING + one context choice, in one breath: warm, names the brand and the product, then ONE low-pressure question that is easy to decline (\"…or shall we just get started?\")."
+          "text": "intake.q1 = the GREETING + one context choice, in one breath: warm, names the brand and the product, then ONE low-pressure question that is easy to decline (\"\u2026or shall we just get started?\")."
         },
         {
           "negative_bearing": true,
-          "text": "ONE question only — never name + something else stacked."
+          "text": "ONE question only \u2014 never name + something else stacked."
         },
         {
           "negative_bearing": false,
@@ -930,11 +962,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening): \"the strongest fit is … and the thing still to verify is …\". takeaway: one memorable plain-language sentence."
+          "text": "decision_frame: written in a buyer's everyday nouns, for the FIT SUMMARY at the END of the demo (never the opening): \"the strongest fit is \u2026 and the thing still to verify is \u2026\". takeaway: one memorable plain-language sentence."
         },
         {
           "negative_bearing": false,
-          "text": "primary_outcome + ≤2 supporting_outcomes: the supported result or buying decision to explore."
+          "text": "primary_outcome + \u22642 supporting_outcomes: the supported result or buying decision to explore."
         },
         {
           "negative_bearing": true,
@@ -1026,23 +1058,23 @@
         },
         {
           "negative_bearing": true,
-          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — \"one of the cars you see most on Indian roads\" — still citing the fact id it rests on."
+          "text": "A derived reputational line is allowed ONCE, in the intro, with no figure and no rank \u2014 \"one of the cars you see most on Indian roads\" \u2014 still citing the fact id it rests on."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Reserve the two closing statements for the final summary and next action."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Segment checkins stay empty."
         },
         {
           "negative_bearing": true,
-          "text": "At most two segments end on a one-line closing statement, never a question, placed where a decision turns; name them in the goal."
+          "text": "Titles are sometimes SPOKEN at runtime as \"Next: <title>.\" Write each title as the thing itself in a buyer's nouns \u2014 \"The seat you'll sit in every day\" \u2014 never a category label such as \"Interior features\". 1-2 \u00d7 role=intro \u2014 the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling."
         },
         {
           "negative_bearing": true,
-          "text": "A question after every section is an interrogation, not a conversation."
-        },
-        {
-          "negative_bearing": true,
-          "text": "Titles are sometimes SPOKEN at runtime as \"Next: <title>.\" Write each title as the thing itself in a buyer's nouns — \"The seat you'll sit in every day\" — never a category label such as \"Interior features\". 1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling."
-        },
-        {
-          "negative_bearing": true,
-          "text": "No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1). 1 × role=outcome — THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question. role=proof — GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order."
+          "text": "No spec lists, no decision framing, NO greeting (the greeting lives in intake.q1). 1 \u00d7 role=outcome \u2014 THREE THINGS TO REMEMBER: the three USPs in one breath; say the buyer can steer, without another question. role=proof \u2014 GUIDED DISCOVERY: one proof segment per playbook stop, in playbook order."
         },
         {
           "negative_bearing": false,
@@ -1050,7 +1082,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "The initial runtime route leads with the first unseen fundamental, then follows the buyer’s strongest signal; later refinements retain the buyer’s requested order, so each proof must stand alone. 1 × role=features — a few more things, one sentence each. 1 × role=establish — variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with where each gets settled (test drive / dealer / a document the owner can upload)."
+          "text": "The initial runtime route leads with the first unseen fundamental, then follows the buyer\u2019s strongest signal; later refinements retain the buyer\u2019s requested order, so each proof must stand alone. 1 \u00d7 role=features \u2014 a few more things, one sentence each. 1 \u00d7 role=establish \u2014 variant + written terms + the TOP 2-3 OPEN QUESTIONS from the unknowns list, declared honestly with where each gets settled (test drive / dealer / a document the owner can upload)."
         },
         {
           "negative_bearing": false,
@@ -1058,7 +1090,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Write three short planning sentences: MOMENT — an optional everyday situation or thing to notice, never asserted as this buyer's circumstances or a demonstrated benefit; SPOKEN / DEEPER — name the fact IDs to voice versus hold for questions, retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF — name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and whether a one-line closing statement would be useful."
+          "text": "Write three short planning sentences: MOMENT \u2014 an optional everyday situation or thing to notice, never asserted as this buyer's circumstances or a demonstrated benefit; SPOKEN / DEEPER \u2014 name the fact IDs to voice versus hold for questions, retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF \u2014 name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and an empty checkin."
         },
         {
           "negative_bearing": false,
@@ -1081,8 +1113,8 @@
           "text": "Do not simply delete technical detail and leave a vague benefit in its place."
         },
         {
-          "negative_bearing": true,
-          "text": "Budget more attention for the lead proof than a minor feature; keep closing statements at a few genuine decision points, never after every segment."
+          "negative_bearing": false,
+          "text": "Budget more attention for the lead proof than a minor feature; keep the two closing statements in the final closing block."
         },
         {
           "negative_bearing": true,
@@ -1102,7 +1134,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "advance: the next action naming a CTA label — chosen to resolve the biggest remaining uncertainty. do_not_recommend_if: honest."
+          "text": "advance: the next action naming a CTA label \u2014 chosen to resolve the biggest remaining uncertainty. do_not_recommend_if: honest."
         },
         {
           "negative_bearing": true,
@@ -1110,7 +1142,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Every segment needs a visual that literally shows its subject (shots quality ≥3 preferred, else images); missing → visual_gaps."
+          "text": "Every segment needs a visual that literally shows its subject (shots quality \u22653 preferred, else images); missing \u2192 visual_gaps."
         },
         {
           "negative_bearing": true,
@@ -1194,7 +1226,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Voice: a persona matching the brand — a warm, cheerful, attentive and honest product guide; subtle enthusiasm, plain language and restrained pauses, never theatrical excitement or pressure."
+          "text": "Voice: a persona matching the brand \u2014 a warm, cheerful, attentive and honest product guide; subtle enthusiasm, plain language and restrained pauses, never theatrical excitement or pressure."
         },
         {
           "negative_bearing": false,
@@ -1227,7 +1259,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Write it as ONE continuous talk, in the plan's order, the way a good salesperson walks a buyer round a car — each part picking up the thread of the part before it."
+          "text": "Write it as ONE continuous talk, in the plan's order, the way a good salesperson walks a buyer round a car \u2014 each part picking up the thread of the part before it."
         },
         {
           "negative_bearing": false,
@@ -1235,11 +1267,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "What breaks when a segment plays out of order is a REFERENCE — \"as I said\", \"that engine we just looked at\", \"the second of the three\"."
+          "text": "What breaks when a segment plays out of order is a REFERENCE \u2014 \"as I said\", \"that engine we just looked at\", \"the second of the three\"."
         },
         {
           "negative_bearing": true,
-          "text": "What does not break is a CONNECTION — the next thing being about a subject the buyer has just arrived at, in the same voice, in a sentence that carries the thought on."
+          "text": "What does not break is a CONNECTION \u2014 the next thing being about a subject the buyer has just arrived at, in the same voice, in a sentence that carries the thought on."
         },
         {
           "negative_bearing": true,
@@ -1271,11 +1303,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "Those stops must open cold — no naming, numbering or pointing back at another segment — but \"cold\" does not mean \"abrupt\": open on a place, a moment, or the thing itself (\"Sitting in the driver's seat,\" / \"On a long drive,\"), which reads as a continuation wherever it lands."
+          "text": "Those stops must open cold \u2014 no naming, numbering or pointing back at another segment \u2014 but \"cold\" does not mean \"abrupt\": open on a place, a moment, or the thing itself (\"Sitting in the driver's seat,\" / \"On a long drive,\"), which reads as a continuation wherever it lands."
         },
         {
           "negative_bearing": false,
-          "text": "THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro → outcome → (proof run) → features → establish → closing always play in that order."
+          "text": "THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro \u2192 outcome \u2192 (proof run) \u2192 features \u2192 establish \u2192 closing always play in that order."
         },
         {
           "negative_bearing": false,
@@ -1371,7 +1403,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Do not add, drop, merge, split, reorder or rename a segment, and do not decide what the demo covers — that decision is made."
+          "text": "Do not add, drop, merge, split, reorder or rename a segment, and do not decide what the demo covers \u2014 that decision is made."
         },
         {
           "negative_bearing": true,
@@ -1391,7 +1423,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "The budget exists to keep the thought clear, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed."
+          "text": "The budget exists to keep the thought clear, not to compress thoughts \u2014 a segment under its word_budget that flows beats one at the ceiling that is crammed."
         },
         {
           "negative_bearing": false,
@@ -1407,7 +1439,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "This script is written before any customer arrives and must be excellent with none: never assign the listener a commute, budget, city, household or job, and never hedge around them either — no \"depending on your routine\", no \"if that matters to you\". \"You\" is fine for what the product does for anyone: \"you'd notice it the first hot afternoon\", never \"on your Bengaluru commute\"."
+          "text": "This script is written before any customer arrives and must be excellent with none: never assign the listener a commute, budget, city, household or job, and never hedge around them either \u2014 no \"depending on your routine\", no \"if that matters to you\". \"You\" is fine for what the product does for anyone: \"you'd notice it the first hot afternoon\", never \"on your Bengaluru commute\"."
         },
         {
           "negative_bearing": false,
@@ -1435,7 +1467,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Padding means filler adjectives, restating the obvious, and repeating what was just said — cut those first."
+          "text": "Padding means filler adjectives, restating the obvious, and repeating what was just said \u2014 cut those first."
         },
         {
           "negative_bearing": true,
@@ -1459,7 +1491,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "The list below is SHAPES to vary across the script, never phrases to speak verbatim: {signposts} Bad, because it is a label: \"Next: cabin and comfort.\" Bad, because it assumes an order: \"As we saw outside —\"."
+          "text": "The list below is SHAPES to vary across the script, never phrases to speak verbatim: {signposts} Bad, because it is a label: \"Next: cabin and comfort.\" Bad, because it assumes an order: \"As we saw outside \u2014\"."
         },
         {
           "negative_bearing": true,
@@ -1483,7 +1515,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Relevance is not a garnish on a fact — it is the sentence, and the fact is the evidence inside it."
+          "text": "Relevance is not a garnish on a fact \u2014 it is the sentence, and the fact is the evidence inside it."
         },
         {
           "negative_bearing": true,
@@ -1503,7 +1535,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "A FIT-CHECK IS A LAST RESORT, NOT A RELEVANCE BEAT. \"Try it on a test drive\", \"check it when you sit in the car\", \"decide whether it matters to you\" — these say nothing and cost the buyer the segment."
+          "text": "A FIT-CHECK IS A LAST RESORT, NOT A RELEVANCE BEAT. \"Try it on a test drive\", \"check it when you sit in the car\", \"decide whether it matters to you\" \u2014 these say nothing and cost the buyer the segment."
         },
         {
           "negative_bearing": true,
@@ -1607,7 +1639,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Set each line's delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9–1.08."
+          "text": "Set each line's delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9\u20131.08."
         },
         {
           "negative_bearing": true,
@@ -1615,7 +1647,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Write overview as a separate, self-contained 23–28 word thought for Explore's 10–15 second introduction: begin with the first supported fundamental in the playbook, as mapped to PLAN.segments, in everyday words with its variant qualification and citations."
+          "text": "Write overview as a separate, self-contained 23\u201328 word thought for Explore's 10\u201315 second introduction: begin with the first supported fundamental in the playbook, as mapped to PLAN.segments, in everyday words with its variant qualification and citations."
         },
         {
           "negative_bearing": true,
@@ -1632,9 +1664,9 @@
       ]
     },
     "after": {
-      "negative_bearing_units": 64,
-      "other_instruction_units": 63,
-      "all_units": 127,
+      "negative_bearing_units": 69,
+      "other_instruction_units": 68,
+      "all_units": 137,
       "units": [
         {
           "negative_bearing": false,
@@ -1642,7 +1674,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Write it as ONE continuous talk, in the plan's order, the way a good salesperson walks a buyer round a car — each part picking up the thread of the part before it."
+          "text": "Write it as ONE continuous talk, in the plan's order, the way a good salesperson walks a buyer round a car \u2014 each part picking up the thread of the part before it."
         },
         {
           "negative_bearing": false,
@@ -1650,11 +1682,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "What breaks when a segment plays out of order is a REFERENCE — \"as I said\", \"that engine we just looked at\", \"the second of the three\"."
+          "text": "What breaks when a segment plays out of order is a REFERENCE \u2014 \"as I said\", \"that engine we just looked at\", \"the second of the three\"."
         },
         {
           "negative_bearing": true,
-          "text": "What does not break is a CONNECTION — the next thing being about a subject the buyer has just arrived at, in the same voice, in a sentence that carries the thought on."
+          "text": "What does not break is a CONNECTION \u2014 the next thing being about a subject the buyer has just arrived at, in the same voice, in a sentence that carries the thought on."
         },
         {
           "negative_bearing": true,
@@ -1665,16 +1697,20 @@
           "text": "Always connect."
         },
         {
+          "negative_bearing": false,
+          "text": "INSIDE a prepared story stop, consecutive complete lines become separate delivery batches."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Each line names its subject and finishes its own thought, so it works after an interruption; its ending carries a subject into the next line."
+        },
+        {
           "negative_bearing": true,
-          "text": "INSIDE one segment the lines always play together, in order, and are never separated."
+          "text": "Connect the ideas without a pronoun needing a previous batch or a repeated topic announcement."
         },
         {
           "negative_bearing": false,
-          "text": "Write them as consecutive sentences of one person speaking: line two may open with \"And\", may finish line one's thought, may say \"it\" for a subject line one named."
-        },
-        {
-          "negative_bearing": false,
-          "text": "A segment whose lines each re-announce their topic is wrong even if every line is true and cited."
+          "text": "Short legacy lines that remain inside one delivery batch may share a subject naturally."
         },
         {
           "negative_bearing": true,
@@ -1686,11 +1722,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "Those stops must open cold — no naming, numbering or pointing back at another segment — but \"cold\" does not mean \"abrupt\": open on a place, a moment, or the thing itself (\"Sitting in the driver's seat,\" / \"On a long drive,\"), which reads as a continuation wherever it lands."
+          "text": "Those stops must open cold \u2014 no naming, numbering or pointing back at another segment \u2014 but \"cold\" does not mean \"abrupt\": open on a place, a moment, or the thing itself (\"Sitting in the driver's seat,\" / \"On a long drive,\"), which reads as a continuation wherever it lands."
         },
         {
           "negative_bearing": false,
-          "text": "THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro → outcome → (proof run) → features → establish → closing always play in that order."
+          "text": "THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro \u2192 outcome \u2192 (proof run) \u2192 features \u2192 establish \u2192 closing always play in that order."
         },
         {
           "negative_bearing": false,
@@ -1698,7 +1734,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "GUIDELINES — make each batch a useful piece of conversation"
+          "text": "GUIDELINES \u2014 make each batch a useful piece of conversation"
         },
         {
           "negative_bearing": false,
@@ -1714,7 +1750,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Write each main delivery batch as one complete 26–33-word line."
+          "text": "Write each main delivery batch as one complete 26\u201333-word line."
         },
         {
           "negative_bearing": false,
@@ -1726,11 +1762,23 @@
         },
         {
           "negative_bearing": true,
-          "text": "The separate Explore overview stays 23–28 words with no digits; final closing stays at most two statements and 45 words total."
+          "text": "The separate Explore overview stays 23\u201328 words with no digits; final closing stays at most two statements and 45 words total."
         },
         {
           "negative_bearing": true,
           "text": "These two shorter formats are not main delivery batches."
+        },
+        {
+          "negative_bearing": true,
+          "text": "Use the distinct first-fundamental detail reserved for the Explore overview only there on the guided path."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Later proof lines develop the other assigned evidence."
+        },
+        {
+          "negative_bearing": true,
+          "text": "Rephrasing that overview claim cannot count as new content."
         },
         {
           "negative_bearing": false,
@@ -1777,6 +1825,14 @@
           "text": "Handoffs are short connecting thoughts, not stock \"moving on\" announcements, repeated promises or invented outcomes."
         },
         {
+          "negative_bearing": true,
+          "text": "Check the ending against the next subject in the plan: repeating this batch's own equipment or availability does not create that join."
+        },
+        {
+          "negative_bearing": false,
+          "text": "The last main batch turns toward the closing choice and next action."
+        },
+        {
           "negative_bearing": false,
           "text": "Keep segment checkins empty when the plan reserves its two statements for the final close."
         },
@@ -1795,6 +1851,22 @@
         {
           "negative_bearing": true,
           "text": "Meet the plan's full supported-word target without padding or slowing speech."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Check citations clause by clause, including openings and handoffs: a transition that mentions another product capability needs that capability's own assigned fact IDs too."
+        },
+        {
+          "negative_bearing": true,
+          "text": "The paragraph's main fact cannot support its bridge."
+        },
+        {
+          "negative_bearing": true,
+          "text": "In deeper detail, preserve whether a counted component is included: a system \"with\" a part is not that count \"and\" an extra part."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Keep the source's complete quantity, membership and conditions together."
         },
         {
           "negative_bearing": false,
@@ -1886,7 +1958,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Do not add, drop, merge, split, reorder or rename a segment, and do not decide what the demo covers — that decision is made."
+          "text": "Do not add, drop, merge, split, reorder or rename a segment, and do not decide what the demo covers \u2014 that decision is made."
         },
         {
           "negative_bearing": true,
@@ -1906,7 +1978,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "The budget exists to keep the thought clear, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed."
+          "text": "The budget exists to keep the thought clear, not to compress thoughts \u2014 a segment under its word_budget that flows beats one at the ceiling that is crammed."
         },
         {
           "negative_bearing": false,
@@ -1922,11 +1994,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "This script is written before any customer arrives and must be excellent with none: never assign the listener a commute, budget, city, household or job, and never hedge around them either — no \"depending on your routine\", no \"if that matters to you\". \"You\" is fine for what the product does for anyone: \"you'd notice it the first hot afternoon\", never \"on your Bengaluru commute\"."
+          "text": "This script is written before any customer arrives and must be excellent with none: never assign the listener a commute, budget, city, household or job, and never hedge around them either \u2014 no \"depending on your routine\", no \"if that matters to you\". \"You\" is fine for what the product does for anyone: \"you'd notice it the first hot afternoon\", never \"on your Bengaluru commute\"."
         },
         {
           "negative_bearing": false,
-          "text": "Each main delivery batch is one natural 26–33-word thought; each complete line must fit the role ceiling."
+          "text": "Each main delivery batch is one natural 26\u201333-word thought; each complete line must fit the role ceiling."
         },
         {
           "negative_bearing": false,
@@ -1950,7 +2022,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Padding means filler adjectives, restating the obvious, and repeating what was just said — cut those first."
+          "text": "Padding means filler adjectives, restating the obvious, and repeating what was just said \u2014 cut those first."
         },
         {
           "negative_bearing": true,
@@ -1974,7 +2046,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "The list below is SHAPES to vary across the script, never phrases to speak verbatim: {signposts} Bad, because it is a label: \"Next: cabin and comfort.\" Bad, because it assumes an order: \"As we saw outside —\"."
+          "text": "The list below is SHAPES to vary across the script, never phrases to speak verbatim: {signposts} Bad, because it is a label: \"Next: cabin and comfort.\" Bad, because it assumes an order: \"As we saw outside \u2014\"."
         },
         {
           "negative_bearing": true,
@@ -1998,7 +2070,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Relevance is not a garnish on a fact — it is the sentence, and the fact is the evidence inside it."
+          "text": "Relevance is not a garnish on a fact \u2014 it is the sentence, and the fact is the evidence inside it."
         },
         {
           "negative_bearing": true,
@@ -2018,7 +2090,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "A FIT-CHECK IS A LAST RESORT, NOT A RELEVANCE BEAT. \"Try it on a test drive\", \"check it when you sit in the car\", \"decide whether it matters to you\" — these say nothing and cost the buyer the segment."
+          "text": "A FIT-CHECK IS A LAST RESORT, NOT A RELEVANCE BEAT. \"Try it on a test drive\", \"check it when you sit in the car\", \"decide whether it matters to you\" \u2014 these say nothing and cost the buyer the segment."
         },
         {
           "negative_bearing": true,
@@ -2122,7 +2194,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Set each line's delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9–1.08."
+          "text": "Set each line's delivery metadata to tone warm/upbeat/calm/reassuring and optional pace 0.9\u20131.08."
         },
         {
           "negative_bearing": true,
@@ -2130,7 +2202,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Write overview as a separate, self-contained 23–28 word thought for Explore's 10–15 second introduction: begin with the first supported fundamental in the playbook, as mapped to PLAN.segments, in everyday words with its variant qualification and citations."
+          "text": "Write overview as a separate, self-contained 23\u201328 word thought for Explore's 10\u201315 second introduction: begin with the first supported fundamental in the playbook, as mapped to PLAN.segments, in everyday words with its variant qualification and citations."
         },
         {
           "negative_bearing": true,
@@ -2155,7 +2227,7 @@
       "units": [
         {
           "negative_bearing": false,
-          "text": "AUTHOR RESPONSIBILITY — turn the approved story outline into natural speech."
+          "text": "AUTHOR RESPONSIBILITY \u2014 turn the approved story outline into natural speech."
         },
         {
           "negative_bearing": false,
@@ -2278,7 +2350,7 @@
       "units": [
         {
           "negative_bearing": false,
-          "text": "AUTHOR RESPONSIBILITY — turn the approved story outline into natural speech."
+          "text": "AUTHOR RESPONSIBILITY \u2014 turn the approved story outline into natural speech."
         },
         {
           "negative_bearing": false,
@@ -2286,7 +2358,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "Use 26–33 words for that complete main line; give a heavily weighted stop several distinct lines instead of cramming facts into one breath."
+          "text": "Use 26\u201333 words for that complete main line; give a heavily weighted stop several distinct lines instead of cramming facts into one breath."
         },
         {
           "negative_bearing": false,
@@ -2415,7 +2487,7 @@
       "units": [
         {
           "negative_bearing": false,
-          "text": "TRANSLATION LADDER — how a specification becomes a sentence a person would say."
+          "text": "TRANSLATION LADDER \u2014 how a specification becomes a sentence a person would say."
         },
         {
           "negative_bearing": true,
@@ -2423,7 +2495,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "R1 SHOWN — no fact id needed."
+          "text": "R1 SHOWN \u2014 no fact id needed."
         },
         {
           "negative_bearing": false,
@@ -2443,7 +2515,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "R2 NAMED — cite the fact id."
+          "text": "R2 NAMED \u2014 cite the fact id."
         },
         {
           "negative_bearing": true,
@@ -2455,15 +2527,15 @@
         },
         {
           "negative_bearing": false,
-          "text": "R3 CHOICE — cite the fact id."
+          "text": "R3 CHOICE \u2014 cite the fact id."
         },
         {
           "negative_bearing": true,
-          "text": "What the specification lets the buyer decide, stated as a decision and not a result: \"the gearbox follows the engine you pick, rather than being a separate decision.\" R4 MOMENT — cite the fact id."
+          "text": "What the specification lets the buyer decide, stated as a decision and not a result: \"the gearbox follows the engine you pick, rather than being a separate decision.\" R4 MOMENT \u2014 cite the fact id."
         },
         {
           "negative_bearing": true,
-          "text": "The ordinary situation the specification is for, left open and never assigned to this buyer: \"it's the one you'd want if most of your driving is highway.\" R5 QUANTIFIED — cite the fact id."
+          "text": "The ordinary situation the specification is for, left open and never assigned to this buyer: \"it's the one you'd want if most of your driving is highway.\" R5 QUANTIFIED \u2014 cite the fact id."
         },
         {
           "negative_bearing": false,
@@ -2475,7 +2547,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Where a figure genuinely IS the point — a price, a warranty period, a stated acceleration time — say it once, whole, with its unit and stated conditions, and never repeat it later in the script."
+          "text": "Where a figure genuinely IS the point \u2014 a price, a warranty period, a stated acceleration time \u2014 say it once, whole, with its unit and stated conditions, and never repeat it later in the script."
         },
         {
           "negative_bearing": true,
@@ -2483,7 +2555,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "If the sentence you want needs a rung above R5, write R1 instead — show it rather than promise it."
+          "text": "If the sentence you want needs a rung above R5, write R1 instead \u2014 show it rather than promise it."
         },
         {
           "negative_bearing": false,
@@ -2502,15 +2574,19 @@
       "units": [
         {
           "negative_bearing": false,
-          "text": "TRANSLATION LADDER — how a specification becomes a sentence a person would say."
+          "text": "TRANSLATION LADDER \u2014 how a specification becomes a sentence a person would say."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Choose the useful connection the evidence supports: a shown subject, its named feature, a choice, or its sourced function in an ordinary moment."
         },
         {
           "negative_bearing": true,
-          "text": "Stop at the first rung the evidence supports; never climb past it."
+          "text": "Check the support at each rung; a picture alone licenses only appearance, never a function or a result."
         },
         {
           "negative_bearing": true,
-          "text": "R1 SHOWN — no fact id needed."
+          "text": "R1 SHOWN \u2014 no fact id needed."
         },
         {
           "negative_bearing": false,
@@ -2522,11 +2598,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "THIS RUNG IS WHERE VIVID LANGUAGE COMES FROM."
-        },
-        {
-          "negative_bearing": false,
-          "text": "Reach for it first."
+          "text": "Use the shown detail to anchor the thought, then connect a cited choice or function when that evidence exists."
         },
         {
           "negative_bearing": true,
@@ -2534,7 +2606,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "R2 NAMED — cite the fact id."
+          "text": "R2 NAMED \u2014 cite the fact id."
         },
         {
           "negative_bearing": true,
@@ -2550,7 +2622,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "R3 CHOICE — cite the fact id."
+          "text": "R3 CHOICE \u2014 cite the fact id."
         },
         {
           "negative_bearing": true,
@@ -2558,7 +2630,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "R4 MOMENT — cite the fact id."
+          "text": "R4 MOMENT \u2014 cite the fact id."
         },
         {
           "negative_bearing": true,
@@ -2578,7 +2650,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "R5 QUANTIFIED — cite the fact id."
+          "text": "R5 QUANTIFIED \u2014 cite the fact id."
         },
         {
           "negative_bearing": false,
@@ -2590,7 +2662,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "Where a figure genuinely IS the point — a price, a warranty period, a stated acceleration time — say it once, whole, with its unit and stated conditions, and never repeat it later in the script."
+          "text": "Where a figure genuinely IS the point \u2014 a price, a warranty period, a stated acceleration time \u2014 say it once, whole, with its unit and stated conditions, and never repeat it later in the script."
         },
         {
           "negative_bearing": true,
@@ -2606,7 +2678,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "If the sentence you want needs a rung above R5, write R1 instead — show it rather than promise it."
+          "text": "If the sentence you want needs a rung above R5, write R1 instead \u2014 show it rather than promise it."
         },
         {
           "negative_bearing": false,
@@ -2627,7 +2699,7 @@
       "units": [
         {
           "negative_bearing": false,
-          "text": "DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged)."
+          "text": "DEMO FLOW \u2014 follow these steps IN THIS ORDER (roles in brackets are how segments are tagged)."
         },
         {
           "negative_bearing": false,
@@ -2651,7 +2723,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure context choice (\"Would you like to tell me quickly what you're buying it for, or shall we get started?\")."
+          "text": "STEP 1 \u00b7 GREETING \u2014 lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure context choice (\"Would you like to tell me quickly what you're buying it for, or shall we get started?\")."
         },
         {
           "negative_bearing": false,
@@ -2659,11 +2731,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened."
+          "text": "The segments below must NEVER greet again or re-introduce the guide \u2014 the greeting has already happened."
         },
         {
           "negative_bearing": false,
-          "text": "STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the playbook's first stop, in everyday words, and the feature that demonstrates it."
+          "text": "STEP 2 \u00b7 QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the playbook's first stop, in everyday words, and the feature that demonstrates it."
         },
         {
           "negative_bearing": false,
@@ -2675,7 +2747,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer relevance across experience, performance and confidence/ownership."
+          "text": "STEP 3 \u00b7 THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer relevance across experience, performance and confidence/ownership."
         },
         {
           "negative_bearing": true,
@@ -2687,11 +2759,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before."
+          "text": "STEP 4 \u00b7 GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before."
         },
         {
           "negative_bearing": false,
-          "text": "Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check."
+          "text": "Each segment: NOTICE one thing \u2192 SHOW it (the picture) \u2192 supported RELEVANCE or a fit-check."
         },
         {
           "negative_bearing": true,
@@ -2703,7 +2775,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive."
+          "text": "STEP 5 \u00b7 A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive."
         },
         {
           "negative_bearing": true,
@@ -2711,11 +2783,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the two or three things the sources do not answer, with the appropriate next source or check to resolve each."
+          "text": "STEP 6 \u00b7 OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the two or three things the sources do not answer, with the appropriate next source or check to resolve each."
         },
         {
           "negative_bearing": false,
-          "text": "STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: \"the strongest fit is X, and the one thing we should still verify is Y\" — the decision framed HERE, in the buyer's own words when known — then one concrete next step naming a CTA."
+          "text": "STEP 7 \u00b7 FIT SUMMARY + NEXT STEP [the closing lines]: \"the strongest fit is X, and the one thing we should still verify is Y\" \u2014 the decision framed HERE, in the buyer's own words when known \u2014 then one concrete next step naming a CTA."
         },
         {
           "negative_bearing": true,
@@ -2724,17 +2796,17 @@
       ]
     },
     "after": {
-      "negative_bearing_units": 10,
-      "other_instruction_units": 17,
+      "negative_bearing_units": 9,
+      "other_instruction_units": 18,
       "all_units": 27,
       "units": [
         {
           "negative_bearing": false,
-          "text": "DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged)."
+          "text": "DEMO FLOW \u2014 follow these steps IN THIS ORDER (roles in brackets are how segments are tagged)."
         },
         {
           "negative_bearing": false,
-          "text": "Keep each main batch a connected 26–33-word thought within its planned word budget and role ceiling."
+          "text": "Keep each main batch a connected 26\u201333-word thought within its planned word budget and role ceiling."
         },
         {
           "negative_bearing": false,
@@ -2758,7 +2830,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure context choice (\"Would you like to tell me quickly what you're buying it for, or shall we get started?\")."
+          "text": "STEP 1 \u00b7 GREETING \u2014 lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure context choice (\"Would you like to tell me quickly what you're buying it for, or shall we get started?\")."
         },
         {
           "negative_bearing": false,
@@ -2766,11 +2838,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "The segments below must NEVER greet again or re-introduce the guide — the greeting has already happened."
+          "text": "The segments below must NEVER greet again or re-introduce the guide \u2014 the greeting has already happened."
         },
         {
           "negative_bearing": false,
-          "text": "STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the playbook's first stop, in everyday words, and the feature that demonstrates it."
+          "text": "STEP 2 \u00b7 QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]: lead with the playbook's first stop, in everyday words, and the feature that demonstrates it."
         },
         {
           "negative_bearing": false,
@@ -2782,7 +2854,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer relevance across experience, performance and confidence/ownership."
+          "text": "STEP 3 \u00b7 THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer relevance across experience, performance and confidence/ownership."
         },
         {
           "negative_bearing": true,
@@ -2794,23 +2866,23 @@
         },
         {
           "negative_bearing": false,
-          "text": "STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before."
+          "text": "STEP 4 \u00b7 GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before."
         },
         {
           "negative_bearing": false,
-          "text": "Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check."
-        },
-        {
-          "negative_bearing": true,
-          "text": "At selected decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty."
+          "text": "Each segment: NOTICE one thing \u2192 SHOW it (the picture) \u2192 supported RELEVANCE or a fit-check."
         },
         {
           "negative_bearing": false,
-          "text": "The runtime reorders these per buyer; each must stand alone."
+          "text": "Keep checkin empty; the final summary and next action use the two closing statements."
         },
         {
           "negative_bearing": false,
-          "text": "STEP 5 · A FEW MORE THINGS [role=features, one segment]: one or two short connected batches of remaining useful detail."
+          "text": "The runtime reorders proof stops per buyer; each complete batch names its subject and stands alone."
+        },
+        {
+          "negative_bearing": false,
+          "text": "STEP 5 \u00b7 A FEW MORE THINGS [role=features, one segment]: one or two short connected batches of remaining useful detail."
         },
         {
           "negative_bearing": true,
@@ -2826,11 +2898,11 @@
         },
         {
           "negative_bearing": true,
-          "text": "STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the two or three things the sources do not answer, with the appropriate next source or check to resolve each."
+          "text": "STEP 6 \u00b7 OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the two or three things the sources do not answer, with the appropriate next source or check to resolve each."
         },
         {
           "negative_bearing": false,
-          "text": "STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: \"the strongest fit is X, and the one thing we should still verify is Y\" — the decision framed HERE, in the buyer's own words when known — then one concrete next step naming a CTA."
+          "text": "STEP 7 \u00b7 FIT SUMMARY + NEXT STEP [the closing lines]: \"the strongest fit is X, and the one thing we should still verify is Y\" \u2014 the decision framed HERE, in the buyer's own words when known \u2014 then one concrete next step naming a CTA."
         },
         {
           "negative_bearing": true,
@@ -2847,7 +2919,7 @@
       "units": [
         {
           "negative_bearing": true,
-          "text": "PLAIN LANGUAGE — the customer is not technical."
+          "text": "PLAIN LANGUAGE \u2014 the customer is not technical."
         },
         {
           "negative_bearing": false,
@@ -2859,7 +2931,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "When a technical quantity does not belong in the main tour, do not simply delete it — replace it at R1 or R2 and move the complete quantity, with its unit and basis, to `deeper`."
+          "text": "When a technical quantity does not belong in the main tour, do not simply delete it \u2014 replace it at R1 or R2 and move the complete quantity, with its unit and basis, to `deeper`."
         },
         {
           "negative_bearing": false,
@@ -2887,11 +2959,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "LANGUAGE — the customer knows the basics."
+          "text": "LANGUAGE \u2014 the customer knows the basics."
         },
         {
           "negative_bearing": false,
-          "text": "Technical terms are fine with a two-word gloss the first time (\"IDC — the certified test range\")."
+          "text": "Technical terms are fine with a two-word gloss the first time (\"IDC \u2014 the certified test range\")."
         },
         {
           "negative_bearing": true,
@@ -2899,7 +2971,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "LANGUAGE — the customer is technical."
+          "text": "LANGUAGE \u2014 the customer is technical."
         },
         {
           "negative_bearing": true,
@@ -2914,7 +2986,7 @@
       "units": [
         {
           "negative_bearing": true,
-          "text": "PLAIN LANGUAGE — the customer is not technical."
+          "text": "PLAIN LANGUAGE \u2014 the customer is not technical."
         },
         {
           "negative_bearing": false,
@@ -2926,7 +2998,7 @@
         },
         {
           "negative_bearing": true,
-          "text": "When a technical quantity does not belong in the main tour, do not simply delete it — replace it at R1 or R2 and move the complete quantity, with its unit and basis, to `deeper`."
+          "text": "When a technical quantity does not belong in the main tour, do not simply delete it \u2014 replace it at R1 or R2 and move the complete quantity, with its unit and basis, to `deeper`."
         },
         {
           "negative_bearing": false,
@@ -2962,11 +3034,11 @@
         },
         {
           "negative_bearing": false,
-          "text": "LANGUAGE — the customer knows the basics."
+          "text": "LANGUAGE \u2014 the customer knows the basics."
         },
         {
           "negative_bearing": false,
-          "text": "Technical terms are fine with a two-word gloss the first time (\"IDC — the certified test range\")."
+          "text": "Technical terms are fine with a two-word gloss the first time (\"IDC \u2014 the certified test range\")."
         },
         {
           "negative_bearing": true,
@@ -2974,7 +3046,7 @@
         },
         {
           "negative_bearing": false,
-          "text": "LANGUAGE — the customer is technical."
+          "text": "LANGUAGE \u2014 the customer is technical."
         },
         {
           "negative_bearing": true,

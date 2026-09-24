@@ -191,9 +191,9 @@ STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]:
 STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
   relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.
   Say they can steer the tour; do not ask another question.
-STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
-  decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty. The runtime
-  reorders these per buyer; each must stand alone.
+STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check.
+  Keep checkin empty; the final summary and next action use the two closing statements. The runtime reorders proof
+  stops per buyer; each complete batch names its subject and stands alone.
 STEP 5 · A FEW MORE THINGS [role=features, one segment]: one or two short connected batches of remaining useful detail.
   Use only detail not already voiced in the Coach stops, connected to ordinary use rather than a second equipment
   list. A feature's availability remains beside it. Keep checkin empty when final closing uses both statements.
@@ -205,13 +205,14 @@ Technical detail lives in `deeper` layers and Q&A, never in the main narration u
 
 SIGNPOSTS = ["A PLACE — where the buyer would be standing: 'Sitting in the driver's seat,'", "A MOMENT — an ordinary situation: 'On a long drive,'", "THE THING ITSELF — name what is in view: 'The glass roof runs right back'", "A CHOICE — the decision this stop gives: 'There are two gearboxes to choose from,'", "AN HONEST LIMIT — what this version does not have: 'Not every version gets this,'", "WHAT PEOPLE ASK — the question this stop answers: 'The thing people ask about first is'"]
 
-TRANSLATION_LADDER = """TRANSLATION LADDER — how a specification becomes a sentence a person would say. Stop at the first rung
-the evidence supports; never climb past it.
+TRANSLATION_LADDER = """TRANSLATION LADDER — how a specification becomes a sentence a person would say. Choose the useful
+connection the evidence supports: a shown subject, its named feature, a choice, or its sourced function in an ordinary
+moment. Check the support at each rung; a picture alone licenses only appearance, never a function or a result.
 R1 SHOWN — no fact id needed. What the picture literally shows is yours to describe in ordinary sensory
    words: shape, material, where a thing sits, what opens, what lights up, how big it looks next to a
    person. "The glass roof runs right back over the second row" describes the picture. It claims nothing
-   about heat, comfort, safety or resale, and it carries no number. THIS RUNG IS WHERE VIVID LANGUAGE
-   COMES FROM. Reach for it first. Worked example: describe a pictured folded seat as a change of seat layout;
+   about heat, comfort, safety or resale, and it carries no number. Use the shown detail to anchor the thought, then
+   connect a cited choice or function when that evidence exists. Worked example: describe a pictured folded seat as a change of seat layout;
    do not turn the visible luggage into a boot-capacity measurement or a promise that this buyer's bags fit.
 R2 NAMED — cite the fact id. The specification in plain words without its number, keeping the source's
    own noun and adding no adjective the source does not use: "the turbo petrol engine", "ventilated front

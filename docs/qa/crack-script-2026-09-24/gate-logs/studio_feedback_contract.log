@@ -1,0 +1,36 @@
+PASS Studio nav starts blank without fetching an existing demo or creating a record
+PASS repeated direct Studio nav stays empty with no draft records
+PASS first meaningful save lazily creates one ID and adopts its explicit Sources URL
+PASS upload reuses the lazy ID and keeps prior saved demo untouched
+PASS Studio nav from a saved workspace returns to a blank unsaved form
+PASS explicit demo URL preserves saved name, URL and source library
+PASS My demos Open Studio still opens its existing demo
+PASS Rehearse contains only chat and preview beside unchanged steps rail
+PASS feedback occupies the full preview height
+PASS feedback sends attachment bytes and player context through existing human-review workflow
+PASS successful feedback clears composer and deduplicates persisted messages
+PASS source progress pauses preview and prevents overlapping requests
+PASS revision completion directs review without starting Build
+PASS failed feedback keeps text/files and exposes a retryable error
+PASS retry sends preserved material once without approvals or publication
+PASS SSE reply stays single when the following conversation refresh fails
+PASS on-demand rehearsal remains an explicit action with results in chat
+PASS Rehearse never invokes provider readiness checks
+PASS navigation destroys preview/subscription and ignores late feedback completion
+PASS duration preference also lazily saves exactly one draft
+PASS late lazy creation cannot replace a newer route or alter an existing demo
+PASS compact navigation and embedded regions stay in 1440×1000 viewport
+GEOMETRY 1440 [{"class":"convo rehearse-feedback","tag":"SECTION","text":"FeedbackRefine your demo ","rect":{"x":232,"y":45.59375,"width":340,"height":954.40625,"top":45.59375,"right":572,"bottom":1000,"left":232}},{"class":"align-agent-header","tag":"DIV","text":"FeedbackRefine your demo ","rect":{"x":232,"y":45.59375,"width":339,"height":83,"top":45.59375,"right":571,"bottom":128.59375,"left":232}},{"class":"dock","tag":"DIV","text":"SendAdd a correction or a","rect":{"x":232,"y":806,"width":339,"height":194,"top":806,"right":571,"bottom":1000,"left":232}},{"class":"btn ghost","tag":"BUTTON","text":"","rect":{"x":255,"y":900,"width":36,"height":36,"top":900,"right":291,"bottom":936,"left":255}},{"class":"","tag":"TEXTAREA","text":"","rect":{"x":255,"y":830,"width":293,"height":64,"top":830,"right":548,"bottom":894,"left":255}},{"class":"btn primary","tag":"BUTTON","text":"Send","rect":{"x":467.328125,"y":900,"width":80.671875,"height":36,"top":900,"right":548,"bottom":936,"left":467.328125}}]
+PASS feedback header, composer, attachment and send stay visible at 1440px
+PASS compact navigation and embedded regions stay in 1366×768 viewport
+GEOMETRY 1366 [{"class":"convo rehearse-feedback","tag":"SECTION","text":"FeedbackRefine your demo ","rect":{"x":232,"y":45.59375,"width":340,"height":722.40625,"top":45.59375,"right":572,"bottom":768,"left":232}},{"class":"align-agent-header","tag":"DIV","text":"FeedbackRefine your demo ","rect":{"x":232,"y":45.59375,"width":339,"height":83,"top":45.59375,"right":571,"bottom":128.59375,"left":232}},{"class":"dock","tag":"DIV","text":"SendAdd a correction or a","rect":{"x":232,"y":574,"width":339,"height":194,"top":574,"right":571,"bottom":768,"left":232}},{"class":"btn ghost","tag":"BUTTON","text":"","rect":{"x":255,"y":668,"width":36,"height":36,"top":668,"right":291,"bottom":704,"left":255}},{"class":"","tag":"TEXTAREA","text":"","rect":{"x":255,"y":598,"width":293,"height":64,"top":598,"right":548,"bottom":662,"left":255}},{"class":"btn primary","tag":"BUTTON","text":"Send","rect":{"x":467.328125,"y":668,"width":80.671875,"height":36,"top":668,"right":548,"bottom":704,"left":467.328125}}]
+PASS feedback header, composer, attachment and send stay visible at 1366px
+PASS compact navigation and embedded regions stay in 390×844 viewport
+GEOMETRY 390 [{"class":"convo rehearse-feedback","tag":"SECTION","text":"FeedbackRefine your demo ","rect":{"x":0,"y":603.109375,"width":390,"height":240.890625,"top":603.109375,"right":390,"bottom":844,"left":0}},{"class":"align-agent-header","tag":"DIV","text":"FeedbackRefine your demo ","rect":{"x":0,"y":604.109375,"width":202.8125,"height":51,"top":604.109375,"right":202.8125,"bottom":655.109375,"left":0}},{"class":"dock","tag":"DIV","text":"SendAdd a correction or a","rect":{"x":202.8125,"y":604.109375,"width":187.1875,"height":239.890625,"top":604.109375,"right":390,"bottom":844,"left":202.8125}},{"class":"btn ghost","tag":"BUTTON","text":"","rect":{"x":220.8125,"y":674.296875,"width":36,"height":36,"top":674.296875,"right":256.8125,"bottom":710.296875,"left":220.8125}},{"class":"","tag":"TEXTAREA","text":"","rect":{"x":220.8125,"y":621.109375,"width":152.1875,"height":47.1875,"top":621.109375,"right":373,"bottom":668.296875,"left":220.8125}},{"class":"btn primary","tag":"BUTTON","text":"Send","rect":{"x":292.328125,"y":674.296875,"width":80.671875,"height":36,"top":674.296875,"right":373,"bottom":710.296875,"left":292.328125}}]
+PASS feedback header, composer, attachment and send stay visible at 390px
+PASS compact mobile nav preserves reachable final route
+SCREENSHOTS /var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/studio-feedback-ui-dvgrz3dm
+PASS no page errors or external requests
+Studio feedback contracts: 29/29
+OUTBOUND_ATTEMPTS 0
+OUTBOUND_ATTEMPTS 0

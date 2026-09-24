@@ -1,0 +1,10 @@
+{
+  "status": "failed",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Writing the script…"
+    }
+  ],
+  "socket_attempts": []
+}

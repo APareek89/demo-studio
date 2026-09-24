@@ -1,5 +1,25 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-24 — A picture-diversity fallback replaced the correct subject
+
+**Symptom:** independent review of the final source-grounded draft found that normalization changed a turbo-engine picture to a tyre-pressure screen, a wheel to seat switches and an airbag diagram to lane assistance. All spoken words and citations were intact, and the script still reported no issues.
+
+**Five whys:** (1) A rules-only diversity pass tried to show every unused image. (2) It matched incidental words anywhere in a line, including handoffs, without requiring improvement over the current picture. (3) Repeated passes overwrote a correct Author binding with whichever weakly related unused image appeared later. (4) The fallback also treated explicit no-picture choices as opportunities for guesses. (5) Source grounding and selected-image provenance were checked separately, so the final post-processing mutation escaped the earlier review.
+
+**Correction:** without real pixel decisions, retain the validated draft's picture references and explicit none, record heuristic proposals only, and keep the audit explicitly unaudited. The pixel auditor's schema, completeness checks and full-coverage rejection remain unchanged. An exact-request replay reuses the same Author response to isolate the code correction from new prose.
+
+**Prevention:** test the complete Author-to-saved-script path with several distracting unused images and explicit nonvisual statements. A picture-variety objective must never outrank subject fidelity. Provider outage and mock mode must not fabricate visual proof or silently replace a source-matched draft.
+
+## 2026-09-24 — A passing script validator did not prove the narrative target
+
+**Symptom:** the baseline returned empty issues despite uneven delivery batches, extra closing statements and unrelated mock picture choices. Later candidates still had a transition citing the previous subject's facts and a speaker description that could imply an extra component.
+
+**Five whys:** (1) Existing checks enforce important boundaries but do not establish every clause's entailment or spoken quality. (2) Handoff clauses were treated as harmless connective prose even when they introduced another product capability. (3) Prompt additions coexisted with older instructions to add segment closings and share pronouns between lines that runtime now splits. (4) Source-fixture review checked each selected quote but missed complete engine/gearbox availability rows present in the PDF. (5) Empty issues and a total word count were being used as substitutes for independent source coverage, narrative and picture review.
+
+**Correction:** reconcile final-closing and complete-line guidance across Planner, Author and shared craft instructions; require clause-level citations and preserve included-versus-additional component meaning. Planner budgets a distinct pictured subject per main batch, reserving other subjects for another batch or deeper detail. Recover the omitted uploaded-table facts in a new versioned simulation fixture and rerun the exact stage requests. Preserve every existing validator and record intermediate failures instead of editing outputs to appear compliant.
+
+**Prevention:** compare the full assembled prompts, not just the newly added paragraph. Review source coverage separately from quote accuracy, and audit handoffs as claims. Count the prepared inventory separately from the selected runtime route; use measured recordings for publication. Mock rules-only image assignment, a source photo's provenance and a zero-issue script are three different pieces of evidence, none of which establishes pixel-audited narration.
+
 ## 2026-09-24 — Derived pictures must inherit source ownership at every exit
 
 **Symptom:** the new PDF-picture catalogue correctly held excluded-parent images, but independent QA reproduced a saved script/deck still publishing those pixels through a second serialization path. A second repro found that a time-limited partial extraction was cached as if complete, so the next Read made zero extraction calls and could never recover the missing pictures.

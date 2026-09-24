@@ -1,0 +1,3 @@
+Final visual review
+
+All 48 retained image assets were inspected against their final descriptions on the three review-contact sheets after normalized-pixel-hash remapping. Descriptions match the displayed pixels. Earlier table/armrest confusion is corrected; the table and closed centre armrest are distinct retained assets. Airbags, split rear seat, naturally aspirated petrol engine and climate controls are recovered and visually confirmed. No image boxes were guessed. Named parts describe visible subjects, not verified dimensions, performance or availability. Fact approval and image tags are manually reviewed isolated simulation input; mocked Understand provider output is not semantic evidence.

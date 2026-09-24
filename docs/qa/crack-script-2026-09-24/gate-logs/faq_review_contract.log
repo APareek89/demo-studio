@@ -1,0 +1,44 @@
+PASS FAQ review: uncited numeric answer rejected atomically
+PASS FAQ review: uncited claim rejected atomically
+PASS FAQ review: unsupported nonnumeric answer rejected atomically
+PASS FAQ review: missing citation rejected atomically
+PASS FAQ review: mixed valid and missing citation rejected atomically
+PASS FAQ review: human-held product citation rejected atomically
+PASS FAQ review: mixed valid and held citation rejected atomically
+PASS FAQ review: comparison disabled rejected atomically
+PASS FAQ review: mixed product and disabled rival rejected atomically
+PASS FAQ review: missing required field rejected atomically
+PASS FAQ review: non-array citations rejected atomically
+PASS FAQ review: non-text citation rejected atomically
+PASS FAQ review: duplicate citation rejected atomically
+PASS FAQ review: empty answer rejected atomically
+PASS FAQ review: non-text answer rejected atomically
+PASS FAQ review: oversize answer rejected atomically
+PASS FAQ review: structural question mutation rejected atomically
+PASS FAQ review: CTA escape rejected atomically
+PASS FAQ review: clarification not in this supported-answer route rejected atomically
+PASS FAQ review: unknown question rejected atomically
+PASS FAQ review: stale registry requires a finished current bank
+PASS FAQ review: partial bank requires a finished current bank
+PASS FAQ review: active worker requires a finished current bank
+PASS FAQ review: running stage requires a finished current bank
+PASS FAQ review: stale FAQ stage requires a finished current bank
+PASS FAQ review: graph between stages rejects edits atomically
+PASS FAQ review: supported edit succeeds and exact reviewed wording is saved
+PASS FAQ review: id/question/origin/hash and unrelated answer remain intact
+PASS FAQ review: old audio/error/clarification/callback removed
+PASS FAQ review: visual and slide derive from corrected facts
+PASS FAQ review: only FAQ approval clears and only its build dependants become stale
+PASS FAQ review: source/plan/script/deck artifacts are unchanged
+PASS FAQ review: unapproved correction returns Build to human Align
+PASS FAQ review: normal Build proceeds to voice and skips FAQ generation
+PASS FAQ review: explicit unchanged-registry reuse preserves reviewed answer without a model call
+PASS FAQ review: bank serves exact correction and routes from current slide
+PASS FAQ review: runtime derives stay instead of retaining the old route
+PASS FAQ review: slide target uses corrected script citations over stale deck copies
+PASS FAQ review: a stale image map cannot restore an excluded visual
+PASS FAQ review: held competitor still rejected with comparisons enabled
+PASS FAQ review: approved competitor accepted only when comparisons enabled
+PASS FAQ review: no model or outbound calls in any case
+FAQ review: 42/42 passed
+OUTBOUND_ATTEMPTS 0

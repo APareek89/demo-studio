@@ -1,0 +1,28 @@
+{
+  "status": "complete",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Writing the script…"
+    },
+    {
+      "event": "replayed",
+      "call": "author-01",
+      "request_sha256": "776343af9ded96056112bb0d5cbfa11e16ca47c5da6c42eca5d55ec263c4e43b",
+      "response_sha256": "e312c06a28bb37adc76749f132cde7a3a196040b337dc062fa411e85f79f7b68"
+    },
+    {
+      "event": "stage",
+      "message": "Visual-proof audit complete: Gemini inspected 0 image(s); 30 line assignment(s) changed to match the words."
+    },
+    {
+      "event": "stage",
+      "message": "5 long batch(es) divided at complete lines for clearer pacing."
+    },
+    {
+      "event": "stage",
+      "message": "Script: 16 segments, 16 lines, all lines grounded and within pacing limits."
+    }
+  ],
+  "socket_attempts": []
+}

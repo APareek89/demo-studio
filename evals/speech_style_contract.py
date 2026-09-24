@@ -80,7 +80,7 @@ def run(check):
         check('author: a declarative checkin cannot bypass citation requirements',any('without citations' in row for row in author.validate(trial,und)) and trial['segments'][0]['checkin']=='')
         from server.agents import principles
         check('author: all active authoring instructions agree checkins never wait',
-              'one-line closing statement' in planner.PLAN_SYSTEM and 'one short closing statement' in author.AUTHOR_SYSTEM
+              'Segment checkins stay empty.' in planner.PLAN_SYSTEM and 'one short closing statement' in author.AUTHOR_SYSTEM
               and 'never a question' in schemas.SegmentOut.model_fields['checkin'].description
               and 'Narration never waits' in principles.AUTHOR_CRAFT
               and 'yes continues' not in '\n'.join([author.AUTHOR_SYSTEM, principles.PITCH_SHAPE, principles.PROOF_BLOCK]))

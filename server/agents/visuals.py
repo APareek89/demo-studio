@@ -334,35 +334,10 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
                     r["ln"]["visual"] = {"ref": choice, "focus": (r["ln"].get("visual") or {}).get("focus", "")} if choice else None
             decided = bool(model_notes)
         except Exception as e:
-            emit(f"Gemini visual-proof audit skipped ({str(e)[:80]}) — conservative rule proposals applied instead.")
-    # If no pixel decisions are available, apply only stronger rule proposals lacking a current feature match.
-    # This fallback is recorded as rules_fallback, not reported as a successful Gemini inspection.
-    if not decided:
-        for r in rows:
-            if r["proposal"] and not r["cur_hits"]:
-                changes.append({"line_id": r["ln"]["id"], "from": r["cur"], "to": r["proposal"], "pass": "rules", "why": f"line mentions {', '.join(r['hits'][:4])}; {by_ref[r['proposal']]['label'][:100]}"})
-                r["ln"]["visual"] = {"ref": r["proposal"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
-    # In the rules-only path, try relevant unused quality images on non-opening main narration.
-    # A completed pixel audit bypasses this diversity pass, so it cannot resurrect an image rejected by vision.
-    # Rules-only coverage guardrail. A successful Gemini audit is authoritative; do not override
-    # pixel-level rejection merely to make an unused image appear.
-    used = {(r["ln"].get("visual") or {}).get("ref") for r in rows}
-    if not decided:
-        for c in cat:
-            if c["ref"] in used or (c.get("quality") or 3) < 3 or c["kind"] != "image" or not (c["strong"] & c["distinct"]):
-                continue
-            best = None
-            for r in rows:
-                if r["deeper"] or r["seg"].get("role") in ("intro", "outcome"):
-                    continue
-                sc, hits = _score(_expand(_tokens(r["ln"].get("text", ""))), c)
-                if sc >= 3.0 and (best is None or sc > best[0]):
-                    best = (sc, r, hits)
-            if best:
-                _sc, r, hits = best
-                changes.append({"line_id": r["ln"]["id"], "from": (r["ln"].get("visual") or {}).get("ref"), "to": c["ref"], "pass": "coverage", "why": f"uploaded picture of {', '.join(c['parts'][:3]) or c['ref']} was never shown; this line mentions {', '.join(hits[:3])}"})
-                r["ln"]["visual"] = {"ref": c["ref"], "focus": (r["ln"].get("visual") or {}).get("focus", "")}
-                used.add(c["ref"])
+            emit(f"Gemini visual-proof audit skipped ({str(e)[:80]}) — existing visual assignments retained; rule proposals recorded only.")
+    # Without pixel decisions, preserve the validated Author bindings, including explicit none.
+    # Metadata matches and unused-image variety are proposals, not evidence that permits replacing them.
+    # author.validate already clears unknown/excluded references before this audit runs.
     used = {(r["ln"].get("visual") or {}).get("ref") for r in rows}
     # Save changed assignments, missing features, unused images and which audit method actually ran.
     # server/store.py:write_json retains the detailed audit; the returned script carries a compact summary.
@@ -379,7 +354,7 @@ def align(demo_id: str, script: dict, und: dict, emit=lambda m: None) -> dict:
     elif decided:
         emit(f"Visual-proof audit complete: Gemini inspected {len(image_audit)} image(s); every assigned picture matches its spoken line.")
     else:
-        emit("Pictures aligned with the conservative rules; Gemini pixel audit was unavailable.")
+        emit("Existing visual assignments retained; rule proposals recorded only because Gemini pixel audit was unavailable.")
     return script
 
 

@@ -1,0 +1,17 @@
+PASS two-picture review persists IDs and resolves both picture URLs
+PASS callout anchors and drag fractions belong to its second picture
+PASS reviewed illustrations retain the proxy badge
+PASS media review resets script approval without granting any approval
+PASS saved picture assignments and per-picture drags survive rebuild
+PASS three pictures fails without changing any saved artifact
+PASS excluded picture fails without changing any saved artifact
+PASS duplicate picture fails without changing any saved artifact
+PASS non-list pictures fails without changing any saved artifact
+PASS unknown callout picture fails without changing any saved artifact
+PASS conflicting legacy primary fails without changing any saved artifact
+PASS failed final validation preserves previous deck and overrides
+PASS an excluded saved picture does not block later title edits
+PASS removing pictures accepts the editor's null callout attachment
+PASS two-picture review makes no outbound requests
+15/15 deck media Align contracts passed
+OUTBOUND_ATTEMPTS 0

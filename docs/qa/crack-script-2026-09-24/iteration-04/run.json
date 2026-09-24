@@ -1,0 +1,12 @@
+{
+  "demo_id": "dm_a0796e94",
+  "repo": "/Users/macbook/Documents/demo-studio-crack-script",
+  "fixture": "/private/tmp/demo-crack-script-20260924/final-source/understanding.json",
+  "fixture_sha256": "04c394feba28ea2d82c98dd4501f25249e7811ba05ab0ea3227f4b754dca8a8f",
+  "mode": "in-session reasoning replay; real app prompts and validators, no model or voice provider",
+  "completed": [
+    "coach",
+    "planner",
+    "author"
+  ]
+}

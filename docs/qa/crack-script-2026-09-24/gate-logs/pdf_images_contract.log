@@ -1,0 +1,62 @@
+invalid pdf header: b'not a'
+EOF marker not found
+PASS extracts actual embedded pixels with page provenance
+PASS deduplicates identical pixel data across objects and pages
+PASS repeat extraction keeps identical assets and identities
+PASS picture count budget is visible
+PASS page budget defers later pages
+PASS later subject pages precede dense early galleries
+PASS embedded resource index is retained for independent pixel review
+PASS candidate budget limits repeated resources too
+PASS zero time budget decodes no picture
+PASS total byte budget retains no oversize output
+PASS pixel budget is checked before image decoding
+PASS file size budget is explicit
+PASS small icons are omitted
+PASS text-only or empty-image PDF is valid
+PASS corrupt PDF is a reported nonfatal gap
+PASS corrupt embedded image is skipped visibly
+PASS PDF remains sole uploaded source and fact authority
+PASS children have stable provenance and are visually allowed
+PASS retry reuses immutable extraction without duplicate source rows
+PASS damaged cached asset is re-extracted with same identity
+PASS parent exclusion applies immediately before another Read
+PASS excluded PDF derivatives remain inactive on Read
+PASS parent restoration preserves individual picture rejection
+PASS parent role invalidates derived pictures
+PASS parent scope_excluded invalidates derived pictures
+PASS parent crawl_active invalidates derived pictures
+PASS parent revision invalidates derived pictures
+PASS deleted parent and missing derived reference cannot publish
+PASS parent cycles fail closed without recursion
+PASS PDF-only Read uses existing image model entry point
+PASS no extraction-invented tags or boxes
+PASS stable image catalogue IDs derive from the media source
+PASS tagging failure remains visibly untagged
+PASS existing uploaded pictures retain ordinary source identity
+PASS shared visual catalogue excludes parent-held derivatives
+PASS Sources lists the parent upload without derived-file clutter
+PASS Bundle shares the parent-aware visual allowance
+PASS changed parent bytes mint new identities and retire old pictures
+PASS prior published media bytes are retained
+PASS corrupt extraction manifest is rebuilt from source
+PASS picture budget is shared across documents
+PASS only time interruption marks an extraction retryable
+PASS interrupted extraction retains its successfully registered picture
+PASS healthy Read retries interrupted extraction and preserves successful identities
+PASS complete extraction after interruption is reusable without duplicates
+PASS excluded PDF is removed from line, deeper and closing visuals in all languages
+PASS excluded PDF is removed from paired slide URLs and attached labels
+PASS excluded PDF leaves no legacy slide picture or orphan label
+PASS excluded PDF is removed from published catalogue and fact image map
+PASS revised PDF is removed from line, deeper and closing visuals in all languages
+PASS revised PDF is removed from paired slide URLs and attached labels
+PASS revised PDF leaves no legacy slide picture or orphan label
+PASS revised PDF is removed from published catalogue and fact image map
+PASS removed PDF is removed from line, deeper and closing visuals in all languages
+PASS removed PDF is removed from paired slide URLs and attached labels
+PASS removed PDF leaves no legacy slide picture or orphan label
+PASS removed PDF is removed from published catalogue and fact image map
+PASS publication filtering leaves saved design, original uploads and prior result intact
+PDF IMAGES CONTRACT: 58/58 passed
+OUTBOUND_ATTEMPTS 0

@@ -48,7 +48,7 @@
 
 --- PLAN_SYSTEM before
 +++ PLAN_SYSTEM after
-@@ -5,6 +5,34 @@
+@@ -5,6 +5,41 @@
  word budgets within that reviewed story. The Author owns final spoken dialogue, transitions and delivery. Write an editorial outline, not
  paragraphs for the guide to recite. The schema's intake greeting and voice sample are provisional briefs for the
  Author; do not put finished narration or mandatory question wording in segment goals.
@@ -63,10 +63,16 @@
 +  to lower that target. The short separate Explore overview and final CTA closing keep their existing limits.
 +  For another duration or category, retain the same thought-sized delivery and give attention in proportion to the
 +  supported buying decisions. The supplied duration budget remains authoritative.
++- Reserve one distinct supported detail from the first fundamental for the short runtime overview. Identify its
++  fact IDs in notes and the first proof goal, and allocate different details to the later proof batches. The overview
++  is part of the guided word target, so its claim earns that space once. Intro/outcome are alternative opening material.
 +- Use each segment's existing goal to specify its batch count, the assigned facts for each batch, its ordinary
 +  situation, exact trim qualification, literal picture subject and the subject it hands to next. A batch explains
 +  what a feature does in that situation, or the choice it offers, using only sourced functions and results. Listing
 +  equipment plus "try it on a test drive" is not an explanation.
++- Give each main batch one literal pictured subject. A second feature needing a different picture gets its own
++  available batch or stays in deeper detail; two feature names in one sentence do not make one visual subject.
++  A supplied composite picture can cover both only when both subjects are actually visible in it.
 +- Keep the Coach's required proof stops intact. The separate features and establish roles add only disjoint details
 +  or unresolved questions: do not narrate the same sunroof, warranty or safety claim again. Count a stop's attention
 +  across those supplemental segments too. Reserve exact technical quantities for deeper detail under the audience
@@ -80,13 +86,54 @@
 +- Vary every planned batch opening, including continuations: place, ordinary moment, visible detail, decision, or
 +  honest limit. End each batch on a relevant subject that can carry the next thought, rather than a bare quantity.
 +  The opening must also work after a customer interruption; a handoff supplies a subject, not a reference backward.
++  Name the next batch's actual subject in each handoff brief; closing on the current equipment alone leaves no join.
  
  {principles}
  
+@@ -48,7 +83,7 @@
+ brand's numbers, not the buyer's experience; they date within weeks and no one buys because of a units
+ figure. A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — "one of
+ the cars you see most on Indian roads" — still citing the fact id it rests on.
+-- At most two segments end on a one-line closing statement, never a question, placed where a decision turns; name them in the goal. A question after every section is an interrogation, not a conversation.
++- Reserve the two closing statements for the final summary and next action. Segment checkins stay empty.
+ - Titles are sometimes SPOKEN at runtime as "Next: <title>." Write each title as the thing itself in a
+ buyer's nouns — "The seat you'll sit in every day" — never a category label such as "Interior features".
+   1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling.
+@@ -63,12 +98,12 @@
+   short planning sentences: MOMENT — an optional everyday situation or thing to notice, never asserted as this buyer's
+   circumstances or a demonstrated benefit; SPOKEN / DEEPER — name the fact IDs to voice versus hold for questions,
+   retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF —
+-  name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and whether
+-  a one-line closing statement would be useful. Each delivery batch stays within its role limit. These are instructions, not sample dialogue. A reordered
++  name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and an empty
++  checkin. Each delivery batch stays within its role limit. These are instructions, not sample dialogue. A reordered
+   proof stop must make sense independently: hand off a subject, never depend on a prior stop or say "as we saw".
+   Put quantities with their full units and basis in deeper detail unless the figure is the point. Do not simply
+   delete technical detail and leave a vague benefit in its place. Budget more attention for the lead proof than a
+-  minor feature; keep closing statements at a few genuine decision points, never after every segment.
++  minor feature; keep the two closing statements in the final closing block.
+ - Titles may be spoken by runtime: use the thing the buyer is looking at, not process labels such as "Proof block",
+   "Three pillars" or "Technical specifications". Vary the openings by what is noticed, an ordinary use, or an honest
+   unresolved choice. Plan the tour as connected subjects, not the same feature-list formula at every stop.
 
 --- AUTHOR_SYSTEM before
 +++ AUTHOR_SYSTEM after
-@@ -17,7 +17,34 @@
+@@ -6,10 +6,10 @@
+ REFERENCE — "as I said", "that engine we just looked at", "the second of the three". What does not
+ break is a CONNECTION — the next thing being about a subject the buyer has just arrived at, in the same
+ voice, in a sentence that carries the thought on. Never reference. Always connect.
+-- INSIDE one segment the lines always play together, in order, and are never separated. Write them as
+-  consecutive sentences of one person speaking: line two may open with "And", may finish line one's
+-  thought, may say "it" for a subject line one named. A segment whose lines each re-announce their topic
+-  is wrong even if every line is true and cited.
++- INSIDE a prepared story stop, consecutive complete lines become separate delivery batches. Each line names its
++  subject and finishes its own thought, so it works after an interruption; its ending carries a subject into the
++  next line. Connect the ideas without a pronoun needing a previous batch or a repeated topic announcement.
++  Short legacy lines that remain inside one delivery batch may share a subject naturally.
+ - ACROSS segments, only the proof segments can be reordered. The default guided tour plays enough supported
+   proof stops to provide the selected demo duration of narration, excluding film and customer Q&A. Those stops must
+   open cold — no naming, numbering or pointing back at another segment — but "cold" does not mean
+@@ -17,7 +17,42 @@
    drive,"), which reads as a continuation wherever it lands.
  - THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro → outcome → (proof run) →
    features → establish → closing always play in that order. Write those joins as though one person is
@@ -101,6 +148,8 @@
 +  allocation. Continuation lines develop the thought, but vary their first words and grammatical openings too.
 +  The separate Explore overview stays 23–28 words with no digits; final closing stays at most two statements and
 +  45 words total. These two shorter formats are not main delivery batches.
++- Use the distinct first-fundamental detail reserved for the Explore overview only there on the guided path.
++  Later proof lines develop the other assigned evidence. Rephrasing that overview claim cannot count as new content.
 +- Shape a batch around one ordinary moment or choice, its sourced function, and a natural handoff. An illustration
 +  of the register: "Packing for a weekend, the split rear seat lets passengers and bags share the space. Keep the
 +  seat arrangement in mind when looking at the rear passengers' comfort next." This example teaches a connected
@@ -114,15 +163,21 @@
 +- End each main batch on the next relevant subject, not a bare specification. Read it aloud without the picture,
 +  then after a customer interruption: it should still name its subject and make sense. Handoffs are short connecting
 +  thoughts, not stock "moving on" announcements, repeated promises or invented outcomes.
++  Check the ending against the next subject in the plan: repeating this batch's own equipment or availability does
++  not create that join. The last main batch turns toward the closing choice and next action.
 +- Keep segment checkins empty when the plan reserves its two statements for the final close. The close summarizes
 +  the supported choices and names the actual next action; it does not choose a customer's preferred trim for them.
 +- Audit the full main path before returning it: varied first words and constructions, exact trim scope, no repeated
 +  evidence, no unsupported figures, each pictured subject literally present. A price or policy can use visual none;
 +  an unrelated car picture is not proof. Meet the plan's full supported-word target without padding or slowing speech.
++- Check citations clause by clause, including openings and handoffs: a transition that mentions another product
++  capability needs that capability's own assigned fact IDs too. The paragraph's main fact cannot support its bridge.
++  In deeper detail, preserve whether a counted component is included: a system "with" a part is not that count
++  "and" an extra part. Keep the source's complete quantity, membership and conditions together.
  
  {principles}
  
-@@ -46,7 +73,7 @@
+@@ -46,7 +81,7 @@
     the listener a commute, budget, city, household or job, and never hedge around them either — no
     "depending on your routine", no "if that matters to you". "You" is fine for what the product does for
     anyone: "you'd notice it the first hot afternoon", never "on your Bengaluru commute".
@@ -145,12 +200,19 @@
 
 --- TRANSLATION_LADDER before
 +++ TRANSLATION_LADDER after
-@@ -4,18 +4,27 @@
+@@ -1,21 +1,31 @@
+-TRANSLATION LADDER — how a specification becomes a sentence a person would say. Stop at the first rung
+-the evidence supports; never climb past it.
++TRANSLATION LADDER — how a specification becomes a sentence a person would say. Choose the useful
++connection the evidence supports: a shown subject, its named feature, a choice, or its sourced function in an ordinary
++moment. Check the support at each rung; a picture alone licenses only appearance, never a function or a result.
+ R1 SHOWN — no fact id needed. What the picture literally shows is yours to describe in ordinary sensory
     words: shape, material, where a thing sits, what opens, what lights up, how big it looks next to a
     person. "The glass roof runs right back over the second row" describes the picture. It claims nothing
-    about heat, comfort, safety or resale, and it carries no number. THIS RUNG IS WHERE VIVID LANGUAGE
+-   about heat, comfort, safety or resale, and it carries no number. THIS RUNG IS WHERE VIVID LANGUAGE
 -   COMES FROM. Reach for it first.
-+   COMES FROM. Reach for it first. Worked example: describe a pictured folded seat as a change of seat layout;
++   about heat, comfort, safety or resale, and it carries no number. Use the shown detail to anchor the thought, then
++   connect a cited choice or function when that evidence exists. Worked example: describe a pictured folded seat as a change of seat layout;
 +   do not turn the visible luggage into a boot-capacity measurement or a promise that this buyer's bags fit.
  R2 NAMED — cite the fact id. The specification in plain words without its number, keeping the source's
     own noun and adding no adjective the source does not use: "the turbo petrol engine", "ventilated front
@@ -194,12 +256,18 @@
  Real clarifications belong to runtime Q&A, separate from the intake context question and the explicit CTA choice.
  STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
    context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
-@@ -14,8 +16,9 @@
- STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
-   decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty. The runtime
-   reorders these per buyer; each must stand alone.
+@@ -11,11 +13,12 @@
+ STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
+   relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.
+   Say they can steer the tour; do not ask another question.
+-STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
+-  decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty. The runtime
+-  reorders these per buyer; each must stand alone.
 -STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive.
 -  An optional `checkin` closes the stop without waiting; never hide a question in narration.
++STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check.
++  Keep checkin empty; the final summary and next action use the two closing statements. The runtime reorders proof
++  stops per buyer; each complete batch names its subject and stands alone.
 +STEP 5 · A FEW MORE THINGS [role=features, one segment]: one or two short connected batches of remaining useful detail.
 +  Use only detail not already voiced in the Coach stops, connected to ordinary use rather than a second equipment
 +  list. A feature's availability remains beside it. Keep checkin empty when final closing uses both statements.

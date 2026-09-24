@@ -31,10 +31,16 @@ GUIDELINES — plan the words a buyer will remember
   to lower that target. The short separate Explore overview and final CTA closing keep their existing limits.
   For another duration or category, retain the same thought-sized delivery and give attention in proportion to the
   supported buying decisions. The supplied duration budget remains authoritative.
+- Reserve one distinct supported detail from the first fundamental for the short runtime overview. Identify its
+  fact IDs in notes and the first proof goal, and allocate different details to the later proof batches. The overview
+  is part of the guided word target, so its claim earns that space once. Intro/outcome are alternative opening material.
 - Use each segment's existing goal to specify its batch count, the assigned facts for each batch, its ordinary
   situation, exact trim qualification, literal picture subject and the subject it hands to next. A batch explains
   what a feature does in that situation, or the choice it offers, using only sourced functions and results. Listing
   equipment plus "try it on a test drive" is not an explanation.
+- Give each main batch one literal pictured subject. A second feature needing a different picture gets its own
+  available batch or stays in deeper detail; two feature names in one sentence do not make one visual subject.
+  A supplied composite picture can cover both only when both subjects are actually visible in it.
 - Keep the Coach's required proof stops intact. The separate features and establish roles add only disjoint details
   or unresolved questions: do not narrate the same sunroof, warranty or safety claim again. Count a stop's attention
   across those supplemental segments too. Reserve exact technical quantities for deeper detail under the audience
@@ -48,6 +54,7 @@ GUIDELINES — plan the words a buyer will remember
 - Vary every planned batch opening, including continuations: place, ordinary moment, visible detail, decision, or
   honest limit. End each batch on a relevant subject that can carry the next thought, rather than a bare quantity.
   The opening must also work after a customer interruption; a handoff supplies a subject, not a reference backward.
+  Name the next batch's actual subject in each handoff brief; closing on the current equipment alone leaves no join.
 
 {principles}
 
@@ -91,7 +98,7 @@ sales figures, customer totals, market share, sales rank, years on sale, or awar
 brand's numbers, not the buyer's experience; they date within weeks and no one buys because of a units
 figure. A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — "one of
 the cars you see most on Indian roads" — still citing the fact id it rests on.
-- At most two segments end on a one-line closing statement, never a question, placed where a decision turns; name them in the goal. A question after every section is an interrogation, not a conversation.
+- Reserve the two closing statements for the final summary and next action. Segment checkins stay empty.
 - Titles are sometimes SPOKEN at runtime as "Next: <title>." Write each title as the thing itself in a
 buyer's nouns — "The seat you'll sit in every day" — never a category label such as "Interior features".
   1-2 × role=intro — the QUICK OVERVIEW (step 2 of the flow): who it's for and the supported experience or choice, within its word_budget and the supplied intro role ceiling.
@@ -106,12 +113,12 @@ buyer's nouns — "The seat you'll sit in every day" — never a category label 
   short planning sentences: MOMENT — an optional everyday situation or thing to notice, never asserted as this buyer's
   circumstances or a demonstrated benefit; SPOKEN / DEEPER — name the fact IDs to voice versus hold for questions,
   retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF —
-  name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and whether
-  a one-line closing statement would be useful. Each delivery batch stays within its role limit. These are instructions, not sample dialogue. A reordered
+  name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and an empty
+  checkin. Each delivery batch stays within its role limit. These are instructions, not sample dialogue. A reordered
   proof stop must make sense independently: hand off a subject, never depend on a prior stop or say "as we saw".
   Put quantities with their full units and basis in deeper detail unless the figure is the point. Do not simply
   delete technical detail and leave a vague benefit in its place. Budget more attention for the lead proof than a
-  minor feature; keep closing statements at a few genuine decision points, never after every segment.
+  minor feature; keep the two closing statements in the final closing block.
 - Titles may be spoken by runtime: use the thing the buyer is looking at, not process labels such as "Proof block",
   "Three pillars" or "Technical specifications". Vary the openings by what is noticed, an ordinary use, or an honest
   unresolved choice. Plan the tour as connected subjects, not the same feature-list formula at every stop.

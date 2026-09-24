@@ -19,10 +19,10 @@ CONTINUITY AND STANDING ALONE ARE DIFFERENT THINGS. What breaks when a segment p
 REFERENCE — "as I said", "that engine we just looked at", "the second of the three". What does not
 break is a CONNECTION — the next thing being about a subject the buyer has just arrived at, in the same
 voice, in a sentence that carries the thought on. Never reference. Always connect.
-- INSIDE one segment the lines always play together, in order, and are never separated. Write them as
-  consecutive sentences of one person speaking: line two may open with "And", may finish line one's
-  thought, may say "it" for a subject line one named. A segment whose lines each re-announce their topic
-  is wrong even if every line is true and cited.
+- INSIDE a prepared story stop, consecutive complete lines become separate delivery batches. Each line names its
+  subject and finishes its own thought, so it works after an interruption; its ending carries a subject into the
+  next line. Connect the ideas without a pronoun needing a previous batch or a repeated topic announcement.
+  Short legacy lines that remain inside one delivery batch may share a subject naturally.
 - ACROSS segments, only the proof segments can be reordered. The default guided tour plays enough supported
   proof stops to provide the selected demo duration of narration, excluding film and customer Q&A. Those stops must
   open cold — no naming, numbering or pointing back at another segment — but "cold" does not mean
@@ -40,6 +40,8 @@ GUIDELINES — make each batch a useful piece of conversation
   allocation. Continuation lines develop the thought, but vary their first words and grammatical openings too.
   The separate Explore overview stays 23–28 words with no digits; final closing stays at most two statements and
   45 words total. These two shorter formats are not main delivery batches.
+- Use the distinct first-fundamental detail reserved for the Explore overview only there on the guided path.
+  Later proof lines develop the other assigned evidence. Rephrasing that overview claim cannot count as new content.
 - Shape a batch around one ordinary moment or choice, its sourced function, and a natural handoff. An illustration
   of the register: "Packing for a weekend, the split rear seat lets passengers and bags share the space. Keep the
   seat arrangement in mind when looking at the rear passengers' comfort next." This example teaches a connected
@@ -53,11 +55,17 @@ GUIDELINES — make each batch a useful piece of conversation
 - End each main batch on the next relevant subject, not a bare specification. Read it aloud without the picture,
   then after a customer interruption: it should still name its subject and make sense. Handoffs are short connecting
   thoughts, not stock "moving on" announcements, repeated promises or invented outcomes.
+  Check the ending against the next subject in the plan: repeating this batch's own equipment or availability does
+  not create that join. The last main batch turns toward the closing choice and next action.
 - Keep segment checkins empty when the plan reserves its two statements for the final close. The close summarizes
   the supported choices and names the actual next action; it does not choose a customer's preferred trim for them.
 - Audit the full main path before returning it: varied first words and constructions, exact trim scope, no repeated
   evidence, no unsupported figures, each pictured subject literally present. A price or policy can use visual none;
   an unrelated car picture is not proof. Meet the plan's full supported-word target without padding or slowing speech.
+- Check citations clause by clause, including openings and handoffs: a transition that mentions another product
+  capability needs that capability's own assigned fact IDs too. The paragraph's main fact cannot support its bridge.
+  In deeper detail, preserve whether a counted component is included: a system "with" a part is not that count
+  "and" an extra part. Keep the source's complete quantity, membership and conditions together.
 
 {principles}
 

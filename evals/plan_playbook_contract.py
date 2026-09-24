@@ -241,7 +241,7 @@ class PlanPlaybookContract(unittest.TestCase):
 
     def test_settled_story_and_audit_prompt_clauses(self):
         for text in ("THE PLAYBOOK IS SETTLED", "WORD BUDGETS", "Never build a USP or a narration line on a company or market statistic",
-                     "At most two segments end on a one-line closing statement, never a question", "Titles are sometimes SPOKEN at runtime",
+                     "Reserve the two closing statements for the final summary and next action. Segment checkins stay empty.", "Titles are sometimes SPOKEN at runtime",
                      "Do not open two consecutive segments the same way", "These are the ONLY pictures that segment may use.",
                      "The segment goal is the Author's brief"):
             self.assertIn(text, plan.PLAN_SYSTEM)

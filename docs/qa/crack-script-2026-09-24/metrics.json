@@ -1,0 +1,1672 @@
+{
+  "version": 1,
+  "assessment": "iteration05 before rules-fallback image-preservation fix",
+  "word_counter": "server.agents.author.words",
+  "runtime_wps_estimate": 1.9,
+  "reference_wps_estimate": 2.24,
+  "measured_sample_audio": false,
+  "iterations": {
+    "00": {
+      "script_sha256": "6328cfdd4694aae3885d85af5a5ce31507f9dadb62ccea6c98f1b9c1c369f0df",
+      "issues": [],
+      "visual_audit": {
+        "method": "rules_fallback",
+        "model": null,
+        "line_count": 0,
+        "image_count": 0,
+        "missing_line_count": 0
+      },
+      "saved_narration_preparation": {
+        "version": 1,
+        "identity": "e4368858179b4941dce1e9b3cf4c8eb6e2e57eb4f9167a9186a6b182d6543a5d",
+        "status": "ready",
+        "minimum_seconds": 180.0,
+        "duration_changed": false,
+        "target_words": 495,
+        "words": 495,
+        "missing_words": 0,
+        "attempts": 1,
+        "mock_preview": false,
+        "measured": false,
+        "seconds": 192.63,
+        "basis": "estimated",
+        "reason": "The supported draft is prepared for review; recording will verify its duration.",
+        "errors": [],
+        "current_recording": false,
+        "recorded_short": false,
+        "recording_incomplete": false
+      },
+      "segment_count": 16,
+      "main_line_count": 24,
+      "batch_range_passes": 6,
+      "complete_line_range_passes": 7,
+      "role_words": {
+        "intro": 31,
+        "outcome": 37,
+        "proof": 337,
+        "features": 32,
+        "establish": 42
+      },
+      "eligible_segment_words": 411,
+      "intro_outcome_words_excluded": 68,
+      "deeper_lines_excluded": 31,
+      "deeper_words_excluded": 1057,
+      "overview_words": 23,
+      "overview_digits": [],
+      "checkins": [
+        {
+          "owner": "space",
+          "text": "Your own bags are the useful check for luggage fit.",
+          "words": 10
+        },
+        {
+          "owner": "cost",
+          "text": "An itemised quote settles the total.",
+          "words": 6
+        }
+      ],
+      "checkin_words": 16,
+      "closing_line_words": [
+        21,
+        24
+      ],
+      "closing_words": 45,
+      "all_closing_statement_count": 4,
+      "proof_batch_counts": {
+        "powertrain": 3,
+        "stance-and-ride": 1,
+        "space-and-practicality": 1,
+        "safety": 2,
+        "delighters": 2,
+        "cabin-and-tech": 2,
+        "ownership": 1
+      },
+      "proof_order": [
+        "powertrain",
+        "stance-and-ride",
+        "space-and-practicality",
+        "safety",
+        "delighters",
+        "cabin-and-tech",
+        "ownership"
+      ],
+      "distinct_batch_first_words": 16,
+      "repeated_batch_first_words": {},
+      "preparation_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 260.53,
+        "sufficient": true,
+        "words": 495,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 260.53,
+        "route": [
+          "driving",
+          "driving-2",
+          "driving-3",
+          "wheels",
+          "space",
+          "protection",
+          "protection-2",
+          "comfort",
+          "comfort-2",
+          "controls",
+          "controls-2",
+          "cost",
+          "small-touches",
+          "ownership-checks"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "preparation_seconds_at_reference_rate": 220.98,
+      "default_route_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 192.63,
+        "sufficient": true,
+        "words": 366,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 192.63,
+        "route": [
+          "driving",
+          "driving-2",
+          "driving-3",
+          "wheels",
+          "space",
+          "protection",
+          "protection-2",
+          "small-touches",
+          "ownership-checks"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "default_route_seconds_at_reference_rate": 163.39,
+      "batches": [
+        {
+          "id": "overview",
+          "role": "intro",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Hi,",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "remember",
+          "role": "outcome",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 37,
+          "main_line_count": 3,
+          "line_words": [
+            9,
+            10,
+            18
+          ],
+          "within_26_33": false,
+          "first_word": "Brakes",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "driving",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "driving",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Stopped",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "driving-2",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "driving",
+          "words": 37,
+          "main_line_count": 2,
+          "line_words": [
+            20,
+            17
+          ],
+          "within_26_33": false,
+          "first_word": "Petrol",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "driving-3",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "driving",
+          "words": 21,
+          "main_line_count": 1,
+          "line_words": [
+            21
+          ],
+          "within_26_33": false,
+          "first_word": "The",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "wheels",
+          "role": "proof",
+          "stop_id": "stance-and-ride",
+          "budget_source_id": null,
+          "words": 24,
+          "main_line_count": 1,
+          "line_words": [
+            24
+          ],
+          "within_26_33": false,
+          "first_word": "Up",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "space",
+          "role": "proof",
+          "stop_id": "space-and-practicality",
+          "budget_source_id": null,
+          "words": 42,
+          "main_line_count": 2,
+          "line_words": [
+            24,
+            18
+          ],
+          "within_26_33": false,
+          "first_word": "Folded",
+          "checkin_words": 10,
+          "in_default_route": true
+        },
+        {
+          "id": "protection",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "protection",
+          "words": 29,
+          "main_line_count": 1,
+          "line_words": [
+            29
+          ],
+          "within_26_33": true,
+          "first_word": "Around",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "protection-2",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "protection",
+          "words": 29,
+          "main_line_count": 1,
+          "line_words": [
+            29
+          ],
+          "within_26_33": true,
+          "first_word": "Ahead",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "comfort",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "comfort",
+          "words": 40,
+          "main_line_count": 2,
+          "line_words": [
+            26,
+            14
+          ],
+          "within_26_33": false,
+          "first_word": "On",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "comfort-2",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "comfort",
+          "words": 13,
+          "main_line_count": 1,
+          "line_words": [
+            13
+          ],
+          "within_26_33": false,
+          "first_word": "Bose",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "controls",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "controls",
+          "words": 23,
+          "main_line_count": 1,
+          "line_words": [
+            23
+          ],
+          "within_26_33": false,
+          "first_word": "At",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "controls-2",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "controls",
+          "words": 27,
+          "main_line_count": 1,
+          "line_words": [
+            27
+          ],
+          "within_26_33": true,
+          "first_word": "For",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "cost",
+          "role": "proof",
+          "stop_id": "ownership",
+          "budget_source_id": null,
+          "words": 20,
+          "main_line_count": 1,
+          "line_words": [
+            20
+          ],
+          "within_26_33": false,
+          "first_word": "Before",
+          "checkin_words": 6,
+          "in_default_route": false
+        },
+        {
+          "id": "small-touches",
+          "role": "features",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 32,
+          "main_line_count": 3,
+          "line_words": [
+            17,
+            8,
+            7
+          ],
+          "within_26_33": true,
+          "first_word": "Beside",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "ownership-checks",
+          "role": "establish",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 42,
+          "main_line_count": 2,
+          "line_words": [
+            12,
+            30
+          ],
+          "within_26_33": false,
+          "first_word": "Choosing",
+          "checkin_words": 0,
+          "in_default_route": true
+        }
+      ],
+      "all_line_record_count": 58,
+      "line_records_with_picture_ref": 49,
+      "line_records_without_picture_ref": 9
+    },
+    "02": {
+      "script_sha256": "2e0ab9cb9b284e9214d3bc00f5e34da07f622f97e9a06ef343062f98c7dd83eb",
+      "issues": [],
+      "visual_audit": {
+        "method": "rules_fallback",
+        "model": null,
+        "line_count": 0,
+        "image_count": 0,
+        "missing_line_count": 0
+      },
+      "saved_narration_preparation": {
+        "version": 1,
+        "identity": "f1675284b2049ed6dd8f7ad8493f2705639c611777f99c863c021f05e69d4a83",
+        "status": "ready",
+        "minimum_seconds": 180.0,
+        "duration_changed": false,
+        "target_words": 495,
+        "words": 495,
+        "missing_words": 0,
+        "attempts": 1,
+        "mock_preview": false,
+        "measured": false,
+        "seconds": 212.63,
+        "basis": "estimated",
+        "reason": "The supported draft is prepared for review; recording will verify its duration.",
+        "errors": [],
+        "current_recording": false,
+        "recorded_short": false,
+        "recording_incomplete": false
+      },
+      "segment_count": 16,
+      "main_line_count": 16,
+      "batch_range_passes": 16,
+      "complete_line_range_passes": 16,
+      "role_words": {
+        "intro": 30,
+        "outcome": 32,
+        "proof": 368,
+        "features": 26,
+        "establish": 33
+      },
+      "eligible_segment_words": 427,
+      "intro_outcome_words_excluded": 62,
+      "deeper_lines_excluded": 28,
+      "deeper_words_excluded": 987,
+      "overview_words": 23,
+      "overview_digits": [],
+      "checkins": [],
+      "checkin_words": 0,
+      "closing_line_words": [
+        20,
+        25
+      ],
+      "closing_words": 45,
+      "all_closing_statement_count": 2,
+      "proof_batch_counts": {
+        "powertrain": 3,
+        "stance-and-ride": 1,
+        "space-and-practicality": 1,
+        "safety": 2,
+        "cabin-and-tech": 2,
+        "delighters": 2,
+        "ownership": 1
+      },
+      "proof_order": [
+        "powertrain",
+        "stance-and-ride",
+        "space-and-practicality",
+        "safety",
+        "cabin-and-tech",
+        "delighters",
+        "ownership"
+      ],
+      "distinct_batch_first_words": 16,
+      "repeated_batch_first_words": {},
+      "preparation_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 260.53,
+        "sufficient": true,
+        "words": 495,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 260.53,
+        "route": [
+          "engines",
+          "engines-2",
+          "engines-3",
+          "wheels",
+          "space",
+          "safety",
+          "safety-2",
+          "controls",
+          "controls-2",
+          "comfort",
+          "comfort-2",
+          "price",
+          "armrest",
+          "terms-and-unknowns"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "preparation_seconds_at_reference_rate": 220.98,
+      "default_route_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 212.63,
+        "sufficient": true,
+        "words": 404,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 212.63,
+        "route": [
+          "engines",
+          "engines-2",
+          "engines-3",
+          "wheels",
+          "space",
+          "safety",
+          "safety-2",
+          "controls",
+          "controls-2",
+          "armrest",
+          "terms-and-unknowns"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "default_route_seconds_at_reference_rate": 180.36,
+      "batches": [
+        {
+          "id": "opening",
+          "role": "intro",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "CRETA's",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "three-choices",
+          "role": "outcome",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Your",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "engines",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "engines",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Changing",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "engines-2",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "engines",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Choosing",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "engines-3",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "engines",
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "When",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "wheels",
+          "role": "proof",
+          "stop_id": "stance-and-ride",
+          "budget_source_id": null,
+          "words": 27,
+          "main_line_count": 1,
+          "line_words": [
+            27
+          ],
+          "within_26_33": true,
+          "first_word": "Beneath",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "space",
+          "role": "proof",
+          "stop_id": "space-and-practicality",
+          "budget_source_id": null,
+          "words": 33,
+          "main_line_count": 1,
+          "line_words": [
+            33
+          ],
+          "within_26_33": true,
+          "first_word": "Packing",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "safety",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "safety",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Inside",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "safety-2",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "safety",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Across",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "controls",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "controls",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "At",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "controls-2",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "controls",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Connecting",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "comfort",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "comfort",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "On",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "comfort-2",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "comfort",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Above",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "price",
+          "role": "proof",
+          "stop_id": "ownership",
+          "budget_source_id": null,
+          "words": 29,
+          "main_line_count": 1,
+          "line_words": [
+            29
+          ],
+          "within_26_33": true,
+          "first_word": "Without",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "armrest",
+          "role": "features",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 26,
+          "main_line_count": 1,
+          "line_words": [
+            26
+          ],
+          "within_26_33": true,
+          "first_word": "Beside",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "terms-and-unknowns",
+          "role": "establish",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 33,
+          "main_line_count": 1,
+          "line_words": [
+            33
+          ],
+          "within_26_33": true,
+          "first_word": "Keeping",
+          "checkin_words": 0,
+          "in_default_route": true
+        }
+      ],
+      "all_line_record_count": 47,
+      "line_records_with_picture_ref": 38,
+      "line_records_without_picture_ref": 9
+    },
+    "04": {
+      "script_sha256": "cdf13d6f5318bec0fa7720b0a94188815ee5c19020bb0d2cdd8e0ca417097bd1",
+      "issues": [],
+      "visual_audit": {
+        "method": "rules_fallback",
+        "model": null,
+        "line_count": 0,
+        "image_count": 0,
+        "missing_line_count": 0
+      },
+      "saved_narration_preparation": {
+        "version": 1,
+        "identity": "87410a51f3aa29c066e33422e66f2ec496d2673272bacf6c6840265fa9ff11db",
+        "status": "ready",
+        "minimum_seconds": 180.0,
+        "duration_changed": false,
+        "target_words": 495,
+        "words": 498,
+        "missing_words": 0,
+        "attempts": 1,
+        "mock_preview": false,
+        "measured": false,
+        "seconds": 181.58,
+        "basis": "estimated",
+        "reason": "The supported draft is prepared for review; recording will verify its duration.",
+        "errors": [],
+        "current_recording": false,
+        "recorded_short": false,
+        "recording_incomplete": false
+      },
+      "segment_count": 16,
+      "main_line_count": 16,
+      "batch_range_passes": 16,
+      "complete_line_range_passes": 16,
+      "role_words": {
+        "intro": 28,
+        "outcome": 32,
+        "proof": 367,
+        "features": 26,
+        "establish": 33
+      },
+      "eligible_segment_words": 426,
+      "intro_outcome_words_excluded": 60,
+      "deeper_lines_excluded": 28,
+      "deeper_words_excluded": 994,
+      "overview_words": 27,
+      "overview_digits": [],
+      "checkins": [],
+      "checkin_words": 0,
+      "closing_line_words": [
+        22,
+        23
+      ],
+      "closing_words": 45,
+      "all_closing_statement_count": 2,
+      "proof_batch_counts": {
+        "powertrain": 3,
+        "stance-and-ride": 1,
+        "space-and-practicality": 1,
+        "safety": 2,
+        "cabin-and-tech": 2,
+        "delighters": 2,
+        "ownership": 1
+      },
+      "proof_order": [
+        "powertrain",
+        "stance-and-ride",
+        "space-and-practicality",
+        "safety",
+        "cabin-and-tech",
+        "delighters",
+        "ownership"
+      ],
+      "distinct_batch_first_words": 16,
+      "repeated_batch_first_words": {},
+      "preparation_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 262.11,
+        "sufficient": true,
+        "words": 498,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 262.11,
+        "route": [
+          "driving-choices",
+          "driving-choices-2",
+          "driving-choices-3",
+          "wheels",
+          "rear-space",
+          "occupants-and-assistance",
+          "occupants-and-assistance-2",
+          "front-controls",
+          "front-controls-2",
+          "cabin-comforts",
+          "cabin-comforts-2",
+          "current-quote",
+          "front-storage",
+          "written-terms"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "preparation_seconds_at_reference_rate": 222.32,
+      "default_route_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 181.58,
+        "sufficient": true,
+        "words": 345,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 181.58,
+        "route": [
+          "driving-choices",
+          "driving-choices-2",
+          "driving-choices-3",
+          "wheels",
+          "rear-space",
+          "occupants-and-assistance",
+          "occupants-and-assistance-2",
+          "front-storage",
+          "written-terms"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "default_route_seconds_at_reference_rate": 154.02,
+      "batches": [
+        {
+          "id": "opening",
+          "role": "intro",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 28,
+          "main_line_count": 1,
+          "line_words": [
+            28
+          ],
+          "within_26_33": true,
+          "first_word": "CRETA's",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "anchors",
+          "role": "outcome",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Your",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "driving-choices",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "driving-choices",
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "Sitting",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "driving-choices-2",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "driving-choices",
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "Considering",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "driving-choices-3",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "driving-choices",
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "Pick",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "wheels",
+          "role": "proof",
+          "stop_id": "stance-and-ride",
+          "budget_source_id": null,
+          "words": 27,
+          "main_line_count": 1,
+          "line_words": [
+            27
+          ],
+          "within_26_33": true,
+          "first_word": "Through",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "rear-space",
+          "role": "proof",
+          "stop_id": "space-and-practicality",
+          "budget_source_id": null,
+          "words": 33,
+          "main_line_count": 1,
+          "line_words": [
+            33
+          ],
+          "within_26_33": true,
+          "first_word": "Folded",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "occupants-and-assistance",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "occupants-and-assistance",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Beside",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "occupants-and-assistance-2",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "occupants-and-assistance",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "With",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "front-controls",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "front-controls",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "At",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "front-controls-2",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "front-controls",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "For",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "cabin-comforts",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "cabin-comforts",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "During",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "cabin-comforts-2",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "cabin-comforts",
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "Looking",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "current-quote",
+          "role": "proof",
+          "stop_id": "ownership",
+          "budget_source_id": null,
+          "words": 28,
+          "main_line_count": 1,
+          "line_words": [
+            28
+          ],
+          "within_26_33": true,
+          "first_word": "Without",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "front-storage",
+          "role": "features",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 26,
+          "main_line_count": 1,
+          "line_words": [
+            26
+          ],
+          "within_26_33": true,
+          "first_word": "Under",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "written-terms",
+          "role": "establish",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 33,
+          "main_line_count": 1,
+          "line_words": [
+            33
+          ],
+          "within_26_33": true,
+          "first_word": "Choosing",
+          "checkin_words": 0,
+          "in_default_route": true
+        }
+      ],
+      "all_line_record_count": 47,
+      "line_records_with_picture_ref": 43,
+      "line_records_without_picture_ref": 4
+    },
+    "05": {
+      "script_sha256": "8331081b56c54bf655d2a47319a55c8a478de2e9484015690c590894baf908ae",
+      "issues": [],
+      "visual_audit": {
+        "method": "rules_fallback",
+        "model": null,
+        "line_count": 0,
+        "image_count": 0,
+        "missing_line_count": 0
+      },
+      "saved_narration_preparation": {
+        "version": 1,
+        "identity": "acab5ae92c35e3df00b9e466ecc48e5e530995614a9386755d18d27ee92e7a1d",
+        "status": "ready",
+        "minimum_seconds": 180.0,
+        "duration_changed": false,
+        "target_words": 495,
+        "words": 498,
+        "missing_words": 0,
+        "attempts": 1,
+        "mock_preview": false,
+        "measured": false,
+        "seconds": 182.63,
+        "basis": "estimated",
+        "reason": "The supported draft is prepared for review; recording will verify its duration.",
+        "errors": [],
+        "current_recording": false,
+        "recorded_short": false,
+        "recording_incomplete": false
+      },
+      "segment_count": 16,
+      "main_line_count": 16,
+      "batch_range_passes": 16,
+      "complete_line_range_passes": 16,
+      "role_words": {
+        "intro": 29,
+        "outcome": 33,
+        "proof": 367,
+        "features": 27,
+        "establish": 32
+      },
+      "eligible_segment_words": 426,
+      "intro_outcome_words_excluded": 62,
+      "deeper_lines_excluded": 29,
+      "deeper_words_excluded": 1185,
+      "overview_words": 27,
+      "overview_digits": [],
+      "checkins": [],
+      "checkin_words": 0,
+      "closing_line_words": [
+        22,
+        23
+      ],
+      "closing_words": 45,
+      "all_closing_statement_count": 2,
+      "proof_batch_counts": {
+        "powertrain": 3,
+        "stance-and-ride": 1,
+        "space-and-practicality": 1,
+        "safety": 2,
+        "cabin-and-tech": 2,
+        "delighters": 2,
+        "ownership": 1
+      },
+      "proof_order": [
+        "powertrain",
+        "stance-and-ride",
+        "space-and-practicality",
+        "safety",
+        "cabin-and-tech",
+        "delighters",
+        "ownership"
+      ],
+      "distinct_batch_first_words": 16,
+      "repeated_batch_first_words": {},
+      "preparation_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 262.11,
+        "sufficient": true,
+        "words": 498,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 262.11,
+        "route": [
+          "engine-choices",
+          "engine-choices-2",
+          "engine-choices-3",
+          "wheels",
+          "shared-space",
+          "airbags-and-help",
+          "airbags-and-help-2",
+          "climate-and-remote",
+          "climate-and-remote-2",
+          "seat-and-roof",
+          "seat-and-roof-2",
+          "quote",
+          "small-storage",
+          "terms"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "preparation_seconds_at_reference_rate": 222.32,
+      "default_route_report": {
+        "minimum_seconds": 180.0,
+        "seconds": 182.63,
+        "sufficient": true,
+        "words": 347,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 182.63,
+        "route": [
+          "engine-choices",
+          "engine-choices-2",
+          "engine-choices-3",
+          "wheels",
+          "shared-space",
+          "airbags-and-help",
+          "airbags-and-help-2",
+          "small-storage",
+          "terms"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "default_route_seconds_at_reference_rate": 154.91,
+      "batches": [
+        {
+          "id": "opening",
+          "role": "intro",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 29,
+          "main_line_count": 1,
+          "line_words": [
+            29
+          ],
+          "within_26_33": true,
+          "first_word": "CRETA's",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "three-anchors",
+          "role": "outcome",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 33,
+          "main_line_count": 1,
+          "line_words": [
+            33
+          ],
+          "within_26_33": true,
+          "first_word": "Gearbox",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "engine-choices",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "engine-choices",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Choosing",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "engine-choices-2",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "engine-choices",
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Considering",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "engine-choices-3",
+          "role": "proof",
+          "stop_id": "powertrain",
+          "budget_source_id": "engine-choices",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Under",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "wheels",
+          "role": "proof",
+          "stop_id": "stance-and-ride",
+          "budget_source_id": null,
+          "words": 28,
+          "main_line_count": 1,
+          "line_words": [
+            28
+          ],
+          "within_26_33": true,
+          "first_word": "Black",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "shared-space",
+          "role": "proof",
+          "stop_id": "space-and-practicality",
+          "budget_source_id": null,
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Packing",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "airbags-and-help",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "airbags-and-help",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Surrounding",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "airbags-and-help-2",
+          "role": "proof",
+          "stop_id": "safety",
+          "budget_source_id": "airbags-and-help",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Following",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "climate-and-remote",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "climate-and-remote",
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "When",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "climate-and-remote-2",
+          "role": "proof",
+          "stop_id": "cabin-and-tech",
+          "budget_source_id": "climate-and-remote",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Before",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "seat-and-roof",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "seat-and-roof",
+          "words": 29,
+          "main_line_count": 1,
+          "line_words": [
+            29
+          ],
+          "within_26_33": true,
+          "first_word": "On",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "seat-and-roof-2",
+          "role": "proof",
+          "stop_id": "delighters",
+          "budget_source_id": "seat-and-roof",
+          "words": 31,
+          "main_line_count": 1,
+          "line_words": [
+            31
+          ],
+          "within_26_33": true,
+          "first_word": "Overhead,",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "quote",
+          "role": "proof",
+          "stop_id": "ownership",
+          "budget_source_id": null,
+          "words": 30,
+          "main_line_count": 1,
+          "line_words": [
+            30
+          ],
+          "within_26_33": true,
+          "first_word": "An",
+          "checkin_words": 0,
+          "in_default_route": false
+        },
+        {
+          "id": "small-storage",
+          "role": "features",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 27,
+          "main_line_count": 1,
+          "line_words": [
+            27
+          ],
+          "within_26_33": true,
+          "first_word": "Lift",
+          "checkin_words": 0,
+          "in_default_route": true
+        },
+        {
+          "id": "terms",
+          "role": "establish",
+          "stop_id": null,
+          "budget_source_id": null,
+          "words": 32,
+          "main_line_count": 1,
+          "line_words": [
+            32
+          ],
+          "within_26_33": true,
+          "first_word": "Keep",
+          "checkin_words": 0,
+          "in_default_route": true
+        }
+      ],
+      "all_line_record_count": 48,
+      "line_records_with_picture_ref": 44,
+      "line_records_without_picture_ref": 4,
+      "main_visual_comparison": [
+        {
+          "segment": "opening",
+          "line_id": "opening-L1",
+          "raw_ref": "im_pdf_e1266b7974b364c1c1ba",
+          "raw_subject": "Electronic parking brake and AUTO HOLD button",
+          "saved_ref": "im_pdf_e1266b7974b364c1c1ba",
+          "saved_subject": "Electronic parking brake and AUTO HOLD button",
+          "changed": false
+        },
+        {
+          "segment": "three-anchors",
+          "line_id": "three-anchors-L1",
+          "raw_ref": null,
+          "raw_subject": null,
+          "saved_ref": "im_pdf_3aa2ebf1c9ed94570455",
+          "saved_subject": "Manual gear lever and centre console buttons",
+          "changed": true
+        },
+        {
+          "segment": "engine-choices",
+          "line_id": "engine-choices-L1",
+          "raw_ref": "im_pdf_98cd4a320f9dbfd33bbd",
+          "raw_subject": "Naturally aspirated petrol engine illustration with printed power and torque labels",
+          "saved_ref": "im_pdf_893405c770ce75e06502",
+          "saved_subject": "Steering wheel paddle marked plus",
+          "changed": true
+        },
+        {
+          "segment": "engine-choices-2",
+          "line_id": "engine-choices-L2",
+          "raw_ref": "im_pdf_5cd207807990f4eea283",
+          "raw_subject": "Diesel engine illustration with printed power and torque labels",
+          "saved_ref": "im_pdf_5cd207807990f4eea283",
+          "saved_subject": "Diesel engine illustration with printed power and torque labels",
+          "changed": false
+        },
+        {
+          "segment": "engine-choices-3",
+          "line_id": "engine-choices-L3",
+          "raw_ref": "im_pdf_87bac17ee980151549ba",
+          "raw_subject": "Turbo petrol engine illustration with printed power and torque labels",
+          "saved_ref": "im_pdf_11d7b41540b2776d6e24",
+          "saved_subject": "Digital instrument cluster showing a tyre pressure diagram with four wheel-position readings; screen values are illustrative.",
+          "changed": true
+        },
+        {
+          "segment": "wheels",
+          "line_id": "wheels-L1",
+          "raw_ref": "im_pdf_a4463ebb4d4d6329f98a",
+          "raw_subject": "Black alloy wheel and tyre with a red brake caliper visible through the spokes; no wheel size can be measured from this photo.",
+          "saved_ref": "im_pdf_b64c9a8093b659198cc1",
+          "saved_subject": "Two seat movement buttons on the side of a front-seat backrest, with seat pictograms on their faces.",
+          "changed": true
+        },
+        {
+          "segment": "shared-space",
+          "line_id": "shared-space-L1",
+          "raw_ref": "im_pdf_adb415f161dfc9567dde",
+          "raw_subject": "Rear seats shown with split seatbacks folded",
+          "saved_ref": "im_pdf_31ed8989f6cc45b71b53",
+          "saved_subject": "Open empty boot with rear parcel tray spanning the luggage area and rear-seat head restraints above; rear seats are upright.",
+          "changed": true
+        },
+        {
+          "segment": "airbags-and-help",
+          "line_id": "airbags-and-help-L1",
+          "raw_ref": "im_pdf_a54e8e56f4b50c2f5596",
+          "raw_subject": "Cabin cutaway showing deployed airbags around seats",
+          "saved_ref": "im_pdf_beece6d09d55074c47bb",
+          "saved_subject": "Top-down lane-keeping illustration showing a vehicle between road markings and a blue projected curved path; this is an assistance diagram, not a recorded road test.",
+          "changed": true
+        },
+        {
+          "segment": "airbags-and-help-2",
+          "line_id": "airbags-and-help-L2",
+          "raw_ref": "im_pdf_87d94ba1ddd0b388c716",
+          "raw_subject": "Collision assistance illustration showing detection cone toward car ahead",
+          "saved_ref": "im_pdf_6fbbc0ada78471786303",
+          "saved_subject": "Side of a front seat with multiple electric adjustment switches visible on the seat base.",
+          "changed": true
+        },
+        {
+          "segment": "climate-and-remote",
+          "line_id": "climate-and-remote-L1",
+          "raw_ref": "im_pdf_f14b998cc020fdfef1d5",
+          "raw_subject": "Dual-zone climate panel with two temperature values and buttons",
+          "saved_ref": "im_pdf_f14b998cc020fdfef1d5",
+          "saved_subject": "Dual-zone climate panel with two temperature values and buttons",
+          "changed": false
+        },
+        {
+          "segment": "climate-and-remote-2",
+          "line_id": "climate-and-remote-L2",
+          "raw_ref": "im_pdf_497f55977a7d19718157",
+          "raw_subject": "Manufacturer Home-to-Car illustration of a woman beside a smart speaker and a car outside, with a speech bubble asking Alexa to turn on the car air conditioning.",
+          "saved_ref": "im_pdf_74629d719ebbc53bbd9b",
+          "saved_subject": "Centre-console charging panel with two USB-C ports and a covered twelve-volt socket, with port symbols and ratings printed on the panel.",
+          "changed": true
+        },
+        {
+          "segment": "seat-and-roof",
+          "line_id": "seat-and-roof-L1",
+          "raw_ref": "im_pdf_498ba48d46b3d2258714",
+          "raw_subject": "Two front seats with airflow arrows through seat cushions",
+          "saved_ref": "im_pdf_7df2ff055b2405e0a449",
+          "saved_subject": "Two front seats and panoramic roof seen from within cabin",
+          "changed": true
+        },
+        {
+          "segment": "seat-and-roof-2",
+          "line_id": "seat-and-roof-L2",
+          "raw_ref": "im_pdf_d3bdfccc9d80857379d1",
+          "raw_subject": "Panoramic glass roof seen from above with open section",
+          "saved_ref": "im_pdf_d3bdfccc9d80857379d1",
+          "saved_subject": "Panoramic glass roof seen from above with open section",
+          "changed": false
+        },
+        {
+          "segment": "quote",
+          "line_id": "quote-L1",
+          "raw_ref": null,
+          "raw_subject": null,
+          "saved_ref": "im_pdf_25b7515fe0c9e93714e1",
+          "saved_subject": "Front seats and the closed centre-console armrest with adjacent cup holders; no rear seatback table or tablet appears.",
+          "changed": true
+        },
+        {
+          "segment": "small-storage",
+          "line_id": "small-storage-L1",
+          "raw_ref": "im_pdf_06658fba292467f801c7",
+          "raw_subject": "Open front armrest storage and cup holder beside front seat",
+          "saved_ref": "im_pdf_06658fba292467f801c7",
+          "saved_subject": "Open front armrest storage and cup holder beside front seat",
+          "changed": false
+        },
+        {
+          "segment": "terms",
+          "line_id": "terms-L1",
+          "raw_ref": null,
+          "raw_subject": null,
+          "saved_ref": "im_pdf_87bac17ee980151549ba",
+          "saved_subject": "Turbo petrol engine illustration with printed power and torque labels",
+          "changed": true
+        }
+      ],
+      "main_visual_bindings_changed": 11,
+      "source_fixture": {
+        "facts": 68,
+        "pictures": 48,
+        "unknowns": 10,
+        "approved_fact_count": 68
+      }
+    }
+  }
+}

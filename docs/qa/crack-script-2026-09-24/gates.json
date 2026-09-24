@@ -1,0 +1,915 @@
+{
+  "environment": "MOCK_LLM=1; isolated data/graph; blocked sockets; providers replaced with fixtures",
+  "suites": [
+    {
+      "suite": "qa_deck",
+      "passed": 380,
+      "total": 380,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef",
+      "test_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae",
+      "log": "gate-logs/qa_deck.log"
+    },
+    {
+      "suite": "qa_accept",
+      "passed": 24,
+      "total": 24,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "9e2530e17693942465f1102745291065c35d3bfd8eb1e848eddb127f1513e3c2",
+      "test_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+      "log": "gate-logs/qa_accept.log"
+    },
+    {
+      "suite": "smoke_mock",
+      "passed": 3,
+      "total": 3,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "ac542cdb7a60d0dd00fb67beddea1e02b9d4c6c1537b27f1914e2da0aba70a88",
+      "test_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+      "log": "gate-logs/smoke_mock.log"
+    },
+    {
+      "suite": "coach_contract",
+      "passed": 27,
+      "total": 27,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "6cca75a38d132fbb1b1712f6ecc36e1bb4ff5a9858650eda517fcaa83ecfd1b8",
+      "test_sha256": "ff19cc8c5663f6ebd52e6d1e39a8121faf233f3baf883ac6429c8cd74bd56c6f",
+      "log": "gate-logs/coach_contract.log"
+    },
+    {
+      "suite": "script_prompt_contract",
+      "passed": 40,
+      "total": 40,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "39191a4cc3c51e54510bdd826183b1ec59092f1048648be5b7fb0a3564a24406",
+      "test_sha256": "3f0f0d8d5fe521019b4d34d405251f6e0afb6febacf086631b51b5c371b0c917",
+      "log": "gate-logs/script_prompt_contract.log"
+    },
+    {
+      "suite": "pdf_images_contract",
+      "passed": 58,
+      "total": 58,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "8cf61d30f2a670026212d04643a3c9d7a5c91ea6290e89550161c0f89c64f408",
+      "test_sha256": "6a2482389fdfd2d491caa84eb37f4a964f887573d2f1ef037872b0615e0dead2",
+      "log": "gate-logs/pdf_images_contract.log"
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "passed": 25,
+      "total": 25,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "d032310ae521f77608776b8bb163bc10a41cc6a50f0130be22ea01a8155642a9",
+      "test_sha256": "807b88615d6ff1d514008f8f515aa5af812a8490c7935dcacf2ec95493086811",
+      "log": "gate-logs/visual_alignment_contract.log"
+    },
+    {
+      "suite": "plan_playbook_contract",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "227158004fa8a0d7b9312a8d4eaf58071fec51b68d462ebb1d08ef138387484e",
+      "test_sha256": "3008f5621566990bbda714d4dbb578dcbf40f19a5fb62ee0d21b18d70542966c",
+      "log": "gate-logs/plan_playbook_contract.log"
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "passed": 14,
+      "total": 14,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "c09a3cbf6e763f838da3470084b56e96638e0831c6db8c48023b4703c58b5a14",
+      "test_sha256": "0908bf4eb316a4f8b7fd46052a9bf61987a89ac9048d243c8feb89e11bb9ef46",
+      "log": "gate-logs/narrative_roles_contract.log"
+    },
+    {
+      "suite": "generation_contract",
+      "passed": 55,
+      "total": 55,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "7bec3b21aeae1f2c38d68c28369b0c2e183419f2325b3b7ec7be9e99afc05110",
+      "test_sha256": "faf4054acc3bc4f58becc0d3b45baa8b473d1d54175e3b8a4bb22b6e55d13ab7",
+      "log": "gate-logs/generation_contract.log"
+    },
+    {
+      "suite": "speech_style_contract",
+      "passed": 30,
+      "total": 30,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c",
+      "test_sha256": "21ef3c276eff71efb0771bf0d7c822caf0728e3754abe1a2aa07e975eaf34cec",
+      "log": "gate-logs/speech_style_contract.log"
+    },
+    {
+      "suite": "narration_preparation_contract",
+      "passed": 35,
+      "total": 35,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "7c4c62296e8d84fbd81f9513494e2b8fc191880b23977460002b842cd80402e6",
+      "test_sha256": "deb2ff6181ed4263b9e09ebd08be64bf66807adb07ffda0e609865222599b5aa",
+      "log": "gate-logs/narration_preparation_contract.log"
+    },
+    {
+      "suite": "narration_recovery_contract",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "d0e09798ec61d784430e02ae0a1d34713d21c1e1a6bf981abb07ebc32d47ae43",
+      "test_sha256": "1a68ec6df118d090312a0bcca26c24b3cdac2f9fc1e03854b9cdeb0526dcc77c",
+      "log": "gate-logs/narration_recovery_contract.log"
+    },
+    {
+      "suite": "automatic_narration_contract",
+      "passed": 16,
+      "total": 16,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "be019f96043417fe680127ba575125911710d80eb780473cb75239b71ab7375c",
+      "test_sha256": "e8ecde9d84ea6a8f57167aaa086cda6aed42dde64903cd1edb9e6f5bb319a1f9",
+      "log": "gate-logs/automatic_narration_contract.log"
+    },
+    {
+      "suite": "source_contract",
+      "passed": 39,
+      "total": 39,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "992c40e00759724046c6b40561c13dcb41f4b9eab62f60d4bf806ff63ec089c9",
+      "test_sha256": "86aef1a056a6df9aa2d23f638587db7b457c617a6d4a845d96895ca0d3aa4c19",
+      "log": "gate-logs/source_contract.log"
+    },
+    {
+      "suite": "upload_stream_contract",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "efa4686997f99929f987d28337ffc2ab663ae277a20e6c7336688e6cc379ee7b",
+      "test_sha256": "2ff52762154a865374ffb147ee8de94fa051b5804898a86ad4f9ef056cef8fd5",
+      "log": "gate-logs/upload_stream_contract.log"
+    },
+    {
+      "suite": "upload_retry_contract",
+      "passed": 12,
+      "total": 12,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "c4a05bea68d2dc06738a82f2065870783bfd35c8edc89ef2ce60a03f89ca600c",
+      "test_sha256": "9bd4496ad35ee1b479a98b91feffe448b0bec01e6b898567b7162d7b9e29d9b0",
+      "log": "gate-logs/upload_retry_contract.log"
+    },
+    {
+      "suite": "deck_media_contract",
+      "passed": 60,
+      "total": 60,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "8358035e327957412f96b5b2a9a14aac6ff8b0641a48636a6f94dde709761eb0",
+      "test_sha256": "6fa40b2feaa58f536eee48aec0291ed452cde6251f7e04a9d9bcdfe76c5f28f8",
+      "log": "gate-logs/deck_media_contract.log"
+    },
+    {
+      "suite": "deck_media_align_contract",
+      "passed": 15,
+      "total": 15,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "8a5ca166cbec2922544883a0c795c3c3419020ef8f4bd10bee90af556747f88d",
+      "test_sha256": "2cf513b687c3bb30493690461b091a9ff4df186df36dc1a02cab2fb0d59bd0f9",
+      "log": "gate-logs/deck_media_align_contract.log"
+    },
+    {
+      "suite": "studio_feedback_contract",
+      "passed": 29,
+      "total": 29,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "0fed585ecb6642d6483dedeb65ab017f8a9e3d81fbb22b149edc63929da94317",
+      "test_sha256": "508b1ec8b9acb0c30066efc21c7a8047919d362b70779dc3a7f92e7404475ad7",
+      "log": "gate-logs/studio_feedback_contract.log"
+    },
+    {
+      "suite": "minimum_narration_contract",
+      "passed": 25,
+      "total": 25,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "eafd30f2027edabe0dfb742c5f1ce9be9d6887996f941d07e20e35c5c9a445d9",
+      "test_sha256": "d844b028e2c50e41f0920f5ea1c054c9d23d9ceaa7c0b09b03130f3c7917085a",
+      "log": "gate-logs/minimum_narration_contract.log"
+    },
+    {
+      "suite": "faq_review_contract",
+      "passed": 42,
+      "total": 42,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "72e439c82fc3a4375e8bdb831520ec4c9acc35d1d4283544371334ba6c13b023",
+      "test_sha256": "41060fce6260e0b5e9383a79e8eab5d2ad1b722b618a2ab4e6675f8c3a062fe4",
+      "log": "gate-logs/faq_review_contract.log"
+    },
+    {
+      "suite": "voice_lock_contract",
+      "passed": 27,
+      "total": 27,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "0d39bea3d18254714c5111e503336434482c0165542b17cf9407678a7b97565e",
+      "test_sha256": "5f5cdafcc78155eac80f038b0f994ac6d96a5bb4d61617ac21f85ccee8432afd",
+      "log": "gate-logs/voice_lock_contract.log"
+    },
+    {
+      "suite": "customer_contract",
+      "passed": 29,
+      "total": 29,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "a75fb2a0d0ebca6b3bfdebeeea1ca8fa68913f064944571abcdb60c1e715e070",
+      "test_sha256": "d9125f9b888020867e67ebbd31347cbaa55196a4838a2a4a7ded77bf81736cbf",
+      "log": "gate-logs/customer_contract.log"
+    },
+    {
+      "suite": "release_mock_contract",
+      "passed": 28,
+      "total": 28,
+      "exit": 0,
+      "outbound_attempts": 0,
+      "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+      "test_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5",
+      "log": "gate-logs/release_mock_contract.log"
+    }
+  ],
+  "nested_provider_checks_in_qa_deck": 60,
+  "reported_total": 1069,
+  "overlapping_coverage": true,
+  "release_mock_narration_seconds": 194.22,
+  "release_mock_audio": "synthetic real WAV fixtures, NOT new sample speech",
+  "corrected_test_expectations": [
+    "plan_playbook_contract literal closing instruction",
+    "speech_style_contract literal closing instruction"
+  ],
+  "syntax": {
+    "python_files": 18,
+    "javascript_modules": 1,
+    "mermaid_copies": 9,
+    "python_paths": [
+      "docs/qa/crack-script-2026-09-24/run_free_gates.py",
+      "docs/qa/crack-script-2026-09-24/stage_harness.py",
+      "evals/coach_contract.py",
+      "evals/pdf_images_contract.py",
+      "evals/plan_playbook_contract.py",
+      "evals/script_prompt_contract.py",
+      "evals/speech_style_contract.py",
+      "evals/visual_alignment_contract.py",
+      "server/agents/author.py",
+      "server/agents/bundle.py",
+      "server/agents/coach.py",
+      "server/agents/plan.py",
+      "server/agents/principles.py",
+      "server/agents/understand.py",
+      "server/agents/visuals.py",
+      "server/media.py",
+      "server/sources.py",
+      "server/store.py"
+    ]
+  },
+  "baseline": {
+    "qa_deck": "380/380",
+    "qa_accept": "24/24",
+    "smoke": "3/3"
+  },
+  "final_prompt_rerun": [
+    {
+      "suite": "script_prompt_contract",
+      "exit": 0,
+      "seconds": 0.73,
+      "summary": [
+        "Script prompt contracts: 40/40",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "39191a4cc3c51e54510bdd826183b1ec59092f1048648be5b7fb0a3564a24406"
+    },
+    {
+      "suite": "coach_contract",
+      "exit": 0,
+      "seconds": 1.01,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "d3999b96ae583258f2659c92844eb58d3d18addc0f3041c9ed07a84c66259fcc"
+    },
+    {
+      "suite": "plan_playbook_contract",
+      "exit": 0,
+      "seconds": 1.27,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "4c3fe9c11a352ec0a2a44d0c2029b9ccacdeef099d3d68a4889d196b70f42deb"
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c"
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "2918efb1b9f7af348f9c71fd24fc351ef45775a48576caad67c9d09ff3a08174"
+    },
+    {
+      "suite": "generation_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Generation input/approval contracts: 55/55 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "7bec3b21aeae1f2c38d68c28369b0c2e183419f2325b3b7ec7be9e99afc05110"
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.18,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef"
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.44,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "1c70085cc2fea1b200a6046379217ed968dab282207c537e15591dfff84478a3"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.1,
+      "summary": [
+        "SMOKE OK dm_6a26211b",
+        "SMOKE OK (phase 2) dm_6a26211b",
+        "SMOKE OK (on-demand rehearsal) dm_6a26211b",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "70718d5ba69d248629c03445fc8b5494b2f7f2d3fec2348ad1742719a6867a03"
+    }
+  ],
+  "application_file_hashes": {
+    "server/agents/author.py": "506c880067941f2539347cd4ad17ad82dccd1d9ac6862e4960c25a4383007cd2",
+    "server/agents/bundle.py": "5e1fbabd65dd4a2c9ddcc9b6582ebdccf30f77bbaad5b9c66a43ae169b0f5c4d",
+    "server/agents/coach.py": "9f8178d74d7ffb21b2abb35e3ac9b68512d7990d8bcbf028a71e10390f482f26",
+    "server/agents/plan.py": "1602861ed62a0f7a3f9cc1535f9f17bf64b5bf458f6534120bf9489deeb52d28",
+    "server/agents/principles.py": "0ec294ca565375a2285265f944f487dd3bba055d138091ef41ef83b3bb001bda",
+    "server/agents/understand.py": "97bce013570c5f3d8e651de197c19862fe992934c9e439a80fcea827464c9506",
+    "server/agents/visuals.py": "d872ada723f4ca97cf6b7739a7940d2272c6615a84c777e0528bca3fd35c648b",
+    "server/media.py": "4f2644a42b028493569734f406b859baa32ef47b6d720ae3dbe0ceff4d9f7e45",
+    "server/sources.py": "b139c174042085eca8c60a7e7ae4d79088d66989c4103abb5acd8fd962a0a6af",
+    "server/store.py": "0f4705ab9553ba4c4e82cb5f0035fac9cfa31b2a9fe26b6d45ad1780aaaf0237",
+    "web/studio/sources.js": "8d6f6966d737d5f41b8df2987b8b6dea616161cd7398d90ed4df23759938cc4d"
+  },
+  "final05_prompt_rerun": [
+    {
+      "suite": "script_prompt_contract",
+      "exit": 0,
+      "seconds": 0.79,
+      "summary": [
+        "Script prompt contracts: 40/40",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "39191a4cc3c51e54510bdd826183b1ec59092f1048648be5b7fb0a3564a24406"
+    },
+    {
+      "suite": "plan_playbook_contract",
+      "exit": 0,
+      "seconds": 1.4,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "3f897b648f060ba34029c5b80fb5a3124c5236cf275ac3fec445b2602400e0af"
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit": 0,
+      "seconds": 0.58,
+      "summary": [
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c"
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.15,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef"
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.49,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "893dad29700cad71f8ef126e82b8fe05d88a2b04123e37217117bf109084d862"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.15,
+      "summary": [
+        "SMOKE OK dm_5259a228",
+        "SMOKE OK (phase 2) dm_5259a228",
+        "SMOKE OK (on-demand rehearsal) dm_5259a228",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "c0710fa927c953534f2aaadb51e44b424897a67dadc9c465d41cc9ba9d89bcdb"
+    }
+  ],
+  "final_strict_run": [
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.39,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.47,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.1,
+      "summary": [
+        "SMOKE OK dm_e629d978",
+        "SMOKE OK (phase 2) dm_e629d978",
+        "SMOKE OK (on-demand rehearsal) dm_e629d978",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "coach_contract",
+      "exit": 0,
+      "seconds": 0.95,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "script_prompt_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Script prompt contracts: 40/40",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "pdf_images_contract",
+      "exit": 0,
+      "seconds": 2.38,
+      "summary": [
+        "PDF IMAGES CONTRACT: 58/58 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "plan_playbook_contract",
+      "exit": 0,
+      "seconds": 1.18,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "exit": 0,
+      "seconds": 0.58,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "generation_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "Generation input/approval contracts: 55/55 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "narration_preparation_contract",
+      "exit": 0,
+      "seconds": 0.84,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "narration_recovery_contract",
+      "exit": 0,
+      "seconds": 2.04,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "automatic_narration_contract",
+      "exit": 0,
+      "seconds": 3.4,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "source_contract",
+      "exit": 0,
+      "seconds": 1.21,
+      "summary": [
+        "Source contracts: 39/39",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "upload_stream_contract",
+      "exit": 0,
+      "seconds": 1.06,
+      "summary": [
+        "upload stream contract: 19/19 groups passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "upload_retry_contract",
+      "exit": 0,
+      "seconds": 1.06,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "deck_media_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "Deck media: 60/60 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "deck_media_align_contract",
+      "exit": 0,
+      "seconds": 1.06,
+      "summary": [
+        "15/15 deck media Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "studio_feedback_contract",
+      "exit": 0,
+      "seconds": 13.82,
+      "summary": [
+        "Studio feedback contracts: 29/29",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "minimum_narration_contract",
+      "exit": 0,
+      "seconds": 0.74,
+      "summary": [
+        "25/25 minimum narration contracts pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "faq_review_contract",
+      "exit": 0,
+      "seconds": 1.18,
+      "summary": [
+        "FAQ review: 42/42 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "voice_lock_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "Voice lock contracts: 27/27",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "customer_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "29/29 customer contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit": 0,
+      "seconds": 12.06,
+      "summary": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    }
+  ],
+  "blocked_operations": [
+    "socket.connect",
+    "socket.connect_ex",
+    "socket.sendto",
+    "socket.create_connection",
+    "socket.getaddrinfo"
+  ],
+  "gate_harness": "run_free_gates.py",
+  "gate_harness_sha256": "6fbdc6e8bbe02eb8a16c44fad6a4684f0a2658249945d1593351ba13fa50d918",
+  "stage_harness": "stage_harness.py",
+  "stage_harness_sha256": "843e165d180525626c2e7ac0812ad18b661e9d6c68a47e6a74d6b896458589b1",
+  "final_complete_run": [
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.34,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.7,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.05,
+      "summary": [
+        "SMOKE OK dm_a86c8292",
+        "SMOKE OK (phase 2) dm_a86c8292",
+        "SMOKE OK (on-demand rehearsal) dm_a86c8292",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "coach_contract",
+      "exit": 0,
+      "seconds": 0.9,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "script_prompt_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Script prompt contracts: 40/40",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "pdf_images_contract",
+      "exit": 0,
+      "seconds": 2.28,
+      "summary": [
+        "PDF IMAGES CONTRACT: 58/58 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "exit": 0,
+      "seconds": 0.52,
+      "summary": [
+        "25/25 visual alignment contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "plan_playbook_contract",
+      "exit": 0,
+      "seconds": 1.23,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "generation_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Generation input/approval contracts: 55/55 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "narration_preparation_contract",
+      "exit": 0,
+      "seconds": 0.9,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "narration_recovery_contract",
+      "exit": 0,
+      "seconds": 2.05,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "automatic_narration_contract",
+      "exit": 0,
+      "seconds": 3.31,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "source_contract",
+      "exit": 0,
+      "seconds": 1.17,
+      "summary": [
+        "Source contracts: 39/39",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "upload_stream_contract",
+      "exit": 0,
+      "seconds": 1.22,
+      "summary": [
+        "upload stream contract: 19/19 groups passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "upload_retry_contract",
+      "exit": 0,
+      "seconds": 1.18,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "deck_media_contract",
+      "exit": 0,
+      "seconds": 0.58,
+      "summary": [
+        "Deck media: 60/60 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "deck_media_align_contract",
+      "exit": 0,
+      "seconds": 1.12,
+      "summary": [
+        "15/15 deck media Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "studio_feedback_contract",
+      "exit": 0,
+      "seconds": 13.86,
+      "summary": [
+        "Studio feedback contracts: 29/29",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "minimum_narration_contract",
+      "exit": 0,
+      "seconds": 0.69,
+      "summary": [
+        "25/25 minimum narration contracts pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "faq_review_contract",
+      "exit": 0,
+      "seconds": 1.18,
+      "summary": [
+        "FAQ review: 42/42 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "voice_lock_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "Voice lock contracts: 27/27",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "customer_contract",
+      "exit": 0,
+      "seconds": 0.52,
+      "summary": [
+        "29/29 customer contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit": 0,
+      "seconds": 12.12,
+      "summary": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    }
+  ]
+}

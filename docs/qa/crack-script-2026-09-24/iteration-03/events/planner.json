@@ -1,0 +1,20 @@
+{
+  "status": "complete",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Planning the pitch: playbook stops, evidence, pictures and word budgets…"
+    },
+    {
+      "event": "replayed",
+      "call": "planner-01",
+      "request_sha256": "2fa8aa6a915a78dc0dacde55f77d5fb81365b7b188b0f7a20f78ebc25b3156d3",
+      "response_sha256": "d7473938e89446c64cc3d0ff2824fee1a959781c03e0cdc6c15a1ddccbbfb80d"
+    },
+    {
+      "event": "stage",
+      "message": "Plan: “Choose the engine and trim together, then check that exact version’s features an” — 11 segments (7 proof blocks), 3 USPs, persona “Priya”."
+    }
+  ],
+  "socket_attempts": []
+}

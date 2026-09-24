@@ -1,0 +1,21 @@
+PASS upload bounded at one MiB per read
+PASS complete original bytes preserved
+PASS metadata preserves filename kind size role
+PASS no uploading residue on success
+PASS known oversized upload returns correct status
+PASS known oversized upload leaves no source or file
+PASS unknown-size oversized upload returns correct status
+PASS unknown-size oversized upload leaves no source or file
+PASS empty upload returns correct status
+PASS empty upload leaves no source or file
+PASS unsupported upload returns correct status
+PASS unsupported upload leaves no source or file
+PASS exact size limit accepted
+PASS interrupted copy cleans partial bytes
+PASS metadata failure cleans unregistered file
+PASS existing byte-source callers stay compatible
+PASS Align attachments use the same bounded stream
+PASS Align applies source limit before invoking the agent
+PASS temporary-file collision preserves the other upload
+upload stream contract: 19/19 groups passed
+OUTBOUND_ATTEMPTS 0

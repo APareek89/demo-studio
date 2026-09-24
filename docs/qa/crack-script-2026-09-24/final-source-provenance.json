@@ -1,0 +1,45 @@
+{
+  "source_pdf": "/Users/macbook/Documents/Hyundai Creta Official/Hyundai_CRETA_Complete_Guide.pdf",
+  "source_id": "src_0ac142",
+  "demo_id": "dm_ca663ef9",
+  "actual_pdf_extraction": true,
+  "mocked_provider_output_not_evidence": true,
+  "manual_reviewed_fact_count": 68,
+  "manual_reviewed_image_count": 48,
+  "unknown_count": 10,
+  "actual_extracted_image_count": 95,
+  "actual_extracted_image_bytes": 26467885,
+  "retained_image_bytes": 15012240,
+  "mock_vision_batches": [
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    11
+  ],
+  "mock_vision_call_count": 8,
+  "elapsed_seconds": 6.001,
+  "socket_attempts": 0,
+  "limits": {
+    "max_pages": 100,
+    "max_images": 96,
+    "max_candidates": 256,
+    "max_file_bytes": 67108864,
+    "max_image_bytes": 8388608,
+    "max_total_bytes": 50331648,
+    "max_pixels": 12000000,
+    "max_edge": 2048,
+    "timeout": 30
+  },
+  "evidence": "The original64 fact quotes were checked on their cited PDF pages and remapped to the sole uploaded source; v2 adds four exact engine/gearbox trim rows from page31 as recorded below. No new visual boxes. Actual normalized image hashes connect the extracted pictures to independently inspected tags, without assuming parser ordinal order.",
+  "source_file_sha256": "f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c",
+  "registry_revision": {
+    "parent_fixture": "/tmp/demo-crack-script-20260924/final-source",
+    "revision": "v2",
+    "change": "Added F065\u2013F068 for four omitted engine/gearbox trim rows from PDF page31. Existing 64 facts, 48 image tags, sources and asset bytes remain unchanged. Existing F006 already covers the turbo DCT row.",
+    "review": "Page31 table headings and every filled-dot/dash cell independently visually checked against render-p31.png and exact local extracted text. Full row excerpts retained verbatim. No providers or sockets used."
+  }
+}

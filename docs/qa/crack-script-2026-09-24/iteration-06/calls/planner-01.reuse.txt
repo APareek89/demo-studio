@@ -1,0 +1,1 @@
+Exact iteration05 request equality checked, including system/content/schema/kwargs/SHA256. Response bytes reused unchanged to isolate the visual-fallback code correction. No new model generation.
