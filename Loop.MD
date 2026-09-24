@@ -1,6 +1,6 @@
 # Loop.MD — Demo Studio
 
-## Script prompt experiment — unmerged · 24 September 2026
+## Script generation — approved and merged to master · 24 September 2026
 
 Mocked, isolated data/graph storage and blocked sockets; no paid model/voice calls. Before and first improved prompt iteration: deck380/380, acceptance24/24 and smoke3/3. Existing scope: Coach27/27, plan/playbook19/19, narrative roles14/14, generation55/55, speech style30/30, narration preparation35/35, recovery18/18, automatic narration16/16. New `python evals/script_prompt_contract.py`:40/40 groups covering actual assembled prompts across categories/audiences, protected evidence rules, numeric/citation/visual rejection, technical-detail preservation, batch splitting and the unchanged495/180 preparation/publication distinction. `evals/coach_contract.py` additionally proves prompt-cache invalidation without evidence mutation.
 

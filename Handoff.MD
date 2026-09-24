@@ -1,8 +1,8 @@
 # Handoff.MD — Demo Studio
 
-## Script prompt experiment — unmerged · 24 September 2026
+## Script generation — approved and merged to master · 24 September 2026
 
-**Decision:** Anand approved `codex/crack-the-script` in a separate worktree from tested release `582ae1a`, instead of old `slides-v1`. The target script is a narrative reference: keep existing validators, the default495-word preparation margin and measured180-second publication gate. No main-narration PS exception, invented reputation or unsupported performance claim. PDF embedded-picture extraction within Understand is separately approved and implemented in this worktree. Nothing from this experiment is merged or deployed.
+**Decision:** Anand reviewed the final sample and said “this is fine, commit to main” on24 September2026. This supersedes the earlier experiment-only merge hold. The repository's default branch is `master` (there is no `main`); reviewed application commit `badc19d` and its four preceding implementation commits are merged without conflicts from `codex/crack-the-script`, based on release `582ae1a`. The target script remains a narrative reference: preserve existing validators, the default495-word preparation margin and measured180-second publication gate. PDF embedded-picture extraction within Understand is approved. No main-narration PS exception, invented reputation or unsupported performance claim. This merge does not deploy or restart AWS or the original local app.
 
 **PDF pictures:** bounded normalized extraction retains parent ownership/revision through tagging, source exclusion, slide/line serialization and retry. Completed manifests reuse stable IDs; timeouts retry without losing successful bytes. Default96-image/48MiB cap recovers all95 pictures in the uploaded PDF;48 were manually inspected and retained for the final source fixture. Facts remain attached to the PDF. New PDF contract58/58, sources39/39, upload stream19/19, retry12/12, deck media60/60, media Align15/15 and Studio29/29 pass. No paid vision was run; the source exercise uses eight mocked image batches. The30-second deadline is cooperative, not process isolation.
 
