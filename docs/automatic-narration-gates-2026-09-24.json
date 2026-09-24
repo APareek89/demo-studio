@@ -1,0 +1,776 @@
+{
+  "recorded_at": "2026-09-24T06:08:40.938818+00:00",
+  "head": "e252ac7ca34759987b25825a20819c1f766b6932",
+  "working_tree_tested": true,
+  "controls": {
+    "mock": true,
+    "isolated_data_and_graph": true,
+    "storage_backend": "local",
+    "cloud_sync": false,
+    "outbound_sockets_blocked": true,
+    "provider_calls": 0,
+    "protected_data_writes": false,
+    "port_8896_used": false
+  },
+  "summary": {
+    "scripts": 35,
+    "python_scripts": 27,
+    "node_scripts": 8,
+    "passed": 1169,
+    "total": 1169,
+    "outbound_attempts": 0
+  },
+  "source_sha256": {
+    "server/agents/author.py": "e434eaf7942bf2550203e7cc80480ac1ff72b35d7722c2e2a9776ceed61b75ff",
+    "server/agents/plan.py": "51842307a2a320c8cf41d0ec786a2c8680e03441d45c6208f4c1393d4db45c02",
+    "server/agents/narration.py": "8364e7e2d60e5907763cd6aa2024bec24813dd3691d23bd81d0810d082c2a51d",
+    "server/agents/align.py": "76e5ddb1c0c5b5d0d35c07f3c40ad5e0f3db3d21c85889a554c7c68e81d018b0",
+    "server/agents/bundle.py": "43563588864de5fe98e478fd2c12a9256a69ef83dbd80e47e8b4a044a1d39c1b",
+    "server/app.py": "4c9477ad2cebdad238d0ec4369ee68f58c02f01655b6438ad5f78a16b9654fdf",
+    "server/graph.py": "d642e254cb2e3c4c8187d1c32bd254c155151122279e957506a5791b3e4b2f2d",
+    "server/orchestrator.py": "291c94155c218ad4a03d9c51f47735ddb3920b44f476ec2eb762d75039a40044",
+    "web/studio/align.js": "269b11f57aa82c17cc2f8ce0d8b1e1b8e3a57ffd9b9e508cdd2e211d74503733"
+  },
+  "results": [
+    {
+      "name": "qa_deck.py",
+      "exit": 0,
+      "count": "365/365",
+      "seconds": 6.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/qa_deck.py.log",
+      "summary": [
+        "365/365 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 365,
+      "total": 365,
+      "unit": "contract check",
+      "log_sha256": "5bdded69fcfa46b68072805ae42c33096adc5fb820dc47a30f91b0b622a95e7e",
+      "file_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae"
+    },
+    {
+      "name": "qa_accept.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 2.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/qa_accept.py.log",
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 24,
+      "total": 24,
+      "unit": "contract check",
+      "log_sha256": "9a24786d7a9cd749a6d1393011473d2ea9055ee466269b85660f127fe1f82c58",
+      "file_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030"
+    },
+    {
+      "name": "smoke_mock.py",
+      "exit": 0,
+      "count": "3/3 phases",
+      "seconds": 4.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/smoke_mock.py.log",
+      "summary": [
+        "SMOKE OK dm_33a475e4",
+        "SMOKE OK (phase 2) dm_33a475e4",
+        "SMOKE OK (on-demand rehearsal) dm_33a475e4",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 3,
+      "total": 3,
+      "unit": "workflow phase",
+      "log_sha256": "ccf77ae94f37971aa773dc18253da7182d6d44389dfb641579405178fefb4625",
+      "file_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07"
+    },
+    {
+      "name": "minimum_narration_contract.py",
+      "exit": 0,
+      "count": "25/25",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/minimum_narration_contract.py.log",
+      "summary": [
+        "25/25 minimum narration contracts pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 25,
+      "total": 25,
+      "unit": "contract check",
+      "log_sha256": "eafd30f2027edabe0dfb742c5f1ce9be9d6887996f941d07e20e35c5c9a445d9",
+      "file_sha256": "d844b028e2c50e41f0920f5ea1c054c9d23d9ceaa7c0b09b03130f3c7917085a"
+    },
+    {
+      "name": "generation_contract.py",
+      "exit": 0,
+      "count": "58/58",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/generation_contract.py.log",
+      "summary": [
+        "Generation input/approval contracts: 58/58 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 58,
+      "total": 58,
+      "unit": "contract check",
+      "log_sha256": "46c5088060d211790c7e15c7ba4e9f46d72d43f8ac486b4b32c4493b275c3b35",
+      "file_sha256": "a175b5ce0ed616fb141fd6f62d79e166fd1596d938162e5fc6d5ff196e62cf6e"
+    },
+    {
+      "name": "plan_playbook_contract.py",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 1.5,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/plan_playbook_contract.py.log",
+      "summary": [
+        "Ran 19 tests in 0.631s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 19,
+      "total": 19,
+      "unit": "unittest case",
+      "log_sha256": "b480482b3d21c5de8a105f911b6737bcfd674c6e5db08374f358bf101e7006be",
+      "file_sha256": "31787008305aa4f929de6fe515725c3f604ed40d140da8f86b3528004f897916"
+    },
+    {
+      "name": "narrative_roles_contract.py",
+      "exit": 0,
+      "count": "14/14",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/narrative_roles_contract.py.log",
+      "summary": [
+        "Ran 14 tests in 0.061s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 14,
+      "total": 14,
+      "unit": "unittest case",
+      "log_sha256": "f3686d52293dfa47617a3c156133d4ab896cf1628e223d5a298e7ea20e126378",
+      "file_sha256": "0908bf4eb316a4f8b7fd46052a9bf61987a89ac9048d243c8feb89e11bb9ef46"
+    },
+    {
+      "name": "speech_style_contract.py",
+      "exit": 0,
+      "count": "30/30",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/speech_style_contract.py.log",
+      "summary": [
+        "PASS all contracts: no outbound calls",
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 30,
+      "total": 30,
+      "unit": "contract check",
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c",
+      "file_sha256": "f3d18a4132171dfcc0c6462c7061cf8817aac894c45a14af41c034d55dba7131"
+    },
+    {
+      "name": "narration_recovery_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 2.4,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/narration_recovery_contract.py.log",
+      "summary": [
+        "Ran 18 tests in 1.067s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 18,
+      "total": 18,
+      "unit": "unittest case",
+      "log_sha256": "d907ddde6c602b2613ea5303c1bae2b17d8ac86e4b743032873c4563efcca959",
+      "file_sha256": "1a68ec6df118d090312a0bcca26c24b3cdac2f9fc1e03854b9cdeb0526dcc77c"
+    },
+    {
+      "name": "automatic_narration_contract.py",
+      "exit": 0,
+      "count": "16/16",
+      "seconds": 3.9,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/automatic_narration_contract.py.log",
+      "summary": [
+        "Ran 16 tests in 2.593s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 16,
+      "total": 16,
+      "unit": "unittest case",
+      "log_sha256": "f7b36924c50c4588c2fc1b661440789d11b1578294f8e4b6b06558efd84293ac",
+      "file_sha256": "e8ecde9d84ea6a8f57167aaa086cda6aed42dde64903cd1edb9e6f5bb319a1f9"
+    },
+    {
+      "name": "narration_preparation_contract.py",
+      "exit": 0,
+      "count": "35/35",
+      "seconds": 1.1,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/narration_preparation_contract.py.log",
+      "summary": [
+        "Ran 35 tests in 0.320s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 35,
+      "total": 35,
+      "unit": "unittest case",
+      "log_sha256": "095945980b7057ae3d14f923da27a92e158f53a5a00b638fb267be69780c8fe9",
+      "file_sha256": "deb2ff6181ed4263b9e09ebd08be64bf66807adb07ffda0e609865222599b5aa"
+    },
+    {
+      "name": "release_mock_contract.py",
+      "exit": 0,
+      "count": "28/28",
+      "seconds": 13.3,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/release_mock_contract.py.log",
+      "summary": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 28,
+      "total": 28,
+      "unit": "contract check",
+      "log_sha256": "b744e8da420592d7a6f6208c784ef80a7f6012f4077a2191e5d8dc6d2cf39ada",
+      "file_sha256": "4a24feea59ba1d08a0fb85fadae3a97b3627d161c21d344d752e95abb1642017"
+    },
+    {
+      "name": "publication_approval_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/publication_approval_contract.py.log",
+      "summary": [
+        "Ran 8 tests in 0.191s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 8,
+      "total": 8,
+      "unit": "unittest case",
+      "log_sha256": "9451c8158212c6da8dc64c64457446f1bafbddb194ae35576befc907fb54bebc",
+      "file_sha256": "d4a111fe734d5f186610e421f6bb19e108fee28c15305daa641719d687965406"
+    },
+    {
+      "name": "align_review_contract.py",
+      "exit": 0,
+      "count": "51/51",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/align_review_contract.py.log",
+      "summary": [
+        "Align review contracts: 51/51",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 51,
+      "total": 51,
+      "unit": "contract check",
+      "log_sha256": "66be363f0576b32d889dae1a2e93b216eb0b8c0a0bb3cafc9ececaa7c8c6954f",
+      "file_sha256": "041b9a8f216197814dbecdf21c7362694ebb448959bf720e052b3646bb393d11"
+    },
+    {
+      "name": "coach_align_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/coach_align_contract.py.log",
+      "summary": [
+        "21/21 coach Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 21,
+      "total": 21,
+      "unit": "contract check",
+      "log_sha256": "7388939b33c89b4d2b8b09ace9b10cf9c23f4a6ebab450c2579cde0129d8097d",
+      "file_sha256": "e3884d959e18e55ecf18e23371d9ea22fd4ab27f32338b05ab6c005410d3e8b3"
+    },
+    {
+      "name": "deck_media_contract.py",
+      "exit": 0,
+      "count": "45/45",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/deck_media_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 45,
+      "total": 45,
+      "unit": "contract check",
+      "log_sha256": "d02a98f078590279ebfe781d1c43405517cc5465be2efa2f6113e101d1126732",
+      "file_sha256": "129eaa45f880bdf834034fcf11c52886d5d2b1272a936f096fb55e3da7c2d331"
+    },
+    {
+      "name": "deck_media_align_contract.py",
+      "exit": 0,
+      "count": "15/15",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/deck_media_align_contract.py.log",
+      "summary": [
+        "15/15 deck media Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 15,
+      "total": 15,
+      "unit": "contract check",
+      "log_sha256": "8a5ca166cbec2922544883a0c795c3c3419020ef8f4bd10bee90af556747f88d",
+      "file_sha256": "2cf513b687c3bb30493690461b091a9ff4df186df36dc1a02cab2fb0d59bd0f9"
+    },
+    {
+      "name": "pitch_delivery_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 1.0,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/pitch_delivery_contract.py.log",
+      "summary": [
+        "Pitch delivery contracts: 18/18",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 18,
+      "total": 18,
+      "unit": "contract check",
+      "log_sha256": "f5cae5ce032694630df02d4f5a2fd9b99e611e8c9ba05c99a8415a2c3b7d4e71",
+      "file_sha256": "2f41a0eb82943dd93c89a09772f0e7f1a249a38af68864f437a980d53924f051"
+    },
+    {
+      "name": "pitch_priority_revision_contract.py",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 1.0,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/pitch_priority_revision_contract.py.log",
+      "summary": [
+        "Ran 7 tests in 0.047s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 7,
+      "total": 7,
+      "unit": "unittest case",
+      "log_sha256": "62d2e1e09dbd0b34eb8051ce46ab7cc63111bec21cf8e35ff043a9f8e453393f",
+      "file_sha256": "158d62e1a24c7304d53b61a8113c81c79385ed00756b2368dc28018c6d14e43d"
+    },
+    {
+      "name": "pitch_fundamental_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/pitch_fundamental_contract.py.log",
+      "summary": [
+        "Pitch fundamental contracts: 12/12",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 12,
+      "total": 12,
+      "unit": "contract check",
+      "log_sha256": "e76eb551563cdf739b8f32dce51959d621f8f2050647886c07240995a7cea02b",
+      "file_sha256": "554d84746d685900aed2bf077be9ec9dfe27e1afd754666628dcf963568aba5f"
+    },
+    {
+      "name": "pitch_grounding_contract.py",
+      "exit": 0,
+      "count": "47/47",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/pitch_grounding_contract.py.log",
+      "summary": [
+        "Pitch grounding contracts: 47/47",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 47,
+      "total": 47,
+      "unit": "contract check",
+      "log_sha256": "dd6e61486f802d6c86782df09c189f5d52bbb43a710399ff01452885a1042b61",
+      "file_sha256": "0a908cb05bec2b83b06a53f843bd565e8c168bc81dbf1ab4cc18a0238c354bd2"
+    },
+    {
+      "name": "runtime_graph_contract.py",
+      "exit": 0,
+      "count": "130/130",
+      "seconds": 1.1,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/runtime_graph_contract.py.log",
+      "summary": [
+        "130/130 runtime graph contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 130,
+      "total": 130,
+      "unit": "contract check",
+      "log_sha256": "ba54968e6d300c412e67fc583fe2c0bf04c04c94f72ab26b9fb69feb8059ef41",
+      "file_sha256": "fcec36a1e2074536ae435d37d0fab1e930dcc840799fbe826d727a3294604b6e"
+    },
+    {
+      "name": "runtime_conversation_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 1.0,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/runtime_conversation_contract.py.log",
+      "summary": [
+        "Ran 18 tests in 0.046s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 18,
+      "total": 18,
+      "unit": "unittest case",
+      "log_sha256": "759c1d09aa7aeb9250df0ff5c7275b4f52d1323b4d0ede232887c7f18962b3f9",
+      "file_sha256": "682c7d8df1c021629ae03812088b395e585a345979a87d37190e1afdcda8409d"
+    },
+    {
+      "name": "readiness_contract.py",
+      "exit": 0,
+      "count": "10/10",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/readiness_contract.py.log",
+      "summary": [
+        "Readiness contracts: 10/10",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 10,
+      "total": 10,
+      "unit": "contract check",
+      "log_sha256": "3f7259fb27342666f362f58ff05cdf416e8802aac49a6019795ea20f6c178127",
+      "file_sha256": "1165745642cf573764ac66f56a07b111e5079f5499c7449d6332d2aba94cf343"
+    },
+    {
+      "name": "voice_lock_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/voice_lock_contract.py.log",
+      "summary": [
+        "Voice lock contracts: 27/27",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 27,
+      "total": 27,
+      "unit": "contract check",
+      "log_sha256": "0d39bea3d18254714c5111e503336434482c0165542b17cf9407678a7b97565e",
+      "file_sha256": "5f5cdafcc78155eac80f038b0f994ac6d96a5bb4d61617ac21f85ccee8432afd"
+    },
+    {
+      "name": "visual_theme_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/visual_theme_contract.py.log",
+      "summary": [
+        "Ran 12 tests in 0.082s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 12,
+      "total": 12,
+      "unit": "unittest case",
+      "log_sha256": "bad21251b399ea62d16002cd46dbcab15279bc90094bbbc0ef05285fa5cbdb68",
+      "file_sha256": "4dd40e771cae05955122501ada3634092a75370f72a489e83bbdcd574ca29fda"
+    },
+    {
+      "name": "align_narration_recovery_contract.mjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "21/21",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/align_narration_recovery_contract.mjs.log",
+      "summary": [
+        "Align narration recovery contracts: 21/21; no network/providers",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 21,
+      "total": 21,
+      "unit": "contract check",
+      "log_sha256": "d44f7b6640d9bcaed01160d943a86268f4162af52efc601dc965c62e3f13b22f",
+      "file_sha256": "604e577d697c7fef13a9e0721eb2e2069baae07b8e0cc2d7fe61e0c61eba2372"
+    },
+    {
+      "name": "align_timing_contract.cjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "13/13",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/align_timing_contract.cjs.log",
+      "summary": [
+        "13/13 Align timing contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 13,
+      "total": 13,
+      "unit": "contract check",
+      "log_sha256": "4bc42832483f8059bbfc02279f90e1d3fa43763bfefb11c985037b94f7d52525",
+      "file_sha256": "ef921ccce8252dfdc9b32c8c769d9fc59188d9d26dc0fa2903b2b261c8d191d1"
+    },
+    {
+      "name": "coach_align_ui_contract.cjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "9/9",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/coach_align_ui_contract.cjs.log",
+      "summary": [
+        "9/9 coach Align UI contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 9,
+      "total": 9,
+      "unit": "contract check",
+      "log_sha256": "85d980f6a953a312d27fce5a22138786e6fa0c3e561009cf8368bacfed420741",
+      "file_sha256": "dd51cab065ec54ad72bec1350c73f5856991b2c28c9f3a9027a3c4702118399b"
+    },
+    {
+      "name": "align_progress_contract.mjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "9/9",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/align_progress_contract.mjs.log",
+      "summary": [
+        "Align progress contracts: 9/9 (actual modules, DOM-shaped host, no browser/network)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 9,
+      "total": 9,
+      "unit": "contract check",
+      "log_sha256": "3d23d77821cd60d957f9ace4164d0cbcfd6072d025a6ce0304240a359f9004bb",
+      "file_sha256": "9001fccfc9e201ab4edbdfd75f3776a09a6b31665c428782d4ad30c7fb14bdb6"
+    },
+    {
+      "name": "readiness_ui_contract.mjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "5/5",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/readiness_ui_contract.mjs.log",
+      "summary": [
+        "Readiness UI contracts: 5/5",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 5,
+      "total": 5,
+      "unit": "contract check",
+      "log_sha256": "6a44969fdfa4451a7dc7a8eb8d5db2b48c6d0ab52b22d4243be12cb14f28a90b",
+      "file_sha256": "7781ef7312ddf6d59e4b7cae50542e807d5d0f57dd3c1aab4d30aa3028a6bdbc"
+    },
+    {
+      "name": "player_fundamental_contract.cjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "10/10",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/player_fundamental_contract.cjs.log",
+      "summary": [
+        "Player fundamental contracts: 10/10; no browser/network/provider",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 10,
+      "total": 10,
+      "unit": "contract check",
+      "log_sha256": "0adcdc3bda223357dcc56a2bd514735a0cf30ae3bb2c57ba2b0570b43c809d3a",
+      "file_sha256": "83c9f52b99283cb54ec9069f8b78198c4f54660af9ac5ee2272677632d634945"
+    },
+    {
+      "name": "player_priority_revision_contract.cjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "11/11",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/player_priority_revision_contract.cjs.log",
+      "summary": [
+        "Player priority revision contracts: 11/11; no browser/network/provider",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 11,
+      "total": 11,
+      "unit": "contract check",
+      "log_sha256": "7accfa6808549fdbe7f682d5f26a28b7035723a4e71a1a26c1b154117feb2f2b",
+      "file_sha256": "81bb7311447dbf48cd4655d497e7cd27ca59cb0013c6368bab9b8d340f15217d"
+    },
+    {
+      "name": "player_media_contract.cjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "7/7",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/scoped/player_media_contract.cjs.log",
+      "summary": [
+        "Player media contracts: 7/7; no browser/network/provider",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 7,
+      "total": 7,
+      "unit": "contract check",
+      "log_sha256": "4b115ead4b4ffd1ee93cac357a3fd6bb270e08a44200bed6cc7bbd8308f7cce6",
+      "file_sha256": "e790dac0f28900ca4b4838c2b50b27e1c5710254062e55ae12144ef19a10773e"
+    },
+    {
+      "name": "build_hardening_contract.py",
+      "exit": 0,
+      "seconds": 1.0,
+      "log": "/tmp/auto-narration-f5oh_118/scoped/build_hardening_contract.py.log",
+      "passed": 28,
+      "total": 28,
+      "count": "28/28",
+      "unit": "contract check",
+      "outbound_attempts": [
+        0
+      ],
+      "log_sha256": "484d6f3d7a0a0fb8ca2bc36ac90dbba8ecfb719aa9bc22d3d43528e8e44d290f",
+      "file_sha256": "043e76505f833f31c48ea17658efb51b09ce6f1e0cdb746695ef6a8a423963e1",
+      "summary": [
+        "PASS all contracts: no outbound calls",
+        "Build hardening contracts: 28/28",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    }
+  ],
+  "baseline": [
+    {
+      "name": "qa_deck.py",
+      "exit": 0,
+      "count": "365/365",
+      "seconds": 6.0,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/qa_deck.py.log"
+    },
+    {
+      "name": "qa_accept.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 2.9,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/qa_accept.py.log"
+    },
+    {
+      "name": "smoke_mock.py",
+      "exit": 0,
+      "count": "3 phases",
+      "seconds": 4.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/tmp/auto-narration-f5oh_118/smoke_mock.py.log"
+    }
+  ],
+  "notes": [
+    "Automatic narration16 drives ordinary source upload and POST/read through extraction, Coach, Plan, Author, Deck/FAQ and human Align. It checks adequate first draft, short repair then one completion, bounded repeated-short failure, no available facts, provider failure, untouched generic MOCK placeholders, deterministic review messages, all approval paths, legacy Build-owned preparation, measured128.3-second retry, initial provider failure with blocked empty approval and normal retry, valid-prior-draft preservation on failed revision, and actual manual PATCH shortening of both unvoiced and stale-voiced prepared drafts with blocked approval/Build and publication preservation; an adequate manual edit remains ready.",
+    "Source passages and provider responses are deterministic fixtures. No prepared final script is injected into the successful automatic Read or release flow. Neither uses a readiness or duration bypass.",
+    "The release journey28 uses real API graphs, Voice hashes and measured WAV accounting, then the actual player with intercepted in-process requests; it reaches194.22 seconds on the selected route. Synthetic silent audio cannot establish acoustic quality.",
+    "qa_deck/smoke remain tiny generic schema fixtures; their duration and preparation readiness are explicitly mocked in those two test processes for broad plumbing coverage. The first graph-plumbing section of build_hardening also explicitly stubs preparation readiness alongside its existing Author/Voice/Bundle stubs; its separate real rehearsal-cache checks are unchanged. Actual eligibility and publication guards are exercised separately.",
+    "Recovery18 preserves prior publication/audio/facts, retries missing or corrupt recordings through Voice without Author, retains legacy API readiness/override coverage, and checks main/alternate timing and allowed-word accounting.",
+    "No new paid model or speech quality run was performed. Counts combine contract checks, unittest cases and3 smoke workflow phases."
+  ],
+  "independent_browser": {
+    "checks": "13/13",
+    "viewports": [
+      "1440x900",
+      "390x844"
+    ],
+    "page_errors": 0,
+    "external_requests": 0,
+    "script": "/tmp/align-recovery-browser-review.py",
+    "screenshots": [
+      "/tmp/align-automatic-draft-desktop.png",
+      "/tmp/align-automatic-draft-mobile.png",
+      "/tmp/align-automatic-mock-mobile.png"
+    ],
+    "provenance": "Independent UI agent reported actual-browser results; no separate browser log file was saved.",
+    "scope": "Draft retry/error/pending/rejection, five-of-six blocked, ready human review, truthful mock with no misleading timer/retry, source upload, legacy Build and recording retry; no forced preparation action."
+  }
+}

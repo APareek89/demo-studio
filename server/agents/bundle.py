@@ -223,7 +223,7 @@ def _build_approved(demo_id: str, emit) -> dict:
             alt[language]["narration_minimum"] = narration.require_minimum(translated, demo_id=demo_id, allowed_fact_ids=set(facts),
                                                                           require_recorded=True)
         except narration.NarrationTooShort as exc:
-            raise narration.NarrationTooShort(f"{language}: {exc}") from exc
+            raise narration.NarrationTooShort(f"{language}: {exc}", result=exc.result) from exc
     # Pin the knowledge snapshot and attach the overview to a suitable opening slide.
     # knowledge.py:snapshot publishes only with all approvals; the overview audio already came from voice.py:render_script.
     snapshot = knowledge.snapshot(demo_id, publish=True)

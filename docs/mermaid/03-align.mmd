@@ -1,7 +1,7 @@
 %% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6["SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line<br/>empty question card auto-approved; same six-card Build gate<br/>Visuals: Marine / Sage / Graphite choice resets Visuals approval<br/>Script: default narration seconds + deficit; estimates labelled; publication requires measured 180s"]:::data
-  PREP["USER selects Prepare three-minute narration<br/>[HUMAN · visible minimum panel, including prior errors]<br/>POST /revise plan; provider readiness or explicit override<br/>reuse reviewed plan and voice/CTAs; rebudget then Author/Deck<br/>existing facts retained; new Script/Visuals require review"]:::ask
+  N6["SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line<br/>empty question card auto-approved; same six-card Build gate<br/>Visuals: Marine / Sage / Graphite choice resets Visuals approval<br/>Script: compact 3-minute target and labelled timing; publication requires measured 180s<br/>incomplete drafts cannot be approved; mock placeholders labelled as preview"]:::data
+  PREP["Retry only an unsuccessful real draft<br/>[HUMAN · compact Script card]<br/>normal Read prepares automatically; no routine Prepare step<br/>POST /revise author with existing preparation instruction<br/>reasoning readiness or explicit override; changed cards return for review"]:::ask
   STORY["USER reviews Story order above script segments<br/>[ask · existing Script card]<br/>drag stops; review kind, fact/picture counts and gaps; Ask for this source"]:::ask
   PBO["PATCH /align/playbook {stop_order, kinds}<br/>[FUNCTION · server/app.py]<br/>save playbook-overrides.json; revalidate effective playbook<br/>mark dependent work stale; reset script + visuals approvals; revise Plan<br/>Planner preserves reviewed stops, kinds, coverage and USPs"]:::fn
   MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
@@ -11,7 +11,7 @@ flowchart TD
   HIST["conversation.json<br/>[DATA · last 12 turns sent as history]"]:::data
   AGENT["align agent<br/>[AGENT · Claude text tier · messages.parse]<br/>in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list<br/>out: AlignOut · reply + actions[]"]:::agent
   APPLY{"action type<br/>[FUNCTION · orchestrator.apply_actions]"}:::dec
-  A1["approve(card)<br/>[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)"]:::fn
+  A1["approve(card)<br/>[FUNCTION] incomplete Script refused by API and chat action guard<br/>other approvals → next-card prompt (template, no LLM)"]:::fn
   A2["edit_fact / remove_fact / resolve_unknown<br/>[FUNCTION] F/C lookup; validate truth and source ownership before save<br/>registries stay separate; downstream work and approvals stale"]:::fn
   A3["set_ctas / set_voice<br/>[FUNCTION] plan.json patched · voice sample re-rendered"]:::fn
   A4["request_upload<br/>[term] note only — user must add files"]:::term
@@ -19,7 +19,7 @@ flowchart TD
   A6["build<br/>[FUNCTION] only if all 6 approved"]:::fn
   A7["answer<br/>[term] nothing changes"]:::term
   EDIT["USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome<br/>[ask · edit modal]"]:::ask
-  SAVEEDIT["validate schema, source ownership and grounding before save<br/>[FUNCTION · store.edit_fact / author.ungrounded / author.validate]<br/>question checkin issues preserve source text/audio for repair; affected approvals and downstream work stale<br/>script visual audit only when requested (Gemini vision)"]:::fn
+  SAVEEDIT["validate schema, source ownership and grounding before save<br/>[FUNCTION · store.edit_fact / author.ungrounded / author.validate]<br/>question checkin issues preserve source text/audio for repair; affected approvals and downstream work stale<br/>manual edits retain words and preparation metadata; short edits stay pending<br/>script visual audit only when requested and narration is complete (Gemini vision)"]:::fn
   FAQEDIT["USER reviews Asked and answered<br/>[ask · card or Preview]<br/>document + customer entries, asked_count and review state<br/>approve / edit supported answer + fact ids / reject; question stays fixed"]:::ask
   FAQGATE{"idle and valid entry; approve/edit use<br/>approved, snapshot-compatible citations?<br/>[FUNCTION · app.edit_aligned_faq / faq.review_entry]<br/>reject empty citations and uncited claims"}:::dec
   FAQFAIL["400 invalid answer/citations or 409 stale/partial/running<br/>[term] no artifacts changed"]:::term
@@ -56,7 +56,7 @@ flowchart TD
   A7 --> REPLY
   ATT -.->|"files but no revise action → revise('understand')"| A5
   N6 --> EDIT --> SAVEEDIT --> N6
-  N6 --> PREP --> R2
+  N6 -- "drafting did not finish" --> PREP --> R3
   N6 --> STORY
   STORY -- "save order / kinds" --> PBO --> R2
   STORY -- "gap text: request_upload" --> A4

@@ -41,8 +41,12 @@ graph TD;
 	align_wait -.-&gt; faq;
 	align_wait -.-&gt; plan;
 	align_wait -.-&gt; understand;
-	author --&gt; deck;
-	bundle --&gt; finish;
+	author -.-&gt; deck;
+	author -.-&gt; faq;
+	bundle -.-&gt; align_enter;
+	bundle -.-&gt; author;
+	bundle -.-&gt; finish;
+	coach --&gt; plan;
 	deck -.-&gt; faq;
 	deck -.-&gt; voice;
 	faq -.-&gt; align_enter;
@@ -56,8 +60,8 @@ graph TD;
 	router -.-&gt; plan;
 	router -.-&gt; understand;
 	understand --&gt; coach;
-	coach --&gt; plan;
-	voice --&gt; bundle;
+	voice -.-&gt; align_enter;
+	voice -.-&gt; bundle;
 	finish --&gt; __end__;
 	align_wait -.-&gt; align_wait;
 	classDef default fill:#f2f0ff,line-height:1.2
@@ -133,7 +137,7 @@ flowchart TD
   PB[&quot;playbook.json + saved order/kind overrides&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;reviewed stops, three USPs and evidence gaps&quot;]:::data
   PLAN[&quot;Evidence mapping, literal pictures and segment briefs&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: effective PLAYBOOK before approved registry, tagged media, brand, language + previous plan&lt;br/&gt;one proof segment per required stop; Coach&#x27;s order and USPs are settled&lt;br/&gt;intro previews the first supported fundamental in everyday words&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff intent&lt;br/&gt;typed stop_id / fundamental / word_budget; no final dialogue&quot;]:::agent
   PVAL[&quot;Enforce evidence and playbook coverage&lt;br/&gt;[FUNCTION · plan.run / _enforce_playbook]&lt;br/&gt;fact_ids ⊆ approved registry · visual_refs ⊆ allowed shots∪images&lt;br/&gt;map stop_id or fact overlap; drop unmapped/optional proof segments&lt;br/&gt;add missing required stops + issue; sort by role and stop order; inherit USPs/version&quot;]:::fn
-  BUDGET[&quot;Allocate supported narration budget&lt;br/&gt;[FUNCTION · narration.word_target / plan._enforce_budget]&lt;br/&gt;default target495words: 180s ×2.5words/s ×1.10; matching recordings can raise it&lt;br/&gt;reserve23overview +45closing; guided stops share remaining words&lt;br/&gt;fact-backed story stops allow up to three short batches; missing evidence stays a gap&lt;br/&gt;explicit preparation reuses reviewed Plan; no new planner/persona call&quot;]:::fn
+  BUDGET[&quot;Allocate supported narration budget&lt;br/&gt;[FUNCTION · narration.word_target / plan._enforce_budget]&lt;br/&gt;default target495words: 180s ×2.5words/s ×1.10; matching recordings can raise it&lt;br/&gt;reserve23overview +45closing; guided stops share remaining words&lt;br/&gt;fact-backed story stops allow up to three short batches; missing evidence stays a gap&lt;br/&gt;every Author run prepares current Plan automatically; no extra planner/persona call&quot;]:::fn
   PJ[&quot;plan.json&lt;br/&gt;[DATA · stop_id, fundamental, word_budget; total_words, playbook_version]&quot;]:::data
   SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
   DRAFT[&quot;Author → Deck&lt;br/&gt;[AGENT + FUNCTION · see diagram 04]&lt;br/&gt;grounded script, visual audit and editable slides&quot;]:::fn
@@ -173,8 +177,8 @@ flowchart TD
 <h2>03 · Align loop — one prompt dock, one agent, structured actions</h2>
 <pre class="mermaid">%% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6[&quot;SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;Script includes Story order and Gemini full/partial/missing visual proof per line&lt;br/&gt;empty question card auto-approved; same six-card Build gate&lt;br/&gt;Visuals: Marine / Sage / Graphite choice resets Visuals approval&lt;br/&gt;Script: default narration seconds + deficit; estimates labelled; publication requires measured 180s&quot;]:::data
-  PREP[&quot;USER selects Prepare three-minute narration&lt;br/&gt;[HUMAN · visible minimum panel, including prior errors]&lt;br/&gt;POST /revise plan; provider readiness or explicit override&lt;br/&gt;reuse reviewed plan and voice/CTAs; rebudget then Author/Deck&lt;br/&gt;existing facts retained; new Script/Visuals require review&quot;]:::ask
+  N6[&quot;SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;Script includes Story order and Gemini full/partial/missing visual proof per line&lt;br/&gt;empty question card auto-approved; same six-card Build gate&lt;br/&gt;Visuals: Marine / Sage / Graphite choice resets Visuals approval&lt;br/&gt;Script: compact 3-minute target and labelled timing; publication requires measured 180s&lt;br/&gt;incomplete drafts cannot be approved; mock placeholders labelled as preview&quot;]:::data
+  PREP[&quot;Retry only an unsuccessful real draft&lt;br/&gt;[HUMAN · compact Script card]&lt;br/&gt;normal Read prepares automatically; no routine Prepare step&lt;br/&gt;POST /revise author with existing preparation instruction&lt;br/&gt;reasoning readiness or explicit override; changed cards return for review&quot;]:::ask
   STORY[&quot;USER reviews Story order above script segments&lt;br/&gt;[ask · existing Script card]&lt;br/&gt;drag stops; review kind, fact/picture counts and gaps; Ask for this source&quot;]:::ask
   PBO[&quot;PATCH /align/playbook {stop_order, kinds}&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;save playbook-overrides.json; revalidate effective playbook&lt;br/&gt;mark dependent work stale; reset script + visuals approvals; revise Plan&lt;br/&gt;Planner preserves reviewed stops, kinds, coverage and USPs&quot;]:::fn
   MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
@@ -184,7 +188,7 @@ flowchart TD
   HIST[&quot;conversation.json&lt;br/&gt;[DATA · last 12 turns sent as history]&quot;]:::data
   AGENT[&quot;align agent&lt;br/&gt;[AGENT · Claude text tier · messages.parse]&lt;br/&gt;in: 6 cards summary (Visuals, Facts, Script, FAQ, Persona, CTAs), approvals, stage status, message, attachment list&lt;br/&gt;out: AlignOut · reply + actions[]&quot;]:::agent
   APPLY{&quot;action type&lt;br/&gt;[FUNCTION · orchestrator.apply_actions]&quot;}:::dec
-  A1[&quot;approve(card)&lt;br/&gt;[FUNCTION] approvals[card]=true → next-card prompt (template, no LLM)&quot;]:::fn
+  A1[&quot;approve(card)&lt;br/&gt;[FUNCTION] incomplete Script refused by API and chat action guard&lt;br/&gt;other approvals → next-card prompt (template, no LLM)&quot;]:::fn
   A2[&quot;edit_fact / remove_fact / resolve_unknown&lt;br/&gt;[FUNCTION] F/C lookup; validate truth and source ownership before save&lt;br/&gt;registries stay separate; downstream work and approvals stale&quot;]:::fn
   A3[&quot;set_ctas / set_voice&lt;br/&gt;[FUNCTION] plan.json patched · voice sample re-rendered&quot;]:::fn
   A4[&quot;request_upload&lt;br/&gt;[term] note only — user must add files&quot;]:::term
@@ -192,7 +196,7 @@ flowchart TD
   A6[&quot;build&lt;br/&gt;[FUNCTION] only if all 6 approved&quot;]:::fn
   A7[&quot;answer&lt;br/&gt;[term] nothing changes&quot;]:::term
   EDIT[&quot;USER reviews F/C facts, truth and source; edits script lines, one intake, check-ins, title/outcome&lt;br/&gt;[ask · edit modal]&quot;]:::ask
-  SAVEEDIT[&quot;validate schema, source ownership and grounding before save&lt;br/&gt;[FUNCTION · store.edit_fact / author.ungrounded / author.validate]&lt;br/&gt;question checkin issues preserve source text/audio for repair; affected approvals and downstream work stale&lt;br/&gt;script visual audit only when requested (Gemini vision)&quot;]:::fn
+  SAVEEDIT[&quot;validate schema, source ownership and grounding before save&lt;br/&gt;[FUNCTION · store.edit_fact / author.ungrounded / author.validate]&lt;br/&gt;question checkin issues preserve source text/audio for repair; affected approvals and downstream work stale&lt;br/&gt;manual edits retain words and preparation metadata; short edits stay pending&lt;br/&gt;script visual audit only when requested and narration is complete (Gemini vision)&quot;]:::fn
   FAQEDIT[&quot;USER reviews Asked and answered&lt;br/&gt;[ask · card or Preview]&lt;br/&gt;document + customer entries, asked_count and review state&lt;br/&gt;approve / edit supported answer + fact ids / reject; question stays fixed&quot;]:::ask
   FAQGATE{&quot;idle and valid entry; approve/edit use&lt;br/&gt;approved, snapshot-compatible citations?&lt;br/&gt;[FUNCTION · app.edit_aligned_faq / faq.review_entry]&lt;br/&gt;reject empty citations and uncited claims&quot;}:::dec
   FAQFAIL[&quot;400 invalid answer/citations or 409 stale/partial/running&lt;br/&gt;[term] no artifacts changed&quot;]:::term
@@ -229,7 +233,7 @@ flowchart TD
   A7 --&gt; REPLY
   ATT -.-&gt;|&quot;files but no revise action → revise(&#x27;understand&#x27;)&quot;| A5
   N6 --&gt; EDIT --&gt; SAVEEDIT --&gt; N6
-  N6 --&gt; PREP --&gt; R2
+  N6 -- &quot;drafting did not finish&quot; --&gt; PREP --&gt; R3
   N6 --&gt; STORY
   STORY -- &quot;save order / kinds&quot; --&gt; PBO --&gt; R2
   STORY -- &quot;gap text: request_upload&quot; --&gt; A4
@@ -253,16 +257,18 @@ flowchart TD
   N7[&quot;Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)&quot;]:::data
   GO[&quot;POST /api/demos/id/build&lt;br/&gt;[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness&lt;br/&gt;explicit operator override logged; mock bypass&quot;]:::fn
   AUTH[&quot;Final spoken delivery of the Planner outline&lt;br/&gt;[AGENT · configured text tier · author.py]&lt;br/&gt;in: plan goals/notes, approved registry, supplied visuals, voice, language/audience&lt;br/&gt;shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK&lt;br/&gt;same segment ids/roles/order; connected speech; checkin = closing statement, no question&lt;br/&gt;deeper, closing + 23–28 word Explore overview led by first supported fundamental&quot;]:::agent
-  VAL[&quot;Grounding and supported narration target&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;existing citation/visual/speech rules; whole-stop word budgets&lt;br/&gt;prepared drafts require global distinct eligible word target; one bounded repair&lt;br/&gt;complete lines/batches retain46/48/44word role ceilings; closing45&lt;br/&gt;legacy validator unchanged; missing evidence never permits padding&quot;]:::fn
+  VAL[&quot;Grounding and supported narration target&lt;br/&gt;[FUNCTION · author.validate]&lt;br/&gt;existing citation/visual/speech rules; whole-stop word budgets&lt;br/&gt;every Author run prepares global distinct eligible word target&lt;br/&gt;existing repair plus at most one focused completion attempt&lt;br/&gt;complete lines/batches retain46/48/44word role ceilings; closing45&lt;br/&gt;legacy validator unchanged; missing evidence never permits padding&quot;]:::fn
   ISS{&quot;issues &gt; 0?&quot;}:::dec
   FIX[&quot;one local rewrite&lt;br/&gt;[AGENT · configured text tier]&lt;br/&gt;in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects&lt;br/&gt;out: full script, revalidated under the same evidence rules&quot;]:::agent
-  VAL2[&quot;re-validate&lt;br/&gt;[FUNCTION] remaining issues stay reviewable; ungrounded lines stay unverified and excluded from voice &amp; bundle&quot;]:::fn
+  VAL2[&quot;Revalidate and finish supported narration automatically&lt;br/&gt;[AGENT + FUNCTION · author.run / narration.preparation_status]&lt;br/&gt;if still short and capacity permits: at most one focused completion&lt;br/&gt;same assigned facts and complete thoughts; no padding or slower voice&lt;br/&gt;remaining deficit or drafting failure stays explicit; no source-gap guess&quot;]:::fn
   IDS[&quot;assign stable line ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;out: seg-L1.. plus closing ids&quot;]:::fn
   VAUD[&quot;visual-proof audit&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: real uploaded pixels in batches ≤12 + every scripted line&lt;br/&gt;out: every image&#x27;s visible features/limits + every line full/partial/none/not_visual&quot;]:::agent
   VGATE[&quot;accept audit only when complete&lt;br/&gt;[FUNCTION · visuals.py]&lt;br/&gt;all line ids + all image refs required; full coverage may bind image&lt;br/&gt;partial/missing visible feature → no proof binding&lt;br/&gt;Gemini failure → conservative tag rules; Deck proxy never changes coverage&quot;]:::fn
   AUDIT[&quot;visual-audit.json&lt;br/&gt;[DATA]&lt;br/&gt;line reasons, image feature inventory, missing features, changes&quot;]:::data
   TIMING[&quot;Whole-line splitting and content timeline&lt;br/&gt;[FUNCTION · author.split_long_batches / timeline]&lt;br/&gt;prepared stops split at role ceiling; complete lines and unique IDs&lt;br/&gt;continuations retain source-stop identity and share original budget&lt;br/&gt;estimates stay labelled; actual audio determines publication duration&quot;]:::fn
-  SJ[&quot;script.json&lt;br/&gt;[DATA] visual refs + audit summary · version++&quot;]:::data
+  SJ[&quot;script.json&lt;br/&gt;[DATA] visual refs + audit summary · version++&lt;br/&gt;preparation status, counts, attempts and drafting errors&quot;]:::data
+  DREADY{&quot;Draft prepared?&lt;br/&gt;[FUNCTION · graph.after_script]&lt;br/&gt;current supported content target or matching sufficient recordings&quot;}:::dec
+  DRAFTWAIT[&quot;Keep Author pending; skip paid Deck generation&lt;br/&gt;[FUNCTION · graph / orchestrator]&lt;br/&gt;FAQ then Align; Script approval blocked, other cards reviewable&lt;br/&gt;no approved facts → source request; writer failure → Retry draft&lt;br/&gt;mock placeholders never described as customer-ready narration&quot;]:::fn
   DPIC[&quot;one slide per segment · up to two pictures&lt;br/&gt;[FUNCTION · deck.choose_media / choose_proxy]&lt;br/&gt;first two distinct verified image refs with full audit coverage; absent audit accepts Author binding&lt;br/&gt;save first from_line; no qualifying ref → trusted matching part (≥0.6) else hero&lt;br/&gt;proxy marked illustration, with reason; never written into visual audit&quot;]:::fn
   DCALL[&quot;titles + picture-owned callouts&lt;br/&gt;[AGENT · Gemini → Claude → Runware text tier · deck.DeckOut]&lt;br/&gt;in: lines, fact ids and each picture&#x27;s parts; approved registry&lt;br/&gt;out: ≤6-word title, ≤3 callouts per picture of ≤8 words, with image_id and citations&lt;br/&gt;proxy additionally gets a derived cited fact label&quot;]:::agent
   DVAL[&quot;the script-line rule on every callout&lt;br/&gt;[FUNCTION · author.ungrounded]&lt;br/&gt;uncited figure/claim, &gt; 8 words, unlisted part → dropped; a slide left empty gets its own cited facts (claim: value)&quot;]:::fn
@@ -286,16 +292,22 @@ flowchart TD
   APPROVAL{&quot;All six approvals still current?&lt;br/&gt;[FUNCTION · shared per-demo publication lock]&lt;br/&gt;serialize input reads and final writes with customer FAQ changes&quot;}:::dec
   REALIGN[&quot;Return to Align; preserve published bundle/version&lt;br/&gt;[HUMAN] review changed cards before another Build&quot;]:::ask
   MINIMUM{&quot;Publishable default narration in every language?&lt;br/&gt;[FUNCTION · narration.require_minimum]&lt;br/&gt;at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing&lt;br/&gt;exclude film, Q&amp;A, deeper-only and duplicates; estimates cannot pass&quot;}:::dec
-  SHORT[&quot;Return short recording to review&lt;br/&gt;[FUNCTION · graph.bundle / orchestrator._run_stage]&lt;br/&gt;Bundle pending; Script approval reset; no Build-done event&lt;br/&gt;keep previous publication, recordings and facts unchanged&lt;br/&gt;Align Prepare action adds distinct supported detail for review; never pads or slows voice&quot;]:::fn
+  SHORT{&quot;Complete recordings but under three minutes?&lt;br/&gt;[FUNCTION · graph.bundle]&lt;br/&gt;Bundle pending; previous publication/audio preserved&lt;br/&gt;missing/unreadable clips need recording recovery, not rewriting&quot;}:::dec
+  AUTODRAFT[&quot;Prepare revised supported narration automatically&lt;br/&gt;[FUNCTION · graph.bundle → author]&lt;br/&gt;same user-requested Build, one bounded authoring pass&lt;br/&gt;entry becomes revise; no second Voice or automatic publication&lt;br/&gt;rebudget from matching recording pace; changed Script/Visuals require review&quot;]:::fn
+  DAPP{&quot;All six approvals still current?&lt;br/&gt;[FUNCTION · graph.after_author / after_faq]&lt;br/&gt;automatic revised draft returns to review before Voice&quot;}:::dec
   READY[&quot;status ready · durable SSE phase_done build&lt;br/&gt;[DATA · events.json + stage progress/warnings]&lt;br/&gt;fresh subscriber receives current baseline; valid cursor resumes bounded history&quot;]:::term
 
   GO --&gt; AUTH --&gt; VAL --&gt; ISS
   ISS -- &quot;yes&quot; --&gt; FIX --&gt; VAL2 --&gt; IDS
   ISS -- &quot;no&quot; --&gt; IDS
   IDS --&gt; VAUD --&gt; VGATE --&gt; AUDIT --&gt; TIMING --&gt; SJ
-  SJ --&gt; DPIC --&gt; DCALL --&gt; DVAL --&gt; DLAY --&gt; DJ
+  SJ --&gt; DREADY
+  DREADY -- &quot;yes&quot; --&gt; DPIC --&gt; DCALL --&gt; DVAL --&gt; DLAY --&gt; DJ
+  DREADY -- &quot;no&quot; --&gt; DRAFTWAIT --&gt; REALIGN
   DOVR -.-&gt; DLAY
-  DJ --&gt; PROV
+  DJ --&gt; DAPP
+  DAPP -- &quot;yes&quot; --&gt; PROV
+  DAPP -- &quot;changed draft&quot; --&gt; REALIGN
   PROV -- &quot;sarvam / gemini / gcloud&quot; --&gt; TTS --&gt; MEASURE --&gt; LANGS
   PROV -- &quot;browser&quot; --&gt; BROWSER --&gt; BUN
   LANGS -- &quot;yes&quot; --&gt; TRANS --&gt; TTS2 --&gt; BUN
@@ -304,7 +316,9 @@ flowchart TD
   APPROVAL -- &quot;yes, lock held through publication&quot; --&gt; MINIMUM
   APPROVAL -- &quot;changed during Voice or before publication&quot; --&gt; REALIGN
   MINIMUM -- &quot;all measured and at least 180 seconds&quot; --&gt; READY
-  MINIMUM -- &quot;short or missing/unreadable audio&quot; --&gt; SHORT --&gt; REALIGN
+  MINIMUM -- &quot;short or missing/unreadable audio&quot; --&gt; SHORT
+  SHORT -- &quot;measured shortfall&quot; --&gt; AUTODRAFT --&gt; AUTH
+  SHORT -- &quot;missing/unreadable recordings&quot; --&gt; REALIGN
   READY -. &quot;optional, on demand&quot; .-&gt; REHEARSE --&gt; QBANK
   QBANK -- &quot;yes&quot; --&gt; QA
   QBANK -- &quot;no&quot; --&gt; QGEN --&gt; QA

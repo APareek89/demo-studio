@@ -1,6 +1,16 @@
 # Handoff.MD — Demo Studio
 
-## Current snapshot — three-minute narration correction · 24 September 2026
+## Current snapshot — automatic narration preparation · 24 September 2026
+
+**Latest decision:** preparing three minutes is the normal product flow, not a user repair task. This supersedes the manual Prepare action in the earlier snapshot. Preserve grounding, natural speech and the measured 180-second publication gate; no padding, duplicate claims or slower playback.
+
+**Implemented:** every Author entry reuses and budgets the reviewed plan deterministically. Initial writing plus the existing repair plus at most one focused completion must produce a sufficiently supported draft before Script approval. An unfinished draft remains pending and skips Deck/picture auditing; other cards remain reviewable. First-call provider failure cannot make an empty Script approvable. The large deficit/Prepare panel is removed; compact timing lives inside Script. Actual mock placeholders are explicitly a preview. Legacy short drafts prepare automatically on normal Build; a short measured recording prepares one revised draft and returns to review, without another Voice pass or publication. Missing/stale audio instead follows recording recovery. Previous bundle, snapshot, version and audio remain intact.
+
+**Verification/release:**35/35 scoped suites,1,169/1,169 reported checks; independent browser13/13. Deck365, acceptance24, smoke both phases+rehearsal; automatic16, preparation35, recovery18, release28, AlignUI21/timing13. Full release mock measures194.22seconds with the actual minimum. Twelve-category FMEA, syntax, whitespace and9Mermaid copies pass. Exact inventory: `docs/automatic-narration-gates-2026-09-24.json`; QA: `docs/automatic-narration-qa-2026-09-24.md`. GitHub/AWS deployment is pending this commit; no live provider-quality claim. Branch remains `codex/sales-trainer-flow`; no paid tests, protected local demo/output write or port8896 operation. Loop stays off.
+
+**Pending:** inherited C7 hosted builder access, C8 Cloud alternate-language voice identity, small-instance capacity, scanned-PDF OCR, damaged nonempty audio-cache recovery and selective Align rebuild routing remain unchanged. No new design questions.
+
+## Earlier snapshot — three-minute narration correction · 24 September 2026
 
 **Authorized:** fix the128.3-second failure by preparing at least180-seconds of distinct supported narration; code QA must preserve the full flow. Earlier GitHub/AWS release authorization continues. Stay on `codex/sales-trainer-flow`; no paid tests, protected demo/output mutation or port8896 operation.
 

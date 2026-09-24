@@ -140,6 +140,7 @@ def cards(demo_id: str) -> dict:
             "language": demo.get("settings", {}).get("language", "en-IN"), "scorecard": reh.get("scorecard"), "timeline": script.get("timeline"),
             "pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 3), "total_words": plan.get("total_words"),
             "narration_minimum": narration_minimum,
+            "preparation": narration.preparation_status(demo_id, script=script, plan=plan),
             "written_at": (store.path(demo_id, "script.json").stat().st_mtime if store.path(demo_id, "script.json").exists() else None), "version": demo.get("version", 0),
             "intake": {"q1": script.get("intake_q1", ""), "q2": script.get("intake_q2", "")},
             "runtime_overview": ({**script["runtime_overview"], "visual": (script["runtime_overview"].get("visual") or {}).get("ref")} if script.get("runtime_overview") else None),
@@ -237,6 +238,9 @@ questions), what stands out or is missing (visual gaps, thin registry), and ask 
 def opening_message(demo_id: str) -> str:
     demo = store.load(demo_id)
     c = cards(demo_id)
+    preparation_note = _preparation_note(c["script"].get("preparation") or {})
+    if preparation_note:
+        return preparation_note + " You can review the other cards while the script is unfinished."
     cur = current_card(demo) or "visuals"
     try:
         return claude.text(OPENING_SYSTEM.format(card=CARD_TITLES[cur]), _cards_text(c), max_tokens=600)
@@ -247,8 +251,21 @@ def opening_message(demo_id: str) -> str:
                 f"Start with the {CARD_TITLES[cur]} card — approve it, or tell me what's wrong.")
 
 
+def _preparation_note(preparation: dict) -> str:
+    if preparation.get("mock_preview"):
+        return "This is a MOCK preview with placeholder narration, not a customer-ready script. Use the app configured with real providers to prepare the demo."
+    if preparation.get("status") == "needs_sources":
+        return "The script needs approved product evidence. Review the Facts card or add source material before continuing."
+    if preparation.get("status") == "incomplete":
+        return "The narration draft is incomplete. Use Retry drafting to finish it before approving Script and building."
+    return ""
+
+
 def card_prompt(demo_id: str, card: str) -> str:
     c = cards(demo_id)
+    preparation_note = _preparation_note(c["script"].get("preparation") or {})
+    if preparation_note and (card == "script" or card not in CARD_TITLES):
+        return preparation_note
     if card == "facts":
         f = c["facts"]
         return f"Next, the Facts card: {len(f['facts'])} facts, each with a source. Check the ones that matter most — prices, warranty, headline specs. Tell me any that are wrong and I'll fix the registry; {len([u for u in f['unknowns'] if u['status']=='open'])} open questions are listed too — upload material for any you want covered."

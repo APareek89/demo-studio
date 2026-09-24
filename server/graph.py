@@ -165,11 +165,21 @@ def align_wait(state: DemoState) -> Command:
 def author(state: DemoState) -> dict:
     d = state["demo_id"]
     orch._set_status(d, "building" if state.get("entry") == "build" else "reading")
-    if state.get("entry") == "build":
-        runlog.event(d, "BUILD started", "All six cards approved. Voice (narration + uploaded FAQ answers + fillers) → bundle. Rehearsal is available on demand.")
-        if store.load(d)["stages"]["author"]["status"] == "done":
-            return {}
     instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "author" else ""
+    if state.get("entry") == "build":
+        preparation = narration.preparation_status(d)
+        if preparation["status"] in {"incomplete", "needs_sources"}:
+            store.update(d, lambda demo: demo["approvals"].__setitem__("script", False))
+            return {}  # A changed draft must return through review, never reach Voice.
+        if preparation["status"] == "needs_preparation":
+            # Old drafts acquire the normal preparation step on an explicit
+            # Build, never by visiting Align or polling the read-only API.
+            instr = narration.PREPARATION_INSTRUCTION
+            runlog.event(d, "Preparing the existing narration draft", "Complete the supported draft automatically, then return it for review before recording.")
+            store.update(d, lambda demo: demo["approvals"].update(script=False, visuals=False))
+        elif store.load(d)["stages"]["author"]["status"] == "done":
+            runlog.event(d, "BUILD started", "All six cards approved. Voice (narration + uploaded FAQ answers + fillers) → bundle. Rehearsal is available on demand.")
+            return {}
     orch._run_stage(d, "author", instr)
     return {}
 
@@ -192,7 +202,8 @@ def deck(state: DemoState) -> dict:
 # Linked: server/agents/voice.py:input_hash and render_script provide reuse and recording.
 def voice(state: DemoState) -> dict:
     orch._set_status(state["demo_id"], "building")
-    if (store.load(state["demo_id"])["stages"]["voice"]["status"] == "done"
+    if (narration.preparation_status(state["demo_id"])["status"] != "needs_recording"
+            and store.load(state["demo_id"])["stages"]["voice"]["status"] == "done"
             and (store.read_json(state["demo_id"], "script.json") or {}).get("voice_input_hash") == orch.voice.input_hash(state["demo_id"])):
         return {}  # A visual-only revision does not re-record approved speech.
     orch._run_stage(state["demo_id"], "voice", "")
@@ -208,14 +219,18 @@ def bundle(state: DemoState) -> Command:
     except orch.bundle.ApprovalRequired:
         return Command(goto="align_enter")
     except narration.NarrationTooShort as error:
-        # Duration is an editorial review condition, not a failed provider or
-        # permission to rewrite already-approved speech behind the reviewer.
+        # Finish supported content within this user-requested Build, then stop
+        # at review. Never record or publish the changed draft automatically.
         d = state["demo_id"]
         store.update(d, lambda demo: demo["approvals"].__setitem__("script", False))
-        next_step = (" Review the missing recordings before publishing." if "missing or unreadable audio" in str(error)
-                     else " Use Prepare three-minute narration in Align to prepare supported detail for review.")
-        orch._append_conversation(d, "agent", str(error) + next_step)
-        return Command(goto="align_enter")
+        result = getattr(error, "result", None)
+        if (result is not None and not result.get("measured")) or "missing or unreadable audio" in str(error):
+            orch._append_conversation(d, "agent", "Some narration recordings are missing or unreadable. Review the recordings before publishing; the existing demo is preserved.")
+            return Command(goto="align_enter")
+        orch._append_conversation(d, "agent", "The recording came in under three minutes. I’m preparing more supported detail now; review the updated draft before recording it again. Your published demo is preserved.")
+        return Command(goto="author", update={"entry": "revise", "revise_stage": "author",
+                                              "instruction": narration.PREPARATION_INSTRUCTION,
+                                              "rebuild": False, "pending": None})
     return Command(goto="finish")
 
 
@@ -238,6 +253,12 @@ def finish(state: DemoState) -> dict:
 # Linked: server/agents/author.py:run consumes the plan saved by server/agents/plan.py:run.
 def after_plan(state: DemoState) -> str:
     return "author"  # the script is part of Align now: plan → author → deck → faq → align
+
+
+def after_script(state: DemoState) -> str:
+    """Do not spend on slide generation for a draft that is not ready to review."""
+    preparation = narration.preparation_status(state["demo_id"])
+    return "faq" if preparation["status"] in {"incomplete", "needs_sources"} else "deck"
 
 
 # Choose the next stage after Deck; the helper name predates the Deck node.
@@ -296,14 +317,14 @@ def build_graph() -> StateGraph:
     g.add_node("deck", deck)
     g.add_node("faq", faq)
     g.add_node("voice", voice)
-    g.add_node("bundle", bundle, destinations=("finish", "align_enter"))
+    g.add_node("bundle", bundle, destinations=("finish", "align_enter", "author"))
     g.add_node("finish", finish)
     g.add_edge(START, "router")
     g.add_edge("understand", "coach")
     g.add_edge("coach", "plan")
     g.add_conditional_edges("plan", after_plan, {"author": "author"})
     g.add_edge("align_enter", "align_wait")
-    g.add_edge("author", "deck")
+    g.add_conditional_edges("author", after_script, {"deck": "deck", "faq": "faq"})
     g.add_conditional_edges("deck", after_author, {"voice": "voice", "faq": "faq"})
     g.add_conditional_edges("faq", after_faq, {"voice": "voice", "align_enter": "align_enter"})
     g.add_conditional_edges("voice", after_voice, {"bundle": "bundle", "align_enter": "align_enter"})
@@ -397,6 +418,9 @@ def start_read(demo_id: str, instruction: str = "") -> None:
 # Input: demo ID. Output: a resumed/new build run, or a clear refusal.
 # Linked: server/app.py:build and server/orchestrator.py:apply_actions call this entry point.
 def start_build(demo_id: str) -> None:
+    preparation = narration.preparation_status(demo_id)
+    if preparation["status"] in {"incomplete", "needs_sources"}:
+        raise RuntimeError(preparation["reason"])
     if not all(store.load(demo_id)["approvals"].values()):
         raise RuntimeError("Approve all six cards before building")
     if is_running(demo_id):

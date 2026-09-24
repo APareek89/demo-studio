@@ -1,7 +1,21 @@
 # Loop.MD — Demo Studio
 
+## Automatic narration preparation · 24 September 2026
 
-## Three-minute narration preparation / recovery · 24 September 2026
+Loop remains **off**. Three-minute preparation is now part of ordinary Read/Author, with bounded completion, current Script approval guards and automatic measured-shortfall drafting inside an explicitly requested Build. Revised speech returns for review; missing recordings do not cause a content rewrite. Manual edits retain exact words and explicit preparation state. The large normal-flow deficit/Prepare panel is removed; mock placeholders are clearly identified.
+
+**Final gates:** **35/35 suites, 1,169/1,169 reported cases/checks/phases; zero outbound attempts**. Independent muted browser **13/13** at desktop/390px. Exact counts, source/test/log hashes and fixture limitations: `docs/automatic-narration-gates-2026-09-24.json`; twelve-category FMEA: `docs/automatic-narration-qa-2026-09-24.md`.
+
+- Required deck **365/365**, acceptance **24/24**, smoke **both phases plus on-demand rehearsal**.
+- Actual normal Read/manual-edit contract **16/16**; preparation **35/35**; recovery **18/18**; measured minimum **25/25**. Successful fixture Read prepares the draft without a final-script injection or guard bypass. Failed first writing call, repeated short outputs, source gaps, manual shortening, all approval paths and preserved prior artifacts are covered.
+- Full API/Read/review/Voice/Bundle/runtime/cache/rehearsal/browser/session journey **28/28**, **194.22 seconds** measured fixture audio with the actual180-second publication guard. Separate preparation→playback proof:495distinct fixture words/198seconds.
+- Changed contract counts: Align review **51/51**, Build hardening **28/28**, Align narration UI **21/21**, Align timing **13/13**, plus the core/preparation/recovery/release/automatic contracts above. Other scoped contracts and each count are in the machine inventory.
+- Syntax, diff whitespace, Mermaid structural checks and all9source/HTML copies pass. Isolated DATA/GRAPH, MOCK_LLM=1, cloud off, blocked sockets, zero outbound attempts. No paid/acoustic/model-quality acceptance. Tiny generic plumbing fixtures explicitly stub readiness; actual automatic/release/publication contracts do not.
+
+No new unresolved FMEA blocker. Inherited hosted access/Cloud voice identity/capacity/OCR/nonempty damaged-audio-cache/selective-rebuild items remain pending. Protected local demo/output/port8896 untouched. GitHub/AWS deployment is recorded separately after cutover.
+
+
+## Earlier narration preparation / recovery · 24 September 2026
 
 Loop remains **off**. The user-reported128.3-second failure now has preparation and explicit Align recovery; the measured180-second publication gate remains unchanged. Baseline eight gates passed; final scoped **33/33 scripts** report **1101/1101** checks/cases/phases with zero outbound attempts. An independent actual-browser pass adds **10/10** checks. Inventory, each count/log and source hashes: `docs/narration-recovery-gates-2026-09-24.json`; twelve-category FMEA: `docs/narration-recovery-qa-2026-09-24.md`.
 

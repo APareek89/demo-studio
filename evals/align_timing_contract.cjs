@@ -13,9 +13,11 @@ const panelCode = source.slice(source.indexOf("function narrationMinimumPanel"),
 const panel = vm.runInNewContext(panelCode + "; narrationMinimumPanel", {h});
 const text = node => typeof node === 'object' ? node.children.map(text).join('') : String(node);
 assert.equal(panel(undefined), null);
-assert.ok(text(panel({seconds:125,minimum_seconds:180,basis:'estimated',measured:false})).includes('55 more seconds'));
-assert.ok(text(panel({seconds:190,minimum_seconds:180,basis:'mixed',measured:false})).includes('mixed measured/estimated'));
-assert.ok(text(panel({seconds:190,minimum_seconds:180,basis:'estimated',measured:false})).includes('publication requires at least three measured minutes'));
-assert.ok(text(panel({seconds:180,minimum_seconds:180,basis:'measured',measured:true})).includes('Recorded narration meets the minimum.'));
-assert.ok(text(panel({seconds:180,measured:true})).includes('Opening film and customer questions do not count'));
-console.log("11/11 Align timing contracts passed");
+assert.ok(text(panel({seconds:125,minimum_seconds:180,basis:'estimated',measured:false})).includes('3-minute narration target · 2:05 estimated'));
+assert.ok(text(panel({seconds:190,minimum_seconds:180,basis:'mixed',measured:false})).includes('3:10 partly recorded'));
+assert.ok(text(panel({seconds:190,minimum_seconds:180,basis:'estimated',measured:false})).includes('Recorded during Build'));
+assert.equal(text(panel({seconds:180,minimum_seconds:180,basis:'measured',measured:true})), '3-minute narration target · 3:00 recorded');
+assert.equal(text(panel({seconds:2.11,minimum_seconds:180,basis:'estimated',measured:false}, {mock_preview:true})), '3-minute narration target · MOCK placeholder narration');
+assert.ok(text(panel({seconds:128.3,minimum_seconds:180,basis:'measured',measured:true,language:'hi-IN'})).includes('2:08 recorded (hi-IN)'));
+assert.ok(text(panel({seconds:180,measured:true}, {status:'needs_recording',reason:'A selected-language recording needs updating during Build.'})).includes('A selected-language recording needs updating during Build.'));
+console.log("13/13 Align timing contracts passed");

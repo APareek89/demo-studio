@@ -373,8 +373,35 @@ def _enforce_budget(p: dict, demo: dict) -> None:
     p["total_words"] = total
     p["guided_minimum_seconds"] = MIN_SECONDS
     p["guided_opening_words"] = OVERVIEW_WORDS
+    p["issues"] = [issue for issue in p.get("issues", [])
+                   if not (issue.startswith("Requested ") and "cannot fit the current stops" in issue)]
     if feasible != target:
         p.setdefault("issues", []).append(f"Requested {total} words cannot fit the current stops within supported delivery budgets; allocated {feasible} guided segment words plus {OVERVIEW_WORDS} overview and 45 closing words. More distinct approved detail is needed; never invent or duplicate speech.")
+
+
+def prepare_existing(demo_id: str, *, save: bool = True) -> dict:
+    """Rebudget the existing story without a model call or changing its reviewed choices."""
+    from . import narration
+    current = store.read_json(demo_id, "plan.json")
+    if not current:
+        raise RuntimeError("Plan first, then prepare narration")
+    p = copy.deepcopy(current)
+    demo = store.load(demo_id)
+    und = store.read_json(demo_id, "understanding.json") or {}
+    allowed = {fact["id"] for fact in und.get("facts", []) if fact.get("approved", True)}
+    visible = {row["id"] for row in [*und.get("shots", []), *und.get("images", [])]
+               if store.visual_allowed(demo, row["source_id"])}
+    for row in [*p.get("segments", []), *p.get("usps", []), *p.get("concerns", [])]:
+        row["fact_ids"] = [fid for fid in row.get("fact_ids", []) if fid in allowed]
+    for row in p.get("segments", []):
+        row["visual_refs"] = [ref for ref in row.get("visual_refs", []) if ref in visible]
+    target = narration.word_target(demo, store.read_json(demo_id, "script.json"), demo_id)
+    p["narration_preparation"] = {"version": narration.PREPARATION_VERSION, "target_words": target,
+                                  "identity": narration.preparation_identity(demo, p.get("voice"))}
+    _enforce_budget(p, demo)
+    if save:
+        store.write_json(demo_id, "plan.json", p)
+    return p
 
 
 # Read understanding.json and produce plan.json: the buying story, segment evidence, image choices and actions.

@@ -77,24 +77,18 @@ export function storyOrderPanel(playbook, draft, onSave, onRequestUpload) {
   return panel;
 }
 
-function narrationMinimumPanel(minimum, { onPrepare, busy = false, message = "" } = {}) {
+function narrationMinimumPanel(minimum, preparation = {}) {
   if (!minimum || !Number.isFinite(minimum.seconds)) return null;
   const required = Number.isFinite(minimum.minimum_seconds) ? minimum.minimum_seconds : 180;
-  const seconds = Math.max(0, minimum.seconds), deficit = Math.max(0, Math.ceil(required - seconds));
+  const seconds = Math.max(0, minimum.seconds);
   const time = value => `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
-  const basis = minimum.measured ? "measured" : minimum.basis === "mixed" ? "mixed measured/estimated" : "estimated";
-  const ready = !deficit && minimum.measured;
-  const preparation = minimum.preparation;
-  const preparationNeeded = !ready && preparation?.sufficient === false;
-  return h("div", { class: "narration-minimum " + (ready ? "ready" : "pending"), "aria-label": "Spoken narration minimum" },
-    h("b", {}, `Spoken narration${minimum.language ? ` (${minimum.language})` : ""}: ${time(seconds)} ${basis} · minimum ${time(required)}`),
-    h("p", {}, deficit ? `${deficit} more seconds of supported narration are needed. ` : "",
-      ready ? "Recorded narration meets the minimum." : "Build records the narration; publication requires at least three measured minutes."),
-    h("p", { class: "small muted" }, "Opening film and customer questions do not count toward this minimum."),
-    ...(preparationNeeded ? [h("p", { class: "small" }, `${Math.max(0, Math.ceil((preparation.target_words || 0) - (preparation.words || 0)))} more words of distinct supported detail are needed for the planned narration. A timing estimate does not establish the recorded duration.`)] : []),
-    ...((deficit || preparationNeeded) && onPrepare ? [h("button", { class: "btn sm primary", disabled: busy, onclick: onPrepare }, busy ? "Preparing narration…" : "Prepare three-minute narration"),
-      h("p", { class: "small muted" }, "Creates a draft for your review. Approvals and publication remain yours.")] : []),
-    ...(message ? [h("p", { class: "small", role: "status" }, message)] : []));
+  const basis = minimum.measured ? "recorded" : minimum.basis === "mixed" ? "partly recorded" : "estimated";
+  return h("p", { class: "narration-timing small muted", "aria-label": "Narration timing" },
+    h("b", {}, `${Math.round(required / 60)}-minute narration target`), " · ",
+    preparation.mock_preview ? "MOCK placeholder narration" : `${time(seconds)} ${basis}${minimum.language ? ` (${minimum.language})` : ""}`,
+    !preparation.mock_preview && preparation.status === "needs_recording"
+      ? ` · ${preparation.reason || "Recordings need updating during Build."}`
+      : !preparation.mock_preview && !minimum.measured ? " · Recorded during Build" : "");
 }
 
 export function renderAlign(ctx) {
@@ -121,7 +115,8 @@ export function renderAlign(ctx) {
   const fileIn = h("input", { type: "file", multiple: true, accept: "video/*,image/*,.pdf,.docx,.txt,.md,.csv" });
   const attachRow = h("div", { class: "attach" });
   const sendBtn = h("button", { class: "btn primary", onclick: send }, icon("send", { size: 16 }), "Send");
-  const buildBar = h("div", { class: "build-bar hidden" }, h("span", { class: "build-ready" }, icon("check-circle", { size: 19 }), "All six cards approved."), h("button", { class: "btn primary", onclick: build }, "Build the demo", icon("arrow-right", { size: 16 })));
+  const buildButton = h("button", { class: "btn primary", onclick: build }, "Build the demo", icon("arrow-right", { size: 16 }));
+  const buildBar = h("div", { class: "build-bar hidden" }, h("span", { class: "build-ready" }, icon("check-circle", { size: 19 }), "All six cards approved."), buildButton);
   let pending = [];
 
   area.replaceChildren(overlay, h("div", { class: "align" }, cardsCol,
@@ -135,28 +130,43 @@ export function renderAlign(ctx) {
   function renderAttach() { attachRow.replaceChildren(...pending.map((f, i) => h("span", {}, icon("file", { size: 13 }), f.name, " ", h("a", { href: "#", "aria-label": `Remove ${f.name}`, onclick: (e) => { e.preventDefault(); pending.splice(i, 1); renderAttach(); } }, icon("close", { size: 13 }))))); }
 
   // ---------- overlay ----------
-  function narrationRecoveryPanel() {
-    return narrationMinimumPanel(cards?.script?.narration_minimum, {
-      onPrepare: prepareNarration,
-      busy: narrationBusy || state.running || ["reading", "building"].includes(demo.status),
-      message: narrationMessage,
-    });
+  function preparationBlocked() {
+    const preparation = cards?.script?.preparation;
+    return preparation?.mock_preview || ["incomplete", "needs_sources"].includes(preparation?.status);
   }
-  async function prepareNarration() {
-    if (narrationBusy || state.running || ["reading", "building"].includes(demo.status)) return;
-    narrationBusy = true; narrationMessage = "Preparing a longer draft from the approved facts…";
+  function preparationMessage() {
+    const preparation = cards?.script?.preparation || {};
+    if (preparation.mock_preview) return "Placeholder narration is not ready for customers. Use the app configured with real providers to prepare the demo.";
+    return preparation.status === "needs_sources" ? "Review and approve product evidence in Facts, or add source material to write the narration." : "The narration draft needs another attempt before Script approval and Build.";
+  }
+  function narrationRecoveryPanel() {
+    if (!preparationBlocked()) return null;
+    const preparation = cards.script.preparation, busy = narrationBusy || state.running || ["reading", "building"].includes(demo.status);
+    return h("div", { class: "align-note narration-status", role: "status" },
+      h("div", {}, h("b", {}, preparation.mock_preview ? "MOCK preview" : preparation.status === "needs_sources" ? "Product evidence needed" : "Draft incomplete"),
+        h("p", { style: "margin:4px 0 0" }, preparationMessage()),
+        narrationMessage && !preparation.mock_preview && preparation.status === "incomplete" ? h("p", { style: "margin:4px 0 0" }, narrationMessage) : null),
+      preparation.mock_preview ? null : preparation.status === "needs_sources"
+        ? h("button", { class: "btn sm", disabled: busy, onclick: () => { hideOverlay(); fileIn.click(); } }, "Add source material")
+        : h("button", { class: "btn sm", disabled: busy, onclick: retryDraft }, narrationBusy ? "Retrying…" : "Retry drafting"));
+  }
+  async function retryDraft() {
+    if (disposed || narrationBusy || state.running || ["reading", "building"].includes(demo.status) || cards?.script?.preparation?.status !== "incomplete" || cards.script.preparation.mock_preview) return;
+    narrationBusy = true; narrationMessage = "";
     renderCards(); if (!overlay.classList.contains("hidden")) syncOverlay();
     let accepted = false;
     try {
-      await api.post(`/api/demos/${demoId}/revise${readinessQuery(demoId)}`, { stage: "plan", instruction: MINIMUM_NARRATION_INSTRUCTION, rebuild: false });
+      await api.post(`/api/demos/${demoId}/revise${readinessQuery(demoId)}`, { stage: "author", instruction: MINIMUM_NARRATION_INSTRUCTION, rebuild: false });
+      if (disposed) return;
       accepted = true;
-      narrationMessage = "The revised narration will return here for your review before recording and publication.";
       logEl.replaceChildren(); showOverlay("reading");
       reload().catch(() => {});
     } catch (error) {
-      narrationMessage = error.message; toast(error.message, true);
+      if (!disposed) { narrationMessage = error.message; toast(error.message, true); }
     } finally {
-      narrationBusy = false; renderCards();
+      narrationBusy = false;
+      if (disposed) return;
+      renderCards();
       if (!accepted && demo.status === "error" && !overlay.classList.contains("hidden")) syncOverlay();
     }
   }
@@ -166,11 +176,12 @@ export function renderAlign(ctx) {
     overlay.replaceChildren(h("div", { class: "box" }, error ? null : h("div", { class: "ring" }), h("h2", {}, error ? "Something went wrong" : title), h("p", { class: "sub" }, error ? "" : sub), logEl,
       error ? h("div", { class: "err" }, error) : null,
       error ? narrationRecoveryPanel() : null,
-      error ? h("div", { class: "actions" }, h("button", { class: "btn", onclick: () => { overlay.classList.add("hidden"); } }, "Back to the cards"), h("button", { class: "btn primary", onclick: retry }, "Retry")) : null));
+      error ? h("div", { class: "actions" }, h("button", { class: "btn", onclick: () => { overlay.classList.add("hidden"); } }, "Back to the cards"), preparationBlocked() ? null : h("button", { class: "btn primary", onclick: retry }, "Retry")) : null));
     ctx.setRailStatus(kind);
   }
   function hideOverlay() { overlay.classList.add("hidden"); }
   async function retry() {
+    if (preparationBlocked()) { toast(preparationMessage(), true); return; }
     try { if (demo.status === "error" && !cards) await api.post(`/api/demos/${demoId}/read`); else if (Object.values(demo.approvals).every(Boolean)) await api.post(`/api/demos/${demoId}/build${readinessQuery(demoId)}`); else await api.post(`/api/demos/${demoId}/read`); logEl.replaceChildren(); showOverlay(cards ? "building" : "reading"); }
     catch (e) { toast(e.message, true); }
   }
@@ -188,22 +199,24 @@ export function renderAlign(ctx) {
 
   // ---------- cards ----------
   function renderCards() {
-    const approvals = demo.approvals || {};
+    const blocked = preparationBlocked();
+    const approvals = { ...demo.approvals, ...(blocked ? { script: false } : {}) };
     const current = CARD_DEFS.find((c) => !approvals[c.key])?.key;
     if (openCard === null) openCard = current || "visuals";
     const allDone = cards && CARD_DEFS.every((c) => approvals[c.key]);
-    const noteEl = h("div", { class: "align-note" }, h("span", {}, "Review each card before building. ", h("b", {}, "Only approved material goes into your demo.")), cards && !allDone ? h("button", { class: "btn sm", onclick: approveAll }, "Approve all") : null);
+    const noteEl = h("div", { class: "align-note" }, h("span", {}, "Review each card before building. ", h("b", {}, "Only approved material goes into your demo.")), cards && !allDone ? h("button", { class: "btn sm", disabled: blocked, onclick: approveAll }, "Approve all") : null);
     cardsCol.replaceChildren(h("header", { class: "studio-page-head align-page-head" }, h("div", { class: "eyebrow" }, "Demo workspace / Align"), h("div", { class: "align-title-row" }, h("h1", {}, "Make it ready for customers"), h("span", { class: "pill" + (allDone ? " ok" : "") }, `${CARD_DEFS.filter((c) => approvals[c.key]).length} of 6 approved`)), h("p", { class: "lede" }, "Review the knowledge, story and experience your guide will deliver.")), narrationRecoveryPanel(), noteEl, ...CARD_DEFS.map((c) => {
       const el = h("div", { class: `acard${approvals[c.key] ? " approved" : ""}${current === c.key ? " current" : ""}${openCard === c.key ? " open" : ""}`, "data-card": c.key },
         h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); requestAnimationFrame(() => cardsCol.querySelector(`[data-card="${c.key}"]`)?.scrollIntoView({ block: "start" })); } }, h("span", { class: "n", title: `Step ${c.n}` }, approvals[c.key] ? icon("check", { size: 15 }) : c.n), h("h3", {}, icon(c.icon, { size: 18 }), c.title), h("span", { class: "st" }, approvals[c.key] ? "Approved" : current === c.key ? "Review now" : "Pending"),
-          cards ? h("span", { class: "hact" }, h("button", { class: "btn sm ghost", onclick: () => openPreview(c.key) }, "Preview"), approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve")) : null),
+          cards ? h("span", { class: "hact" }, h("button", { class: "btn sm ghost", onclick: () => openPreview(c.key) }, "Preview"), approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", disabled: blocked && c.key === "script", onclick: () => setApproval(c.key, true) }, "Approve")) : null),
         h("div", { class: "body" }, cards ? body(c.key) : h("p", { class: "muted small", style: "margin-top:10px" }, "Waiting for the sources to be read."),
           cards ? h("div", { class: "actions" },
-            approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve"),
+            approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", disabled: blocked && c.key === "script", onclick: () => setApproval(c.key, true) }, "Approve"),
             h("button", { class: "btn sm ghost", onclick: () => { dockTa.value = ({ visuals: "About the visuals: ", facts: "About the facts: ", script: "About the slides: ", faq: "About Asked and answered: ", persona: "About the persona and voice: ", ctas: "About the calls to action: " })[c.key] || ""; dockTa.focus(); } }, "Give feedback")) : null));
       return el;
     }));
-    buildBar.classList.toggle("hidden", !(cards && CARD_DEFS.every((c) => approvals[c.key]) && demo.status !== "ready"));
+    buildBar.classList.toggle("hidden", !(allDone && demo.status !== "ready"));
+    buildButton.disabled = blocked;
   }
 
   function body(key) {
@@ -252,11 +265,11 @@ export function renderAlign(ctx) {
       const version = JSON.stringify(pt.playbook || {});
       if (!storyDraft || version !== storyVersion) { storyVersion = version; storyDraft = { stops: (pt.playbook?.stops || []).map((stop) => ({ ...stop })), changed: false }; }
       const mmss = (t) => t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
-      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact);
+      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = pt.preparation?.mock_preview ? "" : scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact);
       return h("div", {},
         h("div", { style: "display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap" }, h("button", { class: "btn sm", onclick: openPitchEditor }, "Edit pitch brief"), h("button", { class: "btn sm", onclick: openScriptEditor }, "Edit the words"), dk.slides.length ? h("button", { class: "btn sm primary", onclick: () => openSlideEditor(dk.slides.length > 1 ? 1 : 0) }, "Review slides") : null),
-        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, `${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 3} min`)),
-        narrationMinimumPanel(pt.narration_minimum),
+        h("div", { class: "kv" }, h("span", { class: "k" }, "Written"), h("span", { class: "small muted" }, pt.written_at ? new Date(pt.written_at * 1000).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + ` · demo v${pt.version}` + (dk.version ? ` · deck v${dk.version}` : "") : "not written yet"), h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Length"), h("span", {}, pt.preparation?.mock_preview ? "MOCK placeholder narration" : `${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 3} min`)),
+        narrationMinimumPanel(pt.narration_minimum, pt.preparation),
         pt.runtime_overview ? h("div", { class: "gap" }, h("b", {}, "Short customer overview"), h("p", {}, pt.runtime_overview.text), h("div", { class: "small muted" }, `Evidence: ${(pt.runtime_overview.fact_ids || []).join(", ") || "No factual claims"}`), h("button", { class: "btn sm ghost", onclick: openScriptEditor }, "Edit overview")) : null,
         storyOrderPanel(pt.playbook, storyDraft, async (payload) => {
           await api.patch(`/api/demos/${demoId}/align/playbook`, payload); storyDraft = null;
@@ -308,6 +321,7 @@ export function renderAlign(ctx) {
   }
 
   async function approveAll() {
+    if (preparationBlocked()) { toast(preparationMessage(), true); return; }
     try { for (const c of CARD_DEFS) if (!demo.approvals[c.key]) await api.post(`/api/demos/${demoId}/approve/${c.key}`); await reload(); toast("All six cards approved — build when ready"); }
     catch (e) { toast(e.message, true); }
   }
@@ -333,11 +347,11 @@ export function renderAlign(ctx) {
     }
     if (key === "script") {
       const pt = cards.script || {}; const tl = pt.timeline || {}; const dk = cards.deck || { slides: [] };
-      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = { start: sg.start, timing: scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact), checkin: sg.checkin };
+      const secs = {}; for (const sg of pt.segments || []) secs[sg.id] = { start: sg.start, timing: pt.preparation?.mock_preview ? "" : scriptTiming(sg.planned_seconds, sg.spoken ?? sg.duration, sg.narration_measured, sg.exact), checkin: sg.checkin };
       return h("div", {},
         h("div", { class: "kv" }, h("span", { class: "k" }, "Decision"), h("span", {}, pt.decision_frame || "—"), h("span", { class: "k" }, "Takeaway"), h("span", {}, h("b", {}, pt.takeaway || "—")), h("span", { class: "k" }, "Primary outcome"), h("span", {}, pt.primary_outcome || "—"), h("span", { class: "k" }, "Supporting"), h("span", {}, (pt.supporting_outcomes || []).join("; ") || "—"), h("span", { class: "k" }, "Not for"), h("span", {}, pt.do_not_recommend_if || "—"), h("span", { class: "k" }, "Advance"), h("span", {}, pt.advance || "—"), h("span", { class: "k" }, "Intake"), h("span", {}, pt.intake?.q1 || "—")),
-        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, `${dk.slides.length} slides · ${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 3} min`),
-        narrationMinimumPanel(pt.narration_minimum),
+        h("h3", { style: "margin:16px 0 6px;font-size:14px" }, pt.preparation?.mock_preview ? `${dk.slides.length} slides · MOCK placeholder narration` : `${dk.slides.length} slides · ${scriptTiming(tl.planned_total_seconds, tl.total_seconds, tl.measured, tl.exact)} · target ${pt.pitch_minutes ?? demo.settings?.pitch_minutes ?? 3} min`),
+        narrationMinimumPanel(pt.narration_minimum, pt.preparation),
         ...dk.slides.map((s, i) => { const view = renderSlide(s, { fit: true, theme: demo.settings?.visual_theme || cards.visuals?.visual_theme, position: { index: i + 1, total: dk.slides.length } }); view.el.classList.add("on"); const tm = secs[s.segment_id] || {}; return h("div", { class: "slide-review" },
           h("div", { class: "slide-review-head" }, h("span", { class: "id mono small", style: "color:var(--accent)" }, tm.start != null ? mmss(tm.start) : ""), h("b", {}, s.title || s.kind), h("span", { class: "muted small" }, s.kind.replaceAll("_", " "), tm.timing ? ` · ${tm.timing}` : "", s.image_id ? ` · ${s.image_id}: ${s.image_reason || ""}` : ""), h("button", { class: "btn sm ghost", onclick: () => openSlideEditor(i) }, "Edit")),
           h("div", { class: "pl slide-review-stage", "data-visual-theme": demo.settings?.visual_theme || cards.visuals?.visual_theme || "marine" }, h("div", { class: "pl-stage" }, view.el)),
@@ -580,6 +594,7 @@ export function renderAlign(ctx) {
     editor("Edit pitch brief", { body, save: () => { const changed = {}; for (const { key, input } of fields) if (input.value.trim() !== String(pt[key] || "").trim()) changed[key] = input.value.trim(); if (!Object.keys(changed).length) return Promise.resolve(); return api.patch(`/api/demos/${demoId}/align/plan`, { fields: changed }); } }, "Save pitch brief");
   }
   async function setApproval(card, on) {
+    if (on && card === "script" && preparationBlocked()) { toast(preparationMessage(), true); return; }
     try { await api.post(`/api/demos/${demoId}/${on ? "approve" : "unapprove"}/${card}`); await reload(); if (on) { openCard = CARD_DEFS.find((c) => !demo.approvals[c.key])?.key || ""; renderCards(); } }
     catch (e) { toast(e.message, true); }
   }
@@ -625,7 +640,7 @@ export function renderAlign(ctx) {
     sendBtn.disabled = false;
   }
 
-  async function build() { try { await api.post(`/api/demos/${demoId}/build${readinessQuery(demoId)}`); logEl.replaceChildren(); showOverlay("building"); } catch (e) { toast(e.message, true); } }
+  async function build() { if (preparationBlocked()) { toast(preparationMessage(), true); return; } try { await api.post(`/api/demos/${demoId}/build${readinessQuery(demoId)}`); logEl.replaceChildren(); showOverlay("building"); } catch (e) { toast(e.message, true); } }
 
   const onVis = () => { if (document.visibilityState === "visible") reload().catch(() => {}); };
   document.addEventListener("visibilitychange", onVis);

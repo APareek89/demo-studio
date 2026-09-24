@@ -89,6 +89,13 @@ def run():
     template_id = store.new_demo("Release provider fixture template")["id"]
     rich = rich_fixture(template_id)
     texts = [fact["value"] for fact in rich["understanding"]["facts"]]
+    # Extra independent source passages make this a prepared customer draft,
+    # rather than relying on the old 1.9-words/second estimate to pass publication.
+    texts += [
+        "The steering column adjusts for height and reach. Its locking lever sits below the wheel, so the driver can set the wheel position after moving the seat and then secure the column before setting off.",
+        "The charging area includes a socket beside the front storage tray. The socket has a protective cover, which opens to expose the connection and closes again when the socket is not being used.",
+    ]
+    proof_indexes = [*range(1, 9), 12, 13]
     original_fake = mock.fake
     fixture_calls = []
     source_id = ""
@@ -107,7 +114,7 @@ def run():
             out = mock.fake_dict(schema)
             template = out["segments"][2]
             out["segments"] = []
-            for index, role in [*[(x, "proof") for x in range(1, 9)], (9, "features"), (10, "establish")]:
+            for index, role in [(0, "intro"), (11, "outcome"), *[(x, "proof") for x in proof_indexes], (9, "features"), (10, "establish")]:
                 out["segments"].append({**copy.deepcopy(template), "id": f"section-{index}", "role": role,
                     "title": f"Handbook area {index}", "topic": f"area-{index}", "stop_id": f"area-{index}" if role == "proof" else None,
                     "fact_ids": [f"F{index + 1:03d}"], "visual_refs": ["im01"], "usp_ids": []})
@@ -132,7 +139,7 @@ def run():
         fixture_calls.append("coach")
         stops = [{"id": f"area-{i}", "label": f"Handbook area {i}", "kind": "fundamental" if i <= 3 else "differentiator",
                   "why_here": "Follow the documented controls.", "fact_ids": [f"F{i + 1:03d}"], "picture_ids": [],
-                  "must_cover": True, "gaps": []} for i in range(1, 9)]
+                  "must_cover": True, "gaps": []} for i in proof_indexes]
         return {"category": "car", "category_source": "library", "stops": stops,
                 "usps": [{"id": f"usp-{i}", "name": name, "fact_ids": stops[i - 1]["fact_ids"], "stop_id": stops[i - 1]["id"]}
                          for i, name in enumerate(["Explore the seating controls", "Understand the folding backrest", "Locate the storage tray"], 1)],
@@ -172,6 +179,7 @@ def run():
         post("read")
         aligned = wait_status("align")
         check("Read traverses extraction, Coach, Plan, Author and Deck into Align", all(key in fixture_calls for key in ("facts", "coach", "plan", "author")) and all(aligned["demo"]["stages"][key]["status"] == "done" for key in ("understand", "coach", "plan", "author", "deck", "faq")))
+        check("ordinary Read prepares enough distinct cited narration without a manual preparation action", aligned["cards"]["script"]["preparation"]["status"] == "ready" and aligned["cards"]["script"]["preparation"]["words"] >= aligned["cards"]["script"]["preparation"]["target_words"] and not aligned["cards"]["script"]["preparation"]["mock_preview"])
         check("source citations survive actual extraction and reconciliation", len(aligned["cards"]["facts"]["facts"]) == len(texts) and all(f["source"]["ref"] == source_id for f in store.read_json(did, "understanding.json")["facts"]))
         check("empty Asked and answered is auto-approved without invented FAQs or rehearsal", aligned["cards"]["faq"]["total"] == 0 and aligned["demo"]["approvals"]["faq"] and aligned["rehearsal"] is None)
         for card in aligned["demo"]["approvals"]:

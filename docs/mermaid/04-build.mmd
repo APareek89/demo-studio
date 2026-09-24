@@ -3,16 +3,18 @@ flowchart TD
   N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
   GO["POST /api/demos/id/build<br/>[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness<br/>explicit operator override logged; mock bypass"]:::fn
   AUTH["Final spoken delivery of the Planner outline<br/>[AGENT · configured text tier · author.py]<br/>in: plan goals/notes, approved registry, supplied visuals, voice, language/audience<br/>shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK<br/>same segment ids/roles/order; connected speech; checkin = closing statement, no question<br/>deeper, closing + 23–28 word Explore overview led by first supported fundamental"]:::agent
-  VAL["Grounding and supported narration target<br/>[FUNCTION · author.validate]<br/>existing citation/visual/speech rules; whole-stop word budgets<br/>prepared drafts require global distinct eligible word target; one bounded repair<br/>complete lines/batches retain46/48/44word role ceilings; closing45<br/>legacy validator unchanged; missing evidence never permits padding"]:::fn
+  VAL["Grounding and supported narration target<br/>[FUNCTION · author.validate]<br/>existing citation/visual/speech rules; whole-stop word budgets<br/>every Author run prepares global distinct eligible word target<br/>existing repair plus at most one focused completion attempt<br/>complete lines/batches retain46/48/44word role ceilings; closing45<br/>legacy validator unchanged; missing evidence never permits padding"]:::fn
   ISS{"issues > 0?"}:::dec
   FIX["one local rewrite<br/>[AGENT · configured text tier]<br/>in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects<br/>out: full script, revalidated under the same evidence rules"]:::agent
-  VAL2["re-validate<br/>[FUNCTION] remaining issues stay reviewable; ungrounded lines stay unverified and excluded from voice & bundle"]:::fn
+  VAL2["Revalidate and finish supported narration automatically<br/>[AGENT + FUNCTION · author.run / narration.preparation_status]<br/>if still short and capacity permits: at most one focused completion<br/>same assigned facts and complete thoughts; no padding or slower voice<br/>remaining deficit or drafting failure stays explicit; no source-gap guess"]:::fn
   IDS["assign stable line ids<br/>[FUNCTION]<br/>out: seg-L1.. plus closing ids"]:::fn
   VAUD["visual-proof audit<br/>[AGENT · Gemini 3.6 Flash]<br/>in: real uploaded pixels in batches ≤12 + every scripted line<br/>out: every image's visible features/limits + every line full/partial/none/not_visual"]:::agent
   VGATE["accept audit only when complete<br/>[FUNCTION · visuals.py]<br/>all line ids + all image refs required; full coverage may bind image<br/>partial/missing visible feature → no proof binding<br/>Gemini failure → conservative tag rules; Deck proxy never changes coverage"]:::fn
   AUDIT["visual-audit.json<br/>[DATA]<br/>line reasons, image feature inventory, missing features, changes"]:::data
   TIMING["Whole-line splitting and content timeline<br/>[FUNCTION · author.split_long_batches / timeline]<br/>prepared stops split at role ceiling; complete lines and unique IDs<br/>continuations retain source-stop identity and share original budget<br/>estimates stay labelled; actual audio determines publication duration"]:::fn
-  SJ["script.json<br/>[DATA] visual refs + audit summary · version++"]:::data
+  SJ["script.json<br/>[DATA] visual refs + audit summary · version++<br/>preparation status, counts, attempts and drafting errors"]:::data
+  DREADY{"Draft prepared?<br/>[FUNCTION · graph.after_script]<br/>current supported content target or matching sufficient recordings"}:::dec
+  DRAFTWAIT["Keep Author pending; skip paid Deck generation<br/>[FUNCTION · graph / orchestrator]<br/>FAQ then Align; Script approval blocked, other cards reviewable<br/>no approved facts → source request; writer failure → Retry draft<br/>mock placeholders never described as customer-ready narration"]:::fn
   DPIC["one slide per segment · up to two pictures<br/>[FUNCTION · deck.choose_media / choose_proxy]<br/>first two distinct verified image refs with full audit coverage; absent audit accepts Author binding<br/>save first from_line; no qualifying ref → trusted matching part (≥0.6) else hero<br/>proxy marked illustration, with reason; never written into visual audit"]:::fn
   DCALL["titles + picture-owned callouts<br/>[AGENT · Gemini → Claude → Runware text tier · deck.DeckOut]<br/>in: lines, fact ids and each picture's parts; approved registry<br/>out: ≤6-word title, ≤3 callouts per picture of ≤8 words, with image_id and citations<br/>proxy additionally gets a derived cited fact label"]:::agent
   DVAL["the script-line rule on every callout<br/>[FUNCTION · author.ungrounded]<br/>uncited figure/claim, > 8 words, unlisted part → dropped; a slide left empty gets its own cited facts (claim: value)"]:::fn
@@ -36,16 +38,22 @@ flowchart TD
   APPROVAL{"All six approvals still current?<br/>[FUNCTION · shared per-demo publication lock]<br/>serialize input reads and final writes with customer FAQ changes"}:::dec
   REALIGN["Return to Align; preserve published bundle/version<br/>[HUMAN] review changed cards before another Build"]:::ask
   MINIMUM{"Publishable default narration in every language?<br/>[FUNCTION · narration.require_minimum]<br/>at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing<br/>exclude film, Q&A, deeper-only and duplicates; estimates cannot pass"}:::dec
-  SHORT["Return short recording to review<br/>[FUNCTION · graph.bundle / orchestrator._run_stage]<br/>Bundle pending; Script approval reset; no Build-done event<br/>keep previous publication, recordings and facts unchanged<br/>Align Prepare action adds distinct supported detail for review; never pads or slows voice"]:::fn
+  SHORT{"Complete recordings but under three minutes?<br/>[FUNCTION · graph.bundle]<br/>Bundle pending; previous publication/audio preserved<br/>missing/unreadable clips need recording recovery, not rewriting"}:::dec
+  AUTODRAFT["Prepare revised supported narration automatically<br/>[FUNCTION · graph.bundle → author]<br/>same user-requested Build, one bounded authoring pass<br/>entry becomes revise; no second Voice or automatic publication<br/>rebudget from matching recording pace; changed Script/Visuals require review"]:::fn
+  DAPP{"All six approvals still current?<br/>[FUNCTION · graph.after_author / after_faq]<br/>automatic revised draft returns to review before Voice"}:::dec
   READY["status ready · durable SSE phase_done build<br/>[DATA · events.json + stage progress/warnings]<br/>fresh subscriber receives current baseline; valid cursor resumes bounded history"]:::term
 
   GO --> AUTH --> VAL --> ISS
   ISS -- "yes" --> FIX --> VAL2 --> IDS
   ISS -- "no" --> IDS
   IDS --> VAUD --> VGATE --> AUDIT --> TIMING --> SJ
-  SJ --> DPIC --> DCALL --> DVAL --> DLAY --> DJ
+  SJ --> DREADY
+  DREADY -- "yes" --> DPIC --> DCALL --> DVAL --> DLAY --> DJ
+  DREADY -- "no" --> DRAFTWAIT --> REALIGN
   DOVR -.-> DLAY
-  DJ --> PROV
+  DJ --> DAPP
+  DAPP -- "yes" --> PROV
+  DAPP -- "changed draft" --> REALIGN
   PROV -- "sarvam / gemini / gcloud" --> TTS --> MEASURE --> LANGS
   PROV -- "browser" --> BROWSER --> BUN
   LANGS -- "yes" --> TRANS --> TTS2 --> BUN
@@ -54,7 +62,9 @@ flowchart TD
   APPROVAL -- "yes, lock held through publication" --> MINIMUM
   APPROVAL -- "changed during Voice or before publication" --> REALIGN
   MINIMUM -- "all measured and at least 180 seconds" --> READY
-  MINIMUM -- "short or missing/unreadable audio" --> SHORT --> REALIGN
+  MINIMUM -- "short or missing/unreadable audio" --> SHORT
+  SHORT -- "measured shortfall" --> AUTODRAFT --> AUTH
+  SHORT -- "missing/unreadable recordings" --> REALIGN
   READY -. "optional, on demand" .-> REHEARSE --> QBANK
   QBANK -- "yes" --> QA
   QBANK -- "no" --> QGEN --> QA

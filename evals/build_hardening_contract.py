@@ -21,6 +21,15 @@ def run(check):
         stack.enter_context(patch.object(cloud,'enabled',return_value=False))
         stack.enter_context(patch.object(cloud,'sync_demo_async'))
         stack.enter_context(patch.object(cloud,'put_event'))
+        # This graph-plumbing section already stubs Author, Voice and Bundle.
+        # Its three-word candidate is not a customer script. Real automatic
+        # readiness is covered by automatic_narration_contract/release_mock_contract;
+        # keep the separate rehearsal-cache section below outside this fixture.
+        stack.enter_context(patch.object(orch.narration,'preparation_status',return_value={
+            'status':'ready','mock_preview':False,'target_words':495,'words':495,
+            'attempts':0,'missing_words':0,'measured':False,'seconds':180,
+            'basis':'synthetic graph-plumbing fixture','reason':'Explicit graph-plumbing fixture','errors':[]}))
+        print('PREPARATION FIXTURE: synthetic only inside graph-plumbing stage stubs; automatic/release contracts use real readiness')
         blocked=[stack.enter_context(patch(n,side_effect=AssertionError('No outbound calls'))) for n in ('socket.create_connection','socket.socket.connect','socket.socket.connect_ex')]
         demo=store.new_demo('Hardening fixture');did=demo['id']
         with patch.object(gemini,'client',side_effect=AssertionError('Mock media must never initialize a provider')) as client:

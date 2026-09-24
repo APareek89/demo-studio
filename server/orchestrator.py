@@ -97,6 +97,7 @@ def invalidate(demo_id: str, stage: str) -> None:
 
 _NON_SEMANTIC = {"audio", "checkin_audio", "intake_audio", "voice_sample_audio", "voice_provider", "voice_name", "voice_input_hash",
                  "voice_failures", "version", "updated_at", "created_at", "t", "timeline",
+                 "narration_preparation",
                  "duration_seconds", "duration_exact", "duration_in_range", "exact", "spoken", "checkin_start", "checkin_duration"}
 
 
@@ -203,11 +204,18 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
             store.update(demo_id, lambda d: d["approvals"].update({card: False for card in cards}))
         if stage == "faq" and approve_empty_faq(demo_id):
             emit("No questions yet; this card fills from customer questions")
-        set_stage(demo_id, stage, "done")
+        preparation = narration.preparation_status(demo_id) if stage == "author" else None
+        incomplete = preparation and preparation["status"] in {"incomplete", "needs_sources"}
+        if incomplete:
+            store.update(demo_id, lambda d: d["approvals"].__setitem__("script", False))
+            set_stage(demo_id, stage, "pending", message=preparation["reason"])
+            emit(preparation["reason"])
+        else:
+            set_stage(demo_id, stage, "done")
         invalidate(demo_id, stage)
         st = store.load(demo_id)["stages"].get(stage, {})
         runlog.stage_report(demo_id, stage, seconds=st.get("seconds"), started_at=st.get("started_at"), instruction=instruction)
-        cloud.put_event(demo_id, "stage_done", {"stage": stage, "seconds": st.get("seconds"), "cost_usd": usage.summary(demo_id).get("by_stage", {}).get(stage, {}).get("usd")})
+        cloud.put_event(demo_id, "stage_pending" if incomplete else "stage_done", {"stage": stage, "seconds": st.get("seconds"), "cost_usd": usage.summary(demo_id).get("by_stage", {}).get(stage, {}).get("usd")})
         cloud.sync_demo_async(demo_id)
         return out
     except Exception as e:
@@ -287,6 +295,12 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
         # Input: the Align action card name. Output: saved approval and the next review prompt.
         # Linked: server/agents/align.py:current_card and card_prompt choose that next prompt.
         if t == "approve" and a.get("card"):
+            if a["card"] == "script":
+                preparation = narration.preparation_status(demo_id)
+                if preparation["status"] in {"incomplete", "needs_sources"}:
+                    store.update(demo_id, lambda d: d["approvals"].__setitem__("script", False))
+                    notes.append("Script approval paused: " + preparation["reason"])
+                    continue
             store.update(demo_id, lambda d, c=a["card"]: d["approvals"].__setitem__(c, True))
             notes.append(f"approved {a['card']}")
             runlog.event(demo_id, f"Card approved: {a['card']}")
@@ -374,7 +388,10 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
                 revise_stage = a["stage"]
             revise_instr.append(a.get("instruction", ""))
         elif t == "build":
-            if all(store.load(demo_id)["approvals"].values()):
+            preparation = narration.preparation_status(demo_id)
+            if preparation["status"] in {"incomplete", "needs_sources"}:
+                notes.append("Build paused: " + preparation["reason"])
+            elif all(store.load(demo_id)["approvals"].values()):
                 requests["build"] = True
                 notes.append("build requested")
             else:

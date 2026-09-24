@@ -30,6 +30,20 @@ def preparation_identity(demo: dict, persona: dict | None = None) -> str:
     return hashlib.sha256(json.dumps(identity, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
+def _alternate_matches(script: dict, alternate: dict, provider: str) -> bool:
+    if alternate.get("voice_provider") != provider or alternate.get("voice_name") != script.get("voice_name"):
+        return False
+    if alternate.get("source_digest"):
+        from .. import store
+        from ..orchestrator import semantic
+        from .translate import TRANSLATE_SYSTEM
+        source_digest = store.digest(json.dumps({"s": semantic(script.get("segments")), "c": semantic(script.get("closing")),
+            "q": [script.get("intake_q1"), script.get("intake_q2")], "overview": semantic(script.get("runtime_overview")),
+            "prompt": TRANSLATE_SYSTEM}, sort_keys=True))
+        return alternate["source_digest"] == source_digest
+    return True
+
+
 def word_target(demo: dict, script: dict | None = None, demo_id: str | None = None) -> int:
     """Plan enough supported words; never change a recording or its delivery speed."""
     rate = NATURAL_WPS
@@ -50,7 +64,7 @@ def word_target(demo: dict, script: dict | None = None, demo_id: str | None = No
                     if not language or language == demo.get("settings", {}).get("language", "en-IN"):
                         continue
                     alternate = store.read_json(demo_id, f"script.{language}.json") or {}
-                    if alternate.get("voice_provider") != provider or alternate.get("voice_name") != script.get("voice_name"):
+                    if not _alternate_matches(script, alternate, provider):
                         continue
                     alt_measured = preparation_report(alternate, demo_id=demo_id)
                     if alt_measured["measured"] and alt_measured["seconds"] > 0:
@@ -68,7 +82,9 @@ def word_target(demo: dict, script: dict | None = None, demo_id: str | None = No
 
 
 class NarrationTooShort(RuntimeError):
-    pass
+    def __init__(self, message: str, result: dict | None = None):
+        super().__init__(message)
+        self.result = result
 
 
 def explicit_short_tour(profile: dict) -> bool:
@@ -220,11 +236,97 @@ def preparation_report(script: dict, *, demo_id: str | None = None,
                          include_all_proofs=True)[1]
 
 
+def preparation_status(demo_id: str, script: dict | None = None, plan: dict | None = None) -> dict:
+    """One current readiness decision for drafting, review and the Build boundary."""
+    from .. import store
+    from . import voice
+    script = store.read_json(demo_id, "script.json") or {} if script is None else script
+    plan = store.read_json(demo_id, "plan.json") or {} if plan is None else plan
+    demo = store.load(demo_id)
+    und = store.read_json(demo_id, "understanding.json") or {}
+    allowed = {fact["id"] for fact in und.get("facts", []) if fact.get("approved", True)}
+    saved = script.get("narration_preparation") or {}
+    target = word_target(demo, script, demo_id)
+    planned = plan.get("narration_preparation") or {}
+    if planned.get("identity") == preparation_identity(demo, plan.get("voice")):
+        target = max(target, int(planned.get("target_words") or 0))
+    draft = preparation_report(script, allowed_fact_ids=allowed)
+    provider = voice.provider_for(demo)
+    current_recording = bool(script.get("voice_input_hash")) and (
+        script["voice_input_hash"] == voice.input_hash(demo_id)
+        and script.get("voice_provider") == provider
+        and script.get("voice_name") == voice.voice_name_for(demo, provider))
+    recorded_rows = [script.get("runtime_overview") or script.get("overview") or {}, *script.get("closing", [])]
+    for segment in script.get("segments", []):
+        recorded_rows.extend([*segment.get("lines", []), *segment.get("deeper", []), _closing(segment)])
+    prior_recording = bool(script.get("voice_provider") and
+                           (any(_audio_path(demo_id, row.get("audio")) for row in recorded_rows)
+                            or ((demo.get("stages") or {}).get("voice") or {}).get("status") == "done"))
+    _, duration = default_route(script, demo_id=demo_id if current_recording else None, allowed_fact_ids=allowed)
+    all_recorded = current_recording and duration["measured"]
+    recorded_ready = current_recording and duration["measured"] and duration["sufficient"]
+    if current_recording:
+        for language in demo.get("settings", {}).get("languages") or []:
+            if not language or language == demo.get("settings", {}).get("language", "en-IN"):
+                continue
+            alternate = store.read_json(demo_id, f"script.{language}.json") or {}
+            _, alt_duration = default_route(alternate, demo_id=demo_id, allowed_fact_ids=allowed)
+            identity_matches = _alternate_matches(script, alternate, provider)
+            all_recorded = all_recorded and identity_matches and alt_duration["measured"]
+            recorded_ready = recorded_ready and identity_matches and alt_duration["measured"] and alt_duration["sufficient"]
+            if (alt_duration["measured"] and alt_duration["sufficient"], alt_duration["seconds"]) < (duration["measured"] and duration["sufficient"], duration["seconds"]):
+                duration = {**alt_duration, "language": language}
+    texts = [script.get("intake_q1", ""), script.get("intake_q2", ""),
+             (script.get("runtime_overview") or script.get("overview") or {}).get("text", "")]
+    texts.extend(row.get("text", "") for row in script.get("closing", []))
+    for segment in script.get("segments", []):
+        texts.extend(row.get("text", "") for row in [*segment.get("lines", []), *segment.get("deeper", [])])
+        texts.append(_closing(segment).get("text", ""))
+    mock_preview = any("(mock)" in str(text).casefold() for text in texts)
+    errors = [str(error)[:300] for error in list(saved.get("errors") or [])[:3]]
+    incomplete_reason = ("Mock placeholder speech is not a prepared customer demo." if mock_preview else
+                         "Narration preparation could not finish because a drafting request failed." if errors else
+                         "Narration preparation has not yet produced enough distinct supported speech.")
+    has_draft = bool(script.get("segments") or script.get("closing")
+                     or (script.get("runtime_overview") or script.get("overview") or {}).get("text"))
+    if not allowed:
+        status, reason = "needs_sources", "No approved source facts are available for the narration."
+    elif not has_draft:
+        status = "incomplete"
+        author_stage = (demo.get("stages") or {}).get("author") or {}
+        if author_stage.get("status") == "error":
+            reason = "Narration drafting failed before a draft was produced. Check the reported error before retrying."
+            if author_stage.get("error"):
+                errors = [*errors, str(author_stage["error"])[:300]][:3]
+        else:
+            reason = "Narration drafting has not produced a draft for review yet."
+    elif recorded_ready:
+        status, reason = "ready", "Current recordings meet the three-minute minimum in every selected language."
+    elif all_recorded:
+        status, reason = "needs_preparation", "The current recordings are short; the next build will prepare supported narration for review."
+    elif not current_recording and saved.get("status") == "incomplete" and draft["words"] < target:
+        status, reason = "incomplete", incomplete_reason
+    elif current_recording or prior_recording:
+        status, reason = "needs_recording", "Some selected recordings are missing, unreadable or no longer current. Build will retry recording the reviewed words."
+    elif draft["words"] >= target and not current_recording:
+        status, reason = "ready", "The supported draft is prepared for review; recording will verify its duration."
+    elif saved.get("status") is None:
+        status, reason = "needs_preparation", "This older draft needs automatic narration preparation before a new build."
+    else:
+        status, reason = "incomplete", incomplete_reason
+    return {"version": PREPARATION_VERSION, "identity": planned.get("identity"), "status": status,
+            "target_words": target, "words": draft["words"], "missing_words": max(0, target - draft["words"]),
+            "attempts": int(saved.get("attempts") or 0), "mock_preview": mock_preview,
+            "measured": bool(current_recording and duration["measured"]), "seconds": duration["seconds"],
+            "basis": duration["basis"], "reason": reason, "errors": errors,
+            "current_recording": bool(current_recording), "recorded_short": bool(all_recorded and not recorded_ready),
+            "recording_incomplete": bool((current_recording or prior_recording) and not recorded_ready and not all_recorded)}
+
+
 def deficit_message(result: dict) -> str:
-    missing = max(0, MIN_SECONDS - result["seconds"])
     return (f"Default guided narration is {result['seconds']:.1f}s ({result['basis']}); at least 180s is required "
-            f"before publication. Add {missing:.1f}s of distinct supported narration in Align, using additional cited "
-            "material or supported detail. Film, customer Q&A, deeper-only lines and repeated speech do not count; "
+            "before publication. The draft needs more distinct supported narration before it can be reviewed for a new build. "
+            "Film, customer Q&A, deeper-only lines and repeated speech do not count; "
             "do not pad, duplicate claims or slow the voice to meet the minimum.")
 
 
@@ -232,7 +334,7 @@ def require_minimum(script: dict, *, demo_id: str | None = None,
                     allowed_fact_ids: set[str] | None = None, require_recorded: bool = False) -> dict:
     _, result = default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_fact_ids)
     if not result["sufficient"]:
-        raise NarrationTooShort(deficit_message(result))
+        raise NarrationTooShort(deficit_message(result), result)
     if require_recorded and not result["measured"]:
-        raise NarrationTooShort("Default guided narration has missing or unreadable audio. Record every counted line before publication; estimated words cannot establish the 180-second minimum.")
+        raise NarrationTooShort("Default guided narration has missing or unreadable audio. Record every counted line before publication; estimated words cannot establish the 180-second minimum.", result)
     return result

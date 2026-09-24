@@ -1,6 +1,16 @@
 # Learning.MD — Demo Studio
 
 
+## 2026-09-24 — Narration preparation became a user repair task
+
+**Symptom:** Align showed a large duration deficit and a Prepare three-minute narration button, even though sufficient narration was already the promised default. The localhost mock draft contained repeated placeholder speech: four distinct words, about two estimated seconds, beside six saved approvals.
+
+**Five whys:** (1) The implementation moved recovery work onto the reviewer. (2) Author could save a still-short repair as a completed stage. (3) Script approval and Build checked stored approvals without checking current preparation. (4) generic mock placeholders passed the surrounding workflow while truthful deduplication exposed their tiny usable content. (5) the earlier positive contract invoked Planner/Author directly rather than proving a fresh ordinary Read and its review handoff.
+
+**Correction:** every Author run deterministically prepares the reviewed plan and checks the distinct supported-word target. The existing repair can be followed by one focused completion, at most three writing calls total; provider failure stops further automatic attempts. Incomplete drafts remain pending, skip slide generation and picture auditing, and cannot be approved or built. First-call failure with no script is incomplete, not a legacy draft. Direct Script edits retain preparation state; shortening stays pending and cannot trigger an automatic replacement of the reviewer’s wording. The normal UI has compact timing inside Script; Retry drafting is only failure recovery, and actual mock placeholders are labelled. A short measured recording triggers one supported draft revision inside the requested Build, then returns for human review without a second Voice pass or publication. Missing/stale recordings use recording recovery instead. Existing published artifacts remain intact.
+
+**Prevention:** ordinary upload→Read contracts now cover successful drafting, bounded completion, no approved sources, first/repair provider failures, mock placeholders, all approval paths and legacy Build recovery. Independent browser checks cover ready/incomplete/mock/recording states on desktop and phone. The full mock release journey uses real measured fixture WAVs and the unchanged 180-second gate. These tests establish workflow mechanics, not new live-model or acoustic quality. See the automatic-narration QA report and Loop.MD for final counts. This user decision supersedes the manual Prepare policy in the historical entry below.
+
 ## 2026-09-24 — A duration rejection was shipped without enough content preparation
 
 **Symptom:** the existing recorded draft reached Bundle with128.3-seconds and failed the180-second publication minimum; ordinary Build reused that same script and audio.

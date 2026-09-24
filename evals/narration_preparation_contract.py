@@ -341,9 +341,230 @@ class NarrationPreparationContract(unittest.TestCase):
         short = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=False))
         with patch.object(author.claude, "structured", return_value=short) as model, patch.object(author.visuals, "align", side_effect=lambda did, sc, und, emit: sc):
             result = author.run(self.did, lambda *_: None)
-        self.assertEqual(model.call_count, 2)
+        self.assertEqual(model.call_count, 3)
+        self.assertEqual(result["narration_preparation"]["status"], "incomplete")
+        self.assertEqual(result["narration_preparation"]["attempts"], 3)
         self.assertTrue(any("GLOBAL NARRATION TARGET" in i for i in result["issues"]))
         self.assertLess(narration.report(result)["words"], 495)
+
+    def author_result(self, responses, *, planned=None):
+        store.write_json(self.did, "plan.json", planned or self.prepared())
+        with patch.object(author.claude, "structured", side_effect=responses) as model, patch.object(author.visuals, "align", side_effect=lambda did, sc, und, emit: sc):
+            result = author.run(self.did, lambda *_: None)
+        return result, model
+
+    def test_normal_author_completes_after_short_general_repair_without_manual_action(self):
+        p = self.prepared()
+        short = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=False))
+        full = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=True))
+        result, model = self.author_result([short, short, full])
+        status = result["narration_preparation"]
+        self.assertEqual(model.call_count, 3)
+        self.assertEqual((status["status"], status["words"], status["attempts"]), ("ready", 495, 3))
+        self.assertFalse(status["mock_preview"])
+        self.assertIn(narration.PREPARATION_INSTRUCTION, model.call_args.args[1])
+        self.assertEqual(store.load(self.did)["approvals"]["script"], False)
+        self.assertIsNone(store.read_json(self.did, "bundle.json"))
+
+    def test_author_revision_prepares_legacy_plan_without_changing_story_voice_ctas(self):
+        legacy = copy.deepcopy(self.plan)
+        full = schemas.ScriptOut.model_validate(draft(legacy, self.und["facts"], complete=True))
+        result, model = self.author_result([full], planned=legacy)
+        planned = store.read_json(self.did, "plan.json")
+        self.assertEqual(planned["total_words"], 495)
+        self.assertEqual(result["narration_preparation"]["status"], "ready")
+        self.assertEqual(model.call_count, 1)
+        for key in ("voice", "ctas", "takeaway", "customer_persona"):
+            self.assertEqual(planned[key], legacy[key])
+        self.assertEqual([s["id"] for s in planned["segments"]], [s["id"] for s in legacy["segments"]])
+
+    def test_incomplete_draft_skips_picture_audit_and_does_not_reuse_old_proof(self):
+        p = self.prepared(); store.write_json(self.did, "plan.json", p)
+        short = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=False))
+        previous_audit = {"method": "previous", "lines": [{"line_id": "seat-L1", "verified": True}]}
+        store.write_json(self.did, "visual-audit.json", previous_audit)
+        with patch.object(author.claude, "structured", return_value=short), patch.object(author.visuals, "align", side_effect=AssertionError("Incomplete draft must not incur an image audit")) as audit:
+            result = author.run(self.did, lambda *_: None)
+        audit.assert_not_called()
+        self.assertEqual(result["narration_preparation"]["status"], "incomplete")
+        self.assertEqual(result["visual_audit"], {"method": "pending_narration", "lines": [], "images": []})
+        self.assertEqual(store.read_json(self.did, "visual-audit.json"), previous_audit)
+
+    def test_repair_failure_is_explicit_and_does_not_request_sources(self):
+        p = self.prepared(); short = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=False))
+        result, model = self.author_result([short, RuntimeError("fixture drafting provider unavailable")])
+        status = result["narration_preparation"]
+        self.assertEqual(model.call_count, 2)
+        self.assertEqual(status["status"], "incomplete")
+        self.assertIn("fixture drafting provider unavailable", " ".join(status["errors"]))
+        self.assertIn("request failed", status["reason"])
+
+    def test_duration_completion_failure_keeps_reviewable_draft_and_publication(self):
+        p = self.prepared(); short = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=False))
+        store.write_json(self.did, "bundle.json", {"version": 9, "audio": "audio/reviewed.wav"})
+        previous = store.path(self.did, "bundle.json").read_bytes()
+        result, model = self.author_result([short, short, RuntimeError("fixture completion failed")])
+        self.assertEqual(model.call_count, 3)
+        self.assertEqual(result["narration_preparation"]["status"], "incomplete")
+        self.assertIn("completion failed", " ".join(result["narration_preparation"]["errors"]))
+        self.assertGreater(result["narration_preparation"]["words"], 0)
+        self.assertEqual(store.path(self.did, "bundle.json").read_bytes(), previous)
+
+    def test_needs_sources_requires_no_approved_facts_globally(self):
+        p = self.prepared(); short = schemas.ScriptOut.model_validate(draft(p, self.und["facts"], complete=False))
+        empty = copy.deepcopy(self.und)
+        for fact in empty["facts"]: fact["approved"] = False
+        store.write_json(self.did, "understanding.json", empty)
+        result, model = self.author_result([short, short])
+        self.assertEqual(model.call_count, 2)
+        self.assertEqual(result["narration_preparation"]["status"], "needs_sources")
+        store.write_json(self.did, "understanding.json", self.und)
+        for seg in p["segments"]: seg["fact_ids"] = []
+        result, model = self.author_result([short, short], planned=p)
+        self.assertEqual(model.call_count, 2)
+        self.assertEqual(result["narration_preparation"]["status"], "incomplete")
+        self.assertNotIn("No approved", result["narration_preparation"]["reason"])
+
+    def test_ordinary_establish_gap_budget_does_not_disable_automatic_completion(self):
+        p = self.prepared()
+        next(segment for segment in p["segments"] if segment["role"] == "establish")["fact_ids"] = []
+        short = schemas.ScriptOut.model_validate(draft(self.prepared(), self.und["facts"], complete=False))
+        result, model = self.author_result([short, short, short], planned=p)
+        self.assertEqual(model.call_count, 3)
+        self.assertEqual(result["narration_preparation"]["status"], "incomplete")
+        self.assertEqual(result["narration_preparation"]["attempts"], 3)
+        stored = store.read_json(self.did, "plan.json")
+        establish = next(segment for segment in stored["segments"] if segment["role"] == "establish")
+        self.assertEqual(establish["fact_ids"], [])
+        self.assertLessEqual(establish["word_budget"], author.LIMITS["establish"])
+
+    def test_mock_preview_reports_actual_placeholders_without_padding_them(self):
+        store.write_json(self.did, "plan.json", self.prepared())
+        with patch.object(author.visuals, "align", side_effect=lambda did, sc, und, emit: sc):
+            result = author.run(self.did, lambda *_: None)
+        status = result["narration_preparation"]
+        self.assertTrue(status["mock_preview"])
+        self.assertEqual(status["status"], "incomplete")
+        self.assertLessEqual(status["words"], 4)
+        self.assertEqual(status["attempts"], 3)
+
+    def test_status_is_current_read_only_and_ignores_approval_flags(self):
+        p = self.prepared(); sc = draft(p, self.und["facts"], complete=False)
+        sc["narration_preparation"] = {"status": "ready", "words": 999, "attempts": 2}
+        store.write_json(self.did, "plan.json", p); store.write_json(self.did, "script.json", sc)
+        store.update(self.did, lambda demo: demo["approvals"].update({card: True for card in store.CARDS}))
+        previous = store.path(self.did, "script.json").read_bytes()
+        status = narration.preparation_status(self.did)
+        self.assertEqual(status["status"], "incomplete")
+        self.assertLess(status["words"], 495)
+        self.assertEqual(store.path(self.did, "script.json").read_bytes(), previous)
+        sc.pop("narration_preparation")
+        self.assertEqual(narration.preparation_status(self.did, sc, p)["status"], "needs_preparation")
+        full = draft(p, self.und["facts"], complete=True)
+        self.assertEqual(narration.preparation_status(self.did, full, p)["status"], "ready")
+
+    def test_absent_failed_author_output_is_incomplete_not_a_legacy_draft(self):
+        store.write_json(self.did, "plan.json", self.prepared())
+        self.assertEqual(narration.preparation_status(self.did)["status"], "incomplete")
+        store.update(self.did, lambda demo: demo["stages"]["author"].update(status="error", error="Script writing failed: fixture provider unavailable"))
+        status = narration.preparation_status(self.did)
+        self.assertEqual(status["status"], "incomplete")
+        self.assertIn("failed before a draft", status["reason"])
+        self.assertIn("fixture provider unavailable", " ".join(status["errors"]))
+        prior = draft(self.prepared(), self.und["facts"], complete=True)
+        store.write_json(self.did, "script.json", prior)
+        self.assertEqual(narration.preparation_status(self.did)["status"], "ready")
+        self.assertFalse(narration.preparation_status(self.did)["errors"])
+
+    def test_direct_validation_preserves_attempts_and_does_not_make_short_edit_legacy(self):
+        p = self.prepared(); sc = draft(p, self.und["facts"], complete=True)
+        sc["narration_preparation"] = {"status": "ready", "attempts": 3, "errors": ["earlier bounded failure"]}
+        sc["segments"][2]["lines"] = sc["segments"][2]["lines"][:1]
+        author.validate(sc, self.und, p, self.demo)
+        metadata = sc["narration_preparation"]
+        self.assertEqual(metadata["status"], "incomplete")
+        self.assertEqual(metadata["attempts"], 3)
+        self.assertEqual(metadata["errors"], ["earlier bounded failure"])
+        self.assertEqual(narration.preparation_status(self.did, sc, p)["status"], "incomplete")
+        record(self.did, sc, wps=2)
+        sc.update(voice_provider="sarvam", voice_name="priya")
+        # Direct content edits invalidate the old text hash before readiness.
+        sc.pop("voice_input_hash", None)
+        self.assertEqual(narration.preparation_status(self.did, sc, p)["status"], "incomplete")
+
+    def test_current_recording_shortfall_is_automatic_preparation_not_new_approval(self):
+        sc = self.calibrated(3)
+        status = narration.preparation_status(self.did, script=sc)
+        self.assertEqual(status["status"], "needs_preparation")
+        self.assertTrue(status["recorded_short"])
+        self.assertTrue(status["measured"])
+        store.path(self.did, sc["runtime_overview"]["audio"]).unlink()
+        status = narration.preparation_status(self.did, script=sc)
+        self.assertEqual(status["status"], "needs_recording")
+        self.assertTrue(status["recording_incomplete"])
+        self.assertFalse(status["recorded_short"])
+        self.assertIn("missing", status["reason"])
+
+    def test_recorded_ready_requires_every_selected_language_voice_and_freshness(self):
+        store.update(self.did, lambda d: d["settings"].update(languages=["hi-IN"]))
+        self.demo = store.load(self.did)
+        sc = self.calibrated(2)
+        alternate = copy.deepcopy(sc)
+        record(self.did, alternate, wps=2, prefix="alt")
+        store.write_json(self.did, "script.hi-IN.json", alternate)
+        self.assertEqual(narration.preparation_status(self.did, sc)["status"], "ready")
+        alternate["voice_name"] = "neha"
+        store.write_json(self.did, "script.hi-IN.json", alternate)
+        self.assertEqual(narration.preparation_status(self.did, sc)["status"], "needs_recording")
+        alternate["voice_name"] = "priya"; alternate["source_digest"] = "stale"
+        store.write_json(self.did, "script.hi-IN.json", alternate)
+        self.assertEqual(narration.preparation_status(self.did, sc)["status"], "needs_recording")
+        alternate.pop("source_digest")
+        record(self.did, alternate, wps=4, prefix="alt-short")
+        store.write_json(self.did, "script.hi-IN.json", alternate)
+        status = narration.preparation_status(self.did, sc)
+        self.assertEqual(status["status"], "needs_preparation")
+        self.assertTrue(status["recorded_short"])
+
+    def test_stale_voice_audio_never_establishes_measured_readiness(self):
+        sc = self.calibrated(2)
+        sc["narration_preparation"] = {"status": "ready", "attempts": 1}
+        store.update(self.did, lambda d: d["settings"].update(sarvam_speaker="neha"))
+        status = narration.preparation_status(self.did, sc)
+        self.assertFalse(status["measured"])
+        self.assertFalse(status["current_recording"])
+        self.assertEqual(status["basis"], "estimated")
+        self.assertEqual(status["status"], "needs_recording")
+        self.assertTrue(status["recording_incomplete"])
+
+    def test_stale_translation_cannot_inflate_calibrated_word_target(self):
+        store.update(self.did, lambda d: d["settings"].update(languages=["hi-IN"]))
+        self.demo = store.load(self.did)
+        sc = self.calibrated(2)
+        alternate = copy.deepcopy(sc); alternate["source_digest"] = "not-current"
+        record(self.did, alternate, wps=8, prefix="stale-alt")
+        store.write_json(self.did, "script.hi-IN.json", alternate)
+        self.assertEqual(narration.word_target(self.demo, sc, self.did), 495)
+
+    def test_unvoiced_draft_audio_field_does_not_pretend_a_recording_failure(self):
+        p = self.prepared(); sc = draft(p, self.und["facts"], complete=True)
+        sc["narration_preparation"] = {"status": "ready", "attempts": 1}
+        sc["overview"]["audio"] = "audio/model-invented.wav"
+        status = narration.preparation_status(self.did, sc, p)
+        self.assertEqual(status["status"], "ready")
+        self.assertFalse(status["recording_incomplete"])
+
+    def test_minimum_error_exposes_exact_measured_or_missing_result(self):
+        sc = self.calibrated(3)
+        with self.assertRaises(narration.NarrationTooShort) as caught:
+            narration.require_minimum(sc, demo_id=self.did, require_recorded=True)
+        self.assertTrue(caught.exception.result["measured"])
+        self.assertEqual(caught.exception.result["seconds"], 165)
+        self.assertNotIn("Add ", str(caught.exception))
+        store.path(self.did, sc["runtime_overview"]["audio"]).unlink()
+        with self.assertRaises(narration.NarrationTooShort) as missing:
+            narration.require_minimum(sc, demo_id=self.did, require_recorded=True)
+        self.assertFalse(missing.exception.result["measured"])
 
 if __name__ == "__main__":
     unittest.main()

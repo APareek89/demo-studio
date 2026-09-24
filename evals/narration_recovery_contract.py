@@ -46,7 +46,9 @@ class NarrationRecovery(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(app)
         self.did = store.new_demo("Disposable narration recovery")["id"]
+        store.update(self.did, lambda demo: demo["settings"].update(tts_provider="sarvam", sarvam_speaker="priya", voice_locked=True))
         self.fixture = rich_fixture(self.did, recorded=True)
+        self.fixture["script"].update(voice_provider="sarvam", voice_name="priya")
         # The duration helper omits unused outline fields. Real Align/API calls
         # also need the normal per-stop visual reference list.
         for segment in self.fixture["plan"]["segments"]:
@@ -129,20 +131,33 @@ class NarrationRecovery(unittest.TestCase):
         self.assertFalse(any(event["type"] == "phase_done" and event.get("phase") == "build"
                              for event in events.since(self.did, since)))
 
-    def test_measured_128_seconds_returns_to_align_without_rewriting_or_recording(self):
+    def test_measured_128_seconds_automatically_prepares_a_draft_without_recording(self):
         self.short_candidate()
-        before = store.path(self.did, "script.json").read_bytes()
         audio = self.audio_hashes()
         since = events.latest_seq(self.did)
-        with patch.object(author, "run", side_effect=AssertionError("Never silently rewrite approved text")), \
+        def prepare(did, emit, instruction=""):
+            self.assertEqual(instruction, narration.PREPARATION_INSTRUCTION)
+            draft = store.read_json(did, "script.json")
+            for field in ("voice_input_hash", "voice_provider", "voice_name"):
+                draft.pop(field, None)
+            for line in [draft["runtime_overview"], *draft["closing"], *[line for segment in draft["segments"] for line in segment["lines"]]]:
+                line["audio"] = None
+            draft["narration_preparation"] = {"version": 1, "status": "incomplete", "target_words": 495, "attempts": 1}
+            store.write_json(did, "script.json", draft)
+            return draft
+        with patch.object(author, "run", side_effect=prepare) as author_run, \
                 patch.object(voice, "render_script", side_effect=AssertionError("Reuse completed recordings")):
-            self.build()
-        self.assert_review_pause(since, before, audio)
-        conversation = store.read_json(self.did, "conversation.json") or []
-        self.assertTrue(any("128.3" in row.get("text", "") and "180" in row.get("text", "") for row in conversation))
-        cards = self.client.get(f"/api/demos/{self.did}").json()["cards"]
-        self.assertEqual(cards["script"]["narration_minimum"]["seconds"], 128.3)
-        self.assertTrue(cards["script"]["narration_minimum"]["measured"])
+            saved = self.build()
+        self.assertEqual(author_run.call_count, 1)
+        self.assertEqual(saved["status"], "align")
+        self.assertTrue(graph.is_waiting(self.did))
+        self.assertFalse(saved["approvals"]["script"])
+        self.assertFalse(saved["approvals"]["visuals"])
+        self.assertEqual(narration.preparation_status(self.did)["status"], "incomplete")
+        self.assertEqual(self.audio_hashes(), audio)
+        self.assertEqual(self.publication(), self.publication_before)
+        self.assertEqual(store.path(self.did, "understanding.json").read_bytes(), self.registry_before)
+        self.assertFalse(any(event["type"] == "phase_error" for event in events.since(self.did, since)))
 
     def test_missing_recording_returns_to_review_and_keeps_existing_clips(self):
         candidate = self.stage_script(self.fixture["script"])
@@ -151,10 +166,14 @@ class NarrationRecovery(unittest.TestCase):
         self.stage_script(candidate)
         before, audio = store.path(self.did, "script.json").read_bytes(), self.audio_hashes()
         since = events.latest_seq(self.did)
-        with patch.object(voice, "render_script", side_effect=AssertionError("No automatic rerecording")):
+        # Voice is retried by the requested Build. If it still returns a missing
+        # clip, publication must pause without using Author to rewrite the text.
+        with patch.object(voice, "render_script", side_effect=lambda did, emit: store.read_json(did, "script.json")) as render, \
+                patch.object(author, "run", side_effect=AssertionError("Missing audio must not rewrite the script")):
             self.build()
+        render.assert_called_once()
         self.assert_review_pause(since, before, audio)
-        self.assertTrue(any("missing or unreadable audio" in row.get("text", "")
+        self.assertTrue(any("missing or unreadable" in row.get("text", "")
                             for row in store.read_json(self.did, "conversation.json")))
 
     def test_corrupt_recording_returns_to_review_without_discarding_text(self):
@@ -164,7 +183,10 @@ class NarrationRecovery(unittest.TestCase):
         self.stage_script(candidate)
         before, audio = store.path(self.did, "script.json").read_bytes(), self.audio_hashes()
         since = events.latest_seq(self.did)
-        self.build()
+        with patch.object(voice, "render_script", side_effect=lambda did, emit: store.read_json(did, "script.json")) as render, \
+                patch.object(author, "run", side_effect=AssertionError("Corrupt audio must not rewrite the script")):
+            self.build()
+        render.assert_called_once()
         self.assert_review_pause(since, before, audio)
 
     def test_repeated_build_requires_reapproval_and_keeps_the_review_checkpoint(self):
@@ -172,7 +194,8 @@ class NarrationRecovery(unittest.TestCase):
         self.build()
         response = self.client.post(f"/api/demos/{self.did}/build")
         self.assertEqual(response.status_code, 409)
-        self.assertIn("Approve all six", response.text)
+        self.assertIn(narration.preparation_status(self.did)["reason"], response.text)
+        self.assertFalse(store.load(self.did)["approvals"]["script"])
         self.assertTrue(graph.is_waiting(self.did))
         self.assertEqual(self.publication(), self.publication_before)
 
@@ -205,7 +228,6 @@ class NarrationRecovery(unittest.TestCase):
 
     def test_explicit_plan_author_preparation_returns_to_review_without_auto_build(self):
         self.short_candidate()
-        self.build()
         original_plan = store.read_json(self.did, "plan.json")
         original_settings = copy.deepcopy(store.load(self.did)["settings"])
         stages = []
@@ -219,7 +241,11 @@ class NarrationRecovery(unittest.TestCase):
             stages.append(("author", instruction))
             draft = store.read_json(did, "script.json")
             draft["segments"][0]["lines"][0]["text"] += " The adjustment controls sit beside the cushion."
-            draft["segments"][0]["lines"][0]["audio"] = None
+            for field in ("voice_input_hash", "voice_provider", "voice_name"):
+                draft.pop(field, None)
+            for line in [draft["runtime_overview"], *draft["closing"], *[line for segment in draft["segments"] for line in segment["lines"]]]:
+                line["audio"] = None
+            draft["narration_preparation"] = {"version": 1, "status": "incomplete", "target_words": 495, "attempts": 1}
             store.write_json(did, "script.json", draft)
             return draft
         def design(did, emit, instruction=""):
@@ -234,7 +260,8 @@ class NarrationRecovery(unittest.TestCase):
             self.assertEqual(response.status_code, 200, response.text)
             saved = self.wait_idle()
             sample.assert_not_called()
-        self.assertEqual([stage for stage, _ in stages], ["plan", "author", "deck"])
+        self.assertEqual([stage for stage, _ in stages], ["plan", "author"])
+        self.assertEqual(saved["stages"]["author"]["status"], "pending")
         self.assertEqual(stages[0][1], narration.PREPARATION_INSTRUCTION)
         self.assertEqual(saved["status"], "align")
         self.assertTrue(graph.is_waiting(self.did))
@@ -303,14 +330,17 @@ class NarrationRecovery(unittest.TestCase):
             status.assert_not_called()
             probe.assert_not_called()
 
-    def test_canonical_readiness_gate_does_not_change_other_revision_routes(self):
+    def test_author_revision_gate_preserves_the_unrelated_plan_revision_route(self):
+        failed = {"stale": False, "mock": False, "checks": {"reasoning": {"ready": False}}}
         with patch.object(config, "MOCK_LLM", False), \
-                patch.object(readiness, "status", side_effect=AssertionError("Only canonical Plan preparation is gated")) as status, \
+                patch.object(readiness, "status", return_value=failed) as status, \
+                patch.object(readiness, "probe", side_effect=AssertionError("No implicit provider probe")) as probe, \
                 patch.object(graph, "start_revise") as start:
-            self.assertEqual(self.preparation_request(stage="author").status_code, 200)
+            self.assertEqual(self.preparation_request(stage="author").status_code, 409)
             self.assertEqual(self.preparation_request(instruction="Review the current plan.").status_code, 200)
-            self.assertEqual(start.call_count, 2)
-            status.assert_not_called()
+            status.assert_called_once_with(self.did)
+            start.assert_called_once_with(self.did, "plan", "Review the current plan.", False)
+            probe.assert_not_called()
 
     def unrecorded_preparation(self):
         draft = copy.deepcopy(self.fixture["script"])

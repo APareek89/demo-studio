@@ -470,6 +470,12 @@ def approve(demo_id: str, card: str):
     demo = _demo_or_404(demo_id)
     if card not in store.CARDS:
         raise HTTPException(400, "unknown card")
+    if graph.is_running(demo_id):
+        raise HTTPException(409, "Wait for the current draft to finish before approving a card")
+    if card == "script":
+        preparation = narration.preparation_status(demo_id)
+        if preparation["status"] in {"incomplete", "needs_sources"}:
+            raise HTTPException(409, preparation["reason"])
     notes = orchestrator.apply_actions(demo_id, [{"type": "approve", "card": card}], [], "align")
     cloud.sync_demo_async(demo_id)
     return {"approvals": store.load(demo_id)["approvals"], "notes": notes}
@@ -715,21 +721,33 @@ async def edit_aligned_script(demo_id: str, req: Request):
                 if author.ungrounded(text, ids, approved_fact_ids)[1]:
                     raise HTTPException(400, "Segment metadata cannot introduce an uncited claim or figure")
                 seg[field] = text
-    issues = author.validate(script, und, store.read_json(demo_id, "plan.json") or {}, demo)
+    plan = store.read_json(demo_id, "plan.json") or {}
+    issues = author.validate(script, und, plan, demo)
     invalid = [line.get("id") for seg in script.get("segments", []) for line in [*(seg.get("lines") or []), *(seg.get("deeper") or [])] if line.get("id") in requested and line.get("unverified")]
     invalid += [line.get("id") for line in extra_lines if line.get("id") in requested and line.get("unverified")]
     if invalid:
         raise HTTPException(400, "That edit introduces an uncited claim or figure. Add the information as a source/fact first: " + ", ".join(invalid))
     script["issues"] = issues
+    if questions or any({"text", "delivery", "fact_ids"}.intersection(edit) for edit in requested.values()):
+        script.pop("voice_input_hash", None)
+    # A manual edit is a current draft, never an unprepared legacy artifact
+    # that Build may silently replace. Keep the user's words and review state.
+    script["narration_preparation"] = {**(script.get("narration_preparation") or {}), "status": "incomplete"}
+    preparation = narration.preparation_status(demo_id, script=script, plan=plan)
+    script["narration_preparation"] = preparation
+    incomplete = preparation["status"] in {"incomplete", "needs_sources"}
     und["image_map"] = visuals.build_map(und, demo)
     store.write_json(demo_id, "understanding.json", und)
-    realigned = bool(body.get("realign_visuals", True))
+    realigned = bool(body.get("realign_visuals", True)) and not incomplete
     if realigned:
         script = visuals.align(demo_id, script, und)
+    elif incomplete:
+        script["visual_audit"] = {"method": "pending_narration", "lines": [], "images": []}
     author.timeline(script, demo_id)
     store.write_json(demo_id, "script.json", script)
     orchestrator.invalidate(demo_id, "author")
-    orchestrator.set_stage(demo_id, "author", "done", message="direct script edits saved and validated")
+    orchestrator.set_stage(demo_id, "author", "pending" if incomplete else "done",
+                           message=preparation["reason"] if incomplete else "direct script edits saved and validated")
     store.update(demo_id, lambda d: d["approvals"].update({"visuals": False, "script": False}))
     runlog.event(demo_id, "Script edited directly", f"{len(found)} line(s), {len(questions)} question(s), {len(segment_edits)} segment label(s) saved; visual alignment {'refreshed' if realigned else 'kept'}; script and visuals require re-approval.")
     return {"ok": True, "cards": align.cards(demo_id), "approvals": store.load(demo_id)["approvals"], "issues": issues}
@@ -1088,7 +1106,7 @@ async def revise(demo_id: str, req: Request, override_readiness: bool = False):
     stage = body.get("stage")
     if stage not in ("understand", "coach", "plan", "author", "deck", "faq"):
         raise HTTPException(400, "stage must be understand | coach | plan | author | deck | faq")
-    if stage == "plan" and body.get("instruction") == narration.PREPARATION_INSTRUCTION:
+    if stage in {"plan", "author"} and body.get("instruction") == narration.PREPARATION_INSTRUCTION:
         _require_provider_readiness(demo, override=override_readiness)
     try:
         graph.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))

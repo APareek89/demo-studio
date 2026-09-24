@@ -140,8 +140,10 @@ def run(check, _demo_id=None):
               saved_script["intake_audio"] == {} and saved_script["intake_q2"] == "" and saved_script["segments"][0]["checkin_audio"] is None
               and saved_script["segments"][0]["lines"][0]["audio"] == "keep.wav")
         current = store.load(did)
-        check("align review: intake and checkin review invalidates downstream audio/deck and requires script/visual approval",
-              current["stages"]["author"]["status"] == "done" and current["stages"]["voice"]["status"] == "stale"
+        check("align review: short manually reviewed narration stays pending, invalidates audio/deck and requires script/visual approval",
+              current["stages"]["author"]["status"] == "pending"
+              and result.json()["cards"]["script"]["preparation"]["status"] == "incomplete"
+              and current["stages"]["voice"]["status"] == "stale"
               and current["stages"]["deck"]["status"] == "stale" and not current["approvals"]["script"] and not current["approvals"]["visuals"])
         result = api.patch(f"/api/demos/{did}/align/script", json={"checkins":[{"segment_id":"proof", "text":"Does that suit your use?"}], "realign_visuals":False})
         rejected_question = store.read_json(did, "script.json")

@@ -18,6 +18,15 @@ _duration_fixture = _duration_patch.object(_narration, "require_minimum", return
     "measured": False, "basis": "synthetic plumbing fixture", "route": []})
 _duration_fixture.start()
 print("DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract")
+# The tiny schema-shaped mock is also intentionally not a customer-ready draft.
+# Scope readiness to this broad plumbing process only. automatic_narration_contract
+# and release_mock_contract use real readiness with distinct cited source passages.
+_preparation_fixture = _duration_patch.object(_narration, "preparation_status", return_value={
+    "status": "ready", "target_words": 495, "words": 495, "attempts": 0,
+    "missing_words": 0, "mock_preview": True, "measured": False, "seconds": 180,
+    "basis": "synthetic plumbing fixture", "reason": "Explicit plumbing fixture", "errors": []})
+_preparation_fixture.start()
+print("PREPARATION FIXTURE: synthetic for plumbing; real Read readiness covered by automatic_narration_contract and release_mock_contract")
 
 c = TestClient(app)
 def status(i): return c.get(f"/api/demos/{i}").json()["demo"]["status"]

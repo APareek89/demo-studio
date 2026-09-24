@@ -332,9 +332,11 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
         script["narration_minimum"] = guided
         if prepared_tour:
-            script["narration_preparation"] = dict(preparation)
+            script["narration_preparation"] = {**(script.get("narration_preparation") or {}), **preparation}
             eligible = narration.preparation_report(script, allowed_fact_ids=fact_ids)
             target = int(preparation["target_words"])
+            script["narration_preparation"].update(status="incomplete" if eligible["words"] < target else "ready",
+                                                  words=eligible["words"], missing_words=max(0, target - eligible["words"]))
             if eligible["words"] < target:
                 issues.append(f"GLOBAL NARRATION TARGET: {eligible['words']} distinct supported words, minimum {target}. Add {target - eligible['words']} words of distinct supported detail from assigned approved facts to underused story stops, within their whole-stop budgets. Add complete cited lines, each within its delivery ceiling. Preserve good existing lines; never repeat claims, pad, slow the voice, or count deeper-only material. If the evidence is insufficient, keep the gap explicit.")
             if eligible["words"] > limit:
@@ -485,14 +487,15 @@ def _assign_ids(script: dict) -> None:
 # Turn the approved registry and planner's outline into script.json with narration and per-line visual references.
 # server/graph.py:author invokes this stage; server/agents/deck.py:build consumes its saved segments next.
 def run(demo_id: str, emit, instruction: str = "") -> dict:
+    from . import narration, plan as planner
     und = store.read_json(demo_id, "understanding.json")
     plan = store.read_json(demo_id, "plan.json")
     if not (und and plan):
         raise RuntimeError("Plan first, then author")
     demo = store.load(demo_id)
-    # New authoring/revision runs adopt the current minimum; read-only validation
-    # of a saved legacy plan keeps its historical issue contract.
-    plan = {**plan, "guided_minimum_seconds": 180}
+    # Drafting owns preparation before human review, including older plans.
+    # This retains the settled story and never invokes another Planner model.
+    plan = planner.prepare_existing(demo_id)
     for s in und["shots"]:
         s["_allowed"] = store.visual_allowed(demo, s["source_id"])
     for i in und["images"]:
@@ -526,6 +529,7 @@ IMAGES:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     audience = demo.get("settings", {}).get("audience", "everyday")
     sys = AUTHOR_SYSTEM.format(principles=PRINCIPLES, author_craft=AUTHOR_CRAFT, ladder=TRANSLATION_LADDER, signposts=" | ".join(SIGNPOSTS), audience=audience_instruction(audience), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
+    attempts, preparation_errors = 1, []
     try:
         out = claude.structured(sys, content, schemas.ScriptOut, max_tokens=40000)
     except Exception as e:
@@ -536,10 +540,11 @@ IMAGES:
         out = manifest
     script = out.model_dump()
     script["intake_q2"] = ""
-    # Check the first draft and, when needed, make one repair request with its concrete validator issues.
-    # The repaired draft is checked again; remaining issues stay visible rather than triggering an endless loop.
+    # Keep the general repair, then permit one duration-focused completion.
+    # Three drafting calls is the hard limit; provider failures stop retries.
     issues = validate(script, und, plan, demo)
     if issues:
+        attempts += 1
         emit(f"Validator flagged {len(issues)} issue{'s' if len(issues) != 1 else ''} — asking for a grounded rewrite…")
         fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
         fix += "\n\n" + """VALIDATOR ISSUES — each names a specific segment or line. Fix ONLY those. Return the full script with
@@ -556,26 +561,59 @@ the one before it, a subject introduced twice, a join that lost its verb.
 """ + "\n".join("- " + i for i in issues)
         try:
             out2 = claude.structured(sys, fix, schemas.ScriptOut, max_tokens=40000)
-            script = out2.model_dump()
-            script["intake_q2"] = ""
-            issues = validate(script, und, plan, demo)
-        except Exception:
-            pass
+            candidate = out2.model_dump()
+            candidate["intake_q2"] = ""
+            candidate_issues = validate(candidate, und, plan, demo)
+            script, issues = candidate, candidate_issues
+        except Exception as error:
+            preparation_errors.append(f"Draft repair failed: {claude.describe_error(error)[:300]}")
+    allowed = {fact["id"] for fact in und["facts"] if fact.get("approved", True)}
+    target = plan["narration_preparation"]["target_words"]
+    available_words = narration.preparation_report(script, allowed_fact_ids=allowed)["words"]
+    route_ids, _ = narration.default_route({"segments": plan["segments"]}, include_all_proofs=True)
+    selected_stops = [segment for segment in plan["segments"] if segment["id"] in route_ids]
+    capacity = narration.OVERVIEW_WORDS + CLOSING_LIMIT + sum(
+        segment["word_budget"] for segment in selected_stops)
+    assigned_evidence = any(allowed.intersection(segment.get("fact_ids", [])) for segment in selected_stops)
+    if available_words < target and not preparation_errors and assigned_evidence and capacity >= target and attempts < 3:
+        attempts += 1
+        emit("Completing the three-minute draft with distinct supported detail…")
+        completion = content + "\n\n" + narration.PREPARATION_INSTRUCTION
+        completion += "\n\nCURRENT DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
+        completion += "\n\nVALIDATOR ISSUES:\n" + "\n".join("- " + issue for issue in issues)
+        try:
+            out3 = claude.structured(sys, completion, schemas.ScriptOut, max_tokens=40000)
+            candidate = out3.model_dump()
+            candidate["intake_q2"] = ""
+            candidate_issues = validate(candidate, und, plan, demo)
+            script, issues = candidate, candidate_issues
+        except Exception as error:
+            preparation_errors.append(f"Narration completion failed: {claude.describe_error(error)[:300]}")
     # Assign line IDs, then audit actual image coverage before splitting batches and estimating their timeline.
     # server/agents/visuals.py:align can change line visuals; deck.py:build later chooses one slide image per segment.
     _assign_ids(script)
     script["issues"] = issues
     script["version"] = (prev.get("version", 0) + 1) if prev else 1
     script["intake_audio"] = {}
+    script["narration_preparation"] = {**plan["narration_preparation"], "status": "incomplete",
+                                       "attempts": attempts, "errors": preparation_errors}
     schemas.Script.model_validate(script)
-    script = visuals.align(demo_id, script, und, emit)
+    if narration.preparation_status(demo_id, script=script, plan=plan)["status"] == "ready":
+        script = visuals.align(demo_id, script, und, emit)
+    else:
+        # An old audit cannot be reused as proof for an incomplete new draft.
+        # Audit the final words only after automatic preparation succeeds.
+        script["visual_audit"] = {"method": "pending_narration", "lines": [], "images": []}
+        emit("Narration preparation is incomplete — picture auditing will wait for a complete draft.")
     n_split = split_long_batches(script, strict=(plan.get("narration_preparation") or {}).get("version") == 1)
     if n_split:
         emit(f"{n_split} long batch(es) divided at complete lines for clearer pacing.")
+    script["narration_preparation"] = narration.preparation_status(demo_id, script=script, plan=plan)
     timeline(script)
     store.write_json(demo_id, "script.json", script)
     n_lines = sum(len(s["lines"]) for s in script["segments"])
     unverified = sum(1 for s in script["segments"] for l in s["lines"] if l.get("unverified"))
-    store.log(demo_id, "author", {"segments": len(script["segments"]), "lines": n_lines, "issues": issues})
+    store.log(demo_id, "author", {"segments": len(script["segments"]), "lines": n_lines, "issues": issues,
+                                  "narration_preparation": script["narration_preparation"]})
     emit(f"Script: {len(script['segments'])} segments, {n_lines} lines" + (f", {unverified} held back as unverified; {len(issues)} note(s) on the Facts card." if issues else ", all lines grounded and within pacing limits."))
     return script
