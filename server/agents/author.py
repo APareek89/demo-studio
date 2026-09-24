@@ -24,7 +24,7 @@ voice, in a sentence that carries the thought on. Never reference. Always connec
   thought, may say "it" for a subject line one named. A segment whose lines each re-announce their topic
   is wrong even if every line is true and cited.
 - ACROSS segments, only the proof segments can be reordered. The default guided tour plays enough supported
-  proof stops to provide at least three minutes of narration, excluding film and customer Q&A. Those stops must
+  proof stops to provide the selected demo duration of narration, excluding film and customer Q&A. Those stops must
   open cold — no naming, numbering or pointing back at another segment — but "cold" does not mean
   "abrupt": open on a place, a moment, or the thing itself ("Sitting in the driver's seat," / "On a long
   drive,"), which reads as a continuation wherever it lands.
@@ -51,7 +51,7 @@ Hard rules:
 4. THE PLAN IS SETTLED. Write one segment for each segment in PLAN.segments, in the order given, keeping
    its id, role and title exactly. Do not add, drop, merge, split, reorder or rename a segment, and do
    not decide what the demo covers — that decision is made. Speak only the facts the plan assigned to
-   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question. For a prepared plan, one segment is one reviewed story stop: its word_budget can cover two or three short delivery batches. Write complete cited lines within that whole-stop allowance; the delivery splitter groups those lines afterward. The budget exists to
+   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question. For a prepared plan, one segment is one reviewed story stop: its word_budget can cover several short delivery batches. Write complete cited lines within that whole-stop allowance; the delivery splitter groups those lines afterward. The budget exists to
    keep the thought clear, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed. Your judgement is about WORDS: what to say first inside the segment, how long a sentence
    runs, which everyday noun carries the idea, how one segment hands over to the next.
    PLAN.customer_persona is the planner's note about who the product suits. It is not a person in the
@@ -139,7 +139,8 @@ def route_limit(demo: dict | None = None, plan: dict | None = None) -> int:
     preparation = (plan or {}).get("narration_preparation") or {}
     if preparation.get("version") == 1 and preparation.get("target_words"):
         return int(preparation["target_words"]) + 40
-    minutes = max(3.0, float((demo or {}).get("settings", {}).get("pitch_minutes", 3) or 3))
+    from .narration import minimum_seconds
+    minutes = minimum_seconds(demo) / 60
     return round(minutes * 60 * WPS) + 40
 
 
@@ -311,7 +312,7 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
     route = sum(by_role.get("intro", [0])) + sum(by_role.get("outcome", [0])) + sum(sorted(by_role.get("proof", []), reverse=True)[:3]) + sum(by_role.get("features", [0])) + sum(by_role.get("establish", [0])) + closing_words
     if isinstance(plan, dict) and plan.get("guided_minimum_seconds") and demo is not None:
         from . import narration
-        _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
+        _, guided = narration.default_route(script, allowed_fact_ids=fact_ids, minimum_seconds=narration.minimum_seconds(demo))
         route = guided["words"]
     limit = route_limit(demo, plan)
     if route > limit:
@@ -329,11 +330,11 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         register_warning(overview.get("text", ""), "Explore overview")
     if isinstance(plan, dict) and plan.get("guided_minimum_seconds") and demo is not None:
         from . import narration
-        _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
+        _, guided = narration.default_route(script, allowed_fact_ids=fact_ids, minimum_seconds=narration.minimum_seconds(demo))
         script["narration_minimum"] = guided
         if prepared_tour:
             script["narration_preparation"] = {**(script.get("narration_preparation") or {}), **preparation}
-            eligible = narration.preparation_report(script, allowed_fact_ids=fact_ids)
+            eligible = narration.preparation_report(script, allowed_fact_ids=fact_ids, minimum_seconds=narration.minimum_seconds(demo))
             target = int(preparation["target_words"])
             script["narration_preparation"].update(status="incomplete" if eligible["words"] < target else "ready",
                                                   words=eligible["words"], missing_words=max(0, target - eligible["words"]))
@@ -577,7 +578,7 @@ the one before it, a subject introduced twice, a join that lost its verb.
     assigned_evidence = any(allowed.intersection(segment.get("fact_ids", [])) for segment in selected_stops)
     if available_words < target and not preparation_errors and assigned_evidence and capacity >= target and attempts < 3:
         attempts += 1
-        emit("Completing the three-minute draft with distinct supported detail…")
+        emit("Completing the selected-length draft with distinct supported detail…")
         completion = content + "\n\n" + narration.PREPARATION_INSTRUCTION
         completion += "\n\nCURRENT DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
         completion += "\n\nVALIDATOR ISSUES:\n" + "\n".join("- " + issue for issue in issues)

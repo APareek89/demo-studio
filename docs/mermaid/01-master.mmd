@@ -18,9 +18,9 @@ flowchart TD
   OVER2["UI overlay<br/>'Building your demo…'"]:::term
   BUNDLE["bundle.json<br/>[DATA · data/demos/id/bundle.json]"]:::data
   PLAY["Rehearse: player<br/>[FUNCTION · web/player/player.js]<br/>continuous stop narration · answers resume after 3 s · clarifications wait<br/>owned voice/typed turns; see diagram 05"]:::fn
-  FB["USER gives feedback<br/>[ask · Rehearse panel]"]:::ask
-  FBA["POST /feedback → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'coach'|'understand') → human Align"]:::agent
-  REHEARSE["USER selects Run rehearsal<br/>[ASK · Rehearse panel]<br/>POST /api/demos/id/rehearsal · customer questions first, then uploaded questions<br/>empty bank only: at most five sample questions; diagnostics preserve publication"]:::ask
+  FB["USER gives feedback<br/>[ask · Rehearse feedback chat]"]:::ask
+  FBA["POST /align + attachments → align agent (context=rehearse)<br/>[AGENT · Claude text tier]<br/>revise('author'|'plan'|'coach'|'understand') → human Align"]:::agent
+  REHEARSE["USER selects Run rehearsal<br/>[ASK · Rehearse feedback chat]<br/>POST /api/demos/id/rehearsal · customer questions first, then uploaded questions<br/>empty bank only: at most five sample questions; diagnostics preserve publication"]:::ask
   HOME["Home workspace<br/>[FUNCTION · web/home.js · #/home default]<br/>real demo/session counts · recent demos · existing create/open actions"]:::fn
   LIB["My demos tab<br/>[DATA · list of data/demos/*/demo.json]<br/>search/filter · approved bundle thumbnails"]:::data
 

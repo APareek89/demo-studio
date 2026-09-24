@@ -112,11 +112,11 @@ def main():
 
             old = play(); page.get_by_role('link', name='Home', exact=True).click()
             check('top Home disposes standalone capture, output and socket once', closed(old))
-            old = play(); page.get_by_role('link', name='Align', exact=True).click()
+            old = play(); page.locator('#tabs').get_by_role('link', name='Align', exact=True).click()
             check('Align navigation disposes standalone player', closed(old))
             old = play(); page.evaluate('history.back()')
             check('browser Back disposes standalone player', closed(old))
-            old = play(True); page.get_by_role('link', name='Align', exact=True).click()
+            old = play(True); page.locator('#tabs').get_by_role('link', name='Align', exact=True).click()
             check('Rehearse to Align disposes embedded player and SSE', closed(old) and page.evaluate('subscriptions.slice(0,-1).every(s=>s.closed)'))
             old = play(True); page.get_by_role('button', name='Full screen', exact=True).click()
             page.wait_for_function(f'clients.length>{old+1}')

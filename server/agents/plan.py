@@ -49,10 +49,10 @@ Produce exactly this:
   a stop. The intro segment previews stop 1 in everyday words; the outcome segment names the three USPs.
    Do not open two consecutive segments the same way: vary whether a segment opens on something noticed,
    on a doubt the previous one raised, on an ordinary situation, or on a short honest limitation.
-- WORD BUDGETS. Set word_budget for every segment. The default guided tour must provide at least three minutes of
+- WORD BUDGETS. Set word_budget for every segment. The default guided tour must provide the selected demo duration of
   distinct supported narration: allocate total_words minus 23 for the Explore overview and 45 for closing across
   proof, features and establish. Intro/outcome are a separate opening used by Browse and do not consume that guided budget.
-  A supported story stop may need two or three short delivery batches. Its word_budget covers the whole stop;
+  A supported story stop may need several short delivery batches, up to the supplied timing limit. Its word_budget covers the whole stop;
   the supplied role ceiling applies to EACH delivery batch, not to the whole stop. Keep one planned segment per
   reviewed stop and brief distinct details from its assigned approved facts for those batches. No facts means no
   extra batches. Spend more on the lead fundamental and less on a minor stop (never under 22). An even split is a catalogue.
@@ -328,10 +328,10 @@ def _enforce_playbook(p: dict, pb: dict) -> None:
 def _enforce_budget(p: dict, demo: dict) -> None:
     """Allocate requested speech length within role ceilings, recording infeasible totals."""
     from . import author
-    from .narration import MIN_SECONDS, OVERVIEW_WORDS, ROLES
+    from .narration import minimum_seconds, OVERVIEW_WORDS, ROLES
     preparation = p.get("narration_preparation") or {}
     total = (int(preparation["target_words"]) if preparation.get("version") == 1 and preparation.get("target_words")
-             else round(max(3.0, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3)) * 60 * author.WPS))
+             else round(minimum_seconds(demo) * author.WPS))
     target = max(0, total - 45 - OVERVIEW_WORDS)
     segments = [segment for segment in p.get("segments", []) if segment.get("role") in ROLES]
     for segment in p.get("segments", []):
@@ -344,7 +344,7 @@ def _enforce_budget(p: dict, demo: dict) -> None:
         if preparation.get("version") == 1 and preparation.get("target_words") and segment.get("fact_ids"):
             # This is room for distinct supported detail, not permission to
             # manufacture content. The author retains the evidence boundary.
-            ceiling *= min(3, max(2, len(set(segment["fact_ids"]))))
+            ceiling *= min(max(3, int(minimum_seconds(demo) / 60)), max(2, len(set(segment["fact_ids"]))))
         ceilings.append(ceiling)
     lead = next((segment for segment in segments if segment.get("role") == "proof" and segment.get("fundamental")), None)
     weights = []
@@ -371,7 +371,7 @@ def _enforce_budget(p: dict, demo: dict) -> None:
         segments[i]["word_budget"] += direction
         remaining -= direction
     p["total_words"] = total
-    p["guided_minimum_seconds"] = MIN_SECONDS
+    p["guided_minimum_seconds"] = minimum_seconds(demo)
     p["guided_opening_words"] = OVERVIEW_WORDS
     p["issues"] = [issue for issue in p.get("issues", [])
                    if not (issue.startswith("Requested ") and "cannot fit the current stops" in issue)]
@@ -441,9 +441,9 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     target_words = narration.word_target(demo, store.read_json(demo_id, "script.json"), demo_id)
     timing = {"pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 3),
               "total_words": target_words,
-              "minimum_narration_seconds": 180, "guided_overview_words": 23,
+              "minimum_narration_seconds": narration.minimum_seconds(demo), "guided_overview_words": 23,
               "closing_words": 45, "role_ceilings": dict(author.LIMITS),
-              "max_delivery_batches_per_supported_stop": 3}
+              "max_delivery_batches_per_supported_stop": max(3, int(narration.minimum_seconds(demo) / 60))}
     playbook_view = {key: playbook.get(key) for key in ("stops", "usps", "objections", "evidence_gaps")} if playbook else None
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND PROFILE: {json.dumps(und['brand'])}
@@ -477,7 +477,7 @@ IMAGES ({len(und['images'])}):
     preparation_only = bool(prev and instruction == narration.PREPARATION_INSTRUCTION)
     if preparation_only:
         p = copy.deepcopy(prev)
-        emit("Preparing the reviewed story for three minutes of supported narration…")
+        emit("Preparing the reviewed story for the selected duration of supported narration…")
     else:
         try:
             plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000, model=config.CLAUDE_PLAN_MODEL)

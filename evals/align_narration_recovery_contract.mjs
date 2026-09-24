@@ -49,7 +49,7 @@ find(overlay,'Back to the cards').click();
 let reject;post=()=>new Promise((_,no)=>{reject=no;});
 const button=find(notice(),'Retry drafting'),pending=button.click();button.click();
 check('explicit retry disables duplicate clicks while pending',calls.length===1&&find(notice(),'Retrying…').disabled);
-check('draft retry uses guarded Author revision and never requests automatic Build',calls[0].path==='/api/demos/dm_12345678/revise?override_readiness=true'&&calls[0].body.stage==='author'&&calls[0].body.rebuild===false&&calls[0].body.instruction==='Expand the default guided narration to at least three measured minutes using distinct supported detail from the approved facts. Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.');
+check('draft retry uses guarded Author revision and never requests automatic Build',calls[0].path==='/api/demos/dm_12345678/revise?override_readiness=true'&&calls[0].body.stage==='author'&&calls[0].body.rebuild===false&&calls[0].body.instruction==='Expand the default guided narration to the selected demo duration using distinct supported detail from the approved facts. Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.');
 reject(new Error('Provider readiness is required'));await pending;await flush();
 check('readiness failure remains visible and retry is re-enabled',toasts.at(-1)==='Provider readiness is required'&&notice().textContent.includes('Provider readiness is required')&&!find(notice(),'Retry drafting').disabled);
 readinessSuffix='';post=async()=>{remote.demo.status='reading';remote.running=true;};

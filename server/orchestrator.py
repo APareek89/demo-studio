@@ -399,7 +399,7 @@ def apply_actions(demo_id: str, actions: list[dict], attachments: list[dict], co
     # Turn newly attached evidence into a source reread when no other revision was selected.
     # Input: attachments, context and accumulated actions. Output: an Understand revision request.
     # Linked: server/graph.py:start_revise sends the new evidence back through the review workflow.
-    if attachments and revise_stage is None and context == "align":
+    if attachments and revise_stage is None and context in {"align", "rehearse"}:
         revise_stage, revise_instr = "understand", ["New sources were added: " + ", ".join(a["name"] for a in attachments) + ". Incorporate them into the registry and visuals."]
     if revise_stage:
         requests["revise"] = (revise_stage, "\n".join(x for x in revise_instr if x))

@@ -14,8 +14,27 @@ const ZONES = [
 ];
 
 export function renderSources(ctx) {
-  const { demoId, area } = ctx;
+  const { area } = ctx;
+  let demoId = ctx.demoId;
   let demo = ctx.state.demo;
+  const isCurrent = () => !ctx.isCurrent || ctx.isCurrent();
+  async function ensureDemo() {
+    if (!isCurrent()) throw new Error("This Sources page is no longer active");
+    if (!demoId) {
+      demoId = await ctx.ensureDemo();
+      demo = ctx.state.demo;
+      readiness.replaceChildren(providerReadiness(demoId));
+    }
+    return demoId;
+  }
+  async function patchDemo(body) {
+    await ensureDemo();
+    if (!isCurrent()) throw new Error("This Sources page is no longer active");
+    demo = await api.patch(`/api/demos/${demoId}`, body);
+    if (!ctx.isCurrent || ctx.isCurrent()) ctx.state.demo = demo;
+    return demo;
+  }
+  const readiness = h("div");
   const list = h("div", { class: "src-list" });
   const sourceCount = h("span", { class: "pill" });
   const uploading = h("span", { class: "uploading", role: "status", "aria-live": "polite" });
@@ -24,16 +43,25 @@ export function renderSources(ctx) {
   const readBtn = h("button", { class: "btn primary", onclick: startRead }, "Configure Demo", icon("arrow-right", { size: 17 }));
   const LANG_LIST = [["en-IN", "Indian English"], ["hinglish", "Hinglish"], ["hi-IN", "Hindi"], ["ta-IN", "Tamil"], ["te-IN", "Telugu"], ["kn-IN", "Kannada"], ["mr-IN", "Marathi"], ["bn-IN", "Bengali"], ["gu-IN", "Gujarati"], ["ml-IN", "Malayalam"], ["pa-IN", "Punjabi"]];
   const chosen = new Set(demo.settings?.languages?.length ? demo.settings.languages : [demo.settings?.language || "en-IN"]);
-  const langChips = h("div", { class: "lang-chips" }, ...LANG_LIST.map(([v, l]) => { const cb = h("input", { type: "checkbox", checked: chosen.has(v) }); const lab = h("label", { class: chosen.has(v) ? "on" : "" }, cb, l); cb.onchange = async () => { if (cb.checked) chosen.add(v); else chosen.delete(v); if (!chosen.size) { chosen.add("en-IN"); } lab.classList.toggle("on", chosen.has(v)); try { await api.patch(`/api/demos/${demoId}`, { settings: { languages: LANG_LIST.map((x) => x[0]).filter((x) => chosen.has(x)) } }); toast("Languages: " + [...chosen].join(", ")); } catch (e) { toast(e.message, true); } }; return lab; }));
-  const audSel = h("select", { id: "source-audience", onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { audience: audSel.value } }); toast("Audience: " + audSel.selectedOptions[0].textContent); } catch (e) { toast(e.message, true); } } },
+  const langChips = h("div", { class: "lang-chips" }, ...LANG_LIST.map(([v, l]) => { const cb = h("input", { type: "checkbox", checked: chosen.has(v) }); const lab = h("label", { class: chosen.has(v) ? "on" : "" }, cb, l); cb.onchange = async () => { if (cb.checked) chosen.add(v); else chosen.delete(v); if (!chosen.size) { chosen.add("en-IN"); } lab.classList.toggle("on", chosen.has(v)); try { await patchDemo({ settings: { languages: LANG_LIST.map((x) => x[0]).filter((x) => chosen.has(x)) } }); toast("Languages: " + [...chosen].join(", ")); } catch (e) { toast(e.message, true); } }; return lab; }));
+  const audSel = h("select", { id: "source-audience", onchange: async () => { try { await patchDemo({ settings: { audience: audSel.value } }); toast("Audience: " + audSel.selectedOptions[0].textContent); } catch (e) { toast(e.message, true); } } },
     h("option", { value: "everyday", selected: (demo.settings?.audience || "everyday") === "everyday" }, "Everyday buyer — plain language, no jargon"),
     h("option", { value: "informed", selected: demo.settings?.audience === "informed" }, "Informed — light technical terms, explained"),
     h("option", { value: "expert", selected: demo.settings?.audience === "expert" }, "Expert — full technical detail"));
+  const durationSel = h("select", { id: "source-duration", onchange: async () => {
+    const previous = demo.settings?.pitch_minutes ?? 3;
+    durationSel.disabled = true;
+    try {
+      await patchDemo({ settings: { pitch_minutes: Number(durationSel.value) } });
+      toast(`Demo duration: ${durationSel.value} minute${durationSel.value === "1" ? "" : "s"}`);
+    } catch (error) { durationSel.value = String(previous); toast(error.message, true); }
+    finally { durationSel.disabled = false; }
+  } }, ...[1, 2, 3, 4, 5].map(value => h("option", { value, selected: value === (demo.settings?.pitch_minutes ?? 3) }, `${value} minute${value === 1 ? "" : "s"}`)));
   const voiceSel = h("select", { id: "source-voice" }, h("option", { value: "" }, "Loading voices…"));
   const voiceStatus = h("span", { class: "help" }, "");
   let vinfo = null;
-  api.get(`/api/voices?demo_id=${demoId}`).then((v) => { vinfo = v; voiceSel.replaceChildren(...v.voices.map((o) => h("option", { value: o.id, selected: o.id === v.current }, o.label))); voiceStatus.textContent = `${v.provider}` + (v.chain.length > 1 ? ` → ${v.chain.slice(1).join(" → ")}` : "") + ` · listening: ${v.stt}` + (v.unavailable && Object.keys(v.unavailable).length ? ` · ⚠ ${Object.entries(v.unavailable).map(([k, w]) => `${k} unavailable (${w.slice(0, 60)})`).join("; ")}` : ""); }).catch(() => { voiceSel.replaceChildren(h("option", { value: "" }, "browser voice")); });
-  const previewBtn = h("button", { class: "btn sm", onclick: async () => { if (!vinfo || !voiceSel.value) return; previewBtn.disabled = true; voiceStatus.textContent = "recording a sample…"; try { await api.patch(`/api/demos/${demoId}`, { settings: { [vinfo.setting_key]: voiceSel.value } }); const r = await api.post(`/api/demos/${demoId}/voice/sample`, { text: "Hi, I'm your guide for today. Tell me what you're hoping this will change for you, and I'll show you that first." }); if (r.url) { new Audio(r.url).play(); voiceStatus.textContent = "playing " + voiceSel.selectedOptions[0].textContent; } else voiceStatus.textContent = "no server voice — browser voice will be used"; } catch (e) { toast(e.message, true); voiceStatus.textContent = ""; } previewBtn.disabled = false; } }, icon("play", { size: 15 }), "Preview");
+  api.get(demoId ? `/api/voices?demo_id=${demoId}` : "/api/voices").then((v) => { vinfo = v; voiceSel.replaceChildren(...v.voices.map((o) => h("option", { value: o.id, selected: o.id === v.current }, o.label))); voiceStatus.textContent = `${v.provider}` + (v.chain.length > 1 ? ` → ${v.chain.slice(1).join(" → ")}` : "") + ` · listening: ${v.stt}` + (v.unavailable && Object.keys(v.unavailable).length ? ` · ⚠ ${Object.entries(v.unavailable).map(([k, w]) => `${k} unavailable (${w.slice(0, 60)})`).join("; ")}` : ""); }).catch(() => { voiceSel.replaceChildren(h("option", { value: "" }, "browser voice")); });
+  const previewBtn = h("button", { class: "btn sm", onclick: async () => { if (!vinfo || !voiceSel.value) return; previewBtn.disabled = true; voiceStatus.textContent = "recording a sample…"; try { await patchDemo({ settings: { [vinfo.setting_key]: voiceSel.value } }); const r = await api.post(`/api/demos/${demoId}/voice/sample`, { text: "Hi, I'm your guide for today. Tell me what you're hoping this will change for you, and I'll show you that first." }); if (r.url) { new Audio(r.url).play(); voiceStatus.textContent = "playing " + voiceSel.selectedOptions[0].textContent; } else voiceStatus.textContent = "no server voice — browser voice will be used"; } catch (e) { toast(e.message, true); voiceStatus.textContent = ""; } previewBtn.disabled = false; } }, icon("play", { size: 15 }), "Preview");
 
   async function refreshList() {
     sourceCount.textContent = `${demo.sources.length} added`;
@@ -43,7 +71,7 @@ export function renderSources(ctx) {
       (s.kind === "video" || s.kind === "image") ? h("label", { class: "use", title: "Off = the agent still learns from it, but it is not shown in the demo" }, h("input", { type: "checkbox", checked: s.use_in_demo !== false, onchange: async (e) => { try { const r = await api.patch(`/api/demos/${demoId}/sources/${s.id}`, { use_in_demo: e.target.checked }); demo.sources = r.sources; } catch (err) { toast(err.message, true); } } }), "use in demo") : null,
       h("button", { class: "btn sm ghost source-remove", title: `Remove ${s.name}`, "aria-label": `Remove ${s.name}`, onclick: async () => { const r = await api.del(`/api/demos/${demoId}/sources/${s.id}`); demo.sources = r.sources; refreshList(); } }, icon("trash", { size: 16 })) )));
     if (!demo.sources.length) list.append(h("div", { class: "studio-empty source-empty" }, icon("upload", { size: 24 }), h("div", {}, h("h3", {}, "Your source library starts here"), h("p", {}, "Add product material above. Everything you add will appear here for review."))));
-    readBtn.disabled = !demo.sources.length;
+    readBtn.disabled = !demo.sources.length && !urlIn.value.trim();
   }
 
   async function upload(role, files, extra = {}) {
@@ -52,15 +80,21 @@ export function renderSources(ctx) {
     fd.append("role", role);
     for (const [k, v] of Object.entries(extra)) fd.append(k, v);
     uploading.textContent = `uploading ${files.length ? files.map((f) => f.name).join(", ") : extra.url || "text"}…`;
-    try { const r = await api.form(`/api/demos/${demoId}/sources`, fd); demo.sources = r.sources; refreshList(); toast(`Added ${r.added.length} source${r.added.length === 1 ? "" : "s"}`); }
-    catch (e) { toast(e.message, true); }
-    uploading.textContent = "";
+    try {
+      await ensureDemo();
+      if (!isCurrent()) return false;
+      const r = await api.form(`/api/demos/${demoId}/sources`, fd);
+      demo.sources = r.sources;
+      if (isCurrent()) { refreshList(); toast(`Added ${r.added.length} source${r.added.length === 1 ? "" : "s"}`); }
+      return true;
+    } catch (error) { if (isCurrent()) toast(error.message, true); return false; }
+    finally { uploading.textContent = ""; }
   }
 
   function zone(z) {
     if (z.url) {
       const u = h("input", { "aria-label": "Competitor product page URL", placeholder: "https://example.com/competitor", style: "flex:1;min-width:220px" });
-      const compSel = h("select", { onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { competition: compSel.value } }); toast(compSel.value === "on" ? "Comparisons on — cited, with a verify caveat" : "Comparisons off"); } catch (e) { toast(e.message, true); } } }, h("option", { value: "off", selected: (demo.settings?.competition || "off") === "off" }, "Reviewed competitor sources: off"), h("option", { value: "on", selected: demo.settings?.competition === "on" }, "Reviewed competitor sources: on — cited, with a verify caveat"));
+      const compSel = h("select", { onchange: async () => { try { await patchDemo({ settings: { competition: compSel.value } }); toast(compSel.value === "on" ? "Comparisons on — cited, with a verify caveat" : "Comparisons off"); } catch (e) { toast(e.message, true); } } }, h("option", { value: "off", selected: (demo.settings?.competition || "off") === "off" }, "Reviewed competitor sources: off"), h("option", { value: "on", selected: demo.settings?.competition === "on" }, "Reviewed competitor sources: on — cited, with a verify caveat"));
       compSel.setAttribute("aria-label", "Competitor comparisons");
       return h("div", { class: "zone wide" }, h("div", { class: "zone-title" }, h("span", { class: "zone-icon" }, icon(SOURCE_ICONS[z.role])), h("h3", {}, z.title)), h("p", {}, z.desc), h("p", { class: "muted small" }, "During a live conversation, the guide can also check a public competitor URL supplied by the customer. Those findings are cited for that conversation and do not change the approved knowledge."), h("div", { class: "pick" }, u, h("button", { class: "btn sm", onclick: () => { const v = u.value.trim(); if (v) { upload("competitor", [], { url: v }); u.value = ""; } } }, icon("plus", { size: 15 }), "Add page"), compSel));
     }
@@ -81,15 +115,22 @@ export function renderSources(ctx) {
   }
 
   async function saveMeta() {
-    await api.patch(`/api/demos/${demoId}`, { name: nameIn.value.trim() || demo.name, product: { name: nameIn.value.trim(), url: urlIn.value.trim() } });
+    if (!demoId && !nameIn.value.trim() && !urlIn.value.trim()) return;
+    await patchDemo({ name: nameIn.value.trim() || demo.name, product: { name: nameIn.value.trim(), url: urlIn.value.trim() } });
   }
 
   async function startRead() {
-    await saveMeta();
-    const u = urlIn.value.trim();
-    if (u && !demo.sources.some((s) => s.kind === "url" && s.url === u)) await upload("product", [], { url: u });
-    try { await api.post(`/api/demos/${demoId}/read${readinessQuery(demoId)}`); ctx.navigate(`#/studio/${demoId}/align`); }
-    catch (e) { toast(e.message, true); }
+    readBtn.disabled = true;
+    try {
+      await ensureDemo();
+      await saveMeta();
+      const u = urlIn.value.trim();
+      if (u && !demo.sources.some((s) => s.kind === "url" && s.url === u) && !await upload("product", [], { url: u })) return;
+      if (!isCurrent()) return;
+      await api.post(`/api/demos/${demoId}/read${readinessQuery(demoId)}`);
+      if (isCurrent()) ctx.navigate(`#/studio/${demoId}/align`);
+    } catch (error) { if (isCurrent()) toast(error.message, true); }
+    finally { if (isCurrent()) refreshList(); }
   }
 
   area.replaceChildren(h("div", { class: "sources" },
@@ -97,19 +138,23 @@ export function renderSources(ctx) {
     h("section", { class: "source-identity" }, h("div", { class: "studio-section-title" }, icon("layers", { size: 19 }), h("h2", {}, "Product details")), h("div", { class: "form-row" }, h("div", {}, h("label", { for: "source-product-name" }, "Product name"), nameIn), h("div", {}, h("label", { for: "source-product-url" }, "Product page URL"), urlIn))),
     h("div", { class: "studio-section-title" }, icon("settings", { size: 19 }), h("h2", {}, "Demo preferences")),
     h("div", { class: "settings" },
+      h("div", {}, h("label", { for: "source-duration" }, "Demo duration"), durationSel, h("div", { class: "help" }, "Guided narration in each selected language. Opening film and customer questions are additional; changing duration requires a fresh Script and Visuals review.")),
       h("div", {}, h("label", { for: "source-audience" }, "Who is the demo for"), audSel, h("div", { class: "help" }, "Match the level of detail to your audience. Everyday buyers hear plain language, with technical detail available when asked.")),
       h("div", {}, h("label", {}, "Languages"), langChips, h("div", { class: "help" }, "First one is the main script; each extra language is translated and voiced at build (more narration lines = more cost).")),
       h("div", {}, h("label", { for: "source-voice" }, "Voice"), h("div", { class: "voice-picker", style: "display:flex;gap:6px;align-items:center" }, voiceSel, previewBtn), h("div", { class: "help" }, voiceStatus)),
-      h("div", {}, h("label", {}, "Opening film"), (() => { const has = demo.sources.some((x) => x.kind === "video" && x.role === "intro_video"); const cb = h("input", { type: "checkbox", checked: has && (demo.settings?.intro_video || "on") !== "off", disabled: !has, onchange: async () => { try { await api.patch(`/api/demos/${demoId}`, { settings: { intro_video: cb.checked ? "on" : "off" } }); toast(cb.checked ? "Opening film will play after the needs question" : "Opening film off"); } catch (e) { toast(e.message, true); } } }); return h("div", {}, h("label", { style: "display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-family:var(--disp);font-size:13px;color:var(--ink)" }, cb, has ? "Play after the guide asks what the customer needs" : "Upload a film in the “Opening film” box first"), h("div", { class: "help" }, "10–20 s with audio. Greeting → needs question → film → tailored walkthrough. The agent plans during the film, so there’s no visible wait.")); })())),
+      h("div", {}, h("label", {}, "Opening film"), (() => { const has = demo.sources.some((x) => x.kind === "video" && x.role === "intro_video"); const cb = h("input", { type: "checkbox", checked: has && (demo.settings?.intro_video || "on") !== "off", disabled: !has, onchange: async () => { try { await patchDemo({ settings: { intro_video: cb.checked ? "on" : "off" } }); toast(cb.checked ? "Opening film will play after the needs question" : "Opening film off"); } catch (e) { toast(e.message, true); } } }); return h("div", {}, h("label", { style: "display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-family:var(--disp);font-size:13px;color:var(--ink)" }, cb, has ? "Play after the guide asks what the customer needs" : "Upload a film in the “Opening film” box first"), h("div", { class: "help" }, "10–20 s with audio. Greeting → needs question → film → tailored walkthrough. The agent plans during the film, so there’s no visible wait.")); })())),
     h("div", { class: "studio-section-title" }, icon("layers", { size: 19 }), h("h2", {}, "Source material"), h("span", { class: "small muted" }, "Files, visuals and official pages")),
     h("div", { class: "src-grid" }, ...ZONES.map(zone)),
     h("div", { class: "studio-section-title source-library-title" }, icon("file", { size: 19 }), h("h2", {}, "Source library"), sourceCount),
     list,
-    providerReadiness(demoId),
+    readiness,
     h("div", { class: "src-actions" },
       h("div", { class: "note" }, h("strong", {}, "Next: review and align"), h("br"), "Your guide reads the sources and prepares the facts, visuals and pitch for your approval. Build time depends on the sources. Progress and any blocked pages are shown as the guide reads. New questions need supported evidence or are left open.", h("br"), uploading),
       readBtn),
   ));
+  if (demoId) readiness.replaceChildren(providerReadiness(demoId));
   refreshList();
-  nameIn.addEventListener("change", saveMeta);
+  nameIn.addEventListener("change", () => saveMeta().catch(error => { if (!ctx.isCurrent || ctx.isCurrent()) toast(error.message, true); }));
+  urlIn.addEventListener("input", refreshList);
+  urlIn.addEventListener("change", () => saveMeta().catch(error => { if (!ctx.isCurrent || ctx.isCurrent()) toast(error.message, true); }));
 }

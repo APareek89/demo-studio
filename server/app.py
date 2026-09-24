@@ -150,6 +150,14 @@ async def patch_demo(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     body = await req.json()
     settings = body.get("settings")
+    if isinstance(settings, dict) and "pitch_minutes" in settings:
+        from .agents import narration
+        try:
+            narration.validate_minutes(settings["pitch_minutes"])
+        except ValueError as error:
+            raise HTTPException(400, str(error)) from None
+        if graph.is_running(demo_id) or store.load(demo_id).get("running"):
+            raise HTTPException(409, "Wait for the current work to finish before changing the demo duration")
     if isinstance(settings, dict) and "runtime_default_sites" in settings and settings["runtime_default_sites"] not in ("off", "on"):
         raise HTTPException(400, "runtime_default_sites must be off or on")
     if isinstance(settings, dict) and "visual_theme" in settings:
@@ -169,6 +177,19 @@ async def patch_demo(demo_id: str, req: Request):
                 allowed["languages"] = [x for x in allowed["languages"] if isinstance(x, str)][:6] or ["en-IN"]
                 allowed["language"] = allowed["languages"][0]
             theme_changed = "visual_theme" in allowed and allowed["visual_theme"] != d["settings"].get("visual_theme", "marine")
+            duration_changed = "pitch_minutes" in allowed and allowed["pitch_minutes"] != d["settings"].get("pitch_minutes", 3)
+            if duration_changed:
+                # The reviewed speech and pictures must be reviewed for the new
+                # duration. Existing publication and source/FAQ approvals survive.
+                if d.get("running"):
+                    raise HTTPException(409, "Wait for the current work to finish before changing the demo duration")
+                for card in ("script", "visuals"):
+                    d["approvals"][card] = False
+                for stage in ("plan", "author", "deck", "voice", "rehearsal", "bundle"):
+                    if d["stages"][stage]["status"] != "idle":
+                        d["stages"][stage]["status"] = "stale"
+                if d.get("status") in ("ready", "error"):
+                    d["status"] = "align"
             d["settings"].update(allowed)
             if theme_changed:
                 d["approvals"]["visuals"] = False
@@ -186,14 +207,15 @@ async def patch_demo(demo_id: str, req: Request):
 
 # ---------- sources ----------
 
-async def _uploaded_source(demo_id: str, file: UploadFile, role: str) -> dict:
+async def _uploaded_source(demo_id: str, file: UploadFile, role: str, *, reuse_identical: bool = False) -> dict:
     """Apply the same bounded source-copy policy in Sources and Align."""
     limit = config.MAX_UPLOAD_MB * 1024 * 1024
     if file.size is not None and file.size > limit:
         raise HTTPException(413, f"{file.filename} is larger than {config.MAX_UPLOAD_MB} MB")
     try:
         return await run_in_threadpool(store.add_stream_source, demo_id,
-                                       file.filename or "file", file.file, role, max_bytes=limit)
+                                       file.filename or "file", file.file, role, max_bytes=limit,
+                                       reuse_identical=reuse_identical)
     except store.UploadTooLarge as e:
         raise HTTPException(413, str(e))
     except ValueError as e:
@@ -452,10 +474,12 @@ async def sse(demo_id: str, request: Request, since: int | None = None):
 @app.post("/api/demos/{demo_id}/align")
 async def align_message(demo_id: str, message: str = Form(default=""), files: list[UploadFile] = File(default=[]),
                         context: str = Form(default="align")):
-    _demo_or_404(demo_id)
+    demo = _demo_or_404(demo_id)
+    if graph.is_running(demo_id) or demo.get("running"):
+        raise HTTPException(409, "Still working on the last change — give me a moment")
     attachments = []
     for f in files:
-        attachments.append(await _uploaded_source(demo_id, f, "product"))
+        attachments.append(await _uploaded_source(demo_id, f, "product", reuse_identical=True))
     if not message.strip() and not attachments:
         raise HTTPException(400, "Say something or attach a file")
     try:

@@ -55,31 +55,49 @@ function stepState(demo, key) {
 }
 
 async function renderStudio(demoId, stage, epoch = beginView()) {
-  if (!demoId) {
-    const demos = await api.get("/api/demos");
-    if (!isCurrentView(epoch)) return;
-    if (demos.length) return navigate(`#/studio/${demos[0].id}/sources`);
-    return navigate("#/demos");
-  }
   let state;
-  try { state = await api.get(`/api/demos/${demoId}`); } catch (e) { if (!isCurrentView(epoch)) return; toast("Demo not found", true); return navigate("#/demos"); }
+  if (!demoId) {
+    stage = "sources";
+    state = { demo: { id: null, name: "", product: { name: "", url: "" }, sources: [], status: "sources", version: 0,
+      settings: { pitch_minutes: 3, audience: "everyday", language: "en-IN", languages: ["en-IN"] }, stages: {}, approvals: {} },
+      cards: null, conversation: [], sessions: [], leads: [], running: false, bundle_ready: false };
+  } else {
+    try { state = await api.get(`/api/demos/${demoId}`); } catch (e) { if (!isCurrentView(epoch)) return; toast("Demo not found", true); return navigate("#/demos"); }
+  }
   if (!isCurrentView(epoch)) return;
   const demo = state.demo; demo.__bundle = state.bundle_ready;
   if (!stage) stage = demo.status === "sources" ? "sources" : demo.status === "ready" ? "rehearse" : "align";
   const rail = h("aside", { class: "rail" },
     h("a", { class: "rail-back", href: "#/demos" }, icon("arrow-left", { size: 13 }), "All demos"),
-    h("div", { class: "demo-name" }, demo.name, h("span", { class: "id" }, demo.id, " · v", String(demo.version || 0))),
+    h("div", { class: "demo-name" }, demo.name || "New demo", h("span", { class: "id" }, demo.id ? `${demo.id} · v${demo.version || 0}` : "Add your product sources")),
     h("div", { class: "rail-label" }, "BUILD YOUR EXPERIENCE"),
-    ...STEPS.map((s) => { const ss = stepState(demo, s.key); return h("a", { class: `step${stage === s.key ? " active" : ""}${ss.done ? " done" : ""}${ss.locked ? " locked" : ""}`, href: `#/studio/${demo.id}/${s.key}` }, h("span", { class: "n" }, s.n), h("span", {}, s.label, h("span", { class: "sub" }, s.sub))); }),
+    ...STEPS.map((s) => { const ss = stepState(demo, s.key); const locked = !demoId && s.key !== "sources" || ss.locked; return h("a", { class: `step${stage === s.key ? " active" : ""}${ss.done ? " done" : ""}${locked ? " locked" : ""}`, "data-step": s.key, "aria-disabled": locked ? "true" : null, href: demoId ? `#/studio/${demo.id}/${s.key}` : "#/studio" }, h("span", { class: "n" }, s.n), h("span", {}, s.label, h("span", { class: "sub" }, s.sub))); }),
     h("div", { class: "spacer" }),
     h("div", { class: "status", id: "railStatus" }, demo.status === "sources" ? "waiting for sources" : demo.status),
   );
-  const area = h("section", { class: "stage-area", id: "stageArea" });
+  const area = h("section", { class: "stage-area" + (stage === "rehearse" ? " rehearse-area" : ""), id: "stageArea" });
   main.replaceChildren(h("div", { class: "studio" }, rail, area));
   if (current.unsub) { current.unsub(); current.unsub = null; }
   current.demoId = demoId;
+  let creating = null;
   const ctx = {
     demoId, state, area, navigate, refresh: () => isCurrentView(epoch) ? renderStudio(demoId, stage) : undefined,
+    ensureDemo: () => {
+      if (demoId) return Promise.resolve(demoId);
+      if (!isCurrentView(epoch)) return Promise.reject(new Error("This workspace has been closed."));
+      if (!creating) creating = (async () => {
+        const created = await api.post("/api/demos", {});
+        if (!isCurrentView(epoch)) throw new Error("This workspace has been closed.");
+        demoId = created.id; current.demoId = demoId; ctx.demoId = demoId;
+        // Adopt the saved URL without remounting an upload or setting change.
+        history.replaceState(null, "", `#/studio/${demoId}/sources`); viewHash = location.hash;
+        ctx.state = { ...state, demo: created }; state = ctx.state;
+        for (const link of rail.querySelectorAll("[data-step]")) link.href = `#/studio/${demoId}/${link.dataset.step}`;
+        rail.querySelector(".demo-name .id").textContent = `${demoId} · v0`;
+        return demoId;
+      })().catch(error => { creating = null; throw error; });
+      return creating;
+    },
     isCurrent: () => isCurrentView(epoch),
     setRailStatus: (t) => { const el = document.getElementById("railStatus"); if (el) el.textContent = t; },
     subscribe: (fn) => { current.unsub = api.subscribe(demoId, fn); return current.unsub; },
@@ -136,5 +154,9 @@ async function renderPlay(demoId, epoch = beginView()) {
 }
 
 document.querySelector(".skip-link")?.addEventListener("click", e => { e.preventDefault(); main.focus(); });
+document.querySelector('#tabs a[href="#/studio"]')?.addEventListener("click", event => {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button) return;
+  if (location.hash === "#/studio") { event.preventDefault(); route(); }
+});
 window.addEventListener("hashchange", route);
 health(); route();

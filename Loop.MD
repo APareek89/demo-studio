@@ -1,5 +1,11 @@
 # Loop.MD — Demo Studio
 
+## Feedback workbook · 24 September 2026
+
+Loop remains **off**. Final local gates: **51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps)**, zero outbound/provider calls. Required deck **380/380**, acceptance **24/24**, smoke **3/3** (Read/Build phases and on-demand rehearsal). Full mock release journey **28/28** with **194.22seconds measured fixture audio** and the actual three-minute default guard. Duration **19/19** covers1–5minutes, alternate-language publication, old-publication preservation, changed-duration preparation and protected manual edits. Upload retry **12/12**, stream **19/19**, Deck media **60/60**; Studio chat/navigation **29/29**, workbook player **101/101**, full-app integration **19/19**, responsive layout **193/193**, existing navigation **22/22**. Every touched contract is green; all15 Node suites pass.
+
+The inventory `docs/feedback-workbook-gates-2026-09-24.json` contains each suite count and test/log/source hashes. FMEA: `docs/feedback-workbook-fmea-2026-09-24.md`,12/12 categories. Python/JavaScript syntax, whitespace and all9 Mermaid copies/structural checks pass; no Mermaid parser or physical-device/acoustic claim. Workbook unchanged, no protected local writes or port8896 action. Nav40percent height reduction is the explicit C9 assumption; selective Align rebuilds remain pending.
+
 ## Automatic narration preparation · 24 September 2026
 
 Loop remains **off**. Three-minute preparation is now part of ordinary Read/Author, with bounded completion, current Script approval guards and automatic measured-shortfall drafting inside an explicitly requested Build. Revised speech returns for review; missing recordings do not cause a content rewrite. Manual edits retain exact words and explicit preparation state. The large normal-flow deficit/Prepare panel is removed; mock placeholders are clearly identified.

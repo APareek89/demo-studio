@@ -39,7 +39,7 @@ Your output:
   reserve a fundamental stop. Order the remaining proof by the buyer's strongest signal (match rear-seat needs to rear-seat proof,
   front-seat needs to front-seat proof, and a performance
   want at the drive), then supported proof blocks, then the single features block, then establish last. The default guided
-  tour must provide at least three minutes of narration and may need more than three proof stops. An explicit short-tour
+  tour must provide the published selected duration of narration and may need more than three proof stops. An explicit short-tour
   request or later refinement can use fewer; never repeat speech or invent facts to fill time. Each step may carry ONE bridge sentence. If a bridge states a product fact, copy one REVIEWED SPOKEN
   PROOF item's exact text and the complete fact_ids. Do not paraphrase, extend or combine that text. Without citations,
   copy only the exact NEUTRAL ROUTE CUES entry for that segment_id, or leave the bridge empty: no other uncited prose.
@@ -285,7 +285,10 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         route_slides = (store.read_json(demo_id, "deck.json") or {}).get("slides", [])
     from . import narration
     duration_policy = ((published or {}).get("runtime") or {}).get("narration_minimum") or {}
-    default_guided = bool(duration_policy.get("minimum_seconds") == narration.MIN_SECONDS
+    selected_minimum = duration_policy.get("minimum_seconds", narration.MIN_SECONDS)
+    if selected_minimum not in (60, 120, 180, 240, 300):
+        selected_minimum = narration.MIN_SECONDS
+    default_guided = bool(duration_policy
                           and not refine and not narration.explicit_short_tour(profile))
     voice = plan.get("voice", {})
     # An initial default tour has not narrated these stops yet: pre-tour Q&A
@@ -431,7 +434,7 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         # the default route's duration is independent of the obsolete three cap.
         expanded, _ = narration.default_route({**script, "segments": segs}, demo_id=demo_id,
                                                preferred=[step["segment_id"] for step in route],
-                                               allowed_fact_ids=fact_ids)
+                                               allowed_fact_ids=fact_ids, minimum_seconds=selected_minimum)
         chosen_steps = {step["segment_id"]: step for step in route}
         route = [chosen_steps.get(sid, {"segment_id": sid, "bridge": "", "bridge_fact_ids": []}) for sid in expanded]
     scheduled_text = {" ".join(text.split()) for step in route for text in main_speech.get(step["segment_id"], [])}
@@ -574,17 +577,17 @@ def plan_pitch(demo_id: str, profile: dict, refine: bool = False, *, voice_it: b
         replacements.sort(key=lambda item: next(i for i, step in enumerate(route) if step["segment_id"] == item["segment_id"]))
     if default_guided:
         duration = narration.report(script, demo_id=demo_id, route_ids=[step["segment_id"] for step in route],
-                                    replacements=replacements, allowed_fact_ids=fact_ids)
+                                    replacements=replacements, allowed_fact_ids=fact_ids, minimum_seconds=selected_minimum)
         if not duration["sufficient"]:
             # A relevance-focused subset may be shorter than the reviewed tour.
             # Restore complete reviewed speech instead of padding or slowing it.
             replacements = []
             duration = narration.report(script, demo_id=demo_id, route_ids=[step["segment_id"] for step in route],
-                                        allowed_fact_ids=fact_ids)
+                                        allowed_fact_ids=fact_ids, minimum_seconds=selected_minimum)
             duration["personalization_fallback"] = "complete_reviewed_narration"
         p["narration_minimum"] = duration
     elif duration_policy:
-        p["narration_minimum"] = {"minimum_seconds": narration.MIN_SECONDS, "exempt": True,
+        p["narration_minimum"] = {"minimum_seconds": selected_minimum, "exempt": True,
                                   "reason": "refinement" if refine else "explicit_short_tour"}
     if not voice_it:
         p["decision_frame_audio"] = None

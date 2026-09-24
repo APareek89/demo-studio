@@ -13,7 +13,7 @@ const CARD_DEFS = [
 ];
 const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and uploaded questions."], building: ["Building your demo…", "Recording narration and uploaded answers, then preparing your demo."] };
 const STAGE_LABELS = { coach: "Sales playbook" };
-const MINIMUM_NARRATION_INSTRUCTION = "Expand the default guided narration to at least three measured minutes using distinct supported detail from the approved facts. Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.";
+const MINIMUM_NARRATION_INSTRUCTION = "Expand the default guided narration to the selected demo duration using distinct supported detail from the approved facts. Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.";
 
 // Distinguish a reviewed allocation from estimated or partially recorded speech.
 export function scriptTiming(planned, actual, measured = false, anyMeasured = false) {

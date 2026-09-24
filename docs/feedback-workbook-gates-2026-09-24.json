@@ -1,0 +1,828 @@
+{
+  "recorded_at": "2026-09-24T06:40:34.691445+00:00",
+  "base_commit": "a2e5097f7dbc957c697b3793f21aff908e31e15d",
+  "working_tree_tested": true,
+  "controls": {
+    "mock": true,
+    "isolated_data_and_graph": true,
+    "cloud_sync": false,
+    "outbound_provider_sockets_blocked": true,
+    "browser_external_requests": 0,
+    "provider_calls": 0,
+    "protected_demo_writes": false,
+    "port_8896_used": false
+  },
+  "summary": {
+    "suites": 51,
+    "passed": 1790,
+    "total": 1790,
+    "count_note": "Reported cases/groups/phases; nested contracts overlap."
+  },
+  "resolved_attempts": [
+    "Initial release browser assertion expected the replaced dark welcome slide; updated to full-area hero then actual Browse transition.",
+    "Mistyped stream_upload_contract invocation was corrected to upload_stream_contract;19/19 passed."
+  ],
+  "source_sha256": {
+    "server/agents/align.py": "3ab9fd25de35f16514d5ac52bafde5b8438763317cebfe510817955d5d801584",
+    "server/agents/author.py": "6944a7017a90d6689ca48f6af686941abc44550691e1cb90fc9602d3fcd8b64b",
+    "server/agents/bundle.py": "9bbdae89789f2ab04569336ca69464e1ec38cb827402098dbd33c7d582cb09cd",
+    "server/agents/deck.py": "8592151f0bc3008f484211880a801924587e52bcb2396bc956784655904eeb2b",
+    "server/agents/narration.py": "e083f5c226a45782e834daf881ca0981ab98f6eba4954a6ea8261dc699d98dff",
+    "server/agents/pitch.py": "a9cf1792a30defd01dbad68271cfbb41292872161e3f0c713cd7ee7aa2bf40c3",
+    "server/agents/plan.py": "5cb4b8da43a6a9314d96be51956a36936126d16f71138588460e3c4cb7c7b95d",
+    "server/app.py": "7a5799ebc9b44d9a8a3a69c122524f2b79952b8f5fd3c7b38da1836dd0ca5413",
+    "server/graph.py": "b312f5663e128be5b04b0e0f1213434306f3b28c49d9a6ded6fdac6385e19c60",
+    "server/orchestrator.py": "4bcc7b9a5e162d49a8f3f9898eeff790927e125bb70d942044c28b1c4c779b91",
+    "server/store.py": "2cf1799be419c2bf55085c22d6e9c7bab6bb1ad9b63a2aafe46693814151afd2",
+    "web/app.js": "74aedea69e783f9012161d80fb37391efbe53b46aabcadc7867ccb92f65abf25",
+    "web/player-ui.css": "0c30254c7c32e6062efa2ca80438a14e26f72f434277b2137179f2d8d0dd603b",
+    "web/player/player.js": "93a9a2793580d639af3e7a376c39a35599274c4db43f148c73f6bde423f85c51",
+    "web/slide.js": "731d52fe9210112b0bf18f13e032608dbdbad44655121f9bec9c340ce3dabdd6",
+    "web/studio/align.js": "7f12c3939687a326700bd559e2a855e7f7a335dfbb08fc79521776782de7a3d2",
+    "web/studio/rehearse.js": "dda86a78088c81fac38cfaa68157a291d4a6d5ef12192f2336f25f1315408e38",
+    "web/studio/sources.js": "d04a8c90ea64a48a98272e72aad2142d9e77dbd92d39c7ae9af91c6ec976a563",
+    "web/styles.css": "1f023059e33e3416e650a463af7a5fdc299643560a8c964d35aea3e8584c3216"
+  },
+  "results": [
+    {
+      "name": "evals/qa_deck.py",
+      "count": "380/380",
+      "passed": 380,
+      "total": 380,
+      "exit": 0,
+      "seconds": 6.27,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/qa_deck.log",
+      "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef",
+      "file_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae"
+    },
+    {
+      "name": "evals/qa_accept.py",
+      "count": "24/24",
+      "passed": 24,
+      "total": 24,
+      "exit": 0,
+      "seconds": 2.48,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/qa_accept.log",
+      "log_sha256": "d2310837a4d7c78cffd86207e1b374c623e371a20a40e7bd2d5b80abaf2a270f",
+      "file_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030"
+    },
+    {
+      "name": "evals/smoke_mock.py",
+      "count": "3/3",
+      "passed": 3,
+      "total": 3,
+      "exit": 0,
+      "seconds": 4.05,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/smoke_mock.log",
+      "log_sha256": "3e82a44f7da4cb74f2aea2582718667b6b1120dd7805761dea15607ada8b6c84",
+      "file_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07"
+    },
+    {
+      "name": "evals/duration_preference_contract.py",
+      "count": "19/19",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "seconds": 1.76,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/duration_preference_contract.log",
+      "log_sha256": "1b8d1e71b4530d2ac4956d9122219e29deddc02bd91da4f61ad731ca3ebfe86a",
+      "file_sha256": "270442b56a98597d8441fe6c286fa9339a703aa427af6d05e082aecf8ff1c084"
+    },
+    {
+      "name": "evals/upload_retry_contract.py",
+      "count": "12/12",
+      "passed": 12,
+      "total": 12,
+      "exit": 0,
+      "seconds": 1.07,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/upload_retry_contract.log",
+      "log_sha256": "ad17ca6cca57893c2b006d5712159d69f5b0a07dbf2692b37c6afc3c64b20c4c",
+      "file_sha256": "9bd4496ad35ee1b479a98b91feffe448b0bec01e6b898567b7162d7b9e29d9b0"
+    },
+    {
+      "name": "evals/minimum_narration_contract.py",
+      "count": "25/25",
+      "passed": 25,
+      "total": 25,
+      "exit": 0,
+      "seconds": 0.63,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/minimum_narration_contract.log",
+      "log_sha256": "eafd30f2027edabe0dfb742c5f1ce9be9d6887996f941d07e20e35c5c9a445d9",
+      "file_sha256": "d844b028e2c50e41f0920f5ea1c054c9d23d9ceaa7c0b09b03130f3c7917085a"
+    },
+    {
+      "name": "evals/generation_contract.py",
+      "count": "58/58",
+      "passed": 58,
+      "total": 58,
+      "exit": 0,
+      "seconds": 0.63,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/generation_contract.log",
+      "log_sha256": "0840e17b0a76b11948712f9529081d5104a6378838c58c2362d20640d59228f8",
+      "file_sha256": "faf4054acc3bc4f58becc0d3b45baa8b473d1d54175e3b8a4bb22b6e55d13ab7"
+    },
+    {
+      "name": "evals/plan_playbook_contract.py",
+      "count": "19/19",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "seconds": 1.33,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/plan_playbook_contract.log",
+      "log_sha256": "57eb6ca0188da0838492e075e6f6879ba3d8f8038c3c2f329710a815c23c44ef",
+      "file_sha256": "51d48e454099bfa270f9471cb4f6e4a580a2138dfaa40c689ee589528250bb52"
+    },
+    {
+      "name": "evals/narrative_roles_contract.py",
+      "count": "14/14",
+      "passed": 14,
+      "total": 14,
+      "exit": 0,
+      "seconds": 0.62,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/narrative_roles_contract.log",
+      "log_sha256": "b55435b82849f76c33b5ef4d34d31e4384c33022616fbbd48a3ef6f0cc6cdc0c",
+      "file_sha256": "0908bf4eb316a4f8b7fd46052a9bf61987a89ac9048d243c8feb89e11bb9ef46"
+    },
+    {
+      "name": "evals/speech_style_contract.py",
+      "count": "30/30",
+      "passed": 30,
+      "total": 30,
+      "exit": 0,
+      "seconds": 0.62,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/speech_style_contract.log",
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c",
+      "file_sha256": "f3d18a4132171dfcc0c6462c7061cf8817aac894c45a14af41c034d55dba7131"
+    },
+    {
+      "name": "evals/narration_recovery_contract.py",
+      "count": "18/18",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "seconds": 2.09,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/narration_recovery_contract.log",
+      "log_sha256": "e61e4369c94f0790b64f66400c2af3c497d7c0b1cd8aaedfc979205788a9c9d7",
+      "file_sha256": "1a68ec6df118d090312a0bcca26c24b3cdac2f9fc1e03854b9cdeb0526dcc77c"
+    },
+    {
+      "name": "evals/automatic_narration_contract.py",
+      "count": "16/16",
+      "passed": 16,
+      "total": 16,
+      "exit": 0,
+      "seconds": 3.35,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/automatic_narration_contract.log",
+      "log_sha256": "bc640856a898b1a6717fd09a8bf812b4641e5ac929068ce1fc46f07592865471",
+      "file_sha256": "e8ecde9d84ea6a8f57167aaa086cda6aed42dde64903cd1edb9e6f5bb319a1f9"
+    },
+    {
+      "name": "evals/narration_preparation_contract.py",
+      "count": "35/35",
+      "passed": 35,
+      "total": 35,
+      "exit": 0,
+      "seconds": 0.84,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/narration_preparation_contract.log",
+      "log_sha256": "2541e58f47682ed30069d26264ce45c5c05fd9b1696c2cddcb3c859e1b6026fe",
+      "file_sha256": "deb2ff6181ed4263b9e09ebd08be64bf66807adb07ffda0e609865222599b5aa"
+    },
+    {
+      "name": "evals/release_mock_contract.py",
+      "count": "28/28",
+      "passed": 28,
+      "total": 28,
+      "exit": 0,
+      "seconds": 11.94,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/finalui/release_mock_contract.log",
+      "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+      "file_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5"
+    },
+    {
+      "name": "evals/publication_approval_contract.py",
+      "count": "8/8",
+      "passed": 8,
+      "total": 8,
+      "exit": 0,
+      "seconds": 1.01,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/publication_approval_contract.log",
+      "log_sha256": "e07612026a73b8448ec13e3d8bef717747ec49fdef7f2d9c1a14674641992245",
+      "file_sha256": "d4a111fe734d5f186610e421f6bb19e108fee28c15305daa641719d687965406"
+    },
+    {
+      "name": "evals/align_review_contract.py",
+      "count": "51/51",
+      "passed": 51,
+      "total": 51,
+      "exit": 0,
+      "seconds": 1.12,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/align_review_contract.log",
+      "log_sha256": "66be363f0576b32d889dae1a2e93b216eb0b8c0a0bb3cafc9ececaa7c8c6954f",
+      "file_sha256": "041b9a8f216197814dbecdf21c7362694ebb448959bf720e052b3646bb393d11"
+    },
+    {
+      "name": "evals/coach_align_contract.py",
+      "count": "21/21",
+      "passed": 21,
+      "total": 21,
+      "exit": 0,
+      "seconds": 1.07,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/coach_align_contract.log",
+      "log_sha256": "7388939b33c89b4d2b8b09ace9b10cf9c23f4a6ebab450c2579cde0129d8097d",
+      "file_sha256": "e3884d959e18e55ecf18e23371d9ea22fd4ab27f32338b05ab6c005410d3e8b3"
+    },
+    {
+      "name": "evals/deck_media_contract.py",
+      "count": "60/60",
+      "passed": 60,
+      "total": 60,
+      "exit": 0,
+      "seconds": 0.58,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/deck_media_contract.log",
+      "log_sha256": "8358035e327957412f96b5b2a9a14aac6ff8b0641a48636a6f94dde709761eb0",
+      "file_sha256": "6fa40b2feaa58f536eee48aec0291ed452cde6251f7e04a9d9bcdfe76c5f28f8"
+    },
+    {
+      "name": "evals/deck_media_align_contract.py",
+      "count": "15/15",
+      "passed": 15,
+      "total": 15,
+      "exit": 0,
+      "seconds": 1.06,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/deck_media_align_contract.log",
+      "log_sha256": "8a5ca166cbec2922544883a0c795c3c3419020ef8f4bd10bee90af556747f88d",
+      "file_sha256": "2cf513b687c3bb30493690461b091a9ff4df186df36dc1a02cab2fb0d59bd0f9"
+    },
+    {
+      "name": "evals/pitch_delivery_contract.py",
+      "count": "18/18",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "seconds": 0.85,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/pitch_delivery_contract.log",
+      "log_sha256": "f5cae5ce032694630df02d4f5a2fd9b99e611e8c9ba05c99a8415a2c3b7d4e71",
+      "file_sha256": "2f41a0eb82943dd93c89a09772f0e7f1a249a38af68864f437a980d53924f051"
+    },
+    {
+      "name": "evals/pitch_priority_revision_contract.py",
+      "count": "7/7",
+      "passed": 7,
+      "total": 7,
+      "exit": 0,
+      "seconds": 0.9,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/pitch_priority_revision_contract.log",
+      "log_sha256": "d62b29005620686c170fd090373081d21f6bd8e1f26bdf0cc0b9170e0a481574",
+      "file_sha256": "158d62e1a24c7304d53b61a8113c81c79385ed00756b2368dc28018c6d14e43d"
+    },
+    {
+      "name": "evals/pitch_fundamental_contract.py",
+      "count": "12/12",
+      "passed": 12,
+      "total": 12,
+      "exit": 0,
+      "seconds": 0.57,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/pitch_fundamental_contract.log",
+      "log_sha256": "e76eb551563cdf739b8f32dce51959d621f8f2050647886c07240995a7cea02b",
+      "file_sha256": "554d84746d685900aed2bf077be9ec9dfe27e1afd754666628dcf963568aba5f"
+    },
+    {
+      "name": "evals/pitch_grounding_contract.py",
+      "count": "47/47",
+      "passed": 47,
+      "total": 47,
+      "exit": 0,
+      "seconds": 0.57,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/pitch_grounding_contract.log",
+      "log_sha256": "dd6e61486f802d6c86782df09c189f5d52bbb43a710399ff01452885a1042b61",
+      "file_sha256": "0a908cb05bec2b83b06a53f843bd565e8c168bc81dbf1ab4cc18a0238c354bd2"
+    },
+    {
+      "name": "evals/runtime_graph_contract.py",
+      "count": "130/130",
+      "passed": 130,
+      "total": 130,
+      "exit": 0,
+      "seconds": 0.95,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/runtime_graph_contract.log",
+      "log_sha256": "ba54968e6d300c412e67fc583fe2c0bf04c04c94f72ab26b9fb69feb8059ef41",
+      "file_sha256": "fcec36a1e2074536ae435d37d0fab1e930dcc840799fbe826d727a3294604b6e"
+    },
+    {
+      "name": "evals/runtime_conversation_contract.py",
+      "count": "18/18",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "seconds": 0.9,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/runtime_conversation_contract.log",
+      "log_sha256": "b9f258f24c29abfa298c722d02a6d631b2523e669f6474624bc88028f071334d",
+      "file_sha256": "682c7d8df1c021629ae03812088b395e585a345979a87d37190e1afdcda8409d"
+    },
+    {
+      "name": "evals/readiness_contract.py",
+      "count": "10/10",
+      "passed": 10,
+      "total": 10,
+      "exit": 0,
+      "seconds": 1.36,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/readiness_contract.log",
+      "log_sha256": "3f7259fb27342666f362f58ff05cdf416e8802aac49a6019795ea20f6c178127",
+      "file_sha256": "1165745642cf573764ac66f56a07b111e5079f5499c7449d6332d2aba94cf343"
+    },
+    {
+      "name": "evals/voice_lock_contract.py",
+      "count": "27/27",
+      "passed": 27,
+      "total": 27,
+      "exit": 0,
+      "seconds": 0.62,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/voice_lock_contract.log",
+      "log_sha256": "0d39bea3d18254714c5111e503336434482c0165542b17cf9407678a7b97565e",
+      "file_sha256": "5f5cdafcc78155eac80f038b0f994ac6d96a5bb4d61617ac21f85ccee8432afd"
+    },
+    {
+      "name": "evals/visual_theme_contract.py",
+      "count": "12/12",
+      "passed": 12,
+      "total": 12,
+      "exit": 0,
+      "seconds": 1.12,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/visual_theme_contract.log",
+      "log_sha256": "1909b1ab9905eb356d2aae905eff4430fcdaadde1e1610c23a2477edd3137c0e",
+      "file_sha256": "4dd40e771cae05955122501ada3634092a75370f72a489e83bbdcd574ca29fda"
+    },
+    {
+      "name": "evals/build_hardening_contract.py",
+      "count": "28/28",
+      "passed": 28,
+      "total": 28,
+      "exit": 0,
+      "seconds": 0.95,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/build_hardening_contract.log",
+      "log_sha256": "484d6f3d7a0a0fb8ca2bc36ac90dbba8ecfb719aa9bc22d3d43528e8e44d290f",
+      "file_sha256": "043e76505f833f31c48ea17658efb51b09ce6f1e0cdb746695ef6a8a423963e1"
+    },
+    {
+      "name": "evals/studio_feedback_contract.py",
+      "count": "29/29",
+      "passed": 29,
+      "total": 29,
+      "exit": 0,
+      "seconds": 12.28,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/finalui/studio_feedback_contract.log",
+      "log_sha256": "ea78820ec2bae86faac68b38c875808fa3a8230b0c2390fbb728b1a340ce2eb7",
+      "file_sha256": "508b1ec8b9acb0c30066efc21c7a8047919d362b70779dc3a7f92e7404475ad7"
+    },
+    {
+      "name": "evals/workbook_player_contract.py",
+      "count": "101/101",
+      "passed": 101,
+      "total": 101,
+      "exit": 0,
+      "seconds": 16.12,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/finalui/workbook_player_contract.log",
+      "log_sha256": "a81b1d02cc5c2143bfdf26d650c76c696fc2bd89eeced0c1cc34adc784c113fe",
+      "file_sha256": "9ed2f0c1e46bfca20f95f091c2f409aedba822c48b5dcf03c40744b5a828970c"
+    },
+    {
+      "name": "evals/ui_layout_contract.py",
+      "count": "193/193",
+      "passed": 193,
+      "total": 193,
+      "exit": 0,
+      "seconds": 26.15,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/finalui/ui_layout_contract.log",
+      "log_sha256": "516fc790b80880460a2aa312e6cfc95f3e235571e86371b8cbc41eeec1719cab",
+      "file_sha256": "8148779c67ef4aa3b9a52d5448cbd5b851bfdfab7ac70d687287a68b8f4f058b"
+    },
+    {
+      "name": "evals/player_navigation_contract.py",
+      "count": "22/22",
+      "passed": 22,
+      "total": 22,
+      "exit": 0,
+      "seconds": 31.65,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/player_navigation_contract.log",
+      "log_sha256": "dcd530badac6825df4e505dd47155ee750f194b6522c9996f2e9a31b9b70125c",
+      "file_sha256": "f6bf39b3c4d25b58339ce6898bcb4cae4e866eb6abca401868fc0ad9724aebdd"
+    },
+    {
+      "name": "evals/public_search_ui_contract.py",
+      "count": "30/30",
+      "passed": 30,
+      "total": 30,
+      "exit": 0,
+      "seconds": 9.95,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/verified/public_search_ui_contract.log",
+      "log_sha256": "64f98fb5235640c3a00213c975597a8874da064f99b76f9dde0c54190a03fd0e",
+      "file_sha256": "89b3c76b75a70879f58bbf061c01c14d663fe954bf3943bbbb1535b72c3266c4"
+    },
+    {
+      "name": "evals/upload_stream_contract.py",
+      "count": "19/19",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "seconds": 1.12,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/upload/upload_stream_contract.log",
+      "log_sha256": "efa4686997f99929f987d28337ffc2ab663ae277a20e6c7336688e6cc379ee7b",
+      "file_sha256": "2ff52762154a865374ffb147ee8de94fa051b5804898a86ad4f9ef056cef8fd5"
+    },
+    {
+      "name": "evals/align_narration_recovery_contract.mjs",
+      "count": "21/21",
+      "passed": 21,
+      "total": 21,
+      "exit": 0,
+      "seconds": 0.15,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/align_narration_recovery_contract.mjs.log",
+      "log_sha256": "d44f7b6640d9bcaed01160d943a86268f4162af52efc601dc965c62e3f13b22f",
+      "file_sha256": "6fce2529bcc5de370ba8dcb95863ee16ad6d6b39a44e3cac06833974b3aacf45"
+    },
+    {
+      "name": "evals/align_progress_contract.mjs",
+      "count": "9/9",
+      "passed": 9,
+      "total": 9,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/align_progress_contract.mjs.log",
+      "log_sha256": "3d23d77821cd60d957f9ace4164d0cbcfd6072d025a6ce0304240a359f9004bb",
+      "file_sha256": "9001fccfc9e201ab4edbdfd75f3776a09a6b31665c428782d4ad30c7fb14bdb6"
+    },
+    {
+      "name": "evals/align_timing_contract.cjs",
+      "count": "13/13",
+      "passed": 13,
+      "total": 13,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/align_timing_contract.cjs.log",
+      "log_sha256": "4bc42832483f8059bbfc02279f90e1d3fa43763bfefb11c985037b94f7d52525",
+      "file_sha256": "ef921ccce8252dfdc9b32c8c769d9fc59188d9d26dc0fa2903b2b261c8d191d1"
+    },
+    {
+      "name": "evals/coach_align_ui_contract.cjs",
+      "count": "9/9",
+      "passed": 9,
+      "total": 9,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/coach_align_ui_contract.cjs.log",
+      "log_sha256": "85d980f6a953a312d27fce5a22138786e6fa0c3e561009cf8368bacfed420741",
+      "file_sha256": "dd51cab065ec54ad72bec1350c73f5856991b2c28c9f3a9027a3c4702118399b"
+    },
+    {
+      "name": "evals/live_voice_contract.mjs",
+      "count": "74/74",
+      "passed": 74,
+      "total": 74,
+      "exit": 0,
+      "seconds": 0.1,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/live_voice_contract.mjs.log",
+      "log_sha256": "a1ca98735495cf67d77d1e5222bb84230e88b00458ce5dd1d654dfeeaa2898a4",
+      "file_sha256": "fd43b5ced3f6d28b102071a3e093262e1d042cb4c0d376a6bc5915a7f83a5dfd"
+    },
+    {
+      "name": "evals/player_customer_sites_contract.cjs",
+      "count": "19/19",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "seconds": 0.05,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_customer_sites_contract.cjs.log",
+      "log_sha256": "049d8bd5d7b67eb278d2a94f7a32cef5c950f7b6844770d438bf7efbdfddafc7",
+      "file_sha256": "c1edb1ddf6d4eb3b5f79d31247840dff413f70c74391e9da853c4825c8c08db5"
+    },
+    {
+      "name": "evals/player_focus_contract.cjs",
+      "count": "21/21",
+      "passed": 21,
+      "total": 21,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_focus_contract.cjs.log",
+      "log_sha256": "c8d747c9b327bcfcb28f87cc3975971399b85df42ef66bea45700f2d3614f1db",
+      "file_sha256": "4c7bc6ad98026ca7ec99d1cb72976409aa0480fe0ecce09bc338db2e42986309"
+    },
+    {
+      "name": "evals/player_fundamental_contract.cjs",
+      "count": "10/10",
+      "passed": 10,
+      "total": 10,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_fundamental_contract.cjs.log",
+      "log_sha256": "0adcdc3bda223357dcc56a2bd514735a0cf30ae3bb2c57ba2b0570b43c809d3a",
+      "file_sha256": "83c9f52b99283cb54ec9069f8b78198c4f54660af9ac5ee2272677632d634945"
+    },
+    {
+      "name": "evals/player_http_question_contract.cjs",
+      "count": "6/6",
+      "passed": 6,
+      "total": 6,
+      "exit": 0,
+      "seconds": 0.03,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_http_question_contract.cjs.log",
+      "log_sha256": "ed1b68bd8d95077b06099d5f047b4838ecbf8a6f1539b8afbbdf1b09696e5257",
+      "file_sha256": "b4e79e9981f2ca141f8fb8873ff6f136d300f159c60bf8b5dcd56300575aca91"
+    },
+    {
+      "name": "evals/player_listen_contract.cjs",
+      "count": "16/16",
+      "passed": 16,
+      "total": 16,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_listen_contract.cjs.log",
+      "log_sha256": "a445f3ded879b8ceb6f095adae87b5ff870b02aea31555061095068c5d236997",
+      "file_sha256": "366e79ebd4ec228b46949b9e1c7902de51971e05155fcaff0584cabe5c86a034"
+    },
+    {
+      "name": "evals/player_media_contract.cjs",
+      "count": "7/7",
+      "passed": 7,
+      "total": 7,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_media_contract.cjs.log",
+      "log_sha256": "4b115ead4b4ffd1ee93cac357a3fd6bb270e08a44200bed6cc7bbd8308f7cce6",
+      "file_sha256": "e790dac0f28900ca4b4838c2b50b27e1c5710254062e55ae12144ef19a10773e"
+    },
+    {
+      "name": "evals/player_priority_revision_contract.cjs",
+      "count": "11/11",
+      "passed": 11,
+      "total": 11,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_priority_revision_contract.cjs.log",
+      "log_sha256": "7accfa6808549fdbe7f682d5f26a28b7035723a4e71a1a26c1b154117feb2f2b",
+      "file_sha256": "81bb7311447dbf48cd4655d497e7cd27ca59cb0013c6368bab9b8d340f15217d"
+    },
+    {
+      "name": "evals/player_session_save_contract.cjs",
+      "count": "7/7",
+      "passed": 7,
+      "total": 7,
+      "exit": 0,
+      "seconds": 0.04,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/player_session_save_contract.cjs.log",
+      "log_sha256": "bb3b32c0d55a2414f18f004349a4bb9814bc28a8261e48dac1e2ff9f5a94df86",
+      "file_sha256": "77d3daab042db8483a878f13704bb1e8c01404013db54a8384bb2e41e42c8433"
+    },
+    {
+      "name": "evals/readiness_ui_contract.mjs",
+      "count": "5/5",
+      "passed": 5,
+      "total": 5,
+      "exit": 0,
+      "seconds": 0.03,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/readiness_ui_contract.mjs.log",
+      "log_sha256": "6a44969fdfa4451a7dc7a8eb8d5db2b48c6d0ab52b22d4243be12cb14f28a90b",
+      "file_sha256": "7781ef7312ddf6d59e4b7cae50542e807d5d0f57dd3c1aab4d30aa3028a6bdbc"
+    },
+    {
+      "name": "evals/sse_client_contract.mjs",
+      "count": "4/4",
+      "passed": 4,
+      "total": 4,
+      "exit": 0,
+      "seconds": 0.03,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/node/sse_client_contract.mjs.log",
+      "log_sha256": "53d22832845d00bfbd0478468197c67cb24cbd965fab3c370b5a99537f2bccf5",
+      "file_sha256": "32f3e973bd3119a5e3a554d23e8204d459959d640a944e615cd202342a3113b3"
+    },
+    {
+      "name": "evals/studio_player_integration_contract.py",
+      "count": "19/19",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "seconds": 18.92,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/tmp/demo-studio-feedback-20260924/finalui/studio_player_integration_contract.log",
+      "log_sha256": "9167093d27dc43816cc04797da035331900503e20343567f3a732c8b0f56c33b",
+      "file_sha256": "b92a300590a30392b8501ca7abe1b6ef5ada79ae6027829d6e2f638399dadfee"
+    }
+  ],
+  "validation": {
+    "python_syntax": 155,
+    "web_javascript_syntax": 18,
+    "mermaid_source_html_copies": 9,
+    "mermaid_structural_checks": 9,
+    "mermaid_parser_run": false,
+    "diff_whitespace": "pass",
+    "full_mock_measured_seconds": 194.22,
+    "original_workbook_sha256": "07bd3db79133b608d583b0b9683f5a83d41eb592e53b1ca1c06eca518ec45406"
+  },
+  "files_touched": [
+    "Handoff.MD",
+    "Learning.MD",
+    "Loop.MD",
+    "PRD.md",
+    "docs/ARCHITECTURE_FLOW.md",
+    "docs/architecture-flow.html",
+    "docs/feedback-workbook-2026-09-24.md",
+    "docs/feedback-workbook-fmea-2026-09-24.md",
+    "docs/feedback-workbook-gates-2026-09-24.json",
+    "docs/mermaid/01-master.mmd",
+    "docs/mermaid/02-understand.mmd",
+    "docs/mermaid/03-align.mmd",
+    "docs/mermaid/04-build.mmd",
+    "docs/mermaid/05-runtime.mmd",
+    "docs/mermaid/08-runtime-graph.mmd",
+    "evals/align_narration_recovery_contract.mjs",
+    "evals/deck_media_contract.py",
+    "evals/duration_preference_contract.py",
+    "evals/generation_contract.py",
+    "evals/plan_playbook_contract.py",
+    "evals/player_navigation_contract.py",
+    "evals/release_mock_contract.py",
+    "evals/studio_feedback_contract.py",
+    "evals/studio_player_integration_contract.py",
+    "evals/ui_layout_contract.py",
+    "evals/upload_retry_contract.py",
+    "evals/workbook_player_contract.py",
+    "refine.MD",
+    "server/agents/align.py",
+    "server/agents/author.py",
+    "server/agents/bundle.py",
+    "server/agents/deck.py",
+    "server/agents/narration.py",
+    "server/agents/pitch.py",
+    "server/agents/plan.py",
+    "server/app.py",
+    "server/graph.py",
+    "server/orchestrator.py",
+    "server/store.py",
+    "web/app.js",
+    "web/player-ui.css",
+    "web/player/player.js",
+    "web/slide.js",
+    "web/studio/align.js",
+    "web/studio/rehearse.js",
+    "web/studio/sources.js",
+    "web/styles.css"
+  ]
+}

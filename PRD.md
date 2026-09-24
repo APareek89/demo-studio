@@ -13,7 +13,7 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 - **Brand / product-marketing user (Anand, testing as the builder):** drop in sources → approve
   what the agent found (visuals, facts, persona & voice, calls to action) → rehearse the demo as the
   customer → give feedback → publish. Wants a demo for *any* product, not just the sample.
-- **Prospective buyer (the demo's audience):** watch a 4–5 minute walkthrough shaped around their
+- **Prospective buyer (the demo's audience):** watch a builder-selected 1–5 minute walkthrough (three by default) shaped around their
   concerns, interrupt with questions, get honest answers, take a call to action.
 
 ## Must never break
@@ -53,18 +53,22 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   the same exact quote/locator rule. Restore all flagged facts is explicit owner approval; it preserves
   the failed-verification reason and excludes manual rejections and conflict/precedence exclusions.
 
-WP11 finishing decisions and the later presentation correction are recorded in `refine.MD`.
-The canonical design is `docs/design/wp11-samples/marine.html?revision=slide-first`.
-The production player and Align preview use its compact top heading, centered native-aspect
-picture, small feature cards with thin leaders and reviewed anchor dots, counter and slide
-progress. The dark slide fills 75% of the player viewport above a white conversation dock;
-CTAs sit below the composer in a fixed footer. Short viewports reserve a minimum usable dock.
-All feature words come from reviewed callout content. This supersedes the separate evidence
-rail and the older oversized title over the picture; Marine/Sage/Graphite color
-selection remains in the existing Visuals card. Search the
+The 24 September feedback workbook supersedes the earlier dark Marine sample. The player
+uses a white borderless surface, selected-template dark text/buttons and native-aspect
+hero imagery across welcome/intake, faded behind the text. Content slides have a smaller
+heading and up to two distinct supported pictures side by side, rounded with a subtle shadow.
+Reviewed feature labels and anchors remain on-slide; neither a second picture nor a position
+is invented when evidence is unavailable. Ordinary slides retain 75% of the player viewport,
+with a white fixed conversation dock; short windows reserve usable controls. Portrait phones
+show rotation guidance and remain usable. Visuals retains Marine/Sage/Graphite color approval.
+Studio navigation opens blank Sources without creating a record until the first mutation;
+My demos → Open Studio retains its saved context. Rehearse keeps the left steps and replaces
+the heading and panel stack with one full-height feedback chat with uploads and on-demand rehearsal. Search the
 public web immediately when approved evidence cannot answer, with cited, turn-local, uncached sources.
-The default guided tour extends through reviewed stops to at least 180 seconds of narration and publication
-blocks if supported narration falls short. Film and Q&A do not count; customers may explicitly shorten, skip or exit. New drafts budget distinct supported content at a conservative natural speaking rate with ten-percent headroom; matching recordings can raise that target. One reviewed story stop may use several short delivery batches, which stay together in the guided route. Read and Author revisions prepare this content automatically before Script approval, with the existing repair plus at most one focused completion attempt. An unfinished draft cannot be approved or published; a word deficit alone is not evidence that more uploads are needed. Align shows compact timing within Script, with Retry only for an unsuccessful drafting attempt and an explicit notice for mock placeholders. Legacy short drafts are prepared during a user-requested Build. If a complete recording still falls short, that Build prepares a revised draft automatically and returns it for Script/Visuals review; it never records or publishes the changed words without renewed approval. Missing audio requests recording recovery, not more content. Prior published content and audio remain intact; there is no padding, duplication or slowdown.
+Sources selects a whole-number duration from one to five minutes, default three. The guided tour
+extends through reviewed stops to that selected measured duration; publication blocks if supported
+narration falls short in any selected language. Changing duration invalidates the affected draft approvals
+and preparation, preserving the prior publication. Film and Q&A do not count; customers may explicitly shorten, skip or exit. New drafts budget distinct supported content at a conservative natural speaking rate with ten-percent headroom; matching recordings can raise that target. One reviewed story stop may use several short delivery batches, which stay together in the guided route. Read and Author revisions prepare this content automatically before Script approval, with the existing repair plus at most one focused completion attempt. An unfinished draft cannot be approved or published; a word deficit alone is not evidence that more uploads are needed. Align shows compact timing within Script, with Retry only for an unsuccessful drafting attempt and an explicit notice for mock placeholders. Legacy short drafts are prepared during a user-requested Build. If a complete recording still falls short, that Build prepares a revised draft automatically and returns it for Script/Visuals review; it never records or publishes the changed words without renewed approval. Missing audio requests recording recovery, not more content. Prior published content and audio remain intact; there is no padding, duplication or slowdown.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
@@ -73,7 +77,7 @@ prompt dock) → *Building your demo…* → Rehearse (voice intake, segments wi
 check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. `MOCK_LLM=1` exercises the
 same path without keys, including the Coach playbook and its review within the six Align cards.
 
-**WP11 gate receipt:** deck365/365, acceptance24/24, smoke both phases; cache27, scope19, public web34, minimum narration25, fact retry12, palette12, browser76, responsive UI103 and search UI30 all pass. Full counts and synthetic-fixture limits are in `Loop.MD`; no paid/acoustic acceptance or deployment is implied.
+**Current feedback gate receipt:** 51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps); deck380/380, acceptance24/24, smoke3/3, duration19/19, upload retry12/12, workbook player101/101, full-app integration19/19, layout193/193. Full counts and fixture boundaries are in `Loop.MD`; no paid/acoustic acceptance is implied.
 
 ## Out of scope (for now)
 Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
@@ -87,7 +91,7 @@ session resume after refresh and multi-worker runtime ownership.
   first spoken line. This replaces the earlier supported-standout opening. Use a warm, cheerful guide
   with restrained pace and punctuation, never invented SSML/emotion controls.
 - Initial Explore plans lead with the first unseen fundamental and extend through reviewed stops
-  to reach the approved three-minute narration minimum; the initial player fallback uses the same rule.
+  to reach the published selected-duration minimum (three minutes by default); the initial player fallback uses the same rule.
   Seen filtering, explicit short requests, refinements and revisits retain customer control.
 - D4: slides allow up to two pictures; when no literal audited picture is available, use a nearby tagged image or hero with a cited label, mark it **illustration**, and never count it as proof.
 - D8: welcome **Voice mode** defaults on only for continuous-voice demos without `?mute=1`; on requests capture once, off keeps streamed speech without a microphone prompt, toggles never reconnect, and typing stays available. Save `input_mode`; actual turn source controls cohorts and ownership rejects stale output.

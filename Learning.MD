@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-24 — Feedback workbook: duration identity and composed screens need end-to-end checks
+
+**Five whys:** (1) A changed one-minute preference could still label an older three-minute recording ready, and feedback controls could leave the visible mobile page. (2) Recording duration was checked before the selected preparation duration, while layout tests inspected parent boxes or the player outside the real app shell. (3) The settings, reviewed draft and published recording had separate identities; CSS minimum heights survived in a later stylesheet. (4) Fresh-build and isolated-component tests did not cover shortening an existing publication or adding app navigation/rail/chat around the player. (5) Quantitative product promises were not tested at their full user-facing boundaries.
+
+**Correction:** Sources selects1–5 whole minutes, default3, across preparation, every-language measured publication and pinned runtime routing. A duration change invalidates Script/Visuals, distinguishes the old preparation, and the next requested Build returns a new supported draft for review without recording/publishing it. Explicit incomplete manual edits remain exact and blocked. Rehearse uses a bounded chat and shared player; browser checks include the real app shell and actual child controls, in portrait and landscape. Extra pictures require full saved pixel coverage, never duplicated unsupported proof.
+
+**Related retry defect:** new feedback uploads exposed the existing multipart partial-write behavior. A saved attachment could be uploaded again after provider failure or timeout, and the Rehearse no-action fallback did not request source understanding. Align now reuses same-name/role/size/kind byte-identical files under the demo lock, and both contexts use the existing Understand fallback. Never erase accepted files after timeout: a worker may already reference them. Partial accepted uploads remain available for retry; bounded chunk hashing costs disk/latency rather than whole-file memory.
+
+**Prevention:** keep the duration break lesson intact: selected length must be prepared automatically, not repaired by the customer after a late failure. Test an existing publication changing length, manual edits, all languages, real app composition and failed upload retries. Exact verification and limitations are in the workbook QA/FMEA report and Loop.MD. The workbook's white design supersedes the earlier dark sample; its source file remains untouched.
+
 
 ## 2026-09-24 — Duration break issue: prepare three-minute narration by default
 

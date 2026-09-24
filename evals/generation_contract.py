@@ -151,7 +151,7 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         for index, (role, count) in enumerate([("intro", 40), ("outcome", 40), ("proof", 70), ("proof", 70), ("proof", 70), ("features", 48), ("establish", 44)]):
             segment = timed_script(count, role)["segments"][0]; segment["id"] = f"route-{index}"; route["segments"].append(segment)
         two, four = {"settings": {"pitch_minutes": 2}}, {"settings": {"pitch_minutes": 4}}
-        check("generation: route ceiling floors old two-minute settings at three and retains four-minute settings", author.route_limit(two) == 382 and author.route_limit(four) == 496 and any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, two)) and not any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, four)))
+        check("generation: route ceiling honors selected two-minute and four-minute settings", author.route_limit(two) == 268 and author.route_limit(four) == 496 and any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, two)) and not any("a full route" in issue for issue in author.validate(copy.deepcopy(route), und, {}, four)))
         default_plan = {"segments": [{"id": f"default-{index}", "role": role, "fundamental": role == "proof"}
                                      for index, role in enumerate(["intro", "outcome", "proof", "proof", "proof", "proof", "proof", "features", "establish"])]}
         plan._enforce_budget(default_plan, {"settings": {}})

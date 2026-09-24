@@ -6,6 +6,7 @@ Swapping in a database later means re-implementing this module only.
 from __future__ import annotations
 
 import io
+import hashlib
 import json
 import mimetypes
 import re
@@ -407,7 +408,8 @@ class UploadTooLarge(ValueError):
 
 
 def add_stream_source(demo_id: str, filename: str, stream: BinaryIO,
-                      role: str = "product", *, max_bytes: int | None = None) -> dict:
+                      role: str = "product", *, max_bytes: int | None = None,
+                      reuse_identical: bool = False) -> dict:
     """Copy a spooled upload in bounded chunks, then register the complete source.
 
     A large film must not be loaded into the app's memory all at once. Failed,
@@ -424,6 +426,7 @@ def add_stream_source(demo_id: str, filename: str, stream: BinaryIO,
     p.parent.mkdir(parents=True, exist_ok=True)
     tmp = p.with_suffix(p.suffix + ".uploading")
     size = 0
+    content_hash = hashlib.sha256() if reuse_identical else None
     copying = False
     try:
         with tmp.open("xb") as target:
@@ -433,6 +436,8 @@ def add_stream_source(demo_id: str, filename: str, stream: BinaryIO,
                 if max_bytes is not None and size > max_bytes:
                     raise UploadTooLarge(f"{filename} is larger than {config.MAX_UPLOAD_MB} MB")
                 target.write(chunk)
+                if content_hash is not None:
+                    content_hash.update(chunk)
         if not size:
             raise ValueError(f"{filename} is empty (0 bytes) — export it again and re-upload")
         tmp.replace(p)
@@ -446,7 +451,28 @@ def add_stream_source(demo_id: str, filename: str, stream: BinaryIO,
         "size": size, "role": role, "added_at": now(), "use_in_demo": True,
     }
     try:
-        update(demo_id, lambda d: d["sources"].append(src))
+        with _lock(demo_id):
+            if reuse_identical:
+                # Feedback retries can follow a provider failure or a partial
+                # multipart upload. Reuse only byte-identical sources in this
+                # demo, retaining IDs that a running reader may already use.
+                for existing in load(demo_id)["sources"]:
+                    if any(existing.get(key) != src[key] for key in ("name", "role", "size", "kind")):
+                        continue
+                    existing_path = path(demo_id, existing.get("path") or "")
+                    try:
+                        if existing_path.stat().st_size != size:
+                            continue
+                        previous_hash = hashlib.sha256()
+                        with existing_path.open("rb") as previous:
+                            while chunk := previous.read(1024 * 1024):
+                                previous_hash.update(chunk)
+                    except OSError:
+                        continue
+                    if previous_hash.digest() == content_hash.digest():
+                        p.unlink(missing_ok=True)
+                        return existing
+            update(demo_id, lambda d: d["sources"].append(src))
     except BaseException:
         p.unlink(missing_ok=True)
         raise

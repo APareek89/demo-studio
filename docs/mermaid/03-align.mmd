@@ -1,10 +1,10 @@
 %% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6["SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line<br/>empty question card auto-approved; same six-card Build gate<br/>Visuals: Marine / Sage / Graphite choice resets Visuals approval<br/>Script: compact 3-minute target and labelled timing; publication requires measured 180s<br/>incomplete drafts cannot be approved; mock placeholders labelled as preview"]:::data
+  N6["SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line<br/>empty question card auto-approved; same six-card Build gate<br/>Visuals: Marine / Sage / Graphite choice resets Visuals approval<br/>Script: compact selected1–5minute target and labelled timing; publication requires measured selected duration<br/>incomplete drafts cannot be approved; mock placeholders labelled as preview"]:::data
   PREP["Retry only an unsuccessful real draft<br/>[HUMAN · compact Script card]<br/>normal Read prepares automatically; no routine Prepare step<br/>POST /revise author with existing preparation instruction<br/>reasoning readiness or explicit override; changed cards return for review"]:::ask
   STORY["USER reviews Story order above script segments<br/>[ask · existing Script card]<br/>drag stops; review kind, fact/picture counts and gaps; Ask for this source"]:::ask
   PBO["PATCH /align/playbook {stop_order, kinds}<br/>[FUNCTION · server/app.py]<br/>save playbook-overrides.json; revalidate effective playbook<br/>mark dependent work stale; reset script + visuals approvals; revise Plan<br/>Planner preserves reviewed stops, kinds, coverage and USPs"]:::fn
-  MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
+  MSG["USER message + optional files<br/>[ask · prompt dock or full-height Rehearse feedback chat + uploads]"]:::ask
   ATT["attachments → sources<br/>[FUNCTION · app.align_message]<br/>files saved as role=product before the agent sees them"]:::fn
   BUSY{"is a stage running?<br/>[FUNCTION · orchestrator.is_running]"}:::dec
   WAIT["409 'Still working on the last change'<br/>[term]"]:::term

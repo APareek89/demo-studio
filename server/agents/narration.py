@@ -13,8 +13,23 @@ ROLES = {"proof", "features", "establish"}
 PREPARATION_VERSION = 1
 NATURAL_WPS = 2.5
 CONTENT_HEADROOM = 1.10
-PREPARATION_INSTRUCTION = ("Expand the default guided narration to at least three measured minutes using distinct supported detail from the approved facts. "
+PREPARATION_INSTRUCTION = ("Expand the default guided narration to the selected demo duration using distinct supported detail from the approved facts. "
                            "Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.")
+
+
+def validate_minutes(value) -> int:
+    """Duration is an explicit whole-minute preference, never a voice-speed change."""
+    if type(value) is not int or not 1 <= value <= 5:
+        raise ValueError("pitch_minutes must be a whole number from 1 to 5")
+    return value
+
+
+def minimum_seconds(demo: dict | None = None) -> float:
+    settings = (demo or {}).get("settings", {})
+    try:
+        return float(validate_minutes(settings.get("pitch_minutes", 3)) * 60)
+    except ValueError:
+        return MIN_SECONDS  # Older invalid/missing settings retain the historic default.
 
 
 def preparation_identity(demo: dict, persona: dict | None = None) -> str:
@@ -25,7 +40,7 @@ def preparation_identity(demo: dict, persona: dict | None = None) -> str:
     identity = {"provider": provider, "speaker": voice.voice_name_for(demo, provider),
                 "language": settings.get("language", "en-IN"),
                 "languages": sorted(set(settings.get("languages") or [])),
-                "pitch_minutes": max(3.0, float(settings.get("pitch_minutes", 3) or 3)),
+                "pitch_minutes": minimum_seconds(demo) / 60,
                 "persona": persona or {}}
     return hashlib.sha256(json.dumps(identity, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
@@ -69,7 +84,7 @@ def word_target(demo: dict, script: dict | None = None, demo_id: str | None = No
                     alt_measured = preparation_report(alternate, demo_id=demo_id)
                     if alt_measured["measured"] and alt_measured["seconds"] > 0:
                         rate = max(rate, measured["words"] / alt_measured["seconds"])
-    seconds = max(MIN_SECONDS, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3) * 60)
+    seconds = minimum_seconds(demo)
     target = math.ceil(seconds * rate * CONTENT_HEADROOM - 1e-9)
     if demo_id:
         from .. import store
@@ -139,7 +154,8 @@ def _closing(segment: dict) -> dict:
 
 
 def report(script: dict, *, demo_id: str | None = None, route_ids: list[str] | None = None,
-           replacements: list[dict] | None = None, allowed_fact_ids: set[str] | None = None) -> dict:
+           replacements: list[dict] | None = None, allowed_fact_ids: set[str] | None = None,
+           minimum_seconds: float = MIN_SECONDS) -> dict:
     """Count only unique playable guide narration; estimates never masquerade as recordings."""
     from .author import WPS, words
     by_id = {segment["id"]: segment for segment in script.get("segments", []) if segment.get("id")}
@@ -184,8 +200,8 @@ def report(script: dict, *, demo_id: str | None = None, route_ids: list[str] | N
         add(line, "closing")
     total = sum(row["seconds"] for row in rows)
     measured_count = sum(row["measured"] for row in rows)
-    return {"minimum_seconds": MIN_SECONDS, "seconds": round(total, 2),
-            "sufficient": total + 1e-9 >= MIN_SECONDS, "words": sum(row["words"] for row in rows),
+    return {"minimum_seconds": minimum_seconds, "seconds": round(total, 2),
+            "sufficient": total + 1e-9 >= minimum_seconds, "words": sum(row["words"] for row in rows),
             "measured": bool(rows) and measured_count == len(rows),
             "basis": "measured" if rows and measured_count == len(rows) else "mixed" if measured_count else "estimated",
             "measured_seconds": round(sum(row["seconds"] for row in rows if row["measured"]), 2),
@@ -194,7 +210,8 @@ def report(script: dict, *, demo_id: str | None = None, route_ids: list[str] | N
 
 
 def default_route(script: dict, *, demo_id: str | None = None, preferred: list[str] | None = None,
-                  allowed_fact_ids: set[str] | None = None, include_all_proofs: bool = False) -> tuple[list[str], dict]:
+                  allowed_fact_ids: set[str] | None = None, include_all_proofs: bool = False,
+                  minimum_seconds: float = MIN_SECONDS) -> tuple[list[str], dict]:
     """Retain buyer order, then add unseen reviewed proofs until the minimum is met."""
     segments = [segment for segment in script.get("segments", []) if segment.get("role") in ROLES]
     by_id = {segment["id"]: segment for segment in segments}
@@ -219,21 +236,21 @@ def default_route(script: dict, *, demo_id: str | None = None, preferred: list[s
         candidates = [key for key in requested_groups if key[0] == role] or [key for key in groups if key[0] == role]
         tail.extend(candidates[:1])
     flatten = lambda selected: [sid for key in selected for sid in groups[key]]
-    result = report(script, demo_id=demo_id, route_ids=flatten(chosen + tail), allowed_fact_ids=allowed_fact_ids)
+    result = report(script, demo_id=demo_id, route_ids=flatten(chosen + tail), allowed_fact_ids=allowed_fact_ids, minimum_seconds=minimum_seconds)
     for sid in proofs:
         if result["sufficient"]:
             break
         if sid not in chosen:
             chosen.append(sid)
-            result = report(script, demo_id=demo_id, route_ids=flatten(chosen + tail), allowed_fact_ids=allowed_fact_ids)
+            result = report(script, demo_id=demo_id, route_ids=flatten(chosen + tail), allowed_fact_ids=allowed_fact_ids, minimum_seconds=minimum_seconds)
     return flatten(chosen + tail), result
 
 
 def preparation_report(script: dict, *, demo_id: str | None = None,
-                       allowed_fact_ids: set[str] | None = None) -> dict:
+                       allowed_fact_ids: set[str] | None = None, minimum_seconds: float = MIN_SECONDS) -> dict:
     """Count all available proof stops and only the default route's closing-role stops."""
     return default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_fact_ids,
-                         include_all_proofs=True)[1]
+                         include_all_proofs=True, minimum_seconds=minimum_seconds)[1]
 
 
 def preparation_status(demo_id: str, script: dict | None = None, plan: dict | None = None) -> dict:
@@ -250,7 +267,12 @@ def preparation_status(demo_id: str, script: dict | None = None, plan: dict | No
     planned = plan.get("narration_preparation") or {}
     if planned.get("identity") == preparation_identity(demo, plan.get("voice")):
         target = max(target, int(planned.get("target_words") or 0))
-    draft = preparation_report(script, allowed_fact_ids=allowed)
+    required = minimum_seconds(demo)
+    reviewed_duration = plan.get("guided_minimum_seconds", saved.get("minimum_seconds"))
+    duration_changed = (isinstance(reviewed_duration, (int, float))
+                        and not isinstance(reviewed_duration, bool)
+                        and reviewed_duration != required)
+    draft = preparation_report(script, allowed_fact_ids=allowed, minimum_seconds=required)
     provider = voice.provider_for(demo)
     current_recording = bool(script.get("voice_input_hash")) and (
         script["voice_input_hash"] == voice.input_hash(demo_id)
@@ -262,7 +284,7 @@ def preparation_status(demo_id: str, script: dict | None = None, plan: dict | No
     prior_recording = bool(script.get("voice_provider") and
                            (any(_audio_path(demo_id, row.get("audio")) for row in recorded_rows)
                             or ((demo.get("stages") or {}).get("voice") or {}).get("status") == "done"))
-    _, duration = default_route(script, demo_id=demo_id if current_recording else None, allowed_fact_ids=allowed)
+    _, duration = default_route(script, demo_id=demo_id if current_recording else None, allowed_fact_ids=allowed, minimum_seconds=required)
     all_recorded = current_recording and duration["measured"]
     recorded_ready = current_recording and duration["measured"] and duration["sufficient"]
     if current_recording:
@@ -270,7 +292,7 @@ def preparation_status(demo_id: str, script: dict | None = None, plan: dict | No
             if not language or language == demo.get("settings", {}).get("language", "en-IN"):
                 continue
             alternate = store.read_json(demo_id, f"script.{language}.json") or {}
-            _, alt_duration = default_route(alternate, demo_id=demo_id, allowed_fact_ids=allowed)
+            _, alt_duration = default_route(alternate, demo_id=demo_id, allowed_fact_ids=allowed, minimum_seconds=required)
             identity_matches = _alternate_matches(script, alternate, provider)
             all_recorded = all_recorded and identity_matches and alt_duration["measured"]
             recorded_ready = recorded_ready and identity_matches and alt_duration["measured"] and alt_duration["sufficient"]
@@ -300,8 +322,16 @@ def preparation_status(demo_id: str, script: dict | None = None, plan: dict | No
                 errors = [*errors, str(author_stage["error"])[:300]][:3]
         else:
             reason = "Narration drafting has not produced a draft for review yet."
+    elif duration_changed:
+        # A longer old recording can satisfy a shorter minimum without being
+        # the draft the user selected. Reprepare on their next Build. Explicit
+        # manual edits remain blocked for review instead of being overwritten.
+        status = "incomplete" if saved.get("status") == "incomplete" else "needs_preparation"
+        reason = (f"This draft was prepared for {reviewed_duration / 60:g} minutes; the selected duration is now {required / 60:g} minutes. "
+                  + ("Keep the manual draft for review; explicitly retry drafting for the selected duration before approving it."
+                     if status == "incomplete" else "Build will prepare narration for the selected duration and return it to Align for fresh review."))
     elif recorded_ready:
-        status, reason = "ready", "Current recordings meet the three-minute minimum in every selected language."
+        status, reason = "ready", f"Current recordings meet the {required / 60:g}-minute minimum in every selected language."
     elif all_recorded:
         status, reason = "needs_preparation", "The current recordings are short; the next build will prepare supported narration for review."
     elif not current_recording and saved.get("status") == "incomplete" and draft["words"] < target:
@@ -315,7 +345,7 @@ def preparation_status(demo_id: str, script: dict | None = None, plan: dict | No
     else:
         status, reason = "incomplete", incomplete_reason
     return {"version": PREPARATION_VERSION, "identity": planned.get("identity"), "status": status,
-            "target_words": target, "words": draft["words"], "missing_words": max(0, target - draft["words"]),
+            "minimum_seconds": required, "duration_changed": duration_changed, "target_words": target, "words": draft["words"], "missing_words": max(0, target - draft["words"]),
             "attempts": int(saved.get("attempts") or 0), "mock_preview": mock_preview,
             "measured": bool(current_recording and duration["measured"]), "seconds": duration["seconds"],
             "basis": duration["basis"], "reason": reason, "errors": errors,
@@ -324,17 +354,18 @@ def preparation_status(demo_id: str, script: dict | None = None, plan: dict | No
 
 
 def deficit_message(result: dict) -> str:
-    return (f"Default guided narration is {result['seconds']:.1f}s ({result['basis']}); at least 180s is required "
+    return (f"Default guided narration is {result['seconds']:.1f}s ({result['basis']}); at least {result.get('minimum_seconds', MIN_SECONDS):g}s is required "
             "before publication. The draft needs more distinct supported narration before it can be reviewed for a new build. "
             "Film, customer Q&A, deeper-only lines and repeated speech do not count; "
             "do not pad, duplicate claims or slow the voice to meet the minimum.")
 
 
 def require_minimum(script: dict, *, demo_id: str | None = None,
-                    allowed_fact_ids: set[str] | None = None, require_recorded: bool = False) -> dict:
-    _, result = default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_fact_ids)
+                    allowed_fact_ids: set[str] | None = None, require_recorded: bool = False,
+                    minimum_seconds: float = MIN_SECONDS) -> dict:
+    _, result = default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_fact_ids, minimum_seconds=minimum_seconds)
     if not result["sufficient"]:
         raise NarrationTooShort(deficit_message(result), result)
     if require_recorded and not result["measured"]:
-        raise NarrationTooShort("Default guided narration has missing or unreadable audio. Record every counted line before publication; estimated words cannot establish the 180-second minimum.", result)
+        raise NarrationTooShort(f"Default guided narration has missing or unreadable audio. Record every counted line before publication; estimated words cannot establish the {minimum_seconds:g}-second minimum.", result)
     return result

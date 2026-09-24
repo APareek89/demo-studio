@@ -212,7 +212,7 @@ def _build_approved(demo_id: str, emit) -> dict:
                                            if segment.get("id") in playable_ids],
                      "closing": next((slide.get("lines", []) for slide in b["slides"] if slide.get("kind") == "closing"), [])}
     minimum = narration.require_minimum(guided_script, demo_id=demo_id, allowed_fact_ids=set(facts),
-                                        require_recorded=True)
+                                        require_recorded=True, minimum_seconds=narration.minimum_seconds(demo))
     for language in alt:
         translated = store.read_json(demo_id, f"script.{language}.json") or {}
         translated_ids = {slide.get("segment_id") for slide in alt[language].get("slides", [])}
@@ -221,7 +221,7 @@ def _build_approved(demo_id: str, emit) -> dict:
                       "closing": next((slide.get("lines", []) for slide in alt[language].get("slides", []) if slide.get("kind") == "closing"), [])}
         try:
             alt[language]["narration_minimum"] = narration.require_minimum(translated, demo_id=demo_id, allowed_fact_ids=set(facts),
-                                                                          require_recorded=True)
+                                                                          require_recorded=True, minimum_seconds=narration.minimum_seconds(demo))
         except narration.NarrationTooShort as exc:
             raise narration.NarrationTooShort(f"{language}: {exc}", result=exc.result) from exc
     # Pin the knowledge snapshot and attach the overview to a suitable opening slide.

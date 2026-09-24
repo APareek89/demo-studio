@@ -1,4 +1,4 @@
-"""Browser geometry and approved-sample parity; isolated fixtures, no live mutations or providers."""
+"""Browser geometry and workbook template; isolated fixtures, no live mutations or providers."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import argparse
@@ -141,6 +141,8 @@ ACTUAL_METRICS = r'''() => {
 
 
 def run_sample_parity(browser,page,base,screenshots,check,live_url):
+    # The earlier sample retains the reviewed image/anchors and compact control
+    # dimensions. The24September workbook supersedes its dark colors and title.
     print('PARITY ASSET: '+('retained source photograph, read-only' if REFERENCE_IMAGE.is_file() else 'synthetic 1120x600 clean-checkout fallback; identical pixels on both sides'),flush=True)
     reference=page.context.new_page()
     reference.goto(base+'/reference/marine.html');reference.wait_for_function("document.querySelector('#customer .slide-scene img')?.complete")
@@ -156,12 +158,12 @@ def run_sample_parity(browser,page,base,screenshots,check,live_url):
         page.locator('.pl').screenshot(path=str(screenshots/f'actual-marine-{width}.png'))
         near=lambda a,b,tolerance=2:abs(a-b)<=tolerance
         check(f'{width}px reference and app use the same image pixels and native ratio',page.evaluate("document.querySelector('.slide-pic img').naturalWidth===1120&&document.querySelector('.slide-pic img').naturalHeight===600") and near(actual['picture']['width']/actual['picture']['height'],1120/600,.01))
-        check(f'{width}px header height and 75 percent stage match the approved sample',near(actual['header']['height'],expected['header']['height']) and near(actual['stage']['height'],expected['stage']['height']))
-        check(f'{width}px exact dark header and stage gradient match the approved sample',actual['headerStyle']['background']==expected['headerStyle']['background'] and actual['stageStyle']['gradient']==expected['stageStyle']['gradient'])
-        check(f'{width}px compact heading matches sample type size and top position',actual['titleStyle']['fontSize']==expected['titleStyle']['fontSize'] and near(actual['title']['x'],expected['title']['x']) and near(actual['title']['y'],expected['title']['y'],3))
+        check(f'{width}px compact header and slide retain75percent space with portrait guidance',near(actual['header']['height'],expected['header']['height']) and near(actual['stage']['height']+(32 if width<720 else 0),expected['stage']['height']))
+        check(f'{width}px workbook header and slide are white without a dark gradient',actual['headerStyle']['background']==actual['stageStyle']['background']=='rgb(255, 255, 255)' and actual['stageStyle']['gradient']=='none')
+        check(f'{width}px workbook heading is half-sized and close to the header',float(actual['titleStyle']['fontSize'][:-2])<=float(expected['titleStyle']['fontSize'][:-2])/2 and actual['title']['y']<expected['title']['y'])
         check(f'{width}px composer, label and hint heights match the approved sample',all(near(actual[k]['height'],expected[k]['height'],1) for k in ('reply','composerLabel','composerHint')))
-        check(f'{width}px caption type and feature card design match the approved sample',actual['captionStyle']['fontSize']==expected['captionStyle']['fontSize'] and actual['captionStyle']['fontFamily']==expected['captionStyle']['fontFamily'] and near(actual['card']['width'],expected['card']['width'],1) and actual['cardStyle']['background']==expected['cardStyle']['background'] and actual['cardTitleStyle']['fontSize']==expected['cardTitleStyle']['fontSize'])
-        check(f'{width}px image is centered below the heading at the approved size',near(actual['picture']['x']+actual['picture']['width']/2,actual['size']['width']/2) and near(actual['picture']['width'],expected['picture']['width'],2) and near(actual['picture']['y'],expected['picture']['y'],2))
+        check(f'{width}px readable caption type and compact feature card sizes are preserved',actual['captionStyle']['fontSize']==expected['captionStyle']['fontSize'] and actual['captionStyle']['fontFamily']==expected['captionStyle']['fontFamily'] and near(actual['card']['width'],expected['card']['width'],1) and actual['cardStyle']['background'] in ('rgb(255, 255, 255)','rgba(255, 255, 255, 0.96)') and actual['cardStyle']['color']=='rgb(16, 45, 66)' and actual['cardTitleStyle']['fontSize']==expected['cardTitleStyle']['fontSize'])
+        check(f'{width}px native-ratio picture is centered below the smaller heading',near(actual['picture']['x']+actual['picture']['width']/2,actual['size']['width']/2) and actual['picture']['width']>actual['size']['width']*.45 and actual['picture']['y']>=actual['title']['y']+actual['title']['height'])
         check(f'{width}px white conversation and CTA footer follow the sample order',actual['dockStyle']['background']==expected['dockStyle']['background']=='rgb(255, 255, 255)' and actual['dock']['y']>=actual['stage']['y']+actual['stage']['height']-1 and actual['footer']['y']>=actual['dock']['y']+actual['dock']['height']-1 and near(actual['footer']['height'],expected['footer']['height']))
         check(f'{width}px sample feature words and unchanged trusted anchors remain visible without overlaps',page.evaluate("(()=>{const g=labelGeometry();return g.represented&&g.bounded&&g.clear&&g.ownership&&JSON.stringify(approvedData)===approvedSaved})()"))
         check(f'{width}px sample anchors are small unnumbered dots, not badges',page.locator('.sample-layout .dot').evaluate_all("nodes=>nodes.length===3&&nodes.every(n=>{const r=n.getBoundingClientRect();return r.width<=10&&r.height<=10&&(!n.querySelector('.num')||getComputedStyle(n.querySelector('.num')).display==='none')})"))
@@ -237,9 +239,12 @@ def main():
     base=f'http://127.0.0.1:{server.server_port}'
     try:
         with tempfile.TemporaryDirectory(prefix='demo-ui-layout-') as tmp, sync_playwright() as pw:
+            os.environ.update(MOCK_LLM='1',CLOUD_SYNC='0',STORAGE_BACKEND='local',DEMO_STUDIO_DATA=tmp+'/demos',DEMO_STUDIO_GRAPH_DB=tmp+'/graph.sqlite')
+            sys.path.insert(0,str(ROOT))
+            from server.crawl import _render_executable
             screenshots=Path(args.screenshots or tmp)
             screenshots.mkdir(parents=True,exist_ok=True)
-            browser=pw.chromium.launch(executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless=True,args=['--mute-audio','--disable-background-networking'])
+            browser=pw.chromium.launch(executable_path=_render_executable(pw.chromium),chromium_sandbox=True,headless=True,args=['--mute-audio','--disable-background-networking'])
             context=browser.new_context(viewport={'width':1440,'height':1000}, reduced_motion='reduce')
             def guard(route):
                 if route.request.url.startswith(base+'/') and route.request.method=='GET':route.continue_()
@@ -254,8 +259,8 @@ def main():
                 check(f'{width}px dock is white',page.locator('.pl-dock').evaluate("el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)'"))
                 check(f'{width}px stage begins directly below header',page.evaluate("Math.abs(document.querySelector('.pl-top').getBoundingClientRect().bottom-document.querySelector('.pl-stage').getBoundingClientRect().top)<1"))
                 check(f'{width}px slide spans the full player width without a side rail',page.evaluate("(()=>{const s=document.querySelector('.slide-stack').getBoundingClientRect(),p=document.querySelector('.pl').getBoundingClientRect();return playerUsesCinematic&&!document.querySelector('.evidence-layout')&&Math.abs(s.left-p.left)<1&&Math.abs(s.width-p.width)<1})()"))
-                check(f'{width}px slide occupies 75 percent of the player viewport',page.evaluate("Math.abs(document.querySelector('.slide-stack').getBoundingClientRect().height/document.querySelector('.pl').getBoundingClientRect().height-.75)<.005"))
-                check(f'{width}px top bar and slide are dark above the white dock',page.evaluate("['.pl-top','.cinematic'].every(s=>{const c=getComputedStyle(document.querySelector(s));if(c.backgroundImage!=='none')return c.backgroundImage.startsWith('radial-gradient');const rgb=c.backgroundColor.match(/[\d.]+/g).map(Number);return rgb.slice(0,3).every(n=>n<100)&&rgb[3]!==0})"))
+                check(f'{width}px slide plus portrait guidance occupies75percent of the player',page.evaluate("(()=>{const p=document.querySelector('.pl'),s=document.querySelector('.slide-stack');return Math.abs((s.getBoundingClientRect().height+(p.classList.contains('portrait-player')?32:0))/p.getBoundingClientRect().height-.75)<.005})()"))
+                check(f'{width}px top bar and slide are white and borderless',page.evaluate("['.pl-top','.cinematic'].every(s=>{const c=getComputedStyle(document.querySelector(s));return c.backgroundColor==='rgb(255, 255, 255)'&&c.backgroundImage==='none'&&c.borderBottomWidth==='0px'})"))
                 page.evaluate('stress()')
                 after=page.evaluate("Object.fromEntries(['.slide-stack','.slide-pic','.pl-dock','.pl-action-bar'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return[s,[r.x,r.y,r.width,r.height]]}))")
                 check(f'{width}px CTA, contact, long answer and capture leave picture and dock fixed', before==after)
@@ -274,8 +279,8 @@ def main():
                 check(f'{width}px Attach and Send share one row',page.evaluate("Math.abs(document.querySelector('.dock .box>.btn.ghost').getBoundingClientRect().top-document.querySelector('.dock .box>.btn.primary').getBoundingClientRect().top)<1"))
                 page.screenshot(path=str(screenshots/f'align-{width}.png'))
                 page.evaluate("show('rehearse')")
-                check(f'{width}px Rehearse header is compact',page.locator('.rehearse-page-head').evaluate('el=>el.getBoundingClientRect().height<100'))
-                check(f'{width}px Rehearse feedback panel is bounded',page.locator('.rpanel').evaluate(f'el=>el.getBoundingClientRect().{"width" if width>980 else "height"}<={"271" if width>980 else "251"}'))
+                check(f'{width}px Rehearse has one feedback conversation without an oversized header',page.locator('.rehearse-page-head,.rpanel').count()==0 and page.locator('.rehearse-feedback').count()==1)
+                check(f'{width}px Rehearse player and feedback fit the available viewport',page.evaluate("[...document.querySelectorAll('.rehearse-workspace>.player-host,.rehearse-feedback')].every(n=>{const r=n.getBoundingClientRect();return r.width>0&&r.height>0&&r.left>=0&&r.right<=innerWidth+1&&r.top>=0&&r.bottom<=innerHeight+1})"))
                 page.screenshot(path=str(screenshots/f'rehearse-{width}.png'))
             page.set_viewport_size({'width':1440,'height':1000});page.evaluate('crossed()')
             check('crossed leaders use the existing rail',page.locator('.slide-panel .rail-fallback').count()==1 and page.locator('line.rail-only').count()==1)

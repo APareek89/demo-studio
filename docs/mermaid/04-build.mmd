@@ -37,8 +37,8 @@ flowchart TD
   BUN["bundle.build<br/>[FUNCTION · bundle.py]<br/>in: demo, understanding, plan, script, deck (+ language variants)<br/>out: media URLs + picture-owned callouts; retain first image_url and existing line-audio joins<br/>renderer: native-fit halves at ≥700px, stacked below; line reveal activates matching picture<br/>proxy illustration badge; CTAs, facts, languages and version retained"]:::fn
   APPROVAL{"All six approvals still current?<br/>[FUNCTION · shared per-demo publication lock]<br/>serialize input reads and final writes with customer FAQ changes"}:::dec
   REALIGN["Return to Align; preserve published bundle/version<br/>[HUMAN] review changed cards before another Build"]:::ask
-  MINIMUM{"Publishable default narration in every language?<br/>[FUNCTION · narration.require_minimum]<br/>at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing<br/>exclude film, Q&A, deeper-only and duplicates; estimates cannot pass"}:::dec
-  SHORT{"Complete recordings but under three minutes?<br/>[FUNCTION · graph.bundle]<br/>Bundle pending; previous publication/audio preserved<br/>missing/unreadable clips need recording recovery, not rewriting"}:::dec
+  MINIMUM{"Publishable default narration in every language?<br/>[FUNCTION · narration.require_minimum]<br/>selected1–5minutes (default3) of readable recorded overview/opening + guided main speech + statements + playable closing<br/>exclude film, Q&A, deeper-only and duplicates; estimates cannot pass"}:::dec
+  SHORT{"Complete recordings but under the selected duration?<br/>[FUNCTION · graph.bundle]<br/>Bundle pending; previous publication/audio preserved<br/>missing/unreadable clips need recording recovery, not rewriting"}:::dec
   AUTODRAFT["Prepare revised supported narration automatically<br/>[FUNCTION · graph.bundle → author]<br/>same user-requested Build, one bounded authoring pass<br/>entry becomes revise; no second Voice or automatic publication<br/>rebudget from matching recording pace; changed Script/Visuals require review"]:::fn
   DAPP{"All six approvals still current?<br/>[FUNCTION · graph.after_author / after_faq]<br/>automatic revised draft returns to review before Voice"}:::dec
   READY["status ready · durable SSE phase_done build<br/>[DATA · events.json + stage progress/warnings]<br/>fresh subscriber receives current baseline; valid cursor resumes bounded history"]:::term
@@ -61,7 +61,7 @@ flowchart TD
   BUN --> APPROVAL
   APPROVAL -- "yes, lock held through publication" --> MINIMUM
   APPROVAL -- "changed during Voice or before publication" --> REALIGN
-  MINIMUM -- "all measured and at least 180 seconds" --> READY
+  MINIMUM -- "all measured and selected duration reached" --> READY
   MINIMUM -- "short or missing/unreadable audio" --> SHORT
   SHORT -- "measured shortfall" --> AUTODRAFT --> AUTH
   SHORT -- "missing/unreadable recordings" --> REALIGN

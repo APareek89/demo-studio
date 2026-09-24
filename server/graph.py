@@ -227,7 +227,7 @@ def bundle(state: DemoState) -> Command:
         if (result is not None and not result.get("measured")) or "missing or unreadable audio" in str(error):
             orch._append_conversation(d, "agent", "Some narration recordings are missing or unreadable. Review the recordings before publishing; the existing demo is preserved.")
             return Command(goto="align_enter")
-        orch._append_conversation(d, "agent", "The recording came in under three minutes. I’m preparing more supported detail now; review the updated draft before recording it again. Your published demo is preserved.")
+        orch._append_conversation(d, "agent", "The recording came in under the selected demo duration. I’m preparing more supported detail now; review the updated draft before recording it again. Your published demo is preserved.")
         return Command(goto="author", update={"entry": "revise", "revise_stage": "author",
                                               "instruction": narration.PREPARATION_INSTRUCTION,
                                               "rebuild": False, "pending": None})

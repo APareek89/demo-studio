@@ -89,9 +89,9 @@ flowchart TD
   OVER2[&quot;UI overlay&lt;br/&gt;&#x27;Building your demo…&#x27;&quot;]:::term
   BUNDLE[&quot;bundle.json&lt;br/&gt;[DATA · data/demos/id/bundle.json]&quot;]:::data
   PLAY[&quot;Rehearse: player&lt;br/&gt;[FUNCTION · web/player/player.js]&lt;br/&gt;continuous stop narration · answers resume after 3 s · clarifications wait&lt;br/&gt;owned voice/typed turns; see diagram 05&quot;]:::fn
-  FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse panel]&quot;]:::ask
-  FBA[&quot;POST /feedback → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;coach&#x27;|&#x27;understand&#x27;) → human Align&quot;]:::agent
-  REHEARSE[&quot;USER selects Run rehearsal&lt;br/&gt;[ASK · Rehearse panel]&lt;br/&gt;POST /api/demos/id/rehearsal · customer questions first, then uploaded questions&lt;br/&gt;empty bank only: at most five sample questions; diagnostics preserve publication&quot;]:::ask
+  FB[&quot;USER gives feedback&lt;br/&gt;[ask · Rehearse feedback chat]&quot;]:::ask
+  FBA[&quot;POST /align + attachments → align agent (context=rehearse)&lt;br/&gt;[AGENT · Claude text tier]&lt;br/&gt;revise(&#x27;author&#x27;|&#x27;plan&#x27;|&#x27;coach&#x27;|&#x27;understand&#x27;) → human Align&quot;]:::agent
+  REHEARSE[&quot;USER selects Run rehearsal&lt;br/&gt;[ASK · Rehearse feedback chat]&lt;br/&gt;POST /api/demos/id/rehearsal · customer questions first, then uploaded questions&lt;br/&gt;empty bank only: at most five sample questions; diagnostics preserve publication&quot;]:::ask
   HOME[&quot;Home workspace&lt;br/&gt;[FUNCTION · web/home.js · #/home default]&lt;br/&gt;real demo/session counts · recent demos · existing create/open actions&quot;]:::fn
   LIB[&quot;My demos tab&lt;br/&gt;[DATA · list of data/demos/*/demo.json]&lt;br/&gt;search/filter · approved bundle thumbnails&quot;]:::data
 
@@ -116,7 +116,7 @@ flowchart TD
 <h2>02 · Read phase — Understand → Coach sales playbook → Plan</h2>
 <pre class="mermaid">%% 02 · Read phase — Understand → Coach sales playbook → Plan
 flowchart TD
-  SRC[&quot;sources[]&lt;br/&gt;[DATA · demo.json]&quot;]:::data
+  SRC[&quot;sources[] + selected duration1–5minutes (default3)&lt;br/&gt;[DATA · demo.json]&lt;br/&gt;Studio opens a blank draft; first change saves it; explicit demo links retain context&quot;]:::data
   ISV{&quot;kind?&lt;br/&gt;[FUNCTION · understand.run]&quot;}:::dec
   UPV[&quot;gemini.upload_file&lt;br/&gt;[LIBRARY · Gemini Files API]&lt;br/&gt;in: mp4/mov · out: file uri (poll until ACTIVE, ≤600 s)&quot;]:::data
   SHOTS[&quot;shot list&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: whole video + VIDEO_PROMPT&lt;br/&gt;out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)&quot;]:::agent
@@ -137,7 +137,7 @@ flowchart TD
   PB[&quot;playbook.json + saved order/kind overrides&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;reviewed stops, three USPs and evidence gaps&quot;]:::data
   PLAN[&quot;Evidence mapping, literal pictures and segment briefs&lt;br/&gt;[AGENT · configured text tier · plan.py]&lt;br/&gt;in: effective PLAYBOOK before approved registry, tagged media, brand, language + previous plan&lt;br/&gt;one proof segment per required stop; Coach&#x27;s order and USPs are settled&lt;br/&gt;intro previews the first supported fundamental in everyday words&lt;br/&gt;goal = moment + spoken/deeper IDs and conditions + visual/handoff intent&lt;br/&gt;typed stop_id / fundamental / word_budget; no final dialogue&quot;]:::agent
   PVAL[&quot;Enforce evidence and playbook coverage&lt;br/&gt;[FUNCTION · plan.run / _enforce_playbook]&lt;br/&gt;fact_ids ⊆ approved registry · visual_refs ⊆ allowed shots∪images&lt;br/&gt;map stop_id or fact overlap; drop unmapped/optional proof segments&lt;br/&gt;add missing required stops + issue; sort by role and stop order; inherit USPs/version&quot;]:::fn
-  BUDGET[&quot;Allocate supported narration budget&lt;br/&gt;[FUNCTION · narration.word_target / plan._enforce_budget]&lt;br/&gt;default target495words: 180s ×2.5words/s ×1.10; matching recordings can raise it&lt;br/&gt;reserve23overview +45closing; guided stops share remaining words&lt;br/&gt;fact-backed story stops allow up to three short batches; missing evidence stays a gap&lt;br/&gt;every Author run prepares current Plan automatically; no extra planner/persona call&quot;]:::fn
+  BUDGET[&quot;Allocate supported narration budget&lt;br/&gt;[FUNCTION · narration.word_target / plan._enforce_budget]&lt;br/&gt;target selected minutes ×60 ×2.5words/s ×1.10; default495words; matching recordings can raise it&lt;br/&gt;reserve23overview +45closing; guided stops share remaining words&lt;br/&gt;fact-backed story stops allow bounded short batches for selected length; missing evidence stays a gap&lt;br/&gt;every Author run prepares current Plan automatically; no extra planner/persona call&quot;]:::fn
   PJ[&quot;plan.json&lt;br/&gt;[DATA · stop_id, fundamental, word_budget; total_words, playbook_version]&quot;]:::data
   SAMPLE[&quot;voice sample&lt;br/&gt;[LIBRARY · Sarvam Bulbul v3 → Gemini TTS → Cloud/browser]&lt;br/&gt;in: voice.sample_line · out: audio/hash.wav&quot;]:::data
   DRAFT[&quot;Author → Deck&lt;br/&gt;[AGENT + FUNCTION · see diagram 04]&lt;br/&gt;grounded script, visual audit and editable slides&quot;]:::fn
@@ -177,11 +177,11 @@ flowchart TD
 <h2>03 · Align loop — one prompt dock, one agent, structured actions</h2>
 <pre class="mermaid">%% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
-  N6[&quot;SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;Script includes Story order and Gemini full/partial/missing visual proof per line&lt;br/&gt;empty question card auto-approved; same six-card Build gate&lt;br/&gt;Visuals: Marine / Sage / Graphite choice resets Visuals approval&lt;br/&gt;Script: compact 3-minute target and labelled timing; publication requires measured 180s&lt;br/&gt;incomplete drafts cannot be approved; mock placeholders labelled as preview&quot;]:::data
+  N6[&quot;SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs&lt;br/&gt;[DATA]&lt;br/&gt;Script includes Story order and Gemini full/partial/missing visual proof per line&lt;br/&gt;empty question card auto-approved; same six-card Build gate&lt;br/&gt;Visuals: Marine / Sage / Graphite choice resets Visuals approval&lt;br/&gt;Script: compact selected1–5minute target and labelled timing; publication requires measured selected duration&lt;br/&gt;incomplete drafts cannot be approved; mock placeholders labelled as preview&quot;]:::data
   PREP[&quot;Retry only an unsuccessful real draft&lt;br/&gt;[HUMAN · compact Script card]&lt;br/&gt;normal Read prepares automatically; no routine Prepare step&lt;br/&gt;POST /revise author with existing preparation instruction&lt;br/&gt;reasoning readiness or explicit override; changed cards return for review&quot;]:::ask
   STORY[&quot;USER reviews Story order above script segments&lt;br/&gt;[ask · existing Script card]&lt;br/&gt;drag stops; review kind, fact/picture counts and gaps; Ask for this source&quot;]:::ask
   PBO[&quot;PATCH /align/playbook {stop_order, kinds}&lt;br/&gt;[FUNCTION · server/app.py]&lt;br/&gt;save playbook-overrides.json; revalidate effective playbook&lt;br/&gt;mark dependent work stale; reset script + visuals approvals; revise Plan&lt;br/&gt;Planner preserves reviewed stops, kinds, coverage and USPs&quot;]:::fn
-  MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or Rehearse feedback panel]&quot;]:::ask
+  MSG[&quot;USER message + optional files&lt;br/&gt;[ask · prompt dock or full-height Rehearse feedback chat + uploads]&quot;]:::ask
   ATT[&quot;attachments → sources&lt;br/&gt;[FUNCTION · app.align_message]&lt;br/&gt;files saved as role=product before the agent sees them&quot;]:::fn
   BUSY{&quot;is a stage running?&lt;br/&gt;[FUNCTION · orchestrator.is_running]&quot;}:::dec
   WAIT[&quot;409 &#x27;Still working on the last change&#x27;&lt;br/&gt;[term]&quot;]:::term
@@ -291,8 +291,8 @@ flowchart TD
   BUN[&quot;bundle.build&lt;br/&gt;[FUNCTION · bundle.py]&lt;br/&gt;in: demo, understanding, plan, script, deck (+ language variants)&lt;br/&gt;out: media URLs + picture-owned callouts; retain first image_url and existing line-audio joins&lt;br/&gt;renderer: native-fit halves at ≥700px, stacked below; line reveal activates matching picture&lt;br/&gt;proxy illustration badge; CTAs, facts, languages and version retained&quot;]:::fn
   APPROVAL{&quot;All six approvals still current?&lt;br/&gt;[FUNCTION · shared per-demo publication lock]&lt;br/&gt;serialize input reads and final writes with customer FAQ changes&quot;}:::dec
   REALIGN[&quot;Return to Align; preserve published bundle/version&lt;br/&gt;[HUMAN] review changed cards before another Build&quot;]:::ask
-  MINIMUM{&quot;Publishable default narration in every language?&lt;br/&gt;[FUNCTION · narration.require_minimum]&lt;br/&gt;at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing&lt;br/&gt;exclude film, Q&amp;A, deeper-only and duplicates; estimates cannot pass&quot;}:::dec
-  SHORT{&quot;Complete recordings but under three minutes?&lt;br/&gt;[FUNCTION · graph.bundle]&lt;br/&gt;Bundle pending; previous publication/audio preserved&lt;br/&gt;missing/unreadable clips need recording recovery, not rewriting&quot;}:::dec
+  MINIMUM{&quot;Publishable default narration in every language?&lt;br/&gt;[FUNCTION · narration.require_minimum]&lt;br/&gt;selected1–5minutes (default3) of readable recorded overview/opening + guided main speech + statements + playable closing&lt;br/&gt;exclude film, Q&amp;A, deeper-only and duplicates; estimates cannot pass&quot;}:::dec
+  SHORT{&quot;Complete recordings but under the selected duration?&lt;br/&gt;[FUNCTION · graph.bundle]&lt;br/&gt;Bundle pending; previous publication/audio preserved&lt;br/&gt;missing/unreadable clips need recording recovery, not rewriting&quot;}:::dec
   AUTODRAFT[&quot;Prepare revised supported narration automatically&lt;br/&gt;[FUNCTION · graph.bundle → author]&lt;br/&gt;same user-requested Build, one bounded authoring pass&lt;br/&gt;entry becomes revise; no second Voice or automatic publication&lt;br/&gt;rebudget from matching recording pace; changed Script/Visuals require review&quot;]:::fn
   DAPP{&quot;All six approvals still current?&lt;br/&gt;[FUNCTION · graph.after_author / after_faq]&lt;br/&gt;automatic revised draft returns to review before Voice&quot;}:::dec
   READY[&quot;status ready · durable SSE phase_done build&lt;br/&gt;[DATA · events.json + stage progress/warnings]&lt;br/&gt;fresh subscriber receives current baseline; valid cursor resumes bounded history&quot;]:::term
@@ -315,7 +315,7 @@ flowchart TD
   BUN --&gt; APPROVAL
   APPROVAL -- &quot;yes, lock held through publication&quot; --&gt; MINIMUM
   APPROVAL -- &quot;changed during Voice or before publication&quot; --&gt; REALIGN
-  MINIMUM -- &quot;all measured and at least 180 seconds&quot; --&gt; READY
+  MINIMUM -- &quot;all measured and selected duration reached&quot; --&gt; READY
   MINIMUM -- &quot;short or missing/unreadable audio&quot; --&gt; SHORT
   SHORT -- &quot;measured shortfall&quot; --&gt; AUTODRAFT --&gt; AUTH
   SHORT -- &quot;missing/unreadable recordings&quot; --&gt; REALIGN
@@ -342,8 +342,8 @@ flowchart TD
   FILM[&quot;Optional opening film when selected by the existing flow&lt;br/&gt;[FUNCTION · playIntroFilm]&lt;br/&gt;native-fit video + Skip below; hide slide shell&lt;br/&gt;end/error/Skip restores player; obsolete run cannot resume&quot;]:::fn
   OVERVIEW[&quot;Grounded overview in the selected voice&lt;br/&gt;[DATA · bundle.runtime.overview]&lt;br/&gt;10–15 second target measured from generated audio&quot;]:::data
   PERSONALIZE[&quot;Explore graph node → pitch.plan_pitch&lt;br/&gt;[AGENT · Gemini → Claude → Runware]&lt;br/&gt;order reviewed slides; explicit priority revision may revisit selected seen proof&quot;]:::agent
-  ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / narration.default_route / player.js]&lt;br/&gt;first fundamental + buyer order; extend whole proof stops to measured180s&lt;br/&gt;all continuation batches stay together, including features/establish&lt;br/&gt;pre-tour Q&amp;A does not shorten speech; reviewed closing stays intact&lt;br/&gt;explicit short/refine exempt; legacy seen policy unchanged&quot;]:::fn
-  PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching on-slide callout with each line&lt;br/&gt;approved Marine sample: compact heading, centered native picture, small feature cards&lt;br/&gt;dark slide: 75% viewport; white conversation dock and fixed CTA footer&lt;br/&gt;plan all labels before reveal; short windows reserve controls; reviewed anchors never move&lt;br/&gt;speak closing statements; skip legacy question checkins without speech or wait&lt;br/&gt;save checkin_skipped: legacy_question on the run&quot;]:::fn
+  ROUTE[&quot;Validate route and personalized segments&lt;br/&gt;[FUNCTION · pitch.py / narration.default_route / player.js]&lt;br/&gt;first fundamental + buyer order; extend whole proof stops to published selected duration (default180s)&lt;br/&gt;all continuation batches stay together, including features/establish&lt;br/&gt;pre-tour Q&amp;A does not shorten speech; reviewed closing stays intact&lt;br/&gt;explicit short/refine exempt; legacy seen policy unchanged&quot;]:::fn
+  PLAY[&quot;Narration owns the screen&lt;br/&gt;[FUNCTION · player.js / slide.js]&lt;br/&gt;one voice; reveal matching on-slide callout with each line&lt;br/&gt;workbook: white borderless demo, template-dark text, two supported native-fit pictures&lt;br/&gt;welcome/intake: full-area hero + fade; slides75% viewport + fixed white conversation dock&lt;br/&gt;smaller heading; phone rotation guidance; viewport-bounded controls&lt;br/&gt;plan all labels before reveal; short windows reserve controls; reviewed anchors never move&lt;br/&gt;speak closing statements; skip legacy question checkins without speech or wait&lt;br/&gt;save checkin_skipped: legacy_question on the run&quot;]:::fn
   STOP[&quot;Stop local audio and cancel old turn/delivery&lt;br/&gt;[FUNCTION · live-voice.js / runtime_live.py]&lt;br/&gt;save return point; discard stale turn/utterance/generation output&quot;]:::fn
   ACK[&quot;Short acknowledgement when useful&lt;br/&gt;[DATA · selected-voice filler]&lt;br/&gt;retrieval starts concurrently; filler is not useful-answer latency&quot;]:::data
   CACHE{&quot;Candidate saved answer before graph?&lt;br/&gt;[FUNCTION · run_turn → faq.match]&lt;br/&gt;same pinned snapshot + registry hash; eligible citations&lt;br/&gt;skip_bank bypasses; rejected tombstones never match&quot;}:::dec
@@ -492,7 +492,7 @@ graph TD;
 	reason[&quot;reason&lt;br/&gt;[AGENT + FUNCTION · session CUSTOMER_URLS]&lt;br/&gt;explicit URL verification first, then explicit public-web search&lt;br/&gt;empty evidence / first clean decline: customer site first, public search if still unanswered&quot;]
 	tools[&quot;tools&lt;br/&gt;[FUNCTION · calculator / customer-site lookup / bounded public-web search]&lt;br/&gt;public search: one discovery + at most two secured page fetches, ≤5 seconds&lt;br/&gt;only fetched passages become attributed turn-scoped W facts&lt;br/&gt;one public search; greeting/control/CTA/clarify/calculator-only/outage fallback excluded&lt;br/&gt;negated/quoted search excluded; never writes facts or FAQ&lt;br/&gt;same scope, network, cancellation and turn-budget gates&quot;]
 	validate[&quot;validate&lt;br/&gt;[FUNCTION · grounded rows → plain terms → exact live host → word cap]&lt;br/&gt;technical_term feedback uses existing bounded repair&quot;]
-	explore[&quot;explore&lt;br/&gt;[AGENT + FUNCTION · pitch.plan_pitch]&lt;br/&gt;new default: first fundamental, buyer order, enough reviewed stops for measured 180s&lt;br/&gt;pre-tour Q&amp;A views cannot shorten counted speech; complete reviewed closing retained&lt;br/&gt;explicit short/refine exempt; legacy seen policy unchanged&quot;]
+	explore[&quot;explore&lt;br/&gt;[AGENT + FUNCTION · pitch.plan_pitch]&lt;br/&gt;new default: first fundamental, buyer order, enough reviewed stops for published selected duration (default180s)&lt;br/&gt;pre-tour Q&amp;A views cannot shorten counted speech; complete reviewed closing retained&lt;br/&gt;explicit short/refine exempt; legacy seen policy unchanged&quot;]
 	delivery_plan[&quot;delivery_plan&lt;br/&gt;[DATA · result includes plain_language_substitutions]&lt;br/&gt;session checkpoint retains input_mode and customer_urls; capture stays outside graph&quot;]
 	__end__([&lt;p&gt;__end__&lt;/p&gt;]):::last
 	REQUEST --&gt; CACHE;

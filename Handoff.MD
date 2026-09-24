@@ -1,6 +1,16 @@
 # Handoff.MD — Demo Studio
 
-## Current snapshot — automatic narration preparation · 24 September 2026
+## Current snapshot — feedback workbook · 24 September 2026
+
+**Decision:** the three-sheet feedback workbook supersedes the earlier dark Marine presentation and fixed180-second minimum for every demo. Use a white borderless player with template-dark text, full-area hero welcome/intake, smaller slide headings, up to two supported pictures and viewport-contained controls. Sources selects1–5 whole minutes, default3; automatic supported narration preparation and measured publication follow that choice. Studio opens blank with lazy creation; Open Studio keeps its saved demo. Rehearse has one feedback chat with uploads and the existing explicit rehearsal action; left steps remain unchanged. Nav height is40percent smaller under the stated C9 interpretation of “width”.
+
+**QA:** 51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps); deck380/380, acceptance24/24, smoke3/3; duration19/19, upload retry12/12, streaming19/19, media60/60, Studio29/29, workbook player101/101, full-app integration19/19, layout193/193, navigation22/22, full mock journey28/28. The full journey measures194.22seconds at the default setting; selected-duration tests cover every value and all-language publication. Code review/FMEA covers12/12 categories with no new unresolved blocker. Exact counts/hashes: `docs/feedback-workbook-gates-2026-09-24.json`; scope: `docs/feedback-workbook-2026-09-24.md`; FMEA: `docs/feedback-workbook-fmea-2026-09-24.md`.
+
+**Preserved:** exact manual draft edits, current source review, prior published bundle/snapshot/version/audio, the original workbook and existing untracked files. Feedback retries reuse byte-identical attachments; partial accepted uploads remain safely available. No paid call, protected local demo/output write or port8896 operation. Deployment receipt is recorded after staging and cutover; these local checks alone are not a deployment claim. Loop remains off.
+
+**Pending:** C9 nav interpretation can be corrected by Anand; inherited C7 hosted builder access, C8 Cloud alternate-language identity, small-instance capacity, scanned-PDF OCR, damaged nonempty audio-cache recovery and selective Align rebuild routing remain unchanged. Physical phone rotation/keyboard and acoustic acceptance are not part of mocked browser verification.
+
+## Earlier snapshot — automatic narration preparation · 24 September 2026
 
 **Latest decision:** preparing three minutes is the normal product flow, not a user repair task. This supersedes the manual Prepare action in the earlier snapshot. Preserve grounding, natural speech and the measured 180-second publication gate; no padding, duplicate claims or slower playback.
 

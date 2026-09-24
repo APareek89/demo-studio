@@ -625,3 +625,48 @@ table.sessions td{padding:7px 6px;border-bottom:1px solid var(--line)}table.sess
  .pl[data-visual-theme] .pl-stage:not(:has(.pl-intake.open)) .cinematic.sample-layout .slide-panel .item{flex:0 0 calc((100% - 12px)/2);min-width:0;max-width:none;font-size:12px}
 }
 .pl[data-visual-theme]:not(.slide-review-stage) .pl-stage:not(:has(.pl-intake.open)) .cinematic.sample-layout .slide-panel .cite{display:none}
+
+/* Rehearse keeps the reviewed demo beside one full-height feedback conversation. */
+.stage-area.rehearse-area{overflow:hidden;min-height:0;min-width:0}
+.rehearse.rehearse-workspace{flex:1;min-height:0;height:100%;min-width:0;grid-template-columns:minmax(280px,340px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);overflow:hidden}
+.rehearse.rehearse-workspace>.player-host{height:100%;min-height:0;min-width:0;overflow:hidden;display:flex}
+.rehearse-workspace>.rehearse-feedback{height:100%;min-height:0;min-width:0;border-right:1px solid var(--line);background:#fff;overflow:hidden}
+.rehearse-feedback .align-agent-header{flex:none;padding:19px 16px;gap:10px;flex-wrap:wrap}
+.rehearse-feedback .align-agent-header>.btn{margin-left:auto;font-size:10px;padding:6px 8px}
+.rehearse-feedback .align-agent-header h2{font-size:15px}
+.rehearse-feedback .align-agent-header p{font-size:11px}
+.rehearse-feedback .thread{min-height:0;padding:20px 16px;gap:14px;overflow-wrap:anywhere;overscroll-behavior:contain}
+.rehearse-feedback .msg{font:400 13px/1.7 var(--disp);border:1px solid var(--line);padding:12px 14px;border-radius:10px;white-space:pre-wrap;max-width:100%}
+.rehearse-feedback .msg.agent{background:#f2f6f8}
+.rehearse-feedback .msg.user{background:#e8f3f8}
+.rehearse-feedback .dock{flex:none;min-width:0;padding:14px;background:#fff}
+.rehearse-feedback .dock .box{display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:none}
+.rehearse-feedback .dock .box:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-tint)}
+.rehearse-feedback .dock textarea{grid-column:1/-1;grid-row:1;width:100%;min-height:64px;max-height:120px;margin:0;padding:6px;border:0;background:transparent;box-shadow:none;outline:none;resize:vertical;font:400 13px/1.6 var(--disp)}
+.rehearse-feedback .dock .box>.btn{grid-row:2;min-height:36px;margin:0;border-radius:7px}
+.rehearse-feedback .dock .box>.btn.ghost{grid-column:1;width:36px;padding:7px}
+.rehearse-feedback .dock .box>.btn.primary{grid-column:2;justify-self:end;padding:8px 12px}
+.rehearse-feedback .dock .attach:empty{display:none}
+.rehearse-feedback .dock .attach>span{max-width:100%;border-radius:4px;overflow-wrap:anywhere;display:flex;align-items:center;gap:5px}
+.rehearse-feedback .dock .attach button{flex:none;padding:2px;min-height:20px;border:0}
+.rehearse-feedback .dock .hint{font:400 11px/1.5 var(--disp);letter-spacing:0}
+.rehearse-feedback .feedback-progress{flex:none;max-height:100px;overflow:auto;padding:10px 16px;color:var(--muted);font:400 12px/1.5 var(--disp);border-top:1px solid var(--line);overflow-wrap:anywhere}
+.rehearse-feedback .feedback-progress.error{color:var(--bad);background:var(--bad-tint,#fff3f2)}
+@media(max-width:1100px){.rehearse.rehearse-workspace{grid-template-columns:minmax(240px,285px) minmax(0,1fr)}.rehearse-feedback .align-agent-header{padding:12px}.rehearse-feedback .thread{padding:14px 12px}.rehearse-feedback .dock{padding:10px}}
+@media(max-width:760px){.rehearse.rehearse-workspace{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(170px,34%)}.rehearse.rehearse-workspace>.player-host{grid-row:1}.rehearse-workspace>.rehearse-feedback{grid-row:2;border-right:0;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,48%);grid-template-rows:auto minmax(0,1fr)}.rehearse-feedback .align-agent-header{grid-column:1;grid-row:1;padding:8px 10px;gap:6px}.rehearse-feedback .align-agent-header p,.rehearse-feedback .studio-agent-mark{display:none}.rehearse-feedback .align-agent-header h2{font-size:12px}.rehearse-feedback .align-agent-header>.btn{font-size:9px;padding:4px}.rehearse-feedback .thread{grid-column:1;grid-row:2;padding:8px;gap:6px}.rehearse-feedback .msg{padding:7px;font-size:11px;line-height:1.5}.rehearse-feedback .dock{grid-column:2;grid-row:1/3;padding:8px;border-top:0;border-left:1px solid var(--line);overflow:auto}.rehearse-feedback .dock textarea{min-height:40px;max-height:64px;font-size:11px}.rehearse-feedback .dock .hint{font-size:9px}.rehearse-feedback .feedback-progress:not(.hidden){grid-column:1;grid-row:2;align-self:end;z-index:1;background:#fff;max-height:70px;padding:6px;font-size:10px}}
+
+/* Workbook: a 40% shorter navigation bar; every route remains available. */
+body>header.top{--topbar-h:45.6px;height:var(--topbar-h);min-height:var(--topbar-h);max-height:var(--topbar-h);width:100%;padding:0 24px;gap:24px;flex-wrap:nowrap;overflow:visible}
+body>header.top .brand{font-size:18px;gap:7px;flex:none;line-height:1.05}
+body>header.top .brand img{width:27px;height:27px}
+body>header.top .brand small{font-size:6px;margin-top:3px;letter-spacing:1.2px}
+body>header.top .tabs{order:0;width:auto;min-width:0;flex:1;height:100%;display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:3px;overflow-x:auto;scrollbar-width:none;align-items:stretch}
+body>header.top .tabs a{flex:none;display:flex;align-items:center;min-height:44px;padding:0 11px;font-size:12px;white-space:nowrap}
+body>header.top .connection-menu{flex:none;margin-left:auto}
+body>header.top .connection-menu summary{min-height:44px;gap:8px}
+body>header.top .workspace-avatar{width:29px;height:29px;font-size:10px}
+@media(max-width:900px){body>header.top{padding:0 12px;gap:12px}body>header.top .brand{font-size:15px}body>header.top .connection-menu summary>span:not(.workspace-avatar){display:none}body>header.top .tabs a{font-size:11px;padding:0 9px}}
+@media(max-width:640px){body>header.top{padding:0 8px;gap:8px}body>header.top .brand{font-size:13px;gap:5px}body>header.top .brand img{width:23px;height:23px}body>header.top .brand small{font-size:5px;letter-spacing:.6px}body>header.top .tabs a{font-size:11px;padding:0 8px}body>header.top .connection-menu summary{padding:0}.top .tabs a.active::after{display:none}}
+/* Short landscape: keep the unchanged steps rail scrollable inside its grid row. */
+.studio:has(>.rehearse-area){grid-template-rows:minmax(0,1fr)}
+.studio:has(>.rehearse-area)>.rail{min-height:0;overflow-y:auto}

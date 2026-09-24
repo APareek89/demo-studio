@@ -124,11 +124,14 @@ export function renderSlide(slide, opts = {}) {
     const hidden = sampleLayout ? [...chips.values(), ...panel.children].filter(node => node.classList.contains("hidden")) : [];
     hidden.forEach(node => node.classList.remove("hidden"));
     try {
-      const reserve = sampleLayout && callouts.some(c => c.placement !== "overlay" || !c.anchor || !c.label_pos) ? (el.clientWidth < 700 ? 86 : 68) : 0;
+      // Short embedded/landscape views must retain visible picture pixels. The
+      // caption band scrolls within its bounded share instead of consuming them.
+      const captionReserve = Math.min(el.clientWidth < 700 ? 86 : 68, Math.max(28, Math.floor(el.clientHeight * .24)));
+      const reserve = sampleLayout && callouts.some(c => c.placement !== "overlay" || !c.anchor || !c.label_pos) ? captionReserve : 0;
       arrange(reserve);
       // A crowded or tall picture may need a caption fallback. Reserve that band
       // before returning the settled geometry, not on a later observer frame.
-      if (sampleLayout && !reserve && panel.querySelector(".rail-fallback")) arrange(el.clientWidth < 700 ? 86 : 68);
+      if (sampleLayout && !reserve && panel.querySelector(".rail-fallback")) arrange(captionReserve);
     } finally {
       hidden.forEach(node => node.classList.add("hidden"));
     }
@@ -137,7 +140,7 @@ export function renderSlide(slide, opts = {}) {
 
   function arrange(panelReserve) {  // label edges connect after browser measurement
     const SW = el.clientWidth || 1, SH = el.clientHeight || 1, small = SW < 700;
-    media.classList.toggle("stacked", small);
+    media.classList.toggle("stacked", small && !opts.fit);
     if (opts.fit) {
       const intake = !!el.closest(".pl-stage")?.querySelector(".pl-intake.open");
       const heading = el.querySelector(".slide-heading");
@@ -145,7 +148,7 @@ export function renderSlide(slide, opts = {}) {
       // The approved sample puts the whole image below a compact heading and
       // above its footer. Unanchored facts keep a fixed on-slide caption band.
       el.style.setProperty("--slide-panel-space", panelReserve + "px");
-      const contentTop = headingBottom + (small ? 0 : 8), contentBottom = SH - (foot?.offsetHeight || 30) - panelReserve - (small ? 12 : 10);
+      const contentTop = headingBottom + (small ? 0 : 8), contentBottom = SH - (foot ? foot.offsetHeight : 30) - panelReserve - (small ? 12 : 10);
       const area = intake ? (small
           ? {x: 16, y: kind === "hero_open" ? 18 : SH * .23, w: SW - 32, h: SH * (kind === "hero_open" ? .55 : .57)}
           : {x: SW * .37, y: 18, w: SW * .60, h: SH - 36})
@@ -155,12 +158,10 @@ export function renderSlide(slide, opts = {}) {
         // Each annotation box fits its own native pixels into its allotted half.
         const R = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 4 / 3;
         const gap = 12, pair = pictures.length > 1;
-        const slot = pair ? (small
-          ? {x: area.x, y: area.y + index * (area.h + gap) / 2, w: area.w, h: (area.h - gap) / 2}
-          : {x: area.x + index * (area.w + gap) / 2, y: area.y, w: (area.w - gap) / 2, h: area.h}) : area;
-        const commonHeight = pair && !small ? Math.min(slot.h, ...pictures.map(({img: other}) => slot.w / (other.naturalWidth && other.naturalHeight ? other.naturalWidth / other.naturalHeight : 4 / 3))) : slot.h;
+        const slot = pair ? {x: area.x + index * (area.w + gap) / 2, y: area.y, w: (area.w - gap) / 2, h: area.h} : area;
+        const commonHeight = pair ? Math.min(slot.h, ...pictures.map(({img: other}) => slot.w / (other.naturalWidth && other.naturalHeight ? other.naturalWidth / other.naturalHeight : 4 / 3))) : slot.h;
         let w = Math.min(slot.w, sampleLayout && !intake ? 980 : slot.w), hh = w / R; if (hh > commonHeight) { hh = commonHeight; w = hh * R; }
-        pic.style.width = Math.round(w) + "px"; pic.style.height = Math.round(hh) + "px";
+        pic.style.width = w + "px"; pic.style.height = hh + "px";
         pic.style.left = Math.round(slot.x + (slot.w - w) * .5) + "px";
         pic.style.top = Math.round(slot.y + (slot.h - hh) / 2) + "px";
       });
@@ -174,7 +175,7 @@ export function renderSlide(slide, opts = {}) {
       // label, move only its displayed box; the truthful anchor and saved data stay fixed.
       const stage = el.getBoundingClientRect(), heading = el.querySelector(".slide-heading");
       const headingBottom = heading ? stage.top + heading.offsetTop + heading.offsetHeight : stage.top;
-      const footerTop = stage.bottom - (foot?.offsetHeight || 28);
+      const footerTop = stage.bottom - (foot ? foot.offsetHeight : 28);
       const panelSpace = Number.parseFloat(el.style.getPropertyValue("--slide-panel-space")) || 0;
       const labelTop = headingBottom + 8, labelBottom = footerTop - panelSpace - 8;
       const occupied = [{left: stage.left, right: stage.right, top: stage.top, bottom: headingBottom},

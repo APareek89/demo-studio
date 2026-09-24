@@ -143,6 +143,32 @@ def choose_proxy(seg_text: str, images: list[dict], hero_id: str | None) -> dict
     return {}
 
 
+def _additional_picture_lines(lines: list[dict], script_audit: dict | None, allowed: set[str]) -> dict[str, set[str]]:
+    """Reuse full pixel coverage for a second view, without inventing visual proof.
+
+    Author binds one picture per line. The same saved audit may also certify a
+    different uploaded picture for that line; this lets the two-picture layout
+    use it without another model call. Explicitly non-image, held or partly
+    covered lines cannot promote an alternative picture.
+    """
+    audit = script_audit or {}
+    rows = {row.get("line_id"): row for row in audit.get("lines", [])}
+    eligible = set()
+    for line in lines:
+        visual = line.get("visual") or {}
+        ref = visual.get("ref")
+        row = rows.get(line.get("id"), {})
+        if (not line.get("unverified") and ref in allowed
+                and visual.get("kind", "image") == "image"
+                and row.get("coverage") == "full" and not row.get("missing_features")
+                and row.get("visual", ref) in (ref, "keep")):
+            eligible.add(line.get("id"))
+    return {item["visual"]: set(item.get("script_line_ids", [])) & eligible
+            for item in audit.get("images", [])
+            if item.get("visual") in allowed and item.get("visible_features")
+            and item.get("confidence", 0) >= PART_CONFIDENCE}
+
+
 def choose_media(seg: dict, lines: list[dict], und: dict, script_audit: dict | None, hero_id: str | None) -> list[dict]:
     """Use at most two distinct literal audited bindings in narration order, else an illustration."""
     images = und.get("images", [])
@@ -165,6 +191,13 @@ def choose_media(seg: dict, lines: list[dict], und: dict, script_audit: dict | N
         media.append({"image_id": ref, "from_line": index, "proxy": False, "proxy_reason": ""})
         if len(media) == 2:
             break
+    if len(media) == 1:
+        additional = _additional_picture_lines(lines, script_audit, allowed)
+        for index, line in enumerate(line for line in lines if not line.get("unverified")):
+            ref = next((ref for ref, ids in additional.items() if ref not in seen and line.get("id") in ids), None)
+            if ref:
+                media.append({"image_id": ref, "from_line": index, "proxy": False, "proxy_reason": ""})
+                break
     if not media:
         text = " ".join([seg.get("title", ""), seg.get("topic", ""), *[line.get("text", "") for line in lines if not line.get("unverified")]])
         proxy = choose_proxy(text, images, hero_id)
@@ -569,7 +602,9 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                 else:
                     original = next((seg for seg in script.get("segments", []) if seg["id"] == s.get("segment_id")), {})
                     refs = {line["id"]: (line.get("visual") or {}).get("ref") for line in original.get("lines", [])}
-                    picture_lines = [line if ref is None or refs.get(line["id"], s["image_id"]) == ref else {**line, "fact_ids": []} for line in s["lines"]]
+                    additional = _additional_picture_lines(original.get("lines", []), script_audit, set(images_by_id))
+                    picture_lines = [line if ref is None or refs.get(line["id"], s["image_id"]) == ref or line["id"] in additional.get(ref, set())
+                                     else {**line, "fact_ids": []} for line in s["lines"]]
                     group = derive_callouts({**s, "lines": picture_lines}, facts_by_id, img)
                 for callout in group:
                     callout["image_id"] = ref

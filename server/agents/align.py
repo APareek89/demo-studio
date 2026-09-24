@@ -93,7 +93,7 @@ def cards(demo_id: str) -> dict:
     voice = plan.get("voice", {})
     actual_provider = voice_agent.provider_for(demo)
     allowed_facts = {fact["id"] for fact in und.get("facts", []) if fact.get("approved", True)}
-    _, narration_minimum = narration.default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_facts)
+    _, narration_minimum = narration.default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_facts, minimum_seconds=narration.minimum_seconds(demo))
     # Publication checks every recorded language. Show the limiting recording
     # here too, so an alternate-language deficit has an actionable review card.
     settings = demo.get("settings", {})
@@ -105,7 +105,7 @@ def cards(demo_id: str) -> dict:
         translated = store.read_json(demo_id, f"script.{language}.json")
         if not translated:
             continue
-        _, candidate = narration.default_route(translated, demo_id=demo_id, allowed_fact_ids=allowed_facts)
+        _, candidate = narration.default_route(translated, demo_id=demo_id, allowed_fact_ids=allowed_facts, minimum_seconds=narration.minimum_seconds(demo))
         current_key = (narration_minimum["sufficient"] and narration_minimum["measured"], narration_minimum["seconds"])
         candidate_key = (candidate["sufficient"] and candidate["measured"], candidate["seconds"])
         if candidate_key < current_key:
@@ -115,7 +115,7 @@ def cards(demo_id: str) -> dict:
     if isinstance(target, int) and not isinstance(target, bool) and target > 0:
         # Include every eligible continuation, not only the first route that
         # reaches the old estimated minimum. Recorded publication stays final.
-        draft = narration.preparation_report(script, allowed_fact_ids=allowed_facts)
+        draft = narration.preparation_report(script, allowed_fact_ids=allowed_facts, minimum_seconds=narration.minimum_seconds(demo))
         narration_minimum["preparation"] = {"target_words": target, "words": draft["words"],
                                               "sufficient": draft["words"] >= target}
     return {

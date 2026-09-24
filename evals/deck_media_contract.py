@@ -72,6 +72,23 @@ def run(check):
             check("proxy: no allowed hero produces no invented picture", deck.choose_proxy("price", [], "excluded") == {})
             held = [{**lines[0], "unverified": True}, lines[1]]
             check("media: held lines do not consume the displayed line index", deck.choose_media(seg, held, und, None, "im08")[0]["from_line"] == 0)
+            second_view = {**audit, "images": [{"visual": "im06", "script_line_ids": ["l0"],
+                                               "visible_features": ["engine detail"], "confidence": .9}]}
+            paired = deck.choose_media(seg, lines[:1], und, second_view, "im08")
+            check("workbook media: saved full pixel coverage supplies a distinct second view", [m["image_id"] for m in paired] == ["im08", "im06"])
+            check("workbook media: additional view retains its supported narration timing", paired[1]["from_line"] == 0 and not paired[1]["proxy"])
+            check("workbook media: one available supported view is not duplicated", len(deck.choose_media(seg, lines[:1], und, audit, "im08")) == 1)
+            def candidate(**changes):
+                return {**second_view, "images": [{**second_view["images"][0], **changes}]}
+            check("workbook media: weak pixel evidence cannot supply the second picture", len(deck.choose_media(seg, lines[:1], und, candidate(confidence=.2), "im08")) == 1)
+            check("workbook media: absent visible features cannot supply the second picture", len(deck.choose_media(seg, lines[:1], und, candidate(visible_features=[]), "im08")) == 1)
+            check("workbook media: excluded pictures cannot enter the second slot", len(deck.choose_media(seg, lines[:1], und, candidate(visual="excluded"), "im08")) == 1)
+            check("workbook media: another segment's audit is not reused", len(deck.choose_media(seg, lines[:1], und, candidate(script_line_ids=["other"]), "im08")) == 1)
+            check("workbook media: held narration cannot promote another view", deck._additional_picture_lines([{**lines[0], "unverified": True}], second_view, set(by_id))["im06"] == set())
+            check("workbook media: partial line coverage cannot promote another view", deck._additional_picture_lines(lines[:1], {**second_view, "lines": partial["lines"]}, set(by_id))["im06"] == set())
+            check("workbook media: explicit none cannot promote another view", deck._additional_picture_lines(explicit_none, second_view, set(by_id))["im06"] == set())
+            check("workbook media: an existing pair keeps its reviewed narration order", deck.choose_media(seg, lines[:2], und, second_view, "im08") == media)
+            check("workbook media: a repeated picture ID cannot fill the second slot", len(deck.choose_media(seg, lines[:1], und, candidate(visual="im08"), "im08")) == 1)
             store.write_json(did, "understanding.json", und)
             store.write_json(did, "plan.json", {"segments": [], "ctas": [], "intake": {}, "voice": {}})
             script = {"segments": [seg], "closing": [], "visual_audit": audit, "version": 1}
@@ -85,6 +102,13 @@ def run(check):
             check("deck: derived labels attach to the picture their source line uses", {c["image_id"] for c in slide["callouts"]} == {"im08", "im06"})
             wheel = next(c for c in slide["callouts"] if c["image_id"] == "im06")
             check("deck: second-picture geometry uses its own part box", wheel["placement"] == "overlay" and abs(wheel["anchor"]["x"] - .725) < 1e-6)
+            alternative_script = {**script, "segments": [{**seg, "lines": lines[:1]}], "visual_audit": second_view}
+            store.write_json(did, "script.json", alternative_script)
+            alternative_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("workbook deck: audited alternative persists through the real deck build", [m["image_id"] for m in alternative_slide["media"]] == ["im08", "im06"])
+            alternative_labels = [c for c in alternative_slide["callouts"] if c["image_id"] == "im06"]
+            check("workbook deck: alternative labels use only their audited line's citations", bool(alternative_labels) and all(c["fact_ids"] == ["F1"] for c in alternative_labels))
+            check("workbook deck: absent matching part uses a caption without a guessed marker", all(c["placement"] == "panel" and c["anchor"] is None for c in alternative_labels))
             store.write_json(did, "script.json", {**script, "visual_audit": partial})
             proxy_built = deck.build(did, lambda _: None)
             proxy_slide = next(s for s in proxy_built["slides"] if s.get("segment_id") == "engine")

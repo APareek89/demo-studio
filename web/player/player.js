@@ -162,7 +162,7 @@ export function mountPlayer(host, bundle, api) {
   const visualTheme = ["marine", "sage", "graphite"].includes(bundle.visual_theme) ? bundle.visual_theme : "marine";
   const productName = bundle.product?.name || bundle.name || "Product demo";
   const productBrand = typeof bundle.product?.brand === "string" ? bundle.product.brand : "";
-  const root = h("div", { class: "pl sample-player", "data-visual-theme": visualTheme },
+  const root = h("div", { class: "pl sample-player workbook-player", "data-visual-theme": visualTheme },
     h("div", { class: "pl-top" },
       h("div", { class: "left" }, h("div", { class: "pl-brand" }, h("div", { class: "pl-name", title: productBrand || productName }, productBrand || productName), h("div", { class: "pl-product" }, productBrand ? `${productName} · Guided demo` : "Guided demo"))),
       el.progress = h("nav", { class: "pl-progress", "aria-label": "Tour progress" }),
@@ -173,6 +173,9 @@ export function mountPlayer(host, bundle, api) {
       el.film = h("video", { class: "pl-film", muted: true, playsinline: true, preload: "auto", "aria-label": "Opening film" }),
       el.skipFilm = h("button", { class: "btn ghost pl-film-skip", onclick: () => { S.skipFilm = true; } }, "Skip the film")),
     el.stage = h("div", { class: "pl-stage" },
+      el.heroBackdrop = h("img", { class: "pl-hero-backdrop", alt: "", draggable: "false" }),
+      h("div", { class: "pl-hero-fade", "aria-hidden": "true" }),
+      el.orientationHint = h("p", { class: "pl-orientation-hint", role: "status", hidden: true }, "Rotate your phone 90° for a wider view. Controls remain available below."),
       el.stack = h("div", { class: "slide-stack" }),
       // The slide, conversation and footer keep fixed positions across runtime states.
       // web/slide.js:renderSlide supplies the fitted image and reviewed feature labels.
@@ -210,15 +213,25 @@ export function mountPlayer(host, bundle, api) {
       // Questions use the API callbacks supplied by web/app.js:renderPlay, just like dock replies.
       h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { oninput: preferTyping, placeholder: "Type a question…", "aria-label": "Type a question" }), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 18 })))));
   host.replaceChildren(root);
-  // Keep the slide at 75% of the demo viewport. Captions and transient controls
-  // share the remaining white area without changing the slide's dimensions.
+  // Stay within the actual host and visible viewport, including an embedded
+  // Rehearse panel or a phone keyboard. Portrait retains a widescreen slide and
+  // an advisory; it never rotates the DOM or attempts to lock the device.
   const sizePlayer = () => {
+    const viewport = window.visualViewport;
+    const viewportHeight = viewport?.height || window.innerHeight;
+    if (viewportHeight) root.style.maxHeight = Math.max(0, viewportHeight + (viewport?.offsetTop || 0) - root.getBoundingClientRect().top) + "px";
     if (root.classList.contains("film-on") || !root.clientHeight) return;
+    const portrait = root.clientWidth <= 720 && root.clientHeight > root.clientWidth && window.innerHeight > window.innerWidth;
+    root.classList.toggle("portrait-player", portrait);
+    el.orientationHint.hidden = !portrait;
     const header = root.querySelector(".pl-top").getBoundingClientRect().height;
-    const actions = root.querySelector(".pl-action-bar").getBoundingClientRect().height;
+    // Welcome hides the footer, but the tour still needs its reserved height
+    // when intake closes without changing the outer player dimensions.
+    const actions = root.querySelector(".pl-action-bar").getBoundingClientRect().height || (root.clientWidth <= 720 ? 30 : 35);
     const minimumDock = root.clientWidth <= 720 ? 132 : 120;
-    const slideHeight = Math.max(0, Math.min(root.clientHeight * .75, root.clientHeight - header - actions - minimumDock));
-    const dockHeight = root.clientHeight - header - actions - slideHeight;
+    const preferred = root.clientHeight * .75;
+    const slideHeight = Math.max(0, Math.min(preferred, root.clientHeight - header - actions - minimumDock));
+    const dockHeight = Math.max(0, root.clientHeight - header - actions - slideHeight);
     root.style.setProperty("--player-slide-height", slideHeight + "px");
     root.style.setProperty("--player-action-height", actions + "px");
     root.style.setProperty("--player-dock-size", dockHeight + "px");
@@ -228,6 +241,16 @@ export function mountPlayer(host, bundle, api) {
   dockObserver?.observe(root);
   dockObserver?.observe(root.querySelector(".pl-top"));
   sizePlayer();
+  window.addEventListener("resize", sizePlayer);
+  window.visualViewport?.addEventListener("resize", sizePlayer);
+  // Backdrops are selected only from the published media catalogue. A failed
+  // preferred image falls through to another supplied image, never to a search.
+  const imageUrls = (bundle.media?.images || []).map(image => image.url).filter(Boolean);
+  const preferredHero = bundle.media?.hero;
+  const heroUrls = [...new Set([preferredHero, heroOpen()?.image_url, ...imageUrls].filter(url => typeof url === "string" && url && !/\.(?:mp4|webm|mov|m4v)(?:[?#]|$)/i.test(url)))];
+  let heroIndex = 0;
+  const nextHero = () => { if (destroyed) return; const url = heroUrls[heroIndex++]; if (url) el.heroBackdrop.src = url; else el.heroBackdrop.removeAttribute("src"); };
+  el.heroBackdrop.addEventListener("error", nextHero); nextHero();
 
   // A single capture session stays independent of each narration/question delivery.
   // Old bundles keep their recorded/manual path; runtime.version=1 opts into the new protocol.
@@ -1634,7 +1657,7 @@ export function mountPlayer(host, bundle, api) {
   window.addEventListener("pagehide", onHide);
   // Remove observers and listeners, cancel active work, release preloads and destroy the player DOM.
   // web/app.js:renderPlay calls this lifecycle method when navigating away or mounting another demo.
-  function destroy() { if (destroyed) return; destroyed = true; clearTimeout(preloadTimer); dockObserver?.disconnect(); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
+  function destroy() { if (destroyed) return; destroyed = true; clearTimeout(preloadTimer); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   // Initialize visible actions, mute state and the hero slide before starting any demo flow.
   // web/slide.js:renderSlide supplies the view; the welcome buttons below choose when interaction starts.

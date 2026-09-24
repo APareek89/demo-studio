@@ -184,8 +184,8 @@ class PlanPlaybookContract(unittest.TestCase):
     def test_budget_clamps_extremes_and_reports_unachievable_lengths(self):
         self.plan["segments"][0]["word_budget"] = -500
         self.plan["segments"][1]["word_budget"] = 9000
-        plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 10}})
-        self.assertEqual(self.plan["total_words"], round(10 * 60 * author.WPS))
+        plan._enforce_budget(self.plan, {"settings": {"pitch_minutes": 5}})
+        self.assertEqual(self.plan["total_words"], round(5 * 60 * author.WPS))
         self.assertTrue(all(22 <= s["word_budget"] <= author.LIMITS[s["role"]] for s in self.plan["segments"]))
         self.assertTrue(any("cannot fit" in issue for issue in self.plan["issues"]))
 

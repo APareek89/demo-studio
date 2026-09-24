@@ -17,7 +17,7 @@ graph TD;
 	reason["reason<br/>[AGENT + FUNCTION · session CUSTOMER_URLS]<br/>explicit URL verification first, then explicit public-web search<br/>empty evidence / first clean decline: customer site first, public search if still unanswered"]
 	tools["tools<br/>[FUNCTION · calculator / customer-site lookup / bounded public-web search]<br/>public search: one discovery + at most two secured page fetches, ≤5 seconds<br/>only fetched passages become attributed turn-scoped W facts<br/>one public search; greeting/control/CTA/clarify/calculator-only/outage fallback excluded<br/>negated/quoted search excluded; never writes facts or FAQ<br/>same scope, network, cancellation and turn-budget gates"]
 	validate["validate<br/>[FUNCTION · grounded rows → plain terms → exact live host → word cap]<br/>technical_term feedback uses existing bounded repair"]
-	explore["explore<br/>[AGENT + FUNCTION · pitch.plan_pitch]<br/>new default: first fundamental, buyer order, enough reviewed stops for measured 180s<br/>pre-tour Q&A views cannot shorten counted speech; complete reviewed closing retained<br/>explicit short/refine exempt; legacy seen policy unchanged"]
+	explore["explore<br/>[AGENT + FUNCTION · pitch.plan_pitch]<br/>new default: first fundamental, buyer order, enough reviewed stops for published selected duration (default180s)<br/>pre-tour Q&A views cannot shorten counted speech; complete reviewed closing retained<br/>explicit short/refine exempt; legacy seen policy unchanged"]
 	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions]<br/>session checkpoint retains input_mode and customer_urls; capture stays outside graph"]
 	__end__([<p>__end__</p>]):::last
 	REQUEST --> CACHE;
