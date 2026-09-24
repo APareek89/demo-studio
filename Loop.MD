@@ -6,6 +6,8 @@ Loop remains **off**. Final local gates: **51/51 suites; 1,790/1,790 reported ch
 
 The inventory `docs/feedback-workbook-gates-2026-09-24.json` contains each suite count and test/log/source hashes. FMEA: `docs/feedback-workbook-fmea-2026-09-24.md`,12/12 categories. Python/JavaScript syntax, whitespace and all9 Mermaid copies/structural checks pass; no Mermaid parser or physical-device/acoustic claim. Workbook unchanged, no protected local writes or port8896 action. Nav40percent height reduction is the explicit C9 assumption; selective Align rebuilds remain pending.
 
+Application commit `483755d` is pushed to GitHub and deployed on AWS after 23/23 staged suites; 4,087 shared files preserved, environment checksum unchanged and public frontend 25/25 verified. Receipt: `docs/aws/release-feedback-workbook-2026-09-24.md`.
+
 ## Automatic narration preparation · 24 September 2026
 
 Loop remains **off**. Three-minute preparation is now part of ordinary Read/Author, with bounded completion, current Script approval guards and automatic measured-shortfall drafting inside an explicitly requested Build. Revised speech returns for review; missing recordings do not cause a content rewrite. Manual edits retain exact words and explicit preparation state. The large normal-flow deficit/Prepare panel is removed; mock placeholders are clearly identified.
