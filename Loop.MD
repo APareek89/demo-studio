@@ -13,6 +13,8 @@ Loop remains **off**. The user-reported128.3-second failure now has preparation 
 
 Python/JavaScript syntax, diff whitespace and all 9 Mermaid source/HTML copies pass. Tests use MOCK_LLM=1, isolated data/graph storage and blocked outbound sockets. No paid model/voice, physical microphone or live model-quality test. Thin evidence remains an explicit review gap, never permission to pad or bypass180-seconds. New recovery UI is active on localhost8905 with its existing isolated mock data; the protected demo, output/ and port8896 were not operated.
 
+GitHub/AWS release `e506448` is verified:15/15 staged suites pass (generation55 there because the three optional real-data checks were already covered locally). Staging exposed the deck/smoke worker-idle wait race; both helpers were fixed and rerun, plus6/6 direct wait scenarios. All4,087 stored files and environment checksum remain unchanged; public frontend25/25 and image/audio206 delivery pass. Full receipt: `docs/aws/release-narration-2026-09-24.md`.
+
 ## WP11 release QA / FMEA · 23 September 2026
 
 Loop remains **off**. Full release review covers WP1–WP11 against deployed `63abb85`. All **95/95** script/harness entries pass (**94 executable**, plus the provider module exercised inside deck); **2,788** reported groups/cases/phases overlap where deck invokes another contract. Full per-file counts and evidence paths: `docs/wp11-release-gates-2026-09-23.json`. FMEA: `docs/wp11-release-fmea-2026-09-23.md`, **12/12 categories**, eight fixes and three inherited limitations.
