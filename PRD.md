@@ -18,10 +18,11 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 
 ## Must never break
 - **No citation, no claim.** Authored speech uses the approved registry. Live answers use its pinned
-  snapshot, explicitly attributed public-web or customer-selected website evidence, or audited calculations from
+  snapshot, attributed live evidence from enabled owner-supplied URL domains, or audited calculations from
   supplied inputs. Live evidence never silently updates the registry; promotion requires Align.
   An unanswerable question takes the "I won't guess" path and is escalated — never invented.
   Enforced deterministically at authoring (validator) and at runtime (server-side Q&A validator).
+- **Retain the source details.** Read documents in smaller page-preserving batches, keeping table associations and footnotes. Qualitative features and gearboxes matter alongside numbers; retain source-stated stale warnings. An exact cited PDF cell can verify a quote when flattened text interleaves columns. Neither valid JSON nor an attached citation proves semantic completeness; Align review remains required.
 - **Keys stay server-side.** API keys live in `.env`; the browser never sees them.
 - **A stage failure never corrupts a demo.** Each stage writes its own JSON; a failed run leaves the
   previous outputs intact and the UI shows the error with a retry.
@@ -32,8 +33,10 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   evidence and explicit gaps, then exposes Story order inside the existing Script card. Reordering
   resets Script/Visuals approval and requests Plan revision. Planner follows its required stops and
   USPs, mapping evidence, pictures and typed word budgets; Author writes the speech.
-- **Budget the speech.** Planner allocates typed segment word budgets for `settings.pitch_minutes`;
-  Author checks each budget within shared role ceilings raised by eight words for natural joins.
+- **Budget the speech.** Planner allocates feasible 26–33-word narration batches for `settings.pitch_minutes`,
+  sharing the existing section allowance with supplemental material about that section. It preserves
+  evidence and delivery limits, reports infeasible targets, and recalculates saved plans consistently.
+  Author checks the resulting whole-stop budgets within the unchanged role ceilings.
   Align distinguishes planned, estimated and recorded durations; a word target is not measured audio.
 - **Explain in everyday words.** Everyday answers use reviewed neutral terminology substitutions
   after grounding and before word limits. Remaining blocked terms receive repair feedback; exact
@@ -47,8 +50,8 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   New snapshots cannot serve old customer answers; already pinned visits retain their own evidence.
 - **Rehearse on demand.** Build ends with Voice → Bundle. The Rehearse button tests customer questions
   first, then uploaded questions; at most five questions are generated only when the bank is empty.
-- **Interrupt on words.** Raw volume/VAD events do not stop the live guide. A meaningful partial or
-  final transcript confirms speech; explicit interrupt controls still stop immediately.
+- **Interrupt on qualified final speech.** Raw volume/VAD, provisional recognition and fragments do not stop the guide. A final utterance must fit the active prompt, a question, a product topic or an explicit playback command. Continue/Pause/Stop/Not now are local controls. Text qualification reduces accidental interruptions; it is not speaker identification or proof against all TV speech.
+- **Save while the customer is present.** Checkpoint the heard transcript during the visit, including a non-mutating current-speech prefix, and on visibility/exit. Ordered, retryable writes cannot replace a newer record with an older snapshot. Closing still uses the existing summary flow; public views mask contact details.
 - **Review held citations together.** Retry makes up to two reads of retained source evidence using
   the same exact quote/locator rule. Restore all flagged facts is explicit owner approval; it preserves
   the failed-verification reason and excludes manual rejections and conflict/precedence exclusions.
@@ -63,8 +66,7 @@ with a white fixed conversation dock; short windows reserve usable controls. Por
 show rotation guidance and remain usable. Visuals retains Marine/Sage/Graphite color approval.
 Studio navigation opens blank Sources without creating a record until the first mutation;
 My demos → Open Studio retains its saved context. Rehearse keeps the left steps and replaces
-the heading and panel stack with one full-height feedback chat with uploads and on-demand rehearsal. Search the
-public web immediately when approved evidence cannot answer, with cited, turn-local, uncached sources.
+the heading and panel stack with one full-height feedback chat with uploads and on-demand rehearsal. When approved evidence cannot answer, search only enabled owner-supplied URL domains, with cited, turn-local, uncached sources. Other relevant pages on those domains are allowed; customer text cannot authorize a new domain. PDF/image-only demos have no external runtime web access.
 Sources selects a whole-number duration from one to five minutes, default three. The guided tour
 extends through reviewed stops to that selected measured duration; publication blocks if supported
 narration falls short in any selected language. Changing duration invalidates the affected draft approvals
@@ -78,6 +80,8 @@ check-ins, CTA, handoff summary saved as a session) → feedback → rebuild. `M
 same path without keys, including the Coach playbook and its review within the six Align cards.
 
 **Current feedback gate receipt:** 51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps); deck380/380, acceptance24/24, smoke3/3, duration19/19, upload retry12/12, workbook player101/101, full-app integration19/19, layout193/193. Full counts and fixture boundaries are in `Loop.MD`; no paid/acoustic acceptance is implied.
+
+**Runtime recovery gate receipt:**60suites/2,335overlapping checks; core386/24/smoke3, full mock journey28, new allocation17, reader10, checkpoint26, domain21 and runtime recovery17. Exact per-contract results, screenshots, FMEA and the separate paid QA record are in `docs/qa/runtime-recovery-2026-09-24/`. Master/AWS release waits for hands-on approval.
 
 ## Out of scope (for now)
 Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
@@ -98,11 +102,11 @@ session resume after refresh and multi-worker runtime ownership.
 - A separate LangGraph retrieves → reasons → optionally calculates/checks a supplied public source →
   validates → produces a delivery plan. Selected-voice streaming happens outside graph replay. Tools share
   two rounds/four calls and a 12-second foreground reasoning budget; failures are explicit.
-- D5: customer-supplied websites persist for bounded session lookup when evidence is absent or a first decline needs checking; attribute live facts and keep them outside the registry. Default sites use only enabled product URL sources and remain off unless explicitly enabled.
+- D5 (24 September): enabled top-level owner URL sources define runtime web permission. Customer-selected pages are usable only within those domains; www/apex are equivalent, other subdomains need their own owner source. Lookup/search may check relevant same-domain pages beyond the initial path, retaining model/market, public-network, redirect, attribution and tool-budget guards. Removing an owner source revokes permission on the next lookup. This supersedes unrestricted public search and customer-created allow-lists.
 - D6: everyday runtime answers use reviewed neutral substitutions for blocked engineering terms or trigger repair; common terms pass, while explicit technical requests and expert audiences may retain cited exact names. Grounding still applies.
 - Explore plays a grounded, measured 10–15-second overview while the LLM orders unseen slides and
   personalizes spoken framing. Explicit corrections affect the next safe boundary.
-- D7: stop-closing check-ins never pause narration; legacy question-shaped check-ins retain their source text/audio and are skipped in playback with a run log; answers and declines resume after three seconds of silence, using a recorded return clip or silence. Customer speech, typing or a chip cancels the timer; guide clarifications, closing, CTA and lead choices still wait.
+- D7 (24 September): after a logical reviewed section, invite questions and continue after three seconds of silence. Answers and declines use the same owned reply window; qualified final speech, typing or a chip takes the turn. Explicit Continue receives a resume acknowledgement, never a question filler. Generic show-me-around intake uses the reviewed default tour without invented preferences. Legacy authored question check-ins remain skipped. Clarifications, closing and explicitly opened contact forms still wait; declines only offer a follow-up button, and Not now dismisses it and resumes. Healthy speech streams may exceed thirty seconds; only inactivity after buffered speech times out.
 - Crawl only the intended model/market and relevant policies; retain page/table context and visible gaps.
   Uploaded documents win genuine same-scope conflicts. Immutable evidence IDs and published snapshots
   preserve old demos. Semantic relevance never proves a claim.

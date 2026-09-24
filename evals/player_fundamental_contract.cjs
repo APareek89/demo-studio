@@ -23,7 +23,7 @@ async function run() {
   await check('intake request is initial and explicit priority correction is refinement', async () => {
     const calls = [], S = {run: 1, profile: {focus: []}, visited: [], sessionId: 'fixture'};
     const classes = {add() {}, remove() {}};
-    const shared = {S, api: {pitch: async request => {calls.push(request); return {route: []};}}, bundle: {version: 1, intake: {}}, live: {}, guide: 'Guide',
+    const shared = {S, ...vm.runInNewContext(part('function genericTour(', 'function defaultVoiceMode(') + '\n({genericTour})'), meaningfulTranscript: text => /[a-z]/i.test(text), api: {pitch: async request => {calls.push(request); return {route: []};}}, bundle: {version: 1, intake: {}}, live: {}, guide: 'Guide',
       el: {intake: {classList: classes}, inFallback: {classList: classes}, cite: {}, inState: {}}, newRun: () => 1, showSlideView() {}, heroOpen: () => ({}), speak: async () => true,
       intakeWait: async () => 'Cabin', intakeSites() {}, addMsg() {}, parseName: () => '', parseFocus: () => ['screens'], profileForServer: () => S.profile, withTimeout: promise => promise, startAfterIntake: async () => {}, cur: null, slides: []};
     const api = vm.runInNewContext(part('  async function runIntake() {', '  async function startAfterIntake(') + '\n' + part('  function queueRefinement() {', '  async function applyUpcomingPlan(') + '\n({runIntake,queueRefinement})', shared);

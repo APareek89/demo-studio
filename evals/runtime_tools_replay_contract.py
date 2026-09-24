@@ -53,7 +53,7 @@ class RuntimeToolsReplay(unittest.TestCase):
             return {'final_url': url, 'sections': [{'text': 'CRETA safety feature table preserves its exact variant conditions.', 'locator': 'Safety'}],
                     'links': [{'url': child, 'label': 'CRETA safety highlights'} for child in [*rejected, allowed]]}
         with patch('server.crawl.fetch_public', side_effect=fetch), patch('socket.socket.connect', side_effect=AssertionError('network forbidden')):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Creta safety highlights'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Creta safety highlights'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual(calls, [seed, allowed])
         self.assertEqual(result['scope']['model_tokens'], ['creta'])
         self.assertTrue(all('/creta/' in item['source']['ref'] for item in result['evidence']))
@@ -68,7 +68,7 @@ class RuntimeToolsReplay(unittest.TestCase):
             return {'final_url': url, 'sections': [{'text': 'CRETA price depends on the selected configuration and applicable charges.', 'locator': 'Price'}],
                     'links': [{'url': child, 'label': 'CRETA price in ' + child.rsplit('/', 1)[-1]} for child in links]}
         with patch('server.crawl.fetch_public', side_effect=fetch), patch('socket.socket.connect', side_effect=AssertionError('network forbidden')):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': query}, question + ' ' + seed, history or [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': query}, question + ' ' + seed, history or [], allowed_urls=[seed])
         return calls, result
 
     def test_model_wide_price_lookup_cannot_choose_a_city_from_menu_or_model_query(self):
@@ -105,27 +105,27 @@ class RuntimeToolsReplay(unittest.TestCase):
         seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed.rsplit('/', 1)[0] + '/price-in-ahmedabad', 'text': 'CRETA price in Ahmedabad is a city-specific price.'}):
             with self.assertRaisesRegex(ValueError, 'No readable section'):
-                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'price'}, 'Check the price in my city at ' + seed, [])
+                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'price'}, 'Check the price in my city at ' + seed, [], allowed_urls=[seed])
 
     def test_explicit_city_redirect_cannot_switch_to_another_city(self):
         seed = 'https://www.hyundai.com/in/en/find-a-car/creta/price-in-mumbai'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed.replace('mumbai', 'ahmedabad'), 'text': 'CRETA price in Ahmedabad is a city-specific price.'}):
             with self.assertRaisesRegex(ValueError, 'No readable section'):
-                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'price'}, 'Check this exact page ' + seed, [])
+                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'price'}, 'Check this exact page ' + seed, [], allowed_urls=[seed])
 
     def test_redirect_cannot_change_the_model(self):
         seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed.replace('/creta/', '/alcazar/'), 'text': 'Safety information about a different vehicle.'}):
             with self.assertRaisesRegex(ValueError, 'No readable section'):
-                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'safety'}, 'Check ' + seed, [])
+                source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'safety'}, 'Check ' + seed, [], allowed_urls=[seed])
 
-    def test_generic_homepage_does_not_authorize_arbitrary_product_links(self):
+    def test_generic_owner_homepage_can_follow_relevant_same_domain_pages(self):
         seed = 'https://example.com/'
         page = {'final_url': seed, 'text': 'The company offers product information and general safety resources.',
                 'links': [{'url': 'https://example.com/other-car/safety', 'label': 'Safety'}]}
         with patch('server.crawl.fetch_public', return_value=page) as fetch:
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'safety'}, 'Check ' + seed, [])
-        self.assertEqual(fetch.call_count, 1)
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'safety'}, 'Check ' + seed, [], allowed_urls=[seed])
+        self.assertEqual(fetch.call_count, 2)
         self.assertEqual(len(result['pages']), 1)
 
     def test_lookup_prefers_answer_body_over_titles_questions_and_contact_forms(self):
@@ -135,7 +135,7 @@ class RuntimeToolsReplay(unittest.TestCase):
                     {'heading': 'Engine options', 'text': 'What engine options does the CRETA provide?', 'locator': 'question'},
                     {'heading': 'Engine options', 'text': 'A 1.5-litre petrol and a 1.5-litre turbo petrol are listed for this model.', 'locator': 'answer'}]
         with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': sections}):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Using this page tell me what engine information it actually provides for Creta'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Using this page tell me what engine information it actually provides for Creta'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual([f['source']['locator'] for f in result['evidence']], ['answer', 'title'])
 
     def test_model_name_alone_does_not_displace_topic_evidence(self):
@@ -143,14 +143,14 @@ class RuntimeToolsReplay(unittest.TestCase):
         sections = [{'heading': 'CRETA', 'text': 'The CRETA name appears across the model family.', 'locator': f'generic{i}'} for i in range(8)]
         sections.append({'heading': 'Cabin', 'text': 'A panoramic sunroof is available on selected trims.', 'locator': 'sunroof'})
         with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': sections}):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Can you verify whether the Creta page mentions a panoramic sunroof?'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Can you verify whether the Creta page mentions a panoramic sunroof?'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual([f['source']['locator'] for f in result['evidence']], ['sunroof'])
 
     def test_feature_heading_remains_evidence_that_page_mentions_feature(self):
         seed = 'https://www.hyundai.com/in/en/find-a-car/creta/highlights'
         heading = 'Voice enabled smart panoramic sunroof'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': [{'heading': heading, 'text': heading, 'locator': 'feature'}]}):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Does the page mention a panoramic sunroof?'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Does the page mention a panoramic sunroof?'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual(result['evidence'][0]['value'], heading)
         self.assertTrue(result['evidence'][0]['scope_unverified'])
 
@@ -158,7 +158,7 @@ class RuntimeToolsReplay(unittest.TestCase):
         seed = 'https://example.com/car/specification'
         passage = 'Fuel tank capacity is 50 litres. Want to know about fuel tank care?'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': [{'heading': 'Fuel tank', 'text': passage, 'locator': 'answer'}]}):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'fuel tank capacity'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'fuel tank capacity'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual(result['evidence'][0]['value'], passage)
 
     def test_hyphenated_model_slug_is_tokenized_like_the_question(self):
@@ -166,14 +166,14 @@ class RuntimeToolsReplay(unittest.TestCase):
         sections = [{'heading': 'Grand Vitara', 'text': 'The Grand Vitara name appears across this model family.', 'locator': f'generic{i}'} for i in range(8)]
         sections.append({'heading': 'Cabin', 'text': 'A panoramic sunroof is available on selected trims.', 'locator': 'sunroof'})
         with patch('server.crawl._model_tokens', return_value=['grand-vitara']), patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': sections}):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Grand Vitara panoramic sunroof'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'Grand Vitara panoramic sunroof'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual([f['source']['locator'] for f in result['evidence']], ['sunroof'])
 
     def test_relevant_answer_with_contact_footer_keeps_its_full_quote(self):
         seed = 'https://example.com/car/specification'
         passage = 'Fuel tank capacity is 50 litres. Share your number to request a test drive.'
         with patch('server.crawl.fetch_public', return_value={'final_url': seed, 'sections': [{'heading': 'Fuel tank', 'text': passage, 'locator': 'answer'}]}):
-            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'fuel tank capacity'}, 'Check ' + seed, [])
+            result = source_lookup({'tool': 'source_lookup', 'url': seed, 'query': 'fuel tank capacity'}, 'Check ' + seed, [], allowed_urls=[seed])
         self.assertEqual(result['evidence'][0]['source']['quote'], passage)
 
 

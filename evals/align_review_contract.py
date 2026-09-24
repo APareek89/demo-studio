@@ -14,6 +14,7 @@ def run(check, _demo_id=None):
     from server import config, orchestrator, schemas, store
     from server.agents import align, bundle, qa, visuals
     from server.app import app
+    from server.llm import mock as fixture_mock
 
     with tempfile.TemporaryDirectory(prefix="align-review-") as tmp, ExitStack() as stack:
         stack.enter_context(patch.multiple(config, MOCK_LLM=True, DATA_DIR=Path(tmp)))
@@ -248,6 +249,52 @@ def run(check, _demo_id=None):
               and timing_card["pitch_minutes"] == store.load(did)["settings"]["pitch_minutes"])
         check("align timing: edited unvoiced words never claim measured audio",
               timing_segment["measured"] is False and timing_segment["lines"][0]["exact"] is False)
+
+        # Plan's model-output schema deliberately excludes server-computed
+        # preparation metadata. Ordinary human edits must not erase that state.
+        prepared = fixture_mock.fake(schemas.Plan).model_dump()
+        computed = {"narration_preparation": {"version": 1, "target_words": 495, "identity": "draft identity"},
+                    "guided_minimum_seconds": 180, "guided_opening_words": 23,
+                    "issues": ["draft review: a supported source is still needed"]}
+        prepared.update(computed, total_words=495, voice_sample_audio="audio/reviewed-sample.wav")
+        prepared["segments"][0]["word_budget"] = 78
+        store.write_json(did, "plan.json", prepared)
+        approve_all()
+        result = api.patch(f"/api/demos/{did}/align/plan", json={"fields": {"notes": "draft notes", "decision_frame": "Review the supported choices."}})
+        reviewed = store.read_json(did, "plan.json")
+        check("align plan: a normal metadata edit preserves computed preparation, issues and reviewed allocation",
+              result.status_code == 200 and all(reviewed.get(key) == value for key, value in computed.items())
+              and reviewed["segments"] == prepared["segments"] and reviewed["total_words"] == 495
+              and reviewed["voice_sample_audio"] == prepared["voice_sample_audio"]
+              and reviewed["decision_frame"] == "Review the supported choices.")
+        current = store.load(did)
+        check("align plan: a preserved prepared plan still invalidates downstream work and approvals",
+              not any(current["approvals"].values()) and current["stages"]["plan"]["status"] == "done"
+              and all(current["stages"][stage]["status"] == "stale" for stage in orchestrator.DOWNSTREAM["plan"]))
+        result = api.patch(f"/api/demos/{did}/align/plan", json={"replacements": [{"from": "draft", "to": "reviewed"}]})
+        reviewed = store.read_json(did, "plan.json")
+        check("align plan: text replacement edits authored notes but cannot rewrite computed diagnostics or identity",
+              result.status_code == 200 and reviewed["notes"] == "reviewed notes"
+              and all(reviewed.get(key) == value for key, value in computed.items()))
+        for label, payload in (
+            ("computed metadata overwrite", {"fields": {"guided_minimum_seconds": 0}}),
+            ("invalid editable field type", {"fields": {"supporting_outcomes": {"invalid": "value"}}}),
+        ):
+            def plan_snapshot():
+                return {str(path.relative_to(store.path(did))): path.read_bytes()
+                        for path in store.path(did).rglob("*") if path.is_file()}
+            before = plan_snapshot()
+            result = api.patch(f"/api/demos/{did}/align/plan", json=payload)
+            check(f"align plan: {label} rejects without mutating artifacts or approvals",
+                  result.status_code == 400 and plan_snapshot() == before)
+        legacy = {key: value for key, value in prepared.items() if key not in computed}
+        legacy["unrecognized_extra"] = "not part of the plan schema"
+        store.write_json(did, "plan.json", legacy)
+        result = api.patch(f"/api/demos/{did}/align/plan", json={"fields": {"notes": "Legacy review."}})
+        reviewed = store.read_json(did, "plan.json")
+        check("align plan: legacy edits neither invent preparation metadata nor relax the plan schema",
+              result.status_code == 200 and reviewed["notes"] == "Legacy review."
+              and not any(key in reviewed for key in computed) and "unrecognized_extra" not in reviewed)
         check("align review: no model, speech or outbound network calls", not any(mock.called for mock in blocked))
 
 

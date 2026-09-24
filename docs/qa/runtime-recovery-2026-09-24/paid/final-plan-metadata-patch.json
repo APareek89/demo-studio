@@ -1,0 +1,65 @@
+{
+  "fields": {
+    "customer_persona": "Customer priorities and intended use have not been supplied. Present the reviewed options without assuming personal requirements.",
+    "decision_frame": "Compare engine and equipment choices against the customer's stated requirements. Fuel efficiency, service costs and local availability remain unconfirmed.",
+    "takeaway": "The Hyundai CRETA has three engine choices and six standard airbags; other equipment depends on the trim.",
+    "primary_outcome": "Compare approved engine and gearbox options, including their variant conditions.",
+    "supporting_outcomes": [
+      "Review the seating layout and listed cabin equipment",
+      "Review standard airbags and the trim conditions for driver assistance"
+    ],
+    "do_not_recommend_if": "Do not infer suitability before the customer's requirements are known. The approved seating capacity is five; requirements beyond the available evidence need confirmation.",
+    "advance": "Use Contact Dealer to confirm the configuration, availability and a written quotation, then arrange a test drive.",
+    "notes": "The overview describes the five-door compact SUV and introduces variant differences, supported by F033 and F038. Customer priorities remain unknown until stated."
+  },
+  "replacements": [
+    {
+      "from": "Hello, welcome to the official Hyundai CRETA tour. Would you like to tell me quickly what you are buying it for, or shall we just get started?",
+      "to": "Hello, I am Priya, your guide to the Hyundai CRETA. Tell me what matters to you, or say show me around to begin."
+    },
+    {
+      "from": "A knowledgeable and precise Hyundai product specialist guiding customers through specifications and trim options. The guide behaves professionally and provides structured information with a warm and attentive demeanor.",
+      "to": "Priya is a guide to the supplied Hyundai CRETA material. She explains reviewed specifications and trim conditions in a warm, precise manner, without claiming manufacturer or dealer affiliation."
+    },
+    {
+      "from": "Diverse engine options for any drive",
+      "to": "Three engine choices"
+    },
+    {
+      "from": "Panoramic sunroof with voice control",
+      "to": "Voice-enabled panoramic roof on specified trims"
+    },
+    {
+      "from": "Fuel capacity determines refuelling frequency on longer runs.",
+      "to": "Tank capacity is listed, but it does not establish driving range or refuelling frequency without fuel-use figures."
+    },
+    {
+      "from": "Occupant protection across variants is vital for family buyers.",
+      "to": "Compare the listed occupant-protection equipment without assuming the customer is a family buyer."
+    },
+    {
+      "from": "Does this seating and safety configuration match what you need for your daily commute?",
+      "to": "Does this seating and safety configuration match the requirements you described?"
+    },
+    {
+      "from": "One of the cars you see most on Indian roads, this five-door compact SUV offers straight four-cylinder engines.",
+      "to": "This five-door compact SUV has three engine choices; cabin equipment and safety features vary across the listed trims."
+    },
+    {
+      "from": "Starting a city drive with smooth power delivery.",
+      "to": "Comparing the available engine and gearbox combinations."
+    },
+    {
+      "from": "Review standard six airbags, three engine choices, and the panoramic sunroof.",
+      "to": "Review six standard airbags, three engine choices, and the trim conditions for the panoramic sunroof."
+    },
+    {
+      "from": "Use F093 for touchscreen options and wireless smartphone integration; hold connected services detail for questions.",
+      "to": "Use F093 for touchscreen sizes and their exact trim availability; connected-service claims require their separate approved facts and conditions."
+    },
+    {
+      "from": "declare open questions on exact fuel efficiency and service costs to be resolved at a dealership.",
+      "to": "keep exact fuel efficiency and service costs unconfirmed, and ask for written dealer information."
+    }
+  ]
+}

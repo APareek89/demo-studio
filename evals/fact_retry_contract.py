@@ -17,7 +17,7 @@ ATTEMPTS = []
 def blocked(*args, **kwargs):
     ATTEMPTS.append(True)
     raise AssertionError("No outbound calls")
-socket.socket.connect = socket.socket.connect_ex = socket.create_connection = blocked
+socket.socket.connect = socket.socket.connect_ex = socket.socket.sendto = socket.create_connection = socket.getaddrinfo = blocked
 from fastapi.testclient import TestClient
 from server import graph, knowledge, store
 from server.app import app
@@ -131,6 +131,98 @@ class FactRetryContract(unittest.TestCase):
         self.assertFalse(saved["facts"][0]["approved"])
         self.assertEqual(saved["facts"][0]["source"],self.fact["source"])
         self.assertNotEqual(knowledge.snapshot(self.did)["id"],old["id"])
+
+
+class PdfTableCitationContract(unittest.TestCase):
+    # Exercise the same retained PDF shape as sources.pdf_pages produces. The
+    # layout text deliberately interleaves columns, unlike individual cells.
+    rows=FactRetryContract.rows
+    tearDown=FactRetryContract.tearDown
+
+    def setUp(self):
+        FactRetryContract.setUp(self)
+        self.source["kind"]="pdf"
+        store.update(self.did, lambda demo: demo.update(sources=[self.source]))
+        self.fact["source"]={"ref":"doc", "locator":"Page 16, Section 6 / Page 29, Section 10",
+                             "quote":"250 Nm (25.5 kgm) @ 1,500–2,750 r/min"}
+        self.extraction={"id":"doc", "revision":"v1", "text":"250 Nm (25.5 kgm) @ 6-speed manual or 1,500–2,750 r/min",
+                         "sections":[{"kind":"pdf", "locator":"page 16", "tables":[[
+                             ["Engine", "Max. torque", "Transmission"],
+                             ["1.5 l U2 CRDi diesel", "250 Nm (25.5 kgm) @\n1,500–2,750 r/min", "6-speed manual or\n6-speed automatic"]]]}]}
+        self.write_evidence()
+
+    def write_evidence(self):
+        store.write_json(self.did,"evidence/doc.json",self.extraction)
+
+    def verifies(self, fact=None, source=None):
+        return knowledge.citation_verified(self.did,fact or self.fact,source or self.source)
+
+    def test_exact_wrapped_cells_keep_all_three_engine_torque_quotes(self):
+        for quote,cell in (
+            ("143.8 Nm (14.7 kgm) @ 4,500 r/min", "143.8 Nm (14.7 kgm) @ 4,500\nr/min"),
+            ("250 Nm (25.5 kgm) @ 1,500–2,750 r/min", "250 Nm (25.5 kgm) @\n1,500–2,750 r/min"),
+            ("253 Nm (25.8 kgm) @ 1,500–3,500 r/min", "253 Nm (25.8 kgm) @\n1,500–3,500 r/min")):
+            with self.subTest(quote=quote):
+                self.fact["source"]["quote"]=quote
+                self.extraction["sections"][0]["tables"][0][1][1]=cell
+                self.write_evidence()
+                self.assertNotIn(knowledge._norm(quote),knowledge._norm(self.extraction["text"]))
+                self.assertTrue(self.verifies())
+
+    def test_same_quote_on_wrong_or_uncited_page_stays_held(self):
+        for locator in ("page 15", "page 116", "Section 16", "page 0", ""):
+            with self.subTest(locator=locator):
+                candidate=copy.deepcopy(self.fact);candidate["source"]["locator"]=locator
+                self.assertFalse(self.verifies(candidate))
+
+    def test_wrong_source_or_revision_cannot_supply_a_table_quote(self):
+        for change in ({"id":"other"},{"revision":"v2"},{"id":None}):
+            with self.subTest(change=change):
+                self.assertFalse(self.verifies(source={**self.source,**change}))
+        candidate=copy.deepcopy(self.fact);candidate["source"]["ref"]="other"
+        self.assertFalse(self.verifies(candidate))
+        for field,value in (("id","other"),("revision","v2"),("id",None)):
+            with self.subTest(extraction_field=field,value=value):
+                altered={**self.extraction,field:value}
+                store.write_json(self.did,"evidence/doc.json",altered)
+                self.assertFalse(self.verifies())
+        for revision in (None, ""):
+            with self.subTest(missing_revision=revision):
+                store.write_json(self.did,"evidence/doc.json",{**self.extraction,"revision":revision})
+                self.assertFalse(self.verifies(source={**self.source,"revision":revision}))
+
+    def test_no_cross_cell_or_cross_row_concat_creates_a_quote(self):
+        for table in (
+            [["250 Nm (25.5 kgm) @", "1,500–2,750 r/min"]],
+            [["250 Nm (25.5 kgm) @"], ["1,500–2,750 r/min"]],
+            [["1,500–2,750 r/min", "250 Nm (25.5 kgm) @"]]):
+            self.extraction["sections"][0]["tables"]=[table]
+            self.write_evidence()
+            self.assertFalse(self.verifies())
+
+    def test_paraphrase_changed_number_or_unit_is_never_fuzzy_matched(self):
+        for quote in ("250 Nm at 1,500–2,750 r/min", "253 Nm (25.5 kgm) @ 1,500–2,750 r/min",
+                      "250 Nm (25.5 kgm) @ 1,500–2,750 rpm", "250 Nm (25.5 kgm) @ 1,500–2,750 r/min on every trim"):
+            candidate=copy.deepcopy(self.fact);candidate["source"]["quote"]=quote
+            self.assertFalse(self.verifies(candidate))
+
+    def test_null_or_unlocated_non_pdf_cells_are_not_evidence(self):
+        for section in (
+            {"kind":"pdf","locator":"page 16","tables":[[[None, ""]]]},
+            {"kind":"pdf","locator":"","tables":self.extraction["sections"][0]["tables"]},
+            {"kind":"table","locator":"page 16","tables":self.extraction["sections"][0]["tables"]}):
+            store.write_json(self.did,"evidence/doc.json",{**self.extraction,"sections":[section]})
+            self.assertFalse(self.verifies())
+
+    def test_cell_retry_retains_original_assertion_and_conflict_exclusion(self):
+        self.und["facts"][0]=copy.deepcopy(self.fact)
+        store.write_json(self.did,"understanding.json",self.und)
+        result=knowledge.review_held_citations(self.did,"retry")
+        self.assertEqual(result["changed_fact_ids"],["F001"])
+        self.assertEqual(result["skipped_conflicts"],["F003"])
+        self.assertEqual(self.rows()[0]["source"],self.fact["source"])
+        self.assertNotIn("citation_override",self.rows()[0]["knowledge"])
+        self.assertEqual(self.rows()[1:],self.und["facts"][1:])
 
 
 if __name__=="__main__": unittest.main(verbosity=2)

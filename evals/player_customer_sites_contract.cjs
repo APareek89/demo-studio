@@ -9,6 +9,9 @@ const part = (start, end) => {
   assert(from >= 0 && to > from, `Missing helper: ${start}`);
   return source.slice(from, to);
 };
+const playbackCommand = vm.runInNewContext(part('function playbackCommand(', 'function genericTour(') + '\nplaybackCommand');
+const voiceSource = fs.readFileSync(path.join(__dirname, '../web/player/live-voice.js'), 'utf8');
+const meaningfulTranscript = vm.runInNewContext(voiceSource.slice(voiceSource.indexOf('export function meaningfulTranscript('),voiceSource.indexOf('export class LiveVoiceClient')).replace('export ', '')+'\nmeaningfulTranscript');
 const urlCode = part('const CUSTOMER_URL_PATTERN', '// Build one interactive demo');
 const customerUrls = vm.runInNewContext(urlCode + '\ncustomerUrls');
 const list = (text, limit) => Array.from(customerUrls(text, limit));
@@ -25,7 +28,7 @@ function fixture() {
     part('  function skipIntake()', '  // ---------- handoff ----------'),
     part('  function restart()', '  // Expose a simple pause method')].join('\n') +
     '\n({addMsg,rememberCustomerUrls,intakeSites,submitIntake,profileForServer,skipIntake,restart})';
-  const api = vm.runInNewContext(code, {S, el, bundle: {language: 'en-IN'}, live: null, cur: null, h: () => ({}),
+  const api = vm.runInNewContext(code, {S, el, scheduleCheckpoint() {}, saveVisit:()=>Promise.resolve(), sessionRecord:()=>({}), slides:[], presentation:{reset(){},mount(){}}, bundle: {language: 'en-IN'}, live: null, cur: null, h: () => ({}),
     acceptTypedAnswer: text => accepted.push(text), interruptAll() {}, newRun: () => 1, showSlideView() {}, heroOpen: () => ({}),
     playIntroFilm: () => Promise.resolve(false), startAfterIntake() {}, newSessionId: () => 'fresh-session', icon() {},
     createLive() {}, startLive() {}, renderProgress() {}, runIntake() {}});
@@ -52,10 +55,10 @@ const cases = [
     assert.deepEqual(f.accepted, ['']); assert.equal(f.S.profile.why, ''); assert.equal(f.S.transcript.length, 0);
   }],
   ['a sites-only submission before the prompt ends resolves the later intake wait', async () => {
-    const S = {run: 1, intakeOpen: true, intakeResolver: null, pendingIntakeAnswer: null};
+    const S = {run: 1, intakeOpen: true, intakeResolver: null, pendingIntakeAnswer: null, profile:{customer_urls:['https://hyundai.com/car']}};
     const code = part('  function acceptTypedAnswer(', '  // Open or close the conversation drawer') + '\n' +
       part('  function intakeWait(', '  // Handle the intake microphone button') + '\n({acceptTypedAnswer,intakeWait})';
-    const api = vm.runInNewContext(code, {S, el: {inHeard: {}}, live: null, preferTyping() {}, resumeSession() {}, stopListening() {}});
+    const api = vm.runInNewContext(code, {S, playbackCommand, meaningfulTranscript, el: {inHeard: {}}, live: null, preferTyping() {}, resumeSession() {}, stopListening() {}});
     api.acceptTypedAnswer('');
     assert.equal(S.pendingIntakeAnswer, '');
     assert.equal(await api.intakeWait(1), '');

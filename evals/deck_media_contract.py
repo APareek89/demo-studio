@@ -16,7 +16,7 @@ def run(check):
     with tempfile.TemporaryDirectory(prefix="deck-media-contract-") as tmp, patch.dict(os.environ, {
             "MOCK_LLM": "1", "CLOUD_SYNC": "0", "DEMO_STUDIO_DATA": tmp, "DEMO_STUDIO_GRAPH_DB": str(Path(tmp) / "graph.sqlite")}):
         from server import config, schemas, store
-        from server.agents import bundle, deck
+        from server.agents import bundle, deck, visuals
         with patch.object(config, "DATA_DIR", Path(tmp)), patch.object(config, "MOCK_LLM", True), \
              patch.object(socket.socket, "connect", side_effect=AssertionError("Outbound blocked")) as connect, \
              patch.object(socket.socket, "connect_ex", side_effect=AssertionError("Outbound blocked")) as connect_ex, \
@@ -112,9 +112,22 @@ def run(check):
             store.write_json(did, "script.json", {**script, "visual_audit": partial})
             proxy_built = deck.build(did, lambda _: None)
             proxy_slide = next(s for s in proxy_built["slides"] if s.get("segment_id") == "engine")
-            check("proxy: one complete cited label anchors on the matching bonnet", len(proxy_slide["callouts"]) == 1 and proxy_slide["callouts"][0]["fact_ids"] == ["F1"] and proxy_slide["callouts"][0]["part"] == "bonnet" and proxy_slide["callouts"][0]["placement"] == "overlay")
+            check("proxy: one complete cited label stays in the panel without guessed proof", len(proxy_slide["callouts"]) == 1 and proxy_slide["callouts"][0]["fact_ids"] == ["F1"] and proxy_slide["callouts"][0]["part"] == "" and proxy_slide["callouts"][0]["placement"] == "panel" and proxy_slide["callouts"][0]["anchor"] is None and proxy_slide["callouts"][0]["part_box"] is None)
             check("proxy: illustrative label reveals at the start", proxy_slide["callouts"][0]["reveal_on_line"] == 0)
             check("proxy: building illustrations never changes the pixel audit", store.path(did, "visual-audit.json").read_bytes() == before_audit)
+            # Run the real no-provider alignment path: retained Author references
+            # have no successful pixel rows, so Deck must keep its proxy boundary.
+            # Neither a nearby part nor an exact tag token proves the whole claim.
+            for topic, line, ref, part in [("engine", lines[0], "im08", "bonnet"), ("wheel", lines[1], "im06", "wheel")]:
+                fallback = visuals.align(did, {**script, "segments": [{**seg, "title": topic, "topic": topic, "lines": [line]}]}, und)
+                store.write_json(did, "script.json", fallback)
+                fallback_audit = store.path(did, "visual-audit.json").read_bytes()
+                fallback_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+                check(f"fallback {topic}: unaudited binding keeps the selected proxy and illustration badge", fallback["visual_audit"]["method"] == "rules_fallback" and fallback["visual_audit"]["line_count"] == 0 and fallback_slide["media"] == [{"image_id": ref, "from_line": 0, "proxy": True, "proxy_reason": f"closest by part: {part}"}])
+                labels = fallback_slide["callouts"]
+                check(f"fallback {topic}: cited wording and reveal survive without a part or anchor", len(labels) == 1 and labels[0]["text"] == line["text"] and labels[0]["fact_ids"] == line["fact_ids"] and labels[0]["reveal_on_line"] == 0 and labels[0]["part"] == "" and labels[0]["placement"] == "panel" and all(labels[0][key] is None for key in ("anchor", "part_box", "label_pos")))
+                check(f"fallback {topic}: build does not manufacture pixel evidence", store.path(did, "visual-audit.json").read_bytes() == fallback_audit)
+            store.write_json(did, "visual-audit.json", audit)
             multi_cited = copy.deepcopy(script)
             multi_cited["visual_audit"] = partial
             multi_cited["segments"][0]["lines"][0]["fact_ids"] = ["F1", "F2"]

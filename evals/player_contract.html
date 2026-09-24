@@ -90,6 +90,7 @@ class FakeRecognition {
   stop() { this.onend?.(); }
   abort() { this.aborted = true; }
   speechStart() { this.onspeechstart?.(); }
+  partial(text) { const result = [{ transcript: text }]; result.isFinal = false; this.onresult?.({ results: [result] }); }
   deliver(text) { const result = [{ transcript: text }]; result.isFinal = true; this.onresult?.({ results: [result] }); this.onend?.(); }
 }
 window.Audio = FakeAudio;
@@ -112,6 +113,9 @@ function bundle(opening = false) {
 const answered = (extra = {}) => ({ answered: true, answer: 'The approved source answers this.', fact_ids: ['f1'], topic: 'safety', route: 'stay', from_bank: true, ...extra });
 async function setup({ opening = false, hold = () => false, holdProof = true, voiceMode = true, qa = async () => answered(), pitch = async () => null, lead = async () => ({}), configure = (b) => b } = {}) {
   player?.destroy(); await flush();
+  // Keep the real player inside the viewport as this page's result list grows.
+  // Its production sizing correctly collapses a host wholly below the viewport.
+  host.scrollIntoView({ block: 'start' });
   env = { calls: [], saved: [], beacons: [], ttsCalls: [], leadCalls: [], played: [], active: new Set(), maxActive: 0, recognizers: [], hold: text => hold(text) || (holdProof && ['First proof.', 'Second proof.', 'Third proof.'].includes(text)) };
   clock = new Clock(); clock.install();
   const owner = env;
@@ -141,6 +145,48 @@ const recentRecognizer = () => env.recognizers.at(-1);
 const detail = () => ({ context: player?.context(), currentCitations: host.querySelector('.pl-cap .cite')?.textContent, qa: env?.calls, audioStarted: env?.played, ttsRequests: env?.ttsCalls, maximumSimultaneousAudio: env?.maxActive, activeAudio: env?.active.size, geometry: env?.geometry, savedSessions: env?.saved, beaconSessions: env?.beacons, leadRequests: env?.leadCalls });
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
+
+test('Runtime section invitations wait exactly three seconds without requiring a reply', async () => {
+  await setup({ voiceMode:false, configure:b=>({...b,runtime:{version:1}}) }); await atProof();
+  await finishAudio('First proof.');
+  const invitation = "Anything you'd like to know about what we've just covered?";
+  assert(env.played.includes(invitation) && player.context().slide === 'proof-one', 'Section ended without its invitation');
+  await clock.tick(2999); assert(!env.played.includes('Second proof.'), 'Section advanced before three seconds');
+  await clock.tick(1); assert(env.played.at(-1) === 'Second proof.' && env.calls.length === 0 && env.maxActive === 1, 'Section did not resume once without inventing a reply');
+});
+test('A generic tour request stays neutral and never invents personalization', async () => {
+  let pitches = 0;
+  await setup({voiceMode:false,pitch:async()=>{pitches++;return null;}}); await click('▶ Start'); await type('Show me around.');
+  assert(env.played.includes('Let me take you through the demo.') && !env.played.some(t=>t.includes('Thanks, that helps me focus')), 'Generic request received a false preference acknowledgement');
+  assert(pitches === 0 && !player.context().profile.why && player.context().profile.stated_needs.length === 0 && player.context().slide === 'proof-one', 'Generic request personalized the demo or failed to begin');
+});
+test('False onset and a recognition fragment cannot freeze the three-second answer window', async () => {
+  await setup({voiceMode:false}); await atProof(); host.querySelector('.pl-reply .mic').click(); await flush();
+  recentRecognizer().deliver('What is supported?'); await flush();
+  const rec=recentRecognizer(); await clock.tick(1200); rec.speechStart(); rec.partial('What is'); rec.deliver("It's"); await flush();
+  await clock.tick(1800);
+  assert(env.calls.length===1 && env.played.filter(t=>t==='First proof.').length===2, 'Noise or fragment took ownership or prevented automatic continuation');
+});
+test('Partial intake stays provisional and a final fragment never becomes a preference', async () => {
+  await setup(); await click('▶ Start'); const rec=recentRecognizer();
+  rec.partial('I need more room'); await flush();
+  assert(host.querySelector('.pl-intake.open') && !player.context().profile.why, 'Partial recognition personalized the visit');
+  rec.deliver("It's"); await flush();
+  assert(host.querySelector('.pl-intake.open') && !player.context().profile.why && env.calls.length===0, 'Recognition fragment became intake');
+});
+test('Active visits save incrementally and pagehide retains started speech without ending the visit', async () => {
+  await setup({voiceMode:false}); await atProof(); await clock.tick(15000);
+  assert(env.saved.some(s=>!s.ended && s.slides_visited.some(v=>v.slide_id==='proof-one')), 'Ongoing visit was not persisted before Stop');
+  [...env.active][0].currentTime = 5;
+  window.dispatchEvent(new Event('pagehide')); const saved=env.beacons.at(-1);
+  assert(!saved.ended && saved.transcript.some(t=>t.role==='agent' && t.text==='First' && t.full==='First proof.' && t.interrupted), 'Pagehide lost the heard prefix or falsely claimed complete narration');
+  assert(env.saved.every((s,i,a)=>i===0 || s.save_seq>a[i-1].save_seq), 'Incremental save sequence is not monotonic');
+});
+test('Typed Continue stays in playback control and does not ask the answer graph', async () => {
+  await setup({voiceMode:false}); await atProof(); await type('What is supported?'); const count=env.calls.length;
+  await type('Continue');
+  assert(env.calls.length===count && env.played.filter(t=>t==='First proof.').length===2 && !env.played.includes('This is a good question, give me a moment.'), 'Continue became a question or failed to resume');
+});
 
 test('A minimum-duration bundle uses its recorded overview without live transport and resumes it after Q&A', async () => {
   const overview = 'This is the published recorded overview counted in the narration minimum.';
@@ -175,9 +221,9 @@ test('Default minimum tour keeps complete Q&A-covered stops and both reviewed cl
     configure:b=>{b.runtime={version:1,narration_minimum:{minimum_seconds:180,seconds:185,measured:true},overview:{text:overview,audio:audioURL(overview),slide_id:'opening',fact_ids:['f1']}};b.slides.find(s=>s.id==='proof-two').lines.push(line('proof-two-detail',detail));const closing=slide('closing','closing',closingOne);closing.lines.push(line('closing-two',closingTwo));b.slides.splice(-1,0,closing);return b;}
   });
   await click('▶ Start');await type('Family driving.');await type('Show the second proof.');await click('Continue demo','.pl-chips button');await finishAudio(overview);
-  await finishAudio('First proof.');await finishAudio('Second proof.');
+  await finishAudio('First proof.');await clock.tick(3000);await finishAudio('Second proof.');
   assert(env.played.at(-1)===detail,'Previously visited slide lost counted main narration');
-  await finishAudio(detail);await finishAudio('Third proof.');
+  await finishAudio(detail);await clock.tick(3000);await finishAudio('Third proof.');await clock.tick(3000);
   assert(env.played.at(-1)===closingOne&&!env.played.includes(advance),'Generated advance replaced counted closing narration');
   await finishAudio(closingOne);assert(env.played.at(-1)===closingTwo,'Second reviewed closing line was skipped');await finishAudio(closingTwo);
   assert(button('Not yet','.pl-chips button')&&env.maxActive===1,'Complete tour lost its explicit end choice or overlapped audio');
@@ -381,12 +427,12 @@ test('Auto-resume uses only an existing back-to-demo clip and otherwise stays si
     assert(env.played.filter(text => text === 'First proof.').length === 2, 'Filler handling prevented the interrupted line replay');
   }
 });
-test('Speech onset at 1200 ms cancels auto-resume and the spoken follow-up reaches QA', async () => {
+test('False speech onset leaves the timer running; qualified final follow-up cancels it', async () => {
   await setup({ voiceMode: false }); await atProof(); host.querySelector('.pl-reply .mic').click(); await flush();
   recentRecognizer().deliver('What is supported?'); await flush();
   const followup = recentRecognizer(); assert(followup?.started, 'Post-answer voice capture did not stay available');
-  await clock.tick(1200); followup.speechStart(); await flush(); await clock.tick(4000);
-  assert(env.played.filter(text => text === 'First proof.').length === 1 && env.calls.length === 1, 'Speech onset lost its turn to the silence timer');
+  await clock.tick(1200); followup.speechStart(); await flush(); await clock.tick(1799);
+  assert(env.played.filter(text => text === 'First proof.').length === 1 && env.calls.length === 1, 'False onset resumed early or became a question');
   followup.deliver('What about the next detail?'); await flush();
   assert(env.calls.length === 2 && env.calls[1].question === 'What about the next detail?', 'Spoken follow-up never entered the question path');
   window.dispatchEvent(new Event('pagehide'));
@@ -430,7 +476,9 @@ test('A guide clarification keeps waiting beyond three seconds and an empty voic
 });
 test('A declined answer defers its listen timer until the optional contact form is dismissed', async () => {
   await setup({ qa: async () => ({ answered: false, topic: 'ownership', escalate: 'Dealer information needed' }) });
-  await atProof(); await type('Can the dealership confirm this?'); await clock.tick(10000);
+  await atProof(); await type('Can the dealership confirm this?');
+  assert(!host.querySelector('.pl-lead.open'), 'Decline opened a form without customer selection');
+  await click('Request dealership follow-up', '.pl-chips button'); await clock.tick(10000);
   assert(host.querySelector('.pl-lead.open') && env.played.filter(text => text === 'First proof.').length === 1, 'Contact form did not retain its explicit wait');
   await click('Not now', '.pl-lead button'); await clock.tick(2999);
   assert(env.played.filter(text => text === 'First proof.').length === 1, 'Decline resumed before the post-dismissal listen window');
@@ -443,6 +491,7 @@ test('A pending callback save cannot change a restarted session or its newer for
   let completeOldSave;
   await setup({ qa: async () => ({ answered: false, topic: 'ownership', escalate: 'Dealer information needed' }), lead: () => new Promise(resolve => { completeOldSave = resolve; }) });
   await atProof(); await type('My original dealership question.');
+  await click('Request dealership follow-up', '.pl-chips button');
   const form = host.querySelector('.pl-lead form');
   form.querySelector('input[placeholder="Your name"]').value = 'Old Customer';
   form.querySelector('input[placeholder="10-digit mobile number"]').value = '9876543210';
@@ -450,6 +499,7 @@ test('A pending callback save cannot change a restarted session or its newer for
   assert(env.leadCalls.length === 1, 'Old consented callback did not enter its deferred save');
   host.querySelector('button[title="Restart"]').click(); await flush(); await click('Skip, start the demo');
   await type('My new dealership question.');
+  await click('Request dealership follow-up', '.pl-chips button');
   assert(host.querySelector('.pl-lead.open'), 'Restarted question did not open its own optional form');
   const narrationCount = env.played.filter(text => text === 'First proof.').length;
   completeOldSave({}); await flush(); await clock.tick(10000); window.dispatchEvent(new Event('pagehide'));
@@ -461,7 +511,7 @@ test('A pending callback save cannot change a restarted session or its newer for
 test('Closing CTA choices require explicit customer selection after narration finishes', async () => {
   await setup({ configure: b => ({ ...b, ctas: [{ id: 'book', label: 'Book a test drive', kind: 'book', when: 'always' }] }) });
   await atProof(); await finishTour(); await clock.tick(30000);
-  assert(player.context().slide === 'hero-end' && button('Book a test drive', '.pl-chips button') && env.saved.length === 0 && env.leadCalls.length === 0, 'Closing silence selected a CTA or submitted a lead');
+  assert(player.context().slide === 'hero-end' && button('Book a test drive', '.pl-chips button') && env.saved.every(s => !s.ended && s.cta === null) && env.leadCalls.length === 0, 'Closing silence selected a CTA or submitted a lead');
   await click('Book a test drive', '.pl-chips button');
   assert(env.saved.at(-1).cta === 'Book a test drive' && env.leadCalls.length === 0, 'Explicit CTA choice was lost or treated as contact consent');
 });
@@ -482,7 +532,7 @@ test('A ready answer bypasses acknowledgment and persists classification and pla
 
 test('An answer arriving during acknowledgment cuts only the filler and never overlaps voices', async () => {
   let release;
-  const filler = 'Give me one moment while I check that for you.';
+  const filler = 'This is a good question, give me a moment.';
   await setup({ hold: text => text === filler, qa: () => new Promise(resolve => { release = resolve; }) });
   await atProof(); await type('What does the approved source say?'); await clock.tick(249);
   assert(!env.played.includes(filler), 'Acknowledgment started before its fast-answer grace');
@@ -590,6 +640,7 @@ test('A direct customer statement survives later QA without turning question his
 test('An unknown answer holds the callback form without narration behind it', async () => {
   await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
   await atProof(); await type('What exact EMI will the bank guarantee?');
+  await click('Request dealership follow-up', '.pl-chips button');
   assert(host.querySelector('.pl-lead.open'), 'Unknown did not open callback form');
   window.dispatchEvent(new Event('pagehide'));
   const turn = env.beacons.at(-1).turns.at(-1);
@@ -606,7 +657,7 @@ test('A model-suggested CTA is not a customer selection or an automatic recap', 
   assert(button('Continue demo', '.pl-chips button') && button('Book a test drive', '.pl-chips button'), 'Suggested CTA replaced the normal answer choices');
   await clock.tick(30000);
   assert(!host.querySelector('.pl-handoff.open') && !host.querySelector('.pl-lead.open'), 'Model CTA ended the answer or opened a follow-up form without customer selection');
-  assert(player.context().slide === 'proof-one' && env.saved.length === 0 && env.leadCalls.length === 0, 'Model CTA advanced, saved a handoff or submitted a lead');
+  assert(player.context().slide === 'proof-one' && env.saved.every(s => !s.ended && s.cta === null) && env.leadCalls.length === 0, 'Model CTA advanced, saved a handoff or submitted a lead');
   window.dispatchEvent(new Event('pagehide'));
   assert(player.context().slide === 'proof-one' && env.beacons.at(-1).cta === null, 'Resuming the answer recorded consent to the unrelated suggested action');
 });
@@ -722,6 +773,7 @@ test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
     qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer: 'The target slide carries that evidence.' }),
     configure: (b) => {
       b.slides.find((s) => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.'));
+      b.slides.find((s) => s.id === 'proof-three').lines.push({ ...line('proof-three-unrelated', 'A different reviewed detail.'), fact_ids: ['f2'] });
       b.slides.find((s) => s.id === 'proof-three').callouts.push({ id: 'target-f1', text: 'Third proof detail', fact_ids: ['f1'], placement: 'panel', anchor: null, label_pos: null, reveal_on_line: 0 });
       return b;
     },
@@ -731,7 +783,7 @@ test('Off-slide Q&A returns to the exact interrupted proof line', async () => {
   await type('Can you show the evidence on the other slide?');
   assert(env.played.indexOf('Let me show you where that is.') < env.played.indexOf('The target slide carries that evidence.') && env.ttsCalls.includes('Let me show you where that is.'), 'An uncached jump did not speak its transition before the answer');
   assert(env.calls[0].slide_id === 'proof-one' && player.context().slide === 'proof-three', 'Routed question did not jump from its original slide to the answer slide');
-  assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Routed answer did not highlight its cited detail');
+  assertTextEvidence('proof-three-l1', 'Third proof.');
   await click('Continue demo');
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1 && player.context().line_text === 'First proof interrupted detail.', 'Return point changed during the off-slide answer');
   assert(env.played.filter((t) => t === 'First proof.').length === 1 && env.played.filter((t) => t === 'First proof interrupted detail.').length === 2, 'Return replayed a completed line or skipped the interrupted one');
@@ -742,11 +794,12 @@ test('Runtime v1 jumps directly to evidence and auto-returns to the exact interr
   await setup({ holdProof: false, hold: text => text === 'First proof interrupted detail.', qa: async () => answered({ route: 'jump', slide_id: 'proof-three', callout_id: 'target-f1', answer }), configure: b => {
     b.runtime = { version: 1 }; b.fillers.bridge_to_custom = { text: bridge, audio: audioURL(bridge) };
     b.slides.find(s => s.id === 'proof-one').lines.push(line('proof-one-l2', 'First proof interrupted detail.'));
+    b.slides.find(s => s.id === 'proof-three').lines.push({ ...line('proof-three-unrelated', 'A different reviewed detail.'), fact_ids: ['f2'] });
     b.slides.find(s => s.id === 'proof-three').callouts.push({ id: 'target-f1', text: 'Cited detail', fact_ids: ['f1'], placement: 'panel', reveal_on_line: 0 }); return b;
   } });
   await click('Skip the intro'); await type('Please show the other evidence.');
   assert(player.context().slide === 'proof-three' && env.played.includes(answer) && !env.played.includes(bridge) && !env.ttsCalls.includes(bridge), 'Runtime jump delayed the answer behind its generic bridge');
-  assert(host.querySelector('.slide.on .slide-panel [data-id="target-f1"].hot'), 'Immediate runtime answer lost its highlighted evidence');
+  assertTextEvidence('proof-three-l1', 'Third proof.');
   await clock.tick(2999); window.dispatchEvent(new Event('pagehide'));
   const turn = env.beacons.at(-1).turns.at(-1);
   assert(player.context().slide === 'proof-three' && button('Continue demo') && turn.answer_audio === turn.qa_done, 'Runtime jump returned before its listen window or failed to stamp the direct answer');
@@ -768,6 +821,26 @@ test('A new question interrupts a direct runtime jump without stealing its origi
   assert(turns[0].cancelled && !turns[1].cancelled && env.maxActive === 1, 'Runtime interruption lost turn ownership or overlapped audio');
   await click('Continue demo');
   assert(player.context().slide === 'proof-one' && player.context().line_index === 1, 'New question replaced the original interrupted return point');
+});
+test('Same-slide Q&A restores the resumed narration inside a long text card', async () => {
+  await setup({ qa: async () => answered({ callout_id: 'later-citation', fact_ids: ['f3'] }), configure: b => {
+    const s = b.slides.find(s => s.id === 'proof-one');
+    s.lines.push({ ...line('long-other-detail', 'A separate reviewed detail. '.repeat(80)), fact_ids: ['f2'] }, { ...line('later-line', 'The exact later detail answers this question.'), fact_ids: ['f3'] });
+    s.callouts.push({ id: 'later-citation', text: 'Later evidence', fact_ids: ['f3'], placement: 'panel', reveal_on_line: 2 });
+    return b;
+  } });
+  await atProof();
+  const slide = host.querySelector('.slide.on'), copy = slide.querySelector('.slide-text-copy'), checkpoint = snapshot(player.context());
+  const geometry = JSON.stringify([rect(slide), rect(slide.querySelector('.slide-text-card'))]), windowScroll = [scrollX, scrollY];
+  await type('Please explain the later detail.');
+  assertTextEvidence('later-line', 'The exact later detail answers this question.');
+  assert(copy.scrollTop > 0, 'Same-slide answer did not expose its later citation');
+  await click('Continue demo');
+  const row = slide.querySelector('[data-line-id="proof-one-l1"]'), box = rect(row), clip = rect(copy);
+  assert(host.querySelector('.slide.on') === slide && player.context().slide === checkpoint.slide && player.context().line_index === checkpoint.line_index && player.context().line_text === checkpoint.line_text, 'Same-slide question replaced the view or lost the interrupted checkpoint');
+  assert(row.getAttribute('aria-hidden') === 'false' && box.y >= clip.y - 1 && box.bottom <= clip.bottom + 1 && !slide.querySelector('.slide-text-line.hot'), 'Resumed narration stayed clipped behind a later answer or retained its highlight');
+  assert(JSON.stringify([rect(slide), rect(slide.querySelector('.slide-text-card'))]) === geometry && JSON.stringify([scrollX, scrollY]) === JSON.stringify(windowScroll), 'Same-slide answer or return moved the stage or page');
+  assert(env.played.filter(text => text === 'First proof.').length === 2 && env.maxActive === 1, 'Same-slide answer did not resume only the interrupted speech');
 });
 test('Explicit slide navigation cancels a direct runtime answer and cannot be undone by its late ending', async () => {
   const answer = 'Routed answer to interrupt.';
@@ -813,7 +886,7 @@ test('Stop, Done and pagehide preserve the same ended session duration', async (
   await clock.tick(180000); await click('Done', '.pl-handoff button'); await clock.tick(120000);
   window.dispatchEvent(new Event('pagehide'));
   const last = env.beacons.at(-1);
-  assert([...env.saved, last].every((r) => r.id === first.id && r.ended && r.minutes === first.minutes && JSON.stringify(r.slides_visited) === JSON.stringify(first.slides_visited)), 'Stopped idle time changed elapsed minutes or final-slide dwell');
+  assert([...env.saved.filter(r=>r.ended), last].every((r) => r.id === first.id && r.ended && r.minutes === first.minutes && JSON.stringify(r.slides_visited) === JSON.stringify(first.slides_visited)), 'Stopped idle time changed elapsed minutes or final-slide dwell');
   assert(last.transcript.some((m) => m.text.startsWith('Thanks for your time.')), 'The frozen duration prevented the heard farewell from being retained');
 });
 test('Back resumes active session time without counting recap idle, and restart resets it', async () => {
@@ -844,6 +917,7 @@ test('Declining callback still permits completion and saves the finished session
   const question = 'Can you guarantee my exact monthly payment?';
   await setup({ qa: async () => ({ answered: false, topic: 'finance', escalate: 'Dealer quote needed' }) });
   await atProof(); await type(question);
+  await click('Request dealership follow-up', '.pl-chips button');
   assert(host.querySelector('.pl-lead.open .consent')?.textContent.includes('agree'), 'Callback form did not explain consent');
   await click('Not now', '.pl-lead button');
   assert(!host.querySelector('.pl-lead.open') && env.leadCalls.length === 0, 'Declining consent created a callback request');
@@ -857,7 +931,7 @@ test('Declining callback still permits completion and saves the finished session
   assert(player.context().slide === 'hero-end', 'Tour did not reach its final choice');
   await click('Not yet', '.pl-chips button'); await click('Done', '.pl-handoff button');
   const saved = env.saved.at(-1);
-  assert(env.saved.length === 1 && saved.ended && new Set(env.saved.map((s) => s.id)).size === 1, 'Completion did not coalesce the unchanged Stop/Done record into one ended session');
+  assert(env.saved.filter(s => s.ended).length === 1 && saved.ended && new Set(env.saved.map((s) => s.id)).size === 1, 'Completion did not coalesce the unchanged Stop/Done record into one ended session');
   assert(saved.questions.includes(question) && saved.unresolved.includes('finance') && saved.leads.length === 0 && env.leadCalls.length === 0, 'Saved session lost the unanswered concern or invented a lead');
   assert(saved.transcript.filter((x) => x.role === 'user' && x.text === question).length === 1, 'Saved transcript duplicated or lost the customer question');
   assert(['First proof.', 'Second proof.', 'Third proof.'].every((text) => saved.transcript.some((x) => x.role === 'agent' && x.text === text)), 'Finished transcript omitted heard proof lines');
@@ -927,6 +1001,7 @@ test('Stopping with a callback open shows a buyer recap while retaining internal
   intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
   assert(player.context().slide === 'proof-one' && env.played.at(-1) === 'First proof.', 'Known customer fixture did not reach its first proof');
   await type(question);
+  await click('Request dealership follow-up', '.pl-chips button');
   assert(host.querySelector('.pl-lead.open'), 'Fixture callback form did not open');
   host.querySelector('button[title="Stop and see the summary"]').click(); await flush();
   const handoff = host.querySelector('.pl-handoff.open'), text = handoff?.textContent || '';
@@ -1014,7 +1089,7 @@ test('An explicitly primary fact still renders its reviewed claim beside conditi
 
 const imageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600"><rect width="1000" height="600" fill="#c9ddd2"/><rect x="8" y="8" width="984" height="584" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="640" cy="280" r="100" fill="#204d43"/><text x="45" y="540" font-family="sans-serif" font-size="32" fill="#173b32">Synthetic geometry fixture — 1000 × 600</text></svg>');
 const tallImageFixture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1000" viewBox="0 0 600 1000"><rect width="600" height="1000" fill="#c9ddd2"/><rect x="8" y="8" width="584" height="984" fill="none" stroke="#204d43" stroke-width="8"/><circle cx="300" cy="800" r="100" fill="#204d43"/></svg>');
-async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture, media = null, editable = false, onMove = null } = {}) {
+async function renderFixture(width, { kind = 'proof', callouts = null, image = imageFixture, media = null, lines = null, editable = false, onMove = null } = {}) {
   player?.destroy(); player = null; host.replaceChildren();
   env = { calls: [], played: [], active: new Set(), maxActive: 0, geometry: [] };
   const frame = document.createElement('div'); frame.className = 'pl render-contract'; frame.dataset.visualTheme = 'marine';
@@ -1024,12 +1099,50 @@ async function renderFixture(width, { kind = 'proof', callouts = null, image = i
   stage.append(stack); frame.append(stage); host.append(frame);
   const sl = slide('geometry', kind, 'A supported point.'); sl.title = 'An exact product detail'; sl.image_url = image;
   if (media) sl.media = media;
+  if (lines) sl.lines = lines;
   sl.callouts = callouts ?? [{ id: 'geometry-callout', text: 'Supported detail', fact_ids: ['f1'], placement: 'overlay', anchor: { x: .64, y: .47 }, label_pos: { x: .12, y: .16 }, reveal_on_line: 0 }];
   const view = renderSlide(sl, { fit: true, editable, onMove }); view.setRevealed(-1); stack.append(view.el); view.el.classList.add('on');
   await Promise.all(view.images.map((image) => image.decode())); view.layout();
   return { frame, view, slide: sl };
 }
 const rect = (el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height, right: r.right, bottom: r.bottom }; };
+function assertTextEvidence(lineId, text) {
+  const slide = host.querySelector('.slide.on.slide-text-only'), copy = slide?.querySelector('.slide-text-copy');
+  const rows = [...(slide?.querySelectorAll('.slide-text-line.hot') || [])], row = rows[0];
+  assert(rows.length === 1 && row.dataset.lineId === lineId && row.textContent === text, 'Question must highlight exactly its cited reviewed narration, never unrelated text');
+  const box = rect(row), clip = rect(copy), stage = rect(slide);
+  (env.geometry ||= []).push({textEvidence: {lineId, text: row.textContent, box, clip, stage, scrollTop: copy.scrollTop}});
+  assert(row.getAttribute('aria-hidden') === 'false' && getComputedStyle(row).visibility === 'visible' && parseFloat(getComputedStyle(row).outlineWidth) > 0 && box.width > 0 && box.height > 0, 'Cited narration was hidden or had no visible highlight');
+  assert(box.x >= clip.x && box.right <= clip.right + 1 && box.y >= clip.y - 1 && box.bottom <= clip.bottom + 1 && clip.y >= stage.y && clip.bottom <= stage.bottom + 1, 'Highlighted narration is clipped or outside its text card');
+  assert(!slide.querySelector('.callout,.dot,img'), 'Text-only evidence acquired fake image annotations');
+}
+test('A text-only question scrolls only its card to the exact cited narration', async () => {
+  for (const width of [1000, 390]) {
+    const lines = [
+      { ...line('opening-line', 'The reviewed opening detail starts here.'), fact_ids: ['f2'] },
+      { ...line('unrelated-long', 'A separate reviewed detail. '.repeat(80)), fact_ids: ['f2'] },
+      line('cited-line', 'This exact reviewed sentence supplies the requested evidence.'),
+    ];
+    const { frame, view, slide: sl } = await renderFixture(width, { image: null, media: [], lines, callouts: [{ id: 'text-citation', text: 'Requested evidence', fact_ids: ['f1'], placement: 'panel', reveal_on_line: 1 }] });
+    const original = JSON.stringify(sl), stable = () => JSON.stringify([rect(frame), rect(view.el), rect(view.pic)]);
+    try {
+      view.setRevealed(99);
+      const copy = view.el.querySelector('.slide-text-copy'), row = view.el.querySelector('[data-line-id="cited-line"]');
+      assert(rect(row).y > rect(copy).bottom && copy.scrollTop === 0, 'Fixture did not put the cited narration below the text viewport');
+      const geometry = stable(), windowScroll = [scrollX, scrollY];
+      view.highlight('text-citation'); assertTextEvidence('cited-line', lines[2].text);
+      assert(copy.scrollTop > 0 && stable() === geometry && JSON.stringify([scrollX, scrollY]) === JSON.stringify(windowScroll), 'Citation scrolling moved the page, slide or card geometry');
+      const scrolled = copy.scrollTop; view.highlight('text-citation');
+      assert(copy.scrollTop === scrolled, 'Repeated highlight changed the settled internal scroll');
+      view.highlight(null);
+      assert(!view.el.querySelector('.slide-text-line.hot') && copy.scrollTop === scrolled && JSON.stringify(sl) === original, 'Clearing the highlight scrolled the card or changed reviewed data');
+      view.setRevealed(0);
+      assert(row.getAttribute('aria-hidden') === 'true' && getComputedStyle(row).visibility === 'hidden', 'Question highlight changed later narration reveal ownership');
+      const opening = rect(view.el.querySelector('[data-line-id="opening-line"]')), clip = rect(copy);
+      assert(opening.y >= clip.y - 1 && opening.bottom <= clip.bottom + 1 && stable() === geometry, 'Returning to the first narrated line left it outside the text viewport');
+    } finally { view.destroy(); frame.remove(); }
+  }
+});
 const evidenceRailDetails = (view) => {
   const panel = view.el.querySelector('.slide-panel');
   const measure = (node) => {
@@ -1140,6 +1253,7 @@ test('Resizing keeps the exact native-image anchor without changing saved callou
   try {
     for (const width of [1000, 780, 390, 1000]) {
       frame.style.width = width + 'px'; view.setRevealed(-1); view.layout(); view.setRevealed(0); view.highlight('geometry-callout');
+      assert(view.pic.querySelector('.callout[data-id="geometry-callout"].hot')?.textContent.includes('Supported detail') && view.pic.querySelector('.dot[data-id="geometry-callout"].hot'), 'Image evidence lost its existing callout and anchor highlight');
       const stage = rect(view.el), image = rect(view.img), picture = rect(view.pic);
       const expected = { x: image.x + image.width * saved[0].anchor.x, y: image.y + image.height * saved[0].anchor.y };
       const leader = view.pic.querySelector('.leaders line'), point = view.pic.querySelector('.leaders').createSVGPoint();

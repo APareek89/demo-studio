@@ -41,7 +41,8 @@ window.activate=()=>Object.assign(clients.at(-1),{mic:true,ready:true,socketOpen
 document.documentElement.requestFullscreen=()=>Promise.resolve();
 await import('/web/app.js');window.ready=true;
 </script>'''
-VOICE = r'''export class LiveVoiceClient {
+VOICE = r'''export { meaningfulTranscript } from '/web/player/live-voice-actual.js';
+export class LiveVoiceClient {
  constructor(options){this.options=options;this.mic=false;this.closed=false;this.closeCalls=0;window.clients.push(this);}
  setMuted(){} unlockOutput(){return Promise.resolve();} connect(){this.ready=true;this.socketOpen=true;return Promise.resolve();}
  setMicEnabled(value){this.mic=value;return Promise.resolve(value);} startCapture(){this.mic=true;return Promise.resolve(true);}
@@ -59,6 +60,8 @@ class Handler(BaseHTTPRequestHandler):
             data, mime = HTML.encode(), 'text/html'
         elif path == '/web/player/live-voice.js':
             data, mime = VOICE.encode(), 'text/javascript'
+        elif path == '/web/player/live-voice-actual.js':
+            data, mime = (ROOT / 'web/player/live-voice.js').read_bytes(), 'text/javascript'
         elif path.startswith('/web/'):
             file = (ROOT / path.lstrip('/')).resolve()
             if not file.is_relative_to(ROOT / 'web') or not file.is_file():

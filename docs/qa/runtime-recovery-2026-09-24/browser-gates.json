@@ -1,0 +1,182 @@
+{
+  "recorded_at": 1790260464.362174,
+  "source_hashes": {
+    "evals/live_player_browser.py": "37608ef00c553223ed5912761debab2042fd9324ab5bca55ff6b767e1535d6d0",
+    "evals/player_browser.py": "14eb51863005a5aa0662c55eab0544dc586896ed9919ed0d3dfc1dc09dd37a85",
+    "evals/player_contract.html": "24ac83feca4501b45897d191a3c23418aca0e6269cb4232ace23a1572784ee7c",
+    "evals/player_navigation_contract.py": "08329476649521caee145b23aea840b19d46190fbfc0e0e5d589522dc298feaa",
+    "evals/studio_player_integration_contract.py": "b92a300590a30392b8501ca7abe1b6ef5ada79ae6027829d6e2f638399dadfee",
+    "evals/ui_layout_contract.py": "263aa219157807975764e4462e2d771aa9b2fcd1942112bb77c1c71fcafeea7c",
+    "evals/workbook_player_contract.py": "9ed2f0c1e46bfca20f95f091c2f409aedba822c48b5dcf03c40744b5a828970c",
+    "evals/wp12_browser_acceptance.py": "1093811221155001009d8a5456943fa055d2a7ea5765cfb4247d28b5aaacdfa6",
+    "web/api.js": "16aea73d79f86d912da99d63067a719818e3804a373c110eb484b5060a4b4f24",
+    "web/app.js": "74aedea69e783f9012161d80fb37391efbe53b46aabcadc7867ccb92f65abf25",
+    "web/demos.js": "e49b2d2901090964671f8f35358922a26febcc5d4601d8d9b080a2a705ad34fc",
+    "web/design-system.css": "b0d8d5879b4c577e0903f3391670d9057a7e00f3e85fa49d382c2c3b9faaa688",
+    "web/home.js": "930cc96d4537438ab6cafdad9aca9996f3b7ac94e20a8431d2aa0db82b998854",
+    "web/icons.js": "126ee925823dadf83c6834337215bc2bfa86965ff2de61628db71f08dfa64de6",
+    "web/insights-ui.css": "32520739c1cff576c0a9c7c524f0d91732c676fdf573877d258c1aae53a96953",
+    "web/observability.js": "977b9afafb01b24841a8996f5400f462968c66eca061bdd10a381275a41bf09b",
+    "web/player/live-voice.js": "bbefcb2ad935fb59d7020a9a01c9f7f1f84d8db16bd074e642d46b4fde82aab5",
+    "web/player/mascot.js": "6353091b054ea30bafc80e2d77c4906f491110dc89919b2193aab610f83ad20d",
+    "web/player/player.js": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+    "web/player/public-search-ui.js": "06ad723ef5bfc97ff4450b5436bc0c05f414d81de1d4a0173c4e98ed93c9dd2f",
+    "web/player/voice-worklet.js": "a14e8df73556b824928ba5649e0fb24fa15b6fd664c2fc11c72761e0d55c3751",
+    "web/player/walkthrough.js": "f04ae44f252427109e0d7085bdda219e40144f856857f303ff34c30a0c8f1e1e",
+    "web/player-ui.css": "c94c58e488f17ecfc8ba97ad123f4a40455de85d2d777cf11bdd173b151a7c61",
+    "web/playground.js": "b6f8786770d3a65fdc437bab9fa234b5d5e4ff34f0bffd9233c35ea998677fa8",
+    "web/provider-readiness.js": "e4afcadc9079141e06b170de6f99de37363af7c2516750b103d11f16f54cd6a2",
+    "web/slide.js": "f82eec2790d106347761d8d8c4b92f589b050c195d4169d37fbd51946c78b338",
+    "web/studio/align.js": "7f12c3939687a326700bd559e2a855e7f7a335dfbb08fc79521776782de7a3d2",
+    "web/studio/rehearse.js": "dda86a78088c81fac38cfaa68157a291d4a6d5ef12192f2336f25f1315408e38",
+    "web/studio/sessions.js": "43d1e9941787b6f9f831dcad0ffa56c7bd526c65c7b61914ecc39d0d856a02f9",
+    "web/studio/sources.js": "8d6f6966d737d5f41b8df2987b8b6dea616161cd7398d90ed4df23759938cc4d",
+    "web/studio-ui.css": "caca91508dd877313fc2c973d3d65a189d7e0766d87d79484aab0b7f9f49ec03",
+    "web/styles.css": "2fd7ff95065e32585d7de7f491ffda65d4a2a30064039e094f041946156a3b0f"
+  },
+  "source_hash_scope": "Final checkout reference hashes; per-suite receipts and reuse notes describe executed-source provenance.",
+  "checks": {
+    "player_html": 87,
+    "live_browser": 40,
+    "ui_layout": 212,
+    "workbook_player": 101,
+    "studio_integration": 19,
+    "player_navigation": 22
+  },
+  "suites": [
+    {
+      "suite": "player_html",
+      "passed": 87,
+      "total": 87,
+      "exit": 0,
+      "source": "evals/player_contract.html",
+      "source_sha256": "24ac83feca4501b45897d191a3c23418aca0e6269cb4232ace23a1572784ee7c",
+      "log_path": "/tmp/demo-runtime-final-20260924/text-highlight-final.log",
+      "log_sha256": "1921732bbcd1ea2a8e9e07fa178c35c0a3df6e59eed17d376408ee6969d95cad",
+      "report_path": "/tmp/demo-runtime-final-20260924/text-highlight-final/player-html.json",
+      "report_sha256": "c602f1d54c003d1b7f327f76871b09eae085955ddd98263c9b1ba77e7afe79bc",
+      "provenance": "Independent module agent final-source browser run; off-slide and same-slide citation return plus below-fold text evidence tested."
+    },
+    {
+      "suite": "live_browser",
+      "passed": 40,
+      "total": 40,
+      "exit": 0,
+      "source": "evals/live_player_browser.py",
+      "source_sha256": "37608ef00c553223ed5912761debab2042fd9324ab5bca55ff6b767e1535d6d0",
+      "log_path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/live-final-confirmation.log",
+      "log_sha256": "c3880e3e41fcbb807d7a3f67c96cbda30574dedbd643c2dc93b484532f15cff0",
+      "source_receipt": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/live-final-confirmation/source-after.json",
+      "source_receipt_sha256": "4cdbd84e3bdd87669fae9a1808dcc79f9146e364837f0932c8fa74367a9cf312"
+    },
+    {
+      "suite": "ui_layout",
+      "passed": 212,
+      "total": 212,
+      "exit": 0,
+      "source": "evals/ui_layout_contract.py",
+      "source_sha256": "263aa219157807975764e4462e2d771aa9b2fcd1942112bb77c1c71fcafeea7c",
+      "log_path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/layout-green/ui_layout_contract.log",
+      "log_sha256": "83ba211d1add8863f4112254c3a7048c47f5ee58e8398b608015319363fcd011",
+      "source_receipt": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/layout-green/receipt.json",
+      "source_receipt_sha256": "fdeda90d73365b98e8f68be9afcf86d6ab9ee62762ad30f819d5613b7ba9a6fe"
+    },
+    {
+      "suite": "workbook_player",
+      "passed": 101,
+      "total": 101,
+      "exit": 0,
+      "source": "evals/workbook_player_contract.py",
+      "source_sha256": "9ed2f0c1e46bfca20f95f091c2f409aedba822c48b5dcf03c40744b5a828970c",
+      "log_path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/geometry/workbook_player_contract.log",
+      "log_sha256": "df143ff5362967925e5b5407b1f6061e5ff02e03cd10c4c8cb8d2da65897b2b2",
+      "reuse": "Retained green workbook image-layout run from the first resumed batch. Subsequent edits only changed no-picture text scrolling/highlighting and walkthrough explicit-empty-media interpretation, covered by final HTML87, layout212 and walkthrough30. Workbook fixtures and image-bearing behavior are unchanged."
+    },
+    {
+      "suite": "studio_integration",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "source": "evals/studio_player_integration_contract.py",
+      "source_sha256": "b92a300590a30392b8501ca7abe1b6ef5ada79ae6027829d6e2f638399dadfee",
+      "log_path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/geometry-resumed/studio_player_integration_contract.log",
+      "log_sha256": "80ea60398eea2b9ad76e2923c833cbf67a80725d47a235090c277660a1f7df54"
+    },
+    {
+      "suite": "player_navigation",
+      "passed": 22,
+      "total": 22,
+      "exit": 0,
+      "source": "evals/player_navigation_contract.py",
+      "source_sha256": "08329476649521caee145b23aea840b19d46190fbfc0e0e5d589522dc298feaa",
+      "log_path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/geometry-resumed/player_navigation_contract.log",
+      "log_sha256": "e5f28c09d8c155181cb0fe312f083c69fe5fa75400ea1e7de805b85e72bc8249"
+    }
+  ],
+  "passed": 481,
+  "total": 481,
+  "errors": 0,
+  "external_requests": 0,
+  "paid_calls": 0,
+  "runtime_url": "http://127.0.0.1:8898/?mute=1#/play/dm_d2d63111",
+  "boundary": "Isolated MOCK_LLM fixture. Real app/WS/worklet and browser geometry; synthetic PCM/STT, explicit warranty-decline provider fixture, skip_bank test control and8x muted audio. No acoustic/noise-recognition quality or real-duration assertion. No paid8910 request.",
+  "prior_runs": [
+    {
+      "source_hashes": {
+        "web/player/player.js": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+        "web/player/live-voice.js": "bbefcb2ad935fb59d7020a9a01c9f7f1f84d8db16bd074e642d46b4fde82aab5",
+        "web/player-ui.css": "c94c58e488f17ecfc8ba97ad123f4a40455de85d2d777cf11bdd173b151a7c61",
+        "web/player/walkthrough.js": "39cf632532960d82ed3d9756d010ebf0a18aa408fa1b34651d560240d3b6055f",
+        "evals/player_contract.html": "d238329503855e8eabd81ad9cf752b356880d40d23b59e7e21926a8b359a2ce0",
+        "evals/live_player_browser.py": "e836b23a875e0fe2a97ea13b4ca045fcf012ccf9ea37942ecce90b2a986e6326",
+        "evals/player_navigation_contract.py": "08329476649521caee145b23aea840b19d46190fbfc0e0e5d589522dc298feaa"
+      },
+      "checks": {
+        "player_html": 85,
+        "live_browser": 40,
+        "ui_layout": 193,
+        "workbook_player": 101,
+        "studio_integration": 19,
+        "player_navigation": 22
+      },
+      "passed": 460,
+      "total": 460,
+      "errors": 0,
+      "external_requests": 0,
+      "paid_calls": 0,
+      "runtime_url": "http://127.0.0.1:8898/?mute=1#/play/dm_d2d63111",
+      "boundary": "Isolated MOCK_LLM fixture. Real app/WS/worklet and actual browser geometry; synthetic PCM/STT, explicit warranty-decline provider fixture, skip_bank test control and8x muted audio. No acoustic/noise recognition quality or real-duration assertion."
+    }
+  ],
+  "retained_failures": [
+    {
+      "name": "initial_player_html",
+      "path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/html/player-html.json",
+      "sha256": "e55c14099ac35155f96a40de846c3eaa093018b89032a51efe2005ae699016f9",
+      "reason": "83/85: routed answer evidence-highlight checks failed on no-picture slides. Final painted text-row assertions and below-fold scroll/interrupted-line return coverage pass87/87."
+    },
+    {
+      "name": "initial_live_browser",
+      "path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/live.log",
+      "sha256": "eb67bfca9872deef3ac47245c5f271338e95b2ad3b9ab9f6446c5aaed3745716",
+      "reason": "Timed out awaiting audio.input after9 passing checks. Exact capture cause was not captured; no production voice fix is claimed. Two subsequent diagnostic/current-source runs passed40/40 without widening timeouts."
+    },
+    {
+      "name": "live_diagnosis_1",
+      "path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/live-diagnosis-1.log",
+      "sha256": "9261e15388765f9493b703b993c86059743f89d7cea389e4c0a5c4abcf711d12",
+      "reason": "Timed out waiting for the first recorded narration to play. Expanded observational timeout diagnostics; later full runs passed."
+    },
+    {
+      "name": "layout_internal_scroll_assertion",
+      "path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/layout-final/ui_layout_contract.log",
+      "sha256": "7a7d4ef6640baf42e519b5f590b140666971c4b97f47f389351efecb4747e989",
+      "reason": "Small-phone assertion compared viewport coordinates across an intentional internal text scroll. Measured outer geometry was unchanged; final test normalizes by scroll offset and checks narrated/cited text visibility."
+    }
+  ],
+  "paused_run": {
+    "path": "/tmp/demo-runtime-final-20260924/browser-text-cards-final/paused.json",
+    "sha256": "06962e1f4f4c75b92d0636ce6ab7b8508e6ae49eacda43f12bf1abfdb9297ca1"
+  },
+  "separate_render_review": "Independent48-render/480-check read-only Bundle evidence is intentionally not added to these overlapping totals."
+}

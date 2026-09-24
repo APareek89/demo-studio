@@ -360,7 +360,132 @@ def _enforce_playbook(p: dict, pb: dict) -> None:
         add_gap(gap.get("what", ""), gap.get("why_it_matters", ""), gap.get("suggested_source", ""))
 
 
-def _enforce_budget(p: dict, demo: dict) -> None:
+_DELIVERY_ALLOCATION = re.compile(r"\s*\[Prepared delivery allocation:[^\]]*\]")
+
+
+def _prepared_budgets(p: dict, demo: dict, target: int, playbook: dict | None) -> tuple[int, list[str]]:
+    """Allocate whole supported thoughts, including shared library-stop attention.
+
+    The existing prompts require 26–33 words per main line. A scalar allowance
+    such as 45 cannot hold two such lines, even though two delivery-role ceilings
+    would fit. Enumerate legal batch counts first; never manufacture evidence.
+    """
+    from . import author, narration
+    segments = [s for s in p.get("segments", []) if s.get("role") in narration.ROLES]
+    selected, _ = narration.default_route(p, include_all_proofs=True)
+    selected = set(selected)
+    normalize = lambda value: re.sub(r"[\s_]+", "-", str(value or "").strip().lower())
+    stops = (playbook or {}).get("stops") or [
+        {"id": s.get("stop_id") or s["id"], "fact_ids": s.get("fact_ids", [])}
+        for s in segments if s.get("role") == "proof"]
+    known = {normalize(s["id"]): set(s.get("fact_ids", [])) for s in stops}
+    category = normalize((playbook or {}).get("category") or (demo.get("product") or {}).get("category"))
+    compact = category == "compact-suv" and narration.minimum_seconds(demo) == 180
+    groups, problems = {}, []
+    for segment in segments:
+        facts = set(segment.get("fact_ids", []))
+        explicit = normalize(segment.get("stop_id"))
+        topic = normalize(segment.get("topic"))
+        owners = {sid for sid, evidence in known.items() if facts & evidence}
+        group = explicit if explicit in known else topic if topic in known else None
+        if group is None and len(owners) == 1:
+            group = next(iter(owners))
+        unclear = (group is None and len(owners) > 1) or (
+            compact and segment["role"] != "proof" and
+            (not group or bool(owners - {group})))
+        if unclear:
+            # A mixed tail cannot claim a fresh independent allowance. The
+            # existing plan must locate its distinct thoughts before budgeting.
+            problems.append(f"{segment['id']}: unmapped or mixed stop evidence needs a reviewed stop assignment")
+        key = group or ("segment:" + segment["id"])
+        active = segment["id"] in selected and bool(facts) and not unclear
+        groups.setdefault(key, []).append((segment, facts if active else set()))
+    group_caps = {}
+    for key, rows in groups.items():
+        facts = set().union(*(f for _, f in rows))
+        evidence_cap = min(max(3, int(narration.minimum_seconds(demo) / 60)), max(2, len(facts))) if facts else 0
+        group_caps[key] = min(evidence_cap, 3 if key == "powertrain" else 2) if compact else evidence_cap
+    # Keep the reviewed/model attention weights where feasible. Reapplying this
+    # to a legal allocation has zero deviation, so preparation is idempotent.
+    weights = {}
+    for key, rows in groups.items():
+        active_count = sum(bool(facts) for _, facts in rows) or 1
+        for segment, facts in rows:
+            weights[segment["id"]] = (max(0, segment.get("word_budget") or 0)
+                or 30 * group_caps[key] / active_count) if facts else 0
+    attention = sum(weights.values()) or 1
+    all_options = []
+    for key, rows in groups.items():
+        cap = group_caps[key]
+        # State is (words, batches); value retains the least uneven allocation.
+        states = {(0, 0): (0.0, [])}
+        for segment, facts in rows:
+            role_limit = author.LIMITS.get(segment["role"], author.LIMITS["proof"])
+            local_cap = min(max(3, int(narration.minimum_seconds(demo) / 60)), max(2, len(facts))) if facts else 0
+            ceiling = role_limit * local_cap
+            counts = range(1 if segment["role"] == "proof" and facts else 0, min(local_cap, cap) + 1)
+            choices = [(count, words) for count in counts
+                       for words in (range(26 * count, min(33 * count, ceiling) + 1) if count else (0,))]
+            next_states = {}
+            for (words, batches), (cost, allocation) in states.items():
+                for count, budget in choices:
+                    if batches + count > cap:
+                        continue
+                    state = (words + budget, batches + count)
+                    share = target * weights[segment["id"]] / attention
+                    value = (cost + (budget - share) ** 2, allocation + [(segment, budget, count)])
+                    if state not in next_states or value[0] < next_states[state][0]:
+                        next_states[state] = value
+            states = next_states
+        required = 3 if compact and key == "powertrain" and cap else None
+        if compact and key == "powertrain" and cap < 3:
+            problems.append("powertrain: approved evidence cannot support the three planned delivery batches")
+        options = {}
+        for (words, batches), value in states.items():
+            if required is not None and batches != required:
+                continue
+            if words not in options or value[0] < options[words][0]:
+                options[words] = value
+        all_options.append(options)
+    # Author permits target+40 overall. Reserve five words for the overview's
+    # 28-word maximum above the 23-word plan reserve; closing already reserves45.
+    # This also permits a legitimate 34→52 word batch transition without making
+    # every integer a legal allowance or inventing another timing rule.
+    surplus = max(0, author.route_limit(demo, p) - p["narration_preparation"]["target_words"] - (28 - narration.OVERVIEW_WORDS))
+    states = {0: (0.0, [])}
+    for options in all_options:
+        next_states = {}
+        for words, (cost, allocation) in states.items():
+            for extra, (extra_cost, extra_allocation) in options.items():
+                total = words + extra
+                if total > target + surplus:
+                    continue  # Higher totals cannot satisfy the existing route ceiling.
+                value = (cost + extra_cost, allocation + extra_allocation)
+                if total not in next_states or value[0] < next_states[total][0]:
+                    next_states[total] = value
+        states = next_states
+    feasible = next((total for total in range(target, target + surplus + 1) if total in states), None)
+    if feasible is None:
+        below = [total for total in states if total < target]
+        feasible = max(below) if below else 0
+        allocation = states.get(feasible, (0, []))[1]
+        problems.append("the approved stops cannot fit the requested duration as complete 26–33-word batches")
+    else:
+        allocation = states[feasible][1]
+    by_id = {s["id"]: (budget, count) for s, budget, count in allocation}
+    for segment in segments:
+        budget, count = by_id.get(segment["id"], (0, 0))
+        segment["word_budget"] = budget
+        goal = _DELIVERY_ALLOCATION.sub("", segment.get("goal", "")).rstrip()
+        goal = re.sub(r"\bword_budget:\s*\d+", f"word_budget: {budget}", goal)
+        detail = (f"{count} complete main line{'s' if count != 1 else ''}, 26–33 words each, {budget} words total; "
+                  "use distinct assigned approved detail and retain its conditions" if count else
+                  "no default main lines allocated; retain only supported deeper detail or the explicit evidence gap")
+        segment["goal"] = goal + " [Prepared delivery allocation: " + detail + ".]"
+    return feasible, problems
+
+
+def _enforce_budget(p: dict, demo: dict, playbook: dict | None = None) -> None:
     """Allocate requested speech length within role ceilings, recording infeasible totals."""
     from . import author
     from .narration import minimum_seconds, OVERVIEW_WORDS, ROLES
@@ -373,6 +498,19 @@ def _enforce_budget(p: dict, demo: dict) -> None:
         if segment.get("role") not in ROLES:
             ceiling = author.LIMITS.get(segment.get("role"), author.LIMITS["proof"])
             segment["word_budget"] = max(22, min(ceiling, int(segment.get("word_budget") or 28)))
+    if preparation.get("version") == 1 and preparation.get("target_words"):
+        feasible, problems = _prepared_budgets(p, demo, target, playbook)
+        p.update(total_words=total, guided_minimum_seconds=minimum_seconds(demo), guided_opening_words=OVERVIEW_WORDS)
+        p["issues"] = [issue for issue in p.get("issues", [])
+                       if not ((issue.startswith("Requested ") and "cannot fit the current stops" in issue)
+                               or issue.startswith("Prepared narration allocation needs review:"))]
+        if problems:
+            if feasible < target:
+                p["issues"].append(f"Requested {total} words cannot fit the current stops within supported delivery budgets; allocated {feasible} guided segment words plus {OVERVIEW_WORDS} overview and 45 closing words. " + "; ".join(problems) + ". Review the evidence and stop allocation; never invent or duplicate speech.")
+            else:
+                p["issues"].append("Prepared narration allocation needs review: " + "; ".join(problems)
+                                   + ". The supported route meets the word target; unassigned segments add no main narration.")
+        return
     ceilings = []
     for segment in segments:
         ceiling = author.LIMITS.get(segment.get("role"), author.LIMITS["proof"])
@@ -433,7 +571,7 @@ def prepare_existing(demo_id: str, *, save: bool = True) -> dict:
     target = narration.word_target(demo, store.read_json(demo_id, "script.json"), demo_id)
     p["narration_preparation"] = {"version": narration.PREPARATION_VERSION, "target_words": target,
                                   "identity": narration.preparation_identity(demo, p.get("voice"))}
-    _enforce_budget(p, demo)
+    _enforce_budget(p, demo, store.read_json(demo_id, "playbook.json"))
     if save:
         store.write_json(demo_id, "plan.json", p)
     return p
@@ -554,7 +692,7 @@ IMAGES ({len(und['images'])}):
     if playbook:
         _enforce_playbook(p, playbook)
     p["narration_preparation"] = {"version": narration.PREPARATION_VERSION, "target_words": target_words}
-    _enforce_budget(p, demo)
+    _enforce_budget(p, demo, playbook)
     p["supporting_outcomes"] = p["supporting_outcomes"][:2]
     # Preserve reviewed CTA and voice choices during revisions that do not ask to change those fields.
     # Then reapply the selected speaker and retained destination constraints before saving plan.json.

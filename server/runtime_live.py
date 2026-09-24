@@ -18,7 +18,7 @@ router = APIRouter()
 
 
 def meaningful_transcript(text) -> bool:
-    """Raw VAD can be a cup impact; a partial containing words confirms input."""
+    """Lexical helper for adapters/tests; playback ownership stays with the client."""
     words = re.sub(r"[\[<(](?:background\s+noise|noise|silence|music|laughter|cough|breathing|inaudible|unintelligible|unk)[\])>]", "", str(text or ""), flags=re.I)
     return any(character.isalnum() for character in words)
 
@@ -68,26 +68,15 @@ async def live(websocket: WebSocket, demo_id: str):
 
     async def consume_stt(adapter, generation):
         nonlocal stt,stt_task,input_mode
-        confirmed = False
-        confirmed_ids = set()
         try:
             async for event in adapter.events():
                 if adapter is not stt or generation != input_generation:
                     return
                 kind = event.get("type")
-                if kind in ("transcript.partial", "transcript.final") and meaningful_transcript(event.get("text")):
-                    identity = event.get("input_id")
-                    if not confirmed and (identity is None or identity not in confirmed_ids):
-                        # Cancel on the first useful partial, never raw VAD or
-                        # an impulse. A completed turn still owns route changes.
-                        await stop_turn(preserve_planning=True)
-                        confirmed = True
-                        if identity is not None:
-                            confirmed_ids.add(identity)
-                            if len(confirmed_ids) > 256:
-                                confirmed_ids = {identity}
-                if kind == "transcript.final":
-                    confirmed = False
+                # Recognition alone cannot own the turn. The player qualifies
+                # the final against its current prompt/product and then sends
+                # the existing turn.interrupt command. Never stop server output
+                # for provisional words that the customer-facing player rejects.
                 if event.get("type")=="error":
                     await send({"type":"error","code":"microphone_stream","message":"Voice input disconnected. Retry the microphone or type your answer.","is_fatal":True,"input_generation":generation})
                     return

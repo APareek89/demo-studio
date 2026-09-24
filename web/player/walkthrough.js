@@ -3,7 +3,7 @@
 const WIDE_KINDS = new Set(['hero_open', 'closing', 'hero_close']);
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
-const entriesOf = slide => slide.media?.length ? slide.media.slice(0, 2) :
+const entriesOf = slide => Array.isArray(slide.media) ? slide.media.slice(0, 2) :
   (slide.image_url ? [{image_id: slide.image_id || '', image_url: slide.image_url, image_parts: slide.image_parts || [], from_line: 0}] : []);
 
 // Exported pure geometry also exercises the actual production cap/clamp in the

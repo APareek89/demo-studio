@@ -1016,6 +1016,11 @@ async def edit_aligned_plan(demo_id: str, req: Request):
         raise HTTPException(400, "The edited pitch brief is invalid: " + str(e)[:400])
     if plan.get("voice_sample_audio"):
         validated["voice_sample_audio"] = plan["voice_sample_audio"]
+    # These values are computed after the model-output schema is validated.
+    # Human pitch edits cannot erase or rewrite the preparation boundary.
+    for key in ("narration_preparation", "guided_minimum_seconds", "guided_opening_words", "issues"):
+        if key in plan:
+            validated[key] = plan[key]
     store.write_json(demo_id, "plan.json", validated)
     orchestrator.invalidate(demo_id, "plan")
     orchestrator.set_stage(demo_id, "plan", "done", message="direct pitch edits saved and validated")
@@ -1338,16 +1343,24 @@ def _session_work(demo_id: str, sid: str):
 def _session_revision(record: dict) -> str:
     # Count equality cannot identify changed words, profile, consent or timing.
     # Server bookkeeping is excluded so repeated Stop/Done/beacons share work.
-    content = {k: v for k, v in record.items() if k not in {"summary", "saved_at"}}
+    content = {k: v for k, v in record.items() if k not in {"summary", "saved_at", "save_seq"}}
     return hashlib.sha256(json.dumps(content, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
 
 
 @app.post("/api/demos/{demo_id}/run/session")
 async def save_session(demo_id: str, req: Request):
-    """Called on Done / Stop and by the tab-close beacon — all with the same id, so one record per visit. The summary is
-    written in the background once the session has ended, and kept only for unchanged session input."""
+    """Save incremental, final and tab-close snapshots as one visit.
+
+    Sequenced clients own a monotonic snapshot counter. Retries and late beacons
+    acknowledge the current record without replacing it. Historical clients keep
+    their existing behavior until a sequenced snapshot takes ownership. Summary
+    work runs only for an ended content revision, never for an autosave tick.
+    """
     _demo_or_404(demo_id)
     body = await req.json()
+    incoming_seq = body.get("save_seq")
+    if "save_seq" in body and (type(incoming_seq) is not int or not 0 < incoming_seq <= 9007199254740991):
+        raise HTTPException(400, "save_seq must be a positive safe integer")
     sid = re.sub(r"[^A-Za-z0-9_-]", "", str(body.get("id") or "")) or f"s_{int(time.time())}"
     body["id"] = sid
     body["saved_at"] = time.time()
@@ -1356,6 +1369,13 @@ async def save_session(demo_id: str, req: Request):
     lock, _ = _session_work(demo_id, sid)
     with lock:
         prev = be.get_session(demo_id, sid) or {}
+        previous_seq = prev.get("save_seq")
+        if type(previous_seq) is int and previous_seq > 0 and (incoming_seq is None or incoming_seq <= previous_seq):
+            # Keep the entire newest snapshot, including ended state, consent,
+            # transcript and a revision-bound summary. A stale request cannot
+            # reopen a visit or erase words already saved by a newer beacon.
+            return {"ok": True, "id": sid, "share_key": _share_key(demo_id, sid),
+                    "accepted": False, "save_seq": previous_seq}
         if body.get("input_mode") not in ("voice", "text"):
             # Old clients may omit this field; retain a known selection without
             # inventing a mode for historical sessions.
@@ -1369,7 +1389,8 @@ async def save_session(demo_id: str, req: Request):
     be.after_write(demo_id)
     if body.get("ended") and not body.get("summary"):
         threading.Thread(target=_summarize_session, args=(demo_id, sid), daemon=True, name=f"summary-{sid}").start()
-    return {"ok": True, "id": sid, "share_key": _share_key(demo_id, sid)}
+    return {"ok": True, "id": sid, "share_key": _share_key(demo_id, sid),
+            "accepted": True, **({"save_seq": incoming_seq} if incoming_seq is not None else {})}
 
 
 def _summarize_session(demo_id: str, sid: str) -> None:
@@ -1429,8 +1450,21 @@ def _public_view(s: dict) -> dict:
     mask = lambda ph: ("•••••• " + str(ph)[-4:]) if ph else ""  # noqa: E731
     sm = dict(s.get("summary") or {})
     sm["leads"] = [{**l, "phone": mask(l.get("phone"))} for l in sm.get("leads", [])]
-    return {"id": s.get("id"), "saved_at": s.get("saved_at"), "minutes": s.get("minutes"), "profile": {"name": (s.get("profile") or {}).get("name", "")}, "cta": s.get("cta"), "intent": s.get("intent"),
-            "questions": s.get("questions", []), "escalations": s.get("escalations", []), "summary": sm, "leads": [{"phone": mask(l.get("phone")), "question": l.get("question")} for l in s.get("leads", [])]}
+    public = {"id": s.get("id"), "saved_at": s.get("saved_at"), "minutes": s.get("minutes"), "profile": {"name": (s.get("profile") or {}).get("name", "")}, "cta": s.get("cta"), "intent": s.get("intent"),
+              "questions": s.get("questions", []), "escalations": s.get("escalations", []), "summary": sm, "leads": [{"phone": mask(l.get("phone")), "question": l.get("question")} for l in s.get("leads", [])]}
+    # Contact numbers can also occur in callback escalation strings, customer
+    # questions or the model's sales opener. Mask the public copy recursively;
+    # sales retains the original consented record and full private transcript.
+    phone = re.compile(r"(?<!\d)(?:\+?91[\s-]*)?([6-9](?:[\s-]*\d){9})(?!\d)")
+    def redact(value):
+        if isinstance(value, str):
+            return phone.sub(lambda match: mask(re.sub(r"\D", "", match.group(1))), value)
+        if isinstance(value, list):
+            return [redact(item) for item in value]
+        if isinstance(value, dict):
+            return {key: item if key in {"id", "slide_id"} else redact(item) for key, item in value.items()}
+        return value
+    return redact(public)
 
 
 STAGES_MS = (("stt", "voice_ended", "stt_done"), ("qa", "stt_done", "qa_done"), ("tts", "qa_done", "answer_audio"), ("total", "voice_ended", "answer_audio"))

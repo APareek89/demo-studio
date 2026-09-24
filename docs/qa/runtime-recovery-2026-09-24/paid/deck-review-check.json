@@ -1,0 +1,67 @@
+{
+  "slides": 20,
+  "expected_selections": 18,
+  "failures": [],
+  "hashes": {
+    "script.json": "ad737fc65bd039de8d42e090373d105b3830a08dde9d680048c185b7934382d4",
+    "deck.json": "03368578c222bc0b5d80b6cd2efc159169ec0824a9e831b5527ef7274873aa7c",
+    "deck-overrides.json": "2676e0f4af63149094e6cd3cd8ec2105b29777ba03099eddb68154670707e321",
+    "plan.json": "54d775f00623b64eaa5a6b5a52ec8a77683f1b79902123a2dcc4a01be6c9fa06",
+    "understanding.json": "6119711465907309ac40efb06213dd83f5f51efb8bfa1396cd011ac8e3d4b287",
+    "demo.json": "013c91df89b945185415cc8ddd241283344f3a1c470be967180ee557fca7cfda"
+  },
+  "schema_valid": true,
+  "all_citations_currently_approved": true,
+  "closing_matches_script": true,
+  "picture_evidence": {
+    "im03": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/sources/src_048ec9_creta-exterior-pc__Hyundai-creta-suv-exterior-big-1120x600-side-1.jpg",
+      "sha256": "245fbc093eada7070179836c1e70a41dbef5a538673af71026115c94d0f237f8"
+    },
+    "im_pdf_288fd534763aa0f85ff5": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/derived/pdf-images/src_140a50/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/bbfe62eb78374f0934ebe01ca761ebef20f3c9a0654b2ad05aa7c33dda63308c.png",
+      "sha256": "bbfe62eb78374f0934ebe01ca761ebef20f3c9a0654b2ad05aa7c33dda63308c"
+    },
+    "im_pdf_ef829d1422c6088c3929": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/derived/pdf-images/src_140a50/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/69bae84838eb80926b3f1b6a6a08fffa98de64963d1ff2b66960e3f9458a1643.png",
+      "sha256": "69bae84838eb80926b3f1b6a6a08fffa98de64963d1ff2b66960e3f9458a1643"
+    },
+    "im_pdf_e307b8d383fc82b4e0fe": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/derived/pdf-images/src_140a50/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/846c465d34a6e2347f7b65f97c178b3ccb6a93dde44960f9b585c741e556770e.png",
+      "sha256": "846c465d34a6e2347f7b65f97c178b3ccb6a93dde44960f9b585c741e556770e"
+    },
+    "im_pdf_8ff60242fc7b54de3d64": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/derived/pdf-images/src_140a50/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/d55f27c5462a1a8aaa1d2caa55b8af52a773b81c7d58f9a386d435312bb737a0.png",
+      "sha256": "d55f27c5462a1a8aaa1d2caa55b8af52a773b81c7d58f9a386d435312bb737a0"
+    },
+    "im_pdf_0b62835448ea81c472d0": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/derived/pdf-images/src_140a50/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/9022b71bc3754899b61efe56985300625aca69cf3043a51d1820c119e56b56b0.png",
+      "sha256": "9022b71bc3754899b61efe56985300625aca69cf3043a51d1820c119e56b56b0"
+    },
+    "im14": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/sources/src_0b4b89_creta-interior-pc__Hyundai-creta-suv-interior-small-830x530-2.jpg",
+      "sha256": "21edfcbf8a55d931fae210996e6727a729bbf57f2c3894d529681a726c18b14f"
+    },
+    "im_pdf_e7722bffe4b0d6394547": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/derived/pdf-images/src_140a50/f2159835f5993c55380132bc048a488476fbbc9e2b4a2f95a51fe558d32ae87c/7b7d7ab6b66254d66d0b88642cd5118161dc869f43131a6fb1b16e63f4fd2c22.png",
+      "sha256": "7b7d7ab6b66254d66d0b88642cd5118161dc869f43131a6fb1b16e63f4fd2c22"
+    },
+    "im09": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/sources/src_c27f76_creta-highlights__Hyundai-creta-suv-highlight-small-800x530-2-infotainment___Clu",
+      "sha256": "c24556ee69eb92f7044ea33d1700202e48781d838f37b56290fa0d1b2b4d41de"
+    },
+    "im06": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/sources/src_656a55_creta-highlights-knightking__cretakingdashboard.jpg",
+      "sha256": "2ff13632d1bee69e84a6d8ff2c9441cc50196c6937235bdba37c4f7751670a6e"
+    },
+    "im07": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/sources/src_8c5552_creta-highlights-knightking__cretakingdpdriving.jpg",
+      "sha256": "3b7ec38ffdaba9427b21bbad80b085abdd21eb38a4bf1dc2f61cf7772282023e"
+    },
+    "im05": {
+      "path": "/tmp/demo-runtime-final-20260924/data/dm_7bbf10d0/sources/src_32b843_creta-highlights-knightking__cretakingbaselesscharger.jpg",
+      "sha256": "2a680299222e7bbab43bcf08e5bb71191d2e67198dd4aa3ac2fabeaccb59b714"
+    }
+  },
+  "scope": "Read-only artifact and literal image review; actual browser render not yet tested; pixel-provider audit remains rules_fallback."
+}

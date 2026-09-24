@@ -333,8 +333,9 @@ class NarrationPreparationContract(unittest.TestCase):
         for key in ("voice", "ctas", "customer_persona", "takeaway", "intake"):
             self.assertEqual(saved[key], second[key])
         for old, new in zip(self.plan["segments"], second["segments"]):
-            for key in ("id", "title", "role", "goal", "fact_ids"):
+            for key in ("id", "title", "role", "fact_ids"):
                 self.assertEqual(old[key], new[key])
+            self.assertEqual(old["goal"], plan._DELIVERY_ALLOCATION.sub("", new["goal"]).rstrip())
 
     def test_insufficient_repair_stays_explicit_and_bounded(self):
         p = self.prepared(); store.write_json(self.did, "plan.json", p)
@@ -425,18 +426,19 @@ class NarrationPreparationContract(unittest.TestCase):
         self.assertEqual(result["narration_preparation"]["status"], "incomplete")
         self.assertNotIn("No approved", result["narration_preparation"]["reason"])
 
-    def test_ordinary_establish_gap_budget_does_not_disable_automatic_completion(self):
+    def test_empty_establish_cannot_supply_fictional_completion_capacity(self):
         p = self.prepared()
         next(segment for segment in p["segments"] if segment["role"] == "establish")["fact_ids"] = []
         short = schemas.ScriptOut.model_validate(draft(self.prepared(), self.und["facts"], complete=False))
         result, model = self.author_result([short, short, short], planned=p)
-        self.assertEqual(model.call_count, 3)
+        self.assertEqual(model.call_count, 2)
         self.assertEqual(result["narration_preparation"]["status"], "incomplete")
-        self.assertEqual(result["narration_preparation"]["attempts"], 3)
+        self.assertEqual(result["narration_preparation"]["attempts"], 2)
         stored = store.read_json(self.did, "plan.json")
         establish = next(segment for segment in stored["segments"] if segment["role"] == "establish")
         self.assertEqual(establish["fact_ids"], [])
-        self.assertLessEqual(establish["word_budget"], author.LIMITS["establish"])
+        self.assertEqual(establish["word_budget"], 0)
+        self.assertTrue(any("cannot fit" in issue for issue in stored["issues"]))
 
     def test_mock_preview_reports_actual_placeholders_without_padding_them(self):
         store.write_json(self.did, "plan.json", self.prepared())

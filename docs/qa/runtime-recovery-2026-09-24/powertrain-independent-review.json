@@ -1,0 +1,133 @@
+{
+  "scope": "Independent direct detector probes only; a false return is not general factual validation. No endpoints, cache writes, paid calls or complete-suite reruns.",
+  "passed": 17,
+  "total": 17,
+  "socket_attempts": 0,
+  "source_hashes": {
+    "server/runtime_facts.py": "e8c96f09d1367e9cada306f507cff7650601b17638663231402857b534eae206",
+    "server/runtime_graph.py": "63cbfe8e9c0df428310209287a0a4a244aeca5f66380011ea8ae253a81375a25",
+    "evals/fixtures/runtime_powertrain_pairing.json": "615f2065df8cc1461d4e3802594640d92bd7e636a0635e80d1a45df3c6193140"
+  },
+  "read_only_bundle_sha256": "7604961afc1ee085cd55f5198cd4eb7db60b6cafe4fb6ea59a90e97d756101f4",
+  "rows": [
+    {
+      "name": "actual repaired second row",
+      "text": "You can pair them with a 6-speed manual or an automatic, and a dual-clutch automatic for the turbo petrol.",
+      "expected_rejection": true,
+      "actual_rejection": true,
+      "passed": true
+    },
+    {
+      "name": "actual cached whole answer",
+      "text": "The Creta offers a petrol, a diesel, and a turbo petrol engine. You can pair them with a 6-speed manual or an automatic, and a dual-clutch automatic for the turbo petrol.",
+      "expected_rejection": true,
+      "actual_rejection": true,
+      "passed": true
+    },
+    {
+      "name": "original specific subset",
+      "text": "You can get a 6-speed manual or an automatic with the petrol and diesel engines, and a dual clutch automatic for the turbo petrol.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "valid common automatic",
+      "text": "All three engines are available with an automatic.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "non-turbo stays distinct",
+      "text": "The non-turbo petrol and diesel both offer a manual.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "negative-only claim not positive pairing",
+      "text": "The turbo petrol is not offered with a manual.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "unsafe collective alternate",
+      "text": "The petrol, diesel and turbo petrol engines each have a manual or automatic.",
+      "expected_rejection": true,
+      "actual_rejection": true,
+      "passed": true
+    },
+    {
+      "name": "engine-only inventory",
+      "text": "The petrol, diesel and turbo petrol engines are available.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "granular approved claim identities",
+      "text": "The petrol and diesel both offer a manual or automatic.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "explicit all does not inherit negative subset",
+      "text": "The turbo petrol does not have a manual, but all three engines offer a manual or automatic.",
+      "expected_rejection": true,
+      "actual_rejection": true,
+      "passed": true
+    },
+    {
+      "name": "Oxford comma collective list",
+      "text": "The petrol, diesel, and turbo petrol engines each offer a manual or automatic.",
+      "expected_rejection": true,
+      "actual_rejection": true,
+      "passed": true
+    },
+    {
+      "name": "safe semicolon pairings",
+      "text": "Petrol and diesel get manual or automatic; turbo petrol gets a dual-clutch automatic.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "safe suffix-qualified alternatives",
+      "text": "There is a manual option for petrol and diesel, but an automatic for turbo petrol.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "automatic climate is not gearbox",
+      "text": "The petrol and diesel models have automatic climate control.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "manual seats are not gearbox",
+      "text": "The petrol and turbo petrol both have manual seats.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "separate named subjects retain bounds",
+      "text": "The turbo petrol has a DCT. The petrol and diesel engines have manual or automatic options.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    },
+    {
+      "name": "actual Turbo GDi claim identity",
+      "text": "The petrol, diesel and turbo petrol engines are all available with an automatic.",
+      "expected_rejection": false,
+      "actual_rejection": false,
+      "passed": true
+    }
+  ]
+}

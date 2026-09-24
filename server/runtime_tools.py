@@ -1,4 +1,4 @@
-"""Bounded arithmetic, customer-selected sources and fetched public-search evidence."""
+"""Bounded arithmetic and live evidence restricted to the demo owner's websites."""
 from __future__ import annotations
 
 import hashlib
@@ -44,6 +44,51 @@ def supplied_urls(question: str, history: list[dict] | None = None, extra: list[
                     continue
             urls.append(_supplied_url(token))
     return list(dict.fromkeys(urls))[:8]
+
+
+def source_domain(url: str) -> str:
+    """An exact host, with only the conventional www/apex pair treated alike.
+
+    Sibling or child subdomains do not inherit permission. A hostname suffix
+    comparison would accidentally authorize unrelated tenants or lookalikes.
+    The fetcher still validates addresses, ports and every redirect before I/O.
+    """
+    try:
+        parsed = urlsplit(str(url))
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+            return ""
+        if re.search(r"[\x00-\x20\x7f]", str(url)):
+            return ""
+        _ = parsed.port
+        host = parsed.hostname.encode("idna").decode("ascii").lower()
+        if host.endswith("."):
+            return ""  # Keep the same hostname representation as crawl's hop check.
+        return host[4:] if host.startswith("www.") else host
+    except (ValueError, UnicodeError):
+        return ""
+
+
+def source_hosts(urls: list[str] | None) -> set[str]:
+    domains = {source_domain(url) for url in urls or []} - {""}
+    return {host for domain in domains for host in (domain, "www." + domain)}
+
+
+def allowed_source_url(url: str, allowed_urls: list[str] | None) -> bool:
+    domain = source_domain(url)
+    return bool(domain and domain in {source_domain(value) for value in allowed_urls or []})
+
+
+def runtime_source_urls(demo: dict) -> list[str]:
+    """Only enabled top-level URLs explicitly added by the demo owner grant access.
+
+    Customer messages, provider results, crawl children and URLs inside uploaded
+    documents are context, never new network permissions. Re-read this on each
+    turn/tool attempt so an excluded source cannot survive in session history.
+    """
+    return list(dict.fromkeys(str(source.get("url") or "") for source in demo.get("sources", [])
+        if source.get("kind") == "url" and not source.get("crawl_parent")
+        and source.get("use_in_demo", True) and source.get("crawl_active", True)
+        and not source.get("scope_excluded") and source_domain(source.get("url", ""))))
 
 
 def _numbers(text: str) -> set[Decimal]:
@@ -245,32 +290,30 @@ def _web_evidence(candidates: list, coverage: list[str], *, claim: str) -> list[
     return evidence
 
 
-def source_lookup(request: ToolRequest | dict, question: str, history: list[dict], timeout: float = 5.0, *, extra: list[str] | None = None) -> dict:
-    """Read explicit customer sources and up to two relevant same-host child pages.
+def source_lookup(request: ToolRequest | dict, question: str, history: list[dict], timeout: float = 5.0, *, extra: list[str] | None = None, allowed_urls: list[str] | None = None) -> dict:
+    """Read a selected owner-domain page and up to two relevant same-domain pages.
 
     Whole sections preserve table headers/footnotes. Positive query overlap is
     required; no matching evidence is an error, never a successful empty lookup.
     """
     from . import crawl
     request = request if isinstance(request, ToolRequest) else ToolRequest.model_validate(request)
-    allowed = supplied_urls(question, history, extra)
     url = _supplied_url(request.url.strip())
-    if url not in allowed:
-        raise ValueError("Provide the exact public website URL you want checked")
+    if not allowed_source_url(url, allowed_urls):
+        raise ValueError("Live lookup is limited to websites supplied by the demo owner")
     started, deadline = time.monotonic(), time.monotonic() + min(max(float(timeout), .1), 5.0)
     query = CUSTOMER_URL_RE.sub("", request.query or question)
     stop = {"the", "and", "for", "are", "what", "which", "this", "that", "with", "from", "you", "your", "can", "could", "please", "check", "tell", "about", "website", "page", "url", "information", "official", "have", "has", "does", "compare", "comparison", "using", "use", "verify", "actually", "provide", "provides", "mention", "mentions", "whether", "details", "specific", "list", "lists", "says", "state", "states", "its"}
     terms = set(re.findall(r"[a-z0-9]{3,}", query.lower())) - stop
     if not terms:
         raise ValueError("Specify the product detail you want checked on that website")
-    seed_host = urlsplit(url).hostname
+    allowed_hosts = source_hosts([url])
     model_tokens = crawl._model_tokens({"url": url, "role": "competitor"}, {})
     # The model name occurs in navigation, forms and every page title. When a
     # topic exists, rank that topic rather than generic mentions of the car.
     model_words = set(re.findall(r"[a-z0-9]{3,}", " ".join(model_tokens).lower()))
     topic_terms = terms - model_words
     terms = topic_terms or terms
-    seed_path = urlsplit(url).path.rstrip("/")
     seed_locale = crawl._locale_prefix(url)
     def price_locality(candidate: str) -> str:
         match = re.search(r"(?:^|/)price-in-([a-z0-9]+(?:-[a-z0-9]+)*)/?$", unquote(urlsplit(candidate).path).casefold())
@@ -284,7 +327,7 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
     customer_words = " " + re.sub(r"\W+", " ", customer_text.casefold()).strip() + " "
 
     def in_source_scope(candidate: str, label: str = "") -> bool:
-        if urlsplit(candidate).hostname != seed_host:
+        if not allowed_source_url(candidate, [url]):
             return False
         if crawl.canonical_url(candidate) == crawl.canonical_url(url):
             return True
@@ -292,14 +335,11 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
         if locality and locality != seed_locality and f" {locality} " not in customer_words:
             return False
         if model_tokens:
-            return crawl._eligible(candidate, label, url, model_tokens)
-        # A generic company homepage does not identify a model. Do not treat
-        # every car or service link on it as that customer's requested product.
-        parts = tuple(part for part in seed_path.split("/") if part)
-        if len(parts) <= len(seed_locale):
-            return False
-        path = urlsplit(candidate).path.rstrip("/")
-        return (not seed_locale or crawl._locale_prefix(candidate) == seed_locale) and path.startswith(seed_path + "/")
+            # Retain the existing product/market guard for linked model pages.
+            # The permitted www/apex alias must not look like another host to it.
+            same_host = urlsplit(candidate)._replace(netloc=urlsplit(url).netloc).geturl()
+            return crawl._eligible(same_host, label, url, model_tokens)
+        return not seed_locale or crawl._locale_prefix(candidate) == seed_locale
 
     queue, seen, pages, coverage = [(url, "customer URL")], set(), [], []
     candidates = []
@@ -314,14 +354,14 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
             coverage.append(f"Time budget reached before reading {target}")
             break
         try:
-            page = crawl.fetch_public(target, timeout=remaining, max_bytes=2_000_000, allowed_hosts={seed_host})
+            page = crawl.fetch_public(target, timeout=remaining, max_bytes=2_000_000, allowed_hosts=allowed_hosts)
         except Exception as exc:
             coverage.append(f"Could not read {target}: {str(exc)[:160]}")
             if target == url:
                 raise ValueError(coverage[-1]) from exc
             continue
         final_url = page.get("final_url") or page.get("url") or target
-        if urlsplit(final_url).hostname != seed_host:
+        if not allowed_source_url(final_url, [url]):
             coverage.append(f"Redirect outside customer-selected host was excluded: {final_url}")
             continue
         if not in_source_scope(final_url):
@@ -337,7 +377,7 @@ def source_lookup(request: ToolRequest | dict, question: str, history: list[dict
         links = []
         for link in page.get("links", []):
             child = link.get("url", "")
-            if urlsplit(child).hostname != seed_host or urlsplit(child).scheme not in {"http", "https"} or crawl.canonical_url(child) in seen:
+            if not allowed_source_url(child, [url]) or crawl.canonical_url(child) in seen:
                 continue
             if crawl.EXCLUDE.search(urlsplit(child).path):
                 continue
@@ -367,7 +407,8 @@ def _search_sources(query: str, timeout: float) -> dict:
     t = gemini._types()
     started = time.monotonic()
     model = config.GEMINI_RUNTIME_MODEL
-    prompt = "Search the public web for this question and cite relevant source pages. Use one search query.\n" + query
+    prompt = ("Search only the websites named by the site: domain restrictions in this query and cite relevant source pages. "
+              "Do not search outside those domains. Use one search query.\n" + query)
     try:
         response = gemini.client().models.generate_content(model=model, contents=prompt,
             config=t.GenerateContentConfig(tools=[t.Tool(google_search=t.GoogleSearch())], temperature=0,
@@ -404,14 +445,17 @@ def _search_sources(query: str, timeout: float) -> dict:
     return result
 
 
-def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0, *, cancel_event=None) -> dict:
-    """One bounded public search plus at most two secured page fetches, scoped to this turn.
+def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0, *, cancel_event=None, allowed_urls: list[str] | None = None) -> dict:
+    """One owner-domain search plus at most two secured page fetches, scoped to this turn.
 
     Search citations discover URLs only. Each evidence quote is an actual fetched
     whole section, with the same relevance, table and size guards as source_lookup.
     """
     from . import crawl
     request = request if isinstance(request, ToolRequest) else ToolRequest.model_validate(request)
+    allowed_hosts = source_hosts(allowed_urls)
+    if not allowed_hosts:
+        raise ValueError("No owner-supplied website is available for live search")
     query = (request.query or question).strip()
     if not query:
         raise ValueError("Specify the question to search for")
@@ -437,11 +481,15 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
             raise TimeoutError("Public search time budget exhausted")
         return left
     # Reserve part of this tool's existing five-second allowance for source reads.
-    discovery = _search_sources(query, min(remaining(), budget * .65))
+    # A site query is discovery guidance; actual permission is enforced again
+    # before fetching, on each redirect, and before accepting returned evidence.
+    domains = sorted({source_domain(url) for url in allowed_urls or []} - {""})
+    restricted_query = "(" + " OR ".join("site:" + domain for domain in domains) + ") " + query
+    discovery = _search_sources(restricted_query, min(remaining(), budget * .65))
     remaining()
-    urls = list(dict.fromkeys(discovery.get("urls", [])))[:2]
+    urls = [url for url in dict.fromkeys(discovery.get("urls", [])) if allowed_source_url(url, allowed_urls)][:2]
     if not urls:
-        raise ValueError("Public search returned no cited source pages")
+        raise ValueError("Search returned no cited pages on the demo owner's allowed websites")
     pages, coverage, candidates = [], [], []
     for url in urls:
         try:
@@ -453,8 +501,7 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
             break
         try:
             # fetch_public validates and pins every DNS result and redirect hop.
-            # Public search permits another public host; customer lookup remains exact-host.
-            page = crawl.fetch_public(url, timeout=left, max_bytes=2_000_000)
+            page = crawl.fetch_public(url, timeout=left, max_bytes=2_000_000, allowed_hosts=allowed_hosts)
             check_cancelled()
         except InterruptedError:
             raise
@@ -462,6 +509,9 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
             coverage.append(f"Could not read {url}: {str(exc)[:160]}")
             continue
         final_url = str(page.get("final_url") or page.get("url") or url)
+        if not allowed_source_url(final_url, allowed_urls):
+            coverage.append("Redirect outside the demo owner's allowed websites was excluded.")
+            continue
         if any(crawl.canonical_url(item["url"]) == crawl.canonical_url(final_url) for item in pages):
             continue
         pages.append({"url": final_url, "discovery": "public search citation", "fetched_at": page.get("fetched_at", time.time())})
@@ -470,9 +520,12 @@ def web_search(request: ToolRequest | dict, question: str, timeout: float = 5.0,
     check_cancelled()
     if not candidates:
         remaining()
-    evidence = _web_evidence(candidates, coverage, claim="Public-search website passage")
+    evidence = _web_evidence(candidates, coverage, claim="Owner-supplied website passage")
     if not evidence:
         raise ValueError("No fetched public-search passage matched that question")
     return {"tool": "web_search", "query": query, "evidence": evidence, "pages": pages,
             "elapsed_ms": round((time.monotonic()-started)*1000), "coverage": list(dict.fromkeys(coverage)),
-            **{key:discovery[key] for key in ("search_queries", "search_entry_point", "provider", "model", "cost_note") if key in discovery}}
+            "allowed_domains": domains,
+            # Provider-rendered search suggestions may link outside permission.
+            # Only the fetched, allowed pages are presented as source links.
+            **{key:discovery[key] for key in ("search_queries", "provider", "model", "cost_note") if key in discovery}}

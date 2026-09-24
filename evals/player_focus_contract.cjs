@@ -30,13 +30,13 @@ const part = (start, end) => source.slice(source.indexOf(start), source.indexOf(
 const defaultMode = vm.runInNewContext(part('function defaultVoiceMode(', '// Build one interactive demo') + '\ndefaultVoiceMode');
 function modePlayer(selected = false, liveSession = true) {
   const S = {voiceMode: selected, inputMode: selected ? 'voice' : 'typed', micOn: false, sessionId: 'mode-fixture', started: 0,
-    visited: [], plan: [], seg: 0, covered: new Set(), resolved: new Set(), unresolved: new Set(), raised: new Set()};
+    transcript: [], visited: [], plan: [], seg: 0, covered: new Set(), resolved: new Set(), unresolved: new Set(), raised: new Set()};
   const calls = {connect: 0, capture: 0, stop: 0, disabled: 0, cancelWindow: 0, stopListening: 0};
   const live = liveSession ? {mic: false, unlockOutput: () => Promise.resolve(), connect: () => {calls.connect++; return Promise.resolve();},
     startCapture: () => {calls.capture++; live.mic = true; return Promise.resolve(true);}, stopCapture: () => {calls.stop++; live.mic = false;},
     setMicEnabled: enabled => {if (!enabled) calls.disabled++; return Promise.resolve(enabled);}} : null;
   const code = part('  function startLive(', '  // ---------- helpers ----------') + '\n' + part('  function preferTyping()', '  // Accept typed words')
-    + '\n' + part('  function micTap()', '  // Offer reply choices') + '\n' + part('  function sessionRecord()', '  // Reopen a completed visit')
+    + '\n' + part('  function micTap()', '  // Offer reply choices') + '\n' + part('  function heardPrefix(', '  // Consume the one-time callback') + '\n' + part('  function sessionRecord()', '  // Reopen a completed visit')
     + '\n({startLive,preferTyping,micTap,sessionRecord})';
   const api = vm.runInNewContext(code, {S, live, bundle: {}, cur: null, slides: [], sessionNow: () => 0, intentScore: () => 20,
     el: {voiceMode: {checked: selected}, hint: {}}, setMicUI() {}, cancelPostAnswerListen: () => calls.cancelWindow++,

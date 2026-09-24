@@ -25,6 +25,99 @@ def _eligible(fact: dict) -> bool:
             and knowledge.get("conflict_status") not in {"suppressed", "unresolved"})
 
 
+_ENGINE = re.compile(r"\b(?:(?:non[- ]turbo|naturally[- ]aspirated|regular|turbo(?:charged)?(?:\s+GDi)?|hybrid)\s+)?(?:petrol|gasoline|diesel)\b", re.I)
+_GEARBOX = re.compile(r"\b(?:manual|automatic|dual[- ]clutch(?:\s+automatic)?|IVT|CVT|DCT|(?-i:AT|MT))\b", re.I)
+_ENGINE_LINK = re.compile(r"\b(?:for|with|on|has|have|offers?|gets?|uses?|paired|pair|comes?|available)\b|:", re.I)
+_COLLECTIVE_PAIR = re.compile(r"\b(?:pair\s+(?:them|these|those)|(?:they|both|each|all|these|those)\b.{0,65}\b(?:with|have|has|offer|offers|get|gets|come|comes|available)|(?:all|both|each)\s+(?:of\s+)?(?:the\s+)?(?:engine|powertrain)s?)\b", re.I)
+
+
+def _engines(text: str) -> set[str]:
+    engines = set()
+    for match in _ENGINE.finditer(text):
+        value = match[0].casefold().replace("gasoline", "petrol")
+        base = "diesel" if value.endswith("diesel") else "petrol"
+        prefix = "hybrid " if value.startswith("hybrid") else "turbo " if value.startswith("turbo") else ""
+        engines.add(prefix + base)
+    return engines
+
+
+def _gearboxes(text: str) -> set[str]:
+    # Everyday "automatic" is a valid generalisation of these named families;
+    # a manual or a different named family is not interchangeable with them.
+    names = set()
+    for match in _GEARBOX.finditer(text):
+        value = match[0].casefold()
+        if value in {"manual", "automatic"}:
+            following = re.match(r"\s+([a-z]+)\b", text[match.end():], re.I)
+            if following and following[1].casefold() not in {
+                "or", "and", "for", "with", "on", "gearbox", "gearboxes", "transmission", "transmissions",
+                "version", "versions", "variant", "variants", "option", "options", "choice", "choices",
+                "is", "are", "was", "can", "only", "depending", "available", "offered",
+            }:
+                continue  # Adjectives in "automatic climate control"/"manual seats" are not gearboxes.
+        name = "manual" if value in {"manual", "mt"} else "dct" if value.startswith("dual") else value
+        names.add(name)
+        if name in {"ivt", "cvt", "dct", "at"}:
+            names.add("automatic")
+    return names
+
+
+def _engine_clauses(text: str):
+    # Preserve decimal engine sizes. A repeated named subject or a separately
+    # qualified gearbox option starts its own clause, not a shared option list.
+    boundary = r"[,;!?]|\.(?=\s|$)|\b(?:while|whereas|but)\b|\band\b(?=\s+(?:the\s+)?(?:turbo\s+)?(?:petrol|diesel)\s+(?:has|offers?|gets?|comes?))|\band\b(?=\s+(?:a\s+|an\s+)?(?:\d+[- ]speed\s+)?(?:dual[- ]clutch|IVT|CVT|DCT|manual|automatic)\b[^,;.!?]*\b(?:for|with)\b)"
+    start = 0
+    for match in re.finditer(boundary, text, re.I):
+        yield start, text[start:match.start()]
+        start = match.end()
+    yield start, text[start:]
+
+
+def unsupported_powertrain_pairing(text: str, cited_facts: list[dict], previous_claim: dict | None = None) -> bool:
+    """Check explicit collective engine/gearbox choices against literal mappings.
+
+    This bounded relation check does not infer compatibility from two independent
+    availability lists. It addresses the loss of engine boundaries in "pair them
+    with a manual or automatic". The preceding accepted row supplies antecedent
+    names only; this row's eligible citations must supply each actual mapping.
+    """
+    supported: dict[str, set[str]] = {}
+    for fact in cited_facts:
+        if not _eligible(fact):
+            continue
+        claim = str(fact.get("claim", ""))
+        claim_engines = _engines(claim) if re.search(r"\b(?:transmissions?|gearboxes?)\b", claim, re.I) and not _NEGATIVE.search(claim) else set()
+        for _, clause in _engine_clauses(str(fact.get("value", ""))):
+            engines, gearboxes = _engines(clause), _gearboxes(clause)
+            # A granular reviewed assertion can name its engine in the claim
+            # ("petrol transmission options") and list gearboxes in the value.
+            own_identity = not engines and len(claim_engines) == 1
+            if own_identity:
+                engines = claim_engines
+            if engines and gearboxes and (own_identity or _ENGINE_LINK.search(clause)) and not _NEGATIVE.search(clause):
+                for engine in engines:
+                    supported.setdefault(engine, set()).update(gearboxes)
+    for start, clause in _engine_clauses(text):
+        gearboxes = _gearboxes(clause)
+        if not gearboxes or _NEGATIVE.search(clause) or not _ENGINE_LINK.search(clause):
+            continue
+        engines = _engines(clause)
+        prefix = re.split(r"[;!?]|\.(?=\s|$)", text[:start])[-1]
+        if engines and _engines(prefix) and not _gearboxes(prefix) and not _NEGATIVE.search(prefix):
+            # Oxford-comma engine enumeration still owns one shared predicate.
+            engines |= _engines(prefix)
+        if _COLLECTIVE_PAIR.search(clause) and not engines:
+            if re.search(r"\ball\s+(?:(?:the|three|3)\s+)?(?:engine|powertrain)s?\b", clause, re.I):
+                engines = set(supported)
+            else:
+                engines = _engines(text[:start]) or _engines(str((previous_claim or {}).get("text", "")))
+        # Single-engine assertions remain under existing scope/quantity guards.
+        # Bare separate inventories have no explicit engine→gearbox relation.
+        if len(engines) > 1 and any(not gearboxes <= supported.get(engine, set()) for engine in engines):
+            return True
+    return False
+
+
 def transmission_condition_dependencies(text: str, cited: list[dict], registry: list[dict],
                                         requested: dict | None = None) -> list[dict]:
     """Carry explicit same-feature gearbox requirements, not additional offerings.

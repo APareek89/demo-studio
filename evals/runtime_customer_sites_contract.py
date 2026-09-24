@@ -33,6 +33,7 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         self.demo = store.new_demo("Hyundai Creta")
         self.demo["product"]["name"] = "Hyundai Creta"
         self.demo["settings"]["runtime_default_sites"] = "off"
+        self.demo["sources"] = [{"id":"owner", "kind":"url", "role":"product", "url":URL}]
         self.demo_id = self.demo["id"]
         store.save(self.demo_id, self.demo)
         store.write_json(self.demo_id, "bundle.json", {"slides":[], "version":1})
@@ -95,7 +96,7 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         await self.turn("Airbags matter; I also supplied https://dealer.example/creta.", evidence=[FACT], turn="t_2", profile={"why":"Family travel"})
         await self.turn(evidence=[FACT], turn="t_3", profile={"customer_urls":["https://specs.example/creta"]})
         saved = runtime_state.previous_state(self.demo_id, "s_sites")
-        self.assertEqual(saved["customer_urls"], [URL, "https://dealer.example/creta", "https://specs.example/creta"])
+        self.assertEqual(saved["customer_urls"], [URL])  # Customer input cannot add permission.
         self.assertEqual(saved["profile"]["customer_urls"], saved["customer_urls"])
         self.assertEqual(saved["profile"]["why"], "Family travel")
         self.assertEqual(self.fetched, [])
@@ -133,16 +134,16 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.fetched[0][0], URL)
         self.fetched.clear()
         await self.turn(session="s_other", profile={"customer_urls":["https://third.example/car", "https://fourth.example/car"]})
-        self.assertEqual(self.fetched[0][0], "https://third.example/car")
+        self.assertEqual(self.fetched[0][0], URL)
 
     def test_extra_allowlist_still_rejects_off_host_seed_and_cross_host_redirect(self):
         with patch("server.crawl.fetch_public", side_effect=self.fetch) as fetch:
-            with self.assertRaisesRegex(ValueError, "exact public website"):
-                runtime_tools.source_lookup({"tool":"source_lookup","url":"https://evil.example/car","query":"airbags"}, "Airbags?", [], extra=[URL])
+            with self.assertRaisesRegex(ValueError, "demo owner"):
+                runtime_tools.source_lookup({"tool":"source_lookup","url":"https://evil.example/car","query":"airbags"}, "Airbags?", [], extra=[URL], allowed_urls=[URL])
             fetch.assert_not_called()
         with patch("server.crawl.fetch_public", return_value={"final_url":"https://evil.example/car", "text":"Six airbags are available."}):
             with self.assertRaisesRegex(ValueError, "No readable section"):
-                runtime_tools.source_lookup({"tool":"source_lookup","url":URL,"query":"airbags"}, "Airbags?", [], extra=[URL])
+                runtime_tools.source_lookup({"tool":"source_lookup","url":URL,"query":"airbags"}, "Airbags?", [], extra=[URL], allowed_urls=[URL])
 
     def test_as_per_website_cannot_attribute_stored_fact_to_an_unread_page(self):
         decision = TurnDecision(action="answer", sentences=[{"text":"As per the website, six airbags are available.","fact_ids":["F1"]}])
@@ -151,12 +152,14 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(result["answered"])
 
     async def test_explicit_check_bare_url_still_overrides_existing_registry_evidence(self):
+        self.demo["sources"].append({"id":"owner-bare", "kind":"url", "url":"https://hyundai.com/"})
+        store.save(self.demo_id, self.demo)
         final = await self.turn("Check hyundai.com/creta for airbags.", evidence=[FACT])
         self.assertEqual([url for url, _ in self.fetched], ["https://hyundai.com/creta"])
         self.assertEqual(final["tool_rounds"], 1)
         self.assertTrue(final["tool_results"][0]["evidence"][0]["id"].startswith("W"))
 
-    async def test_default_sites_off_and_on_use_only_enabled_root_product_sources(self):
+    async def test_legacy_default_setting_cannot_override_owner_source_permission(self):
         self.demo["product"]["url"] = "https://unselected.example/car"
         self.demo["sources"] = [
             {"id":"source-root","kind":"url","role":"product","url":URL,"use_in_demo":True},
@@ -166,11 +169,12 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
         ]
         store.save(self.demo_id, self.demo)
         await self.turn(session="s_off")
-        self.assertEqual(self.fetched, [])
+        self.assertEqual([url for url, _ in self.fetched], [URL])
+        self.fetched.clear()
         self.demo["settings"]["runtime_default_sites"]="on"; store.save(self.demo_id,self.demo)
         await self.turn(session="s_on")
         self.assertEqual([url for url, _ in self.fetched], [URL])
-        self.assertEqual(runtime_state.previous_state(self.demo_id,"s_on")["customer_urls"], [URL])
+        self.assertEqual(runtime_state.previous_state(self.demo_id,"s_on")["customer_urls"], [URL,"https://competitor.example/car"])
 
     async def test_interactions_and_explicit_no_lookup_never_auto_fetch(self):
         for index, question in enumerate(["Hello", "Continue the demo", "Thank you", "Do not check the website; how many airbags are there?"]):
@@ -218,7 +222,7 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
     def test_private_source_still_fails_before_outbound_connection(self):
         url="http://127.0.0.1/private"
         with self.assertRaisesRegex(ValueError,"Could not read"):
-            runtime_tools.source_lookup({"tool":"source_lookup","url":url,"query":"airbags"},"Airbags?",[],extra=[url])
+            runtime_tools.source_lookup({"tool":"source_lookup","url":url,"query":"airbags"},"Airbags?",[],extra=[url],allowed_urls=[url])
 
     async def test_decline_ignores_unrequested_stale_tool_calls(self):
         state={"demo_id":self.demo_id,"question":"How many airbags?","history":[],"customer_urls":[URL],
@@ -241,8 +245,8 @@ class CustomerSites(unittest.IsolatedAsyncioTestCase):
             await runtime_graph.reason(state)
         self.assertEqual(payloads[0]["CUSTOMER_URLS"],[URL])
 
-    def test_verbatim_prompt_and_isolated_storage(self):
-        self.assertIn("If the evidence does not answer the question and CUSTOMER_URLS is non-empty, request source_lookup on the most relevant customer URL before declining. Never claim a page was checked unless a live_web fact from it is cited.", runtime_graph.SYSTEM)
+    def test_owner_restricted_prompt_and_isolated_storage(self):
+        self.assertIn("Only websites supplied by the demo owner authorize live access.", runtime_graph.SYSTEM)
         self.assertTrue(str(config.DATA_DIR).startswith(scratch.name))
 
 

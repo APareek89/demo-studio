@@ -1,0 +1,16 @@
+{
+  "deck-review-check.json": "43e51b45f4e374c6aed22ce48133a332836395b81c70f410c6194797dd6eebe2",
+  "final-plan-metadata-patch.json": "c8d8aa7cf7b2ee84e3658338b249591ebcd70d5adb19d3c59894108f4f9d7492",
+  "final-reviewed-deck-patch.json": "f2084f973ea4f3a9dbf9cd8ee062103bdcd8c9157f1df6be754694e146d67199",
+  "final-script-editorial-patch.json": "7cf746c65c5b8467019f405bb135f36d39b9f689bdfc75642e97cc83b27a7fb2",
+  "final-source-script-review.json": "74e36dc582503ccdaa55b9359aa9c3effdfe375d38905cec54ec8567b5c57885",
+  "final-source-script-review.md": "180d1346a2dfedceb6331de29477bde563ba438fb9a691e3e805716acc5484e3",
+  "final-visual-review.md": "e2b1931968f6c301dbf167be2c4971e2979ec6bc1c2204e4332ee4572504516d",
+  "review.json": "03cca830bad82aa1792df1008a0fa8d35dd9c96d20d56bca9423756d351e157a",
+  "reviewed-align-edits-receipt.json": "812b66173dfabde91095851c79011812d6eee8b473500954139922ee49d72264",
+  "reviewed-deck-revision-receipt.json": "85027bbb3fa8af13a98f4f8aeef28154bee64b04e505f3ae3b1579c838c24d91",
+  "reviewed-deck-selections-receipt.json": "616060c5a52fb0b3ed49cf6153758d12f1be3eef9a8e6bd14e68d8ad5c860801",
+  "reviewed-slide-titles-receipt.json": "673bbce01a1116f99c808e0e195ae90ed94cfc9b2f1964a78834407a04e4758e",
+  "source-review-applied.json": "c159a775b780c89586dc6e915f8a9b947e72ba5ed8c68b36c15de69eada56470",
+  "source-review.md": "2ada582e51468cee8298b744bb46bfd1300aa5bc1623fafbc88c920f1c2ea93a"
+}

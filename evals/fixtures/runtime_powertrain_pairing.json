@@ -1,0 +1,72 @@
+{
+  "provenance": {
+    "description": "Captured paid QA repair wording and independently reviewed approved assertions; no paid data is accessed by this contract.",
+    "entry_id": "C90dfa838b917c6ea",
+    "snapshot_id": "kb_2679d87aeeb0ab06c7284862"
+  },
+  "question": "What engines and gearboxes are offered?",
+  "facts": [
+    {
+      "id": "F149",
+      "claim": "Engine options",
+      "value": "1.5-litre naturally aspirated petrol, 1.5-litre diesel, and 1.5-litre turbo petrol",
+      "conditions": "",
+      "scope": {},
+      "approved": true,
+      "truth": "stated",
+      "kind": "feature",
+      "source": {
+        "ref": "customer-uploaded-compilation.pdf",
+        "page": 43,
+        "quote": "The Hyundai CRETA offers three main engine options: a 1.5-litre naturally aspirated petrol, a 1.5-litre diesel, and a 1.5-litre turbo petrol."
+      }
+    },
+    {
+      "id": "F150",
+      "claim": "Gearbox options",
+      "value": "6-speed manual or an IVT automatic for the 1.5-litre petrol, 6-speed manual or a 6-speed automatic for the diesel, and 7-speed dual-clutch automatic for the turbo petrol",
+      "conditions": "",
+      "scope": {},
+      "approved": true,
+      "truth": "stated",
+      "kind": "feature",
+      "source": {
+        "ref": "customer-uploaded-compilation.pdf",
+        "page": 43,
+        "quote": "Transmission options for the CRETA include a 6-speed manual or an IVT automatic for the 1.5-litre petrol, a 6-speed manual or a 6-speed automatic for the diesel, and a 7-speed dual-clutch automatic for the turbo petrol variant."
+      }
+    }
+  ],
+  "repaired_rows": [
+    {
+      "text": "The Creta offers a petrol, a diesel, and a turbo petrol engine.",
+      "fact_ids": [
+        "F149"
+      ],
+      "kind": "fact"
+    },
+    {
+      "text": "You can pair them with a 6-speed manual or an automatic, and a dual-clutch automatic for the turbo petrol.",
+      "fact_ids": [
+        "F150"
+      ],
+      "kind": "fact"
+    }
+  ],
+  "original_rows": [
+    {
+      "text": "The Creta offers three engine choices, including a 1.5-litre petrol, a 1.5-litre diesel, and a 1.5-litre turbo petrol.",
+      "fact_ids": [
+        "F149"
+      ],
+      "kind": "fact"
+    },
+    {
+      "text": "You can get a 6-speed manual or an automatic with the petrol and diesel engines, and a dual clutch automatic for the turbo petrol.",
+      "fact_ids": [
+        "F150"
+      ],
+      "kind": "fact"
+    }
+  ]
+}

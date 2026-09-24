@@ -1,0 +1,173 @@
+{
+  "suites": [
+    {
+      "suite": "runtime_powertrain_pairing_contract",
+      "exit": 0,
+      "seconds": 0.85,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 19,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_powertrain_pairing_contract.log",
+      "log_sha256": "037e0f7095d454e06b3386419558d98b8ac0a879c2ca30c819dbc56efee7ca8f",
+      "source_sha256": "ca0bb014d28f1d2ac835ffd7d828f9da3e886db220999ebbc2bed6d7dc35e378"
+    },
+    {
+      "suite": "runtime_transmission_conditions_contract",
+      "exit": 0,
+      "seconds": 0.95,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 17,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_transmission_conditions_contract.log",
+      "log_sha256": "ffb07e3565bfdd8fc190b89f3d2174faeee0a0930895b01811f1dd5e47b21338",
+      "source_sha256": "c346a99b7228c77d19bfae883c25aea8c253afee7bdcebff793f75a43f062de7"
+    },
+    {
+      "suite": "runtime_pairing_contract",
+      "exit": 0,
+      "seconds": 0.9,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 12,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_pairing_contract.log",
+      "log_sha256": "730a6d1a630e84a34f7050b485048e33b5c234aa135a5da411a72094cd20c16b",
+      "source_sha256": "b86a93f827835a98777411456213cfe4ab7ea5de080ac5d1b40c78ee93585539"
+    },
+    {
+      "suite": "runtime_repair_contract",
+      "exit": 0,
+      "seconds": 0.96,
+      "summary": [
+        "106/106 runtime repair contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 106,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_repair_contract.log",
+      "log_sha256": "613f83256a8865973544d7ce88b5783a049832813597402b5c72bbf5abacba5c",
+      "source_sha256": "c0d1dc8a33149410d48c00efca92b20b8ce7e1f44aeacde6dbe59d239cb33f8b"
+    },
+    {
+      "suite": "runtime_graph_contract",
+      "exit": 0,
+      "seconds": 1.0,
+      "summary": [
+        "130/130 runtime graph contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 130,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_graph_contract.log",
+      "log_sha256": "94d7b4f8f3cb930edeb18ca17ecf96d78e0aae674f1e041a484ea5daf7d20ee5",
+      "source_sha256": "01cea1d2047203cefa13e78cb63df6363cc0bd22c48ab257fddb784f895131f0"
+    },
+    {
+      "suite": "runtime_plain_language_contract",
+      "exit": 0,
+      "seconds": 0.95,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 25,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_plain_language_contract.log",
+      "log_sha256": "2a9b6bbab53a465f2bc8654f1fdc5f6a6fa29b42c30089bf1252283f95817ca3",
+      "source_sha256": "de18d629f2706eb16157dd7198f2809219fcaf493c553e297c192f515ec059ae"
+    },
+    {
+      "suite": "faq_cache_contract",
+      "exit": 0,
+      "seconds": 1.22,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 27,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/faq_cache_contract.log",
+      "log_sha256": "9cc2f9b876f057eeb4b6616c6f7a8545f163d727c12004fc47c660975f0fa215",
+      "source_sha256": "9454c273e5ae9428ba87d6d283a0e1dd0fa5ed61d8be8c5e03aa733cb3c8d339"
+    },
+    {
+      "suite": "faq_scope_contract",
+      "exit": 0,
+      "seconds": 1.27,
+      "summary": [
+        "..............Executing <Task pending name='Task-175' coro=<FAQScope.test_rest_followup_without_profile_renders_persisted_language_and_published_voice() running at evals/faq_scope_contract.py:326> cb=[_run_until_complete_cb() at /usr/local/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py:181] created at /usr/local/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py:100> took 0.139 seconds",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 19,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/faq_scope_contract.log",
+      "log_sha256": "2a1c1204dc619af160b4750681366e99b5734c2bacdf370f0b595b250e12a13a",
+      "source_sha256": "aa9532d696d8159c4018aa196c351d38c2964264311994f1306e007ee119bd93"
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.12,
+      "summary": [
+        "386/386 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 386,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/qa_deck.log",
+      "log_sha256": "34d92f907cb605eec5bb34513993dc1befffca3051bc4e54048ebee64f826273",
+      "source_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae"
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.41,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 24,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/qa_accept.log",
+      "log_sha256": "acd771815cb155b37701b0fd179a582ae6c71d452af59693c97d5c4d2ac939f3",
+      "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.09,
+      "summary": [
+        "SMOKE OK dm_91fca6f4",
+        "SMOKE OK (phase 2) dm_91fca6f4",
+        "SMOKE OK (on-demand rehearsal) dm_91fca6f4",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 3,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/smoke_mock.log",
+      "log_sha256": "abbd1a77187bead8d62421bff25c17749814bcc925a4b33dd31e114a4a8d3a48",
+      "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07"
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit": 0,
+      "seconds": 12.81,
+      "summary": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 28,
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/release_mock_contract.log",
+      "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+      "source_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5"
+    }
+  ],
+  "suite_count": 12,
+  "overlapping_check_count": 796,
+  "source_sha256": {
+    "server/runtime_facts.py": "e8c96f09d1367e9cada306f507cff7650601b17638663231402857b534eae206",
+    "server/runtime_graph.py": "63cbfe8e9c0df428310209287a0a4a244aeca5f66380011ea8ae253a81375a25",
+    "evals/runtime_powertrain_pairing_contract.py": "ca0bb014d28f1d2ac835ffd7d828f9da3e886db220999ebbc2bed6d7dc35e378",
+    "evals/fixtures/runtime_powertrain_pairing.json": "615f2065df8cc1461d4e3802594640d92bd7e636a0635e80d1a45df3c6193140"
+  },
+  "source_frozen_after_run": true,
+  "outbound_attempts": 0,
+  "paid_calls": 0,
+  "independent_review": "/tmp/demo-runtime-final-20260924/powertrain-guard/independent-review-final.json",
+  "red_receipt": "/tmp/demo-runtime-final-20260924/powertrain-guard/red.log",
+  "syntax": "3 Python ASTs + fixture JSON parsed",
+  "diff_check": "passed"
+}

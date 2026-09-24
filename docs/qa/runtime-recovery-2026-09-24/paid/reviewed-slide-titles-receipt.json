@@ -1,0 +1,83 @@
+{
+  "status": "saved",
+  "request": {
+    "slides": [
+      {
+        "slide_id": "sl01",
+        "title": "CRETA at a glance"
+      },
+      {
+        "slide_id": "sl02",
+        "title": "The key choices"
+      },
+      {
+        "slide_id": "sl03",
+        "title": "Petrol gearbox choices"
+      },
+      {
+        "slide_id": "sl04",
+        "title": "Diesel gearbox choices"
+      },
+      {
+        "slide_id": "sl05",
+        "title": "Turbo petrol pairing"
+      },
+      {
+        "slide_id": "sl06",
+        "title": "Wheel finishes by trim"
+      },
+      {
+        "slide_id": "sl07",
+        "title": "Lighting by trim"
+      },
+      {
+        "slide_id": "sl08",
+        "title": "Split rear seats"
+      },
+      {
+        "slide_id": "sl09",
+        "title": "Seating and luggage"
+      },
+      {
+        "slide_id": "sl10",
+        "title": "Standard airbags"
+      },
+      {
+        "slide_id": "sl11",
+        "title": "Driver assistance availability"
+      },
+      {
+        "slide_id": "sl12",
+        "title": "Connecting your phone"
+      },
+      {
+        "slide_id": "sl13",
+        "title": "Connectivity conditions"
+      },
+      {
+        "slide_id": "sl14",
+        "title": "Panoramic roof"
+      },
+      {
+        "slide_id": "sl15",
+        "title": "Price and exclusions"
+      },
+      {
+        "slide_id": "sl16",
+        "title": "Wireless charging"
+      },
+      {
+        "slide_id": "sl17",
+        "title": "Extended warranty terms"
+      },
+      {
+        "slide_id": "sl18",
+        "title": "Your next step"
+      }
+    ]
+  },
+  "deck_sha256": "03368578c222bc0b5d80b6cd2efc159169ec0824a9e831b5527ef7274873aa7c",
+  "script_sha256": "ad737fc65bd039de8d42e090373d105b3830a08dde9d680048c185b7934382d4",
+  "provider_calls_added": 0,
+  "reason": "Name the actual reviewed feature instead of generic section/continuation labels; no new claims, pictures or coordinates."
+}

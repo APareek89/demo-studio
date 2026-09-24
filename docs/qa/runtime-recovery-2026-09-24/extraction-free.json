@@ -1,0 +1,105 @@
+{
+  "gates": [
+    {
+      "suite": "understand_batch_contract",
+      "exit": 0,
+      "seconds": 0.76,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free/understand_batch_contract.log",
+      "count": 10,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.16,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-core/qa_deck.log",
+      "count": 380,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.57,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-core/qa_accept.log",
+      "count": 24,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.17,
+      "summary": [
+        "SMOKE OK dm_2e101f97",
+        "SMOKE OK (phase 2) dm_2e101f97",
+        "SMOKE OK (on-demand rehearsal) dm_2e101f97",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-core/smoke_mock.log",
+      "count": 3,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "source_contract",
+      "exit": 0,
+      "seconds": 1.14,
+      "summary": [
+        "Source contracts: 39/39",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-core/source_contract.log",
+      "count": 39,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "knowledge_contract",
+      "exit": 0,
+      "seconds": 9.27,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-core/knowledge_contract.log",
+      "count": 60,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "automatic_narration_contract",
+      "exit": 0,
+      "seconds": 3.55,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-flow/automatic_narration_contract.log",
+      "count": 16,
+      "outbound_attempts": 0
+    },
+    {
+      "suite": "narration_preparation_contract",
+      "exit": 0,
+      "seconds": 0.9,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log": "/tmp/demo-runtime-final-20260924/extraction-free-flow/narration_preparation_contract.log",
+      "count": 35,
+      "outbound_attempts": 0
+    }
+  ],
+  "source_sha256": {
+    "server/agents/understand.py": "42e23cc6ed80323c05d1a9ba1e0f0b0b0cb49a98e86fc18ecceaf62325aa9163",
+    "evals/understand_batch_contract.py": "029b932057a336b4b4435d4d759d0d27cfa2cee3050b07f4c899577b839476fc"
+  },
+  "paid_calls": 0,
+  "scope": "Understand existing reader batch size and completeness instructions; no graph/schema/model changes"
+}

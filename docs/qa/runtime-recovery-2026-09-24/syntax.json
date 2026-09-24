@@ -1,0 +1,222 @@
+{
+  "files": [
+    {
+      "file": "evals/align_review_contract.py",
+      "sha256": "27b091312ba3e7160f99d17be4d04022a6cb9aebfaa250cd8200f23e19d0addc",
+      "passed": true
+    },
+    {
+      "file": "evals/deck_media_contract.py",
+      "sha256": "12185a3cb01e27779d310ce1754d27936f9b86d9b5dfc3a09dbb06f6aeb821ef",
+      "passed": true
+    },
+    {
+      "file": "evals/fact_retry_contract.py",
+      "sha256": "68b201ae3e00e6292655202f8697d66d4e1b4e2f420e4de4f54b2c7c71c2cbdc",
+      "passed": true
+    },
+    {
+      "file": "evals/knowledge_contract.py",
+      "sha256": "9ae4493152699f1ba35e8b10cd67b2fd423713a34ff41126be216f212adf101c",
+      "passed": true
+    },
+    {
+      "file": "evals/live_player_browser.py",
+      "sha256": "37608ef00c553223ed5912761debab2042fd9324ab5bca55ff6b767e1535d6d0",
+      "passed": true
+    },
+    {
+      "file": "evals/live_transport_contract.py",
+      "sha256": "c5dfe65d39408a1a16ddb5fcbffc552e15b1813b01d338ff61ef4414d7799a0b",
+      "passed": true
+    },
+    {
+      "file": "evals/live_voice_contract.mjs",
+      "sha256": "d9633006bd45f10c727564a0e9cc5070933400398fd3890ae977f7f711a37be1",
+      "passed": true
+    },
+    {
+      "file": "evals/narration_preparation_contract.py",
+      "sha256": "a22272d1d0bc2c52b7de68bac68ac15b77353a26a44ac27ef2d006f6c8ceae48",
+      "passed": true
+    },
+    {
+      "file": "evals/narrative_roles_contract.py",
+      "sha256": "c0e22f991d6b2b991c2e3a7d8e013cc40ec03ebf8625d6a266aef652cbbcaa25",
+      "passed": true
+    },
+    {
+      "file": "evals/plan_playbook_contract.py",
+      "sha256": "6e347c30e0f897cdddfa6633eded0a5dea4a5bf57b28a292a92f80cbec602532",
+      "passed": true
+    },
+    {
+      "file": "evals/player_customer_sites_contract.cjs",
+      "sha256": "9cd5cc7c14d64bb46aa524754476019617fd55dd564bbb38391b332fce328f58",
+      "passed": true
+    },
+    {
+      "file": "evals/player_focus_contract.cjs",
+      "sha256": "30c99d1ee6edb3f26d5d5749f7c1e4964dd2c5ce0d9a4749358e020fa5ffb221",
+      "passed": true
+    },
+    {
+      "file": "evals/player_fundamental_contract.cjs",
+      "sha256": "1f52e8edc2788968141df2a9816a7baf6f92ceeab4679ee0842938d1ed5dcf94",
+      "passed": true
+    },
+    {
+      "file": "evals/player_listen_contract.cjs",
+      "sha256": "f2d6dfc5c3b2e577fb854f94d6d9155d0db0b2bae02276be2e475e38ae56ea3d",
+      "passed": true
+    },
+    {
+      "file": "evals/player_navigation_contract.py",
+      "sha256": "08329476649521caee145b23aea840b19d46190fbfc0e0e5d589522dc298feaa",
+      "passed": true
+    },
+    {
+      "file": "evals/player_runtime_recovery_contract.cjs",
+      "sha256": "0d64b30c83e7d1524b7addee497dd6f43e75dbbc6362cde331a9a367c96aee11",
+      "passed": true
+    },
+    {
+      "file": "evals/player_session_save_contract.cjs",
+      "sha256": "52f1eb7802c7712f8be237380bf9750192b92cc9a3e5f8433e934a8db04e57e7",
+      "passed": true
+    },
+    {
+      "file": "evals/player_walkthrough_contract.cjs",
+      "sha256": "d7d6e3ff333811b1a15b2ed2179b8b520f9be6b2bff635edd3a24a76be7db9db",
+      "passed": true
+    },
+    {
+      "file": "evals/prepared_budget_contract.py",
+      "sha256": "ff779b63b104c2f99af6ca63cd2387d9a0e4dddb4a3baaad54690810e641eb7c",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_customer_sites_contract.py",
+      "sha256": "4fe7f2dc6b379c294b171a49f0684b218718e7cae5706349f9f1aa6064cd3c1d",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_domain_contract.py",
+      "sha256": "d40c325f2cd84d58afeccef2c83b8557d4b5d584d6327452202916bc928d92b9",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_final_browser.py",
+      "sha256": "8202247b17a69a7f011740b0b107e1da5734f22f35cc71030852c1cc71b01a61",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_final_qa.py",
+      "sha256": "f0a1c6f3f11d314ba6c49c3fa98884d3006252e6669c2cacf324dbe10f050b46",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_graph_contract.py",
+      "sha256": "01cea1d2047203cefa13e78cb63df6363cc0bd22c48ab257fddb784f895131f0",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_powertrain_pairing_contract.py",
+      "sha256": "ca0bb014d28f1d2ac835ffd7d828f9da3e886db220999ebbc2bed6d7dc35e378",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_tools_replay_contract.py",
+      "sha256": "75cbde6b078a28c3f82e666805b04bddab960921e4816730a3114daaaedb83b9",
+      "passed": true
+    },
+    {
+      "file": "evals/runtime_web_search_contract.py",
+      "sha256": "9b7e746b53b1d4a0bd854f9c060ce1a23db0a0b4190eadb13c78996f31972793",
+      "passed": true
+    },
+    {
+      "file": "evals/session_checkpoint_contract.py",
+      "sha256": "374fd12203152ca311883b1e601d3c13007f6107367551163b887711eae294e4",
+      "passed": true
+    },
+    {
+      "file": "evals/ui_layout_contract.py",
+      "sha256": "263aa219157807975764e4462e2d771aa9b2fcd1942112bb77c1c71fcafeea7c",
+      "passed": true
+    },
+    {
+      "file": "evals/understand_batch_contract.py",
+      "sha256": "029b932057a336b4b4435d4d759d0d27cfa2cee3050b07f4c899577b839476fc",
+      "passed": true
+    },
+    {
+      "file": "server/agents/deck.py",
+      "sha256": "accd3ba6093a26ad3bc81e2b78edde5c5a78b78764fa77b8aef92951673404ba",
+      "passed": true
+    },
+    {
+      "file": "server/agents/plan.py",
+      "sha256": "47349bef6e966cd471d7fff98a2ca864c00596db7aa2bd694c60dcdf6a2a5bd8",
+      "passed": true
+    },
+    {
+      "file": "server/agents/understand.py",
+      "sha256": "42e23cc6ed80323c05d1a9ba1e0f0b0b0cb49a98e86fc18ecceaf62325aa9163",
+      "passed": true
+    },
+    {
+      "file": "server/app.py",
+      "sha256": "d0847ef16fe094540845b03925e51f1bcdbc71ede1e05ec74d056ea4c2c38f9e",
+      "passed": true
+    },
+    {
+      "file": "server/knowledge.py",
+      "sha256": "9b362ef52449cce81272ad107a71396bdfca81084c4d2602339756e698154b89",
+      "passed": true
+    },
+    {
+      "file": "server/runtime_facts.py",
+      "sha256": "e8c96f09d1367e9cada306f507cff7650601b17638663231402857b534eae206",
+      "passed": true
+    },
+    {
+      "file": "server/runtime_graph.py",
+      "sha256": "63cbfe8e9c0df428310209287a0a4a244aeca5f66380011ea8ae253a81375a25",
+      "passed": true
+    },
+    {
+      "file": "server/runtime_live.py",
+      "sha256": "c56a7884002c8ddc853db6eca7588352a108e3f6be8d50b8d2d2405fcfa7c34d",
+      "passed": true
+    },
+    {
+      "file": "server/runtime_tools.py",
+      "sha256": "8a21d180ed0ec8e15bdd5a8e5e32134a7df934f7e85f53ed721f3edaaa470f89",
+      "passed": true
+    },
+    {
+      "file": "web/player/live-voice.js",
+      "sha256": "bbefcb2ad935fb59d7020a9a01c9f7f1f84d8db16bd074e642d46b4fde82aab5",
+      "passed": true
+    },
+    {
+      "file": "web/player/player.js",
+      "sha256": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+      "passed": true
+    },
+    {
+      "file": "web/player/walkthrough.js",
+      "sha256": "f04ae44f252427109e0d7085bdda219e40144f856857f303ff34c30a0c8f1e1e",
+      "passed": true
+    },
+    {
+      "file": "web/slide.js",
+      "sha256": "f82eec2790d106347761d8d8c4b92f589b050c195d4169d37fbd51946c78b338",
+      "passed": true
+    }
+  ],
+  "python": 31,
+  "javascript": 12,
+  "diff_check": "pass"
+}

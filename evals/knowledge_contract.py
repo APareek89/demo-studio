@@ -757,7 +757,7 @@ class KnowledgeContract(unittest.TestCase):
                    "footnote": "Seats raised", "text": "Variant | Litres\nSX | 400\nFootnote: Seats raised"}
         page = {"url": "https://example.com/creta", "final_url": "https://example.com/creta/specs", "sections": [section], "links": [], "fetched_at": 123}
         with patch.object(crawl, "fetch_public", return_value=page):
-            result = source_lookup({"tool": "source_lookup", "url": page["url"], "query": "boot capacity"}, "Check " + page["url"], [])
+            result = source_lookup({"tool": "source_lookup", "url": page["url"], "query": "boot capacity"}, "Check " + page["url"], [], allowed_urls=[page["url"]])
         evidence = result["evidence"][0]
         self.assertEqual(evidence["source"]["ref"], page["final_url"])
         self.assertEqual(evidence["source"]["locator"], "boot-table")
@@ -770,7 +770,7 @@ class KnowledgeContract(unittest.TestCase):
         request = {"tool": "source_lookup", "url": "https://example.com/creta", "query": "boot capacity"}
         for passage in ["Our company was founded long ago and has many employees.", "boot capacity " * 2000]:
             with patch.object(crawl, "fetch_public", return_value={"text": passage, "final_url": request["url"]}), self.assertRaises(ValueError):
-                source_lookup(request, "Check " + request["url"], [])
+                source_lookup(request, "Check " + request["url"], [], allowed_urls=[request["url"]])
 
     def test_runtime_lookup_reads_only_two_relevant_same_host_children(self):
         from server.runtime_tools import source_lookup
@@ -778,7 +778,7 @@ class KnowledgeContract(unittest.TestCase):
         called = []
         def fake(url, **kwargs):
             called.append(url)
-            self.assertEqual(kwargs["allowed_hosts"], {"example.com"})
+            self.assertEqual(kwargs["allowed_hosts"], {"example.com", "www.example.com"})
             self.assertLessEqual(kwargs["timeout"], 5)
             return {"final_url": url, "sections": [{"text": "Boot capacity details preserve the original specification context.", "locator": "boot", "kind": "text"}],
                     "links": [{"url": "https://example.com/creta/boot-one", "label": "Boot details"},
@@ -787,7 +787,7 @@ class KnowledgeContract(unittest.TestCase):
                               {"url": "https://other.example/creta/boot", "label": "Boot comparison"},
                               {"url": "https://example.com/careers", "label": "Careers"}]}
         with patch.object(crawl, "fetch_public", side_effect=fake):
-            result = source_lookup({"tool": "source_lookup", "url": seed, "query": "boot"}, "Check " + seed, [])
+            result = source_lookup({"tool": "source_lookup", "url": seed, "query": "boot"}, "Check " + seed, [], allowed_urls=[seed])
         self.assertEqual(len(called), 3)
         self.assertTrue(all(url.startswith("https://example.com/") for url in called))
         self.assertTrue(any("unvisited" in warning for warning in result["coverage"]))

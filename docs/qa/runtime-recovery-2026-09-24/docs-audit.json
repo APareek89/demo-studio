@@ -1,0 +1,30 @@
+{
+  "scope": "Final source/log identities, syntax, diagram parity and recorded evidence. No provider calls.",
+  "free": {
+    "suites": 54,
+    "checks": 1854,
+    "suite_source_hashes_verified": 54
+  },
+  "browser": {
+    "suites": 6,
+    "checks": 481,
+    "source_hashes_verified": 32,
+    "boundary": "Isolated MOCK_LLM fixture. Real app/WS/worklet and browser geometry; synthetic PCM/STT, explicit warranty-decline provider fixture, skip_bank test control and8x muted audio. No acoustic/noise-recognition quality or real-duration assertion. No paid8910 request."
+  },
+  "combined": {
+    "suites": 60,
+    "overlapping_checks": 2335
+  },
+  "html_diagrams_matched": 9,
+  "markdown_diagrams_matched": 1,
+  "total_embedded_copies_matched": 10,
+  "audited_file_sha256": {
+    "docs/qa/runtime-recovery-2026-09-24/free-gates.json": "1a61385942e38e4775559f2b453cd317f4482fa06bdaefb8b99f05be2f264120",
+    "docs/qa/runtime-recovery-2026-09-24/browser-gates.json": "98e050781486af468720acf14d100bd848053fd5ff139fa7f028ecec083474a6",
+    "docs/qa/runtime-recovery-2026-09-24/fmea.md": "494157e86cf0eddf86a10435e74e2648112c10cdab15ed883bbac0897ba58b01",
+    "docs/qa/runtime-recovery-2026-09-24/syntax.json": "88cf732ea7264161a88c08b723cf370914c72669aef9f9878c4149bed57ea0c6",
+    "docs/architecture-flow.html": "0156421d0bc4349cf08665cd9ad3debe08d75dd6266508139a863b5fc5d17a94",
+    "docs/ARCHITECTURE_FLOW.md": "ac6055213ed75b5cd4015590b1f82758632330122a263e9ec5e19d7a1c62af2a"
+  },
+  "paid_calls": 0
+}

@@ -1,0 +1,2913 @@
+{
+  "scope": "Real local player shell; production renderSlide displays unchanged published Bundle slides. Welcome controls remain unclicked; DOM-only presentation avoids starting visits. No narration, microphone or natural conversation claims.",
+  "slide_renders": 48,
+  "checks": 480,
+  "passed": 480,
+  "failures": [],
+  "errors": [],
+  "blocked_writes": [],
+  "blocked_external": [
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  ],
+  "blocked_websockets": [],
+  "audio_starts": 0,
+  "source_hashes": {
+    "web/slide.js": "adbb33e282fe53cd9eb570d50cf6aca531cad53a373843f202f2fb59db8a4f7a",
+    "web/styles.css": "2fd7ff95065e32585d7de7f491ffda65d4a2a30064039e094f041946156a3b0f",
+    "web/player/player.js": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+    "web/player-ui.css": "c94c58e488f17ecfc8ba97ad123f4a40455de85d2d777cf11bdd173b151a7c61",
+    "web/player/walkthrough.js": "39cf632532960d82ed3d9756d010ebf0a18aa408fa1b34651d560240d3b6055f"
+  },
+  "source_hashes_unchanged": true,
+  "bundle_sha256": "770f5b10608e1cff4f2f880951e14cfb5ee0bee7f8f215f2f1b578ad86ee0ec5",
+  "rows": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Hyundai CRETA",
+      "imageIds": [
+        "im03"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl00",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "CRETA at a glance",
+      "imageIds": [
+        "im_pdf_288fd534763aa0f85ff5"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl01",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "The key choices",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Six airbags are standard across the variants. The panoramic roof is available on specified trims.",
+        "Regular petrol, diesel and turbo petrol have different gearbox pairings. Compare the complete configuration before choosing."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl02",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Petrol gearbox choices",
+      "imageIds": [
+        "im_pdf_ef829d1422c6088c3929"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl03",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Diesel gearbox choices",
+      "imageIds": [
+        "im_pdf_e307b8d383fc82b4e0fe"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl04",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Turbo petrol pairing",
+      "imageIds": [
+        "im_pdf_8ff60242fc7b54de3d64"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl05",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Wheel finishes by trim",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Choosing a wheel finish depends on the trim. SX and SX Premium have diamond-cut alloys; King has a larger diamond-cut design, while both Knight versions use matte black alloys."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl06",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Lighting by trim",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "At the front, E and EX use projector headlamps. The guide lists LED headlights and connected LED tail lamps from EX(O) onwards, making lighting another difference between trims."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl07",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Split rear seats",
+      "imageIds": [
+        "im_pdf_0b62835448ea81c472d0"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl08",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Seating and luggage",
+      "imageIds": [
+        "im14"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl09",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Standard airbags",
+      "imageIds": [
+        "im_pdf_e7722bffe4b0d6394547"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl10",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Driver assistance availability",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "King, King Knight and Lounge Edition carry the full driver-assistance suite. Their automatic versions include cruise control with stop and go; availability depends on that engine and trim combination."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl11",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Connecting your phone",
+      "imageIds": [
+        "im09"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl12",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Connectivity conditions",
+      "imageIds": [
+        "im06"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl13",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Panoramic roof",
+      "imageIds": [
+        "im07"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl14",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Price and exclusions",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The September guide lists a starting price of ten lakh ninety thousand seven hundred rupees ex-showroom, but records a conflicting lower figure. Tax, registration and insurance are extra; confirm the current dealer quote."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl15",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Wireless charging",
+      "imageIds": [
+        "im05"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl16",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Extended warranty terms",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The guide describes up to seven years of extended warranty for petrol versions only. Extended warranty and Shield of Trust packages are paid separately from the vehicle purchase."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl17",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Your next step",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Equipment, colours and specifications may change, some illustrated items can cost extra, and colour availability also varies by trim; rendered colours may differ.",
+        "Use Contact Dealer to confirm your preferred configuration, check the written specification and current availability, then arrange a test drive before deciding."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl18",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "stage": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 750,
+        "right": 1440,
+        "bottom": 804
+      },
+      "heading": {
+        "x": 0,
+        "y": 54,
+        "w": 1440,
+        "h": 48.390625,
+        "right": 1440,
+        "bottom": 102.390625
+      },
+      "headingInside": true,
+      "title": "Hyundai CRETA",
+      "imageIds": [
+        "im03"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 804,
+        "w": 1440,
+        "h": 161,
+        "right": 1440,
+        "bottom": 965
+      },
+      "viewport": "desktop",
+      "slide_id": "sl19",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Hyundai CRETA",
+      "imageIds": [
+        "im03"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl00",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "CRETA at a glance",
+      "imageIds": [
+        "im_pdf_288fd534763aa0f85ff5"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl01",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "The key choices",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Six airbags are standard across the variants. The panoramic roof is available on specified trims.",
+        "Regular petrol, diesel and turbo petrol have different gearbox pairings. Compare the complete configuration before choosing."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl02",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Petrol gearbox choices",
+      "imageIds": [
+        "im_pdf_ef829d1422c6088c3929"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl03",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Diesel gearbox choices",
+      "imageIds": [
+        "im_pdf_e307b8d383fc82b4e0fe"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl04",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Turbo petrol pairing",
+      "imageIds": [
+        "im_pdf_8ff60242fc7b54de3d64"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl05",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Wheel finishes by trim",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Choosing a wheel finish depends on the trim. SX and SX Premium have diamond-cut alloys; King has a larger diamond-cut design, while both Knight versions use matte black alloys."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl06",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Lighting by trim",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "At the front, E and EX use projector headlamps. The guide lists LED headlights and connected LED tail lamps from EX(O) onwards, making lighting another difference between trims."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl07",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Split rear seats",
+      "imageIds": [
+        "im_pdf_0b62835448ea81c472d0"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl08",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Seating and luggage",
+      "imageIds": [
+        "im14"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl09",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Standard airbags",
+      "imageIds": [
+        "im_pdf_e7722bffe4b0d6394547"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl10",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Driver assistance availability",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "King, King Knight and Lounge Edition carry the full driver-assistance suite. Their automatic versions include cruise control with stop and go; availability depends on that engine and trim combination."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl11",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Connecting your phone",
+      "imageIds": [
+        "im09"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl12",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Connectivity conditions",
+      "imageIds": [
+        "im06"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl13",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Panoramic roof",
+      "imageIds": [
+        "im07"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl14",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Price and exclusions",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The September guide lists a starting price of ten lakh ninety thousand seven hundred rupees ex-showroom, but records a conflicting lower figure. Tax, registration and insurance are extra; confirm the current dealer quote."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl15",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Wireless charging",
+      "imageIds": [
+        "im05"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl16",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Extended warranty terms",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The guide describes up to seven years of extended warranty for petrol versions only. Extended warranty and Shield of Trust packages are paid separately from the vehicle purchase."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl17",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Your next step",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Equipment, colours and specifications may change, some illustrated items can cost extra, and colour availability also varies by trim; rendered colours may differ.",
+        "Use Contact Dealer to confirm your preferred configuration, check the written specification and current availability, then arrange a test drive before deciding."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl18",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Hyundai CRETA",
+      "imageIds": [
+        "im03"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile",
+      "slide_id": "sl19",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Petrol gearbox choices",
+      "imageIds": [
+        "im_pdf_ef829d1422c6088c3929"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile-walkthrough",
+      "slide_id": "sl03",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Connecting your phone",
+      "imageIds": [
+        "im09"
+      ],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [
+        "illustration"
+      ],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 0,
+      "textCardsInside": true,
+      "textRows": [],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile-walkthrough",
+      "slide_id": "sl12",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 601,
+        "right": 390,
+        "bottom": 682
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 42.5,
+        "right": 390,
+        "bottom": 123.5
+      },
+      "headingInside": true,
+      "title": "Extended warranty terms",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The guide describes up to seven years of extended warranty for petrol versions only. Extended warranty and Shield of Trust packages are paid separately from the vehicle purchase."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 682,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 814
+      },
+      "viewport": "mobile-walkthrough",
+      "slide_id": "sl17",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 157,
+        "right": 390,
+        "bottom": 238
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 19.5,
+        "right": 390,
+        "bottom": 100.5
+      },
+      "headingInside": true,
+      "title": "Wheel finishes by trim",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Choosing a wheel finish depends on the trim. SX and SX Premium have diamond-cut alloys; King has a larger diamond-cut design, while both Knight versions use matte black alloys."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 238,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 370
+      },
+      "viewport": "short-mobile",
+      "slide_id": "sl06",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 157,
+        "right": 390,
+        "bottom": 238
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 19.5,
+        "right": 390,
+        "bottom": 100.5
+      },
+      "headingInside": true,
+      "title": "Lighting by trim",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "At the front, E and EX use projector headlamps. The guide lists LED headlights and connected LED tail lamps from EX(O) onwards, making lighting another difference between trims."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 238,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 370
+      },
+      "viewport": "short-mobile",
+      "slide_id": "sl07",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 157,
+        "right": 390,
+        "bottom": 238
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 19.5,
+        "right": 390,
+        "bottom": 100.5
+      },
+      "headingInside": true,
+      "title": "Price and exclusions",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The September guide lists a starting price of ten lakh ninety thousand seven hundred rupees ex-showroom, but records a conflicting lower figure. Tax, registration and insurance are extra; confirm the current dealer quote."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 238,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 370
+      },
+      "viewport": "short-mobile",
+      "slide_id": "sl15",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 157,
+        "right": 390,
+        "bottom": 238
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 19.5,
+        "right": 390,
+        "bottom": 100.5
+      },
+      "headingInside": true,
+      "title": "Extended warranty terms",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "The guide describes up to seven years of extended warranty for petrol versions only. Extended warranty and Shield of Trust packages are paid separately from the vehicle purchase."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 238,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 370
+      },
+      "viewport": "short-mobile",
+      "slide_id": "sl17",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 157,
+        "right": 390,
+        "bottom": 238
+      },
+      "heading": {
+        "x": 0,
+        "y": 81,
+        "w": 390,
+        "h": 19.5,
+        "right": 390,
+        "bottom": 100.5
+      },
+      "headingInside": true,
+      "title": "Your next step",
+      "imageIds": [],
+      "imagesLoaded": true,
+      "imagesInside": true,
+      "labelsInside": true,
+      "proxyBadges": [],
+      "anchors": 0,
+      "noPicture": false,
+      "noPictureText": [],
+      "textCards": 1,
+      "textCardsInside": true,
+      "textRows": [
+        "Equipment, colours and specifications may change, some illustrated items can cost extra, and colour availability also varies by trim; rendered colours may differ.",
+        "Use Contact Dealer to confirm your preferred configuration, check the written specification and current availability, then arrange a test drive before deciding."
+      ],
+      "textNoHorizontalOverflow": true,
+      "walkthroughActive": false,
+      "dock": {
+        "x": 0,
+        "y": 238,
+        "w": 390,
+        "h": 132,
+        "right": 390,
+        "bottom": 370
+      },
+      "viewport": "short-mobile",
+      "slide_id": "sl18",
+      "checks": {
+        "no_horizontal_overflow": true,
+        "heading_bounded": true,
+        "images_loaded": true,
+        "images_bounded": true,
+        "labels_bounded": true,
+        "no_unreviewed_anchor": true,
+        "narrow_flag_fallback": true,
+        "no_empty_picture_placeholder": true,
+        "text_card_bounded": true,
+        "text_card_verbatim": true
+      }
+    }
+  ]
+}

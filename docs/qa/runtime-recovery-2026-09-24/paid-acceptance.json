@@ -1,0 +1,142 @@
+{
+  "status": "Original paid answer failed semantic review; corrected shared validator passes19focused tests,17independent probes and all12affected/core suites. Original paid playback remains11/11mechanical. No second paid visit.",
+  "boundary": "Real app/providers, muted natural-speed playback, read-only observation hook, no microphone or acoustic claim.",
+  "demo_id": "dm_7bbf10d0",
+  "one_build": true,
+  "paid_browser_visits": 1,
+  "measured_default_narration_seconds": 193.78,
+  "elapsed_seconds": 541.82,
+  "checks": [
+    {
+      "name": "generic intake uses a tour acknowledgement without invented preferences",
+      "passed": true
+    },
+    {
+      "name": "visit is checkpointed before its ending",
+      "passed": true
+    },
+    {
+      "name": "typed question returns a validated, cited answer through real live transport",
+      "passed": true
+    },
+    {
+      "name": "answered question resumes the tour without a blocking lead form",
+      "passed": true
+    },
+    {
+      "name": "natural full tour reaches closing and customer CTA choices",
+      "passed": true
+    },
+    {
+      "name": "every completed section asks for customer questions",
+      "passed": true
+    },
+    {
+      "name": "no page overflow at closing",
+      "passed": true
+    },
+    {
+      "name": "final session retains typed question and closing transcript",
+      "passed": true
+    },
+    {
+      "name": "incremental and final saves both occurred",
+      "passed": true
+    },
+    {
+      "name": "physical microphone was never requested",
+      "passed": true
+    },
+    {
+      "name": "browser and request-budget handlers have no errors",
+      "passed": true
+    }
+  ],
+  "mechanical_passed": 11,
+  "mechanical_total": 11,
+  "section_prompts": {
+    "prompts": 9,
+    "sections": 9
+  },
+  "errors": [],
+  "client_requests": {
+    "reasoning": 1,
+    "speech": 11
+  },
+  "session": {
+    "id": "s_mufmvdlnta5i",
+    "ended": true,
+    "save_count": 67,
+    "save_seq": 67,
+    "transcript_rows": 35
+  },
+  "semantic_review": {
+    "status": "failed_original_answer",
+    "question": "What engine and gearbox choices does this CRETA offer?",
+    "answer": "The Creta offers a petrol, a diesel, and a turbo petrol engine. You can pair them with a 6-speed manual or an automatic, and a dual-clutch automatic for the turbo petrol.",
+    "fact_ids": [
+      "F149",
+      "F150"
+    ],
+    "cause": "Existing repair changed explicitly scoped petrol/diesel wording to pronoun them, generalizing manual availability to turbo petrol. Citation IDs remained valid.",
+    "expected": "Petrol: six-speed manual or IVT; diesel: six-speed manual or six-speed automatic; turbo petrol: seven-speed dual-clutch automatic.",
+    "severity": "P1",
+    "sod": [
+      5,
+      4,
+      5
+    ],
+    "rpn": 100,
+    "provider_repair_accepted_before_fix": true,
+    "cache_entry": "C90dfa838b917c6ea",
+    "cache_disposition": "Rejected through existing Align FAQ PATCH after the visit; no provider call. Original stored answer/session/receipt retained.",
+    "correction_status": "fixed and replayed with mocks; no fresh paid semantic pass claimed",
+    "correction_receipts": [
+      "powertrain-gates.json",
+      "powertrain-independent-review.json"
+    ]
+  },
+  "recorded_cumulative_cost": {
+    "usd": 0.9182,
+    "provider_calls": 126,
+    "includes": "Initial failed Read, bounded review revisions, one Build and one natural browser visit.",
+    "caveat": "Provider timeout charges may be absent from recorded estimates."
+  },
+  "raw_evidence": {
+    "browser-results.json": {
+      "local_path": "/tmp/demo-runtime-final-20260924/browser-results.json",
+      "sha256": "427474a20f07e3e742813a8a3441d38c770b6acdfe4ecfd142303bd3c9fc24b8"
+    },
+    "browser-saved-session.json": {
+      "local_path": "/tmp/demo-runtime-final-20260924/browser-saved-session.json",
+      "sha256": "46dc97a4942ca02c2aedbca9065d610c61ec5271b7fcf4b6461d2ad10c3062cc"
+    },
+    "paid-browser.log": {
+      "local_path": "/tmp/demo-runtime-final-20260924/paid-browser.log",
+      "sha256": "2fdb9f9264eb0f78f1b88fc0027b0987f3ddbfb3b6c4fa6c884d321359208757"
+    },
+    "usage-after-paid-browser.json": {
+      "local_path": "/tmp/demo-runtime-final-20260924/usage-after-paid-browser.json",
+      "sha256": "ff5901c311d91249094c7269c8369d50e2faf081ed4d87a3f3a5faed143efac3"
+    },
+    "faq-pairing-rejection.json": {
+      "local_path": "/tmp/demo-runtime-final-20260924/faq-pairing-rejection.json",
+      "sha256": "8741d1a0c4ab10010bbaebb9cdc84427136d535b322cb65e580ebe6f0e6a1b2d"
+    }
+  },
+  "screenshots": {
+    "saved-recap.png": "28266f35770c00b79f75a42eb322e4c930484e5179a56c436bef646f44643849",
+    "guided-route.png": "4e4eee862cb22a61a74fee5518ee39c56f5b2073175c386e2fbb4e83825db5bd",
+    "question-answer.png": "535d170f1bd14d7e158bc67cbc5b12eb32be7e3555970d0a548f0da5765ace03",
+    "natural-closing.png": "c51c202bdea051247b8af8b21abf9768f44a627ccbed9a41e888b1839b74a298",
+    "welcome.png": "dc516e220bc458899bcc06953b81df98d3ec06fb96f3622b9b0157399f995cda"
+  },
+  "release": "Branch only; no master merge or AWS deployment.",
+  "stream_delivery": {
+    "started": 9,
+    "ended": 9,
+    "client_completed": 9,
+    "wire_failure_events": 0,
+    "source": "Retained browser WebSocket observation; recorded narration uses ordinary audio playback."
+  }
+}

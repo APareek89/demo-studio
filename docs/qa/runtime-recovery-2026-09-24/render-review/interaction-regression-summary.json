@@ -1,0 +1,49 @@
+{
+  "scope": "Production renderer/player interaction regressions; fake audio/API/clock, not natural or acoustic playback. Not additional full-suite counts.",
+  "before": {
+    "path": "/tmp/demo-runtime-final-20260924/text-highlight-return-before/player-html.json",
+    "sha256": "18a753bded8a5ef3536f931504c5117cf0fd24844b06f8c4d6e03210925aa0e7",
+    "passed": 85,
+    "total": 87,
+    "failures": [
+      {
+        "name": "Same-slide Q&A restores the resumed narration inside a long text card",
+        "error": "Resumed narration stayed clipped behind a later answer or retained its highlight"
+      },
+      {
+        "name": "A text-only question scrolls only its card to the exact cited narration",
+        "error": "Returning to the first narrated line left it outside the text viewport"
+      }
+    ]
+  },
+  "after": {
+    "path": "/tmp/demo-runtime-final-20260924/text-highlight-final/player-html.json",
+    "sha256": "c602f1d54c003d1b7f327f76871b09eae085955ddd98263c9b1ba77e7afe79bc",
+    "passed": 87,
+    "total": 87,
+    "errors": [],
+    "external": [],
+    "former_failures": [
+      {
+        "name": "Same-slide Q&A restores the resumed narration inside a long text card",
+        "pass": true
+      },
+      {
+        "name": "A text-only question scrolls only its card to the exact cited narration",
+        "pass": true
+      }
+    ]
+  },
+  "walkthrough": {
+    "before_log_sha256": "f9110f2f4d0f184c2bd4954f85d5e058c8ed6bec07c5a520983b9ee75c9d8028",
+    "after_log_sha256": "e39293fac7bdcbe7a8f69da882db0962d4e498d5c0b9cdcb09d831624173d03b",
+    "before_passed": 29,
+    "total": 30,
+    "after_passed": 30,
+    "regression": "Explicit empty media cannot restore stale legacy illustration; no frames/images/transitions, source immutable."
+  },
+  "test_hashes": {
+    "evals/player_contract.html": "24ac83feca4501b45897d191a3c23418aca0e6269cb4232ace23a1572784ee7c",
+    "evals/player_walkthrough_contract.cjs": "d7d6e3ff333811b1a15b2ed2179b8b520f9be6b2bff635edd3a24a76be7db9db"
+  }
+}

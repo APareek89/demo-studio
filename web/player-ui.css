@@ -391,7 +391,10 @@
 
 /* 24 September workbook: one white customer canvas, with the reviewed palette
    used for ink and controls. These overrides also reach shared slide previews. */
-.pl.sample-player.workbook-player[data-visual-theme]{height:100%;width:100%;max-width:100%;min-height:0;min-width:0;background:#fff;color:var(--theme-deep);--scene-dark:#fff;--showroom-paper:#fff;overflow:hidden}
+.pl.sample-player.workbook-player[data-visual-theme]{height:100%;width:100%;max-width:100%;min-height:0;min-width:0;grid-template-columns:minmax(0,1fr);background:#fff;color:var(--theme-deep);--scene-dark:#fff;--showroom-paper:#fff;overflow:hidden}
+/* Reply choices must not enlarge the shared header/stage grid on narrow screens. */
+.pl.sample-player.workbook-player[data-visual-theme]>.pl-top,
+.pl.sample-player.workbook-player[data-visual-theme]>.pl-stage{min-width:0}
 .pl.sample-player.workbook-player[data-visual-theme] .pl-top{background:#fff;border:0;box-shadow:none}
 .pl.sample-player.workbook-player[data-visual-theme] .pl-name,
 .pl.sample-player.workbook-player[data-visual-theme] .pl-product,

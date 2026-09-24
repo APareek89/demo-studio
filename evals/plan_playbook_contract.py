@@ -237,7 +237,10 @@ class PlanPlaybookContract(unittest.TestCase):
         with patch.object(plan.claude, "structured", return_value=schemas.Plan.model_validate(self.plan)):
             result = plan.run(self.did, lambda _: None)
         self.assertEqual([s["id"] for s in result["segments"] if s["role"] == "proof"], ["sunroof", "engine", "wheels", "space"])
-        self.assertTrue(all(s["word_budget"] >= 22 for s in result["segments"]))
+        self.assertTrue(all(s["word_budget"] >= 22 for s in result["segments"]
+                            if s["role"] in {"intro", "outcome"} or s["fact_ids"]))
+        self.assertTrue(all(s["word_budget"] == 0 for s in result["segments"]
+                            if s["role"] in {"features", "establish"} and not s["fact_ids"]))
 
     def test_settled_story_and_audit_prompt_clauses(self):
         for text in ("THE PLAYBOOK IS SETTLED", "WORD BUDGETS", "Never build a USP or a narration line on a company or market statistic",

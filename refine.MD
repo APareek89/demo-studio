@@ -21,6 +21,8 @@
 
 **Following package, separately authorized:** validate the reported runtime failures, implement section-end three-second check-ins, speech/noise and fragment handling, local Continue/Not now commands and contextual acknowledgments, supplied-domain-only web evidence, stream recovery, incremental session saves and follow-up/layout fixes. Report the caption/audio lag cause without changing that behavior. Then perform the requested full mock QA and one paid end-to-end QA with the16images and PDF in the supplied Demo files folder; record cost and provide a localhost demo link. The paid authorization applies to that later run, not WP12.
 
+**24 September runtime QA:** WP12 is committed as `721611b`. Its follow-up fixes preserve the current agents/nodes and release boundaries. One paid Build reached193.78measured seconds; the natural customer visit reached the CTA and saved67checkpoints/ended recap. Its engine/gearbox answer failed semantic review despite valid citation IDs; the failure is retained, the cache entry rejected through Align, and the shared validation correction passes19targeted tests/17independent probes plus all12affected/core suites. Source omissions, infeasible batch budgets, metadata loss and false proxy pointers found during this same journey were corrected without adding generation retries or bypassing review/publication. Physical microphone/TV/cup testing remains outstanding; caption lag is diagnosis-only. No new design question; master/AWS wait for Anand's local review.
+
 Discovery and implementation log for 23 September 2026. The questions below retain the pre-implementation findings; current status is recorded in the proposal rows and closure below. The approved implementation scope is `docs/codex-brief-2026-09-23.md`; the user requested implementation in its package order on `codex/sales-trainer-flow`. The original build/run explanation remains in `docs/core-flow-explained-2026-09-23.md`.
 
 ## Questions — discovery snapshot before implementation
@@ -162,3 +164,15 @@ Anand rejected the manual Prepare step and large deficit panel: three-minute nar
 ## Feedback workbook — 24 September 2026
 
 Implement `Demo_Studio_Feedback.xlsx` (three sheets, four embedded reference screenshots): blank Studio navigation with lazy draft creation; selected1–5minute duration/default3 throughout preparation and measured publication; one Rehearse feedback chat with uploads; white borderless viewport-contained demo with hero-first welcome/intake and two supported pictures. Preserve approved facts, native image aspect, existing human review, previous publications, on-demand rehearsal and no paid validation. Exact cell mapping and verification are in `docs/feedback-workbook-2026-09-24.md`. The source workbook is read-only and remains outside the repository.
+
+
+## Runtime recovery decisions — 24 September 2026
+
+Implement on `codex/sales-trainer-flow`, with best judgement inside the existing workflow; no approval questions, new agents, graph nodes, services or dependencies. Master merge and AWS deployment wait for Anand to try the completed local demo and approve.
+
+- Owner-supplied enabled URL domains now define runtime lookup permission. This supersedes C4/public-web search and the earlier customer-created allow-list; relevant same-domain paths are permitted, arbitrary domains are not.
+- Existing playback functions qualify final speech and route local controls. Rejecting provisional/fractured input avoids unowned holds without adding a paid classifier agent. A relevant TV sentence can still pass; physical acoustic acceptance remains open.
+- Existing section boundaries invite questions and wait three seconds. Generic tour requests do not create buyer preferences. Query and resume acknowledgements have separate purposes.
+- Follow-up forms require an explicit choice, honor Not now and remain within the mobile viewport. Ongoing session snapshots use the existing save endpoint with ordered writes and heard-prefix preservation.
+- Caption/audio lag is diagnosis-only: captions are set before asynchronous speech starts, without word timing. No synchronization redesign.
+- One isolated full mock QA precedes one authorized paid final journey using the supplied16JPGs/PDF. Conflicting source claims are held rather than silently reconciled or approved. No new open design question.

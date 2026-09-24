@@ -1,0 +1,388 @@
+{
+  "demo_id": "dm_7bbf10d0",
+  "phase": "reviewed-deck-revision",
+  "request": {
+    "stage": "deck",
+    "rebuild": false,
+    "instruction": "Regenerate slides from the current reviewed script and approved registry only. Retain the existing saved Align media and callout overrides. Selected illustrations are not visual proof: do not invent anchors or pixel-audit findings. Keep citations and precise source conditions; do not rewrite the reviewed narration."
+  },
+  "status": "align-review-required",
+  "usage_before": {
+    "rows": 60,
+    "total_usd": 0.7816,
+    "total_inr": 65.65,
+    "fx_inr": 84.0,
+    "by_stage": {
+      "preflight": {
+        "calls": 3,
+        "in": 36,
+        "out": 5,
+        "chars": 38,
+        "sec": 1.0,
+        "usd": 0.0008
+      },
+      "understand": {
+        "calls": 29,
+        "in": 318622,
+        "out": 87045,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.3132
+      },
+      "coach": {
+        "calls": 3,
+        "in": 54644,
+        "out": 6888,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.0336
+      },
+      "plan": {
+        "calls": 6,
+        "in": 78058,
+        "out": 13902,
+        "chars": 278,
+        "sec": 0.0,
+        "usd": 0.0794
+      },
+      "author": {
+        "calls": 18,
+        "in": 441425,
+        "out": 85131,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.3453
+      },
+      "deck": {
+        "calls": 1,
+        "in": 13856,
+        "out": 2058,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.0093
+      }
+    },
+    "by_model": {
+      "gemini-3.5-flash-lite": {
+        "calls": 28,
+        "in": 534308,
+        "out": 115545,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.4492
+      },
+      "bulbul:v3": {
+        "calls": 3,
+        "in": 0,
+        "out": 0,
+        "chars": 316,
+        "sec": 0.0,
+        "usd": 0.0056
+      },
+      "saaras:v3-realtime": {
+        "calls": 1,
+        "in": 0,
+        "out": 0,
+        "chars": 0,
+        "sec": 1.0,
+        "usd": 0.0001
+      },
+      "gemini-3.6-flash": {
+        "calls": 27,
+        "in": 372268,
+        "out": 78001,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.3067
+      },
+      "gemini-3.1-flash-lite-image": {
+        "calls": 1,
+        "in": 65,
+        "out": 1483,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.02
+      }
+    },
+    "per_session_usd": null,
+    "sessions": 0,
+    "prices": {
+      "claude-opus-5": {
+        "in": 5.0,
+        "out": 25.0,
+        "note": "Anthropic list price"
+      },
+      "claude-sonnet-5": {
+        "in": 3.0,
+        "out": 15.0,
+        "note": "assumed — set PRICE_SONNET_IN/OUT"
+      },
+      "claude-haiku-4-5": {
+        "in": 1.0,
+        "out": 5.0,
+        "note": "Anthropic list price"
+      },
+      "gemini-lite": {
+        "in": 0.1,
+        "out": 0.4,
+        "note": "assumed — set PRICE_GEMINI_LITE_IN/OUT"
+      },
+      "gemini-image": {
+        "per_image": 0.02,
+        "note": "assumed $/generated image — set PRICE_GEMINI_IMAGE"
+      },
+      "gemini-3.6-flash": {
+        "in": 0.3,
+        "out": 2.5,
+        "note": "assumed — set PRICE_GEMINI_IN/OUT"
+      },
+      "gemini-3.5-flash-lite": {
+        "in": 0.3,
+        "out": 2.5,
+        "note": "Google standard paid text price; output includes thinking"
+      },
+      "gemini-3.8-flash": {
+        "in": 0.75,
+        "out": 3.75,
+        "standard_in": 1.5,
+        "standard_out": 7.5,
+        "note": "Google introductory price through 2026-12-31 UTC; standard rates from 2027-01-01; selected by call timestamp, output includes thinking"
+      },
+      "deepseek:v4@flash": {
+        "in": 0.076,
+        "out": 0.153,
+        "note": "Runware uncached list price; returned USD cost takes precedence"
+      },
+      "openai:gpt@5.5": {
+        "in": 5.0,
+        "out": 30.0,
+        "note": "Runware uncached list price; returned USD cost takes precedence"
+      },
+      "gemini-tts": {
+        "in": 0.5,
+        "out": 10.0,
+        "note": "assumed — set PRICE_GEMINI_TTS_IN/OUT"
+      },
+      "sarvam-tts": {
+        "per_1k_chars_inr": 1.5,
+        "note": "assumed ₹/1k chars — set PRICE_SARVAM_TTS_INR_1K"
+      },
+      "sarvam-stt": {
+        "per_min_inr": 0.5,
+        "note": "assumed ₹/min — set PRICE_SARVAM_STT_INR_MIN"
+      }
+    }
+  },
+  "snapshot": "/private/tmp/demo-runtime-final-20260924/deck-before-final",
+  "snapshot_hashes": {
+    "faq.json": "462cd704012edc21d79947a4e6ae90279de63cf75fc6b1a5114be7dbeaec4797",
+    "reviewed-deck-selections-receipt.json": "616060c5a52fb0b3ed49cf6153758d12f1be3eef9a8e6bd14e68d8ad5c860801",
+    "script.json": "ad737fc65bd039de8d42e090373d105b3830a08dde9d680048c185b7934382d4",
+    "plan.json": "54d775f00623b64eaa5a6b5a52ec8a77683f1b79902123a2dcc4a01be6c9fa06",
+    "demo.json": "567503d8e9c7338fe53d04b6f8682153732251d95545a4c99161d4aef9f33d69",
+    "server-restart-final-deck.json": "4bb2f4fafb38c318732782d30c244176f997588107244718de601c04dad7e796",
+    "events.json": "16d999d1003ea83f4c2d8c9d910457b6b848e4e027ce61af8ffc38ced3fffa25",
+    "understanding.json": "6119711465907309ac40efb06213dd83f5f51efb8bfa1396cd011ac8e3d4b287",
+    "deck.json": "37c852db0138048d835462e519516fc4ef7d6587cb5cf48d08dd693593129f94",
+    "conversation.json": "c4047777d3fff6cedcf5a68a93efd36fbcb430abce56b72a853304029233aeac",
+    "pdf-images.json": "9d3a9217f9be7252c09c5001fc534292e153aa00a0f6378db9c53886d8e1d35d",
+    "provider-readiness.json": "e04996fa767d75446113f9fe9a42dbef2616f4b00ad528317e4eeb8affca131e",
+    "deck-overrides.json": "c40735a2abf4154d972e3137bd0e5300cf8720fc3e236a64aef010c39c70d1d7",
+    "visual-audit.json": "7fb8b27e7e6f7a199dedcb0458217c2fa44645e36c10dacfd3be8b503d49f830",
+    "usage-latest.json": "4ca8fee6da03f95d24d984d94de593698e181b0b4df423e31d8ea596f6a0edf6",
+    "journey.json": "ff59e30eebfc770c2dd01c2f6f639d956e18903dc397a7d2d0fd1581695d263f",
+    "playbook.json": "66677fe3b8cf5b8211a96678068565ec2fd2e4b7e1ea99fa56af1ba0e4196be5",
+    "trace.jsonl": "ffa8e96d8fe1ebe8a6ee8ea4a329ed6269903a181ca2bf962e22e3f2fb3f22ff",
+    "usage.jsonl": "9cb52dd6421b8853145d2b3737d546b4f7100c2187442fcab9d801b944f135ed",
+    "reviewed-align-edits-receipt.json": "812b66173dfabde91095851c79011812d6eee8b473500954139922ee49d72264"
+  },
+  "server_identity": {
+    "storage": "/private/tmp/demo-runtime-final-20260924/data",
+    "graph": "/private/tmp/demo-runtime-final-20260924/graph.sqlite",
+    "port": 8910,
+    "pid": 83240
+  },
+  "new_read": false,
+  "author": false,
+  "build": false,
+  "dispatched_at": 1790254113.468766,
+  "response": {
+    "ok": true
+  },
+  "completed_at": 1790254119.902661,
+  "usage_after": {
+    "rows": 61,
+    "total_usd": 0.7908,
+    "total_inr": 66.43,
+    "fx_inr": 84.0,
+    "by_stage": {
+      "preflight": {
+        "calls": 3,
+        "in": 36,
+        "out": 5,
+        "chars": 38,
+        "sec": 1.0,
+        "usd": 0.0008
+      },
+      "understand": {
+        "calls": 29,
+        "in": 318622,
+        "out": 87045,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.3132
+      },
+      "coach": {
+        "calls": 3,
+        "in": 54644,
+        "out": 6888,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.0336
+      },
+      "plan": {
+        "calls": 6,
+        "in": 78058,
+        "out": 13902,
+        "chars": 278,
+        "sec": 0.0,
+        "usd": 0.0794
+      },
+      "author": {
+        "calls": 18,
+        "in": 441425,
+        "out": 85131,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.3453
+      },
+      "deck": {
+        "calls": 2,
+        "in": 27741,
+        "out": 4075,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.0185
+      }
+    },
+    "by_model": {
+      "gemini-3.5-flash-lite": {
+        "calls": 29,
+        "in": 548193,
+        "out": 117562,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.4584
+      },
+      "bulbul:v3": {
+        "calls": 3,
+        "in": 0,
+        "out": 0,
+        "chars": 316,
+        "sec": 0.0,
+        "usd": 0.0056
+      },
+      "saaras:v3-realtime": {
+        "calls": 1,
+        "in": 0,
+        "out": 0,
+        "chars": 0,
+        "sec": 1.0,
+        "usd": 0.0001
+      },
+      "gemini-3.6-flash": {
+        "calls": 27,
+        "in": 372268,
+        "out": 78001,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.3067
+      },
+      "gemini-3.1-flash-lite-image": {
+        "calls": 1,
+        "in": 65,
+        "out": 1483,
+        "chars": 0,
+        "sec": 0.0,
+        "usd": 0.02
+      }
+    },
+    "per_session_usd": null,
+    "sessions": 0,
+    "prices": {
+      "claude-opus-5": {
+        "in": 5.0,
+        "out": 25.0,
+        "note": "Anthropic list price"
+      },
+      "claude-sonnet-5": {
+        "in": 3.0,
+        "out": 15.0,
+        "note": "assumed — set PRICE_SONNET_IN/OUT"
+      },
+      "claude-haiku-4-5": {
+        "in": 1.0,
+        "out": 5.0,
+        "note": "Anthropic list price"
+      },
+      "gemini-lite": {
+        "in": 0.1,
+        "out": 0.4,
+        "note": "assumed — set PRICE_GEMINI_LITE_IN/OUT"
+      },
+      "gemini-image": {
+        "per_image": 0.02,
+        "note": "assumed $/generated image — set PRICE_GEMINI_IMAGE"
+      },
+      "gemini-3.6-flash": {
+        "in": 0.3,
+        "out": 2.5,
+        "note": "assumed — set PRICE_GEMINI_IN/OUT"
+      },
+      "gemini-3.5-flash-lite": {
+        "in": 0.3,
+        "out": 2.5,
+        "note": "Google standard paid text price; output includes thinking"
+      },
+      "gemini-3.8-flash": {
+        "in": 0.75,
+        "out": 3.75,
+        "standard_in": 1.5,
+        "standard_out": 7.5,
+        "note": "Google introductory price through 2026-12-31 UTC; standard rates from 2027-01-01; selected by call timestamp, output includes thinking"
+      },
+      "deepseek:v4@flash": {
+        "in": 0.076,
+        "out": 0.153,
+        "note": "Runware uncached list price; returned USD cost takes precedence"
+      },
+      "openai:gpt@5.5": {
+        "in": 5.0,
+        "out": 30.0,
+        "note": "Runware uncached list price; returned USD cost takes precedence"
+      },
+      "gemini-tts": {
+        "in": 0.5,
+        "out": 10.0,
+        "note": "assumed — set PRICE_GEMINI_TTS_IN/OUT"
+      },
+      "sarvam-tts": {
+        "per_1k_chars_inr": 1.5,
+        "note": "assumed ₹/1k chars — set PRICE_SARVAM_TTS_INR_1K"
+      },
+      "sarvam-stt": {
+        "per_min_inr": 0.5,
+        "note": "assumed ₹/min — set PRICE_SARVAM_STT_INR_MIN"
+      }
+    }
+  },
+  "artifact_hashes_after": {
+    "understanding.json": "6119711465907309ac40efb06213dd83f5f51efb8bfa1396cd011ac8e3d4b287",
+    "playbook.json": "66677fe3b8cf5b8211a96678068565ec2fd2e4b7e1ea99fa56af1ba0e4196be5",
+    "plan.json": "54d775f00623b64eaa5a6b5a52ec8a77683f1b79902123a2dcc4a01be6c9fa06",
+    "script.json": "ad737fc65bd039de8d42e090373d105b3830a08dde9d680048c185b7934382d4",
+    "deck.json": "13641a365b8b88c138fc745d94758613057bd123b37b3b7d7ea6c1468ed986d4",
+    "faq.json": "462cd704012edc21d79947a4e6ae90279de63cf75fc6b1a5114be7dbeaec4797"
+  },
+  "frozen_output": "/private/tmp/demo-runtime-final-20260924/deck-final-unedited"
+}

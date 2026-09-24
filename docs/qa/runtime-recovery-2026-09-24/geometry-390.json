@@ -1,0 +1,36 @@
+{
+  "page": 390,
+  "width": 390,
+  "rects": [
+    {
+      "name": "pl sample-player workbook-player portrait-player",
+      "left": 0,
+      "right": 390,
+      "width": 390
+    },
+    {
+      "name": "pl-top",
+      "left": 0,
+      "right": 390,
+      "width": 390
+    },
+    {
+      "name": "pl-stage",
+      "left": 0,
+      "right": 390,
+      "width": 390
+    },
+    {
+      "name": "pl-dock",
+      "left": 0,
+      "right": 390,
+      "width": 390
+    },
+    {
+      "name": "pl-lead open",
+      "left": 14,
+      "right": 376,
+      "width": 362
+    }
+  ]
+}

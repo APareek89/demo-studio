@@ -21,7 +21,7 @@ if args.walkthrough_record:
     from wp12_browser_acceptance import walkthrough_record
     walkthrough_record(args.url, args.output or Path("/tmp/demo-wp12-20260924/walkthrough-recording"))
     raise SystemExit(0)
-assert args.url.startswith("http://127.0.0.1:8897/") and "mute=1" in args.url, "Use the dedicated muted mock server"
+assert urlsplit(args.url).hostname == "127.0.0.1" and urlsplit(args.url).port in (8897, 8898) and "mute=1" in args.url, "Use the dedicated muted mock server"
 output = args.output or Path("output/playwright/creta-runtime")
 output.mkdir(parents=True, exist_ok=True)
 results = []
@@ -38,6 +38,11 @@ def check(name, ok):
 
 instrument = """(() => {
 window.__wire=[]; window.__captures=0; window.__tracks=[]; window.__audios=[];
+window.__audioContexts=[];window.__workletFrames=0;
+const Context=window.AudioContext;
+window.AudioContext=class extends Context {constructor(...args){super(...args);window.__audioContexts.push(this);}};
+const Worklet=window.AudioWorkletNode;
+window.AudioWorkletNode=class extends Worklet {constructor(...args){super(...args);this.port.addEventListener('message',()=>window.__workletFrames++);}};
 const WS=window.WebSocket;
 window.WebSocket=class extends WS {
  constructor(...args){super(...args); window.__liveSocket=this; this.addEventListener('message',e=>{try{window.__wire.push({direction:'in',...JSON.parse(e.data)});}catch{}});}
@@ -90,6 +95,25 @@ with sync_playwright() as p:
     page.on("request", lambda request: saved_sessions.append(request.post_data_json) if request.method == "POST" and request.url.endswith("/run/session") else None)
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
+    native_wait = page.wait_for_function
+    def diagnosed_wait(*arguments, **options):
+        try:
+            return native_wait(*arguments, **options)
+        except Exception:
+            diagnostic = page.evaluate("""() => ({wire:__wire.filter(e=>!['audio.chunk','audio.input'].includes(e.type)),
+                contexts:__audioContexts.map(c=>({state:c.state,sampleRate:c.sampleRate,currentTime:c.currentTime})),
+                audio:__audios.map(a=>({src:a.src,paused:a.paused,ended:a.ended,currentTime:a.currentTime,duration:a.duration,error:a.error?.message})),
+                workletFrames:__workletFrames,captures:__captures,tracks:__tracks.map(t=>({readyState:t.readyState,enabled:t.enabled,muted:t.muted})),
+                visibility:document.visibilityState,status:document.querySelector('.pl-status')?.textContent,
+                live:document.querySelector('.pl-live')?.textContent,thread:document.querySelector('.pl-thread, .pl-drawer .body')?.textContent})""")
+            diagnostic.update(page_errors=errors, predicate=str(arguments[0]))
+            (output / 'wait-timeout.json').write_text(json.dumps(diagnostic, indent=2))
+            page.screenshot(path=str(output / 'wait-timeout.png'))
+            raise
+    page.wait_for_function = diagnosed_wait
+    def wait_for_pcm(generation=None):
+        """Keep real capture assertions; preserve actionable state on a timeout."""
+        page.wait_for_function("generation=>__wire.some(e=>e.type==='audio.input'&&(generation===null||e.input_generation===generation))", arg=generation)
     page.goto(args.url)
     page.get_by_role("button", name="Explore with me", exact=True).click()
     answer = page.get_by_role("textbox", name="Your answer", exact=True)
@@ -98,15 +122,14 @@ with sync_playwright() as p:
     answer.fill("I want a family car with useful boot space and clear ownership costs.")
     answer.press("Enter")
     page.wait_for_function("!document.querySelector('.pl-intake.open:not(.pl-welcome)') && __audios.some(a=>!a.paused&&!a.ended)", timeout=20000)
-    check("Explore begins continuous narration after accepted intake", "quick overview" in page.locator(".pl-thread, .pl-drawer .body").inner_text() or page.locator(".pl-status").inner_text() == "Speaking")
+    check("Explore begins continuous narration after accepted intake", page.evaluate("__audios.some(a=>!a.paused&&!a.ended)"))
     page.screenshot(path=str(output / "explore-playing.png"))
     question = page.get_by_role("textbox", name="Your question or answer", exact=True)
     question.fill("What is the warranty? Do not search online."); question.press("Enter")
     expect(page.get_by_role("button", name="Continue demo", exact=True)).to_be_visible(timeout=20000)
     check("live QA uses WS graph and deferred answer delivery", page.evaluate("__wire.some(e=>e.type==='turn.ask') && __wire.some(e=>e.type==='turn.result') && __wire.some(e=>e.type==='delivery.request')"))
-    check("explicit mock decline preserves the unanswered question and opens follow-up", page.evaluate("__wire.some(e=>e.type==='turn.result'&&e.answer?.answered===false)") and page.locator('.pl-lead.open').count()==1)
+    check("decline preserves question and offers follow-up without opening a form", page.evaluate("__wire.some(e=>e.type==='turn.result'&&e.answer?.answered===false)") and page.locator('.pl-lead.open').count()==0 and page.get_by_role('button',name='Request dealership follow-up',exact=True).count()==1)
     check("completed QA opens its current three-second turn window", page.locator(".pl-status").inner_text() == "Your turn")
-    if page.locator('.pl-lead.open .lead-close').count():page.locator('.pl-lead.open .lead-close').click()
     page.wait_for_function("!Array.from(document.querySelectorAll('.pl-chips button')).some(b=>b.textContent==='Continue demo')",timeout=6000)
     check("QA automatically resumes continuous narration after its owned window", not page.get_by_role('button',name='Continue demo',exact=True).count())
     asks = page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")
@@ -125,33 +148,66 @@ with sync_playwright() as p:
     expect(answer).to_be_visible()
     page.locator(".pl-intake.open .mic").click()
     expect(page.locator(".pl-intake.open .mic")).to_have_attribute("aria-label", "Turn voice mode off")
-    page.wait_for_function("__wire.some(e=>e.type==='audio.input')")
+    wait_for_pcm()
     check("one synthetic capture sends real worklet PCM after mic.ready", page.evaluate("__captures===1 && __wire.some(e=>e.type==='mic.ready')"))
     page.locator(".pl-intake.open .mic").click()
     expect(page.locator(".pl-intake.open .mic")).to_have_attribute("aria-label", "Turn voice mode on")
     page.locator(".pl-intake.open .mic").click()
-    page.wait_for_function("__wire.some(e=>e.type==='audio.input'&&e.input_generation===2)")
+    wait_for_pcm(2)
     before_stale = page.locator(".pl-thread, .pl-drawer .body").inner_text()
     page.evaluate("__stt({type:'input.speech_start',input_generation:1,input_id:'old'}); __stt({type:'transcript.final',input_generation:1,input_id:'old',text:'An obsolete answer from the muted capture'}); __stt({type:'error',input_generation:1,code:'microphone_stream',message:'Old failure'})")
     check("muting and reopening rejects delayed old capture events", page.locator(".pl-thread, .pl-drawer .body").inner_text() == before_stale and answer.is_visible())
     check("old capture is stopped and new capture remains live", page.evaluate("__captures===2 && __tracks[0].readyState==='ended' && __tracks[1].readyState==='live'"))
-    page.evaluate("__stt({type:'input.speech_start',input_id:'voice-1'}); __stt({type:'transcript.final',input_id:'voice-1',text:'Boot space matters to me.'})")
+    page.evaluate("__stt({type:'input.speech_start',input_id:'fragment'}); __stt({type:'transcript.partial',input_id:'fragment',text:'I need more room'}); __stt({type:'transcript.final',input_id:'fragment',text:\"It's\"})")
+    check("partial intake and recognition fragments never personalize or dismiss intake", answer.is_visible() and "It's" not in page.locator('.pl-thread, .pl-drawer .body').inner_text())
+    page.evaluate("__stt({type:'input.speech_start',input_id:'voice-1'}); __stt({type:'transcript.final',input_id:'voice-1',text:'Show me around.'})")
     page.wait_for_function("!document.querySelector('.pl-intake.open:not(.pl-welcome)') && __audios.some(a=>!a.paused&&!a.ended)", timeout=20000)
+    check("generic tour request uses neutral acknowledgement", "Let me take you through the demo" in page.locator('.pl-thread, .pl-drawer .body').inner_text() and "Thanks, that helps me focus" not in page.locator('.pl-thread, .pl-drawer .body').inner_text())
     check("voice intake retains one active capture through continuous narration", page.evaluate("__captures===2 && __tracks[1].readyState==='live'"))
     page.evaluate("__stt({type:'input.speech_start',input_id:'voice-2'})")
     check("raw speech onset alone does not interrupt narration", page.evaluate("__audios.some(a=>!a.paused&&!a.ended)"))
     page.evaluate("__stt({type:'transcript.partial',input_id:'voice-2',text:'What is the warranty'})")
-    check("meaningful transcript onset immediately pauses actual HTML audio", page.evaluate("__audios.every(a=>a.paused || a.ended)"))
+    check("partial transcript cannot pause or create a question", page.evaluate("__audios.some(a=>!a.paused&&!a.ended)"))
     before = page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")
     page.evaluate("__stt({type:'transcript.partial',input_id:'voice-2',text:'What is'}); __stt({type:'transcript.final',input_id:'voice-2',text:'What is the warranty? Do not search online.'}); __stt({type:'transcript.final',input_id:'voice-2',text:'What is the warranty? Do not search online.'})")
-    expect(page.get_by_role("button", name="Continue demo", exact=True)).to_be_visible()
+    expect(page.get_by_role("button", name="Continue demo", exact=True)).to_be_visible(timeout=20000)
     check("duplicate final creates exactly one question", page.evaluate("__wire.filter(e=>e.type==='turn.ask').length") == before + 1)
     check("answer and interruption leave the same capture running", page.evaluate("__captures===2 && __tracks[1].readyState==='live'"))
     # Current tours are continuous; there are no proof-stop choice buttons.
     # Eight-times playback is a muted fixture acceleration, not a duration claim.
-    if page.locator('.pl-lead.open .lead-close').count():page.locator('.pl-lead.open .lead-close').click()
-    page.get_by_role('button',name='Continue demo',exact=True).click()
-    expect(page.get_by_role('button',name='Not yet',exact=True)).to_be_visible(timeout=60000)
+    check("second decline again leaves form closed", page.locator('.pl-lead.open').count()==0)
+    # Hold the reply window through deliberate input activity while measuring
+    # both viewports; the earlier decline already proved unattended 3s resume.
+    question.fill(' '); question.fill('')
+    layout_before = {}
+    def capture_followup_layout(phase):
+        for width,height in ((1440,1000),(390,844)):
+            page.set_viewport_size({'width':width,'height':height})
+            page.wait_for_timeout(150)
+            geometry=page.evaluate("({page:document.documentElement.scrollWidth,width:innerWidth,rects:[...document.querySelectorAll('.pl-top,.pl-stage,.pl-dock,.pl-lead.open')].map(n=>({name:n.className,left:n.getBoundingClientRect().left,right:n.getBoundingClientRect().right,top:n.getBoundingClientRect().top,height:n.getBoundingClientRect().height}))})")
+            (output/f'followup-{phase}-{width}-geometry.json').write_text(json.dumps(geometry,indent=2))
+            fixed = [r for r in geometry['rects'] if r['name'] in ('pl-top','pl-stage','pl-dock')]
+            if phase == 'before': layout_before[width] = fixed
+            check(f"follow-up {phase} fits {width}px viewport without moving player",geometry['page']<=width+1 and all(r['left']>=-1 and r['right']<=width+1 for r in geometry['rects']) and fixed==layout_before[width])
+            page.screenshot(path=str(output/f'followup-{phase}-{width}.png'))
+        page.set_viewport_size({'width':1440,'height':1000})
+    capture_followup_layout('before')
+    page.get_by_role('button',name='Request dealership follow-up',exact=True).click()
+    expect(page.locator('.pl-lead.open')).to_be_visible()
+    capture_followup_layout('open')
+    before_local=page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")
+    page.evaluate("__stt({type:'transcript.final',input_id:'not-now',text:'Not now'})")
+    expect(page.locator('.pl-lead.open')).to_have_count(0)
+    check("spoken Not now dismisses optional form without QA",page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")==before_local)
+    capture_followup_layout('dismissed')
+    page.wait_for_function("!Array.from(document.querySelectorAll('.pl-chips button')).some(b=>b.textContent==='Continue demo')",timeout=6000)
+    check("dismissed follow-up resumes after three seconds",page.locator('.pl-lead.open').count()==0)
+    page.evaluate("__stt({type:'transcript.final',input_id:'continue-local',text:'Continue'})")
+    check("spoken Continue stays local without question filler",page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")==before_local)
+    page.wait_for_timeout(1200)
+    check("active visit is saved incrementally before closing",any(not row.get('ended') and any(t.get('input_source')=='realtime' for t in row.get('turns',[])) for row in saved_sessions))
+    expect(page.get_by_role('button',name='Not yet',exact=True)).to_be_visible(timeout=120000)
+    check("section invitations are spoken without requiring a response", "Anything you'd like to know about what we've just covered?" in page.locator('.pl-thread, .pl-drawer .body').inner_text())
     check("continuous route reaches the natural closing CTA with capture active", page.evaluate("__tracks[1].readyState==='live'") and bool(page.locator('.pl-ctas button,.pl-chips button').count()))
     page.get_by_role('button',name='Not yet',exact=True).click()
     expect(page.get_by_role("heading", name="Your recap", exact=True)).to_be_visible(timeout=12000)

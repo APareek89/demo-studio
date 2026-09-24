@@ -40,11 +40,11 @@ async function run() {
   await check('a new genuine wait cancels the previous answer deadline', async () => {const t=setup();t.api.holdConversation(1);t.api.waitFor([{label:'Choose',value:'chosen'}]);await t.tick(30000);assert.equal(t.calls.resumed.length,0);assert.equal(t.S.waiter.chips[0].value,'chosen');});
   await check('visible lead form holds indefinitely then dismiss starts a fresh 3s window', async () => {const t=setup({leadOpen:true}),turn={};t.api.holdConversation(1,{turn});await t.tick(10000);assert.equal(t.calls.resumed.length,0);assert.ok(t.calls.focus.includes('lead'));t.api.dismissLeadPrompt();await t.tick(2999);assert.equal(t.calls.resumed.length,0);await t.tick(1);assert.equal(t.calls.resumed.length,1);assert.equal(turn.auto_resumed_at,13000);});
   await check('a typed answer while contact form is open cannot later resurrect its timer', async () => {const t=setup({leadOpen:true});t.api.holdConversation(1);t.api.preferTyping();t.api.dismissLeadPrompt();await t.tick(30000);assert.equal(t.calls.resumed.length,0);});
-  await check('legacy speech onset cancels the exact answer timer before final transcription', async () => {
-    const t=setup(),rec={start(){},abort(){},stop(){}};t.context.SR=function(){return rec;};t.context.LANG='en-IN';t.context.setMicUI=()=>{};
+  await check('legacy raw onset leaves the timer intact; qualified final takes the turn', async () => {
+    const t=setup(),rec={start(){},abort(){},stop(){}};t.context.SR=function(){return rec;};t.context.LANG='en-IN';t.context.setMicUI=()=>{};t.context.qualifiesCustomerSpeech=text=>text==='What about the cabin?';t.context.speechTerms=[];
     const listen=vm.runInNewContext(part('  function listenBrowser(', '  // Stop or finish legacy listening')+'\nlistenBrowser',t.context);
-    t.api.holdConversation(1);listen({},1);await t.tick(1200);rec.onspeechstart();await t.tick(4000);assert.equal(t.calls.resumed.length,0);
-    const result=[{transcript:'What about the cabin?'}];result.isFinal=true;rec.onresult({results:[result]});rec.onend();
+    t.api.holdConversation(1);listen({},1);await t.tick(1200);rec.onspeechstart();assert.ok(t.S.postAnswerListen?.timer);
+    const result=[{transcript:'What about the cabin?'}];result.isFinal=true;rec.onresult({results:[result]});assert.equal(t.S.postAnswerListen,null);rec.onend();await t.tick(4000);assert.equal(t.calls.resumed.length,0);
   });
   await check('automatic return speaks only a recorded bridge and restores the saved checkpoint', async () => {
     for (const audio of [null,'cached-audio']) {const S={run:1,playback:{phase:'route',line:5},conversationOrigin:{phase:'route',line:2}},spoken=[],resumed=[];

@@ -1,0 +1,46 @@
+{
+  "attempted": {
+    "create": 1790250662.53934,
+    "readiness": 1790250662.574656,
+    "read": 1790250666.273725,
+    "evidence-revision": 1790251569.06198,
+    "reviewed-coach-revision": 1790252168.646882,
+    "reviewed-author-revision": 1790253201.037427,
+    "reviewed-align-edits": 1790253922.080368,
+    "reviewed-deck-selections": 1790253965.964989,
+    "reviewed-deck-revision": 1790254113.468661,
+    "reviewed-slide-titles": 1790254171.4545438,
+    "build": 1790254262.681925
+  },
+  "checks": [],
+  "demo_id": "dm_7bbf10d0",
+  "publication": {
+    "minimum": {
+      "minimum_seconds": 180.0,
+      "seconds": 193.78,
+      "sufficient": true,
+      "words": 438,
+      "measured": true,
+      "basis": "measured",
+      "measured_seconds": 193.78,
+      "estimated_seconds": 0,
+      "route": [
+        "powertrain",
+        "powertrain-2",
+        "powertrain-3",
+        "stance_and_ride",
+        "stance_and_ride-2",
+        "space_and_practicality",
+        "space_and_practicality-2",
+        "safety",
+        "safety-2",
+        "cabin_and_tech",
+        "cabin_and_tech-2",
+        "more_features",
+        "establish"
+      ],
+      "duplicate_lines_excluded": 0
+    },
+    "version": 1
+  }
+}

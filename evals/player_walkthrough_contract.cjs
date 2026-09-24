@@ -88,6 +88,16 @@ const groups = [];
 function group(name, test) {groups.push([name, test]);}
 group('flag off returns exact view and builds no hall', () => {const h = harness({enabled: false}), t = h.wrap(); assert.equal(t.result, t.handle); assert.equal(t.handle.setRevealed, t.originals.setRevealed); assert.equal(h.hall(), null); assert.equal(t.handle.el.querySelector('.wt-caption'), null);});
 group('one frame per content picture in deck order; no hero/closing frames', () => {const h = harness(); const f = h.hall().querySelectorAll('.wt-frame'); assert.equal(f.length, 3); assert.deepEqual(f.map(x => [x.dataset.slideId, x.dataset.mediaIndex]), [['s1','0'],['s1','1'],['s2','0']]); assert.equal(h.stack.querySelector('.wt-frame'), null);});
+group('explicit empty media cannot restore a stale legacy illustration into the gallery', () => {
+  const slide = {id: 'text-only', kind: 'proof', title: 'Reviewed terms', media: [], image_url: '/stale-legacy-image.png', lines: [{id: 'terms', text: 'Reviewed terms.', fact_ids: ['F1']}], callouts: []};
+  const h = harness({slides: [slide]}), t = h.view(slide), original = JSON.stringify(slide);
+  t.handle.walkthroughPictures = []; t.handle.images = [];
+  h.presentation.wrap(slide, t.handle, {reveal: 99, position: {index: 1, total: 1}});
+  assert.equal(h.hall().querySelectorAll('.wt-frame').length, 0);
+  assert.equal(h.hall().querySelectorAll('img').length, 0);
+  assert.equal(h.phase(), 'transient'); assert.equal(h.hall().hidden, true);
+  assert.equal(h.tasks.size, 0); assert.equal(JSON.stringify(slide), original);
+});
 group('real transitionend drives hall walk straighten dive stop', () => {const h = harness(), t = h.wrap(); assert.equal(h.phase(), 'walk'); t.handle.setRevealed(0); h.finish(); assert.equal(h.phase(), 'straighten'); h.finish(); assert.equal(h.phase(), 'dive'); h.finish(); assert.equal(h.phase(), 'stop'); h.finish(); assert.equal(h.tasks.size, 0);});
 group('grounded caption and actual anchored dot survive camera zoom', () => {const h = harness(), t = h.wrap(); t.handle.setRevealed(0); h.settle(); const cap = t.handle.el.querySelector('.wt-caption'); assert.deepEqual(cap.children.map(x => x.textContent), ['Grille', 'Reviewed front detail', 'F1']); const dot = t.records[0].cam.querySelector('.wt-stop-dot'); assert.equal(dot.style.left, '20%'); assert.equal(dot.style.top, '55.00000000000001%'); assert.ok(Number(dot.style['--wt-dot-scale']) < 1);});
 group('no newly revealed tag means no new camera move', () => {const h = harness(), t = h.wrap(); t.handle.setRevealed(0); h.settle(); const before = t.records[0].cam.style.transform; t.handle.setRevealed(1); assert.equal(t.records[0].cam.style.transform, before); assert.equal(h.tasks.size, 0);});

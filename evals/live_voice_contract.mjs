@@ -41,12 +41,12 @@ client.receive({ type: "mic.ready", input_generation: client.inputGeneration });
 check("provider readiness flushes initial audio instead of losing first words", client.micReady && client.preRoll.length === 0 && client.socket.sent.some(e => e.type === "audio.input"));
 client.receive({ input_generation: client.inputGeneration, type: "transcript.partial", input_id: "a", text: "boot" });
 client.receive({ input_generation: client.inputGeneration, type: "input.speech_start", input_id: "a" });
-check("partial and VAD onset share one human turn", onsets.length === 1);
+check("partial and raw VAD remain provisional until a final", onsets.length === 0);
 client.receive({ input_generation: client.inputGeneration, type: "input.speech_end", input_id: "a", voice_ended: 123 });
 const endpointReceived = client.endpointAt;
 client.receive({ input_generation: client.inputGeneration, type: "transcript.final", input_id: "a", text: "boot space" });
 client.receive({ input_generation: client.inputGeneration, type: "transcript.final", input_id: "a", text: "boot space" });
-check("final transcript is delivered once using the browser receipt clock", transcripts.filter(e => e.final).length === 1 && transcripts.at(-1).voice_ended === endpointReceived && transcripts.at(-1).speech_end_basis === "browser_endpoint_receipt");
+check("qualified final interrupts once and uses the browser receipt clock", onsets.length === 1 && onsets[0].source === "final" && transcripts.filter(e => e.final).length === 1 && transcripts.at(-1).voice_ended === endpointReceived && transcripts.at(-1).speech_end_basis === "browser_endpoint_receipt");
 check("server timestamp is provenance and cannot skew browser latency", transcripts.at(-1).server_endpoint_received_at === 123 && transcripts.at(-1).voice_ended !== 123);
 client.receive({ input_generation: client.inputGeneration, type: "transcript.final", text: "yes" }); client.receive({ input_generation: client.inputGeneration, type: "transcript.final", text: "yes" });
 check("same wording without provider identity is not permanently swallowed", transcripts.filter(e => e.final && e.text === "yes").length === 2);
@@ -144,8 +144,12 @@ const playerSource = fs.readFileSync(new URL("../web/player/player.js", import.m
 const correctionSource = playerSource.slice(playerSource.indexOf("function explicitContextCorrection("), playerSource.indexOf("\nexport function mountPlayer"));
 const correction = vm.runInNewContext(correctionSource + "\nexplicitContextCorrection");
 const questionAckKey = vm.runInNewContext(correctionSource + "\nquestionAckKey");
-check("acknowledgment reuses the shorter reviewed clip without changing its wording", questionAckKey({ hold_on_question: { text: "Good question give me one moment please", audio: "/long.wav" }, hold_on_lookup: { text: "Let me check", audio: "/short.wav" } }) === "hold_on_lookup");
-check("unrecorded or longer alternatives never replace the reviewed acknowledgment", questionAckKey({ hold_on_question: { text: "Checking", audio: "/short.wav" }, hold_on_lookup: { text: "One moment while I look that up", audio: "/long.wav" } }) === "hold_on_question" && questionAckKey({ hold_on_lookup: { text: "Checking" } }) === "hold_on_question");
+const qualification = vm.runInNewContext(correctionSource + "\n({qualifiesCustomerSpeech,playbackCommand,genericTour})",{meaningfulTranscript});
+check("actual player qualifier rejects fragment intake and unrelated TV statement",!qualification.qualifiesCustomerSpeech("It’s",{prompt:true}) && !qualification.qualifiesCustomerSpeech("Breaking news and the weather forecast",{terms:["warranty","creta"]}));
+check("actual player qualifier keeps short questions and prompt-owned phone input",qualification.qualifiesCustomerSpeech("Warranty?",{terms:[]}) && qualification.qualifiesCustomerSpeech("Automatic?",{terms:[]}) && qualification.qualifiesCustomerSpeech("9876543210",{prompt:true}) && !qualification.qualifiesCustomerSpeech("9876543210",{prompt:false}));
+check("actual player qualifier accepts repeated yes only for a current question",qualification.qualifiesCustomerSpeech("yes",{prompt:true}) && qualification.qualifiesCustomerSpeech("yes",{prompt:true}) && !qualification.qualifiesCustomerSpeech("yes",{prompt:false}));
+check("generic tour and playback commands are recognized without product preference",qualification.genericTour("show me around") && qualification.playbackCommand("Continue") === "continue" && qualification.playbackCommand("Not now") === "notnow" && !qualification.genericTour("I care about rear seat comfort"));
+
 check("explicit stated priority triggers refinement", correction("Actually, boot space matters more.") && correction("I care more about safety."));
 check("factual questions and hypotheticals cannot rewrite customer preference", !correction("Is boot space more important?") && !correction("For example, I prefer safety.") && !correction("Actually, the warranty is five years.") && !correction("What if I prefer safety?"));
 const resultSource = playerSource.slice(playerSource.indexOf("  async function questionResult("), playerSource.indexOf("  async function handleQuestion("));
@@ -172,13 +176,14 @@ const resultSource = playerSource.slice(playerSource.indexOf("  async function q
 }
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 function questionHarness() {
-  const state = { run: 1 }, qa = deferred(), filler = deferred(), calls = { cancel: 0, filler: 0, status: 0 };
+  const state = { run: 1 }, qa = deferred(), filler = deferred(), calls = { cancel: 0, filler: 0, status: 0, words: [] };
   const result = vm.runInNewContext(resultSource + "\nquestionResult", { S: state, bundle: {}, questionAckKey, withTimeout: async () => null,
-    speakF() { calls.filler++; return filler.promise; }, cancelSpeech() { calls.cancel++; }, setStatus() { calls.status++; } });
+    speak(text) { calls.filler++; calls.words.push(text); return filler.promise; }, cancelSpeech() { calls.cancel++; }, setStatus() { calls.status++; } });
   return { state, qa, filler, calls, result };
 }
 {
   const h = questionHarness(), turn = {}; const result = h.result(h.qa.promise, 1, turn); await tick(); h.state.onFirstAudio(100);
+  check("genuine question gets the requested acknowledgment instead of a lookup filler", h.calls.words.length === 1 && h.calls.words[0] === "This is a good question, give me a moment.");
   h.qa.resolve({ answer: "Useful answer" }); const value = await result;
   check("ready answer cuts acknowledgment without awaiting its obsolete delivery", value.answer === "Useful answer" && h.calls.cancel === 1 && turn.ack_audio === 100 && h.state.onFirstAudio === null);
   h.filler.resolve(false);
@@ -221,6 +226,44 @@ async function routeAfterOverview(plan) {
 {
   const h = await routeAfterOverview({ route: [{ slide_id: "not-reviewed" }], decision_frame: "Pretend this plan succeeded." });
   check("unusable live plan reports stable fallback without claiming personalization", !h.state.personalized && h.state.pitch === null && h.routed[0] === null && h.heard.length === 1 && h.heard[0].includes("couldn't finish tailoring") && h.notes.length === 1);
+}
+// Generic intake must retain the reviewed route, and a URL by itself remains a
+// usable intake submission even when there are no preference words to qualify.
+{
+  const state={run:1,genericTour:true,profile:{why:"",focus:[]},pitchPromise:null};
+  const heard=[],routes=[],calls={pitch:0,play:0};
+  const overview={text:"Reviewed full product overview.",audio:"/fixture/overview.wav",slide_id:"proof",fact_ids:["F1"]};
+  const start=vm.runInNewContext(startSource+"\nstartAfterIntake",{S:state,live:{},api:{pitch:()=>{calls.pitch++;return Promise.resolve(null);}},
+    bundle:{runtime:{narration_minimum:180,overview}},slides:[base],showSlideView(){},opening:()=>[],heroOpen:()=>base,
+    speak:async text=>{heard.push(text);return true;},buildRoute:route=>routes.push(route),playFrom:()=>calls.play++,el:{cite:{}},
+    profileForServer:()=>state.profile,withTimeout:async promise=>promise});
+  await start(1,"show me around",{phase:"opening"});
+  check("generic initial tour keeps recorded overview and reviewed route without starting personalization",calls.pitch===0 && heard.length===1 && heard[0]===overview.text && routes[0]===null && calls.play===1 && state.overviewPlayed && state.planningDecided && state.personalized===false);
+}
+{
+  const intakeSource=playerSource.slice(playerSource.indexOf("  async function runIntake("),playerSource.indexOf("  async function startAfterIntake("));
+  for(const answer of ["show me around","It's"]){
+    const state={run:1,profile:{customer_urls:[],focus:[]}},heard=[],calls={pitch:0,started:0};
+    const classList={add(){},remove(){}};
+    const intake=vm.runInNewContext(intakeSource+"\nrunIntake",{S:state,newRun:()=>1,el:{intake:{classList},inFallback:{classList},cite:{},inState:{}},
+      bundle:{intake:{q1:"What matters to you?"}},guide:"Guide",live:{},showSlideView(){},heroOpen(){},
+      speak:async text=>{heard.push(text);return true;},intakeWait:async()=>answer,intakeSites(){},genericTour:qualification.genericTour,meaningfulTranscript,
+      addMsg(){},parseName:()=>"",parseFocus:()=>[],api:{pitch:()=>{calls.pitch++;return Promise.resolve(null);}},startAfterIntake:async()=>calls.started++});
+    await intake();
+    check(`generic or fragment intake ${JSON.stringify(answer)} never claims customer-specific focus`,state.genericTour && state.profile.why==="" && calls.pitch===0 && calls.started===1 && heard[1]==="Let me take you through the demo.");
+  }
+}
+{
+  const acceptSource=playerSource.slice(playerSource.indexOf("  function acceptTypedAnswer("),playerSource.indexOf("  function handlePlaybackCommand("));
+  const accepted=[],state={intakeOpen:true,profile:{customer_urls:["https://www.example.com/product"]},intakeResolver:text=>accepted.push(text)},el={inState:{},inHeard:{}};
+  let preferred=0;
+  const accept=vm.runInNewContext(acceptSource+"\nacceptTypedAnswer",{S:state,el,meaningfulTranscript,handlePlaybackCommand:()=>false,preferTyping:()=>preferred++,resumeSession(){},Date});
+  accept("");
+  check("a URL-only intake submits without inventing preference text",accepted.length===1 && accepted[0]==="" && preferred===1 && state.lastListen.via==="typed");
+  accept("It's");
+  check("a URL does not turn a recognition fragment into preference evidence",accepted.length===1 && preferred===1 && el.inState.textContent.includes("choose Skip"));
+  state.profile.customer_urls=[];accept("");
+  check("empty intake without a customer URL still asks for input or Skip",accepted.length===1 && preferred===1);
 }
 // WP8: a selected text mode keeps streamed output while capture remains opt-in.
 {
@@ -297,9 +340,10 @@ async function routeAfterOverview(plan) {
   noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"impact",text:"..."});
   check("cup impulse, raw VAD and noise-only transcripts preserve active narration",noise.delivery===owner && !playing.stopped && starts.length===0 && heard.length===0 && noise.socket.sent.filter(event=>event.type==="turn.interrupt").length===sentBefore);
   noise.receive({type:"transcript.partial",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty"});
-  check("first meaningful partial interrupts immediately without waiting for a final",starts.length===1 && starts[0].source==="partial" && playing.stopped && noise.delivery===null && await reading===false && heard.at(-1).text==="Warranty");
+  check("a meaningful partial may preview words but cannot interrupt narration",starts.length===0 && !playing.stopped && noise.delivery===owner && heard.at(-1).text==="Warranty" && !heard.at(-1).final);
   noise.receive({type:"input.speech_start",input_generation:noise.inputGeneration,input_id:"question"});
   noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty?"});
+  check("short qualified warranty final interrupts exactly once",starts.length===1 && starts[0].source==="final" && playing.stopped && noise.delivery===null && await reading===false && heard.at(-1).final);
   const nextReading = noise.speak("The next reviewed line."); await tick(); const nextOwner = noise.delivery;
   noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty?"});
   check("a duplicated final cannot interrupt the next owned narration",noise.delivery===nextOwner && starts.length===1);
@@ -310,7 +354,83 @@ async function routeAfterOverview(plan) {
   check("short final-only speech interrupts and preserves its endpoint timing",starts.length===2 && starts.at(-1).source==="final" && await nextReading===false && heard.at(-1).text==="हाँ" && heard.at(-1).endpoint_received_at===endedAt && heard.at(-1).server_endpoint_received_at===456);
   const explicit = noise.speak("Explicit controls remain immediate."); await tick(); noise.interrupt();
   check("explicit interruption still cancels without transcript confirmation",await explicit===false && noise.mic);
-  check("speech confirmation keeps words and numbers while discarding annotations",["yes","हाँ","20","stop","[noise] warranty"].every(meaningfulTranscript) && ["","   ","...","[noise]","(silence)","<inaudible>","[background noise]"].every(text=>!meaningfulTranscript(text)));
+  check("speech confirmation keeps words and numbers while discarding annotations",["yes","हाँ","20","stop","[noise] warranty"].every(meaningfulTranscript) && ["","   ","...","[noise]","(silence)","<inaudible>","[background noise]","It's","It’s","It is","The","uh"].every(text=>!meaningfulTranscript(text)));
   noise.close();
+}
+{
+  const starts = [], finals = [], rejected = [];
+  const qualified = new LiveVoiceClient({url:"/run/live",sessionId:"qualified-noise",env,
+    qualifyInput:text=>{const ok=!/breaking news|weather forecast/i.test(text);if(!ok)rejected.push(text);return ok;},
+    onSpeechStart:event=>{starts.push(event);qualified.interrupt();},onTranscript:event=>{if(event.final)finals.push(event);}});
+  await qualified.startCapture(); qualified.receive({type:"mic.ready",input_generation:qualified.inputGeneration});
+  const read=qualified.speak("Keep showing the reviewed product details."); await tick(); const owner=qualified.delivery;
+  qualified.receive({type:"audio.chunk",turn_id:owner.turnId,utterance_id:owner.utteranceId,seq:0,audio});
+  const playing=Context.sources.at(-1), input=qualified.inputGeneration;
+  qualified.receive({type:"transcript.partial",input_generation:input,input_id:"fragment",text:"It’s"});
+  qualified.receive({type:"transcript.final",input_generation:input,input_id:"fragment",text:"[noise]"});
+  check("recognition fragment It’s followed by noise creates no turn or audio cancellation",qualified.delivery===owner && !playing.stopped && starts.length===0 && finals.length===0);
+  qualified.receive({type:"transcript.final",input_generation:input,input_id:"tv",text:"Breaking news and the weather forecast"});
+  check("application qualifier rejects unrelated TV final without taking playback ownership",rejected.length===1 && starts.length===0 && finals.length===0 && qualified.delivery===owner && !playing.stopped);
+  qualified.receive({type:"transcript.final",input_generation:input,input_id:"wanted",text:"Warranty?"});
+  check("qualifier keeps a short relevant question actionable",starts.length===1 && finals.length===1 && finals[0].text==="Warranty?" && await read===false);
+  qualified.receive({type:"transcript.final",input_generation:input,text:"yes"}); qualified.receive({type:"transcript.final",input_generation:input,text:"yes"});
+  check("qualification never deduplicates separate unowned yes replies by text",finals.filter(event=>event.text==="yes").length===2);
+  qualified.close();
+}
+{
+  const starts=[],finals=[];
+  const controls=new LiveVoiceClient({url:"/run/live",sessionId:"local-controls",env,shouldInterrupt:text=>!qualification.playbackCommand(text),onSpeechStart:event=>{starts.push(event);controls.interrupt();},onTranscript:event=>{if(event.final)finals.push(event.text);}});
+  await controls.startCapture(); controls.receive({type:"mic.ready",input_generation:controls.inputGeneration});
+  const reading=controls.speak("Current narration keeps its audio owner."); await tick(); const owner=controls.delivery;
+  controls.receive({type:"audio.chunk",turn_id:owner.turnId,utterance_id:owner.utteranceId,seq:0,audio}); const playing=Context.sources.at(-1);
+  controls.receive({type:"transcript.final",input_generation:controls.inputGeneration,input_id:"continue",text:"Continue"});
+  check("Continue is delivered as a local command without pre-cancelling narration",finals[0]==="Continue" && starts.length===0 && controls.delivery===owner && !playing.stopped);
+  controls.receive({type:"transcript.final",input_generation:controls.inputGeneration,input_id:"question",text:"Warranty?"});
+  check("a genuine query still interrupts after a non-interrupting local command",starts.length===1 && finals.at(-1)==="Warranty?" && await reading===false);
+  controls.close();
+}
+// Production timeout code with an explicit clock and scheduled fake PCM. This
+// proves healthy speech can last over thirty seconds without a wall-clock wait.
+function timedVoice() {
+  const clock={now:0,serial:0,timers:new Map(),set(fn,ms){const id=++this.serial;this.timers.set(id,{at:this.now+ms,fn});return id;},clear(id){this.timers.delete(id);},
+    advance(ms){const end=this.now+ms;for(;;){const next=[...this.timers].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;this.timers.delete(next[0]);this.now=next[1].at;next[1].fn();}this.now=end;}};
+  class TimedSource extends Node { start(at){this.timer=clock.set(()=>this.onended?.(),Math.max(0,(at+this.buffer.duration)*1000-clock.now));} stop(){clock.clear(this.timer);this.stopped=true;} }
+  class TimedContext extends Context {constructor(){super();Object.defineProperty(this,"currentTime",{get:()=>clock.now/1000});}createBufferSource(){const node=new TimedSource();Context.sources.push(node);return node;}}
+  const {LiveVoiceClient:TimedClient}=vm.runInNewContext(source.replace(/export /g,"")+"\n({LiveVoiceClient})",{
+    URL,atob,btoa,Date:{now:()=>clock.now},setTimeout:(fn,ms)=>clock.set(fn,ms),clearTimeout:id=>clock.clear(id),queueMicrotask});
+  const client=new TimedClient({url:"/run/live",sessionId:"deadline-fixture",env:{...env,AudioContext:TimedContext}});
+  return {client,clock};
+}
+{
+  const {client:timed,clock}=timedVoice(); let completed=false;
+  const spoken=timed.speak("A healthy extended narration.").then(result=>{completed=result;return result;}); await tick(); const owner=timed.delivery;
+  const longAudio=Buffer.alloc(16000*2*45).toString("base64");
+  timed.receive({type:"audio.chunk",turn_id:owner.turnId,utterance_id:owner.utteranceId,seq:0,audio:longAudio,sample_rate:16000,format:"pcm_s16le"});
+  timed.receive({type:"audio.end",turn_id:owner.turnId,utterance_id:owner.utteranceId});
+  clock.advance(31000); await tick();
+  check("healthy scheduled narration remains owned after the old thirty-second cutoff",!completed && timed.delivery===owner && owner.sources.size===1);
+  clock.advance(15000);
+  check("healthy forty-five-second narration completes after local audio drains",await spoken===true && timed.delivery===null);
+  timed.close();
+}
+{
+  const {client:timed,clock}=timedVoice(); const stalled=timed.speak("Caption fallback must preserve this answer.").catch(error=>error); await tick();
+  clock.advance(31000); const failure=await stalled;
+  check("stream that never starts rejects with a non-cancellation error for caption fallback",failure.message==="Speech stream timed out" && failure.name!=="AbortError" && failure.audioStarted===false && timed.delivery===null);
+  timed.close();
+}
+{
+  const {client:timed,clock}=timedVoice(); const missingEnd=timed.speak("A closing sentence with a missing provider end.").catch(error=>error); await tick(); const owner=timed.delivery;
+  timed.receive({type:"audio.chunk",turn_id:owner.turnId,utterance_id:owner.utteranceId,seq:0,audio,sample_rate:24000});
+  clock.advance(1000); check("local chunk ending alone cannot fabricate provider completion",timed.delivery===owner && owner.sources.size===0 && !owner.ended);
+  clock.advance(31000); const failure=await missingEnd;
+  check("missing provider end becomes an owned delivery failure instead of swallowing closing",failure.message==="Speech stream timed out" && failure.audioStarted===true && !timed.delivery);
+  timed.close();
+}
+{
+  const {client:timed,clock}=timedVoice(); const speech=timed.speak("An obsolete line cannot return."); await tick(); const owner=timed.delivery, timeout=clock.timers.get(owner.timer).fn;
+  timed.interrupt(); timeout(); clock.advance(60000);
+  check("cancelled stream ignores even a late timeout callback and never revives",await speech===false && !timed.delivery);
+  timed.close();
 }
 console.log(`Live voice: ${passes}/${passes} passed (fake devices and transports only)`);

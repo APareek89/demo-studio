@@ -33,25 +33,42 @@ function labelEdge(box, anchor) {
 }
 
 export function renderSlide(slide, opts = {}) {
-  const callouts = slide.callouts || [];
+  const narration = (slide.lines || []).map((line, index) => ({line, index})).filter(({line}) => typeof line.text === "string" && line.text.trim());
+  const suppliedMedia = slide.media?.length ? slide.media.slice(0, 2) : [{ image_id: slide.image_id || "", image_url: slide.image_url, image_parts: slide.image_parts || [], from_line: 0 }];
+  const noPicture = Array.isArray(slide.media) && !slide.media.length || !suppliedMedia.some((entry, index) => entry.image_url ?? (index === 0 ? slide.image_url : null));
+  const textOnly = !opts.editable && noPicture && narration.length > 0;
+  const callouts = textOnly ? [] : slide.callouts || [];
   const kind = slide.kind || "proof";
   const sampleLayout = !!opts.fit && !opts.editable;
   const theme = ["marine", "sage", "graphite"].includes(opts.theme) ? opts.theme : "marine";
   const el = h("div", { class: `slide slide-${kind} motion-${slide.motion || "none"}${opts.fit ? " cinematic" : ""}${sampleLayout ? " sample-layout" : ""}${opts.editable ? " editable" : ""}`, "data-visual-theme": theme });
-  const entries = slide.media?.length ? slide.media.slice(0, 2) : [{ image_id: slide.image_id || "", image_url: slide.image_url, image_parts: slide.image_parts || [], from_line: 0 }];
+  if (textOnly) el.classList.add("slide-text-only");
+  const textRows = [];
+  const entries = textOnly ? [{image_id: "", from_line: 0}] : suppliedMedia;
   const media = h("div", { class: "slide-media" + (entries.length > 1 ? " multi" : "") });
   el.classList.toggle("has-multiple-media", entries.length > 1);
   const pictures = entries.map((entry, index) => {
-  const url = entry.image_url ?? (index === 0 ? slide.image_url : null);
-  const pic = h("div", { class: "slide-pic" + (url ? "" : " noimg"), "data-image-id": entry.image_id || "" });
+  const url = textOnly ? null : entry.image_url ?? (index === 0 ? slide.image_url : null);
+  const pic = h("div", { class: textOnly ? "slide-text-card" : "slide-pic" + (url ? "" : " noimg"), "data-image-id": entry.image_id || "" });
   const img = h("img", { alt: slide.title || "Product view", draggable: "false" });
   const leaders = document.createElementNS(SVG_NS, "svg");
   leaders.setAttribute("class", "leaders"); leaders.setAttribute("viewBox", "0 0 100 100"); leaders.setAttribute("preserveAspectRatio", "none");
   // Only the flagged player groups these layers; Align and the default view keep their exact DOM.
-  const cam = opts.walkthrough ? h("div", { class: "slide-cam", style: "display:contents" }) : null;
+  const cam = opts.walkthrough && !textOnly ? h("div", { class: "slide-cam", style: "display:contents" }) : null;
   if (cam) pic.append(cam);
-  (cam || pic).append(img, leaders);
-  if (url) img.src = url; else pic.append(h("span", {}, "no picture"));
+  if (textOnly) {
+    // Caption-only slides use the exact reviewed speech, never generated summary
+    // labels. All rows keep their geometry when audio reveals the next line.
+    const copy = h("div", {class: "slide-text-copy", tabindex: "0", role: "region", "aria-label": slide.title || "Demo details"});
+    for (const {line, index: lineIndex} of narration) {
+      const node = h("p", {class: "slide-text-line", "data-line-id": line.id || "", "data-line-index": String(lineIndex)}, line.text);
+      textRows.push({node, line, index: lineIndex}); copy.append(node);
+    }
+    pic.append(copy);
+  } else {
+    (cam || pic).append(img, leaders);
+    if (url) img.src = url; else pic.append(h("span", {}, "no picture"));
+  }
   if (entry.proxy) pic.append(h("span", { class: "slide-proxy-badge", title: entry.proxy_reason || "This picture illustrates the topic; it is not visual proof." }, "illustration"));
   media.append(pic);
   return { pic, img, leaders, entry, cam };
@@ -95,7 +112,7 @@ export function renderSlide(slide, opts = {}) {
   }
   const scrollHint = opts.fit ? h("span", { class: "slide-scroll-hint", hidden: true, "aria-hidden": "true" }) : null;
   el.append(media, panel); if (scrollHint) el.append(scrollHint);
-  const foot = sampleLayout ? h("div", {class: "slide-foot"}, h("span", {}, entries.some(entry => entry.proxy) ? "Illustrative product view" : "Product view"), h("span", {class: "slide-pagination", "aria-hidden": "true"})) : null;
+  const foot = sampleLayout ? h("div", {class: "slide-foot"}, h("span", {}, textOnly ? "Reviewed details" : entries.some(entry => entry.proxy) ? "Illustrative product view" : "Product view"), h("span", {class: "slide-pagination", "aria-hidden": "true"})) : null;
   if (foot) el.append(foot);
   function setPosition(position) {
     const index = Number(position?.index), total = Number(position?.total);
@@ -158,6 +175,11 @@ export function renderSlide(slide, opts = {}) {
         : sampleLayout ? {x: small ? 0 : 30, y: contentTop, w: SW - (small ? 0 : 60), h: Math.max(1, contentBottom - contentTop)}
         : {x: 0, y: SH * .25, w: SW, h: SH * .5};
       pictures.forEach(({ pic, img }, index) => {
+        if (textOnly) {
+          const width = Math.min(area.w - (small ? 32 : 0), 960);
+          Object.assign(pic.style, {width: Math.max(1, width) + "px", height: area.h + "px", left: (area.x + (area.w - width) / 2) + "px", top: area.y + "px"});
+          return;
+        }
         // Each annotation box fits its own native pixels into its allotted half.
         const R = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 4 / 3;
         const gap = 12, pair = pictures.length > 1;
@@ -259,7 +281,15 @@ export function renderSlide(slide, opts = {}) {
     const end = (e) => { if (!start) return; start = null; chip.classList.remove("dragging"); try { chip.releasePointerCapture(e.pointerId); } catch (err) {} const W = pic.clientWidth || 1, H = pic.clientHeight || 1; const pos = { x: +(chip.offsetLeft / W).toFixed(4), y: +(chip.offsetTop / H).toFixed(4) }; c.label_pos = pos; if (opts.onMove) opts.onMove(c.id, pos, owners.get(c.id).entry.image_id); };
     chip.addEventListener("pointerup", end); chip.addEventListener("pointercancel", end);
   }
+  function scrollTextIntoView(target) {
+    if (!target) return;
+    // Scroll only reviewed copy inside its card, never the page or player chrome.
+    const copy = target.parentElement, box = target.getBoundingClientRect(), viewport = copy.getBoundingClientRect();
+    if (box.top < viewport.top) copy.scrollTop += box.top - viewport.top;
+    else if (box.bottom > viewport.bottom) copy.scrollTop += Math.min(box.top - viewport.top, box.bottom - viewport.bottom);
+  }
   function setRevealed(lineIdx) {  // player: a callout appears when the line it supports starts; -1 hides all
+    for (const row of textRows) { const on = row.index <= lineIdx; row.node.classList.toggle("text-unrevealed", !on); row.node.setAttribute("aria-hidden", String(!on)); }
     for (const c of callouts) { const on = c.reveal_on_line <= lineIdx; chips.get(c.id)?.classList.toggle("hidden", !on); dots.get(c.id)?.classList.toggle("hidden", !on); lines.get(c.id)?.classList.toggle("hidden", !on); panel.querySelector(`[data-id="${c.id}"]`)?.classList.toggle("hidden", !on); }
     let active = 0, latest = -Infinity;
     pictures.forEach(({ entry }, index) => { const from = Number(entry.from_line) || 0; if (from <= lineIdx && from >= latest) { active = index; latest = from; } });
@@ -270,8 +300,23 @@ export function renderSlide(slide, opts = {}) {
     pictures.forEach(({ pic }, index) => { pic.classList.toggle("active", index === active); pic.classList.toggle("dimmed", index !== active); });
     // A hidden chip has no dimensions. Recompute its leader only after it is visible.
     layout();
+    // A question may have scrolled to later evidence. The next narrated line
+    // owns this viewport again; reveal-all (99) leaves the Q&A target to highlight.
+    if (lineIdx !== 99) scrollTextIntoView(textRows.find(row => row.index === lineIdx)?.node);
   }
-  function highlight(id) { for (const [cid, chip] of chips) chip.classList.toggle("hot", cid === id); for (const [cid, dot] of dots) dot.classList.toggle("hot", cid === id); for (const it of panel.children) it.classList.toggle("hot", it.dataset.id === id); }
+  function highlight(id) {
+    for (const [cid, chip] of chips) chip.classList.toggle("hot", cid === id);
+    for (const [cid, dot] of dots) dot.classList.toggle("hot", cid === id);
+    for (const it of panel.children) it.classList.toggle("hot", it.dataset.id === id);
+    const cited = (slide.callouts || []).find(c => c.id === id)?.fact_ids || [];
+    let target = null;
+    for (const row of textRows) {
+      const hot = !!id && (row.line.id === id || (row.line.fact_ids || []).some(fid => cited.includes(fid)));
+      row.node.classList.toggle("hot", hot);
+      if (hot && !row.node.classList.contains("text-unrevealed")) target ||= row.node;
+    }
+    scrollTextIntoView(target);
+  }
   function setImage(url, parts, index = 0) {
     const picture = pictures[index]; if (!picture) return;
     picture.pic.classList.toggle("noimg", !url); picture.img.src = url || "";
@@ -282,5 +327,5 @@ export function renderSlide(slide, opts = {}) {
   pictures.forEach(({ pic, img }) => { ro?.observe(pic); img.addEventListener("load", layout); });
   ro?.observe(el); if (opts.fit) ro?.observe(panel);
   requestAnimationFrame(layout);
-  return { el, pic, img, pics: pictures.map((item) => item.pic), images: pictures.map((item) => item.img), ...(opts.walkthrough ? { walkthroughPictures: pictures } : {}), layout, setRevealed, highlight, setImage, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
+  return { el, pic, img, pics: pictures.map((item) => item.pic), images: textOnly ? [] : pictures.map((item) => item.img), ...(opts.walkthrough ? { walkthroughPictures: textOnly ? [] : pictures } : {}), layout, setRevealed, highlight, setImage, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
 }

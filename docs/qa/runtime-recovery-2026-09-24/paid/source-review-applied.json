@@ -1,0 +1,322 @@
+{
+  "at": 1790252129.832524,
+  "actions": [
+    {
+      "id": "F152",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Stale FAQ turbo1497cc conflicts with page16/page29 1482cm3; keep F085 and F086.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F153",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Stale most-variant airbags conflicts with explicit all-variant F090 and matrix.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F156",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Select-variants-only TPMS conflicts with Highline TPMS standard on all10 matrix trims.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F160",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Ambiguous standard-variant8inch wording includes no E exclusion; keep explicit F093 and current matrix.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F161",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Unqualified smart-key statement omits E foldable-key exclusion; do not imply all-variant keyless ignition.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F163",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Drive/traction mode FAQ drops automatic-only restriction; conditional matrix facts F141/F142 can remain after qualified edits.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F168",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Unqualified body-colour rear spoiler contradicts black-theme trims in matrix; HMSL is universal but should not validate whole combined assertion.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F169",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Shark-fin antenna has no E exclusion in this assertion; E uses micro-roof antenna, shark-fin is EX and listed later trims.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F170",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Source itself discloses stale FAQ colours; use current names F058-F066, never offer FieryRed/RangerKhaki from this row.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F172",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "FAQ summary drops premium-trim restriction for SCC and implies lower trims have cruise generally; keep specific F091 and corrected F144.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F173",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Obsolete SX(O)/SXTech voice-roof fitment conflicts with current matrix; keep F135 current named trims.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F175",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Seven-variant stale FAQ is not an available product variant count; current10trim list is F038.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F089",
+      "method": "POST",
+      "body": {
+        "approved": false
+      },
+      "reason": "Broad prose advertises automatic S(O)Knight, although no automatic S(O)Knight engine pairing is listed; prefer explicitly conditional corrected matrix facts.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F068",
+      "method": "PATCH",
+      "body": {
+        "value": "Semi leatherette",
+        "conditions": "All upholstery described as leather in the source is leatherette. Availability remains limited to the named variant(s)."
+      },
+      "reason": "Apply explicit material footnote to the active assertion itself; separate F076 alone does not prevent leather claims.",
+      "new_id": "F186",
+      "ok": true
+    },
+    {
+      "id": "F069",
+      "method": "PATCH",
+      "body": {
+        "value": "Leather",
+        "conditions": "All upholstery described as leather in the source is leatherette. Availability remains limited to the named variant(s)."
+      },
+      "reason": "Apply explicit material footnote to the active assertion itself; separate F076 alone does not prevent leather claims.",
+      "new_id": "F187",
+      "ok": true
+    },
+    {
+      "id": "F071",
+      "method": "PATCH",
+      "body": {
+        "value": "Exclusive black leatherette with brass highlights",
+        "conditions": "All upholstery described as leather in the source is leatherette. Availability remains limited to the named variant(s)."
+      },
+      "reason": "Apply explicit material footnote to the active assertion itself; separate F076 alone does not prevent leather claims.",
+      "new_id": "F188",
+      "ok": true
+    },
+    {
+      "id": "F072",
+      "method": "PATCH",
+      "body": {
+        "value": "Exclusive black and grey leatherette",
+        "conditions": "All upholstery described as leather in the source is leatherette. Availability remains limited to the named variant(s)."
+      },
+      "reason": "Apply explicit material footnote to the active assertion itself; separate F076 alone does not prevent leather claims.",
+      "new_id": "F189",
+      "ok": true
+    },
+    {
+      "id": "F101",
+      "method": "PATCH",
+      "body": {
+        "value": "The King equipment on the Knight black theme, with brass coloured cabin inserts, exclusive black leatherette upholstery with brass highlights, red calipers front and rear, and matte black badging.",
+        "conditions": "All upholstery described as leather in the source is leatherette. Availability remains limited to the named variant(s)."
+      },
+      "reason": "Apply explicit material footnote to the active assertion itself; separate F076 alone does not prevent leather claims.",
+      "new_id": "F190",
+      "ok": true
+    },
+    {
+      "id": "F102",
+      "method": "PATCH",
+      "body": {
+        "value": "All black interior with silver inserts, exclusive black and grey leatherette, moon white ambient lighting, and a 29.46 cm rear seat entertainment screen on the passenger side. Automatic transmissions only.",
+        "conditions": "All upholstery described as leather in the source is leatherette. Availability remains limited to the named variant(s). Lounge Edition is offered with automatic transmissions only."
+      },
+      "reason": "Apply explicit material footnote to the active assertion itself; separate F076 alone does not prevent leather claims.",
+      "new_id": "F191",
+      "ok": true
+    },
+    {
+      "id": "F096",
+      "method": "PATCH",
+      "body": {
+        "conditions": "Wireless Android Auto and Apple CarPlay on SX, SX Premium, King, King Knight and Lounge Edition run through a wired-to-wireless adapter. Voice recognition and smartphone mirroring depend on device compatibility. Alexa Echo is not a standard car accessory and must be bought separately. Bluelink needs adequate power and uninterrupted network connectivity."
+      },
+      "reason": "Restore omitted adapter, compatibility, extra hardware and connected-service dependencies.",
+      "new_id": "F192",
+      "ok": true
+    },
+    {
+      "id": "F139",
+      "method": "PATCH",
+      "body": {
+        "value": "S* for S(O), S(O) Knight and SX Premium; S for King, King Knight and Lounge Edition; – for E, EX, EX(O) and SX",
+        "conditions": "* denotes IVT, AT or DCT only, applying to the starred S(O), S(O) Knight and SX Premium cells. King, King Knight and Lounge Edition cells are unstarred S. The engine/trim table lists no automatic S(O) Knight pairing, so do not claim that configuration is offered; verify the source inconsistency with the dealer."
+      },
+      "reason": "Correct actual S versus S* transcription and preserve unresolved automatic S(O)Knight cross-table inconsistency.",
+      "new_id": "F193",
+      "ok": true
+    },
+    {
+      "id": "F141",
+      "method": "PATCH",
+      "body": {
+        "conditions": "* denotes IVT, AT or DCT only. Availability requires a listed compatible automatic engine/transmission pairing; the engine/trim table lists no automatic S(O) Knight pairing despite its S* feature cell, so do not claim that configuration is offered without dealer confirmation."
+      },
+      "reason": "Retain exact feature row without converting contradictory S(O)Knight star into an offered configuration.",
+      "new_id": "F194",
+      "ok": true
+    },
+    {
+      "id": "F142",
+      "method": "PATCH",
+      "body": {
+        "conditions": "* denotes IVT, AT or DCT only. Availability requires a listed compatible automatic engine/transmission pairing; the engine/trim table lists no automatic S(O) Knight pairing despite its S* feature cell, so do not claim that configuration is offered without dealer confirmation."
+      },
+      "reason": "Retain exact feature row without converting contradictory S(O)Knight star into an offered configuration.",
+      "new_id": "F195",
+      "ok": true
+    },
+    {
+      "id": "F143",
+      "method": "PATCH",
+      "body": {
+        "conditions": "* denotes IVT, AT or DCT only. Availability requires a listed compatible automatic engine/transmission pairing; the engine/trim table lists no automatic S(O) Knight pairing despite its S* feature cell, so do not claim that configuration is offered without dealer confirmation."
+      },
+      "reason": "Retain exact feature row without converting contradictory S(O)Knight star into an offered configuration.",
+      "new_id": "F196",
+      "ok": true
+    },
+    {
+      "id": "F144",
+      "method": "PATCH",
+      "body": {
+        "conditions": "Plain cruise control is listed for S(O), S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition; it is not listed for E, EX or EX(O). Smart Cruise Control with Stop & Go replaces plain cruise only on automatic King, King Knight and Lounge Edition configurations. Do not infer current SX(O) or SX Tech variants from the stale footnote."
+      },
+      "reason": "Remove obsolete footnote names and bind SCC to actual current matrix fitment.",
+      "new_id": "F197",
+      "ok": true
+    },
+    {
+      "id": "F147",
+      "method": "PATCH",
+      "body": {
+        "conditions": "Ex-showroom price; road tax, registration and insurance are added on top and differ by state and city. Page structured data carries a slightly lower headline of ₹10.79 lakh. The upload was compiled on 19 September 2026; these are source-published figures, not a current dealer/on-road quote. Confirm current price and the unresolved source discrepancy before booking."
+      },
+      "reason": "Keep disclosed price discrepancy and explain historical ex-showroom basis; never label as current live price.",
+      "new_id": "F198",
+      "ok": true
+    },
+    {
+      "id": "F033",
+      "method": "POST",
+      "body": {
+        "approved": true
+      },
+      "reason": "Exact current quote and value independently match the retained/rendered PDF; held as changed assertion after reread. Restore only this reviewed row, not all held rows.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F034",
+      "method": "POST",
+      "body": {
+        "approved": true
+      },
+      "reason": "Exact current quote and value independently match the retained/rendered PDF; held as changed assertion after reread. Restore only this reviewed row, not all held rows.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F103",
+      "method": "POST",
+      "body": {
+        "approved": true
+      },
+      "reason": "Exact current quote and value independently match the retained/rendered PDF; held as changed assertion after reread. Restore only this reviewed row, not all held rows.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F104",
+      "method": "POST",
+      "body": {
+        "approved": true
+      },
+      "reason": "Exact current quote and value independently match the retained/rendered PDF; held as changed assertion after reread. Restore only this reviewed row, not all held rows.",
+      "new_id": null,
+      "ok": true
+    },
+    {
+      "id": "F106",
+      "method": "POST",
+      "body": {
+        "approved": true
+      },
+      "reason": "Exact current quote and value independently match the retained/rendered PDF; held as changed assertion after reread. Restore only this reviewed row, not all held rows.",
+      "new_id": null,
+      "ok": true
+    }
+  ]
+}

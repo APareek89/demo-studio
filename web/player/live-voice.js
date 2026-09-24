@@ -13,16 +13,17 @@ export function pcmToFloat(audio, decode = atob) {
 }
 function encodePCM(buffer) { const bytes = new Uint8Array(buffer); let binary = ""; for (const byte of bytes) binary += String.fromCharCode(byte); return btoa(binary); }
 
-// Level/VAD alone also detects cup impacts. Confirm words without waiting for
-// the final transcript; annotations and punctuation are not customer speech.
+// VAD and recognition partials are provisional: a cup impact or TV fragment
+// must not take ownership of playback. Only a qualified final can interrupt.
 export function meaningfulTranscript(text) {
   const words = String(text || "").replace(/[\[<(](?:background\s+noise|noise|silence|music|laughter|cough|breathing|inaudible|unintelligible|unk)[\])>]/gi, "");
-  return /[\p{L}\p{N}]/u.test(words);
+  const value = words.toLowerCase().replace(/[’]/g, "'").replace(/[.!?,]+$/g, "").trim();
+  return /[\p{L}\p{N}]/u.test(value) && !/^(?:i|i'm|i am|it's|it is|it|the|a|an|and|but|so|uh|um|hmm|you|you know|this|that|there|there's|well)$/.test(value);
 }
 
 export class LiveVoiceClient {
-  constructor({ url, sessionId, language = "en-IN", onSpeechStart = () => {}, onTranscript = () => {}, onState = () => {}, onError = () => {}, env = globalThis }) {
-    Object.assign(this, { url, sessionId, language, onSpeechStart, onTranscript, onState, onError, env });
+  constructor({ url, sessionId, language = "en-IN", qualifyInput = meaningfulTranscript, shouldInterrupt = () => true, onSpeechStart = () => {}, onTranscript = () => {}, onState = () => {}, onError = () => {}, env = globalThis }) {
+    Object.assign(this, { url, sessionId, language, qualifyInput, shouldInterrupt, onSpeechStart, onTranscript, onState, onError, env });
     this.socket = null; this.ready = false; this.closed = false; this.connecting = null; this.turn = 0; this.turnId = "t_0";
     this.pending = null; this.delivery = null; this.inputMode = "text"; this.mic = false; this.captureEpoch = 0; this.captureStarting = null;
     this.speechActive = false; this.seenInputs = new Set(); this.inputGeneration = 0; this.muted = false; this.generation = 0; this.audioEpoch = 0;
@@ -170,8 +171,8 @@ export class LiveVoiceClient {
         if (key && this.seenInputs.has(key)) return;
         if (key) this.seenInputs.add(key); if (this.seenInputs.size > 256) this.seenInputs.delete(this.seenInputs.values().next().value);
       }
-      const meaningful = meaningfulTranscript(data.text);
-      if (meaningful) this.speechStart({ source: final ? "final" : "partial", detected_at: Date.now(), preserve_endpoint: final });
+      const meaningful = meaningfulTranscript(data.text) && (!final || this.qualifyInput(data.text));
+      if (meaningful && final && this.shouldInterrupt(data.text)) this.speechStart({ source: "final", detected_at: Date.now(), preserve_endpoint: true });
       if (final) { this.speechActive = false; this.loudFrames = 0; this.speechCandidateAt = null; }
       if (!meaningful) {
         if (final) { this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; }
@@ -222,8 +223,8 @@ export class LiveVoiceClient {
     const id = utteranceId || `u_${Date.now().toString(36)}_${++this.turn}`;
     const owner = turnId || this.turnId;
     return new Promise((resolve, reject) => {
-      this.delivery = { utteranceId: id, turnId: owner, sequence: -1, sources: new Set(), nextAt: this.outputContext.currentTime + 0.025, ended: false, started: false, resolve, reject, onStart,
-        timer: setTimeout(() => this.finishAudio(false, new Error("Speech stream timed out")), 30000) };
+      this.delivery = { utteranceId: id, turnId: owner, sequence: -1, sources: new Set(), nextAt: this.outputContext.currentTime + 0.025, ended: false, started: false, resolve, reject, onStart };
+      this.armAudioDeadline(this.delivery);
       this.send(utteranceId ? "delivery.request" : "delivery.speak", { turn_id: owner, utterance_id: id, ...(utteranceId ? {} : { text }) });
     });
   }
@@ -232,6 +233,15 @@ export class LiveVoiceClient {
     if (!this.outputContext || this.outputContext.state === "closed") { this.outputContext = new Context(); this.gain = this.outputContext.createGain(); this.gain.connect(this.outputContext.destination); }
     this.gain.gain.value = this.muted ? 0 : 1; await this.outputContext.resume();
   }
+  armAudioDeadline(active) {
+    clearTimeout(active.timer);
+    // Healthy queued speech may exceed thirty seconds. Bound inactivity after
+    // its scheduled audio drains, instead of truncating the whole utterance.
+    const buffered = Math.max(0, active.nextAt - this.outputContext.currentTime) * 1000;
+    active.timer = setTimeout(() => {
+      if (this.delivery === active) this.finishAudio(false, new Error("Speech stream timed out"));
+    }, 30000 + buffered);
+  }
   queueAudio(data, active) {
     if (data.format && data.format !== "pcm_s16le" && data.format !== "linear16") throw new Error("Unsupported streamed audio format");
     const sampleRate = Number(data.sample_rate || 24000); if (![8000, 16000, 22050, 24000].includes(sampleRate)) throw new Error("Unsupported audio rate");
@@ -239,6 +249,7 @@ export class LiveVoiceClient {
     const buffer = ctx.createBuffer(1, samples.length, sampleRate); buffer.copyToChannel(samples, 0);
     const source = ctx.createBufferSource(); source.buffer = buffer; source.connect(this.gain);
     const at = Math.max(ctx.currentTime + 0.01, active.nextAt); active.nextAt = at + buffer.duration; active.sources.add(source);
+    this.armAudioDeadline(active);
     source.onended = () => { source.disconnect(); active.sources.delete(source); if (this.delivery === active && active.ended && !active.sources.size) this.finishAudio(true); };
     source.start(at);
     if (!active.started) {

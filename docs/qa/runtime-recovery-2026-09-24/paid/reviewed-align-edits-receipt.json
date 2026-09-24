@@ -1,0 +1,241 @@
+{
+  "status": "saved-needs-deck-review",
+  "demo_id": "dm_7bbf10d0",
+  "at": 1790253922.080554,
+  "before_hashes": {
+    "plan.json": "8dc6cdc7d0ab05e2a5169b38da88208d958a223b87a923c57648214151b683c1",
+    "script.json": "680a3a3f3433e8ebf581485460c510933f0dfec699a2b96f1801837b783e7a4b",
+    "understanding.json": "f9bd14d79ad2c85b695181c2fcbabea730a4d1eb63c0e9e4c2d4a2530c2106da"
+  },
+  "usage_before": 0.7816,
+  "provider_calls_before": 60,
+  "requests": {
+    "align/plan": {
+      "payload": {
+        "fields": {
+          "customer_persona": "Customer priorities and intended use have not been supplied. Present the reviewed options without assuming personal requirements.",
+          "decision_frame": "Compare engine and equipment choices against the customer's stated requirements. Fuel efficiency, service costs and local availability remain unconfirmed.",
+          "takeaway": "The Hyundai CRETA has three engine choices and six standard airbags; other equipment depends on the trim.",
+          "primary_outcome": "Compare approved engine and gearbox options, including their variant conditions.",
+          "supporting_outcomes": [
+            "Review the seating layout and listed cabin equipment",
+            "Review standard airbags and the trim conditions for driver assistance"
+          ],
+          "do_not_recommend_if": "Do not infer suitability before the customer's requirements are known. The approved seating capacity is five; requirements beyond the available evidence need confirmation.",
+          "advance": "Use Contact Dealer to confirm the configuration, availability and a written quotation, then arrange a test drive.",
+          "notes": "The overview describes the five-door compact SUV and introduces variant differences, supported by F033 and F038. Customer priorities remain unknown until stated."
+        },
+        "replacements": [
+          {
+            "from": "Hello, welcome to the official Hyundai CRETA tour. Would you like to tell me quickly what you are buying it for, or shall we just get started?",
+            "to": "Hello, I am Priya, your guide to the Hyundai CRETA. Tell me what matters to you, or say show me around to begin."
+          },
+          {
+            "from": "A knowledgeable and precise Hyundai product specialist guiding customers through specifications and trim options. The guide behaves professionally and provides structured information with a warm and attentive demeanor.",
+            "to": "Priya is a guide to the supplied Hyundai CRETA material. She explains reviewed specifications and trim conditions in a warm, precise manner, without claiming manufacturer or dealer affiliation."
+          },
+          {
+            "from": "Diverse engine options for any drive",
+            "to": "Three engine choices"
+          },
+          {
+            "from": "Panoramic sunroof with voice control",
+            "to": "Voice-enabled panoramic roof on specified trims"
+          },
+          {
+            "from": "Fuel capacity determines refuelling frequency on longer runs.",
+            "to": "Tank capacity is listed, but it does not establish driving range or refuelling frequency without fuel-use figures."
+          },
+          {
+            "from": "Occupant protection across variants is vital for family buyers.",
+            "to": "Compare the listed occupant-protection equipment without assuming the customer is a family buyer."
+          },
+          {
+            "from": "Does this seating and safety configuration match what you need for your daily commute?",
+            "to": "Does this seating and safety configuration match the requirements you described?"
+          },
+          {
+            "from": "One of the cars you see most on Indian roads, this five-door compact SUV offers straight four-cylinder engines.",
+            "to": "This five-door compact SUV has three engine choices; cabin equipment and safety features vary across the listed trims."
+          },
+          {
+            "from": "Starting a city drive with smooth power delivery.",
+            "to": "Comparing the available engine and gearbox combinations."
+          },
+          {
+            "from": "Review standard six airbags, three engine choices, and the panoramic sunroof.",
+            "to": "Review six standard airbags, three engine choices, and the trim conditions for the panoramic sunroof."
+          },
+          {
+            "from": "Use F093 for touchscreen options and wireless smartphone integration; hold connected services detail for questions.",
+            "to": "Use F093 for touchscreen sizes and their exact trim availability; connected-service claims require their separate approved facts and conditions."
+          },
+          {
+            "from": "declare open questions on exact fuel efficiency and service costs to be resolved at a dealership.",
+            "to": "keep exact fuel efficiency and service costs unconfirmed, and ask for written dealer information."
+          }
+        ]
+      },
+      "sha256": "c8d8aa7cf7b2ee84e3658338b249591ebcd70d5adb19d3c59894108f4f9d7492",
+      "status": "saved",
+      "issues": []
+    },
+    "align/script": {
+      "payload": {
+        "intake_q1": "Hello, I am Priya, your guide to the Hyundai CRETA. Tell me what matters to you, or say show me around to begin.",
+        "lines": [
+          {
+            "id": "overview-D1",
+            "text": "The guide lists regular petrol, diesel and turbo petrol engines. Each uses four cylinders. Gearbox choices depend on the engine, so compare the full configuration.",
+            "fact_ids": [
+              "F036",
+              "F151",
+              "F150"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "three_things-D1",
+            "text": "Roof equipment depends on the trim. The voice-enabled panoramic roof is listed on SX, SX Premium, King, King Knight and Lounge Edition.",
+            "fact_ids": [
+              "F135"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "powertrain-D1",
+            "text": "The regular petrol is rated at 115 PS at 6,300 revolutions per minute. It pairs with a six-speed manual or an IVT automatic.",
+            "fact_ids": [
+              "F078",
+              "F080"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "stance_and_ride-D1",
+            "text": "S(O) has black alloy wheels. SX and SX Premium have diamond-cut alloys. Confirm the wheel finish against your chosen trim.",
+            "fact_ids": [
+              "F051",
+              "F052"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "space_and_practicality-D1",
+            "text": "Rear-seat recline is a two-step adjustment on select trims. It is separate from the sixty-forty split, so check whether recline is included in your chosen version.",
+            "fact_ids": [
+              "F164",
+              "F166"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "safety-D1",
+            "text": "Hill-start assist helps prevent backward rolling on a slope. Driver-assistance systems do not replace safe and attentive driving.",
+            "fact_ids": [
+              "F154",
+              "F182"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "cabin_and_tech-D1",
+            "text": "EX, EX(O), S(O) and S(O) Knight have an eight-inch touchscreen. SX upwards use a 10.25-inch navigation display. Lounge Edition also has an 11.6-inch rear entertainment screen on the passenger side.",
+            "fact_ids": [
+              "F093"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "delighters-D1",
+            "text": "The guide lists the Bose eight-speaker system with a subwoofer on SX Premium, King, King Knight and Lounge Edition.",
+            "fact_ids": [
+              "F095"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "ownership-D1",
+            "text": "The listed fuel tank capacity is fifty litres. That alone does not establish how far the car will travel on a tank; I cannot confirm fuel-efficiency figures from these approved facts.",
+            "fact_ids": [
+              "F031"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "more_features-D1",
+            "text": "Front-seat ventilation is listed on SX Premium, King, King Knight and Lounge Edition. The wireless charger also appears on SX, and works only with compatible smartphones.",
+            "fact_ids": [
+              "F138",
+              "F140"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "establish-D1",
+            "text": "Up to seven years of extended warranty is listed for petrol versions only and is separately paid. Ask the dealer to confirm its coverage, exclusions and price in writing.",
+            "fact_ids": [
+              "F181",
+              "F185"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "three_things-L1",
+            "text": "Six airbags are standard across the variants. The panoramic roof is available on specified trims.",
+            "fact_ids": [
+              "F090",
+              "F135"
+            ],
+            "visual_ref": ""
+          },
+          {
+            "id": "three_things-L2",
+            "text": "Regular petrol, diesel and turbo petrol have different gearbox pairings. Compare the complete configuration before choosing.",
+            "fact_ids": [
+              "F036",
+              "F150"
+            ],
+            "visual_ref": ""
+          }
+        ],
+        "realign_visuals": false
+      },
+      "sha256": "7cf746c65c5b8467019f405bb135f36d39b9f689bdfc75642e97cc83b27a7fb2",
+      "status": "saved",
+      "issues": [
+        "three_things (outcome): warning — well under budget; add the join or the moment (31 words, budget 46)"
+      ]
+    }
+  },
+  "after_hashes": {
+    "plan.json": "54d775f00623b64eaa5a6b5a52ec8a77683f1b79902123a2dcc4a01be6c9fa06",
+    "script.json": "ad737fc65bd039de8d42e090373d105b3830a08dde9d680048c185b7934382d4",
+    "understanding.json": "6119711465907309ac40efb06213dd83f5f51efb8bfa1396cd011ac8e3d4b287"
+  },
+  "preparation": {
+    "version": 1,
+    "identity": "b40aa16f1d1b70da1ef0dd7d321b09dfdc30169505d6cf4777a7499bdd9b3452",
+    "status": "ready",
+    "minimum_seconds": 180.0,
+    "duration_changed": false,
+    "target_words": 495,
+    "words": 497,
+    "missing_words": 0,
+    "attempts": 2,
+    "mock_preview": false,
+    "measured": false,
+    "seconds": 201.05,
+    "basis": "estimated",
+    "reason": "The supported draft is prepared for review; recording will verify its duration.",
+    "errors": [],
+    "current_recording": false,
+    "recorded_short": false,
+    "recording_incomplete": false
+  },
+  "issues": [
+    "three_things (outcome): warning — well under budget; add the join or the moment (31 words, budget 46)"
+  ],
+  "usage_after": 0.7816,
+  "provider_calls_after": 60
+}

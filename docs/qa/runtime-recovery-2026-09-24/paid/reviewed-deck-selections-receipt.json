@@ -1,0 +1,120 @@
+{
+  "status": "saved-awaiting-normal-deck-refresh",
+  "at": 1790253965.96511,
+  "before_deck_sha256": "943f9c77336c5764c25bdbbfb089814d2a204f66a18692a88f4f34b047d0eb2e",
+  "request": {
+    "slides": [
+      {
+        "slide_id": "sl01",
+        "media": [
+          "im_pdf_288fd534763aa0f85ff5"
+        ],
+        "callouts": [
+          {
+            "id": "sl01-c1",
+            "text": "Five-door compact SUV",
+            "fact_ids": [
+              "F033",
+              "F038"
+            ],
+            "part": "",
+            "placement": "panel"
+          }
+        ]
+      },
+      {
+        "slide_id": "sl02",
+        "media": []
+      },
+      {
+        "slide_id": "sl03",
+        "media": [
+          "im_pdf_ef829d1422c6088c3929"
+        ]
+      },
+      {
+        "slide_id": "sl04",
+        "media": [
+          "im_pdf_e307b8d383fc82b4e0fe"
+        ]
+      },
+      {
+        "slide_id": "sl05",
+        "media": [
+          "im_pdf_8ff60242fc7b54de3d64"
+        ]
+      },
+      {
+        "slide_id": "sl06",
+        "media": []
+      },
+      {
+        "slide_id": "sl07",
+        "media": []
+      },
+      {
+        "slide_id": "sl08",
+        "media": [
+          "im_pdf_0b62835448ea81c472d0"
+        ]
+      },
+      {
+        "slide_id": "sl09",
+        "media": [
+          "im14"
+        ]
+      },
+      {
+        "slide_id": "sl10",
+        "media": [
+          "im_pdf_e7722bffe4b0d6394547"
+        ]
+      },
+      {
+        "slide_id": "sl11",
+        "media": []
+      },
+      {
+        "slide_id": "sl12",
+        "media": [
+          "im09"
+        ]
+      },
+      {
+        "slide_id": "sl13",
+        "media": [
+          "im06"
+        ]
+      },
+      {
+        "slide_id": "sl14",
+        "media": [
+          "im07"
+        ]
+      },
+      {
+        "slide_id": "sl15",
+        "media": []
+      },
+      {
+        "slide_id": "sl16",
+        "media": [
+          "im05"
+        ]
+      },
+      {
+        "slide_id": "sl17",
+        "media": []
+      },
+      {
+        "slide_id": "sl18",
+        "media": []
+      }
+    ]
+  },
+  "request_sha256": "f2084f973ea4f3a9dbf9cd8ee062103bdcd8c9157f1df6be754694e146d67199",
+  "proof_boundary": "Human-reviewed pictures remain illustrations; no invented coordinates or successful model pixel-audit claim.",
+  "after_deck_sha256": "37c852db0138048d835462e519516fc4ef7d6587cb5cf48d08dd693593129f94",
+  "overrides_sha256": "c40735a2abf4154d972e3137bd0e5300cf8720fc3e236a64aef010c39c70d1d7",
+  "provider_calls_added": 0
+}

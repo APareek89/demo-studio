@@ -1,4 +1,4 @@
-"""Public search remains fetched, cited, turn-local and bounded. No provider or network calls."""
+"""Owner-domain search remains fetched, cited, turn-local and bounded. No paid or network calls."""
 import asyncio
 import copy
 import os
@@ -30,6 +30,8 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
         for blocker in self.blockers: blocker.start()
         self.demo = store.new_demo("Creta")
         self.did = self.demo["id"]
+        self.demo["sources"] = [{"id":"owner", "kind":"url", "role":"product", "url":URL}]
+        store.save(self.did, self.demo)
         store.write_json(self.did, "understanding.json", {"facts":[], "unknowns":[]})
         store.write_json(self.did, "bundle.json", {"slides":[], "version":1})
         self.calls = []
@@ -43,7 +45,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
 
     def search(self, query="How many airbags are available?", urls=None, **kwargs):
         with patch.object(runtime_tools, "_search_sources", return_value={"urls": urls or [URL], "search_queries":[query], "search_entry_point":"<div>Search suggestions</div>"}), patch("server.crawl.fetch_public", side_effect=self.fetch):
-            return runtime_tools.web_search({"tool":"web_search", "query":query}, query, **kwargs)
+            return runtime_tools.web_search({"tool":"web_search", "query":query}, query, **kwargs, allowed_urls=[URL])
 
     def test_schema_addition_preserves_other_tool_fields(self):
         self.assertEqual(runtime_state.ToolRequest(tool="web_search", query="airbags").tool, "web_search")
@@ -52,7 +54,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
     def test_mock_fails_closed_without_provider(self):
         with patch.object(gemini, "client", side_effect=AssertionError("provider called")):
             with self.assertRaisesRegex(ValueError, "mock mode"):
-                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")
+                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])
 
     def test_fetched_sections_only_are_evidence_and_keep_citations(self):
         result = self.search()
@@ -62,71 +64,71 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(fact["provenance"], "live_web")
         self.assertTrue(fact["scope_unverified"])
         self.assertTrue(fact["id"].startswith("W"))
-        self.assertIn("Search suggestions", result["search_entry_point"])
+        self.assertNotIn("search_entry_point", result)
         self.assertEqual(store.read_json(self.did, "understanding.json")["facts"], [])
 
     def test_max_two_unique_fetches_and_existing_size_limit(self):
-        self.search(urls=[URL,URL,"https://review.example/safety","https://extra.example/safety"])
-        self.assertEqual([url for url,_ in self.calls], [URL,"https://review.example/safety"])
+        self.search(urls=[URL,URL,"https://maker.example/safety","https://maker.example/more-safety"])
+        self.assertEqual([url for url,_ in self.calls], [URL,"https://maker.example/safety"])
         self.assertTrue(all(0 < args["timeout"] <= 5 and args["max_bytes"] == 2_000_000 for _,args in self.calls))
 
     def test_no_cited_sources_does_not_fetch_or_use_search_prose(self):
         with patch.object(runtime_tools, "_search_sources", return_value={"urls":[],"text":QUOTE}), patch("server.crawl.fetch_public") as fetch:
             with self.assertRaisesRegex(ValueError, "no cited"):
-                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")
+                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])
         fetch.assert_not_called()
 
     def test_question_only_and_unrelated_sections_cannot_answer(self):
         with patch.object(runtime_tools, "_search_sources", return_value={"urls":[URL]}), patch("server.crawl.fetch_public", return_value={"sections":[{"text":"How many airbags are available?"},{"text":"This is an unrelated warranty page."}]}):
             with self.assertRaisesRegex(ValueError, "No fetched"):
-                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")
+                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])
 
     def test_table_headers_footnotes_are_preserved_whole(self):
         section={"text":"Airbags | Trim A | Trim B\nCount | 6 | 4\nOnly applies to the stated market.","kind":"table","rows":[["Airbags","Trim A","Trim B"],["Count","6","4"]],"footnote":"Only applies to the stated market."}
         with patch.object(runtime_tools, "_search_sources", return_value={"urls":[URL]}), patch("server.crawl.fetch_public", return_value={"sections":[section]}):
-            fact=runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")["evidence"][0]
+            fact=runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])["evidence"][0]
         self.assertEqual(fact["value"],section["text"])
         self.assertEqual(fact["context"]["rows"],section["rows"])
         self.assertEqual(fact["context"]["footnote"],section["footnote"])
 
     def test_redirect_is_cited_at_actual_fetched_url(self):
-        target="https://actual.example/safety"
+        target="https://www.maker.example/creta/safety"
         with patch.object(runtime_tools, "_search_sources", return_value={"urls":[URL]}), patch("server.crawl.fetch_public", return_value={"final_url":target,"text":QUOTE}):
-            result=runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")
+            result=runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])
         self.assertEqual(result["evidence"][0]["source"]["ref"],target)
 
     def test_private_or_failed_sources_are_not_evidence(self):
         with patch.object(runtime_tools, "_search_sources", return_value={"urls":["http://127.0.0.1/private"]}), patch("server.crawl.fetch_public", side_effect=ValueError("Private address")):
-            with self.assertRaisesRegex(ValueError, "No fetched"):
-                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")
+            with self.assertRaisesRegex(ValueError, "no cited"):
+                runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])
 
     def test_actual_fetch_security_rejects_private_dns_before_socket(self):
         answer=[(socket.AF_INET,socket.SOCK_STREAM,6,"",("127.0.0.1",80))]
         with patch.object(runtime_tools,"_search_sources",return_value={"urls":["http://private.example/"]}), patch.object(socket,"getaddrinfo",return_value=answer):
             with self.assertRaisesRegex(ValueError,"No fetched"):
-                runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags")
+                runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags", allowed_urls=["http://private.example/"])
 
     def test_oversize_whole_section_is_dropped_not_truncated(self):
         with patch.object(runtime_tools,"_search_sources",return_value={"urls":[URL]}), patch("server.crawl.fetch_public",return_value={"text":"Airbags "+"x"*12000}):
             with self.assertRaisesRegex(ValueError,"No fetched"):
-                runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags")
+                runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags", allowed_urls=[URL])
 
     def test_cancellation_before_discovery_prevents_all_work(self):
         event=threading.Event();event.set()
         with patch.object(runtime_tools,"_search_sources") as search:
-            with self.assertRaises(InterruptedError): runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags",cancel_event=event)
+            with self.assertRaises(InterruptedError): runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags",cancel_event=event, allowed_urls=[URL])
         search.assert_not_called()
 
     def test_cancellation_after_discovery_prevents_fetch(self):
         event=threading.Event()
         def discover(*_): event.set();return {"urls":[URL]}
         with patch.object(runtime_tools,"_search_sources",side_effect=discover), patch("server.crawl.fetch_public") as fetch:
-            with self.assertRaises(InterruptedError): runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags",cancel_event=event)
+            with self.assertRaises(InterruptedError): runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags",cancel_event=event, allowed_urls=[URL])
         fetch.assert_not_called()
 
     def test_deadline_after_discovery_prevents_fetch(self):
         with patch.object(runtime_tools,"_search_sources",return_value={"urls":[URL]}), patch("server.runtime_tools.time.monotonic",side_effect=[10,10.1,16]), patch("server.crawl.fetch_public") as fetch:
-            with self.assertRaises(TimeoutError): runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags")
+            with self.assertRaises(TimeoutError): runtime_tools.web_search({"tool":"web_search", "query":"airbags"}, "airbags", allowed_urls=[URL])
         fetch.assert_not_called()
 
     def test_cancellation_after_page_does_not_publish_evidence(self):
@@ -134,7 +136,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
         def fetch(*_,**kwargs): event.set();return {"text":QUOTE}
         with patch.object(runtime_tools,"_search_sources",return_value={"urls":[URL]}),patch("server.crawl.fetch_public",side_effect=fetch):
             with self.assertRaises(InterruptedError):
-                runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags",cancel_event=event)
+                runtime_tools.web_search({"tool":"web_search","query":"airbags"},"airbags",cancel_event=event, allowed_urls=[URL])
 
     def test_optional_timeout_retains_completed_cited_passage(self):
         clock = [0.0]
@@ -145,9 +147,9 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
             clock[0] += kwargs["timeout"]
             raise TimeoutError("optional page timed out")
         with patch.object(runtime_tools.time, "monotonic", side_effect=lambda: clock[0]), \
-             patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://slow.example/safety"]}), \
+             patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://maker.example/slow-safety"]}), \
              patch("server.crawl.fetch_public", side_effect=fetch):
-            result = runtime_tools.web_search({"tool": "web_search", "query": "airbags"}, "airbags")
+            result = runtime_tools.web_search({"tool": "web_search", "query": "airbags"}, "airbags", allowed_urls=[URL])
         self.assertEqual(result["evidence"][0]["source"]["ref"], URL)
         self.assertEqual(result["evidence"][0]["source"]["quote"], QUOTE)
         self.assertTrue(any("optional page timed out" in warning for warning in result["coverage"]))
@@ -160,10 +162,10 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
                 return {"text": QUOTE}
             event.set()
             raise TimeoutError("optional page timed out during cancellation")
-        with patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://slow.example/safety"]}), \
+        with patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://maker.example/slow-safety"]}), \
              patch("server.crawl.fetch_public", side_effect=fetch):
             with self.assertRaises(InterruptedError):
-                runtime_tools.web_search({"tool": "web_search", "query": "airbags"}, "airbags", cancel_event=event)
+                runtime_tools.web_search({"tool": "web_search", "query": "airbags"}, "airbags", cancel_event=event, allowed_urls=[URL])
 
     async def test_actual_dispatch_returns_partial_search_before_outer_deadline(self):
         control = runtime_state.claim_turn(self.did, "s_partial", "t_partial", budget=.5)
@@ -175,7 +177,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
                 return {"final_url": url, "text": QUOTE}
             time.sleep(kwargs["timeout"])
             raise TimeoutError("optional page timed out")
-        with patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://slow.example/safety"]}), \
+        with patch.object(runtime_tools, "_search_sources", return_value={"urls": [URL, "https://maker.example/slow-safety"]}), \
              patch("server.crawl.fetch_public", side_effect=fetch):
             result = await runtime_graph.tools_node(state)
         self.assertGreater(control.remaining(), 0)
@@ -207,7 +209,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
 
     def test_existing_supplied_url_tool_still_rejects_unprovided_urls(self):
         with patch("server.crawl.fetch_public") as fetch:
-            with self.assertRaisesRegex(ValueError,"exact public website"):
+            with self.assertRaisesRegex(ValueError,"demo owner"):
                 runtime_tools.source_lookup({"tool":"source_lookup","url":URL,"query":"airbags"},"airbags",[])
         fetch.assert_not_called()
 
@@ -259,7 +261,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["decision"]["tool_calls"][0]["tool"],"source_lookup")
 
     async def test_model_can_search_when_retrieved_evidence_cannot_answer(self):
-        state={"demo_id":self.did,"question":"How many airbags?","history":[],"evidence":[],"tool_results":[],"errors":[],
+        state={"demo_id":self.did,"question":"How many airbags?","history":[],"evidence":[],"tool_rounds":1,"tool_results":[{"tool":"source_lookup","error":"unavailable"}],"errors":[],
                "decision":{"action":"tools","tool_calls":[{"tool":"web_search","query":"airbags"}]},
                "control":runtime_state.claim_turn(self.did,"s_no_intent","t_search")}
         with patch.object(runtime_graph,"web_search",return_value=self.search()) as search:
@@ -268,12 +270,12 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["errors"],[])
         self.assertEqual(len(result["evidence"]),1)
 
-    async def test_empty_retrieval_automatically_searches_before_model(self):
+    async def test_empty_retrieval_automatically_reads_owner_source_before_model(self):
         before=copy.deepcopy(store.read_json(self.did,"understanding.json"))
         with patch.object(runtime_tools,"_search_sources",return_value={"urls":[URL]}) as discover,patch("server.crawl.fetch_public",side_effect=self.fetch):
             final=await runtime_graph.run_turn(self.did,{"question":"How many airbags are available?","session_id":"automatic","skip_bank":True})
-        discover.assert_called_once()
-        self.assertIn("Creta",discover.call_args.args[0])
+        discover.assert_not_called()
+        self.assertEqual(self.calls[0][0],URL)
         self.assertTrue(final["result"]["answered"],final["result"])
         self.assertEqual(final["result"]["answer"],"According to maker.example, six airbags are available.")
         self.assertEqual(final["tool_rounds"],1)
@@ -291,12 +293,12 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
             return original({**state,"evidence":live})
         with patch.object(runtime_graph,"_mock_decision",side_effect=decision),patch.object(runtime_tools,"_search_sources",return_value={"urls":[URL]}) as discover,patch("server.crawl.fetch_public",side_effect=self.fetch):
             final=await runtime_graph.run_turn(self.did,{"question":"How many airbags?","session_id":"decline","skip_bank":True})
-        discover.assert_called_once()
+        discover.assert_not_called()
         self.assertTrue(final["result"]["answered"],final["result"])
         self.assertEqual(final["tool_count"],1)
 
     async def test_customer_site_precedes_public_fallback_within_two_rounds(self):
-        preferred="https://preferred.example/creta"
+        preferred="https://maker.example/creta"
         order=[]
         def fetch(url,**kwargs):
             order.append(url)
@@ -335,7 +337,7 @@ class WebSearch(unittest.IsolatedAsyncioTestCase):
 
     async def test_failed_search_is_not_retried_or_promoted(self):
         with patch.object(runtime_graph,"web_search",side_effect=ValueError("No cited public sources")) as search:
-            final=await runtime_graph.run_turn(self.did,{"question":"How many airbags?","session_id":"failed-search","skip_bank":True})
+            final=await runtime_graph.run_turn(self.did,{"question":"Search the web for airbags","session_id":"failed-search","skip_bank":True})
         search.assert_called_once()
         self.assertFalse(final["result"]["answered"])
         self.assertEqual((final["tool_rounds"],final["tool_count"]),(1,1))

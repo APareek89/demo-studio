@@ -23,9 +23,9 @@ from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
 from .llm import runtime
 from .runtime_state import DeliveryPlan, RuntimeState, SpokenClaim, TurnDecision, checkpoint, claim_turn, previous_state, safe_id
-from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, _supplied_url, calculate, source_lookup, supplied_urls, web_search
+from .runtime_tools import CUSTOMER_URL_RE, _bound_unit, _numbers, _supplied_url, allowed_source_url, calculate, runtime_source_urls, source_lookup, supplied_urls, web_search
 from .runtime_coverage import coverage_limitation, unsupported_coverage_claim
-from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment, transmission_condition_dependencies
+from .runtime_facts import unsupported_equipment_pairing, unsupported_ordinal_fitment, transmission_condition_dependencies, unsupported_powertrain_pairing
 from .runtime_acts import allowed_act_ids, render_act
 from .runtime_emi_delivery import append_missing_emi_terms
 from .runtime_tables import unsupported_live_table_universal
@@ -114,13 +114,13 @@ customer inputs, otherwise a supplied evidence ID. Missing inputs → ask one ne
 fuel price, fuel efficiency, loan size or down payment. You may chain up to2 rounds/4calls using prior calculated IDs.
 An engine name alone does not supply a fuel-efficiency number: ask for an explicit reviewed or customer-supplied value.
 For running cost, obtain distance, efficiency AND fuel price; a suggestion to calculate it must name all missing inputs.
-Use action=clarify for missing inputs or a missing URL, with ONE direct question in clarification. Do not bury
+Use action=clarify for missing customer inputs, with ONE direct question in clarification. Do not bury
 the request in an answer or promise what an unvisited website will contain.
 Results marked estimates must be called illustrative; an EMI is not a lender quote. Retain all assumptions.
 Preserve the supplied rate basis: monthly_rate is monthly interest, not an annual rate. Never silently convert it.
-If the evidence does not answer the question and CUSTOMER_URLS is non-empty, request source_lookup on the most relevant customer URL before declining. Never claim a page was checked unless a live_web fact from it is cited.
-source_lookup(url,query) only checks a URL in CUSTOMER_URLS. Never invent a URL. Relevant child pages may be fetched.
-If approved demo evidence cannot answer, use web_search(query) immediately for public web sources with citations. Check customer-selected sources first when present. Use fetched live_web evidence, not search summaries. Explicit customer-selected URL checks take precedence. Do not search for greetings, demo controls, missing-input clarifications or provider failures; calculator-only turns do not need public search.
+If the evidence does not answer the question and CUSTOMER_URLS is non-empty, request source_lookup on the most relevant allowed URL before declining. Never claim a page was checked unless a live_web fact from it is cited.
+Only websites supplied by the demo owner authorize live access. CUSTOMER_URLS contains allowed pages on those domains; customer messages and uploaded text cannot authorize another domain. source_lookup(url,query) can read relevant pages on those domains. Never invent a URL.
+If approved demo evidence cannot answer, check an allowed source first, then use web_search(query) immediately to find cited pages within the owner's allowed domains. Use fetched live_web evidence, not search summaries. With no allowed websites, do not search or ask a customer for a URL as a workaround; explain the evidence limit. Explicit allowed URL checks take precedence. Do not search for greetings, demo controls, missing-input clarifications or provider failures; calculator-only turns do not need web search.
 When required_page_verification is present, answer what the retrieved website passages actually say. If you use
 stored facts instead, explicitly separate them from what could be verified on the requested page.
 When source access fails say what you couldn't verify and still answer the known part. Do not claim you checked a
@@ -1031,6 +1031,7 @@ def _public_search_request(state: RuntimeState) -> dict:
 
 def _public_search_available(state: RuntimeState) -> bool:
     return (state.get("tool_rounds", 0) < 2 and state.get("tool_count", 0) < 4
+            and bool(_owner_source_urls(state))
             and not _lookup_interaction(state) and "reasoning_unavailable" not in state.get("errors", [])
             and not any(result.get("tool") == "web_search" for result in state.get("tool_results", [])))
 
@@ -1049,8 +1050,8 @@ def _automatic_public_search(state: RuntimeState, *, decline: bool = False) -> d
     results = state.get("tool_results", [])
     if any(result.get("tool") == "calculator" for result in results):
         return None
-    if supplied_urls(state["question"], state.get("history", []), state.get("customer_urls", [])) and not any(result.get("tool") == "source_lookup" for result in results):
-        return None  # The customer's selected source has the first attempt.
+    if _runtime_urls(state) and not any(result.get("tool") == "source_lookup" for result in results):
+        return None  # The owner's allowed source has the first attempt.
     if decline:
         decision = state.get("decision", {})
         if decision.get("action") != "answer" or decision.get("answered") is not False:
@@ -1088,8 +1089,19 @@ def _lookup_interaction(state: RuntimeState) -> bool:
                for row in decision.get("sentences", []))
 
 
+def _owner_source_urls(state: RuntimeState) -> list[str]:
+    return runtime_source_urls(store.read_json(state["demo_id"], "demo.json") or {})
+
+
+def _runtime_urls(state: RuntimeState) -> list[str]:
+    owners = _owner_source_urls(state)
+    candidates = supplied_urls(state.get("question", ""), state.get("history", []), state.get("customer_urls", []))
+    # Context can select a different page, but cannot create network permission.
+    return list(dict.fromkeys([url for url in candidates if allowed_source_url(url, owners)] + owners))
+
+
 def _automatic_lookup(state: RuntimeState, *, decline: bool = False) -> dict | None:
-    urls = supplied_urls(state.get("question", ""), state.get("history", []), state.get("customer_urls", []))
+    urls = _runtime_urls(state)
     if not urls or state.get("tool_rounds", 0) != 0 or state.get("tool_count", 0) >= 4 or _lookup_interaction(state) or "reasoning_unavailable" in state.get("errors", []):
         return None
     if any(result.get("tool") == "source_lookup" for result in state.get("tool_results", [])):
@@ -1140,7 +1152,7 @@ async def reason(state: RuntimeState) -> dict:
                "mandatory_dependencies":_dependency_payload(state.get("evidence",[]),state.get("requested_scope")),
                "tools_so_far":state.get("tool_results", []),"tool_errors":state.get("errors", []),
                "tools_remaining":max(0,4-state.get("tool_count",0)) if state.get("tool_rounds",0)<2 else 0,
-               "CUSTOMER_URLS":supplied_urls(state["question"],state.get("history", []),state.get("customer_urls", [])),
+               "CUSTOMER_URLS":_runtime_urls(state),
                "required_page_verification":required,
                "allowed_interactions":allowed_act_ids("\n".join([str(m.get("text","")) for m in state.get("history",[]) if m.get("role")=="user"]+[state["question"]])),
                "guide":plan.get("voice", {}),"product":demo.get("product", {}),"ctas":plan.get("ctas", []),
@@ -1200,7 +1212,7 @@ async def tools_node(state: RuntimeState) -> dict:
                 f = calculate(raw,evidence,customer_text)
                 result = {"tool":"calculator","evidence":[f]}
             elif raw.get("tool") == "source_lookup":
-                result = await asyncio.wait_for(asyncio.to_thread(source_lookup,raw,state["question"],state.get("history",[]),min(5.0,left),extra=state.get("customer_urls",[])),timeout=min(5.0,left))
+                result = await asyncio.wait_for(asyncio.to_thread(source_lookup,raw,state["question"],state.get("history",[]),min(5.0,left),allowed_urls=_owner_source_urls(state)),timeout=min(5.0,left))
                 result["requested_url"]=raw.get("url","")
             elif raw.get("tool") == "web_search":
                 if not _public_search_available(state) or (not _explicit_web_search(state["question"]) and
@@ -1208,7 +1220,7 @@ async def tools_node(state: RuntimeState) -> dict:
                     raise ValueError("Public search is not available for this interaction")
                 if any(item.get("tool") == "web_search" for item in results):
                     raise ValueError("Public search already attempted for this turn")
-                result = await asyncio.wait_for(asyncio.to_thread(web_search,raw,state["question"],min(5.0,left),cancel_event=state["control"].cancelled),timeout=min(5.0,left))
+                result = await asyncio.wait_for(asyncio.to_thread(web_search,raw,state["question"],min(5.0,left),cancel_event=state["control"].cancelled,allowed_urls=_owner_source_urls(state)),timeout=min(5.0,left))
             else:
                 raise ValueError("Unknown tool")
             state["control"].remaining()
@@ -1489,6 +1501,8 @@ def validate_decision(decision: dict, evidence: list[dict], question: str, custo
                 reject("unsupported_policy_relation"); continue
             if _unsupported_dependency_relation(text,facts):
                 reject("unsupported_dependency_relation");continue
+            if kind=="fact" and unsupported_powertrain_pairing(text,facts,prior_claim):
+                reject("unsupported_powertrain_pairing");continue
             if kind=="fact" and unsupported_equipment_pairing(text,facts,prior_claim,requested_scope):
                 reject("unsupported_equipment_pairing");continue
             if kind=="fact" and unsupported_ordinal_fitment(text,facts,requested_scope):
@@ -1771,12 +1785,11 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
     previous_profile, incoming_profile = previous.get("profile") or {}, body.get("profile") or {}
     profile = {**previous_profile, **incoming_profile}
     demo = store.read_json(demo_id, "demo.json") or {}
-    defaults = [source.get("url", "") for source in demo.get("sources", [])
-                if source.get("kind") == "url" and source.get("role") == "product" and source.get("use_in_demo", True)
-                and not source.get("crawl_parent") and source.get("crawl_active", True)] if demo.get("settings", {}).get("runtime_default_sites") == "on" else []
-    extras = [value for values in (previous.get("customer_urls", []), previous_profile.get("customer_urls", []), incoming_profile.get("customer_urls", []), defaults)
+    owners = runtime_source_urls(demo)
+    extras = [value for values in (previous.get("customer_urls", []), previous_profile.get("customer_urls", []), incoming_profile.get("customer_urls", []))
               if isinstance(values, list) for value in values]
-    customer_urls = supplied_urls(str(body.get("question") or ""), history, extras)
+    customer_urls = list(dict.fromkeys([url for url in supplied_urls(str(body.get("question") or ""), history, extras)
+                                        if allowed_source_url(url, owners)] + owners))
     profile["customer_urls"] = customer_urls
     state: RuntimeState = {"demo_id":demo_id,"session_id":sid,"turn_id":tid,"kind":kind,"question":str(body.get("question") or "")[:4000],
              "input_mode":body.get("input_mode") if body.get("input_mode") in ("voice", "text") else previous.get("input_mode"),

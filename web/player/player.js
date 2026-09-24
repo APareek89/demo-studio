@@ -20,7 +20,7 @@ import { renderSlide } from "/web/slide.js";
 import { createWalkthrough } from "/web/player/walkthrough.js";
 import { h, toast } from "/web/api.js";
 import { icon } from "/web/icons.js";
-import { LiveVoiceClient } from "/web/player/live-voice.js";
+import { LiveVoiceClient, meaningfulTranscript } from "/web/player/live-voice.js";
 import { renderPublicSearch } from "/web/player/public-search-ui.js";
 
 // Read browser speech support once; the other constants describe text helpers and contact consent.
@@ -54,8 +54,34 @@ function explicitContextCorrection(text) {
 // Compare the available recorded acknowledgments and return the shorter usable filler key.
 // player.js:questionResult uses it while server/runtime_graph.py:run_turn prepares an answer.
 function questionAckKey(fillers = {}) {
-  const lookup = fillers.hold_on_lookup, question = fillers.hold_on_question;
-  return lookup?.audio && lookup.text && (!question?.audio || lookup.text.split(/\s+/).length < (question.text || "").split(/\s+/).length) ? "hold_on_lookup" : "hold_on_question";
+  return "hold_on_question";
+}
+
+function playbackCommand(text) {
+  const value = String(text || "").toLowerCase().trim().replace(/[.!?,]+$/g, "");
+  if (/^(?:please )?(?:continue(?: the demo)?|carry on|go on|go ahead|next|move on|proceed|resume(?: the demo)?|चलो|आगे बढ़ो)$/.test(value)) return "continue";
+  if (/^(?:please )?(?:pause(?: the demo)?|wait|hold on|रुको)$/.test(value)) return "pause";
+  if (/^(?:please )?(?:stop(?: the demo)?|end(?: the demo)?|finish|बंद करो)$/.test(value)) return "stop";
+  if (/^(?:not now|no thanks|no thank you|maybe later|not yet|baad mein|अभी नहीं)$/.test(value)) return "notnow";
+  return null;
+}
+function genericTour(text) {
+  return /^(?:(?:please|just|okay|ok)[, ]+)*(?:show me around|show me(?: the)? (?:car|product|demo)|take me (?:through|around)(?: the demo)?|give me (?:an? |the )?(?:tour|overview)|start(?: the demo)?|let'?s (?:start|go)|go ahead|continue|anything|everything|no preference|nothing specific)[.!?]*$/i.test(String(text || "").trim());
+}
+function qualifiesCustomerSpeech(text, { prompt = false, terms = [] } = {}) {
+  if (!meaningfulTranscript(text)) return false;
+  if (playbackCommand(text) || genericTour(text)) return true;
+  if (prompt && /^(?:\+?\d[\d -]{6,15})$/.test(String(text).trim())) return true;
+  if (/[?？]$/.test(String(text).trim())) return true;
+  const value = String(text).trim().toLowerCase();
+  if (/^(?:check|search|look up|find)\s+\S+/i.test(value)) return true;
+  if (/^(?:yes|no|yeah|nope|okay|ok|sure|thanks|thank you|haan|nahi|nahin|theek|जी|हाँ|नहीं)[.!?]*$/i.test(value)) return prompt;
+  // Keep supported languages and short feature questions usable; this gate
+  // rejects obvious fragments/background statements, not speaker identity.
+  if (/[^\u0000-\u024f\s\p{P}\p{N}]/u.test(value)) return true;
+  if (/^(?:what|which|how|why|when|where|who|can|could|does|do|is|are|will|would|tell me|i (?:want|need|prefer|drive|use|travel|have|am looking|care)|my (?:name|priority|budget|family|commute))\b/i.test(value) && value.split(/\s+/).length >= 3) return true;
+  const words = new Set(value.match(/[a-z0-9]+/g) || []);
+  return terms.some(term => words.has(term));
 }
 
 function defaultVoiceMode(bundle, muted) { return bundle.runtime?.continuous_voice === true && !muted; }
@@ -122,6 +148,8 @@ export function mountPlayer(host, bundle, api) {
   // Return a stable topic key, falling back to the segment or slide ID when a topic is missing.
   // Local resolved and unresolved sets use it; server/app.py:save_session receives those sets as arrays.
   const topicOf = (sl) => sl.topics?.[0] || sl.segment_id || sl.id;
+  const speechStopWords = new Set("about after again before being choosing every features from have into just more most only other over some that their them then there these they this those through what when where which with your will would demo guide product section things".split(" "));
+  const speechTerms = [...new Set([bundle.product?.name, ...slides.flatMap(sl => [sl.title, ...(sl.topics || []), ...(sl.callouts || []).map(c => c.part || c.text)])].join(" ").toLowerCase().match(/[a-z0-9]{4,}/g) || [])].filter(word => !speechStopWords.has(word));
 
   // Keep preload objects alive for the full session: every recorded line, filler, FAQ answer and picture, plus the film.
   // Warm the browser cache with published audio, slide images and the optional opening film.
@@ -266,6 +294,8 @@ export function mountPlayer(host, bundle, api) {
     S.pendingRefinement = null; S.contextRevision = 0; S.interruptions.length = 0;
     if (!api.liveUrl) return;
     live = new LiveVoiceClient({ url: api.liveUrl, sessionId: S.sessionId, language: LANG,
+      qualifyInput: text => qualifiesCustomerSpeech(text, { prompt: S.intakeOpen || !!S.waiter || S.promptRun === S.run, terms: speechTerms }),
+      shouldInterrupt: text => !playbackCommand(text),
       // On detected speech, stop current output and preserve the return point when a conversation begins.
       // The event comes from live-voice.js:LiveVoiceClient.speechStart; local timing records when output was stopped.
       onSpeechStart: (event) => {
@@ -284,6 +314,7 @@ export function mountPlayer(host, bundle, api) {
         const text = (event.text || "").trim();
         if (!event.final) { if (S.intakeOpen) el.inHeard.textContent = text; else el.live.textContent = text; return; }
         if (!text) return;
+        if (handlePlaybackCommand(text)) return;
         S.lastListen = { voice_ended: event.voice_ended, stt_done: event.stt_done, speech_detected: S.speechDetectedAt || null, endpoint_received_at: event.endpoint_received_at, server_endpoint_received_at: event.server_endpoint_received_at, speech_end_basis: event.speech_end_basis, via: "realtime" };
         resumeSession();
         if (S.intakeOpen) { if (S.intakeResolver) S.intakeResolver(text); else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; } return; }
@@ -330,7 +361,7 @@ export function mountPlayer(host, bundle, api) {
   function setStatus(kind, txt) { el.status.className = "pl-status " + kind; el.statusTxt.textContent = txt; el.avatar.classList.toggle("speaking", kind === "speaking"); el.avatar.classList.toggle("listening", kind === "listening"); const ms = kind === "speaking" ? "speaking" : kind === "listening" ? "listening" : kind === "thinking" ? "thinking" : "idle"; [el.mascotTop, el.mascotIntake, el.mascotStage].forEach((m) => m && m.set(ms)); }
   // Append a conversation message, scroll it into view and retain non-note text for the report.
   // Role, text and interruption details become history for server/app.py:run_qa and save_session.
-  function addMsg(role, text, extra = {}) { if (role === "user") rememberCustomerUrls(text); const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") S.transcript.push({ role, text, t: Date.now(), ...extra }); if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
+  function addMsg(role, text, extra = {}) { if (role === "user") rememberCustomerUrls(text); const d = h("div", { class: "m " + role + (extra.interrupted ? " interrupted" : "") }, text, extra.interrupted ? h("span", { class: "cut", title: "cut off here" }, " —") : null); el.thread.append(d); el.thread.scrollTop = el.thread.scrollHeight; if (role !== "note") { S.transcript.push({ role, text, t: Date.now(), ...extra }); scheduleCheckpoint(); } if (role === "agent" && !el.drawer.classList.contains("open")) el.chatBtn.classList.add("unread"); }
   // Keep source widgets beside the current caption and beside this question in
   // the retained drawer. Provider markup never joins the spoken transcript.
   function showPublicSearch(result) {
@@ -352,12 +383,34 @@ export function mountPlayer(host, bundle, api) {
   // Accept typed words, stamp their timing and deliver them to the current intake or reply wait.
   // If no wait owns the text, handleQuestion sends it through server/app.py:run_qa.
   function acceptTypedAnswer(text) {
+    if (handlePlaybackCommand(text)) return;
+    if (S.intakeOpen && !meaningfulTranscript(text) && (text.trim() || !S.profile.customer_urls?.length)) { el.inState.textContent = "Tell me what matters to you, or choose Skip."; return; }
     preferTyping();
     resumeSession();
     S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "typed" };
     if (S.intakeOpen) { if (S.intakeResolver) S.intakeResolver(text); else { S.pendingIntakeAnswer = text; el.inHeard.textContent = text; } return; }
     if (S.waiter) { addMsg("user", text); resolveWait(replyForTurn(text, S.waiter)); return; }
     handleQuestion(text);
+  }
+  function handlePlaybackCommand(text) {
+    const command = playbackCommand(text);
+    const callbackOffered = S.waiter?.chips.some(c => c.value === "callback");
+    if (!command || (command === "notnow" && !el.lead.classList.contains("open") && !callbackOffered)) return false;
+    if (S.intakeOpen && command === "continue") return false;
+    addMsg("user", text);
+    if (command === "stop") { stopDemo(); return true; }
+    if (command === "pause") { if (!S.paused) togglePause(); return true; }
+    if (el.lead.classList.contains("open")) dismissLeadPrompt();
+    if (command === "notnow") {
+      S.leadDismissed = true;
+      if (callbackOffered) { S.waiter.chips = S.waiter.chips.filter(c => c.value !== "callback"); setChips(S.waiter.chips); armPostAnswerListen(); }
+      return true;
+    }
+    if (S.paused) { togglePause(); return true; }
+    if (S.waiter?.chips.some(c => c.value === "continue")) { resolveWait("continue"); return true; }
+    if (S.conversationOrigin) { interruptAll({ preservePlanning: openingPlanPending() }); resumeAfterQA(); }
+    // Already-playing narration needs no question call or checking filler.
+    return true;
   }
   // Open or close the conversation drawer, clear its unread marker and focus the text box when opened.
   // The optional force flag overrides toggling; the drawer was built with web/api.js:h.
@@ -393,7 +446,7 @@ export function mountPlayer(host, bundle, api) {
     el.hint.textContent = "Ask another question, or I'll continue in a moment.";
     reply.focus({ preventScroll: true });
   }
-  function dismissLeadPrompt() { S.leadFormId = (S.leadFormId || 0) + 1; el.lead.classList.remove("open"); armPostAnswerListen(); }
+  function dismissLeadPrompt() { S.leadFormId = (S.leadFormId || 0) + 1; S.leadDismissed = true; el.lead.classList.remove("open"); armPostAnswerListen(); }
   // Clear reply timing on a new wait, an explicit choice or interruption.
   function clearTimer() { cancelPostAnswerListen(); if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   // Increment and return the playback run number whenever a new flow takes ownership.
@@ -503,9 +556,13 @@ export function mountPlayer(host, bundle, api) {
   function logHeard(sp, complete) {
     if (!sp || sp.logged) return; sp.logged = true;
     if (complete) { addMsg("agent", sp.text); return; }
+    const heard = heardPrefix(sp); if (heard) addMsg("agent", heard.text, heard);
+  }
+  function heardPrefix(sp) {
+    if (!sp?.startedAt) return null;
     const a = sp.audio; const frac = a && isFinite(a.duration) && a.duration > 0 ? a.currentTime / a.duration : Math.min(1, (Date.now() - sp.startedAt) / Math.max(1, sp.estMs));
-    const n = Math.min(sp.words, Math.round(frac * sp.words)); if (n <= 0) return;
-    addMsg("agent", sp.text.split(/\s+/).slice(0, n).join(" "), { interrupted: true, full: sp.text, heard_fraction: +frac.toFixed(2) });
+    const n = Math.min(sp.words, Math.round(frac * sp.words)); if (n <= 0) return null;
+    return { text: sp.text.split(/\s+/).slice(0, n).join(" "), interrupted: true, full: sp.text, heard_fraction: +frac.toFixed(2) };
   }
   // Consume the one-time callback for actual audio onset and give it the current timestamp.
   // This feeds answer timing later read by server/runtime_metrics.py:aggregate, separately from caption display.
@@ -540,7 +597,7 @@ export function mountPlayer(host, bundle, api) {
     return new Promise((res) => {
       const my = ++S.ttsToken, u = new SpeechSynthesisUtterance(text); S.utterance = u;
       const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1;
-      const sp = { text, words: wordsOf(text), audio: null, startedAt: Date.now(), estMs: Math.max(1500, text.length * 75) }; S.speaking = sp;
+      const sp = { text, words: wordsOf(text), audio: null, startedAt: null, estMs: Math.max(1500, text.length * 75) }; S.speaking = sp;
       let done = false;
       // Finish browser speech once and clear only the utterance and callbacks owned by this attempt.
       // Resolve with run and token checks; the resulting transcript is saved by server/app.py:save_session.
@@ -603,7 +660,7 @@ export function mountPlayer(host, bundle, api) {
     // The URL comes from server/app.py:get_bundle or run_tts; completion is returned to the narration loop.
     if (url) ok = await new Promise((res) => {
       const my = ++S.ttsToken, a = new Audio(url); a.muted = S.muted; S.audio = a;
-      const sp = { text, words: wordsOf(text), audio: a, startedAt: Date.now(), estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp;
+      const sp = { text, words: wordsOf(text), audio: a, startedAt: null, estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp;
       let done = false;
       // Settle file playback once and clear only the audio objects owned by this attempt.
       // Return completion with run and token checks; logHeard supplies the transcript for server/app.py:save_session.
@@ -730,7 +787,8 @@ export function mountPlayer(host, bundle, api) {
       // Resolve the text promise; server/runtime_metrics.py:aggregate later distinguishes this browser timing source.
       const end = (discard = false) => {
         if (ended) return; ended = true; clearTimeout(t);
-        const text = !discard && current() ? (fin || interim).trim() : "";
+        const candidate = fin.trim();
+        const text = !discard && current() && qualifiesCustomerSpeech(candidate, { prompt: true, terms: speechTerms }) ? candidate : "";
         if (current()) { S.cancelListen = null; S.finishListen = null; S.rec = null; S.micOn = false; setMicUI(false); if (text) S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "browser" }; }
         res(text);
       };
@@ -742,8 +800,8 @@ export function mountPlayer(host, bundle, api) {
       S.finishListen = () => { try { rec.stop(); } catch (e) { end(); } };
       // Combine final and interim recognition results and update the visible partial transcript.
       // Ignore stale events; final text is routed locally before any server/app.py:run_qa request.
-      rec.onspeechstart = () => { if (!ended && current()) cancelPostAnswerListen(); };
-      rec.onresult = (e) => { if (ended || !current()) return; interim = ""; fin = ""; for (const r of e.results) { if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript; } if ((fin || interim).trim()) cancelPostAnswerListen(); onInterim((fin || interim).trim()); };
+      rec.onspeechstart = () => {}; // Raw noise never takes the reply window.
+      rec.onresult = (e) => { if (ended || !current()) return; interim = ""; fin = ""; for (const r of e.results) { if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript; } if (qualifiesCustomerSpeech(fin, { prompt: true, terms: speechTerms })) cancelPostAnswerListen(); onInterim((fin || interim).trim()); };
       // Remember denied microphone access and settle recognition when the browser reports an error.
       // The screen can then offer typing; this does not retry server/app.py:run_stt.
       rec.onerror = (e) => { if (!current() || ended) return; if (e.error === "not-allowed" || e.error === "service-not-allowed") S.micDenied = true; end(); };
@@ -1003,12 +1061,29 @@ export function mountPlayer(host, bundle, api) {
       lineIdx = 0; bridgeDone = false; if (run !== S.run) return;
       // Preserve legacy source text, but skip questions without requesting audio or waiting.
       if (sl.checkin?.text && !short) {
-        if (legacyQuestion) { S.checkin_skipped = "legacy_question"; continue; }
-        S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = "";
-        if (!(await speak(sl.checkin.text, run, sl.checkin.audio))) return;
+        if (legacyQuestion) S.checkin_skipped = "legacy_question";
+        else { S.atCheckin = true; S.playback.checkin = true; el.cite.textContent = "";
+          if (!(await speak(sl.checkin.text, run, sl.checkin.audio))) return; }
+      }
+      if (bundle.runtime?.version === 1 && topicOf(sl) !== topicOf(S.plan[i + 1]?.slide || {})) {
+        if (!(await sectionCheckin(i, run))) return;
       }
     }
     await closeFlow(run);
+  }
+
+  async function sectionCheckin(index, run) {
+    // A section is a contiguous group of the existing topic; split delivery
+    // batches do not create extra questions or count toward factual duration.
+    S.playback = { phase: "route", index: index + 1, line: 0, checkin: false, bridgeDone: false };
+    if (!(await speak("Anything you'd like to know about what we've just covered?", run))) return false;
+    const response = waitFor([{ label: "Continue demo", value: "continue", primary: true }]), owner = S.waiter;
+    S.postAnswerListen = { waiter: owner, run, timer: null };
+    armPostAnswerListen();
+    const answer = await response;
+    if (run !== S.run) return false;
+    if (answer.text) { handleQuestion(answer.text); return false; }
+    return ["continue", "__auto_resume"].includes(answer.value);
   }
 
   // Play a slide's deeper reviewed explanation and continue after its audio.
@@ -1096,10 +1171,11 @@ export function mountPlayer(host, bundle, api) {
   }
   // Offer reply choices after an answer, then resume after a short silent window.
   // Clarification and explicit question solicitation opt out of that deadline.
-  async function holdConversation(run, { suggested = null, turn = null, autoResume = true } = {}) {
+  async function holdConversation(run, { suggested = null, turn = null, autoResume = true, callbackQuestion = null } = {}) {
     const cta = (bundle.ctas || []).find(item => item.id === suggested);
     const choices = [{ label: "Ask another question", value: "question" }, { label: "Continue demo", value: "continue", primary: true }];
     if (cta) choices.push({ label: cta.label, value: "cta:" + cta.id });
+    if (callbackQuestion && !S.leadDismissed && !S.leads.length) choices.push({ label: "Request dealership follow-up", value: "callback" });
     const response = waitFor(choices), owner = S.waiter;
     if (autoResume && owner?.run === run) {
       S.postAnswerListen = { waiter: owner, run, turn, timer: null };
@@ -1110,6 +1186,7 @@ export function mountPlayer(host, bundle, api) {
     if (run !== S.run) return;
     if (r.value === "continue" || r.value === "__auto_resume") { el.lead.classList.remove("open"); resumeAfterQA({ automatic: r.value === "__auto_resume" }); }
     else if (r.value.startsWith("cta:")) await ctaFlow(r.value.slice(4), run);
+    else if (r.value === "callback") { showLeadPrompt("requested", callbackQuestion); await holdConversation(run, { suggested, turn }); }
     else if (r.text) handleQuestion(r.text);
     else if (r.value === "question") listenForQuestion();
   }
@@ -1142,7 +1219,7 @@ export function mountPlayer(host, bundle, api) {
     // Stamp acknowledgment audio separately from useful answer audio.
     // The timestamp is stored on this turn for server/runtime_metrics.py:aggregate, not counted as answer onset.
     S.onFirstAudio = ts => { turn.ack_audio = ts; };
-    const filler = speakF(questionAckKey(bundle.fillers), "Give me one moment while I check that for you.", run);
+    const filler = speak("This is a good question, give me a moment.", run);
     const ready = qaP.then(result => ({ kind: "answer", result }), error => ({ kind: "error", error }));
     const winner = await Promise.race([ready, filler.then(ok => ({ kind: "filler", ok }))]);
     if (run !== S.run) return null;
@@ -1161,6 +1238,7 @@ export function mountPlayer(host, bundle, api) {
   // Handle a customer question or explicit priority correction while preserving the interrupted demo position.
   // Send context and bundle version to server/app.py:run_qa or run_pitch; only the owning run may present the result.
   async function handleQuestion(text, options = {}) {
+    if (!options.question && handlePlaybackCommand(text)) return;
     if (live && !options.question && explicitContextCorrection(text)) {
       captureOrigin(); interruptAll(); const run = newRun();
       if (!(S.transcript.at(-1)?.role === "user" && S.transcript.at(-1)?.text === text)) addMsg("user", text);
@@ -1233,7 +1311,7 @@ export function mountPlayer(host, bundle, api) {
       const decline = live && r.answer ? r.answer : "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.";
       if (!(await speak(decline, run, live ? r.audio : null, live ? r : null))) return;
       turn.delivery_done = Date.now(); S.activeTurn = null;
-      showLeadPrompt("unknown", customerQuestion); await holdConversation(run, { turn }); return;
+      await holdConversation(run, { turn, callbackQuestion: customerQuestion }); return;
     }
     const from = cur?.slide?.id || null;
     jumped = r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
@@ -1261,15 +1339,14 @@ export function mountPlayer(host, bundle, api) {
     if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
     if (!(await speak(r.answer, run, r.audio, r))) return;
     turn.delivery_done = Date.now(); S.activeTurn = null;
-    if (r.offer_callback) showLeadPrompt("question", customerQuestion);
     S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion);
     // A suggested CTA remains an explicit customer choice; silence only resumes narration.
-    await holdConversation(run, { suggested: r.cta, turn });
+    await holdConversation(run, { suggested: r.cta, turn, callbackQuestion: r.offer_callback ? customerQuestion : null });
   }
   // Open the optional dealership contact form with wording appropriate to the reason.
   // Local fields are prefilled only; server/app.py:run_lead is called only after form submission.
   function showLeadPrompt(reason, question = "") {
-    if (S.leads.length || (S.leadPromptShown && reason !== "unknown" && reason !== "requested")) return;
+    if (S.leads.length || ((S.leadPromptShown || S.leadDismissed) && reason !== "requested")) return;
     S.leadFormId = (S.leadFormId || 0) + 1;
     S.leadPromptShown = true; S.leadReason = reason; S.leadQuestion = question || "test drive";
     el.leadName.value = S.profile.name || ""; el.leadPhone.value = ""; el.leadError.textContent = "";
@@ -1310,7 +1387,7 @@ export function mountPlayer(host, bundle, api) {
     const origin = S.conversationOrigin || { ...S.playback }; S.conversationOrigin = null;
     if (cur) cur.view.highlight(null);
     const run = newRun();
-    if ((!automatic || bundle.fillers?.back_to_demo?.audio) && !(await speakF("back_to_demo", "Let's return to where we paused.", run))) return;
+    if ((!automatic || bundle.fillers?.back_to_demo?.audio) && !(await speakF("back_to_demo", "Sure, let's carry on.", run))) return;
     resumePlayback(origin, run);
   }
   // Dispatch a saved phase and line checkpoint to its matching playback function.
@@ -1402,14 +1479,16 @@ export function mountPlayer(host, bundle, api) {
     const ok = await speak(q1, run, bundle.intake?.audio?.q1); if (!ok && (!live || run !== S.run)) return;
     const a1 = await intakeWait(run); if (run !== S.run) return;
     intakeSites();
-    if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = a1; S.profile.focus = parseFocus(a1); }
+    const hasContext = !!a1 && !genericTour(a1) && meaningfulTranscript(a1);
+    S.genericTour = !hasContext;
+    if (a1) { addMsg("user", a1); S.profile.name = parseName(a1); S.profile.why = hasContext ? a1 : ""; S.profile.focus = hasContext ? parseFocus(a1) : []; }
     el.intake.classList.remove("open"); S.intakeOpen = false;
-    const ack = live ? "Thanks—that helps me focus the demo. While I tailor it, here's a quick overview of the car." : a1 ? (S.profile.name ? pick([`Lovely to meet you, ${S.profile.name}.`, `Thanks, ${S.profile.name}.`]) : "Thanks for that.") + " Let me set up what we're deciding, then I'll show you the result first." : "No problem — let me set up what we're deciding, then show you the result first.";
+    const ack = hasContext ? "Thanks—that helps me focus the demo. Let me take you through it." : "Let me take you through the demo.";
     // Start one version-pinned pitch request when intake provided usable context.
     // server/app.py:run_pitch runs in parallel with the opening; live mode requests text planning without extra voice generation.
-    S.pitchPromise = (a1 && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
+    S.pitchPromise = (hasContext && api.pitch) ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : null;
     S.playback = { phase: "opening", index: 0, line: 0 };
-    const fa = live ? { text: ack, audio: bundle.runtime?.overview_ack?.audio } : a1 ? F("ack_with_context", ack) : F("ack_no_context", ack); const ok2 = await speak(fa.text, run, fa.audio); if (!ok2) return;
+    const ok2 = await speak(ack, run); if (!ok2) return;
     if (!live) { const okF = await playIntroFilm(run); if (!okF) return; }
     await startAfterIntake(run, a1);
   }
@@ -1417,7 +1496,7 @@ export function mountPlayer(host, bundle, api) {
   // Use the recorded overview or fixed opening, then accept a valid route from server/app.py:run_pitch or use the deck fallback.
   async function startAfterIntake(run = newRun(), a1 = S.profile.why, checkpoint = { phase: "opening", index: 0, line: 0 }) {
     // Keep the same planning request alive across questions during the opening.
-    if (!S.browseOnly && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
+    if (!S.browseOnly && !S.genericTour && !S.pitchPromise) S.pitchPromise = api.pitch ? withTimeout(api.pitch({ profile: profileForServer(), refine: false, input_mode: S.voiceMode ? "voice" : "text", session_id: S.sessionId, demo_version: bundle.version, ...(live ? { voice_it: false } : {}) }).catch(() => null), live ? 12000 : 60000) : Promise.resolve(null);
     if (["opening", "intake", "overview"].includes(checkpoint.phase)) {
       // New published minimums count this recorded overview, including embeds
       // without a live transport. Keep older bundles' fixed opening unchanged.
@@ -1436,6 +1515,7 @@ export function mountPlayer(host, bundle, api) {
       } else if (!(await playOpening(run, checkpoint.index || 0, checkpoint.line || 0))) return;
     }
     if (S.browseOnly) { buildRoute(null); playFrom(0, 0); return; }
+    if (S.genericTour && !S.pitch) { S.planningDecided = true; S.personalized = false; buildRoute(null); playFrom(0, 0); return; }
     // At the end of the opening, make a bounded decision about the available personalized route.
     // The promise came from server/app.py:run_pitch; a late result cannot silently replace a route already chosen.
     let plan = S.pitch;
@@ -1503,28 +1583,100 @@ export function mountPlayer(host, bundle, api) {
   // Keep retries immutable while serializing real revisions of the same visit.
   // This also lets route teardown join an existing save without a duplicate POST.
   const reportSaves = new Map();
-  function saveVisit(record) {
-    const snapshot = JSON.parse(JSON.stringify(record)), revision = JSON.stringify(snapshot);
+  function prepareSave(record) {
+    const snapshot = JSON.parse(JSON.stringify(record)), retrySequence = snapshot.save_seq;
+    delete snapshot.save_seq;
+    const revision = JSON.stringify(snapshot);
     let owner = reportSaves.get(snapshot.id);
-    if (!owner) { owner = { saved: null, pending: new Map(), tail: Promise.resolve() }; reportSaves.set(snapshot.id, owner); }
-    if (owner.pending.has(revision)) return owner.pending.get(revision);
-    if (owner.saved === revision && !owner.pending.size) return Promise.resolve();
-    const request = owner.tail.catch(() => {}).then(() => api.saveSession(snapshot)).then(result => { owner.saved = revision; return result; });
-    owner.tail = request; owner.pending.set(revision, request);
-    const clear = () => { if (owner.pending.get(revision) === request) owner.pending.delete(revision); };
-    request.then(clear, clear);
-    return request;
+    if (!owner) {
+      owner = { saved: 0, sequence: 0, latest: null, pending: new Map(), inflight: null, queued: null };
+      reportSaves.set(snapshot.id, owner);
+      // Completed earlier visits need no retained retry bookkeeping forever.
+      if (reportSaves.size > 32) for (const [id, previous] of reportSaves) {
+        if (id !== snapshot.id && !previous.inflight && !previous.queued) reportSaves.delete(id);
+        if (reportSaves.size <= 32) break;
+      }
+    }
+    if (Number.isSafeInteger(retrySequence) && retrySequence > 0) {
+      // Retry tokens are immutable snapshots, not newly observed visit state.
+      snapshot.save_seq = retrySequence; owner.sequence = Math.max(owner.sequence, retrySequence);
+    } else {
+      // Compare only with the latest observed snapshot. A → ended B → resumed
+      // A is a new event and must advance beyond B even when its words match A.
+      if (owner.latest?.revision !== revision) owner.latest = { revision, sequence: ++owner.sequence };
+      snapshot.save_seq = owner.latest.sequence;
+    }
+    return { snapshot, revision, owner };
+  }
+  function saveVisit(record) {
+    const { snapshot, revision, owner } = prepareSave(record), sequence = snapshot.save_seq;
+    if (owner.pending.has(sequence)) return owner.pending.get(sequence).promise;
+    if (sequence <= owner.saved) return Promise.resolve({ ok: true, accepted: false, save_seq: owner.saved });
+    let resolve, reject;
+    const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
+    const task = { snapshot, revision, sequence, promise, resolve, reject };
+    owner.pending.set(sequence, task);
+    function launch(next) {
+      owner.inflight = next;
+      let timer;
+      const deadline = new Promise((_, no) => { timer = setTimeout(() => no(new Error("Visit save timed out")), 10000); });
+      const request = Promise.resolve().then(() => api.saveSession(next.snapshot));
+      Promise.race([request, deadline]).then(result => {
+        owner.saved = Math.max(owner.saved, Number.isSafeInteger(result?.save_seq) ? result.save_seq : next.sequence);
+        owner.sequence = Math.max(owner.sequence, owner.saved);
+        next.resolve(result);
+      }, error => {
+        // A Retry button resends these bytes and this sequence. A late older
+        // request is harmless once the server has accepted a higher sequence.
+        const failure = error instanceof Error ? error : new Error(String(error));
+        failure.retryRecord = JSON.parse(JSON.stringify(next.snapshot));
+        next.reject(failure);
+      }).finally(() => {
+        clearTimeout(timer); owner.pending.delete(next.sequence);
+        if (owner.inflight === next) owner.inflight = null;
+        const queued = owner.queued; owner.queued = null;
+        if (queued) launch(queued);
+      });
+    }
+    if (!owner.inflight) launch(task);
+    else {
+      // Keep one current request and one latest queued snapshot. Intermediate
+      // autosaves join the newer save rather than building an unbounded queue.
+      const newer = owner.queued?.sequence > sequence ? owner.queued : owner.inflight.sequence > sequence ? owner.inflight : null;
+      if (newer) { owner.pending.delete(sequence); task.resolve(newer.promise); }
+      else {
+        if (owner.queued) { owner.pending.delete(owner.queued.sequence); owner.queued.resolve(promise); }
+        owner.queued = task;
+      }
+    }
+    return promise;
   }
   // Calculate a bounded engagement score from local questions, progress and explicit next steps.
   // Return a rough score for server/app.py:save_session, not a verified prediction of customer purchase intent.
   function intentScore() { let s = 20; s += Math.min(30, S.questions.length * 8); s += S.resolved.size * 8; s += S.seg >= S.plan.length - 1 ? 15 : 0; if (S.cta && S.cta !== "summary") s += 30; if (S.leads.length) s += 10; s -= S.unresolved.size * 5; return Math.max(5, Math.min(98, s)); }
+  let checkpointTimer = null;
+  function scheduleCheckpoint() {
+    if (destroyed || !api.saveSession || checkpointTimer) return;
+    checkpointTimer = setTimeout(() => { checkpointTimer = null; checkpointVisit(); }, 1000);
+  }
+  function checkpointVisit() {
+    if (destroyed || !api.saveSession || (!S.hasStarted && !S.transcript.length) || S.ended) return;
+    saveVisit(sessionRecord()).catch(() => {
+      if (!destroyed) el.hint.textContent = "Visit save is delayed; I'll retry while you continue.";
+    });
+  }
+  const checkpointHeartbeat = setInterval(checkpointVisit, 15000);
   // Assemble the current visit into a report ready to save, with route, timing, questions and transcript.
   // Return data for server/app.py:save_session; constructing this object does not itself save or summarize it.
   function sessionRecord() {
     const now = sessionNow();
+    // Snapshot a playing prefix without marking the utterance logged. A later
+    // completion/return from pagehide must still record its complete content.
+    const partial = !S.speaking?.logged && heardPrefix(S.speaking);
+    const transcript = [...S.transcript, ...(partial ? [{ role: "agent", t: now, ...partial }] : [])];
     const visited = [...S.visited, ...(cur ? [{ slide_id: cur.slide.id, kind: cur.slide.kind, seconds: Math.round((now - cur.enteredAt) / 100) / 10 }] : [])];
     const uspsCovered = [...new Set(S.plan.slice(0, S.seg + 1).flatMap((st) => st.slide.usp_ids || []))];
-    return { id: S.sessionId, ended: S.ended, checkin_skipped: S.checkin_skipped, input_mode: S.voiceMode ? "voice" : "text", profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript: S.transcript };
+    return { id: S.sessionId, ended: S.ended, checkin_skipped: S.checkin_skipped, input_mode: S.voiceMode ? "voice" : "text", profile: S.profile, customer_state: S.pitch?.customer_state, personalized: !!S.personalized, bundle_version: bundle.version || null, runtime_version: bundle.runtime?.version || 0, provider: bundle.voice?.provider || "browser", interruptions: S.interruptions, route: S.plan.map((st) => st.slide.segment_id || st.slide.id), slides: S.plan.map((st) => st.slide.id), slides_visited: visited, covered: [...S.covered], jumps: S.jumps, turns: S.turns, usps_covered: uspsCovered, questions: S.questions, escalations: S.escalations, leads: S.leads, resolved: [...S.resolved], unresolved: [...S.unresolved], cta: S.cta, intent: intentScore(), drop_point: S.plan[S.seg]?.slide.title, minutes: Math.round((now - S.started) / 6000) / 10, transcript };
   }
   // Reopen a completed visit while excluding the idle recap interval from its duration.
   // Update local clocks and hide the recap; later server/app.py:save_session calls use the resumed record.
@@ -1558,6 +1710,7 @@ export function mountPlayer(host, bundle, api) {
         saveNote.textContent = "Visit saved.";
       } catch (error) {
         if (request !== saveRequest || destroyed || S.sessionId !== session.id) return;
+        if (error.retryRecord) retryRecord = error.retryRecord;
         saveNote.textContent = "Couldn't save this visit. You can retry without restarting the demo.";
         retrySave.classList.remove("hidden");
         if (!el.handoff.classList.contains("open")) toast("Couldn't save this visit. Use Stop to reopen the recap and retry.", true);
@@ -1650,7 +1803,7 @@ export function mountPlayer(host, bundle, api) {
   // ---------- lifecycle ----------
   // Start over with a fresh session ID, empty visit history and newly created live connection.
   // Destroy the old slide and capture before intake; live-voice.js:LiveVoiceClient.close ends the previous transport.
-  function restart() { interruptAll(); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadDismissed = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   // Expose a simple pause method for callers without toggling an already paused demo back on.
   // web/app.js:renderPlay receives this method from mountPlayer.
   function pause() { if (!S.paused) togglePause(); }
@@ -1659,11 +1812,14 @@ export function mountPlayer(host, bundle, api) {
   function context() { const st = S.plan[S.seg]; return { customer_state: S.pitch?.customer_state, route: S.plan.map((x) => x.slide.id), slide: cur?.slide?.id, segment: st?.slide.segment_id, segment_title: st?.slide.title, line_index: S.line, line_text: st?.slide.lines?.[S.line]?.text, bridge: st?.bridge, questions: S.questions.slice(-5), profile: S.profile, escalations: S.escalations.slice(-5), leads: S.leads }; }
   // Close live capture when the page leaves and make a best-effort report beacon if conversation text was recorded.
   // web/app.js:renderPlay provides api.beacon targeting server/app.py:save_session; delivery is not guaranteed.
-  const onHide = () => { live?.close(); if (S.transcript.length && api.beacon) { try { api.beacon(sessionRecord()); } catch (e) {} } };
+  const checkpointBeacon = () => { if ((S.hasStarted || S.transcript.length) && api.beacon) { try { api.beacon(prepareSave(sessionRecord()).snapshot); } catch (e) {} } };
+  const onHide = () => { live?.close(); checkpointBeacon(); };
+  const onVisibility = () => { if (document.visibilityState === "hidden") checkpointBeacon(); };
   window.addEventListener("pagehide", onHide);
+  document.addEventListener("visibilitychange", onVisibility);
   // Remove observers and listeners, cancel active work, release preloads and destroy the player DOM.
   // web/app.js:renderPlay calls this lifecycle method when navigating away or mounting another demo.
-  function destroy() { if (destroyed) return; destroyed = true; presentation.destroy(); clearTimeout(preloadTimer); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
+  function destroy() { if (destroyed) return; destroyed = true; presentation.destroy(); clearTimeout(preloadTimer); clearTimeout(checkpointTimer); clearInterval(checkpointHeartbeat); document.removeEventListener("visibilitychange", onVisibility); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   // Initialize visible actions, mute state and the hero slide before starting any demo flow.
   // web/slide.js:renderSlide supplies the view; the welcome buttons below choose when interaction starts.
@@ -1675,7 +1831,7 @@ export function mountPlayer(host, bundle, api) {
   const voiceChoice = h("label", { class: "pl-voice-choice" }, h("span", { class: "pl-voice-choice-label" }, "Voice mode"),
     el.voiceMode = h("input", { type: "checkbox", role: "switch", checked: S.voiceMode, "aria-label": "Voice mode" }),
     h("span", { class: "pl-voice-choice-caption" }, `Talk to ${guide}. You can also type at any time.`));
-  const begin = (browse) => { setVoiceMode(el.voiceMode.checked); startBtn.remove(); startLive(); if (browse) skipIntake(); else runIntake(); };
+  const begin = (browse) => { S.hasStarted = true; setVoiceMode(el.voiceMode.checked); startBtn.remove(); startLive(); if (browse) skipIntake(); else runIntake(); };
   const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, "Take a closer look. Ask what matters to you."), voiceChoice, h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => begin(false) }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => begin(true) }, "Browse at my pace"))));
   el.stage.append(startBtn);
   // List alternate languages already included in the published bundle.

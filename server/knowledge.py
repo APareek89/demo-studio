@@ -333,6 +333,32 @@ def copy_on_edit(demo_id: str, previous_fact: dict, candidate: dict, *, competit
 CITATION_REVIEW_REQUIRED = "Citation quote/locator was not verified against this source revision."
 
 
+def _pdf_table_citation_verified(extraction: dict, source: dict, citation: dict) -> bool:
+    """Match one exact retained cell on a cited page, never flatten table columns.
+
+    PDF layout text can interleave a wrapped cell with adjacent columns. The
+    extractor also retains each original cell, which preserves its exact quote.
+    Page/source identity stays mandatory for this additional evidence path.
+    """
+    if source.get("kind") != "pdf" or not source.get("id") or citation.get("ref") != source["id"]:
+        return False
+    if not source.get("revision") or extraction.get("id") != source["id"] or extraction.get("revision") != source["revision"]:
+        return False
+    pages = {int(page) for page in re.findall(r"\bpage\s+([1-9]\d*)\b", _norm(citation.get("locator")))}
+    quote = _norm(citation.get("quote"))
+    if not pages or not quote:
+        return False
+    for section in extraction.get("sections", []):
+        page = re.fullmatch(r"page\s+([1-9]\d*)", _norm(section.get("locator")))
+        if section.get("kind") != "pdf" or not page or int(page[1]) not in pages:
+            continue
+        for table in section.get("tables", []):
+            for row in table:
+                if any(isinstance(cell, str) and quote in _norm(cell) for cell in row):
+                    return True
+    return False
+
+
 def citation_verified(demo_id: str, fact: dict, source: dict, *, attempts: int = 2) -> bool:
     """Retry the retained-source read, without weakening the exact-quote rule."""
     if not source.get("evidence_path"):
@@ -343,6 +369,8 @@ def citation_verified(demo_id: str, fact: dict, source: dict, *, attempts: int =
     for _ in range(min(2, max(1, attempts))):
         extraction = store.read_json(demo_id, source["evidence_path"]) or {}
         if quote in _norm(extraction.get("text")):
+            return True
+        if _pdf_table_citation_verified(extraction, source, fact.get("source", {})):
             return True
     return False
 

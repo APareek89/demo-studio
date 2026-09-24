@@ -1,5 +1,14 @@
 # Handoff.MD — Demo Studio
 
+## Runtime recovery — branch QA · 24 September 2026
+
+**Decision:** implement enhancements inside the current agents/nodes/workflow without further approval questions. Stay on `codex/sales-trainer-flow`; master merge and AWS deployment wait for Anand to test the local demo and approve. Owner URL domains supersede public-web permission. Protected demo/port8896 remain untouched.
+
+**Implemented:** final-speech qualification and local playback controls; neutral generic tour; three-second section/answer windows; progress-aware speech deadlines; explicit/dismissible follow-up form with narrow-screen grid fix; incremental, ordered, retryable session saves preserving actual heard prefixes and private/public contact separation. No caption synchronization change: text currently appears before asynchronous audio onset.
+
+**QA:** WP12 committed `721611b`; runtime/source/allocation/renderer fixes stay on this branch. The original paid Read failed342/495words; bounded causal revisions and normal source/script/picture review followed, with all failed responses/costs retained. Smaller page-preserving reader batches, exact same-page cell verification and feasible26–33-word batch allocation address the demonstrated causes. A normal Author revision with a reviewed editorial reference produced497eligible words; one Build published193.78measured seconds. This is not unattended first-pass success. The pixel auditor timed out (`rules_fallback`); pictures were reviewed manually. Free gates60suites/2,335checks and actual-Bundle renderer480checks pass. The single paid browser visit passed11mechanical checks, reached the CTA and saved67checkpoints/ended recap, but its engine/gearbox answer failed semantic review. The narrow shared validator correction passes19tests and17independent probes, including repaired/cached wording. The unsafe cache entry was rejected through normal Align without a provider call. See `docs/qa/runtime-recovery-2026-09-24/paid-acceptance.md`. Isolated8910, `dm_7bbf10d0`, data/graph under `/tmp/demo-runtime-final-20260924`; server session44248/PID88526. Recorded cumulative estimate:$0.9182/126calls; timed-out charges may be absent. Physical acoustic quality remains unmeasured. No master/AWS release. Loop stays off.
+
+
 ## WP12 walkthrough — branch review · 24 September 2026
 
 **Scope:** optional gallery presentation behind `?presentation=walkthrough`, before the route hash. Default player/Align DOM and chrome remain unchanged. One camera wrapper follows existing audio/reveal events; bounded native-aspect zoom, grounded feature captions, two-picture walks, pause/resume, direct jumps and return, narrow/reduced-motion fallback. No server, agents, nodes, schema or publication change belongs to WP12.

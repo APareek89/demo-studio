@@ -597,7 +597,9 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                     group = derive_callouts({**s, "lines": [one] if one else []}, facts_by_id, img)[:1]
                     for callout in group:
                         callout["fact_ids"] = list(first.get("fact_ids", []))
-                        callout["part"] = media.get("proxy_reason", "").removeprefix("closest by part: ") if media.get("proxy_reason", "").startswith("closest by part: ") else ""
+                        # A nearby part selects an illustration, not visual proof
+                        # of the cited claim. Keep its label in the caption panel.
+                        callout["part"] = ""
                         callout["reveal_on_line"] = 0
                 else:
                     original = next((seg for seg in script.get("segments", []) if seg["id"] == s.get("segment_id")), {})

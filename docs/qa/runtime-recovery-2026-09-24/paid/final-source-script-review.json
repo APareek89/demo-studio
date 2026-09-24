@@ -1,0 +1,149 @@
+{
+  "demo_id": "dm_7bbf10d0",
+  "scope": "Independent source and semantic review of the normally saved final Author revision. Human editorial PATCH proposed only; no API calls, artifact mutations, approvals or provider calls.",
+  "script_mtime": 1790253655.8579655,
+  "artifact_hashes": {
+    "script.json": "680a3a3f3433e8ebf581485460c510933f0dfec699a2b96f1801837b783e7a4b",
+    "plan.json": "8dc6cdc7d0ab05e2a5169b38da88208d958a223b87a923c57648214151b683c1",
+    "understanding.json": "f9bd14d79ad2c85b695181c2fcbabea730a4d1eb63c0e9e4c2d4a2530c2106da",
+    "demo.json": "d274a0488f3fb602fe66bd8024da872dfe5328337ce7a6122f27c3cc96886cc9"
+  },
+  "line_count_reviewed": 32,
+  "approved_fact_count": 122,
+  "stale_or_rejected_citations": [],
+  "eligible_words_before": 497,
+  "eligible_words_after_proposed_patch": 497,
+  "before_native_issues": [
+    "three_things (outcome): warning — well under budget; add the join or the moment (26 words, budget 46)"
+  ],
+  "after_native_issues": [
+    "three_things (outcome): warning — well under budget; add the join or the moment (31 words, budget 46)"
+  ],
+  "changed_line_count": 13,
+  "outbound_attempts": 0,
+  "patch": {
+    "intake_q1": "Hello, I am Priya, your guide to the Hyundai CRETA. Tell me what matters to you, or say show me around to begin.",
+    "lines": [
+      {
+        "id": "overview-D1",
+        "text": "The guide lists regular petrol, diesel and turbo petrol engines. Each uses four cylinders. Gearbox choices depend on the engine, so compare the full configuration.",
+        "fact_ids": [
+          "F036",
+          "F151",
+          "F150"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "three_things-D1",
+        "text": "Roof equipment depends on the trim. The voice-enabled panoramic roof is listed on SX, SX Premium, King, King Knight and Lounge Edition.",
+        "fact_ids": [
+          "F135"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "powertrain-D1",
+        "text": "The regular petrol is rated at 115 PS at 6,300 revolutions per minute. It pairs with a six-speed manual or an IVT automatic.",
+        "fact_ids": [
+          "F078",
+          "F080"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "stance_and_ride-D1",
+        "text": "S(O) has black alloy wheels. SX and SX Premium have diamond-cut alloys. Confirm the wheel finish against your chosen trim.",
+        "fact_ids": [
+          "F051",
+          "F052"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "space_and_practicality-D1",
+        "text": "Rear-seat recline is a two-step adjustment on select trims. It is separate from the sixty-forty split, so check whether recline is included in your chosen version.",
+        "fact_ids": [
+          "F164",
+          "F166"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "safety-D1",
+        "text": "Hill-start assist helps prevent backward rolling on a slope. Driver-assistance systems do not replace safe and attentive driving.",
+        "fact_ids": [
+          "F154",
+          "F182"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "cabin_and_tech-D1",
+        "text": "EX, EX(O), S(O) and S(O) Knight have an eight-inch touchscreen. SX upwards use a 10.25-inch navigation display. Lounge Edition also has an 11.6-inch rear entertainment screen on the passenger side.",
+        "fact_ids": [
+          "F093"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "delighters-D1",
+        "text": "The guide lists the Bose eight-speaker system with a subwoofer on SX Premium, King, King Knight and Lounge Edition.",
+        "fact_ids": [
+          "F095"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "ownership-D1",
+        "text": "The listed fuel tank capacity is fifty litres. That alone does not establish how far the car will travel on a tank; I cannot confirm fuel-efficiency figures from these approved facts.",
+        "fact_ids": [
+          "F031"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "more_features-D1",
+        "text": "Front-seat ventilation is listed on SX Premium, King, King Knight and Lounge Edition. The wireless charger also appears on SX, and works only with compatible smartphones.",
+        "fact_ids": [
+          "F138",
+          "F140"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "establish-D1",
+        "text": "Up to seven years of extended warranty is listed for petrol versions only and is separately paid. Ask the dealer to confirm its coverage, exclusions and price in writing.",
+        "fact_ids": [
+          "F181",
+          "F185"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "three_things-L1",
+        "text": "Six airbags are standard across the variants. The panoramic roof is available on specified trims.",
+        "fact_ids": [
+          "F090",
+          "F135"
+        ],
+        "visual_ref": ""
+      },
+      {
+        "id": "three_things-L2",
+        "text": "Regular petrol, diesel and turbo petrol have different gearbox pairings. Compare the complete configuration before choosing.",
+        "fact_ids": [
+          "F036",
+          "F150"
+        ],
+        "visual_ref": ""
+      }
+    ],
+    "realign_visuals": false
+  },
+  "remaining_limitations": [
+    "The word target is met; actual recorded default-route narration still requires the normal measured >=180 second publication gate.",
+    "A short-budget advisory on the unplayed outcome is deliberately not padded.",
+    "This is a human-assisted QA artifact after prior extraction, source-review and allocation repairs, not a claim of first-pass generator success."
+  ]
+}

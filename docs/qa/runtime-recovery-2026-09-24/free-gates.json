@@ -1,0 +1,883 @@
+{
+  "status": "All60listed suites green after final collective powertrain validation correction. Original paid semantic failure remains recorded separately; corrected-code replay and independent17/17 probes are green.",
+  "suites": [
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "source_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae",
+      "log_sha256": "34d92f907cb605eec5bb34513993dc1befffca3051bc4e54048ebee64f826273",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/qa_deck.log",
+      "passed": 386,
+      "total": 386,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "qa_deck",
+          "passed": 380,
+          "total": 380,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae",
+          "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef",
+          "log_path": "/tmp/demo-runtime-final-20260924/post-plan-edit-core/qa_deck.log"
+        },
+        {
+          "suite": "qa_deck",
+          "passed": 386,
+          "total": 386,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae",
+          "log_sha256": "34d92f907cb605eec5bb34513993dc1befffca3051bc4e54048ebee64f826273",
+          "log_path": "/tmp/demo-runtime-final-20260924/final-core/qa_deck.log"
+        },
+        {
+          "suite": "qa_deck",
+          "passed": 386,
+          "total": 386,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae",
+          "log_sha256": "34d92f907cb605eec5bb34513993dc1befffca3051bc4e54048ebee64f826273",
+          "log_path": "/tmp/demo-runtime-final-20260924/closed-core/qa_deck.log"
+        }
+      ]
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+      "log_sha256": "acd771815cb155b37701b0fd179a582ae6c71d452af59693c97d5c4d2ac939f3",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/qa_accept.log",
+      "passed": 24,
+      "total": 24,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "qa_accept",
+          "passed": 24,
+          "total": 24,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+          "log_sha256": "5d1b14998e65ea88eaee1d4bae78189a56b85c5a283d3408d82dd43d5d1904dd"
+        },
+        {
+          "suite": "qa_accept",
+          "passed": 24,
+          "total": 24,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+          "log_sha256": "d27e000fc74a1aed7b6b8ec9d2cfadb1e97b1d472f5f030d4df7d23df93c833a",
+          "log_path": "/tmp/demo-runtime-final-20260924/budget-release/qa_accept.log"
+        },
+        {
+          "suite": "qa_accept",
+          "passed": 24,
+          "total": 24,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+          "log_sha256": "29a90cf68134add88a18e1aedc139656bdaba329ffa0aeb1b4331090a6b768d6",
+          "log_path": "/tmp/demo-runtime-final-20260924/post-plan-edit-core/qa_accept.log"
+        },
+        {
+          "suite": "qa_accept",
+          "passed": 24,
+          "total": 24,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+          "log_sha256": "98494b378c9abd0f213165a19eff2b1df591cc2c4c1931c37de560a8f0748125",
+          "log_path": "/tmp/demo-runtime-final-20260924/final-core/qa_accept.log"
+        },
+        {
+          "suite": "qa_accept",
+          "passed": 24,
+          "total": 24,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+          "log_sha256": "b663358602476e79024e8efc4b3c2526c265d3cbaf9469465c25f0b44fab0c19",
+          "log_path": "/tmp/demo-runtime-final-20260924/closed-core/qa_accept.log"
+        }
+      ]
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+      "log_sha256": "abbd1a77187bead8d62421bff25c17749814bcc925a4b33dd31e114a4a8d3a48",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/smoke_mock.log",
+      "passed": 3,
+      "total": 3,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "smoke_mock",
+          "passed": 3,
+          "total": 3,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+          "log_sha256": "e2d63f35dceb729c52a2336881bc6839ecf0169ff77a0173e697815ca93f3517"
+        },
+        {
+          "suite": "smoke_mock",
+          "passed": 3,
+          "total": 3,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+          "log_sha256": "6baf59871a7ce57989dcf3bce7dd21624d3cd901de9f0c0a406f48591663a5fc",
+          "log_path": "/tmp/demo-runtime-final-20260924/budget-release-final/smoke_mock.log"
+        },
+        {
+          "suite": "smoke_mock",
+          "passed": 3,
+          "total": 3,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+          "log_sha256": "b2dd835e24e649b05969fe0c5ffe109ed9965a3348508937c6e4bf1537da5400",
+          "log_path": "/tmp/demo-runtime-final-20260924/post-plan-edit-core/smoke_mock.log"
+        },
+        {
+          "suite": "smoke_mock",
+          "passed": 3,
+          "total": 3,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+          "log_sha256": "241a8db2c88879d1c0028c72ced1170bd9f279b0d1db29cb9bfcad798a5e8705",
+          "log_path": "/tmp/demo-runtime-final-20260924/final-core/smoke_mock.log"
+        },
+        {
+          "suite": "smoke_mock",
+          "passed": 3,
+          "total": 3,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+          "log_sha256": "1f7459b195c26d834ef6c801cfb58136698486b6a9a9fced2a835042f2f8472a",
+          "log_path": "/tmp/demo-runtime-final-20260924/closed-core/smoke_mock.log"
+        }
+      ]
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit": 0,
+      "source_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5",
+      "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/release_mock_contract.log",
+      "passed": 28,
+      "total": 28,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "release_mock_contract",
+          "passed": 28,
+          "total": 28,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5",
+          "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+          "log_path": "/tmp/demo-runtime-final-20260924/final-core/release_mock_contract.log"
+        },
+        {
+          "suite": "release_mock_contract",
+          "passed": 28,
+          "total": 28,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5",
+          "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+          "log_path": "/tmp/demo-runtime-final-20260924/closed-core/release_mock_contract.log"
+        }
+      ]
+    },
+    {
+      "suite": "session_checkpoint_contract",
+      "passed": 26,
+      "total": 26,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "cb46a7e3b60fb3d4ffc245ac58b5bc52f1baa4c930801a57026c97ad9fbebb23",
+      "source_sha256": "374fd12203152ca311883b1e601d3c13007f6107367551163b887711eae294e4",
+      "log_path": "/tmp/demo-runtime-final-20260924/post-plan-edit-core/session_checkpoint_contract.log"
+    },
+    {
+      "suite": "summary_race_contract",
+      "passed": 14,
+      "total": 14,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "0633d589ceb65a9ceac2f2714f5ec88f84799e07097c95034547868f950758e0",
+      "source_sha256": "b2e9babc6745a57f62100762de609442483e094b7ab1ad5102468470826525d3"
+    },
+    {
+      "suite": "session_input_mode_contract",
+      "passed": 8,
+      "total": 8,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "17ff73aa350e3f0353a580460b92e03d23a092487289424588c9ff903d00f64b",
+      "source_sha256": "af489812cbcd996767cf57ab37b8f445124dc0c52f63168cd04adc092fd6c661"
+    },
+    {
+      "suite": "runtime_domain_contract",
+      "passed": 21,
+      "total": 21,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "3f246f65ee8b8cf75bb4f599b77dc0d0cebaff0c4226d78975d9905d41c70f54",
+      "source_sha256": "d40c325f2cd84d58afeccef2c83b8557d4b5d584d6327452202916bc928d92b9"
+    },
+    {
+      "suite": "runtime_web_search_contract",
+      "passed": 37,
+      "total": 37,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "0e6d92f92487b7f27ab4aa9f6b7d80b69818db08082ea8624aa641f7e4833f8d",
+      "source_sha256": "9b7e746b53b1d4a0bd854f9c060ce1a23db0a0b4190eadb13c78996f31972793"
+    },
+    {
+      "suite": "runtime_tools_replay_contract",
+      "passed": 20,
+      "total": 20,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "e93366641417d4d649142e0f318641fe02485ba5ed68b927367578f17dbfd278",
+      "source_sha256": "75cbde6b078a28c3f82e666805b04bddab960921e4816730a3114daaaedb83b9"
+    },
+    {
+      "suite": "runtime_graph_contract",
+      "exit": 0,
+      "source_sha256": "01cea1d2047203cefa13e78cb63df6363cc0bd22c48ab257fddb784f895131f0",
+      "log_sha256": "94d7b4f8f3cb930edeb18ca17ecf96d78e0aae674f1e041a484ea5daf7d20ee5",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_graph_contract.log",
+      "passed": 130,
+      "total": 130,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "runtime_graph_contract",
+          "passed": 130,
+          "total": 130,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "01cea1d2047203cefa13e78cb63df6363cc0bd22c48ab257fddb784f895131f0",
+          "log_sha256": "94d7b4f8f3cb930edeb18ca17ecf96d78e0aae674f1e041a484ea5daf7d20ee5",
+          "log_path": "/tmp/demo-runtime-final-20260924/budget-release/runtime_graph_contract.log"
+        }
+      ]
+    },
+    {
+      "suite": "runtime_delivery_contract",
+      "passed": 27,
+      "total": 27,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "1658dcc34b9e56d867940606c265eb1c71b1368cbe4efd63850555c669e5d8eb",
+      "source_sha256": "8085218e6aaa9aed012d2f3762f98358beef8992035dc644efa4bdd21ac65e5f"
+    },
+    {
+      "suite": "faq_cache_contract",
+      "exit": 0,
+      "source_sha256": "9454c273e5ae9428ba87d6d283a0e1dd0fa5ed61d8be8c5e03aa733cb3c8d339",
+      "log_sha256": "9cc2f9b876f057eeb4b6616c6f7a8545f163d727c12004fc47c660975f0fa215",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/faq_cache_contract.log",
+      "passed": 27,
+      "total": 27,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "faq_cache_contract",
+          "passed": 27,
+          "total": 27,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "log_sha256": "7438cb43c67327d8faea7a896311c8ab125e23cbab30b2c39fc773c043b89037",
+          "source_sha256": "9454c273e5ae9428ba87d6d283a0e1dd0fa5ed61d8be8c5e03aa733cb3c8d339"
+        }
+      ]
+    },
+    {
+      "suite": "runtime_customer_sites_contract",
+      "passed": 20,
+      "total": 20,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "da501dcb1a48df3ec138ab6d5adc66b24a994787cfdb49d82b89db2c83826719",
+      "source_sha256": "4fe7f2dc6b379c294b171a49f0684b218718e7cae5706349f9f1aa6064cd3c1d"
+    },
+    {
+      "suite": "faq_scope_contract",
+      "exit": 0,
+      "source_sha256": "aa9532d696d8159c4018aa196c351d38c2964264311994f1306e007ee119bd93",
+      "log_sha256": "2a1c1204dc619af160b4750681366e99b5734c2bacdf370f0b595b250e12a13a",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/faq_scope_contract.log",
+      "passed": 19,
+      "total": 19,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "faq_scope_contract",
+          "passed": 19,
+          "total": 19,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "log_sha256": "e6dbfe2f5eedd4339a5a2a7bf37b9e5c7ff40309986861b35ede18c779d9f385",
+          "source_sha256": "aa9532d696d8159c4018aa196c351d38c2964264311994f1306e007ee119bd93"
+        }
+      ]
+    },
+    {
+      "suite": "knowledge_contract",
+      "passed": 60,
+      "total": 60,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "9ae4493152699f1ba35e8b10cd67b2fd423713a34ff41126be216f212adf101c",
+      "log_sha256": "93bc1e236cc9b8a52b789be183c210946c4d4097ad1c9f8e36948404d0a83bba"
+    },
+    {
+      "suite": "live_transport_contract",
+      "passed": 25,
+      "total": 25,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "3bb0252c97723a214d332fbbc72af6dec8ac20a52f9764c921831b1e26909da2",
+      "source_sha256": "c5dfe65d39408a1a16ddb5fcbffc552e15b1813b01d338ff61ef4414d7799a0b"
+    },
+    {
+      "suite": "runtime_operational_failure_contract",
+      "passed": 13,
+      "total": 13,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "c01a46c0c59f3db3b3e42e19d4aa4ab4e8ef6df9973003ed6cabd0d074864bfa",
+      "source_sha256": "936a6581552a6a46cfd9a2432eb6362744cc636189d0f4e513f01950071c33d6"
+    },
+    {
+      "suite": "runtime_interaction_contract",
+      "passed": 7,
+      "total": 7,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "16b0d48745e82e67ecd9e83f2d1cf635198af6eb334285ef4a3303e0edb6dc1f",
+      "source_sha256": "871ab700223aa32bf7c791d34f8fad435f80339245e8ba9c046a6b6fa143d372"
+    },
+    {
+      "suite": "runtime_conversation_contract",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "756bf952c7afb16c7849a8926a3475aa6632dd3d7bd9b8cf98a2a98555d49662",
+      "source_sha256": "682c7d8df1c021629ae03812088b395e585a345979a87d37190e1afdcda8409d"
+    },
+    {
+      "suite": "runtime_repair_contract",
+      "exit": 0,
+      "source_sha256": "c0d1dc8a33149410d48c00efca92b20b8ce7e1f44aeacde6dbe59d239cb33f8b",
+      "log_sha256": "613f83256a8865973544d7ce88b5783a049832813597402b5c72bbf5abacba5c",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_repair_contract.log",
+      "passed": 106,
+      "total": 106,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys",
+      "prior_runs": [
+        {
+          "suite": "runtime_repair_contract",
+          "passed": 106,
+          "total": 106,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "log_sha256": "613f83256a8865973544d7ce88b5783a049832813597402b5c72bbf5abacba5c",
+          "source_sha256": "c0d1dc8a33149410d48c00efca92b20b8ce7e1f44aeacde6dbe59d239cb33f8b"
+        }
+      ]
+    },
+    {
+      "suite": "runtime_metrics_contract",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "log_sha256": "14102ccb7adfe2c766828a61623433e94d75d49833cf1f7d7e8eb7d1d4fdf9e3",
+      "source_sha256": "3244c38cc02da39e6320b9042dc7dfa7aca9d9756dd231d7ab6503eab232c1da"
+    },
+    {
+      "suite": "player_customer_sites_contract.cjs",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "a5581576d0cea11ffd3577af26fe6076ad664328e3014a4df26194a6dda43318",
+      "source_sha256": "9cd5cc7c14d64bb46aa524754476019617fd55dd564bbb38391b332fce328f58"
+    },
+    {
+      "suite": "player_focus_contract.cjs",
+      "passed": 21,
+      "total": 21,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "d06365ab7c90f03e9b0a7f1349ca88b6fb185003b4671cafb979a1b0f743e968",
+      "source_sha256": "30c99d1ee6edb3f26d5d5749f7c1e4964dd2c5ce0d9a4749358e020fa5ffb221"
+    },
+    {
+      "suite": "player_fundamental_contract.cjs",
+      "passed": 10,
+      "total": 10,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "1f3e5a3baae1f616287782261305cd6c75fa1b2ec285e713e0a0af6b2caaa941",
+      "source_sha256": "1f52e8edc2788968141df2a9816a7baf6f92ceeab4679ee0842938d1ed5dcf94"
+    },
+    {
+      "suite": "player_http_question_contract.cjs",
+      "passed": 6,
+      "total": 6,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "0470c99a5387b3fecfb96ee4d3ab1a13cc0a0a2a83fda3bf16751e9c09b69c9b",
+      "source_sha256": "b4e79e9981f2ca141f8fb8873ff6f136d300f159c60bf8b5dcd56300575aca91"
+    },
+    {
+      "suite": "player_listen_contract.cjs",
+      "passed": 16,
+      "total": 16,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "b6bcdcc91bd8dd3cf06ac759922ed7d180bb29c1735a092b242d331602697f74",
+      "source_sha256": "f2d6dfc5c3b2e577fb854f94d6d9155d0db0b2bae02276be2e475e38ae56ea3d"
+    },
+    {
+      "suite": "player_media_contract.cjs",
+      "passed": 7,
+      "total": 7,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "39ecaff3901dc3992e03c1c3e63e0676a134aeb6abd4fe99470765f89775b338",
+      "source_sha256": "e790dac0f28900ca4b4838c2b50b27e1c5710254062e55ae12144ef19a10773e"
+    },
+    {
+      "suite": "player_priority_revision_contract.cjs",
+      "passed": 11,
+      "total": 11,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "5ccf6b0c5b69e1bf636be07b0427a078c5f1202b40b4137db47a36500974c5ad",
+      "source_sha256": "81bb7311447dbf48cd4655d497e7cd27ca59cb0013c6368bab9b8d340f15217d"
+    },
+    {
+      "suite": "player_runtime_recovery_contract.cjs",
+      "passed": 17,
+      "total": 17,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "b08b2a61a983cff18f7a07167be358a349b7e919a3ebd6c7fffca2d851481839",
+      "source_sha256": "0d64b30c83e7d1524b7addee497dd6f43e75dbbc6362cde331a9a367c96aee11"
+    },
+    {
+      "suite": "player_session_save_contract.cjs",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "431bddcd840dc6c8e13a118a1b39d1f3cfd8a8e2b594fc9fe3abb8e802b1de39",
+      "source_sha256": "52f1eb7802c7712f8be237380bf9750192b92cc9a3e5f8433e934a8db04e57e7"
+    },
+    {
+      "suite": "player_walkthrough_contract.cjs",
+      "passed": 30,
+      "total": 30,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "e39293fac7bdcbe7a8f69da882db0962d4e498d5c0b9cdcb09d831624173d03b",
+      "source_sha256": "d7d6e3ff333811b1a15b2ed2179b8b520f9be6b2bff635edd3a24a76be7db9db",
+      "prior_runs": [
+        {
+          "suite": "player_walkthrough_contract.cjs",
+          "passed": 29,
+          "total": 29,
+          "exit": 0,
+          "boundary": "production helpers, fake devices/transports, no network/providers",
+          "log_sha256": "ea2f0c393a79db7ea158a67ecb99ea347c94edf244fb9b7e65703987cd5661b4",
+          "source_sha256": "85b1cebafa4d55ed21379f1ad86723d383500302fc64b26173a762f227b606fa"
+        }
+      ],
+      "log_path": "/tmp/demo-runtime-final-20260924/text-highlight-walkthrough-after.log"
+    },
+    {
+      "suite": "live_voice_contract.mjs",
+      "passed": 96,
+      "total": 96,
+      "exit": 0,
+      "boundary": "production helpers, fake devices/transports, no network/providers",
+      "log_sha256": "a7fc8f82fe520afc7cb535ace1709241123938143c5705dc6c3f1c5ba979caae",
+      "source_sha256": "d9633006bd45f10c727564a0e9cc5070933400398fd3890ae977f7f711a37be1"
+    },
+    {
+      "suite": "understand_batch_contract",
+      "passed": 10,
+      "total": 10,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "029b932057a336b4b4435d4d759d0d27cfa2cee3050b07f4c899577b839476fc",
+      "log_sha256": "7edb3cdffa010fe4542b93f5e19b10b5663bbf258f2ae41ee6e78dd59e47816c"
+    },
+    {
+      "suite": "source_contract",
+      "passed": 39,
+      "total": 39,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "86aef1a056a6df9aa2d23f638587db7b457c617a6d4a845d96895ca0d3aa4c19",
+      "log_sha256": "992c40e00759724046c6b40561c13dcb41f4b9eab62f60d4bf806ff63ec089c9"
+    },
+    {
+      "suite": "automatic_narration_contract",
+      "passed": 16,
+      "total": 16,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "e8ecde9d84ea6a8f57167aaa086cda6aed42dde64903cd1edb9e6f5bb319a1f9",
+      "log_sha256": "94939f119ab9c68233e46c97c4e7bb5fb128ad3436dbeada662e37bb42f4b649",
+      "log_path": "/tmp/allocator-automatic.log",
+      "prior_runs": [
+        {
+          "suite": "automatic_narration_contract",
+          "passed": 16,
+          "total": 16,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "e8ecde9d84ea6a8f57167aaa086cda6aed42dde64903cd1edb9e6f5bb319a1f9",
+          "log_sha256": "e03246383516f137edc365b51515d94eaf161a6822197853d89554c390a0b438"
+        }
+      ]
+    },
+    {
+      "suite": "narration_preparation_contract",
+      "passed": 35,
+      "total": 35,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "a22272d1d0bc2c52b7de68bac68ac15b77353a26a44ac27ef2d006f6c8ceae48",
+      "log_sha256": "aa9e4df2ed7a658c239253d4aa2079936d8cc11dbdb2352a1cb9ad8136eeba16",
+      "log_path": "/tmp/demo-runtime-final-20260924/post-plan-edit-core/narration_preparation_contract.log",
+      "prior_runs": [
+        {
+          "suite": "narration_preparation_contract",
+          "passed": 35,
+          "total": 35,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "deb2ff6181ed4263b9e09ebd08be64bf66807adb07ffda0e609865222599b5aa",
+          "log_sha256": "6a2c9d6112aa009ff5e9287ed9bdb30ee109ecab67ceb84982ce44b5a7c5c988"
+        },
+        {
+          "suite": "narration_preparation_contract",
+          "passed": 35,
+          "total": 35,
+          "exit": 0,
+          "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+          "source_sha256": "a22272d1d0bc2c52b7de68bac68ac15b77353a26a44ac27ef2d006f6c8ceae48",
+          "log_sha256": "726cd1bd2874334598d80133b54892455d944b2f2168c17c0692181fcb92f92f",
+          "log_path": "/tmp/allocator-preparation.log"
+        }
+      ]
+    },
+    {
+      "suite": "fact_retry_contract",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "68b201ae3e00e6292655202f8697d66d4e1b4e2f420e4de4f54b2c7c71c2cbdc",
+      "log_sha256": "84aaa845f42e8223c33e5352516a226aaeb7fb3416ff3b4e5487feec49f00448"
+    },
+    {
+      "suite": "prepared_budget_contract",
+      "passed": 17,
+      "total": 17,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "ff779b63b104c2f99af6ca63cd2387d9a0e4dddb4a3baaad54690810e641eb7c",
+      "log_sha256": "0da6d1f10207757a5f4e4f421b5e125023d8b79d0a63c4e36f212c5b1cb05508",
+      "log_path": "/tmp/allocator-focused.log"
+    },
+    {
+      "suite": "plan_playbook_contract",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "6e347c30e0f897cdddfa6633eded0a5dea4a5bf57b28a292a92f80cbec602532",
+      "log_sha256": "97d80a8dcc234b6b2e4252b67951e4aadf529a66f51e8ef0772ffc42efdd7376",
+      "log_path": "/tmp/allocator-plan.log"
+    },
+    {
+      "suite": "duration_preference_contract",
+      "passed": 19,
+      "total": 19,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "270442b56a98597d8441fe6c286fa9339a703aa427af6d05e082aecf8ff1c084",
+      "log_sha256": "76c04ecdf9079980ba93c9691b1f1a653a8e2a010aa70ae2f5db1995d8e22874",
+      "log_path": "/tmp/allocator-duration.log"
+    },
+    {
+      "suite": "minimum_narration_contract",
+      "passed": 25,
+      "total": 25,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "d844b028e2c50e41f0920f5ea1c054c9d23d9ceaa7c0b09b03130f3c7917085a",
+      "log_sha256": "9d7812b6b66b786ba3169b410c52effde7788f5931019530de7089d6d30fa93a",
+      "log_path": "/tmp/allocator-minimum.log"
+    },
+    {
+      "suite": "narration_recovery_contract",
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "1a68ec6df118d090312a0bcca26c24b3cdac2f9fc1e03854b9cdeb0526dcc77c",
+      "log_sha256": "74b1931e2b8204aa44b620bf8480af2edff52012bc8e9ebc488e3dd49031d9f7",
+      "log_path": "/tmp/allocator-recovery.log"
+    },
+    {
+      "suite": "generation_contract",
+      "passed": 58,
+      "total": 58,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "faf4054acc3bc4f58becc0d3b45baa8b473d1d54175e3b8a4bb22b6e55d13ab7",
+      "log_sha256": "663806f5084d56dfbacff7846540119fb1428a24617cd2125cdfd86a35075602",
+      "log_path": "/tmp/allocator-generation.log"
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "passed": 14,
+      "total": 14,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "c0e22f991d6b2b991c2e3a7d8e013cc40ec03ebf8625d6a266aef652cbbcaa25",
+      "log_sha256": "2f3a638b3bbd9b2b31ab4014cdde46649074a91e050a38205c75a9aa0ecf6a17",
+      "log_path": "/tmp/allocator-roles.log"
+    },
+    {
+      "suite": "script_prompt_contract",
+      "passed": 40,
+      "total": 40,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "3f0f0d8d5fe521019b4d34d405251f6e0afb6febacf086631b51b5c371b0c917",
+      "log_sha256": "39191a4cc3c51e54510bdd826183b1ec59092f1048648be5b7fb0a3564a24406",
+      "log_path": "/tmp/demo-runtime-final-20260924/budget-release/script_prompt_contract.log"
+    },
+    {
+      "suite": "align_review_contract",
+      "passed": 57,
+      "total": 57,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound; normal FastAPI PATCH endpoint with provider factories blocked",
+      "source_sha256": "27b091312ba3e7160f99d17be4d04022a6cb9aebfaa250cd8200f23e19d0addc",
+      "log_sha256": "8e461f8506576026cbb5e33baf14a3cd3b5d93128786d2ed206b7f8d4bc6bfa2",
+      "log_path": "/tmp/demo-runtime-final-20260924/plan-retention-green/align_review_contract.log",
+      "production_source": "server/app.py",
+      "production_sha256": "d0847ef16fe094540845b03925e51f1bcdbc71ede1e05ec74d056ea4c2c38f9e",
+      "regression_evidence": {
+        "before_fix_passed": 55,
+        "before_fix_total": 57,
+        "log_path": "/tmp/demo-runtime-final-20260924/plan-retention-red/align_review_contract.log",
+        "log_sha256": "c8d6dd4988f7c4c77a427be058035ab301659b7416629c419ca0f2c41be7085a",
+        "reason": "The two prepared-plan preservation regressions fail before the four-field retention fix; invalid-edit and legacy-schema tests already pass."
+      }
+    },
+    {
+      "suite": "deck_media_contract",
+      "passed": 66,
+      "total": 66,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "12185a3cb01e27779d310ce1754d27936f9b86d9b5dfc3a09dbb06f6aeb821ef",
+      "log_sha256": "94a0adde14f873d1a49ada2725d5bf4e39a41e6a657134c32190ee1795fba412",
+      "log_path": "/tmp/demo-runtime-final-20260924/proxy-caption-after/deck_media_contract.log"
+    },
+    {
+      "suite": "deck_media_align_contract",
+      "passed": 15,
+      "total": 15,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "2cf513b687c3bb30493690461b091a9ff4df186df36dc1a02cab2fb0d59bd0f9",
+      "log_sha256": "8a5ca166cbec2922544883a0c795c3c3419020ef8f4bd10bee90af556747f88d",
+      "log_path": "/tmp/demo-runtime-final-20260924/proxy-caption-after/deck_media_align_contract.log"
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "passed": 25,
+      "total": 25,
+      "exit": 0,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked outbound",
+      "source_sha256": "807b88615d6ff1d514008f8f515aa5af812a8490c7935dcacf2ec95493086811",
+      "log_sha256": "d032310ae521f77608776b8bb163bc10a41cc6a50f0130be22ea01a8155642a9",
+      "log_path": "/tmp/demo-runtime-final-20260924/proxy-caption-after/visual_alignment_contract.log"
+    },
+    {
+      "suite": "runtime_powertrain_pairing_contract",
+      "exit": 0,
+      "source_sha256": "ca0bb014d28f1d2ac835ffd7d828f9da3e886db220999ebbc2bed6d7dc35e378",
+      "log_sha256": "037e0f7095d454e06b3386419558d98b8ac0a879c2ca30c819dbc56efee7ca8f",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_powertrain_pairing_contract.log",
+      "passed": 19,
+      "total": 19,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys"
+    },
+    {
+      "suite": "runtime_transmission_conditions_contract",
+      "exit": 0,
+      "source_sha256": "c346a99b7228c77d19bfae883c25aea8c253afee7bdcebff793f75a43f062de7",
+      "log_sha256": "ffb07e3565bfdd8fc190b89f3d2174faeee0a0930895b01811f1dd5e47b21338",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_transmission_conditions_contract.log",
+      "passed": 17,
+      "total": 17,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys"
+    },
+    {
+      "suite": "runtime_pairing_contract",
+      "exit": 0,
+      "source_sha256": "b86a93f827835a98777411456213cfe4ab7ea5de080ac5d1b40c78ee93585539",
+      "log_sha256": "730a6d1a630e84a34f7050b485048e33b5c234aa135a5da411a72094cd20c16b",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_pairing_contract.log",
+      "passed": 12,
+      "total": 12,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys"
+    },
+    {
+      "suite": "runtime_plain_language_contract",
+      "exit": 0,
+      "source_sha256": "de18d629f2706eb16157dd7198f2809219fcaf493c553e297c192f515ec059ae",
+      "log_sha256": "2a9b6bbab53a465f2bc8654f1fdc5f6a6fa29b42c30089bf1252283f95817ca3",
+      "log_path": "/tmp/demo-runtime-final-20260924/powertrain-guard/final/runtime_plain_language_contract.log",
+      "passed": 25,
+      "total": 25,
+      "boundary": "MOCK_LLM=1, isolated DATA/GRAPH, blocked connect/sendto/DNS, blank provider keys"
+    }
+  ],
+  "overlap": "Counts overlap; do not interpret as independent end-to-end scenarios.",
+  "reported_total_with_browser": 2335,
+  "suite_total_with_browser": 60,
+  "free_suite_count": 54,
+  "free_checks_passed": 1854,
+  "free_checks_total": 1854,
+  "browser_evidence": {
+    "path": "docs/qa/runtime-recovery-2026-09-24/browser-gates.json",
+    "sha256": "98e050781486af468720acf14d100bd848053fd5ff139fa7f028ecec083474a6",
+    "suite_count": 6,
+    "passed": 481,
+    "total": 481,
+    "source_hashes": {
+      "evals/live_player_browser.py": "37608ef00c553223ed5912761debab2042fd9324ab5bca55ff6b767e1535d6d0",
+      "evals/player_browser.py": "14eb51863005a5aa0662c55eab0544dc586896ed9919ed0d3dfc1dc09dd37a85",
+      "evals/player_contract.html": "24ac83feca4501b45897d191a3c23418aca0e6269cb4232ace23a1572784ee7c",
+      "evals/player_navigation_contract.py": "08329476649521caee145b23aea840b19d46190fbfc0e0e5d589522dc298feaa",
+      "evals/studio_player_integration_contract.py": "b92a300590a30392b8501ca7abe1b6ef5ada79ae6027829d6e2f638399dadfee",
+      "evals/ui_layout_contract.py": "263aa219157807975764e4462e2d771aa9b2fcd1942112bb77c1c71fcafeea7c",
+      "evals/workbook_player_contract.py": "9ed2f0c1e46bfca20f95f091c2f409aedba822c48b5dcf03c40744b5a828970c",
+      "evals/wp12_browser_acceptance.py": "1093811221155001009d8a5456943fa055d2a7ea5765cfb4247d28b5aaacdfa6",
+      "web/api.js": "16aea73d79f86d912da99d63067a719818e3804a373c110eb484b5060a4b4f24",
+      "web/app.js": "74aedea69e783f9012161d80fb37391efbe53b46aabcadc7867ccb92f65abf25",
+      "web/demos.js": "e49b2d2901090964671f8f35358922a26febcc5d4601d8d9b080a2a705ad34fc",
+      "web/design-system.css": "b0d8d5879b4c577e0903f3391670d9057a7e00f3e85fa49d382c2c3b9faaa688",
+      "web/home.js": "930cc96d4537438ab6cafdad9aca9996f3b7ac94e20a8431d2aa0db82b998854",
+      "web/icons.js": "126ee925823dadf83c6834337215bc2bfa86965ff2de61628db71f08dfa64de6",
+      "web/insights-ui.css": "32520739c1cff576c0a9c7c524f0d91732c676fdf573877d258c1aae53a96953",
+      "web/observability.js": "977b9afafb01b24841a8996f5400f462968c66eca061bdd10a381275a41bf09b",
+      "web/player/live-voice.js": "bbefcb2ad935fb59d7020a9a01c9f7f1f84d8db16bd074e642d46b4fde82aab5",
+      "web/player/mascot.js": "6353091b054ea30bafc80e2d77c4906f491110dc89919b2193aab610f83ad20d",
+      "web/player/player.js": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+      "web/player/public-search-ui.js": "06ad723ef5bfc97ff4450b5436bc0c05f414d81de1d4a0173c4e98ed93c9dd2f",
+      "web/player/voice-worklet.js": "a14e8df73556b824928ba5649e0fb24fa15b6fd664c2fc11c72761e0d55c3751",
+      "web/player/walkthrough.js": "f04ae44f252427109e0d7085bdda219e40144f856857f303ff34c30a0c8f1e1e",
+      "web/player-ui.css": "c94c58e488f17ecfc8ba97ad123f4a40455de85d2d777cf11bdd173b151a7c61",
+      "web/playground.js": "b6f8786770d3a65fdc437bab9fa234b5d5e4ff34f0bffd9233c35ea998677fa8",
+      "web/provider-readiness.js": "e4afcadc9079141e06b170de6f99de37363af7c2516750b103d11f16f54cd6a2",
+      "web/slide.js": "f82eec2790d106347761d8d8c4b92f589b050c195d4169d37fbd51946c78b338",
+      "web/studio/align.js": "7f12c3939687a326700bd559e2a855e7f7a335dfbb08fc79521776782de7a3d2",
+      "web/studio/rehearse.js": "dda86a78088c81fac38cfaa68157a291d4a6d5ef12192f2336f25f1315408e38",
+      "web/studio/sessions.js": "43d1e9941787b6f9f831dcad0ffa56c7bd526c65c7b61914ecc39d0d856a02f9",
+      "web/studio/sources.js": "8d6f6966d737d5f41b8df2987b8b6dea616161cd7398d90ed4df23759938cc4d",
+      "web/studio-ui.css": "caca91508dd877313fc2c973d3d65a189d7e0766d87d79484aab0b7f9f49ec03",
+      "web/styles.css": "2fd7ff95065e32585d7de7f491ffda65d4a2a30064039e094f041946156a3b0f"
+    },
+    "reuse": "Only workbook101 image-layout checks are reused as explained per suite; final HTML87, live40, layout212, integration19 and navigation22 are recorded with final-source evidence.",
+    "boundary": "Isolated MOCK_LLM fixture. Real app/WS/worklet and browser geometry; synthetic PCM/STT, explicit warranty-decline provider fixture, skip_bank test control and8x muted audio. No acoustic/noise-recognition quality or real-duration assertion. No paid8910 request."
+  },
+  "latest_allocator_evidence": {
+    "path": "/tmp/demo-runtime-final-20260924/allocator-gate-receipts.json",
+    "sha256": "cc81d072f33702d70897923209754133bdecaa7c4b5c872317bf1e27946590df",
+    "production_source": "server/agents/plan.py",
+    "production_sha256": "47349bef6e966cd471d7fff98a2ca864c00596db7aa2bd694c60dcdf6a2a5bd8",
+    "paid_calls": 0
+  },
+  "latest_release_fixture": {
+    "suite": "release_mock_contract",
+    "measured_narration_seconds": 194.22,
+    "boundary": "Canned provider responses and silent WAV files measured by the real publication gate. This is synthetic fixture duration, not paid narration or physical microphone quality."
+  },
+  "excluded_invocations": [
+    {
+      "name": "smoke",
+      "exit": 1,
+      "log_path": "/tmp/demo-runtime-final-20260924/budget-release/smoke.log",
+      "log_sha256": "73d47cf21d0ba138eca7be3aee6874caeb2e01bfd786538a1effa94bd11433e1",
+      "reason": "Runner requested a nonexistent eval filename; no test suite ran. Correct smoke_mock and release_mock_contract reruns passed and are counted once above."
+    },
+    {
+      "name": "full_mock_release_contract",
+      "exit": 1,
+      "log_path": "/tmp/demo-runtime-final-20260924/budget-release/full_mock_release_contract.log",
+      "log_sha256": "60348d64def192ae5b9b97128896f6fb4a3817993d22ba547d654f99242e4263",
+      "reason": "Runner requested a nonexistent eval filename; no test suite ran. Correct smoke_mock and release_mock_contract reruns passed and are counted once above."
+    }
+  ],
+  "prior_inventory_sha256": "1ab6c0ba1b8c19357cc5f2b144b70a15f59a5e31ad900c25125bb1d35099fe10",
+  "proxy_caption_fix": {
+    "production_source": "server/agents/deck.py",
+    "production_sha256": "accd3ba6093a26ad3bc81e2b78edde5c5a78b78764fa77b8aef92951673404ba",
+    "regression_log": "/tmp/demo-runtime-final-20260924/proxy-caption-before/deck_media_contract.log",
+    "regression_log_sha256": "48e87e4cd5dcc39c26c29977e21347a9ac095ab8b10f4ede63c429cb236df916",
+    "boundary": "Selected proxy media and full-coverage pixel-audit gate unchanged. Proxy-derived labels are panels without inferred part anchors; six new fallback assertions included in deck_media66 and qa_deck386."
+  },
+  "prior_inventory_path": "/tmp/demo-runtime-final-20260924/free-gates-before-pairing.json",
+  "prior_browser_evidence": [
+    {
+      "path": "docs/qa/runtime-recovery-2026-09-24/browser-gates.json",
+      "sha256": "75b5544118ec8a54385aa1a85b2c88043f77facccc92a13dd432a03e8da535a2",
+      "suite_count": 6,
+      "passed": 460,
+      "total": 460,
+      "source_hashes": {
+        "web/player/player.js": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+        "web/player/live-voice.js": "bbefcb2ad935fb59d7020a9a01c9f7f1f84d8db16bd074e642d46b4fde82aab5",
+        "web/player-ui.css": "c94c58e488f17ecfc8ba97ad123f4a40455de85d2d777cf11bdd173b151a7c61",
+        "web/player/walkthrough.js": "39cf632532960d82ed3d9756d010ebf0a18aa408fa1b34651d560240d3b6055f",
+        "evals/player_contract.html": "d238329503855e8eabd81ad9cf752b356880d40d23b59e7e21926a8b359a2ce0",
+        "evals/live_player_browser.py": "e836b23a875e0fe2a97ea13b4ca045fcf012ccf9ea37942ecce90b2a986e6326",
+        "evals/player_navigation_contract.py": "08329476649521caee145b23aea840b19d46190fbfc0e0e5d589522dc298feaa"
+      },
+      "reuse": "All seven recorded browser source hashes still match. These are the existing mock browser results, not a rerun of natural paid playback.",
+      "boundary": "Isolated MOCK_LLM fixture. Real app/WS/worklet and actual browser geometry; synthetic PCM/STT, explicit warranty-decline provider fixture, skip_bank test control and8x muted audio. No acoustic/noise recognition quality or real-duration assertion."
+    }
+  ],
+  "powertrain_guard": {
+    "receipt": "powertrain-gates.json",
+    "independent": "powertrain-independent-review.json",
+    "initial_failed_runner": "Preserved under /tmp/demo-runtime-final-20260924/powertrain-guard; first qa_deck invocation lacked evals import path. Corrected temporary runner uses standard strict run_free.py; production assertions unchanged."
+  }
+}

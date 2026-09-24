@@ -1,5 +1,105 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-24 — A runtime repair lost the engine-to-gearbox boundary
+
+**Symptom:** the paid runtime answer cited the correct engine and gearbox facts but said “You can pair them with a 6-speed manual or an automatic”, after listing petrol, diesel and turbo petrol. The source does not offer a manual with the turbo engine.
+
+**Five whys:** (1) Citation IDs and individual gearbox words were supported. (2) Their relationship to each engine was not checked. (3) A quantity rejection in a different sentence triggered the existing composition repair. (4) That repair replaced a valid explicit petrol/diesel qualifier with “them”. (5) Revalidation accepted the ambiguous relation, so the otherwise clean answer entered the customer cache. Checking citation presence alone hid condition loss.
+
+**Correction:** add a narrow collective engine/gearbox relation check to the existing shared validator. It checks initial, repaired and cached words against literal approved mappings; it does not infer compatibility from independent lists. Failed repair retains the original supported portion within the existing single-repair budget. Historical cache hits are revalidated before audio or count changes. The observed unsafe entry was separately rejected through normal Align, preserving the original paid evidence.
+
+**Prevention:** replay the exact original and repaired rows, whole cached wording, supported shared choices, unrelated feature language and reviewed/unreviewed cache hits. Preserve the original paid failure even after corrected-code tests pass. This bounded check is not general semantic entailment; model answers still need independent source-based QA.
+
+## 2026-09-24 — A valid no-picture choice became a blank slide
+
+**Symptom:** visual review of the actual paid Bundle showed a broken-image placeholder and “no picture” on comparison and terms slides whose media had intentionally been cleared during review.
+
+**Five whys:** (1) The shared renderer always created a picture container. (2) Empty media fell through its legacy image placeholder. (3) Reviewed speech was available only in the conversation dock. (4) Geometry tests accepted a correctly sized empty container. (5) Semantic picture review and painted-content acceptance were separate, leaving the absence-of-image path uncovered.
+
+**Correction:** read-only no-picture slides render their exact reviewed lines as a bounded text card. Speech reveal changes visibility while reserving geometry; long text scrolls within the fixed slide. Cited Q&A scrolls only the card, and resuming the interrupted line restores that paragraph. Explicit empty media also wins over stale legacy images in the walkthrough gallery. Picture-bearing rendering, Align editing, narration and data stay unchanged. This is a runtime follow-up after WP12, not a claim that WP12's original default-DOM parity applies to the new fallback.
+
+**Prevention:** nineteen new real-browser checks cover desktop, phone and short windows, exact text, absence of fake pictures/anchors, reveal geometry, scrolling and lifecycle. Inspect actual published comparison/terms slides in addition to synthetic layout bounds.
+
+## 2026-09-24 — An illustration acquired a false feature pointer
+
+**Symptom:** after the paid pixel auditor timed out, the fallback deck pinned a body-style statement to a grille and a mixed wheel-fitment claim to an unrelated wheel picture.
+
+**Five whys:** (1) The strict visual-proof gate correctly refused unaudited bindings. (2) The existing fallback selected an illustration by its nearest tagged part. (3) The derived-label path then reused that part as an anchor for the cited sentence. (4) A picture-selection hint became a claim-location assertion. (5) Earlier tests checked illustration flags and citations but not whether proxy labels could imply visual proof.
+
+**Correction:** retain the existing fallback selection and illustration badge, but clear the automatically derived part so its text remains a caption without a pointer. Literal audited pictures and explicit Align review remain unchanged. Correct pictures for the QA demo were selected through ordinary review controls; comparisons and terms remain caption-only.
+
+**Prevention:** actual fallback-to-Deck regressions fail on the old branch and pass after the fix. Deck media66, core deck386, media Align15 and visual alignment25 pass with isolated mocks and blocked outbound. Preserve the provider timeout in the paid receipt; manual picture review does not turn that timeout into a successful automated audit.
+
+## 2026-09-24 — Duration break: a normal pitch edit discarded preparation metadata
+
+**Symptom:** review of the paid draft found that an ordinary Align pitch edit would remove its prepared-narration target and computed timing fields.
+
+**Five whys:** (1) The endpoint rebuilt the saved Plan through its model-output schema. (2) That strict schema intentionally excludes computed preparation fields. (3) The endpoint retained the voice sample but not those fields. (4) Author validation could then see a prepared story as a legacy plan. (5) Existing edit tests checked changed text and approval resets, without checking preservation of the duration boundary.
+
+**Correction:** after strict validation, retain the original four server-owned preparation/timing/issue fields. Text replacements cannot rewrite them. Downstream invalidation, human approval and legacy schema behavior remain unchanged.
+
+**Prevention:** six real PATCH regressions prove retention, unchanged invalidation, protected computed identity, atomic invalid edits and legacy compatibility. The contract failed55/57 before the fix and passes57/57 afterward; no paid call is needed to reproduce it.
+
+## 2026-09-24 — Duration break: a total word budget was not a feasible writing plan
+
+**Symptom:** even after source review recovered the missing evidence, the paid writer returned 399 of the required 495 eligible words. Its three responses contained 288, 317 and 399 words; validation and splitting removed none.
+
+**Five whys:** (1) Prepared stop budgets were 45–51 words. (2) The writing rules require complete 26–33-word batches, including three for the compact-SUV powertrain stop. (3) A 45-word allowance cannot fit two minimum batches, and 51 cannot fit three. (4) The allocator distributed individual words and checked only a scalar total, ignoring those discrete batch constraints. (5) Mock tests proved the target sum and publication gate, but did not prove that a writer could satisfy the budget and batch instructions together.
+
+**Correction:** allocate feasible batches within the existing evidence, story and delivery limits; preserve the target and report an actual capacity shortfall when the reviewed stops cannot support it. No new graph node, model change, extra automatic writing loop, padded speech or slower voice. Seventeen allocator groups and related free gates pass. A normal Author revision with an explicit reviewed editorial reference produced497eligible words; the single approved Build published193.78measured seconds. This is a reviewed success, not unattended first-pass evidence.
+
+**Prevention:** test the actual failed nine-stop allocation, shared-stop limits, empty evidence, selected durations and repeat preparation. Prove batch feasibility as well as total words. Keep initial paid failures and editorial contributions visible; a reviewed final demo is not evidence of unattended first-pass reliability.
+
+## 2026-09-24 — Paid narration QA exposed an incomplete evidence inventory
+
+**Symptom:** the normal paid Read stopped at342/495 prepared words. Its three Author attempts returned171,274 and342 words; no text was lost in validation or splitting. The third draft added unsupported generic benefits and remained unsuitable for approval.
+
+**Five whys:** (1) The fact reader returned26 mostly numeric facts from a49-page guide and nine failed exact-text verification. (2) The two large reader inputs contained every page/table, but valid JSON was accepted without proving semantic completeness. (3) Missing feature/gearbox matrices removed two supported story stops. (4) Numeric plan budgets still added to495 although the remaining distinct stops could not satisfy the approved short-batch limits. (5) Asking Author to expand that thin inventory treated an upstream evidence-coverage issue as a writing deficit; citations alone did not prove the generic benefits it added.
+
+**Correction (code/process):** keep the current Understand node, models and schema; use smaller page-preserving batches and explicitly request categorical features, pairings, fitment and source-stated stale warnings. Partial-batch absence cannot establish a whole-document unknown. Verify a quoted PDF table cell under the same explicit page/source/revision when flattened columns interleave it; never concatenate cells or use fuzzy matching. Hold conflicting/stale claims and review the resulting script before the existing Build. The original paid failure is retained, with a separate bounded revision receipt; the duration gate and Author attempt cap are unchanged.
+
+**Prevention:** prove exact input preservation and table-source identity with free contracts, then inspect a real source-rich generation. Schema validity, passing mock plumbing and citation-ID presence are not evidence of complete extraction or semantic entailment. Smaller batches increase reader calls; source review remains necessary. Never replace an underfilled draft with uncited filler or label the failed initial paid Read a success.
+
+## 2026-09-24 — Provisional speech took ownership of the demo
+
+**Symptom:** a TV fragment or cup-triggered recognition could stop narration indefinitely; “It's” became intake context and “Continue” triggered a checking acknowledgement.
+
+**Five whys:** (1) Raw onset and partial words cancelled output before a usable request existed. (2) Cancellation opened a hold without a corresponding submitted turn. (3) Recognition and customer intent were treated as the same event. (4) Playback controls went through the question path. (5) Tests established transport delivery without proving ownership for rejected input.
+
+**Correction (code/design):** qualify final speech in the existing player before interruption; retain local Continue/Pause/Stop/Not now routing, reject fragments, and give generic tour requests a neutral acknowledgement/default route. Existing logical sections use the same three-second reply-window mechanism as answers. No classifier agent or new graph node.
+
+**Prevention:** replay VAD, partial, duplicate/stale final, fragments, generic requests, short feature questions and controls through actual client transport. Text relevance cannot distinguish every TV sentence from a customer; physical acoustic validation remains separate.
+
+## 2026-09-24 — A healthy stream was treated as a stalled answer
+
+**Symptom:** long streamed answers or closing speech could time out before completing.
+
+**Five whys:** (1) A fixed thirty-second timer began when delivery was requested. (2) New valid chunks did not refresh it. (3) Buffered playback duration was ignored. (4) Provider progress and utterance duration shared one deadline. (5) Tests favoured short clips and did not cross the healthy thirty-second boundary.
+
+**Correction (code):** refresh an owner-bound inactivity deadline on valid audio progress, allowing scheduled audio to drain before the timeout. Existing cancellation/fallback ownership stays unchanged.
+
+**Prevention:** test healthy long buffered speech, stalls, cancellation and stale timers separately. Caption lag has a different cause: full text is displayed before asynchronous speech onset, with no word timestamps. It is report-only in this task.
+
+## 2026-09-24 — A long live session existed only in the browser
+
+**Symptom:** a visit abandoned before Done/Stop could be absent from sales records; adding naive autosaves also risked older requests replacing newer content.
+
+**Five whys:** (1) Persistence was tied to ending and an unreliable unload beacon. (2) Ongoing progress had no checkpoint. (3) Concurrent snapshots had no ordering. (4) Retrying regenerated content rather than retaining its identity. (5) Transcript completion and checkpoint sampling shared mutable speech state, so a visibility save could suppress later completed words or count queued audio as heard.
+
+**Correction (code):** one-second change debounce, fifteen-second heartbeat and visibility/exit snapshots through the existing endpoint; one current/one latest queued write, safe-integer sequence rejection on the server and immutable retries. Copy the current heard prefix without marking speech logged, and begin timing only on actual output onset. Ended summaries remain revision-bound; public copies mask phone numbers wherever they occur.
+
+**Prevention:** test a sixteen-minute unfinished visit, reordered writes, failed retry, resumed ended state, pagehide during speech, buffering before onset and later full completion. Network-loss beacons remain best effort and current locking remains single-worker.
+
+## 2026-09-24 — Decline forms interrupted the conversation and widened the player
+
+**Symptom:** every unknown answer opened a follow-up form, “Not now” failed to resume reliably, and a390px viewport acquired401.53px-wide header/slide/dock regions.
+
+**Five whys:** (1) An answer category directly opened the form. (2) Repeated declines bypassed remembered dismissal. (3) The form blocked the automatic reply window. (4) The grid's implicit minimum column width grew to fit its content. (5) Tests checked the root width rather than the actual header, slide, dock and open-form rectangles.
+
+**Correction (code):** offer an explicit follow-up button, honor dismissal and resume via the existing timer. Use a zero-minimum grid column and zero-minimum direct children; no fixed-slide geometry change.
+
+**Prevention:** actual desktop/phone browser checks before opening, while open and after dismissal; assert no unsolicited lead request. Keep model suggestions separate from contact consent.
+
 ## 2026-09-24 — Camera tests must check actual painted bounds
 
 **Symptom:** the walkthrough state machine passed while a zoomed picture painted over its heading; fading old chips briefly competed with its new caption.

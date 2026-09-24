@@ -161,7 +161,10 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertIn("each complete line must fit the role ceiling", prompt)
         self.assertIn("the first supported fundamental in the playbook", prompt)
         self.assertIn("No greeting, question, decision frame, digits or dimensions. Delighters come later.", prompt)
-        self.assertTrue(all(isinstance(segment["word_budget"], int) and segment["word_budget"] > 0 for segment in self.author_plan["segments"]))
+        self.assertTrue(all(isinstance(segment["word_budget"], int) and segment["word_budget"] >= 0 for segment in self.author_plan["segments"]))
+        for segment in self.author_plan["segments"]:
+            if segment["word_budget"] == 0:
+                self.assertIn("no default main lines allocated", segment["goal"])
         self.assertEqual(self.author_plan["total_words"], self.planned["total_words"])
         self.assertEqual(self.author_plan["playbook_version"], "2026-09-23")
 
@@ -205,7 +208,8 @@ class NarrativeRolesContract(unittest.TestCase):
     def test_story_intent_visual_order_and_editorial_notes_reach_author(self):
         self.assertEqual(self.author_plan["segments"], self.planned["segments"])
         self.assertEqual(self.author_plan["notes"], fixture_plan()["notes"])
-        self.assertEqual(self.author_plan["segments"][2]["goal"], fixture_plan()["segments"][2]["goal"])
+        self.assertEqual(planner._DELIVERY_ALLOCATION.sub("", self.author_plan["segments"][2]["goal"]).rstrip(),
+                         fixture_plan()["segments"][2]["goal"])
         self.assertEqual(self.author_plan["segments"][2]["visual_refs"], ["im1"])
         self.assertEqual([s["id"] for s in self.authored["segments"]], [s["id"] for s in self.planned["segments"]])
 
@@ -229,7 +233,8 @@ class NarrativeRolesContract(unittest.TestCase):
         rewrite = self.author_calls[1]["content"]
         self.assertIn("VALIDATOR ISSUES", rewrite)
         self.assertIn("999", rewrite)
-        self.assertIn(self.planned["segments"][2]["goal"], rewrite)
+        rewrite_plan = json.JSONDecoder().raw_decode(rewrite.split("\nPLAN: ", 1)[1])[0]
+        self.assertEqual(self.planned["segments"][2]["goal"], rewrite_plan["segments"][2]["goal"])
         self.assertTrue(all("999" not in l["text"] and not l["unverified"]
                             for s in self.authored["segments"] for l in s["lines"]))
         issues = self.authored["issues"]
@@ -237,8 +242,12 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertEqual(len(minimum), 1, issues)
         self.assertIn("62 distinct supported words, minimum 495", minimum[0])
         self.assertIn("Add 433 words of distinct supported detail", minimum[0])
-        self.assertTrue(all(issue in minimum or "warning — well under budget" in issue for issue in issues), issues)
-        self.assertEqual(sum("warning — well under budget" in issue for issue in issues), 3)
+        # The canned repair fixes the rejected claim, but its unchanged 39-word
+        # paragraphs still exceed the two 33-word allocations for this one fact.
+        # Preserve those actual warnings instead of pretending this is ready.
+        budgets = [issue for issue in issues if "over its budget of 33" in issue]
+        self.assertEqual(len(budgets), 2, issues)
+        self.assertTrue(all(issue in minimum or issue in budgets for issue in issues), issues)
         self.assertFalse(self.authored["narration_minimum"]["sufficient"])
 
     def test_draft_persistence_does_not_publish_approve_or_generate_audio(self):

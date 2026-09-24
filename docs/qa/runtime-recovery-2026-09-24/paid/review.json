@@ -1,0 +1,41 @@
+{
+  "demo_id": "dm_7bbf10d0",
+  "artifact_hashes": {
+    "understanding.json": "6119711465907309ac40efb06213dd83f5f51efb8bfa1396cd011ac8e3d4b287",
+    "playbook.json": "66677fe3b8cf5b8211a96678068565ec2fd2e4b7e1ea99fa56af1ba0e4196be5",
+    "plan.json": "54d775f00623b64eaa5a6b5a52ec8a77683f1b79902123a2dcc4a01be6c9fa06",
+    "script.json": "ad737fc65bd039de8d42e090373d105b3830a08dde9d680048c185b7934382d4",
+    "deck.json": "03368578c222bc0b5d80b6cd2efc159169ec0824a9e831b5527ef7274873aa7c",
+    "faq.json": "462cd704012edc21d79947a4e6ae90279de63cf75fc6b1a5114be7dbeaec4797"
+  },
+  "reviewed_by": "Codex source review with independent semantic and literal-picture reviewers",
+  "facts_citations_checked": true,
+  "script_issues_checked": true,
+  "cards": {
+    "visuals": {
+      "approved": true,
+      "notes": "Independent literal review inspected16 original/selected pictures; final20-slide Deck has18 exact reviewed media/title choices,11 used picture files and zero unsafe anchors. Main/deeper/closing text and citations match currentScript; schema and all approved citations checked. Normal Align selected correct engine, split-seat, boot, airbag, screens, cabin, roof and charger pictures as illustrations; comparisons/pricing/terms are caption-only. No coordinates or successful pixel audit invented: provider timed out after7batches. Actual published desktop/mobile rendering remains a separate acceptance check."
+    },
+    "facts": {
+      "approved": true,
+      "notes": "Reviewed all160 extracted rows against supplied49-page compiled PDF and source tables;122approved.13unsafe/stale exclusions,13versioned scoped corrections and5individually checked restores are recorded. Turbo1482versusstale1497, standardairbags, dated/conflicting ex-showroom pricing, automatic/trim pairings, connectivity and petrol-only paid extended warranty retain explicit conditions. Other held rows remain held; original assertions/snapshots retained."
+    },
+    "script": {
+      "approved": true,
+      "notes": "Reviewed32spoken/deeper/overview/closing lines. Ordinary Align edits remove official affiliation, internal writing directions, unsupported benefits and assumed customer requirements.497eligible words meet495preparationtarget without main-speech padding or speed changes; one short alternative-outcome advisory is accepted because that unplayed alternative does not count. Recording must still satisfy180measured seconds before publication."
+    },
+    "faq": {
+      "approved": true,
+      "notes": "No uploaded FAQ-role document questions or customer answers yet; empty Asked and answered is valid. No guessed FAQ generation or rehearsal is requested in Build. Subsequent runtime answers use the pinned-snapshot cache rules."
+    },
+    "persona": {
+      "approved": true,
+      "notes": "Priya remains the existing selected Sarvam speaker, en-IN. Neutral source-guide description removes manufacturer/dealer affiliation; original voice identity and sample remain. No new customer preference has been invented."
+    },
+    "ctas": {
+      "approved": true,
+      "notes": "One existing Contact Dealer contact action at the end, with explicit opt-in form and no invented dealer URL. No lead will be submitted during acceptance; Not yet will be used for the final saved visit."
+    }
+  },
+  "instructions": "Inspect facts against the uploaded PDF, supported script, pictures, issues and six cards. Write completed review.json; do not blindly copy approval booleans."
+}

@@ -1,0 +1,139 @@
+{
+  "boundary": "One isolated paid QA journey; initial Read and bounded normal review revisions preserved. One Build and one natural browser visit completed; mechanical success and semantic answer failure are separate.",
+  "demo_id": "dm_7bbf10d0",
+  "source_files": 17,
+  "source_pdf_pages": 49,
+  "initial_read": {
+    "eligible_words": 342,
+    "required_words": 495,
+    "recorded_usd": 0.2238,
+    "calls": 22,
+    "approved": false,
+    "built": false
+  },
+  "evidence_revision": {
+    "eligible_words": 467,
+    "required_words": 495,
+    "facts": 160,
+    "initially_approved": 130,
+    "initially_held": 30,
+    "recorded_cumulative_usd": 0.5175,
+    "calls": 45,
+    "approved": false,
+    "built": false
+  },
+  "source_review": {
+    "actions": 31,
+    "excluded": 13,
+    "versioned_corrections": 13,
+    "individually_reviewed_restores": 5,
+    "applied_via": "existing Align endpoints",
+    "approved_facts_after_review": 122
+  },
+  "records": {
+    "source-review-applied.json": {
+      "path": "/tmp/demo-runtime-final-20260924/source-review-applied.json",
+      "sha256": "c159a775b780c89586dc6e915f8a9b947e72ba5ed8c68b36c15de69eada56470"
+    },
+    "evidence-revision-receipt.json": {
+      "path": "/tmp/demo-runtime-final-20260924/evidence-revision-receipt.json",
+      "sha256": "dcf788f6c00fce4e4f4ceeed1ed6e72dc680fdaa76bb1d3fef11cecd30570340"
+    },
+    "revised-source-review.md": {
+      "path": "/tmp/demo-runtime-final-20260924/revised-source-review.md",
+      "sha256": "d9854f0ef5878401751c9369182ad4a307cbb1b4339b28470beda2a257a97750"
+    },
+    "revised-visual-review.md": {
+      "path": "/tmp/demo-runtime-final-20260924/revised-visual-review.md",
+      "sha256": "0c168292adb32483496c16820fa33a2ffcb21570467d98eb5d8b4fe1c796cedb"
+    },
+    "upload-manifest.json": {
+      "path": "/tmp/demo-runtime-final-20260924/upload-manifest.json",
+      "sha256": "2787f4c01e01086325a9afa68d32f617daae8a25cf911d1500cab9b1f0df7319"
+    },
+    "reviewed-coach-revision-receipt.json": {
+      "path": "/tmp/demo-runtime-final-20260924/reviewed-coach-revision-receipt.json",
+      "sha256": "a60721d7a3de53c9b81624dc72d1ea5fe4d11cc4706810cc6ddddddfea7198aa"
+    }
+  },
+  "reviewed_coach_revision": {
+    "eligible_words": 399,
+    "required_words": 495,
+    "recorded_cumulative_usd": 0.6231,
+    "calls": 50,
+    "approved": false,
+    "built": false,
+    "purpose": "Refresh dependent story from the source review through the existing Coach revision path."
+  },
+  "final_author": {
+    "eligible_words": 497,
+    "target_words": 495,
+    "recorded_usd": 0.7816,
+    "provider_calls": 60,
+    "attempts": 2,
+    "human_editorial_reference": true,
+    "pixel_audit": "timed out after7completed batches; existing assignments retained as rules_fallback",
+    "timeout_charge": "may be absent from recorded estimate",
+    "approved_for_build": true
+  },
+  "reviewed_corrections": {
+    "source_actions": 31,
+    "plan_fields": 8,
+    "plan_replacements": 12,
+    "script_line_edits": 13,
+    "intake_edit": 1,
+    "media_selections": 18,
+    "slide_titles": 18,
+    "provider_calls_for_manual_edits": 0,
+    "normal_deck_refresh_calls": 1,
+    "after_review_recorded_usd": 0.7908,
+    "after_review_provider_calls": 61,
+    "notes": "Normal API review paths only; no artifact injection or audit/duration bypass."
+  },
+  "current_phase": "Local review ready. One Build193.78s; one natural browser11/11mechanical, semantic failure corrected and independently replayed with mocks. No master/AWS release.",
+  "publication": {
+    "minimum": {
+      "minimum_seconds": 180.0,
+      "seconds": 193.78,
+      "sufficient": true,
+      "words": 438,
+      "measured": true,
+      "basis": "measured",
+      "measured_seconds": 193.78,
+      "estimated_seconds": 0,
+      "route": [
+        "powertrain",
+        "powertrain-2",
+        "powertrain-3",
+        "stance_and_ride",
+        "stance_and_ride-2",
+        "space_and_practicality",
+        "space_and_practicality-2",
+        "safety",
+        "safety-2",
+        "cabin_and_tech",
+        "cabin_and_tech-2",
+        "more_features",
+        "establish"
+      ],
+      "duplicate_lines_excluded": 0
+    },
+    "version": 1
+  },
+  "after_build_usage": {
+    "total_usd": 0.9003,
+    "rows": 112
+  },
+  "after_browser_usage": {
+    "total_usd": 0.9182,
+    "rows": 126
+  },
+  "browser": {
+    "receipt": "paid-acceptance.json",
+    "mechanical_passed": 11,
+    "mechanical_total": 11,
+    "elapsed_seconds": 541.82,
+    "save_count": 67,
+    "semantic_answer": "failed_original; shared guard fixed and verified19focused/17independent plus12affected/core suites, no second paid visit"
+  }
+}

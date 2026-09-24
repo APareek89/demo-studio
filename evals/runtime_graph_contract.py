@@ -241,11 +241,11 @@ check("Counts stay bound to their feature across multiple citations","unsupporte
 r,e=rg.validate_decision(answer("The turbo petrol has a seven-speed gearbox.",["F002"]),[gears],"Gearbox?")
 check("Correct word-form transmission count remains answerable",r["answered"] and not e)
 
-check("Only user messages authorize lookup URLs",supplied_urls("Check www.example.com/car",[{"role":"assistant","text":"https://evil.example"}])==["https://www.example.com/car"])
+check("URL context extraction excludes assistant messages; owner policy grants access",supplied_urls("Check www.example.com/car",[{"role":"assistant","text":"https://evil.example"}])==["https://www.example.com/car"])
 with patch("server.crawl.fetch_public",return_value={"text":"A model-specific official passage describes six airbags for this vehicle.","final_url":"https://example.com/car","fetched_at":123}):
-    result=source_lookup({"tool":"source_lookup","url":"https://example.com/car","query":"airbags"},"Check https://example.com/car",[])
+    result=source_lookup({"tool":"source_lookup","url":"https://example.com/car","query":"airbags"},"Check https://example.com/car",[], allowed_urls=["https://example.com/car"])
     check("Web evidence retains exact passage and date",result["evidence"][0]["source"]["quote"].startswith("A model-specific") and result["evidence"][0]["fetched_at"]==123)
-    try:source_lookup({"tool":"source_lookup","url":"https://other.example/car"},"Check https://example.com/car",[])
+    try:source_lookup({"tool":"source_lookup","url":"https://other.example/car"},"Check https://example.com/car",[], allowed_urls=["https://example.com/car"])
     except ValueError:check("LLM cannot invent a source",True)
     else:check("LLM cannot invent a source",False)
 
