@@ -1,5 +1,16 @@
 # Learning.MD — Demo Studio
 
+
+## 2026-09-24 — A duration rejection was shipped without enough content preparation
+
+**Symptom:** the existing recorded draft reached Bundle with128.3-seconds and failed the180-second publication minimum; ordinary Build reused that same script and audio.
+
+**Five whys:** (1) The app rejected a short recording instead of preparing enough speech before review. (2) Planning allocated exactly342 words using a1.9 words/second estimate, while actual narration could be faster and individual segments could remain under budget. (3) Short delivery-batch limits also capped an entire reviewed story stop, leaving too little room for distinct supported detail. (4) Author’s global deficit shared a generic repair, and a repeated Build reused completed work. (5) Prior tests supplied already-long scripts and matching-rate WAVs, proving the publication boundary but missing generation and recovery.
+
+**Correction:** prepare495-words by default (a conservative2.5 words/second drafting assumption with10 percent headroom), or a higher target learned from matching recorded main/selected-language speech. Retain that target across unvoiced retries only for the same provider/speaker, languages, requested length and persona. Keep one reviewed story stop while splitting complete cited thoughts into short delivery batches; count/play whole continuation groups and exclude unreachable tail groups and all question-shaped speech. The existing bounded Author repair must address the global content target without padding or changing voice speed. Exact Prepare reuses the reviewed plan, skips unnecessary planner/persona calls, preserves facts/voice/CTAs and returns changed Script/Visuals for approval. A measured shortfall parks Build at Align, preserves the previous publication and recordings, and exposes the limiting current language.
+
+**Prevention:** new preparation contracts run the actual Planner/Author repair, Deck, Bundle and initial Pitch using source-backed provider fixtures and real silent WAVs at2.5 words/second;495-words publish/play as198 seconds. Separate recovery tests reproduce128.3-seconds through the real API/graph and require no automatic rewrite/approval/publication. Independent QA caught and fixed readiness bypass, a worker-completion UI race, hidden alternate-language deficits and calibration loss on retry. Fixtures prove mechanics, not fresh model prose, claim entailment or acoustic quality; human Align review and the measured publication gate remain mandatory.
+
 ## 2026-09-23 — Release FMEA found failures between otherwise passing stages
 
 **Five whys:** (1) Green stage contracts hid a publication approval race, lost partial web evidence and players surviving navigation. (2) Approval was checked before Voice, the tool budget covered optional fetches, and teardown depended on only some exit paths. (3) Customer FAQ learning, public search and browser routing introduced asynchronous boundaries between the checks. (4) Earlier fixtures mainly tested one owner at a time and exact legacy technical wording. (5) Stage success was being treated as proof of an entire customer journey.

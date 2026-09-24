@@ -122,3 +122,8 @@ The additional presentation variants are design-review artifacts. Any unspecifie
 ## Implementation closure — WP11
 
 P12 and the approved finishing requests are implemented. C3 (Marine/layout/Visuals color approval), C4 (immediate cited public search) and C5 (recorded three-minute default tour) were explicitly approved by Anand during implementation; C6 retains the existing scope/date/grounding boundary. No unanswered design questions remain. Selective Align rebuild routing stays pending in Handoff.MD. Full gate counts, files, protected-path comparison and verification limits are in `docs/wp11-implementation-report-2026-09-23.md`. No paid calls or deployment were performed.
+
+
+## Three-minute narration correction — 24 September 2026
+
+The128.3-second failure exposed preparation and recovery gaps, not a reason to waive C5. New drafts target enough distinct supported words with natural-rate headroom and matching-recording calibration. Whole reviewed story stops can use several short delivery batches. Align Prepare reuses the reviewed plan, expands supported narration through Author, and returns changed cards for approval; short recorded builds return to Align without overwriting the prior publication. Full QA/FMEA: `docs/narration-recovery-qa-2026-09-24.md`. No new design question; the180-second measured minimum and no-padding/no-slowdown rules stay unchanged.

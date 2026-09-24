@@ -10,7 +10,7 @@ import traceback
 import re
 
 from . import cloud, events, media, store, usage, runlog
-from .agents import align, author, bundle, coach, deck, faq, plan, rehearsal, understand, voice
+from .agents import align, author, bundle, coach, deck, faq, narration, plan, rehearsal, understand, voice
 from .store import STAGES
 
 # Declare which outputs depend on a changed stage so reuse never assumes they are current.
@@ -211,7 +211,7 @@ def _run_stage(demo_id: str, stage: str, instruction: str = "") -> object:
         cloud.sync_demo_async(demo_id)
         return out
     except Exception as e:
-        if isinstance(e, bundle.ApprovalRequired):
+        if isinstance(e, (bundle.ApprovalRequired, narration.NarrationTooShort)):
             set_stage(demo_id, stage, "pending", message=str(e))
             raise
         store.log(demo_id, f"error-{stage}", {"error": str(e), "trace": traceback.format_exc()})

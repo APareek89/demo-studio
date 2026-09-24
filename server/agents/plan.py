@@ -51,8 +51,13 @@ Produce exactly this:
    on a doubt the previous one raised, on an ordinary situation, or on a short honest limitation.
 - WORD BUDGETS. Set word_budget for every segment. The default guided tour must provide at least three minutes of
   distinct supported narration: allocate total_words minus 23 for the Explore overview and 45 for closing across
-  proof, features and establish. Intro/outcome are a separate opening used by Browse and do not consume that guided budget. Spend more on the lead fundamental stop (up to the role ceiling) and less on a
-  minor stop (never under 22). An even split is a catalogue.
+  proof, features and establish. Intro/outcome are a separate opening used by Browse and do not consume that guided budget.
+  A supported story stop may need two or three short delivery batches. Its word_budget covers the whole stop;
+  the supplied role ceiling applies to EACH delivery batch, not to the whole stop. Keep one planned segment per
+  reviewed stop and brief distinct details from its assigned approved facts for those batches. No facts means no
+  extra batches. Spend more on the lead fundamental and less on a minor stop (never under 22). An even split is a catalogue.
+  Use the supplied target, including its natural-speech headroom. Never fill a deficit with repeated claims, generic
+  praise, extra transitions, or a slower voice; report missing evidence when useful supported detail is insufficient.
 - Never build a USP or a narration line on a company or market statistic: units sold, monthly or annual
 sales figures, customer totals, market share, sales rank, years on sale, or award counts. These are the
 brand's numbers, not the buyer's experience; they date within weeks and no one buys because of a units
@@ -73,8 +78,8 @@ buyer's nouns — "The seat you'll sit in every day" — never a category label 
   short planning sentences: MOMENT — an optional everyday situation or thing to notice, never asserted as this buyer's
   circumstances or a demonstrated benefit; SPOKEN / DEEPER — name the fact IDs to voice versus hold for questions,
   retaining every material variant, transmission, purchase and policy condition beside the fact; VISUAL / HANDOFF —
-  name the first visual's literal subject and the subject left in focus, plus a word budget within the existing role
-  limit and whether a one-line closing statement would be useful. These are instructions, not sample dialogue. A reordered
+  name the first visual's literal subject and the subject left in focus, plus the whole-stop word budget and whether
+  a one-line closing statement would be useful. Each delivery batch stays within its role limit. These are instructions, not sample dialogue. A reordered
   proof stop must make sense independently: hand off a subject, never depend on a prior stop or say "as we saw".
   Put quantities with their full units and basis in deeper detail unless the figure is the point. Do not simply
   delete technical detail and leave a vague benefit in its place. Budget more attention for the lead proof than a
@@ -324,14 +329,23 @@ def _enforce_budget(p: dict, demo: dict) -> None:
     """Allocate requested speech length within role ceilings, recording infeasible totals."""
     from . import author
     from .narration import MIN_SECONDS, OVERVIEW_WORDS, ROLES
-    total = round(max(3.0, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3)) * 60 * author.WPS)
+    preparation = p.get("narration_preparation") or {}
+    total = (int(preparation["target_words"]) if preparation.get("version") == 1 and preparation.get("target_words")
+             else round(max(3.0, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3)) * 60 * author.WPS))
     target = max(0, total - 45 - OVERVIEW_WORDS)
     segments = [segment for segment in p.get("segments", []) if segment.get("role") in ROLES]
     for segment in p.get("segments", []):
         if segment.get("role") not in ROLES:
             ceiling = author.LIMITS.get(segment.get("role"), author.LIMITS["proof"])
             segment["word_budget"] = max(22, min(ceiling, int(segment.get("word_budget") or 28)))
-    ceilings = [author.LIMITS.get(segment.get("role"), author.LIMITS["proof"]) for segment in segments]
+    ceilings = []
+    for segment in segments:
+        ceiling = author.LIMITS.get(segment.get("role"), author.LIMITS["proof"])
+        if preparation.get("version") == 1 and preparation.get("target_words") and segment.get("fact_ids"):
+            # This is room for distinct supported detail, not permission to
+            # manufacture content. The author retains the evidence boundary.
+            ceiling *= min(3, max(2, len(set(segment["fact_ids"]))))
+        ceilings.append(ceiling)
     lead = next((segment for segment in segments if segment.get("role") == "proof" and segment.get("fundamental")), None)
     weights = []
     for segment, ceiling in zip(segments, ceilings):
@@ -360,7 +374,7 @@ def _enforce_budget(p: dict, demo: dict) -> None:
     p["guided_minimum_seconds"] = MIN_SECONDS
     p["guided_opening_words"] = OVERVIEW_WORDS
     if feasible != target:
-        p.setdefault("issues", []).append(f"Requested {total} words cannot fit the current stops within role budgets; allocated {feasible} guided segment words plus {OVERVIEW_WORDS} overview and 45 closing words. More supported proof stops are needed; never invent or duplicate speech.")
+        p.setdefault("issues", []).append(f"Requested {total} words cannot fit the current stops within supported delivery budgets; allocated {feasible} guided segment words plus {OVERVIEW_WORDS} overview and 45 closing words. More distinct approved detail is needed; never invent or duplicate speech.")
 
 
 # Read understanding.json and produce plan.json: the buying story, segment evidence, image choices and actions.
@@ -396,11 +410,13 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in vshots)
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in vimgs)
     unk_txt = "\n".join(f"{u['id']} {u['question']}" for u in und["unknowns"] if u.get("status") == "open")
-    from . import author
+    from . import author, narration
+    target_words = narration.word_target(demo, store.read_json(demo_id, "script.json"), demo_id)
     timing = {"pitch_minutes": demo.get("settings", {}).get("pitch_minutes", 3),
-              "total_words": round(max(3.0, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3)) * 60 * author.WPS),
+              "total_words": target_words,
               "minimum_narration_seconds": 180, "guided_overview_words": 23,
-              "closing_words": 45, "role_ceilings": dict(author.LIMITS)}
+              "closing_words": 45, "role_ceilings": dict(author.LIMITS),
+              "max_delivery_batches_per_supported_stop": 3}
     playbook_view = {key: playbook.get(key) for key in ("stops", "usps", "objections", "evidence_gaps")} if playbook else None
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND PROFILE: {json.dumps(und['brand'])}
@@ -431,20 +447,25 @@ IMAGES ({len(und['images'])}):
     if instruction:
         content += f"\nREVISION INSTRUCTION FROM THE USER — follow it precisely:\n{instruction}\n"
     sys = PLAN_SYSTEM.format(principles=PRINCIPLES, states=CUSTOMER_STATES, shape=PITCH_SHAPE, proof_block=PROOF_BLOCK, audience=audience_instruction(demo.get("settings", {}).get("audience", "everyday")), language=language_instruction(demo.get("settings", {}).get("language", "en-IN")))
-    try:
-        plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000, model=config.CLAUDE_PLAN_MODEL)
-    except Exception as e:
-        manifest = _verified_plan(demo_id, demo) if claude._provider_unavailable(e) else None
-        if not manifest:
-            raise RuntimeError(f"Planning failed: {claude.describe_error(e)}") from e
-        emit("Reasoning providers unavailable — using the explicit verified plan…")
-        plan = manifest
+    preparation_only = bool(prev and instruction == narration.PREPARATION_INSTRUCTION)
+    if preparation_only:
+        p = copy.deepcopy(prev)
+        emit("Preparing the reviewed story for three minutes of supported narration…")
+    else:
+        try:
+            plan = claude.structured(sys, content, schemas.Plan, max_tokens=20000, model=config.CLAUDE_PLAN_MODEL)
+        except Exception as e:
+            manifest = _verified_plan(demo_id, demo) if claude._provider_unavailable(e) else None
+            if not manifest:
+                raise RuntimeError(f"Planning failed: {claude.describe_error(e)}") from e
+            emit("Reasoning providers unavailable — using the explicit verified plan…")
+            plan = manifest
+        p = plan.model_dump()
 
     # Remove fact, visual and USP references that are absent from the supplied allowed sets.
     # This checks identities for server/agents/author.py:run; it is not a pixel-level proof of the chosen image.
     fact_ids = {f["id"] for f in facts}
     vis_ids = {s["id"] for s in vshots} | {i["id"] for i in vimgs}
-    p = plan.model_dump()
     p["intake"]["q2"] = ""
     usp_ids = {u["id"] for u in p["usps"]}
     for u in p["usps"]:
@@ -470,20 +491,22 @@ IMAGES ({len(und['images'])}):
     p["segments"].sort(key=lambda s: order.get(s["role"], 2))
     if playbook:
         _enforce_playbook(p, playbook)
+    p["narration_preparation"] = {"version": narration.PREPARATION_VERSION, "target_words": target_words}
     _enforce_budget(p, demo)
     p["supporting_outcomes"] = p["supporting_outcomes"][:2]
     # Preserve reviewed CTA and voice choices during revisions that do not ask to change those fields.
     # Then reapply the selected speaker and retained destination constraints before saving plan.json.
     if prev and instruction:
         low = instruction.lower()
-        if "cta" not in low and "button" not in low and "call to action" not in low:
+        if preparation_only or ("cta" not in low and "button" not in low and "call to action" not in low):
             p["ctas"] = prev.get("ctas", p["ctas"])
-        if "voice" not in low and "persona" not in low and "tone" not in low:
+        if preparation_only or ("voice" not in low and "persona" not in low and "tone" not in low):
             p["voice"] = prev.get("voice", p["voice"])
     # Apply after preservation of previous review fields: a prior invented
     # persona cannot override the currently selected locked voice on revision.
     _keep_locked_persona(p, configured_voice)
     _ground_action_ctas(p, action_urls)
+    p["narration_preparation"]["identity"] = narration.preparation_identity(demo, p.get("voice"))
     if not p["ctas"]:
         p["ctas"] = [{"id": "contact", "label": "Talk to us", "kind": "contact", "url": "", "primary": True, "when": "always"}]
     store.write_json(demo_id, "plan.json", p)

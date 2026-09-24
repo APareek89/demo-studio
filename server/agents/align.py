@@ -92,8 +92,32 @@ def cards(demo_id: str) -> dict:
     images = [{**i, "url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("play") or src_by_id.get(i["source_id"], {}).get("path")), "original_url": media_url(demo_id, src_by_id.get(i["source_id"], {}).get("path")), "enhanced": src_by_id.get(i["source_id"], {}).get("enhanced"), "audit": audit_images.get(i["id"])} for i in und.get("images", [])]
     voice = plan.get("voice", {})
     actual_provider = voice_agent.provider_for(demo)
-    _, narration_minimum = narration.default_route(script, demo_id=demo_id,
-        allowed_fact_ids={fact["id"] for fact in und.get("facts", []) if fact.get("approved", True)})
+    allowed_facts = {fact["id"] for fact in und.get("facts", []) if fact.get("approved", True)}
+    _, narration_minimum = narration.default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_facts)
+    # Publication checks every recorded language. Show the limiting recording
+    # here too, so an alternate-language deficit has an actionable review card.
+    settings = demo.get("settings", {})
+    main_language = settings.get("language", "en-IN")
+    recorded_current = bool(script.get("voice_input_hash")) and script["voice_input_hash"] == voice_agent.input_hash(demo_id)
+    for language in (settings.get("languages", []) or []) if recorded_current else []:
+        if language == main_language:
+            continue
+        translated = store.read_json(demo_id, f"script.{language}.json")
+        if not translated:
+            continue
+        _, candidate = narration.default_route(translated, demo_id=demo_id, allowed_fact_ids=allowed_facts)
+        current_key = (narration_minimum["sufficient"] and narration_minimum["measured"], narration_minimum["seconds"])
+        candidate_key = (candidate["sufficient"] and candidate["measured"], candidate["seconds"])
+        if candidate_key < current_key:
+            narration_minimum = {**candidate, "language": language}
+    preparation = plan.get("narration_preparation") or {}
+    target = preparation.get("target_words")
+    if isinstance(target, int) and not isinstance(target, bool) and target > 0:
+        # Include every eligible continuation, not only the first route that
+        # reaches the old estimated minimum. Recorded publication stays final.
+        draft = narration.preparation_report(script, allowed_fact_ids=allowed_facts)
+        narration_minimum["preparation"] = {"target_words": target, "words": draft["words"],
+                                              "sufficient": draft["words"] >= target}
     return {
         "product": und.get("product", {"name": demo["name"]}),
         "visuals": {"shots": shots, "images": images, "gaps": plan.get("visual_gaps", []), "video_summaries": und.get("video_summaries", {}),

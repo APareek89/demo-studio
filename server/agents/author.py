@@ -51,7 +51,7 @@ Hard rules:
 4. THE PLAN IS SETTLED. Write one segment for each segment in PLAN.segments, in the order given, keeping
    its id, role and title exactly. Do not add, drop, merge, split, reorder or rename a segment, and do
    not decide what the demo covers — that decision is made. Speak only the facts the plan assigned to
-   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question. One segment = one batch the guide speaks without stopping, then continues naturally. The budget exists to
+   that segment; anything else it cites belongs in `deeper`. Put a one-line closing statement only where the plan asks for one; never a question. For a prepared plan, one segment is one reviewed story stop: its word_budget can cover two or three short delivery batches. Write complete cited lines within that whole-stop allowance; the delivery splitter groups those lines afterward. The budget exists to
    keep the thought clear, not to compress thoughts — a segment under its word_budget that flows beats one at the ceiling that is crammed. Your judgement is about WORDS: what to say first inside the segment, how long a sentence
    runs, which everyday noun carries the idea, how one segment hands over to the next.
    PLAN.customer_persona is the planner's note about who the product suits. It is not a person in the
@@ -59,7 +59,7 @@ Hard rules:
    the listener a commute, budget, city, household or job, and never hedge around them either — no
    "depending on your routine", no "if that matters to you". "You" is fine for what the product does for
    anyone: "you'd notice it the first hot afternoon", never "on your Bengaluru commute".
-   Aim for one natural ten-to-twenty-second thought, within the segment's word_budget (ceiling: the role limit). Padding means
+   Each delivery batch is one natural ten-to-twenty-second thought; each complete line must fit the role ceiling. In a prepared plan, use the segment's whole-stop word_budget for several distinct supported thoughts. PLAN.narration_preparation.target_words is the minimum across overview, all proof/features/establish narration and closing, excluding intro/outcome alternatives, deeper-only lines, questions and repeated claims. Use distinct detail from the assigned approved facts to meet it; if those facts cannot support it, state the evidence gap. Do not change the voice speed. In a legacy plan without that preparation field, the role ceiling applies to the whole segment. Padding means
    filler adjectives, restating the obvious, and repeating what was just said — cut those first. A
    joining clause is NOT padding; it is what makes this one piece of speech instead of a stack of
    captions. When the budget is tight, drop the least decisive fact and keep the remaining sentences
@@ -134,8 +134,11 @@ CLAIMISH = re.compile(r"\b(warrant|guarantee|certified|rated|fastest|longest|bes
 LIMITS = {"intro": 46, "outcome": 46, "proof": 46, "features": 48, "establish": 44}  # Room for natural joins; the planner allocates within these ceilings.
 WPS = 1.9  # spoken words per second, measured on Sarvam bulbul (Creta run 2026-09-04: 446 words → 240 s); replaced by real audio durations after voicing
 CLOSING_LIMIT = 45
-def route_limit(demo: dict | None = None) -> int:
+def route_limit(demo: dict | None = None, plan: dict | None = None) -> int:
     """Derive the route ceiling from the selected duration, with room for joins."""
+    preparation = (plan or {}).get("narration_preparation") or {}
+    if preparation.get("version") == 1 and preparation.get("target_words"):
+        return int(preparation["target_words"]) + 40
     minutes = max(3.0, float((demo or {}).get("settings", {}).get("pitch_minutes", 3) or 3))
     return round(minutes * 60 * WPS) + 40
 
@@ -203,6 +206,8 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         audience, plan = plan, None
     audience = audience or (demo or {}).get("settings", {}).get("audience", "everyday")
     _carry_plan_metadata(script, plan)
+    preparation = (plan or {}).get("narration_preparation") or {}
+    prepared_tour = preparation.get("version") == 1 and bool(preparation.get("target_words"))
     # A human rejection in Align is a hard boundary: rejected facts must not
     # survive as citations merely because they still exist in the registry.
     fact_ids = {f["id"] for f in und["facts"] if f.get("approved", True)}
@@ -279,7 +284,11 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
             issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, over its budget of {budget} — cut a whole idea, keeping the joins")
         if explicit_budget and total < budget - 10:
             issues.append(f"{seg['id']} ({seg.get('role')}): warning — well under budget; add the join or the moment ({total} words, budget {budget})")
-        if total > lim:
+        if prepared_tour and seg.get("role") in {"proof", "features", "establish"} and not seg.get("budget_source_id"):
+            for n, line in enumerate(seg["lines"], 1):
+                if words(line.get("text", "")) > lim:
+                    issues.append(f"{seg['id']} line {n}: complete thought exceeds the {lim}-word delivery ceiling — use separate complete cited lines, never fragments")
+        elif total > lim:
             issues.append(f"{seg['id']} ({seg.get('role')}): {total} words, limit {lim} — shorten (P06)")
         for n, line in enumerate(seg["lines"], 1):
             register_warning(line.get("text", ""), f"{seg['id']} line {n}")
@@ -304,7 +313,7 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         from . import narration
         _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
         route = guided["words"]
-    limit = route_limit(demo)
+    limit = route_limit(demo, plan)
     if route > limit:
         issues.append(f"a full route would run {route} words (~{route / WPS / 60:.1f} min); keep it under {limit} for the selected demo length — cut, don't compress")
     # Validate the separate Explore opening as cited, question-free narration with its own word budget.
@@ -322,7 +331,15 @@ def validate(script: dict, und: dict, plan: dict | str | None = None, demo: dict
         from . import narration
         _, guided = narration.default_route(script, allowed_fact_ids=fact_ids)
         script["narration_minimum"] = guided
-        if not guided["sufficient"]:
+        if prepared_tour:
+            script["narration_preparation"] = dict(preparation)
+            eligible = narration.preparation_report(script, allowed_fact_ids=fact_ids)
+            target = int(preparation["target_words"])
+            if eligible["words"] < target:
+                issues.append(f"GLOBAL NARRATION TARGET: {eligible['words']} distinct supported words, minimum {target}. Add {target - eligible['words']} words of distinct supported detail from assigned approved facts to underused story stops, within their whole-stop budgets. Add complete cited lines, each within its delivery ceiling. Preserve good existing lines; never repeat claims, pad, slow the voice, or count deeper-only material. If the evidence is insufficient, keep the gap explicit.")
+            if eligible["words"] > limit:
+                issues.append(f"GLOBAL NARRATION TARGET: {eligible['words']} words exceeds the {limit}-word route ceiling; remove a whole less useful idea without losing the minimum {target} words")
+        elif not guided["sufficient"]:
             issues.append(narration.deficit_message(guided))
     return issues
 
@@ -400,15 +417,16 @@ def timeline(script: dict, demo_id: str | None = None) -> dict:
 
 # Split oversized narration at existing line boundaries, keeping check-in/deeper material on the last piece.
 # Returns the added batch count; server/agents/deck.py:build later creates slides from the resulting segments.
-def split_long_batches(script: dict) -> int:
+def split_long_batches(script: dict, *, strict: bool = False) -> int:
     """A segment whose spoken lines exceed its role ceiling is split at line
     boundaries into '… (cont.)' batches; the check-in and deeper lines stay with the last piece. Returns the number of
     new batches created."""
     out, created = [], 0
+    reserved_ids = {segment["id"] for segment in script.get("segments", [])}
     for seg in script.get("segments", []):
         limit = LIMITS.get(seg.get("role", "proof"), 50)
         lines = [l for l in seg.get("lines", []) if not l.get("unverified")]
-        if sum(words(l.get("text", "")) for l in lines) <= limit + 4 or len(lines) < 2:
+        if sum(words(l.get("text", "")) for l in lines) <= limit + (0 if strict else 4) or len(lines) < 2:
             out.append(seg)
             continue
         # Group whole verified lines within the role's word budget; never rewrite a sentence to make it fit.
@@ -430,12 +448,18 @@ def split_long_batches(script: dict) -> int:
             allocations = _allocate_words(seg["word_budget"], weights)
         for k, ch in enumerate(chunks):
             last = k == len(chunks) - 1
-            piece = {**seg, "id": seg["id"] if k == 0 else f"{seg['id']}-{k + 1}", "title": seg["title"] if k == 0 else f"{seg['title']} (cont.)",
+            piece_id = seg["id"]
+            if k:
+                suffix = k + 1
+                while f"{seg['id']}-{suffix}" in reserved_ids:
+                    suffix += 1
+                piece_id = f"{seg['id']}-{suffix}"
+                reserved_ids.add(piece_id)
+            piece = {**seg, "id": piece_id, "budget_source_id": seg.get("budget_source_id") or seg["id"], "title": seg["title"] if k == 0 else f"{seg['title']} (cont.)",
                      "lines": ch + (held if last else []), "checkin": seg.get("checkin", "") if last else "", "checkin_audio": seg.get("checkin_audio") if last else None,
                      "deeper": seg.get("deeper", []) if last else []}
             if allocations is not None:
                 piece["word_budget"] = allocations[k]
-                piece["budget_source_id"] = seg.get("budget_source_id") or seg["id"]
             out.append(piece)
             created += 0 if k == 0 else 1
     script["segments"] = out
@@ -480,7 +504,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     facts_txt = "\n".join(fact_context(f) for f in und["facts"] if f.get("approved", True))
     shots_txt = "\n".join(f"{s['id']} {s['start']:.1f}-{s['end']:.1f}s q{s['quality']} · {s['part']} · {s['feature']} · {s['description']}" for s in und["shots"] if s.get("_allowed", True))
     imgs_txt = "\n".join(f"{i['id']} q{i['quality']} · {i['angle']} · {', '.join(visuals.part_names(i))} · {i['description']}" for i in und["images"] if i.get("_allowed", True))
-    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes", "total_words", "playbook_version", "guided_minimum_seconds", "guided_opening_words")}
+    plan_view = {k: plan.get(k) for k in ("customer_persona", "decision_frame", "takeaway", "primary_outcome", "supporting_outcomes", "concerns", "usps", "segments", "ctas", "voice", "intake", "do_not_recommend_if", "advance", "notes", "total_words", "playbook_version", "guided_minimum_seconds", "guided_opening_words", "narration_preparation")}
     content = f"""PRODUCT: {json.dumps(und['product'])}
 BRAND: {json.dumps(und['brand'])}
 PLAN: {json.dumps(plan_view)}
@@ -520,7 +544,7 @@ IMAGES:
         fix = content + "\n\nYOUR DRAFT:\n" + json.dumps({k: script.get(k) for k in ("overview", "segments", "closing", "intake_q1", "intake_q2")})[:60000]
         fix += "\n\n" + """VALIDATOR ISSUES — each names a specific segment or line. Fix ONLY those. Return the full script with
 every unflagged line reproduced exactly as you wrote it: those lines are already right, and re-deciding
-them loses more than it gains. For each flagged line, try these in order and stop at the first that
+them loses more than it gains. A GLOBAL NARRATION TARGET issue also requires adding distinct supported detail to underused planned stops: retain the existing good lines and add complete cited lines from their assigned facts within the whole-stop allowances. This minimum is required, not advisory; deeper-only lines, film, questions and repeated claims do not count. If approved evidence cannot support more detail, leave that gap explicit. For each flagged line, try these in order and stop at the first that
 works: (1) add the correct fact id if the registry genuinely supports the claim; (2) drop one rung on
 the translation ladder and move the complete quantity to `deeper`; (3) state the gap honestly in the
 guide's voice. Delete the thought only as a last resort. Where a segment is over budget, CUT A WHOLE
@@ -545,7 +569,7 @@ the one before it, a subject introduced twice, a join that lost its verb.
     script["intake_audio"] = {}
     schemas.Script.model_validate(script)
     script = visuals.align(demo_id, script, und, emit)
-    n_split = split_long_batches(script)
+    n_split = split_long_batches(script, strict=(plan.get("narration_preparation") or {}).get("version") == 1)
     if n_split:
         emit(f"{n_split} long batch(es) divided at complete lines for clearer pacing.")
     timeline(script)

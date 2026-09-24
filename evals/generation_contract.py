@@ -122,8 +122,12 @@ def run(check, demo_id: str = "generation-fixture") -> None:
         check("generation: planner and author both receive the evidence-to-relevance rules",
               principles.EVIDENCE_RULES in plan_system and principles.EVIDENCE_RULES in author_system)
         check("generation: complete technical quantities survive the bounded minimum-length repair without jargon issues",
-              model.call_count == 2 and scripted["issues"] and all("before publication" in issue for issue in scripted["issues"])
-              and scripted["segments"][0]["deeper"][0]["text"] == technical["text"])
+              model.call_count == 2 and len(scripted["issues"]) == 1
+              and scripted["issues"][0].startswith("GLOBAL NARRATION TARGET:")
+              and "distinct supported words, minimum 495" in scripted["issues"][0]
+              and scripted["segments"][0]["deeper"][0]["text"] == technical["text"]
+              and scripted["segments"][0]["deeper"][0]["fact_ids"] == technical["fact_ids"]
+              and not scripted["segments"][0]["deeper"][0]["unverified"])
         jargon = copy.deepcopy(scripted)
         jargon["segments"][0]["lines"] = [copy.deepcopy(scripted["segments"][0]["deeper"][0])]
         issues = author.validate(jargon, und)

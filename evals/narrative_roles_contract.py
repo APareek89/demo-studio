@@ -157,7 +157,8 @@ class NarrativeRolesContract(unittest.TestCase):
         prompt = self.author_calls[0]["system"]
         self.assertIn("4. THE PLAN IS SETTLED", prompt)
         self.assertIn("a segment under its word_budget that flows", prompt)
-        self.assertIn("within the segment's word_budget", prompt)
+        self.assertIn("use the segment's whole-stop word_budget for several distinct supported thoughts", prompt)
+        self.assertIn("each complete line must fit the role ceiling", prompt)
         self.assertIn("the first supported fundamental in the playbook", prompt)
         self.assertIn("No greeting, question, decision frame, digits or dimensions. Delighters come later.", prompt)
         self.assertTrue(all(isinstance(segment["word_budget"], int) and segment["word_budget"] > 0 for segment in self.author_plan["segments"]))
@@ -231,8 +232,13 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertIn(self.planned["segments"][2]["goal"], rewrite)
         self.assertTrue(all("999" not in l["text"] and not l["unverified"]
                             for s in self.authored["segments"] for l in s["lines"]))
-        self.assertTrue(self.authored["issues"])
-        self.assertTrue(all("before publication" in issue for issue in self.authored["issues"]), self.authored["issues"])
+        issues = self.authored["issues"]
+        minimum = [issue for issue in issues if issue.startswith("GLOBAL NARRATION TARGET:")]
+        self.assertEqual(len(minimum), 1, issues)
+        self.assertIn("62 distinct supported words, minimum 495", minimum[0])
+        self.assertIn("Add 433 words of distinct supported detail", minimum[0])
+        self.assertTrue(all(issue in minimum or "warning — well under budget" in issue for issue in issues), issues)
+        self.assertEqual(sum("warning — well under budget" in issue for issue in issues), 3)
         self.assertFalse(self.authored["narration_minimum"]["sufficient"])
 
     def test_draft_persistence_does_not_publish_approve_or_generate_audio(self):

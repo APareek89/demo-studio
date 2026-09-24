@@ -1,6 +1,7 @@
 %% 03 · Align loop — one prompt dock, one agent, structured actions
 flowchart TD
   N6["SIX cards — Visuals · Facts · Script · Asked and answered · Persona · CTAs<br/>[DATA]<br/>Script includes Story order and Gemini full/partial/missing visual proof per line<br/>empty question card auto-approved; same six-card Build gate<br/>Visuals: Marine / Sage / Graphite choice resets Visuals approval<br/>Script: default narration seconds + deficit; estimates labelled; publication requires measured 180s"]:::data
+  PREP["USER selects Prepare three-minute narration<br/>[HUMAN · visible minimum panel, including prior errors]<br/>POST /revise plan; provider readiness or explicit override<br/>reuse reviewed plan and voice/CTAs; rebudget then Author/Deck<br/>existing facts retained; new Script/Visuals require review"]:::ask
   STORY["USER reviews Story order above script segments<br/>[ask · existing Script card]<br/>drag stops; review kind, fact/picture counts and gaps; Ask for this source"]:::ask
   PBO["PATCH /align/playbook {stop_order, kinds}<br/>[FUNCTION · server/app.py]<br/>save playbook-overrides.json; revalidate effective playbook<br/>mark dependent work stale; reset script + visuals approvals; revise Plan<br/>Planner preserves reviewed stops, kinds, coverage and USPs"]:::fn
   MSG["USER message + optional files<br/>[ask · prompt dock or Rehearse feedback panel]"]:::ask
@@ -55,6 +56,7 @@ flowchart TD
   A7 --> REPLY
   ATT -.->|"files but no revise action → revise('understand')"| A5
   N6 --> EDIT --> SAVEEDIT --> N6
+  N6 --> PREP --> R2
   N6 --> STORY
   STORY -- "save order / kinds" --> PBO --> R2
   STORY -- "gap text: request_upload" --> A4

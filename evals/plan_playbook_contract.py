@@ -175,8 +175,11 @@ class PlanPlaybookContract(unittest.TestCase):
             result = plan.run(self.did, lambda _: None)
         timing = json.loads(model.call_args.args[1].split("DEMO WORD BUDGET: ", 1)[1].split("\n", 1)[0])
         self.assertEqual(timing["pitch_minutes"], 3)
-        self.assertEqual(timing["total_words"], 342)
-        self.assertEqual(result["total_words"], 342)
+        self.assertEqual(timing["total_words"], 495)
+        self.assertEqual(result["total_words"], 495)
+        self.assertEqual(result["narration_preparation"]["version"], 1)
+        self.assertEqual(result["narration_preparation"]["target_words"], 495)
+        self.assertRegex(result["narration_preparation"]["identity"], r"^[0-9a-f]{64}$")
 
     def test_budget_clamps_extremes_and_reports_unachievable_lengths(self):
         self.plan["segments"][0]["word_budget"] = -500
@@ -225,7 +228,7 @@ class PlanPlaybookContract(unittest.TestCase):
         self.assertIn('(pictures: im1)', content)
         self.assertIn('(origin: website)', content)
         self.assertIn('(origin: uploaded)', content)
-        self.assertIn('"total_words": 342', content)
+        self.assertIn('"total_words": 495', content)
         self.assertIn('"role_ceilings"', content)
         self.assertEqual([s for s in result["segments"] if s["role"] == "proof"][0]["stop_id"], "stance-and-ride")
 

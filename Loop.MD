@@ -1,5 +1,18 @@
 # Loop.MD — Demo Studio
 
+
+## Three-minute narration preparation / recovery · 24 September 2026
+
+Loop remains **off**. The user-reported128.3-second failure now has preparation and explicit Align recovery; the measured180-second publication gate remains unchanged. Baseline eight gates passed; final scoped **33/33 scripts** report **1101/1101** checks/cases/phases with zero outbound attempts. An independent actual-browser pass adds **10/10** checks. Inventory, each count/log and source hashes: `docs/narration-recovery-gates-2026-09-24.json`; twelve-category FMEA: `docs/narration-recovery-qa-2026-09-24.md`.
+
+- Required deck **365/365**, acceptance **24/24**, smoke **both phases plus on-demand rehearsal**.
+- New preparation **18/18**: actual Plan→Author bounded repair→Deck→Bundle→Pitch, **495 distinct cited words /198 seconds measured fixture audio**, all 13 guided pieces retained. Calibrated targets survive retries, reset for changed voice/language/length/persona, and exclude unreachable/deeper/duplicate/question speech.
+- New recovery **18/18**: actual128.3-second Build parks at Align, leaves published version/snapshot/audio intact, requires explicit review/rebuild, checks readiness/override, selected-language visibility and draft target counts.
+- New Align recovery UI **17/17**, independent muted browser **10/10**; existing timing11, progress9, CoachUI9, readinessUI5; no device or external request.
+- Contracts touched: minimum25, Plan19, generation58, narrative14, speech30, publication8, Align51, CoachAlign21, Deck45, DeckAlign15, voice27, theme12, readiness10. Broader flow: full release journey27 with194.22seconds measured fixture audio, runtime130/conversation18, pitch delivery18/priority7/fundamental12/grounding47, player fundamental10/priority11/media7. Every listed contract passes.
+
+Python/JavaScript syntax, diff whitespace and all 9 Mermaid source/HTML copies pass. Tests use MOCK_LLM=1, isolated data/graph storage and blocked outbound sockets. No paid model/voice, physical microphone or live model-quality test. Thin evidence remains an explicit review gap, never permission to pad or bypass180-seconds. New recovery UI is active on localhost8905 with its existing isolated mock data; the protected demo, output/ and port8896 were not operated.
+
 ## WP11 release QA / FMEA · 23 September 2026
 
 Loop remains **off**. Full release review covers WP1–WP11 against deployed `63abb85`. All **95/95** script/harness entries pass (**94 executable**, plus the provider module exercised inside deck); **2,788** reported groups/cases/phases overlap where deck invokes another contract. Full per-file counts and evidence paths: `docs/wp11-release-gates-2026-09-23.json`. FMEA: `docs/wp11-release-fmea-2026-09-23.md`, **12/12 categories**, eight fixes and three inherited limitations.

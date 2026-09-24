@@ -1,0 +1,778 @@
+{
+  "recorded_at": "2026-09-24T05:19:56.487627+00:00",
+  "repo": "/Users/macbook/Documents/demo-studio",
+  "head": "92a6541668ba22291cbf1cc49606e383e3fcbe92",
+  "working_tree_tested": true,
+  "controls": {
+    "mock_llm": true,
+    "isolated_data_and_graph": true,
+    "storage_backend": "local",
+    "cloud_sync": false,
+    "outbound_sockets_blocked": true,
+    "browser_requests": "intercepted in-process TestClient; external requests denied",
+    "protected_demos_modified": false,
+    "paid_calls": 0
+  },
+  "summary": {
+    "scripts": 33,
+    "python_scripts": 25,
+    "node_scripts": 8,
+    "passed": 1101,
+    "total": 1101,
+    "outbound_attempts": 0
+  },
+  "source_sha256": {
+    "server/agents/narration.py": "de8ed7e6c7ca7fac9331ffb08467188a810a50dee32c831e1a31b46574e1feaf",
+    "server/agents/plan.py": "7a12876a9ab0e7e8144d05ff6878926d793044f1c1e204d9eea682dc58ef0b16",
+    "server/agents/author.py": "c2ea4b534ad6534d673deb355149c95176a7ea1555230f62389758df1ee3d022",
+    "server/agents/align.py": "b507941e1a6b3ecbbb19b29996e7baa60ae0b27b7d9447a14cc5b91bc27a0160",
+    "server/agents/bundle.py": "0242d6cb182da2193cc039015c26831657e882a8d8709315de1fb87043890f9f",
+    "server/graph.py": "86a4718c27dd3c203806a2d66401ee5812b671cf08746f4bbc46c209502ab745",
+    "server/app.py": "5edbcb31ee693e44469cd1a2825b2c919c8cabae9dd40b96497fe9cea2877831",
+    "server/orchestrator.py": "83f819a39f6b03451a5709fadae1c56633b9c4012319018a405c4b9a893df4d9",
+    "web/studio/align.js": "41ef037c3e143b036bdd51c0fe4d647565db468f88cee11889dbc5f72e7a264b",
+    "server/schemas.py": "8f9de9f2bd4b54f658dee5e786d2d8c17c3ae903365591c645f22067417c5e37",
+    "server/agents/principles.py": "e3cf9a3ec1d8a01384cef9737bec09563857bfccbde850139582fb14f1b7796b"
+  },
+  "results": [
+    {
+      "name": "qa_deck.py",
+      "exit": 0,
+      "count": "365/365",
+      "seconds": 5.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/qa_deck.py.log",
+      "summary": [
+        "365/365 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 365,
+      "total": 365,
+      "unit": "contract check",
+      "log_sha256": "442666630423d08ce13a07cdb70decfb75ea3cc8c16ed39b90c1e0d687c720e6"
+    },
+    {
+      "name": "qa_accept.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 2.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/qa_accept.py.log",
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 24,
+      "total": 24,
+      "unit": "contract check",
+      "log_sha256": "2d984ccbdf65089410754d148ae94bcd63fea204aa2713fd3340bc58ed7d7476"
+    },
+    {
+      "name": "smoke_mock.py",
+      "exit": 0,
+      "count": "3 smoke phases",
+      "seconds": 4.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/smoke_mock.py.log",
+      "summary": [
+        "SMOKE OK dm_6bdb7520",
+        "SMOKE OK (phase 2) dm_6bdb7520",
+        "SMOKE OK (on-demand rehearsal) dm_6bdb7520",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 3,
+      "total": 3,
+      "unit": "workflow phase",
+      "log_sha256": "e7c8b10772f7891c151aa79f8202bbfdcee20538cda85aa7600a8e508dc185dd"
+    },
+    {
+      "name": "minimum_narration_contract.py",
+      "exit": 0,
+      "count": "25/25",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/minimum_narration_contract.py.log",
+      "summary": [
+        "25/25 minimum narration contracts pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 25,
+      "total": 25,
+      "unit": "contract check",
+      "log_sha256": "eafd30f2027edabe0dfb742c5f1ce9be9d6887996f941d07e20e35c5c9a445d9"
+    },
+    {
+      "name": "generation_contract.py",
+      "exit": 0,
+      "count": "58/58",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/generation_contract.py.log",
+      "summary": [
+        "Generation input/approval contracts: 58/58 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 58,
+      "total": 58,
+      "unit": "contract check",
+      "log_sha256": "46c5088060d211790c7e15c7ba4e9f46d72d43f8ac486b4b32c4493b275c3b35"
+    },
+    {
+      "name": "plan_playbook_contract.py",
+      "exit": 0,
+      "count": "19/19",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/plan_playbook_contract.py.log",
+      "summary": [
+        "Ran 19 tests in 0.567s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 19,
+      "total": 19,
+      "unit": "unittest case",
+      "log_sha256": "be2ce5a39e7767bdfac0b3e4ecd16e9d7d241db321b6cc7643139bacd83d9759"
+    },
+    {
+      "name": "narrative_roles_contract.py",
+      "exit": 0,
+      "count": "14/14",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/narrative_roles_contract.py.log",
+      "summary": [
+        "Ran 14 tests in 0.055s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 14,
+      "total": 14,
+      "unit": "unittest case",
+      "log_sha256": "b55435b82849f76c33b5ef4d34d31e4384c33022616fbbd48a3ef6f0cc6cdc0c"
+    },
+    {
+      "name": "speech_style_contract.py",
+      "exit": 0,
+      "count": "30/30",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/speech_style_contract.py.log",
+      "summary": [
+        "PASS all contracts: no outbound calls",
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 30,
+      "total": 30,
+      "unit": "contract check",
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c"
+    },
+    {
+      "name": "narration_recovery_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 2.1,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/narration_recovery_contract.py.log",
+      "summary": [
+        "Ran 18 tests in 0.970s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 18,
+      "total": 18,
+      "unit": "unittest case",
+      "log_sha256": "0ca5ce3331f109ffebaedad8c387c24c1979ae77ae4b5afd675d83103c6e6792"
+    },
+    {
+      "name": "release_mock_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 12.9,
+      "outbound_attempts": [
+        0,
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/release_mock_contract.py.log",
+      "summary": [
+        "RELEASE JOURNEY: 27/27 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 27,
+      "total": 27,
+      "unit": "contract check",
+      "log_sha256": "49e542b8b57f11667324bf2ed3ebcc4937ce30354a785e0dbdceadca3faf3358"
+    },
+    {
+      "name": "publication_approval_contract.py",
+      "exit": 0,
+      "count": "8/8",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/publication_approval_contract.py.log",
+      "summary": [
+        "Ran 8 tests in 0.203s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 8,
+      "total": 8,
+      "unit": "unittest case",
+      "log_sha256": "6651291cb69a66c6daec8d6ab6634d4668b32c99aabf0bd72725155be9af5e2a"
+    },
+    {
+      "name": "align_review_contract.py",
+      "exit": 0,
+      "count": "51/51",
+      "seconds": 1.3,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/align_review_contract.py.log",
+      "summary": [
+        "Align review contracts: 51/51",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 51,
+      "total": 51,
+      "unit": "contract check",
+      "log_sha256": "94db1a619afd92113f1bcdec3919245d6840910f84fa11f58b2f613c288abf1a"
+    },
+    {
+      "name": "coach_align_contract.py",
+      "exit": 0,
+      "count": "21/21",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/coach_align_contract.py.log",
+      "summary": [
+        "21/21 coach Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 21,
+      "total": 21,
+      "unit": "contract check",
+      "log_sha256": "7388939b33c89b4d2b8b09ace9b10cf9c23f4a6ebab450c2579cde0129d8097d"
+    },
+    {
+      "name": "deck_media_contract.py",
+      "exit": 0,
+      "count": "45/45",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/deck_media_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 45,
+      "total": 45,
+      "unit": "contract check",
+      "log_sha256": "d02a98f078590279ebfe781d1c43405517cc5465be2efa2f6113e101d1126732"
+    },
+    {
+      "name": "deck_media_align_contract.py",
+      "exit": 0,
+      "count": "15/15",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/deck_media_align_contract.py.log",
+      "summary": [
+        "15/15 deck media Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 15,
+      "total": 15,
+      "unit": "contract check",
+      "log_sha256": "8a5ca166cbec2922544883a0c795c3c3419020ef8f4bd10bee90af556747f88d"
+    },
+    {
+      "name": "pitch_delivery_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 1.0,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/pitch_delivery_contract.py.log",
+      "summary": [
+        "Pitch delivery contracts: 18/18",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 18,
+      "total": 18,
+      "unit": "contract check",
+      "log_sha256": "f5cae5ce032694630df02d4f5a2fd9b99e611e8c9ba05c99a8415a2c3b7d4e71"
+    },
+    {
+      "name": "pitch_priority_revision_contract.py",
+      "exit": 0,
+      "count": "7/7",
+      "seconds": 1.0,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/pitch_priority_revision_contract.py.log",
+      "summary": [
+        "Ran 7 tests in 0.046s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 7,
+      "total": 7,
+      "unit": "unittest case",
+      "log_sha256": "e9b653bc6d440e76cefc0de975e9f561a96d0c28b012b12f1dd27326635a4fe2"
+    },
+    {
+      "name": "pitch_fundamental_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/pitch_fundamental_contract.py.log",
+      "summary": [
+        "Pitch fundamental contracts: 12/12",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 12,
+      "total": 12,
+      "unit": "contract check",
+      "log_sha256": "e76eb551563cdf739b8f32dce51959d621f8f2050647886c07240995a7cea02b"
+    },
+    {
+      "name": "pitch_grounding_contract.py",
+      "exit": 0,
+      "count": "47/47",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/pitch_grounding_contract.py.log",
+      "summary": [
+        "Pitch grounding contracts: 47/47",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 47,
+      "total": 47,
+      "unit": "contract check",
+      "log_sha256": "dd6e61486f802d6c86782df09c189f5d52bbb43a710399ff01452885a1042b61"
+    },
+    {
+      "name": "runtime_graph_contract.py",
+      "exit": 0,
+      "count": "130/130",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/runtime_graph_contract.py.log",
+      "summary": [
+        "130/130 runtime graph contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 130,
+      "total": 130,
+      "unit": "contract check",
+      "log_sha256": "ba54968e6d300c412e67fc583fe2c0bf04c04c94f72ab26b9fb69feb8059ef41"
+    },
+    {
+      "name": "runtime_conversation_contract.py",
+      "exit": 0,
+      "count": "18/18",
+      "seconds": 1.2,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/runtime_conversation_contract.py.log",
+      "summary": [
+        "Ran 18 tests in 0.079s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 18,
+      "total": 18,
+      "unit": "unittest case",
+      "log_sha256": "02b681883c2a41ef2be3e3cecf5643eb5eac84c8e0961c5fc84ea8485cd5cd7c"
+    },
+    {
+      "name": "readiness_contract.py",
+      "exit": 0,
+      "count": "10/10",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/readiness_contract.py.log",
+      "summary": [
+        "Readiness contracts: 10/10",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 10,
+      "total": 10,
+      "unit": "contract check",
+      "log_sha256": "3f7259fb27342666f362f58ff05cdf416e8802aac49a6019795ea20f6c178127"
+    },
+    {
+      "name": "voice_lock_contract.py",
+      "exit": 0,
+      "count": "27/27",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/voice_lock_contract.py.log",
+      "summary": [
+        "Voice lock contracts: 27/27",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 27,
+      "total": 27,
+      "unit": "contract check",
+      "log_sha256": "0d39bea3d18254714c5111e503336434482c0165542b17cf9407678a7b97565e"
+    },
+    {
+      "name": "visual_theme_contract.py",
+      "exit": 0,
+      "count": "12/12",
+      "seconds": 1.7,
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/visual_theme_contract.py.log",
+      "summary": [
+        "Ran 12 tests in 0.116s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 12,
+      "total": 12,
+      "unit": "unittest case",
+      "log_sha256": "0ffdd38901b70f7635a00581140d8b502e879558a9e8bffe751e5f98eabbed05"
+    },
+    {
+      "name": "align_narration_recovery_contract.mjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "17/17",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/align_narration_recovery_contract.mjs.log",
+      "summary": [
+        "Align narration recovery contracts: 17/17; no network/providers",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 17,
+      "total": 17,
+      "unit": "contract check",
+      "log_sha256": "f46dfaff4b363c895b5f40755dbb446acb33056895c7ec0c6b6d1a2e45dd1ee6"
+    },
+    {
+      "name": "align_timing_contract.cjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "11/11",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/align_timing_contract.cjs.log",
+      "summary": [
+        "11/11 Align timing contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 11,
+      "total": 11,
+      "unit": "contract check",
+      "log_sha256": "d685ef0792b67689d753a8504c1daaaed1274a01cea83e26e311a43b3b51a519"
+    },
+    {
+      "name": "coach_align_ui_contract.cjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "9/9",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/coach_align_ui_contract.cjs.log",
+      "summary": [
+        "9/9 coach Align UI contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 9,
+      "total": 9,
+      "unit": "contract check",
+      "log_sha256": "85d980f6a953a312d27fce5a22138786e6fa0c3e561009cf8368bacfed420741"
+    },
+    {
+      "name": "align_progress_contract.mjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "count": "9/9",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/align_progress_contract.mjs.log",
+      "summary": [
+        "Align progress contracts: 9/9 (actual modules, DOM-shaped host, no browser/network)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 9,
+      "total": 9,
+      "unit": "contract check",
+      "log_sha256": "3d23d77821cd60d957f9ace4164d0cbcfd6072d025a6ce0304240a359f9004bb"
+    },
+    {
+      "name": "readiness_ui_contract.mjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "5/5",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/readiness_ui_contract.mjs.log",
+      "summary": [
+        "Readiness UI contracts: 5/5",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 5,
+      "total": 5,
+      "unit": "contract check",
+      "log_sha256": "6a44969fdfa4451a7dc7a8eb8d5db2b48c6d0ab52b22d4243be12cb14f28a90b"
+    },
+    {
+      "name": "player_fundamental_contract.cjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "10/10",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/player_fundamental_contract.cjs.log",
+      "summary": [
+        "Player fundamental contracts: 10/10; no browser/network/provider",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 10,
+      "total": 10,
+      "unit": "contract check",
+      "log_sha256": "0adcdc3bda223357dcc56a2bd514735a0cf30ae3bb2c57ba2b0570b43c809d3a"
+    },
+    {
+      "name": "player_priority_revision_contract.cjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "11/11",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/player_priority_revision_contract.cjs.log",
+      "summary": [
+        "Player priority revision contracts: 11/11; no browser/network/provider",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 11,
+      "total": 11,
+      "unit": "contract check",
+      "log_sha256": "7accfa6808549fdbe7f682d5f26a28b7035723a4e71a1a26c1b154117feb2f2b"
+    },
+    {
+      "name": "player_media_contract.cjs",
+      "exit": 0,
+      "seconds": 0.0,
+      "count": "7/7",
+      "outbound_attempts": [
+        0
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/player_media_contract.cjs.log",
+      "summary": [
+        "Player media contracts: 7/7; no browser/network/provider",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "passed": 7,
+      "total": 7,
+      "unit": "contract check",
+      "log_sha256": "4b115ead4b4ffd1ee93cac357a3fd6bb270e08a44200bed6cc7bbd8308f7cce6"
+    },
+    {
+      "name": "narration_preparation_contract.py",
+      "exit": 0,
+      "seconds": 0.8,
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/narration_preparation_contract.py.log",
+      "passed": 18,
+      "total": 18,
+      "count": "18/18",
+      "unit": "unittest case",
+      "outbound_attempts": [
+        0
+      ],
+      "summary": [
+        "Ran 18 tests in 0.166s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "00baf7db17df5533229e7c42ec311957c72c37b137fc91d891f7fbe09250a104"
+    }
+  ],
+  "baseline": [
+    {
+      "name": "qa_deck.py",
+      "exit": 0,
+      "count": "365/365",
+      "seconds": 6.3,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/qa_deck.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "qa_accept.py",
+      "exit": 0,
+      "count": "24/24",
+      "seconds": 2.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/qa_accept.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "smoke_mock.py",
+      "exit": 0,
+      "count": "3 smoke phases",
+      "seconds": 4.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/smoke_mock.py.log",
+      "summary": [
+        "SMOKE OK dm_1f2a99da",
+        "SMOKE OK (phase 2) dm_1f2a99da",
+        "SMOKE OK (on-demand rehearsal) dm_1f2a99da",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "minimum_narration_contract.py",
+      "exit": 0,
+      "count": "25/25",
+      "seconds": 0.8,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/minimum_narration_contract.py.log",
+      "summary": [
+        "25/25 minimum narration contracts pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "generation_contract.py",
+      "exit": 0,
+      "count": "58/58",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/generation_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "plan_playbook_contract.py",
+      "exit": 0,
+      "count": "19",
+      "seconds": 1.4,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/plan_playbook_contract.py.log",
+      "summary": [
+        "Ran 19 tests in 0.626s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "narrative_roles_contract.py",
+      "exit": 0,
+      "count": "14",
+      "seconds": 0.7,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/narrative_roles_contract.py.log",
+      "summary": [
+        "Ran 14 tests in 0.054s",
+        "OK",
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "name": "speech_style_contract.py",
+      "exit": 0,
+      "count": "30/30",
+      "seconds": 0.6,
+      "outbound_attempts": [
+        "0"
+      ],
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/baseline/speech_style_contract.py.log",
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ]
+    }
+  ],
+  "notes": [
+    "The first scoped run had one new assertion failure: a prepared plan marker includes voice-calibration identity in addition to version and target. The fixed test requires all three fields; rerun passed19/19.",
+    "The updated generation and narrative tests retain rejected-citation/technical-unit preservation and explicitly require the hard495-word deficit on thin evidence. Legacy unmarked budget helper expectations remain342.",
+    "Preparation positive uses actual Plan and Author calls with deterministic provider responses: short first response, issue-driven repaired495 distinct cited words; actual splitter/deck/bundle/pitch path and synthetic2.5words/second WAVs reach198 measured seconds. It establishes deterministic pipeline behavior, not live model quality or synthesized speech quality.",
+    "Release mock27 checks use real API graph/browser and measured194.22-second synthetic WAVs with no duration bypass. qa_deck/smoke retain their explicitly labelled duration plumbing fixtures; dedicated minimum/preparation/recovery contracts enforce real WAV accounting.",
+    "Recovery18 includes measured128.3-second publication refusal returning to Align, missing/corrupt clip handling, preserved previous publication and recordings, explicit reapproval/rebuild, canonical preparation readiness and audited override, correct alternate-language reporting, and eligible word counting.",
+    "All questions/deeper-only/held/duplicate lines remain excluded. No paid provider quality run was performed.",
+    "Totals combine individual contract checks, unittest cases, and3 smoke workflow phases; all33 scripts passed."
+  ],
+  "independent_browser": {
+    "checks": "10/10",
+    "errors": 0,
+    "external_requests": 0,
+    "script": "/tmp/align-recovery-browser-review.py",
+    "screenshot": "/tmp/align-recovery-review-mobile-final.png",
+    "scope": "Muted actual Align module: desktop/390px, failure/retry, completion race and limiting language"
+  }
+}

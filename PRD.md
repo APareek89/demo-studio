@@ -64,7 +64,7 @@ rail and the older oversized title over the picture; Marine/Sage/Graphite color
 selection remains in the existing Visuals card. Search the
 public web immediately when approved evidence cannot answer, with cited, turn-local, uncached sources.
 The default guided tour extends through reviewed stops to at least 180 seconds of narration and publication
-blocks if supported narration falls short. Film and Q&A do not count; customers may explicitly shorten, skip or exit.
+blocks if supported narration falls short. Film and Q&A do not count; customers may explicitly shorten, skip or exit. New drafts budget distinct supported content at a conservative natural speaking rate with ten-percent headroom; matching recordings can raise that target. One reviewed story stop may use several short delivery batches, which stay together in the guided route. Align offers “Prepare three-minute narration” for an existing short draft: reuse its reviewed plan, rebudget and rewrite supported detail, then return for Script/Visuals approval. A measured shortfall pauses publication at Align, preserving the previous bundle and recordings; it never triggers an automatic paid rewrite or slower speech.
 
 ## Done for v1
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes

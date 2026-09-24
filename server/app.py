@@ -17,7 +17,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
 
 from . import cloud, config, events, graph, orchestrator, runlog, schemas, storage, store, usage
-from .agents import align, author, coach, deck, faq, pitch, qa, rehearsal, summary as _summary, visuals, voice
+from .agents import align, author, coach, deck, faq, narration, pitch, qa, rehearsal, summary as _summary, visuals, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
@@ -1082,12 +1082,14 @@ def run_rehearsal(demo_id: str):
 
 
 @app.post("/api/demos/{demo_id}/revise")
-async def revise(demo_id: str, req: Request):
-    _demo_or_404(demo_id)
+async def revise(demo_id: str, req: Request, override_readiness: bool = False):
+    demo = _demo_or_404(demo_id)
     body = await req.json()
     stage = body.get("stage")
     if stage not in ("understand", "coach", "plan", "author", "deck", "faq"):
         raise HTTPException(400, "stage must be understand | coach | plan | author | deck | faq")
+    if stage == "plan" and body.get("instruction") == narration.PREPARATION_INSTRUCTION:
+        _require_provider_readiness(demo, override=override_readiness)
     try:
         graph.start_revise(demo_id, stage, body.get("instruction", ""), bool(body.get("rebuild")))
     except RuntimeError as e:

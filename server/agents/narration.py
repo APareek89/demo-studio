@@ -3,11 +3,68 @@ from __future__ import annotations
 
 import re
 import math
+import hashlib
+import json
 from functools import lru_cache
 
 MIN_SECONDS = 180.0
 OVERVIEW_WORDS = 23  # The lower edge of the reviewed 23–28 word opening.
 ROLES = {"proof", "features", "establish"}
+PREPARATION_VERSION = 1
+NATURAL_WPS = 2.5
+CONTENT_HEADROOM = 1.10
+PREPARATION_INSTRUCTION = ("Expand the default guided narration to at least three measured minutes using distinct supported detail from the approved facts. "
+                           "Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.")
+
+
+def preparation_identity(demo: dict, persona: dict | None = None) -> str:
+    """Retain calibration only for the same selected voice, languages and duration."""
+    from . import voice
+    settings = demo.get("settings", {})
+    provider = voice.provider_for(demo)
+    identity = {"provider": provider, "speaker": voice.voice_name_for(demo, provider),
+                "language": settings.get("language", "en-IN"),
+                "languages": sorted(set(settings.get("languages") or [])),
+                "pitch_minutes": max(3.0, float(settings.get("pitch_minutes", 3) or 3)),
+                "persona": persona or {}}
+    return hashlib.sha256(json.dumps(identity, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+def word_target(demo: dict, script: dict | None = None, demo_id: str | None = None) -> int:
+    """Plan enough supported words; never change a recording or its delivery speed."""
+    rate = NATURAL_WPS
+    if script and demo_id and script.get("voice_input_hash"):
+        from . import voice
+        from .. import store
+        provider = voice.provider_for(demo)
+        matching = (script.get("voice_provider") == provider
+                    and script.get("voice_name") == voice.voice_name_for(demo, provider)
+                    and script["voice_input_hash"] == voice.input_hash(demo_id))
+        if matching:
+            measured = preparation_report(script, demo_id=demo_id)
+            if measured["measured"] and measured["seconds"] > 0:
+                rate = max(rate, measured["words"] / measured["seconds"])
+                # Translate the old language duration into required main-script
+                # content, not a cross-language words-per-second assumption.
+                for language in demo.get("settings", {}).get("languages") or []:
+                    if not language or language == demo.get("settings", {}).get("language", "en-IN"):
+                        continue
+                    alternate = store.read_json(demo_id, f"script.{language}.json") or {}
+                    if alternate.get("voice_provider") != provider or alternate.get("voice_name") != script.get("voice_name"):
+                        continue
+                    alt_measured = preparation_report(alternate, demo_id=demo_id)
+                    if alt_measured["measured"] and alt_measured["seconds"] > 0:
+                        rate = max(rate, measured["words"] / alt_measured["seconds"])
+    seconds = max(MIN_SECONDS, float(demo.get("settings", {}).get("pitch_minutes", 3) or 3) * 60)
+    target = math.ceil(seconds * rate * CONTENT_HEADROOM - 1e-9)
+    if demo_id:
+        from .. import store
+        previous = store.read_json(demo_id, "plan.json") or {}
+        preparation = previous.get("narration_preparation") or {}
+        if (preparation.get("version") == PREPARATION_VERSION
+                and preparation.get("identity") == preparation_identity(demo, previous.get("voice"))):
+            target = max(target, int(preparation.get("target_words") or 0))
+    return target
 
 
 class NarrationTooShort(RuntimeError):
@@ -77,7 +134,7 @@ def report(script: dict, *, demo_id: str | None = None, route_ids: list[str] | N
     def add(line: dict, owner: str, *, statement: bool = False):
         nonlocal duplicates
         text = " ".join(str(line.get("text") or "").split())
-        if not text or line.get("unverified") or (statement and re.search(r"[?？]", text)):
+        if not text or line.get("unverified") or re.search(r"[?？]", text):
             return
         if allowed_fact_ids is not None and set(line.get("fact_ids") or []) - allowed_fact_ids:
             return
@@ -121,28 +178,46 @@ def report(script: dict, *, demo_id: str | None = None, route_ids: list[str] | N
 
 
 def default_route(script: dict, *, demo_id: str | None = None, preferred: list[str] | None = None,
-                  allowed_fact_ids: set[str] | None = None) -> tuple[list[str], dict]:
+                  allowed_fact_ids: set[str] | None = None, include_all_proofs: bool = False) -> tuple[list[str], dict]:
     """Retain buyer order, then add unseen reviewed proofs until the minimum is met."""
     segments = [segment for segment in script.get("segments", []) if segment.get("role") in ROLES]
     by_id = {segment["id"]: segment for segment in segments}
-    proofs = [segment["id"] for segment in segments if segment.get("role") == "proof"]
+    # A story stop can use several short delivery batches. Select and move the
+    # whole stop; neither proof nor closing-role continuations may be orphaned.
+    groups, group_for = {}, {}
+    for segment in segments:
+        key = (segment.get("role"), segment.get("budget_source_id") or segment["id"])
+        groups.setdefault(key, []).append(segment["id"])
+        group_for[segment["id"]] = key
+    proofs = [key for key in groups if key[0] == "proof"]
     requested = list(dict.fromkeys(sid for sid in preferred or [] if sid in by_id))
-    chosen = [sid for sid in requested if by_id[sid].get("role") == "proof"][:3] or proofs[:3]
-    fundamental = next((sid for sid in proofs if by_id[sid].get("fundamental")), None)
+    requested_groups = list(dict.fromkeys(group_for[sid] for sid in requested))
+    chosen = [key for key in requested_groups if key[0] == "proof"][:3] or proofs[:3]
+    if include_all_proofs:
+        chosen = proofs[:]
+    fundamental = next((key for key in proofs if any(by_id[sid].get("fundamental") for sid in groups[key])), None)
     if fundamental:
         chosen = [fundamental, *[sid for sid in chosen if sid != fundamental]]
     tail = []
     for role in ("features", "establish"):
-        candidates = [sid for sid in requested if by_id[sid].get("role") == role] or [segment["id"] for segment in segments if segment.get("role") == role]
+        candidates = [key for key in requested_groups if key[0] == role] or [key for key in groups if key[0] == role]
         tail.extend(candidates[:1])
-    result = report(script, demo_id=demo_id, route_ids=chosen + tail, allowed_fact_ids=allowed_fact_ids)
+    flatten = lambda selected: [sid for key in selected for sid in groups[key]]
+    result = report(script, demo_id=demo_id, route_ids=flatten(chosen + tail), allowed_fact_ids=allowed_fact_ids)
     for sid in proofs:
         if result["sufficient"]:
             break
         if sid not in chosen:
             chosen.append(sid)
-            result = report(script, demo_id=demo_id, route_ids=chosen + tail, allowed_fact_ids=allowed_fact_ids)
-    return chosen + tail, result
+            result = report(script, demo_id=demo_id, route_ids=flatten(chosen + tail), allowed_fact_ids=allowed_fact_ids)
+    return flatten(chosen + tail), result
+
+
+def preparation_report(script: dict, *, demo_id: str | None = None,
+                       allowed_fact_ids: set[str] | None = None) -> dict:
+    """Count all available proof stops and only the default route's closing-role stops."""
+    return default_route(script, demo_id=demo_id, allowed_fact_ids=allowed_fact_ids,
+                         include_all_proofs=True)[1]
 
 
 def deficit_message(result: dict) -> str:

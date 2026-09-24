@@ -13,6 +13,7 @@ const CARD_DEFS = [
 ];
 const PHASE_TITLES = { reading: ["Preparing your demo…", "Reviewing the evidence and preparing your story, visuals and uploaded questions."], building: ["Building your demo…", "Recording narration and uploaded answers, then preparing your demo."] };
 const STAGE_LABELS = { coach: "Sales playbook" };
+const MINIMUM_NARRATION_INSTRUCTION = "Expand the default guided narration to at least three measured minutes using distinct supported detail from the approved facts. Preserve the reviewed story, voice and CTAs. Film, questions, deeper-only lines and repeated claims do not count; do not pad or slow the voice.";
 
 // Distinguish a reviewed allocation from estimated or partially recorded speech.
 export function scriptTiming(planned, actual, measured = false, anyMeasured = false) {
@@ -76,18 +77,24 @@ export function storyOrderPanel(playbook, draft, onSave, onRequestUpload) {
   return panel;
 }
 
-function narrationMinimumPanel(minimum) {
+function narrationMinimumPanel(minimum, { onPrepare, busy = false, message = "" } = {}) {
   if (!minimum || !Number.isFinite(minimum.seconds)) return null;
   const required = Number.isFinite(minimum.minimum_seconds) ? minimum.minimum_seconds : 180;
   const seconds = Math.max(0, minimum.seconds), deficit = Math.max(0, Math.ceil(required - seconds));
   const time = value => `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
   const basis = minimum.measured ? "measured" : minimum.basis === "mixed" ? "mixed measured/estimated" : "estimated";
   const ready = !deficit && minimum.measured;
+  const preparation = minimum.preparation;
+  const preparationNeeded = !ready && preparation?.sufficient === false;
   return h("div", { class: "narration-minimum " + (ready ? "ready" : "pending"), "aria-label": "Spoken narration minimum" },
-    h("b", {}, `Spoken narration: ${time(seconds)} ${basis} · minimum ${time(required)}`),
+    h("b", {}, `Spoken narration${minimum.language ? ` (${minimum.language})` : ""}: ${time(seconds)} ${basis} · minimum ${time(required)}`),
     h("p", {}, deficit ? `${deficit} more seconds of supported narration are needed. ` : "",
       ready ? "Recorded narration meets the minimum." : "Build records the narration; publication requires at least three measured minutes."),
-    h("p", { class: "small muted" }, "Opening film and customer questions do not count toward this minimum."));
+    h("p", { class: "small muted" }, "Opening film and customer questions do not count toward this minimum."),
+    ...(preparationNeeded ? [h("p", { class: "small" }, `${Math.max(0, Math.ceil((preparation.target_words || 0) - (preparation.words || 0)))} more words of distinct supported detail are needed for the planned narration. A timing estimate does not establish the recorded duration.`)] : []),
+    ...((deficit || preparationNeeded) && onPrepare ? [h("button", { class: "btn sm primary", disabled: busy, onclick: onPrepare }, busy ? "Preparing narration…" : "Prepare three-minute narration"),
+      h("p", { class: "small muted" }, "Creates a draft for your review. Approvals and publication remain yours.")] : []),
+    ...(message ? [h("p", { class: "small", role: "status" }, message)] : []));
 }
 
 export function renderAlign(ctx) {
@@ -97,6 +104,8 @@ export function renderAlign(ctx) {
   let openCard = null;
   let factsReviewBusy = false, factsReviewMessage = "";
   let storyDraft = null, storyVersion = "";
+  let narrationBusy = false, narrationMessage = "";
+  let disposed = false, workerRefreshTimer = null, workerRefreshAttempt = 0;
   const detached = new Set(), escapeHandlers = new Set();
   function mountDetached(node) { detached.add(node); document.body.appendChild(node); }
   function closeOnEscape(node) {
@@ -126,11 +135,37 @@ export function renderAlign(ctx) {
   function renderAttach() { attachRow.replaceChildren(...pending.map((f, i) => h("span", {}, icon("file", { size: 13 }), f.name, " ", h("a", { href: "#", "aria-label": `Remove ${f.name}`, onclick: (e) => { e.preventDefault(); pending.splice(i, 1); renderAttach(); } }, icon("close", { size: 13 }))))); }
 
   // ---------- overlay ----------
+  function narrationRecoveryPanel() {
+    return narrationMinimumPanel(cards?.script?.narration_minimum, {
+      onPrepare: prepareNarration,
+      busy: narrationBusy || state.running || ["reading", "building"].includes(demo.status),
+      message: narrationMessage,
+    });
+  }
+  async function prepareNarration() {
+    if (narrationBusy || state.running || ["reading", "building"].includes(demo.status)) return;
+    narrationBusy = true; narrationMessage = "Preparing a longer draft from the approved facts…";
+    renderCards(); if (!overlay.classList.contains("hidden")) syncOverlay();
+    let accepted = false;
+    try {
+      await api.post(`/api/demos/${demoId}/revise${readinessQuery(demoId)}`, { stage: "plan", instruction: MINIMUM_NARRATION_INSTRUCTION, rebuild: false });
+      accepted = true;
+      narrationMessage = "The revised narration will return here for your review before recording and publication.";
+      logEl.replaceChildren(); showOverlay("reading");
+      reload().catch(() => {});
+    } catch (error) {
+      narrationMessage = error.message; toast(error.message, true);
+    } finally {
+      narrationBusy = false; renderCards();
+      if (!accepted && demo.status === "error" && !overlay.classList.contains("hidden")) syncOverlay();
+    }
+  }
   function showOverlay(kind, error) {
     const [title, sub] = PHASE_TITLES[kind] || ["Working…", ""];
     overlay.classList.remove("hidden");
     overlay.replaceChildren(h("div", { class: "box" }, error ? null : h("div", { class: "ring" }), h("h2", {}, error ? "Something went wrong" : title), h("p", { class: "sub" }, error ? "" : sub), logEl,
       error ? h("div", { class: "err" }, error) : null,
+      error ? narrationRecoveryPanel() : null,
       error ? h("div", { class: "actions" }, h("button", { class: "btn", onclick: () => { overlay.classList.add("hidden"); } }, "Back to the cards"), h("button", { class: "btn primary", onclick: retry }, "Retry")) : null));
     ctx.setRailStatus(kind);
   }
@@ -158,7 +193,7 @@ export function renderAlign(ctx) {
     if (openCard === null) openCard = current || "visuals";
     const allDone = cards && CARD_DEFS.every((c) => approvals[c.key]);
     const noteEl = h("div", { class: "align-note" }, h("span", {}, "Review each card before building. ", h("b", {}, "Only approved material goes into your demo.")), cards && !allDone ? h("button", { class: "btn sm", onclick: approveAll }, "Approve all") : null);
-    cardsCol.replaceChildren(h("header", { class: "studio-page-head align-page-head" }, h("div", { class: "eyebrow" }, "Demo workspace / Align"), h("div", { class: "align-title-row" }, h("h1", {}, "Make it ready for customers"), h("span", { class: "pill" + (allDone ? " ok" : "") }, `${CARD_DEFS.filter((c) => approvals[c.key]).length} of 6 approved`)), h("p", { class: "lede" }, "Review the knowledge, story and experience your guide will deliver.")), noteEl, ...CARD_DEFS.map((c) => {
+    cardsCol.replaceChildren(h("header", { class: "studio-page-head align-page-head" }, h("div", { class: "eyebrow" }, "Demo workspace / Align"), h("div", { class: "align-title-row" }, h("h1", {}, "Make it ready for customers"), h("span", { class: "pill" + (allDone ? " ok" : "") }, `${CARD_DEFS.filter((c) => approvals[c.key]).length} of 6 approved`)), h("p", { class: "lede" }, "Review the knowledge, story and experience your guide will deliver.")), narrationRecoveryPanel(), noteEl, ...CARD_DEFS.map((c) => {
       const el = h("div", { class: `acard${approvals[c.key] ? " approved" : ""}${current === c.key ? " current" : ""}${openCard === c.key ? " open" : ""}`, "data-card": c.key },
         h("div", { class: "head", onclick: (e) => { if (e.target.closest("button")) return; openCard = openCard === c.key ? "" : c.key; renderCards(); requestAnimationFrame(() => cardsCol.querySelector(`[data-card="${c.key}"]`)?.scrollIntoView({ block: "start" })); } }, h("span", { class: "n", title: `Step ${c.n}` }, approvals[c.key] ? icon("check", { size: 15 }) : c.n), h("h3", {}, icon(c.icon, { size: 18 }), c.title), h("span", { class: "st" }, approvals[c.key] ? "Approved" : current === c.key ? "Review now" : "Pending"),
           cards ? h("span", { class: "hact" }, h("button", { class: "btn sm ghost", onclick: () => openPreview(c.key) }, "Preview"), approvals[c.key] ? h("button", { class: "btn sm ghost", onclick: () => setApproval(c.key, false) }, "Un-approve") : h("button", { class: "btn sm primary", onclick: () => setApproval(c.key, true) }, "Approve")) : null),
@@ -596,14 +631,33 @@ export function renderAlign(ctx) {
   document.addEventListener("visibilitychange", onVis);
   const poll = setInterval(() => { if (document.visibilityState === "visible") reload().catch(() => {}); }, 30000);
   window.addEventListener("hashchange", () => {
+    disposed = true; clearTimeout(workerRefreshTimer); workerRefreshTimer = null;
     document.removeEventListener("visibilitychange", onVis); clearInterval(poll);
     for (const node of detached) node.remove(); detached.clear();
     for (const handler of escapeHandlers) document.removeEventListener("keydown", handler); escapeHandlers.clear();
   }, { once: true });
+  function refreshFinishingWorker() {
+    if (disposed) return;
+    // Completion is emitted just before the worker exits. Keep its real guard,
+    // but recheck briefly so a finished worker does not disable recovery for 30s.
+    if (state.running && ["align", "error"].includes(demo.status)) {
+      const delays = [250, 750, 1500, 3000];
+      if (workerRefreshTimer === null && workerRefreshAttempt < delays.length) {
+        workerRefreshTimer = setTimeout(() => {
+          workerRefreshTimer = null;
+          reload().catch(() => refreshFinishingWorker());
+        }, delays[workerRefreshAttempt++]);
+      }
+    } else {
+      clearTimeout(workerRefreshTimer); workerRefreshTimer = null; workerRefreshAttempt = 0;
+    }
+  }
   async function reload() {
     state = await api.get(`/api/demos/${demoId}`); demo = state.demo; cards = state.cards; conversation = state.conversation || [];
+    if (disposed) return;
     renderCards(); renderThread(); ctx.setRailStatus(demo.status);
     syncOverlay();
+    refreshFinishingWorker();
     if (demo.status === "ready") buildBar.classList.add("hidden");
   }
 
@@ -614,10 +668,11 @@ export function renderAlign(ctx) {
     else if (type === "status") { demo.status = ev.status; ctx.setRailStatus(ev.status); if (ev.status === "reading" || ev.status === "building") showOverlay(ev.status); }
     else if (type === "message") addMsg(ev.message);
     else if (type === "phase_done") { if (ev.phase === "build") { hideOverlay(); reload().then(() => ctx.navigate(`#/studio/${demoId}/rehearse`)); } else { hideOverlay(); reload(); } }
-    else if (type === "phase_error") showOverlay(demo.status === "building" ? "building" : "reading", ev.error);
+    else if (type === "phase_error") { showOverlay(demo.status === "building" ? "building" : "reading", ev.error); reload().catch(() => refreshFinishingWorker()); }
   });
 
   // initial
   renderCards(); renderThread();
   syncOverlay();
+  refreshFinishingWorker();
 }

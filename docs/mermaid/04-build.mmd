@@ -3,7 +3,7 @@ flowchart TD
   N7["Since 2026-09-04: AUTHOR, DECK and FAQ run at Configure (before Align); BUILD = voice (narration + FAQ answers + filler lines) → bundle (slides with audio joined by line id, timeline, fillers, faq, image map)"]:::data
   GO["POST /api/demos/id/build<br/>[FUNCTION] all6 approvals + fresh observed reasoning/selected-speech readiness<br/>explicit operator override logged; mock bypass"]:::fn
   AUTH["Final spoken delivery of the Planner outline<br/>[AGENT · configured text tier · author.py]<br/>in: plan goals/notes, approved registry, supplied visuals, voice, language/audience<br/>shared grounding + AUTHOR_CRAFT; no second PITCH_SHAPE or PROOF_BLOCK<br/>same segment ids/roles/order; connected speech; checkin = closing statement, no question<br/>deeper, closing + 23–28 word Explore overview led by first supported fundamental"]:::agent
-  VAL["grounding + planned budget + plain-language validator<br/>[FUNCTION · author.validate]<br/>approved citations and existing visual refs; unsupported uncited quantities/claims held<br/>above word_budget +4: issue; below explicit budget −10: advisory warning<br/>hard ceilings: intro/outcome/proof 46; features 48; establish 44; closing 45<br/>route ≤ round(max(3,pitch_minutes) × 60 × WPS) +40<br/>new draft default narration deficit uses existing single repair; legacy validation unchanged"]:::fn
+  VAL["Grounding and supported narration target<br/>[FUNCTION · author.validate]<br/>existing citation/visual/speech rules; whole-stop word budgets<br/>prepared drafts require global distinct eligible word target; one bounded repair<br/>complete lines/batches retain46/48/44word role ceilings; closing45<br/>legacy validator unchanged; missing evidence never permits padding"]:::fn
   ISS{"issues > 0?"}:::dec
   FIX["one local rewrite<br/>[AGENT · configured text tier]<br/>in: full draft + specific issues; preserve unaffected grounded lines, plan structure and visual subjects<br/>out: full script, revalidated under the same evidence rules"]:::agent
   VAL2["re-validate<br/>[FUNCTION] remaining issues stay reviewable; ungrounded lines stay unverified and excluded from voice & bundle"]:::fn
@@ -11,7 +11,7 @@ flowchart TD
   VAUD["visual-proof audit<br/>[AGENT · Gemini 3.6 Flash]<br/>in: real uploaded pixels in batches ≤12 + every scripted line<br/>out: every image's visible features/limits + every line full/partial/none/not_visual"]:::agent
   VGATE["accept audit only when complete<br/>[FUNCTION · visuals.py]<br/>all line ids + all image refs required; full coverage may bind image<br/>partial/missing visible feature → no proof binding<br/>Gemini failure → conservative tag rules; Deck proxy never changes coverage"]:::fn
   AUDIT["visual-audit.json<br/>[DATA]<br/>line reasons, image feature inventory, missing features, changes"]:::data
-  TIMING["Whole-line splitting and content timeline<br/>[FUNCTION · author.split_long_batches / timeline]<br/>split only above role ceiling +4; retain original allocation across continuations<br/>planned seconds from word_budget / WPS; draft duration estimated until recorded<br/>word ceilings are not a measured twenty-second guarantee"]:::fn
+  TIMING["Whole-line splitting and content timeline<br/>[FUNCTION · author.split_long_batches / timeline]<br/>prepared stops split at role ceiling; complete lines and unique IDs<br/>continuations retain source-stop identity and share original budget<br/>estimates stay labelled; actual audio determines publication duration"]:::fn
   SJ["script.json<br/>[DATA] visual refs + audit summary · version++"]:::data
   DPIC["one slide per segment · up to two pictures<br/>[FUNCTION · deck.choose_media / choose_proxy]<br/>first two distinct verified image refs with full audit coverage; absent audit accepts Author binding<br/>save first from_line; no qualifying ref → trusted matching part (≥0.6) else hero<br/>proxy marked illustration, with reason; never written into visual audit"]:::fn
   DCALL["titles + picture-owned callouts<br/>[AGENT · Gemini → Claude → Runware text tier · deck.DeckOut]<br/>in: lines, fact ids and each picture's parts; approved registry<br/>out: ≤6-word title, ≤3 callouts per picture of ≤8 words, with image_id and citations<br/>proxy additionally gets a derived cited fact label"]:::agent
@@ -36,7 +36,7 @@ flowchart TD
   APPROVAL{"All six approvals still current?<br/>[FUNCTION · shared per-demo publication lock]<br/>serialize input reads and final writes with customer FAQ changes"}:::dec
   REALIGN["Return to Align; preserve published bundle/version<br/>[HUMAN] review changed cards before another Build"]:::ask
   MINIMUM{"Publishable default narration in every language?<br/>[FUNCTION · narration.require_minimum]<br/>at least 180s of readable recorded overview/opening + guided main speech + statements + playable closing<br/>exclude film, Q&A, deeper-only and duplicates; estimates cannot pass"}:::dec
-  SHORT["Keep previous publication unchanged<br/>[FUNCTION · before snapshot/version/bundle writes]<br/>show deficit or missing-clip error; add distinct supported material and record it<br/>never pad, duplicate claims or slow voice"]:::fn
+  SHORT["Return short recording to review<br/>[FUNCTION · graph.bundle / orchestrator._run_stage]<br/>Bundle pending; Script approval reset; no Build-done event<br/>keep previous publication, recordings and facts unchanged<br/>Align Prepare action adds distinct supported detail for review; never pads or slows voice"]:::fn
   READY["status ready · durable SSE phase_done build<br/>[DATA · events.json + stage progress/warnings]<br/>fresh subscriber receives current baseline; valid cursor resumes bounded history"]:::term
 
   GO --> AUTH --> VAL --> ISS
@@ -54,7 +54,7 @@ flowchart TD
   APPROVAL -- "yes, lock held through publication" --> MINIMUM
   APPROVAL -- "changed during Voice or before publication" --> REALIGN
   MINIMUM -- "all measured and at least 180 seconds" --> READY
-  MINIMUM -- "short or missing/unreadable audio" --> SHORT
+  MINIMUM -- "short or missing/unreadable audio" --> SHORT --> REALIGN
   READY -. "optional, on demand" .-> REHEARSE --> QBANK
   QBANK -- "yes" --> QA
   QBANK -- "no" --> QGEN --> QA

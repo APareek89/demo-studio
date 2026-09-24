@@ -24,7 +24,7 @@ from langgraph.types import Command, interrupt
 
 from . import cloud, config, events, runlog, store
 from . import orchestrator as orch
-from .agents import align
+from .agents import align, narration
 
 
 # Carry instructions about which build step should run; large artifacts stay in JSON files.
@@ -91,8 +91,10 @@ def plan(state: DemoState) -> dict:
     d = state["demo_id"]
     orch._set_status(d, "reading")
     instr = state.get("instruction", "") if state.get("entry") == "revise" and state.get("revise_stage") == "plan" else ""
+    preserve_persona = instr == narration.PREPARATION_INSTRUCTION and bool(store.read_json(d, "plan.json"))
     orch._run_stage(d, "plan", instr)
-    orch._persona_sample(d)
+    if not preserve_persona:
+        orch._persona_sample(d)
     return {}
 
 
@@ -110,6 +112,11 @@ def align_enter(state: DemoState) -> dict:
         runlog.event(d, "Agent opening message", text)
         runlog.phase_done(d, "read")
         events.publish(d, "phase_done", phase="read")
+    elif state.get("entry") == "build":
+        # A publication guard returned this build to review. Do not emit a
+        # successful Build event: the browser would open Rehearse prematurely.
+        runlog.event(d, "BUILD paused for review", "Review the Align cards before publishing. Existing recordings and the published demo are preserved.")
+        events.publish(d, "phase_done", phase="align")
     else:
         runlog.phase_done(d, "revise")
         events.publish(d, "phase_done", phase="revise")
@@ -199,6 +206,15 @@ def bundle(state: DemoState) -> Command:
     try:
         orch._run_stage(state["demo_id"], "bundle", "")
     except orch.bundle.ApprovalRequired:
+        return Command(goto="align_enter")
+    except narration.NarrationTooShort as error:
+        # Duration is an editorial review condition, not a failed provider or
+        # permission to rewrite already-approved speech behind the reviewer.
+        d = state["demo_id"]
+        store.update(d, lambda demo: demo["approvals"].__setitem__("script", False))
+        next_step = (" Review the missing recordings before publishing." if "missing or unreadable audio" in str(error)
+                     else " Use Prepare three-minute narration in Align to prepare supported detail for review.")
+        orch._append_conversation(d, "agent", str(error) + next_step)
         return Command(goto="align_enter")
     return Command(goto="finish")
 

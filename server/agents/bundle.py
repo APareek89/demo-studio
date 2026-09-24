@@ -84,6 +84,7 @@ def _build_approved(demo_id: str, emit) -> dict:
                 "id": seg["id"], "title": seg["title"], "topic": seg["topic"], "priority": bool(splan.get("priority_topic")),
                 "role": seg.get("role", "proof"), "outcome": seg.get("outcome") or splan.get("outcome", ""), "usp_ids": seg.get("usp_ids") or splan.get("usp_ids", []),
                 "fundamental": bool(seg.get("fundamental", splan.get("fundamental", False))),
+                "budget_source_id": seg.get("budget_source_id"),
                 "lines": [line(l) for l in seg["lines"] if not l.get("unverified")],
                 "checkin": {"text": seg.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))},
                 "deeper": [line(l) for l in seg.get("deeper", []) if not l.get("unverified")],
@@ -124,6 +125,7 @@ def _build_approved(demo_id: str, emit) -> dict:
                       "image_parts": visuals.part_boxes(images[entry["image_id"]])}
                      for entry in slide_media(s) if entry["image_id"] in images]
             out.append({**{k: s.get(k) for k in ("id", "segment_id", "kind", "topics", "fact_ids", "image_id", "image_reason", "motion", "usp_ids", "priority", "role", "fundamental")},
+                        "budget_source_id": seg.get("budget_source_id"),
                         "title": o.get("title") or s.get("title", ""), "image_url": img_url(im) if im else None, "image_parts": visuals.part_boxes(im) if im else [],
                         "media": media,
                         "callouts": [{**c, "text": ctext.get(c["id"], c["text"])} for c in s.get("callouts", [])],
@@ -155,6 +157,7 @@ def _build_approved(demo_id: str, emit) -> dict:
             "id": seg["id"], "title": seg["title"], "topic": seg["topic"], "priority": bool(splan.get("priority_topic")),
             "role": seg.get("role", "proof"), "outcome": seg.get("outcome") or splan.get("outcome", ""), "usp_ids": seg.get("usp_ids") or splan.get("usp_ids", []),
             "fundamental": bool(seg.get("fundamental", splan.get("fundamental", False))),
+            "budget_source_id": seg.get("budget_source_id"),
             "lines": [line(l) for l in seg["lines"] if not l.get("unverified")],
             "checkin": {"text": seg.get("checkin", ""), "audio": media_url(demo_id, seg.get("checkin_audio"))},
             "deeper": [line(l) for l in seg.get("deeper", []) if not l.get("unverified")],

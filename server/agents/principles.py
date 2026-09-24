@@ -186,7 +186,7 @@ STEP 2 · QUICK OVERVIEW [role=intro, 1-2 segments, within each planned budget]:
 STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three USPs, chosen for strength of evidence and buyer
   relevance across experience, performance and confidence/ownership. Do not fabricate a differentiator to fill a category.
   Say they can steer the tour; do not ask another question.
-STEP 4 · GUIDED DISCOVERY [role=proof, 4-6 segments]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
+STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
   decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty. The runtime
   reorders these per buyer; each must stand alone.
 STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive.
