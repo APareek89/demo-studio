@@ -15,6 +15,8 @@ Loop remains **off**. Three-minute preparation is now part of ordinary Read/Auth
 No new unresolved FMEA blocker. Inherited hosted access/Cloud voice identity/capacity/OCR/nonempty damaged-audio-cache/selective-rebuild items remain pending. Protected local demo/output/port8896 untouched. GitHub/AWS deployment is recorded separately after cutover.
 
 
+GitHub/AWS release `b15d23e`:16/16 staged suites pass; shared demo bytes/environment unchanged, served frontend25/25 and media206pass. [Receipt](docs/aws/release-automatic-narration-2026-09-24.md). No paid calls.
+
 ## Earlier narration preparation / recovery · 24 September 2026
 
 Loop remains **off**. The user-reported128.3-second failure now has preparation and explicit Align recovery; the measured180-second publication gate remains unchanged. Baseline eight gates passed; final scoped **33/33 scripts** report **1101/1101** checks/cases/phases with zero outbound attempts. An independent actual-browser pass adds **10/10** checks. Inventory, each count/log and source hashes: `docs/narration-recovery-gates-2026-09-24.json`; twelve-category FMEA: `docs/narration-recovery-qa-2026-09-24.md`.
