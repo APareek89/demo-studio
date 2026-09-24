@@ -198,6 +198,18 @@ class CoachContract(unittest.TestCase):
             coach.run(self.did, self.events.append, "Put practical choices first")
             self.assertEqual(generate.call_count, 4)
 
+    def test_changed_coach_guidance_regenerates_once_without_changing_evidence(self):
+        before = coach.run(self.did, self.events.append)
+        evidence = store.path(self.did, "understanding.json").read_bytes()
+        with patch.object(coach, "COACH_SYSTEM", coach.COACH_SYSTEM + "\nGive the lead stop a clear buyer choice."), \
+                patch.object(coach, "mock_playbook", wraps=coach.mock_playbook) as generate:
+            revised = coach.run(self.did, self.events.append)
+            repeated = coach.run(self.did, self.events.append)
+        self.assertEqual(generate.call_count, 1)
+        self.assertNotEqual(before["input_hash"], revised["input_hash"])
+        self.assertEqual(revised, repeated)
+        self.assertEqual(store.path(self.did, "understanding.json").read_bytes(), evidence)
+
     def test_overrides_reorder_relabel_and_revalidate(self):
         pb = coach.run(self.did, self.events.append)
         original = copy.deepcopy(pb)
@@ -311,7 +323,7 @@ class CoachContract(unittest.TestCase):
         self.assertEqual(mock.fake(schemas.Playbook).category_source, "library")
         self.assertTrue(all(stop.kind == "fundamental" for stop in mock.fake(schemas.Playbook).stops))
 
-    def test_coach_includes_audit_stats_ban_and_fundamental_emotional_moment(self):
+    def test_coach_keeps_stats_ban_and_ownership_emphasis_inside_library_order(self):
         stats_ban = """Never build a USP or a narration line on a company or market statistic: units sold, monthly or annual
 sales figures, customer totals, market share, sales rank, years on sale, or award counts. These are the
 brand's numbers, not the buyer's experience; they date within weeks and no one buys because of a units
@@ -320,8 +332,9 @@ the cars you see most on Indian roads" — still citing the fact id it rests on.
         self.assertIn(stats_ban, coach.COACH_SYSTEM)
         self.assertLess(coach.COACH_SYSTEM.index("- usps:"), coach.COACH_SYSTEM.index(stats_ban))
         self.assertLess(coach.COACH_SYSTEM.index(stats_ban), coach.COACH_SYSTEM.index("- objections:"))
-        self.assertIn("You choose what the demo is emotionally about, not only what it proves", coach.COACH_SYSTEM)
-        self.assertIn("make the lead fundamental stop the one closest to it, and place the delighter that serves it right after the fundamentals", coach.COACH_SYSTEM)
+        self.assertIn("Choose the ordinary ownership moment that connects the tour", coach.COACH_SYSTEM)
+        self.assertIn("the first fundamental stays first, and each delighter stays at its supplied", coach.COACH_SYSTEM)
+        self.assertNotIn("place the delighter that serves it right after the fundamentals", coach.COACH_SYSTEM)
         self.assertNotIn("make the first proof stop the one closest to it", coach.COACH_SYSTEM)
 
     def test_storage_is_temporary_and_sockets_are_blocked(self):

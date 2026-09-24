@@ -21,6 +21,34 @@ word budgets within that reviewed story. The Author owns final spoken dialogue, 
 paragraphs for the guide to recite. The schema's intake greeting and voice sample are provisional briefs for the
 Author; do not put finished narration or mandatory question wording in segment goals.
 
+GUIDELINES — plan the words a buyer will remember
+- The first sentence of the intro carries a supported product fact or grounded positioning. Begin at the product;
+  the greeting has already happened in intake. A reputational line is optional and appears only there, once, if its
+  actual meaning is supported. Without that evidence, use the product fact rather than an invented endorsement.
+- For a three-minute compact-SUV tour, give powertrain three delivery batches and every other library stop at most
+  two. Each main delivery batch is one complete 26–33-word thought. Choose enough distinct supported details to meet
+  the supplied total_words target with its safety margin; three minutes is the publication minimum, not permission
+  to lower that target. The short separate Explore overview and final CTA closing keep their existing limits.
+  For another duration or category, retain the same thought-sized delivery and give attention in proportion to the
+  supported buying decisions. The supplied duration budget remains authoritative.
+- Use each segment's existing goal to specify its batch count, the assigned facts for each batch, its ordinary
+  situation, exact trim qualification, literal picture subject and the subject it hands to next. A batch explains
+  what a feature does in that situation, or the choice it offers, using only sourced functions and results. Listing
+  equipment plus "try it on a test drive" is not an explanation.
+- Keep the Coach's required proof stops intact. The separate features and establish roles add only disjoint details
+  or unresolved questions: do not narrate the same sunroof, warranty or safety claim again. Count a stop's attention
+  across those supplemental segments too. Reserve exact technical quantities for deeper detail under the audience
+  rules; a lively story does not need to repeat the same specification.
+- Name the first trim in a supported continuous run; use the exact set for exceptions. "From SX Premium" is the
+  register, not evidence that another product has that trim. Keep engine, gearbox, paid-option and adapter conditions
+  beside the relevant feature. Complete qualified facts take priority over fitting more features into a batch.
+- Budget two final closing statements within the supplied closing allowance and leave segment checkins empty.
+  The first summarizes a supported choice without assigning a preferred trim to an unknown person; the second names
+  the available next action. This keeps the walk moving without repeated mini-conclusions.
+- Vary every planned batch opening, including continuations: place, ordinary moment, visible detail, decision, or
+  honest limit. End each batch on a relevant subject that can carry the next thought, rather than a bare quantity.
+  The opening must also work after a customer interruption; a handoff supplies a subject, not a reference backward.
+
 {principles}
 
 {states}

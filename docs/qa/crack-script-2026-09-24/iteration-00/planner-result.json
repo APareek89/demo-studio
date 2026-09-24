@@ -1,0 +1,683 @@
+{
+  "total_words": 495,
+  "playbook_version": "2026-09-23",
+  "customer_persona": "Everyday compact-SUV shoppers comparing driving choices, passenger and luggage space, equipment and ownership costs. Their actual routine, location, budget and priorities are unknown until they choose to share them.",
+  "decision_frame": "The strongest fit is a version with the brake-holding, flexible rear seats and front-seat airflow features that matter to you, and the thing still to verify is the exact engine and trim at a current on-road price.",
+  "takeaway": "Choose the engine and trim together, then check the features, personal fit and current quote for that exact version.",
+  "primary_outcome": "Choose a CRETA engine and trim for a personal fit check.",
+  "supporting_outcomes": [
+    "Check which comfort and practical features the chosen version includes.",
+    "Identify the current price and missing ownership evidence before booking."
+  ],
+  "concerns": [
+    {
+      "topic": "powertrain",
+      "why": "The three engines have different gearbox choices, while measured acceleration and engine-specific fuel economy are missing.",
+      "fact_ids": [
+        "F003",
+        "F005",
+        "F006",
+        "F008",
+        "F009"
+      ]
+    },
+    {
+      "topic": "space-and-practicality",
+      "why": "Seat flexibility and a pictured boot cannot establish personal passenger, luggage or parking fit.",
+      "fact_ids": [
+        "F001",
+        "F022",
+        "F023",
+        "F063"
+      ]
+    },
+    {
+      "topic": "safety",
+      "why": "The buyer needs to distinguish standard equipment, selected-trim assistance and an as-yet-unverified crash rating.",
+      "fact_ids": [
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F030",
+        "F031",
+        "F034",
+        "F062"
+      ]
+    },
+    {
+      "topic": "ownership",
+      "why": "An entry ex-showroom amount is not a chosen-version on-road quote, and warranty packages cost extra.",
+      "fact_ids": [
+        "F054",
+        "F055",
+        "F056",
+        "F057",
+        "F058"
+      ]
+    },
+    {
+      "topic": "running-costs",
+      "why": "No approved fuel-economy measurement, service cost or resale evidence is supplied.",
+      "fact_ids": []
+    }
+  ],
+  "usps": [
+    {
+      "id": "rest-at-a-stop",
+      "name": "Rest your foot at a stop",
+      "fact_ids": [
+        "F015",
+        "F016"
+      ],
+      "stop_id": "powertrain"
+    },
+    {
+      "id": "room-for-changing-plans",
+      "name": "Make room for changing plans",
+      "fact_ids": [
+        "F022",
+        "F023"
+      ],
+      "stop_id": "space-and-practicality"
+    },
+    {
+      "id": "relief-from-the-heat",
+      "name": "A little relief from the heat",
+      "fact_ids": [
+        "F037",
+        "F038"
+      ],
+      "stop_id": "delighters"
+    }
+  ],
+  "segments": [
+    {
+      "id": "overview",
+      "title": "The button beside the brake",
+      "role": "intro",
+      "goal": "MOMENT — Preview the first stop through a possible pause in stop-start driving, without assigning that routine to this buyer. SPOKEN / DEEPER — Use F015–F016 for the stationary brake-holding function on equipped versions, with King, King Knight and Lounge standard and S(O), S(O) Knight and SX Premium automatic-only availability held beside the claim; leave engine figures for powertrain detail. VISUAL / HANDOFF — Open on the AUTO HOLD button in im11 and leave the button in focus, using 35 words in one batch with no closing statement.",
+      "outcome": "",
+      "topic": "powertrain",
+      "fact_ids": [
+        "F015",
+        "F016"
+      ],
+      "usp_ids": [
+        "rest-at-a-stop"
+      ],
+      "visual_refs": [
+        "im11"
+      ],
+      "priority_topic": false,
+      "stop_id": null,
+      "fundamental": false,
+      "word_budget": 35
+    },
+    {
+      "id": "remember",
+      "title": "The brake button, rear seats and front seats",
+      "role": "outcome",
+      "goal": "MOMENT — Give three memorable anchors for a tour the buyer can steer by interrupting. SPOKEN / DEEPER — Name exactly the three reviewed USPs, using F015–F016 for brake holding on equipped trims, F022–F023 for the standard split rear seat, and F037–F038 for front-seat airflow on SX Premium, King, King Knight and Lounge; keep the full availability details for their stops. VISUAL / HANDOFF — Start with the AUTO HOLD button in im11, change to the folded split seats in im13, then the airflow illustration in im21, ending on the seats within 43 words and without a closing statement.",
+      "outcome": "Choose which everyday features matter",
+      "topic": "highlights",
+      "fact_ids": [
+        "F015",
+        "F016",
+        "F022",
+        "F023",
+        "F037",
+        "F038"
+      ],
+      "usp_ids": [
+        "rest-at-a-stop",
+        "room-for-changing-plans",
+        "relief-from-the-heat"
+      ],
+      "visual_refs": [
+        "im11",
+        "im13",
+        "im21"
+      ],
+      "priority_topic": false,
+      "stop_id": null,
+      "fundamental": false,
+      "word_budget": 43
+    },
+    {
+      "id": "driving",
+      "title": "The brake button and engine choices",
+      "role": "proof",
+      "goal": "MOMENT — Start with the labelled brake button and a possible stop on the drive home, then explore which engine and gearbox combination to try. SPOKEN / DEEPER — Voice F015–F016 as holding the stationary vehicle without keeping the brake pressed on equipped versions, explicitly identifying standard fit on King, King Knight and Lounge and reserving S(O), S(O) Knight and SX Premium automatic-only details for deeper; use F003, F005–F006, F008–F009 for separate petrol, diesel and turbo-petrol choices, manual or automatic for the first two subject to trim and automatic-only turbo listed only on King, while F004 and F007 stay deeper with their complete stated power or torque units and engine-speed basis, and F002 remains manufacturer positioning rather than a tested result. VISUAL / HANDOFF — Open on im11, switch to im06, im05 and im04 as the separate engines are discussed and im07 only for the manual lever, leave the engine/gearbox choice in focus, and allocate 90 words across three batches of about 30 each with no closing statement.",
+      "outcome": "Choose an engine combination to try",
+      "topic": "powertrain",
+      "fact_ids": [
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F007",
+        "F008",
+        "F009",
+        "F015",
+        "F016"
+      ],
+      "usp_ids": [
+        "rest-at-a-stop"
+      ],
+      "visual_refs": [
+        "im04",
+        "im05",
+        "im06",
+        "im07",
+        "im11"
+      ],
+      "priority_topic": true,
+      "stop_id": "powertrain",
+      "fundamental": true,
+      "word_budget": 90
+    },
+    {
+      "id": "wheels",
+      "title": "The wheels meeting the road",
+      "role": "proof",
+      "goal": "MOMENT — Notice the alloy wheel and distinguish its visible design from how it might feel on a particular road. SPOKEN / DEEPER — Use F017 to explain that wheel choices change by trim, keeping the complete F017 trim mapping and F064 tyre-size specifications in deeper; ground clearance, suspension and comparative rough-road comfort remain unanswered and wheel size establishes none of them. VISUAL / HANDOFF — Open and stay on the literal wheel and tyre close-up im12, with im02 available for the whole-car context, leaving the wheel as the subject for 24 words in one batch without a closing statement.",
+      "outcome": "Check wheel choice and road feel",
+      "topic": "stance-and-ride",
+      "fact_ids": [
+        "F017",
+        "F064"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im01",
+        "im02",
+        "im03",
+        "im12"
+      ],
+      "priority_topic": false,
+      "stop_id": "stance-and-ride",
+      "fundamental": true,
+      "word_budget": 24
+    },
+    {
+      "id": "space",
+      "title": "The rear seat and open boot",
+      "role": "proof",
+      "goal": "MOMENT — Notice the differently sized folded seatbacks and explore a possible day with passengers and luggage without assuming their number or bags. SPOKEN / DEEPER — Voice F022–F023 for the standard split rear seat and its passenger/storage trade-off, F001 for five seats if needed, and F063 as the manufacturer-stated boot purpose followed by a personal luggage fit-check; hold F020, F021, F024, F059–F061 and the exact split ratio in deeper, preserving rear vents and armrest as standard, rear recline from S(O), rear shades from EX(O), and sliding front armrest only on King, King Knight and Lounge, with no invented boot litres or legroom. VISUAL / HANDOFF — Open on folded rear seats im13, switch to the visible sample bags in im15 without promising they match the buyer’s luggage, and leave the open boot in focus across 52 words in two batches, ending with a short statement that the buyer’s own bags are the useful fit check.",
+      "outcome": "Check passenger and luggage fit",
+      "topic": "space-and-practicality",
+      "fact_ids": [
+        "F001",
+        "F020",
+        "F021",
+        "F022",
+        "F023",
+        "F024",
+        "F059",
+        "F060",
+        "F061",
+        "F063"
+      ],
+      "usp_ids": [
+        "room-for-changing-plans"
+      ],
+      "visual_refs": [
+        "im13",
+        "im14",
+        "im15",
+        "im31"
+      ],
+      "priority_topic": true,
+      "stop_id": "space-and-practicality",
+      "fundamental": true,
+      "word_budget": 52
+    },
+    {
+      "id": "protection",
+      "title": "The airbags around the seats",
+      "role": "proof",
+      "goal": "MOMENT — Look at where the illustrated airbags sit before separating equipment fitted to every version from extra assistance. SPOKEN / DEEPER — Voice F025 for six airbags across the range and F031–F032 with F034 for collision warning and assistance on King, King Knight and Lounge while retaining driver responsibility; keep F026–F030, F033, F035–F036 and F062 deeper with standard stability control, disc brakes, hill-start help, tyre-pressure monitoring and rear sensors, cameras on SX Premium/King/King Knight/Lounge, and adaptive stop-go only on automatics of King/King Knight/Lounge, without inferring crash ratings, stopping distance or guaranteed intervention. VISUAL / HANDOFF — Start with the deployed-airbag illustration im16, use im18 for the forward detection illustration and im19 or im20 only for their literal subjects in deeper answers, leaving forward assistance in focus over 58 words in two batches with no closing statement.",
+      "outcome": "Distinguish standard protection and assistance",
+      "topic": "safety",
+      "fact_ids": [
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F029",
+        "F030",
+        "F031",
+        "F032",
+        "F033",
+        "F034",
+        "F035",
+        "F036",
+        "F062"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im16",
+        "im17",
+        "im18",
+        "im19",
+        "im20"
+      ],
+      "priority_topic": true,
+      "stop_id": "safety",
+      "fundamental": true,
+      "word_budget": 58
+    },
+    {
+      "id": "comfort",
+      "title": "Airflow through the front seats",
+      "role": "proof",
+      "goal": "MOMENT — Consider returning to a hot parked car as a possible situation, noticing the airflow arrows through the seats before the roof and speakers. SPOKEN / DEEPER — Voice F037–F038 for cool airflow through the front-seat cushions on SX Premium, King, King Knight and Lounge, F048–F049 for the panoramic roof from EX(O) and voice opening/closing from SX, and F050 for Bose sound on SX Premium, King, King Knight and Lounge; keep the eight-speaker specification deeper and do not claim a cooling time, refrigerated air or improved driving safety. VISUAL / HANDOFF — Open on seat-airflow illustration im21, change to im27 or im26 for the roof and im25 for the speaker layout, and leave speakers in focus within 53 words in two batches without a closing statement.",
+      "outcome": "Choose seat airflow roof and sound",
+      "topic": "delighters",
+      "fact_ids": [
+        "F037",
+        "F038",
+        "F048",
+        "F049",
+        "F050"
+      ],
+      "usp_ids": [
+        "relief-from-the-heat"
+      ],
+      "visual_refs": [
+        "im21",
+        "im25",
+        "im26",
+        "im27"
+      ],
+      "priority_topic": false,
+      "stop_id": "delighters",
+      "fundamental": false,
+      "word_budget": 53
+    },
+    {
+      "id": "controls",
+      "title": "The temperature controls and phone connection",
+      "role": "proof",
+      "goal": "MOMENT — Notice the two temperature settings and consider a driver and front passenger wanting different settings. SPOKEN / DEEPER — Voice F039–F040 for independent front temperature settings from S(O) and F045–F046 for compatible Android Auto or Apple CarPlay from EX, explicitly keeping the wired-to-wireless adapter condition on SX and above; hold F041–F044 and F047 deeper with both 26.03 cm (10.25-inch) screens from SX, Bluelink from SX with three complimentary years and 70+ features subject to power/network, Alexa Home to Car from SX with separate hardware excluded and no inferred phone-app engine start, and both front power seats plus driver memory only on King/King Knight/Lounge. VISUAL / HANDOFF — Open on the literal climate panel im23, move to dashboard im22 as contextual imagery for connectivity rather than a demonstrated wireless link, and use im24 only for memory-button detail, leaving the screen in focus over 50 words in two batches with no closing statement.",
+      "outcome": "Check controls and phone compatibility",
+      "topic": "cabin-and-tech",
+      "fact_ids": [
+        "F039",
+        "F040",
+        "F041",
+        "F042",
+        "F043",
+        "F044",
+        "F045",
+        "F046",
+        "F047"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im22",
+        "im23",
+        "im24"
+      ],
+      "priority_topic": false,
+      "stop_id": "cabin-and-tech",
+      "fundamental": false,
+      "word_budget": 50
+    },
+    {
+      "id": "cost",
+      "title": "The price of your chosen version",
+      "role": "proof",
+      "goal": "MOMENT — Turn the feature choices into the cost of a specific engine and trim rather than treating the entry price as a personal quote. SPOKEN / DEEPER — Voice F055–F056 for road tax, registration and insurance added to the ex-showroom amount and the need for a current dealer quotation; keep F054 deeper with the dated 19 September 2026 body price of ₹10,90,700, conflicting ₹10.79 lakh structured data and entry ex-showroom basis all together, while F057–F058 warranty detail belongs to the ownership wrap and deeper answers. VISUAL / HANDOFF — Use the whole-car profile im02 only as explicitly contextual imagery because no price or terms document image exists, leave the chosen version in focus for 26 words in one batch, and close with a short statement that a current itemised quote settles the price.",
+      "outcome": "Get the exact on-road quote",
+      "topic": "ownership",
+      "fact_ids": [
+        "F054",
+        "F055",
+        "F056",
+        "F057",
+        "F058"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im02"
+      ],
+      "priority_topic": true,
+      "stop_id": "ownership",
+      "fundamental": false,
+      "word_budget": 26
+    },
+    {
+      "id": "small-touches",
+      "title": "Lights by the doors and storage by your seat",
+      "role": "features",
+      "goal": "MOMENT — Notice the light beside the door, then two small details inside. SPOKEN / DEEPER — Plan three brief feature sentences from F051–F052 for driver-side puddle lighting from SX and both sides on King/King Knight/Lounge, F061 for standard front-armrest storage, and F013 for Normal, Eco and Sport on King automatics; retain the full selected-automatic trim list, its absent current S(O) Knight automatic combination and Snow/Mud/Sand labels in deeper without claiming off-road capability, and reserve sliding armrest availability for King/King Knight/Lounge. VISUAL / HANDOFF — Start with the literal light pool im28, change to open armrest storage im31 and the drive-mode display im09, leaving the display in focus within 32 words in one batch and no closing statement.",
+      "outcome": "Notice three useful equipment details",
+      "topic": "features",
+      "fact_ids": [
+        "F051",
+        "F052",
+        "F061",
+        "F013"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im28",
+        "im31",
+        "im09"
+      ],
+      "priority_topic": false,
+      "stop_id": null,
+      "fundamental": false,
+      "word_budget": 32
+    },
+    {
+      "id": "ownership-checks",
+      "title": "Your version and the remaining checks",
+      "role": "establish",
+      "goal": "MOMENT — Keep the engine and trim together when turning interest into a next step. SPOKEN / DEEPER — Briefly refer to variant choice using F003 and F006, state under F057–F058 that the extended warranty is separately paid and petrol-only while reserving the up-to-seven-years limit and absent package prices/coverage for deeper, and name three unresolved questions with owners: official engine-specific fuel-economy documentation for U002, the applicable model/year crash-test report for U005, and the selected dealer’s stock and delivery confirmation for U009. VISUAL / HANDOFF — Hold im03 as contextual imagery of a King rather than proof of any price, policy, rating or availability, leave the version to verify in focus, and use 42 words in one batch without a closing statement.",
+      "outcome": "Know what remains to verify",
+      "topic": "ownership",
+      "fact_ids": [
+        "F003",
+        "F006",
+        "F057",
+        "F058"
+      ],
+      "usp_ids": [],
+      "visual_refs": [
+        "im03"
+      ],
+      "priority_topic": true,
+      "stop_id": null,
+      "fundamental": false,
+      "word_budget": 42
+    }
+  ],
+  "ctas": [
+    {
+      "id": "dealer-request",
+      "label": "Request dealer contact",
+      "kind": "contact",
+      "url": "",
+      "primary": true,
+      "when": "end"
+    },
+    {
+      "id": "test-drive-request",
+      "label": "Request a test drive",
+      "kind": "contact",
+      "url": "",
+      "primary": false,
+      "when": "end"
+    }
+  ],
+  "voice": {
+    "persona_name": "Priya",
+    "persona_description": "The guide is a practical, attentive Hyundai product guide. The guide speaks warmly, explains equipment in ordinary words and states what needs checking without pressure.",
+    "tone": "Warm and cheerful Indian English, with short thoughts, restrained pauses and quiet enthusiasm for useful details.",
+    "sample_line": "Hi, welcome to the Hyundai CRETA; would you like to share what you’re looking for in your next car, or shall we get started?",
+    "suggested_voice": "priya",
+    "language": "en-IN"
+  },
+  "visual_gaps": [
+    {
+      "what": "Price, variant quotation and warranty terms documents",
+      "why": "Ownership has no supplied literal picture; im02 and im03 are contextual car images only and cannot show or prove prices, coverage or stock.",
+      "suggestion": "Upload a current itemised dealer quotation for the exact city, engine and trim, plus the official standard and paid extended-warranty pages."
+    },
+    {
+      "what": "Automatic gearboxes and the trim availability matrix",
+      "why": "Engine illustrations and the manual lever do not literally show the automatic mechanisms or their variant availability.",
+      "suggestion": "Upload labelled automatic selector or gearbox imagery and the official engine/transmission and feature availability tables."
+    },
+    {
+      "what": "Measured dimensions, suspension and road-test evidence",
+      "why": "Wheel and whole-car photographs do not establish ground clearance, suspension specification, parking dimensions or rough-road ride quality.",
+      "suggestion": "Upload the exact model-year dimensions/suspension page and a documented road-test visual with its vehicle and test conditions identified."
+    },
+    {
+      "what": "Luggage capacity and rear-seat detail measurements",
+      "why": "Folded seats and sample luggage do not establish boot litres, rear legroom or the buyer’s personal fit.",
+      "suggestion": "Upload the official luggage/dimension table and measured rear-seat views, then use an in-person check for the buyer’s actual passengers and bags."
+    },
+    {
+      "what": "Rear vents, rear recline control, rear armrest and window shade detail",
+      "why": "The cabin panorama provides general seating context but the supplied description does not establish these individual mechanisms as visible.",
+      "suggestion": "Upload close-ups of the rear air vent, reclining-seat control, deployed rear armrest with cupholders and rear-window shade for the relevant trim."
+    },
+    {
+      "what": "Brakes, parking sensors, monitor displays and tyre-pressure display",
+      "why": "The airbag and assistance illustrations do not literally show the standard brake hardware, rear sensors or selected-trim surround/blind-spot monitor interfaces.",
+      "suggestion": "Upload labelled brake and rear-sensor photos plus camera and tyre-pressure screen examples identifying the trim."
+    },
+    {
+      "what": "Applicable crash-test report and body structure evidence",
+      "why": "Airbag and detection illustrations cannot prove a crash rating or measured crash performance.",
+      "suggestion": "Upload the official crash-test report for this exact model and year and the manufacturer’s body safety documentation."
+    },
+    {
+      "what": "Working phone mirroring and connected-service conditions",
+      "why": "The dashboard photo is only contextual for wireless mirroring, its adapter and Alexa remote functions.",
+      "suggestion": "Upload a compatible phone connected through the required adapter on SX or above and labelled connected-service/Alexa screenshots with the relevant conditions."
+    },
+    {
+      "what": "Fuel-use, acceleration and loaded-climb test results",
+      "why": "Engine illustrations and manufacturer specifications do not demonstrate measured road outcomes.",
+      "suggestion": "Upload official fuel-economy certification and identified instrumented tests with engine, transmission, load and test basis."
+    },
+    {
+      "what": "Documented seat cooling time and ambient lighting",
+      "why": "The airflow illustration supports only the described mechanism, and no ambient-lighting specification is approved.",
+      "suggestion": "Upload an identified seat-temperature test if a cooling-time answer is needed, and a feature table with matching cabin photo before mentioning ambient lighting."
+    },
+    {
+      "what": "Current stock, delivery, maintenance and resale evidence",
+      "why": "No supplied pictures or registry facts establish these ownership answers or a completed test-drive booking.",
+      "suggestion": "Obtain current dealer stock/delivery confirmation, the official service schedule and local service estimate, comparable used-car valuations if asked, and a verified test-drive destination."
+    },
+    {
+      "what": "Certified or measured fuel economy for each engine",
+      "why": "Missing support for everyday driving choices.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Measured acceleration",
+      "why": "Missing support for everyday driving choices.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Fully loaded diesel performance on a long climb",
+      "why": "Missing support for everyday driving choices.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Ground clearance figure",
+      "why": "Missing support for wheels and road fit.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Suspension specification",
+      "why": "Missing support for wheels and road fit.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Evidence of ride comfort on rough roads",
+      "why": "Missing support for wheels and road fit.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Boot volume in litres",
+      "why": "Missing support for seats and luggage space.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Measured rear legroom",
+      "why": "Missing support for seats and luggage space.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Measured overall length and width for parking fit",
+      "why": "Missing support for seats and luggage space.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Crash-test rating for the exact model and year",
+      "why": "Missing support for safety and parking help.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Body structure safety evidence",
+      "why": "Missing support for safety and parking help.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Ambient lighting specification and availability",
+      "why": "Missing support for seats roof and sound.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Current city-specific on-road prices by trim",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Standard warranty terms",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Service intervals and maintenance costs",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Extended warranty package prices and coverage",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Certified or measured fuel economy by engine",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Resale evidence",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Local stock and delivery dates",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Test-drive booking destination",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Picture showing price and ownership costs",
+      "why": "Missing support for price and ownership costs.",
+      "suggestion": "Upload the official source or a literal picture of this subject."
+    },
+    {
+      "what": "Ground clearance figure and suspension specification",
+      "why": "Wheel sizes alone cannot answer questions about speed breakers or rough roads.",
+      "suggestion": "Official specification sheet dimensions and suspension tables for the exact model year."
+    },
+    {
+      "what": "Measured ride comfort on rough roads",
+      "why": "No comfort or road-absorption comparison follows from the wheel choices.",
+      "suggestion": "A documented road test on relevant surfaces with the engine, trim and tyres identified."
+    },
+    {
+      "what": "Boot volume, rear legroom and overall length and width",
+      "why": "The seat and boot features do not establish personal luggage fit, passenger comfort or parking fit.",
+      "suggestion": "Official brochure dimensions and luggage capacity tables, followed by a showroom fit check with the buyer."
+    },
+    {
+      "what": "Crash-test rating and body structure safety evidence for this exact model and year",
+      "why": "Standard airbags and assistance features do not establish a crash rating.",
+      "suggestion": "The applicable official crash-test report and manufacturer body safety section."
+    },
+    {
+      "what": "Certified or measured fuel economy for each engine and transmission",
+      "why": "Running cost cannot be estimated from the supplied marketing descriptions.",
+      "suggestion": "Official fuel economy certification table and a clearly described real-world fuel-use test."
+    },
+    {
+      "what": "Measured acceleration and fully loaded diesel performance on a long climb",
+      "why": "Power and torque figures do not establish acceleration times or loaded climbing performance.",
+      "suggestion": "Instrumented road-test results identifying the exact engine, load, route and test conditions."
+    },
+    {
+      "what": "Current on-road prices by trim for the buyer’s city",
+      "why": "The supplied entry price is dated, has a conflicting value in the same source and excludes local additions.",
+      "suggestion": "A current itemised Hyundai dealer quotation naming the city, trim and engine."
+    },
+    {
+      "what": "Standard warranty, service intervals, maintenance costs, and paid extended warranty coverage and prices",
+      "why": "The paid petrol warranty eligibility alone cannot answer the cost and coverage questions of ownership.",
+      "suggestion": "Official warranty booklet, service schedule, local authorised service estimate and current extended warranty package terms."
+    },
+    {
+      "what": "Resale evidence for comparable versions",
+      "why": "The registry does not support a future resale promise.",
+      "suggestion": "Recent documented used-car sale valuations matched for age, trim, mileage and city."
+    },
+    {
+      "what": "Local stock, delivery dates and an actual test-drive booking destination",
+      "why": "The demo cannot promise availability or offer a working booking route without these details.",
+      "suggestion": "The chosen dealer’s current stock confirmation and verified test-drive booking page."
+    }
+  ],
+  "intake": {
+    "q1": "Hi, welcome to the Hyundai CRETA; would you like to share what you’re looking for in your next car, or shall we get started?",
+    "q2": "",
+    "chips": [
+      {
+        "key": "powertrain",
+        "label": "Driving choices"
+      },
+      {
+        "key": "stance-and-ride",
+        "label": "Wheels and roads"
+      },
+      {
+        "key": "space-and-practicality",
+        "label": "Seats and bags"
+      },
+      {
+        "key": "safety",
+        "label": "Safety equipment"
+      },
+      {
+        "key": "delighters",
+        "label": "Seat airflow and roof"
+      },
+      {
+        "key": "cabin-and-tech",
+        "label": "Controls and phone"
+      },
+      {
+        "key": "ownership",
+        "label": "Price and ownership"
+      }
+    ]
+  },
+  "state_questions": [],
+  "do_not_recommend_if": "Do not recommend a specific version if a non-negotiable requirement depends on missing fuel-economy, crash-rating, fit, cost or availability evidence until the appropriate source resolves it.",
+  "advance": "When the buyer is ready to verify a version, offer Request dealer contact so the selected Hyundai dealer can confirm the engine and trim and provide a current itemised on-road quotation; the app records this contact preference and optional follow-up, not a completed contact or booking.",
+  "notes": "Unknown customer context: use a balanced route and accept interruptions without a second intake. Copy the Coach’s seven stops and three USPs unchanged; no playbook version was supplied. Guided allocation is 427 words across proof, features and establish, plus 23 words for the Explore overview and 45 for closing, totalling 495; the separate Browse intro/outcome use 78 words and do not consume that guided budget. Only space and cost receive brief declarative checkins; none waits for a reply. Each proof stop uses at most three delivery batches and each batch stays at or below 46 words; features uses 32 of 48 and establish 42 of 44. The configured Sarvam Priya identity is retained. Use ordinary feature explanations in main narration, complete units and source bases in deeper answers, and no calculated performance or economic differences. The ownership stop lacks literal evidence imagery, so contextual treatment and the gap are explicit. The empty-URL CTAs are contact requests because no action destination was supplied. Buyer-specific closing language remains conditional until the buyer actually shares a priority.",
+  "issues": [],
+  "narration_preparation": {
+    "version": 1,
+    "target_words": 495,
+    "identity": "e4368858179b4941dce1e9b3cf4c8eb6e2e57eb4f9167a9186a6b182d6543a5d"
+  },
+  "guided_minimum_seconds": 180.0,
+  "guided_opening_words": 23
+}

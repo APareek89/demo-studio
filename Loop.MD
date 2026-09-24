@@ -1,5 +1,11 @@
 # Loop.MD — Demo Studio
 
+## Script prompt experiment — unmerged · 24 September 2026
+
+Mocked, isolated data/graph storage and blocked sockets; no paid model/voice calls. Before and first improved prompt iteration: deck380/380, acceptance24/24 and smoke3/3. Existing scope: Coach27/27, plan/playbook19/19, narrative roles14/14, generation55/55, speech style30/30, narration preparation35/35, recovery18/18, automatic narration16/16. New `python evals/script_prompt_contract.py`:40/40 groups covering actual assembled prompts across categories/audiences, protected evidence rules, numeric/citation/visual rejection, technical-detail preservation, batch splitting and the unchanged495/180 preparation/publication distinction. `evals/coach_contract.py` additionally proves prompt-cache invalidation without evidence mutation.
+
+Stage simulations and their quantitative review live in `docs/qa/crack-script-2026-09-24/`. They use source-derived, manually inspected fixtures and separate reasoning agents, not live model providers; mocked rules-only picture assignments are not pixel proof. Final PDF integration and final source-corrected simulation are still pending. Loop remains off.
+
 ## Feedback workbook · 24 September 2026
 
 Loop remains **off**. Final local gates: **51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps)**, zero outbound/provider calls. Required deck **380/380**, acceptance **24/24**, smoke **3/3** (Read/Build phases and on-demand rehearsal). Full mock release journey **28/28** with **194.22seconds measured fixture audio** and the actual three-minute default guard. Duration **19/19** covers1–5minutes, alternate-language publication, old-publication preservation, changed-duration preparation and protected manual edits. Upload retry **12/12**, stream **19/19**, Deck media **60/60**; Studio chat/navigation **29/29**, workbook player **101/101**, full-app integration **19/19**, responsive layout **193/193**, existing navigation **22/22**. Every touched contract is green; all15 Node suites pass.

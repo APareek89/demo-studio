@@ -134,6 +134,9 @@ SCORECARD = [
 PROOF_BLOCK = "Proof block pattern: SAY the decision or outcome being explored → SHOW the actual feature or evidence → EXPLAIN its supported relevance, or a useful fit-check when no outcome is demonstrated. At a useful decision point, optionally close with one short statement in checkin, never a question. Narration continues immediately; leave checkin empty unless the plan calls for it."
 
 AUTHOR_CRAFT = """AUTHOR RESPONSIBILITY — turn the approved story outline into natural speech.
+- A useful spoken batch connects an ordinary situation to one sourced function or choice, then leaves a concrete
+  subject for the next thought. Use 26–33 words for that complete main line; give a heavily weighted stop several
+  distinct lines instead of cramming facts into one breath. The planned global content target still applies.
 - The Planner owns the selected story, segment order/ids/roles, proof priorities, spoken-versus-deeper evidence and
   image plan. You own the final words, sentence rhythm, joins and short closing statements. Follow that outline;
   do not design a second itinerary, add proof areas, or read its planning labels aloud. Its proposed wording, intake
@@ -174,9 +177,11 @@ def language_instruction(code: str) -> str:
 
 
 PITCH_SHAPE = """DEMO FLOW — follow these steps IN THIS ORDER (roles in brackets are how segments are tagged).
-Keep each batch within its planned word budget and role ceiling. Aim for a natural ten-to-twenty-second thought,
-not clipped labels or a list; do not pad a shorter useful thought. At most two planned stops may carry a short
-closing statement in `checkin`, never a question. Narration continues on audio completion without a reply gate.
+Keep each main batch a connected 26–33-word thought within its planned word budget and role ceiling. The thought
+explains a sourced function in an ordinary situation or buying choice; it is neither clipped labels nor a list.
+The short runtime opening and final closing retain their own supplied limits. Reserve at most two closing statements
+across the whole script, normally the final summary and CTA, with segment checkins empty. Narration continues on
+audio completion without a reply gate.
 Real clarifications belong to runtime Q&A, separate from the intake context question and the explicit CTA choice.
 STEP 1 · GREETING — lives in intake_q1, NOT in a segment: a warm greeting naming the brand and product, then ONE low-pressure
   context choice ("Would you like to tell me quickly what you're buying it for, or shall we get started?"). Easy to decline.
@@ -189,8 +194,9 @@ STEP 3 · THREE THINGS TO REMEMBER [role=outcome, one segment]: exactly three US
 STEP 4 · GUIDED DISCOVERY [role=proof, one story stop per supported playbook stop, delivered in one or more short batches]: the playbook's stops in order, spoken as a walk: each stop is a place to be standing after the one before. Each segment: NOTICE one thing → SHOW it (the picture) → supported RELEVANCE or a fit-check. At selected
   decision points, add one short closing statement in `checkin`, never a question; otherwise leave it empty. The runtime
   reorders these per buyer; each must stand alone.
-STEP 5 · A FEW MORE THINGS [role=features, one segment]: 3-5 quick one-sentence features, no numbers unless decisive.
-  An optional `checkin` closes the stop without waiting; never hide a question in narration.
+STEP 5 · A FEW MORE THINGS [role=features, one segment]: one or two short connected batches of remaining useful detail.
+  Use only detail not already voiced in the Coach stops, connected to ordinary use rather than a second equipment
+  list. A feature's availability remains beside it. Keep checkin empty when final closing uses both statements.
 STEP 6 · OWNERSHIP & HONESTY [role=establish, one segment]: variant choice in one line, the written terms in one line, AND the
   two or three things the sources do not answer, with the appropriate next source or check to resolve each.
 STEP 7 · FIT SUMMARY + NEXT STEP [the closing lines]: "the strongest fit is X, and the one thing we should still verify is Y" —
@@ -205,18 +211,27 @@ R1 SHOWN — no fact id needed. What the picture literally shows is yours to des
    words: shape, material, where a thing sits, what opens, what lights up, how big it looks next to a
    person. "The glass roof runs right back over the second row" describes the picture. It claims nothing
    about heat, comfort, safety or resale, and it carries no number. THIS RUNG IS WHERE VIVID LANGUAGE
-   COMES FROM. Reach for it first.
+   COMES FROM. Reach for it first. Worked example: describe a pictured folded seat as a change of seat layout;
+   do not turn the visible luggage into a boot-capacity measurement or a promise that this buyer's bags fit.
 R2 NAMED — cite the fact id. The specification in plain words without its number, keeping the source's
    own noun and adding no adjective the source does not use: "the turbo petrol engine", "ventilated front
-   seats". Naming is not promising.
+   seats". Naming is not promising. Add the named starting trim or exact trim set from the same evidence:
+   "ventilated front seats from SX Premium" is a wording example, not a fact about the product in this request.
 R3 CHOICE — cite the fact id. What the specification lets the buyer decide, stated as a decision and not
-   a result: "the gearbox follows the engine you pick, rather than being a separate decision."
-R4 MOMENT — cite the fact id. The ordinary situation the specification is for, left open and never
-   assigned to this buyer: "it's the one you'd want if most of your driving is highway."
+   a result: "the gearbox follows the engine you pick, rather than being a separate decision." Worked example:
+   sourced manual and automatic pairings can explain the choice of changing gears yourself or choosing an automatic;
+   keep any automatic-only engine separate, without claiming either gearbox makes smoother changes.
+R4 MOMENT — cite the fact id. Explain a sourced function in a possible ordinary situation, without assigning that
+   life or a preferred variant to the buyer. Worked example: "When traffic pauses, auto hold can keep the car
+   stationary" needs a fact establishing that function and its trim scope. Torque alone cannot support
+   "a loaded car never feels strained on a climb". The source supplies the function, not the imagined situation.
 R5 QUANTIFIED — cite the fact id. The number with its unit and its basis. For an everyday buyer this rung
    lives in `deeper` and in Q&A, not in the main narration. Where a figure genuinely IS the point — a
    price, a warranty period, a stated acceleration time — say it once, whole, with its unit and stated
    conditions, and never repeat it later in the script.
+   Worked example for deeper detail: retain "160 PS" with its turbo-engine scope and stated measurement basis;
+   do not rename PS as horsepower, strip PS from the number, or invent an acceleration time. The everyday-register
+   checks still apply to main narration; technical detail can remain complete and useful in deeper answers.
 There is no rung above R5. "Responsive", "effortless", "confidence-inspiring", "enough power for a quick
 overtake", "planted", "premium feel" are results, and a result needs a cited fact that reports it. If the
 sentence you want needs a rung above R5, write R1 instead — show it rather than promise it. A picture
@@ -235,7 +250,10 @@ of torque" is R5 and goes to `deeper`; "quick off the line" is above R5 and goes
 request for that specification gets the complete value and unit with a short gloss, even for an everyday audience.
 Use terms such as "battery size", "the motor", "pulling power", "the screen" or "the brakes" only where supported;
 "pulling power" alone is not a unit. Do not turn a connector rating into household compatibility or a protection
-rating into an unqualified durability claim. Lead with the useful choice or fit-check, without inventing an outcome.""",
+rating into an unqualified durability claim. Lead with a sourced function in an ordinary situation or a useful
+choice: independent temperature settings can explain driver and passenger choosing their own settings; they cannot
+establish a cooling time. Carry the named trim in the same thought. Use a fit-check only for an actual unresolved fit
+question, rather than ending every feature with a suggestion to try it.""",
     "informed": """LANGUAGE — the customer knows the basics. Technical terms are fine with a two-word gloss the first time
 ("IDC — the certified test range"). Still lead with what a number means for them, not the number.""",
     "expert": """LANGUAGE — the customer is technical. Use the proper terms and test conditions; precision over warmth, no dumbing down.""",

@@ -1,0 +1,344 @@
+{
+  "category": "compact SUV",
+  "category_source": "library",
+  "stops": [
+    {
+      "id": "powertrain",
+      "label": "Engine and driving choices",
+      "kind": "fundamental",
+      "why_here": "For an evening drive that starts in traffic and may continue out of town, begin with the engine and manual or automatic choices, explain the available help when stopped, and then turn to the wheels for the roads ahead.",
+      "fact_ids": [
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F012",
+        "F013",
+        "F014",
+        "F015",
+        "F016"
+      ],
+      "picture_ids": [
+        "im_pdf_eb83000c135195546031",
+        "im_pdf_d62b85cb6c76c3c1a60e",
+        "im_pdf_df8fadffe78c7af4bbc1",
+        "im_pdf_90ccaf0bef2da9143187",
+        "im_pdf_7f6a4cea202b824c4a74"
+      ],
+      "must_cover": true,
+      "gaps": [
+        "Complete current engine and gearbox availability by trim",
+        "Measured acceleration and fully loaded diesel climbing performance",
+        "Measured fuel economy, smoothness and quietness",
+        "Literal pictures of the non-turbo petrol engine, automatic gear controls and paddle shifters"
+      ]
+    },
+    {
+      "id": "stance-and-ride",
+      "label": "Wheels and road fit",
+      "kind": "fundamental",
+      "why_here": "When considering the roads on that journey, show how the wheel choices change by trim without promising clearance or a softer ride, then move inside to the people and bags making the trip.",
+      "fact_ids": [
+        "F017",
+        "F064"
+      ],
+      "picture_ids": [
+        "im_pdf_654ca5b2d4cb084d4a92",
+        "im_pdf_f9bbe411c2dac4280a3e"
+      ],
+      "must_cover": true,
+      "gaps": [
+        "Ground clearance figure",
+        "Suspension specification",
+        "Measured ride comfort on rough roads",
+        "Close-up pictures identifying each wheel and tyre option"
+      ]
+    },
+    {
+      "id": "space-and-practicality",
+      "label": "Seats and luggage space",
+      "kind": "fundamental",
+      "why_here": "When a trip calls for passengers as well as bags, explain the standard split rear seat and the adjustable rear seatback from S(O), then consider the safety equipment for everyone aboard.",
+      "fact_ids": [
+        "F001",
+        "F020",
+        "F021",
+        "F022",
+        "F023",
+        "F024",
+        "F059",
+        "F060",
+        "F061",
+        "F063"
+      ],
+      "picture_ids": [
+        "im_pdf_f422a4dec2ba86f0f22f",
+        "im_pdf_06dc900e0519722a9b8a",
+        "im_pdf_8bfe17bdf06959cc1e40"
+      ],
+      "must_cover": true,
+      "gaps": [
+        "Boot volume in litres",
+        "Measured rear legroom",
+        "Overall length and width for a parking-space check",
+        "Literal pictures of the split rear seat folded, rear recline adjustment, rear vents and rear sunshade"
+      ]
+    },
+    {
+      "id": "safety",
+      "label": "Safety and driving help",
+      "kind": "fundamental",
+      "why_here": "Before setting off with passengers, establish the standard airbags and other safety equipment, distinguish the extra assistance on King, King Knight and Lounge Edition, and then move to the cabin controls used along the way.",
+      "fact_ids": [
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F029",
+        "F030",
+        "F031",
+        "F032",
+        "F033",
+        "F034",
+        "F035",
+        "F036",
+        "F062"
+      ],
+      "picture_ids": [
+        "im_pdf_2814e44d0603eba5c07b"
+      ],
+      "must_cover": true,
+      "gaps": [
+        "Crash-test rating for the exact model and year",
+        "Body structure safety evidence",
+        "Literal pictures of airbags, stability control, brakes, hill-start assistance, tyre-pressure display, parking sensors and camera views"
+      ]
+    },
+    {
+      "id": "cabin-and-tech",
+      "label": "Cabin controls and connections",
+      "kind": "differentiator",
+      "why_here": "When the front occupants prefer different temperature settings or want their phone connected, explain the supported controls and connection conditions, then return to the small comforts that can make a warm evening journey more pleasant.",
+      "fact_ids": [
+        "F039",
+        "F040",
+        "F041",
+        "F042",
+        "F043",
+        "F044",
+        "F045",
+        "F046",
+        "F047"
+      ],
+      "picture_ids": [
+        "im_pdf_d0648e7a506c339014a1"
+      ],
+      "must_cover": true,
+      "gaps": [
+        "Close-up of the separate temperature settings",
+        "Literal pictures of phone mirroring and its adapter, Alexa controls and seat memory buttons"
+      ]
+    },
+    {
+      "id": "delighters",
+      "label": "Seat airflow roof and sound",
+      "kind": "delighter",
+      "why_here": "Once the essentials are settled, use a warm evening as the reason to show airflow through the front seat cushions from SX Premium, add the roof and sound choices briefly, and then connect these preferences to the price and trim decision.",
+      "fact_ids": [
+        "F037",
+        "F038",
+        "F048",
+        "F049",
+        "F050",
+        "F051",
+        "F052",
+        "F053"
+      ],
+      "picture_ids": [
+        "im_pdf_eef9a17053efd1f47451",
+        "im_pdf_2eaa12b3086c47d07a0f",
+        "im_pdf_4f9cd789de81af3fa67e"
+      ],
+      "must_cover": true,
+      "gaps": [
+        "Measured seat comfort or cooldown time in hot conditions",
+        "Ambient lighting specification and availability",
+        "Literal pictures of the sound system and cooled glove box"
+      ]
+    },
+    {
+      "id": "ownership",
+      "label": "Price and ownership costs",
+      "kind": "ownership",
+      "why_here": "When the engine and feature preferences point toward a trim, explain what the supplied price excludes and what the paid petrol warranty option covers in principle, then identify the current dealer quote and test-drive details still needed.",
+      "fact_ids": [
+        "F054",
+        "F055",
+        "F056",
+        "F057",
+        "F058"
+      ],
+      "picture_ids": [],
+      "must_cover": true,
+      "gaps": [
+        "Conflicting entry price figures",
+        "Current on-road price by trim and city",
+        "Standard warranty terms",
+        "Service intervals, local service access and maintenance costs",
+        "Extended warranty prices and exact coverage",
+        "Resale evidence",
+        "Local availability and delivery date",
+        "A real test-drive booking destination",
+        "Literal price and warranty visuals"
+      ]
+    }
+  ],
+  "usps": [
+    {
+      "id": "choose-your-gears",
+      "name": "Choose how you change gears",
+      "fact_ids": [
+        "F003",
+        "F005",
+        "F006",
+        "F008",
+        "F009"
+      ],
+      "stop_id": "powertrain"
+    },
+    {
+      "id": "share-the-room",
+      "name": "Make space for people and bags",
+      "fact_ids": [
+        "F022",
+        "F023"
+      ],
+      "stop_id": "space-and-practicality"
+    },
+    {
+      "id": "airbags-from-the-start",
+      "name": "Airbags included from the starting trim",
+      "fact_ids": [
+        "F025"
+      ],
+      "stop_id": "safety"
+    }
+  ],
+  "objections": [
+    {
+      "objection": "What will my chosen trim cost on the road in my city?",
+      "fact_ids": [
+        "F054",
+        "F055",
+        "F056"
+      ],
+      "status": "unknown"
+    },
+    {
+      "objection": "How much fuel will it use on everyday journeys?",
+      "fact_ids": [],
+      "status": "unknown"
+    },
+    {
+      "objection": "How much will servicing cost and where can I get it done?",
+      "fact_ids": [],
+      "status": "unknown"
+    },
+    {
+      "objection": "What will it be worth when I sell it?",
+      "fact_ids": [],
+      "status": "unknown"
+    },
+    {
+      "objection": "Will my passengers and luggage fit, and will it fit my parking space?",
+      "fact_ids": [
+        "F001",
+        "F022",
+        "F023",
+        "F063"
+      ],
+      "status": "unknown"
+    },
+    {
+      "objection": "Do I have to pay for a higher trim to get the standard airbags?",
+      "fact_ids": [
+        "F025"
+      ],
+      "status": "supported"
+    }
+  ],
+  "evidence_gaps": [
+    {
+      "what": "Complete current engine and gearbox combinations by trim",
+      "why_it_matters": "Petrol and diesel offer choices, but the registry does not provide the full combination table; automatic feature rows for S(O) Knight also have no current automatic engine combination.",
+      "suggested_source": "Current official brochure engine matrix corresponding to PDF page 31, reconciled with the feature rows and footnotes on pages 39 and 41."
+    },
+    {
+      "what": "Ground clearance, suspension details and measured ride comfort",
+      "why_it_matters": "Wheel choices cannot establish speed-breaker clearance or how the car feels on rough roads.",
+      "suggested_source": "Official dimensions and suspension specification tables and a documented road test naming the trim, tyres and surfaces."
+    },
+    {
+      "what": "Boot capacity, rear legroom, overall length and width",
+      "why_it_matters": "The split-seat function and boot photograph do not establish luggage capacity, individual passenger fit or parking fit.",
+      "suggested_source": "Official brochure dimensions and boot-capacity tables, plus a physical seating and luggage check."
+    },
+    {
+      "what": "Crash-test rating and body structure safety evidence for this exact model and year",
+      "why_it_matters": "Standard airbags and driving assistance do not establish a crash rating or identical protection across trims.",
+      "suggested_source": "Applicable official crash-test report and the manufacturer body safety section."
+    },
+    {
+      "what": "Measured acceleration, loaded climbing performance, fuel economy, smoothness and noise",
+      "why_it_matters": "Power and torque figures and maker descriptions do not prove these outcomes or a running-cost saving.",
+      "suggested_source": "Official fuel-economy certification by engine and gearbox and documented instrumented tests that identify the vehicle, load and conditions."
+    },
+    {
+      "what": "Measured seat comfort or cooldown time after parking in sunshine",
+      "why_it_matters": "Airflow through the cushions does not establish a cabin cooldown time or refrigerated air through the seats.",
+      "suggested_source": "A documented seat-ventilation test with stated ambient conditions, starting temperature and measurement method."
+    },
+    {
+      "what": "Reconciled entry price and current city-specific on-road quotes",
+      "why_it_matters": "The compilation page body states ₹10,90,700 but its structured data says ₹10.79 lakh; a final local total also needs tax, registration and insurance.",
+      "suggested_source": "Current official price listing and a dated itemised local Hyundai dealer quotation naming the engine and trim."
+    },
+    {
+      "what": "Standard warranty, service intervals, local service access, maintenance costs and extended warranty package terms",
+      "why_it_matters": "Paid petrol extended-warranty eligibility does not establish standard coverage, package prices or ongoing ownership costs.",
+      "suggested_source": "Official warranty booklet, service schedule and service locator, a local maintenance estimate, and current extended-warranty coverage and pricing documents."
+    },
+    {
+      "what": "Resale evidence",
+      "why_it_matters": "No registry fact supports a future retained-value promise.",
+      "suggested_source": "Recent documented valuations or completed transactions matched by age, engine, trim, mileage and city."
+    },
+    {
+      "what": "Ambient lighting specification and availability",
+      "why_it_matters": "The category library includes ambient lighting, but no registry entry establishes that it is fitted.",
+      "suggested_source": "Official feature availability table and a corresponding cabin photograph."
+    },
+    {
+      "what": "Missing literal pictures for supported driving and seating features",
+      "why_it_matters": "The available engine illustrations cover turbo petrol and diesel only; no supplied picture shows the non-turbo petrol engine, automatic gear controls, paddle shifters, folded split rear seat, rear recline operation, rear vents or rear sunshade.",
+      "suggested_source": "Labelled official or showroom photographs of these features on identified trims, including the engine bay and rear-seat folding sequence."
+    },
+    {
+      "what": "Missing literal pictures for supported safety, cabin and ownership features",
+      "why_it_matters": "The supplied safety image shows lane detection only; it cannot stand in for airbags or other assistance, and no dedicated pictures establish climate settings, connected functions, seat memory, audio equipment, cooled glove box or ownership terms.",
+      "suggested_source": "Official feature diagrams and close-ups of the specific controls and displays, sound-system and glove-box photographs, and current official price and warranty graphics."
+    },
+    {
+      "what": "Local stock, delivery date and a usable test-drive booking destination",
+      "why_it_matters": "A purchase or test-drive close needs a real next step without invented availability.",
+      "suggested_source": "Current local dealer confirmation and its verified booking page."
+    }
+  ],
+  "notes": "Ownership moment: an evening drive that begins in town, with passengers and bags settled in, and can continue into a longer journey; on a warm day the later seat-airflow beat adds a small pleasure. This is a general situation, not a claim about the customer. Keep the seven supplied stops in exactly their supplied order. Make the engine and gear-changing decision the largest beat; keep small comforts brief. Every stop has approved facts, so all are required even where subtopics have gaps. F002 permits an opening about Hyundai positioning the car for city use and longer runs; the registry supplies no grounded reputation hook. Driving handoff: the petrol engine offers a six-speed manual or IVT, diesel a six-speed manual or six-speed automatic, and turbo petrol a seven-speed DCT. Turbo/DCT is listed only for King, while King also offers other engines. Do not imply each trim offers every choice. Any F010–F012 driving language remains an attributed manufacturer description; F004 and F007 are specifications, not acceleration or loaded-climb proof. Modes and paddles have automatic-only feature rows for S(O), S(O) Knight, SX Premium, King, King Knight and Lounge Edition; the current matrix has no S(O) Knight automatic combination and no SX automatic. Auto hold is unavailable on E, EX, EX(O) and SX; automatic-only on S(O), S(O) Knight and SX Premium; standard on King, King Knight and Lounge Edition, with the S(O) Knight combination caveat retained. Explain holding while stationary without a guarantee on every surface. Wheels: R16 on E, EX and EX(O); R17 on S(O), SX and SX Premium; R18 on S(O) Knight, King, King Knight and Lounge Edition. Their sizes do not prove comfort or clearance. Space: split rear seats, rear vents, rear armrest and front armrest storage are standard; reclining rear seats start S(O), rear sunshade starts EX(O), and sliding front armrest operation is only King, King Knight and Lounge Edition. The split-seat USP promises flexibility between passengers and bags, not a quantity of luggage or guaranteed comfort. Safety: airbags, stability control, disc brakes, hill-start assistance, tyre-pressure monitoring and rear parking sensors are standard. The airbag USP is narrow and does not imply the same complete safety equipment or crash performance at every price. Hill-start assistance is an aid with the driver responsible. Extra driving assistance is King, King Knight and Lounge Edition; adaptive stop-go is automatic-only within those trims. Surround and blind-spot cameras start SX Premium without extending the other assistance features to SX Premium. Whenever assistance is described, retain F034: safe attentive driving remains necessary, effectiveness varies and intervention is not guaranteed. Cabin: separate front temperature settings start S(O). The two stated screens are each 26.03 cm (10.25 inches) and start SX; preserve the exact size. Bluelink starts SX with three complimentary years and dependence on power and network coverage. Alexa Home to Car starts SX and uses separate Alexa hardware; this registry does not establish phone-app engine start. Phone mirroring starts EX; SX and above require a wired-to-wireless adapter and compatible devices. Both front power seats and driver memory apply to King, King Knight and Lounge Edition; driver power adjustment separately starts SX Premium. Small comforts: front-seat airflow and Bose sound start SX Premium; panoramic roof starts EX(O), with voice operation from SX. Describe airflow through cushions without a cabin-cooling time or refrigerated-air promise, and voice roof operation without a safety benefit. Driver-side welcome lamps start SX; both sides apply to King, King Knight and Lounge Edition. Glove-box cooling starts S(O). The real supplied image IDs alone are permitted: turbo and diesel pictures show those engines, the lane picture shows lane detection, and a dashboard picture cannot substitute for an engine. The rear table visible in im_pdf_21bb72b4fd2c922acfa9 has no approved feature fact and should not be promoted. Missing literal feature pictures remain gaps even when facts support narration. Ownership: the supplied entry ex-showroom amount belongs to the 19 September 2026 compilation and conflicts with another amount on the same page; do not present it as a verified current price. Tax, registration and insurance are added locally and a dealer quote is required. Up to seven years extended warranty applies only to petrol and is paid separately; exact coverage and price remain unknown. Fact IDs under an unknown objection provide partial context only, not a complete answer."
+}

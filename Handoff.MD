@@ -1,5 +1,13 @@
 # Handoff.MD — Demo Studio
 
+## Script prompt experiment — unmerged · 24 September 2026
+
+**Decision:** Anand approved `codex/crack-the-script` in a separate worktree from tested release `582ae1a`, instead of old `slides-v1`. The target script is a narrative reference: keep existing validators, the default495-word preparation margin and measured180-second publication gate. No main-narration PS exception, invented reputation or unsupported performance claim. PDF embedded-picture extraction within Understand is separately approved and still being finalized in this worktree. Nothing from this experiment is merged or deployed.
+
+**First improved iteration:** exact captured Coach → Planner → Author requests were answered by separate in-session agents and replayed through real stage code in isolated mocked storage with sockets blocked. Iteration02 returns495 prepared words, empty issues, fifteen26–33-word guided batches, three powertrain batches and two final closing statements. The baseline also had empty issues but uneven speech and four closings. The new Coach wording keeps the seven library stops; its cache now includes the formatted prompt. Exact requests/results and baseline source review are under `docs/qa/crack-script-2026-09-24/`.
+
+**Checks so far:** deck380/380, acceptance24/24, smoke3/3, Coach27/27, prompt contract40/40, plan/playbook19/19, narrative roles14/14, generation55/55, speech style30/30, narration preparation35/35, recovery18/18 and automatic narration16/16. No paid calls. These establish plumbing and guard behavior, not live-model consistency, acoustic timing or pixel proof. Final work reconciles remaining prompt conflicts, corrects manually tagged source pictures and validates the approved PDF extraction before the final sample/report.
+
 ## Current snapshot — feedback workbook · 24 September 2026
 
 **Decision:** the three-sheet feedback workbook supersedes the earlier dark Marine presentation and fixed180-second minimum for every demo. Use a white borderless player with template-dark text, full-area hero welcome/intake, smaller slide headings, up to two supported pictures and viewport-contained controls. Sources selects1–5 whole minutes, default3; automatic supported narration preparation and measured publication follow that choice. Studio opens blank with lazy creation; Open Studio keeps its saved demo. Rehearse has one feedback chat with uploads and the existing explicit rehearsal action; left steps remain unchanged. Nav height is40percent smaller under the stated C9 interpretation of “width”.

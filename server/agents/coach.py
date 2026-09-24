@@ -15,8 +15,30 @@ COACH_SYSTEM = """You are a sales trainer for {category}. You have trained showr
 salesperson covers, in what order, for THIS product, using only the APPROVED FACT REGISTRY below. You do not write
 dialogue. You write the playbook the planner must follow.
 
+GUIDELINES — give the writer a reason for each stop
+- Build the tour around a choice the evidence actually helps a buyer make. In a compact SUV, begin with the engine
+  and gearbox choices, then walk through stance, rear-seat use, safety, cabin, small comforts and ownership in the
+  supplied library order. Weight the lead fundamental more heavily than the small comforts.
+- Write why_here as an editorial handoff: an ordinary situation, the supported function or choice to explain there,
+  and the subject that naturally follows. For example, engine choice can lead to choosing gears in traffic; a rear
+  seat that folds can lead to deciding how to share room between passengers and bags. The situation is general,
+  never this customer's life, and the function still needs its own source.
+- Select USPs a buyer could repeat in one breath. The register of "Protection that doesn't move with price" is
+  memorable, but that promise is too broad if driver assistance varies by trim. Prefer the narrower supported idea,
+  such as "Standard airbags across the range", when the approved facts establish it. Examples teach wording only;
+  they supply no product facts. At least two selected promises still belong to fundamental stops.
+- Carry exact availability into the evidence handoff: the starting trim when the source establishes a continuous
+  range, otherwise the named trims and engine or gearbox restrictions. A short trim list beats "selected variants".
+- Treat the introductory reputation sentence as optional evidence, not a quota. Use it once only when its meaning
+  follows from an approved source. A sales rank cannot establish "best in the market"; supported product positioning
+  makes a stronger honest opening when reputation cannot be grounded.
+- Put missing felt outcomes, conflicting figures and absent literal pictures in evidence_gaps. A vivid ordinary
+  situation helps explain a sourced capability; it does not manufacture a test result or fill missing evidence.
+
 RULES
-- Follow CATEGORY LIBRARY ORDER as the spine. Keep every stop whose evidence exists. A stop the registry cannot support
+- Return exactly the supplied CATEGORY LIBRARY ORDER stops, with their supplied ids and relative order. Express
+  editorial emphasis through why_here and USPs within those stops; keep a feature inside its existing stop.
+  Keep every stop whose evidence exists. A stop the registry cannot support
   stays in the list with must_cover=false and a gap naming exactly what is missing (e.g. "ground clearance figure").
 - The first stop must be a fundamental. Delighters (sunroof, ventilated seats, audio, ambient lighting) never come before
   the fundamentals are covered.
@@ -30,9 +52,9 @@ sales figures, customer totals, market share, sales rank, years on sale, or awar
 brand's numbers, not the buyer's experience; they date within weeks and no one buys because of a units
 figure. A derived reputational line is allowed ONCE, in the intro, with no figure and no rank — "one of
 the cars you see most on Indian roads" — still citing the fact id it rests on.
-You choose what the demo is emotionally about, not only what it proves: decide the one moment in owning
-this product that the whole tour walks toward, and make the lead fundamental stop the one closest to it, and place the delighter that serves it right after the fundamentals. The
-author can make any stop sound warm; it cannot rescue a tour that opens on dimensions.
+Choose the ordinary ownership moment that connects the tour. Let that choice guide the emphasis and handoffs
+inside the supplied category order: the first fundamental stays first, and each delighter stays at its supplied
+position. Give the author a buyer's reason for each existing stop rather than a rearranged or additional stop.
 - objections: the 3-6 doubts a buyer in this category raises (price, running cost, service, resale, size, safety).
   Mark each supported (with ids) or unknown. Never invent a response.
 - evidence_gaps: what the category playbook needs that the registry lacks, with the source that would supply it
@@ -235,11 +257,12 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
     product = und.get("product") or {}
     category = product.get("category", "")
     library_key, entry = playbooks.match(category)
+    coach_prompt = COACH_SYSTEM.format(category=category)
     # The FAQ hash covers claim meaning; Coach also consumes category, source
     # provenance, unknowns and picture eligibility/tags. Changes to any of those
     # must not reuse a stale story merely because the claim text stayed equal.
-    input_hash = hashlib.sha256(json.dumps({key: und.get(key) for key in
-        ("product", "facts", "images", "shots", "image_map", "unknowns")}, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:20]
+    input_hash = hashlib.sha256(json.dumps({"prompt": coach_prompt, **{key: und.get(key) for key in
+        ("product", "facts", "images", "shots", "image_map", "unknowns")}}, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:20]
     if (not instruction and previous and previous.get("registry_hash") == registry_hash
             and previous.get("library_version") == playbooks.VERSION and previous.get("audience") == audience
             and previous.get("library_key") == library_key and previous.get("category") == category
@@ -285,7 +308,7 @@ IMAGES ({len(und.get('images', []))}):
     if config.MOCK_LLM:
         pb = mock_playbook(und, entry)
     else:
-        pb = claude.structured(COACH_SYSTEM.format(category=category), content, schemas.Playbook, max_tokens=12000).model_dump()
+        pb = claude.structured(coach_prompt, content, schemas.Playbook, max_tokens=12000).model_dump()
     pb["issues"] = validate(pb, und)
     pb.update(library_version=playbooks.VERSION, library_key=library_key, registry_hash=registry_hash, audience=audience, input_hash=input_hash)
     pb = apply_overrides(pb, demo_id)

@@ -1,5 +1,13 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-24 — A story-order instruction contradicted the category spine
+
+**Symptom:** baseline in-session Coach moved delighters before cabin; the first revised response invented a separate front-seat-airflow stop. Both survived existing validation because it checks fundamental/delighter precedence and evidence, not exact library membership. Separately, an unchanged evidence hash could reuse a playbook after its system guidance changed.
+
+**Cause:** the prompt said to follow the category order but also to move the emotionally relevant fundamental first and its delighter directly after the fundamentals. Positive writing guidance could not resolve two owners of order. The cache represented evidence changes but omitted the formatted system prompt.
+
+**Correction:** express emotional emphasis and handoffs inside the exact supplied stops and order. Include the formatted Coach system prompt in the cache identity. Keep existing validators and the category library unchanged. A regression proves one regeneration after guidance changes, subsequent reuse, and unchanged evidence bytes. Separate exact-prompt simulation confirms seven correctly ordered stops; empty validator issues alone are not a narrative or pixel-quality score.
+
 ## 2026-09-24 — Feedback workbook: duration identity and composed screens need end-to-end checks
 
 **Five whys:** (1) A changed one-minute preference could still label an older three-minute recording ready, and feedback controls could leave the visible mobile page. (2) Recording duration was checked before the selected preparation duration, while layout tests inspected parent boxes or the player outside the real app shell. (3) The settings, reviewed draft and published recording had separate identities; CSS minimum heights survived in a later stylesheet. (4) Fresh-build and isolated-component tests did not cover shortening an existing publication or adding app navigation/rail/chat around the player. (5) Quantitative product promises were not tested at their full user-facing boundaries.

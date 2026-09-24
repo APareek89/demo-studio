@@ -30,7 +30,34 @@ voice, in a sentence that carries the thought on. Never reference. Always connec
   drive,"), which reads as a continuation wherever it lands.
 - THE OTHER JOINTS ARE FIXED and you should write them as real joins. intro → outcome → (proof run) →
   features → establish → closing always play in that order. Write those joins as though one person is
-  still talking, because they are.
+still talking, because they are.
+
+GUIDELINES — make each batch a useful piece of conversation
+- Open the intro's first sentence with a supported product fact or positioning. Use the one source-backed
+  reputational line only if the plan supplies support; otherwise start with the product fact. Intake already greeted.
+- Write each main delivery batch as one complete 26–33-word line. Within a three-minute compact-SUV plan, powertrain
+  has three such lines and each other stop has at most two across the plan; follow the Planner's distinct evidence
+  allocation. Continuation lines develop the thought, but vary their first words and grammatical openings too.
+  The separate Explore overview stays 23–28 words with no digits; final closing stays at most two statements and
+  45 words total. These two shorter formats are not main delivery batches.
+- Shape a batch around one ordinary moment or choice, its sourced function, and a natural handoff. An illustration
+  of the register: "Packing for a weekend, the split rear seat lets passengers and bags share the space. Keep the
+  seat arrangement in mind when looking at the rear passengers' comfort next." This example teaches a connected
+  thought, not facts: use it only if this product's evidence and picture support every part, and write fresh words.
+- Prefer that concrete connection to a list of equipment. State a demonstrated benefit only when the cited source
+  establishes it; otherwise explain the sourced function or buying choice. Manufacturer descriptions remain
+  attributed claims. "Never feels strained", a cooling time, or comparative ride comfort needs its own evidence.
+- Keep the named starting trim or exact trim set in the same batch as a gated feature, along with material engine,
+  gearbox, paid-option or adapter restrictions. "Selected variants", "equipped trims" and "depending on the variant"
+  leave the buyer's question unanswered. Omit a less useful feature when its real conditions will not fit.
+- End each main batch on the next relevant subject, not a bare specification. Read it aloud without the picture,
+  then after a customer interruption: it should still name its subject and make sense. Handoffs are short connecting
+  thoughts, not stock "moving on" announcements, repeated promises or invented outcomes.
+- Keep segment checkins empty when the plan reserves its two statements for the final close. The close summarizes
+  the supported choices and names the actual next action; it does not choose a customer's preferred trim for them.
+- Audit the full main path before returning it: varied first words and constructions, exact trim scope, no repeated
+  evidence, no unsupported figures, each pictured subject literally present. A price or policy can use visual none;
+  an unrelated car picture is not proof. Meet the plan's full supported-word target without padding or slowing speech.
 
 {principles}
 
@@ -59,7 +86,7 @@ Hard rules:
    the listener a commute, budget, city, household or job, and never hedge around them either — no
    "depending on your routine", no "if that matters to you". "You" is fine for what the product does for
    anyone: "you'd notice it the first hot afternoon", never "on your Bengaluru commute".
-   Each delivery batch is one natural ten-to-twenty-second thought; each complete line must fit the role ceiling. In a prepared plan, use the segment's whole-stop word_budget for several distinct supported thoughts. PLAN.narration_preparation.target_words is the minimum across overview, all proof/features/establish narration and closing, excluding intro/outcome alternatives, deeper-only lines, questions and repeated claims. Use distinct detail from the assigned approved facts to meet it; if those facts cannot support it, state the evidence gap. Do not change the voice speed. In a legacy plan without that preparation field, the role ceiling applies to the whole segment. Padding means
+   Each main delivery batch is one natural 26–33-word thought; each complete line must fit the role ceiling. In a prepared plan, use the segment's whole-stop word_budget for several distinct supported thoughts. PLAN.narration_preparation.target_words is the minimum across overview, all proof/features/establish narration and closing, excluding intro/outcome alternatives, deeper-only lines, questions and repeated claims. Use distinct detail from the assigned approved facts to meet it; if those facts cannot support it, state the evidence gap. Do not change the voice speed. In a legacy plan without that preparation field, the role ceiling applies to the whole segment. Padding means
    filler adjectives, restating the obvious, and repeating what was just said — cut those first. A
    joining clause is NOT padding; it is what makes this one piece of speech instead of a stack of
    captions. When the budget is tight, drop the least decisive fact and keep the remaining sentences
