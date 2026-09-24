@@ -16,6 +16,8 @@ Final per-gate counts and isolated evidence paths are recorded in `narration-rec
 
 The new preparation contract runs actual Plan→Author repair→Deck→Bundle→Pitch around source-backed canned model responses and local silent WAVs at2.5 words/second:495-words publish and play as198 seconds, retaining all 13 guided delivery pieces. The independent recovery contract reproduces128.3-seconds through real APIs/graph and verifies preservation, explicit reapproval, readiness, alternate-language visibility and genuine provider failures. The original full release mock journey still exercises new-demo upload→Read→six approvals→Voice→Bundle→runtime/cache→review/rehearsal→browser/session saving with the unchanged measured minimum.
 
+AWS staging initially caught a QA harness timing race: `qa_deck` saw Align before the worker exited and its immediate FAQ PATCH correctly received409. The deck/smoke wait helpers now require the requested phase and `running:false`. No production guard was relaxed and no mutation was retried blindly. The staged rerun result is recorded in the deployment receipt.
+
 ## FMEA — complete twelve-category review
 
 Product context: PRD.md, architecture diagrams02–05, existing Learning.MD failures and one-worker AWS constraints. Ratings are pre-fix severity ×occurrence ×detection; focused regressions reduce detection to1–2 for these specific mechanics, not all possible provider outputs.

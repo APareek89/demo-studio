@@ -24,8 +24,10 @@ def status(i): return c.get(f"/api/demos/{i}").json()["demo"]["status"]
 def wait(i, want, secs=90):
     t0 = time.time()
     while time.time() - t0 < secs:
-        s = status(i)
-        if s == want: return True
+        state = c.get(f"/api/demos/{i}").json()
+        s = state["demo"]["status"]
+        # Align/ready can be saved before the worker releases its mutation guard.
+        if s == want and state["running"] is False: return True
         if s == "error": raise SystemExit(f"status error: {json.dumps(c.get(f'/api/demos/{i}').json()['demo']['stages'], indent=1)}")
         time.sleep(0.5)
     raise SystemExit(f"timeout waiting for {want}, status={status(i)}")

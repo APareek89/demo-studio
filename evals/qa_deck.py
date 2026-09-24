@@ -32,8 +32,10 @@ def check(name: str, ok: bool, detail: str = ""):
 def wait(i, want, secs=180):
     t0 = time.time()
     while time.time() - t0 < secs:
-        s = c.get(f"/api/demos/{i}").json()["demo"]["status"]
-        if s == want: return
+        state = c.get(f"/api/demos/{i}").json()
+        s = state["demo"]["status"]
+        # Align/ready can be saved before the worker releases its mutation guard.
+        if s == want and state["running"] is False: return
         if s == "error": raise SystemExit("status error: " + json.dumps(c.get(f"/api/demos/{i}").json()["demo"]["stages"], indent=1))
         time.sleep(0.4)
     raise SystemExit(f"timeout waiting for {want}")

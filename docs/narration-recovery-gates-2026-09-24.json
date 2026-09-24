@@ -39,11 +39,11 @@
       "name": "qa_deck.py",
       "exit": 0,
       "count": "365/365",
-      "seconds": 5.7,
+      "seconds": 6.1,
       "outbound_attempts": [
         0
       ],
-      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/qa_deck.py.log",
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/idle-gates/qa_deck.py.log",
       "summary": [
         "365/365 deck cases pass",
         "OUTBOUND_ATTEMPTS 0"
@@ -51,7 +51,8 @@
       "passed": 365,
       "total": 365,
       "unit": "contract check",
-      "log_sha256": "442666630423d08ce13a07cdb70decfb75ea3cc8c16ed39b90c1e0d687c720e6"
+      "log_sha256": "442666630423d08ce13a07cdb70decfb75ea3cc8c16ed39b90c1e0d687c720e6",
+      "file_sha256": "ff03fec5d50ac0c565873023b9d1a5bf8a2842cf816aa7adbeea9969e75410cf"
     },
     {
       "name": "qa_accept.py",
@@ -75,21 +76,22 @@
       "name": "smoke_mock.py",
       "exit": 0,
       "count": "3 smoke phases",
-      "seconds": 4.7,
+      "seconds": 4.0,
       "outbound_attempts": [
         0
       ],
-      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/scoped/smoke_mock.py.log",
+      "log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/idle-gates/smoke_mock.py.log",
       "summary": [
-        "SMOKE OK dm_6bdb7520",
-        "SMOKE OK (phase 2) dm_6bdb7520",
-        "SMOKE OK (on-demand rehearsal) dm_6bdb7520",
+        "SMOKE OK dm_ac3bae7a",
+        "SMOKE OK (phase 2) dm_ac3bae7a",
+        "SMOKE OK (on-demand rehearsal) dm_ac3bae7a",
         "OUTBOUND_ATTEMPTS 0"
       ],
       "passed": 3,
       "total": 3,
       "unit": "workflow phase",
-      "log_sha256": "e7c8b10772f7891c151aa79f8202bbfdcee20538cda85aa7600a8e508dc185dd"
+      "log_sha256": "4309d970944f99ca92b951b0303568829b39355aad7acb67339eb199d89edefb",
+      "file_sha256": "a74fe6547caf9c44b6503ac7525c55fd8cc5f1523e13e25b132d5fe5aec2f230"
     },
     {
       "name": "minimum_narration_contract.py",
@@ -774,5 +776,19 @@
     "script": "/tmp/align-recovery-browser-review.py",
     "screenshot": "/tmp/align-recovery-review-mobile-final.png",
     "scope": "Muted actual Align module: desktop/390px, failure/retry, completion race and limiting language"
+  },
+  "worker_idle_followup": {
+    "recorded_at": "2026-09-24T05:26:24.709709+00:00",
+    "head": "293223ce044388fa6b9fd744910019d6f6eb770e",
+    "working_tree_tested": true,
+    "scope": "qa_deck and smoke wait for the requested API status and running=false before the next operation. Existing error handling, timeout and polling cadence remain unchanged. No production guard was modified.",
+    "results": {
+      "qa_deck": "365/365",
+      "smoke_mock": "3/3 workflow phases",
+      "wait_helpers": "6/6 simulated worker-completion, error and timeout scenarios"
+    },
+    "wait_helper_log": "/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/narration-recovery-checks-7b7ww5bi/idle-gates/wait-helper.log",
+    "outbound_attempts": 0,
+    "provider_calls": 0
   }
 }
