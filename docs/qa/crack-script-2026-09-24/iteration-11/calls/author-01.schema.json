@@ -1,0 +1,213 @@
+{
+  "$defs": {
+    "LineOut": {
+      "properties": {
+        "text": {
+          "description": "one complete natural spoken thought, 1-2 short sentences within the role delivery ceiling; a prepared story stop can use several such lines across short batches, no padding, lists or questions",
+          "title": "Text",
+          "type": "string"
+        },
+        "step": {
+          "default": "other",
+          "description": "proof-block step; confirm is legacy compatibility only; new narration and checkins use statements, not questions",
+          "enum": [
+            "frame",
+            "say",
+            "show",
+            "translate",
+            "confirm",
+            "establish",
+            "advance",
+            "other"
+          ],
+          "title": "Step",
+          "type": "string"
+        },
+        "visual": {
+          "$ref": "#/$defs/Visual"
+        },
+        "fact_ids": {
+          "description": "every fact this line relies on; empty only for pure transition/opinion lines",
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "card": {
+          "default": "none",
+          "enum": [
+            "none",
+            "facts",
+            "price",
+            "summary",
+            "contrast"
+          ],
+          "title": "Card",
+          "type": "string"
+        },
+        "delivery": {
+          "additionalProperties": true,
+          "description": "Subtle delivery metadata only: tone warm/upbeat/calm/reassuring, optional pace 0.9–1.08. Never put emotion tags or SSML in text.",
+          "title": "Delivery",
+          "type": "object"
+        }
+      },
+      "required": [
+        "text",
+        "visual",
+        "fact_ids"
+      ],
+      "title": "LineOut",
+      "type": "object"
+    },
+    "SegmentOut": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "intro",
+            "outcome",
+            "proof",
+            "features",
+            "establish"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "topic": {
+          "title": "Topic",
+          "type": "string"
+        },
+        "outcome": {
+          "default": "",
+          "title": "Outcome",
+          "type": "string"
+        },
+        "usp_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Usp Ids",
+          "type": "array"
+        },
+        "lines": {
+          "description": "Complete cited thoughts covering this planned story stop within its whole-stop word_budget; each line must fit the role delivery ceiling so longer supported stops can split at whole lines",
+          "items": {
+            "$ref": "#/$defs/LineOut"
+          },
+          "title": "Lines",
+          "type": "array"
+        },
+        "checkin": {
+          "description": "Optional one short closing statement for the stop, never a question. Narration continues immediately after it, without waiting. No claims or assumed customer details. Leave empty unless the plan asks for one; empty for intro/outcome.",
+          "title": "Checkin",
+          "type": "string"
+        },
+        "deeper": {
+          "description": "2-3 lines for 'tell me more', grounded",
+          "items": {
+            "$ref": "#/$defs/LineOut"
+          },
+          "title": "Deeper",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "role",
+        "topic",
+        "lines",
+        "checkin",
+        "deeper"
+      ],
+      "title": "SegmentOut",
+      "type": "object"
+    },
+    "Visual": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "shot",
+            "image",
+            "none"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ref": {
+          "default": "",
+          "description": "shot or image id",
+          "title": "Ref",
+          "type": "string"
+        },
+        "focus": {
+          "default": "",
+          "description": "what to draw the eye to, 2-5 words, shown as a label",
+          "title": "Focus",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Visual",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "overview": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LineOut"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Standalone 23–28 word, 10–15 second opening for Explore while its route is planned. Lead with the first supported fundamental in the reviewed playbook, as mapped to PLAN.segments, in everyday words; retain variant qualifiers and cite facts. No greeting, question, decision frame, digits or spec list; delighters come later. Not a segment."
+    },
+    "segments": {
+      "items": {
+        "$ref": "#/$defs/SegmentOut"
+      },
+      "title": "Segments",
+      "type": "array"
+    },
+    "closing": {
+      "description": "two lines, at most 45 words total: fit summary then next step naming the CTA; statements, no questions",
+      "items": {
+        "$ref": "#/$defs/LineOut"
+      },
+      "title": "Closing",
+      "type": "array"
+    },
+    "intake_q1": {
+      "description": "warm greeting plus ONE useful context question; no name request stacked with it",
+      "title": "Intake Q1",
+      "type": "string"
+    },
+    "intake_q2": {
+      "description": "empty string; no second intake",
+      "title": "Intake Q2",
+      "type": "string"
+    }
+  },
+  "required": [
+    "segments",
+    "closing",
+    "intake_q1",
+    "intake_q2"
+  ],
+  "title": "ScriptOut",
+  "type": "object"
+}

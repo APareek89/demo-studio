@@ -1,0 +1,20 @@
+{
+  "status": "complete",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Planning the pitch: playbook stops, evidence, pictures and word budgets…"
+    },
+    {
+      "event": "replayed",
+      "call": "planner-01",
+      "request_sha256": "44b95d46118604457fbabd8ec031d4e881e4cc57b6ca5860495a14aa3008877b",
+      "response_sha256": "60bee4eef5c413751f2a9efb10fce18e8e1f1884cfb62b99b0a4f4b3a71b1e77"
+    },
+    {
+      "event": "stage",
+      "message": "Plan: “Choose an offered engine-and-gearbox combination, then confirm the equipment and” — 11 segments (7 proof blocks), 3 USPs, persona “Priya”."
+    }
+  ],
+  "socket_attempts": []
+}

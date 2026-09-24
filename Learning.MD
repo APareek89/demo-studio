@@ -22,6 +22,10 @@
 
 **Scope follow-through:** a later draft shortened “up to seven years, petrol only” to “petrol-only extended warranty.” That broadened one package’s restriction into an unsupported rule about all extensions. Root review caught it after a lenient source-audit sign-off; the audit was corrected and the sample regenerated from new guidance. A deeper-only qualifier cannot repair an overbroad main sentence. Similarly, a picture of an alloy cannot stand for a steel-wheel example just because both concern wheels.
 
+**Whole-response follow-through:** improving main-path prose can introduce new errors in deeper answers. One fresh candidate omitted the turbo row while ruling out all automatic choices and combined physical pictures with separate subscription/boot claims. Review the complete response, attach all evidence needed for an exclusion, and compare each whole line with its visual. The native decline repair remained unchanged; semantic review is separate from its lexical acceptance.
+
+**Review-path follow-through:** saved narration has already been split into delivery batches, while PLAN budgets whole story stops. Feeding those saved containers back unchanged can create advisory under-budget warnings even when all speech is present. Regroup the existing lines under their planned stop before normal delivery splitting; adding filler is not the fix. The final sample explicitly records its QA-driven revisions and does not claim perfect first-pass generation. The schema/validator owns derived warning metadata; a clean unknown statement with empty fact IDs is still not a fact.
+
 **Prevention:** compare the full assembled prompts, not just the newly added paragraph. Review source coverage separately from quote accuracy, and audit handoffs as claims. Count the prepared inventory separately from the selected runtime route; use measured recordings for publication. Mock rules-only image assignment, a source photo's provenance and a zero-issue script are three different pieces of evidence, none of which establishes pixel-audited narration.
 
 ## 2026-09-24 — Derived pictures must inherit source ownership at every exit

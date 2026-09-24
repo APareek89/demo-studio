@@ -1,0 +1,20 @@
+{
+  "status": "complete",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Preparing the sales playbook: fundamentals, selling points and evidence gaps…"
+    },
+    {
+      "event": "replayed",
+      "call": "coach-01",
+      "request_sha256": "cede01c1b4898c234f9428c58741e63c6904f5b3b5ffdfa7796346f96d4c31fd",
+      "response_sha256": "a692341f16900be854c8596b478502cc5c5a7bf1af2fd644815e0f9e59fef27b"
+    },
+    {
+      "event": "stage",
+      "message": "Sales playbook ready: 7 story stops, 3 selling points, 11 evidence gaps."
+    }
+  ],
+  "socket_attempts": []
+}

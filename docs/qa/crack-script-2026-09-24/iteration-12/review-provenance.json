@@ -1,0 +1,7 @@
+{
+  "mode": "second bounded QA-driven revision through existing author.run; first diesel manual availability replaces higher-trim example",
+  "previous_iteration": "11",
+  "previous_script_sha256": "fa30b50caa33768b126601960cd614b1631fe0d94dea84b57b85d4756c2b1c83",
+  "previous_script_bytes_unchanged": true,
+  "app_prompt_unchanged_from": "10"
+}

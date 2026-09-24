@@ -8,7 +8,7 @@ Seven prompt constants changed. [The exact before/after diff](prompt-changes.dif
 
 - `COACH_SYSTEM`: gives each stop an ordinary situation, supported choice and handoff; requires the supplied stop identities/order; reputation is evidence-dependent. Removed the contradictory instruction to move the emotional delighter immediately after fundamentals.
 - `PLAN_SYSTEM`: allocates three powertrain batches for a three-minute compact-SUV tour and at most two per other stop, including supplemental detail; assigns exact evidence/trim scope and literal subjects, with one pictured subject per main batch; reserves a distinct first-fundamental detail for the runtime overview; final closing owns both closing statements.
-- `AUTHOR_SYSTEM`: asks for complete 26–33-word main thoughts, varied independent openings and a handoff to the actual next subject. Clarifies that prepared lines split into separate delivery batches. Intro begins with a fact; the overview does not repeat a guided claim. Clause-level citation guidance includes handoffs; counted-component wording preserves whether parts are included. The final polish briefs ordinary actions and buying choices, first offered trim before higher-trim examples, varied grammatical openings and handoffs that explain a connection rather than announcing the next item. Eligibility restrictions retain their duration/package scope; a picture of one physical option cannot illustrate its opposite.
+- `AUTHOR_SYSTEM`: asks for complete 26–33-word main thoughts, varied independent openings and a handoff to the actual next subject. Clarifies that prepared lines split into separate delivery batches. Intro begins with a fact; the overview does not repeat a guided claim. Clause-level citation guidance includes handoffs; counted-component wording preserves whether parts are included. The final polish briefs ordinary actions and buying choices, first offered trim before higher-trim examples, varied grammatical openings and handoffs that explain a connection rather than announcing the next item. Practical action/choice opening examples outrank catalogue/location phrasing, and first availability outranks a higher-trim plan example. A final whole-response review covers exhaustive citation sets, literal subjects and repeated openings. Eligibility restrictions retain their duration/package scope; a picture of one physical option cannot illustrate its opposite.
 - `AUTHOR_CRAFT`: makes the ordinary use/choice, source support and connected thought the writing unit while preserving the existing role and evidence boundaries.
 - `TRANSLATION_LADDER`: adds worked examples for each rung and chooses a useful supported connection instead of stopping at a picture description whenever any picture exists. Retains full technical quantities in deeper detail and never invents a result.
 - `PITCH_SHAPE`: makes the two-statement final close and empty segment checkins consistent throughout the prompt; supplemental features develop unused useful detail.
@@ -24,14 +24,14 @@ This reproducible lexical count splits paragraphs/bullets and sentence boundarie
 |---|---:|---:|
 | Coach |14 /16|18 /33|
 | Planner |48 /46|59 /70|
-| Author |50 /52|75 /76|
+| Author |50 /52|79 /87|
 | Author craft |16 /13|16 /16|
 | Translation ladder |11 /9|16 /13|
 | Pitch shape |13 /11|9 /18|
 | Audience |8 /7|9 /8|
-| Total |160 /154|202 /234|
+| Total |160 /154|206 /245|
 
-The ratio changes from 1.04 to 0.86. Positive guidance increased; the absolute number of prohibition-bearing units did not fall. Some local prompt sections remain verbose.
+The ratio changes from 1.04 to 0.84. Positive guidance increased; the absolute number of prohibition-bearing units did not fall. Some local prompt sections remain verbose.
 
 ### Approved code changes
 
@@ -86,10 +86,24 @@ Each `iteration-*` folder contains the exact assembled system/content/schema req
 - **07 — writing polish, not accepted:** identical Coach/Planner requests were reused; a fresh Author produced495 prepared words and empty issues. Root review caught a warranty restriction generalized beyond its seven-year scope; two mixed-option images also failed literal subject coverage. The independent source review corrected its initial lenient sign-off. [Corrected source audit](final07-source-audit.md), [criteria audit](final07-criteria-audit.md). The generated artifact remains unchanged as evidence.
 - **08 — scope and physical-option fidelity:** a fresh independent Author receives the exact new runtime request with duration/package scope preservation and literal-option comparison guidance. Coach/Planner requests remain exactly identical to07 and their response bytes are explicitly reused. Source review confirms49/49 units preserved (29 images,20 deliberate none),500prepared words and empty issues. Warranty scope and both mixed-option picture defects are fixed. Strict style criteria still fail in catalogue/location openings, so this is an intermediate source-clean candidate. [Source audit](final08-source-audit.md), [criteria audit](final08-criteria-audit.md).
 
+- **09 — practical opening language:** Coach/Planner requests and responses remain equal. The Author prompt now gives concrete action/choice opening shapes and prioritises first availability over a higher-trim example when the word budget is tight. A fresh independent Author sees only this runtime request. The native repair fixes one lexical decline issue, but source review finds three citation/picture errors in deeper answers; this497-word candidate is not accepted. [Audit](final09-criteria-audit.md).
+- **10 — complete-response self-review:** the real Author prompt ends by reviewing local citation coverage for exhaustive exclusions, the full line’s literal visual subjects, repeated batch openings, first availability and budgets. Coach/Planner requests and responses remain equal; another fresh independent Author receives only the exact new request.
+
+- **11 — source QA revision:** the unchanged10 prompts receive the byte-identical prior script through the existing revision path and two explicit QA findings. Only the ventilation handoff and unknown-evidence decline change. A native repair regroups saved delivery batches into PLAN’s whole stops without adding speech. Source/picture review passes49/49; the diesel manual’s E starting trim remains a main-route coverage omission.
+- **12 — final coverage revision:** one bounded existing revision replaces the higher-trim diesel manual example with first availability E, using its existing F067 citation. All other spoken content remains unchanged; response containers follow the11planned stops and normal splitting restores16batches. Actual replay completes in one call with empty issues. [Revision provenance](iteration-12/review-provenance.json).
+
+### Final reviewed sample
+
+Read [the complete495-word sample](sample-script.md), [machine-readable script with citations and visuals](script.json), [thirteen-criterion review](final12-criteria-audit.md), [source/picture review](final12-source-audit.md) and [exact metrics](final12-metrics.json).
+
+Prepared inventory is495words:425main,26overview and44closing. All16rendered batches (14guided plus two alternate openings) meet26–33words, all16first words are distinct, powertrain has three batches, other stops have at most two, and final closing has two statements. The separate overview has no digits. The unvoiced selector currently chooses345words/9batches,181.58seconds at the app’s estimate; at the reference2.24words/second that selection is about154seconds. The full495-word inventory is about221seconds at that reference rate. Neither estimate is measured sample audio; recording and the unchanged selector/publication guard remain authoritative.
+
+This result needed two explicit QA-driven revisions through the existing Author revision mechanism after the fresh10 response. They are captured verbatim and do not edit generated JSON by hand or disguise review as a perfect first response. The native citation marker is derived by the schema/validator: removing a warning can set `unverified` false on a truthful unknown statement, while its words and empty fact IDs remain unchanged. No unknown became a registry fact.
+
 ## What is still weak
 
 The target's unsupported market reputation, loaded-climb assurance, quantified acceleration/mileage/capacity/clearance/safety/rival claims and inferred engine recommendations cannot be manufactured from this source. [Source review](source-review.md) names the exact gaps and material trim/engine/paid-option restrictions. The existing everyday validator still flags PS in main narration; complete160PS remains eligible for deeper answers, as Anand's override requires.
 
 A495-word prepared inventory is about221seconds at the reference2.24words/second. The initial runtime chooses a measured qualifying route after recording; a pre-recording estimate is not proof of180seconds. The user expressly kept the margin rather than forcing the sample to an exact three-minute estimate.
 
-Empty `issues` proves only the existing checks. Mock visual rules can propose unrelated pictures; they are not a completed pixel audit. Literal-picture claims, semantic entailment, consistency across live model runs and acoustic delivery need their own evidence. The production pixel audit and human Align checkpoint remain unchanged. No publication, merge or deployment is implied by this experiment.
+Fresh-generation compliance is not guaranteed: the10 response still needed source and first-availability review. Engine availability remains information-dense, and naturalness and repeatability with the production models need live evaluation. Empty `issues` proves only the existing checks. Mock visual rules can propose unrelated pictures; they are not a completed pixel audit. Literal-picture claims, semantic entailment, consistency across live model runs and acoustic delivery need their own evidence. The production pixel audit and human Align checkpoint remain unchanged. No publication, merge or deployment is implied by this experiment.

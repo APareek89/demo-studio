@@ -1,0 +1,28 @@
+{
+  "status": "complete",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Writing the script…"
+    },
+    {
+      "event": "replayed",
+      "call": "author-01",
+      "request_sha256": "887c7b7516435d05ba1523e187c65c3b6082b46d4a39808fb9a9bf4171e42dc3",
+      "response_sha256": "739bc3ff374b43f264ed695eeb888e3ac78dd40fc68d2f2d1050c5c494498f48"
+    },
+    {
+      "event": "stage",
+      "message": "Existing visual assignments retained; rule proposals recorded only because Gemini pixel audit was unavailable."
+    },
+    {
+      "event": "stage",
+      "message": "5 long batch(es) divided at complete lines for clearer pacing."
+    },
+    {
+      "event": "stage",
+      "message": "Script: 16 segments, 18 lines, all lines grounded and within pacing limits."
+    }
+  ],
+  "socket_attempts": []
+}

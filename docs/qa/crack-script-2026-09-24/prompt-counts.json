@@ -1664,9 +1664,9 @@
       ]
     },
     "after": {
-      "negative_bearing_units": 75,
-      "other_instruction_units": 76,
-      "all_units": 151,
+      "negative_bearing_units": 79,
+      "other_instruction_units": 87,
+      "all_units": 166,
       "units": [
         {
           "negative_bearing": false,
@@ -1810,6 +1810,18 @@
         },
         {
           "negative_bearing": false,
+          "text": "Start the batch in that action, situation or choice, then introduce the product evidence. \"Choosing how to change gears\" and \"Picking a wheel finish\" are useful starting shapes; a topic label, \"Under the cover\" or \"Inside this illustration\" merely locates equipment."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Work the fact into the action instead of attaching a generic buying phrase to the end of a catalogue sentence."
+        },
+        {
+          "negative_bearing": true,
+          "text": "These examples teach register, not reusable openers."
+        },
+        {
+          "negative_bearing": false,
           "text": "Prefer that concrete connection to a list of equipment."
         },
         {
@@ -1835,6 +1847,14 @@
         {
           "negative_bearing": false,
           "text": "Keep an exception beside any statement it qualifies; the complete matrix remains deeper."
+        },
+        {
+          "negative_bearing": false,
+          "text": "When space is tight, first availability and material restrictions outrank a higher-trim example in the plan; move that example deeper."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Treat the plan's suggested wording as guidance, keeping these speech rules intact."
         },
         {
           "negative_bearing": true,
@@ -2271,6 +2291,46 @@
         {
           "negative_bearing": true,
           "text": "Do not duplicate overview verbatim in the regular segments; it is an alternative opening while the route is planned. {audience} {language}"
+        },
+        {
+          "negative_bearing": false,
+          "text": "FINAL SELF-REVIEW \u2014 apply to the complete response before returning it"
+        },
+        {
+          "negative_bearing": false,
+          "text": "Read every claim against its own fact_ids, including deeper answers."
+        },
+        {
+          "negative_bearing": true,
+          "text": "An exhaustive exclusion across engine, trim or offer choices needs the evidence for every choice it rules out, not just two rows of a larger matrix."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Review each visual against the whole line."
+        },
+        {
+          "negative_bearing": true,
+          "text": "A dashboard may show its displays but cannot show a connected-service entitlement or subscription period."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Keep such mixed evidence lines nonvisual, or separate the pictured subject."
+        },
+        {
+          "negative_bearing": false,
+          "text": "List the first word of each main delivery batch and revise repeats; check the grammatical openings too."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Make the practical action or buying choice carry the first clause, and keep the handoff connected to the next actual subject."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Check first availability, scope restrictions, distinct evidence and all word budgets again after those edits."
+        },
+        {
+          "negative_bearing": true,
+          "text": "Return the script only; this review is preparation, not extra narration or an added schema field."
         }
       ]
     }

@@ -1,0 +1,8 @@
+{
+  "mode": "QA-driven revision through existing author.run instruction and previous-script path; not a fresh first-pass claim",
+  "previous_iteration": "10",
+  "previous_script_sha256": "bc390baae9ad806fd08074fff53ee592791b48d423547f2cac4646e441f12317",
+  "previous_script_bytes_unchanged": true,
+  "previous_context_chars": 29756,
+  "app_prompt_unchanged_from": "10"
+}

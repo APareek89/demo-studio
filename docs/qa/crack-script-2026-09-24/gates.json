@@ -17,7 +17,7 @@
       "total": 24,
       "exit": 0,
       "outbound_attempts": 0,
-      "log_sha256": "460865c46f2d38381a824334763de9e03a4dc7522a6c7d1f7e29432110de366c",
+      "log_sha256": "b51f40ae8d8749ebf097278fc25251778a161ac14973b86ffe5f8e5a49d35e9a",
       "test_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
       "log": "gate-logs/qa_accept.log"
     },
@@ -27,7 +27,7 @@
       "total": 3,
       "exit": 0,
       "outbound_attempts": 0,
-      "log_sha256": "c1e45fd7e4a336ecf74f0f1c7f3947aa7bf23b9d6ad420f3c8049d8c3f9406f8",
+      "log_sha256": "d65edd96319d6f10b8c0f9a003c2089f16addefd5c6e1172f74f28060b1af8d7",
       "test_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
       "log": "gate-logs/smoke_mock.log"
     },
@@ -87,7 +87,7 @@
       "total": 14,
       "exit": 0,
       "outbound_attempts": 0,
-      "log_sha256": "9eecf4bfb7376f2cabf4ff7ab1ce33bb187ae40870b7963da7a5deb0b0b80b68",
+      "log_sha256": "c09a3cbf6e763f838da3470084b56e96638e0831c6db8c48023b4703c58b5a14",
       "test_sha256": "0908bf4eb316a4f8b7fd46052a9bf61987a89ac9048d243c8feb89e11bb9ef46",
       "log": "gate-logs/narrative_roles_contract.log"
     },
@@ -383,7 +383,7 @@
     }
   ],
   "application_file_hashes": {
-    "server/agents/author.py": "2ea7bc55fcdf2fd53906e3f031343e3541cc4444a220435fd7873f0d720e8e0f",
+    "server/agents/author.py": "cecb02f67950d1ebd31421889c2c9b581657d0aaf4f7ed64cecd4983c37d561e",
     "server/agents/bundle.py": "5e1fbabd65dd4a2c9ddcc9b6582ebdccf30f77bbaad5b9c66a43ae169b0f5c4d",
     "server/agents/coach.py": "9f8178d74d7ffb21b2abb35e3ac9b68512d7990d8bcbf028a71e10390f482f26",
     "server/agents/plan.py": "1602861ed62a0f7a3f9cc1535f9f17bf64b5bf458f6534120bf9489deeb52d28",
@@ -1068,6 +1068,172 @@
         "OUTBOUND_ATTEMPTS 0"
       ],
       "log_sha256": "c1e45fd7e4a336ecf74f0f1c7f3947aa7bf23b9d6ad420f3c8049d8c3f9406f8"
+    }
+  ],
+  "final09_prompt_rerun": [
+    {
+      "suite": "script_prompt_contract",
+      "exit": 0,
+      "seconds": 0.9,
+      "summary": [
+        "Script prompt contracts: 40/40",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "39191a4cc3c51e54510bdd826183b1ec59092f1048648be5b7fb0a3564a24406"
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "exit": 0,
+      "seconds": 0.57,
+      "summary": [
+        "25/25 visual alignment contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "d032310ae521f77608776b8bb163bc10a41cc6a50f0130be22ea01a8155642a9"
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit": 0,
+      "seconds": 0.68,
+      "summary": [
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c"
+    },
+    {
+      "suite": "generation_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Generation input/approval contracts: 55/55 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "7bec3b21aeae1f2c38d68c28369b0c2e183419f2325b3b7ec7be9e99afc05110"
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "c09a3cbf6e763f838da3470084b56e96638e0831c6db8c48023b4703c58b5a14"
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.2,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef"
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.44,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "f9203e7e9d496534bf7baa26699b5e54e430da44b3886df7b01f2daf1dd66ee2"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.18,
+      "summary": [
+        "SMOKE OK dm_51e7f042",
+        "SMOKE OK (phase 2) dm_51e7f042",
+        "SMOKE OK (on-demand rehearsal) dm_51e7f042",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "7338d0847cfc0f4cd480eba7769aea9b06636f5c10bfb312efa162d1e88df78b"
+    }
+  ],
+  "final10_prompt_rerun": [
+    {
+      "suite": "script_prompt_contract",
+      "exit": 0,
+      "seconds": 0.68,
+      "summary": [
+        "Script prompt contracts: 40/40",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "39191a4cc3c51e54510bdd826183b1ec59092f1048648be5b7fb0a3564a24406"
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "exit": 0,
+      "seconds": 0.52,
+      "summary": [
+        "25/25 visual alignment contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "d032310ae521f77608776b8bb163bc10a41cc6a50f0130be22ea01a8155642a9"
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Speech style contracts: 30/30",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "e3d2c09fb4a7aa7faef63b29e352998bcde21f3e82787eb52253c9482e1f009c"
+    },
+    {
+      "suite": "generation_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "Generation input/approval contracts: 55/55 (model entailment not evaluated)",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "7bec3b21aeae1f2c38d68c28369b0c2e183419f2325b3b7ec7be9e99afc05110"
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "exit": 0,
+      "seconds": 0.63,
+      "summary": [
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "c09a3cbf6e763f838da3470084b56e96638e0831c6db8c48023b4703c58b5a14"
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.22,
+      "summary": [
+        "380/380 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "fc0dc9158aee886a4b0cae6ea7456d2492862fcbeb7d8e558b98ed95ce22adef"
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 2.49,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "b51f40ae8d8749ebf097278fc25251778a161ac14973b86ffe5f8e5a49d35e9a"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 4.08,
+      "summary": [
+        "SMOKE OK dm_d36ecd8b",
+        "SMOKE OK (phase 2) dm_d36ecd8b",
+        "SMOKE OK (on-demand rehearsal) dm_d36ecd8b",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "log_sha256": "d65edd96319d6f10b8c0f9a003c2089f16addefd5c6e1172f74f28060b1af8d7"
     }
   ]
 }

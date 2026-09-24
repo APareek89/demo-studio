@@ -1,0 +1,38 @@
+{
+  "status": "complete",
+  "events": [
+    {
+      "event": "stage",
+      "message": "Writing the script…"
+    },
+    {
+      "event": "replayed",
+      "call": "author-01",
+      "request_sha256": "3f4bebc405f4d972ae2453bdb531981b75c343e8b0880226e5d6a749e149eb2a",
+      "response_sha256": "1909524bd37001b136143cfa07993c8521126c6674875a6588aaabf3e0d911a7"
+    },
+    {
+      "event": "stage",
+      "message": "Validator flagged 1 issue — asking for a grounded rewrite…"
+    },
+    {
+      "event": "replayed",
+      "call": "author-02",
+      "request_sha256": "0af9f83fbdcb5eed6e0537fd96e7752b3bb8cb7c43c9dbf4795d22e34d08d32f",
+      "response_sha256": "9c787f7c8b2b6e9cb3af7824189b8b60c97140b6f7dff80fbad7a16e724a39fb"
+    },
+    {
+      "event": "stage",
+      "message": "Existing visual assignments retained; rule proposals recorded only because Gemini pixel audit was unavailable."
+    },
+    {
+      "event": "stage",
+      "message": "5 long batch(es) divided at complete lines for clearer pacing."
+    },
+    {
+      "event": "stage",
+      "message": "Script: 16 segments, 18 lines, 0 held back as unverified; 1 note(s) on the Facts card."
+    }
+  ],
+  "socket_attempts": []
+}

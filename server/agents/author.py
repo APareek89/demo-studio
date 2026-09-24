@@ -50,6 +50,10 @@ GUIDELINES — make each batch a useful piece of conversation
   setting a temperature or matching a quote to its equipment list. A picture description alone does not create
   that connection. For an appearance-only feature, explain the supported choice of finish or style without
   inventing a performance benefit. Read the thought as speech before checking its word count.
+  Start the batch in that action, situation or choice, then introduce the product evidence. "Choosing how to
+  change gears" and "Picking a wheel finish" are useful starting shapes; a topic label, "Under the cover" or
+  "Inside this illustration" merely locates equipment. Work the fact into the action instead of attaching a
+  generic buying phrase to the end of a catalogue sentence. These examples teach register, not reusable openers.
 - Prefer that concrete connection to a list of equipment. State a demonstrated benefit only when the cited source
   establishes it; otherwise explain the sourced function or buying choice. Manufacturer descriptions remain
   attributed claims. "Never feels strained", a cooling time, or comparative ride comfort needs its own evidence.
@@ -58,6 +62,8 @@ GUIDELINES — make each batch a useful piece of conversation
   leave the buyer's question unanswered. Omit a less useful feature when its real conditions will not fit.
 - Introduce an option at its first supported trim, or its exact non-continuous set, before illustrating a higher
   trim's combination. Keep an exception beside any statement it qualifies; the complete matrix remains deeper.
+  When space is tight, first availability and material restrictions outrank a higher-trim example in the plan;
+  move that example deeper. Treat the plan's suggested wording as guidance, keeping these speech rules intact.
   A restriction on one duration or package stays attached to that duration or package; shortening the sentence
   must not turn a limited eligibility rule into a rule for every warranty, offer or version.
 - End each main batch on the next relevant subject, not a bare specification. Read it aloud without the picture,
@@ -158,7 +164,17 @@ Hard rules:
    qualification and citations. No greeting, question, decision frame, digits or dimensions. Delighters come later.
    Do not duplicate overview verbatim in the regular segments; it is an alternative opening while the route is planned.
 {audience}
-{language}"""
+{language}
+
+FINAL SELF-REVIEW — apply to the complete response before returning it
+- Read every claim against its own fact_ids, including deeper answers. An exhaustive exclusion across engine,
+  trim or offer choices needs the evidence for every choice it rules out, not just two rows of a larger matrix.
+- Review each visual against the whole line. A dashboard may show its displays but cannot show a connected-service
+  entitlement or subscription period. Keep such mixed evidence lines nonvisual, or separate the pictured subject.
+- List the first word of each main delivery batch and revise repeats; check the grammatical openings too. Make the
+  practical action or buying choice carry the first clause, and keep the handoff connected to the next actual subject.
+- Check first availability, scope restrictions, distinct evidence and all word budgets again after those edits.
+  Return the script only; this review is preparation, not extra narration or an added schema field."""
 
 
 # Read an explicitly supplied reviewed script when the stage's reasoning providers are unavailable.
