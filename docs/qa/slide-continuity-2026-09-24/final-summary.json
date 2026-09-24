@@ -1,0 +1,16 @@
+{
+  "published_version": 3,
+  "actual_render_checks": 1505,
+  "states": 88,
+  "speaking_slides": 18,
+  "tags": 34,
+  "measured_narration_seconds": 193.78,
+  "recordings_unchanged": 56,
+  "source_hashes_match": true,
+  "script_registry_plan_faq_usage_unchanged": true,
+  "master_unchanged": "74990add25a79bed6d5a4e90a13e3ad143879f0e",
+  "server_port": 8910,
+  "server_pid": 92400,
+  "no_new_paid_calls": true,
+  "status": "local branch ready for user review; not merged or deployed"
+}

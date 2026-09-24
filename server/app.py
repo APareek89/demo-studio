@@ -874,6 +874,7 @@ async def edit_aligned_deck(demo_id: str, req: Request):
     slides = {s["id"]: s for s in dk["slides"]}
     ov = store.read_json(demo_id, "deck-overrides.json") or {"slides": []}
     ov_by = {o["slide_id"]: o for o in ov.get("slides", []) if o.get("slide_id")}
+    reserved_callout_ids = {c.get("id") for row in [*dk["slides"], *ov_by.values()] for c in row.get("callouts", []) if c.get("id")}
     # Source exclusions can retire old saved choices. Sanitize those old choices
     # before applying new, strictly validated edits; never restore excluded media.
     for sid, saved in ov_by.items():
@@ -911,7 +912,11 @@ async def edit_aligned_deck(demo_id: str, req: Request):
             o["image_id"] = e["image_id"]
             if "media" in o and "media" not in e:
                 o["media"] = [e["image_id"], *o["media"][1:]]
-        selected_media = o.get("media", [m["image_id"] for m in s.get("media", [])] or ([o.get("image_id", s.get("image_id"))] if o.get("image_id", s.get("image_id")) else []))
+        selected_media = o.get("media")
+        if selected_media is None:
+            selected_media = [m["image_id"] for m in deck.slide_media(s)]
+            if "image_id" in o:
+                selected_media = [o["image_id"], *[ref for ref in selected_media[1:] if ref != o["image_id"]]]
         if len(set(selected_media)) != len(selected_media):
             raise HTTPException(400, "Pictures must be distinct")
         if "title" in e:
@@ -920,14 +925,36 @@ async def edit_aligned_deck(demo_id: str, req: Request):
                 raise HTTPException(400, "A title needs 1–80 characters")
             o["title"] = title
         oc_by = {c["id"]: c for c in o.get("callouts", []) if c.get("id")}
+        if "media" in e or "image_id" in e:
+            # Geometry reviewed against a removed picture must not be replayed
+            # as an anchor on its replacement. Preserve semantic edits, then
+            # merge any explicit new callout binding in this request below.
+            for cid, oc in oc_by.items():
+                current = next((c for c in s["callouts"] if c["id"] == cid), {})
+                old_ref = oc.get("image_id") or current.get("image_id") or s.get("image_id")
+                if old_ref not in selected_media:
+                    for field in ("image_id", "part", "label_pos", "placement"):
+                        oc.pop(field, None)
         for ce in e.get("callouts") or []:
             if not isinstance(ce, dict):
                 raise HTTPException(400, "Each callout edit must be an object")
             cid = str(ce.get("id") or "")
             cur = next((c for c in s["callouts"] if c["id"] == cid), None)
+            creating = ce.get("create") is True
+            if creating:
+                if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", cid) or cid in reserved_callout_ids:
+                    raise HTTPException(400, "A new callout needs a unique id using letters, numbers, underscores or hyphens")
+                if not {"text", "fact_ids", "reveal_on_line"} <= ce.keys():
+                    raise HTTPException(400, "A new callout needs text, fact_ids and reveal_on_line")
+                if not isinstance(ce["text"], str) or ("part" in ce and ce["part"] is not None and not isinstance(ce["part"], str)):
+                    raise HTTPException(400, "A new callout's text and part must be strings")
+                reserved_callout_ids.add(cid)
+                cur = {"id":cid, "text":"", "fact_ids":[]}
             if not cur:
                 raise HTTPException(404, f"callout not found: {cid}")
             oc = oc_by.setdefault(cid, {"id": cid})
+            if creating:
+                oc["create"] = True
             if "text" in ce or "fact_ids" in ce:
                 text = (ce.get("text") if "text" in ce else oc.get("text", cur["text"])).strip()
                 fids = ce.get("fact_ids") if "fact_ids" in ce else oc.get("fact_ids", cur["fact_ids"])
@@ -936,12 +963,19 @@ async def edit_aligned_deck(demo_id: str, req: Request):
                 unknown = {str(x) for x in fids} - allowed_facts
                 if unknown:
                     raise HTTPException(400, "Rejected or unknown fact ids cannot be attached: " + ", ".join(sorted(unknown)))
+                if creating and (not fids or not {str(x) for x in fids} <= deck.slide_facts(s)):
+                    raise HTTPException(400, "A new callout must cite approved facts already on this slide")
                 valid, bad = author.ungrounded(text, [str(x) for x in fids], allowed_facts)
                 if not text or bad:
                     raise HTTPException(400, "That callout states a figure or claim without a fact id. Add the information as a source/fact first.")
                 if author.words(text) > deck.MAX_CALLOUT_WORDS:
                     raise HTTPException(400, f"A callout is at most {deck.MAX_CALLOUT_WORDS} words")
                 oc["text"], oc["fact_ids"] = text, valid
+            if "reveal_on_line" in ce:
+                reveal = ce["reveal_on_line"]
+                if type(reveal) is not int or not 0 <= reveal <= max(0, len(s.get("lines", [])) - 1):
+                    raise HTTPException(400, "reveal_on_line must be an existing slide line index")
+                oc["reveal_on_line"] = reveal
             if "image_id" in ce:
                 if ce["image_id"] is not None and ce["image_id"] not in selected_media:
                     raise HTTPException(400, "A callout must refer to one of this slide's pictures")

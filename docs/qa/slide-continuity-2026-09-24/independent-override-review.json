@@ -1,0 +1,35 @@
+{
+  "scope": "Independent pure in-memory override probes, isolated MOCK storage and blocked sockets. No paid data/API writes.",
+  "passed": 6,
+  "total": 6,
+  "rows": [
+    {
+      "name": "media-only replacement preserves semantic label without anchor",
+      "passed": true
+    },
+    {
+      "name": "empty media preserves semantic label without anchor",
+      "passed": true
+    },
+    {
+      "name": "explicit reviewed binding can establish new real-part anchor",
+      "passed": true
+    },
+    {
+      "name": "unchanged picture retains real-part binding",
+      "passed": true
+    },
+    {
+      "name": "legacy empty callout array does not clear tags",
+      "passed": true
+    },
+    {
+      "name": "excluded saved ref cannot reapply old geometry on same fallback ref",
+      "passed": true
+    }
+  ],
+  "source_sha256": {
+    "server/app.py": "544e2be0b69a483d6c67744a456041c2181532cafa8406f7c1b77e6b2916ba90",
+    "server/agents/deck.py": "7bd1db3d925d3902c2b743856aeefb66c74480da537f5e9286469d1022bb8349"
+  }
+}

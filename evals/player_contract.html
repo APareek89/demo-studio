@@ -1430,18 +1430,25 @@ test('The mobile evidence cue follows actual overflow without changing slide geo
   } finally { view.destroy(); frame.remove(); }
 });
 
-test('The walkthrough URL flag preserves playback context and keeps its frames outside the slide stack', async () => {
+test('The walkthrough URL keeps the current native photo and feature tags visible with identical playback', async () => {
   const original = location.href;
-  const configure = b => { for (const s of b.slides) s.image_url = imageFixture; return b; };
+  const configure = b => { for (const s of b.slides) { s.image_url = imageFixture; s.callouts = [{id:'native-feature',text:'Current reviewed feature',fact_ids:['f1'],placement:'overlay',anchor:{x:.64,y:.47},label_pos:{x:.12,y:.16},reveal_on_line:0}]; } return b; };
+  const currentPicture = () => {
+    const slide = host.querySelector('.slide.on'), pic = slide.querySelector('.slide-pic'), img = pic.querySelector('img'), tag = pic.querySelector('.callout[data-id="native-feature"]');
+    assert(img.src === imageFixture && tag.textContent.includes('Current reviewed feature'), 'Current narrated photo or reviewed feature was replaced');
+    assert(getComputedStyle(pic).opacity !== '0' && getComputedStyle(pic).visibility === 'visible' && getComputedStyle(tag).visibility === 'visible' && getComputedStyle(tag).opacity !== '0' && tag.getBoundingClientRect().width > 0, 'Native narrated photo or feature tag is hidden behind a presentation phase');
+    assert(!host.querySelector('.wt-hall,.wt-caption,.wt-frame'), 'An unrelated gallery or duplicate caption replaced the current slide');
+    return {image:rect(img),tag:rect(tag),picture:rect(pic)};
+  };
   try {
     const url = new URL(original); url.searchParams.delete('presentation'); history.replaceState(null, '', url);
     await setup({voiceMode:false, configure}); await atProof();
-    const baseline = snapshot(player.context()), baselineSpeech = snapshot(env.played);
+    const baseline = snapshot(player.context()), baselineSpeech = snapshot(env.played), baselinePicture = currentPicture();
     assert(!host.querySelector('.slide-cam'), 'Default renderer acquired a camera wrapper');
     url.searchParams.set('presentation', 'walkthrough'); history.replaceState(null, '', url);
     await setup({voiceMode:false, configure}); await atProof();
-    assert(host.querySelector('.wt-hall') && host.querySelector('.slide-cam'), 'Flag did not mount the walkthrough');
-    assert(!host.querySelector('.slide-stack .wt-frame') && host.querySelectorAll('.slide-stack .slide.on').length === 1, 'Gallery frames replaced or duplicated the active slide');
+    assert(host.querySelector('.slide-cam') && getComputedStyle(host.querySelector('.slide-cam')).display === 'contents', 'Compatible flag changed the native camera wrapper layout');
+    assert(host.querySelectorAll('.slide-stack .slide.on').length === 1 && JSON.stringify(currentPicture()) === JSON.stringify(baselinePicture), 'Flag moved the current photo or feature tag');
     assert(JSON.stringify(player.context()) === JSON.stringify(baseline), 'Presentation changed the playback checkpoint or profile');
     assert(JSON.stringify(env.played) === JSON.stringify(baselineSpeech), 'Camera movement delayed or changed narration');
     assert(host.querySelectorAll('.pl-top').length === 1 && host.querySelectorAll('.pl-dock').length === 1, 'Presentation replaced player controls');

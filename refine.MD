@@ -1,5 +1,9 @@
 # refine.MD — running log of Anand's questions and proposed solutions
 
+## Slide continuity correction — latest direction · 24 September 2026
+
+Anand rejected the delivered gallery/text-page presentation and narrowed this correction to demo slides: image + feature tags + matching voice on each narrated screen. This supersedes the gallery behavior in the historical WP12 plan below. Both URL modes now retain the native slide view; the experimental gallery is removed from playback. Reuse reviewed illustrations and concise cited labels, preserving narration/sequence/recordings and all existing workflow/guardrails. Do not invent pixel anchors. All eighteen speaking slides in the isolated local QA demo are reviewed; desktop/phone screenshots and regression evidence are in `docs/qa/slide-continuity-2026-09-24/`. Branch only; no master/AWS release. No open design questions for this correction.
+
 ## WP12 plan
 
 24 September2026 — Anand confirmed autonomous minor implementation/test decisions on this branch; keep existing agents/nodes/workflow intact. Master integration and AWS deployment wait for his hands-on localhost review and approval.

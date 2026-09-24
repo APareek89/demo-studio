@@ -1,0 +1,382 @@
+{
+  "scope": "Independent read-only source assertion and code review; geometry comparisons derived from acceptance receipt, not another browser execution. No production/data mutation/provider call.",
+  "patch_sha256": "2ac8422a3b8f1c2b2cd4d13970ffe118aff8f7e84e0b31eabe356f69710509f3",
+  "source_hashes": {
+    "web/slide.js": "f300af900dba44b9410802032c53f5f7367b0645a5b2b0b5f86a80a43abaf8bc",
+    "web/styles.css": "2fd7ff95065e32585d7de7f491ffda65d4a2a30064039e094f041946156a3b0f",
+    "web/player/player.js": "31a904d1051ce0d6f85afea1749e88903c8c6d1ca7e92b32b240754c6477ed1d",
+    "web/player-ui.css": "6cff30d53d91229085ee5cf00d7b4af0dbfef5469d72fde1056bd16242f62499",
+    "web/player/walkthrough.js": "973e747c0c853cff512fbc8287afc8cdda0e5931d7a316a84ab5d41249ab4628"
+  },
+  "source_matches_accepted_browser_bytes": true,
+  "slide_count": 18,
+  "label_count": 34,
+  "labels": [
+    {
+      "slide_id": "sl01",
+      "callout_id": "sl01-c1",
+      "fact_ids": [
+        "F033",
+        "F038"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl02",
+      "callout_id": "sl02-review-1",
+      "fact_ids": [
+        "F090"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl02",
+      "callout_id": "sl02-review-2",
+      "fact_ids": [
+        "F135"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl02",
+      "callout_id": "sl02-review-3",
+      "fact_ids": [
+        "F150"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl03",
+      "callout_id": "sl03-review-1",
+      "fact_ids": [
+        "F080",
+        "F150"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl03",
+      "callout_id": "sl03-review-2",
+      "fact_ids": [
+        "F080",
+        "F150"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl04",
+      "callout_id": "sl04-review-1",
+      "fact_ids": [
+        "F084",
+        "F150"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl04",
+      "callout_id": "sl04-review-2",
+      "fact_ids": [
+        "F084",
+        "F150"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl05",
+      "callout_id": "sl05-review-1",
+      "fact_ids": [
+        "F088",
+        "F150"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl06",
+      "callout_id": "sl06-review-1",
+      "fact_ids": [
+        "F052"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl06",
+      "callout_id": "sl06-review-2",
+      "fact_ids": [
+        "F053"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl06",
+      "callout_id": "sl06-review-3",
+      "fact_ids": [
+        "F054"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl07",
+      "callout_id": "sl07-review-1",
+      "fact_ids": [
+        "F055"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl07",
+      "callout_id": "sl07-review-2",
+      "fact_ids": [
+        "F056",
+        "F057"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl08",
+      "callout_id": "sl08-review-1",
+      "fact_ids": [
+        "F164"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl09",
+      "callout_id": "sl09-review-1",
+      "fact_ids": [
+        "F148"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl09",
+      "callout_id": "sl09-review-2",
+      "fact_ids": [
+        "F164"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl10",
+      "callout_id": "sl10-review-1",
+      "fact_ids": [
+        "F090"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl10",
+      "callout_id": "sl10-review-2",
+      "fact_ids": [
+        "F182"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl11",
+      "callout_id": "sl11-review-1",
+      "fact_ids": [
+        "F091"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl11",
+      "callout_id": "sl11-review-2",
+      "fact_ids": [
+        "F091"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl12",
+      "callout_id": "sl12-review-1",
+      "fact_ids": [
+        "F192"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl12",
+      "callout_id": "sl12-review-2",
+      "fact_ids": [
+        "F192"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl13",
+      "callout_id": "sl13-review-1",
+      "fact_ids": [
+        "F192"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl13",
+      "callout_id": "sl13-review-2",
+      "fact_ids": [
+        "F180"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl13",
+      "callout_id": "sl13-review-3",
+      "fact_ids": [
+        "F192"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl14",
+      "callout_id": "sl14-review-1",
+      "fact_ids": [
+        "F135"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl15",
+      "callout_id": "sl15-review-1",
+      "fact_ids": [
+        "F198"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl15",
+      "callout_id": "sl15-review-2",
+      "fact_ids": [
+        "F198"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl16",
+      "callout_id": "sl16-review-1",
+      "fact_ids": [
+        "F140"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl17",
+      "callout_id": "sl17-review-1",
+      "fact_ids": [
+        "F185"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl17",
+      "callout_id": "sl17-review-2",
+      "fact_ids": [
+        "F181"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl18",
+      "callout_id": "sl18-review-1",
+      "fact_ids": [
+        "F177",
+        "F179",
+        "F184"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    },
+    {
+      "slide_id": "sl18",
+      "callout_id": "sl18-review-2",
+      "fact_ids": [
+        "F178"
+      ],
+      "all_approved": true,
+      "image_owned_by_slide": true,
+      "unanchored_caption": true
+    }
+  ],
+  "geometry": "All eight sl02/sl18 line0\u2192line1 comparisons at1440/390 with both flags have identical image/stage/title/footer/existing-tag rectangles.",
+  "manual_source_review": "Engine-specific gearbox options, trim/automatic restrictions, phone-adapter/compatibility conditions, power/network, separate Alexa purchase, dated ex-showroom warning and payable petrol-only extended warranty preserve the approved assertions.",
+  "images_inspected": [
+    "render-final-v2/390-default-sl11-line0.png",
+    "render-final-v2/390-default-sl13-line0.png"
+  ],
+  "findings": [
+    {
+      "severity": "P2 editorial precision",
+      "callout_id": "sl18-review-2",
+      "current": "Some equipment costs extra",
+      "suggested": "Some equipment may cost extra",
+      "reason": "F178 says equipment may be available at extra cost; preserve the conditional modal."
+    }
+  ],
+  "layout_or_image_ownership_blocker": false,
+  "paid_calls": 0
+}

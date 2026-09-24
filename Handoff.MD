@@ -1,5 +1,16 @@
 # Handoff.MD — Demo Studio
 
+## Slide continuity restoration — 24 September 2026
+
+**Latest direction:** fix only the demo slides after Anand rejected the delivered presentation. The gallery/text-page experience is superseded: use the native image + on-slide feature tags + matching recorded narration in both URL modes. Header/dock/75% stage, agents/nodes, workflow, words, voice, ordering and guards remain unchanged.
+
+**Implemented and reviewed:** Deck preserves grounded proxy captions without false anchors; media edits preserve words while retiring old image attachments. Explicit missing-label creation uses the existing Align validation/approval path. Local `dm_7bbf10d0` v3 now has pictures and34source-cited labels across all18speaking slides, with serif slide headings removed and phone tags wrapped above the footer. The script/plan/registry/rejected FAQ/provider usage and all56audio files are unchanged; measured duration193.78s. Source-qualified “may cost extra” was retained. Native walkthrough adapter creates no gallery DOM/timers.
+
+**QA:** qa_deck399, qa_accept24, smoke3, full mock release28; Deck media79, Align media39, visual25, Align review57; adapter18, HTML87, recorder39; layout212, workbook101, integration19; actual-Bundle render1505checks/88states, all green. Failed initial mobile evidence retained. Independent review6APIcases plus8reveal comparisons; twelve-category FMEA. Detailed evidence/screenshots: `docs/qa/slide-continuity-2026-09-24/`. No new paid generation or session; acoustic QA is not claimed.
+
+**Run/release:** isolated localhost8910, server session5512/PID92400, same data/graph under `/tmp/demo-runtime-final-20260924`. Open `http://127.0.0.1:8910/?presentation=walkthrough&revision=slides-3#/play/dm_7bbf10d0`. Local branch checkpoint only; master/AWS still await hands-on approval. Protected demo/port8896 untouched. No open design questions; loop remains off.
+
+
 ## Runtime recovery — branch QA · 24 September 2026
 
 **Decision:** implement enhancements inside the current agents/nodes/workflow without further approval questions. Stay on `codex/sales-trainer-flow`; master merge and AWS deployment wait for Anand to test the local demo and approve. Owner URL domains supersede public-web permission. Protected demo/port8896 remain untouched.

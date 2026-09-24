@@ -408,12 +408,42 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
                 if ref not in ids:
                     index = old_slots.get(ref, 0)
                     callout["image_id"] = ids[min(index, len(ids) - 1)] if ids else None
+                    # A label's reviewed words survive picture edits, but its
+                    # old part binding is not proof about a new illustration.
+                    # An explicit callout part edit below can establish a new
+                    # reviewed binding; otherwise placement becomes a caption.
+                    callout["part"] = ""
         title = _compact(o.get("title", ""), MAX_TITLE_WORDS)
         if title:
             s["title"] = title
         media_ids = {entry["image_id"] for entry in slide_media(s)}
+        retired_geometry = set()
         for oc in o.get("callouts", []):
             c = next((x for x in s["callouts"] if x["id"] == oc.get("id")), None)
+            if c is None and oc.get("create") is True:
+                ref = oc.get("image_id") or s.get("image_id")
+                candidate = oc
+                if ref is not None and ref not in media_ids and not strict:
+                    ref = s.get("image_id")
+                    candidate = {**oc, "image_id":ref, "part":""}
+                    retired_geometry.add(oc.get("id"))
+                reveal = oc.get("reveal_on_line")
+                citations = oc.get("fact_ids")
+                # Explicit reviewed creation is also revalidated during rebuild:
+                # retired evidence or a new script cannot resurrect an old label.
+                valid = (isinstance(oc.get("id"), str) and re.fullmatch(r"[A-Za-z0-9_-]{1,80}", oc["id"])
+                         and isinstance(citations, list) and bool(citations) and all(isinstance(fid, str) for fid in citations)
+                         and set(citations) <= allowed.intersection(slide_facts(s))
+                         and type(reveal) is int and 0 <= reveal <= max(0, len(s.get("lines", [])) - 1)
+                         and (ref is None or ref in media_ids))
+                safe = clean_callouts([candidate], s, allowed, images_by_id.get(ref)) if valid else []
+                same_picture = sum((old.get("image_id") or s.get("image_id")) == ref for old in s["callouts"])
+                if not safe or same_picture >= MAX_CALLOUTS:
+                    if strict:
+                        raise ValueError("A new callout needs a unique id, approved slide facts, valid reveal and picture, and room within three labels")
+                    continue
+                c = {"id": oc["id"], **safe[0]}
+                s["callouts"].append(c)
             if not c:
                 continue
             if "image_id" in oc:
@@ -422,21 +452,27 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
                     if strict:
                         raise ValueError("A callout must belong to one of this slide's pictures")
                     ref = c.get("image_id") if c.get("image_id") in media_ids else s.get("image_id")
+                    retired_geometry.add(c["id"])
+                    c["part"] = ""
+                if ref != c.get("image_id"):
+                    c["part"] = ""
                 c["image_id"] = ref
             if "text" in oc or "fact_ids" in oc:
                 text = (oc.get("text") if "text" in oc else c["text"]).strip()
                 valid, bad = ungrounded(text, oc.get("fact_ids", c["fact_ids"]), allowed)
                 if text and not bad and words(text) <= MAX_CALLOUT_WORDS:
                     c["text"], c["fact_ids"] = text, valid
-            if "part" in oc:
+            if "part" in oc and c["id"] not in retired_geometry:
                 c["part"] = (oc.get("part") or "").strip().lower()
+            if "reveal_on_line" in oc:
+                c["reveal_on_line"] = max(0, min(int(oc["reveal_on_line"]), max(0, len(s.get("lines", [])) - 1)))
         # A changed image or part invalidates the old anchor, so recompute placement before applying drags.
         # visuals.py:part_boxes supplies the new geometry; the later position edit cannot invent a missing anchor.
-        if not media_ids and image_changed:
-            s["callouts"] = []
         counts = {}
         for callout in s["callouts"]:
             ref = callout.get("image_id") or s.get("image_id")
+            if ref is None:
+                continue  # Picture-free captions retain both prior picture groups.
             counts[ref] = counts.get(ref, 0) + 1
         if any(count > MAX_CALLOUTS for count in counts.values()):
             if strict:
@@ -445,13 +481,15 @@ def apply_overrides(slides: list[dict], overrides: dict, images_by_id: dict, all
             for callout in s["callouts"]:
                 ref = callout.get("image_id") or s.get("image_id")
                 counts[ref] = counts.get(ref, 0) + 1
-                if counts[ref] <= MAX_CALLOUTS:
+                if ref is None or counts[ref] <= MAX_CALLOUTS:
                     kept.append(callout)
             s["callouts"] = kept
-        if image_changed or any("part" in oc or "image_id" in oc for oc in o.get("callouts", [])):
+        if image_changed or any(oc.get("create") or "part" in oc or "image_id" in oc for oc in o.get("callouts", [])):
             _place_media_callouts(s, images_by_id)
         for oc in o.get("callouts", []):
             c = next((x for x in s["callouts"] if x["id"] == oc.get("id")), None)
+            if c and c["id"] in retired_geometry:
+                continue
             lp = oc.get("label_pos")
             if c and isinstance(lp, dict) and 0 <= float(lp.get("x", -1)) <= 1 and 0 <= float(lp.get("y", -1)) <= 1:
                 c["label_pos"] = {"x": round(float(lp["x"]), 4), "y": round(float(lp["y"]), 4)}
@@ -586,7 +624,15 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
             ref = media["image_id"]
             img = images_by_id.get(ref)
             proposals = [c for c in raw if (c.get("image_id") or s["image_id"]) == ref]
-            group = clean_callouts(proposals, s, allowed, img) if proposals and not media.get("proxy") else []
+            caption_allowed = allowed.intersection(slide_facts(s)) if media.get("proxy") else allowed
+            if media.get("proxy"):
+                proposals = [c for c in proposals if c.get("fact_ids") and set(c["fact_ids"]) <= caption_allowed]
+            group = clean_callouts(proposals, s, caption_allowed, img) if proposals else []
+            if media.get("proxy"):
+                # The approved assertions support the caption, while this
+                # illustration supplies no proof of a part-level attachment.
+                for callout in group:
+                    callout["part"] = ""
             if group:
                 n_model += len(group)
             elif s["lines"] and s["kind"] not in ("hero_open", "hero_close"):

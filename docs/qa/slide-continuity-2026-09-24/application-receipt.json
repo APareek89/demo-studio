@@ -1,0 +1,46 @@
+{
+  "demo_id": "dm_7bbf10d0",
+  "method": "Align PATCH + normal approvals of unchanged script/rejected FAQ + deterministic Bundle stage only",
+  "version_before": 1,
+  "version_after": 2,
+  "spoken_slides": 18,
+  "tag_count": 34,
+  "protected_artifact_hashes": {
+    "faq.json": "57041416d574e040df44d521b915c89383ba425d4adda8205fb70a9e51949911",
+    "script.json": "5e0430d81c68ae9e60d35fc4802a7fcc0dcc593bf613fdc02ac7e877eb1f409a",
+    "plan.json": "54d775f00623b64eaa5a6b5a52ec8a77683f1b79902123a2dcc4a01be6c9fa06",
+    "understanding.json": "6119711465907309ac40efb06213dd83f5f51efb8bfa1396cd011ac8e3d4b287",
+    "usage.jsonl": "f90d094c2ce05f4603a3a53fbf8eb6a4c70585b3e0fe9f284085e337df677f30"
+  },
+  "audio_files_unchanged": 56,
+  "speech_sequence_unchanged": true,
+  "runtime_unchanged": true,
+  "narration_minimum": {
+    "minimum_seconds": 180.0,
+    "seconds": 193.78,
+    "sufficient": true,
+    "words": 438,
+    "measured": true,
+    "basis": "measured",
+    "measured_seconds": 193.78,
+    "estimated_seconds": 0,
+    "route": [
+      "powertrain",
+      "powertrain-2",
+      "powertrain-3",
+      "stance_and_ride",
+      "stance_and_ride-2",
+      "space_and_practicality",
+      "space_and_practicality-2",
+      "safety",
+      "safety-2",
+      "cabin_and_tech",
+      "cabin_and_tech-2",
+      "more_features",
+      "establish"
+    ],
+    "duplicate_lines_excluded": 0
+  },
+  "outbound_attempts": 0,
+  "provider_calls_added": 0
+}

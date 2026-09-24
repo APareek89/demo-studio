@@ -61,7 +61,9 @@ uses a white borderless surface, selected-template dark text/buttons and native-
 hero imagery across welcome/intake, faded behind the text. Content slides have a smaller
 heading and up to two distinct supported pictures side by side, rounded with a subtle shadow.
 Reviewed feature labels and anchors remain on-slide; neither a second picture nor a position
-is invented when evidence is unavailable. Ordinary slides retain 75% of the player viewport,
+is invented when evidence is unavailable. The current image and tags must remain visible
+while their recorded narration plays; gallery experiments cannot replace this accompaniment.
+Illustrative pictures may carry source-cited captions without guessed feature coordinates. Ordinary slides retain 75% of the player viewport,
 with a white fixed conversation dock; short windows reserve usable controls. Portrait phones
 show rotation guidance and remain usable. Visuals retains Marine/Sage/Graphite color approval.
 Studio navigation opens blank Sources without creating a record until the first mutation;

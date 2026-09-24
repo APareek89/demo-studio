@@ -1,0 +1,132 @@
+{
+  "suites": [
+    {
+      "suite": "deck_media_contract",
+      "exit": 0,
+      "seconds": 0.69,
+      "summary": [
+        "Deck media: 79/79 passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 79,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/deck_media_contract.log",
+      "log_sha256": "c1aa2761bbef3b1a7520a9477fc0860153358165ed56f0388f87afbc6d516595",
+      "source_sha256": "124b6badc24bded1c4881c8f34deec72a4582b23f3045338b85dc8bb34b7bbbb"
+    },
+    {
+      "suite": "deck_media_align_contract",
+      "exit": 0,
+      "seconds": 1.89,
+      "summary": [
+        "39/39 deck media Align contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 39,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/deck_media_align_contract.log",
+      "log_sha256": "2fb9e8b4407602f7070eda4455dc165b71985f3bfd7745250fd0c5ac7ec1d00c",
+      "source_sha256": "48591aaee57165a74a063058991b3277354ab59e4123d59d14149c3cadcf637d"
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "exit": 0,
+      "seconds": 0.72,
+      "summary": [
+        "25/25 visual alignment contracts passed",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 25,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/visual_alignment_contract.log",
+      "log_sha256": "d032310ae521f77608776b8bb163bc10a41cc6a50f0130be22ea01a8155642a9",
+      "source_sha256": "807b88615d6ff1d514008f8f515aa5af812a8490c7935dcacf2ec95493086811"
+    },
+    {
+      "suite": "align_review_contract",
+      "exit": 0,
+      "seconds": 1.89,
+      "summary": [
+        "Align review contracts: 57/57",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 57,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/align_review_contract.log",
+      "log_sha256": "8e461f8506576026cbb5e33baf14a3cd3b5d93128786d2ed206b7f8d4bc6bfa2",
+      "source_sha256": "27b091312ba3e7160f99d17be4d04022a6cb9aebfaa250cd8200f23e19d0addc"
+    },
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.7,
+      "summary": [
+        "399/399 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 399,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/qa_deck.log",
+      "log_sha256": "b983fca4e58398950fb7fd48371a29669178c829c77b30250a3b2b1e5a81857c",
+      "source_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae"
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "seconds": 3.45,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 24,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/qa_accept.log",
+      "log_sha256": "edaebde07416c8b446271b51f64f3baae41d3c7328aeeb6d35c9cbd932c1aa48",
+      "source_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "seconds": 5.31,
+      "summary": [
+        "SMOKE OK dm_dca767ec",
+        "SMOKE OK (phase 2) dm_dca767ec",
+        "SMOKE OK (on-demand rehearsal) dm_dca767ec",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 3,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/smoke_mock.log",
+      "log_sha256": "9d84a39cfdee73a478105b8cd578a5c2272e47b9d8e324ca7381b332c4a99c85",
+      "source_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07"
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit": 0,
+      "seconds": 28.6,
+      "summary": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "OUTBOUND_ATTEMPTS 0",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "count": 28,
+      "log_path": "/tmp/demo-runtime-final-20260924/label-preservation/final-frozen/release_mock_contract.log",
+      "log_sha256": "a9d6ac96be7275eafc647737cab91b5a8f24e0a62c4c9a38309c2f8d9081e9f2",
+      "source_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5"
+    }
+  ],
+  "suite_count": 8,
+  "overlapping_check_count": 654,
+  "source_sha256": {
+    "server/agents/deck.py": "7bd1db3d925d3902c2b743856aeefb66c74480da537f5e9286469d1022bb8349",
+    "server/app.py": "544e2be0b69a483d6c67744a456041c2181532cafa8406f7c1b77e6b2916ba90",
+    "evals/deck_media_contract.py": "124b6badc24bded1c4881c8f34deec72a4582b23f3045338b85dc8bb34b7bbbb",
+    "evals/deck_media_align_contract.py": "48591aaee57165a74a063058991b3277354ab59e4123d59d14149c3cadcf637d"
+  },
+  "source_frozen_after_run": true,
+  "outbound_attempts": 0,
+  "paid_calls": 0,
+  "independent_review": "/tmp/demo-slide-repair-20260924/independent-override-review.json",
+  "syntax": "4 Python ASTs parsed",
+  "diff_check": "passed",
+  "red_receipts": [
+    "red/results.json",
+    "proxy-red/results.json",
+    "create-red/results.json",
+    "stale-red/results.json",
+    "proxy-scope-red/results.json"
+  ]
+}

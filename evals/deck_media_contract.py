@@ -114,6 +114,24 @@ def run(check):
             proxy_slide = next(s for s in proxy_built["slides"] if s.get("segment_id") == "engine")
             check("proxy: one complete cited label stays in the panel without guessed proof", len(proxy_slide["callouts"]) == 1 and proxy_slide["callouts"][0]["fact_ids"] == ["F1"] and proxy_slide["callouts"][0]["part"] == "" and proxy_slide["callouts"][0]["placement"] == "panel" and proxy_slide["callouts"][0]["anchor"] is None and proxy_slide["callouts"][0]["part_box"] is None)
             check("proxy: illustrative label reveals at the start", proxy_slide["callouts"][0]["reveal_on_line"] == 0)
+            caption = deck.DeckOut(titles=[], callouts=[deck.CalloutOut(slide_id=proxy_slide["id"], image_id=proxy_slide["image_id"],
+                text="Turbo engine", fact_ids=["F1"], part="bonnet", reveal_on_line=0)])
+            with patch.object(config, "MOCK_LLM", False), patch.object(deck, "_ask_model", return_value=caption):
+                model_proxy = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("proxy: valid concise model feature label survives without shortening a fact", len(model_proxy["callouts"]) == 1
+                  and model_proxy["callouts"][0]["text"] == "Turbo engine" and model_proxy["callouts"][0]["fact_ids"] == ["F1"])
+            check("proxy: model label never receives a part anchor or visual-proof claim", model_proxy["media"] == proxy_slide["media"]
+                  and all(c["part"] == "" and c["placement"] == "panel" and c["anchor"] is None and c["part_box"] is None for c in model_proxy["callouts"]))
+            for name, cited, text in (("foreign slide fact", ["F3"], "LED headlights"),
+                                       ("mixed local and foreign facts", ["F1", "F3"], "Turbo engine and LED headlights"),
+                                       ("uncited model label", [], "Everyday comfort"),
+                                       ("overlong model label", ["F1"], "Turbo engine choices with additional descriptive details beyond the limit")):
+                rejected_caption = deck.DeckOut(titles=[], callouts=[deck.CalloutOut(slide_id=proxy_slide["id"], image_id=proxy_slide["image_id"],
+                    text=text, fact_ids=cited, part="bonnet", reveal_on_line=0)])
+                with patch.object(config, "MOCK_LLM", False), patch.object(deck, "_ask_model", return_value=rejected_caption):
+                    rejected_proxy = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+                check(f"proxy: {name} cannot become a reviewed feature caption", not any(c["text"] == text for c in rejected_proxy["callouts"])
+                      and all(set(c["fact_ids"]) <= {"F1", "F2"} and c["placement"] == "panel" for c in rejected_proxy["callouts"]))
             check("proxy: building illustrations never changes the pixel audit", store.path(did, "visual-audit.json").read_bytes() == before_audit)
             # Run the real no-provider alignment path: retained Author references
             # have no successful pixel rows, so Deck must keep its proxy boundary.
@@ -153,7 +171,31 @@ def run(check):
             check("override: null picture attachment means the first picture", next(c for c in null_default["callouts"] if c["id"] == wheel["id"])["image_id"] == "im08")
             cleared = copy.deepcopy(slide)
             deck.apply_overrides([cleared], {"slides": [{"slide_id": slide["id"], "media": [], "callouts": [{"id": wheel["id"], "image_id": None}]}]}, by_id, {"F1", "F2", "F3"})
-            check("override: removing both pictures accepts the editor's null attachments", cleared["media"] == [] and cleared["image_id"] is None and cleared["callouts"] == [])
+            semantic = lambda labels: [{key: c.get(key) for key in ("id", "text", "fact_ids", "reveal_on_line")} for c in labels]
+            check("override: removing pictures preserves every existing semantic label", cleared["media"] == [] and cleared["image_id"] is None
+                  and semantic(cleared["callouts"]) == semantic(slide["callouts"]))
+            check("override: picture-free labels have no guessed parts or anchors", bool(cleared["callouts"]) and all(c["placement"] == "panel"
+                  and not c.get("part") and c.get("image_id") is None and c.get("anchor") is None and c.get("part_box") is None for c in cleared["callouts"]))
+            same_part = {**copy.deepcopy(by_id["im06"]), "id": "replacement"}
+            same_part["parts"][0]["box"]["x"] = .2
+            media_only = copy.deepcopy(slide)
+            deck.apply_overrides([media_only], {"slides": [{"slide_id": slide["id"], "media": ["im08", "replacement"], "callouts": []}]}, {**by_id, "replacement": same_part}, {"F1", "F2", "F3"})
+            retained = next(c for c in media_only["callouts"] if c["id"] == wheel["id"])
+            check("override: media-only swap preserves label wording citations and reveal", semantic(media_only["callouts"]) == semantic(slide["callouts"]))
+            check("override: matching part name in a new illustration does not become proof", retained["image_id"] == "replacement"
+                  and retained["placement"] == "panel" and retained["part"] == "" and retained["anchor"] is None and retained["part_box"] is None)
+            check("override: unchanged image retains its existing true anchor", next(c for c in media_only["callouts"] if c["image_id"] == "im08")["anchor"]
+                  == next(c for c in slide["callouts"] if c["image_id"] == "im08")["anchor"])
+            stale_binding = copy.deepcopy(media_only)
+            next(c for c in stale_binding["callouts"] if c["id"] == wheel["id"])["part"] = "wheel"
+            deck.apply_overrides([stale_binding], {"slides":[{"slide_id":slide["id"], "callouts":[{"id":wheel["id"], "image_id":"im06", "part":"wheel", "label_pos":{"x":.2, "y":.1}}]}]},
+                                 {"im08":by_id["im08"], "replacement":same_part}, {"F1", "F2", "F3"}, strict=False)
+            stale_label = next(c for c in stale_binding["callouts"] if c["id"] == wheel["id"])
+            check("override: excluded saved picture retires geometry even after rebuild remapped its image", stale_label["part"] == ""
+                  and stale_label["anchor"] is None and stale_label["label_pos"] is None and stale_label["placement"] == "panel")
+            empty = {**copy.deepcopy(slide), "callouts": []}
+            deck.apply_overrides([empty], {"slides": [{"slide_id": slide["id"], "media": []}]}, by_id, {"F1", "F2", "F3"})
+            check("override: intentionally empty labels are never generated by media edits", empty["callouts"] == [])
             for label, override in [("third picture", {"media": ["im08", "im06", "im03"]}), ("excluded picture", {"media": ["excluded"]}),
                                     ("foreign callout attachment", {"callouts": [{"id": wheel["id"], "image_id": "im03"}]})]:
                 rejected = False
@@ -169,6 +211,13 @@ def run(check):
                 model_deck = deck.build(did, lambda _: None)
             six_slide = next(s for s in model_deck["slides"] if s.get("segment_id") == "engine")
             check("deck: two pictures can each carry three independently validated callouts", len(six_slide["callouts"]) == 6 and all(sum(c["image_id"] == ref for c in six_slide["callouts"]) == 3 for ref in ("im08", "im06")))
+            no_picture = copy.deepcopy(six_slide)
+            try:
+                deck.apply_overrides([no_picture], {"slides": [{"slide_id": six_slide["id"], "media": []}]}, by_id, {"F1", "F2", "F3"})
+                preserves_six = semantic(no_picture["callouts"]) == semantic(six_slide["callouts"]) and all(c["placement"] == "panel" for c in no_picture["callouts"])
+            except ValueError:
+                preserves_six = False
+            check("override: removal of two pictures retains both sets of captions", preserves_six)
             over_limit = False
             try:
                 deck.apply_overrides([copy.deepcopy(six_slide)], {"slides": [{"slide_id": six_slide["id"], "callouts": [{"id": six_slide["callouts"][-1]["id"], "image_id": "im08"}]}]}, by_id, {"F1", "F2", "F3"})

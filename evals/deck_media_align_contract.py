@@ -54,6 +54,29 @@ def run(check):
         deck.apply_overrides(rebuilt, store.read_json(did, "deck-overrides.json"), {i["id"]: i for i in images[:2]}, {"F1"})
         check("saved picture assignments and per-picture drags survive rebuild", rebuilt[0]["callouts"][0]["image_id"] == "im2"
               and rebuilt[0]["callouts"][0]["label_pos"] == {"x": .15, "y": .15})
+        before_media_edit = {name: store.read_json(did, name) for name in ("deck.json", "deck-overrides.json")}
+        media_only = api.patch(f"/api/demos/{did}/align/deck", json={"slides": [{"slide_id":"s1", "media":["im1"], "callouts":[]}]})
+        media_label = (store.read_json(did, "deck.json")["slides"][0].get("callouts") or [{}])[0]
+        check("media-only API edit retains existing feature text and evidence", media_only.status_code == 200
+              and all(media_label.get(key) == callout.get(key) for key in ("id", "text", "fact_ids", "reveal_on_line")))
+        check("media-only API edit retires stale saved part and drag instead of anchoring new illustration", media_only.status_code == 200
+              and media_label.get("image_id") == "im1" and media_label.get("placement") == "panel"
+              and not media_label.get("part") and media_label.get("anchor") is None and media_label.get("label_pos") is None)
+        if media_only.status_code == 200:
+            saved = store.read_json(did, "deck-overrides.json")["slides"][0]
+            check("media-only API edit does not save obsolete attachment geometry", all(not any(key in c for key in ("image_id", "part", "label_pos", "placement")) for c in saved.get("callouts", [])))
+        else:
+            check("media-only API edit does not save obsolete attachment geometry", False)
+        for name, value in before_media_edit.items(): store.write_json(did, name, value)
+        legacy = copy.deepcopy(before_media_edit["deck.json"])
+        legacy["slides"][0].update(image_id="im2", media=[legacy["slides"][0]["media"][1]])
+        store.write_json(did, "deck.json", legacy)
+        store.write_json(did, "deck-overrides.json", {"slides":[{"slide_id":"s1", "image_id":"im2", "callouts":[{"id":"c1", "image_id":"im2", "part":"bonnet", "label_pos":{"x":.15, "y":.15}}]}]})
+        legacy_edit = api.patch(f"/api/demos/{did}/align/deck", json={"slides":[{"slide_id":"s1", "image_id":"im1"}]})
+        legacy_label = store.read_json(did, "deck.json")["slides"][0]["callouts"][0]
+        check("legacy primary-picture edits retire old saved attachment geometry", legacy_edit.status_code == 200
+              and legacy_label["image_id"] == "im1" and legacy_label["placement"] == "panel" and legacy_label["anchor"] is None and not legacy_label["part"])
+        for name, value in before_media_edit.items(): store.write_json(did, name, value)
         for name, edit in [
             ("three pictures", {"media": ["im1", "im2", "im3"]}),
             ("excluded picture", {"media": ["im1", "im3"]}),
@@ -81,8 +104,61 @@ def run(check):
             "callouts": [{"id": "c1", "image_id": None}]}]})
         check("removing pictures accepts the editor's null callout attachment", result.status_code == 200
               and store.read_json(did, "deck.json")["slides"][0]["media"] == []
+              and len(store.read_json(did, "deck.json")["slides"][0]["callouts"]) == 1
               and all(c.get("placement") == "panel" and not c.get("anchor") for c in store.read_json(did, "deck.json")["slides"][0]["callouts"]))
         check("two-picture review makes no outbound requests", not any(mock.called for mock in blocked))
+
+        # Missing labels can be restored explicitly through the same review API;
+        # ordinary edits still cannot silently create unknown IDs.
+        creation_slide = {**copy.deepcopy(slide), "callouts":[], "fact_ids":["F1"],
+                          "lines":[{"id":"l1", "text":"Petrol engine", "fact_ids":["F1"]}]}
+        store.write_json(did, "deck.json", {"slides":[creation_slide]})
+        store.write_json(did, "deck-overrides.json", {"slides":[]})
+        und["facts"].extend([{"id":"F2", "claim":"Held", "value":"Held", "approved":False},
+                             {"id":"F3", "claim":"Other feature", "value":"Other", "approved":True}])
+        store.write_json(did, "understanding.json", und)
+        new_label = {"id":"s1-reviewed-feature", "create":True, "text":"Petrol engine", "fact_ids":["F1"],
+                     "reveal_on_line":0, "image_id":"im1"}
+        for name, update in (
+            ("ordinary unknown edit", {"create":False}),
+            ("missing citations", {"fact_ids":[]}), ("unknown citation", {"fact_ids":["missing"]}),
+            ("rejected citation", {"fact_ids":["F2"]}), ("foreign slide citation", {"fact_ids":["F3"]}),
+            ("unknown picture", {"image_id":"im3"}), ("invalid reveal", {"reveal_on_line":1}),
+            ("noninteger reveal", {"reveal_on_line":True}),
+            ("nontext label", {"text":None}), ("nontext part", {"part":{}}),
+            ("overlong label", {"text":"This source faithful feature label is longer than eight words"}),
+        ):
+            before = snapshot()
+            response = api.patch(f"/api/demos/{did}/align/deck", json={"slides":[{"slide_id":"s1", "callouts":[{**new_label, **update}]}]})
+            check(f"create: {name} rejected without artifact changes", response.status_code == (404 if name == "ordinary unknown edit" else 400) and snapshot() == before)
+        response = api.patch(f"/api/demos/{did}/align/deck", json={"slides":[{"slide_id":"s1", "callouts":[new_label]}]})
+        labels = store.read_json(did, "deck.json")["slides"][0]["callouts"]
+        check("create: explicit reviewed label saved with exact citations and reveal", response.status_code == 200 and len(labels) == 1
+              and all(labels[0].get(key) == new_label[key] for key in ("id", "text", "fact_ids", "reveal_on_line", "image_id")))
+        check("create: label defaults to a caption without guessing a part", bool(labels) and labels[0]["placement"] == "panel" and labels[0]["anchor"] is None)
+        before = snapshot()
+        repeated = api.patch(f"/api/demos/{did}/align/deck", json={"slides":[{"slide_id":"s1", "callouts":[new_label]}]})
+        check("create: duplicate ID is rejected without replacing reviewed wording", repeated.status_code == 400 and snapshot() == before)
+        restored = [copy.deepcopy(creation_slide)]
+        deck.apply_overrides(restored, store.read_json(did, "deck-overrides.json"), {"im1":images[0]}, {"F1", "F3"}, strict=False)
+        check("create: saved explicit label is restored after regeneration and stays idempotent", restored[0]["callouts"] == labels and bool(labels))
+        deck.apply_overrides(restored, store.read_json(did, "deck-overrides.json"), {"im1":images[0]}, {"F1", "F3"}, strict=False)
+        check("create: replay never duplicates the restored label", restored[0]["callouts"] == labels and len(labels) == 1)
+        retired = [copy.deepcopy(creation_slide)]
+        deck.apply_overrides(retired, store.read_json(did, "deck-overrides.json"), {"im1":images[0]}, {"F3"}, strict=False)
+        check("create: a later held fact cannot resurrect a saved label", retired[0]["callouts"] == [])
+        replacement = {**copy.deepcopy(creation_slide), "image_id":None, "media":[], "callouts":[]}
+        deck.apply_overrides([replacement], store.read_json(did, "deck-overrides.json"), {}, {"F1"}, strict=False)
+        check("create: excluded saved picture retains approved wording as an unanchored caption", len(replacement["callouts"]) == 1
+              and replacement["callouts"][0]["text"] == new_label["text"] and replacement["callouts"][0]["image_id"] is None
+              and replacement["callouts"][0]["placement"] == "panel" and replacement["callouts"][0]["anchor"] is None)
+        extras = [{**new_label, "id":f"s1-extra-{index}"} for index in (2, 3)]
+        response = api.patch(f"/api/demos/{did}/align/deck", json={"slides":[{"slide_id":"s1", "callouts":extras}]})
+        check("create: three explicit reviewed captions fit the existing per-picture cap", response.status_code == 200
+              and len(store.read_json(did, "deck.json")["slides"][0]["callouts"]) == 3)
+        before = snapshot()
+        response = api.patch(f"/api/demos/{did}/align/deck", json={"slides":[{"slide_id":"s1", "callouts":[{**new_label, "id":"s1-fourth"}]}]})
+        check("create: fourth label is rejected without changing approved wording", response.status_code == 400 and snapshot() == before)
 
 
 if __name__ == "__main__":

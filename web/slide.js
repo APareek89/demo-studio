@@ -103,6 +103,9 @@ export function renderSlide(slide, opts = {}) {
   });
   const panel = h("div", { class: "slide-panel" }, ...callouts.map((c, k) => h("div", { class: "item " + (c.placement === "overlay" && c.label_pos && c.anchor ? "overlay" : "panel"), "data-id": c.id, "data-image-id": owners.get(c.id).entry.image_id || "" },
     h("span", { class: "num" }, String(k + 1)), h("span", {}, c.text, c.fact_ids?.length ? h("div", { class: "cite" }, c.fact_ids.join(", ")) : null))));
+  // The common one-to-three-caption slide fits a wrapped phone rail. Larger
+  // reviewed groups retain their existing bounded, scrollable arrangement.
+  panel.classList.toggle("compact-tags", callouts.length > 0 && callouts.length <= 3);
   if (opts.fit) {
     const chapter = ({hero_open: "A closer look", intro: "Meet your next possibility", outcome: "Made for your everyday",
       proof: "Look a little closer", features: "The details that matter", establish: "Before you decide",
@@ -168,6 +171,7 @@ export function renderSlide(slide, opts = {}) {
       // The approved sample puts the whole image below a compact heading and
       // above its footer. Unanchored facts keep a fixed on-slide caption band.
       el.style.setProperty("--slide-panel-space", panelReserve + "px");
+      el.style.setProperty("--slide-footer-space", (foot?.offsetHeight || 0) + "px");
       const contentTop = headingBottom + (small ? 0 : 8), contentBottom = SH - (foot ? foot.offsetHeight : 30) - panelReserve - (small ? 12 : 10);
       const area = intake ? (small
           ? {x: 16, y: kind === "hero_open" ? 18 : SH * .23, w: SW - 32, h: SH * (kind === "hero_open" ? .55 : .57)}

@@ -1,5 +1,16 @@
 # Learning.MD — Demo Studio
 
+
+## 2026-09-24 — Slide continuity broke despite green geometry checks
+
+**Symptom:** the delivered CRETA run had seven picture-free and seventeen tag-free screens among eighteen narrated slides; paragraph cards and the optional gallery made the experience inconsistent. The gallery even replaced the closing car picture with the last feature picture. The user rejected it.
+
+**Why:** Deck discarded all model labels on proxy pictures, then its full-fact fallback often exceeded eight words. Manual visual review treated lack of literal pixel proof as a reason to remove the image instead of retaining a disclosed illustration and source-backed caption. The gallery hid native picture/tags while speech continued. Geometry tests used `every()` on empty image/tag arrays and approved exact paragraph text, so those tests never established the core product behavior.
+
+**Fix:** preserve validated captions on illustrations without anchors; keep labels but retire geometry on media edits; support explicit guarded label creation through Align; restore relevant uploaded pictures and34 reviewed tags; use the native slide renderer in both URL modes with consistent sans-serif headings. Phone review caught and fixed third-tag clipping and footer overlap. Narration, facts, runtime order and all56 recorded files remain byte-for-byte unchanged.
+
+**Prevention:** acceptance must require positive picture/tag presence on every actual speaking slide, map visible tags to narration lines, decode the unchanged clips, inspect full screenshots at desktop/phone sizes and verify both URL modes. Review the actual product experience before handing it back. A count of passing tests is supporting evidence, never a substitute. Exact failures and final receipts: `docs/qa/slide-continuity-2026-09-24/`.
+
 ## 2026-09-24 — A runtime repair lost the engine-to-gearbox boundary
 
 **Symptom:** the paid runtime answer cited the correct engine and gearbox facts but said “You can pair them with a 6-speed manual or an automatic”, after listing petrol, diesel and turbo petrol. The source does not offer a manual with the turbo engine.

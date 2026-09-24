@@ -1,0 +1,62 @@
+{
+  "before": {
+    "storage": "/private/tmp/demo-runtime-final-20260924/data",
+    "graph": "/private/tmp/demo-runtime-final-20260924/graph.sqlite",
+    "port": 8910,
+    "pid": 88526
+  },
+  "usage_sha256": "f90d094c2ce05f4603a3a53fbf8eb6a4c70585b3e0fe9f284085e337df677f30",
+  "purpose": "Load slide review corrections only; no automated provider request",
+  "after": {
+    "storage": "/private/tmp/demo-runtime-final-20260924/data",
+    "graph": "/private/tmp/demo-runtime-final-20260924/graph.sqlite",
+    "port": 8910,
+    "pid": 92400
+  },
+  "health": {
+    "anthropic": true,
+    "gemini": true,
+    "runware": true,
+    "gcloud_tts": false,
+    "storage": "local",
+    "sarvam": true,
+    "tts_provider": "sarvam",
+    "stt_provider": "sarvam",
+    "mock": false,
+    "model_tier": "eval",
+    "claude_model": "claude-haiku-4-5-20251001",
+    "claude_plan_model": "claude-haiku-4-5-20251001",
+    "claude_lite_model": "claude-haiku-4-5-20251001",
+    "gemini_image_model": "gemini-3.1-flash-lite-image",
+    "gemini_model": "gemini-3.6-flash",
+    "gemini_text_model": "gemini-3.5-flash-lite",
+    "gemini_tts_model": "gemini-3.1-flash-tts-preview",
+    "runware_text_model": "deepseek:v4@flash",
+    "runware_text_model_premium": "openai:gpt@5.5",
+    "build_providers": [
+      "gemini",
+      "claude",
+      "runware"
+    ],
+    "runtime_providers": [
+      "gemini",
+      "claude",
+      "runware"
+    ],
+    "runtime_timeout": 15.0,
+    "runtime_hedge_enabled": false,
+    "runtime_hedge_delay_s": 5.0,
+    "claude_runtime_model": "claude-haiku-4-5-20251001",
+    "gemini_runtime_model": "gemini-3.5-flash-lite",
+    "cloud": {
+      "enabled": false,
+      "why": "off (mock or CLOUD_SYNC=0)",
+      "account": "",
+      "region": "",
+      "bucket": "",
+      "tables": {}
+    }
+  },
+  "bundle_version": 2,
+  "usage_unchanged": true
+}

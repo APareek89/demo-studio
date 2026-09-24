@@ -1,0 +1,215 @@
+PASS 1440px dock is white
+PASS 1440px stage begins directly below header
+PASS 1440px slide spans the full player width without a side rail
+PASS 1440px slide plus portrait guidance occupies75percent of the player
+PASS 1440px top bar and slide are white and borderless
+PASS 1440px CTA, contact, long answer and capture leave picture and dock fixed
+PASS 1440px caption remains scrollable
+PASS 1440px microphone stays inside the visible dock
+PASS 1440px contact form does not cover the conversation dock
+PASS 1440px opening film hides normal header/stage/drawer
+PASS 1440px film Skip remains below video
+PASS 1440px Align composer and controls remain within panel
+PASS 1440px Attach and Send share one row
+PASS 1440px Rehearse has one feedback conversation without an oversized header
+PASS 1440px Rehearse player and feedback fit the available viewport
+PASS 850px dock is white
+PASS 850px stage begins directly below header
+PASS 850px slide spans the full player width without a side rail
+PASS 850px slide plus portrait guidance occupies75percent of the player
+PASS 850px top bar and slide are white and borderless
+PASS 850px CTA, contact, long answer and capture leave picture and dock fixed
+PASS 850px caption remains scrollable
+PASS 850px microphone stays inside the visible dock
+PASS 850px contact form does not cover the conversation dock
+PASS 850px opening film hides normal header/stage/drawer
+PASS 850px film Skip remains below video
+PASS 850px Align composer and controls remain within panel
+PASS 850px Attach and Send share one row
+PASS 850px Rehearse has one feedback conversation without an oversized header
+PASS 850px Rehearse player and feedback fit the available viewport
+PASS 390px dock is white
+PASS 390px stage begins directly below header
+PASS 390px slide spans the full player width without a side rail
+PASS 390px slide plus portrait guidance occupies75percent of the player
+PASS 390px top bar and slide are white and borderless
+PASS 390px CTA, contact, long answer and capture leave picture and dock fixed
+PASS 390px caption remains scrollable
+PASS 390px microphone stays inside the visible dock
+PASS 390px contact form does not cover the conversation dock
+PASS 390px opening film hides normal header/stage/drawer
+PASS 390px film Skip remains below video
+PASS 390px Align composer and controls remain within panel
+PASS 390px Attach and Send share one row
+PASS 390px Rehearse has one feedback conversation without an oversized header
+PASS 390px Rehearse player and feedback fit the available viewport
+PASS crossed leaders use the existing rail
+PASS collision fallback preserves reviewed positions and anchors
+PASS overlapping label boxes use the existing rail
+PASS editing retains draggable labels while hiding crossed leaders
+PASS separate picture coordinates do not cause a false cross
+PASS bulk review counts only eligible citation-held facts
+PASS retry sends the bounded-review action
+PASS retry reports unchanged held facts and preserved conflicts
+PASS restore is explicit owner approval and sends restore action
+PASS returned conflict and manual exclusions remain visibly excluded
+PASS 1440px marine is applied from the bundle
+PASS 1440px marine keeps small trusted anchors on the picture
+PASS 1440px marine shows feature text on the slide without label collisions
+PASS 1440px marine uses overlay labels when the slide has room
+PASS 1440px marine visible connectors start at label edges, outside the text
+PASS 1440px marine keeps reviewed image ratio and saved coordinates
+PASS 1440px marine hides raw source IDs from customer labels
+PASS 1440px marine has no evidence rail or off-slide details
+PASS 1440px sage is applied from the bundle
+PASS 1440px sage keeps small trusted anchors on the picture
+PASS 1440px sage shows feature text on the slide without label collisions
+PASS 1440px sage uses overlay labels when the slide has room
+PASS 1440px sage visible connectors start at label edges, outside the text
+PASS 1440px sage keeps reviewed image ratio and saved coordinates
+PASS 1440px sage hides raw source IDs from customer labels
+PASS 1440px sage has no evidence rail or off-slide details
+PASS 1440px graphite is applied from the bundle
+PASS 1440px graphite keeps small trusted anchors on the picture
+PASS 1440px graphite shows feature text on the slide without label collisions
+PASS 1440px graphite uses overlay labels when the slide has room
+PASS 1440px graphite visible connectors start at label edges, outside the text
+PASS 1440px graphite keeps reviewed image ratio and saved coordinates
+PASS 1440px graphite hides raw source IDs from customer labels
+PASS 1440px graphite has no evidence rail or off-slide details
+PASS 1440px two pictures retain separate anchors and native ratios
+PASS 1440px two-picture feature text remains visible and separate
+PASS 850px marine is applied from the bundle
+PASS 850px marine keeps small trusted anchors on the picture
+PASS 850px marine shows feature text on the slide without label collisions
+PASS 850px marine uses overlay labels when the slide has room
+PASS 850px marine visible connectors start at label edges, outside the text
+PASS 850px marine keeps reviewed image ratio and saved coordinates
+PASS 850px marine hides raw source IDs from customer labels
+PASS 850px marine has no evidence rail or off-slide details
+PASS 850px sage is applied from the bundle
+PASS 850px sage keeps small trusted anchors on the picture
+PASS 850px sage shows feature text on the slide without label collisions
+PASS 850px sage uses overlay labels when the slide has room
+PASS 850px sage visible connectors start at label edges, outside the text
+PASS 850px sage keeps reviewed image ratio and saved coordinates
+PASS 850px sage hides raw source IDs from customer labels
+PASS 850px sage has no evidence rail or off-slide details
+PASS 850px graphite is applied from the bundle
+PASS 850px graphite keeps small trusted anchors on the picture
+PASS 850px graphite shows feature text on the slide without label collisions
+PASS 850px graphite uses overlay labels when the slide has room
+PASS 850px graphite visible connectors start at label edges, outside the text
+PASS 850px graphite keeps reviewed image ratio and saved coordinates
+PASS 850px graphite hides raw source IDs from customer labels
+PASS 850px graphite has no evidence rail or off-slide details
+PASS 850px two pictures retain separate anchors and native ratios
+PASS 850px two-picture feature text remains visible and separate
+PASS 390px marine is applied from the bundle
+PASS 390px marine keeps small trusted anchors on the picture
+PASS 390px marine shows feature text on the slide without label collisions
+PASS 390px marine uses overlay labels when the slide has room
+PASS 390px marine visible connectors start at label edges, outside the text
+PASS 390px marine keeps reviewed image ratio and saved coordinates
+PASS 390px marine hides raw source IDs from customer labels
+PASS 390px marine has no evidence rail or off-slide details
+PASS 390px sage is applied from the bundle
+PASS 390px sage keeps small trusted anchors on the picture
+PASS 390px sage shows feature text on the slide without label collisions
+PASS 390px sage uses overlay labels when the slide has room
+PASS 390px sage visible connectors start at label edges, outside the text
+PASS 390px sage keeps reviewed image ratio and saved coordinates
+PASS 390px sage hides raw source IDs from customer labels
+PASS 390px sage has no evidence rail or off-slide details
+PASS 390px graphite is applied from the bundle
+PASS 390px graphite keeps small trusted anchors on the picture
+PASS 390px graphite shows feature text on the slide without label collisions
+PASS 390px graphite uses overlay labels when the slide has room
+PASS 390px graphite visible connectors start at label edges, outside the text
+PASS 390px graphite keeps reviewed image ratio and saved coordinates
+PASS 390px graphite hides raw source IDs from customer labels
+PASS 390px graphite has no evidence rail or off-slide details
+PASS 390px two pictures retain separate anchors and native ratios
+PASS 390px two-picture feature text remains visible and separate
+PASS colliding reviewed label positions produce readable on-slide text without changing anchors
+PASS short phone viewport keeps a full-width slide while reserving readable controls
+PASS short phone keeps its feature labels on the slide without overlaps
+PASS very short viewport reserves non-overlapping header, slide, CTA and dock regions
+PASS very short viewport keeps microphone and typed reply visible while feedback scrolls
+PASS very short phone keeps one readable caption line and reply feedback
+PASS 1440x640 keeps reply chips reachable in a visible scrollable feedback area
+PASS 1440x640 keeps microphone and typed reply inside the fixed dock
+PASS 1440x720 keeps reply chips reachable in a visible scrollable feedback area
+PASS 1440x720 keeps microphone and typed reply inside the fixed dock
+PASS 1440x900 explicit empty media displays reviewed speech verbatim without picture artifacts
+PASS 1440x900 text card remains inside the unchanged slide with readable type
+PASS 1440x900 speech reveal hides future text while reserving its geometry
+PASS 1440x900 reveal and citation scrolling preserve stage, page and text layout
+PASS 1440x900 long reviewed text scrolls within its card without growing the stage
+PASS 390x844 explicit empty media displays reviewed speech verbatim without picture artifacts
+PASS 390x844 text card remains inside the unchanged slide with readable type
+PASS 390x844 speech reveal hides future text while reserving its geometry
+PASS 390x844 reveal and citation scrolling preserve stage, page and text layout
+PASS 390x844 long reviewed text scrolls within its card without growing the stage
+PASS 390x400 explicit empty media displays reviewed speech verbatim without picture artifacts
+PASS 390x400 text card remains inside the unchanged slide with readable type
+PASS 390x400 speech reveal hides future text while reserving its geometry
+PASS 390x400 reveal and citation scrolling preserve stage, page and text layout
+PASS 390x400 long reviewed text scrolls within its card without growing the stage
+PASS image-bearing slides retain their existing picture renderer
+PASS an empty slide retains its no-content placeholder
+PASS Align editing retains its image picker and callout renderer
+PASS text-card lifecycle removes the view without changing reviewed data
+PASS three palettes stay inside the existing six approval cards
+PASS palette selection saves the exact setting and reflects reopened Visuals
+PASS reselecting the saved palette sends no change
+PASS blocked palette save keeps selection and re-enables its button
+PARITY ASSET: retained source photograph, read-only
+PASS 1440px reference and app use the same image pixels and native ratio
+PASS 1440px compact header and slide retain75percent space with portrait guidance
+PASS 1440px workbook header and slide are white without a dark gradient
+PASS 1440px workbook heading is half-sized and close to the header
+PASS 1440px composer, label and hint heights match the approved sample
+PASS 1440px readable caption type and compact feature card sizes are preserved
+PASS 1440px native-ratio picture is centered below the smaller heading
+PASS 1440px white conversation and CTA footer follow the sample order
+PASS 1440px sample feature words and unchanged trusted anchors remain visible without overlaps
+PASS 1440px sample anchors are small unnumbered dots, not badges
+PASS 1440px answer, listening and callback keep sample frame dimensions stable
+PASS 850px reference and app use the same image pixels and native ratio
+PASS 850px compact header and slide retain75percent space with portrait guidance
+PASS 850px workbook header and slide are white without a dark gradient
+PASS 850px workbook heading is half-sized and close to the header
+PASS 850px composer, label and hint heights match the approved sample
+PASS 850px readable caption type and compact feature card sizes are preserved
+PASS 850px native-ratio picture is centered below the smaller heading
+PASS 850px white conversation and CTA footer follow the sample order
+PASS 850px sample feature words and unchanged trusted anchors remain visible without overlaps
+PASS 850px sample anchors are small unnumbered dots, not badges
+PASS 850px answer, listening and callback keep sample frame dimensions stable
+PASS 390px reference and app use the same image pixels and native ratio
+PASS 390px compact header and slide retain75percent space with portrait guidance
+PASS 390px workbook header and slide are white without a dark gradient
+PASS 390px workbook heading is half-sized and close to the header
+PASS 390px composer, label and hint heights match the approved sample
+PASS 390px readable caption type and compact feature card sizes are preserved
+PASS 390px native-ratio picture is centered below the smaller heading
+PASS 390px white conversation and CTA footer follow the sample order
+PASS 390px sample feature words and unchanged trusted anchors remain visible without overlaps
+PASS 390px sample anchors are small unnumbered dots, not badges
+PASS 390px answer, listening and callback keep sample frame dimensions stable
+MOCK PARITY BUILD: real Bundle, measured WAV minimum, isolated storage, OUTBOUND_ATTEMPTS 0
+PASS a newly built isolated mock bundle uses the same sample renderer and recorded publication gate
+PASS long reviewed routes keep the first navigation stop reachable
+PASS long reviewed routes keep the last navigation stop reachable
+PASS 1440px two pictures keep all six reviewed labels and their original anchor owners
+PASS 1440px six-label picture layout has no overlapping text boxes
+PASS 1440px missing anchor remains a visible on-slide detail without a guessed marker
+PASS 1440px proxy keeps its illustration label
+PASS 390px two pictures keep all six reviewed labels and their original anchor owners
+PASS 390px six-label picture layout has no overlapping text boxes
+PASS 390px missing anchor remains a visible on-slide detail without a guessed marker
+PASS 390px proxy keeps its illustration label
+PASS no browser exceptions
+PASS no external request or mutation attempts
+UI layout: 212/212 passed; isolated headless browser, zero outbound attempts

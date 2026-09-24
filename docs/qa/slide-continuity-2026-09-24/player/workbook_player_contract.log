@@ -1,0 +1,103 @@
+PASS 1440x900 welcome stays inside viewport
+PASS 1440x900 hero fills below-header area without distortion
+PASS 1440x900 welcome has no lower dock and accessible start actions
+PASS 1440x900 intake owns the same full hero area and no lower panel
+PASS 1440x900 intake control remains reachable: Your answer
+PASS 1440x900 intake control remains reachable: Websites I can check (optional)
+PASS 1440x900 intake control remains reachable: Skip, start the demo
+PASS 1440x900 closing intake preserves a reserved action footer
+PASS 1440x900 slide is white, borderless with half-size heading
+PASS 1440x900 actual tour header remains fully in the viewport
+PASS 1440x900 two supplied pictures remain left and right with native proportions
+PASS 1440x900 labels stay bounded, clear and attached to reviewed image coordinates
+PASS 1440x900 portrait guidance is truthful and nonblocking
+PASS 1440x900 transient conversation and CTA retain slide geometry
+PASS 1366x768 welcome stays inside viewport
+PASS 1366x768 hero fills below-header area without distortion
+PASS 1366x768 welcome has no lower dock and accessible start actions
+PASS 1366x768 intake owns the same full hero area and no lower panel
+PASS 1366x768 intake control remains reachable: Your answer
+PASS 1366x768 intake control remains reachable: Websites I can check (optional)
+PASS 1366x768 intake control remains reachable: Skip, start the demo
+PASS 1366x768 closing intake preserves a reserved action footer
+PASS 1366x768 slide is white, borderless with half-size heading
+PASS 1366x768 actual tour header remains fully in the viewport
+PASS 1366x768 two supplied pictures remain left and right with native proportions
+PASS 1366x768 labels stay bounded, clear and attached to reviewed image coordinates
+PASS 1366x768 portrait guidance is truthful and nonblocking
+PASS 1366x768 transient conversation and CTA retain slide geometry
+PASS 850x650 welcome stays inside viewport
+PASS 850x650 hero fills below-header area without distortion
+PASS 850x650 welcome has no lower dock and accessible start actions
+PASS 850x650 intake owns the same full hero area and no lower panel
+PASS 850x650 intake control remains reachable: Your answer
+PASS 850x650 intake control remains reachable: Websites I can check (optional)
+PASS 850x650 intake control remains reachable: Skip, start the demo
+PASS 850x650 closing intake preserves a reserved action footer
+PASS 850x650 slide is white, borderless with half-size heading
+PASS 850x650 actual tour header remains fully in the viewport
+PASS 850x650 two supplied pictures remain left and right with native proportions
+PASS 850x650 labels stay bounded, clear and attached to reviewed image coordinates
+PASS 850x650 portrait guidance is truthful and nonblocking
+PASS 850x650 transient conversation and CTA retain slide geometry
+PASS 390x844 welcome stays inside viewport
+PASS 390x844 hero fills below-header area without distortion
+PASS 390x844 welcome has no lower dock and accessible start actions
+PASS 390x844 intake owns the same full hero area and no lower panel
+PASS 390x844 intake control remains reachable: Your answer
+PASS 390x844 intake control remains reachable: Websites I can check (optional)
+PASS 390x844 intake control remains reachable: Skip, start the demo
+PASS 390x844 closing intake preserves a reserved action footer
+PASS 390x844 slide is white, borderless with half-size heading
+PASS 390x844 actual tour header remains fully in the viewport
+PASS 390x844 two supplied pictures remain left and right with native proportions
+PASS 390x844 labels stay bounded, clear and attached to reviewed image coordinates
+PASS 390x844 portrait guidance is truthful and nonblocking
+PASS 390x844 transient conversation and CTA retain slide geometry
+PASS 844x390 welcome stays inside viewport
+PASS 844x390 hero fills below-header area without distortion
+PASS 844x390 welcome has no lower dock and accessible start actions
+PASS 844x390 intake owns the same full hero area and no lower panel
+PASS 844x390 intake control remains reachable: Your answer
+PASS 844x390 intake control remains reachable: Websites I can check (optional)
+PASS 844x390 intake control remains reachable: Skip, start the demo
+PASS 844x390 closing intake preserves a reserved action footer
+PASS 844x390 slide is white, borderless with half-size heading
+PASS 844x390 actual tour header remains fully in the viewport
+PASS 844x390 two supplied pictures remain left and right with native proportions
+PASS 844x390 labels stay bounded, clear and attached to reviewed image coordinates
+PASS 844x390 portrait guidance is truthful and nonblocking
+PASS 844x390 transient conversation and CTA retain slide geometry
+PASS 390x400 welcome stays inside viewport
+PASS 390x400 hero fills below-header area without distortion
+PASS 390x400 welcome has no lower dock and accessible start actions
+PASS 390x400 intake owns the same full hero area and no lower panel
+PASS 390x400 intake control remains reachable: Your answer
+PASS 390x400 intake control remains reachable: Websites I can check (optional)
+PASS 390x400 intake control remains reachable: Skip, start the demo
+PASS 390x400 closing intake preserves a reserved action footer
+PASS 390x400 slide is white, borderless with half-size heading
+PASS 390x400 actual tour header remains fully in the viewport
+PASS 390x400 two supplied pictures remain left and right with native proportions
+PASS 390x400 labels stay bounded, clear and attached to reviewed image coordinates
+PASS 390x400 portrait guidance is truthful and nonblocking
+PASS 390x400 transient conversation and CTA retain slide geometry
+PASS failed or absent hero falls back to an uploaded image
+PASS selected palette controls text and dark button background
+PASS shared Align/Rehearse slide preview uses the same white template
+PASS 1366x768 actual Rehearse player and feedback stay inside the viewport
+PASS 1366x768 embedded welcome uses the same full-area hero and white header
+PASS 1366x768 embedded actual slide and composer share the bounded player
+PASS 844x390 actual Rehearse player and feedback stay inside the viewport
+PASS 844x390 embedded welcome uses the same full-area hero and white header
+PASS 844x390 embedded actual slide and composer share the bounded player
+PASS 390x844 actual Rehearse player and feedback stay inside the viewport
+PASS 390x844 embedded welcome uses the same full-area hero and white header
+PASS 390x844 embedded actual slide and composer share the bounded player
+PASS marine active microphone, Send and dark CTA text contrast reaches4.5
+PASS sage active microphone, Send and dark CTA text contrast reaches4.5
+PASS graphite active microphone, Send and dark CTA text contrast reaches4.5
+PASS no browser exceptions
+PASS no external requests or mutations
+Workbook player: 101/101; external requests0; page errors0
+OUTBOUND_ATTEMPTS 0

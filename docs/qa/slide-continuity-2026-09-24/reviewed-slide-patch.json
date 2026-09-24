@@ -1,0 +1,567 @@
+{
+  "slides": [
+    {
+      "slide_id": "sl01",
+      "media": [
+        "im_pdf_288fd534763aa0f85ff5"
+      ],
+      "callouts": [
+        {
+          "id": "sl01-c1",
+          "text": "Five-door compact SUV",
+          "fact_ids": [
+            "F033",
+            "F038"
+          ],
+          "image_id": "im_pdf_288fd534763aa0f85ff5",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0
+        }
+      ]
+    },
+    {
+      "slide_id": "sl02",
+      "media": [
+        "im03"
+      ],
+      "callouts": [
+        {
+          "id": "sl02-review-1",
+          "text": "Six airbags as standard",
+          "fact_ids": [
+            "F090"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl02-review-2",
+          "text": "Panoramic roof on specified trims",
+          "fact_ids": [
+            "F135"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl02-review-3",
+          "text": "Gearboxes matched to each engine",
+          "fact_ids": [
+            "F150"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 1,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl03",
+      "media": [
+        "im11",
+        "im08"
+      ],
+      "callouts": [
+        {
+          "id": "sl03-review-1",
+          "text": "Petrol: six-speed manual",
+          "fact_ids": [
+            "F080",
+            "F150"
+          ],
+          "image_id": "im11",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl03-review-2",
+          "text": "Petrol: IVT automatic",
+          "fact_ids": [
+            "F080",
+            "F150"
+          ],
+          "image_id": "im08",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl04",
+      "media": [
+        "im11",
+        "im08"
+      ],
+      "callouts": [
+        {
+          "id": "sl04-review-1",
+          "text": "Diesel: six-speed manual",
+          "fact_ids": [
+            "F084",
+            "F150"
+          ],
+          "image_id": "im11",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl04-review-2",
+          "text": "Diesel: six-speed automatic",
+          "fact_ids": [
+            "F084",
+            "F150"
+          ],
+          "image_id": "im08",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl05",
+      "media": [
+        "im08"
+      ],
+      "callouts": [
+        {
+          "id": "sl05-review-1",
+          "text": "Turbo petrol: seven-speed dual-clutch automatic",
+          "fact_ids": [
+            "F088",
+            "F150"
+          ],
+          "image_id": "im08",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl06",
+      "media": [
+        "im_pdf_98d8731144b7b826dbcb",
+        "im_pdf_1d4d3c14bdba2d4d67f4"
+      ],
+      "callouts": [
+        {
+          "id": "sl06-review-1",
+          "text": "SX / SX Premium: diamond-cut alloys",
+          "fact_ids": [
+            "F052"
+          ],
+          "image_id": "im_pdf_98d8731144b7b826dbcb",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl06-review-2",
+          "text": "King: larger diamond-cut alloys",
+          "fact_ids": [
+            "F053"
+          ],
+          "image_id": "im_pdf_98d8731144b7b826dbcb",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl06-review-3",
+          "text": "Knight variants: matte-black alloys",
+          "fact_ids": [
+            "F054"
+          ],
+          "image_id": "im_pdf_1d4d3c14bdba2d4d67f4",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl07",
+      "media": [
+        "im_pdf_333fb98c5e3b93c4ae7d"
+      ],
+      "callouts": [
+        {
+          "id": "sl07-review-1",
+          "text": "E / EX: projector headlamps",
+          "fact_ids": [
+            "F055"
+          ],
+          "image_id": "im_pdf_333fb98c5e3b93c4ae7d",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl07-review-2",
+          "text": "EX(O) upwards: LED headlamps and taillamps",
+          "fact_ids": [
+            "F056",
+            "F057"
+          ],
+          "image_id": "im_pdf_333fb98c5e3b93c4ae7d",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl08",
+      "media": [
+        "im_pdf_0b62835448ea81c472d0"
+      ],
+      "callouts": [
+        {
+          "id": "sl08-review-1",
+          "text": "60:40 split rear seat",
+          "fact_ids": [
+            "F164"
+          ],
+          "image_id": "im_pdf_0b62835448ea81c472d0",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl09",
+      "media": [
+        "im14"
+      ],
+      "callouts": [
+        {
+          "id": "sl09-review-1",
+          "text": "Flexible luggage space",
+          "fact_ids": [
+            "F148"
+          ],
+          "image_id": "im14",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl09-review-2",
+          "text": "Five seats; split-folding rear seat",
+          "fact_ids": [
+            "F164"
+          ],
+          "image_id": "im14",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl10",
+      "media": [
+        "im_pdf_e7722bffe4b0d6394547"
+      ],
+      "callouts": [
+        {
+          "id": "sl10-review-1",
+          "text": "Six airbags on every variant",
+          "fact_ids": [
+            "F090"
+          ],
+          "image_id": "im_pdf_e7722bffe4b0d6394547",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl10-review-2",
+          "text": "Assistance does not replace attentive driving",
+          "fact_ids": [
+            "F182"
+          ],
+          "image_id": "im_pdf_e7722bffe4b0d6394547",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl11",
+      "media": [
+        "im03"
+      ],
+      "callouts": [
+        {
+          "id": "sl11-review-1",
+          "text": "ADAS: King, King Knight, Lounge Edition",
+          "fact_ids": [
+            "F091"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl11-review-2",
+          "text": "Stop-and-go cruise: automatic versions of those trims",
+          "fact_ids": [
+            "F091"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl12",
+      "media": [
+        "im09"
+      ],
+      "callouts": [
+        {
+          "id": "sl12-review-1",
+          "text": "Wireless mirroring: adapter on specified trims",
+          "fact_ids": [
+            "F192"
+          ],
+          "image_id": "im09",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl12-review-2",
+          "text": "Phone compatibility required",
+          "fact_ids": [
+            "F192"
+          ],
+          "image_id": "im09",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl13",
+      "media": [
+        "im_pdf_8a26e12e6c0b6fb1dbe1"
+      ],
+      "callouts": [
+        {
+          "id": "sl13-review-1",
+          "text": "Bluelink: SX and above",
+          "fact_ids": [
+            "F192"
+          ],
+          "image_id": "im_pdf_8a26e12e6c0b6fb1dbe1",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl13-review-2",
+          "text": "Requires power and network connectivity",
+          "fact_ids": [
+            "F180"
+          ],
+          "image_id": "im_pdf_8a26e12e6c0b6fb1dbe1",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl13-review-3",
+          "text": "Alexa device purchased separately",
+          "fact_ids": [
+            "F192"
+          ],
+          "image_id": "im_pdf_8a26e12e6c0b6fb1dbe1",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl14",
+      "media": [
+        "im07"
+      ],
+      "callouts": [
+        {
+          "id": "sl14-review-1",
+          "text": "Voice-enabled panoramic roof on specified trims",
+          "fact_ids": [
+            "F135"
+          ],
+          "image_id": "im07",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl15",
+      "media": [
+        "im03"
+      ],
+      "callouts": [
+        {
+          "id": "sl15-review-1",
+          "text": "Dated source price; confirm with dealer",
+          "fact_ids": [
+            "F198"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl15-review-2",
+          "text": "Taxes, registration and insurance are extra",
+          "fact_ids": [
+            "F198"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl16",
+      "media": [
+        "im05"
+      ],
+      "callouts": [
+        {
+          "id": "sl16-review-1",
+          "text": "Wireless charging: compatible phones on specified trims",
+          "fact_ids": [
+            "F140"
+          ],
+          "image_id": "im05",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl17",
+      "media": [
+        "im03"
+      ],
+      "callouts": [
+        {
+          "id": "sl17-review-1",
+          "text": "Up to seven years: petrol variants only",
+          "fact_ids": [
+            "F185"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl17-review-2",
+          "text": "Extended warranty packages cost extra",
+          "fact_ids": [
+            "F181"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    },
+    {
+      "slide_id": "sl18",
+      "media": [
+        "im03"
+      ],
+      "callouts": [
+        {
+          "id": "sl18-review-1",
+          "text": "Specifications and availability may change",
+          "fact_ids": [
+            "F177",
+            "F179",
+            "F184"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        },
+        {
+          "id": "sl18-review-2",
+          "text": "Some equipment costs extra",
+          "fact_ids": [
+            "F178"
+          ],
+          "image_id": "im03",
+          "part": "",
+          "placement": "panel",
+          "reveal_on_line": 0,
+          "create": true
+        }
+      ]
+    }
+  ]
+}

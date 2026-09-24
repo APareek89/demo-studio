@@ -1,5 +1,12 @@
 # Loop.MD — Demo Studio
 
+## Slide continuity restoration — latest acceptance · 24 September 2026
+
+Loop remains off.15scoped suites /2,635overlapping reported checks, all green: backend8suites654; native adapter18, player HTML87, recorder39; responsive layout212, workbook101, Studio integration19; actual published-v3 screenshots/render1505. Required qa_deck399/399, qa_accept24/24, smoke3/3 and full mock journey28/28 (194.22s synthetic). Touched Deck media79/79, media Align39/39, visual25/25 and Align review57/57. Independent6APIcases and8stable-reveal comparisons are additional.
+
+Actual review covers all20slides/18speaking slides,88states at1440/390px with/without the legacy walkthrough URL. Positive picture/tag presence, exact current-line tag identity, native source loading, bounds, no overlaps, sans-serif headings, stable earlier tags and unchanged20decoded recorded clips are required. Script/plan/registry, all56stored recordings and usage remain unchanged. Captures are renderer acceptance, with no natural-audio/microphone claim; player contracts use synthetic speech. Provider calls0. Initial mobile failure1369/1417 is retained, followed by fixed rail wrapping/footer clearance and final1505/1505; full screenshots/counts/hashes/FMEA are in `docs/qa/slide-continuity-2026-09-24/`. This supersedes previous claims that empty picture/tag arrays and exact paragraph cards established presentation quality. No master/AWS release.
+
+
 ## Runtime recovery — acceptance plan · 24 September 2026
 
 Finite QA only; recurring loop remains off. Anand authorizes one paid final journey after the complete isolated mock pass, using only the supplied16JPGs and49-page PDF. Work stays on `codex/sales-trainer-flow`; master/AWS require his later hands-on approval. No protected demo or port8896 operations.

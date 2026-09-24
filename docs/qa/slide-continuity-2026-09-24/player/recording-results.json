@@ -1,0 +1,163 @@
+{
+  "results": [
+    {
+      "name": "flag-off speech 1 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off speech 2 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off speech 3 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off speech 4 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off speech 5 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off speech 6 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off speech 7 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-off full tour reaches recap with unchanged bundle",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 1 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 2 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 3 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 4 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 5 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 6 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on speech 7 keeps its current native picture and revealed tags",
+      "passed": true
+    },
+    {
+      "name": "flag-on full tour reaches recap with unchanged bundle",
+      "passed": true
+    },
+    {
+      "name": "flag preserves narrated text, logical timing and public checkpoints",
+      "passed": true
+    },
+    {
+      "name": "1280x720 reduce=False shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "1280x720 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "1280x720 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "1024x640 reduce=False shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "1024x640 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "1024x640 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "800x600 reduce=False shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "800x600 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "800x600 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "700x600 reduce=False shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "700x600 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "700x600 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "699x600 reduce=False shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "699x600 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "699x600 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "390x640 reduce=False shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "390x640 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "390x640 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "1280x720 reduce=True shows the native slide at speech start",
+      "passed": true
+    },
+    {
+      "name": "1280x720 pause retains the same photo without presentation movement",
+      "passed": true
+    },
+    {
+      "name": "1280x720 resume retains the narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "no browser exceptions or external/mutation requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "rejected": [],
+  "boundary": "Real mountPlayer and supplied bundle; controlled local speech ends. Native current-photo/tag continuity replaces historical gallery-phase assertions. No paid calls, microphone or voice-quality claim."
+}

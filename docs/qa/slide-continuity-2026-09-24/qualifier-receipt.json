@@ -1,0 +1,23 @@
+{
+  "request": {
+    "slides": [
+      {
+        "slide_id": "sl18",
+        "callouts": [
+          {
+            "id": "sl18-review-2",
+            "text": "Some equipment may cost extra",
+            "fact_ids": [
+              "F178"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "version": 3,
+  "reason": "Independent source review: retain may from F178",
+  "audio_script_registry_usage_unchanged": true,
+  "provider_calls_added": 0,
+  "outbound_attempts": 0
+}

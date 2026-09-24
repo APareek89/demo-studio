@@ -1,0 +1,77 @@
+[
+  {
+    "suite": "deck_media_contract",
+    "exit": 0,
+    "seconds": 0.69,
+    "summary": [
+      "Deck media: 79/79 passed",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "deck_media_align_contract",
+    "exit": 0,
+    "seconds": 1.89,
+    "summary": [
+      "39/39 deck media Align contracts passed",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "visual_alignment_contract",
+    "exit": 0,
+    "seconds": 0.72,
+    "summary": [
+      "25/25 visual alignment contracts passed",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "align_review_contract",
+    "exit": 0,
+    "seconds": 1.89,
+    "summary": [
+      "Align review contracts: 57/57",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "qa_deck",
+    "exit": 0,
+    "seconds": 6.7,
+    "summary": [
+      "399/399 deck cases pass",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "qa_accept",
+    "exit": 0,
+    "seconds": 3.45,
+    "summary": [
+      "24/24 cases behave as required",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "smoke_mock",
+    "exit": 0,
+    "seconds": 5.31,
+    "summary": [
+      "SMOKE OK dm_dca767ec",
+      "SMOKE OK (phase 2) dm_dca767ec",
+      "SMOKE OK (on-demand rehearsal) dm_dca767ec",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "release_mock_contract",
+    "exit": 0,
+    "seconds": 28.6,
+    "summary": [
+      "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+      "OUTBOUND_ATTEMPTS 0",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "scope": "Slide-first recovery; the compatible walkthrough URL delegates native photos/tags immediately without gallery transitions. Historical WP12 motion results are not current acceptance.",
+  "source_sha256": {
+    "web/player/walkthrough.js": "973e747c0c853cff512fbc8287afc8cdda0e5931d7a316a84ab5d41249ab4628",
+    "web/player-ui.css": "6cff30d53d91229085ee5cf00d7b4af0dbfef5469d72fde1056bd16242f62499",
+    "evals/player_walkthrough_contract.cjs": "5debb8663f7f59bdd710abdbf6b96b37ea6c495309734108bd5a1cf3849dbe8b",
+    "evals/player_contract.html": "dfb31f6bda0db2195a8fca1d59adef1f8e5aa68fac518b5ed76e48fb506fd33c",
+    "evals/wp12_browser_acceptance.py": "4e3352ab03b5fa91bc2e66873da90284208351aa103238171cb9d323dd7f81dd"
+  },
+  "checks": {
+    "native_adapter": {
+      "passed": 18,
+      "total": 18,
+      "log": "../native-slide-state.log"
+    },
+    "player_html": {
+      "passed": 87,
+      "total": 87,
+      "report": "html/player-html.json"
+    },
+    "native_recorder": {
+      "passed": 39,
+      "total": 39,
+      "report": "recording/recording-results.json"
+    }
+  },
+  "boundaries": [
+    "No provider calls or production data changes",
+    "MOCK_LLM=1 and isolated temporary storage",
+    "External sockets blocked; zero attempts",
+    "Synthetic local speech ends; no acoustic, provider or real-audio claim",
+    "Actual reviewed-Bundle continuity is owned by the independent acceptance agent"
+  ]
+}
