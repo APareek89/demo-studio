@@ -14,7 +14,7 @@ test_rewrite_preserves_unflagged_lines_and_repairs_whole_ideas (__main__.Narrati
 test_story_intent_visual_order_and_editorial_notes_reach_author (__main__.NarrativeRolesContract.test_story_intent_visual_order_and_editorial_notes_reach_author) ... ok
 
 ----------------------------------------------------------------------
-Ran 14 tests in 0.054s
+Ran 14 tests in 0.062s
 
 OK
 OUTBOUND_ATTEMPTS 0

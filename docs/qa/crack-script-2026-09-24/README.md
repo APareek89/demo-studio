@@ -8,7 +8,7 @@ Seven prompt constants changed. [The exact before/after diff](prompt-changes.dif
 
 - `COACH_SYSTEM`: gives each stop an ordinary situation, supported choice and handoff; requires the supplied stop identities/order; reputation is evidence-dependent. Removed the contradictory instruction to move the emotional delighter immediately after fundamentals.
 - `PLAN_SYSTEM`: allocates three powertrain batches for a three-minute compact-SUV tour and at most two per other stop, including supplemental detail; assigns exact evidence/trim scope and literal subjects, with one pictured subject per main batch; reserves a distinct first-fundamental detail for the runtime overview; final closing owns both closing statements.
-- `AUTHOR_SYSTEM`: asks for complete26–33-word main thoughts, varied independent openings and a handoff to the actual next subject. Clarifies that prepared lines split into separate delivery batches. Intro begins with a fact; the overview does not repeat a guided claim. Clause-level citation guidance includes handoffs; counted-component wording preserves whether parts are included.
+- `AUTHOR_SYSTEM`: asks for complete 26–33-word main thoughts, varied independent openings and a handoff to the actual next subject. Clarifies that prepared lines split into separate delivery batches. Intro begins with a fact; the overview does not repeat a guided claim. Clause-level citation guidance includes handoffs; counted-component wording preserves whether parts are included. The final polish briefs ordinary actions and buying choices, first offered trim before higher-trim examples, varied grammatical openings and handoffs that explain a connection rather than announcing the next item. Eligibility restrictions retain their duration/package scope; a picture of one physical option cannot illustrate its opposite.
 - `AUTHOR_CRAFT`: makes the ordinary use/choice, source support and connected thought the writing unit while preserving the existing role and evidence boundaries.
 - `TRANSLATION_LADDER`: adds worked examples for each rung and chooses a useful supported connection instead of stopping at a picture description whenever any picture exists. Retains full technical quantities in deeper detail and never invents a result.
 - `PITCH_SHAPE`: makes the two-statement final close and empty segment checkins consistent throughout the prompt; supplemental features develop unused useful detail.
@@ -24,14 +24,14 @@ This reproducible lexical count splits paragraphs/bullets and sentence boundarie
 |---|---:|---:|
 | Coach |14 /16|18 /33|
 | Planner |48 /46|59 /70|
-| Author |50 /52|69 /68|
+| Author |50 /52|75 /76|
 | Author craft |16 /13|16 /16|
 | Translation ladder |11 /9|16 /13|
 | Pitch shape |13 /11|9 /18|
 | Audience |8 /7|9 /8|
-| Total |160 /154|196 /226|
+| Total |160 /154|202 /234|
 
-The ratio changes from1.04 to0.87. Positive guidance increased; the absolute number of prohibition-bearing units did not fall. Some local prompt sections remain verbose.
+The ratio changes from 1.04 to 0.86. Positive guidance increased; the absolute number of prohibition-bearing units did not fall. Some local prompt sections remain verbose.
 
 ### Approved code changes
 
@@ -82,7 +82,9 @@ Each `iteration-*` folder contains the exact assembled system/content/schema req
 - **03 — source-corrected candidate:** uses the inspected48-picture catalogue from actual95-picture extraction, resolves remaining closing/continuation conflicts and reserves a distinct overview detail. Its first Author response was492words; the bounded repair supplied495. Before replay, semantic review found uncited engine handoffs and ambiguous speaker membership. The changed prompt correctly caused the harness to reject the old response fingerprint; this is not a completed normalized Author result. [Status](iteration-03/STATUS.md).
 - **04 — clause-level citation guidance:** Coach and Planner requests were exactly identical to03 and their responses were explicitly reused. Author was generated fresh. This run remains useful intermediate evidence, but source review exposed missing trim-table rows in the manual fixture.
 - **05 — complete table evidence:** adds four exact uploaded-table facts and briefs one literal pictured subject per batch. All three stage requests are regenerated from these inputs. The498-word draft passes actual Author validation; independent source review finds all48 spoken/deeper units grounded, but normalization corrupts22 visual references. [Pre-fix criteria](final-criteria-audit.md).
-- **06 — preserve draft visual choices:** all05 requests and responses match exactly; this code-only replay removes fallback image substitution while preserving the same498-word speech and existing pixel gates. [Replay status](iteration-06/STATUS.md), [source audit and delta](final-source-audit.md). A final Author writing pass will address remaining stiff handoffs; no guard change is planned.
+- **06 — preserve draft visual choices:** all05 requests and responses match exactly; this code-only replay removes fallback image substitution while preserving the same498-word speech and existing pixel gates. [Replay status](iteration-06/STATUS.md), [source audit and delta](final-source-audit.md). The further07 Author pass uses this same plan with more concrete action/choice and handoff guidance; no guard change is made.
+- **07 — writing polish, not accepted:** identical Coach/Planner requests were reused; a fresh Author produced495 prepared words and empty issues. Root review caught a warranty restriction generalized beyond its seven-year scope; two mixed-option images also failed literal subject coverage. The independent source review corrected its initial lenient sign-off. [Corrected source audit](final07-source-audit.md), [criteria audit](final07-criteria-audit.md). The generated artifact remains unchanged as evidence.
+- **08 — scope and physical-option fidelity:** a fresh independent Author receives the exact new runtime request with duration/package scope preservation and literal-option comparison guidance. Coach/Planner requests remain exactly identical to07 and their response bytes are explicitly reused. Source review confirms49/49 units preserved (29 images,20 deliberate none),500prepared words and empty issues. Warranty scope and both mixed-option picture defects are fixed. Strict style criteria still fail in catalogue/location openings, so this is an intermediate source-clean candidate. [Source audit](final08-source-audit.md), [criteria audit](final08-criteria-audit.md).
 
 ## What is still weak
 

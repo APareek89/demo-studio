@@ -1,0 +1,383 @@
+{
+  "base": "582ae1a",
+  "checks": [
+    {
+      "kind": "file",
+      "path": "server/schemas.py",
+      "sha256": "8f9de9f2bd4b54f658dee5e786d2d8c17c3ae903365591c645f22067417c5e37",
+      "unchanged": true
+    },
+    {
+      "kind": "file",
+      "path": "server/graph.py",
+      "sha256": "b312f5663e128be5b04b0e0f1213434306f3b28c49d9a6ded6fdac6385e19c60",
+      "unchanged": true
+    },
+    {
+      "kind": "file",
+      "path": "server/agents/playbooks.py",
+      "sha256": "ebafbfed2c1d12fa5884453b81731f89260089b037bdd012518bf40d2d7c0bc3",
+      "unchanged": true
+    },
+    {
+      "kind": "file",
+      "path": "server/agents/narration.py",
+      "sha256": "e083f5c226a45782e834daf881ca0981ab98f6eba4954a6ea8261dc699d98dff",
+      "unchanged": true
+    },
+    {
+      "kind": "file",
+      "path": "server/agents/plain_terms.py",
+      "sha256": "389f367d522b59d0dbdc2396bd42d5998f726863fda399e84bf270bb67c2fb7c",
+      "unchanged": true
+    },
+    {
+      "kind": "file",
+      "path": "server/runtime_graph.py",
+      "sha256": "277a978f6f26624c7c8e938ab98fe7078a918c5b5d44d792f33aa261badadef5",
+      "unchanged": true
+    },
+    {
+      "kind": "file",
+      "path": "requirements.txt",
+      "sha256": "c78decb15a48a756467ffea9a43b6a96831571334d6650f9a5d30e6365c724b5",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "_verified_script",
+      "sha256": "068a020da8120a6823e48cad0ed14dba0b9a1264dec49021de820a524d65135f",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "route_limit",
+      "sha256": "ae2735c98e4429acc346a04dd5921d2da5d3c16176f0a9bdb011ab2f57447072",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "_carry_plan_metadata",
+      "sha256": "e647d6c881dba7b63cedec0cc767cff1e1b2375cc5ec5fe4523275962c11e8f1",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "_allocate_words",
+      "sha256": "df10ec38b3b2e96815bd002eff3546624550cbc4e99b4aff0b622ba397e86d27",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "words",
+      "sha256": "686ee388582d986ff663e1158f7d81f429ed21f04fe0fed2b866880e0be59ed8",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "ungrounded",
+      "sha256": "a8680ccb8ba453d55647bf2631a626cd96924c79d574f621835fbf044fe3cd7c",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "validate",
+      "sha256": "996e65be886a79822959f31b4f40cb88e5cab428a522056474f5d33dd8e021b9",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "_audio_seconds",
+      "sha256": "268e5ec11faf04d9309194c0f34b29a27af36f75f8628195e113b91811079993",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "timeline",
+      "sha256": "fe2620a729247ea480db53812ce614e503d785605a6f513b8e5075b4a2198f78",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "split_long_batches",
+      "sha256": "108c3d96405961e3bd65c5e4a26b7f6bb0436a36329c0c02a9bcdffc851835ab",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "_assign_ids",
+      "sha256": "82901744e0eba0456d70cd1a390a94b66fca609735214c800aa3a0f77c2ae89e",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/author.py",
+      "name": "run",
+      "sha256": "a35e8e51fadc0d35e830ff1a4cad93befa8df5fa5994aff11481bdd0ab77f7d1",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_verified_plan",
+      "sha256": "16b23367f18b5a97116ed3b41c07b0c3e7d38acca1bfa890fcbb074c6a5fc985",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_action_urls",
+      "sha256": "44d4d47382099029d9a7c8da87899961c2c419212981fa965add5ff6b062c7ab",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_ground_action_ctas",
+      "sha256": "6e01bf0e504442779b9d7b73e42bfeda7467bd48410fc5d42caf27b2850a3e42",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_configured_voice",
+      "sha256": "cb3928e43cd83f3c7676e04df3420495de03905cbe8ee903163a83441c4e0570",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_keep_locked_persona",
+      "sha256": "b974cf4b5278591f0ba71525bbd99088291ebbfd08666a1eba2e9c8d15baf54c",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_enforce_playbook",
+      "sha256": "ff94c86538f684ac08f73d5a9bb20e76a6f1f6daddb764150c7b91836263e634",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "_enforce_budget",
+      "sha256": "d2e71cf3c7a28acad1bc27134f5875a4beefa4ade6a068ab8e79276094ad719b",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "prepare_existing",
+      "sha256": "427830a75ac690af4bc066584e372d51c0ba79d15565d09b12f3888c6c4e71b6",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/plan.py",
+      "name": "run",
+      "sha256": "efd94ba0d1e2dd7b2c7a6117910859464ac20be236d5e096fe2edb14299479a9",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/principles.py",
+      "name": "policy_relation_conflict",
+      "sha256": "cd26f680a92fd30b12e88ee313aa550856e7c43802743a1d3667864414960fcc",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/principles.py",
+      "name": "fact_context",
+      "sha256": "d6c76d0fcb1770a0f49f6c56dda65756b400b3bfb338d6af57ba96ea14185e7c",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/principles.py",
+      "name": "language_instruction",
+      "sha256": "89ca2a6b1c1ada964ac8311aceb9f20f4e08dbe91cdafd2a7606f8ed85c0c486",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/principles.py",
+      "name": "audience_instruction",
+      "sha256": "2eef60673ada0f00be92a8d3faf71cab250b02af7e466d71a7f5c3424c16f919",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "_stem",
+      "sha256": "2fa18d64755e34fb5e8841a1be0c43d52f98c66b628cf81439d13c3231e7cc37",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "_tokens",
+      "sha256": "4c637a7c91dddceb992c166c48975d64f4874d4c860fbffea9e679c92804a53d",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "_expand",
+      "sha256": "4c4aa662be85a143d67b93bba9451ff2e826134bddc9394f9b6fd9c80993eb5f",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "part_names",
+      "sha256": "fca7a7ac64c088fa5ade371a00b8fab5f6d651bf229320cabaee047067eacecc",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "part_boxes",
+      "sha256": "a26b180a5ab21ccb4e481157bb6d39c0f3143eef1d757b5bc5ebb411c6dfba85",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "pick_hero",
+      "sha256": "ba61af6c77ea1ce5060df1263fe38e64476cf4c7cc13f12b641c0d8324daf2f3",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "catalogue",
+      "sha256": "d24c65101bdc755d43d270dcdb96605a20e9b0280b0bbd14a06265dc28a9f00f",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "_score",
+      "sha256": "97bd8f2ec1a7be122e7bdaa070eb1a99c877826e9d97ab9e902e17d9746620de",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "Assignment",
+      "sha256": "6a66a04391abd5c875facf2dfa59bc7a1b37549e77ac88c84937986deb91f6ee",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "ImageAudit",
+      "sha256": "194cc6fde381efb5c2f076f1b13df6c705a182e807ee86b835ef13ae8716adba",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "VisualsOut",
+      "sha256": "e16cf9eb9062e36f5992462c68ed20812e6f85f0773943a6002f332f03928b3e",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "_vision_batches",
+      "sha256": "f46650ff3fad29553869058b0ea788b39ca2497ddb7e2f2e858751c89641520a",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "build_map",
+      "sha256": "c923f6a40f727417823eec0a3b51fcf32ba43f86c185e9b3fb39c5ea617455cd",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "for_facts",
+      "sha256": "8846c430594159eafd8c42fbcf26831df277ea0c33953d13f74730ddf507da4a",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/visuals.py",
+      "name": "for_text_and_facts",
+      "sha256": "2040d8d1834404fcc3734d891d8605f84a1cf0052cc7e860fc1d861fc2f830a9",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "_unsafe_usp_name",
+      "sha256": "81342a870e46ecff3842b98a5a1713e8d0163438fee3b8846ef1f99af673a73d",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "_clean_usp_name",
+      "sha256": "58cb204c7f678c0d9b2e164d732265b178572d5d00e56530a3f8dbf278fb9dcc",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "_unique",
+      "sha256": "345010362d0523227c988b25a93fc495da13dafc751850a5b3d51f2ba5ab29d2",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "_allowed_understanding",
+      "sha256": "3619832d1e7cf0c5781cf98ce17651409b7b5ca49a90c8be97b86b09a62b04d3",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "validate",
+      "sha256": "42498916ecba4dfe9adee78208da436dacf0a83f9eafa51dd78132f10164cd4c",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "mock_playbook",
+      "sha256": "1066daa5a450ff648bd7498edd76c14451b091e29afc38786242e295cee92bda",
+      "unchanged": true
+    },
+    {
+      "kind": "function_or_class",
+      "path": "server/agents/coach.py",
+      "name": "apply_overrides",
+      "sha256": "22dd2100f80b8e1e677a2c98ea772a823ad2355cd0c36dafa13aeff39720fa18",
+      "unchanged": true
+    },
+    {
+      "kind": "pixel_application_block",
+      "path": "server/agents/visuals.py",
+      "unchanged": true,
+      "sha256": "81e77d2ff4bb4fbe930d2c50a3ea64cac4f3a5fbfc6afb7948d913dc65752133"
+    }
+  ],
+  "all_passed": true
+}

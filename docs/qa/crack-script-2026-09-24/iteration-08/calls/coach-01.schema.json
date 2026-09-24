@@ -1,0 +1,212 @@
+{
+  "$defs": {
+    "EvidenceGap": {
+      "properties": {
+        "what": {
+          "title": "What",
+          "type": "string"
+        },
+        "why_it_matters": {
+          "title": "Why It Matters",
+          "type": "string"
+        },
+        "suggested_source": {
+          "title": "Suggested Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "what",
+        "why_it_matters",
+        "suggested_source"
+      ],
+      "title": "EvidenceGap",
+      "type": "object"
+    },
+    "PlaybookObjection": {
+      "properties": {
+        "objection": {
+          "title": "Objection",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "objection",
+        "status"
+      ],
+      "title": "PlaybookObjection",
+      "type": "object"
+    },
+    "PlaybookStop": {
+      "properties": {
+        "id": {
+          "description": "slug, e.g. 'powertrain'",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "2-6 everyday words, the thing itself, no numbers",
+          "title": "Label",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "fundamental",
+            "differentiator",
+            "delighter",
+            "hygiene",
+            "ownership"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "why_here": {
+          "description": "one sentence: why a trained salesperson covers this at this point",
+          "title": "Why Here",
+          "type": "string"
+        },
+        "fact_ids": {
+          "description": "approved registry ids that support this stop",
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "picture_ids": {
+          "description": "image/shot ids that literally show this stop",
+          "items": {
+            "type": "string"
+          },
+          "title": "Picture Ids",
+          "type": "array"
+        },
+        "must_cover": {
+          "default": true,
+          "title": "Must Cover",
+          "type": "boolean"
+        },
+        "gaps": {
+          "description": "what the library expects here that the registry lacks",
+          "items": {
+            "type": "string"
+          },
+          "title": "Gaps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "kind",
+        "why_here",
+        "fact_ids"
+      ],
+      "title": "PlaybookStop",
+      "type": "object"
+    },
+    "PlaybookUSP": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "3-8 everyday words, a promise in the buyer's language, no digits, units or model codes",
+          "title": "Name",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "stop_id": {
+          "title": "Stop Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fact_ids",
+        "stop_id"
+      ],
+      "title": "PlaybookUSP",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "category": {
+      "title": "Category",
+      "type": "string"
+    },
+    "category_source": {
+      "enum": [
+        "library",
+        "inferred"
+      ],
+      "title": "Category Source",
+      "type": "string"
+    },
+    "stops": {
+      "items": {
+        "$ref": "#/$defs/PlaybookStop"
+      },
+      "title": "Stops",
+      "type": "array"
+    },
+    "usps": {
+      "description": "exactly three",
+      "items": {
+        "$ref": "#/$defs/PlaybookUSP"
+      },
+      "title": "Usps",
+      "type": "array"
+    },
+    "objections": {
+      "items": {
+        "$ref": "#/$defs/PlaybookObjection"
+      },
+      "title": "Objections",
+      "type": "array"
+    },
+    "evidence_gaps": {
+      "items": {
+        "$ref": "#/$defs/EvidenceGap"
+      },
+      "title": "Evidence Gaps",
+      "type": "array"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "category",
+    "category_source",
+    "stops",
+    "usps"
+  ],
+  "title": "Playbook",
+  "type": "object"
+}

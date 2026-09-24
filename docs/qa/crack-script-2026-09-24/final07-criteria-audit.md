@@ -1,0 +1,67 @@
+# Final writing audit — iteration07
+
+**Iteration07 is not accepted.** Independent semantic and picture review found a broadened warranty claim and mixed-variant picture bindings, so criterion12 fails despite `issues=[]`. Its structural metrics remain **495prepared words,16/16rendered batches within26–33words, three powertrain batches and two closing statements**. The current unvoiced route selects343words and estimates180.53seconds; no sample audio has been measured. Normalization preserves all46raw text/citation/reference units, including34pictures and12deliberate none references; preservation does not establish that those units are correct.
+
+This is an audit of the actual [saved Author artifact](iteration-07/artifacts/author.json), not just its empty `issues` list. [Exact metrics](final07-metrics.json) use the application's `author.words`, `narration.preparation_report` and `narration.default_route`. The [raw response](iteration-07/calls/author-01.response.json) was generated from the exact runtime request. The historical [iteration05 audit](final-criteria-audit.md) remains unchanged; its image corruption was fixed in06, before this07writing pass.
+
+The goal is a reference under the user's later instruction. Existing grounding, truth-kind, persona, CTA, jargon and literal-picture rules remain in force; complete160PS stays in deeper. The495-word preparation margin and measured180-second publication gate remain intact. The68-fact source fixture is manually reviewed PDF-only evidence, not a paid live extraction result. No source was added for this pass.
+
+## Thirteen criteria
+
+| # | Reference goal | What the actual07output does | Assessment |
+|---|---|---|---|
+|1|First intro sentence carries a product fact or standing, without warm-up.|Starts “The CRETA can hold itself stationary with auto hold, standard from King…” and explains the stationary brake function from F015/F016. No greeting precedes it.|**Pass**|
+|2|One grounded, figure-free reputation sentence; no sales, rank, tenure or awards narration.|Zero reputation sentences and zero prohibited company-statistic narration. The supplied evidence cannot establish “one of the best in the market”; the opening remains a supported product fact.|**Evidence-blocked reference difference**, acceptable under preserve-grounding direction; the strict positive criterion is not met.|
+|3|Powertrain first with three batches; every other stop at most two.|Proof order stays powertrain → stance → space → safety → cabin → delighters → ownership. Batch allocation3,1,1,2,2,2,1. Supplemental storage and terms do not add another roof/audio proof.|**Pass**|
+|4|Every delivery batch26–33words.|16/16rendered batches pass. All14guided lines pass. Outcome is one33-word alternative-opening batch containing17/7/9-word picture-specific lines; those three lines are not three delivery batches. All18complete main lines therefore do **not** independently meet26–33:15/18do.|**Pass at actual delivery-batch level**, with explicit line/batch distinction.|
+|5|Every feature is connected to an ordinary situation.|Traffic pause, changing gears yourself, packing with passengers, temperature preferences, Alexa at home, warm-evening ventilation and written dealer pricing give concrete moments or buyer actions. Wheel finish is an appearance decision, and some engine/trim prose remains catalogue-oriented. The rewrite is more useful than05's feature descriptions, but a strict daily-life situation for every feature is not demonstrated.|**Improved / partial under the strict “every” wording**.|
+|6|Every gated feature names its first applicable trim or exact exceptions.|Main explicitly names E/EXsteel wheels, alloys from S(O), airbags even on E, separate temperatures from S(O), Alexa from SX, ventilation from SX Premium, roof from EX(O), voice operation from SX and sliding from King. Engine lines retain exact SX/SX Premium examples and diesel's complete automatic set, with the full nonuniform matrix in deeper. They still do not state the first offered trim for every engine/gearbox pairing in main.|**Qualified**: named claims are specific; complete first-trim coverage is deferred in part. No invented continuous range is used to force a simpler story.|
+|7|Varied openings, without specs, topic labels or stock transitions.|All16batch first words are unique: The, You, With, For, A, Outside, Packing, Around, Watching, Separate, At, On, Above, An, Beside, Keep. The05“Choosing/Considering” pair becomes different sentence constructions; the wheel now begins outside, and temperature begins from differing preferences. Location-led openings recur, but no repeated full opening template or “moving on” transition is identified.|**Mechanical uniqueness passes; editorial variety improved**. Do not equate this with a numerical proof of every stylistic preference.|
+|8|End each batch toward the next subject without bare-spec endings.|The chain remains engine/gearbox → petrol → diesel → turbo → wheel style → passenger/luggage arrangements → safety → driver assistance → temperature → home control → seat comfort → roof → quote → included cabin equipment → written warranty terms → choice. The conspicuous05stage direction “front armrest awaits inspection” is removed. Quote now connects to equipment on paper; storage connects that equipment to warranty terms. Some joins remain general rather than effortless spoken transitions.|**Subject continuity passes; naturalness improved, with residual polish limits**.|
+|9|At most two closing statements, no questions.|All checkins empty. Final closing has exactly two statements,19+26=45words. The second records a contact preference; it does not promise that a booking or dealer contact has happened.|**Pass**|
+|10|Runtime overview23–28words, no digits.|23words and zero digits. It uses the reserved auto-hold detail. Intro repeats that detail only as alternative opening material, excluded from the guided count.|**Pass**|
+|11|No absent acceleration, mileage, boot-volume, clearance, top-speed, crash-rating or rival figures.|No such figures found across the46main/deeper/overview/closing units. Unknown economy, boot capacity and crash evidence are kept unknown. Engine power/torque, tyre sizes, screen sizes, sourced prices and warranty duration are different supported categories. Complete160PS appears in deeper with its engine and measurement basis.|**Pass under the user's preserved-validator override**.|
+|12|Empty issues, grounded figures and literal matching pictures.|`issues=[]`, but the main terms line says “petrol-only extended warranty costs extra.” F057 establishes that the extension **up to seven years** is petrol-only; it does not establish that every extended-warranty option is petrol-only. Dropping that qualifier broadens the claim, and correct deeper wording does not repair it. The outcome shows a manual lever while discussing engine-dependent gearbox options and saying turbo is automatic only. The wheel main names E/EX steel wheels with covers alongside alloys, while its picture shows a black alloy wheel with a red caliper; wheel deeper likewise lists multiple steel/alloy alternatives against that one option. These are actual literal mismatches, not merely missing pixel certification. All46units survive normalization, but audit method remains `rules_fallback`, null model,0pixel-audited lines/images.|**Fail — semantic warranty scope and literal-image mismatches**. Faithful normalization and empty validator issues do not certify entailment or picture coverage. No live pixel-model pass is claimed.|
+|13|Three-minute narration while preserving the495-word preparation margin.|495prepared words across14eligible batches plus overview/closing. Provisional selected route343words across9batches estimates180.53s at app1.9words/s, approximately153.1s at reference2.24. Full inventory is220.98s at2.24. No sample audio is measured; the existing recorded selector must add reviewed stops as needed and publication still requires180seconds.|**Preparation margin passes; measured-duration acceptance remains unverified**.|
+
+The result is not “all thirteen green” and is not an accepted candidate. Criterion12 has confirmed semantic and literal-picture failures. Unsupported reputation, some strict stylistic/entry-trim wording and acoustic measurement remain separately qualified. None was resolved by weakening a guardrail.
+
+## Batch, line and duration accounting
+
+The16rendered batch lengths, in order, are **29,33,31,32,31,28,32,31,31,31,31,30,30,30,27,32**. Every value is26–33. All14guided batches have one complete main line. The intro has one29-word line. The outcome has three short lines of17,7and9words, each with its own subject/picture, retained together as a33-word alternative-opening batch. This yields18main lines but16delivery batches;15/18individual main lines satisfy the range, while14/14guided lines do.
+
+Prepared words are **368proof +27features +32establish +23runtime overview +45closing =495**. Intro29 and outcome33 total62alternative words excluded from guided duration. Deeper has25lines and924words, also excluded. All checkins are empty, and the accountant excludes zero exact duplicate lines. Exact-text deduplication is not semantic proof that every phrase adds a different meaning.
+
+The selected route is `engine-choices`, `engine-choices-2`, `engine-choices-3`, `wheels`, `shared-space`, `airbags-and-help`, `airbags-and-help-2`, `small-storage`, `terms`. It comprises **275selected segment words +23overview +45closing =343words**. Cabin, delighters and ownership are prepared but omitted from the provisional unvoiced selection because the app estimate already reaches180.53seconds. The measured selector can later include those complete reviewed stops; the current estimate is not evidence of their actual recorded duration.
+
+The saved `narration_preparation` fields are `target_words:495`, `words:495`, `seconds:180.53`, `basis:estimated`, `measured:false`, `attempts:1`, `status:ready`. Words describe the full prepared inventory; seconds describe the selected default route. The application's full-inventory report is260.53estimated seconds at1.9words/s. Describing495words as a measured180.53-second recording would be incorrect.
+
+## What improved from05, and what did not
+
+| Measure | Baseline00 | Iteration05 before fallback fix | Iteration07 |
+|---|---:|---:|---:|
+| Rendered batches / complete main lines |16 /24|16 /16|16 /18|
+| Rendered batches in26–33range |6/16|16/16|16/16|
+| Eligible guided batches / compliant guided lines |14 /not one-per-batch|14 /14|14 /14|
+| All closing statements |4|2|2|
+| Runtime overview words |23|27|23|
+| Prepared inventory words |495|498|495|
+| Selected route words / batches |366 /9|347 /9|343 /9|
+| Selected estimate at app1.9words/s |192.63s|182.63s|180.53s|
+| Full inventory at reference2.24words/s |220.98s|222.32s|220.98s|
+| Deeper words excluded |1,057|1,185|924|
+| Main bindings overwritten by fallback |Known mismatches|11/16|0/18lines|
+| Pixel-model audited lines |0|0|0|
+| New sample audio measured |No|No|No|
+
+Some writing changes help: engine openings vary instead of using two similar gerunds; wheel availability now explicitly names EandEX; the price-to-equipment-to-written-terms connection replaces a direction to inspect an armrest. However, moving the warranty's seven-year qualifier to deeper broadens the remaining main assertion from one petrol-only extension duration to all extended warranty. Moving a quantity deeper is allowed only when the main claim retains its source scope; this change fails that requirement. The outcome separates three picture subjects into short lines without increasing the delivered batch length, but its manual-lever line still discusses the automatic-only turbo option. The wheel line likewise names steel and alloy options while showing only one alloy. Some engine catalogue detail and general joins also remain.
+
+The comparison also separates causes. Iteration06 fixed metadata fallback that corrupted correct references; iteration07 did not need to change that code again. All46raw07units match saved text/citations/refs: **34/34explicit picture refs and12/12none refs retained**. This verifies faithful normalization. It does not prove that a picture literally depicts every clause, or that a live model would independently approve it. The source auditor's semantic/picture assessment must retain those distinctions.
+
+## Verification boundary
+
+The metric computation used actual application functions with MOCK_LLM=1, isolated DATA/GRAPH paths and blocked socket connect/connect_ex/sendto/create_connection/getaddrinfo. No paid model, voice or web call ran. The original PDF, protected demo, original app tree, AWS and port8896 were not modified for this audit.
+
+The07rerun is eight suites: script prompts40/40, visual alignment25/25, speech style30/30, generation55/55, narrative roles14/14, deck380/380, acceptance24/24 and smoke3/3. Every suite exited successfully and reports zero outbound attempts. This rerun refreshes relevant coverage within the existing25-suite/1,069reported-check ledger; it is not an additional unique-case total. Passing mocked code tests does not certify narrative entailment, live pixel-provider quality, natural delivery, new sample acoustic duration or AWS capacity.
+
+Artifact SHA-256: `20d3e52fb6a2f9a657d63ef0318c7382cd0a0e8fa21128cdb5f063ddb2342e82`. No application code or earlier audit was edited while producing this report.

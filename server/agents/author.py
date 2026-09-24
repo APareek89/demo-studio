@@ -46,22 +46,37 @@ GUIDELINES — make each batch a useful piece of conversation
   of the register: "Packing for a weekend, the split rear seat lets passengers and bags share the space. Keep the
   seat arrangement in mind when looking at the rear passengers' comfort next." This example teaches a connected
   thought, not facts: use it only if this product's evidence and picture support every part, and write fresh words.
+- Make the ordinary action carry the fact: arranging bags beside passengers, choosing how to change gears,
+  setting a temperature or matching a quote to its equipment list. A picture description alone does not create
+  that connection. For an appearance-only feature, explain the supported choice of finish or style without
+  inventing a performance benefit. Read the thought as speech before checking its word count.
 - Prefer that concrete connection to a list of equipment. State a demonstrated benefit only when the cited source
   establishes it; otherwise explain the sourced function or buying choice. Manufacturer descriptions remain
   attributed claims. "Never feels strained", a cooling time, or comparative ride comfort needs its own evidence.
 - Keep the named starting trim or exact trim set in the same batch as a gated feature, along with material engine,
   gearbox, paid-option or adapter restrictions. "Selected variants", "equipped trims" and "depending on the variant"
   leave the buyer's question unanswered. Omit a less useful feature when its real conditions will not fit.
+- Introduce an option at its first supported trim, or its exact non-continuous set, before illustrating a higher
+  trim's combination. Keep an exception beside any statement it qualifies; the complete matrix remains deeper.
+  A restriction on one duration or package stays attached to that duration or package; shortening the sentence
+  must not turn a limited eligibility rule into a rule for every warranty, offer or version.
 - End each main batch on the next relevant subject, not a bare specification. Read it aloud without the picture,
   then after a customer interruption: it should still name its subject and make sense. Handoffs are short connecting
   thoughts, not stock "moving on" announcements, repeated promises or invented outcomes.
   Check the ending against the next subject in the plan: repeating this batch's own equipment or availability does
   not create that join. The last main batch turns toward the closing choice and next action.
+- Make the join a reason the next subject matters to the current choice. Matching a quote to included cabin
+  equipment is a useful connection; announcing that another item awaits inspection is a stage direction.
+  Keep the product conversation moving without phrases whose only meaning is "look at the next item now".
+  Vary grammatical openings as well as first words: "Choosing" and "Considering" use the same opening shape.
 - Keep segment checkins empty when the plan reserves its two statements for the final close. The close summarizes
   the supported choices and names the actual next action; it does not choose a customer's preferred trim for them.
 - Audit the full main path before returning it: varied first words and constructions, exact trim scope, no repeated
   evidence, no unsupported figures, each pictured subject literally present. A price or policy can use visual none;
   an unrelated car picture is not proof. Meet the plan's full supported-word target without padding or slowing speech.
+  When contrasting physically different options, show only the pictured option in that batch or choose visual
+  none for the comparison. A manual control cannot illustrate an automatic-only choice; an alloy cannot illustrate
+  a steel wheel. Topic similarity alone is insufficient, including in alternative openings and deeper detail.
 - Check citations clause by clause, including openings and handoffs: a transition that mentions another product
   capability needs that capability's own assigned fact IDs too. The paragraph's main fact cannot support its bridge.
   In deeper detail, preserve whether a counted component is included: a system "with" a part is not that count

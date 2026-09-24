@@ -1664,9 +1664,9 @@
       ]
     },
     "after": {
-      "negative_bearing_units": 69,
-      "other_instruction_units": 68,
-      "all_units": 137,
+      "negative_bearing_units": 75,
+      "other_instruction_units": 76,
+      "all_units": 151,
       "units": [
         {
           "negative_bearing": false,
@@ -1794,6 +1794,22 @@
         },
         {
           "negative_bearing": false,
+          "text": "Make the ordinary action carry the fact: arranging bags beside passengers, choosing how to change gears, setting a temperature or matching a quote to its equipment list."
+        },
+        {
+          "negative_bearing": true,
+          "text": "A picture description alone does not create that connection."
+        },
+        {
+          "negative_bearing": true,
+          "text": "For an appearance-only feature, explain the supported choice of finish or style without inventing a performance benefit."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Read the thought as speech before checking its word count."
+        },
+        {
+          "negative_bearing": false,
           "text": "Prefer that concrete connection to a list of equipment."
         },
         {
@@ -1811,6 +1827,18 @@
         {
           "negative_bearing": true,
           "text": "Omit a less useful feature when its real conditions will not fit."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Introduce an option at its first supported trim, or its exact non-continuous set, before illustrating a higher trim's combination."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Keep an exception beside any statement it qualifies; the complete matrix remains deeper."
+        },
+        {
+          "negative_bearing": true,
+          "text": "A restriction on one duration or package stays attached to that duration or package; shortening the sentence must not turn a limited eligibility rule into a rule for every warranty, offer or version."
         },
         {
           "negative_bearing": true,
@@ -1834,6 +1862,22 @@
         },
         {
           "negative_bearing": false,
+          "text": "Make the join a reason the next subject matters to the current choice."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Matching a quote to included cabin equipment is a useful connection; announcing that another item awaits inspection is a stage direction."
+        },
+        {
+          "negative_bearing": true,
+          "text": "Keep the product conversation moving without phrases whose only meaning is \"look at the next item now\"."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Vary grammatical openings as well as first words: \"Choosing\" and \"Considering\" use the same opening shape."
+        },
+        {
+          "negative_bearing": false,
           "text": "Keep segment checkins empty when the plan reserves its two statements for the final close."
         },
         {
@@ -1851,6 +1895,18 @@
         {
           "negative_bearing": true,
           "text": "Meet the plan's full supported-word target without padding or slowing speech."
+        },
+        {
+          "negative_bearing": true,
+          "text": "When contrasting physically different options, show only the pictured option in that batch or choose visual none for the comparison."
+        },
+        {
+          "negative_bearing": true,
+          "text": "A manual control cannot illustrate an automatic-only choice; an alloy cannot illustrate a steel wheel."
+        },
+        {
+          "negative_bearing": false,
+          "text": "Topic similarity alone is insufficient, including in alternative openings and deeper detail."
         },
         {
           "negative_bearing": false,

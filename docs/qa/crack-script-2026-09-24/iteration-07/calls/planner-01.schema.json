@@ -1,0 +1,494 @@
+{
+  "$defs": {
+    "CTA": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "button text, 2-4 words",
+          "title": "Label",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "book",
+            "reserve",
+            "buy",
+            "contact",
+            "trial",
+            "link",
+            "custom"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "url": {
+          "default": "",
+          "title": "Url",
+          "type": "string"
+        },
+        "primary": {
+          "default": false,
+          "title": "Primary",
+          "type": "boolean"
+        },
+        "when": {
+          "default": "always",
+          "description": "when to show it: always | after_price | end",
+          "title": "When",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "kind"
+      ],
+      "title": "CTA",
+      "type": "object"
+    },
+    "Concern": {
+      "properties": {
+        "topic": {
+          "description": "short topic key, e.g. range, price, setup, security",
+          "title": "Topic",
+          "type": "string"
+        },
+        "why": {
+          "description": "why a buyer of this product worries about it",
+          "title": "Why",
+          "type": "string"
+        },
+        "fact_ids": {
+          "description": "facts that address it (may be empty)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "topic",
+        "why",
+        "fact_ids"
+      ],
+      "title": "Concern",
+      "type": "object"
+    },
+    "Intake": {
+      "properties": {
+        "q1": {
+          "description": "warm brand/product greeting plus ONE useful context question, easy to decline; do not also ask for a name",
+          "title": "Q1",
+          "type": "string"
+        },
+        "q2": {
+          "description": "empty string; retained for older bundles, never a second intake question",
+          "title": "Q2",
+          "type": "string"
+        },
+        "chips": {
+          "description": "4-7 focus topics the customer might pick, matching segment topics",
+          "items": {
+            "$ref": "#/$defs/IntakeChip"
+          },
+          "title": "Chips",
+          "type": "array"
+        }
+      },
+      "required": [
+        "q1",
+        "q2",
+        "chips"
+      ],
+      "title": "Intake",
+      "type": "object"
+    },
+    "IntakeChip": {
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "label"
+      ],
+      "title": "IntakeChip",
+      "type": "object"
+    },
+    "SegmentPlan": {
+      "properties": {
+        "id": {
+          "description": "short slug id, e.g. 'range'",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "role": {
+          "description": "intro = brief overview, no decision frame; outcome = three things to remember; proof = guided discovery; features = one 'a few more things' block; establish = assumptions, terms and open questions",
+          "enum": [
+            "intro",
+            "outcome",
+            "proof",
+            "features",
+            "establish"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "goal": {
+          "description": "what the customer should believe or understand after this segment",
+          "title": "Goal",
+          "type": "string"
+        },
+        "outcome": {
+          "description": "supported customer result or decision/fit-check explored, 3-8 words; no promised outcome inferred from a specification (empty for intro)",
+          "title": "Outcome",
+          "type": "string"
+        },
+        "topic": {
+          "title": "Topic",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "usp_ids": {
+          "description": "USPs this segment covers",
+          "items": {
+            "type": "string"
+          },
+          "title": "Usp Ids",
+          "type": "array"
+        },
+        "visual_refs": {
+          "description": "shot or image ids to use, best first",
+          "items": {
+            "type": "string"
+          },
+          "title": "Visual Refs",
+          "type": "array"
+        },
+        "priority_topic": {
+          "description": "true if this addresses one of the top concerns",
+          "title": "Priority Topic",
+          "type": "boolean"
+        },
+        "stop_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stop Id"
+        },
+        "fundamental": {
+          "default": false,
+          "title": "Fundamental",
+          "type": "boolean"
+        },
+        "word_budget": {
+          "default": 0,
+          "title": "Word Budget",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "role",
+        "goal",
+        "outcome",
+        "topic",
+        "fact_ids",
+        "visual_refs",
+        "priority_topic"
+      ],
+      "title": "SegmentPlan",
+      "type": "object"
+    },
+    "StateQuestion": {
+      "properties": {
+        "state": {
+          "enum": [
+            "unknown",
+            "stated_want",
+            "stated_need"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "question": {
+          "description": "optional clarification for an unclear customer request; never an automatic second intake question",
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "question"
+      ],
+      "title": "StateQuestion",
+      "type": "object"
+    },
+    "USP": {
+      "properties": {
+        "id": {
+          "description": "short slug, e.g. 'usp-warranty'",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "the differentiated value, 3-8 words",
+          "title": "Name",
+          "type": "string"
+        },
+        "why_it_matters": {
+          "default": "",
+          "description": "one concrete sentence of supported relevance; a choice or fit-check is valid when the source does not demonstrate a customer outcome",
+          "title": "Why It Matters",
+          "type": "string"
+        },
+        "fact_ids": {
+          "description": "approved facts supporting the stated value and scope; no invented benefit or comparison; with no facts, describe the unresolved choice rather than asserting a product advantage",
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "stop_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stop Id"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fact_ids"
+      ],
+      "title": "USP",
+      "type": "object"
+    },
+    "VisualGap": {
+      "properties": {
+        "what": {
+          "description": "what visual is missing, e.g. 'the charging port'",
+          "title": "What",
+          "type": "string"
+        },
+        "why": {
+          "title": "Why",
+          "type": "string"
+        },
+        "suggestion": {
+          "description": "what to upload, concretely",
+          "title": "Suggestion",
+          "type": "string"
+        }
+      },
+      "required": [
+        "what",
+        "why",
+        "suggestion"
+      ],
+      "title": "VisualGap",
+      "type": "object"
+    },
+    "VoiceBrief": {
+      "properties": {
+        "persona_name": {
+          "title": "Persona Name",
+          "type": "string"
+        },
+        "persona_description": {
+          "description": "2 sentences: who the guide is, how they behave",
+          "title": "Persona Description",
+          "type": "string"
+        },
+        "tone": {
+          "description": "1 sentence",
+          "title": "Tone",
+          "type": "string"
+        },
+        "sample_line": {
+          "description": "one natural greeting line in the persona's voice, ~25 words",
+          "title": "Sample Line",
+          "type": "string"
+        },
+        "suggested_voice": {
+          "description": "one of: Sulafat, Aoede, Leda, Despina, Kore, Achernar, Zephyr",
+          "title": "Suggested Voice",
+          "type": "string"
+        },
+        "language": {
+          "default": "en-IN",
+          "title": "Language",
+          "type": "string"
+        }
+      },
+      "required": [
+        "persona_name",
+        "persona_description",
+        "tone",
+        "sample_line",
+        "suggested_voice"
+      ],
+      "title": "VoiceBrief",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "total_words": {
+      "default": 0,
+      "title": "Total Words",
+      "type": "integer"
+    },
+    "playbook_version": {
+      "default": "",
+      "title": "Playbook Version",
+      "type": "string"
+    },
+    "customer_persona": {
+      "description": "general intended audience, 2 sentences; no invented individual distance, budget, location or household",
+      "title": "Customer Persona",
+      "type": "string"
+    },
+    "decision_frame": {
+      "description": "fit summary at the END: the strongest supported fit and what remains to verify; not an opening decision frame",
+      "title": "Decision Frame",
+      "type": "string"
+    },
+    "takeaway": {
+      "description": "the ONE sentence the buyer should be able to repeat after the demo",
+      "title": "Takeaway",
+      "type": "string"
+    },
+    "primary_outcome": {
+      "description": "one supported customer result or buying decision the demo explores; do not invent a performance or safety guarantee",
+      "title": "Primary Outcome",
+      "type": "string"
+    },
+    "supporting_outcomes": {
+      "description": "at most two",
+      "items": {
+        "type": "string"
+      },
+      "title": "Supporting Outcomes",
+      "type": "array"
+    },
+    "concerns": {
+      "items": {
+        "$ref": "#/$defs/Concern"
+      },
+      "title": "Concerns",
+      "type": "array"
+    },
+    "usps": {
+      "description": "exactly three differentiated value points, each tied to facts",
+      "items": {
+        "$ref": "#/$defs/USP"
+      },
+      "title": "Usps",
+      "type": "array"
+    },
+    "segments": {
+      "items": {
+        "$ref": "#/$defs/SegmentPlan"
+      },
+      "title": "Segments",
+      "type": "array"
+    },
+    "ctas": {
+      "items": {
+        "$ref": "#/$defs/CTA"
+      },
+      "title": "Ctas",
+      "type": "array"
+    },
+    "voice": {
+      "$ref": "#/$defs/VoiceBrief"
+    },
+    "visual_gaps": {
+      "items": {
+        "$ref": "#/$defs/VisualGap"
+      },
+      "title": "Visual Gaps",
+      "type": "array"
+    },
+    "intake": {
+      "$ref": "#/$defs/Intake"
+    },
+    "state_questions": {
+      "description": "optional clarification suggestions, not an automatic discovery sequence",
+      "items": {
+        "$ref": "#/$defs/StateQuestion"
+      },
+      "title": "State Questions",
+      "type": "array"
+    },
+    "do_not_recommend_if": {
+      "description": "P09: the honest condition under which the guide would not recommend this product, 1 sentence",
+      "title": "Do Not Recommend If",
+      "type": "string"
+    },
+    "advance": {
+      "description": "P10: the next buyer action that resolves the largest remaining uncertainty, with an owner and trigger — references one CTA by label",
+      "title": "Advance",
+      "type": "string"
+    },
+    "notes": {
+      "default": "",
+      "description": "anything the planner wants the human to know",
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "customer_persona",
+    "decision_frame",
+    "takeaway",
+    "primary_outcome",
+    "supporting_outcomes",
+    "concerns",
+    "usps",
+    "segments",
+    "ctas",
+    "voice",
+    "visual_gaps",
+    "intake",
+    "state_questions",
+    "do_not_recommend_if",
+    "advance"
+  ],
+  "title": "Plan",
+  "type": "object"
+}

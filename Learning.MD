@@ -18,6 +18,10 @@
 
 **Correction:** reconcile final-closing and complete-line guidance across Planner, Author and shared craft instructions; require clause-level citations and preserve included-versus-additional component meaning. Planner budgets a distinct pictured subject per main batch, reserving other subjects for another batch or deeper detail. Recover the omitted uploaded-table facts in a new versioned simulation fixture and rerun the exact stage requests. Preserve every existing validator and record intermediate failures instead of editing outputs to appear compliant.
 
+**Writing follow-through:** the source-corrected candidate still used catalogue-style openings and announcements such as an armrest awaiting inspection. The final Author guidance makes an ordinary action or buying choice carry the fact, introduces the first offered trim before higher-trim examples, and connects the next subject to the current decision rather than announcing it. This is writing guidance, not permission to add felt benefits.
+
+**Scope follow-through:** a later draft shortened “up to seven years, petrol only” to “petrol-only extended warranty.” That broadened one package’s restriction into an unsupported rule about all extensions. Root review caught it after a lenient source-audit sign-off; the audit was corrected and the sample regenerated from new guidance. A deeper-only qualifier cannot repair an overbroad main sentence. Similarly, a picture of an alloy cannot stand for a steel-wheel example just because both concern wheels.
+
 **Prevention:** compare the full assembled prompts, not just the newly added paragraph. Review source coverage separately from quote accuracy, and audit handoffs as claims. Count the prepared inventory separately from the selected runtime route; use measured recordings for publication. Mock rules-only image assignment, a source photo's provenance and a zero-issue script are three different pieces of evidence, none of which establishes pixel-audited narration.
 
 ## 2026-09-24 — Derived pictures must inherit source ownership at every exit

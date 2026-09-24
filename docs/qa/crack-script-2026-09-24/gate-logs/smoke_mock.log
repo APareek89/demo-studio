@@ -1,6 +1,6 @@
 DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract
 PREPARATION FIXTURE: synthetic for plumbing; real Read readiness covered by automatic_narration_contract and release_mock_contract
-created dm_a86c8292
+created dm_e72ee0ac
 sources 8
 read → align ok
 cards: images 5 facts 3 ctas 3 script batches 4 seconds 16.5 faq 0
@@ -23,12 +23,12 @@ feedback reply: reply (mock)
 rehearsal coverage None gaps None scorecard None
 fillers 19 faq 0 timeline 9.0
 roles ['intro', 'outcome', 'features', 'establish']
-SMOKE OK dm_a86c8292
+SMOKE OK dm_e72ee0ac
 settings ok ['en-IN', 'hi-IN'] everyday
 multi-language bundle ok: hi-IN 4 segments, audio True
 tts with language ok
 trace ok: stages {'understand': 0.4, 'coach': 0.0, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': None, 'bundle': 0.0} rows 12
 jargon check ok: ['s1 line 1: states a figure or claim without a fact id — “It has a 3.4 kWh battery and 15A charging with IDC range.”', "s1 line 1: everyday register warning — jargon 'kWh' in the main narration; move the complete technical quantity to deeper unless explicitly requested, never keep a number while dropping its unit"]
-SMOKE OK (phase 2) dm_a86c8292
-SMOKE OK (on-demand rehearsal) dm_a86c8292
+SMOKE OK (phase 2) dm_e72ee0ac
+SMOKE OK (on-demand rehearsal) dm_e72ee0ac
 OUTBOUND_ATTEMPTS 0

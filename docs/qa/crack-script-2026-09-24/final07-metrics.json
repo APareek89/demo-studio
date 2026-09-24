@@ -1,0 +1,714 @@
+{
+  "iteration": "07",
+  "script_sha256": "20d3e52fb6a2f9a657d63ef0318c7382cd0a0e8fa21128cdb5f063ddb2342e82",
+  "word_counter": "server.agents.author.words",
+  "app_estimate_wps": 1.9,
+  "reference_estimate_wps": 2.24,
+  "issues": [],
+  "visual_audit": {
+    "method": "rules_fallback",
+    "model": null,
+    "line_count": 0,
+    "image_count": 0,
+    "missing_line_count": 0
+  },
+  "saved_narration_preparation": {
+    "version": 1,
+    "identity": "acab5ae92c35e3df00b9e466ecc48e5e530995614a9386755d18d27ee92e7a1d",
+    "status": "ready",
+    "minimum_seconds": 180.0,
+    "duration_changed": false,
+    "target_words": 495,
+    "words": 495,
+    "missing_words": 0,
+    "attempts": 1,
+    "mock_preview": false,
+    "measured": false,
+    "seconds": 180.53,
+    "basis": "estimated",
+    "reason": "The supported draft is prepared for review; recording will verify its duration.",
+    "errors": [],
+    "current_recording": false,
+    "recorded_short": false,
+    "recording_incomplete": false
+  },
+  "roles_words": {
+    "intro": 29,
+    "outcome": 33,
+    "proof": 368,
+    "features": 27,
+    "establish": 32
+  },
+  "rendered_batch_count": 16,
+  "rendered_batch_range_passes": 16,
+  "main_line_count": 18,
+  "main_complete_line_range_passes": 15,
+  "eligible_guided_batch_count": 14,
+  "eligible_guided_line_count": 14,
+  "eligible_guided_line_range_passes": 14,
+  "eligible_segment_words": 427,
+  "intro_outcome_words_excluded": 62,
+  "deeper_lines_excluded": 25,
+  "deeper_words_excluded": 924,
+  "overview_words": 23,
+  "overview_has_digits": false,
+  "closing_line_words": [
+    19,
+    26
+  ],
+  "checkins": [],
+  "all_closing_statement_count": 2,
+  "proof_batch_counts": {
+    "powertrain": 3,
+    "stance-and-ride": 1,
+    "space-and-practicality": 1,
+    "safety": 2,
+    "cabin-and-tech": 2,
+    "delighters": 2,
+    "ownership": 1
+  },
+  "distinct_batch_first_words": 16,
+  "preparation_report": {
+    "minimum_seconds": 180.0,
+    "seconds": 260.53,
+    "sufficient": true,
+    "words": 495,
+    "measured": false,
+    "basis": "estimated",
+    "measured_seconds": 0,
+    "estimated_seconds": 260.53,
+    "route": [
+      "engine-choices",
+      "engine-choices-2",
+      "engine-choices-3",
+      "wheels",
+      "shared-space",
+      "airbags-and-help",
+      "airbags-and-help-2",
+      "climate-and-remote",
+      "climate-and-remote-2",
+      "seat-and-roof",
+      "seat-and-roof-2",
+      "quote",
+      "small-storage",
+      "terms"
+    ],
+    "duplicate_lines_excluded": 0
+  },
+  "preparation_seconds_at_reference_rate": 220.98,
+  "default_route_report": {
+    "minimum_seconds": 180.0,
+    "seconds": 180.53,
+    "sufficient": true,
+    "words": 343,
+    "measured": false,
+    "basis": "estimated",
+    "measured_seconds": 0,
+    "estimated_seconds": 180.53,
+    "route": [
+      "engine-choices",
+      "engine-choices-2",
+      "engine-choices-3",
+      "wheels",
+      "shared-space",
+      "airbags-and-help",
+      "airbags-and-help-2",
+      "small-storage",
+      "terms"
+    ],
+    "duplicate_lines_excluded": 0
+  },
+  "default_route_seconds_at_reference_rate": 153.12,
+  "batches": [
+    {
+      "id": "opening",
+      "role": "intro",
+      "stop_id": null,
+      "budget_source_id": null,
+      "words": 29,
+      "main_line_count": 1,
+      "main_line_words": [
+        29
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": false,
+      "in_selected_route": false,
+      "first_word": "The",
+      "text": "The CRETA can hold itself stationary with auto hold, standard from King, so a traffic pause needn't mean keeping the brake pressed; the engine choice starts with gearbox preference."
+    },
+    {
+      "id": "three-anchors",
+      "role": "outcome",
+      "stop_id": null,
+      "budget_source_id": null,
+      "words": 33,
+      "main_line_count": 3,
+      "main_line_words": [
+        17,
+        7,
+        9
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": false,
+      "in_selected_route": false,
+      "first_word": "You",
+      "text": "You can steer the tour: gearbox choices depend on engine and trim, and turbo is automatic only. The split rear seats offer flexible arrangements. Airbags are standard from E; begin with non-turbo petrol."
+    },
+    {
+      "id": "engine-choices",
+      "role": "proof",
+      "stop_id": "powertrain",
+      "budget_source_id": "engine-choices",
+      "words": 31,
+      "main_line_count": 1,
+      "main_line_words": [
+        31
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "With",
+      "text": "With the non-turbo petrol engine, choosing how to change gears starts at the trim: SX is manual only, while SX Premium offers both manual and automatic; diesel needs a separate decision."
+    },
+    {
+      "id": "engine-choices-2",
+      "role": "proof",
+      "stop_id": "powertrain",
+      "budget_source_id": "engine-choices",
+      "words": 32,
+      "main_line_count": 1,
+      "main_line_words": [
+        32
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "For",
+      "text": "For diesel, SX Premium means changing gears yourself; automatics are listed only on EX(O), S(O), King, King Knight and Lounge Edition. The turbo petrol is another engine to weigh against gearbox preferences."
+    },
+    {
+      "id": "engine-choices-3",
+      "role": "proof",
+      "stop_id": "powertrain",
+      "budget_source_id": "engine-choices",
+      "words": 31,
+      "main_line_count": 1,
+      "main_line_words": [
+        31
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "A",
+      "text": "A turbo petrol choice means an automatic gearbox and the King trim; King also offers other engines, so specify turbo when comparing versions, before settling on the wheel style alongside it."
+    },
+    {
+      "id": "wheels",
+      "role": "proof",
+      "stop_id": "stance-and-ride",
+      "budget_source_id": null,
+      "words": 28,
+      "main_line_count": 1,
+      "main_line_words": [
+        28
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "Outside,",
+      "text": "Outside, E and EX wear steel wheels with covers; alloys start at S(O). Choosing the wheel finish settles an appearance detail, leaving passenger and luggage arrangements to consider."
+    },
+    {
+      "id": "shared-space",
+      "role": "proof",
+      "stop_id": "space-and-practicality",
+      "budget_source_id": null,
+      "words": 32,
+      "main_line_count": 1,
+      "main_line_words": [
+        32
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "Packing",
+      "text": "Packing alongside passengers, the standard split rear seat lets seating and luggage space share the cabin in different arrangements. The folded sections show that choice; occupants bring safety equipment into the decision."
+    },
+    {
+      "id": "airbags-and-help",
+      "role": "proof",
+      "stop_id": "safety",
+      "budget_source_id": "airbags-and-help",
+      "words": 31,
+      "main_line_count": 1,
+      "main_line_words": [
+        31
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "Around",
+      "text": "Around the seats, six airbags cover the driver, passenger, side and curtain positions, even on E. Buying a higher trim isn't required for airbags; assistance while driving is a separate choice."
+    },
+    {
+      "id": "airbags-and-help-2",
+      "role": "proof",
+      "stop_id": "safety",
+      "budget_source_id": "airbags-and-help",
+      "words": 31,
+      "main_line_count": 1,
+      "main_line_words": [
+        31
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "Watching",
+      "text": "Watching the car ahead remains the driver's job: King, King Knight and Lounge Edition add forward-collision warning and assistance, without replacing attentive driving. Cabin temperature is a different kind of control."
+    },
+    {
+      "id": "climate-and-remote",
+      "role": "proof",
+      "stop_id": "cabin-and-tech",
+      "budget_source_id": "climate-and-remote",
+      "words": 31,
+      "main_line_count": 1,
+      "main_line_words": [
+        31
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": false,
+      "first_word": "Separate",
+      "text": "Separate temperature preferences needn't mean choosing one setting: from S(O), the driver and front passenger can set temperatures independently. The controls sit inside; asking from home raises a separate equipment question."
+    },
+    {
+      "id": "climate-and-remote-2",
+      "role": "proof",
+      "stop_id": "cabin-and-tech",
+      "budget_source_id": "climate-and-remote",
+      "words": 31,
+      "main_line_count": 1,
+      "main_line_words": [
+        31
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": false,
+      "first_word": "At",
+      "text": "At home, Alexa can adjust cabin conditions from SX; Alexa hardware isn't included, and adequate power plus uninterrupted network are required. Seat comfort becomes a different choice once you get in."
+    },
+    {
+      "id": "seat-and-roof",
+      "role": "proof",
+      "stop_id": "delighters",
+      "budget_source_id": "seat-and-roof",
+      "words": 30,
+      "main_line_count": 1,
+      "main_line_words": [
+        30
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": false,
+      "first_word": "On",
+      "text": "On a warm evening, ventilated front seats allow cool airflow through the cushions starting from SX Premium. Air at the seats is one cabin choice; the roof overhead is another."
+    },
+    {
+      "id": "seat-and-roof-2",
+      "role": "proof",
+      "stop_id": "delighters",
+      "budget_source_id": "seat-and-roof",
+      "words": 30,
+      "main_line_count": 1,
+      "main_line_words": [
+        30
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": false,
+      "first_word": "Above",
+      "text": "Above the cabin, the panoramic roof starts at EX(O); voice opening and closing start at SX. Choosing the roof controls helps specify which version belongs on a current dealer quote."
+    },
+    {
+      "id": "quote",
+      "role": "proof",
+      "stop_id": "ownership",
+      "budget_source_id": null,
+      "words": 30,
+      "main_line_count": 1,
+      "main_line_words": [
+        30
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": false,
+      "first_word": "An",
+      "text": "An entry price won't settle a chosen version's cost: road tax, registration and insurance sit above ex-showroom. Ask the dealer for current itemised pricing matched to the included cabin equipment."
+    },
+    {
+      "id": "small-storage",
+      "role": "features",
+      "stop_id": null,
+      "budget_source_id": null,
+      "words": 27,
+      "main_line_count": 1,
+      "main_line_words": [
+        27
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "Beside",
+      "text": "Beside the front seat, every trim has armrest storage for small items; sliding adjustment starts at King. Included equipment belongs on paper alongside the written warranty terms."
+    },
+    {
+      "id": "terms",
+      "role": "establish",
+      "stop_id": null,
+      "budget_source_id": null,
+      "words": 32,
+      "main_line_count": 1,
+      "main_line_words": [
+        32
+      ],
+      "within_26_33": true,
+      "eligible_for_guided": true,
+      "in_selected_route": true,
+      "first_word": "Keep",
+      "text": "Keep engine and trim together: petrol-only extended warranty costs extra. I can't confirm fuel economy or crash results; seek official engine certification information and the testing body's exact model-year report before choosing."
+    }
+  ],
+  "raw_to_saved_comparison": [
+    {
+      "text": "The CRETA can hold itself stationary with auto hold, standard from King, so a traffic pause needn't mean keeping the brake pressed; the engine choice starts with gearbox preference.",
+      "raw_ref": "im_pdf_e1266b7974b364c1c1ba",
+      "saved_ref": "im_pdf_e1266b7974b364c1c1ba",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Auto hold is standard on King, King Knight and Lounge Edition. The equipment table restricts S(O), S(O) Knight and SX Premium to automatics; it is unavailable on E, EX, EX(O) and SX.",
+      "raw_ref": "im_pdf_e1266b7974b364c1c1ba",
+      "saved_ref": "im_pdf_e1266b7974b364c1c1ba",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The automatic-only S(O) Knight equipment entry doesn't establish an offered automatic car: the compiled engine matrix lists no S(O) Knight automatic combination. Confirm the engine and trim together before ordering.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "You can steer the tour: gearbox choices depend on engine and trim, and turbo is automatic only.",
+      "raw_ref": "im_pdf_3aa2ebf1c9ed94570455",
+      "saved_ref": "im_pdf_3aa2ebf1c9ed94570455",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The split rear seats offer flexible arrangements.",
+      "raw_ref": "im_pdf_adb415f161dfc9567dde",
+      "saved_ref": "im_pdf_adb415f161dfc9567dde",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Airbags are standard from E; begin with non-turbo petrol.",
+      "raw_ref": "im_pdf_a54e8e56f4b50c2f5596",
+      "saved_ref": "im_pdf_a54e8e56f4b50c2f5596",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "With the non-turbo petrol engine, choosing how to change gears starts at the trim: SX is manual only, while SX Premium offers both manual and automatic; diesel needs a separate decision.",
+      "raw_ref": "im_pdf_98cd4a320f9dbfd33bbd",
+      "saved_ref": "im_pdf_98cd4a320f9dbfd33bbd",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "For diesel, SX Premium means changing gears yourself; automatics are listed only on EX(O), S(O), King, King Knight and Lounge Edition. The turbo petrol is another engine to weigh against gearbox preferences.",
+      "raw_ref": "im_pdf_5cd207807990f4eea283",
+      "saved_ref": "im_pdf_5cd207807990f4eea283",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "A turbo petrol choice means an automatic gearbox and the King trim; King also offers other engines, so specify turbo when comparing versions, before settling on the wheel style alongside it.",
+      "raw_ref": "im_pdf_87bac17ee980151549ba",
+      "saved_ref": "im_pdf_87bac17ee980151549ba",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The non-turbo petrol has a six-speed manual or IVT automatic. Manual trims are E, EX, EX(O), S(O), S(O) Knight, SX, SX Premium and King; automatic trims are EX(O), S(O), SX Premium, King, King Knight and Lounge Edition. These are the compiled nineteen September twenty twenty-six offerings, not a live stock check.",
+      "raw_ref": "im_pdf_98cd4a320f9dbfd33bbd",
+      "saved_ref": "im_pdf_98cd4a320f9dbfd33bbd",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Diesel has a six-speed manual or six-speed automatic. Manual trims are E, EX, EX(O), S(O), S(O) Knight, SX Premium and King; automatic trims are EX(O), S(O), King, King Knight and Lounge Edition. Its stated torque is 250 Nm, or 25.5 kgm, at 1,500 to 2,750 r/min; this isn't a loaded-climb test.",
+      "raw_ref": "im_pdf_5cd207807990f4eea283",
+      "saved_ref": "im_pdf_5cd207807990f4eea283",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The 1.5-litre turbo petrol is listed only on King, with a seven-speed dual-clutch automatic. Its maximum power is 117.5 kW, or 160 PS, at 5,500 r/min; torque is 253 Nm, or 25.8 kgm, at 1,500 to 3,500 r/min. These are engine specifications, not acceleration measurements, and King also offers other engines.",
+      "raw_ref": "im_pdf_87bac17ee980151549ba",
+      "saved_ref": "im_pdf_87bac17ee980151549ba",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Outside, E and EX wear steel wheels with covers; alloys start at S(O). Choosing the wheel finish settles an appearance detail, leaving passenger and luggage arrangements to consider.",
+      "raw_ref": "im_pdf_a4463ebb4d4d6329f98a",
+      "saved_ref": "im_pdf_a4463ebb4d4d6329f98a",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "E and EX have R16 steel wheels with covers; EX(O) has R16 dual-tone styled steel. S(O) has R17 black alloys, SX and SX Premium R17 diamond-cut alloys, and King R18 diamond-cut alloys. S(O) Knight, King Knight and Lounge Edition have R18 matte black alloys.",
+      "raw_ref": "im_pdf_a4463ebb4d4d6329f98a",
+      "saved_ref": "im_pdf_a4463ebb4d4d6329f98a",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The listed tyre specifications are 205 / 65 R16, 215 / 60 R17 and 215 / 55 R18. These size labels don't establish ride comfort, rough-road absorption or ground clearance; the wheel photograph cannot measure any of those.",
+      "raw_ref": "im_pdf_3706b9e10eac9af2dac8",
+      "saved_ref": "im_pdf_3706b9e10eac9af2dac8",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Packing alongside passengers, the standard split rear seat lets seating and luggage space share the cabin in different arrangements. The folded sections show that choice; occupants bring safety equipment into the decision.",
+      "raw_ref": "im_pdf_adb415f161dfc9567dde",
+      "saved_ref": "im_pdf_adb415f161dfc9567dde",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The rear seat has a sixty-forty split as standard across every trim. Hyundai describes the arrangement as balancing passenger comfort and storage capacity; the folded-seat picture shows the arrangement, not a boot-capacity measurement.",
+      "raw_ref": "im_pdf_adb415f161dfc9567dde",
+      "saved_ref": "im_pdf_adb415f161dfc9567dde",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Rear passengers can adjust the seatback angle with two-step reclining from S(O), including S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition. No supplied picture demonstrates the reclining mechanism in operation.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Hyundai describes the boot as storage for luggage and travel essentials, but I can't confirm a capacity in litres from these details. An in-person check with the intended luggage can settle personal fit; the manufacturer must confirm the specification.",
+      "raw_ref": "im_pdf_086219c79f5c77a4f468",
+      "saved_ref": "im_pdf_086219c79f5c77a4f468",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Around the seats, six airbags cover the driver, passenger, side and curtain positions, even on E. Buying a higher trim isn't required for airbags; assistance while driving is a separate choice.",
+      "raw_ref": "im_pdf_a54e8e56f4b50c2f5596",
+      "saved_ref": "im_pdf_a54e8e56f4b50c2f5596",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Watching the car ahead remains the driver's job: King, King Knight and Lounge Edition add forward-collision warning and assistance, without replacing attentive driving. Cabin temperature is a different kind of control.",
+      "raw_ref": "im_pdf_87d94ba1ddd0b388c716",
+      "saved_ref": "im_pdf_87d94ba1ddd0b388c716",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Tyre-pressure monitoring is standard across all variants. The cluster illustration locates the wheel readings, but the numbers pictured are illustrative; they aren't pressure measurements from a customer's car.",
+      "raw_ref": "im_pdf_11d7b41540b2776d6e24",
+      "saved_ref": "im_pdf_11d7b41540b2776d6e24",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Surround-view and blind-spot-view cameras start at SX Premium, including King, King Knight and Lounge Edition. The displayed camera views are different equipment from collision assistance; camera availability doesn't put adaptive cruise control on SX Premium.",
+      "raw_ref": "im_pdf_c8743c0adbf32f9b7e56",
+      "saved_ref": "im_pdf_c8743c0adbf32f9b7e56",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "King, King Knight and Lounge Edition have blind-spot warning and assistance plus lane-keeping assistance. Smart Cruise Control with Stop and Go is automatic-only on those trims; none of these systems replaces safe, attentive driving or guarantees intervention.",
+      "raw_ref": "im_pdf_beece6d09d55074c47bb",
+      "saved_ref": "im_pdf_beece6d09d55074c47bb",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Separate temperature preferences needn't mean choosing one setting: from S(O), the driver and front passenger can set temperatures independently. The controls sit inside; asking from home raises a separate equipment question.",
+      "raw_ref": "im_pdf_f14b998cc020fdfef1d5",
+      "saved_ref": "im_pdf_f14b998cc020fdfef1d5",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "At home, Alexa can adjust cabin conditions from SX; Alexa hardware isn't included, and adequate power plus uninterrupted network are required. Seat comfort becomes a different choice once you get in.",
+      "raw_ref": "im_pdf_497f55977a7d19718157",
+      "saved_ref": "im_pdf_497f55977a7d19718157",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Wireless Android Auto and Apple CarPlay start at EX and require a compatible device. On SX, SX Premium, King, King Knight and Lounge Edition, wireless mirroring uses a wired-to-wireless adapter; a charging-pad image wouldn't demonstrate mirroring.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The navigation screen and separate digital instrument cluster each measure 26.03 centimetres, or 10.25 inches, from SX. Bluelink starts at SX with more than seventy features and three complimentary years, subject to adequate power and uninterrupted network connectivity.",
+      "raw_ref": "im_pdf_46a6d841c01356a2e42d",
+      "saved_ref": "im_pdf_46a6d841c01356a2e42d",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "King, King Knight and Lounge Edition combine eight-way power adjustment for both front seats with driver-seat memory. The electric driver's seat separately starts at SX Premium; that earlier seat doesn't establish the complete King package.",
+      "raw_ref": "im_pdf_6fbbc0ada78471786303",
+      "saved_ref": "im_pdf_6fbbc0ada78471786303",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "On a warm evening, ventilated front seats allow cool airflow through the cushions starting from SX Premium. Air at the seats is one cabin choice; the roof overhead is another.",
+      "raw_ref": "im_pdf_498ba48d46b3d2258714",
+      "saved_ref": "im_pdf_498ba48d46b3d2258714",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Above the cabin, the panoramic roof starts at EX(O); voice opening and closing start at SX. Choosing the roof controls helps specify which version belongs on a current dealer quote.",
+      "raw_ref": "im_pdf_d3bdfccc9d80857379d1",
+      "saved_ref": "im_pdf_d3bdfccc9d80857379d1",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "SX Premium, King, King Knight and Lounge Edition have the Bose eight-speaker system with a subwoofer. The subwoofer belongs to the stated system; the evidence doesn't establish eight speakers plus an additional ninth speaker.",
+      "raw_ref": "im_pdf_bb10676bf859267f1262",
+      "saved_ref": "im_pdf_bb10676bf859267f1262",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The puddle lamp illuminates the ground near the door as you approach. Driver-side fit starts at SX, while both driver and passenger sides are fitted on King, King Knight and Lounge Edition.",
+      "raw_ref": "im_pdf_7e1e6afe3e5807a60e62",
+      "saved_ref": "im_pdf_7e1e6afe3e5807a60e62",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Glove-box cooling starts at S(O), including S(O) Knight, SX, SX Premium, King, King Knight and Lounge Edition. The supplied details don't establish a cooling time or a temperature for anything stored inside.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "An entry price won't settle a chosen version's cost: road tax, registration and insurance sit above ex-showroom. Ask the dealer for current itemised pricing matched to the included cabin equipment.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The compilation dated nineteen September twenty twenty-six shows an entry ex-showroom amount of ₹10,90,700 in the page body and a conflicting ₹10.79 lakh in structured data. Neither is a current on-road quote for a chosen version; the dealer needs to resolve the current price.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Road tax, registration and insurance are added to the ex-showroom amount and differ by state and city. No exact on-road total is supplied here; ask the Hyundai dealer to itemise the chosen version's current quotation before booking.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Beside the front seat, every trim has armrest storage for small items; sliding adjustment starts at King. Included equipment belongs on paper alongside the written warranty terms.",
+      "raw_ref": "im_pdf_06658fba292467f801c7",
+      "saved_ref": "im_pdf_06658fba292467f801c7",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Front-console armrest storage is standard across all trims. The open compartment is pictured beside the front seat; the source doesn't state its capacity or establish that a particular object fits inside.",
+      "raw_ref": "im_pdf_06658fba292467f801c7",
+      "saved_ref": "im_pdf_06658fba292467f801c7",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Sliding adjustment belongs only to King, King Knight and Lounge Edition. The open-storage photograph locates the armrest, but it doesn't demonstrate sliding motion or establish cooling or locking functions.",
+      "raw_ref": "im_pdf_06658fba292467f801c7",
+      "saved_ref": "im_pdf_06658fba292467f801c7",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Keep engine and trim together: petrol-only extended warranty costs extra. I can't confirm fuel economy or crash results; seek official engine certification information and the testing body's exact model-year report before choosing.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The extended warranty is available for up to seven years on petrol variants only and is payable separately. Extended warranty and Shield of Trust packages cost extra; ask for the written package price and coverage because neither is established here.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "The supplied information doesn't confirm stock, delivery timing or a booking destination. Request dealer contact records a contact preference rather than completing a booking; the selected dealer can confirm availability and the next steps.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Auto hold, standard from King, keeps the stationary CRETA in place without keeping the brake pressed; engine choice begins with how you'd drive.",
+      "raw_ref": "im_pdf_e1266b7974b364c1c1ba",
+      "saved_ref": "im_pdf_e1266b7974b364c1c1ba",
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "An offered engine, gearbox and trim, with the seat arrangement and equipment you want, is the combination to identify.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    },
+    {
+      "text": "Choose Request dealer contact to record a contact preference, so the selected Hyundai dealer can confirm the chosen version and prepare a current itemised on-road quote.",
+      "raw_ref": null,
+      "saved_ref": null,
+      "text_and_citations_unchanged": true,
+      "ref_unchanged": true
+    }
+  ],
+  "all_raw_line_units": 46,
+  "all_saved_line_units": 46,
+  "preserved_text_and_citation_units": 46,
+  "preserved_visual_ref_units": 46,
+  "raw_picture_refs": 34,
+  "raw_none_refs": 12,
+  "live_pixel_audit_performed": false,
+  "new_sample_audio_measured": false
+}
