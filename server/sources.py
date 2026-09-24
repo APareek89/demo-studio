@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import re
 import shutil
 import subprocess
@@ -13,6 +14,126 @@ from . import config, store
 from .crawl import UA, fetch_public, parse_html
 
 EXTRACTION_VERSION = 2
+PDF_IMAGE_VERSION = 1
+PDF_IMAGE_LIMITS = {"max_pages": 100, "max_images": 96, "max_candidates": 256,
+                    "max_file_bytes": 64 * 1024 * 1024, "max_image_bytes": 8 * 1024 * 1024,
+                    "max_total_bytes": 48 * 1024 * 1024, "max_pixels": 12_000_000,
+                    "max_edge": 2048, "timeout": 30}
+
+
+def extract_pdf_images(p: Path, destination: Path, **overrides) -> dict:
+    """Extract bounded embedded pictures, without interpreting text or inventing boxes.
+
+    Raster data is decoded only after its PDF dimensions and encoded size pass
+    limits. Normalized pixels determine identity; repeated logos reuse one asset.
+    The caller retains the parent source/revision and applies ordinary vision.
+    """
+    from pypdf import PdfReader
+    from PIL import Image
+    limits = {**PDF_IMAGE_LIMITS, **overrides}
+    started, images, warnings, seen = time.monotonic(), [], [], {}
+    result = {"version": PDF_IMAGE_VERSION, "images": images, "warnings": warnings,
+              "error": None, "interrupted": False, "candidates": 0, "bytes": 0}
+    try:
+        if p.stat().st_size > limits["max_file_bytes"]:
+            raise ValueError("PDF exceeds the embedded-picture file-size budget")
+        reader = PdfReader(p)
+        if reader.is_encrypted:
+            raise ValueError("encrypted PDF pictures need an unlocked source")
+        candidates = []
+        for page_number, page in enumerate(reader.pages, 1):
+            if page_number > limits["max_pages"]:
+                warnings.append("PDF picture page budget reached; remaining pages deferred.")
+                break
+            if time.monotonic() - started >= limits["timeout"]:
+                result["interrupted"] = True
+                warnings.append("PDF picture time budget reached; remaining pages deferred.")
+                break
+            for position, key in enumerate(page.images.keys()):
+                if len(candidates) >= limits["max_candidates"]:
+                    warnings.append("PDF picture candidate budget reached; remaining resources deferred.")
+                    break
+                candidates.append((position // 2, page_number, position, page, key))
+            if len(candidates) >= limits["max_candidates"]:
+                break
+        # Give each page two opportunities before dense early galleries consume
+        # the media budget. This is structural coverage, not a semantic claim.
+        for _, page_number, position, page, key in sorted(candidates, key=lambda row: row[:3]):
+            if time.monotonic() - started >= limits["timeout"]:
+                result["interrupted"] = True
+                warnings.append("PDF picture time budget reached; remaining pictures deferred.")
+                return result
+            if result["candidates"] >= limits["max_candidates"] or len(images) >= limits["max_images"]:
+                warnings.append("PDF picture count budget reached; remaining pictures deferred.")
+                return result
+            result["candidates"] += 1
+            try:
+                # Resolve nested form resources before asking pypdf to decode.
+                keys = [key] if isinstance(key, str) else key
+                if len(keys) > 8 or any(str(name).startswith("~") for name in keys):
+                    warnings.append(f"Page {page_number}: inline/deeply nested picture deferred.")
+                    continue
+                obj = page
+                for name in keys:
+                    obj = obj["/Resources"]["/XObject"][name].get_object()
+                width, height = int(obj.get("/Width", 0)), int(obj.get("/Height", 0))
+                if min(width, height) < 64:
+                    continue  # Icons and fragments are not useful demo pictures.
+                if width * height > limits["max_pixels"] or len(getattr(obj, "_data", b"")) > limits["max_image_bytes"]:
+                    warnings.append(f"Page {page_number}: oversized picture deferred before decoding.")
+                    continue
+                mask = obj.get("/SMask")
+                if mask:
+                    mask = mask.get_object()
+                    if (int(mask.get("/Width", 0)) * int(mask.get("/Height", 0)) > limits["max_pixels"]
+                            or len(getattr(mask, "_data", b"")) > limits["max_image_bytes"]):
+                        warnings.append(f"Page {page_number}: oversized picture mask deferred.")
+                        continue
+                encoded = page.images[key].data
+                if len(encoded) > limits["max_image_bytes"]:
+                    warnings.append(f"Page {page_number}: decoded picture exceeds byte budget.")
+                    continue
+                with Image.open(io.BytesIO(encoded)) as original:
+                    if original.width * original.height > limits["max_pixels"]:
+                        warnings.append(f"Page {page_number}: decoded picture exceeds pixel budget.")
+                        continue
+                    image = original.convert("RGBA" if "A" in original.getbands() or "transparency" in original.info else "RGB")
+                    image.thumbnail((limits["max_edge"], limits["max_edge"]))
+                    buffer = io.BytesIO()
+                    image.save(buffer, format="PNG")
+                    payload = buffer.getvalue()
+                    image_size = list(image.size)
+                digest = hashlib.sha256(payload).hexdigest()
+                occurrence = {"page": page_number, "image_index": position + 1, "resource": key}
+                if digest in seen:
+                    if page_number not in seen[digest]["pages"]:
+                        seen[digest]["pages"].append(page_number)
+                    seen[digest]["occurrences"].append(occurrence)
+                    continue
+                if len(payload) > limits["max_image_bytes"] or result["bytes"] + len(payload) > limits["max_total_bytes"]:
+                    warnings.append(f"Page {page_number}: normalized picture exceeds remaining byte budget.")
+                    continue
+                destination.mkdir(parents=True, exist_ok=True)
+                path = destination / f"{digest}.png"
+                if not path.exists() or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+                    with tempfile.NamedTemporaryFile(dir=destination, suffix=".tmp", delete=False) as pending:
+                        pending.write(payload)
+                        pending_path = Path(pending.name)
+                    try:
+                        pending_path.replace(path)
+                    finally:
+                        pending_path.unlink(missing_ok=True)
+                row = {"path": path.name, "sha256": digest, "pages": [page_number],
+                       "occurrences": [occurrence], "size": len(payload), "dimensions": image_size}
+                images.append(row)
+                seen[digest] = row
+                result["bytes"] += len(payload)
+            except Exception as exc:
+                warnings.append(f"Page {page_number}: picture unavailable ({str(exc)[:120]}).")
+        return result
+    except Exception as exc:
+        result["error"] = f"could not extract PDF pictures: {str(exc)[:180]}"
+        return result
 
 
 def ocr_pdf_pages(p: Path, pages: list[str], *, max_ocr_pages: int = 12, timeout: float = 90) -> tuple[list[str], list[dict]]:

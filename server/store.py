@@ -547,13 +547,27 @@ def patch_source(demo_id: str, source_id: str, fields: dict) -> dict:
 
 
 # Check whether a known source was explicitly excluded from demo visuals.
-# Input: demo metadata and source ID. Output: false only for an explicit exclusion; unknown IDs return true.
+# Input: demo metadata and source ID. Derived PDF pictures also require their current enabled parent;
+# unknown legacy upload IDs retain their existing permissive behavior.
 # Linked: server/agents/plan.py:run, author.py:run and deck.py:build use it when filtering registered visuals.
 def visual_allowed(demo: dict, source_id: str) -> bool:
-    for s in demo.get("sources", []):
-        if s["id"] == source_id:
-            return s.get("use_in_demo", True) is not False
-    return True
+    by_id = {s["id"]: s for s in demo.get("sources", [])}
+    source = by_id.get(source_id)
+    if source is None:
+        return not str(source_id or "").startswith("src_pdf_")  # Missing derived media cannot become an upload.
+    if source.get("use_in_demo", True) is False:
+        return False
+    parent_id = source.get("pdf_parent_source_id")
+    if not parent_id:
+        return True
+    parent = by_id.get(parent_id)
+    return bool(source.get("pdf_image_active") and parent and parent.get("kind") == "pdf"
+                and not parent.get("pdf_parent_source_id") and parent.get("role") != "competitor"
+                and source.get("role") == parent.get("role", "product")
+                and parent.get("use_in_demo", True) is not False and parent.get("crawl_active", True)
+                and not parent.get("scope_excluded")
+                and source.get("pdf_parent_revision") == parent.get("pdf_image_revision")
+                and source.get("pdf_parent_revision") == parent.get("revision"))
 
 
 # Resolve a requested media file and refuse paths outside its demo folder.

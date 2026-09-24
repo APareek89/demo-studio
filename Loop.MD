@@ -4,7 +4,9 @@
 
 Mocked, isolated data/graph storage and blocked sockets; no paid model/voice calls. Before and first improved prompt iteration: deck380/380, acceptance24/24 and smoke3/3. Existing scope: Coach27/27, plan/playbook19/19, narrative roles14/14, generation55/55, speech style30/30, narration preparation35/35, recovery18/18, automatic narration16/16. New `python evals/script_prompt_contract.py`:40/40 groups covering actual assembled prompts across categories/audiences, protected evidence rules, numeric/citation/visual rejection, technical-detail preservation, batch splitting and the unchanged495/180 preparation/publication distinction. `evals/coach_contract.py` additionally proves prompt-cache invalidation without evidence mutation.
 
-Stage simulations and their quantitative review live in `docs/qa/crack-script-2026-09-24/`. They use source-derived, manually inspected fixtures and separate reasoning agents, not live model providers; mocked rules-only picture assignments are not pixel proof. Final PDF integration and final source-corrected simulation are still pending. Loop remains off.
+New `python evals/pdf_images_contract.py`:58/58 for bounded embedded pictures, parent eligibility, stable retry IDs, exclusion across every bundle image path and timeout recovery. Supporting source39/39, upload stream19/19, retry12/12, deck media60/60, media Align15/15 and Studio29/29 pass. The actual PDF yields95 pictures/26,467,885bytes within the96-picture/48MiB cap; eight vision batches are mocked and are not pixel evidence.48 pictures were independently inspected for the final prompt fixture.
+
+Stage simulations and their quantitative review live in `docs/qa/crack-script-2026-09-24/`. They use source-derived, manually inspected fixtures and separate reasoning agents, not live model providers; mocked rules-only picture assignments are not pixel proof. Final source-corrected script simulation is still pending. Loop remains off.
 
 ## Feedback workbook · 24 September 2026
 

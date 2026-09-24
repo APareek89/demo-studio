@@ -9,6 +9,7 @@ import csv
 import json
 import re
 import hashlib
+import time
 
 from .. import config, crawl, knowledge, media, schemas, sources, store
 from ..llm import claude, gemini
@@ -144,6 +145,99 @@ def _stills_from_shots(demo_id: str, demo: dict, shots: list[dict], emit, max_st
     return n
 
 
+def _pdf_images_from_sources(demo_id: str, demo: dict, emit) -> dict:
+    """Register PDF pictures as derived media; their PDF remains the fact source.
+
+    Deterministic identities survive retries. Parent exclusion/deletion/revision
+    remains authoritative through store.visual_allowed, including after Read.
+    The global budget bounds additional vision work on a small deployment host.
+    """
+    limits = sources.PDF_IMAGE_LIMITS
+    started, remaining, byte_budget = time.monotonic(), limits["max_images"], limits["max_total_bytes"]
+    reports, active, revisions = [], [], {}
+    pdfs = [s for s in demo.get("sources", []) if s.get("kind") == "pdf" and s.get("role") != "competitor"
+            and s.get("use_in_demo", True) is not False and s.get("crawl_active", True) and not s.get("scope_excluded")]
+    for src in pdfs[:10]:
+        if remaining <= 0 or byte_budget <= 0 or time.monotonic() - started >= limits["timeout"]:
+            reports.append({"source_id": src["id"], "warnings": ["Shared PDF picture budget reached; this document was deferred."]})
+            continue
+        try:
+            path = store.path(demo_id, src["path"])
+            if path.stat().st_size > limits["max_file_bytes"]:
+                raise ValueError("PDF exceeds the embedded-picture file-size budget")
+            digest = hashlib.sha256()
+            with path.open("rb") as stream:
+                for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            revision = digest.hexdigest()
+            revisions[src["id"]] = revision
+            relative = f"derived/pdf-images/{src['id']}/{revision}"
+            folder = store.path(demo_id, relative)
+            manifest_path = f"{relative}/manifest-v{sources.PDF_IMAGE_VERSION}.json"
+            try:
+                manifest = store.read_json(demo_id, manifest_path) or {}
+            except (ValueError, TypeError):
+                manifest = {}  # A broken cache is not a broken source.
+            policy = {**limits, "max_images": remaining, "max_total_bytes": byte_budget}
+            cached = (manifest.get("limits") == policy and manifest.get("source_revision") == revision
+                      and not manifest.get("interrupted"))
+            if cached:
+                for item in manifest.get("images", []):
+                    file = folder / item["path"]
+                    if (not file.is_file() or file.stat().st_size != item["size"]
+                            or hashlib.sha256(file.read_bytes()).hexdigest() != item["sha256"]):
+                        cached = False
+                        break
+            if not cached:
+                manifest = sources.extract_pdf_images(path, folder, max_images=remaining, max_total_bytes=byte_budget,
+                    timeout=max(0, limits["timeout"] - (time.monotonic() - started)))
+                manifest.update(source_revision=revision, source_id=src["id"], limits=policy)
+                if not manifest.get("error"):
+                    store.write_json(demo_id, manifest_path, manifest)
+            reports.append({key: manifest.get(key) for key in ("source_id", "source_revision", "warnings", "error", "candidates", "bytes")})
+            for item in manifest.get("images", []):
+                identity = hashlib.sha256(f"{src['id']}:{revision}:{item['sha256']}".encode()).hexdigest()[:20]
+                active.append({"id": f"src_pdf_{identity}", "name": f"{src['name']} — picture on page {item['pages'][0]}",
+                    "kind": "image", "mime": "image/png", "path": f"{relative}/{item['path']}",
+                    "size": item["size"], "role": src.get("role", "product"), "added_at": src.get("added_at", 0),
+                    "derived_from": src["id"], "pdf_parent_source_id": src["id"], "pdf_parent_revision": revision,
+                    "pdf_image_active": True, "pdf_image_version": sources.PDF_IMAGE_VERSION, "pdf_pages": item["pages"],
+                    "pdf_occurrences": item["occurrences"],
+                    "revision": item["sha256"], "origin": "derived_pdf_image"})
+            remaining -= len(manifest.get("images", []))
+            byte_budget -= manifest.get("bytes", 0)
+        except Exception as exc:
+            reports.append({"source_id": src["id"], "error": f"PDF pictures unavailable: {str(exc)[:160]}"})
+    if len(pdfs) > 10:
+        reports.append({"warnings": ["PDF picture document budget reached; remaining documents deferred."]})
+    def register(current):
+        by_id = {row["id"]: row for row in current["sources"]}
+        for source in current["sources"]:
+            if source.get("pdf_parent_source_id"):
+                source["pdf_image_active"] = False
+            if source["id"] in revisions:
+                source["pdf_image_revision"] = revisions[source["id"]]
+                source["revision"] = revisions[source["id"]]
+        for image in active:
+            parent = by_id.get(image["pdf_parent_source_id"])
+            if not parent:  # A concurrent source removal cannot resurrect it.
+                continue
+            previous = by_id.get(image["id"])
+            if previous:
+                previous.update(image)  # Preserve explicit child exclusion and existing rendered media.
+            else:
+                current["sources"].append({**image, "use_in_demo": True})
+    store.update(demo_id, register)
+    store.write_json(demo_id, "pdf-images.json", {"version": sources.PDF_IMAGE_VERSION, "limits": limits,
+                                                 "images": len(active), "sources": reports})
+    if active:
+        emit(f"Found {len(active)} embedded PDF picture(s); applying the existing visual tagging checks.")
+    for report in reports:
+        for warning in [*report.get("warnings", []), *([report["error"]] if report.get("error") else [])]:
+            emit(warning)
+    return store.load(demo_id)
+
+
 # Combine the demo name, product category and URL into a short orientation hint for extraction.
 # These values come from server/store.py:load; the returned hint is context, not a cited product fact.
 def _hint(demo: dict) -> str:
@@ -202,18 +296,22 @@ def _verified_manifest(demo_id: str, demo: dict) -> schemas.FactsOut | None:
 # server/graph.py:understand invokes this stage; server/agents/plan.py:run consumes its saved output.
 def run(demo_id: str, emit, instruction: str = "") -> dict:
     demo = store.load(demo_id)
+    if any(s.get("kind") == "pdf" or s.get("pdf_parent_source_id") for s in demo.get("sources", [])):
+        demo = _pdf_images_from_sources(demo_id, demo, emit)
     prev = store.read_json(demo_id, "understanding.json")
     hint = _hint(demo)
     shots: list[dict] = []
     images: list[dict] = []
     video_summaries: dict[str, str] = {}
     n_shot = 0
+    n_uploaded_image = 0
 
     # Prepare product footage and ask Gemini for shot boundaries and visible subjects.
     # server/media.py:prepare_video provides the model file; source_id keeps each shot tied to its upload.
     # ---- visuals (Gemini) ----
     videos = [s for s in demo["sources"] if s["kind"] == "video" and s.get("role") != "intro_video"]
-    imgs = [s for s in demo["sources"] if s["kind"] == "image"]
+    imgs = [s for s in demo["sources"] if s["kind"] == "image"
+            and (not s.get("pdf_parent_source_id") or store.visual_allowed(demo, s["id"]))]
     for src in videos:
         emit(f"Watching {src['name']}…")
         prep = media.prepare_video(demo_id, src, emit)
@@ -234,7 +332,8 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         store.log(demo_id, "understand-video", {"source": src["id"], "shots": len(out.shots)})
     if not imgs and shots and _stills_from_shots(demo_id, demo, shots, emit):
         demo = store.load(demo_id)
-        imgs = [s for s in demo["sources"] if s["kind"] == "image"]
+        imgs = [s for s in demo["sources"] if s["kind"] == "image"
+                and (not s.get("pdf_parent_source_id") or store.visual_allowed(demo, s["id"]))]
     # Send actual image bytes in batches; retain each file hash so unchanged tagging can be reused.
     # The returned descriptions and boxes feed server/agents/visuals.py:catalogue and the planner's choices.
     if imgs:
@@ -264,8 +363,13 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
             # On a tagging outage the image remains available, explicitly untagged and without part boxes.
             for j, s in enumerate(batch):
                 im = by_index.get(j)
+                if s.get("pdf_parent_source_id"):
+                    image_id = f"im_pdf_{s['id'].removeprefix('src_pdf_')}"
+                else:
+                    n_uploaded_image += 1
+                    image_id = f"im{n_uploaded_image:02d}"
                 images.append({
-                    "id": f"im{len(images)+1:02d}", "source_id": s["id"],
+                    "id": image_id, "source_id": s["id"],
                     "description": im.description if im else f"{s['name']} (untagged — image tagging was unavailable)", "angle": im.angle if im else "",
                     "parts": [_part(pp) for pp in (im.parts if im else [])], "quality": im.quality if im else 3,
                     "full_product": bool(im.full_product) if im else False,

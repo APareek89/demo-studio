@@ -39,7 +39,9 @@ def _build_approved(demo_id: str, emit) -> dict:
     # store.py:load and understand.py:run provide these records; no new source extraction happens here.
     src_by_id = {s["id"]: s for s in demo["sources"]}
     shots = {s["id"]: s for s in und.get("shots", [])}
-    images = {i["id"]: i for i in und.get("images", [])}
+    # A saved script/deck can outlive its source's exclusion or PDF revision.
+    # Use the same current permission boundary for every serialized image path.
+    images = {i["id"]: i for i in und.get("images", []) if store.visual_allowed(demo, i["source_id"])}
     facts = {f["id"]: f for f in und.get("facts", []) if f.get("approved", True)}
 
     # Resolve an image tag through its source ID to the playable or original stored file.
@@ -118,17 +120,25 @@ def _build_approved(demo_id: str, emit) -> dict:
         # visuals.py:part_boxes supplies geometry; the browser receives one selected image for this slide.
         for s in slides_with_script(deck.get("slides", []), sc):
             seg = seg_by_id.get(s.get("segment_id") or "", {})
-            im = images.get(s.get("image_id") or "")
             o = ov.get(s["id"], {})
             ctext = {c["id"]: c["text"] for c in o.get("callouts", [])}
             media = [{**entry, "image_url": img_url(images[entry["image_id"]]),
                       "image_parts": visuals.part_boxes(images[entry["image_id"]])}
                      for entry in slide_media(s) if entry["image_id"] in images]
+            # Preserve the remaining reviewed pictures; never move a rejected
+            # picture's labels onto a different subject during publication.
+            media_ids = {entry["image_id"] for entry in media}
+            image_id = media[0]["image_id"] if media else None
+            im = images.get(image_id)
+            callouts = [c for c in s.get("callouts", [])
+                        if (c.get("image_id") or s.get("image_id")) in media_ids
+                        or not (c.get("image_id") or s.get("image_id"))]
             out.append({**{k: s.get(k) for k in ("id", "segment_id", "kind", "topics", "fact_ids", "image_id", "image_reason", "motion", "usp_ids", "priority", "role", "fundamental")},
+                        "image_id": image_id,
                         "budget_source_id": seg.get("budget_source_id"),
                         "title": o.get("title") or s.get("title", ""), "image_url": img_url(im) if im else None, "image_parts": visuals.part_boxes(im) if im else [],
                         "media": media,
-                        "callouts": [{**c, "text": ctext.get(c["id"], c["text"])} for c in s.get("callouts", [])],
+                        "callouts": [{**c, "text": ctext.get(c["id"], c["text"])} for c in callouts],
                         "lines": [sl_line(l) for l in s.get("lines", [])], "deeper": [sl_line(l) for l in s.get("deeper", [])],
                         "checkin": {"text": seg.get("checkin", s.get("checkin", "")), "audio": media_url(demo_id, seg.get("checkin_audio"))}})
         return out
@@ -166,7 +176,7 @@ def _build_approved(demo_id: str, emit) -> dict:
     # visuals.py:pick_hero selects the hero; source use flags keep excluded media out of the general catalogue.
     price_facts = [f for f in facts.values() if f["kind"] in ("price", "offer")]
     spec_facts = [f for f in facts.values() if f["kind"] in ("spec", "feature", "policy")]
-    usable_images = [i for i in und.get("images", []) if src_by_id.get(i["source_id"], {}).get("use_in_demo", True) is not False]
+    usable_images = list(images.values())
     all_images = [{"id": i["id"], "url": img_url(i), "angle": i["angle"], "description": i["description"], "parts": visuals.part_boxes(i),
                    "full_product": bool(i.get("full_product")), "role": src_by_id.get(i["source_id"], {}).get("role", "product"),
                    "derived_from": src_by_id.get(i["source_id"], {}).get("derived_from")} for i in usable_images]
@@ -192,7 +202,8 @@ def _build_approved(demo_id: str, emit) -> dict:
         "timeline": script.get("timeline"),
         "faq": [{**e, "audio": media_url(demo_id, e.get("audio")), "visual": visual({"ref": (e.get("visual") or {}).get("ref")}) if e.get("visual") else {"kind": "none"}} for e in faq.current_entries(store.read_json(demo_id, "faq.json") or {})],
         "fillers": {k: {"text": v.get("text"), "audio": media_url(demo_id, v.get("audio"))} for k, v in (store.read_json(demo_id, "fillers.json") or {}).items()},
-        "image_map": und.get("image_map", {}),
+        "image_map": {fid: [ref for ref in refs if ref in images or (ref in shots and store.visual_allowed(demo, shots[ref]["source_id"]))]
+                      for fid, refs in und.get("image_map", {}).items()},
         "stt": {"provider": config.STT_PROVIDER},
         "facts": list(facts.values()),
         "cards": {"price": [{"claim": f["claim"], "value": f["value"], "conditions": f.get("conditions", "")} for f in price_facts][:12],

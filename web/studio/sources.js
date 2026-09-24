@@ -64,14 +64,15 @@ export function renderSources(ctx) {
   const previewBtn = h("button", { class: "btn sm", onclick: async () => { if (!vinfo || !voiceSel.value) return; previewBtn.disabled = true; voiceStatus.textContent = "recording a sample…"; try { await patchDemo({ settings: { [vinfo.setting_key]: voiceSel.value } }); const r = await api.post(`/api/demos/${demoId}/voice/sample`, { text: "Hi, I'm your guide for today. Tell me what you're hoping this will change for you, and I'll show you that first." }); if (r.url) { new Audio(r.url).play(); voiceStatus.textContent = "playing " + voiceSel.selectedOptions[0].textContent; } else voiceStatus.textContent = "no server voice — browser voice will be used"; } catch (e) { toast(e.message, true); voiceStatus.textContent = ""; } previewBtn.disabled = false; } }, icon("play", { size: 15 }), "Preview");
 
   async function refreshList() {
-    sourceCount.textContent = `${demo.sources.length} added`;
-    list.replaceChildren(...demo.sources.map((s) => h("div", { class: "src-item" },
+    const uploadedSources = demo.sources.filter((s) => !s.pdf_parent_source_id);
+    sourceCount.textContent = `${uploadedSources.length} added`;
+    list.replaceChildren(...uploadedSources.map((s) => h("div", { class: "src-item" },
       h("span", { class: "source-file-icon", title: s.kind }, icon(({ video: "video", image: "image", url: "link" })[s.kind] || "file")), h("span", { class: "kind" }, s.kind), h("span", { class: "name", title: s.name }, s.name),
       h("span", { class: "pill" }, s.role), h("span", { class: "size" }, s.size ? fmtSize(s.size) : "url"),
       (s.kind === "video" || s.kind === "image") ? h("label", { class: "use", title: "Off = the agent still learns from it, but it is not shown in the demo" }, h("input", { type: "checkbox", checked: s.use_in_demo !== false, onchange: async (e) => { try { const r = await api.patch(`/api/demos/${demoId}/sources/${s.id}`, { use_in_demo: e.target.checked }); demo.sources = r.sources; } catch (err) { toast(err.message, true); } } }), "use in demo") : null,
       h("button", { class: "btn sm ghost source-remove", title: `Remove ${s.name}`, "aria-label": `Remove ${s.name}`, onclick: async () => { const r = await api.del(`/api/demos/${demoId}/sources/${s.id}`); demo.sources = r.sources; refreshList(); } }, icon("trash", { size: 16 })) )));
-    if (!demo.sources.length) list.append(h("div", { class: "studio-empty source-empty" }, icon("upload", { size: 24 }), h("div", {}, h("h3", {}, "Your source library starts here"), h("p", {}, "Add product material above. Everything you add will appear here for review."))));
-    readBtn.disabled = !demo.sources.length && !urlIn.value.trim();
+    if (!uploadedSources.length) list.append(h("div", { class: "studio-empty source-empty" }, icon("upload", { size: 24 }), h("div", {}, h("h3", {}, "Your source library starts here"), h("p", {}, "Add product material above. Everything you add will appear here for review."))));
+    readBtn.disabled = !uploadedSources.length && !urlIn.value.trim();
   }
 
   async function upload(role, files, extra = {}) {

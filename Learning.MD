@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-24 — Derived pictures must inherit source ownership at every exit
+
+**Symptom:** the new PDF-picture catalogue correctly held excluded-parent images, but independent QA reproduced a saved script/deck still publishing those pixels through a second serialization path. A second repro found that a time-limited partial extraction was cached as if complete, so the next Read made zero extraction calls and could never recover the missing pictures.
+
+**Cause:** eligibility was enforced only on the final catalogue rather than the shared image index used by lines, alternate languages, slides and labels. The extraction cache treated `error=None` as completion even when a cooperative timeout had ended the work.
+
+**Correction:** use parent-aware eligibility before every bundle image path and drop labels attached to held images without moving them onto a different subject. Mark interrupted extraction explicitly and refuse reuse until a healthy retry completes; deterministic identities preserve previously successful assets. The parent PDF remains the fact authority.58 regression checks cover bounded extraction, source inheritance, publication and partial retry; current reviewed deck and prior published artifacts stay intact.
+
+**Prevention:** source-derived artifacts need both provenance and complete/incomplete state. A passing source catalogue test does not establish publication behavior. Check all serialized references and retry after an actual partial result. Cooperative parser/decode deadlines remain a capacity limitation, not a hard memory/process sandbox.
+
 ## 2026-09-24 — A story-order instruction contradicted the category spine
 
 **Symptom:** baseline in-session Coach moved delighters before cabin; the first revised response invented a separate front-seat-airflow stop. Both survived existing validation because it checks fundamental/delighter precedence and evidence, not exact library membership. Separately, an unchanged evidence hash could reuse a playbook after its system guidance changed.

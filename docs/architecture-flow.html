@@ -122,7 +122,8 @@ flowchart TD
   SHOTS[&quot;shot list&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: whole video + VIDEO_PROMPT&lt;br/&gt;out: ShotsOut · start/end s, part, feature, quality 1-5 (≤60 shots)&quot;]:::agent
   STILLS[&quot;one still per good shot&lt;br/&gt;[LIBRARY · ffmpeg]&lt;br/&gt;only when the demo has video and no images · midpoint of shots with quality ≥ 3 · ≤12 · added as image sources (derived_from = shot)&quot;]:::fn
   IMGS[&quot;image tags&lt;br/&gt;[AGENT · Gemini 3.6 Flash]&lt;br/&gt;in: batches of ≤12 images&lt;br/&gt;out: ImagesOut · description, angle, quality, full_product, parts — each {name, box_2d 0-1000 → {x,y,w,h} 0-1, confidence}&quot;]:::agent
-  IDS[&quot;assign ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;sh01.., im01.. + source_id&quot;]:::fn
+  PDFIM[&quot;Embedded PDF pictures within Understand&lt;br/&gt;[FUNCTION · sources.extract_pdf_images]&lt;br/&gt;≤96 pictures / 48MiB total / 100 pages; cooperative30s deadline&lt;br/&gt;normalized pixel hashes + parent revision; timeout results retry&lt;br/&gt;parent exclusion/deletion/revision follows pictures through publication&quot;]:::fn
+  IDS[&quot;assign ids&lt;br/&gt;[FUNCTION]&lt;br/&gt;sh01.., uploaded im01.., stable im_pdf hashes + source_id&quot;]:::fn
   CRAWL[&quot;Scoped discovery and evidence capture&lt;br/&gt;[FUNCTION · crawl.py]&lt;br/&gt;exact model + market/locale; relevant sitemap/navigation pages and policies&lt;br/&gt;40 HTML / 10 documents / 300 pages / depth4; visible blocked/deferred frontier&lt;br/&gt;public IP pinned fetch; controlled headless rendered fallback&quot;]:::fn
   DOCS[&quot;sources.source_text&lt;br/&gt;[LIBRARY · pdfplumber / pypdf / docx; OCR when needed]&lt;br/&gt;whole section/page/table headers + footnotes; bounded batches without silent clipping&quot;]:::data
   FACTS[&quot;fact registry + brand + product&lt;br/&gt;[AGENT · configured text tier · Gemini → Claude → Runware]&lt;br/&gt;in: product / brand documents (rivals excluded) + product hint (+ previous registry + revision instruction)&lt;br/&gt;out: FactsOut · facts with source ref/locator/quote, unknowns, brand&quot;]:::agent
@@ -131,7 +132,7 @@ flowchart TD
   UND[&quot;understanding.json&lt;br/&gt;[DATA]&quot;]:::data
   CUSTOMER[&quot;Customer questions the sources could not answer&lt;br/&gt;[DATA · source=customer, asked_count, session_id]&lt;br/&gt;deduplicated runtime unknowns; never facts&quot;]:::data
   LIB[&quot;Category sales order · version 2026-09-23&lt;br/&gt;[DATA · agents/playbooks.py]&lt;br/&gt;compact SUV / premium SUV / electric scooter / generic inferred order&quot;]:::data
-  CACHE{&quot;registry hash, library version, audience, category&lt;br/&gt;and consumed evidence/picture inputs unchanged; no instruction?&lt;br/&gt;[FUNCTION · coach.run]&quot;}:::dec
+  CACHE{&quot;registry hash, library version, audience, category, Coach prompt&lt;br/&gt;and consumed evidence/picture inputs unchanged; no instruction?&lt;br/&gt;[FUNCTION · coach.run]&quot;}:::dec
   COACH[&quot;Sales playbook&lt;br/&gt;[AGENT · configured text tier · coach.py]&lt;br/&gt;in: category order + approved registry, image evidence, unknowns and revision instruction&lt;br/&gt;out: ordered stops, three USPs, objections and evidence gaps&lt;br/&gt;MOCK_LLM=1 uses deterministic keyword assignment&quot;]:::agent
   CVAL[&quot;Validate playbook&lt;br/&gt;[FUNCTION · coach.validate / apply_overrides]&lt;br/&gt;approved fact / allowed picture ids only · duplicate stops keep first · first stop fundamental&lt;br/&gt;USP count/name errors stay issues: first three, strip unsafe tokens or drop&lt;br/&gt;Planner inherits only three valid USPs, else keeps its own · unsupported stops optional with gaps&lt;br/&gt;open customer unknowns become evidence gaps with counts; resolved gaps disappear&quot;]:::fn
   PB[&quot;playbook.json + saved order/kind overrides&lt;br/&gt;[DATA · library version / key, registry hash, audience, issues]&lt;br/&gt;reviewed stops, three USPs and evidence gaps&quot;]:::data
@@ -151,6 +152,7 @@ flowchart TD
   ISV -- &quot;video&quot; --&gt; UPV --&gt; SHOTS --&gt; IDS
   SHOTS -- &quot;no images uploaded&quot; --&gt; STILLS --&gt; IMGS
   ISV -- &quot;image&quot; --&gt; IMGS --&gt; IDS
+  ISV -- &quot;enabled product / brand PDF pictures&quot; --&gt; PDFIM --&gt; IMGS
   ISV -- &quot;product / brand pdf / doc / url / text&quot; --&gt; CRAWL --&gt; DOCS --&gt; FACTS --&gt; FIDS
   ISV -- &quot;role=competitor: URL / PDF / doc / text&quot; --&gt; COMP --&gt; UND
   IDS --&gt; UND

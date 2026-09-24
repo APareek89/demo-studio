@@ -234,7 +234,7 @@ def enhance_images(demo_id: str, emit=lambda m: None) -> list[dict]:
     if mode == "off":
         return done
     for src in demo["sources"]:
-        if src.get("kind") != "image" or src.get("use_in_demo", True) is False:
+        if src.get("kind") != "image" or not store.visual_allowed(demo, src["id"]):
             continue
         need, why = needs_cleanup(demo_id, src)
         if not need:
