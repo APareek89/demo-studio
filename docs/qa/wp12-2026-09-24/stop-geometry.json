@@ -1,0 +1,26 @@
+{
+  "hall": {
+    "phase": "stop",
+    "frame": "0",
+    "stop": "sl02-c1",
+    "zoom": "1.9008264462809916",
+    "active": "true",
+    "frozen": "false"
+  },
+  "overflow": "hidden",
+  "labels": [
+    {
+      "visibility": "hidden",
+      "opacity": "0"
+    },
+    {
+      "visibility": "hidden",
+      "opacity": "0"
+    },
+    {
+      "visibility": "hidden",
+      "opacity": "0"
+    }
+  ],
+  "caption": "badgeCompact SUV, five seatsF032"
+}

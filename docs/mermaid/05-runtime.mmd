@@ -10,6 +10,7 @@ flowchart TD
   PERSONALIZE["Explore graph node → pitch.plan_pitch<br/>[AGENT · Gemini → Claude → Runware]<br/>order reviewed slides; explicit priority revision may revisit selected seen proof"]:::agent
   ROUTE["Validate route and personalized segments<br/>[FUNCTION · pitch.py / narration.default_route / player.js]<br/>first fundamental + buyer order; extend whole proof stops to published selected duration (default180s)<br/>all continuation batches stay together, including features/establish<br/>pre-tour Q&A does not shorten speech; reviewed closing stays intact<br/>explicit short/refine exempt; legacy seen policy unchanged"]:::fn
   PLAY["Narration owns the screen<br/>[FUNCTION · player.js / slide.js]<br/>one voice; reveal matching on-slide callout with each line<br/>workbook: white borderless demo, template-dark text, two supported native-fit pictures<br/>welcome/intake: full-area hero + fade; slides75% viewport + fixed white conversation dock<br/>smaller heading; phone rotation guidance; viewport-bounded controls<br/>plan all labels before reveal; short windows reserve controls; reviewed anchors never move<br/>speak closing statements; skip legacy question checkins without speech or wait<br/>save checkin_skipped: legacy_question on the run"]:::fn
+  WALK["Optional URL presentation=walkthrough<br/>[FUNCTION · walkthrough.js wrapper]<br/>hall frames per content picture; line-reveal anchored stop or caption-only rest<br/>native-aspect uniform FLIP; natural-pixel zoom cap and bounded pan<br/>transitionend retargeting; pause freezes pose; jump and return retain checkpoint<br/>stage under700px wide or320px tall / reduced motion: existing cross-fade<br/>Align and flag-off chrome/geometry unchanged; movement never gates speech"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Short acknowledgement when useful<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data
   CACHE{"Candidate saved answer before graph?<br/>[FUNCTION · run_turn → faq.match]<br/>same pinned snapshot + registry hash; eligible citations<br/>skip_bank bypasses; rejected tombstones never match"}:::dec
@@ -48,6 +49,7 @@ flowchart TD
   INTAKE --> PERSONALIZE --> ROUTE
   OVERVIEW --> ROUTE --> PLAY
   STT --> STOP
+  PLAY -. "presentation only; audio remains authoritative" .-> WALK
   PLAY -- "typed interruption" --> STOP
   STOP --> ACK
   STOP --> CACHE

@@ -1,5 +1,14 @@
 # Handoff.MD — Demo Studio
 
+## WP12 walkthrough — branch review · 24 September 2026
+
+**Scope:** optional gallery presentation behind `?presentation=walkthrough`, before the route hash. Default player/Align DOM and chrome remain unchanged. One camera wrapper follows existing audio/reveal events; bounded native-aspect zoom, grounded feature captions, two-picture walks, pause/resume, direct jumps and return, narrow/reduced-motion fallback. No server, agents, nodes, schema or publication change belongs to WP12.
+
+**QA:** core380/24/smoke3; layout193, workbook101, integration19, navigation22, HTML79, exact chrome/Align parity9; walkthrough29, media7, focus21, fundamental10; live26. Mock/isolated storage/blocked outbound only. Screenshots and final motion results: `docs/qa/wp12-2026-09-24/`. Reference source inspected; local-file browser playback was denied and not bypassed. Twelve-category FMEA found no remaining P0/P1 after clipping, stale geometry, fallback cleanup and caption overlap fixes.
+
+**Next:** separately requested conversation/voice fixes, owner-domain-only lookup and incremental session saving; then one full mock QA and one authorized paid final QA using the supplied16JPGs/PDF. Caption/audio lag is report-only. Stay on `codex/sales-trainer-flow`; do not merge master or deploy AWS until Anand tries the demo and approves. No protected demo or port8896 operation. Loop stays off. Effort: implementation35%, browser/test reconciliation50%, review/docs15%.
+
+
 ## Script generation — approved and merged to master · 24 September 2026
 
 **Decision:** Anand reviewed the final sample and said “this is fine, commit to main” on24 September2026. This supersedes the earlier experiment-only merge hold. The repository's default branch is `master` (there is no `main`); reviewed application commit `badc19d` and its four preceding implementation commits are merged without conflicts from `codex/crack-the-script`, based on release `582ae1a`. The target script remains a narrative reference: preserve existing validators, the default495-word preparation margin and measured180-second publication gate. PDF embedded-picture extraction within Understand is approved. No main-narration PS exception, invented reputation or unsupported performance claim. This merge does not deploy or restart AWS or the original local app.

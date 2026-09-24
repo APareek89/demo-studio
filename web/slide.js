@@ -47,11 +47,14 @@ export function renderSlide(slide, opts = {}) {
   const img = h("img", { alt: slide.title || "Product view", draggable: "false" });
   const leaders = document.createElementNS(SVG_NS, "svg");
   leaders.setAttribute("class", "leaders"); leaders.setAttribute("viewBox", "0 0 100 100"); leaders.setAttribute("preserveAspectRatio", "none");
-  pic.append(img, leaders);
+  // Only the flagged player groups these layers; Align and the default view keep their exact DOM.
+  const cam = opts.walkthrough ? h("div", { class: "slide-cam", style: "display:contents" }) : null;
+  if (cam) pic.append(cam);
+  (cam || pic).append(img, leaders);
   if (url) img.src = url; else pic.append(h("span", {}, "no picture"));
   if (entry.proxy) pic.append(h("span", { class: "slide-proxy-badge", title: entry.proxy_reason || "This picture illustrates the topic; it is not visual proof." }, "illustration"));
   media.append(pic);
-  return { pic, img, leaders, entry };
+  return { pic, img, leaders, entry, cam };
   });
   const { pic, img } = pictures[0]; // Existing player/editor callers use the first-image aliases.
   const chips = new Map(), dots = new Map(), lines = new Map(), owners = new Map();
@@ -65,14 +68,14 @@ export function renderSlide(slide, opts = {}) {
   callouts.forEach((c, k) => {
     const picture = pictures.find((item) => item.entry.image_id === c.image_id) || pictures[0];
     owners.set(c.id, picture);
-    const { pic, leaders } = picture;
+    const { pic, leaders, cam } = picture;
     const num = String(k + 1);
     if (c.placement === "overlay" && c.label_pos && c.anchor) {
       const chip = h("div", { class: "callout", "data-id": c.id, style: `left:${c.label_pos.x * 100}%;top:${c.label_pos.y * 100}%` }, h("span", { class: "num" }, num), featureText(c));
       const dot = h("div", { class: "dot", "data-id": c.id, style: `left:${c.anchor.x * 100}%;top:${c.anchor.y * 100}%` }, h("span", { class: "num" }, num));
       if (opts.fit && !opts.editable) { dot.setAttribute("role", "button"); dot.setAttribute("tabindex", "0"); dot.setAttribute("aria-label", `Detail ${num}: ${c.text}`); const focusDetail = () => { highlight(c.id); const item = panel.querySelector(`[data-id="${c.id}"]`); if (item?.offsetWidth) panel.scrollLeft = item.offsetLeft; }; dot.addEventListener("click", focusDetail); dot.addEventListener("keydown", event => { if (["Enter", " "].includes(event.key)) { event.preventDefault(); focusDetail(); } }); }
       const ln = document.createElementNS(SVG_NS, "line"); ln.setAttribute("x2", String(c.anchor.x * 100)); ln.setAttribute("y2", String(c.anchor.y * 100));
-      leaders.append(ln); pic.append(dot, chip); chips.set(c.id, chip); dots.set(c.id, dot); lines.set(c.id, ln);
+      leaders.append(ln); (cam || pic).append(dot, chip); chips.set(c.id, chip); dots.set(c.id, dot); lines.set(c.id, ln);
       if (sampleLayout) {
         chip.setAttribute("role", "button"); chip.setAttribute("tabindex", "0"); chip.setAttribute("aria-label", c.text);
         chip.addEventListener("click", () => highlight(c.id));
@@ -279,5 +282,5 @@ export function renderSlide(slide, opts = {}) {
   pictures.forEach(({ pic, img }) => { ro?.observe(pic); img.addEventListener("load", layout); });
   ro?.observe(el); if (opts.fit) ro?.observe(panel);
   requestAnimationFrame(layout);
-  return { el, pic, img, pics: pictures.map((item) => item.pic), images: pictures.map((item) => item.img), layout, setRevealed, highlight, setImage, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
+  return { el, pic, img, pics: pictures.map((item) => item.pic), images: pictures.map((item) => item.img), ...(opts.walkthrough ? { walkthroughPictures: pictures } : {}), layout, setRevealed, highlight, setImage, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
 }

@@ -17,6 +17,7 @@
 // They are assembled below; the entry point that supplies this player is web/app.js:renderPlay.
 import { mascot } from "/web/player/mascot.js";
 import { renderSlide } from "/web/slide.js";
+import { createWalkthrough } from "/web/player/walkthrough.js";
 import { h, toast } from "/web/api.js";
 import { icon } from "/web/icons.js";
 import { LiveVoiceClient } from "/web/player/live-voice.js";
@@ -81,6 +82,7 @@ function customerUrls(text, limit = 8) {
 // Return lifecycle methods for web/app.js:renderPlay; all visit state stays inside this player.
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
+  const walkthroughEnabled = new URLSearchParams(window.location.search).get("presentation") === "walkthrough";
   // Keep the current route, audio, customer input, timing and report fields together for this visit.
   // Run and listening counters identify the owner of asynchronous work; server/runtime_state.py:claim_turn uses matching session IDs.
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: null, intakeOpen: false,
@@ -213,6 +215,8 @@ export function mountPlayer(host, bundle, api) {
       // Questions use the API callbacks supplied by web/app.js:renderPlay, just like dock replies.
       h("form", { class: "composer", onsubmit: (e) => { e.preventDefault(); const t = el.q.value.trim(); if (t) { el.q.value = ""; acceptTypedAnswer(t); } } }, el.q = h("input", { oninput: preferTyping, placeholder: "Type a question…", "aria-label": "Type a question" }), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 18 })))));
   host.replaceChildren(root);
+  const presentation = createWalkthrough({ stage: el.stage, stack: el.stack, bundle, enabled: walkthroughEnabled });
+  presentation.mount(slides);
   // Stay within the actual host and visible viewport, including an embedded
   // Rehearse panel or a phone keyboard. Portrait retains a widescreen slide and
   // an advisory; it never rotates the DOM or attempts to lock the device.
@@ -236,6 +240,7 @@ export function mountPlayer(host, bundle, api) {
     root.style.setProperty("--player-action-height", actions + "px");
     root.style.setProperty("--player-dock-size", dockHeight + "px");
     root.style.setProperty("--player-dock-height", dockHeight + "px");
+    presentation.resize(el.stage.getBoundingClientRect());
   };
   const dockObserver = typeof ResizeObserver === "function" ? new ResizeObserver(sizePlayer) : null;
   dockObserver?.observe(root);
@@ -415,7 +420,8 @@ export function mountPlayer(host, bundle, api) {
   function showSlideView(slide, { reveal = -1 } = {}) {
     if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); cur.view.setPosition?.(slidePosition(slide)); return cur.view; }
     if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
-    const view = renderSlide(slide, { fit: true, theme: visualTheme, position: slidePosition(slide) });
+    let view = renderSlide(slide, { fit: true, theme: visualTheme, position: slidePosition(slide), walkthrough: walkthroughEnabled });
+    view = presentation.wrap(slide, view, { reveal, jump: !!S.conversationOrigin, position: slidePosition(slide) });
     view.setRevealed(reveal);
     el.stack.append(view.el);
     view.layout(); void view.el.offsetWidth; view.el.classList.add("on");  // a forced reflow starts the cross-fade; no animation frame needed (a hidden tab never gets one)
@@ -784,7 +790,7 @@ export function mountPlayer(host, bundle, api) {
   function openingPlanPending() { return !!S.pitchPromise && !S.planningDecided && ["opening", "overview", "planning"].includes(S.playback.phase); }
   // Invalidate the old run and stop its speech, film, waits and unfinished answer delivery.
   // The optional planning flag is forwarded to live-voice.js:LiveVoiceClient.interrupt without resuming anything automatically.
-  function interruptAll({ preservePlanning = false } = {}) { newRun(); S.httpQuestion?.cancel(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} root.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
+  function interruptAll({ preservePlanning = false } = {}) { presentation.freeze(); newRun(); S.httpQuestion?.cancel(); if (S.activeTurn && !S.activeTurn.delivery_done) { S.activeTurn.cancelled = true; S.activeTurn.cancelled_at = Date.now(); } S.activeTurn = null; live?.interrupt({ preservePlanning }); cancelSpeech(); stopListening(); S.promptRun = null; S.pendingPromptAnswer = ""; try { el.film.pause(); } catch (e) {} root.classList.remove("film-on"); S.onFirstAudio = null; clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.waitChips = []; w.resolve({ value: "__interrupted" }); } if (S.intakeResolver) S.intakeResolver(""); setChips([]); }
   // Interpret customer words only against choices offered by the current wait.
   // Return a selected value or a question; server/app.py:run_qa handles questions that do not match a choice.
   function interpretReply(t, chips) {
@@ -1632,19 +1638,19 @@ export function mountPlayer(host, bundle, api) {
   function togglePause() {
     if (S.paused) { resumeSession(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); const resume = S.resume; S.resume = null; if (resume) resume(); return; }
     const origin = { ...S.playback }, intake = S.intakeOpen, conversation = !!S.conversationOrigin;
-    interruptAll({ preservePlanning: openingPlanPending() }); S.paused = true; el.pauseBtn.replaceChildren(icon("play", { size: 18 })); el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press play to continue.";
+    presentation.pause(); interruptAll({ preservePlanning: openingPlanPending() }); S.paused = true; el.pauseBtn.replaceChildren(icon("play", { size: 18 })); el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press play to continue.";
     // Capture a resume action that returns to intake, conversation or the saved playback phase.
     // This closure runs only on explicit resume; live-voice.js:LiveVoiceClient does not advance the route itself.
-    S.resume = () => { if (intake) runIntake(); else if (conversation) holdConversation(newRun(), { autoResume: false }); else resumePlayback({ ...origin, checkin: false }); };
+    S.resume = () => { presentation.resume(); if (intake) runIntake(); else if (conversation) holdConversation(newRun(), { autoResume: false }); else resumePlayback({ ...origin, checkin: false }); };
   }
   // Stop the active demo, clear intake and show a summary instead of continuing narration.
   // showHandoff requests persistence through server/app.py:save_session.
-  function stopDemo() { interruptAll(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
+  function stopDemo() { interruptAll(); presentation.reset(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); el.intake.classList.remove("open"); S.intakeOpen = false; setStatus("idle", "Stopped"); el.cap.textContent = "Stopped."; S.cta = S.cta || "summary"; showHandoff(); }
 
   // ---------- lifecycle ----------
   // Start over with a fresh session ID, empty visit history and newly created live connection.
   // Destroy the old slide and capture before intake; live-voice.js:LiveVoiceClient.close ends the previous transport.
-  function restart() { interruptAll(); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   // Expose a simple pause method for callers without toggling an already paused demo back on.
   // web/app.js:renderPlay receives this method from mountPlayer.
   function pause() { if (!S.paused) togglePause(); }
@@ -1657,7 +1663,7 @@ export function mountPlayer(host, bundle, api) {
   window.addEventListener("pagehide", onHide);
   // Remove observers and listeners, cancel active work, release preloads and destroy the player DOM.
   // web/app.js:renderPlay calls this lifecycle method when navigating away or mounting another demo.
-  function destroy() { if (destroyed) return; destroyed = true; clearTimeout(preloadTimer); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
+  function destroy() { if (destroyed) return; destroyed = true; presentation.destroy(); clearTimeout(preloadTimer); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   // Initialize visible actions, mute state and the hero slide before starting any demo flow.
   // web/slide.js:renderSlide supplies the view; the welcome buttons below choose when interaction starts.

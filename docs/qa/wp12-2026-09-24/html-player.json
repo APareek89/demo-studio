@@ -1,0 +1,326 @@
+{
+  "passed": 79,
+  "total": 79,
+  "cases": [
+    {
+      "name": "A minimum-duration bundle uses its recorded overview without live transport and resumes it after Q&A",
+      "pass": true
+    },
+    {
+      "name": "A legacy bundle without the narration minimum keeps its existing no-transport opening",
+      "pass": true
+    },
+    {
+      "name": "Default minimum tour keeps complete Q&A-covered stops and both reviewed closing lines",
+      "pass": true
+    },
+    {
+      "name": "Optional intake websites reach planning and remain available across later questions",
+      "pass": true
+    },
+    {
+      "name": "Intake sites cap at five and later typed and spoken URLs append without duplicates",
+      "pass": true
+    },
+    {
+      "name": "Restart clears supplied sites and an email address never becomes lookup permission",
+      "pass": true
+    },
+    {
+      "name": "Websites submitted during the intake prompt continue without inventing a customer answer",
+      "pass": true
+    },
+    {
+      "name": "Voice mode welcome defaults follow continuous voice and muted automation",
+      "pass": true
+    },
+    {
+      "name": "Text mode starts and accepts intake and questions without a microphone prompt",
+      "pass": true
+    },
+    {
+      "name": "Voice-mode visits still accept typed input and save the selected mode separately",
+      "pass": true
+    },
+    {
+      "name": "The player microphone button toggles mode during a text visit",
+      "pass": true
+    },
+    {
+      "name": "The visible conversation voice switch and microphone share real capture ownership",
+      "pass": true
+    },
+    {
+      "name": "Narration, listening and an answer keep the slide, dock and CTA footer fixed",
+      "pass": true
+    },
+    {
+      "name": "Film view shows only native-fit video and a separate Skip control at desktop and mobile widths",
+      "pass": true
+    },
+    {
+      "name": "Natural film completion and media error restore the slide player once",
+      "pass": true
+    },
+    {
+      "name": "Destroy during a film suppresses its late completion",
+      "pass": true
+    },
+    {
+      "name": "Legacy question check-ins are skipped and logged without a wait",
+      "pass": true
+    },
+    {
+      "name": "An answer listens for exactly 3000 ms then resumes its interrupted line once and logs it",
+      "pass": true
+    },
+    {
+      "name": "Auto-resume uses only an existing back-to-demo clip and otherwise stays silent",
+      "pass": true
+    },
+    {
+      "name": "Speech onset at 1200 ms cancels auto-resume and the spoken follow-up reaches QA",
+      "pass": true
+    },
+    {
+      "name": "One typed character cancels automatic continuation without submitting a partial question",
+      "pass": true
+    },
+    {
+      "name": "A draft typed during answer audio keeps its turn after the answer finishes",
+      "pass": true
+    },
+    {
+      "name": "Navigation and Stop cancel a pending post-answer timer",
+      "pass": true
+    },
+    {
+      "name": "A guide clarification keeps waiting beyond three seconds and an empty voice attempt",
+      "pass": true
+    },
+    {
+      "name": "A declined answer defers its listen timer until the optional contact form is dismissed",
+      "pass": true
+    },
+    {
+      "name": "A pending callback save cannot change a restarted session or its newer form",
+      "pass": true
+    },
+    {
+      "name": "Closing CTA choices require explicit customer selection after narration finishes",
+      "pass": true
+    },
+    {
+      "name": "A ready answer bypasses acknowledgment and persists classification and plain-language substitutions",
+      "pass": true
+    },
+    {
+      "name": "An answer arriving during acknowledgment cuts only the filler and never overlaps voices",
+      "pass": true
+    },
+    {
+      "name": "Typing keeps later question waits closed to ambient speech until an explicit mic tap",
+      "pass": true
+    },
+    {
+      "name": "Typing preference survives Restart and intake microphone explicitly restores voice mode",
+      "pass": true
+    },
+    {
+      "name": "Question mode holds its place after 30 seconds of silence",
+      "pass": true
+    },
+    {
+      "name": "A yes-prefixed question reaches QA instead of the next slide",
+      "pass": true
+    },
+    {
+      "name": "A typed clarification is accepted once with conversation history",
+      "pass": true
+    },
+    {
+      "name": "A direct customer statement survives later QA without turning question history into recap preferences",
+      "pass": true
+    },
+    {
+      "name": "An unknown answer holds the callback form without narration behind it",
+      "pass": true
+    },
+    {
+      "name": "A model-suggested CTA is not a customer selection or an automatic recap",
+      "pass": true
+    },
+    {
+      "name": "An explicitly chosen proposed CTA records the choice without claiming an unsent handoff",
+      "pass": true
+    },
+    {
+      "name": "A negated CTA mention at closing remains a question while an exact selection still works",
+      "pass": true
+    },
+    {
+      "name": "Brochure and dealer selections expose their exact HTTPS link only after customer selection",
+      "pass": true
+    },
+    {
+      "name": "Booking links retain optional consent and invalid CTA URLs never become active links",
+      "pass": true
+    },
+    {
+      "name": "A late speech result cannot answer the wait after a slide skip",
+      "pass": true
+    },
+    {
+      "name": "A late speech result after restart leaves the new intake untouched",
+      "pass": true
+    },
+    {
+      "name": "Opening Q&A resumes the interrupted line without replaying completed lines",
+      "pass": true
+    },
+    {
+      "name": "A superseded QA response cannot speak over the current answer",
+      "pass": true
+    },
+    {
+      "name": "Q&A labels prerequisite citations separately and clears them when a new answer takes ownership",
+      "pass": true
+    },
+    {
+      "name": "Off-slide Q&A returns to the exact interrupted proof line",
+      "pass": true
+    },
+    {
+      "name": "Runtime v1 jumps directly to evidence and auto-returns to the exact interrupted line",
+      "pass": true
+    },
+    {
+      "name": "A new question interrupts a direct runtime jump without stealing its original return point",
+      "pass": true
+    },
+    {
+      "name": "Explicit slide navigation cancels a direct runtime answer and cannot be undone by its late ending",
+      "pass": true
+    },
+    {
+      "name": "A cached jump transition completes before the view and answer-latency stamp change",
+      "pass": true
+    },
+    {
+      "name": "Interrupting a jump announcement cancels its pending view change and answer",
+      "pass": true
+    },
+    {
+      "name": "Stop, Done and pagehide preserve the same ended session duration",
+      "pass": true
+    },
+    {
+      "name": "Back resumes active session time without counting recap idle, and restart resets it",
+      "pass": true
+    },
+    {
+      "name": "An intentional new typed question after Done reopens timing without the idle gap",
+      "pass": true
+    },
+    {
+      "name": "Declining callback still permits completion and saves the finished session",
+      "pass": true
+    },
+    {
+      "name": "Reviewed detail owns its citations across Q&A return and clears them for question prompts",
+      "pass": true
+    },
+    {
+      "name": "Legacy reviewed questions continue as narration without a customer wait",
+      "pass": true
+    },
+    {
+      "name": "Stopping with a callback open shows a buyer recap while retaining internal session detail",
+      "pass": true
+    },
+    {
+      "name": "Personalized boot evidence reuses its complete reviewed label and image, not the current cabin",
+      "pass": true
+    },
+    {
+      "name": "Personalized evidence omits an overlong fact and cannot borrow a differently scoped callout",
+      "pass": true
+    },
+    {
+      "name": "Personalized fallback retains complete conditions and truth, and excludes rejected facts",
+      "pass": true
+    },
+    {
+      "name": "Condition-only evidence shows its full prerequisite and cannot reuse donor claims or imagery",
+      "pass": true
+    },
+    {
+      "name": "An explicitly primary fact still renders its reviewed claim beside condition-only evidence",
+      "pass": true
+    },
+    {
+      "name": "Two pictures use separate native-aspect boxes side by side at one thousand pixels",
+      "pass": true
+    },
+    {
+      "name": "Two fitted pictures stay side by side without distortion at four hundred pixels",
+      "pass": true
+    },
+    {
+      "name": "Line emphasis changes picture opacity without moving media or misrepresenting a proxy",
+      "pass": true
+    },
+    {
+      "name": "Dragging the second picture reports fractions of that picture",
+      "pass": true
+    },
+    {
+      "name": "Revealing an overlay connects its leader at the visible label edge",
+      "pass": true
+    },
+    {
+      "name": "Wide and narrow slides keep the native image ratio inside the stage",
+      "pass": true
+    },
+    {
+      "name": "Resizing keeps the exact native-image anchor without changing saved callout coordinates",
+      "pass": true
+    },
+    {
+      "name": "A narrow slide shows complete feature cards with small trusted anchors and no layout mutation",
+      "pass": true
+    },
+    {
+      "name": "Feature leaders stay visible with their labels and disappear together only on fallback",
+      "pass": true
+    },
+    {
+      "name": "Phone evidence wraps complete trim qualifiers inside each card without shrinking the type",
+      "pass": true
+    },
+    {
+      "name": "Opening and closing hero images retain their native ratio within wide and narrow stages",
+      "pass": true
+    },
+    {
+      "name": "Crowded overlay labels settle in one pass without colliding with their fallback evidence",
+      "pass": true
+    },
+    {
+      "name": "A tall native image stays above wrapped mobile evidence",
+      "pass": true
+    },
+    {
+      "name": "The mobile evidence cue follows actual overflow without changing slide geometry",
+      "pass": true
+    },
+    {
+      "name": "The walkthrough URL flag preserves playback context and keeps its frames outside the slide stack",
+      "pass": true
+    }
+  ],
+  "boundaries": "Real DOM/events and mountPlayer; synthetic audio/SpeechRecognition/API; virtual timers. Not an acoustic or native microphone check.",
+  "errors": [],
+  "external": [],
+  "full_local_receipt": "/tmp/demo-wp12-20260924/after-parity/player-html.json"
+}

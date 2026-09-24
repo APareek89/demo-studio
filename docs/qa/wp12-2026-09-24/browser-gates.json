@@ -1,0 +1,22 @@
+[
+  {
+    "name": "ui_layout_contract",
+    "exit": 0,
+    "seconds": 60.0
+  },
+  {
+    "name": "workbook_player_contract",
+    "exit": 0,
+    "seconds": 17.61
+  },
+  {
+    "name": "studio_player_integration_contract",
+    "exit": 0,
+    "seconds": 23.29
+  },
+  {
+    "name": "player_navigation_contract",
+    "exit": 0,
+    "seconds": 42.1
+  }
+]

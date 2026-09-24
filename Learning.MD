@@ -1,5 +1,16 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-24 — Camera tests must check actual painted bounds
+
+**Symptom:** the walkthrough state machine passed while a zoomed picture painted over its heading; fading old chips briefly competed with its new caption.
+
+**Five whys:** (1) Camera math measured correct rectangles, but overflow remained visible. (2) Existing more-specific slide styles overrode the intended clip. (3) Opacity transitions left obsolete labels visible during a new stop. (4) fake transition tests established state ownership without testing painted pixels. (5) visual acceptance initially sampled stable endpoints rather than interacting styles and in-flight transitions.
+
+**Correction (code/process):** scope explicit clipping and immediate label visibility to the optional walkthrough only; preserve existing default styles and DOM. Add actual browser bounds/computed-style checks and screenshot review, alongside generation-owned transition tests.
+
+**Prevention:** treat state, geometry, pixels and audio ownership as separate evidence. Run flag-off screenshot/DOM parity and active/fallback/paused resize cases. Preserve baseline failures and update stale tests only against the agreed behavior; never change the product to satisfy an obsolete assertion.
+
+
 ## 2026-09-24 — A picture-diversity fallback replaced the correct subject
 
 **Symptom:** independent review of the final source-grounded draft found that normalization changed a turbo-engine picture to a tyre-pressure screen, a wheel to seat switches and an airbag diagram to lane assistance. All spoken words and citations were intact, and the script still reported no issues.

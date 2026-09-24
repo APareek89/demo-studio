@@ -1,0 +1,31 @@
+[
+  {
+    "suite": "qa_deck",
+    "exit": 0,
+    "seconds": 6.29,
+    "summary": [
+      "380/380 deck cases pass",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "qa_accept",
+    "exit": 0,
+    "seconds": 2.64,
+    "summary": [
+      "24/24 cases behave as required",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  },
+  {
+    "suite": "smoke_mock",
+    "exit": 0,
+    "seconds": 4.23,
+    "summary": [
+      "SMOKE OK dm_84c7d6fd",
+      "SMOKE OK (phase 2) dm_84c7d6fd",
+      "SMOKE OK (on-demand rehearsal) dm_84c7d6fd",
+      "OUTBOUND_ATTEMPTS 0"
+    ]
+  }
+]

@@ -1,0 +1,347 @@
+{
+  "results": [
+    {
+      "name": "flag-off full real-script tour reaches recap and keeps bundle immutable",
+      "passed": true
+    },
+    {
+      "name": "flag-on full real-script tour reaches recap and keeps bundle immutable",
+      "passed": true
+    },
+    {
+      "name": "flag does not change narrated text, logical audio timing or public context checkpoints",
+      "passed": true
+    },
+    {
+      "name": "paced sl02 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl02 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl02 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl02 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl02 line2 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl02 line2 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl03 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl03 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl03 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl03 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl03 line2 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl03 line2 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl04 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl04 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl04 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl04 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl05 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl05 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl05 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl05 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl06 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl06 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl06 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl06 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl07 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl07 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl07 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl07 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl08 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl08 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl08 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl08 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl08 line2 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl08 line2 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl09 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl09 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl09 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl09 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl10 line0 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl10 line0 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl10 line1 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl10 line1 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced sl10 line2 reaches its picture frame",
+      "passed": true
+    },
+    {
+      "name": "paced sl10 line2 caps zoom and covers viewport",
+      "passed": true
+    },
+    {
+      "name": "paced walkthrough traverses all content slides and reaches closing",
+      "passed": true
+    },
+    {
+      "name": "paced walkthrough visits every published picture including second-picture stops",
+      "passed": true
+    },
+    {
+      "name": "walk nav pause freezes every computed moving transform",
+      "passed": true
+    },
+    {
+      "name": "walk nav resume replays interrupted speech",
+      "passed": true
+    },
+    {
+      "name": "dive nav pause freezes every computed moving transform",
+      "passed": true
+    },
+    {
+      "name": "dive nav resume replays interrupted speech",
+      "passed": true
+    },
+    {
+      "name": "tour viewport clips camera while labels and leaders hide immediately",
+      "passed": true
+    },
+    {
+      "name": "stop nav pause freezes every computed moving transform",
+      "passed": true
+    },
+    {
+      "name": "stop nav resume replays interrupted speech",
+      "passed": true
+    },
+    {
+      "name": "recorded gallery, walk, straighten, dive, tour stop and rise",
+      "passed": true
+    },
+    {
+      "name": "pause and resume exercised mid-walk, mid-dive and mid-tour",
+      "passed": true
+    },
+    {
+      "name": "nav pause freezes moving transforms",
+      "passed": true
+    },
+    {
+      "name": "nav resume replays same narration checkpoint",
+      "passed": true
+    },
+    {
+      "name": "answer jumps to another reviewed slide",
+      "passed": true
+    },
+    {
+      "name": "Continue restores interrupted slide and line",
+      "passed": true
+    },
+    {
+      "name": "walk Stop returns gallery wide and shows recap",
+      "passed": true
+    },
+    {
+      "name": "walk Restart rebuilds frames and clears prior route",
+      "passed": true
+    },
+    {
+      "name": "dive Stop returns gallery wide and shows recap",
+      "passed": true
+    },
+    {
+      "name": "dive Restart rebuilds frames and clears prior route",
+      "passed": true
+    },
+    {
+      "name": "stop Stop returns gallery wide and shows recap",
+      "passed": true
+    },
+    {
+      "name": "stop Restart rebuilds frames and clears prior route",
+      "passed": true
+    },
+    {
+      "name": "narrow toggle starts from first picture of an actual two-picture slide",
+      "passed": true
+    },
+    {
+      "name": "narrow transition uses unchanged fallback",
+      "passed": true
+    },
+    {
+      "name": "narrow fallback advances narration to second-picture line",
+      "passed": true
+    },
+    {
+      "name": "narrow return retains current second picture and speech",
+      "passed": true
+    },
+    {
+      "name": "reduced toggle starts from first picture of an actual two-picture slide",
+      "passed": true
+    },
+    {
+      "name": "reduced transition uses unchanged fallback",
+      "passed": true
+    },
+    {
+      "name": "reduced fallback advances narration to second-picture line",
+      "passed": true
+    },
+    {
+      "name": "reduced return retains current second picture and speech",
+      "passed": true
+    },
+    {
+      "name": "1280x720 reduce=False stays within stage",
+      "passed": true
+    },
+    {
+      "name": "1024x640 reduce=False stays within stage",
+      "passed": true
+    },
+    {
+      "name": "800x600 reduce=False stays within stage",
+      "passed": true
+    },
+    {
+      "name": "700x600 reduce=False stays within stage",
+      "passed": true
+    },
+    {
+      "name": "699x600 reduce=False stays within stage",
+      "passed": true
+    },
+    {
+      "name": "699 reduce=False uses ordinary crossfade fallback",
+      "passed": true
+    },
+    {
+      "name": "1280x720 reduce=True stays within stage",
+      "passed": true
+    },
+    {
+      "name": "1280 reduce=True uses ordinary crossfade fallback",
+      "passed": true
+    },
+    {
+      "name": "no browser exceptions or external/mutation requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "rejected": [],
+  "boundary": "Exact published scratch bundle, real mountPlayer and motion; synthetic browser speech end events and local QA route fixture. No paid provider, real microphone, or acoustic timing claim."
+}

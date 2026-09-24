@@ -1061,13 +1061,13 @@ test('Two pictures use separate native-aspect boxes side by side at one thousand
     env.geometry.push({ stage, boxes });
   } finally { view.destroy(); frame.remove(); }
 });
-test('Two pictures stack without distortion at four hundred pixels', async () => {
+test('Two fitted pictures stay side by side without distortion at four hundred pixels', async () => {
   const { frame, view } = await renderFixture(400, { media: pairedMedia(), callouts: pairedCallouts() });
   try {
     view.setRevealed(1); const boxes = view.pics.map(rect);
-    assert(view.el.querySelector('.slide-media.stacked') && boxes[0].bottom < boxes[1].y, 'Narrow pictures did not stack');
-    view.images.forEach((image, index) => assert(Math.abs(boxes[index].width / boxes[index].height - image.naturalWidth / image.naturalHeight) < .015, 'Stacked picture lost its native ratio'));
-    assert(frame.scrollWidth <= frame.clientWidth + 1, 'Stacked media causes horizontal overflow');
+    assert(!view.el.querySelector('.slide-media.stacked') && boxes[0].right < boxes[1].x, 'Narrow fitted pictures did not preserve the approved side-by-side layout');
+    view.images.forEach((image, index) => assert(Math.abs(boxes[index].width / boxes[index].height - image.naturalWidth / image.naturalHeight) < .015, 'Fitted picture lost its native ratio'));
+    assert(frame.scrollWidth <= frame.clientWidth + 1, 'Fitted media causes horizontal overflow');
     env.geometry.push({ boxes });
   } finally { view.destroy(); frame.remove(); }
 });
@@ -1077,7 +1077,7 @@ test('Line emphasis changes picture opacity without moving media or misrepresent
     view.setRevealed(0); const before = view.pics.map(rect);
     assert(view.pics[0].classList.contains('active') && view.pics[1].classList.contains('dimmed'), 'The first spoken line did not activate its image');
     view.setRevealed(1);
-    assert(view.pics[1].classList.contains('active') && Number(getComputedStyle(view.pics[0]).opacity) === .55, 'Second line did not activate the second picture and dim the first');
+    assert(view.pics[1].classList.contains('active') && view.pics[0].classList.contains('dimmed') && Number(getComputedStyle(view.pics[0]).opacity) === 1 && Number(getComputedStyle(view.images[0]).opacity) === .86, 'Second line did not apply the approved image-only emphasis while keeping evidence fully legible');
     assert(JSON.stringify(before) === JSON.stringify(view.pics.map(rect)), 'Emphasis changed layout geometry');
     assert(view.pics[1].querySelector('.slide-proxy-badge')?.textContent === 'illustration', 'Proxy picture is not labelled as illustration');
     assert(view.pics.every((pic) => pic.querySelector('.leaders')), 'A picture is missing its own leader coordinates');
@@ -1314,6 +1314,24 @@ test('The mobile evidence cue follows actual overflow without changing slide geo
     frame.style.width = '1000px'; view.layout();
     assert(hint.hidden && panel.scrollWidth <= panel.clientWidth + 2 && JSON.stringify(callouts) === JSON.stringify(saved), 'Desktop retained a mobile cue or changed approved callouts');
   } finally { view.destroy(); frame.remove(); }
+});
+
+test('The walkthrough URL flag preserves playback context and keeps its frames outside the slide stack', async () => {
+  const original = location.href;
+  const configure = b => { for (const s of b.slides) s.image_url = imageFixture; return b; };
+  try {
+    const url = new URL(original); url.searchParams.delete('presentation'); history.replaceState(null, '', url);
+    await setup({voiceMode:false, configure}); await atProof();
+    const baseline = snapshot(player.context()), baselineSpeech = snapshot(env.played);
+    assert(!host.querySelector('.slide-cam'), 'Default renderer acquired a camera wrapper');
+    url.searchParams.set('presentation', 'walkthrough'); history.replaceState(null, '', url);
+    await setup({voiceMode:false, configure}); await atProof();
+    assert(host.querySelector('.wt-hall') && host.querySelector('.slide-cam'), 'Flag did not mount the walkthrough');
+    assert(!host.querySelector('.slide-stack .wt-frame') && host.querySelectorAll('.slide-stack .slide.on').length === 1, 'Gallery frames replaced or duplicated the active slide');
+    assert(JSON.stringify(player.context()) === JSON.stringify(baseline), 'Presentation changed the playback checkpoint or profile');
+    assert(JSON.stringify(env.played) === JSON.stringify(baselineSpeech), 'Camera movement delayed or changed narration');
+    assert(host.querySelectorAll('.pl-top').length === 1 && host.querySelectorAll('.pl-dock').length === 1, 'Presentation replaced player controls');
+  } finally { player?.destroy(); player = null; history.replaceState(null, '', original); }
 });
 
 runButton.textContent = 'Run checks'; runButton.disabled = false; summary.textContent = `Ready — ${cases.length} browser checks`;

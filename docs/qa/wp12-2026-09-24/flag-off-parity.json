@@ -1,0 +1,86 @@
+{
+  "rows": [
+    {
+      "name": "top-1440",
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 54
+      },
+      "sha256": "27355473e1bad2abb1366af4c18061b5e95120b5b22434d58bf94334ef566633",
+      "identical_pixels": true
+    },
+    {
+      "name": "dock-1440",
+      "rectangle": {
+        "x": 0,
+        "y": 729,
+        "width": 1440,
+        "height": 136
+      },
+      "sha256": "a9672dfe83d0cccafa15fd5a025c6f0fd91ce4cd60c3b4e49cb9cf6325c6a1a2",
+      "identical_pixels": true
+    },
+    {
+      "name": "align-dom-1440",
+      "byte_identical": true
+    },
+    {
+      "name": "top-1024",
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 54
+      },
+      "sha256": "5c13bac52b528a1c867b82802fb0199d7e2a617226aec9bff64a84f48e0dfc6c",
+      "identical_pixels": true
+    },
+    {
+      "name": "dock-1024",
+      "rectangle": {
+        "x": 0,
+        "y": 729,
+        "width": 1024,
+        "height": 136
+      },
+      "sha256": "21c6a8af0d663d7b937ab591857e93388128575c948bcc82725c9bc214de1bea",
+      "identical_pixels": true
+    },
+    {
+      "name": "align-dom-1024",
+      "byte_identical": true
+    },
+    {
+      "name": "top-800",
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 800,
+        "height": 54
+      },
+      "sha256": "b79ea43f4462eaea434888ba27cd2aff82e92ea21621ffa0d08b7515b8befada",
+      "identical_pixels": true
+    },
+    {
+      "name": "dock-800",
+      "rectangle": {
+        "x": 0,
+        "y": 729,
+        "width": 800,
+        "height": 136
+      },
+      "sha256": "8347ccb72e5a6442554c121e652273e8d1af204cfe3510b895c0f4f1e7875983",
+      "identical_pixels": true
+    },
+    {
+      "name": "align-dom-800",
+      "byte_identical": true
+    }
+  ],
+  "errors": [],
+  "rejected": [],
+  "baseline": "/tmp/demo-wp12-20260924/baseline-parity",
+  "boundary": "Real DOM and pointer drag; deterministic local fixture, reduced motion, no provider or microphone."
+}

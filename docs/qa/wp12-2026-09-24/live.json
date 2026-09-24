@@ -1,0 +1,124 @@
+{
+  "results": [
+    {
+      "name": "muted Explore opens transport without microphone",
+      "passed": true
+    },
+    {
+      "name": "Explore begins continuous narration after accepted intake",
+      "passed": true
+    },
+    {
+      "name": "live QA uses WS graph and deferred answer delivery",
+      "passed": true
+    },
+    {
+      "name": "explicit mock decline preserves the unanswered question and opens follow-up",
+      "passed": true
+    },
+    {
+      "name": "completed QA opens its current three-second turn window",
+      "passed": true
+    },
+    {
+      "name": "QA automatically resumes continuous narration after its owned window",
+      "passed": true
+    },
+    {
+      "name": "explicit correction does not become a factual QA request",
+      "passed": true
+    },
+    {
+      "name": "recap retains explicit customer correction and unresolved question",
+      "passed": true
+    },
+    {
+      "name": "recap needs include intake and explicit refinement, not raw QA history",
+      "passed": true
+    },
+    {
+      "name": "one synthetic capture sends real worklet PCM after mic.ready",
+      "passed": true
+    },
+    {
+      "name": "muting and reopening rejects delayed old capture events",
+      "passed": true
+    },
+    {
+      "name": "old capture is stopped and new capture remains live",
+      "passed": true
+    },
+    {
+      "name": "voice intake retains one active capture through continuous narration",
+      "passed": true
+    },
+    {
+      "name": "raw speech onset alone does not interrupt narration",
+      "passed": true
+    },
+    {
+      "name": "meaningful transcript onset immediately pauses actual HTML audio",
+      "passed": true
+    },
+    {
+      "name": "duplicate final creates exactly one question",
+      "passed": true
+    },
+    {
+      "name": "answer and interruption leave the same capture running",
+      "passed": true
+    },
+    {
+      "name": "continuous route reaches the natural closing CTA with capture active",
+      "passed": true
+    },
+    {
+      "name": "ending visit releases microphone tracks",
+      "passed": true
+    },
+    {
+      "name": "natural recap never claims to be listening after capture ends",
+      "passed": true
+    },
+    {
+      "name": "explicit Not yet still reaches a readable recap when farewell transport fails",
+      "passed": true
+    },
+    {
+      "name": "failed farewell never records successful audio delivery",
+      "passed": true
+    },
+    {
+      "name": "both completed visits are posted to session storage",
+      "passed": true
+    },
+    {
+      "name": "voice visit preserves actual per-turn voice provenance after capture closes",
+      "passed": true
+    },
+    {
+      "name": "all audio remains muted",
+      "passed": true
+    },
+    {
+      "name": "no browser runtime exception",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "saved_visits": [
+    {
+      "id": "s_mufgbnip9tlb",
+      "ended": true,
+      "input_mode": "text",
+      "turn_count": 1
+    },
+    {
+      "id": "s_mufgc8hzro8p",
+      "ended": true,
+      "input_mode": "text",
+      "turn_count": 1
+    }
+  ],
+  "boundary": "Headless isolated Chrome; real app/WS/worklet and mock backend; explicit declined-question provider fixture, skip_bank request control, synthetic capture/transcripts and 8x muted audio acceleration; no acoustic quality or natural duration assertion."
+}

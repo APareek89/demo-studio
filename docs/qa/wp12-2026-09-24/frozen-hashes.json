@@ -1,0 +1,10 @@
+{
+  "web/player/player.js": "9d905f978315e7ef6a64ab8bea5ac4af4202b18d15b57dbdcae52db1424ade6c",
+  "web/player/live-voice.js": "2aa12079701511db14650d62a7a6ba508ef967d5ee47423f1158ae8999bdf7c9",
+  "web/player/walkthrough.js": "39cf632532960d82ed3d9756d010ebf0a18aa408fa1b34651d560240d3b6055f",
+  "web/slide.js": "fe66dffc1dd22644b63be532dc5efda2d097ae5c1c9d2d4391a4d19113829fc2",
+  "web/player-ui.css": "d24a5e6647e8084c624c3a881cc85b620247e988770de54c5908cf057382da14",
+  "evals/player_contract.html": "337d93a27f2430c6773eea8e2fc7540977a7f02b8138481e444778cfe040d6da",
+  "evals/live_player_browser.py": "978bfa1e3351bad7583e119c357d2729315596792fc59de2c599fb241ba3e5ae",
+  "evals/wp12_browser_acceptance.py": "1093811221155001009d8a5456943fa055d2a7ea5765cfb4247d28b5aaacdfa6"
+}

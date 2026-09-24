@@ -1,5 +1,10 @@
 # Loop.MD — Demo Studio
 
+## WP12 walkthrough · 24 September 2026
+
+Finite mock acceptance; recurring loop remains off. Deck380/380, acceptance24/24, smoke3/3; layout193/193, workbook101/101, Studio integration19/19, navigation22/22, HTML player79/79; exact default chrome/Align parity9/9; walkthrough29/29, media7/7, focus21/21, fundamental10/10; live browser26/26. Motion85/85 and screenshots are recorded in `docs/qa/wp12-2026-09-24/`. Narration content/logical completion/context parity uses controlled speech events; separately paced checks observe real camera transitions. Neither establishes acoustic recognition or voice quality. All tests use isolated mock storage with blocked outbound sockets. No paid run within WP12. User-approved stale baseline browser expectations were updated without changing default application behavior.
+
+
 ## Script generation — approved and merged to master · 24 September 2026
 
 Mocked, isolated data/graph storage and blocked sockets; no paid model/voice calls. Before and first improved prompt iteration: deck380/380, acceptance24/24 and smoke3/3. Existing scope: Coach27/27, plan/playbook19/19, narrative roles14/14, generation55/55, speech style30/30, narration preparation35/35, recovery18/18, automatic narration16/16. New `python evals/script_prompt_contract.py`:40/40 groups covering actual assembled prompts across categories/audiences, protected evidence rules, numeric/citation/visual rejection, technical-detail preservation, batch splitting and the unchanged495/180 preparation/publication distinction. `evals/coach_contract.py` additionally proves prompt-cache invalidation without evidence mutation.
