@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Noise qualification must not postpone output pause until the question ends
+
+**Observed:** the previous final-only interruption guard fixed false semantic turns but let prerecorded/streamed narration continue while a customer asked a question. A baseline replay on e80a180 confirms a qualified partial does not stop output. Runtime answers also returned no explicit photo identity; selecting a slide could retain another picture on that same slide. Knowledge retrieval repeatedly decoded the same source JSON for matching facts before trimming the result.
+
+**Why chain:** (1) User-perceived interruption waited for final text. (2) The noise fix treated output pause and semantic turn ownership as one action. (3) Stopping early had previously cancelled speech and seized conversation state, so provisional inputs were ignored entirely. (4) Existing tests required this final-only behavior rather than testing a reversible pause separately. (5) Cross-boundary tests did not cover pending image decode, caption timers, late final text, exact picture ownership or failed image acknowledgement. These are separate synchronization/selection problems, not evidence that a new LLM classifier or database is required.
+
+**Correction:** separate immediate reversible output hold from qualified-final turn creation; keep microphone capture running, pause recorded/streaming/browser speech and fallback timers, retain long-question progress and final-text grace, and resume the same position for rejected input. Gate late gallery decodes and pending answers by the same run owner. Retrieve exact reviewed media/caption identities using pinned evidence and publication; reject wrong-row/negative-variant projections and never invent pointers. Picture-navigation failures stay out of factual unknown/callback tracking. Hydrate only selected fact contexts with a request-local source memo and independent copied rows.
+
+**Prevention/evidence:** synthetic voice/cup/throat, watchdog/cancellation/fallback regressions; real muted browser pause-event clock and same-clip resume; actual desktop/phone image-before-answer, Continue return, unavailable/stale/decode and deferred-image ownership; snapshot/scope/FAQ/backend contracts; identical BMW retrieval payload with31→1 source reads; frozen baseline and final core/mock gates. [Receipt](docs/qa/runtime-interruption-media-2026-09-25/README.md). No physical acoustic, paid model, speaker-identity or load-test claim. Existing Build/Align/grounding/provider architecture stays intact; LiveKit remains a discussed transport option, not installed code.
+
 ## 2026-09-25 — A public feedback link needs a private operator boundary
 
 **Observed:** the previous AWS proxy forwarded every path anonymously. Sharing a player URL also left demo inventory, edit/paid-build APIs, saved-session records and raw JSON/trace files reachable. Copying the entire local BMW directory would additionally have transferred the owner's test conversation.

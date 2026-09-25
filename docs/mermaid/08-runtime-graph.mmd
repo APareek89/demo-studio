@@ -6,21 +6,25 @@ config:
 ---
 graph TD;
 	REQUEST["run_turn wrapper<br/>claim owned turn; pin snapshot and registry<br/>same entry point for REST and live socket"]
+	SHOW{"Wrapper: unambiguous picture-only request?<br/>generic tour controls and mixed questions stay on normal path"}
+	PICTURE["Wrapper: scoped published-picture lookup<br/>ordinary retrieve helper plus bounded reviewed-caption search hints<br/>strict snapshot/version, eligible facts and owning image/caption<br/>neutral show or no-photo reply; no reasoning model, FAQ or unknown write<br/>not an additional graph node"]
 	CACHE{"Eligible saved answer?<br/>faq.match before graph; skip_bank bypasses<br/>same pin/hash and approved citations; rejected tombstones excluded"}
-	CACHEVALID{"Exact cached words pass this turn?<br/>_validated_bank_result → ordinary scope/date-aware retrieval + validation<br/>eligible citations, conditions and word cap<br/>fresh URL verification / explicit public search bypass"}
+	CACHEVALID{"Exact cached words pass this turn?<br/>_validated_bank_result → ordinary scope/date-aware retrieval + validation<br/>eligible citations, conditions and word cap<br/>fresh URL verification / explicit owner-domain search bypass"}
 	HIT["Exact cached words + clip when available<br/>from_bank=true; increment asked_count<br/>unchanged validated words; current evidence view; no graph/model call"]
 	LEARN["run_turn wrapper after fresh validated result<br/>clean approved answer → source customer cache, reviewed=false<br/>decline / I-will-not-guess → deduplicated customer unknown, never fact<br/>no provider/repair failure, clarification, live-web or calculation answer cached"]
 	REVIEW["Asked and answered card + Coach evidence gaps<br/>content changes reset approval; count/audio-only changes do not<br/>approve/edit/reject through existing Align review API"]
-	DELIVER["Return owned DeliveryPlan<br/>streaming voice happens outside graph<br/>completed clip attaches only to same entry and exact answer"]
+	DELIVER["Return owned DeliveryPlan<br/>existing delivery helper resolves exact published image for model and FAQ answers<br/>client verifies image identity; same-slide picture changes preserve return point<br/>streaming voice happens outside graph<br/>completed clip attaches only to same entry and exact answer"]
 	__start__([<p>__start__</p>]):::first
-	retrieve(retrieve)
-	reason["reason<br/>[AGENT + FUNCTION · session CUSTOMER_URLS]<br/>explicit URL verification first, then explicit public-web search<br/>empty evidence / first clean decline: customer site first, public search if still unanswered"]
-	tools["tools<br/>[FUNCTION · calculator / customer-site lookup / bounded public-web search]<br/>public search: one discovery + at most two secured page fetches, ≤5 seconds<br/>only fetched passages become attributed turn-scoped W facts<br/>one public search; greeting/control/CTA/clarify/calculator-only/outage fallback excluded<br/>negated/quoted search excluded; never writes facts or FAQ<br/>same scope, network, cancellation and turn-budget gates"]
+	retrieve["retrieve<br/>same approved pinned ranking and scope<br/>hydrate returned facts only; selected extraction read once per request"]
+	reason["reason<br/>[AGENT + FUNCTION · session CUSTOMER_URLS]<br/>explicit URL verification first, then explicit owner-domain search<br/>empty evidence / first clean decline: allowed source first, owner-domain search if still unanswered"]
+	tools["tools<br/>[FUNCTION · calculator / customer-site lookup / bounded owner-domain search]<br/>owner-domain search: one discovery + at most two secured page fetches, ≤5 seconds<br/>only fetched passages become attributed turn-scoped W facts<br/>one owner-domain search; greeting/control/CTA/clarify/calculator-only/outage fallback excluded<br/>negated/quoted search excluded; never writes facts or FAQ<br/>same scope, network, cancellation and turn-budget gates"]
 	validate["validate<br/>[FUNCTION · grounded rows → plain terms → exact live host → word cap]<br/>technical_term feedback uses existing bounded repair"]
 	explore["explore<br/>[AGENT + FUNCTION · pitch.plan_pitch]<br/>new default: first fundamental, buyer order, enough reviewed stops for published selected duration (default180s)<br/>pre-tour Q&A views cannot shorten counted speech; complete reviewed closing retained<br/>explicit short/refine exempt; legacy seen policy unchanged"]
-	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions]<br/>session checkpoint retains input_mode and customer_urls; capture stays outside graph"]
+	delivery_plan["delivery_plan<br/>[DATA · result includes plain_language_substitutions and eligible published visual]<br/>runtime_visuals selects existing picture/caption only; no new model or graph node<br/>pin/version race clears image; picture-only reply then reports unavailable<br/>session checkpoint retains input_mode and customer_urls; capture stays outside graph"]
 	__end__([<p>__end__</p>]):::last
-	REQUEST --> CACHE;
+	REQUEST --> SHOW;
+	SHOW -- "picture only" --> PICTURE --> DELIVER;
+	SHOW -- "question or explore" --> CACHE;
 	CACHE -- "candidate" --> CACHEVALID;
 	CACHEVALID -- "valid unchanged answer" --> HIT --> DELIVER;
 	CACHEVALID -- "invalid / fresh check" --> __start__;

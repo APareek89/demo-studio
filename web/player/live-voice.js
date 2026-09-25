@@ -13,8 +13,8 @@ export function pcmToFloat(audio, decode = atob) {
 }
 function encodePCM(buffer) { const bytes = new Uint8Array(buffer); let binary = ""; for (const byte of bytes) binary += String.fromCharCode(byte); return btoa(binary); }
 
-// VAD and recognition partials are provisional: a cup impact or TV fragment
-// must not take ownership of playback. Only a qualified final can interrupt.
+// Early speech can pause output reversibly. Only a qualified final takes
+// semantic ownership of a turn; a discarded sound resumes the same audio.
 export function meaningfulTranscript(text) {
   // Providers can describe a sound instead of leaving the transcript empty.
   // Remove only known sound annotations, retaining any real words around them.
@@ -31,8 +31,8 @@ export function meaningfulTranscript(text) {
 }
 
 export class LiveVoiceClient {
-  constructor({ url, sessionId, language = "en-IN", qualifyInput = meaningfulTranscript, shouldInterrupt = () => true, onSpeechStart = () => {}, onTranscript = () => {}, onState = () => {}, onError = () => {}, env = globalThis }) {
-    Object.assign(this, { url, sessionId, language, qualifyInput, shouldInterrupt, onSpeechStart, onTranscript, onState, onError, env });
+  constructor({ url, sessionId, language = "en-IN", qualifyInput = meaningfulTranscript, shouldInterrupt = () => true, canHold = () => true, onSpeechHold = () => {}, onSpeechHoldEnd = () => {}, onSpeechStart = () => {}, onTranscript = () => {}, onState = () => {}, onError = () => {}, env = globalThis }) {
+    Object.assign(this, { url, sessionId, language, qualifyInput, shouldInterrupt, canHold, onSpeechHold, onSpeechHoldEnd, onSpeechStart, onTranscript, onState, onError, env });
     this.socket = null; this.ready = false; this.closed = false; this.connecting = null; this.turn = 0; this.turnId = "t_0";
     this.pending = null; this.delivery = null; this.inputMode = "text"; this.mic = false; this.captureEpoch = 0; this.captureStarting = null;
     this.speechActive = false; this.seenInputs = new Set(); this.inputGeneration = 0; this.muted = false; this.generation = 0; this.audioEpoch = 0;
@@ -109,7 +109,7 @@ export class LiveVoiceClient {
       this.captureContext = context; this.stream = stream; this.input = context.createMediaStreamSource(stream);
       this.worklet = new this.env.AudioWorkletNode(context, "demo-capture"); this.silent = context.createGain(); this.silent.gain.value = 0;
       this.input.connect(this.worklet); this.worklet.connect(this.silent); this.silent.connect(context.destination);
-      this.inputMode = "voice"; this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.speechCandidateAt = null; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003;
+      this.inputMode = "voice"; this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.speechCandidateAt = null; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003; this.speechFrames = []; this.localOnsetArmed = true; this.holdBlockedUntil = 0;
       this.send("mic.set", { enabled: true, input_generation: this.inputGeneration, input_mode: "voice" });
       this.micReadyTimer = setTimeout(() => { if (this.mic && !this.micReady && epoch === this.captureEpoch) { this.stopCapture(); this.onError("Voice input did not connect. Type below or tap the mic to retry."); } }, 9000);
       this.worklet.port.onmessage = ({ data }) => {
@@ -118,6 +118,7 @@ export class LiveVoiceClient {
         const threshold = Math.max(0.018, this.noise * 3.5);
         if (data.rms > threshold) { this.loudFrames++; this.quietFrames = 0; this.lastSpeechAt = Date.now(); } else { this.loudFrames = 0; this.quietFrames++; this.noise = this.noise * 0.98 + Math.min(data.rms, 0.02) * 0.02; }
         if (this.loudFrames === 1 && !this.speechActive) this.speechCandidateAt = Date.now();
+        this.observeSpeechFrame(data, threshold);
         const frame = { audio: encodePCM(data.pcm), sample_rate: 16000, input_generation: this.inputGeneration };
         if (this.micReady) this.send("audio.input", frame);
         else if (this.preRoll.length < 400) this.preRoll.push(frame);
@@ -132,6 +133,7 @@ export class LiveVoiceClient {
     }
   }
   stopCapture(notify = true) {
+    this.endSpeechHold(this.closed ? "closed" : "microphone_off", !this.closed);
     this.captureEpoch++; this.captureStarting = null; this.mic = false; this.micReady = false; this.preRoll = []; this.speechActive = false; this.speechCandidateAt = null; clearTimeout(this.micReadyTimer);
     if (notify || !this.closed) this.inputMode = "text";
     if (notify) this.send("mic.set", { enabled: false, input_generation: this.inputGeneration, input_mode: "text" });
@@ -146,8 +148,59 @@ export class LiveVoiceClient {
     this.speechActive = true;
     if (!event.preserve_endpoint) { this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; }
     this.speechStartedAt = this.speechCandidateAt || event.detected_at || Date.now();
+    const provisional = this.inputHold;
+    this.endSpeechHold("confirmed", false);
     this.cancelAudio(); // local stop precedes server cancellation and application work
-    this.onSpeechStart(event);
+    this.onSpeechStart({ ...event, provisional_detected_at: provisional?.detected_at, provisional_source: provisional?.source });
+  }
+  observeSpeechFrame(data, threshold) {
+    this.speechFrames ||= [];
+    this.speechFrames.push(data.rms > threshold && data.speechLike === true);
+    if (this.speechFrames.length > 10) this.speechFrames.shift();
+    if (!this.speechFrames.some(Boolean)) this.localOnsetArmed = true;
+    // Eight voiced 20ms frames reject brief bumps/clears. This may still pause
+    // for sustained background speech; it cannot establish who is speaking.
+    if ((this.inputHold || this.localOnsetArmed) && this.speechFrames.filter(Boolean).length >= 8) this.holdSpeech({ source: "local_speech", detected_at: Date.now() });
+  }
+  holdSpeech(event) {
+    if (!this.mic || this.speechActive || !this.canHold() || Date.now() < (this.holdBlockedUntil || 0)) return;
+    let hold = this.inputHold;
+    if (!hold) {
+      hold = this.inputHold = { ...event, startedAt: Date.now() };
+      this.localOnsetArmed = false;
+      this.speechStartedAt = this.speechCandidateAt || event.detected_at || hold.startedAt;
+      // Gain drops synchronously, before the audio context suspension promise.
+      if (this.gain) this.gain.gain.value = 0;
+      this.outputContext?.suspend?.().catch(() => {});
+      if (this.delivery) { clearTimeout(this.delivery.timer); clearTimeout(this.delivery.startTimer); }
+      this.onSpeechHold(event);
+      hold.limit = setTimeout(() => this.endSpeechHold("deadline"), 20000);
+    }
+    // Recognized progress means a real question can take longer than20s.
+    // Repeated unchanged partials and raw background energy cannot renew this
+    // watchdog forever. No completion/final means no semantic question yet.
+    if (event.source === "partial" && event.text !== hold.partialText) {
+      hold.partialText = event.text; clearTimeout(hold.limit);
+      hold.limit = setTimeout(() => this.endSpeechHold("deadline"), 20000);
+    }
+    clearTimeout(hold.timer);
+    hold.timer = setTimeout(() => this.endSpeechHold("silence"), hold.partialText !== undefined ? 2400 : 1400);
+  }
+  endSpeechHold(reason, resume = true) {
+    const hold = this.inputHold; if (!hold) return;
+    this.inputHold = null; clearTimeout(hold.timer); clearTimeout(hold.limit); this.speechFrames = [];
+    if (reason === "deadline") this.holdBlockedUntil = Date.now() + 2000;
+    this.onSpeechHoldEnd({ reason, resume, detected_at: hold.detected_at });
+    if (resume && !this.closed) this.resumeOutput();
+  }
+  resumeOutput() {
+    const context = this.outputContext;
+    if (context && context.state !== "closed") context.resume().then(() => {
+      if (this.outputContext !== context || this.closed) return;
+      if (this.inputHold) { context.suspend?.().catch(() => {}); return; }
+      if (this.gain) this.gain.gain.value = this.muted ? 0 : 1;
+      if (this.delivery) { this.armAudioDeadline(this.delivery); this.armAudioStart(this.delivery); }
+    }).catch(() => {});
   }
   receive(data) {
     // Turn IDs own answers; a separate generation owns each microphone capture.
@@ -181,7 +234,9 @@ export class LiveVoiceClient {
         if (key) this.seenInputs.add(key); if (this.seenInputs.size > 256) this.seenInputs.delete(this.seenInputs.values().next().value);
       }
       const meaningful = meaningfulTranscript(data.text) && (!final || this.qualifyInput(data.text));
+      if (!final && meaningful && this.qualifyInput(data.text) && this.shouldInterrupt(data.text)) this.holdSpeech({ source: "partial", text: String(data.text).trim().toLowerCase(), detected_at: Date.now() });
       if (meaningful && final && this.shouldInterrupt(data.text)) this.speechStart({ source: "final", detected_at: Date.now(), preserve_endpoint: true });
+      else if (final) this.endSpeechHold(meaningful ? "control" : "rejected");
       if (final) { this.speechActive = false; this.loudFrames = 0; this.speechCandidateAt = null; }
       if (!meaningful) {
         if (final) { this.voiceEnded = null; this.endpointAt = null; this.serverEndpointAt = null; this.endpointBasis = null; }
@@ -215,6 +270,7 @@ export class LiveVoiceClient {
   }
   failPending(error) { if (this.pending) { const pending = this.pending; this.pending = null; clearTimeout(pending.timer); pending.reject(error); } }
   interrupt({ preservePlanning = false } = {}) {
+    this.endSpeechHold("superseded", false);
     this.generation++; this.cancelAudio(); this.failPending(abortError()); this.turnId = `t_${++this.turn}`; this.send("turn.interrupt", { preserve_planning: !!preservePlanning });
   }
   async ask(payload) {
@@ -240,10 +296,15 @@ export class LiveVoiceClient {
   async unlockOutput() {
     const Context = this.env.AudioContext || this.env.webkitAudioContext;
     if (!this.outputContext || this.outputContext.state === "closed") { this.outputContext = new Context(); this.gain = this.outputContext.createGain(); this.gain.connect(this.outputContext.destination); }
-    this.gain.gain.value = this.muted ? 0 : 1; await this.outputContext.resume();
+    this.gain.gain.value = this.muted || this.inputHold ? 0 : 1;
+    if (this.inputHold) await this.outputContext.suspend?.(); else {
+      await this.outputContext.resume();
+      if (this.inputHold) { this.gain.gain.value = 0; await this.outputContext.suspend?.(); }
+    }
   }
   armAudioDeadline(active) {
     clearTimeout(active.timer);
+    if (this.inputHold) return;
     // Healthy queued speech may exceed thirty seconds. Bound inactivity after
     // its scheduled audio drains, instead of truncating the whole utterance.
     const buffered = Math.max(0, active.nextAt - this.outputContext.currentTime) * 1000;
@@ -263,8 +324,13 @@ export class LiveVoiceClient {
     source.start(at);
     if (!active.started) {
       active.started = true; this.send("delivery.start", { turn_id: active.turnId, utterance_id: active.utteranceId });
-      active.startTimer = setTimeout(() => { if (this.delivery === active) active.onStart(Date.now()); }, Math.max(0, (at - ctx.currentTime) * 1000));
+      active.startAt = at; this.armAudioStart(active);
     }
+  }
+  armAudioStart(active) {
+    if (this.inputHold || active.startNotified || !active.started) return;
+    clearTimeout(active.startTimer);
+    active.startTimer = setTimeout(() => { if (this.delivery === active && !this.inputHold && !active.startNotified) { active.startNotified = true; active.onStart(Date.now()); } }, Math.max(0, (active.startAt - this.outputContext.currentTime) * 1000));
   }
   finishAudio(completed, error) {
     const active = this.delivery; if (!active) return;
@@ -274,7 +340,7 @@ export class LiveVoiceClient {
     if (error) { error.audioStarted = active.started; active.reject(error); } else active.resolve(completed);
   }
   cancelAudio() { this.audioEpoch++; if (this.delivery) this.send("delivery.cancel", { turn_id: this.delivery.turnId, utterance_id: this.delivery.utteranceId }); this.finishAudio(false); }
-  setMuted(muted) { this.muted = muted; if (this.gain) this.gain.gain.value = muted ? 0 : 1; }
+  setMuted(muted) { this.muted = muted; if (this.gain) this.gain.gain.value = muted || this.inputHold ? 0 : 1; }
   close() {
     this.closed = true; this.stopCapture(false); this.interrupt(); this.send("session.end"); this.socket?.close(); this.socket = null; this.ready = false; this.connecting = null;
     this.outputContext?.close().catch(() => {}); this.outputContext = null;

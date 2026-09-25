@@ -327,9 +327,27 @@ export function renderSlide(slide, opts = {}) {
     picture.entry.image_url = url; picture.entry.image_parts = parts || [];
     if (index === 0) slide.image_parts = parts || [];
   }
+  async function focusMedia(imageId, { lineIndex = 99, calloutId = null, awaitPlayback = null } = {}) {
+    const index = pictures.findIndex(({ entry }) => entry.image_id === imageId);
+    if (index < 0) return Promise.resolve(false);
+    const target = pictures[index].img;
+    const loaded = target.complete ? target.naturalWidth > 0 : await new Promise(resolve => {
+      let timer;
+      const finish = () => { clearTimeout(timer); target.removeEventListener("load", finish); target.removeEventListener("error", finish); resolve(target.naturalWidth > 0); };
+      target.addEventListener("load", finish); target.addEventListener("error", finish);
+      timer = setTimeout(finish, 2500);
+    });
+    if (awaitPlayback && !await awaitPlayback()) return false;
+    if (!el.isConnected) return false;
+    setRevealed(lineIndex);
+    pictures.forEach(({ pic }, i) => { pic.classList.toggle("active", i === index); pic.classList.toggle("dimmed", i !== index); });
+    const owner = (slide.callouts || []).find(c => c.id === calloutId && (c.image_id ? c.image_id === imageId : index === 0));
+    highlight(owner?.id || null);
+    return loaded;
+  }
   const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(layout) : null;
   pictures.forEach(({ pic, img }) => { ro?.observe(pic); img.addEventListener("load", layout); });
   ro?.observe(el); if (opts.fit) ro?.observe(panel);
   requestAnimationFrame(layout);
-  return { el, pic, img, pics: pictures.map((item) => item.pic), images: textOnly ? [] : pictures.map((item) => item.img), ...(opts.walkthrough ? { walkthroughPictures: textOnly ? [] : pictures } : {}), layout, setRevealed, highlight, setImage, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
+  return { el, pic, img, pics: pictures.map((item) => item.pic), images: textOnly ? [] : pictures.map((item) => item.img), ...(opts.walkthrough ? { walkthroughPictures: textOnly ? [] : pictures } : {}), layout, setRevealed, highlight, setImage, focusMedia, setPosition, destroy: () => { ro?.disconnect(); el.remove(); } };
 }

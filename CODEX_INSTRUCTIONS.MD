@@ -11,7 +11,9 @@ Refreshed 25 September 2026. This is the entrypoint for a fresh session; [the pr
 5. `docs/context-index-2026-09-25.md` indexes the remaining markdown. Consult current QA reports first; historical briefs/design samples are not automatically current requirements.
 6. Relevant source before editing: `server/app.py` (API), `server/graph.py` (build graph), `server/orchestrator.py` (staleness), `server/store.py` / `storage.py` (persistence), then the relevant stage/runtime module and UI.
 
-Latest task completed: Anand approved BMW and explicitly requested master/GitHub plus AWS for public feedback. Application `278c21d` and operator proxy `0f7e2be` are deployed; public BMW is `https://13-202-0-79.sslip.io/#/play/dm_29df0418`. See Handoff and `docs/aws/release-bmw-gallery-2026-09-25.md` for exact gates, backup and limits. The approved recordings/snapshot were copied, with local test history excluded; no new paid QA. Receipt-only commits do not change the running application SHA.
+Current follow-up: immediate reversible speech holds, exact published answer/show pictures and request-local source-context retrieval are implemented on the working branch. Consult the newest Handoff/Loop/QA receipt for final checks. This follow-up is not merged/deployed; no paid QA or LiveKit integration.
+
+Previous task completed: Anand approved BMW and explicitly requested master/GitHub plus AWS for public feedback. Application `278c21d` and operator proxy `0f7e2be` are deployed; public BMW is `https://13-202-0-79.sslip.io/#/play/dm_29df0418`. See Handoff and `docs/aws/release-bmw-gallery-2026-09-25.md` for exact gates, backup and limits. The approved recordings/snapshot were copied, with local test history excluded; no new paid QA. Receipt-only commits do not change the running application SHA.
 
 Preceding implementation: [gallery-template receipt](docs/qa/gallery-template-2026-09-25/README.md). Anand approved the standalone preview, then explicitly requested its integration into the middle slide area and commitment to master. Default playback now uses that gallery for picture-bearing content slides; the navbar and bottom conversation controls stay unchanged. The receipt records verification and Git publication; AWS remains separate. The earlier [noise/preview receipt](docs/qa/noise-gallery-2026-09-25/README.md) is historical evidence for `eacbb57`.
 
@@ -38,7 +40,7 @@ The later explicit AWS approval supersedes the preceding Git-only scope. Public 
 ## Code map
 
 - Build: `server/graph.py`, `orchestrator.py`, `agents/{understand,coach,plan,author,deck,faq,voice,bundle,rehearsal}.py`.
-- Evidence/pictures: `server/{sources,knowledge,runtime_facts}.py`, `agents/{visuals,narration,plain_terms}.py`.
+- Evidence/pictures: `server/{sources,knowledge,runtime_facts,runtime_visuals}.py`, `agents/{visuals,narration,plain_terms}.py`.
 - Runtime: `server/{runtime_graph,runtime_tools,runtime_live,runtime_delivery,runtime_metrics}.py`; `agents/{pitch,summary}.py`.
 - UI: `web/app.js`, `web/studio/*.js`, `web/player/{player,live-voice,walkthrough}.js`, `web/slide.js`, `web/{styles,player-ui}.css`. Walkthrough is the player-only middle-slide gallery adapter; Align retains the native renderer. `playLines` awaits its cancellable preparation before the existing speech call; the player still owns voice, route, checkpoints and interruptions.
 - Persistence: `server/{store,storage,cloud}.py`; folder-per-demo JSON/media plus graph SQLite. Backend selection/configuration must be inspected, not assumed to be AWS.

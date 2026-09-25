@@ -1,0 +1,32 @@
+PASS sound descriptions and standalone vocalizations are not customer speech
+PASS question punctuation cannot promote a throat sound into a customer question
+PASS a real question survives an adjacent sound annotation
+PASS short commands and feature questions remain actionable
+PASS meaningful intake and supported-language questions survive
+PASS raw onset and throat-clearing partial/final never cancel active output
+PASS next real final after ignored sounds interrupts exactly once
+PASS duplicate and stale finals do not steal the next output owner
+PASS Continue remains local and cannot cause an unnecessary speech interruption
+PASS legacy high-energy noise leaves the three-second resume owner intact
+PASS legacy rejected final creates no input timing record and releases microphone
+PASS legacy silence does not call STT or cancel resume
+PASS legacy relevant final takes the reply only after it is recognized
+PASS legacy intake preserves a short real answer
+PASS deliberate server capture keeps names, locations and freeform household replies
+PASS a late legacy final after cancellation cannot revoke resume or write timing
+PASS an utterance extending beyond3s can finish after automatic resume
+PASS an STT result already in flight at3s is delivered after resume
+PASS a retained late server reply keeps freeform name/location/family wording
+PASS noise can finish after resume without changing playback or UI status
+PASS silence at3s ends capture and cannot start recording the resumed narration
+PASS a qualified final before the3s boundary takes the original reply exactly once
+PASS an expired late-final deadline cancels capture without holding narration
+PASS preferTyping cancels a late final after auto-resume
+PASS interruptAll cancels a late final after auto-resume
+PASS micTap cancels a late final after auto-resume
+PASS toggleMute cancels a late final after auto-resume
+PASS a new wait/capture supersedes the old delayed final
+PASS an explicit Continue cancels the older pending spoken reply
+PASS browser recognition can finish a real partial after automatic resume
+PASS browser noise partial cannot retain capture beyond the reply window
+Speech noise: 31/31 passed (synthetic events, no acoustic acceptance claim)

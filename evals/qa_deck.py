@@ -387,7 +387,10 @@ check("total = first answer audio − voice ended, p95 ≥ p50", st["total"]["p9
 check("turns are split by answer source (bank vs model)", lat.get("by_source", {}).get("bank", 0) >= 1 and lat.get("by_source", {}).get("model", 0) >= 3)
 pj = c.get("/web/player/player.js").text
 check("player stamps voice ended + STT done for server STT, browser recognition and typed questions", 'S.lastListen = { voice_ended: tVoice, stt_done: Date.now(), via: "server" }' in pj and 'via: "browser"' in pj and 'via: "typed"' in pj)
-check("player structure: QA and first-audio stamps use owned playback callbacks (behavior checked in player_browser)", "turn.qa_done = Date.now(); turn.from_bank" in pj and 'a.onplaying = () => { if (!done && my === S.ttsToken && run === S.run)' in pj and "firstAudio(); } else a.pause()" in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
+_result_start = pj.index("r = await questionResult(qaP, run, turn);")
+_result_stamp = pj.index("turn.qa_done = Date.now();", _result_start)
+_result_hold = pj.index("if (S.localSpeechHold && !await awaitSpeechHold(run)) return;", _result_start)
+check("player structure: QA stamps precede provisional hold; first-audio uses owned, unheld playback callbacks (behavior checked in player_browser)", _result_start < _result_stamp < _result_hold and "turn.qa_done ||= Date.now(); turn.from_bank" in pj and 'a.onplaying = () => { if (S.localSpeechHold) { a.pause(); return; } if (!done && my === S.ttsToken && run === S.run)' in pj and "firstAudio(); } else a.pause()" in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
 check("the turns travel on the session record", "turns: S.turns," in pj)
 check("Observability shows the percentiles", "p50" in c.get("/web/observability.js").text and "latency" in c.get("/web/observability.js").text)
 _r = c.get("/web/observability.js")

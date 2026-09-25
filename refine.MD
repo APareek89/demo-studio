@@ -1,5 +1,11 @@
 # refine.MD — running log of Anand's questions and proposed solutions
 
+## Runtime speech and picture follow-up — 25 September 2026
+
+Anand requested immediate quieting when customer speech begins, reviewed images alongside runtime answers or explicit show requests, and actual storage/retrieval diagnosis while discussing LiveKit. The chosen implementation separates a reversible browser output hold from qualified-final semantic input; it does not add a paid classifier. Image selection reuses eligible pinned facts and the exact published photo/caption association, with conservative no-picture behavior for missing/ambiguous/illustrative-only parts. Request-local source memoization removes duplicate disk reads without changing evidence or moving storage. No new workflow agents/nodes, prompts or provider dependencies.
+
+Rejected implementation alternatives: waiting for a final transcript (causes talk-over); cancelling the question/narration on raw volume (noise takes over); selecting a generic hero or guessed coordinates (misrepresents visual evidence); migrating to DynamoDB for a repeated JSON-read bug (unnecessary migration and no proven answer-latency benefit). LiveKit integration is a separate proposed trial, not an approved architecture change. Current AWS is local EC2 storage with cloud disabled; optional DynamoDB/S3 adapters are not the active data plane. Follow-up remains on the working branch; prior AWS release is unchanged. No new product question blocks this work.
+
 ## Current checkpoint — 25 September 2026
 
 **Later approved AWS release:** Anand accepted the revised BMW and requested master/GitHub plus AWS for sharing. Application278c21d and proxy0f7e2be are deployed at [the public BMW link](https://13-202-0-79.sslip.io/#/play/dm_29df0418); the bundle,96assets and pinned evidence match local review, while local test visits were excluded. Existing data/environment remained unchanged. The operational decision is to keep playback/runtime public and password-protect the builder/private records at Caddy. This resolves C7's immediate exposure for feedback sharing without adding account/tenant architecture; no new design question or paid QA was introduced. [Release evidence](docs/aws/release-bmw-gallery-2026-09-25.md).

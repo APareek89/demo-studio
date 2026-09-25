@@ -1,0 +1,18 @@
+test_complete_evidence_matches_pre_optimization_reference (__main__.RetrievalIOContract.test_complete_evidence_matches_pre_optimization_reference) ... ok
+test_context_rows_do_not_share_mutable_nested_values (__main__.RetrievalIOContract.test_context_rows_do_not_share_mutable_nested_values) ... ok
+test_excluded_scope_and_competitor_sources_are_not_read (__main__.RetrievalIOContract.test_excluded_scope_and_competitor_sources_are_not_read) ... ok
+test_extraction_memo_does_not_survive_a_request (__main__.RetrievalIOContract.test_extraction_memo_does_not_survive_a_request) ... ok
+test_invalid_and_missing_snapshot_fail_before_source_reads (__main__.RetrievalIOContract.test_invalid_and_missing_snapshot_fail_before_source_reads) ... ok
+test_missing_or_malformed_selected_extraction_stays_empty (__main__.RetrievalIOContract.test_missing_or_malformed_selected_extraction_stays_empty) ... ok
+test_multiple_selected_facts_parse_each_source_once (__main__.RetrievalIOContract.test_multiple_selected_facts_parse_each_source_once) ... ok
+test_no_evidence_path_does_not_add_a_context_field (__main__.RetrievalIOContract.test_no_evidence_path_does_not_add_a_context_field) ... ok
+test_old_and_new_published_snapshots_keep_separate_contexts (__main__.RetrievalIOContract.test_old_and_new_published_snapshots_keep_separate_contexts) ... ok
+test_semantic_duplicates_do_not_read_the_discarded_source (__main__.RetrievalIOContract.test_semantic_duplicates_do_not_read_the_discarded_source) ... ok
+test_sources_outside_final_limit_are_never_read (__main__.RetrievalIOContract.test_sources_outside_final_limit_are_never_read) ... ok
+test_unapproved_and_expired_rows_do_not_load_context (__main__.RetrievalIOContract.test_unapproved_and_expired_rows_do_not_load_context) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.068s
+
+OK
+FINAL_OUTBOUND_ATTEMPTS 0

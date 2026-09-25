@@ -22,6 +22,7 @@ import { h, toast } from "/web/api.js";
 import { icon } from "/web/icons.js";
 import { LiveVoiceClient, meaningfulTranscript } from "/web/player/live-voice.js";
 import { renderPublicSearch } from "/web/player/public-search-ui.js";
+import { resolveAnswerVisual } from "/web/player/answer-visual.js";
 
 // Read browser speech support once; the other constants describe text helpers and contact consent.
 // These are local defaults; server speech is connected through web/app.js:renderPlay.
@@ -296,15 +297,18 @@ export function mountPlayer(host, bundle, api) {
     live = new LiveVoiceClient({ url: api.liveUrl, sessionId: S.sessionId, language: LANG,
       qualifyInput: text => qualifiesCustomerSpeech(text, { prompt: S.intakeOpen || !!S.waiter || S.promptRun === S.run, terms: speechTerms }),
       shouldInterrupt: text => !playbackCommand(text),
+      canHold: () => S.hasStarted && !S.ended && !S.paused && S.voiceMode,
+      onSpeechHold: beginSpeechHold,
+      onSpeechHoldEnd: finishSpeechHold,
       // On detected speech, stop current output and preserve the return point when a conversation begins.
       // The event comes from live-voice.js:LiveVoiceClient.speechStart; local timing records when output was stopped.
       onSpeechStart: (event) => {
         if (S.ended || !S.voiceMode) return;
         cancelPostAnswerListen();
-        S.inputMode = "voice"; S.speechDetectedAt = event.detected_at;
+        S.inputMode = "voice"; S.speechDetectedAt = event.provisional_detected_at || event.detected_at;
         if (S.intakeOpen || S.waiter || S.promptRun === S.run) cancelSpeech();
         else { captureOrigin(); interruptAll({ preservePlanning: openingPlanPending() }); holdConversation(newRun(), { autoResume: false }); }
-        S.interruptions.push({ detected_at: event.detected_at, stopped_at: Date.now(), phase: S.playback.phase, detection_source: event.source });
+        S.interruptions.push({ detected_at: S.speechDetectedAt, stopped_at: event.provisional_detected_at || Date.now(), phase: S.playback.phase, detection_source: event.provisional_source || event.source });
         setStatus("listening", "Listening"); el.live.textContent = "Listening…";
       },
       // Show interim transcripts, then route final customer words to intake, a pending prompt or a question.
@@ -337,6 +341,42 @@ export function mountPlayer(host, bundle, api) {
     live.setMuted(S.muted);
   }
   createLive();
+  // A provisional onset only suspends existing output. It neither cancels its
+  // promise nor creates a Q&A turn, so rejected noise resumes the exact sample.
+  function beginSpeechHold(event) {
+    if (S.localSpeechHold) return;
+    const hold = S.localSpeechHold = { run: S.run, startedAt: Date.now(), speaking: S.speaking, audio: S.audio,
+      film: root.classList.contains("film-on") && !el.film.paused ? el.film : null,
+      status: el.status.className, statusText: el.statusTxt.textContent, liveText: el.live.textContent };
+    hold.done = new Promise(resolve => { hold.resolve = resolve; });
+    hold.resumeDeadline = hold.speaking?.pauseDeadline?.();
+    hold.audio?.pause(); hold.film?.pause();
+    if (S.utterance) { try { speechSynthesis.pause(); } catch (_) {} }
+    hold.animations = (el.stage.getAnimations?.({ subtree: true }) || []).filter(animation => animation.playState === "running");
+    for (const animation of hold.animations) animation.pause();
+    const pending = S.postAnswerListen;
+    if (pending) { clearTimeout(pending.timer); pending.timer = null; }
+    setStatus("listening", "Listening"); el.live.textContent = "Listening…";
+  }
+  function finishSpeechHold({ resume }) {
+    const hold = S.localSpeechHold; if (!hold) return;
+    S.localSpeechHold = null;
+    if (hold.speaking?.startedAt) hold.speaking.startedAt += Date.now() - hold.startedAt;
+    const owned = resume && hold.run === S.run && !S.ended && !S.paused;
+    hold.resolve(owned);
+    if (!owned) return;
+    hold.resumeDeadline?.();
+    for (const animation of hold.animations) { try { animation.play(); } catch (_) {} }
+    if (hold.audio && S.audio === hold.audio) hold.audio.play().catch(() => {});
+    if (hold.film && root.classList.contains("film-on")) hold.film.play().catch(() => {});
+    if (S.utterance) { try { speechSynthesis.resume(); } catch (_) {} }
+    setStatus(hold.status.replace(/^pl-status\s*/, ""), hold.statusText); el.live.textContent = hold.liveText;
+    armPostAnswerListen();
+  }
+  async function awaitSpeechHold(run) {
+    while (S.localSpeechHold) if (!await S.localSpeechHold.done) return false;
+    return run === S.run;
+  }
   // Unlock output, connect the live session and optionally begin microphone capture.
   // The capture flag selects voice or typing; live-voice.js:LiveVoiceClient owns the actual connection.
   function startLive(capture = S.voiceMode) {
@@ -431,7 +471,7 @@ export function mountPlayer(host, bundle, api) {
   // start this same answer window only if it still belongs to the current wait.
   function armPostAnswerListen() {
     const pending = S.postAnswerListen;
-    if (!pending || pending.timer !== null || S.waiter !== pending.waiter || S.run !== pending.run || S.ended) return;
+    if (!pending || pending.timer !== null || S.waiter !== pending.waiter || S.run !== pending.run || S.ended || S.localSpeechHold) return;
     if (el.lead.classList.contains("open")) { pending.heldForLead = true; return; }
     const reply = el.drawer.classList.contains("open") ? el.q : el.reply;
     // Typing can begin while the answer is still speaking, before a timer exists.
@@ -452,7 +492,7 @@ export function mountPlayer(host, bundle, api) {
   function clearTimer() { cancelPostAnswerListen(); if (S.timer) { clearInterval(S.timer); S.timer = null; } el.timer.replaceChildren(); }
   // Increment and return the playback run number whenever a new flow takes ownership.
   // Async callbacks compare this number before continuing; live-voice.js:LiveVoiceClient has its own transport ownership.
-  function newRun() { return ++S.run; }
+  function newRun() { live?.endSpeechHold("superseded", false); return ++S.run; }
   // Draw route progress buttons and wire each one to an explicit customer navigation action.
   // A click interrupts the old flow before playing the selected slide through web/slide.js:renderSlide.
   function renderProgress() { el.progress.replaceChildren(...S.plan.map((st, i) => h("button", { class: "pp" + (i < S.seg ? " done" : i === S.seg ? " active" : ""), title: st.slide.title, "aria-current": i === S.seg ? "step" : null, onclick: () => { resumeSession(); interruptAll(); S.conversationOrigin = null; playFrom(i, 0); } }, st.slide.title))); if (cur) cur.view.setPosition?.(slidePosition(cur.slide)); }
@@ -561,7 +601,8 @@ export function mountPlayer(host, bundle, api) {
   }
   function heardPrefix(sp) {
     if (!sp?.startedAt) return null;
-    const a = sp.audio; const frac = a && isFinite(a.duration) && a.duration > 0 ? a.currentTime / a.duration : Math.min(1, (Date.now() - sp.startedAt) / Math.max(1, sp.estMs));
+    const held = S.localSpeechHold?.speaking === sp ? Date.now() - S.localSpeechHold.startedAt : 0;
+    const a = sp.audio; const frac = a && isFinite(a.duration) && a.duration > 0 ? a.currentTime / a.duration : Math.min(1, (Date.now() - sp.startedAt - held) / Math.max(1, sp.estMs));
     const n = Math.min(sp.words, Math.round(frac * sp.words)); if (n <= 0) return null;
     return { text: sp.text.split(/\s+/).slice(0, n).join(" "), interrupted: true, full: sp.text, heard_fraction: +frac.toFixed(2) };
   }
@@ -571,6 +612,7 @@ export function mountPlayer(host, bundle, api) {
   // Show text for a readable interval when the selected audio cannot be delivered.
   // Return a cancellable completion promise; server/runtime_metrics.py:aggregate must not count this as successful audio.
   function captionOnly(text, run) {
+    if (S.localSpeechHold) return awaitSpeechHold(run).then(owned => owned ? captionOnly(text, run) : false);
     return new Promise((res) => {
       const my = ++S.ttsToken, words = wordsOf(text), ms = Math.max(1200, words / 2.5 * 1000);
       const sp = { text, words, audio: null, startedAt: Date.now(), estMs: ms }; S.speaking = sp;
@@ -583,30 +625,37 @@ export function mountPlayer(host, bundle, api) {
         else S.activeTurn.ack_caption_at = Date.now();
       }
       let done = false;
+      let t, deadlineAt;
+      const armDeadline = remaining => { deadlineAt = Date.now() + remaining; t = setTimeout(() => finish(true), remaining); };
+      sp.pauseDeadline = () => { const remaining = Math.max(0, deadlineAt - Date.now()); clearTimeout(t); return () => { if (!done) armDeadline(remaining); }; };
       // Finish this caption once, clear its timer and log complete or interrupted text.
       // Resolve true only for the owning run and speech token; the log later reaches server/app.py:save_session.
-      const finish = (complete) => { if (done) return; done = true; clearTimeout(t); if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; } res(complete && my === S.ttsToken && run === S.run); };
+      const finish = (complete) => { if (done) return; if (complete && S.localSpeechHold) { S.localSpeechHold.done.then(owned => finish(owned)); return; } done = true; clearTimeout(t); if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; } res(complete && my === S.ttsToken && run === S.run); };
       // Expose a cancellation callback that finishes this caption with an incomplete result.
       // interruptAll or cancelSpeech can call it; it does not contact server/runtime_live.py:live.
       const cancel = () => finish(false); S.cancelVoice = cancel;
-      const t = setTimeout(() => finish(true), ms);
+      armDeadline(ms);
     });
   }
   // Speak text with the browser voice and return a promise for completion or cancellation.
   // Used only by the browser-voice path; server/app.py:run_tts supplies the separate selected-server-voice path.
   function speakBrowser(text, run) {
+    if (S.localSpeechHold) return awaitSpeechHold(run).then(owned => owned ? speakBrowser(text, run) : false);
     return new Promise((res) => {
       const my = ++S.ttsToken, u = new SpeechSynthesisUtterance(text); S.utterance = u;
       const v = browserVoice(); if (v) u.voice = v; u.lang = LANG; u.rate = 0.98; u.pitch = 1.05; u.volume = S.muted ? 0 : 1;
       const sp = { text, words: wordsOf(text), audio: null, startedAt: null, estMs: Math.max(1500, text.length * 75) }; S.speaking = sp;
       let done = false;
+      let t, deadlineAt;
+      const armDeadline = remaining => { deadlineAt = Date.now() + remaining; t = setTimeout(() => finish(true), remaining); };
+      sp.pauseDeadline = () => { const remaining = Math.max(0, deadlineAt - Date.now()); clearTimeout(t); return () => { if (!done) armDeadline(remaining); }; };
       // Finish browser speech once and clear only the utterance and callbacks owned by this attempt.
       // Resolve with run and token checks; the resulting transcript is saved by server/app.py:save_session.
-      const finish = (complete) => { if (done) return; done = true; clearTimeout(t); if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.utterance === u) S.utterance = null; if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; } res(complete && my === S.ttsToken && run === S.run); };
+      const finish = (complete) => { if (done) return; if (complete && S.localSpeechHold) { S.localSpeechHold.done.then(owned => finish(owned)); return; } done = true; clearTimeout(t); if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.utterance === u) S.utterance = null; if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; } res(complete && my === S.ttsToken && run === S.run); };
       // Connect browser-speech cancellation to the same one-time finish routine.
       // Return an incomplete result locally; live-voice.js:LiveVoiceClient.cancelAudio handles the other transport.
       const cancel = () => finish(false); S.cancelVoice = cancel;
-      const t = setTimeout(() => finish(true), sp.estMs + 4000);
+      armDeadline(sp.estMs + 4000);
       // Record actual browser speech start only while this utterance still owns the current run.
       // This updates status and first-audio timing consumed later by server/runtime_metrics.py:aggregate.
       u.onstart = () => { if (!done && my === S.ttsToken && run === S.run) { sp.startedAt = Date.now(); setStatus("speaking", "Speaking"); firstAudio(); } };
@@ -626,6 +675,7 @@ export function mountPlayer(host, bundle, api) {
   // Return whether this run completed the line; live-voice.js:LiveVoiceClient.speak owns streamed delivery.
   async function speak(text, run, preset, delivery = null) {
     if (run !== S.run || !text) return run === S.run;
+    if (S.localSpeechHold && !await awaitSpeechHold(run)) return false;
     el.cap.textContent = text; if (S.intakeOpen) el.inQ.textContent = text; setStatus("thinking", "Preparing audio");
     // Use the live channel for text that has no recorded audio, retaining its server delivery IDs.
     // The result comes from live-voice.js:LiveVoiceClient.speak and is ignored if the local run has changed.
@@ -656,6 +706,7 @@ export function mountPlayer(host, bundle, api) {
     const voiceToken = S.ttsToken;
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
     if (run !== S.run || voiceToken !== S.ttsToken) return false;
+    if (S.localSpeechHold && !await awaitSpeechHold(run)) return false;
     let ok;
     // Play a recorded audio file and wait for playback events rather than advancing on a slide timer.
     // The URL comes from server/app.py:get_bundle or run_tts; completion is returned to the narration loop.
@@ -671,7 +722,7 @@ export function mountPlayer(host, bundle, api) {
       const cancel = () => { a.pause(); finish(false); }; S.cancelVoice = cancel;
       // Treat the file playing event as audio onset only for the current speech and run.
       // Late playback is paused; server/runtime_metrics.py:aggregate later uses the retained first-audio timestamp.
-      a.onplaying = () => { if (!done && my === S.ttsToken && run === S.run) { sp.startedAt = Date.now(); setStatus("speaking", "Speaking"); firstAudio(); } else a.pause(); };
+      a.onplaying = () => { if (S.localSpeechHold) { a.pause(); return; } if (!done && my === S.ttsToken && run === S.run) { sp.startedAt ||= Date.now(); setStatus("speaking", "Speaking"); firstAudio(); } else a.pause(); };
       // Handle file playback failure without reviving a cancelled utterance.
       // Return caption or browser-voice completion according to the configured provider from server/app.py:get_bundle.
       const safeFallback = () => {
@@ -1061,10 +1112,12 @@ export function mountPlayer(host, bundle, api) {
   async function playLines(sl, run, view, from = 0, upto = sl.lines.length) {
     for (let j = from; j < upto; j++) {
       if (run !== S.run) return false;
+      if (S.localSpeechHold && !await awaitSpeechHold(run)) return false;
       S.line = j; S.playback.line = j;
       // Finish the gallery's current camera move before the existing audio owner starts this line.
-      if (view.prepareLine && !(await view.prepareLine(j))) return false;
+      if (view.prepareLine && !(await view.prepareLine(j, () => S.localSpeechHold ? awaitSpeechHold(run) : run === S.run))) return false;
       if (run !== S.run) return false;
+      if (S.localSpeechHold && !await awaitSpeechHold(run)) return false;
       const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : "";
       const spoken = await speak(ln.text, run, ln.audio);
       if (!spoken) return false;
@@ -1313,6 +1366,8 @@ export function mountPlayer(host, bundle, api) {
       // The request belongs to server/runtime_graph.py:run_turn; cancelled runs must not narrate a late response.
       r = await questionResult(qaP, run, turn);
       if (run !== S.run || !r) return;
+      turn.qa_done = Date.now();
+      if (S.localSpeechHold && !await awaitSpeechHold(run)) return;
     } catch (e) {
       turn.qa_done = Date.now(); if (run !== S.run || e.name === "AbortError") { turn.cancelled = true; return; } turn.error = true; turn.failed = true; turn.timed_out = e.name === "TimeoutError";
       // Record when the transport-failure explanation actually starts playing.
@@ -1325,7 +1380,7 @@ export function mountPlayer(host, bundle, api) {
     // Store returned classification, tool and timing metadata without treating the flag as a quality grade.
     // server/runtime_graph.py:run_turn supplies these fields; server/runtime_metrics.py:aggregate later groups their latency.
     if (run !== S.run) return;
-    turn.qa_done = Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered; turn.failed = !!(r.provider_failed || r.timed_out);
+    turn.qa_done ||= Date.now(); turn.from_bank = !!r.from_bank; turn.route = r.route || null; turn.answered = !!r.answered; turn.failed = !!(r.provider_failed || r.timed_out);
     turn.response_kind = r.clarifying_question ? "clarification" : r.answered ? "answer" : "decline";
     turn.plain_language_substitutions = r.plain_language_substitutions || [];
     turn.tool_count = r.tool_count || r.tool_results?.length || 0; turn.tool_results = (r.tool_results || []).map(tool => ({ type: tool.type || tool.tool, ok: tool.ok, source_url: tool.source_url, error: tool.error })); turn.graph_timings = r.graph_timings || {}; turn.answer_route = turn.tool_count ? "tool" : r.from_bank ? "cache" : "model";
@@ -1344,6 +1399,14 @@ export function mountPlayer(host, bundle, api) {
       else await holdConversation(run, { autoResume: false });
       return;
     }
+    if (r.visual_only && !r.answered) {
+      // A missing reviewed picture is a navigation limit, not an unknown fact
+      // or a reason to open the dealership follow-up flow.
+      el.cite.textContent = ""; S.openQuestions.delete(customerQuestion);
+      if (!(await speak(r.answer || "I don't have a reviewed picture for that request.", run, r.audio, r))) return;
+      turn.delivery_done = Date.now(); turn.visual_status = "unavailable"; S.activeTurn = null;
+      await holdConversation(run, { turn }); return;
+    }
     if (!r.answered) {
       // Present a supported limitation or service refusal and retain the question as unresolved.
       // The server answer from server/runtime_graph.py:run_turn is spoken before optional follow-up and explicit waiting.
@@ -1357,7 +1420,10 @@ export function mountPlayer(host, bundle, api) {
       await holdConversation(run, { turn, callbackQuestion: customerQuestion }); return;
     }
     const from = cur?.slide?.id || null;
-    jumped = r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
+    const answerVisual = resolveAnswerVisual(bundle, slides, r);
+    let pictureShown = false;
+    jumped = answerVisual && answerVisual.slide.id !== from ? answerVisual.slide :
+      !r.visual && r.route === "jump" && r.slide_id && r.slide_id !== from ? slides.find((s) => s.id === r.slide_id) || null : null;
     if (jumped) {
       // Runtime answers start with their evidence. The slide heading explains
       // Show the server-selected evidence slide without changing the saved route position.
@@ -1372,7 +1438,19 @@ export function mountPlayer(host, bundle, api) {
       // The separate timestamp lets server/runtime_metrics.py:aggregate avoid counting bridge audio as the answer.
       S.onFirstAudio = (ts) => { turn.answer_audio = ts; };
     } else cur?.view.setRevealed(99);
-    if (r.callout_id) cur?.view.highlight(r.callout_id);
+    if (answerVisual && cur?.slide.id === answerVisual.slide.id) {
+      // A matching slide can still be showing a different picture. Select the
+      // exact published media/tag and wait for it before starting answer audio.
+      pictureShown = await cur.view.focusMedia?.(answerVisual.imageId, { lineIndex: answerVisual.lineIndex, calloutId: answerVisual.calloutId, awaitPlayback: () => S.localSpeechHold ? awaitSpeechHold(run) : run === S.run });
+      if (run !== S.run) return;
+    } else if (!r.visual && r.callout_id) cur?.view.highlight(r.callout_id);
+    if (r.visual_only && !pictureShown) {
+      el.cite.textContent = ""; turn.visual_status = "unavailable"; S.openQuestions.delete(customerQuestion);
+      if (!(await speak("I couldn't display that picture. You can try again or continue the demo.", run))) return;
+      turn.delivery_done = Date.now(); S.activeTurn = null;
+      await holdConversation(run, { turn }); return;
+    }
+    if (answerVisual) turn.visual_status = pictureShown ? "shown" : "unavailable";
     const conditionIds = r.condition_fact_ids || r.condition_evidence?.map((f) => f.id) || r.facts?.filter((f) => f.runtime_role === "condition").map((f) => f.id) || [];
     // Show primary citations separately from facts that only establish a required condition.
     // The IDs come from server/runtime_graph.py:run_turn; a condition donor does not become a product claim.

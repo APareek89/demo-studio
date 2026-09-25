@@ -111,15 +111,16 @@ function galleryView(slide, native, entries, previous, next, options) {
     try {await animation.finished;if(dead || owner!==epoch)return false;Object.assign(el.style,to);return true;}
     catch (_) {return false;} finally {animations.delete(animation);animation.cancel();}
   }
-  function loadPicture(entry,owner,currentImage,attach) {
+  function loadPicture(entry,owner,currentImage,attach,awaitPlayback=null) {
     if(currentImage.getAttribute('src')===entry.image_url && currentImage.complete && currentImage.naturalWidth)return Promise.resolve(true);
     return new Promise(resolve => {
       // A pending photo must not replace the frozen frame after cancellation.
       // Commit the already-loaded element only while this presentation owns it.
       const candidate=node('img',currentImage.className);candidate.alt=currentImage.alt;candidate.draggable=false;
       let timer,done=false;
-      const finish=ok => {
+      const finish=async ok => {
         if(done)return;done=true;clearTimeout(timer);candidate.removeEventListener('load',loaded);candidate.removeEventListener('error',failed);pending.delete(finish);
+        if(ok && awaitPlayback && !await awaitPlayback())ok=false;
         const owned=ok && owner===epoch && !dead;
         if(owned)attach(candidate);
         resolve(owned);
@@ -132,11 +133,11 @@ function galleryView(slide, native, entries, previous, next, options) {
       if(candidate.complete)finish(candidate.naturalWidth>0);
     });
   }
-  const loadPhoto=(entry,owner,hidePrevious=false)=>loadPicture(entry,owner,image,candidate=>{
+  const loadPhoto=(entry,owner,hidePrevious=false,awaitPlayback=null)=>loadPicture(entry,owner,image,candidate=>{
     if(hidePrevious){captions.style.opacity='0';pointer.style.opacity='0';}
     camera.replaceChildren(candidate);image=candidate;
-  });
-  function showSecondary(i,owner) {
+  },awaitPlayback);
+  function showSecondary(i,owner,awaitPlayback=null) {
     const owners=photosFor(i);
     secondaryEntry=owners.length>1?owners.find(entry=>entry!==active) || null:null;
     secondary.hidden=!secondaryEntry;
@@ -144,7 +145,7 @@ function galleryView(slide, native, entries, previous, next, options) {
     secondaryDisclosure.hidden=!secondaryEntry.proxy;
     secondary.dataset.imageId=secondaryEntry.image_id || '';
     secondary.setAttribute('aria-label',`Show reviewed photo ${entries.indexOf(secondaryEntry)+1}`);
-    const loading=loadPicture(secondaryEntry,owner,secondaryImage,candidate=>{secondary.replaceChildren(candidate,secondaryDisclosure);secondaryImage=candidate;secondary.style.visibility='visible';});
+    const loading=loadPicture(secondaryEntry,owner,secondaryImage,candidate=>{secondary.replaceChildren(candidate,secondaryDisclosure);secondaryImage=candidate;secondary.style.visibility='visible';},awaitPlayback);
     secondary.style.visibility=secondaryImage.getAttribute('src')===secondaryEntry.image_url?'visible':'hidden';
     return loading;
   }
@@ -216,9 +217,11 @@ function galleryView(slide, native, entries, previous, next, options) {
     const s=surface.getBoundingClientRect(),f=cards[target]?.getBoundingClientRect();
     return f && s.width && s.height ? `translate(${f.left+f.width/2-s.left-s.width/2}px,${f.top+f.height/2-s.top-s.height/2}px) scale(${f.width/s.width},${f.height/s.height})` : 'none';
   }
-  function showInstant(i,id=null,entry=null) {
-    if(dead)return;active=entry || photoFor(i);if(id){const c=allLabels.find(c=>c.id===id);if(c)active=labelOwner(c);}
-    const owner=epoch, loading=Promise.all([loadPhoto(active,owner),showSecondary(i,owner)]);
+  async function showInstant(i,id=null,entry=null,awaitPlayback=null) {
+    const owner=epoch;
+    if(awaitPlayback && !await awaitPlayback())return false;
+    if(dead || owner!==epoch)return false;active=entry || photoFor(i);if(id){const c=allLabels.find(c=>c.id===id);if(c)active=labelOwner(c);}
+    const loading=Promise.all([loadPhoto(active,owner,false,awaitPlayback),showSecondary(i,owner,awaitPlayback)]);
     // Answer captions stay immediate; a different pending picture cannot carry
     // their pointer or inherit a previous photo while its bytes are loading.
     camera.style.visibility=image.getAttribute('src')===active.image_url?'visible':'hidden';
@@ -226,25 +229,34 @@ function galleryView(slide, native, entries, previous, next, options) {
     focus.style.transform='translate(0px,0px) scale(1)';focus.style.opacity='1';focus.classList.add('visible');
     captions.style.opacity='1';geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();ready=true;state('ready');
     if(camera.style.visibility==='hidden')pointer.style.opacity='0';
-    loading.then(results=>{
-      if(dead || owner!==epoch)return;
-      if(results.some(ok=>!ok)){useNativeFallback();return;}
+    return loading.then(async results=>{
+      if(awaitPlayback && !await awaitPlayback())return false;
+      if(dead || owner!==epoch)return false;
+      if(results.some(ok=>!ok)){
+        useNativeFallback();
+        return native.focusMedia?.(active.image_id,{lineIndex:i,calloutId:id,awaitPlayback}) ?? false;
+      }
       camera.style.visibility='visible';geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();
+      return true;
     });
   }
-  async function prepareLine(i) {
+  async function prepareLine(i,awaitPlayback=null) {
     if(dead)return false;
     const from=active, wasReady=ready && focus.classList.contains('visible');
     cancel();const owner=epoch, entry=photoFor(i);line=i;setPreparing(true);
     try {
     if(fallback)return true;
-    if(!await loadPhoto(entry,owner,true)){
+    const photoLoaded=await loadPhoto(entry,owner,true,awaitPlayback);
+    if(awaitPlayback && !await awaitPlayback())return false;
+    if(!photoLoaded){
       if(dead || owner!==epoch)return false;
       useNativeFallback();return true;
     }
     if(dead || owner!==epoch)return false;
     active=entry;surface.dataset.lineIndex=String(i);surface.dataset.imageId=active.image_id || '';camera.style.visibility='visible';
-    if(!await showSecondary(i,owner)){
+    const secondaryLoaded=await showSecondary(i,owner,awaitPlayback);
+    if(awaitPlayback && !await awaitPlayback())return false;
+    if(!secondaryLoaded){
       if(dead || owner!==epoch)return false;
       useNativeFallback();return true;
     }
@@ -285,6 +297,17 @@ function galleryView(slide, native, entries, previous, next, options) {
     native.highlight(id);if(!id || dead || fallback)return;
     cancel();showInstant(index,id);
   }
+  async function focusMedia(imageId,{lineIndex=99,calloutId=null,awaitPlayback=null}={}) {
+    const entry=entries.find(p=>p.image_id===imageId);
+    if(!entry || dead)return Promise.resolve(false);
+    const owner=epoch;
+    if(awaitPlayback && !await awaitPlayback())return false;
+    if(dead || owner!==epoch)return false;
+    if(fallback)return Promise.resolve(native.focusMedia?.(imageId,{lineIndex,calloutId,awaitPlayback}) ?? false);
+    const label=allLabels.find(c=>c.id===calloutId && labelOwner(c)===entry);
+    cancel();native.setRevealed(lineIndex);native.highlight(label?.id || null);
+    return showInstant(lineIndex,label?.id || null,entry,awaitPlayback);
+  }
   secondary.addEventListener('click',()=>{if(preparing || !secondaryEntry || dead || fallback)return;const entry=secondaryEntry;cancel();showInstant(line,null,entry);});
   captions.addEventListener('scroll',()=>{if(!dead)drawPointer();},{passive:true});
   const ro=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;ro?.observe(native.el);ro?.observe(surface);
@@ -292,7 +315,7 @@ function galleryView(slide, native, entries, previous, next, options) {
   buildHall(previous);layout();
   const view={...native,prepareLine,layout,
     setRevealed(i){native.setRevealed(i);if(i>=0 && !fallback && !dead && prepared!==i){cancel();showInstant(i);} },
-    highlight,
+    highlight,focusMedia,
     setImage(...args){cancel();fallback=true;surface.hidden=true;native.el.classList.remove('gallery-slide');native.setImage(...args);},
     destroy(){dispose();native.destroy();},
   };

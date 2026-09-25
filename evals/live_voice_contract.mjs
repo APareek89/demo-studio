@@ -19,7 +19,7 @@ class Source extends Node { start() { this.started = true; } stop() { this.stopp
 class Context {
   static sources = [];
   constructor() { this.currentTime = 0; this.state = "running"; this.destination = {}; this.audioWorklet = { addModule: async () => {} }; }
-  async resume() {} async close() { this.state = "closed"; }
+  async resume() { this.state = "running"; } async suspend() { this.state = "suspended"; } async close() { this.state = "closed"; }
   createGain() { return Object.assign(new Node(), { gain: { value: 1 } }); }
   createMediaStreamSource() { return new Node(); }
   createBuffer(_, samples, rate) { return { duration: samples / rate, copyToChannel() {} }; }
@@ -41,7 +41,7 @@ client.receive({ type: "mic.ready", input_generation: client.inputGeneration });
 check("provider readiness flushes initial audio instead of losing first words", client.micReady && client.preRoll.length === 0 && client.socket.sent.some(e => e.type === "audio.input"));
 client.receive({ input_generation: client.inputGeneration, type: "transcript.partial", input_id: "a", text: "boot" });
 client.receive({ input_generation: client.inputGeneration, type: "input.speech_start", input_id: "a" });
-check("partial and raw VAD remain provisional until a final", onsets.length === 0);
+check("partial and raw VAD cannot commit a semantic interruption before a final", onsets.length === 0);
 client.receive({ input_generation: client.inputGeneration, type: "input.speech_end", input_id: "a", voice_ended: 123 });
 const endpointReceived = client.endpointAt;
 client.receive({ input_generation: client.inputGeneration, type: "transcript.final", input_id: "a", text: "boot space" });
@@ -340,7 +340,7 @@ async function routeAfterOverview(plan) {
   noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"impact",text:"..."});
   check("cup impulse, raw VAD and noise-only transcripts preserve active narration",noise.delivery===owner && !playing.stopped && starts.length===0 && heard.length===0 && noise.socket.sent.filter(event=>event.type==="turn.interrupt").length===sentBefore);
   noise.receive({type:"transcript.partial",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty"});
-  check("a meaningful partial may preview words but cannot interrupt narration",starts.length===0 && !playing.stopped && noise.delivery===owner && heard.at(-1).text==="Warranty" && !heard.at(-1).final);
+  check("a qualified partial holds output without cancelling its delivery or creating a turn",starts.length===0 && !playing.stopped && noise.delivery===owner && noise.outputContext.state==="suspended" && noise.inputHold && heard.at(-1).text==="Warranty" && !heard.at(-1).final);
   noise.receive({type:"input.speech_start",input_generation:noise.inputGeneration,input_id:"question"});
   noise.receive({type:"transcript.final",input_generation:noise.inputGeneration,input_id:"question",text:"Warranty?"});
   check("short qualified warranty final interrupts exactly once",starts.length===1 && starts[0].source==="final" && playing.stopped && noise.delivery===null && await reading===false && heard.at(-1).final);

@@ -1,0 +1,8 @@
+{
+  "suite": "qa_deck",
+  "exit_code": 0,
+  "seconds": 10.26,
+  "test_sha256": "e12416f6283a531e729a206850972aaad6fc5e5cd749ce2349eadd274fc40cc3",
+  "reason": "Stale source-string assertion updated to verify actual-result timestamp before hold and held onplaying ownership; initial failure log retained.",
+  "source_unchanged": true
+}

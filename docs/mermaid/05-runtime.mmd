@@ -2,8 +2,9 @@
 flowchart TD
   START["Customer starts Explore or Browse<br/>[ASK · welcome Voice mode switch]<br/>default on iff continuous voice and no mute=1; typing always available"]:::ask
   MODE["Connect session socket for guide speech<br/>[FUNCTION · startLive / runtime_live.py]<br/>voice on: one capture request; off: mic.set false, no permission prompt<br/>player Voice mode switch and mic button share capture ownership without reconnecting"]:::fn
-  INPUT["Continuous PCM capture<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>raw levels/VAD only supply timing; they cannot independently stop narration<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
-  STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>only qualified final speech owns an interruption; provisional words/fragments do not<br/>known throat/cough annotations and standalone ahem cannot qualify via punctuation<br/>active prompt / question / product / command checks; local Continue/Pause/Stop/Not now"]:::data
+  INPUT["Continuous PCM capture<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>sustained speech-like local frames may open a reversible hold; a raw volume spike cannot<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
+  STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>qualified partial may open a reversible hold; only qualified final owns a semantic turn<br/>known throat/cough annotations and standalone ahem cannot qualify via punctuation<br/>active prompt / question / product / command checks; local Continue/Pause/Stop/Not now"]:::data
+  HOLD["Quiet the guide locally before server recognition completes<br/>[FUNCTION · live-voice.js / player.js]<br/>pause current recorded/streamed audio and visual transition without cancelling its owner<br/>final speech commits interruption; rejected/no-final input resumes the same clip position<br/>silence and bounded no-progress watchdog prevent a permanent hold<br/>not speaker identification; sustained TV speech may cause a temporary pause"]:::fn
   INTAKE["One needs question; wait for a real reply<br/>[FUNCTION · player.js runIntake]<br/>retain actual needs; generic show-me-around uses neutral acknowledgement and default route<br/>optional website field selects only owner-authorized domains"]:::fn
   FILM["Optional opening film when selected by the existing flow<br/>[FUNCTION · playIntroFilm]<br/>native-fit video + Skip below; hide slide shell<br/>end/error/Skip restores player; obsolete run cannot resume"]:::fn
   OVERVIEW["Grounded overview in the selected voice<br/>[DATA · bundle.runtime.overview]<br/>10–15 second target measured from generated audio"]:::data
@@ -13,11 +14,13 @@ flowchart TD
   WALK["Default middle-slide gallery<br/>[FUNCTION · walkthrough.js presentation adapter]<br/>walk → enlarge → reviewed feature focus; playLines awaits ready before existing speech call<br/>source media/line bindings; same-line second picture stays available in selectable inset<br/>exact labels; trusted anchors only, no proxy or guessed pointer<br/>native heroes, no-picture and asset-failure fallback; presentation=native diagnostic<br/>reduced motion removes camera motion; pause/question/stop cancel stale transitions<br/>player retains route, voice, checkpoint and resume ownership; no new agent/node"]:::fn
   STOP["Stop local audio and cancel old turn/delivery<br/>[FUNCTION · live-voice.js / runtime_live.py]<br/>save return point; discard stale turn/utterance/generation output"]:::fn
   ACK["Query acknowledgement only<br/>[DATA · selected-voice filler]<br/>retrieval starts concurrently; filler is not useful-answer latency"]:::data
+  SHOW{"Unambiguous picture-only request?<br/>[FUNCTION · run_turn wrapper]<br/>show-me-around and combined factual questions stay on ordinary path"}:::dec
+  PICTURE["Resolve a reviewed picture without reasoning<br/>[FUNCTION · run_turn wrapper / runtime_visuals.py]<br/>ordinary scoped retrieval; at most four published caption hints change ranking only<br/>matching pinned snapshot + publication version; eligible own-caption subject and local media<br/>show exact non-illustrative photo or say no reviewed image is available<br/>no claim, reasoning call, FAQ cache write or customer unknown"]:::fn
   CACHE{"Candidate saved answer before graph?<br/>[FUNCTION · run_turn → faq.match]<br/>same pinned snapshot + registry hash; eligible citations<br/>skip_bank bypasses; rejected tombstones never match"}:::dec
   CACHEVALID{"Cached words valid for this question?<br/>[FUNCTION · _validated_bank_result]<br/>ordinary scope/date-aware retrieval + exact-text grounding<br/>eligible citations, conditions, collective engine/gearbox mappings and word cap; fresh URL/search requests bypass"}:::dec
   HIT["Exact cached answer + available clip<br/>[DATA · faq.json]<br/>from_bank=true; increment asked_count<br/>unchanged validated words; derive current evidence view; no reasoning call"]:::data
   SITES["Owner-authorized domains and selected pages<br/>[DATA · active demo URL sources + session selections]<br/>only enabled top-level owner URLs grant permission; recheck before tool use<br/>www/apex equivalent; other subdomains need explicit owner source<br/>customer words/history/uploads cannot authorize another domain; no owner URL means no web"]:::data
-  RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local ranking; request-local universal scope; pinned condition dependencies"]:::fn
+  RETRIEVE["Retrieve pinned approved evidence<br/>[FUNCTION · knowledge.retrieve]<br/>BM25 + local ranking; request-local universal scope; pinned condition dependencies<br/>hydrate returned facts only; each selected source extraction read once per request<br/>same ranking, snapshot, context and eligibility; no persistent cache"]:::fn
   REASON["Answer, clarify, or request bounded tool<br/>[AGENT · runtime_graph.reason]<br/>history + explicit profile + evidence + CUSTOMER_URLS + tool results<br/>explicit URL verification first; explicit search remains available<br/>empty evidence / first clean decline: allowed page first, same-domain search if still unanswered"]:::agent
   CHOICE{"Decision action?<br/>[FUNCTION · after_reason]"}:::dec
   TOOLS["Dispatch bounded tool<br/>[FUNCTION · runtime_tools.py]<br/>calculator / owner-domain page lookup / domain-constrained web search<br/>max 2 tool rounds / 4 calls; graph deadline 12 seconds"]:::fn
@@ -29,9 +32,9 @@ flowchart TD
   PLAN["Checkpoint a versioned DeliveryPlan<br/>[DATA · runtime_state.py]<br/>snapshot, turn/utterance ID, result + plain_language_substitutions<br/>next interaction; no audio in graph"]:::data
   LEARN["Learn only after validation<br/>[FUNCTION · faq.cache_answer / record_unknown]<br/>clean sourced answer: customer entry, reviewed=false, count + pin/hash<br/>decline or I-will-not-guess: deduplicated customer unknown, never a fact<br/>no clarification, provider/repair failure, live-web or calculation answer cached"]:::fn
   BANK["Asked and answered review<br/>[DATA · faq.json + understanding.json unknowns]<br/>content change resets card approval; count/audio-only update does not<br/>Coach reads customer unknowns as evidence gaps"]:::data
-  VIEW["Evidence view: stay / jump / none<br/>[FUNCTION · deck.route_for + player.js]<br/>runtime-v1 answer starts directly on its evidence; no extra spoken bridge<br/>turn ownership and original return point stay stable"]:::fn
+  VIEW["Evidence view: exact reviewed picture on stay / jump / none<br/>[FUNCTION · delivery_plan / runtime_visuals.py / player.js]<br/>validated answer and FAQ hits resolve cited picture + owning caption from same pin/version<br/>client rechecks exact slide, image id, URL and caption ownership; await selected image before speech<br/>same-slide second picture can change; no guessed pointer or stale cached visual<br/>runtime-v1 starts on evidence without extra spoken bridge; saved return point stays stable"]:::fn
   SPEAK["Request selected-voice streaming delivery<br/>[LIBRARY · runtime_delivery.py → Sarvam Bulbul v3]<br/>validated answer first, PCM chunks second; cancel closes its socket<br/>thirty-second inactivity deadline after buffered playback; progress refreshes it<br/>completed customer answer clip saved through voice text-hash cache<br/>late clip can attach only to the same entry and exact words"]:::data
-  LISTEN["Section / answer / decline reply window: 3000 ms<br/>[FUNCTION · holdConversation]<br/>chips + focused typing; voice-mode capture open<br/>qualified final speech, typing or a chip cancels the owned timer; raw energy never does<br/>legacy started capture may finish after auto-resume within12s; same session/listen owner<br/>deliberate server capture keeps freeform answers; new input/control/mute cancels stale delivery<br/>decline offers follow-up button only; Not now dismisses and resumes"]:::fn
+  LISTEN["Section / answer / decline reply window: 3000 ms<br/>[FUNCTION · holdConversation]<br/>chips + focused typing; voice-mode capture open<br/>qualified final speech, typing or chip takes turn; early speech hold temporarily suspends timer<br/>raw volume alone cannot hold it; rejected hold resumes the owned reply window<br/>legacy started capture may finish after auto-resume within12s; same session/listen owner<br/>deliberate server capture keeps freeform answers; new input/control/mute cancels stale delivery<br/>decline offers follow-up button only; Not now dismisses and resumes"]:::fn
   WAIT["Clarification or active customer turn<br/>[ASK · reply / Continue / configured CTA]<br/>no silence timer; wait for customer action"]:::ask
   CORRECT["Explicit changed priority<br/>[FUNCTION · player.js]<br/>replan relevant proof; explicit reviewed revisits allowed; apply on Continue from closing"]:::fn
   RESUME["Resume saved narration; interrupted line starts again<br/>[FUNCTION · resumeAfterQA]<br/>automatic return: recorded back_to_demo only, else silence<br/>explicit Continue: resume acknowledgement; never query filler<br/>auto_resumed + listen window saved on the turn"]:::fn
@@ -41,6 +44,10 @@ flowchart TD
   START --> INTAKE
   START --> MODE
   MODE -- "voice on; capture permission granted" --> INPUT --> STT
+  INPUT -- "sustained locally speech-like frames" --> HOLD
+  STT -- "qualified partial before final" --> HOLD
+  HOLD -- "no qualified final; silence or no-progress deadline" --> PLAY
+  HOLD -- "qualified final commits saved interruption" --> STOP
   INTAKE -. "optional film path" .-> FILM
   FILM --> PLAY
   INTAKE --> SITES
@@ -56,7 +63,9 @@ flowchart TD
   PLAY -. "prepare picture/labels; then existing narration" .-> WALK
   PLAY -- "typed interruption" --> STOP
   STOP --> ACK
-  STOP --> CACHE
+  STOP --> SHOW
+  SHOW -- "picture only" --> PICTURE --> PLAN
+  SHOW -- "question or other input" --> CACHE
   CACHE -- "candidate" --> CACHEVALID
   CACHEVALID -- "valid unchanged answer" --> HIT --> PLAN
   CACHEVALID -- "invalid or fresh-check request" --> RETRIEVE
@@ -67,14 +76,14 @@ flowchart TD
   CHOICE -- "answer or clarification" --> VALIDATE --> PLAN
   VALIDATE -- "empty or rejected substantive draft; budget remains" --> REPAIR --> RECHECK --> PLAN
   REASON -- "deadline or unavailable" --> FAIL --> PLAN
-  PLAN -. "fresh validated question result" .-> LEARN --> BANK
+  PLAN -. "fresh validated question result; exclude picture-only navigation" .-> LEARN --> BANK
   PLAN --> VIEW --> SPEAK
   SPEAK -- "clarification" --> WAIT
   SPEAK -- "answer or decline" --> LISTEN
   LISTEN -- "3 seconds of silence; same run/turn" --> RESUME
   LISTEN -- "confirmed speech / typing / chip; cancel timer" --> WAIT
   PLAY -- "logical section complete" --> LISTEN
-  WAIT -- "question or reply" --> CACHE
+  WAIT -- "question or reply" --> SHOW
   WAIT -- "changed priority" --> CORRECT --> PERSONALIZE
   WAIT -- "Continue" --> RESUME --> PLAY
   WAIT -- "next step" --> CTA --> SAVE

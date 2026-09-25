@@ -1,0 +1,26 @@
+{
+  "files": {
+    "web/player/live-voice.js": "437f02802bcda84dd00b57e6d9ee4fb45ccb40b1bdbd1691902284fc4db1a429",
+    "web/player/player.js": "8ebfce5ed0dd66fd8d8d1db0bcd308ed8e7e2dc703df2b561b9296cc9b378fe5",
+    "web/player/voice-worklet.js": "d75eefc76d64ebd20c0cf395064c7f0523fdc64b4f14f2939f903dac6cad1cb3",
+    "evals/live_voice_contract.mjs": "e7acd69b4dd4485613d24bb8e78e8860ef93fbbf24ecaf56a540dda435502369",
+    "evals/live_player_browser.py": "84544d5c94544af4e4683bc2ec1dc667c2137aebbe6e9e835c4182054d667bb5",
+    "evals/immediate_speech_hold_contract.mjs": "444fc9d60371c3e6f6d43209de9c4da8de2e04c3ba54091747624d7f1fa2479b"
+  },
+  "counts": {
+    "immediate_speech_hold": 26,
+    "live_voice": 96,
+    "speech_noise": 31,
+    "runtime_recovery": 17,
+    "listen": 16,
+    "session_save": 18,
+    "live_browser": 42
+  },
+  "outbound_provider_calls": 0,
+  "test_server_stopped": true,
+  "limits": [
+    "Synthetic PCM and transcript events; real acoustic discrimination unverified.",
+    "HTML media clock assertion waits native pause event, avoiding last-quantum skew at8x fixture playback."
+  ],
+  "server_stderr_note": "After the42/42 integrated browser journey, stopping the isolated mock server flushed an ASGI InterruptedError: Turn superseded from runtime_graph.delivery_plan. Browser showed no exception. Root notified to inspect HTTP cancellation handling; this receipt does not claim zero backend errors."
+}

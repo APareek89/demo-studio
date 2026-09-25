@@ -1,0 +1,25 @@
+{
+  "counts": {
+    "knowledge_contract": 60,
+    "faq_cache_contract": 27,
+    "runtime_transmission_conditions_contract": 17,
+    "retrieval_io_contract": 12,
+    "runtime_graph_contract": 130
+  },
+  "focused_before": {
+    "passed": 8,
+    "failed": 4,
+    "failures": [
+      "evals.retrieval_io_contract.RetrievalIOContract.test_missing_or_malformed_selected_extraction_stays_empty",
+      "evals.retrieval_io_contract.RetrievalIOContract.test_multiple_selected_facts_parse_each_source_once",
+      "evals.retrieval_io_contract.RetrievalIOContract.test_semantic_duplicates_do_not_read_the_discarded_source",
+      "evals.retrieval_io_contract.RetrievalIOContract.test_sources_outside_final_limit_are_never_read"
+    ]
+  },
+  "source_hashes": {
+    "server/knowledge.py": "4f44a032e86e31b02ab7b620676d985f1dcbdb548e87f9e8564c0e19235475b6",
+    "evals/retrieval_io_contract.py": "3d89027658110478f5a2f34a12e924fb31eb74f747e1f4f55c46a532f1de7870"
+  },
+  "baseline_commit": "e80a18077036490e25608d90ff027f918379bcc1",
+  "note": "All final suites mock+isolated with outbound connect/sendto/DNS blocked. Literal-IP DNS resolution uses a deterministic local fixture. Initial wrapper failure retained; no application guard changed."
+}

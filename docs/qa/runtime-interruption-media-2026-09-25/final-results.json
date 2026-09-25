@@ -1,0 +1,112 @@
+{
+  "all_passed": true,
+  "outbound_attempts": 0,
+  "application_source_files": 89,
+  "application_source_changed": [],
+  "suites": [
+    {
+      "suite": "qa_deck",
+      "exit_code": 0,
+      "seconds": 10.26,
+      "test_sha256": "e12416f6283a531e729a206850972aaad6fc5e5cd749ce2349eadd274fc40cc3",
+      "reason": "Stale source-string assertion updated to verify actual-result timestamp before hold and held onplaying ownership; initial failure log retained.",
+      "source_unchanged": true,
+      "counts": [
+        "445/445",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ],
+      "initial_receipt": "qa_deck.log",
+      "final_receipt": "qa_deck-rerun.log"
+    },
+    {
+      "suite": "qa_accept",
+      "exit_code": 0,
+      "seconds": 3.75,
+      "test_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+      "counts": [
+        "24/24",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "smoke_mock",
+      "exit_code": 0,
+      "seconds": 5.88,
+      "test_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+      "counts": [
+        "3/3 (Read/Build, phase 2 language/trace, on-demand rehearsal)",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit_code": 0,
+      "seconds": 24.54,
+      "test_sha256": "cc6d3d3e6f6deeb41840dc785c77772403ff0851db5c00436b5c9f9dbc24c3e5",
+      "counts": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "retrieval_io_contract",
+      "exit_code": 0,
+      "seconds": 0.41,
+      "test_sha256": "3d89027658110478f5a2f34a12e924fb31eb74f747e1f4f55c46a532f1de7870",
+      "counts": [
+        "Ran 12 tests in 0.068s",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_visuals_contract",
+      "exit_code": 0,
+      "seconds": 1.58,
+      "test_sha256": "cc7c850d0eecbcec1119db0cf29cc72526ef0c16f24160d5a29eadc265421d42",
+      "counts": [
+        "Ran 23 tests in 0.151s",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "knowledge_contract",
+      "exit_code": 0,
+      "seconds": 11.97,
+      "test_sha256": "9ae4493152699f1ba35e8b10cd67b2fd423713a34ff41126be216f212adf101c",
+      "counts": [
+        "Ran 60 tests in 11.366s",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_graph_contract",
+      "exit_code": 0,
+      "seconds": 1.68,
+      "test_sha256": "01cea1d2047203cefa13e78cb63df6363cc0bd22c48ab257fddb784f895131f0",
+      "counts": [
+        "130/130",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "faq_cache_contract",
+      "exit_code": 0,
+      "seconds": 1.68,
+      "test_sha256": "9454c273e5ae9428ba87d6d283a0e1dd0fa5ed61d8be8c5e03aa733cb3c8d339",
+      "counts": [
+        "Ran 27 tests in 0.784s",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_transmission_conditions_contract",
+      "exit_code": 0,
+      "seconds": 1.52,
+      "test_sha256": "c346a99b7228c77d19bfae883c25aea8c253afee7bdcebff793f75a43f062de7",
+      "counts": [
+        "Ran 17 tests in 0.123s",
+        "FINAL_OUTBOUND_ATTEMPTS 0"
+      ]
+    }
+  ]
+}

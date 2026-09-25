@@ -166,8 +166,19 @@ with sync_playwright() as p:
     check("voice intake retains one active capture through continuous narration", page.evaluate("__captures===2 && __tracks[1].readyState==='live'"))
     page.evaluate("__stt({type:'input.speech_start',input_id:'voice-2'})")
     check("raw speech onset alone does not interrupt narration", page.evaluate("__audios.some(a=>!a.paused&&!a.ended)"))
+    before = page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")
+    # HTML media updates its official clock through the queued pause event.
+    # Capture that stopped clock, not the previous audio quantum's timestamp
+    # read inside the pause() call (magnified by this fixture's8x playback).
+    page.evaluate("async()=>{window.__heldAudio=__audios.find(a=>!a.paused&&!a.ended); const paused=new Promise(resolve=>__heldAudio.addEventListener('pause',resolve,{once:true})); __stt({type:'transcript.partial',input_id:'noise-recovery',text:'What is the warranty'}); await paused; window.__heldAt=__heldAudio.currentTime;}")
+    page.wait_for_timeout(120)
+    held = page.evaluate("({paused:__heldAudio.paused,before:__heldAt,after:__heldAudio.currentTime,asks:__wire.filter(e=>e.type==='turn.ask').length})")
+    (output / 'held-audio.json').write_text(json.dumps(held, indent=2))
+    check("provisional hold preserves the exact recorded position without a server question", held['paused'] and held['before'] == held['after'] and held['asks'] == before)
+    page.evaluate("__stt({type:'transcript.final',input_id:'noise-recovery',text:'[clears throat]'})")
+    check("rejected sound resumes the same audio clip without seeking to its beginning", page.evaluate("!__heldAudio.paused && __heldAudio.currentTime>=__heldAt"))
     page.evaluate("__stt({type:'transcript.partial',input_id:'voice-2',text:'What is the warranty'})")
-    check("partial transcript cannot pause or create a question", page.evaluate("__audios.some(a=>!a.paused&&!a.ended)"))
+    check("qualified partial pauses local narration before the final", page.evaluate("!__audios.some(a=>!a.paused&&!a.ended)"))
     before = page.evaluate("__wire.filter(e=>e.type==='turn.ask').length")
     page.evaluate("__stt({type:'transcript.partial',input_id:'voice-2',text:'What is'}); __stt({type:'transcript.final',input_id:'voice-2',text:'What is the warranty? Do not search online.'}); __stt({type:'transcript.final',input_id:'voice-2',text:'What is the warranty? Do not search online.'})")
     expect(page.get_by_role("button", name="Continue demo", exact=True)).to_be_visible(timeout=20000)

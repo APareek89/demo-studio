@@ -1,0 +1,25 @@
+{
+  "review": "12/12 categories; no new unresolved code blocker",
+  "baseline": "e80a18077036490e25608d90ff027f918379bcc1",
+  "files": {
+    "output/runtime-interruption-media-2026-09-25/review/FMEA.md": "e4ec84f50adc38d34d08e17e5554062138c1b36f45e918f774db4665e84838b7",
+    "output/runtime-interruption-media-2026-09-25/final-core/final-results.json": "937ab062809dd71c190a1dd361b208b2786daf937d55b09b60249cfbeda7c718",
+    "output/runtime-interruption-media-2026-09-25/final-core/source-hashes-before.json": "e90403a331dd5c08bf9b50e63c3b8bce0e91866999530d43557971af1626442d",
+    "output/runtime-interruption-media-2026-09-25/final-core/source-hashes-after.json": "e90403a331dd5c08bf9b50e63c3b8bce0e91866999530d43557971af1626442d",
+    "output/runtime-interruption-media-2026-09-25/final-core/source-stability.json": "4558e918e72c22593f25e77917f57906cac1c2d720517863869b577b258bc215",
+    "output/runtime-interruption-media-2026-09-25/speech/receipt.json": "3f660ef8745e07c34c4f4c747154b44c67b9b063a8d3108efd2ab2f4a6b37eca",
+    "output/runtime-interruption-media-2026-09-25/speech/browser-results.json": "69b3505e4393efd830a617a36538ac304dece90ee8061d156d721df074ced47d",
+    "output/runtime-interruption-media-2026-09-25/gallery-final/gallery-browser.json": "3b3f142c6dda35c33c86f5d75ac308da10b098e5d05b93efb76f2a05d370f191",
+    "output/runtime-interruption-media-2026-09-25/gallery-final/player-browser-current.json": "2f5b45adb206c37396a4b2550b41a79d4462e7e6fc1911ad24754b7c713c577a",
+    "output/runtime-interruption-media-2026-09-25/runtime_image_player-final.log": "fbfc9540fabd0495a56324a736995688d3416d93066c7aa614d1636913437eb4"
+  },
+  "source_changed_during_final_core": false,
+  "paid_calls": 0,
+  "aws_writes": 0,
+  "limitations": [
+    "Physical speech/noise discrimination not measured",
+    "Concurrent load not measured",
+    "Existing public runtime capacity protections not added",
+    "Expected HTTP supersession emits inherited ASGI shutdown diagnostic"
+  ]
+}

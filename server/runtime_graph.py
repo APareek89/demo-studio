@@ -17,7 +17,7 @@ from urllib.parse import urlsplit
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
-from . import config, store, usage
+from . import config, runtime_visuals, store, usage
 from .agents import deck, pitch, plain_terms, qa, voice
 from .agents.author import CLAIMISH, NUMBERISH
 from .agents.principles import audience_instruction, language_instruction, policy_relation_conflict
@@ -929,6 +929,12 @@ async def retrieve(state: RuntimeState) -> dict:
     snap = store.read_json(state["demo_id"], f"knowledge/snapshots/{sid}.json") if sid and re.fullmatch(r"kb_[a-f0-9]{24}",sid) else None
     registry = snap or store.read_json(state["demo_id"], "understanding.json") or {}
     requested = explicit_scope(state["question"], [f for f, _ in store.fact_entries(registry)], state.get("profile"))
+    if runtime_visuals.show_request(state["question"]):
+        published = store.read_json(state["demo_id"], "bundle.json") or {}
+        if published.get("knowledge_snapshot_id") == sid and published.get("version") == state.get("demo_version"):
+            # Caption words improve index recall only. The original question
+            # above exclusively decides the customer scope and intent.
+            query += " " + runtime_visuals.retrieval_hint(published, state["question"], requested)
     pack = await asyncio.to_thread(knowledge.retrieve, state["demo_id"], query,
                                    snapshot_id=state.get("snapshot_id") or None,
                                    scope=requested, competition=demo.get("settings", {}).get("competition") == "on", limit=14)
@@ -1742,6 +1748,8 @@ async def explore(state: RuntimeState) -> dict:
 async def delivery_plan(state: RuntimeState) -> dict:
     if state["control"].cancelled.is_set(): raise InterruptedError("Turn superseded")
     result = state.get("result",{})
+    if state.get("kind") == "qa":
+        runtime_visuals.attach(state, result, store.read_json(state["demo_id"], "bundle.json") or {})
     text = result.get("answer","") if state.get("kind")!="explore" else result.get("decision_frame","")
     utterance = "u_"+hashlib.sha256((state["session_id"]+state["turn_id"]+text).encode()).hexdigest()[:20]
     result.update(runtime_utterance_id=utterance,turn_id=state["turn_id"],timings=state.get("timings",{}))
@@ -1806,7 +1814,22 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
             published = store.read_json(demo_id, "knowledge/published.json") or {}
             state["snapshot_id"] = published.get("id") or knowledge.snapshot(demo_id)["id"]
         registry_hash = faq._registry_hash(demo_id, snapshot_id=state["snapshot_id"])
-        hit = None if kind != "qa" or body.get("skip_bank") else faq.match(
+        visual_result = None
+        if kind == "qa" and runtime_visuals.show_request(state["question"]):
+            # Showing an already reviewed picture is navigation, not a new
+            # product assertion. The ordinary retrieval still owns eligibility.
+            state.update(await retrieve(state))
+            selected = runtime_visuals.select(demo_id, bundle, snapshot_id=state["snapshot_id"],
+                demo_version=state.get("demo_version"), question=state["question"],
+                current_id=state.get("slide_id"), evidence=state.get("evidence", []), visual_only=True,
+                requested_scope=state.get("requested_scope"))
+            visual_result = {**(selected or {"visual": None, "slide_id": state.get("slide_id"), "route": "none", "callout_id": None, "by": ""}),
+                "answer": "Here is the reviewed image." if selected else "I don't have a reviewed image for that request in this demo.",
+                "answered": bool(selected), "visual_only": True, "fact_ids": [], "facts": [], "audio": None,
+                "clarifying_question": "", "offer_callback": False, "cta": "", "from_bank": False,
+                "snapshot_id": state["snapshot_id"], "provider_failed": False, "repair_failed": False,
+                "tool_results": [], "validation_errors": []}
+        hit = None if visual_result or kind != "qa" or body.get("skip_bank") else faq.match(
             demo_id, state["question"], snapshot_id=state["snapshot_id"], registry_hash=registry_hash)
         control.remaining()
         if hit:
@@ -1818,7 +1841,10 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
                     state.update(retrieved)
             else:
                 hit = None
-        if hit:
+        if visual_result:
+            state["result"] = visual_result
+            final = await delivery_plan(state)
+        elif hit:
             cached_audio = voice._cached(demo_id, hit["answer"], voice.runtime_demo(demo_id, profile.get("language")))
             result = {**cached_result,
                       "answered": True, "clarifying_question": "", "offer_callback": False, "cta": "",
@@ -1859,6 +1885,7 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
                                       audio=f"/media/{demo_id}/{cached_audio}" if cached_audio else None,
                                       plain_language_substitutions=entry.get("plain_language_substitutions", []))
                         result.update(deck.route_for(bundle.get("slides", []), state.get("slide_id"), result["fact_ids"], state["question"]))
+                        runtime_visuals.attach({**state, **final}, result, store.read_json(demo_id, "bundle.json") or {})
                         final["delivery"]["speech"] = result["answer"]
                         final["delivery"]["result"] = result
                     elif (not result.get("clarifying_question") and

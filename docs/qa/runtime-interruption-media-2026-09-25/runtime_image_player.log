@@ -1,0 +1,43 @@
+PASS valid pinned image accepted
+PASS decline cannot introduce image
+PASS clarification cannot introduce image
+PASS stale pin rejected
+PASS stale version rejected
+PASS arbitrary URL rejected
+PASS unknown image rejected
+PASS unknown slide rejected
+PASS other photo tag ignored
+PASS negative line falls back to reviewed start
+PASS missing visual preserves legacy result
+PASS pointer only comes from reviewed slide
+PASS 1440: different later photo initially visible
+PASS 1440: same-slide answer selects exact earlier image before speech
+PASS 1440: same-slide answer selects owning reviewed tag
+PASS 1440: one question and no overlapping output
+PASS 1440: published bundle unchanged
+PASS 1440: Continue restores interrupted photo
+PASS 1440: player remains within viewport
+PASS 390: different later photo initially visible
+PASS 390: same-slide answer selects exact earlier image before speech
+PASS 390: same-slide answer selects owning reviewed tag
+PASS 390: one question and no overlapping output
+PASS 390: published bundle unchanged
+PASS 390: Continue restores interrupted photo
+PASS 390: player remains within viewport
+PASS missing: honest response without false picture acknowledgement
+PASS missing: no automatic follow-up form
+PASS missing: image navigation failure is absent from factual open questions
+PASS stale: honest response without false picture acknowledgement
+PASS stale: no automatic follow-up form
+PASS stale: image navigation failure is absent from factual open questions
+PASS decode: honest response without false picture acknowledgement
+PASS decode: no automatic follow-up form
+PASS decode: image navigation failure is absent from factual open questions
+PASS factual_decode: honest response without false picture acknowledgement
+PASS factual_decode: no automatic follow-up form
+PASS Decoded gallery picture remains unchanged during speech hold
+PASS No gallery camera move starts during decode hold
+PASS Releasing hold presents pending picture exactly once
+PASS Cancelled held answer cannot change current picture
+PASS No microphone, external request or script error
+{"passed": 42, "total": 42, "provider_calls": 0, "checks": ["valid pinned image accepted", "decline cannot introduce image", "clarification cannot introduce image", "stale pin rejected", "stale version rejected", "arbitrary URL rejected", "unknown image rejected", "unknown slide rejected", "other photo tag ignored", "negative line falls back to reviewed start", "missing visual preserves legacy result", "pointer only comes from reviewed slide", "1440: different later photo initially visible", "1440: same-slide answer selects exact earlier image before speech", "1440: same-slide answer selects owning reviewed tag", "1440: one question and no overlapping output", "1440: published bundle unchanged", "1440: Continue restores interrupted photo", "1440: player remains within viewport", "390: different later photo initially visible", "390: same-slide answer selects exact earlier image before speech", "390: same-slide answer selects owning reviewed tag", "390: one question and no overlapping output", "390: published bundle unchanged", "390: Continue restores interrupted photo", "390: player remains within viewport", "missing: honest response without false picture acknowledgement", "missing: no automatic follow-up form", "missing: image navigation failure is absent from factual open questions", "stale: honest response without false picture acknowledgement", "stale: no automatic follow-up form", "stale: image navigation failure is absent from factual open questions", "decode: honest response without false picture acknowledgement", "decode: no automatic follow-up form", "decode: image navigation failure is absent from factual open questions", "factual_decode: honest response without false picture acknowledgement", "factual_decode: no automatic follow-up form", "Decoded gallery picture remains unchanged during speech hold", "No gallery camera move starts during decode hold", "Releasing hold presents pending picture exactly once", "Cancelled held answer cannot change current picture", "No microphone, external request or script error"]}

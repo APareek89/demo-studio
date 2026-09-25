@@ -1,0 +1,46 @@
+{
+  "gallery": {
+    "passed": 320,
+    "total": 320,
+    "provider_calls": 0,
+    "errors": [],
+    "blocked": [],
+    "asset_errors": [],
+    "scope": "Actual mountPlayer, isolated muted browser, approved local fixture bytes; fake audio/API, no acoustic claim"
+  },
+  "native_player": {
+    "passed": 87,
+    "total": 87,
+    "boundaries": "Real DOM/events and mountPlayer; synthetic audio/SpeechRecognition/API; virtual timers. Not an acoustic or native microphone check."
+  },
+  "live_player": {
+    "errors": []
+  },
+  "core": {
+    "qa_deck": "445/445",
+    "qa_accept": "24/24",
+    "smoke": "3/3",
+    "release_mock": "28/28",
+    "synthetic_narration_seconds": 194.22
+  },
+  "new_contracts": {
+    "immediate_speech_hold": "26/26",
+    "runtime_visuals": "23/23",
+    "runtime_image_player": "42/42",
+    "retrieval_io": "12/12"
+  },
+  "focused": {
+    "live_voice": "96/96",
+    "speech_noise": "31/31",
+    "runtime_recovery": "17/17",
+    "listen": "16/16",
+    "session_save": "18/18",
+    "knowledge": "60/60",
+    "runtime_graph": "130/130",
+    "faq_cache": "27/27",
+    "transmission_conditions": "17/17"
+  },
+  "baseline": "e80a180",
+  "paid_calls": 0,
+  "deploy_status": "Working branch only; master and AWS unchanged"
+}

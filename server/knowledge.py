@@ -775,12 +775,6 @@ def retrieve(demo_id: str, query: str, *, snapshot_id: str | None = None, scope:
             item["applicability_projection"] = projection
         source = next((s for s in snap.get("sources", []) if s["id"] == fact.get("source", {}).get("ref")), {})
         item["source_metadata"] = source
-        if source.get("evidence_path"):
-            extraction = store.read_json(demo_id, source["evidence_path"]) or {}
-            quote = _norm(fact.get("source", {}).get("quote"))
-            locator = fact.get("source", {}).get("locator", "")
-            matching = [s for s in extraction.get("sections", []) if (quote and quote in _norm(s.get("text"))) or (locator and locator == s.get("locator"))]
-            item["context"] = matching[:2]
         evidence.append(item)
     evidence.sort(key=lambda row: (-row["score"], row["id"]))
     unique, seen = [], set()
@@ -788,5 +782,22 @@ def retrieve(demo_id: str, query: str, *, snapshot_id: str | None = None, scope:
         key = (_norm(row.get("claim")), _norm(row.get("value")), _norm(row.get("conditions")), json.dumps(row.get("scope",{}),sort_keys=True), row.get("entity"))
         if key not in seen:
             unique.append(row); seen.add(key)
-    return {"snapshot_id": snap["id"], "evidence": unique[:max(1, min(30, limit))], "conflicts": snap.get("conflicts", []),
+    selected = unique[:max(1, min(30, limit))]
+    # Source context does not participate in ranking or eligibility. Load only
+    # the selected rows' source documents, once per request, retaining the
+    # pinned source paths rather than the current draft's extraction. Keeping
+    # this memo local avoids stale evidence across requests or publications.
+    extractions = {}
+    for item in selected:
+        source = item["source_metadata"]
+        if source.get("evidence_path"):
+            path = source["evidence_path"]
+            if path not in extractions:
+                extractions[path] = store.read_json(demo_id, path) or {}
+            quote = _norm(item.get("source", {}).get("quote"))
+            locator = item.get("source", {}).get("locator", "")
+            matching = [s for s in extractions[path].get("sections", []) if (quote and quote in _norm(s.get("text"))) or (locator and locator == s.get("locator"))]
+            # Previously each JSON read produced independent nested objects.
+            item["context"] = copy.deepcopy(matching[:2])
+    return {"snapshot_id": snap["id"], "evidence": selected, "conflicts": snap.get("conflicts", []),
             "coverage": snap.get("coverage", {}), "method": index["method"]}
