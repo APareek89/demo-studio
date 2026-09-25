@@ -1,5 +1,11 @@
 # Loop.MD — Demo Studio
 
+## AWS BMW feedback release — 25 September 2026
+
+Finite release QA, loop off. Exact application278c21d on the existing AWS virtualenv: **deck445/445, acceptance24/24, smoke3/3 phases, full mock28/28** (194.22s synthetic narration). All33 staged subprocesses exit0 with isolated DATA/GRAPH, mock providers, blank keys and zero outbound attempts. Provider79 ran inside deck; its separate import-only invocation is not additional test coverage. Generation55/55 omits three optional unavailable legacy-Creta cases; no protected fixture was mounted to inflate counts. Every other staged contract's observed count/log hash is recorded in [the gate inventory](docs/qa/aws-bmw-release-2026-09-25/gate-counts.json). No standalone JavaScript rerun on AWS (no Node); local final same-byte browser281/audio71 and gallery320/native87 remain applicable. Full mock does execute its real browser fixture.
+
+Real installed Caddy2.8.4: **153/153** isolated proxy checks. Public HTTPS after cutover: **17/17**, including26frontend hashes,96unique BMW media ranges, exact approved bundle content/pin, anonymous private-path denial, operator login and mic-off WSS session.ready. Desktop1440/phone390 welcome captures have no script/asset errors or horizontal overflow. All4108 prior data files unchanged; no new QA usage, trace, session or lead; no service error. This deployment performed no paid generation, acoustic test or capacity/load test. [Release, FMEA, screenshots and rollback](docs/aws/release-bmw-gallery-2026-09-25.md).
+
 ## BMW gallery, conversational writing and expression — 25 September 2026
 
 Finite QA; recurring loop stays off. Final free core after the per-picture caption correction and build thinking-budget fix: **qa_deck445/445, qa_accept24/24, smoke3/3** (Read, Build, on-demand rehearsal), all with zero outbound attempts. Full mock release **28/28**, including194.22seconds of measured synthetic narration, real review/publication guards, runtime answer and saved session. These measurements describe fixtures, not the real BMW recordings.

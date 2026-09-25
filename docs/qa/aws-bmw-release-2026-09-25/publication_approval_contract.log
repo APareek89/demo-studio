@@ -1,0 +1,14 @@
+test_actual_graph_stops_at_review_after_learning_during_recording (__main__.PublicationApproval.test_actual_graph_stops_at_review_after_learning_during_recording) ... ok
+test_all_six_cards_are_required_at_final_boundary (__main__.PublicationApproval.test_all_six_cards_are_required_at_final_boundary) ... ok
+test_approved_bundle_progress_can_reenter_the_metadata_lock (__main__.PublicationApproval.test_approved_bundle_progress_can_reenter_the_metadata_lock) ... ok
+test_bundle_node_treats_review_pause_as_pending_not_failed (__main__.PublicationApproval.test_bundle_node_treats_review_pause_as_pending_not_failed) ... ok
+test_last_moment_invalidation_preserves_every_publication_file (__main__.PublicationApproval.test_last_moment_invalidation_preserves_every_publication_file) ... ok
+test_live_writer_waits_until_approved_bundle_has_been_published (__main__.PublicationApproval.test_live_writer_waits_until_approved_bundle_has_been_published) ... ok
+test_reapproval_publishes_the_reviewed_new_bank (__main__.PublicationApproval.test_reapproval_publishes_the_reviewed_new_bank) ... ok
+test_runtime_learning_during_voice_returns_to_align (__main__.PublicationApproval.test_runtime_learning_during_voice_returns_to_align) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.242s
+
+OK
+STAGED_OUTBOUND_ATTEMPTS 0

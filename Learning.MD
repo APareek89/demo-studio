@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — A public feedback link needs a private operator boundary
+
+**Observed:** the previous AWS proxy forwarded every path anonymously. Sharing a player URL also left demo inventory, edit/paid-build APIs, saved-session records and raw JSON/trace files reachable. Copying the entire local BMW directory would additionally have transferred the owner's test conversation.
+
+**Correction:** retain anonymous published playback, media and customer runtime; require one operator login for all other proxy paths/methods. Transfer the already-reviewed BMW bundle, evidence and media, excluding test session/lead/log/usage/history files. Keep credentials private, preserve the shared environment/global graph and make the new demo install absent-only. No workflow/agent/node redesign. The broader option of making viewers log in was rejected because the user wants a shareable feedback demo.
+
+**Prevention/evidence:** test actual Caddy URI/method/auth behavior with an isolated upstream, including encoded traversal and WebSocket upgrades (153/153), then check public HTTPS and all96 published media assets. Back up data while the app is stopped and compare every existing file after switching releases (4108/4108 unchanged). Rollback attempts must restart the previous application even if proxy recovery fails; capture independent recovery errors instead of aborting the recovery chain. The initial privileged-path preflight failed before stopping service and was corrected to use sudo test; the journal timestamp and screenshot selector failures were QA harness issues, not application failures. [Release receipt](docs/aws/release-bmw-gallery-2026-09-25.md).
+
+**Limit:** this closes the immediate operator/private-record exposure. Public runtime remains intentionally callable; per-visitor ownership, account roles, quotas and abuse controls require separate product work. Mock/free checks and a mic-off handshake do not establish live provider quality or microphone noise performance.
+
 ## 2026-09-25 — System instructions were delivered as source-level text
 
 **Symptom:** real BMW revisions retained formal specification lists, mixed-picture sentences and missing qualifications despite explicit writing rules. Five Gemini drafts were held instead of published.

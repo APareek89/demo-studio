@@ -1,0 +1,1218 @@
+{
+  "contract": "feedback proxy with real Caddy and isolated loopback upstream",
+  "passed": 153,
+  "total": 153,
+  "failures": [],
+  "checks": [
+    {
+      "name": "all upstream transports retain 600-second read_timeout",
+      "passed": true
+    },
+    {
+      "name": "all upstream transports retain 600-second write_timeout",
+      "passed": true
+    },
+    {
+      "name": "all upstream transports retain 600-second response_header_timeout",
+      "passed": true
+    },
+    {
+      "name": "request body limit remains one gigabyte",
+      "passed": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/api/health",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/app.js",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/web/app.js",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/player/player.js",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/web/player/player.js",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/styles.css",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/web/styles.css",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/bundle",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/api/demos/dm_29df0418/bundle",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/export.mp4",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player read",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/api/demos/dm_29df0418/export.mp4",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/photo.jpg",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/photo.jpg",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/car%20front.JPG",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/car%20front.JPG",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/derived/pdf-images/src_123/a.png",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/derived/pdf-images/src_123/a.png",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/media/mascot.png",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/media/mascot.png",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/audio/voice.wav",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/audio/voice.wav",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/audio/voice.mp3",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/audio/voice.mp3",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/intro.mp4",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/intro.mp4",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/media/preview.webm",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public player media",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/media/preview.webm",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "public customer action",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/qa",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "customer action GET stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/qa",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "public customer action",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/tts",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "customer action GET stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/tts",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "public customer action",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/pitch",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "customer action GET stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/pitch",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "public customer action",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/lead",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "customer action GET stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/lead",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "public customer action",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/stt",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "customer action GET stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/stt",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "public customer action",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/session",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "customer action GET stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/session",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "public websocket upgrade",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/live?session_id=s_fixture",
+      "status": 101,
+      "upstream_reached": true
+    },
+    {
+      "name": "non-upgrade live request stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/run/live",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "live wrong method stays private",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/run/live",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "live wrong method stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/api/demos/dm_29df0418/run/live",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "signed summary delegated to app",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/share/dm_29df0418/s_contract?k=1234567890abcdef1234",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "signed summary HEAD delegated to app",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/api/share/dm_29df0418/s_contract?k=1234567890abcdef1234",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "invalid signature remains denied by app",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/share/dm_29df0418/s_contract?k=invalid",
+      "status": 403,
+      "upstream_reached": true
+    },
+    {
+      "name": "missing share key stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/share/dm_29df0418/s_contract",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "share cannot be mutated",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/share/dm_29df0418/s_contract?k=1234567890abcdef1234",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "PATCH",
+      "path": "/api/demos/dm_29df0418",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "DELETE",
+      "path": "/api/demos/dm_29df0418",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/sessions",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/sessions/s_fixture",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/trace",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/runlog",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/usage",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/events",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/readiness",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/evals",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/read",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/build",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/feedback",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/sync",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/align",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "PATCH",
+      "path": "/api/demos/dm_29df0418/align/script",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/approve/script",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/sources",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/rehearsal",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/cloud",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/cloud/setup",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/docs",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/openapi.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "GET",
+      "path": "/redoc",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "DELETE",
+      "path": "/web/app.js",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/api/demos/dm_29df0418/bundle",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "DELETE",
+      "path": "/api/demos/dm_29df0418/export.mp4",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private endpoint requires credentials",
+      "passed": true,
+      "method": "POST",
+      "path": "/media/dm_29df0418/sources/photo.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/demo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/demo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/trace.jsonl",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/trace.jsonl",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/understanding.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/understanding.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sessions/s_fixture.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sessions/s_fixture.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/private.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/private.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/private.jsonl",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/private.jsonl",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/brochure.pdf",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/brochure.pdf",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/active.html",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/active.html",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/active.svg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/active.svg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/active.SVG",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/active.SVG",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/audio/private.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/audio/private.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/derived/metadata.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/derived/metadata.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/photo.jpg/private.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/photo.jpg/private.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/private.json/photo.jpg/",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/private.json/photo.jpg/",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/private/photo.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/private/photo.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/.hidden.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "private media or extension stays private",
+      "passed": true,
+      "method": "HEAD",
+      "path": "/media/dm_29df0418/sources/.hidden.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/bundle/trace",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/bundle.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/bundle/",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_invalid/bundle",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df04180/bundle",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418evil/run/session",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/other/bundle",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/../api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/%2e%2e/api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/%252e%252e/api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/app.js/../../api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/web/%2f..%2fapi%2fdemos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/../demo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%2e%2e/demo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%252e%252e/demo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%2e%2e%2fdemo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%252e%252e%252fdemo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/../sessions/private.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%2e%2e/sessions/private.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%252e%252e/sessions/private.jpg",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/%5c..%5cdemo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/photo.jpg%00.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/photo.jpg%252fprivate.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "ambiguous or traversing path stays private",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/sources/photo.jpg%2f..%2f..%2fdemo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "wrong password denied",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "correct admin password accepted",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "wrong password denied",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/sessions",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "correct admin password accepted",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/sessions",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "wrong password denied",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/trace",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "correct admin password accepted",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/trace",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "wrong password denied",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/demo.json",
+      "status": 401,
+      "upstream_reached": false
+    },
+    {
+      "name": "correct admin password accepted",
+      "passed": true,
+      "method": "GET",
+      "path": "/media/dm_29df0418/demo.json",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "authorized editor mutation accepted",
+      "passed": true,
+      "method": "PATCH",
+      "path": "/api/demos/dm_29df0418/align/script",
+      "status": 200,
+      "upstream_reached": true
+    },
+    {
+      "name": "authorization does not change public player",
+      "passed": true,
+      "method": "GET",
+      "path": "/api/demos/dm_29df0418/bundle",
+      "status": 200,
+      "upstream_reached": true
+    }
+  ],
+  "production_requests": 0,
+  "provider_calls": 0
+}

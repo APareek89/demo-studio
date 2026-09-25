@@ -1,0 +1,30 @@
+{
+  "commit": "278c21db39abc15c4f56125637b3ff2a790e4834",
+  "source_files": 1116,
+  "demo_id": "dm_29df0418",
+  "copied_files": 151,
+  "bundle_version": 2,
+  "snapshot_id": "kb_cd2f6a8cf905301b30a07d42",
+  "private_visit_history_excluded": true,
+  "minimum": {
+    "minimum_seconds": 120.0,
+    "seconds": 122.64,
+    "sufficient": true,
+    "words": 280,
+    "measured": true,
+    "basis": "measured",
+    "measured_seconds": 122.64,
+    "estimated_seconds": 0,
+    "route": [
+      "powertrain-proof",
+      "powertrain-proof-2",
+      "ride-proof",
+      "safety-proof",
+      "cabin-proof",
+      "cabin-proof-2",
+      "more-features",
+      "establish"
+    ],
+    "duplicate_lines_excluded": 0
+  }
+}

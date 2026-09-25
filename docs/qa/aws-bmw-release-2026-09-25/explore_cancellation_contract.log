@@ -1,0 +1,11 @@
+PASS media-only pause preserves actual in-flight HTTP Explore
+PASS preserved planner completes its own checkpoint without starting WS narration
+PASS actual STT onset preserves Explore before any browser preservation flag arrives
+PASS new Explore or refine cancels older context before publication
+PASS actual WS question preserves pending personalized route without overwriting its checkpoint
+PASS late planning completion cannot register speech during the customer wait
+PASS preservation flag never keeps a QA turn alive
+PASS ordinary Stop cancels pending planning
+PASS session close cancels pending planning and cannot publish it
+Explore cancellation: 9/9 passed
+STAGED_OUTBOUND_ATTEMPTS 0

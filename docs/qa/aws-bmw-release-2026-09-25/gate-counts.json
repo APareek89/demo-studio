@@ -1,0 +1,440 @@
+{
+  "source_commit": "278c21db39abc15c4f56125637b3ff2a790e4834",
+  "basis": "Fresh staged AWS release logs; no previous local counts substituted. Suite totals overlap and are deliberately not summed as unique assertions.",
+  "staged_process_exit_successes": 33,
+  "staged_process_count": 33,
+  "standalone_provider_invocation_is_import_only": true,
+  "all_staged_outbound_attempts": 0,
+  "suites": [
+    {
+      "suite": "qa_deck",
+      "exit_code": 0,
+      "seconds": 20.18,
+      "log": "output/deploy-bmw-2026-09-25/qa_deck.log",
+      "log_sha256": "9eb64ce8e9a659ea4838c42733980c8c8cc8bd64f97adb89e8f53848ee2d7d3a",
+      "staged_outbound_attempts": 0,
+      "passed": 445,
+      "total": 445,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "qa_accept",
+      "exit_code": 0,
+      "seconds": 4.88,
+      "log": "output/deploy-bmw-2026-09-25/qa_accept.log",
+      "log_sha256": "487acf5cbe691757fbe85552c30b9c15b41a29e11aee8ec28472acd0b7104d81",
+      "staged_outbound_attempts": 0,
+      "passed": 24,
+      "total": 24,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit_code": 0,
+      "seconds": 6.13,
+      "log": "output/deploy-bmw-2026-09-25/smoke_mock.log",
+      "log_sha256": "21b12ca9b163e234825f3bce0fde11bc5f42807dd3301ba927aa46e0758b289e",
+      "staged_outbound_attempts": 0,
+      "passed": 3,
+      "total": 3,
+      "count_unit": "phases",
+      "count_basis": "Explicit SMOKE OK phase completion markers",
+      "phase_markers": [
+        "SMOKE OK dm_b4fa7b5c",
+        "SMOKE OK (phase 2) dm_b4fa7b5c",
+        "SMOKE OK (on-demand rehearsal) dm_b4fa7b5c"
+      ],
+      "fixture_note": "Synthetic duration/preparation plumbing; unchanged real measured-duration gate covered separately by minimum_narration and release_mock."
+    },
+    {
+      "suite": "release_mock_contract",
+      "exit_code": 0,
+      "seconds": 23.49,
+      "log": "output/deploy-bmw-2026-09-25/release_mock_contract.log",
+      "log_sha256": "2530d7ee797c9c8f5d89bf421b42c88d0ffccfcf1e2229bc778dff504bb41169",
+      "staged_outbound_attempts": 0,
+      "passed": 28,
+      "total": 28,
+      "count_basis": "Explicit final suite count",
+      "narration_seconds": 194.22,
+      "provider_calls": 0,
+      "browser_checks_executed": true,
+      "fixture_note": "Canned provider responses and silent WAVs; real publication timing and real browser journey, not an acoustic quality test."
+    },
+    {
+      "suite": "provider_contract",
+      "exit_code": 0,
+      "seconds": 0.48,
+      "log": "output/deploy-bmw-2026-09-25/provider_contract.log",
+      "log_sha256": "f8f957fc5d8ec55d50a2a4eeca393aaacfc7fa22f17b32ddf461d4d1e4724e85",
+      "staged_outbound_attempts": 0,
+      "passed": 79,
+      "total": 79,
+      "count_basis": "79 named provider checks in qa_deck.log; included in qa_deck total",
+      "standalone_checks_executed": 0,
+      "included_in": "qa_deck",
+      "note": "provider_contract.py defines run(check, demo_id) without a main entrypoint. Its standalone subprocess exited 0 but did not execute its checks; qa_deck invoked them and logged 79 results."
+    },
+    {
+      "suite": "understand_batch_contract",
+      "exit_code": 0,
+      "seconds": 2.97,
+      "log": "output/deploy-bmw-2026-09-25/understand_batch_contract.log",
+      "log_sha256": "dcb2464e8c7333d56c1cb99460692e32844dee0b45c39972911122f61f3d08d4",
+      "staged_outbound_attempts": 0,
+      "passed": 16,
+      "total": 16,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "pdf_images_contract",
+      "exit_code": 0,
+      "seconds": 2.02,
+      "log": "output/deploy-bmw-2026-09-25/pdf_images_contract.log",
+      "log_sha256": "48170c1babc2314098771092097596f94f6c3508d04108ad0b67780e730b052b",
+      "staged_outbound_attempts": 0,
+      "passed": 58,
+      "total": 58,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "script_prompt_contract",
+      "exit_code": 0,
+      "seconds": 1.52,
+      "log": "output/deploy-bmw-2026-09-25/script_prompt_contract.log",
+      "log_sha256": "60c6a8949bd0042b16dc61a68c9a90986cf921b26d58fd3bc0bf5bd46c11dab3",
+      "staged_outbound_attempts": 0,
+      "passed": 53,
+      "total": 53,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "narrative_roles_contract",
+      "exit_code": 0,
+      "seconds": 2.25,
+      "log": "output/deploy-bmw-2026-09-25/narrative_roles_contract.log",
+      "log_sha256": "47d596c901da1c722d16c9590d1f9a138aa99751e0e176e918ef47c86f3a204a",
+      "staged_outbound_attempts": 0,
+      "passed": 14,
+      "total": 14,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "generation_contract",
+      "exit_code": 0,
+      "seconds": 1.99,
+      "log": "output/deploy-bmw-2026-09-25/generation_contract.log",
+      "log_sha256": "6b1ab4c989dad37e7c1d22d52e715f4f9978dfb1b345d38b1d53ed2fe9d5ebd6",
+      "staged_outbound_attempts": 0,
+      "passed": 55,
+      "total": 55,
+      "count_basis": "Explicit final suite count",
+      "optional_checks_not_executed": 3,
+      "optional_reason": "The three legacy Creta artifact checks are conditional on data/demos/dm_41513908 files. They were absent from this isolated AWS release test fixture; final staged count is 55, not the prior local 58.",
+      "optional_check_names": [
+        "isolated legacy Creta has exactly its two question-checkin repair issues",
+        "validation preserves every legacy Creta checkin and its reviewed audio",
+        "legacy Creta source artifacts remain byte-identical"
+      ],
+      "semantic_scope": "Model entailment not evaluated; providers are fake."
+    },
+    {
+      "suite": "narration_preparation_contract",
+      "exit_code": 0,
+      "seconds": 2.12,
+      "log": "output/deploy-bmw-2026-09-25/narration_preparation_contract.log",
+      "log_sha256": "de80e0a8ff7a91bb6f1e1934b55a104cab571331781aa281222391f47a0547cd",
+      "staged_outbound_attempts": 0,
+      "passed": 35,
+      "total": 35,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "automatic_narration_contract",
+      "exit_code": 0,
+      "seconds": 7.68,
+      "log": "output/deploy-bmw-2026-09-25/automatic_narration_contract.log",
+      "log_sha256": "393b73cb7f4897442a8b018eee8d0e47226bd4c62e5279e79ab9914eb4b7a91a",
+      "staged_outbound_attempts": 0,
+      "passed": 16,
+      "total": 16,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "minimum_narration_contract",
+      "exit_code": 0,
+      "seconds": 1.37,
+      "log": "output/deploy-bmw-2026-09-25/minimum_narration_contract.log",
+      "log_sha256": "429fe917668ca0e73d43cdf24ea95c152cd1c357c099813d654a3ac9ae8df317",
+      "staged_outbound_attempts": 0,
+      "passed": 25,
+      "total": 25,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "duration_preference_contract",
+      "exit_code": 0,
+      "seconds": 3.83,
+      "log": "output/deploy-bmw-2026-09-25/duration_preference_contract.log",
+      "log_sha256": "d16abac1b7902f735fd5ba3002629952f18cdf9f5eaebb203aef85dadcb0d773",
+      "staged_outbound_attempts": 0,
+      "passed": 19,
+      "total": 19,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "publication_approval_contract",
+      "exit_code": 0,
+      "seconds": 2.22,
+      "log": "output/deploy-bmw-2026-09-25/publication_approval_contract.log",
+      "log_sha256": "e0327c6c25408781925b5c33e269374498c1854b2e752a2556ce656ec83c9713",
+      "staged_outbound_attempts": 0,
+      "passed": 8,
+      "total": 8,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "deck_media_contract",
+      "exit_code": 0,
+      "seconds": 1.32,
+      "log": "output/deploy-bmw-2026-09-25/deck_media_contract.log",
+      "log_sha256": "7bf8c6168f7798770013f9f7fdbda14e70e5fd90f8893c062060ab54fa53312d",
+      "staged_outbound_attempts": 0,
+      "passed": 106,
+      "total": 106,
+      "count_basis": "Explicit final suite count",
+      "overlaps_with": "Also included in qa_deck; standalone rerun is not additional unique coverage."
+    },
+    {
+      "suite": "deck_media_align_contract",
+      "exit_code": 0,
+      "seconds": 2.52,
+      "log": "output/deploy-bmw-2026-09-25/deck_media_align_contract.log",
+      "log_sha256": "d958ca541b026fdb563a52733a131960c56cf26f64b162d34956518252559f3d",
+      "staged_outbound_attempts": 0,
+      "passed": 39,
+      "total": 39,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "visual_alignment_contract",
+      "exit_code": 0,
+      "seconds": 1.27,
+      "log": "output/deploy-bmw-2026-09-25/visual_alignment_contract.log",
+      "log_sha256": "2358f1cb63f909f0678d7d41f9f6a60f07c5b4e84713fdb2b44079d398cb37e0",
+      "staged_outbound_attempts": 0,
+      "passed": 25,
+      "total": 25,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "speech_expression_contract",
+      "exit_code": 0,
+      "seconds": 1.27,
+      "log": "output/deploy-bmw-2026-09-25/speech_expression_contract.log",
+      "log_sha256": "77c501fa3c1665435bf3c3e4a0f088960fa5ba65f4086bc945acff4c4273e559",
+      "staged_outbound_attempts": 0,
+      "passed": 20,
+      "total": 20,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "speech_style_contract",
+      "exit_code": 0,
+      "seconds": 1.42,
+      "log": "output/deploy-bmw-2026-09-25/speech_style_contract.log",
+      "log_sha256": "0462346c8fc80f079f0d39245473bded819f046205f56dce66ccbc55af967288",
+      "staged_outbound_attempts": 0,
+      "passed": 30,
+      "total": 30,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "voice_lock_contract",
+      "exit_code": 0,
+      "seconds": 1.32,
+      "log": "output/deploy-bmw-2026-09-25/voice_lock_contract.log",
+      "log_sha256": "904632ef8b68868c9648171446a26bef3dddbd071aa17c194b87478f3bd9a160",
+      "staged_outbound_attempts": 0,
+      "passed": 27,
+      "total": 27,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "sarvam_stream_contract",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "log": "output/deploy-bmw-2026-09-25/sarvam_stream_contract.log",
+      "log_sha256": "5c1a10029a4602249c304cce034883542e08c7f4efa00b26aa2fc1b39a1f4bfc",
+      "staged_outbound_attempts": 0,
+      "passed": 17,
+      "total": 17,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "runtime_delivery_contract",
+      "exit_code": 0,
+      "seconds": 2.42,
+      "log": "output/deploy-bmw-2026-09-25/runtime_delivery_contract.log",
+      "log_sha256": "a72e8e9603b83a7a322794f084eab0e811d833ddb603d8d0fcc0a91b482529bc",
+      "staged_outbound_attempts": 0,
+      "passed": 27,
+      "total": 27,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "runtime_graph_contract",
+      "exit_code": 0,
+      "seconds": 2.17,
+      "log": "output/deploy-bmw-2026-09-25/runtime_graph_contract.log",
+      "log_sha256": "e92b30c072f1695c2fb74a42a13ac6b89c5ba34d3287afe3b0062e17c0562bba",
+      "staged_outbound_attempts": 0,
+      "passed": 130,
+      "total": 130,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "runtime_repair_contract",
+      "exit_code": 0,
+      "seconds": 2.22,
+      "log": "output/deploy-bmw-2026-09-25/runtime_repair_contract.log",
+      "log_sha256": "d1443896286a9362f4bcb383beca7da92545852bd7fe6a93229fb254a6094042",
+      "staged_outbound_attempts": 0,
+      "passed": 106,
+      "total": 106,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "runtime_hedge_contract",
+      "exit_code": 0,
+      "seconds": 2.22,
+      "log": "output/deploy-bmw-2026-09-25/runtime_hedge_contract.log",
+      "log_sha256": "72e81a38b043dfa907109c1920f7c09380b13e9bddecd2dcbc57c71b24c539bf",
+      "staged_outbound_attempts": 0,
+      "passed": 35,
+      "total": 35,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "runtime_hedge_config_contract",
+      "exit_code": 0,
+      "seconds": 9.44,
+      "log": "output/deploy-bmw-2026-09-25/runtime_hedge_config_contract.log",
+      "log_sha256": "dbc1909a1fa70a9498a7fee7aeadfaf90f4ea861c7285eaae302bf6b1345352d",
+      "staged_outbound_attempts": 0,
+      "passed": 6,
+      "total": 6,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "live_transport_contract",
+      "exit_code": 0,
+      "seconds": 2.17,
+      "log": "output/deploy-bmw-2026-09-25/live_transport_contract.log",
+      "log_sha256": "709ecde42fd2a0aa2d6749d9b1ceec90a71334c8d1e583f3f8ebb6ca0a77b82f",
+      "staged_outbound_attempts": 0,
+      "passed": 25,
+      "total": 25,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "faq_cache_contract",
+      "exit_code": 0,
+      "seconds": 2.57,
+      "log": "output/deploy-bmw-2026-09-25/faq_cache_contract.log",
+      "log_sha256": "e1828e4564c49aec35459846adbc55b4f5604cd521121e536ec6f8062d8d235a",
+      "staged_outbound_attempts": 0,
+      "passed": 27,
+      "total": 27,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "runtime_live_table_contract",
+      "exit_code": 0,
+      "seconds": 2.22,
+      "log": "output/deploy-bmw-2026-09-25/runtime_live_table_contract.log",
+      "log_sha256": "6df3d58052eaf18c2a238c3f3afcf6857802ed86982d41d81940747cffc894cb",
+      "staged_outbound_attempts": 0,
+      "passed": 21,
+      "total": 21,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "runtime_transmission_conditions_contract",
+      "exit_code": 0,
+      "seconds": 2.12,
+      "log": "output/deploy-bmw-2026-09-25/runtime_transmission_conditions_contract.log",
+      "log_sha256": "8911fdd42b5f83ecd44b9c39d56def14d3bfb26d22045dbd73c4fbf6571ff6d0",
+      "staged_outbound_attempts": 0,
+      "passed": 17,
+      "total": 17,
+      "skipped": 0,
+      "count_basis": "unittest Ran count and OK completion; test groups, not subtest assertions"
+    },
+    {
+      "suite": "session_checkpoint_contract",
+      "exit_code": 0,
+      "seconds": 2.63,
+      "log": "output/deploy-bmw-2026-09-25/session_checkpoint_contract.log",
+      "log_sha256": "b7c8a905339fdb8347f3d4642800e6391a3af39491ccf54bcb3864f5d802ab26",
+      "staged_outbound_attempts": 0,
+      "passed": 26,
+      "total": 26,
+      "count_basis": "Explicit final suite count"
+    },
+    {
+      "suite": "explore_cancellation_contract",
+      "exit_code": 0,
+      "seconds": 3.2,
+      "log": "output/deploy-bmw-2026-09-25/explore_cancellation_contract.log",
+      "log_sha256": "51c3eeb6a684c706f97ceda8fd854a4b5df232e4aa90e6e09055bc1d11ba47d7",
+      "staged_outbound_attempts": 0,
+      "passed": 9,
+      "total": 9,
+      "count_basis": "Explicit final suite count"
+    }
+  ],
+  "proxy_contract": {
+    "passed": 153,
+    "total": 153,
+    "production_requests": 0,
+    "provider_calls": 0,
+    "basis": "Real installed Caddy against isolated ephemeral loopback HTTP stub; separate from application suites."
+  },
+  "skips_and_limits": [
+    {
+      "scope": "generation_contract",
+      "count": 3,
+      "reason": "Optional pre-existing protected Creta fixture is not present in the isolated release; no access or mutation was performed by these absent checks."
+    },
+    {
+      "scope": "unittest suites",
+      "count": 0,
+      "reason": "All available unittest logs finish OK without a skipped count."
+    },
+    {
+      "scope": "qa_accept",
+      "count": 0,
+      "reason": "All 24 rows executed, including AVIF, HEIC, dummy MP4 and MOV; no encoder-unavailable row."
+    },
+    {
+      "scope": "JavaScript",
+      "count": null,
+      "reason": "No explicit JS skip marker in staged logs. No standalone Node/JS contract suite is listed in staged-gates.json; do not claim it was rerun. release_mock did execute its real browser journey."
+    },
+    {
+      "scope": "paid semantic/acoustic QA",
+      "count": null,
+      "reason": "These release gates were MOCK_LLM=1 with blocked outbound sockets, not new paid generation or physical microphone/acoustic tests."
+    }
+  ]
+}

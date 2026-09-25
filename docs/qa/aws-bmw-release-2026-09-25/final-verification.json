@@ -1,0 +1,19 @@
+{
+  "existing_files_verified": 4108,
+  "missing": [],
+  "changed": [],
+  "bmw_private_record_counts": {
+    "sessions": 0,
+    "leads": 0,
+    "runtime": 0,
+    "logs": 0
+  },
+  "new_usage_or_trace": false,
+  "service_error_count": 0,
+  "live_caddy_template_sha256": "60ba8ffeb9558bb6b22db7c822159de3d85027651b8d6c8e1948c4665c4fdb6e",
+  "public_read_probe_did_not_save_visit": true,
+  "active": [
+    "active",
+    "active"
+  ]
+}

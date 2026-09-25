@@ -1,0 +1,41 @@
+PASS two-picture review persists IDs and resolves both picture URLs
+PASS callout anchors and drag fractions belong to its second picture
+PASS reviewed illustrations retain the proxy badge
+PASS media review resets script approval without granting any approval
+PASS saved picture assignments and per-picture drags survive rebuild
+PASS media-only API edit retains existing feature text and evidence
+PASS media-only API edit retires stale saved part and drag instead of anchoring new illustration
+PASS media-only API edit does not save obsolete attachment geometry
+PASS legacy primary-picture edits retire old saved attachment geometry
+PASS three pictures fails without changing any saved artifact
+PASS excluded picture fails without changing any saved artifact
+PASS duplicate picture fails without changing any saved artifact
+PASS non-list pictures fails without changing any saved artifact
+PASS unknown callout picture fails without changing any saved artifact
+PASS conflicting legacy primary fails without changing any saved artifact
+PASS failed final validation preserves previous deck and overrides
+PASS an excluded saved picture does not block later title edits
+PASS removing pictures accepts the editor's null callout attachment
+PASS two-picture review makes no outbound requests
+PASS create: ordinary unknown edit rejected without artifact changes
+PASS create: missing citations rejected without artifact changes
+PASS create: unknown citation rejected without artifact changes
+PASS create: rejected citation rejected without artifact changes
+PASS create: foreign slide citation rejected without artifact changes
+PASS create: unknown picture rejected without artifact changes
+PASS create: invalid reveal rejected without artifact changes
+PASS create: noninteger reveal rejected without artifact changes
+PASS create: nontext label rejected without artifact changes
+PASS create: nontext part rejected without artifact changes
+PASS create: overlong label rejected without artifact changes
+PASS create: explicit reviewed label saved with exact citations and reveal
+PASS create: label defaults to a caption without guessing a part
+PASS create: duplicate ID is rejected without replacing reviewed wording
+PASS create: saved explicit label is restored after regeneration and stays idempotent
+PASS create: replay never duplicates the restored label
+PASS create: a later held fact cannot resurrect a saved label
+PASS create: excluded saved picture retains approved wording as an unanchored caption
+PASS create: three explicit reviewed captions fit the existing per-picture cap
+PASS create: fourth label is rejected without changing approved wording
+39/39 deck media Align contracts passed
+STAGED_OUTBOUND_ATTEMPTS 0

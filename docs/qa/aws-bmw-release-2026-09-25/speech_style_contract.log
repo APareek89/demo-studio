@@ -1,0 +1,32 @@
+PASS delivery: matching effective style reuses cache; pace change records separately
+PASS delivery: changed persona invalidates cache without changing locked Priya
+PASS delivery: tags never reach provider or captions, pace is finite and bounded
+PASS overview: separately validated and assigned without inserting duplicate narration
+PASS overview: actual same-voice WAV duration and evidence preserved
+PASS author: source ID does not authorize an invented gearbox outcome
+PASS author: everyday main speech flags automotive jargon
+PASS author: two closing statements across seven sections pass without a reply gate
+PASS author: sparse cadence still rejects hidden questions and uncited claims in checkins
+PASS author: question checkins require repair while reviewed text and audio remain unchanged
+PASS author: short closing statements and empty checkins remain valid
+PASS author: full-width question mark requires repair without mutating reviewed text or audio
+PASS author: a declarative checkin cannot bypass citation requirements
+PASS author: all active authoring instructions agree checkins never wait
+PASS author: closing-statement rule does not constrain the separate open intake flow
+PASS author: observed everyday dimensions and component labels warn without withholding cited speech
+PASS author: requested technical audience and deeper lines retain complete quantities without register warnings
+PASS author: overview closing and checkin receive the same warning-only register review
+PASS plan: actual generation gets configured identity and observed grounding examples
+PASS plan: locked Priya identity overrides generated name and neutralizes persona without changing model object
+PASS plan: preserved revision fields cannot restore wrong locked identity; unlocked persona stays editable
+PASS plan: source action URLs reach actual planner and replace misleading highlights destinations
+PASS plan: CTA candidates exclude other model market host and label-only download claims
+PASS plan: missing destinations become honest local contact requests with matching advance
+PASS personalization: customer framing replaces speech, preserves sourced sentence/style and callout index
+PASS personalization: seen segments cannot replay
+PASS personalization: unsupported rewrite falls back to marked reviewed speech without admitting the claim
+PASS translation: overview keeps citations/style, clears source audio and reuses semantic translation
+PASS translation: a dropped overview quantity unit is held before speech
+PASS all contracts: no outbound calls
+Speech style contracts: 30/30
+STAGED_OUTBOUND_ATTEMPTS 0

@@ -1,0 +1,167 @@
+[
+  {
+    "suite": "qa_deck",
+    "exit_code": 0,
+    "seconds": 20.18
+  },
+  {
+    "suite": "qa_accept",
+    "exit_code": 0,
+    "seconds": 4.88
+  },
+  {
+    "suite": "smoke_mock",
+    "exit_code": 0,
+    "seconds": 6.13
+  },
+  {
+    "suite": "release_mock_contract",
+    "exit_code": 0,
+    "seconds": 23.49
+  },
+  {
+    "suite": "provider_contract",
+    "exit_code": 0,
+    "seconds": 0.48
+  },
+  {
+    "suite": "understand_batch_contract",
+    "exit_code": 0,
+    "seconds": 2.97
+  },
+  {
+    "suite": "pdf_images_contract",
+    "exit_code": 0,
+    "seconds": 2.02
+  },
+  {
+    "suite": "script_prompt_contract",
+    "exit_code": 0,
+    "seconds": 1.52
+  },
+  {
+    "suite": "narrative_roles_contract",
+    "exit_code": 0,
+    "seconds": 2.25
+  },
+  {
+    "suite": "generation_contract",
+    "exit_code": 0,
+    "seconds": 1.99
+  },
+  {
+    "suite": "narration_preparation_contract",
+    "exit_code": 0,
+    "seconds": 2.12
+  },
+  {
+    "suite": "automatic_narration_contract",
+    "exit_code": 0,
+    "seconds": 7.68
+  },
+  {
+    "suite": "minimum_narration_contract",
+    "exit_code": 0,
+    "seconds": 1.37
+  },
+  {
+    "suite": "duration_preference_contract",
+    "exit_code": 0,
+    "seconds": 3.83
+  },
+  {
+    "suite": "publication_approval_contract",
+    "exit_code": 0,
+    "seconds": 2.22
+  },
+  {
+    "suite": "deck_media_contract",
+    "exit_code": 0,
+    "seconds": 1.32
+  },
+  {
+    "suite": "deck_media_align_contract",
+    "exit_code": 0,
+    "seconds": 2.52
+  },
+  {
+    "suite": "visual_alignment_contract",
+    "exit_code": 0,
+    "seconds": 1.27
+  },
+  {
+    "suite": "speech_expression_contract",
+    "exit_code": 0,
+    "seconds": 1.27
+  },
+  {
+    "suite": "speech_style_contract",
+    "exit_code": 0,
+    "seconds": 1.42
+  },
+  {
+    "suite": "voice_lock_contract",
+    "exit_code": 0,
+    "seconds": 1.32
+  },
+  {
+    "suite": "sarvam_stream_contract",
+    "exit_code": 0,
+    "seconds": 0.37
+  },
+  {
+    "suite": "runtime_delivery_contract",
+    "exit_code": 0,
+    "seconds": 2.42
+  },
+  {
+    "suite": "runtime_graph_contract",
+    "exit_code": 0,
+    "seconds": 2.17
+  },
+  {
+    "suite": "runtime_repair_contract",
+    "exit_code": 0,
+    "seconds": 2.22
+  },
+  {
+    "suite": "runtime_hedge_contract",
+    "exit_code": 0,
+    "seconds": 2.22
+  },
+  {
+    "suite": "runtime_hedge_config_contract",
+    "exit_code": 0,
+    "seconds": 9.44
+  },
+  {
+    "suite": "live_transport_contract",
+    "exit_code": 0,
+    "seconds": 2.17
+  },
+  {
+    "suite": "faq_cache_contract",
+    "exit_code": 0,
+    "seconds": 2.57
+  },
+  {
+    "suite": "runtime_live_table_contract",
+    "exit_code": 0,
+    "seconds": 2.22
+  },
+  {
+    "suite": "runtime_transmission_conditions_contract",
+    "exit_code": 0,
+    "seconds": 2.12
+  },
+  {
+    "suite": "session_checkpoint_contract",
+    "exit_code": 0,
+    "seconds": 2.63
+  },
+  {
+    "suite": "explore_cancellation_contract",
+    "exit_code": 0,
+    "seconds": 3.2
+  }
+]

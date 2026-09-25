@@ -1,0 +1,27 @@
+PASS rules: matching picture survives unused steering-wheel distractor
+PASS rules: sparse tags do not replace the Author's picture
+PASS rules: deeper bindings and focus remain intact
+PASS rules: closing bindings and focus remain intact
+PASS rules: stronger lexical candidates remain recorded proposals
+PASS rules: no assignment changes or pixel findings are claimed
+PASS rules: unused distractors remain unused
+PASS rules: status says bindings were retained without pixel proof
+PASS rules: explicit none is not filled by metadata matches
+PASS rules: null visual is not filled by metadata matches
+PASS rules: an empty catalogue leaves the entire draft unchanged
+PASS provider failure: Author refs are preserved
+PASS provider failure: proposals do not become replacements
+PASS provider failure: status does not claim rules were applied
+PASS empty pixel result: Author refs are preserved
+PASS pixels: partial rejection remains authoritative
+PASS pixels: none rejection remains authoritative
+PASS pixels: not_visual rejection remains authoritative
+PASS pixels: full coverage can still replace the current image
+PASS pixels: heuristics never resurrect rejected refs
+PASS pixel validator: full coverage with a missing feature still fails
+PASS source boundary: Author still clears an excluded ref
+PASS source boundary: rules cannot refill the cleared ref
+PASS isolation: data and graph paths are temporary
+PASS isolation: no real provider or socket was called
+25/25 visual alignment contracts passed
+STAGED_OUTBOUND_ATTEMPTS 0

@@ -1,0 +1,28 @@
+PASS session checkpoint: first ongoing checkpoint is durable before the session ends
+PASS session checkpoint: ongoing autosaves never start summary work
+PASS session checkpoint: accepted response acknowledges sequence and stable share identity
+PASS session checkpoint: late lower checkpoint cannot truncate the sixteen-minute visit
+PASS session checkpoint: same sequence retry cannot change words, time or ended state
+PASS session checkpoint: legacy beacon cannot overwrite a session owned by sequenced saves
+PASS session checkpoint: sales session list already includes ongoing visit and elapsed minutes
+PASS session checkpoint: late ongoing beacon cannot reopen an ended session or remove its summary
+PASS session checkpoint: higher transport sequence with identical ended content reuses summary
+PASS session checkpoint: higher sequence intentionally resumes same visit and drops old summary
+PASS session checkpoint: legacy-to-legacy saves retain their established behavior
+PASS session checkpoint: first sequenced checkpoint safely migrates a legacy session
+PASS session checkpoint: booleans, floats, strings, null and unsafe sequence values are rejected
+PASS session checkpoint: incremental save preserves known input-mode selection when omitted
+PASS session checkpoint: sequence counters belong to their session, not the whole demo
+PASS session checkpoint: checkpoint route still strips client-supplied summaries
+PASS session checkpoint: sharing keeps transcript private and masks lead phones after checkpoints
+PASS session checkpoint: private consent survives exactly in the stored snapshot
+PASS session checkpoint: wrong share key remains forbidden
+PASS session checkpoint: public callback escalations and questions never expose the full number
+PASS session checkpoint: public model prose and nested objections mask contact numbers too
+PASS session checkpoint: public contact masking never rewrites the private consented record
+PASS session checkpoint: old in-flight summary cannot attach after a higher-sequence resume
+PASS session checkpoint: concurrent out-of-order requests retain the highest complete snapshot
+PASS session checkpoint: summary content revision excludes only transport bookkeeping
+PASS session checkpoint: all fake workers finish under blocked sockets
+Session checkpoint: 26/26 (actual route and threads; isolated mock; blocked sockets)
+STAGED_OUTBOUND_ATTEMPTS 0

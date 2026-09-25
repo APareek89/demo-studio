@@ -1,0 +1,27 @@
+PASS text session opens no provider
+PASS session readiness reports selected text input mode
+PASS text mode owns runtime request metadata despite conflicting client payload
+PASS text mode reaches the real isolated session checkpoint
+PASS text mode streams output while no STT adapter exists
+PASS mic readiness belongs to the requested capture
+PASS one voice adapter survives three independent runtime turns
+PASS voice selection persists in the actual latest checkpoint
+PASS raw VAD and noise-only transcripts never cancel server delivery or planning
+PASS meaningful partial is forwarded without cancelling server planning or output
+PASS final and duplicated recognition events alone never take server turn ownership
+PASS short multilingual final waits for the player's qualified interrupt command
+PASS explicit interruption still cancels immediately without speech evidence
+PASS fragment then noise and unrelated TV finals remain observational on server
+PASS server preserves repeated unowned yes finals for client qualification
+PASS transcript carries adapter capture generation
+PASS explicit microphone off records text mode for following turns
+PASS unmute closes previous adapter and creates a new one
+PASS old mute and queued PCM cannot affect new capture
+PASS obsolete microphone off cannot relabel the current voice session
+PASS older enable cannot replace current adapter
+PASS new adapter final belongs to current generation
+PASS normal provider end reports owned failure and releases adapter
+PASS capture failure falls back to text metadata without closing transport
+PASS session teardown does not relabel the completed voice checkpoint
+Live transport: 25/25 passed
+STAGED_OUTBOUND_ATTEMPTS 0
