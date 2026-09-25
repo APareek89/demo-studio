@@ -121,8 +121,27 @@ def _wav_concat(parts: list[bytes]) -> bytes:
     return buf.getvalue()
 
 
-def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float = 1.0) -> tuple[bytes, str]:
+def checked_temperature(value: float | None) -> float | None:
+    """The documented shared REST/WebSocket v3 range; never coerce invalid metadata."""
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError("Unsupported speech temperature")
+    try:
+        temperature = float(value)
+    except OverflowError as exc:
+        raise ValueError("Unsupported speech temperature") from exc
+    if not math.isfinite(temperature) or not 0.01 <= temperature <= 1.0:
+        raise ValueError("Unsupported speech temperature")
+    return temperature
+
+
+def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float = 1.0,
+        *, temperature: float | None = None) -> tuple[bytes, str]:
     """Bulbul v3. Returns (wav_bytes, 'wav')."""
+    temperature = checked_temperature(temperature)
+    if temperature is not None and config.SARVAM_TTS_MODEL != "bulbul:v3":
+        raise ValueError("Speech temperature requires bulbul:v3")
     if config.MOCK_LLM:
         return mock.silent_wav(max(0.6, min(4.0, len(text) / 40))), "wav"
     speaker = speaker if speaker in SPEAKERS else "priya"
@@ -135,6 +154,8 @@ def tts(text: str, speaker: str = "priya", language: str = "en-IN", pace: float 
                     "speech_sample_rate": 22050, "enable_preprocessing": True}
             if pace and abs(pace - 1.0) > 1e-3:
                 body["pace"] = pace  # bulbul:v3 rejects pitch/loudness; pace only when changed
+            if temperature is not None:
+                body["temperature"] = temperature
             try:
                 r = _tts_request(c, body, deadline)
             except RateLimitError as exc:

@@ -1,0 +1,33 @@
+test_audience_registry_version_and_instruction_invalidate_cache (__main__.CoachContract.test_audience_registry_version_and_instruction_invalidate_cache) ... ok
+test_cache_returns_identical_artifact_without_model_or_write (__main__.CoachContract.test_cache_returns_identical_artifact_without_model_or_write) ... ok
+test_category_and_picture_changes_invalidate_cache_without_fact_changes (__main__.CoachContract.test_category_and_picture_changes_invalidate_cache_without_fact_changes) ... ok
+test_changed_coach_guidance_regenerates_once_without_changing_evidence (__main__.CoachContract.test_changed_coach_guidance_regenerates_once_without_changing_evidence) ... ok
+test_coach_keeps_stats_ban_and_ownership_emphasis_inside_library_order (__main__.CoachContract.test_coach_keeps_stats_ban_and_ownership_emphasis_inside_library_order) ... ok
+test_coach_prompt_receives_registry_provenance_and_revision (__main__.CoachContract.test_coach_prompt_receives_registry_provenance_and_revision) ... ok
+test_customer_unknowns_are_live_evidence_gaps_never_facts (__main__.CoachContract.test_customer_unknowns_are_live_evidence_gaps_never_facts) ... ok
+test_duplicate_stop_ids_keep_first_occurrence_and_report_issue (__main__.CoachContract.test_duplicate_stop_ids_keep_first_occurrence_and_report_issue) ... ok
+test_first_fundamental_and_delighter_order_enforced (__main__.CoachContract.test_first_fundamental_and_delighter_order_enforced) ... ok
+test_four_model_usps_keep_the_first_three_and_save (__main__.CoachContract.test_four_model_usps_keep_the_first_three_and_save) ... ok
+test_generic_is_inferred_and_sparse_evidence_is_explicit (__main__.CoachContract.test_generic_is_inferred_and_sparse_evidence_is_explicit) ... ok
+test_library_matches_aliases_and_specificity (__main__.CoachContract.test_library_matches_aliases_and_specificity) ... ok
+test_missing_or_failed_model_preserves_previous_file (__main__.CoachContract.test_missing_or_failed_model_preserves_previous_file) ... ok
+test_nested_registry_origins_reach_coach_and_planner_prompts (__main__.CoachContract.test_nested_registry_origins_reach_coach_and_planner_prompts) ... ok
+test_overrides_reorder_relabel_and_revalidate (__main__.CoachContract.test_overrides_reorder_relabel_and_revalidate) ... ok
+test_picture_gap_per_supported_stop (__main__.CoachContract.test_picture_gap_per_supported_stop) ... ok
+test_power_and_capacity_units_do_not_survive_digit_cleanup (__main__.CoachContract.test_power_and_capacity_units_do_not_survive_digit_cleanup) ... ok
+test_progress_stage_schema_and_faker (__main__.CoachContract.test_progress_stage_schema_and_faker) ... ok
+test_storage_is_temporary_and_sockets_are_blocked (__main__.CoachContract.test_storage_is_temporary_and_sockets_are_blocked) ... ok
+test_three_usps_have_approved_fundamental_support (__main__.CoachContract.test_three_usps_have_approved_fundamental_support) ... ok
+test_two_model_usps_are_saved_with_an_issue (__main__.CoachContract.test_two_model_usps_are_saved_with_an_issue) ... ok
+test_unapproved_unknown_and_wrong_stop_facts_dropped (__main__.CoachContract.test_unapproved_unknown_and_wrong_stop_facts_dropped) ... ok
+test_unknown_and_excluded_pictures_dropped (__main__.CoachContract.test_unknown_and_excluded_pictures_dropped) ... ok
+test_unsafe_usp_cleanup_removes_whole_number_unit_and_code_tokens (__main__.CoachContract.test_unsafe_usp_cleanup_removes_whole_number_unit_and_code_tokens) ... ok
+test_unsafe_usp_still_over_word_limit_is_dropped (__main__.CoachContract.test_unsafe_usp_still_over_word_limit_is_dropped) ... ok
+test_unsafe_usp_too_short_after_cleanup_is_dropped_without_aborting (__main__.CoachContract.test_unsafe_usp_too_short_after_cleanup_is_dropped_without_aborting) ... ok
+test_unsupported_stop_retained_with_gap (__main__.CoachContract.test_unsupported_stop_retained_with_gap) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.388s
+
+OK
+OUTBOUND_ATTEMPTS 0

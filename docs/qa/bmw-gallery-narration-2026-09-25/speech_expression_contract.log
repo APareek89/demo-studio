@@ -1,0 +1,22 @@
+PASS optional expression preserves the exact legacy normalized shape
+PASS numeric expression is retained and conservatively bounded
+PASS invalid expression is omitted rather than creating arbitrary provider controls
+PASS expression never enters the spoken words or changes pace
+PASS actual REST default payload keeps temperature absent
+PASS actual REST forwards only selected temperature with unchanged words and voice
+PASS direct adapter rejects invalid temperature before HTTP
+PASS unsupported older models never receive v3 temperature
+PASS actual streaming defaults omit expression while preserving Sumit and pace
+PASS actual streaming forwards the same optional temperature and valid PCM
+PASS existing default cache remains byte-compatible without a synthesis call
+PASS effective expression changes recordings while repeats reuse exact cached audio
+PASS voice stage forwards selected expression with locked Sumit and unchanged speed
+PASS invalid metadata reuses the original effective default audio
+PASS changed expression invalidates the Voice-stage input identity
+PASS expression cannot satisfy duration by estimate or metadata
+PASS runtime plain speech retains default controls and the published locked voice
+PASS runtime prepared metadata uses identical optional expression without changing ownership
+PASS streamed and recorded styled audio share the same effective cache identity
+PASS all expression contracts use isolated storage and zero outbound sockets
+Speech expression contracts: 20/20
+OUTBOUND_ATTEMPTS 0

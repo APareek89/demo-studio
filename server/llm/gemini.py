@@ -144,10 +144,12 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
         return mock.fake(schema)
     t = _types()
     model = model or config.GEMINI_TEXT_MODEL
+    # Preserve the existing diagnostic transcript, but give the SDK the real
+    # system role instead of flattening policy into user/source material.
     prompt = f"SYSTEM INSTRUCTIONS:\n{system}\n\nCONVERSATION / TASK:\n{transcript}"
     # The legacy response_schema converter rejects dictionary properties locally.
     # Send JSON Schema intact; validate the response with the same Pydantic model.
-    cfg: dict = dict(response_mime_type="application/json", response_json_schema=schema.model_json_schema(), temperature=temperature,
+    cfg: dict = dict(system_instruction=system, response_mime_type="application/json", response_json_schema=schema.model_json_schema(), temperature=temperature,
                      max_output_tokens=min(max(256, max_tokens), 32768))
     if thinking_level is not None and model == "gemini-3.8-flash":
         # Only this exact model's support is verified; unknown overrides retain their defaults.
@@ -166,7 +168,7 @@ def text_structured(system: str, transcript: str, schema: type[BaseModel], *, ma
         cfg["http_options"] = t.HttpOptions(**http_options)
     t0 = time.time()
     try:
-        resp = _retry(lambda: client().models.generate_content(model=model, contents=prompt, config=t.GenerateContentConfig(**cfg)),
+        resp = _retry(lambda: client().models.generate_content(model=model, contents=transcript, config=t.GenerateContentConfig(**cfg)),
                       tries=tries, waits=(2,))
     except Exception as exc:
         usage.trace(kind,model,latency_ms=(time.time()-t0)*1000,system=system[:TRACE_SYS],user=prompt,error=usage.redact(str(exc))[:500])

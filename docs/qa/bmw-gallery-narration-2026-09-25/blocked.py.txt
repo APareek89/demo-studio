@@ -1,0 +1,14 @@
+import atexit, os, runpy, socket, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[1])))
+attempts = []
+def blocked(*args, **kwargs):
+    attempts.append(True)
+    raise OSError("Network blocked by free QA")
+for name in ("connect", "connect_ex", "sendto"):
+    setattr(socket.socket, name, blocked)
+socket.create_connection = blocked
+socket.getaddrinfo = blocked
+atexit.register(lambda: print("OUTBOUND_ATTEMPTS", len(attempts)))
+target = sys.argv[1]
+sys.argv = sys.argv[1:]
+runpy.run_path(target, run_name="__main__")

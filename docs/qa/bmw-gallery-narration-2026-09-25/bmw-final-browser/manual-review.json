@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "bundle_sha256": "7baeffb535e121fa793a1b8fc5dbec4537194a20bda517f8ab0ffeed96620a02",
+  "automated": {
+    "passed": 281,
+    "total": 281
+  },
+  "visual_findings_resolved": [
+    {
+      "slide": "sl05",
+      "verified": "One source side-profile photo and exactly two dimension captions, with duplicate cards removed."
+    },
+    {
+      "slide": "sl07",
+      "verified": "Existing rear-seat pointer now labels Third-row seating; individual second-row seats remains a caption without an invented location."
+    },
+    {
+      "slide": "sl09",
+      "verified": "Correct display photograph and cited AR captions; incorrect right-hand touchscreen pointer removed."
+    }
+  ],
+  "reviewed": "Desktop and phone corrections, console details, animated gallery transition; all other speaking slides inspected in version 1 and unchanged by these display-only corrections. Actual-player checks visited all 14 main clips across 13 speaking slides at both viewport sizes.",
+  "advisories": [
+    "Runtime overview is 9.2s against the authoring target of 10\u201315s; selected overall 120s publication requirement independently passes at 122.624s of decoded audio (publication reports 122.64s after per-clip rounding).",
+    "Audio checks establish decoded nonzero PCM, duration and published voice/delivery cache identity. They do not establish perceived emphasis, pronunciation or acoustic quality; listening remains a human check."
+  ],
+  "scope": "Read-only local source fixture, actual application player, fake runtime and audio progression, outbound blocked, no microphone/provider calls or source-data writes."
+}

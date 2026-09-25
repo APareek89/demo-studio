@@ -1,0 +1,70 @@
+{
+  "at": 1790322525.5991511,
+  "reason": "Semantic source review before publication; preserve complete eligibility, paid package and safety conditions; exclude stale/ambiguous offers, abbreviated warranty start summary and image-file metadata",
+  "edits": [
+    {
+      "old": "F013",
+      "new": "F088",
+      "fields": {
+        "conditions": "Source-listed audio equipment. The supplied compilation warns that illustrated equipment and configurations may differ from vehicles supplied in India; confirm the chosen vehicle configuration."
+      }
+    },
+    {
+      "old": "F025",
+      "new": "F089",
+      "fields": {
+        "value": "Learns a manoeuvre performed once by the driver, up to 200 metres; on request parks and leaves the space while the driver monitors close by on a smartphone",
+        "conditions": "Perform the manoeuvre once first; monitor everything close by on a smartphone. No unsupervised or autonomous-driving claim."
+      }
+    },
+    {
+      "old": "F026",
+      "new": "F090",
+      "fields": {
+        "value": "Compatible smartphones or smartwatches unlock and start the BMW; the digital key can be shared with up to five people",
+        "conditions": "Compatible mobile devices only; verify device compatibility."
+      }
+    },
+    {
+      "old": "F044",
+      "new": "F091",
+      "fields": {
+        "conditions": "The offer page lists a Service Inclusive Basic package, not automatic standard inclusion. Service-package charges included in the EMI calculation are paid by the customer; current package price and scope require confirmation. Keep separate from standard vehicle warranty."
+      }
+    },
+    {
+      "old": "F071",
+      "new": "F092",
+      "fields": {
+        "conditions": "Optional paid programme for new cars only; purchase within the standard warranty period except extensions of an existing package. Ends at the chosen time or kilometre limit, whichever occurs first. Original factory-built specification only; stated exclusions apply. Package price and kilometre limits are not supplied."
+      }
+    },
+    {
+      "old": "F075",
+      "new": "F093",
+      "fields": {
+        "scope": {
+          "market": "India"
+        },
+        "conditions": "Applies to vehicles sold after 2010, regardless of mileage; excludes doors, panels, trim strips and roof rails. Claim requires prescribed inspections and workshop confirmation; damage from external influence is excluded; specified body repair and corrosion-protection requirements apply."
+      }
+    },
+    {
+      "old": "F082",
+      "new": "F094",
+      "fields": {
+        "conditions": "Genuine accessory for the X7; available in Black and Titanium Silver. Accessory price is not published and must be confirmed with a BMW Sales Consultant. This is roof-box capacity, separate from vehicle luggage capacity."
+      }
+    }
+  ],
+  "rejected": [
+    "F042",
+    "F043",
+    "F047",
+    "F048",
+    "F072",
+    "F083",
+    "F084",
+    "F085"
+  ]
+}

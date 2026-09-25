@@ -1,0 +1,126 @@
+{
+  "first": {
+    "context": {
+      "customer_state": null,
+      "route": [],
+      "slide": "sl01",
+      "segment": null,
+      "segment_title": null,
+      "line_index": 0,
+      "line_text": null,
+      "bridge": null,
+      "questions": [],
+      "profile": {
+        "name": "",
+        "why": "",
+        "followup": "",
+        "focus": [],
+        "stated_needs": [],
+        "customer_urls": []
+      },
+      "escalations": [],
+      "leads": []
+    },
+    "played": [
+      {
+        "src": "/media/dm_b3a502ce/audio/28bf78aa45da38f52a16.wav",
+        "text": "Parked against the landscape, model code G07 introduces BMW's largest full-size luxury SUV finished in Sparkling Copper Grey metallic.",
+        "at": 5903.700000017881,
+        "slide": "sl01",
+        "phase": "ready",
+        "cap": "Parked against the landscape, model code G07 introduces BMW's largest full-size luxury SUV finished in Sparkling Copper Grey metallic."
+      }
+    ],
+    "active": [
+      {
+        "src": "/media/dm_b3a502ce/audio/28bf78aa45da38f52a16.wav",
+        "text": "Parked against the landscape, model code G07 introduces BMW's largest full-size luxury SUV finished in Sparkling Copper Grey metallic.",
+        "time": 0
+      }
+    ],
+    "maxActive": 1,
+    "qa": [],
+    "geometry": {
+      ".pl-top": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 54,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "0px 27px",
+        "margin": "0px"
+      },
+      ".pl-progress": {
+        "x": 284.8125,
+        "y": 27,
+        "w": 887.1875,
+        "h": 0,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "0px",
+        "margin": "0px"
+      },
+      ".pl-dock": {
+        "x": 0,
+        "y": 774,
+        "w": 1440,
+        "h": 151,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "12px 25px 8px",
+        "margin": "0px"
+      },
+      ".pl-cap": {
+        "x": 25,
+        "y": 807.0625,
+        "w": 819.90625,
+        "h": 88.875,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "0px",
+        "margin": "0px"
+      },
+      ".pl-controls": {
+        "x": 872.90625,
+        "y": 809.75,
+        "w": 542.09375,
+        "h": 83.5,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "0px",
+        "margin": "0px"
+      },
+      ".pl-reply": {
+        "x": 872.90625,
+        "y": 833.75,
+        "w": 542.09375,
+        "h": 42,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "3px",
+        "margin": "0px"
+      },
+      ".pl-action-bar": {
+        "x": 0,
+        "y": 925,
+        "w": 1440,
+        "h": 35,
+        "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+        "fontSize": "14px",
+        "padding": "0px 25px 7px",
+        "margin": "0px"
+      }
+    },
+    "unchanged": true,
+    "slideClass": "slide slide-intro motion-pan_left cinematic sample-layout gallery-slide on",
+    "slideData": {
+      "visualTheme": "marine"
+    },
+    "animations": [],
+    "caption": "Parked against the landscape, model code G07 introduces BMW's largest full-size luxury SUV finished in Sparkling Copper Grey metallic."
+  },
+  "errors": [],
+  "bad_assets": [],
+  "scope": "Current actual mountPlayer + original read-only BMW published bundle, fake audio/API, muted browser, loopback-only requests, no provider calls"
+}

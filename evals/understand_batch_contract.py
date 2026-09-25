@@ -136,6 +136,54 @@ class UnderstandBatchContract(unittest.TestCase):
         self.assertIn("EVIDENCE BATCH 1/1", reader.call_args.args[1][-1]["text"])
         self.assertIn("all supplied document chunks", reader.call_args.args[1][-1]["text"])
 
+    def test_category_outlier_is_reconciled_in_real_read_merge(self):
+        did = store.new_demo("Misnamed product hint")["id"]
+        for n in range(4):
+            store.add_text_source(did, f"document {n}", f"evidence-{n}\n" + "content " * 1500, "product")
+        results = [output() for _ in range(4)]
+        results[0].product = schemas.Product(name="BMW X7", category="electric scooter", summary="A luxury SUV.", audience="Families")
+        for result in results[1:]:
+            result.product.category = "luxury SUV"
+        before = copy.deepcopy(results)
+        messages = []
+        with patch.object(understand.claude, "structured", side_effect=results):
+            merged = understand.run(did, messages.append)
+        self.assertEqual(merged["product"], {**before[0].product.model_dump(), "category": "luxury SUV"})
+        self.assertEqual(merged["brand"], before[0].brand.model_dump())
+        self.assertEqual(results, before)
+        self.assertTrue(any("reconciled" in message for message in messages))
+
+    def test_category_two_of_three_can_correct_first_batch(self):
+        results = [output() for _ in range(3)]
+        results[0].product.category = "car"
+        results[1].product.category = "Analytics platform"
+        results[2].product.category = " analytics   PLATFORM "
+        self.assertEqual(understand._product_from_batches(results).category, "Analytics platform")
+
+    def test_category_tie_and_plurality_preserve_primary_source(self):
+        for categories in [("car", "scooter"), ("car", "scooter", "scooter", "bicycle")]:
+            with self.subTest(categories=categories):
+                results = [output() for _ in categories]
+                for result, category in zip(results, categories):
+                    result.product.category = category
+                self.assertIs(understand._product_from_batches(results), results[0].product)
+
+    def test_category_empty_majority_does_not_erase_primary(self):
+        results = [output() for _ in range(3)]
+        results[1].product.category = ""
+        results[2].product.category = "  "
+        self.assertIs(understand._product_from_batches(results), results[0].product)
+
+    def test_single_and_agreeing_batches_keep_primary_product_identity(self):
+        results = [output() for _ in range(3)]
+        self.assertIs(understand._product_from_batches(results[:1]), results[0].product)
+        self.assertIs(understand._product_from_batches(results), results[0].product)
+
+    def test_reader_category_is_source_led_without_schema_example(self):
+        self.assertIn("source evidence wins", understand.FACTS_SYSTEM)
+        self.assertIn("actual product", schemas.Product.model_fields["category"].description)
+        self.assertNotIn("electric scooter", schemas.Product.model_fields["category"].description)
+
     def test_cache_reuses_only_exact_prompt_content_and_revision(self):
         did = store.new_demo("Cache fixture")["id"]
         docs, extracted = fixture([{"locator": "page 1", "text": "ABS is standard.", "tables": [[["ABS", "S"]]]}])

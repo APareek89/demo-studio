@@ -1,0 +1,41 @@
+{
+  "demo_id": "dm_29df0418",
+  "method": "Validated data-only review: existing Deck editor does not expose deletion; remove exact duplicate captions using canonical store and Deck schema before normal media PATCH, Script reapproval and Bundle guards.",
+  "removed_callouts": [
+    {
+      "text": "Length: 5,181 mm",
+      "fact_ids": [
+        "F029"
+      ],
+      "part": "",
+      "image_id": "im03",
+      "reveal_on_line": 0,
+      "id": "sl05-c1",
+      "confidence": 0.0,
+      "part_box": null,
+      "placement": "panel",
+      "anchor": null,
+      "label_pos": null
+    },
+    {
+      "text": "Wheelbase: 3,105 mm",
+      "fact_ids": [
+        "F033"
+      ],
+      "part": "",
+      "image_id": "im03",
+      "reveal_on_line": 0,
+      "id": "sl05-c4",
+      "confidence": 0.0,
+      "part_box": null,
+      "placement": "panel",
+      "anchor": null,
+      "label_pos": null
+    }
+  ],
+  "preserved_main_caption_ids": [
+    "sl05-c2",
+    "sl05-c3"
+  ],
+  "no_script_voice_source_or_guard_change": true
+}

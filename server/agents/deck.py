@@ -170,11 +170,18 @@ def _additional_picture_lines(lines: list[dict], script_audit: dict | None, allo
 
 
 def choose_media(seg: dict, lines: list[dict], und: dict, script_audit: dict | None, hero_id: str | None) -> list[dict]:
-    """Use at most two distinct literal audited bindings in narration order, else an illustration."""
+    """Keep up to two bindings in spoken order; unavailable audits disclose illustrations."""
     images = und.get("images", [])
     allowed = {image["id"] for image in images}
     audit_present = isinstance(script_audit, dict) and "lines" in script_audit
     rows = {row.get("line_id"): row for row in (script_audit or {}).get("lines", [])}
+    # An unavailable pixel audit is different from a completed rejection. Author
+    # already validated these allowed image identities; retain its picture as an
+    # illustration, never as proof or an anchored feature. Do not apply this to
+    # missing/partial audit rows, explicit non-image choices or rejected images.
+    unavailable = (audit_present and script_audit.get("method") == "rules_fallback"
+                   and script_audit.get("lines") == [] and not script_audit.get("images")
+                   and not script_audit.get("changes"))
     media, seen = [], set()
     for index, line in enumerate(line for line in lines if not line.get("unverified")):
         visual = line.get("visual") or {}
@@ -185,10 +192,11 @@ def choose_media(seg: dict, lines: list[dict], und: dict, script_audit: dict | N
         if kind != "image" or ref not in allowed or ref in seen:
             continue
         audit = rows.get(line.get("id"), {})
-        if audit_present and (audit.get("coverage") != "full" or audit.get("visual", ref) not in (ref, "keep")):
+        if audit_present and not unavailable and (audit.get("coverage") != "full" or audit.get("visual", ref) not in (ref, "keep")):
             continue
         seen.add(ref)
-        media.append({"image_id": ref, "from_line": index, "proxy": False, "proxy_reason": ""})
+        media.append({"image_id": ref, "from_line": index, "proxy": bool(unavailable),
+                      "proxy_reason": "Author-selected illustration — pixel audit unavailable" if unavailable else ""})
         if len(media) == 2:
             break
     if len(media) == 1:
@@ -626,6 +634,15 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
             proposals = [c for c in raw if (c.get("image_id") or s["image_id"]) == ref]
             caption_allowed = allowed.intersection(slide_facts(s)) if media.get("proxy") else allowed
             if media.get("proxy"):
+                start = media.get("from_line", 0)
+                end = min((entry.get("from_line", 0) for entry in slide_media(s)
+                           if entry.get("from_line", 0) > start), default=len(s["lines"]))
+                if len(slide_media(s)) > 1:
+                    # A model caption for either illustration must belong to
+                    # that picture's spoken interval before placement can clamp
+                    # its reveal index. Slide-wide citations are too broad here.
+                    caption_allowed &= {fid for line in s["lines"][start:end] for fid in line.get("fact_ids", [])}
+                    proposals = [c for c in proposals if start <= c.get("reveal_on_line", 0) < end]
                 proposals = [c for c in proposals if c.get("fact_ids") and set(c["fact_ids"]) <= caption_allowed]
             group = clean_callouts(proposals, s, caption_allowed, img) if proposals else []
             if media.get("proxy"):
@@ -637,7 +654,9 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                 n_model += len(group)
             elif s["lines"] and s["kind"] not in ("hero_open", "hero_close"):
                 if media.get("proxy"):
-                    first = next((line for line in s["lines"] if any(fid in allowed for fid in line.get("fact_ids", []))), None)
+                    # A second illustrated picture belongs to its own first
+                    # narration line, not the first picture's caption/citation.
+                    first = next((line for line in s["lines"][start:end] if any(fid in allowed for fid in line.get("fact_ids", []))), None)
                     first_id = next((fid for fid in (first or {}).get("fact_ids", []) if fid in allowed), None)
                     one = {**first, "fact_ids": [first_id]} if first else None
                     group = derive_callouts({**s, "lines": [one] if one else []}, facts_by_id, img)[:1]
@@ -646,7 +665,7 @@ def build(demo_id: str, emit, instruction: str = "") -> dict:
                         # A nearby part selects an illustration, not visual proof
                         # of the cited claim. Keep its label in the caption panel.
                         callout["part"] = ""
-                        callout["reveal_on_line"] = 0
+                        callout["reveal_on_line"] = s["lines"].index(first)
                 else:
                     original = next((seg for seg in script.get("segments", []) if seg["id"] == s.get("segment_id")), {})
                     refs = {line["id"]: (line.get("visual") or {}).get("ref") for line in original.get("lines", [])}

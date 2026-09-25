@@ -1,6 +1,6 @@
-"""Provider-neutral delivery metadata; Bulbul v3 receives text and supported pace only.
+"""Provider-neutral delivery metadata; Bulbul v3 receives pace and optional temperature.
 
-Sarvam documents punctuation and pace, not SSML or emotion tags:
+Sarvam documents punctuation, pace and temperature, not SSML or emotion tags:
 https://docs.sarvam.ai/api/api-guides-tutorials/text-to-speech/best-practices
 Tone is an authoring instruction, not a promise of a vendor emotion control.
 """
@@ -25,11 +25,22 @@ def normalize(delivery: dict | None = None) -> dict:
     if not math.isfinite(pace):
         pace = _TONES[tone]
     # A subtle guide: vendor's full 0.5–2.0 range is intentionally not exposed.
-    return {"tone": tone, "pace": round(max(0.9, min(1.08, pace)), 2)}
+    normalized = {"tone": tone, "pace": round(max(0.9, min(1.08, pace)), 2)}
+    # The author can choose restrained variation for an occasional line. An
+    # omitted/invalid value stays absent so legacy audio identities do not change.
+    expression = delivery.get("expressiveness")
+    if isinstance(expression, (int, float)) and not isinstance(expression, bool):
+        try:
+            expression = float(expression)
+        except OverflowError:
+            expression = float("nan")
+        if math.isfinite(expression):
+            normalized["expressiveness"] = round(max(0.5, min(0.8, expression)), 2)
+    return normalized
 
 
 def prepare(text: str, delivery: dict | None = None) -> dict:
-    """Return {text, plain_text, pace}; never send literal delivery tags to TTS.
+    """Return text, pace and optional expressiveness; never send delivery tags to TTS.
 
     Script punctuation carries natural pauses. Keep captions and spoken words
     identical, and keep styling out of source claims and customer quotations.
@@ -37,4 +48,6 @@ def prepare(text: str, delivery: dict | None = None) -> dict:
     plain = _SSML.sub(" ", _MARKERS.sub(" ", str(text or "")))
     plain = re.sub(r"[ \t]+", " ", plain).strip()
     plain = re.sub(r" +([,.!?;:])", r"\1", plain)
-    return {"text": plain, "plain_text": plain, "pace": normalize(delivery)["pace"]}
+    normalized = normalize(delivery)
+    return {"text": plain, "plain_text": plain, "pace": normalized["pace"],
+            **({"expressiveness": normalized["expressiveness"]} if "expressiveness" in normalized else {})}

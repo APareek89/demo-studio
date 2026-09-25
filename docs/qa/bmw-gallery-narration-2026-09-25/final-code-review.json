@@ -1,0 +1,84 @@
+{
+  "reviewed_at_utc": "2026-09-25T08:24:03.192072+00:00",
+  "reviewer": "gallery_docs_release",
+  "tracked_app_test_files": 18,
+  "new_contract_files": 1,
+  "source_sha256": {
+    "evals/deck_media_contract.py": "eea27ff51ddb3477393dff05d562f5d75a7969f5aee19cea8ae8421b0aa42ddf",
+    "evals/narrative_roles_contract.py": "5714c08d13fbb7d0993e77c27463d7bbd5e8f5bdc90f43eef33ae6b6a55e3f45",
+    "evals/provider_contract.py": "c5d6cd40196c17ddbfaa75db27a0155d88fc5861215460271558573aa1167808",
+    "evals/script_prompt_contract.py": "ea35dc9293c2c090cf7fc0dbc1dac322ed8158eff334c4c193708529a764b4b4",
+    "evals/understand_batch_contract.py": "26896fe01169b8a8971616fbc0fb2c7c17e2cc3a30bfc7ba2fa09ab447360a70",
+    "server/agents/author.py": "930cfe7f7f71ea7a64ac3eb954f7712e787d96212584ec93bee81ede1e294082",
+    "server/agents/deck.py": "53a4766d6258919cb6cbf94794d83f95e8011dcc4e66c555f395c6e372bd3063",
+    "server/agents/principles.py": "c0c743b73a189b5de63576cc23c2f07cd97018b4a37a72acc5163ec7640d199a",
+    "server/agents/speech_style.py": "8a287bd4a69c355d81f5f2871008dc7b55e9452382726dac99d8473385c23f61",
+    "server/agents/understand.py": "1e9d4cb2e33958957ae0c21febc36417b6a8c5b1730c680903be16138e3473d7",
+    "server/agents/voice.py": "63fa80562915b02924c2859e0145bd28664c70d2598dbfae7504bd3f2dbfa9f2",
+    "server/config.py": "97b038cdbddda5322da65566d43b473ff692f4a523d2af429ebc1e1f137d5958",
+    "server/llm/claude.py": "38382ce28100d4cccaada9b10bd80fa73a5820c01c12282244c2094b83ab93bf",
+    "server/llm/gemini.py": "26b4c4010703a3c355de0d7eef6ad5622ff369c597217cffa6d7f121ff9ca127",
+    "server/llm/sarvam.py": "ef09af5645f9541101d3d8917c6642205dfbeefaf9568d289b88c2ae0f24183f",
+    "server/llm/sarvam_stream.py": "ea3fa9f84dcca10be279fe75d0bb7e8bcde2241a78d6c71fb0a4949f142b0a91",
+    "server/runtime_delivery.py": "0110218ab917411720877ecf232287714b57ba5c4539e718f96546cd8ef3ee88",
+    "server/schemas.py": "76fcf7ab316322d468ad113a88f6b0f64064c78711bc780cfe521236171feccc",
+    "evals/speech_expression_contract.py": "27abaea0f5c340a6f7220e5752680e34b84f42d46f4c1af12910fc0bcbdfdea6"
+  },
+  "tracked_diff_sha256": "19762475184ad77f6f4ca326dea4d723b7fb8e3f44ef24990080f4898892bfe7",
+  "review": "No new actionable P0/P1 found in current application/test diff. Historical corrected/mitigated P1s remain in FMEA.md.",
+  "code_mutated_during_review": false,
+  "new_paid_calls": 0,
+  "new_test_runs": 0,
+  "gates_reused_from_matching_source": {
+    "qa_deck": 445,
+    "provider": 79,
+    "qa_accept": 24,
+    "smoke": 3,
+    "release_mock": 28,
+    "runtime_configuration": 6
+  },
+  "paid_checkpoint_provenance": "Build owner reports independent source review accepted31 cited lines and335/330 eligible main words after normal Align cleanup;11 distinct pictures/six approvals. Recording and measured/browser acceptance pending.",
+  "subsequent_paid_artifact_checkpoint": {
+    "provenance": "Build owner report; no application change since the source review.",
+    "published_version": 2,
+    "recording_builds": 1,
+    "later_slide_only_rebundles": 1,
+    "measured_narration_seconds": 122.64,
+    "selected_minimum_seconds": 120,
+    "script_clips_successful": 32,
+    "fillers_successful": 19,
+    "unchanged_audio_files_after_rebundle": 53,
+    "voice_stage_unchanged": true,
+    "slides": 15,
+    "distinct_images": 11,
+    "labels": 32,
+    "overview_seconds": 9.2,
+    "overview_guidance_seconds": [
+      10,
+      15
+    ],
+    "overview_timing_advisory": true,
+    "final_browser_acceptance": "pending",
+    "acoustic_acceptance": "not established",
+    "extra_paid_generation_after_slide_corrections": false
+  },
+  "final_browser_checkpoint": {
+    "bundle_version": 2,
+    "bundle_sha256": "7baeffb535e121fa793a1b8fc5dbec4537194a20bda517f8ab0ffeed96620a02",
+    "browser": [
+      281,
+      281
+    ],
+    "published_audio": [
+      71,
+      71
+    ],
+    "viewports": [
+      1440,
+      390
+    ],
+    "read_only": true,
+    "provider_calls": 0,
+    "acoustic_quality": "unmeasured"
+  }
+}

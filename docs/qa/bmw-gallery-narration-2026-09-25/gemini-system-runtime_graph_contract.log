@@ -1,0 +1,132 @@
+130/130 runtime graph contracts passed
+PASS EMI uses deterministic formula and rounded result
+PASS Calculation retains input provenance and formula
+PASS Zero-interest EMI avoids division by zero
+PASS Reject invented interest
+PASS Reject invented quote
+PASS Reject unknown source
+PASS Reject wrong tenure unit
+PASS Reject infinite amount
+PASS Reject duplicate input
+PASS Reject unit borrowed from another quantity
+PASS Reject monthly interest mislabeled annual
+PASS Reject annual basis missing
+PASS Reject scale silently discarded
+PASS Fuel calculation preserves monthly basis
+PASS Distance cannot silently become monthly
+PASS Approved factual answer survives
+PASS Reject new quantity
+PASS Reject fake id
+PASS Reject no citation
+PASS Useful supported portion survives unknown price
+PASS Unqualified modeled EMI is rejected
+PASS Auditable estimate is allowed
+PASS Clarification is a wait with no fact claim
+PASS Question cannot smuggle a product claim
+PASS General feature discovery retains selected-variant qualification
+PASS Explicit variant question supplies applicability
+PASS Longer canonical trim wins substring
+PASS Two named variants retain comparison
+PASS Single letter trim never matches a letter inside prose
+PASS Unknown parenthesized trim never aliases base trim
+PASS Model brand prefix has the same explicit identity
+PASS Latest explicit correction replaces previous scope
+PASS Terse follow-up retains corrected scope
+PASS Unlisted explicit correction clears stale trim
+PASS Unlisted correction persists on a terse follow-up
+PASS Explicit comparison retains an unlisted requested trim
+PASS Explicit comparison accepts lowercase customer identifiers
+PASS Conversational comparison retains both requested trims
+PASS Capitalized topic comparison never invents trim names
+PASS Explicit trim label is customer scope without registry endorsement
+PASS Verb after a named variant never becomes another trim
+PASS Ordinary comparison words do not invent trims
+PASS Ordinary correction does not replace trim scope
+PASS Explicit unsupported model year stays in customer scope
+PASS Explicit year filters undated facts conservatively
+PASS Customer monetary amount does not become model year
+PASS Gearbox choices do not impose a selected transmission filter
+PASS Explicit engine capacity is preserved as requested scope
+PASS Model-adjacent quantity never becomes model year: My budget for CRETA is 2026 rupees
+PASS Model-adjacent quantity never becomes model year: I drive my CRETA 2026 km per month
+PASS Unknown longer variant cannot qualify base fact
+PASS Explicit list provides two atomic canonical trims
+PASS Listed trim applicability qualifies a cited assertion
+PASS Listed trims cannot leak to an unlisted trim
+PASS Single-trim evidence cannot universalize comparison: Both have six airbags.
+PASS Single-trim evidence cannot universalize comparison: E and King have six airbags.
+PASS Single-trim evidence cannot universalize comparison: They each have six airbags.
+PASS A partial comparison must identify the supported trim
+PASS Supported partial comparison survives rejected universal claim
+PASS Comparison with evidence for both configurations is allowed
+PASS Explicit all-variant evidence can support both requested trims
+PASS Empty or unsupported answer offers callback: toolsFalse
+PASS Empty or unsupported answer offers callback: answerFalse
+PASS Empty or unsupported answer offers callback: answerTrue
+PASS Context label cannot bypass citations
+PASS Live website claims require attribution
+PASS Real fetched source restores attribution on every surviving sentence
+PASS Conditions outside structured variant scope remain in delivered sentence
+PASS Generic condition preservation never permits every-trim overclaim
+PASS Unrelated table quantities cannot borrow a different assertion ID
+PASS Runtime assertion payload excludes broad source/context while retaining locator
+PASS Space-grouped PDF thousands equal comma-grouped spoken quantities
+PASS Safe negative guarantee retains customer quantity
+PASS Negative guarantee label never exempts a positive product claim
+PASS Negative clause exemption rejects positive continuation: and you get ADAS on every variant
+PASS Negative clause exemption rejects positive continuation: but all variants have ADAS
+PASS Negative clause exemption rejects positive continuation: and King has ADAS
+PASS Negative exemption rejects causal/appositive positive claim: because
+PASS Negative exemption rejects causal/appositive positive claim: although
+PASS Negative exemption rejects causal/appositive positive claim: since
+PASS Negative exemption rejects causal/appositive positive claim: —
+PASS Explicit nearest-rupee calculator rounding is accepted
+PASS Unjustified approximate calculator amount is rejected
+PASS Empty model response preserves verified calculator result
+PASS Caveat-only response cannot hide a successful calculator result
+PASS Caveat citation alone is not an answered product question
+PASS Explicit reviewed exclusion supports a negative answer for E
+PASS Negative applicability cannot license another positive or unrelated claim: E has a panoramic sunroof.
+PASS Negative applicability cannot license another positive or unrelated claim: E does not have a panoramic sunroof, but it has ventilated seats.
+PASS Negative applicability cannot license another positive or unrelated claim: E does not have ventilated seats.
+PASS Negative projection never exposes positive higher-trim feature as E evidence
+PASS Exact positive matrix clause supports its explicit trim
+PASS Explicit conditions mapping can support an acronym-defined feature
+PASS Matrix features cannot swap named trim applicability: King has manual air conditioning.
+PASS Matrix features cannot swap named trim applicability: E has dual zone automatic temperature control.
+PASS Projected exclusion cannot invert or broaden its feature: SX has ventilated seats without a surcharge.
+PASS Projected exclusion cannot invert or broaden its feature: SX does not lack ventilated seats.
+PASS Projected exclusion cannot invert or broaden its feature: SX is not without ventilated seats.
+PASS Projected exclusion cannot invert or broaden its feature: SX does not have rear seats.
+PASS Projected exclusion cannot invert or broaden its feature: SX lacks front seats.
+PASS Unrelated feature cannot borrow an ISOFIX citation
+PASS Torque does not authorize power even when the quantity is equal: The turbo petrol makes 253 PS.
+PASS Torque does not authorize power even when the quantity is equal: The turbo petrol has maximum power of 253 Nm.
+PASS A supported quantity cannot change its unit
+PASS Airbag count cannot authorize gearbox speeds
+PASS Positive equipment cannot license inverse absence: The E variant does not have ISOFIX child-seat anchors.
+PASS Positive equipment cannot license inverse absence: The CRETA has no airbags.
+PASS Positive equipment cannot license inverse absence: Airbags are absent.
+PASS Positive equipment cannot license inverse absence: The E variant comes without ISOFIX child-seat anchors.
+PASS Negative limitation cannot smuggle an attributed product property: I cannot guarantee comfort in the bulletproof cabin.
+PASS Negative limitation cannot smuggle an attributed product property: I cannot guarantee comfort, which comes from its titanium armour.
+PASS Gear count requires gearbox assertion rather than another feature count
+PASS Counts stay bound to their feature across multiple citations
+PASS Correct word-form transmission count remains answerable
+PASS URL context extraction excludes assistant messages; owner policy grants access
+PASS Web evidence retains exact passage and date
+PASS LLM cannot invent a source
+PASS Actual LangGraph reaches a versioned DeliveryPlan
+PASS Graph itself produces no audio
+PASS Graph pins reviewed evidence snapshot
+PASS Meaningful boundary persisted
+PASS Explicit context survives following turn without repeated payload
+PASS Superseded turn cannot checkpoint over new input
+PASS Actual graph invokes tool then recomposes
+PASS Actual graph reports the provider that returned the answer
+PASS Tool result stays session scoped
+PASS Actual graph performs one composition repair after an empty model answer
+PASS Actual graph publishes only revalidated repaired speech
+PASS Repair timing stays within the same pinned graph turn
+PASS Outage is not cached as a knowledge gap
+OUTBOUND_ATTEMPTS 0

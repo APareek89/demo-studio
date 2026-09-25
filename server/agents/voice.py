@@ -296,7 +296,10 @@ def render_line(demo_id: str, text: str, *, demo: dict | None = None, lang: str 
         # llm/sarvam.py:tts and llm/gemini.py:tts return bytes; this function saves the successful clip locally.
         try:
             if provider == "sarvam":
-                data, ext = sarvam.tts(text, voice, lang, pace=prepared["pace"]) if prepared["pace"] != 1.0 else sarvam.tts(text, voice, lang)
+                controls = {"pace": prepared["pace"]} if prepared["pace"] != 1.0 else {}
+                if "expressiveness" in prepared:
+                    controls["temperature"] = prepared["expressiveness"]
+                data, ext = sarvam.tts(text, voice, lang, **controls)
             elif provider == "gemini":
                 style = _style(demo_id, demo=demo)
                 if delivery:

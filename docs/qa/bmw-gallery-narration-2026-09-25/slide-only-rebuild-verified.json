@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "audio_files_identical": 53,
+  "narration_minimum": {
+    "minimum_seconds": 120.0,
+    "seconds": 122.64,
+    "sufficient": true,
+    "words": 280,
+    "measured": true,
+    "basis": "measured",
+    "measured_seconds": 122.64,
+    "estimated_seconds": 0,
+    "route": [
+      "powertrain-proof",
+      "powertrain-proof-2",
+      "ride-proof",
+      "safety-proof",
+      "cabin-proof",
+      "cabin-proof-2",
+      "more-features",
+      "establish"
+    ],
+    "duplicate_lines_excluded": 0
+  },
+  "voice_stage": {
+    "status": "done",
+    "updated_at": 1790324604.648222,
+    "error": null,
+    "message": "FAQ bank and fillers recorded (19/19).",
+    "started_at": 1790324497.596265,
+    "seconds": 107.1,
+    "progress": [
+      {
+        "t": 1790324497.599016,
+        "message": "Recording narration with sarvam \u2014 32 lines\u2026"
+      },
+      {
+        "t": 1790324515.2502909,
+        "message": "Recorded 8/32 lines\u2026"
+      },
+      {
+        "t": 1790324530.874401,
+        "message": "Recorded 16/32 lines\u2026"
+      },
+      {
+        "t": 1790324548.2424698,
+        "message": "Recorded 24/32 lines\u2026"
+      },
+      {
+        "t": 1790324564.237256,
+        "message": "Explore overview is 9.2s; its 10\u201315s target needs a script/pacing review."
+      },
+      {
+        "t": 1790324564.245515,
+        "message": "Narration ready."
+      },
+      {
+        "t": 1790324564.255274,
+        "message": "Recording 19 FAQ answers and filler lines\u2026"
+      },
+      {
+        "t": 1790324604.626948,
+        "message": "FAQ bank and fillers recorded (19/19)."
+      }
+    ],
+    "warnings": []
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-25",
+  "mode": "mock providers and fake HTTP/WebSocket transports; isolated temporary storage; outbound sockets blocked; no paid calls",
+  "contracts": {
+    "speech_expression": 20,
+    "speech_style": 30,
+    "voice_lock": 27,
+    "sarvam_stream": 17,
+    "runtime_delivery": 27,
+    "live_transport": 25,
+    "explore_cancellation": 9,
+    "faq_cache": 27,
+    "faq_scope": 19
+  },
+  "all_passed": true,
+  "py_compile": true,
+  "git_diff_check": true,
+  "source_sha256": {
+    "server/agents/speech_style.py": "8a287bd4a69c355d81f5f2871008dc7b55e9452382726dac99d8473385c23f61",
+    "server/agents/voice.py": "63fa80562915b02924c2859e0145bd28664c70d2598dbfae7504bd3f2dbfa9f2",
+    "server/llm/sarvam.py": "ef09af5645f9541101d3d8917c6642205dfbeefaf9568d289b88c2ae0f24183f",
+    "server/llm/sarvam_stream.py": "ea3fa9f84dcca10be279fe75d0bb7e8bcde2241a78d6c71fb0a4949f142b0a91",
+    "server/runtime_delivery.py": "0110218ab917411720877ecf232287714b57ba5c4539e718f96546cd8ef3ee88",
+    "server/schemas.py": "76fcf7ab316322d468ad113a88f6b0f64064c78711bc780cfe521236171feccc",
+    "evals/speech_expression_contract.py": "27abaea0f5c340a6f7220e5752680e34b84f42d46f4c1af12910fc0bcbdfdea6"
+  },
+  "limits": [
+    "No new real speech was generated or listened to; documented expressiveness is not guaranteed word emphasis.",
+    "Existing BMW publication/data was read only; its audio remains unchanged."
+  ]
+}

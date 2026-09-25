@@ -1,0 +1,1 @@
+Initial regression: 13/14 passed. The old assertion required the exact blanket ban on transition phrases that this task intentionally removes. Updated only that expectation to require stock-signpost avoidance plus contextual transitions and ordinary repeated words; grounding/continuity/voice checks retained.

@@ -1,0 +1,58 @@
+{
+  "demo_id": "dm_29df0418",
+  "script_version": 6,
+  "reviewed_at": "2026-09-25T08:21:22.339799+00:00",
+  "status": "source_and_dialogue_review_pass",
+  "script_sha256": "99e23622084abf107fcb37614b3d23092479f28349c37fc91ec60502458d87c3",
+  "scope": "Independent read-only review of actual saved main, overview, closing and deeper narration against approved registry and supplied PDF text; local pixel inspection for displayed subject mappings. This does not replace recorded-duration, browser or live-audio verification.",
+  "provenance": "Normal model-generated Author revision via GPT 5.5 followed by the existing Align editorial API for eight main/overview lines and one warranty deeper line. This final sample is reviewed editorial recovery, not proof that every fresh build is first-pass ready.",
+  "findings": [],
+  "approved_fact_reference_errors": [],
+  "reviewed_line_count": 31,
+  "guided_line_count": 13,
+  "checks": {
+    "source_claims": "Pass: no concrete unsupported numerical, performance or warranty claim found in saved content.",
+    "torque": "540 Nm explicitly refers to combined system; deeper correctly separates 520 Nm engine figure.",
+    "parking": "Prior driver-performed manoeuvre and nearby smartphone supervision both retained.",
+    "ownership": "Current quote requested; optional paid new-car warranty and unspecified prices/km limits distinguished; deeper includes purchase window and earlier time/km expiry. Paint external/environmental exclusion retained.",
+    "towing": "Braked 2700 kg limit retains up-to-12-percent incline and 140 kg towbar download. Roof load is explicitly roof-rack mount without rails.",
+    "images": "Side profile im05, rear seating im09, crystal controls im10 and Augmented View im17 each match the spoken subject. Engine, safety and policy lines avoid fabricated literal feature photos.",
+    "style": "Natural direct guidance now replaces internal QA language in the main tour; no hardcoded production playback prefix was introduced.",
+    "delivery": "One main glass-controls line retains model-selected expressiveness 0.7; other main lines omit expressiveness; all main pace values remain 1.0."
+  },
+  "narration_preparation": {
+    "version": 1,
+    "identity": "64b79daaa5bc0bff0ab557431bedc4fc8da1854644539f4b33ef3549df4408d0",
+    "status": "ready",
+    "minimum_seconds": 120.0,
+    "duration_changed": false,
+    "target_words": 330,
+    "words": 335,
+    "missing_words": 0,
+    "attempts": 2,
+    "mock_preview": false,
+    "measured": false,
+    "seconds": 147.37,
+    "basis": "estimated",
+    "reason": "The supported draft is prepared for review; recording will verify its duration.",
+    "errors": [],
+    "current_recording": false,
+    "recorded_short": false,
+    "recording_incomplete": false
+  },
+  "remaining_advisories": [
+    "outcome (outcome): warning — well under budget; add the join or the moment (30 words, budget 45)"
+  ],
+  "visual_audit": {
+    "method": "gemini_pixels",
+    "model": "gemini-3.6-flash",
+    "line_count": 30,
+    "image_count": 44,
+    "missing_line_count": 9
+  },
+  "limitations": [
+    "Selected BMW duration is two minutes, preserved from the existing demo settings; 335/330 is the saved preparation count, not a measured recording duration.",
+    "Source review uses the customer-uploaded BMW compilation; it does not independently certify current BMW prices, availability or optional-package terms.",
+    "Generation required outline review and editorial cleanup. Further generative quality improvements may still be needed for other fresh demos."
+  ]
+}

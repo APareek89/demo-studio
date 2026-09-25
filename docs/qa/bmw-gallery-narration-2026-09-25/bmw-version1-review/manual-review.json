@@ -1,0 +1,27 @@
+{
+  "scope": "Independent screenshot review of exact version 1 bundle; read-only fixture, no provider calls.",
+  "automated": {
+    "passed": 280,
+    "total": 282,
+    "note": "Two duration assertions used stale 180s argument; actual selected requirement is 120s, and decoded publication duration is 122.64s."
+  },
+  "visual_findings": [
+    {
+      "slide": "sl05",
+      "issue": "Length and Wheelbase captions are repeated for the second same-line picture.",
+      "remedy": "Keep reviewed side-profile image and one caption per fact."
+    },
+    {
+      "slide": "sl07",
+      "issue": "Second-row seat caption pointer lands in visible third-row seat region.",
+      "remedy": "Use the existing observed seat anchor only for Third-row seating; second-row description remains a panel caption."
+    },
+    {
+      "slide": "sl09",
+      "issue": "Augmented View caption points to right-hand centre display; visible live-video AR scene is on left instrument display.",
+      "remedy": "Remove inappropriate touchscreen anchor; keep verified caption and photo."
+    }
+  ],
+  "advisory": "Runtime overview is 9.2s against the authored 10\u201315s target. This is not the selected overall publication-duration gate.",
+  "reviewed": "All 13 speaking desktop slide images plus representative phone seat/AR/console/screens; no other blocking visual issue observed."
+}

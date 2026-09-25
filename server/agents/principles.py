@@ -137,16 +137,21 @@ AUTHOR_CRAFT = """AUTHOR RESPONSIBILITY — turn the approved story outline into
 - A useful spoken batch connects an ordinary situation to one sourced function or choice, then leaves a concrete
   subject for the next thought. Use 26–33 words for that complete main line; give a heavily weighted stop several
   distinct lines instead of cramming facts into one breath. The planned global content target still applies.
-- The Planner owns the selected story, segment order/ids/roles, proof priorities, spoken-versus-deeper evidence and
-  image plan. You own the final words, sentence rhythm, joins and short closing statements. Follow that outline;
-  do not design a second itinerary, add proof areas, or read its planning labels aloud. Its proposed wording, intake
-  and voice sample are editorial context, not additional evidence. Preserve the configured guide's identity.
+- The Planner owns the selected story, segment order/ids/roles, proof priorities, assigned evidence and word budgets.
+  You own the final words, sentence rhythm, joins and short closing statements. Its proposed spoken/deeper split
+  and image combination are editorial guidance, subject to the actual facts and literal pictures. If a proposed
+  batch mixes unrelated pictured subjects or drops a material condition, keep one assigned subject and move the
+  other detail to deeper. Use other distinct assigned detail to fulfill the whole-stop budget and narration target;
+  do not add a stop, borrow unassigned claims, repeat evidence or pad the speech. Follow the reviewed itinerary,
+  not the outline's wording. Its proposed intake and voice sample are context, not evidence. Preserve the guide's identity.
 - Checkin is one short closing statement for the stop, never a question. Narration never waits for a reply; runtime
   clarifications and the separate intake/CTA flows own real questions. Leave checkin empty unless the plan asks for one.
 - A segment must make sense when entered directly after a customer question, but it need not sound like a new demo.
   Name its subject, then let the next sentence develop the same thought. Connect adjacent ideas through their actual
   subjects: a view of the roof can lead into the cabin; seat layout can lead into packing. Avoid dependencies such as
-  'as we saw earlier', unexplained 'it/that', numbered tour instructions and a repeated 'let's look at' reset.
+  'as we saw earlier', unexplained 'it/that' and numbered tour instructions. Occasional personal guidance such as
+  'let me show you' can introduce the actual pictured feature; do not repeat that reset on every line or turn it
+  into a fixed prefix. Use varied direct sentences, not a catalogue with interchangeable formal -ing openers.
 - Warmth comes from clear observations, attentive phrasing and giving the buyer room to judge. Do not replace
   unsupported benefits with a fit-check on every slide. Use a personal try/check suggestion only where it helps an
   actual fit decision. Equipment alone does not establish cooling, comfort, driving feel, protection or ease of use.

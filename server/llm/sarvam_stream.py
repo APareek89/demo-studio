@@ -16,7 +16,7 @@ from urllib.parse import urlencode
 import websockets
 
 from .. import config, usage
-from .sarvam import SPEAKERS, lang_code
+from .sarvam import SPEAKERS, checked_temperature, lang_code
 
 RATE = 24000
 
@@ -125,7 +125,7 @@ class RealtimeSTT:
                         response=json.dumps({"audio_seconds": seconds, "billing_basis": "provider" if self.billed_seconds is not None else "sent_pcm_estimate"}))
 
 
-async def stream_tts(text: str, speaker="priya", language="en-IN", pace=1.0):
+async def stream_tts(text: str, speaker="priya", language="en-IN", pace=1.0, *, temperature=None):
     """Yield raw PCM16 base64 chunks. Closing/cancelling the generator closes its socket."""
     text = str(text).strip()
     if not text or len(text) > 2000:
@@ -134,6 +134,7 @@ async def stream_tts(text: str, speaker="priya", language="en-IN", pace=1.0):
         raise ValueError("The selected voice is not supported by Sarvam streaming")
     if not 0.5 <= float(pace) <= 2:
         raise ValueError("Unsupported speaking pace")
+    temperature = checked_temperature(temperature)
     if config.MOCK_LLM:
         for _ in range(3):
             await asyncio.sleep(0)
@@ -149,6 +150,7 @@ async def stream_tts(text: str, speaker="priya", language="en-IN", pace=1.0):
                                       ping_interval=20, max_size=4 * 1024 * 1024) as ws:
             await ws.send(json.dumps({"type": "config", "data": {
                 "speaker": speaker, "language_code": lang_code(language), "pace": float(pace),
+                **({"temperature": temperature} if temperature is not None else {}),
                 "speech_sample_rate": RATE, "output_audio_codec": "linear16",
                 "min_buffer_size": 30, "max_chunk_length": 160}}))
             await ws.send(json.dumps({"type": "text", "data": {"text": text}}))

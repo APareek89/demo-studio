@@ -1,0 +1,33 @@
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x7ff63df1d100] moov atom not found
+[in#0 @ 0x7ff63df1ce40] Error opening input: Invalid data found when processing input
+Error opening input file /private/var/folders/59/npmd31hj6w7gsjyvd95chv700000gp/T/bmw-final-qa_accept-gri_665g/data/dm_ceaff460/sources/src_99ef69_bad.mp4.
+Error opening input files: Invalid data found when processing input
+| Case | Result | Message | OK |
+|---|---|---|---|
+| WEBP product image | 200 · accept | image:a.webp | ✅ |
+| PNG 4000×4000 (large dimensions) | 200 · accept | image:big.png | ✅ |
+| PNG 1×1 (tiny) | 200 · accept | image:tiny.png | ✅ |
+| JPEG | 200 · accept | image:a.jpg | ✅ |
+| AVIF | 200 · accept | image:a.avif | ✅ |
+| HEIC | 200 · accept | image:a.heic | ✅ |
+| BMP (not supported) | 400 · reject | unsupported file type .bmp | ✅ |
+| TIFF (not supported) | 400 · reject | unsupported file type .tiff | ✅ |
+| Corrupted JPEG (random bytes) | 200 · accept | image:bad.jpg | ✅ |
+| Corrupted AVIF (random bytes) | 200 · accept | image:bad.avif | ✅ |
+| Empty file (0 bytes) | 400 · reject | empty.jpg is empty (0 bytes) — export it again and re-upload | ✅ |
+| Wrong extension (.exe) | 400 · reject | unsupported file type .exe | ✅ |
+| No extension | 400 · reject | unsupported file type  | ✅ |
+| MP4 dummy video (20 s, 720p) | 200 · accept | video:demo.mp4 | ✅ |
+| Corrupted MP4 (random bytes) | 200 · accept | video:bad.mp4 | ✅ |
+| MOV extension with MP4 bytes | 200 · accept | video:demo.mov | ✅ |
+| AVI (not supported) | 400 · reject | unsupported file type .avi | ✅ |
+| Over the size limit (6 MB at a 5 MB limit) | 413 · reject | huge.jpg is larger than 5 MB | ✅ |
+| PDF (empty shell) | 200 · accept | pdf:spec.pdf | ✅ |
+| TXT catalogue | 200 · accept | text:cat.txt | ✅ |
+| DOCX (zip garbage) | 200 · accept | doc:a.docx | ✅ |
+| Path traversal name | 200 · accept | image:evil.jpg | ✅ |
+| READ STAGE with everything accepted above | align | no error | ✅ |
+| Path traversal stayed inside data/demos/<id> | checked | escaped files: none | ✅ |
+
+24/24 cases behave as required
+OUTBOUND_ATTEMPTS 0

@@ -1,0 +1,20 @@
+test_actual_validation_rewrites_figure_using_a_rejected_citation (__main__.NarrativeRolesContract.test_actual_validation_rewrites_figure_using_a_rejected_citation) ... ok
+test_approved_registry_and_full_conditions_remain_the_only_factual_input (__main__.NarrativeRolesContract.test_approved_registry_and_full_conditions_remain_the_only_factual_input) ... ok
+test_author_continuity_ladder_and_openings_reach_the_real_provider (__main__.NarrativeRolesContract.test_author_continuity_ladder_and_openings_reach_the_real_provider) ... ok
+test_author_formatter_has_no_planner_flow_injection (__main__.NarrativeRolesContract.test_author_formatter_has_no_planner_flow_injection) ... ok
+test_draft_persistence_does_not_publish_approve_or_generate_audio (__main__.NarrativeRolesContract.test_draft_persistence_does_not_publish_approve_or_generate_audio) ... ok
+test_locked_voice_and_single_intake_survive_planner_to_author (__main__.NarrativeRolesContract.test_locked_voice_and_single_intake_survive_planner_to_author) ... ok
+test_mock_author_uses_the_actual_planned_stops (__main__.NarrativeRolesContract.test_mock_author_uses_the_actual_planned_stops) ... ok
+test_new_draft_question_is_preserved_for_the_author_repair_pass (__main__.NarrativeRolesContract.test_new_draft_question_is_preserved_for_the_author_repair_pass) ... ok
+test_opening_prompts_do_not_reintroduce_cabin_or_standout_first (__main__.NarrativeRolesContract.test_opening_prompts_do_not_reintroduce_cabin_or_standout_first) ... ok
+test_overview_schema_and_runtime_plan_agree_on_fundamental_first (__main__.NarrativeRolesContract.test_overview_schema_and_runtime_plan_agree_on_fundamental_first) ... ok
+test_playbook_owns_order_while_author_follows_typed_budget (__main__.NarrativeRolesContract.test_playbook_owns_order_while_author_follows_typed_budget) ... ok
+test_real_payload_roles_use_distinct_contracts (__main__.NarrativeRolesContract.test_real_payload_roles_use_distinct_contracts) ... ok
+test_rewrite_preserves_unflagged_lines_and_repairs_whole_ideas (__main__.NarrativeRolesContract.test_rewrite_preserves_unflagged_lines_and_repairs_whole_ideas) ... ok
+test_story_intent_visual_order_and_editorial_notes_reach_author (__main__.NarrativeRolesContract.test_story_intent_visual_order_and_editorial_notes_reach_author) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.065s
+
+OK
+OUTBOUND_ATTEMPTS 0

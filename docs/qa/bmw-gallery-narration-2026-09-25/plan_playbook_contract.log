@@ -1,0 +1,25 @@
+test_budget_clamps_extremes_and_reports_unachievable_lengths (__main__.PlanPlaybookContract.test_budget_clamps_extremes_and_reports_unachievable_lengths) ... ok
+test_budget_total_three_minutes_and_proportional_allocation (__main__.PlanPlaybookContract.test_budget_total_three_minutes_and_proportional_allocation) ... ok
+test_default_budget_emphasizes_lead_fundamental (__main__.PlanPlaybookContract.test_default_budget_emphasizes_lead_fundamental) ... ok
+test_false_stop_drops_proof_keeps_deeper_and_gap (__main__.PlanPlaybookContract.test_false_stop_drops_proof_keeps_deeper_and_gap) ... ok
+test_fundamental_flags_and_exact_usps_version (__main__.PlanPlaybookContract.test_fundamental_flags_and_exact_usps_version) ... ok
+test_incomplete_or_invalid_playbook_usps_retain_planner_usps (__main__.PlanPlaybookContract.test_incomplete_or_invalid_playbook_usps_retain_planner_usps) ... ok
+test_legacy_direct_plan_without_playbook_remains_readable (__main__.PlanPlaybookContract.test_legacy_direct_plan_without_playbook_remains_readable) ... ok
+test_missing_duration_defaults_to_three_minutes_in_prompt_and_saved_plan (__main__.PlanPlaybookContract.test_missing_duration_defaults_to_three_minutes_in_prompt_and_saved_plan) ... ok
+test_missing_supported_stop_added_with_minimal_brief_and_issue (__main__.PlanPlaybookContract.test_missing_supported_stop_added_with_minimal_brief_and_issue) ... ok
+test_mock_read_real_graph_creates_coach_then_plan (__main__.PlanPlaybookContract.test_mock_read_real_graph_creates_coach_then_plan) ... ok
+test_mock_read_with_incomplete_coach_usps_reaches_align (__main__.PlanPlaybookContract.test_mock_read_with_incomplete_coach_usps_reaches_align) ... ok
+test_model_failure_preserves_saved_plan (__main__.PlanPlaybookContract.test_model_failure_preserves_saved_plan) ... ok
+test_overlap_fallback_unknown_and_duplicate_proofs (__main__.PlanPlaybookContract.test_overlap_fallback_unknown_and_duplicate_proofs) ... ok
+test_planner_and_author_share_exact_role_ceilings (__main__.PlanPlaybookContract.test_planner_and_author_share_exact_role_ceilings) ... ok
+test_playbook_overrides_and_registry_provenance_reach_model (__main__.PlanPlaybookContract.test_playbook_overrides_and_registry_provenance_reach_model) ... ok
+test_proof_order_matches_supported_playbook_and_role_order (__main__.PlanPlaybookContract.test_proof_order_matches_supported_playbook_and_role_order) ... ok
+test_settled_story_and_audit_prompt_clauses (__main__.PlanPlaybookContract.test_settled_story_and_audit_prompt_clauses) ... ok
+test_stop_evidence_precedes_other_approved_planner_references (__main__.PlanPlaybookContract.test_stop_evidence_precedes_other_approved_planner_references) ... ok
+test_typed_fields_and_legacy_defaults (__main__.PlanPlaybookContract.test_typed_fields_and_legacy_defaults) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.704s
+
+OK
+OUTBOUND_ATTEMPTS 0

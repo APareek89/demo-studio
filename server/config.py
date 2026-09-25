@@ -35,7 +35,8 @@ if STT_PROVIDER == "sarvam" and not SARVAM_API_KEY:
     STT_PROVIDER = "browser"
 MOCK_LLM = os.getenv("MOCK_LLM", "").strip() == "1"  # schema-shaped fake outputs, no keys, no spend
 
-# The tier chooses text-model defaults only. Explicit role overrides win; media/speech stay independent.
+# The tier chooses text-model and build-order defaults. Explicit overrides win;
+# runtime order and media/speech stay independent.
 MODEL_TIER = os.getenv("MODEL_TIER", "eval").strip() or "eval"
 if MODEL_TIER not in {"eval", "customer"}:
     raise ValueError("MODEL_TIER must be 'eval' or 'customer'")
@@ -52,7 +53,8 @@ RUNWARE_TEXT_MODEL_PREMIUM = os.getenv("RUNWARE_TEXT_MODEL_PREMIUM", "").strip()
 RUNWARE_TEXT_MODEL = RUNWARE_TEXT_MODEL_PREMIUM if MODEL_TIER == "customer" else _runware_eval_model
 # Structured text-only build work uses its own configurable order. Media adapters
 # retain their current provider, and explicit runtime calls disable this chain.
-BUILD_PROVIDERS = list(dict.fromkeys(p.strip().lower() for p in (os.getenv("BUILD_PROVIDERS", "").strip() or "gemini,claude,runware").split(",") if p.strip()))
+_build_default = "runware,gemini,claude" if MODEL_TIER == "customer" else "gemini,claude,runware"
+BUILD_PROVIDERS = list(dict.fromkeys(p.strip().lower() for p in (os.getenv("BUILD_PROVIDERS", "").strip() or _build_default).split(",") if p.strip()))
 if not BUILD_PROVIDERS or set(BUILD_PROVIDERS) - {"gemini", "claude", "runware"}:
     raise ValueError("BUILD_PROVIDERS must list gemini, claude and/or runware")
 # Runtime (the live demo — the customer is waiting): a provider order the user can flip and a short timeout per try.

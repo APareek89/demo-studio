@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/macbook/Documents/demo-studio/docs/qa/bmw-gallery-narration-2026-09-25/blocked.py.txt", line 14, in <module>
+    runpy.run_path(target, run_name="__main__")
+  File "<frozen runpy>", line 291, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/macbook/Documents/demo-studio/evals/runtime_hedge_contract.py", line 16, in <module>
+    from server import config,usage
+ModuleNotFoundError: No module named 'server'
+OUTBOUND_ATTEMPTS 0

@@ -1,0 +1,180 @@
+{
+  "demo_id": "dm_b3a502ce",
+  "parsed_images": 43,
+  "author_selected_distinct": 14,
+  "previous_distinct_pictures": 2,
+  "corrected_distinct_pictures": 14,
+  "all_illustrated": true,
+  "selections": [
+    {
+      "segment_id": "intro",
+      "media": [
+        {
+          "image_id": "im01",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        },
+        {
+          "image_id": "im02",
+          "from_line": 1,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "outcome",
+      "media": [
+        {
+          "image_id": "im05",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        },
+        {
+          "image_id": "im06",
+          "from_line": 1,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "range",
+      "media": [
+        {
+          "image_id": "im01",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "range-2",
+      "media": [
+        {
+          "image_id": "im12",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "charging",
+      "media": [
+        {
+          "image_id": "im_pdf_61d88b6efa697bc92c1f",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "charging-2",
+      "media": [
+        {
+          "image_id": "im_pdf_61d88b6efa697bc92c1f",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "running-cost",
+      "media": [
+        {
+          "image_id": "im_pdf_56e024dcc83bff280f7e",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        },
+        {
+          "image_id": "im_pdf_7fdd4200236a738f57e2",
+          "from_line": 1,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "battery-life-and-warranty",
+      "media": [
+        {
+          "image_id": "im_pdf_547d441079a9a649e2c3",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "battery-life-and-warranty-2",
+      "media": [
+        {
+          "image_id": "im_pdf_547d441079a9a649e2c3",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "ride-and-practicality",
+      "media": [
+        {
+          "image_id": "im08",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        },
+        {
+          "image_id": "im_pdf_7eaf34ae58732d8aef32",
+          "from_line": 1,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "features",
+      "media": [
+        {
+          "image_id": "im09",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "features-2",
+      "media": [
+        {
+          "image_id": "im11",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    },
+    {
+      "segment_id": "ownership",
+      "media": [
+        {
+          "image_id": "im_pdf_63be40d7f51bfae63b82",
+          "from_line": 0,
+          "proxy": true,
+          "proxy_reason": "Author-selected illustration \u2014 pixel audit unavailable"
+        }
+      ]
+    }
+  ],
+  "original_files_unchanged": true,
+  "provider_calls": 0,
+  "mode": "read-only source inputs; pure choose_media, isolated env, sockets blocked"
+}

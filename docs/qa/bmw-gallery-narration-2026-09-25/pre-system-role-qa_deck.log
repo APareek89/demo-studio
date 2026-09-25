@@ -1,0 +1,440 @@
+DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract
+PREPARATION FIXTURE: synthetic for plumbing; real Read readiness covered by automatic_narration_contract and release_mock_contract
+| Case | OK |
+|---|---|
+| bundle carries no 3D asset | ✅ |
+| no line carries a stage-mode classifier | ✅ |
+| every line visual is none | image | shot | ✅ |
+| demo record has no visual_asset field | ✅ |
+| no visual/ folder is created for a new demo | ✅ |
+| /visual routes are gone | ✅ |
+| /assets routes are gone | ✅ |
+| MP4 export is parked with 409 | ✅ |
+| health lists Runware text fallback and tier, with no retired 3D model setting | ✅ |
+| index.html loads no model-viewer | ✅ |
+| player has no 3D branch | ✅ |
+| providers down → declines | ✅ |
+| providers down → offers a callback | ✅ |
+| providers down → says it will not guess | ✅ |
+| no ten-minute cooldown: the next call still tries the providers (and declines again) | ✅ |
+| no hardcoded product fallback survives | ✅ |
+| provider failure is traced | ✅ |
+| bank question answers from the bank | ✅ |
+| every tagged image lists parts as {name, box, confidence} | ✅ |
+| every part box is normalised 0-1 with positive size | ✅ |
+| every part confidence is 0-1 | ✅ |
+| images carry full_product | ✅ |
+| bundle media images carry parts, full_product and role | ✅ |
+| the hero upload is bundle.hero_image | ✅ |
+| media.hero is the hero image's url | ✅ |
+| a second hero upload replaces the first (old one becomes a product image) | ✅ |
+| video-only demo gets one still per good shot, tagged with its shot id | ✅ |
+| stills are tagged like uploaded images | ✅ |
+| without a hero upload, hero_image is the best full-product still | ✅ |
+| deck.json written at Configure: one slide per segment + hero open, closing, hero close | ✅ |
+| first and last slides are the hero | ✅ |
+| every content slide has a picture and lines | ✅ |
+| deck stage done; author stayed done | ✅ |
+| callouts exist (mock: derived from each slide's cited facts) | ✅ |
+| ≤ 3 callouts per picture, ≤ 8 words each, ≤ 6-word titles | ✅ |
+| every callout cites only registry facts | ✅ |
+| every callout has a placement; panel ones carry no position | ✅ |
+| bundle.slides present, every line's audio joined by id | ✅ |
+| bundle slides carry image urls and part boxes | ✅ |
+| bundle keeps segments for the pre-slide player (until Phase 5) | ✅ |
+| layout: confident part → overlay, anchor at the box centre | ✅ |
+| layout: label outside its part box | ✅ |
+| layout: label inside the frame | ✅ |
+| layout: two overlay labels on one slide do not overlap | ✅ |
+| layout: low-confidence part → panel, no position | ✅ |
+| layout: no part → panel, no position | ✅ |
+| callout validator: cited kept · uncited claim dropped · unknown-fact claim dropped · 9 words dropped | ✅ |
+| callout validator clears a part the picture does not list | ✅ |
+| older demos (parts as plain names) still derive callouts, in the panel | ✅ |
+| ready deck revision returns to human Align before rebuilding | ✅ |
+| revise deck bumps the deck version without re-authoring | ✅ |
+| Align override: the user's title wins | ✅ |
+| Align override: the dragged label position wins | ✅ |
+| the rebuilt bundle carries the override | ✅ |
+| PATCH /align/deck accepts title, picture and callout edits | ✅ |
+| the edit lands in deck.json (title, picture chosen in Align) | ✅ |
+| callout text, facts and the dragged position land | ✅ |
+| overrides are saved for the next rebuild | ✅ |
+| a slide edit un-approves the Script card and marks only the bundle stale | ✅ |
+| an uncited claim in a callout is refused (400, names the fact-id rule) | ✅ |
+| a 9-word callout is refused | ✅ |
+| a position outside the picture is refused | ✅ |
+| an unknown picture is refused | ✅ |
+| an unknown slide is 404 | ✅ |
+| after a full deck rebuild the Align edits still win | ✅ |
+| the rebuilt bundle shows the reviewed slide | ✅ |
+| cards.deck gives the editor its slides and pictures with parts | ✅ |
+| bundle.slides is the player's structure: hero open → content → closing → hero close | ✅ |
+| every content slide carries a picture, lines and callouts with placement and reveal line | ✅ |
+| the player renders slides through web/slide.js; the segment stage and 3D/media card are gone | ✅ |
+| sync is event-driven: no timer in the line loop or the slide switch (audio ended → next) | ✅ |
+| a line's callouts reveal when its audio starts (setRevealed before speak) | ✅ |
+| transcript: an agent line is logged only by logHeard — when its audio ends, never when it starts | ✅ |
+| transcript: a cut-off line logs the heard prefix (elapsed/duration × words) and marks it interrupted | ✅ |
+| cancelSpeech logs the partial before stopping the audio | ✅ |
+| only the true transcript goes to /run/qa as history | ✅ |
+| next slide is preloaded (picture + audio) while the current one plays | ✅ |
+| motion is CSS-only and respects prefers-reduced-motion | ✅ |
+| the renderer fits the picture box to the stage (player) and is shared with Align | ✅ |
+| an older bundle without slides still plays (one slide per segment) | ✅ |
+| the session record carries slides visited and the route by slide id | ✅ |
+| route: the current slide carries an answer fact → stay, its matching callout named | ✅ |
+| route: another slide carries the facts → jump to it with its callout | ✅ |
+| route: no facts, the question names another slide's topic → jump by topic | ✅ |
+| route: nothing matches → none, the slide is unchanged | ✅ |
+| route: no current slide (opening, custom batch) → jump to the slide that carries the facts | ✅ |
+| route: hero slides are never a target | ✅ |
+| every FAQ bank entry carries a slide_id naming a deck slide (or None when nothing matches) | ✅ |
+| bundle FAQ entries carry the slide id | ✅ |
+| /run/qa: an answered bank hit asked from another slide → route jump to the slide that carries its fact | ✅ |
+| /run/qa: the jump names the callout that cites the fact (mock callouts come from cited facts) | ✅ |
+| /run/qa: the same question asked on that slide → route stay | ✅ |
+| /run/qa: a declined bank answer never moves the slide (route none) | ✅ |
+| /run/qa: the model path carries slide_id + route too (mock declines → none) | ✅ |
+| /run/pitch: every route step names its slide (personalisation orders slides) | ✅ |
+| player sends the current slide with every question | ✅ |
+| player: jump cross-fades to the target, lights the callout, marks it covered; stay reveals this slide's callouts | ✅ |
+| player structure: Q&A keeps one playback checkpoint and resumes its phase (behavior checked in player_browser) | ✅ |
+| player: a covered slide plays its title + first line, no check-in | ✅ |
+| player: the pitch route is applied by slide id, segment id as fallback | ✅ |
+| player: a decline stays on the current slide (no transient answer slide) | ✅ |
+| storage backend defaults to local files | ✅ |
+| STORAGE_BACKEND=aws without credentials (mock) falls back to local and says why | ✅ |
+| the AWS backend is the local backend plus rows, mirror and signed media (one interface) | ✅ |
+| /run/session keeps the player's id and returns a share key | ✅ |
+| an ended session gets its summary in the background (mock: no model call) | ✅ |
+| the record's own facts are copied by code, not the model: name, questions, slides with seconds, CTA, leads | ✅ |
+| the summary carries the model's fields (context, cared_about, objections, unanswered, opening line) | ✅ |
+| saving again with nothing new heard keeps the summary (no second call) | ✅ |
+| GET /sessions lists the session with its state and storage backend, without transcripts | ✅ |
+| the share link shows the summary with phones masked and no transcript | ✅ |
+| a wrong share key is refused | ✅ |
+| a lead without consent is refused | ✅ |
+| a lead records the consent line it was shown | ✅ |
+| leads and sessions on the demo record come through the storage interface | ✅ |
+| player: one line of consent is shown before a number is saved, and sent with the lead | ✅ |
+| player: one session id per visit; Done, Stop and the tab-close beacon update the same record | ✅ |
+| Studio has a Sessions page and a read-only share route | ✅ |
+| local media is still served by the app (no redirect without a signed URL) | ✅ |
+| the instance-role policy names only the bucket and the three tables, no IAM | ✅ |
+| /trace carries latency: every stamped turn counted, per stage n / p50 / p95 | ✅ |
+| stt = STT done − voice ended (typed turns count as 0); p50 of [400, 600, 0, 500] is 450-ish by nearest rank → 500 | ✅ |
+| qa = QA done − STT done; a turn with no answer audio still counts for stt and qa but not tts / total | ✅ |
+| total = first answer audio − voice ended, p95 ≥ p50 | ✅ |
+| turns are split by answer source (bank vs model) | ✅ |
+| player stamps voice ended + STT done for server STT, browser recognition and typed questions | ✅ |
+| player structure: QA and first-audio stamps use owned playback callbacks (behavior checked in player_browser) | ✅ |
+| the turns travel on the session record | ✅ |
+| Observability shows the percentiles | ✅ |
+| front-end files are served with Cache-Control: no-cache and revalidate to a 304; APIs untouched | ✅ |
+| FAQ bank: a rebuild with the same registry keeps uploaded questions and makes no answer call | ✅ |
+| FAQ bank: force reanswers uploaded questions without generating new questions | ✅ |
+| a burst-limit 429 with a retry hint cools down for that long (+1 s) | ✅ |
+| a burst-limit 429 without a hint cools down 30 s, a zero quota 600 s, a 503 not at all | ✅ |
+| FAQ bank: every provider down at rebuild → a previously answered entry is kept, not overwritten with a decline | ✅ |
+| FAQ bank: a question with no previous answer is marked for a retry (error), never a permanent decline; the bank is partial | ✅ |
+| FAQ bank: an unbuilt entry never matches at runtime (the live model answers instead) | ✅ |
+| providers: stalled primary reserves a bounded fallback budget | ✅ |
+| providers: actual selected provider and model are recorded | ✅ |
+| providers: selection metadata never changes the provider schema | ✅ |
+| providers: successive stalls share rather than reset twelve seconds | ✅ |
+| providers: exhausted budget never starts a futile provider request | ✅ |
+| providers: runtime really traverses Gemini → Claude → Runware once | ✅ |
+| providers: runtime passes role models and disables Claude's nested fallback | ✅ |
+| providers: Runware preserves history roles and leaves caller history unchanged | ✅ |
+| providers: gemini runtime success stops later providers | ✅ |
+| providers: claude runtime success stops later providers | ✅ |
+| providers: build reaches Runware even without a Gemini key | ✅ |
+| providers: gemini build success stops later providers | ✅ |
+| providers: claude build success stops later providers | ✅ |
+| providers: configured build order is honored independently of runtime | ✅ |
+| providers: explicit fallback=False never enters build provider chain | ✅ |
+| providers: media remains with its original Claude adapter | ✅ |
+| providers: all down declines with callback on two independent traversals | ✅ |
+| providers: Claude grammar retry preserves model, timeout, effort and retries | ✅ |
+| providers: mock runtime/build/direct Runware never open providers | ✅ |
+| providers: current/history media and build fallback reject before transport | ✅ |
+| providers: one JSON repair returns a validated application schema | ✅ |
+| providers: invalid and repaired billable replies both record cost and trace | ✅ |
+| providers: two schema-invalid replies stop after one repair | ✅ |
+| providers: wrong task UUID fails closed without a JSON repair | ✅ |
+| providers: truncated answer fails closed without a JSON repair | ✅ |
+| providers: refused answer fails closed without a JSON repair | ✅ |
+| providers: HTTP error fails closed without a JSON repair | ✅ |
+| providers: task error envelope fails closed without a JSON repair | ✅ |
+| providers: credentials never enter Runware traces or raised diagnostics | ✅ |
+| providers: valid Runware JSON cannot smuggle an uncited figure into callouts | ✅ |
+| providers: runtime drops Runware's uncited figure and offers callback | ✅ |
+| providers: eval tier resolves every approved text-model role | ✅ |
+| providers: customer tier resolves every approved text-model role | ✅ |
+| providers: build order config deduplicates and health reports it | ✅ |
+| providers: unknown build provider fails configuration before a call | ✅ |
+| providers: changing text tier leaves vision, image and speech defaults unchanged | ✅ |
+| providers: explicit role and media overrides survive customer tier | ✅ |
+| providers: Runware eval and premium overrides stay in their own tier | ✅ |
+| providers: blank overrides use eval defaults and invalid tier is refused | ✅ |
+| providers: approved model IDs and Runware aliases use exact token prices | ✅ |
+| providers: native Runware cost overrides estimates including exact zero | ✅ |
+| providers: Gemini customer promotional price ends at the UTC boundary | ✅ |
+| providers: Gemini text billing includes hidden thought tokens | ✅ |
+| providers: build uses LOW thinking for exact Gemini 3.8 through the real SDK config | ✅ |
+| providers: build LOW preserves schema, output budget, timeout, history and retry policy | ✅ |
+| providers: build retains thinking defaults for gemini-3.5-flash-lite | ✅ |
+| providers: build retains thinking defaults for gemini-unknown-override | ✅ |
+| providers: extracted-text build fallback uses the same LOW policy without changing its transcript | ✅ |
+| providers: truncated LOW build JSON retains bounded fallback instead of returning a partial playbook | ✅ |
+| providers: truncated build output still records the complete thought-token charge | ✅ |
+| providers: live QA reserves 3000 output tokens in the real Gemini SDK envelope | ✅ |
+| providers: live QA uses LOW thinking on the documented Gemini 3.8 model | ✅ |
+| providers: complete live QA keeps its approved citation and stops after Gemini | ✅ |
+| providers: enlarged live envelope still bills candidate and thought tokens | ✅ |
+| providers: build-time QA keeps its existing 1500-token budget | ✅ |
+| providers: unrelated runtime callers retain the 1500-token default | ✅ |
+| providers: live QA leaves unknown model overrides free of thinking options | ✅ |
+| providers: LOW live QA preserves the two-attempt retry, timeout and usage accounting | ✅ |
+| providers: LOW live QA still rejects an unsupported citation before speech | ✅ |
+| providers: extracted PDF text follows configured build chain once with source labels | ✅ |
+| providers: exhausted source-text chain is not restarted by document recovery | ✅ |
+| providers: Runware key with observed readiness permits a text-only source read | ✅ |
+| providers: image sources still require Gemini before a read starts | ✅ |
+| providers: no model key refuses a real source read before the graph starts | ✅ |
+| providers: JSON repair shares the original timeout budget | ✅ |
+| providers: duplicate task results are refused and returned costs remain recorded | ✅ |
+| providers: no fake-provider contract opened a network socket | ✅ |
+| customer: fallback callouts omit long facts instead of chopping a sentence | ✅ |
+| customer: a complete short fallback label survives unchanged | ✅ |
+| customer: fallback never drops a long applicability condition to fit a label | ✅ |
+| customer: short fallback retains its applicability condition | ✅ |
+| customer: an overlong title is omitted rather than cut mid-thought | ✅ |
+| customer: unsafe title override keeps the existing complete title | ✅ |
+| customer: narration cannot ask a question or move it into checkin | ✅ |
+| customer: moving an uncited claim into checkin cannot bypass grounding | ✅ |
+| customer: deck preserves an old script's explicit confirmation step | ✅ |
+| customer: main and translated bundle slides retain explicit question metadata | ✅ |
+| customer: omitting a long label preserves the surviving fact's reviewed callout id | ✅ |
+| customer: explicit reviewed short copy survives omission of its long generated fallback | ✅ |
+| customer: a reviewed label is omitted when its citation no longer belongs to the slide | ✅ |
+| customer: an orphaned Align edit never attaches to a new fact on a later rebuild | ✅ |
+| customer: clarification is spoken alone before an answer | ✅ |
+| customer: clarification carries no claim, visual, escalation or callback | ✅ |
+| customer: an explicit clarification is not converted into a callback refusal | ✅ |
+| customer: a clarification cannot smuggle uncited figures past grounding | ✅ |
+| customer: stacked clarification questions are rejected instead of opening a wait | ✅ |
+| customer: an explicit CTA does not also create a clarification wait | ✅ |
+| customer: clarified answer retains the original question and actual reply in model context | ✅ |
+| customer: route planning never adds a second intake question | ✅ |
+| customer: acknowledgement cannot invent a different customer distance | ✅ |
+| customer: a valid fact id cannot license an unrelated invented customer quantity | ✅ |
+| customer: a skipped intake cannot produce invented personal batches or bridges | ✅ |
+| customer: spelling an invented customer quantity does not evade the context guard | ✅ |
+| customer: the real customer's quantities survive spoken-number normalization | ✅ |
+| customer: a cited decimal survives natural spoken rendering | ✅ |
+| customer: content contracts made no network or voice calls | ✅ |
+| pitch: observed unsupported warranty relation is dropped before speech | ✅ |
+| pitch: rejecting custom proof preserves the reviewed safety/ownership route | ✅ |
+| pitch: observed uncited installation bridge is dropped before speech | ✅ |
+| pitch: an equipment citation alone cannot license an installation benefit | ✅ |
+| pitch: uncited free product prose never reaches bridge speech: The rear mounting points sit under a removable panel. | ✅ |
+| pitch: uncited free product prose never reaches bridge speech: The cabin surface feels velvety to the touch. | ✅ |
+| pitch: uncited free product prose never reaches bridge speech: Next: Child seat mounting. The anchors sit beneath a panel. | ✅ |
+| pitch: a neutral cue cannot be attached to the wrong route segment | ✅ |
+| pitch: equipment-only proof does not license properly secured child-seat outcome | ✅ |
+| pitch: unreviewed property detail never reaches batch speech: For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin. | ✅ |
+| pitch: unreviewed property detail never reaches bridge speech: For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin. | ✅ |
+| pitch: unreviewed property detail never reaches batch speech: ISOFIX mounts are standard and made from titanium. | ✅ |
+| pitch: unreviewed property detail never reaches bridge speech: ISOFIX mounts are standard and made from titanium. | ✅ |
+| pitch: unreviewed property detail never reaches batch speech: ISOFIX mounts are standard. They are hidden beneath a removable panel. | ✅ |
+| pitch: unreviewed property detail never reaches bridge speech: ISOFIX mounts are standard. They are hidden beneath a removable panel. | ✅ |
+| pitch: main-route proof is not repeated in an optional batch | ✅ |
+| pitch: main-route proof is not repeated in an optional bridge | ✅ |
+| pitch: exact reviewed proof remains available for the selected buyer need | ✅ |
+| pitch: reviewed text cannot be relabelled with different fact ids | ✅ |
+| pitch: invalid model citations are not silently stripped into a trusted proof | ✅ |
+| pitch: an unverified script line cannot authorize new speech | ✅ |
+| pitch: a script line with unsupported citations supplies no reviewed proof | ✅ |
+| pitch: existing source-condition safeguards still apply to reviewed proof | ✅ |
+| pitch: unapproved script supplies no custom proof while the route remains | ✅ |
+| pitch: no exact reviewed proof omits only the optional batch | ✅ |
+| pitch: unknown relation rejects batch The warranty lasts 3 years or 100 000 km. | ✅ |
+| pitch: unknown relation rejects bridge The warranty lasts 3 years or 100 000 km. | ✅ |
+| pitch: unknown relation rejects batch The warranty lasts 3 years and 100 000 km, whichever occurs first. | ✅ |
+| pitch: unknown relation rejects bridge The warranty lasts 3 years and 100 000 km, whichever occurs first. | ✅ |
+| pitch: unknown relationship can be stated honestly without inventing one | ✅ |
+| pitch: plain equipment and a proposed personal fit check survive | ✅ |
+| pitch: the exact route-owned neutral cue needs no fabricated product claim | ✅ |
+| pitch: prompt supplies exact neutral cues by route and forbids other uncited prose | ✅ |
+| pitch: an unreviewed title cannot authorize a neutral spoken cue | ✅ |
+| pitch: a stated volume cannot lose its explicit measurement basis | ✅ |
+| pitch: complete volume scope and measurement basis survive | ✅ |
+| pitch: the next reviewed route title supplies its own neutral cue | ✅ |
+| pitch: a measurement basis stated only in the quote cannot be omitted | ✅ |
+| pitch: a quoted measurement code is approved numeric evidence | ✅ |
+| pitch: explicitly documented relation survives despite unrelated missing exclusions | ✅ |
+| pitch: an explicitly stated installation assessment is not blanket-blocked | ✅ |
+| pitch: runtime requests LOW thinking with the same schema, proof context and token ceiling | ✅ |
+| pitch: full evidence and scope-before-benefit rules reach the real prompt | ✅ |
+| pitch: the prompt exposes reviewed proof and limits factual wording to it | ✅ |
+| pitch: reviewed factual reuse keeps selected need-led proof order and customer context | ✅ |
+| pitch: computed focus alone cannot create stated need or attributed preference | ✅ |
+| pitch: tests made no provider/network calls or source/script writes | ✅ |
+| summary: actual C readiness promise becomes a neutral invitation | ✅ |
+| summary: context, interests and objections survive the opener guard | ✅ |
+| summary: unanswered questions and input status are preserved | ✅ |
+| summary: provider gets explicit open-question limits and the real unresolved record | ✅ |
+| summary: LOW thinking preserves the 1200-token schema and full session context | ✅ |
+| summary: recorded unresolved alone prevents a readiness promise | ✅ |
+| summary: recorded escalations alone prevents a readiness promise | ✅ |
+| summary: model unanswered alone prevents a readiness promise | ✅ |
+| summary: a resolved session retains its specific supported opener | ✅ |
+| summary: callback bookkeeping alone does not invent an unanswered question | ✅ |
+| summary: mock path applies the guard without a provider call | ✅ |
+| summary usage: independent workers complete | ✅ |
+| summary usage: each worker establishes its own demo and runtime stage | ✅ |
+| summary usage: both actual usage and trace files receive exactly one row per demo | ✅ |
+| summary usage: recorded cost contributes to the demo total | ✅ |
+| summary usage: parent context is unchanged by concurrent workers | ✅ |
+| summary usage: direct worker call restores both caller context values | ✅ |
+| summary usage: failure trace remains attributed and session keeps its error | ✅ |
+| summary usage: failure also restores caller context | ✅ |
+| summary race: first actual worker enters the fake provider | ✅ |
+| summary race: identical in-flight saves launch only one provider call | ✅ |
+| summary race: attaching success preserves the latest saved record metadata | ✅ |
+| summary race: a late duplicate failure cannot replace current success | ✅ |
+| summary race: an identical completed save reuses its summary without provider work | ✅ |
+| summary race: held old revision reaches the provider | ✅ |
+| summary race: one held provider does not block another session summary | ✅ |
+| summary race: a resumed same-length transcript survives an old result unchanged | ✅ |
+| summary race: the newly ended revision receives its own summary | ✅ |
+| summary race: equal transcript length cannot reuse a different-content summary | ✅ |
+| summary race: changed non-transcript summary input triggers current work | ✅ |
+| summary race: superseded failed worker is held before completion | ✅ |
+| summary race: a superseded error cannot overwrite the new session or summary | ✅ |
+| summary race: all fake workers terminate without outbound calls | ✅ |
+| policy: actual contradictory or-plus-unknown answer is declined | ✅ |
+| policy: invalid meaning has no citations, CTA or proposed visual | ✅ |
+| policy: only the existing safe decline reaches speech | ✅ |
+| policy: semantic rejection offers callback without inventing a provider outage | ✅ |
+| policy: advertised limits with an explicit unknown remain usable | ✅ |
+| policy: a negated relationship is not an assertion | ✅ |
+| policy: a source that explicitly states the relationship retains it | ✅ |
+| policy: a source-quote-only explicit unknown also rejects the assertion | ✅ |
+| policy: reversed distance/time order cannot bypass the guard | ✅ |
+| policy: spoken quantities cannot bypass the relation guard | ✅ |
+| policy: unrelated earlier uncertainty cannot excuse an assertion | ✅ |
+| policy: uncertainty attached to the actual limits remains usable | ✅ |
+| media: audited bindings retain two picture IDs in spoken order | ✅ |
+| media: each picture retains its first spoken line index | ✅ |
+| media: audited pictures are not marked illustration | ✅ |
+| media: a third distinct picture is not added | ✅ |
+| media: repeated references collapse and retain first indexes | ✅ |
+| media: absent audit accepts the Author's actual binding | ✅ |
+| media: full audited legacy bindings recover only the missing image kind | ✅ |
+| media: explicit none is never promoted to audited picture proof | ✅ |
+| media: partial coverage cannot become literal evidence | ✅ |
+| media: stale audit for a different picture cannot approve its binding | ✅ |
+| media: unknown pictures and shots are not accepted as slide images | ✅ |
+| proxy: engine chooses the confidently tagged bonnet | ✅ |
+| proxy: weak part tags fall back to hero | ✅ |
+| proxy: a confident tag without a box still selects the illustration | ✅ |
+| proxy: a missing part box keeps its label in the panel | ✅ |
+| proxy: price has no visual proof and uses hero illustration | ✅ |
+| proxy: no allowed hero produces no invented picture | ✅ |
+| media: held lines do not consume the displayed line index | ✅ |
+| workbook media: saved full pixel coverage supplies a distinct second view | ✅ |
+| workbook media: additional view retains its supported narration timing | ✅ |
+| workbook media: one available supported view is not duplicated | ✅ |
+| workbook media: weak pixel evidence cannot supply the second picture | ✅ |
+| workbook media: absent visible features cannot supply the second picture | ✅ |
+| workbook media: excluded pictures cannot enter the second slot | ✅ |
+| workbook media: another segment's audit is not reused | ✅ |
+| workbook media: held narration cannot promote another view | ✅ |
+| workbook media: partial line coverage cannot promote another view | ✅ |
+| workbook media: explicit none cannot promote another view | ✅ |
+| workbook media: an existing pair keeps its reviewed narration order | ✅ |
+| workbook media: a repeated picture ID cannot fill the second slot | ✅ |
+| deck: media list persists and legacy image_id mirrors its first picture | ✅ |
+| deck: fundamental status survives media selection and script joins | ✅ |
+| deck: derived labels attach to the picture their source line uses | ✅ |
+| deck: second-picture geometry uses its own part box | ✅ |
+| workbook deck: audited alternative persists through the real deck build | ✅ |
+| workbook deck: alternative labels use only their audited line's citations | ✅ |
+| workbook deck: absent matching part uses a caption without a guessed marker | ✅ |
+| proxy: one complete cited label stays in the panel without guessed proof | ✅ |
+| proxy: illustrative label reveals at the start | ✅ |
+| proxy: valid concise model feature label survives without shortening a fact | ✅ |
+| proxy: model label never receives a part anchor or visual-proof claim | ✅ |
+| proxy: foreign slide fact cannot become a reviewed feature caption | ✅ |
+| proxy: mixed local and foreign facts cannot become a reviewed feature caption | ✅ |
+| proxy: uncited model label cannot become a reviewed feature caption | ✅ |
+| proxy: overlong model label cannot become a reviewed feature caption | ✅ |
+| proxy: building illustrations never changes the pixel audit | ✅ |
+| fallback engine: unaudited binding keeps the selected proxy and illustration badge | ✅ |
+| fallback engine: cited wording and reveal survive without a part or anchor | ✅ |
+| fallback engine: build does not manufacture pixel evidence | ✅ |
+| fallback wheel: unaudited binding keeps the selected proxy and illustration badge | ✅ |
+| fallback wheel: cited wording and reveal survive without a part or anchor | ✅ |
+| fallback wheel: build does not manufacture pixel evidence | ✅ |
+| unavailable audit: Author pictures retain exact spoken order and the two-picture limit | ✅ |
+| unavailable audit: every retained picture explicitly remains illustration | ✅ |
+| unavailable audit: picture selection does not alter script or audit | ✅ |
+| unavailable audit: held lines cannot allocate an image or offset timing | ✅ |
+| unavailable audit: missing method cannot use the unavailable-audit exception | ✅ |
+| unavailable audit: completed empty audit cannot use the unavailable-audit exception | ✅ |
+| unavailable audit: partial rejection cannot use the unavailable-audit exception | ✅ |
+| unavailable audit: wrong-picture rejection cannot use the unavailable-audit exception | ✅ |
+| unavailable audit: retained correction cannot use the unavailable-audit exception | ✅ |
+| unavailable audit: incomplete image audit cannot use the unavailable-audit exception | ✅ |
+| unavailable audit: explicit none cannot be restored as an Author illustration | ✅ |
+| unavailable audit: video shot cannot be restored as an Author illustration | ✅ |
+| unavailable audit: foreign picture cannot be restored as an Author illustration | ✅ |
+| unavailable audit: missing picture cannot be restored as an Author illustration | ✅ |
+| unavailable audit: reproduces fifteen selected views collapsing to two generic proxies | ✅ |
+| unavailable audit: all fifteen selected views survive without claiming visual proof | ✅ |
+| unavailable audit: built proxy labels keep their own picture, citations and narration line | ✅ |
+| unavailable audit: built proxy labels never acquire feature geometry | ✅ |
+| unavailable audit: script join preserves exact picture-to-line mapping | ✅ |
+| unavailable audit model captions: first picture fact on second picture is rejected before placement | ✅ |
+| unavailable audit model captions: mixed picture facts is rejected before placement | ✅ |
+| unavailable audit model captions: second picture revealed before its line is rejected before placement | ✅ |
+| unavailable audit model captions: second picture revealed beyond the script is rejected before placement | ✅ |
+| unavailable audit model captions: first picture revealed in second picture window is rejected before placement | ✅ |
+| unavailable audit model captions: correct words, picture, citations and timing survive | ✅ |
+| unavailable audit: first picture cannot borrow the next picture's cited caption | ✅ |
+| unavailable audit: excluded uploaded pictures stay excluded at the real build boundary | ✅ |
+| proxy: derived illustration retains every citation from its source line | ✅ |
+| proxy: overlong scope is omitted whole instead of shortened | ✅ |
+| override: second-slot swap preserves timing and marks unaudited illustration | ✅ |
+| override: unchanged picture retains its audited metadata | ✅ |
+| override: moved callout uses new picture geometry and independent drag | ✅ |
+| override: null picture attachment means the first picture | ✅ |
+| override: removing pictures preserves every existing semantic label | ✅ |
+| override: picture-free labels have no guessed parts or anchors | ✅ |
+| override: media-only swap preserves label wording citations and reveal | ✅ |
+| override: matching part name in a new illustration does not become proof | ✅ |
+| override: unchanged image retains its existing true anchor | ✅ |
+| override: excluded saved picture retires geometry even after rebuild remapped its image | ✅ |
+| override: intentionally empty labels are never generated by media edits | ✅ |
+| override: rejects third picture | ✅ |
+| override: rejects excluded picture | ✅ |
+| override: rejects foreign callout attachment | ✅ |
+| deck: two pictures can each carry three independently validated callouts | ✅ |
+| override: removal of two pictures retains both sets of captions | ✅ |
+| override: moving a fourth label onto a picture is rejected | ✅ |
+| deck: model sees picture IDs with separate exact part lists | ✅ |
+| override: rebuild survives a later exclusion of the saved picture | ✅ |
+| override: stale callout attachments cannot restore an excluded picture | ✅ |
+| bundle: both media URLs and own part boxes are resolved | ✅ |
+| bundle: legacy image_url and new first media URL agree | ✅ |
+| bundle: callout picture identities survive publication | ✅ |
+| bundle: segments and slides preserve the lead-fundamental flag | ✅ |
+| media: no outbound requests and all storage is isolated | ✅ |
+| runtime provider order defaults Gemini → Claude → Runware | ✅ |
+| runtime timeout is short | ✅ |
+
+433/433 deck cases pass
+OUTBOUND_ATTEMPTS 0

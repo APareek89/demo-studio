@@ -1,0 +1,217 @@
+{
+  "demo_id": "dm_29df0418",
+  "reviewed_at_utc": "2026-09-25T07:47:16.063892+00:00",
+  "mode": "read-only semantic review against saved source extraction; no providers or demo writes",
+  "inputs": {
+    "understanding.json": "2bcaef2bf63808b5d39b16e9796e0d2a55cc39353d3479b8286b507122050e79",
+    "playbook.json": "622e451841d7bd876cf2e8ec53ff411d9151b4d9378e987fae914790e30d71bf"
+  },
+  "source": {
+    "id": "src_407678",
+    "sha256": "1cf9f4863623dec46e3af4d874d325a6a37c4d5513fa9c5fc306136070002b8b"
+  },
+  "facts_total": 87,
+  "facts_approved": 80,
+  "corrected_category": "Luxury SUV",
+  "findings": [
+    {
+      "id": "R01",
+      "severity": "high",
+      "fact_ids": [
+        "F003",
+        "F017",
+        "F018",
+        "F019",
+        "F020"
+      ],
+      "location": "playbook.usps[usp_power]",
+      "issue": "Effortless power with hybrid efficiency adds driving-feel and efficiency claims beyond its assigned specifications.",
+      "source_evidence": "Page 12 explicitly says the fuel-consumption field is a placeholder and no consumption figure is quoted. The assigned facts state the engine, power and torque.",
+      "recommended_action": "Replace the USP through normal Align/playbook review with a supported descriptive choice; no effortless/efficiency claim. Do not copy this wording into Author or Deck."
+    },
+    {
+      "id": "R02",
+      "severity": "high",
+      "fact_ids": [
+        "F005"
+      ],
+      "location": "playbook.stops[ride-and-refinement].why_here",
+      "issue": "All-wheel drive alone does not establish passenger isolation from harsh roads.",
+      "source_evidence": "F005 states xDrive all-wheel drive. Page 11 describes two-axle air suspension separately, but that detail is absent from the extracted registry.",
+      "recommended_action": "Limit this stop to its assigned supported drivetrain detail, or add the separately cited suspension fact through the normal reviewed-fact path. Attribute source performance descriptions; do not infer ride comfort from AWD."
+    },
+    {
+      "id": "R03",
+      "severity": "high",
+      "fact_ids": [
+        "F044"
+      ],
+      "location": "playbook.objections[service costs]",
+      "issue": "Package duration is marked as answering service/maintenance cost; no cost is provided.",
+      "source_evidence": "Page 18 lists Service Inclusive Basic 3 years or 40,000 km and says service-package charges included in the EMI calculation are paid by the customer.",
+      "recommended_action": "Mark actual cost unknown; describe a listed package only, with price/package terms to confirm. Never call it free, automatically included, or a service-cost quote."
+    },
+    {
+      "id": "R04",
+      "severity": "medium",
+      "fact_ids": [
+        "F013"
+      ],
+      "location": "understanding.facts[F013].conditions",
+      "issue": "Standard audio equipment is an added availability assertion.",
+      "source_evidence": "Page 9 lists Harman Kardon surround sound system, 16 speakers, 464 W output; it does not label this standard equipment. Page 32 warns illustrated equipment/configurations may differ in India.",
+      "recommended_action": "Remove unsupported standard qualification; retain the source-listed audio description and verify selected vehicle configuration where relevant."
+    },
+    {
+      "id": "R05",
+      "severity": "high",
+      "fact_ids": [
+        "F025"
+      ],
+      "location": "understanding.facts[F025]",
+      "issue": "Automatic parking description omits the performed-once manoeuvre prerequisite and nearby supervision in its value/conditions.",
+      "source_evidence": "Page 14: perform the manoeuvre once, up to 200 metres; the car parks/leaves on request while you monitor everything close by on your smartphone.",
+      "recommended_action": "Carry the performed-once prerequisite and nearby monitoring into the fact conditions and any substantive claim. Do not imply fully autonomous, unsupervised parking."
+    },
+    {
+      "id": "R06",
+      "severity": "high",
+      "fact_ids": [
+        "F026"
+      ],
+      "location": "understanding.facts[F026]",
+      "issue": "Value and conditions omit compatible devices, inviting universal smartphone/smartwatch support.",
+      "source_evidence": "Page 14 begins: Compatible mobile devices become your BMW Digital Key.",
+      "recommended_action": "Retain compatible-device restriction in the fact and same spoken thought. Existing quote already contains it; it is not new evidence."
+    },
+    {
+      "id": "R07",
+      "severity": "high",
+      "fact_ids": [
+        "F042",
+        "F043",
+        "F087"
+      ],
+      "location": "understanding special offers",
+      "issue": "Offer-specific facts do not carry all material charges, availability and approval conditions; F087 is separate and outside the Coach ownership stop facts.",
+      "source_evidence": "Page 18: limited units/some states, taxes extra, change without notice, service-package and registration charges paid by customer; finance approval at BMW India Financial Services discretion. Page 32 restates the general offer caveat.",
+      "recommended_action": "Either omit expiring numerical offer promises from the main tour or cite and state the material scope/conditions with the offer. Do not promise the quoted EMI or benefits to this visitor."
+    },
+    {
+      "id": "R08",
+      "severity": "high",
+      "fact_ids": [
+        "F044"
+      ],
+      "location": "understanding.facts[F044]",
+      "issue": "Service package fact does not say it is a separately charged offer package.",
+      "source_evidence": "Page 18: Registration charges and the service-package charges included in the EMI calculation are paid by the customer.",
+      "recommended_action": "Preserve offer/package context and charges; keep it separate from standard warranty. Do not claim standard inclusion or that it pays all service costs."
+    },
+    {
+      "id": "R09",
+      "severity": "medium",
+      "fact_ids": [
+        "F047",
+        "F048"
+      ],
+      "location": "understanding finance comparisons",
+      "issue": "Up to 40% lower has no explicit comparator in the extracted table, and buyback value depends on chosen finance terms.",
+      "source_evidence": "Page 20 is a finance-plan comparison; page 18 says assured buyback percentages depend on tenure, mileage and manufacturing year.",
+      "recommended_action": "Do not generalize 40% lower into a customer saving or compare against an invented baseline. Keep buyback conditions with the finance-plan claim."
+    },
+    {
+      "id": "R10",
+      "severity": "high",
+      "fact_ids": [
+        "F071",
+        "F086"
+      ],
+      "location": "understanding.facts[F071]",
+      "issue": "Extended warranty omits new-car-only eligibility, cost-option status and earliest time/kilometre limit despite retaining purchase timing.",
+      "source_evidence": "Page 24: sold on a cost-option basis and only to new cars; ends at whichever comes first, kilometre limit or time limit of chosen package; covers original factory-built specification with listed exclusions.",
+      "recommended_action": "Carry optional paid new-car scope and time/kilometre limit into any up-to-ten-years statement. Do not call this included or unlimited-mileage extended protection; preserve exclusions in deeper detail."
+    },
+    {
+      "id": "R11",
+      "severity": "medium",
+      "fact_ids": [
+        "F072",
+        "F073"
+      ],
+      "location": "understanding base-warranty start rules",
+      "issue": "Adjacent source pages state different start-event lists; do not turn the narrower page-24 summary into the definitive event rule.",
+      "source_evidence": "Page 24 says registration or invoice, whichever sooner; page 25 policy says first drive, official registration, invoice or possession, whichever comes first.",
+      "recommended_action": "Prefer the detailed policy scope for contract explanation, preserve source distinction and avoid pretending the summaries are identical. General 24-month/no-mileage-limit duration remains supported."
+    },
+    {
+      "id": "R12",
+      "severity": "medium",
+      "fact_ids": [
+        "F074",
+        "F075",
+        "F076"
+      ],
+      "location": "understanding warranty details",
+      "issue": "The new extraction retains named exclusions, but the rust effective_from invents an exact date and fuller claim conditions are absent.",
+      "source_evidence": "Page 25 says vehicles sold after 2010, not 2010-01-01. Rust claims exclude specified parts and require specified maintenance/repair/inspection conditions; paint and wearing-part exclusions are explicit.",
+      "recommended_action": "Remove fabricated exact effective date or retain only the source year wording. Keep exclusions in any warranty-specific answer; add the detailed rust claim conditions if that topic is narrated rather than giving unconditional coverage."
+    },
+    {
+      "id": "R13",
+      "severity": "medium",
+      "fact_ids": [
+        "F082"
+      ],
+      "location": "understanding.facts[F082]",
+      "issue": "Roof box is an accessory, but optional/accessory status and unlisted price are absent from fact scope.",
+      "source_evidence": "Page 28 is Genuine accessories for the X7; prices are not published and readers should contact a BMW Sales Consultant.",
+      "recommended_action": "Label as optional/accessory detail; never add its 520 litres to the vehicle luggage capacity or imply it is included."
+    },
+    {
+      "id": "R14",
+      "severity": "low",
+      "fact_ids": [
+        "F083",
+        "F084",
+        "F085"
+      ],
+      "location": "understanding.facts image metadata",
+      "issue": "Image-file pixel dimensions are extraction metadata, not useful customer product facts.",
+      "source_evidence": "Page 31 is the image library index with file names, dimensions and source locations.",
+      "recommended_action": "Exclude these rows from customer-facing product narration and selling points; they should not satisfy supported narration length."
+    },
+    {
+      "id": "R15",
+      "severity": "high",
+      "fact_ids": [
+        "F006",
+        "F012"
+      ],
+      "location": "playbook.usps",
+      "issue": "Only one of three selected USPs belongs to a fundamental stop, contrary to the existing two-fundamental rule.",
+      "source_evidence": "playbook.issues explicitly records At least two supported USPs must sit on fundamental stops; usp_seats and usp_climate both point to cabin.",
+      "recommended_action": "Review and correct the selected USPs through existing Align/playbook mechanism before publication; no new rule needed."
+    },
+    {
+      "id": "R16",
+      "severity": "medium",
+      "fact_ids": [],
+      "location": "understanding image scope and playbook.picture_ids",
+      "issue": "The source itself warns illustrations may not match the Indian vehicle; some parking/boat pictures show a different model, and exterior images cannot show an internal engine.",
+      "source_evidence": "Page 32 equipment/configuration warning; page 14 parking illustrations include a white vehicle/boat rather than the X7. Existing vision descriptions identify exterior views separately from cabin/detail pictures.",
+      "recommended_action": "Use matching actual X7 pictures and reviewed anchors. Mark legitimate mechanism illustrations clearly; never claim a nonvisible engine, drivetrain or safety system is physically shown."
+    }
+  ],
+  "positive_findings": [
+    "Category is Luxury SUV and selects premium SUV library.",
+    "Paint/rust/accessory warranty exclusions omitted in the original demo are now retained in fact conditions.",
+    "Engine, motor and total-system torque are separate facts.",
+    "Owner-selected two-minute duration is not changed by this review."
+  ],
+  "limits": [
+    "This review does not mutate approvals or scripts. Root must apply any corrections through existing review paths.",
+    "Quoted source compilation is treated as owner-uploaded evidence; no independent current BMW-web verification was performed.",
+    "Human script and visual review remains needed after Author/Deck complete."
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "original_id": "dm_b3a502ce",
+  "revised_id": "dm_29df0418",
+  "selected_minutes": 2,
+  "speaker": "sumit",
+  "provider": "sarvam",
+  "uploads": [
+    {
+      "file": "BMW_X7_India_Complete_Guide.pdf",
+      "bytes": 9608493,
+      "sha256": "09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47",
+      "source_id": "src_407678",
+      "role": "product"
+    },
+    {
+      "file": "01_hero_stage.jpg",
+      "bytes": 303047,
+      "sha256": "0a681a5a93d41c235e7217ec7c482b4ebcee30e4981a0bb7ea1822cafd03d077",
+      "source_id": "src_dbf803",
+      "role": "hero"
+    },
+    {
+      "file": "02_positioning_front_three_quarter.jpg",
+      "bytes": 266419,
+      "sha256": "0bbf5f7d997a63b6a9d6e4e9858171b702441673aa30f98bcf09f023acb707bd",
+      "source_id": "src_d83000",
+      "role": "product"
+    },
+    {
+      "file": "03_exterior_overview.jpg",
+      "bytes": 322326,
+      "sha256": "50893ca6dfddd4ad9059cae9969d60e70b1df770ec4ab0dcb27b833991b99c62",
+      "source_id": "src_00aaa3",
+      "role": "product"
+    },
+    {
+      "file": "04_exterior_front_grille_headlights.jpg",
+      "bytes": 367920,
+      "sha256": "b1bedcc053e1dd19b8a7545813c70c657a2c71246eb02592f26162bc8b0b32df",
+      "source_id": "src_2fa70c",
+      "role": "product"
+    },
+    {
+      "file": "05_exterior_side_profile.jpg",
+      "bytes": 375080,
+      "sha256": "6911e0213f178795abb2753f001733239b23aee7e501a93dd4a5493eecca80d4",
+      "source_id": "src_a63790",
+      "role": "product"
+    },
+    {
+      "file": "06_exterior_rear_lights_spoiler.jpg",
+      "bytes": 340468,
+      "sha256": "f94d484e77bcbed3c8f71d6a3ed345330bfbe9ebf1a1bcd69680f4a2de7e934c",
+      "source_id": "src_54acf2",
+      "role": "product"
+    },
+    {
+      "file": "07_interior_overview.jpg",
+      "bytes": 363544,
+      "sha256": "a6c7f305fd04988f0f1d4285a8f42953c0f6fdce3a1761ddbd83ba536682b198",
+      "source_id": "src_9fc70c",
+      "role": "product"
+    },
+    {
+      "file": "08_interior_cockpit_curved_display.jpg",
+      "bytes": 571388,
+      "sha256": "f646b8bfe0cd9eceaf32b9331030019120084c74331fb961ac9445b3d27a36a6",
+      "source_id": "src_0ebbe4",
+      "role": "product"
+    },
+    {
+      "file": "09_interior_space_seats.jpg",
+      "bytes": 672218,
+      "sha256": "0a439aa104bfa4de141ce594fec23274ac7912d8e191101e2b1fb02fff7f1c4f",
+      "source_id": "src_bbc793",
+      "role": "product"
+    },
+    {
+      "file": "10_interior_craftedclarity_glass_controls.jpg",
+      "bytes": 558173,
+      "sha256": "434bbd20b18e23f9504e5aec16af1a8868b847229fe83758274b0e7861fdf7c5",
+      "source_id": "src_24322d",
+      "role": "product"
+    },
+    {
+      "file": "11_driving_dynamics_overview.jpg",
+      "bytes": 316886,
+      "sha256": "9373d1bcc2b65d447834b167be1e838ee0ff2f414508e394432d1a250196c3f2",
+      "source_id": "src_0ac711",
+      "role": "product"
+    },
+    {
+      "file": "12_drive_and_air_suspension.jpg",
+      "bytes": 526405,
+      "sha256": "c9cc114c957dee1fbee325c701b2b4893daab2ba116d2e8171438b4fce55e1e7",
+      "source_id": "src_cf3842",
+      "role": "product"
+    },
+    {
+      "file": "13_technical_data_stage.jpg",
+      "bytes": 306230,
+      "sha256": "2692985dd2b1fe07313dcf9a29648b7dfe5e4d0fdc96653dce2403225d5e212c",
+      "source_id": "src_bf331d",
+      "role": "product"
+    },
+    {
+      "file": "14_parking_assistant_professional_a.jpg",
+      "bytes": 147478,
+      "sha256": "fc5ef8626d75f9bff0b40a6b6bae2519169801be6496542a1f536fd1a576e19c",
+      "source_id": "src_5c3639",
+      "role": "product"
+    },
+    {
+      "file": "15_parking_assistant_professional_b.jpg",
+      "bytes": 508385,
+      "sha256": "847ce0ebe14df600da8bce7607ae510c574965694579acb0e109ccc8c0583c8f",
+      "source_id": "src_346afb",
+      "role": "product"
+    },
+    {
+      "file": "16_digital_key.jpg",
+      "bytes": 87454,
+      "sha256": "c8f266fddc8ccd4ad136405165c4ee9a221106f9387451de976cb36675a7f1c0",
+      "source_id": "src_5c9fcb",
+      "role": "product"
+    },
+    {
+      "file": "17_augmented_view_headup.jpg",
+      "bytes": 138592,
+      "sha256": "f2e6098ebe83c55fc541a6c423b2439fc15cfb33dce01c932d928ed2c74c68d1",
+      "source_id": "src_796143",
+      "role": "product"
+    },
+    {
+      "file": "18_driving_assistant_video_still.jpg",
+      "bytes": 148667,
+      "sha256": "f55d2cdc3574ce91c41b24eca7f6f8e403fd990db19d6c9909abb70e0feb78f2",
+      "source_id": "src_92378b",
+      "role": "product"
+    },
+    {
+      "file": "19_accessory_advanced_car_eye_dashcam.jpg",
+      "bytes": 435153,
+      "sha256": "ee4d9e40dbbb0d991220fdcaafa609052ad2184dae67990045863e48e63e243a",
+      "source_id": "src_642ce1",
+      "role": "product"
+    },
+    {
+      "file": "20_accessory_led_door_projector.jpg",
+      "bytes": 345630,
+      "sha256": "dbffa277db2b2d39ff84abef8e29480c950233749ae2c6aee06b4e65c0dd6d1c",
+      "source_id": "src_7450e1",
+      "role": "product"
+    },
+    {
+      "file": "21_accessory_floating_hub_cap.jpg",
+      "bytes": 281047,
+      "sha256": "71443a5996edde1ca2f2164ab9b5a01d2333e14e44f33ea43e6ac31e53ffe935",
+      "source_id": "src_ba1896",
+      "role": "product"
+    },
+    {
+      "file": "22_accessory_travel_comfort_system.jpg",
+      "bytes": 262641,
+      "sha256": "5a8aa145c565115f079f114010642df32a0036b638ac603696e1a7fcb419cc5a",
+      "source_id": "src_08d983",
+      "role": "product"
+    }
+  ],
+  "initial_read": {
+    "result": "incomplete",
+    "prepared_words": 301,
+    "required_words": 330,
+    "attempts": 3,
+    "model": "gemini-3.5-flash-lite",
+    "published": false
+  },
+  "revision": {
+    "stage": "coach",
+    "model_tier": "customer",
+    "model": "gemini-3.8-flash",
+    "source_reextraction": false
+  }
+}

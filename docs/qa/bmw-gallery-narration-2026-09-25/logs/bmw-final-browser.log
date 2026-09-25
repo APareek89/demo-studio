@@ -1,0 +1,282 @@
+PASS Published BMW has narration-bearing slides
+PASS Every recorded line uses the published voice, text and expression cache identity
+PASS Recorded clip decodes completely and contains nonzero PCM: 01e99260ec801c99282b.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 0614bd543b5d7ba7b9bc.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 0dc09bfbace10654cb85.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 1a115cb80b13daa58bbb.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 223a04ec302d7682017e.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 25944eb2efba95e2c71c.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 32f7fa1a371dba6d6318.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 3e82d30b206d841a32b7.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 46ba1e611b23aa432db8.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 479fc478cfc463eef558.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 4ffb5864f0cdc77c01c6.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 580bbabbe8584033969c.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 5f8f9470cf1b945e395a.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 7168e91ac1dced1fe34e.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 774b15af896763224038.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 7982a2cfcac60121dba9.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 7bcd7e56be51f1ba4305.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 80df4d6090ef8c1d66d3.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 81c2a9c1d021d68f2808.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 857b50c40b1155798222.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 8855f247ce01ee4ae8f0.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: 8f71a035d2dc8783b254.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: ae28423abcd4d47dbc50.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: ae8544691e356c859a03.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: cb3c2623d2f420f1d922.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: cc9f7c5b6b8dd284386b.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: e25f8ee8c370d956270d.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: e73866f73ce53ddd3d31.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: ea3eada8d87c347eca08.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: f633ec07a6b6b00853cf.wav
+PASS Recorded clip decodes completely and contains nonzero PCM: fa38b637aac045f6d8e9.wav
+PASS Every main/deeper/overview line has a recorded clip
+PASS Publication reports a measured sufficient requested minimum
+PASS Independent decoded default-route duration meets minimum and publication report
+PASS Selected expressive clips have bounded metadata and normal pace
+PASS 1440px sl01 line 0 exact recorded audio and caption
+PASS 1440px sl01 line 0 unchanged navbar and bottom controls
+PASS 1440px sl01 line 0 actual photo decoded in ready gallery
+PASS 1440px sl01 line 0 middle view and feature text fit the viewport
+PASS 1440px sl01 line 0 correct source picture for narration
+PASS 1440px sl01 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl01 line 0 feature text accompanies the spoken line
+PASS 1440px sl01 line 0 illustration has no invented feature pointer
+PASS 1440px sl02 line 0 exact recorded audio and caption
+PASS 1440px sl02 line 0 unchanged navbar and bottom controls
+PASS 1440px sl02 line 0 actual photo decoded in ready gallery
+PASS 1440px sl02 line 0 middle view and feature text fit the viewport
+PASS 1440px sl02 line 0 correct source picture for narration
+PASS 1440px sl02 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl02 line 0 feature text accompanies the spoken line
+PASS 1440px sl02 line 0 illustration has no invented feature pointer
+PASS 1440px sl03 line 0 exact recorded audio and caption
+PASS 1440px sl03 line 0 unchanged navbar and bottom controls
+PASS 1440px sl03 line 0 actual photo decoded in ready gallery
+PASS 1440px sl03 line 0 middle view and feature text fit the viewport
+PASS 1440px sl03 line 0 correct source picture for narration
+PASS 1440px sl03 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl03 line 0 feature text accompanies the spoken line
+PASS 1440px sl03 line 0 illustration has no invented feature pointer
+PASS 1440px sl04 line 0 exact recorded audio and caption
+PASS 1440px sl04 line 0 unchanged navbar and bottom controls
+PASS 1440px sl04 line 0 actual photo decoded in ready gallery
+PASS 1440px sl04 line 0 middle view and feature text fit the viewport
+PASS 1440px sl04 line 0 correct source picture for narration
+PASS 1440px sl04 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl04 line 0 feature text accompanies the spoken line
+PASS 1440px sl04 line 0 illustration has no invented feature pointer
+PASS 1440px sl05 line 0 exact recorded audio and caption
+PASS 1440px sl05 line 0 unchanged navbar and bottom controls
+PASS 1440px sl05 line 0 actual photo decoded in ready gallery
+PASS 1440px sl05 line 0 middle view and feature text fit the viewport
+PASS 1440px sl05 line 0 correct source picture for narration
+PASS 1440px sl05 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl05 line 0 feature text accompanies the spoken line
+PASS 1440px sl06 line 0 exact recorded audio and caption
+PASS 1440px sl06 line 0 unchanged navbar and bottom controls
+PASS 1440px sl06 line 0 actual photo decoded in ready gallery
+PASS 1440px sl06 line 0 middle view and feature text fit the viewport
+PASS 1440px sl06 line 0 correct source picture for narration
+PASS 1440px sl06 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl06 line 0 feature text accompanies the spoken line
+PASS 1440px sl06 line 0 illustration has no invented feature pointer
+PASS 1440px sl07 line 0 exact recorded audio and caption
+PASS 1440px sl07 line 0 unchanged navbar and bottom controls
+PASS 1440px sl07 line 0 actual photo decoded in ready gallery
+PASS 1440px sl07 line 0 middle view and feature text fit the viewport
+PASS 1440px sl07 line 0 correct source picture for narration
+PASS 1440px sl07 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl07 line 0 feature text accompanies the spoken line
+PASS 1440px sl08 line 0 exact recorded audio and caption
+PASS 1440px sl08 line 0 unchanged navbar and bottom controls
+PASS 1440px sl08 line 0 actual photo decoded in ready gallery
+PASS 1440px sl08 line 0 middle view and feature text fit the viewport
+PASS 1440px sl08 line 0 correct source picture for narration
+PASS 1440px sl08 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl08 line 0 feature text accompanies the spoken line
+PASS 1440px sl09 line 0 exact recorded audio and caption
+PASS 1440px sl09 line 0 unchanged navbar and bottom controls
+PASS 1440px sl09 line 0 actual photo decoded in ready gallery
+PASS 1440px sl09 line 0 middle view and feature text fit the viewport
+PASS 1440px sl09 line 0 correct source picture for narration
+PASS 1440px sl09 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl09 line 0 feature text accompanies the spoken line
+PASS 1440px sl10 line 0 exact recorded audio and caption
+PASS 1440px sl10 line 0 unchanged navbar and bottom controls
+PASS 1440px sl10 line 0 actual photo decoded in ready gallery
+PASS 1440px sl10 line 0 middle view and feature text fit the viewport
+PASS 1440px sl10 line 0 correct source picture for narration
+PASS 1440px sl10 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl10 line 0 feature text accompanies the spoken line
+PASS 1440px sl10 line 0 illustration has no invented feature pointer
+PASS 1440px sl11 line 0 exact recorded audio and caption
+PASS 1440px sl11 line 0 unchanged navbar and bottom controls
+PASS 1440px sl11 line 0 actual photo decoded in ready gallery
+PASS 1440px sl11 line 0 middle view and feature text fit the viewport
+PASS 1440px sl11 line 0 correct source picture for narration
+PASS 1440px sl11 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl11 line 0 feature text accompanies the spoken line
+PASS 1440px sl11 line 0 illustration has no invented feature pointer
+PASS 1440px sl12 line 0 exact recorded audio and caption
+PASS 1440px sl12 line 0 unchanged navbar and bottom controls
+PASS 1440px sl12 line 0 actual photo decoded in ready gallery
+PASS 1440px sl12 line 0 middle view and feature text fit the viewport
+PASS 1440px sl12 line 0 correct source picture for narration
+PASS 1440px sl12 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl12 line 0 feature text accompanies the spoken line
+PASS 1440px sl12 line 0 illustration has no invented feature pointer
+PASS 1440px sl13 line 0 exact recorded audio and caption
+PASS 1440px sl13 line 0 unchanged navbar and bottom controls
+PASS 1440px sl13 line 0 actual photo decoded in ready gallery
+PASS 1440px sl13 line 0 middle view and feature text fit the viewport
+PASS 1440px sl13 line 0 correct source picture for narration
+PASS 1440px sl13 line 0 exact eligible feature tags and picture ownership
+PASS 1440px sl13 line 1 exact recorded audio and caption
+PASS 1440px sl13 line 1 unchanged navbar and bottom controls
+PASS 1440px sl13 line 1 actual photo decoded in ready gallery
+PASS 1440px sl13 line 1 middle view and feature text fit the viewport
+PASS 1440px sl13 line 1 correct source picture for narration
+PASS 1440px sl13 line 1 exact eligible feature tags and picture ownership
+PASS 1440px every speaking slide and main clip inspected
+PASS 1440px sl01 includes feature tags
+PASS 1440px sl02 includes feature tags
+PASS 1440px sl03 includes feature tags
+PASS 1440px sl04 includes feature tags
+PASS 1440px sl05 includes feature tags
+PASS 1440px sl06 includes feature tags
+PASS 1440px sl07 includes feature tags
+PASS 1440px sl08 includes feature tags
+PASS 1440px sl09 includes feature tags
+PASS 1440px sl10 includes feature tags
+PASS 1440px sl11 includes feature tags
+PASS 1440px sl12 includes feature tags
+PASS 1440px source bundle remains unchanged in player
+PASS 1440px no microphone access
+PASS 1440px closing reaches existing CTA choices
+PASS 390px sl01 line 0 exact recorded audio and caption
+PASS 390px sl01 line 0 unchanged navbar and bottom controls
+PASS 390px sl01 line 0 actual photo decoded in ready gallery
+PASS 390px sl01 line 0 middle view and feature text fit the viewport
+PASS 390px sl01 line 0 correct source picture for narration
+PASS 390px sl01 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl01 line 0 feature text accompanies the spoken line
+PASS 390px sl01 line 0 illustration has no invented feature pointer
+PASS 390px sl02 line 0 exact recorded audio and caption
+PASS 390px sl02 line 0 unchanged navbar and bottom controls
+PASS 390px sl02 line 0 actual photo decoded in ready gallery
+PASS 390px sl02 line 0 middle view and feature text fit the viewport
+PASS 390px sl02 line 0 correct source picture for narration
+PASS 390px sl02 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl02 line 0 feature text accompanies the spoken line
+PASS 390px sl02 line 0 illustration has no invented feature pointer
+PASS 390px sl03 line 0 exact recorded audio and caption
+PASS 390px sl03 line 0 unchanged navbar and bottom controls
+PASS 390px sl03 line 0 actual photo decoded in ready gallery
+PASS 390px sl03 line 0 middle view and feature text fit the viewport
+PASS 390px sl03 line 0 correct source picture for narration
+PASS 390px sl03 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl03 line 0 feature text accompanies the spoken line
+PASS 390px sl03 line 0 illustration has no invented feature pointer
+PASS 390px sl04 line 0 exact recorded audio and caption
+PASS 390px sl04 line 0 unchanged navbar and bottom controls
+PASS 390px sl04 line 0 actual photo decoded in ready gallery
+PASS 390px sl04 line 0 middle view and feature text fit the viewport
+PASS 390px sl04 line 0 correct source picture for narration
+PASS 390px sl04 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl04 line 0 feature text accompanies the spoken line
+PASS 390px sl04 line 0 illustration has no invented feature pointer
+PASS 390px sl05 line 0 exact recorded audio and caption
+PASS 390px sl05 line 0 unchanged navbar and bottom controls
+PASS 390px sl05 line 0 actual photo decoded in ready gallery
+PASS 390px sl05 line 0 middle view and feature text fit the viewport
+PASS 390px sl05 line 0 correct source picture for narration
+PASS 390px sl05 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl05 line 0 feature text accompanies the spoken line
+PASS 390px sl06 line 0 exact recorded audio and caption
+PASS 390px sl06 line 0 unchanged navbar and bottom controls
+PASS 390px sl06 line 0 actual photo decoded in ready gallery
+PASS 390px sl06 line 0 middle view and feature text fit the viewport
+PASS 390px sl06 line 0 correct source picture for narration
+PASS 390px sl06 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl06 line 0 feature text accompanies the spoken line
+PASS 390px sl06 line 0 illustration has no invented feature pointer
+PASS 390px sl07 line 0 exact recorded audio and caption
+PASS 390px sl07 line 0 unchanged navbar and bottom controls
+PASS 390px sl07 line 0 actual photo decoded in ready gallery
+PASS 390px sl07 line 0 middle view and feature text fit the viewport
+PASS 390px sl07 line 0 correct source picture for narration
+PASS 390px sl07 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl07 line 0 feature text accompanies the spoken line
+PASS 390px sl08 line 0 exact recorded audio and caption
+PASS 390px sl08 line 0 unchanged navbar and bottom controls
+PASS 390px sl08 line 0 actual photo decoded in ready gallery
+PASS 390px sl08 line 0 middle view and feature text fit the viewport
+PASS 390px sl08 line 0 correct source picture for narration
+PASS 390px sl08 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl08 line 0 feature text accompanies the spoken line
+PASS 390px sl09 line 0 exact recorded audio and caption
+PASS 390px sl09 line 0 unchanged navbar and bottom controls
+PASS 390px sl09 line 0 actual photo decoded in ready gallery
+PASS 390px sl09 line 0 middle view and feature text fit the viewport
+PASS 390px sl09 line 0 correct source picture for narration
+PASS 390px sl09 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl09 line 0 feature text accompanies the spoken line
+PASS 390px sl10 line 0 exact recorded audio and caption
+PASS 390px sl10 line 0 unchanged navbar and bottom controls
+PASS 390px sl10 line 0 actual photo decoded in ready gallery
+PASS 390px sl10 line 0 middle view and feature text fit the viewport
+PASS 390px sl10 line 0 correct source picture for narration
+PASS 390px sl10 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl10 line 0 feature text accompanies the spoken line
+PASS 390px sl10 line 0 illustration has no invented feature pointer
+PASS 390px sl11 line 0 exact recorded audio and caption
+PASS 390px sl11 line 0 unchanged navbar and bottom controls
+PASS 390px sl11 line 0 actual photo decoded in ready gallery
+PASS 390px sl11 line 0 middle view and feature text fit the viewport
+PASS 390px sl11 line 0 correct source picture for narration
+PASS 390px sl11 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl11 line 0 feature text accompanies the spoken line
+PASS 390px sl11 line 0 illustration has no invented feature pointer
+PASS 390px sl12 line 0 exact recorded audio and caption
+PASS 390px sl12 line 0 unchanged navbar and bottom controls
+PASS 390px sl12 line 0 actual photo decoded in ready gallery
+PASS 390px sl12 line 0 middle view and feature text fit the viewport
+PASS 390px sl12 line 0 correct source picture for narration
+PASS 390px sl12 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl12 line 0 feature text accompanies the spoken line
+PASS 390px sl12 line 0 illustration has no invented feature pointer
+PASS 390px sl13 line 0 exact recorded audio and caption
+PASS 390px sl13 line 0 unchanged navbar and bottom controls
+PASS 390px sl13 line 0 actual photo decoded in ready gallery
+PASS 390px sl13 line 0 middle view and feature text fit the viewport
+PASS 390px sl13 line 0 correct source picture for narration
+PASS 390px sl13 line 0 exact eligible feature tags and picture ownership
+PASS 390px sl13 line 1 exact recorded audio and caption
+PASS 390px sl13 line 1 unchanged navbar and bottom controls
+PASS 390px sl13 line 1 actual photo decoded in ready gallery
+PASS 390px sl13 line 1 middle view and feature text fit the viewport
+PASS 390px sl13 line 1 correct source picture for narration
+PASS 390px sl13 line 1 exact eligible feature tags and picture ownership
+PASS 390px every speaking slide and main clip inspected
+PASS 390px sl01 includes feature tags
+PASS 390px sl02 includes feature tags
+PASS 390px sl03 includes feature tags
+PASS 390px sl04 includes feature tags
+PASS 390px sl05 includes feature tags
+PASS 390px sl06 includes feature tags
+PASS 390px sl07 includes feature tags
+PASS 390px sl08 includes feature tags
+PASS 390px sl09 includes feature tags
+PASS 390px sl10 includes feature tags
+PASS 390px sl11 includes feature tags
+PASS 390px sl12 includes feature tags
+PASS 390px source bundle remains unchanged in player
+PASS 390px no microphone access
+PASS 390px closing reaches existing CTA choices
+PASS Actual BMW enters animated gallery before narration
+PASS Distinct BMW photos enter animated gallery before powertrain narration
+PASS No browser errors, failed source images or outbound requests
+PASS Original publication bytes remain unchanged
+BMW gallery: 281/281

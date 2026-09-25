@@ -105,8 +105,12 @@ def _build_text(system: str, msgs: list[dict], schema: type[T], *, max_tokens: i
     for provider in (config.BUILD_PROVIDERS if providers is None else providers):
         try:
             if provider == "gemini":
+                # 3.8 shares its output allowance with hidden reasoning. Keep
+                # room for build JSON with its lowest supported thinking level;
+                # minimal is unsupported. Unknown model overrides keep defaults.
+                thinking = {"thinking_level": "LOW"} if config.GEMINI_TEXT_MODEL == "gemini-3.8-flash" else {}
                 return gemini.text_structured(system, _fallback_transcript(msgs), schema, max_tokens=max_tokens,
-                                              fallback_reason=fallback_reason, timeout_s=timeout)
+                                              fallback_reason=fallback_reason, timeout_s=timeout, **thinking)
             if provider == "claude":
                 return structured(system, msgs[-1]["content"], schema, history=msgs[:-1], max_tokens=max_tokens,
                                   soft=soft, effort=effort, timeout=timeout, model=model, max_retries=max_retries,

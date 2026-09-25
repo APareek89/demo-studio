@@ -1,0 +1,37 @@
+35/35 hedge contracts passed
+PASS Flag-off dispatch retains sequential primary cap and provider metadata
+PASS Flag-off emits no hedge events
+PASS A legacy caller without a turn-cancellation token never starts a race
+PASS Fast primary never launches fallback and still has7s local cap
+PASS Winner metadata stays outside the declared schema
+PASS Race events retain call and turn identity
+PASS Primary can win after hedge launch without another fallback pass
+PASS Late failed lane is observable but cannot overwrite winner
+PASS Delayed fallback wins with one attempt per remaining provider
+PASS Independent provider lanes cannot mutate shared history
+PASS Late returned usage retains original demo and stage
+PASS Late successful response is traced and never replaces the chosen answer
+PASS Early primary failure starts fallback without waiting for hedge delay
+PASS before_hedge cancellation discards pending outputs and starts no further provider
+PASS after_hedge cancellation discards pending outputs and starts no further provider
+PASS Both lanes share one hard call deadline without waiting for threads
+PASS Failure and duplicated configuration never start a second fallback chain
+PASS Existing explicit-credit cooldown skips only that provider
+PASS Simultaneous completions elect one winner and ignore the other
+PASS First raw object cannot beat a schema-valid structured completion
+PASS An already cancelled turn starts no provider lane
+PASS Winner during fallback launch trace prevents late paid dispatch
+PASS Retired launch intent gets exactly one non-dispatched terminal
+PASS History preparation observes winner before fallback dispatch
+PASS History winner closes only its undispatched launch intent
+PASS History preparation observes cancel before fallback dispatch
+PASS History cancel closes only its undispatched launch intent
+PASS History preparation observes deadline before fallback dispatch
+PASS History deadline closes only its undispatched launch intent
+PASS Insufficient prepared budget emits one non-dispatched terminal
+PASS Slow history preparation is deducted from the adapter timeout
+PASS Lost Runware generation retains usage but cannot publish or JSON-repair: not json
+PASS Lost Runware generation retains usage but cannot publish or JSON-repair: {"answer
+PASS Already lost Runware lane does not send its first request
+PASS The experimental flag is off in the current environment
+OUTBOUND_ATTEMPTS 0

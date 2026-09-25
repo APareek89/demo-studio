@@ -105,7 +105,8 @@ class DeliveryCoordinator:
                         usage.trace("runtime-audio-cache-error", "code", latency_ms=(time.monotonic()-started)*1000, error="clip reference persistence failed")
                     await self.send({"type":"audio.end",**envelope,"seq":seq+1})
                 return
-            async for chunk in stream_tts(prepared["text"],speaker=speaker,language=lang,pace=prepared["pace"]):
+            controls = {"temperature": prepared["expressiveness"]} if "expressiveness" in prepared else {}
+            async for chunk in stream_tts(prepared["text"],speaker=speaker,language=lang,pace=prepared["pace"],**controls):
                 if generation != self.generation: return
                 seq += 1
                 await self.send({"type":"audio.chunk",**envelope,"seq":seq,**chunk})

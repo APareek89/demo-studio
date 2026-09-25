@@ -1,0 +1,42 @@
+{
+  "request": {
+    "slides": [
+      {
+        "slide_id": "sl05",
+        "media": [
+          "im05"
+        ]
+      },
+      {
+        "slide_id": "sl07",
+        "callouts": [
+          {
+            "id": "sl07-c1",
+            "text": "Third-row seating",
+            "fact_ids": [
+              "F006"
+            ]
+          },
+          {
+            "id": "sl07-c2",
+            "text": "Two individual second-row seats",
+            "fact_ids": [
+              "F006"
+            ],
+            "part": ""
+          }
+        ]
+      },
+      {
+        "slide_id": "sl09",
+        "callouts": [
+          {
+            "id": "sl09-c1",
+            "part": ""
+          }
+        ]
+      }
+    ]
+  },
+  "ok": true
+}

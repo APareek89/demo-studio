@@ -141,10 +141,98 @@ def run(check):
                 store.write_json(did, "script.json", fallback)
                 fallback_audit = store.path(did, "visual-audit.json").read_bytes()
                 fallback_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
-                check(f"fallback {topic}: unaudited binding keeps the selected proxy and illustration badge", fallback["visual_audit"]["method"] == "rules_fallback" and fallback["visual_audit"]["line_count"] == 0 and fallback_slide["media"] == [{"image_id": ref, "from_line": 0, "proxy": True, "proxy_reason": f"closest by part: {part}"}])
+                check(f"fallback {topic}: unaudited binding keeps the selected proxy and illustration badge", fallback["visual_audit"]["method"] == "rules_fallback" and fallback["visual_audit"]["line_count"] == 0 and fallback_slide["media"] == [{"image_id": ref, "from_line": 0, "proxy": True, "proxy_reason": "Author-selected illustration — pixel audit unavailable"}])
                 labels = fallback_slide["callouts"]
                 check(f"fallback {topic}: cited wording and reveal survive without a part or anchor", len(labels) == 1 and labels[0]["text"] == line["text"] and labels[0]["fact_ids"] == line["fact_ids"] and labels[0]["reveal_on_line"] == 0 and labels[0]["part"] == "" and labels[0]["placement"] == "panel" and all(labels[0][key] is None for key in ("anchor", "part_box", "label_pos")))
                 check(f"fallback {topic}: build does not manufacture pixel evidence", store.path(did, "visual-audit.json").read_bytes() == fallback_audit)
+            unavailable = {"method": "rules_fallback", "lines": [], "images": [], "changes": []}
+            before_inputs = copy.deepcopy((lines, und, unavailable))
+            retained = deck.choose_media(seg, lines, und, unavailable, "im03")
+            check("unavailable audit: Author pictures retain exact spoken order and the two-picture limit",
+                  [m["image_id"] for m in retained] == ["im08", "im06"] and [m["from_line"] for m in retained] == [0, 1])
+            check("unavailable audit: every retained picture explicitly remains illustration",
+                  all(m["proxy"] and m["proxy_reason"] == "Author-selected illustration — pixel audit unavailable" for m in retained))
+            check("unavailable audit: picture selection does not alter script or audit", (lines, und, unavailable) == before_inputs)
+            check("unavailable audit: held lines cannot allocate an image or offset timing",
+                  deck.choose_media(seg, held, und, unavailable, "im03")[0]["image_id"] == "im06"
+                  and deck.choose_media(seg, held, und, unavailable, "im03")[0]["from_line"] == 0)
+            for name, other_audit in [
+                ("missing method", {"lines": []}), ("completed empty audit", {"method": "gemini_pixels", "lines": []}),
+                ("partial rejection", {**unavailable, "lines": partial["lines"]}),
+                ("wrong-picture rejection", {**unavailable, "lines": [{"line_id": "l1", "visual": "none", "coverage": "none"}]}),
+                ("retained correction", {**unavailable, "changes": [{"line_id": "l1", "from": "im06", "to": None}]}),
+                ("incomplete image audit", {**unavailable, "images": [{"visual": "im06"}]})]:
+                rejected = deck.choose_media({"title": "Terms", "topic": "terms"}, [lines[1]], und, other_audit, "im03")
+                check(f"unavailable audit: {name} cannot use the unavailable-audit exception",
+                      all(m["proxy_reason"] != "Author-selected illustration — pixel audit unavailable" for m in rejected))
+            for name, visual in [("explicit none", {"kind": "none", "ref": "im06"}),
+                                 ("video shot", {"kind": "shot", "ref": "im06"}),
+                                 ("foreign picture", {"kind": "image", "ref": "not-this-demo"}),
+                                 ("missing picture", {"kind": "image", "ref": ""})]:
+                rejected = deck.choose_media(seg, [{**lines[1], "visual": visual}], und, unavailable, "im03")
+                check(f"unavailable audit: {name} cannot be restored as an Author illustration",
+                      all(m["proxy_reason"] != "Author-selected illustration — pixel audit unavailable" for m in rejected))
+            # The BMW failure reduced fifteen Author-selected uploaded views to
+            # two generic engine/hero proxies after one failed vision audit.
+            # Synthetic identities preserve that regression without user files.
+            diverse_images = [{**images[0], "id": f"view-{i}"} for i in range(15)]
+            diverse_und = {**und, "images": diverse_images}
+            diverse_segments = [{"title": "Engine" if i < 3 else "Ownership", "topic": "engine" if i < 3 else "ownership",
+                                 "lines": [{"id": f"view-line-{i}", "text": "Engine details" if i < 3 else "Ownership terms",
+                                            "visual": {"kind": "image", "ref": f"view-{i}"}}]} for i in range(15)]
+            generic = {m["image_id"] for segment in diverse_segments
+                       for m in deck.choose_media(segment, segment["lines"], diverse_und, {"lines": []}, "view-14")}
+            diverse = [m for segment in diverse_segments
+                       for m in deck.choose_media(segment, segment["lines"], diverse_und, unavailable, "view-14")]
+            check("unavailable audit: reproduces fifteen selected views collapsing to two generic proxies", len(generic) == 2)
+            check("unavailable audit: all fifteen selected views survive without claiming visual proof",
+                  {m["image_id"] for m in diverse} == {f"view-{i}" for i in range(15)} and all(m["proxy"] for m in diverse))
+            store.write_json(did, "script.json", {**script, "visual_audit": unavailable})
+            retained_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("unavailable audit: built proxy labels keep their own picture, citations and narration line",
+                  {(c["image_id"], tuple(c["fact_ids"]), c["reveal_on_line"]) for c in retained_slide["callouts"]}
+                  == {("im08", ("F1",), 0), ("im06", ("F2",), 1)})
+            check("unavailable audit: built proxy labels never acquire feature geometry",
+                  all(c["placement"] == "panel" and c["part"] == "" and all(c[k] is None for k in ("anchor", "part_box", "label_pos")) for c in retained_slide["callouts"]))
+            joined = deck.slides_with_script([retained_slide], {**script, "visual_audit": unavailable})[0]
+            check("unavailable audit: script join preserves exact picture-to-line mapping", joined["media"] == retained_slide["media"]
+                  and [joined["lines"][m["from_line"]]["id"] for m in joined["media"]] == ["l0", "l1"])
+            for label, ref, cited, reveal, text in [
+                    ("first picture fact on second picture", "im06", ["F1"], 1, "Turbo engine"),
+                    ("mixed picture facts", "im06", ["F1", "F2"], 1, "Turbo engine and alloy wheel"),
+                    ("second picture revealed before its line", "im06", ["F2"], 0, "Alloy wheel"),
+                    ("second picture revealed beyond the script", "im06", ["F2"], 99, "Alloy wheel"),
+                    ("first picture revealed in second picture window", "im08", ["F1"], 1, "Turbo engine")]:
+                candidate = deck.DeckOut(titles=[], callouts=[deck.CalloutOut(slide_id=retained_slide["id"], image_id=ref,
+                    text=text, fact_ids=cited, part="wheel" if ref == "im06" else "bonnet", reveal_on_line=reveal)])
+                with patch.object(config, "MOCK_LLM", False), patch.object(deck, "_ask_model", return_value=candidate):
+                    rejected_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+                check(f"unavailable audit model captions: {label} is rejected before placement",
+                      not any(c["text"] == text for c in rejected_slide["callouts"])
+                      and {(c["image_id"], tuple(c["fact_ids"]), c["reveal_on_line"]) for c in rejected_slide["callouts"]}
+                      == {("im08", ("F1",), 0), ("im06", ("F2",), 1)})
+            valid_pair = deck.DeckOut(titles=[], callouts=[
+                deck.CalloutOut(slide_id=retained_slide["id"], image_id=ref, text=text, fact_ids=[fid], part=part, reveal_on_line=index)
+                for index, (ref, text, fid, part) in enumerate([("im08", "Turbo engine", "F1", "bonnet"), ("im06", "Alloy wheel", "F2", "wheel")])])
+            with patch.object(config, "MOCK_LLM", False), patch.object(deck, "_ask_model", return_value=valid_pair):
+                accepted_pair = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("unavailable audit model captions: correct words, picture, citations and timing survive",
+                  {(c["image_id"], c["text"], tuple(c["fact_ids"]), c["reveal_on_line"]) for c in accepted_pair["callouts"]}
+                  == {("im08", "Turbo engine", ("F1",), 0), ("im06", "Alloy wheel", ("F2",), 1)}
+                  and all(c["placement"] == "panel" and c["anchor"] is None for c in accepted_pair["callouts"]))
+            uncited_first = copy.deepcopy(script)
+            uncited_first["visual_audit"] = unavailable
+            uncited_first["segments"][0]["lines"][0]["fact_ids"] = []
+            store.write_json(did, "script.json", uncited_first)
+            uncited_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("unavailable audit: first picture cannot borrow the next picture's cited caption",
+                  [(c["image_id"], c["fact_ids"], c["reveal_on_line"]) for c in uncited_slide["callouts"]] == [("im06", ["F2"], 1)])
+            store.write_json(did, "script.json", {**script, "visual_audit": unavailable})
+            store.update(did, lambda d: next(src for src in d["sources"] if src["id"] == sources[1]["id"]).update(use_in_demo=False))
+            excluded_slide = next(s for s in deck.build(did, lambda _: None)["slides"] if s.get("segment_id") == "engine")
+            check("unavailable audit: excluded uploaded pictures stay excluded at the real build boundary",
+                  all(m["image_id"] != "im06" for m in excluded_slide["media"]) and all(c["image_id"] != "im06" for c in excluded_slide["callouts"]))
+            store.update(did, lambda d: next(src for src in d["sources"] if src["id"] == sources[1]["id"]).update(use_in_demo=True))
             store.write_json(did, "visual-audit.json", audit)
             multi_cited = copy.deepcopy(script)
             multi_cited["visual_audit"] = partial

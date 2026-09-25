@@ -1,0 +1,53 @@
+PASS protected TRUTH_RULES remains byte-identical to the approved baseline
+PASS protected EVIDENCE_RULES remains byte-identical to the approved baseline
+PASS protected PRINCIPLES remains byte-identical to the approved baseline
+PASS category order remains unchanged: compact suv
+PASS category order remains unchanged: premium suv
+PASS category order remains unchanged: electric scooter
+PASS category order remains unchanged: _generic
+PASS actual Coach/Planner/Author envelopes: compact suv, everyday, en-IN
+PASS actual Coach/Planner/Author envelopes: compact suv, informed, hi-IN
+PASS actual Coach/Planner/Author envelopes: compact suv, expert, hinglish
+PASS actual Coach/Planner/Author envelopes: premium suv, everyday, en-IN
+PASS actual Coach/Planner/Author envelopes: premium suv, informed, hi-IN
+PASS actual Coach/Planner/Author envelopes: premium suv, expert, hinglish
+PASS actual Coach/Planner/Author envelopes: electric scooter, everyday, en-IN
+PASS actual Coach/Planner/Author envelopes: electric scooter, informed, hi-IN
+PASS actual Coach/Planner/Author envelopes: electric scooter, expert, hinglish
+PASS actual Coach/Planner/Author envelopes: unlisted industrial product, everyday, en-IN
+PASS actual Coach/Planner/Author envelopes: unlisted industrial product, informed, hi-IN
+PASS actual Coach/Planner/Author envelopes: unlisted industrial product, expert, hinglish
+PASS the assembled writer leads with direct human speech rather than an outline register
+PASS planner prose cannot authorize unsupported benefits or hide material prerequisites
+PASS writer allows specific personal guidance without mandatory phrase prefixes
+PASS writer removes conflicting transition and unique-first-word prohibitions
+PASS writer retains evidence and visual scope inside conversational joins
+PASS brand courtesy and technical depth do not override conversational speech
+PASS writer selects sparse expressive metadata without spoken markup or duration padding
+PASS authored guide wording survives unchanged: Now let me show you the rear-seat layout
+PASS authored guide wording survives unchanged: If we look at the gearbox choice, the petrol engine comes with an automatic
+PASS authored guide wording survives unchanged: You can set the temperature separately across all three rows
+PASS validator retains refusal: numeric output without citation
+PASS validator retains refusal: spelled equipment count without citation
+PASS validator retains refusal: unpublished acceleration without citation
+PASS validator retains refusal: invented fact identity
+PASS validator retains refusal: human-rejected fact identity
+PASS validator retains refusal: uncited warranty claim
+PASS sourced PS retains its full quantity and existing everyday warning
+PASS complete technical quantity is allowed in grounded deeper detail
+PASS unknown image identity is rejected without inventing a replacement
+PASS excluded image cannot remain bound
+PASS equipment cannot imply a seamless-shift outcome
+PASS an explicitly sourced outcome retains its marketing evidence
+PASS authored narration remains statements, not a new reply gate
+PASS checkin cannot bypass citations for a numeric or policy claim
+PASS reviewed plain-language substitution preserves meaning: 160 PS with an IVT
+PASS reviewed plain-language substitution preserves meaning: A DCT and 253 Nm
+PASS reviewed plain-language substitution preserves meaning: Hyundai SmartSense features
+PASS reviewed plain-language substitution preserves meaning: ISOFIX child-seat mounts
+PASS three complete short thoughts become three delivery batches verbatim
+PASS three-minute content margin and publication minimum remain unchanged
+PASS conversational delivery preserves an owner's selected two-minute duration
+PASS all prompt contracts ran mocked, isolated and without provider/socket calls
+Script prompt contracts: 51/51
+OUTBOUND_ATTEMPTS 0

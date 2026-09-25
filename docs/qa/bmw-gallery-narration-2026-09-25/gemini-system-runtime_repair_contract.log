@@ -1,0 +1,108 @@
+106/106 runtime repair contracts passed
+PASS Safety question does not turn generic variant conditions into a trim
+PASS q067 actual whole-page absence is limited to retrieved evidence
+PASS q071 actual whole-page absence is limited to retrieved evidence
+PASS q025 actual omitted purchase/payable term is detected
+PASS q079 actual omitted purchase/payable term is detected
+PASS Explicit warranty commercial condition accepted: The extended warranty is payable separately for petrol variants.
+PASS Explicit warranty commercial condition accepted: The extended warranty can be purchased for petrol variants.
+PASS Explicit warranty commercial condition accepted: The extended warranty is available at an additional charge for petrol variants.
+PASS A negated payment phrase does not satisfy payable condition
+PASS Alexa device purchase condition is preserved
+PASS An unrelated OTA claim does not invent an Alexa purchase requirement
+PASS A negative availability sentence does not manufacture a purchase claim
+PASS Unrelated paid accessories cannot satisfy warranty payment condition
+PASS Negation inside an Echo purchase clause cannot satisfy its condition
+PASS A device bought separately preserves purchase dependency
+PASS A device sold separately preserves purchase dependency
+PASS Repair schema rejects tool_calls
+PASS Repair schema rejects cta
+PASS focused_q030 recorded useful composition survives without another call
+PASS focused_q030 no unrelated fact or invented release survives
+PASS focused_q049 recorded useful composition survives without another call
+PASS focused_q049 no unrelated fact or invented release survives
+PASS Saved connected-car omission now gets one bounded repair
+PASS Failed connected-car repair retains supported scope and purchase
+PASS An explicit mixed economy-and-tank question keeps its tank answer
+PASS Opaque relative scope permits its grammatical noun: SX trim and above
+PASS Opaque relative scope permits its grammatical noun: SX variant and above
+PASS Opaque relative scope does not imply King is above SX
+PASS An exact SX claim does not borrow an opaque relative scope
+PASS Scope prefix keeps proper names and removes only leading transition
+PASS Scope prefix keeps proper names and removes only leading transition
+PASS Verification wording cannot smuggle a positive claim: I could not find the specific terms and the car has titanium armour in our records.
+PASS Verification wording cannot smuggle a positive claim: The available details do not state comfort because the Creta has bulletproof glass.
+PASS Verification wording cannot smuggle a positive claim: You can check the brochure because the Creta has bulletproof glass.
+PASS Verification wording cannot smuggle a positive claim: You can check the brochure for the CRETA’s 12 airbags.
+PASS Verification wording cannot smuggle a positive claim: We can check the dealer about the standard bulletproof cabin.
+PASS Actual warranty repair timeout retains the precise standard-coverage limit
+PASS One repair can rescue a rejected substantive limitation
+PASS Explicit local-file source request is declined before provider or fetch
+PASS Negated or quoted file example does not swallow a product question
+PASS Negated or quoted file example does not swallow a product question
+PASS Negated or quoted file example does not swallow a product question
+PASS q028 actual missing attribute and verification basis survive
+PASS q028 intact specific limitation needs no model repair
+PASS q030 actual missing attribute and verification basis survive
+PASS q030 intact specific limitation needs no model repair
+PASS q049 actual missing attribute and verification basis survive
+PASS q049 intact specific limitation needs no model repair
+PASS Source-limitation normalization cannot admit a positive presupposition: I could not verify comfort because the Creta has bulletproof glass from my available records.
+PASS Source-limitation normalization cannot admit a positive presupposition: I do not have verified comfort in the bulletproof cabin from the available records.
+PASS q024 repair preserves language and audience instructions
+PASS q024 repair preserves customer profile and guide
+PASS q024 actual rejected/empty draft gets exactly one repair
+PASS q024 corrected mock composition passes unchanged grounding guards
+PASS q024 original evidence IDs and exact rejection feedback are preserved
+PASS q024 repair provider and original decision trace remain reviewable
+PASS q024 one repair retains whole-turn deadline
+PASS q027 repair preserves language and audience instructions
+PASS q027 repair preserves customer profile and guide
+PASS q027 actual rejected/empty draft gets exactly one repair
+PASS q027 corrected mock composition passes unchanged grounding guards
+PASS q027 original evidence IDs and exact rejection feedback are preserved
+PASS q027 repair provider and original decision trace remain reviewable
+PASS q027 one repair retains whole-turn deadline
+PASS q039 repair preserves language and audience instructions
+PASS q039 repair preserves customer profile and guide
+PASS q039 actual rejected/empty draft gets exactly one repair
+PASS q039 corrected mock composition passes unchanged grounding guards
+PASS q039 original evidence IDs and exact rejection feedback are preserved
+PASS q039 repair provider and original decision trace remain reviewable
+PASS q039 one repair retains whole-turn deadline
+PASS q041 repair preserves language and audience instructions
+PASS q041 repair preserves customer profile and guide
+PASS q041 actual rejected/empty draft gets exactly one repair
+PASS q041 corrected mock composition passes unchanged grounding guards
+PASS q041 original evidence IDs and exact rejection feedback are preserved
+PASS q041 repair provider and original decision trace remain reviewable
+PASS q041 one repair retains whole-turn deadline
+PASS q025 repair preserves language and audience instructions
+PASS q025 repair preserves customer profile and guide
+PASS q025 actual rejected/empty draft gets exactly one repair
+PASS q025 corrected mock composition passes unchanged grounding guards
+PASS q025 original evidence IDs and exact rejection feedback are preserved
+PASS q025 repair provider and original decision trace remain reviewable
+PASS q025 one repair retains whole-turn deadline
+PASS q079 repair preserves language and audience instructions
+PASS q079 repair preserves customer profile and guide
+PASS q079 actual rejected/empty draft gets exactly one repair
+PASS q079 corrected mock composition passes unchanged grounding guards
+PASS q079 original evidence IDs and exact rejection feedback are preserved
+PASS q079 repair provider and original decision trace remain reviewable
+PASS q079 one repair retains whole-turn deadline
+PASS Safety's approved all-range statement survives with corrected empty trim scope
+PASS No repair for good answer
+PASS No repair for safe direct refusal
+PASS No repair for provider outage
+PASS No repair for insufficient deadline
+PASS Unsupported repair never replaces a surviving original answer
+PASS Failed revalidation never starts a second repair
+PASS A clean limitation repair cannot erase a surviving supported answer
+PASS Exact ops limitation-plus-context repair preserves original citations
+PASS Limitation plus generic next step is a decline, despite model answered flag
+PASS A context-only greeting can remain answered
+PASS Repair timeout retains honest original fallback
+PASS Repair-call failure is explicit without changing first-call outage classification
+PASS Cancelled repair cannot return a late delivery
+OUTBOUND_ATTEMPTS 0

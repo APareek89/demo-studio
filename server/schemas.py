@@ -109,7 +109,7 @@ class Brand(BaseModel):
 # Linked: server/agents/understand.py:run stores it; server/agents/plan.py:run uses it to frame the story.
 class Product(BaseModel):
     name: str
-    category: str = Field(description="e.g. electric scooter, laptop, SaaS analytics tool")
+    category: str = Field(description="The actual product category supported by the supplied source evidence, consistent with the product summary; do not copy a schema example or a conflicting product hint")
     summary: str = Field(description="2 sentences, factual")
     audience: str = Field(description="who buys this, 1 sentence")
 
@@ -381,7 +381,7 @@ class LineOut(BaseModel):
     visual: Visual
     fact_ids: list[str] = Field(description="every fact this line relies on; empty only for pure transition/opinion lines")
     card: Literal["none", "facts", "price", "summary", "contrast"] = "none"
-    delivery: dict[str, Any] = Field(default_factory=dict, description="Subtle delivery metadata only: tone warm/upbeat/calm/reassuring, optional pace 0.9–1.08. Never put emotion tags or SSML in text.")
+    delivery: dict[str, Any] = Field(default_factory=dict, description="Subtle delivery metadata only: tone warm/upbeat/calm/reassuring, optional pace 0.9–1.08. Keep ordinary narration at pace 1.0. Most lines omit expressiveness; an occasional meaningful showcase line may use optional numeric expressiveness 0.5–0.8 for supported voice variation, not guaranteed word emphasis or pitch/loudness control. Never put emotion tags or SSML in text.")
 
 
 # Group a short narration batch with its optional check-in and deeper explanation.

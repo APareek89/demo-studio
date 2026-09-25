@@ -1,0 +1,22 @@
+test_cache_reuses_only_exact_prompt_content_and_revision (__main__.UnderstandBatchContract.test_cache_reuses_only_exact_prompt_content_and_revision) ... ok
+test_category_empty_majority_does_not_erase_primary (__main__.UnderstandBatchContract.test_category_empty_majority_does_not_erase_primary) ... ok
+test_category_outlier_is_reconciled_in_real_read_merge (__main__.UnderstandBatchContract.test_category_outlier_is_reconciled_in_real_read_merge) ... ok
+test_category_tie_and_plurality_preserve_primary_source (__main__.UnderstandBatchContract.test_category_tie_and_plurality_preserve_primary_source) ... ok
+test_category_two_of_three_can_correct_first_batch (__main__.UnderstandBatchContract.test_category_two_of_three_can_correct_first_batch) ... ok
+test_default_twenty_thousand_budget_preserves_page_order (__main__.UnderstandBatchContract.test_default_twenty_thousand_budget_preserves_page_order) ... ok
+test_empty_and_legacy_text_fallback_keep_evidence_state (__main__.UnderstandBatchContract.test_empty_and_legacy_text_fallback_keep_evidence_state) ... ok
+test_equal_page_numbers_in_different_sources_remain_separate (__main__.UnderstandBatchContract.test_equal_page_numbers_in_different_sources_remain_separate) ... ok
+test_exact_tables_nulls_unicode_locators_and_roles_survive (__main__.UnderstandBatchContract.test_exact_tables_nulls_unicode_locators_and_roles_survive) ... ok
+test_existing_pieces_of_one_pdf_page_stay_together (__main__.UnderstandBatchContract.test_existing_pieces_of_one_pdf_page_stay_together) ... ok
+test_nonpage_document_chunks_remain_bounded (__main__.UnderstandBatchContract.test_nonpage_document_chunks_remain_bounded) ... ok
+test_reader_category_is_source_led_without_schema_example (__main__.UnderstandBatchContract.test_reader_category_is_source_led_without_schema_example) ... ok
+test_run_supplies_batch_context_revision_and_full_evidence (__main__.UnderstandBatchContract.test_run_supplies_batch_context_revision_and_full_evidence) ... ok
+test_single_and_agreeing_batches_keep_primary_product_identity (__main__.UnderstandBatchContract.test_single_and_agreeing_batches_keep_primary_product_identity) ... ok
+test_single_batch_marks_all_chunks_without_claiming_factual_completeness (__main__.UnderstandBatchContract.test_single_batch_marks_all_chunks_without_claiming_factual_completeness) ... ok
+test_single_oversized_page_is_not_split_or_truncated (__main__.UnderstandBatchContract.test_single_oversized_page_is_not_split_or_truncated) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.055s
+
+OK
+OUTBOUND_ATTEMPTS 0

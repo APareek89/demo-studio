@@ -145,7 +145,9 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertIn(TRANSLATION_LADDER, prompt)
         self.assertIn("A FIT-CHECK IS A LAST RESORT", prompt)
         self.assertLess(prompt.index("TRANSLATION LADDER"), prompt.index("A FIT-CHECK IS A LAST RESORT"))
-        self.assertIn("OPENINGS. Never open a segment with a stock signpost", prompt)
+        self.assertIn("OPENINGS. Avoid stock signposts", prompt)
+        self.assertIn("A natural transition is allowed", prompt)
+        self.assertIn("occasional repeated ordinary first words are fine", prompt)
         self.assertTrue(all(shape in prompt for shape in SIGNPOSTS))
         self.assertNotIn("panoramic sunroof", author.AUTHOR_SYSTEM)
         self.assertNotIn("Show standout features early", author.AUTHOR_SYSTEM)
@@ -198,10 +200,12 @@ class NarrativeRolesContract(unittest.TestCase):
         self.assertIn("The initial runtime route leads with the first unseen fundamental, then follows the buyer’s strongest signal; later refinements retain the buyer’s requested order, so each proof must stand alone.", prompt)
         self.assertNotIn("runtime plays the buyer's strongest signal first", prompt)
 
-    def test_rewrite_preserves_unflagged_lines_and_repairs_whole_ideas(self):
+    def test_rewrite_preserves_valid_meaning_and_repairs_whole_ideas(self):
         rewrite = self.author_calls[1]["content"]
-        self.assertIn("VALIDATOR ISSUES — each names a specific segment or line. Fix ONLY those.", rewrite)
-        self.assertIn("every unflagged line reproduced exactly as you wrote it", rewrite)
+        self.assertIn("Fix every reported issue and return the full script.", rewrite)
+        self.assertIn("Preserve valid meaning, citations, settled stop order and budgets", rewrite)
+        self.assertIn("only passed these mechanical checks", rewrite)
+        self.assertNotIn("every unflagged line reproduced exactly", rewrite)
         self.assertIn("CUT A WHOLE\nIDEA, DO NOT COMPRESS A SENTENCE", rewrite)
         self.assertIn('Issues whose text contains the word "warning" are advisory', rewrite)
 

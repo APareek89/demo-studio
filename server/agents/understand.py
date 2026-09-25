@@ -94,7 +94,9 @@ agent will be allowed to say. Rules:
   absence from this batch does not establish absence from the whole upload. Return fewer or no unknowns as needed.
 - BRAND: from the brand guideline if given; otherwise infer a sensible, restrained profile from the product and
   its category and say so in persona_hint.
-- PRODUCT: name, category, a factual 2-sentence summary, and who buys it.
+- PRODUCT: name, category, a factual 2-sentence summary, and who buys it. Classify the actual
+  product described by this evidence, consistently with its summary. The product hint can be
+  stale or misnamed; source evidence wins. Never copy a schema example as the category.
 Return only what the schema asks for.""" + "\n\n" + TRUTH_RULES
 
 
@@ -334,6 +336,24 @@ def _verified_manifest(demo_id: str, demo: dict) -> schemas.FactsOut | None:
     return schemas.FactsOut(product=schemas.Product(**product), facts=facts, unknowns=unknowns, brand=schemas.Brand(**brand))
 
 
+def _product_from_batches(outputs):
+    """Reconcile a category outlier without replacing the primary source identity.
+
+    Each reader already classifies the same product. A strict majority of at
+    least two agreeing batches can correct one erroneous category; a tie or
+    lone partial batch cannot override the primary result. Other product fields
+    and every cited fact retain their existing source-precedence behavior.
+    """
+    product = outputs[0].product
+    categories = [" ".join(result.product.category.split()).casefold() for result in outputs]
+    first = categories[0]
+    for category in dict.fromkeys(categories):
+        if category and category != first and categories.count(category) > len(outputs) / 2 and categories.count(category) >= 2:
+            agreed = next(result.product.category.strip() for result, key in zip(outputs, categories) if key == category)
+            return product.model_copy(update={"category": agreed})
+    return product
+
+
 # Turn uploaded media and source text into understanding.json: visual tags, cited facts and gaps.
 # server/graph.py:understand invokes this stage; server/agents/plan.py:run consumes its saved output.
 def run(demo_id: str, emit, instruction: str = "") -> dict:
@@ -511,7 +531,7 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
                 outputs = [manifest]
                 break
             raise RuntimeError(f"Fact extraction failed in batch {batch_number}: {claude.describe_error(e)}") from e
-    # Combine batch facts and gaps, keeping the first result's product and brand description.
+    # Combine batch facts/gaps with primary product/brand identity; reconcile a category outlier.
     # Exact repeated assertions are deduplicated here before server/knowledge.py:reconcile assigns durable identity.
     # Exact duplicates across overlapping chunk boundaries are the same extraction.
     # Mock fixtures intentionally contain identical rows; retain their legacy contract.
@@ -525,7 +545,10 @@ def run(demo_id: str, emit, instruction: str = "") -> dict:
         for unknown in result.unknowns:
             if unknown.question not in {u.question for u in merged_unknowns}:
                 merged_unknowns.append(unknown)
-    out = outputs[0].model_copy(update={"facts": merged_facts, "unknowns": merged_unknowns})
+    product = _product_from_batches(outputs)
+    if product.category != outputs[0].product.category:
+        emit(f"Product category reconciled across evidence batches: {product.category}.")
+    out = outputs[0].model_copy(update={"product": product, "facts": merged_facts, "unknowns": merged_unknowns})
 
     # Add working fact and gap IDs plus review fields to the model output.
     # These fact IDs are reconciled with previous knowledge later; gaps start with status=open.

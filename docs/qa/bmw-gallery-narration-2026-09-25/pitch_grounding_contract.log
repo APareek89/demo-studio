@@ -1,0 +1,49 @@
+PASS pitch: observed unsupported warranty relation is dropped before speech
+PASS pitch: rejecting custom proof preserves the reviewed safety/ownership route
+PASS pitch: observed uncited installation bridge is dropped before speech
+PASS pitch: an equipment citation alone cannot license an installation benefit
+PASS pitch: uncited free product prose never reaches bridge speech: The rear mounting points sit under a removable panel.
+PASS pitch: uncited free product prose never reaches bridge speech: The cabin surface feels velvety to the touch.
+PASS pitch: uncited free product prose never reaches bridge speech: Next: Child seat mounting. The anchors sit beneath a panel.
+PASS pitch: a neutral cue cannot be attached to the wrong route segment
+PASS pitch: equipment-only proof does not license properly secured child-seat outcome
+PASS pitch: unreviewed property detail never reaches batch speech: For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin.
+PASS pitch: unreviewed property detail never reaches bridge speech: For your child seat, ISOFIX child seat mounts come standard across all variants, providing built-in mounting points in the rear cabin.
+PASS pitch: unreviewed property detail never reaches batch speech: ISOFIX mounts are standard and made from titanium.
+PASS pitch: unreviewed property detail never reaches bridge speech: ISOFIX mounts are standard and made from titanium.
+PASS pitch: unreviewed property detail never reaches batch speech: ISOFIX mounts are standard. They are hidden beneath a removable panel.
+PASS pitch: unreviewed property detail never reaches bridge speech: ISOFIX mounts are standard. They are hidden beneath a removable panel.
+PASS pitch: main-route proof is not repeated in an optional batch
+PASS pitch: main-route proof is not repeated in an optional bridge
+PASS pitch: exact reviewed proof remains available for the selected buyer need
+PASS pitch: reviewed text cannot be relabelled with different fact ids
+PASS pitch: invalid model citations are not silently stripped into a trusted proof
+PASS pitch: an unverified script line cannot authorize new speech
+PASS pitch: a script line with unsupported citations supplies no reviewed proof
+PASS pitch: existing source-condition safeguards still apply to reviewed proof
+PASS pitch: unapproved script supplies no custom proof while the route remains
+PASS pitch: no exact reviewed proof omits only the optional batch
+PASS pitch: unknown relation rejects batch The warranty lasts 3 years or 100 000 km.
+PASS pitch: unknown relation rejects bridge The warranty lasts 3 years or 100 000 km.
+PASS pitch: unknown relation rejects batch The warranty lasts 3 years and 100 000 km, whichever occurs first.
+PASS pitch: unknown relation rejects bridge The warranty lasts 3 years and 100 000 km, whichever occurs first.
+PASS pitch: unknown relationship can be stated honestly without inventing one
+PASS pitch: plain equipment and a proposed personal fit check survive
+PASS pitch: the exact route-owned neutral cue needs no fabricated product claim
+PASS pitch: prompt supplies exact neutral cues by route and forbids other uncited prose
+PASS pitch: an unreviewed title cannot authorize a neutral spoken cue
+PASS pitch: a stated volume cannot lose its explicit measurement basis
+PASS pitch: complete volume scope and measurement basis survive
+PASS pitch: the next reviewed route title supplies its own neutral cue
+PASS pitch: a measurement basis stated only in the quote cannot be omitted
+PASS pitch: a quoted measurement code is approved numeric evidence
+PASS pitch: explicitly documented relation survives despite unrelated missing exclusions
+PASS pitch: an explicitly stated installation assessment is not blanket-blocked
+PASS pitch: runtime requests LOW thinking with the same schema, proof context and token ceiling
+PASS pitch: full evidence and scope-before-benefit rules reach the real prompt
+PASS pitch: the prompt exposes reviewed proof and limits factual wording to it
+PASS pitch: reviewed factual reuse keeps selected need-led proof order and customer context
+PASS pitch: computed focus alone cannot create stated need or attributed preference
+PASS pitch: tests made no provider/network calls or source/script writes
+Pitch grounding contracts: 47/47
+OUTBOUND_ATTEMPTS 0

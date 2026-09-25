@@ -152,7 +152,97 @@ for category in ("compact suv", "premium suv", "electric scooter", "unlisted ind
                 valid = valid and principles.PRINCIPLES in system and principles.audience_instruction(audience) in system
         check(f"actual Coach/Planner/Author envelopes: {category}, {audience}, {language}", valid)
 
+# This regression checks the actual assembled writer instructions, including the
+# shared craft block. The previous prompt banned every transition phrase and
+# required a unique first word, rewarding 'Managing/Providing/Supporting' even
+# when each sentence retained the same brochure cadence. It is an instruction
+# contract, not evidence that a model will write good dialogue on every run.
+writer_system = captured["author"][0]
+check("the assembled writer leads with direct human speech rather than an outline register",
+      writer_system.startswith("You are writing what a helpful human guide actually says to one visitor")
+      and writer_system.index("let I/we/you occur naturally") < writer_system.index("CONTINUITY")
+      and "not a mandatory pronoun in every line or a prefix" in writer_system
+      and "rewrite the sentence itself rather than adding a" in writer_system)
+check("planner prose cannot authorize unsupported benefits or hide material prerequisites",
+      "adjectives, benefit labels and suggested sentences are untrusted" in writer_system
+      and "Re-check every capability or felt outcome against the actual cited fact" in writer_system
+      and "Never hide a material prerequisite in deeper detail" in writer_system
+      and "drop\nthat claim instead if its complete qualification cannot fit" in writer_system)
+check("writer may repair a mixed visual brief within settled evidence and budgets",
+      "keep one\n   already assigned literal subject" in writer_system
+      and "current approved facts outrank a shorter or conflicting outline" in writer_system
+      and "unchanged whole-stop budget" in writer_system
+      and "do not add a stop, borrow unassigned claims, repeat evidence or pad the speech" in writer_system)
+check("writer allows specific personal guidance without mandatory phrase prefixes",
+      "occasional first-person guidance" in writer_system
+      and "not\n  mandatory openers, a phrase list to rotate" in writer_system
+      and "do not repeat that reset on every line" in writer_system)
+check("writer removes conflicting transition and unique-first-word prohibitions",
+      "a topic label, a transition phrase" not in writer_system
+      and "no two may open with the same word" not in writer_system
+      and "occasional repeated ordinary first words are fine" in writer_system)
+check("writer retains evidence and visual scope inside conversational joins",
+      "only refer to a part the assigned picture really shows" in writer_system
+      and "a transition that mentions another product\n  capability needs that capability's own assigned fact IDs too" in writer_system
+      and "an existing id does not\n   prove an added benefit" in writer_system)
+check("brand courtesy and technical depth do not override conversational speech",
+      "A courteous or precise brand voice can" in writer_system
+      and "Let the chosen audience decide the depth of explanation, not whether the guide sounds human" in writer_system)
+check("writer selects sparse expressive metadata without spoken markup or duration padding",
+      "optional delivery.expressiveness" in writer_system
+      and "At most one in four main lines" in writer_system
+      and "keep pace at 1.0" in writer_system
+      and "not a direct pitch or loudness control" in writer_system
+      and "exact words and punctuation remain the script the customer sees and hears" in writer_system)
+
+# Reach the real repair envelope with an invalid proposed model response. This
+# proves that a repair no longer freezes unflagged-but-poor wording while the
+# real uncited-claim validator still initiates the bounded repair path.
+repair_calls = []
+def capture_repair(system, content, schema, **kwargs):
+    assert schema is schemas.ScriptOut
+    repair_calls.append((system, content))
+    if len(repair_calls) == 1:
+        return schemas.ScriptOut.model_validate(draft("The warranty includes 99 years.", []))
+    raise CapturedAuthor()
+with patch.object(author.claude, "structured", side_effect=capture_repair), \
+        patch("server.llm.gemini.client", side_effect=blocked), \
+        patch("server.llm.runware._post", side_effect=blocked), \
+        patch("server.llm.claude._client_opts", side_effect=blocked):
+    try:
+        author.run(demo["id"], lambda message: None)
+    except CapturedAuthor:
+        pass
+    else:
+        raise AssertionError("Author did not reach its intercepted repair boundary")
+repair_system, repair_content = repair_calls[-1]
+check("actual repair preserves valid meaning without freezing unflagged bad prose",
+      len(repair_calls) == 2 and "YOUR DRAFT" in repair_content
+      and "Preserve valid meaning, citations, settled stop order and budgets" in repair_content
+      and "only passed these mechanical checks" in repair_content
+      and "every unflagged line reproduced exactly" not in repair_content
+      and "states a figure or claim without a fact id" in repair_content
+      and repair_system == writer_system)
+
 und = registry()
+conversational = copy.deepcopy(und)
+conversational["facts"].extend([
+    fact("F005", "Second-row arrangement", "Two individual second-row seats"),
+    fact("F006", "Climate controls", "Individual temperature settings in all three rows"),
+])
+for text, citations in [
+    ("Now let me show you the rear-seat layout. There are two individual seats in the second row.", ["F005"]),
+    ("If we look at the gearbox choice, the petrol engine comes with an automatic.", ["F002"]),
+    ("You can set the temperature separately across all three rows. That is how the climate controls are arranged.", ["F006"]),
+]:
+    script = draft(text, citations)
+    issues = author.validate(script, conversational)
+    written = script["segments"][0]["lines"][0]
+    check(f"authored guide wording survives unchanged: {text.split('.')[0]}",
+          not issues and not written["unverified"] and written["text"] == text
+          and written["fact_ids"] == citations
+          and author.speech_style.prepare(written["text"], written.get("delivery"))["text"] == text)
+
 for description, text, ids in [
     ("numeric output without citation", "The engine makes 160 PS.", []),
     ("spelled equipment count without citation", "The car has six airbags.", []),
@@ -217,5 +307,8 @@ check("three complete short thoughts become three delivery batches verbatim",
 check("three-minute content margin and publication minimum remain unchanged",
       narration.word_target({"settings": {"pitch_minutes": 3}}) == 495
       and narration.minimum_seconds({"settings": {"pitch_minutes": 3}}) == 180)
+check("conversational delivery preserves an owner's selected two-minute duration",
+      narration.word_target({"settings": {"pitch_minutes": 2}}) == 330
+      and narration.minimum_seconds({"settings": {"pitch_minutes": 2}}) == 120)
 check("all prompt contracts ran mocked, isolated and without provider/socket calls", config.MOCK_LLM and not ATTEMPTS and config.DATA_DIR.is_relative_to(Path(_STORAGE.name).resolve()))
 print(f"Script prompt contracts: {len(PASSED)}/{len(PASSED)}")

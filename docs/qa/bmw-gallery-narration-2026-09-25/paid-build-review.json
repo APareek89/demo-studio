@@ -1,0 +1,100 @@
+{
+  "demo_id": "dm_29df0418",
+  "version": 2,
+  "status": "ready",
+  "url": "http://127.0.0.1:8910/#/play/dm_29df0418",
+  "build_profile": "customer; Runware GPT5.5 first for final Author/Deck; same schemas/validators",
+  "source_and_draft_review": "Failed Gemini drafts retained; normal Align source/outline/script review and six card approvals, not unattended first-pass quality",
+  "selected_minutes": 2,
+  "narration_preparation_words": 335,
+  "narration_preparation_target": 330,
+  "published_narration": {
+    "minimum_seconds": 120.0,
+    "seconds": 122.64,
+    "sufficient": true,
+    "words": 280,
+    "measured": true,
+    "basis": "measured",
+    "measured_seconds": 122.64,
+    "estimated_seconds": 0,
+    "route": [
+      "powertrain-proof",
+      "powertrain-proof-2",
+      "ride-proof",
+      "safety-proof",
+      "cabin-proof",
+      "cabin-proof-2",
+      "more-features",
+      "establish"
+    ],
+    "duplicate_lines_excluded": 0
+  },
+  "slides": 15,
+  "distinct_images": 11,
+  "callouts": 32,
+  "voice": {
+    "provider": "sarvam",
+    "name": "sumit",
+    "persona": {
+      "persona_name": "Sumit",
+      "persona_description": "The guide is an authoritative, polished automotive consultant representing BMW India. They speak with refined calm, factual precision, and subtle enthusiasm for vehicle engineering.",
+      "tone": "Professional, authoritative, and sophisticated.",
+      "sample_line": "Welcome to BMW. I am Sumit, and I will be guiding you through the engineering and six-seat comfort of the BMW X7 xDrive40i M Sport.",
+      "suggested_voice": "sumit",
+      "language": "en-IN"
+    }
+  },
+  "expressive_main_lines": [
+    {
+      "id": "cabin-proof-L2",
+      "delivery": {
+        "tone": "upbeat",
+        "pace": 1.0,
+        "expressiveness": 0.7
+      }
+    }
+  ],
+  "recording_runs": 1,
+  "subsequent_slide_only_rebundles": 1,
+  "audio_files_unchanged_after_slide_review": 53,
+  "approvals": {
+    "visuals": true,
+    "facts": true,
+    "script": true,
+    "faq": true,
+    "persona": true,
+    "ctas": true
+  },
+  "bundle_sha256": "7baeffb535e121fa793a1b8fc5dbec4537194a20bda517f8ab0ffeed96620a02",
+  "advisories": [
+    "Outcome30words vs45budget (nonblocking).",
+    "Explore overview9.2seconds vs10\u201315second target (nonblocking)."
+  ],
+  "limits": [
+    "Muted browser/decoded audio checks do not establish acoustic quality or exact pitch/amplitude emphasis.",
+    "Original selected two-minute setting retained; no shorter guard or slowed voice.",
+    "No AWS deployment, no protected demo or port access."
+  ],
+  "browser": {
+    "checks": [
+      281,
+      281
+    ],
+    "published_audio_checks": [
+      71,
+      71
+    ],
+    "viewports": [
+      1440,
+      390
+    ],
+    "speaking_slides": 13,
+    "main_clips": 14,
+    "mode": "Actual app and bundle, simulated playback/QA APIs, blocked external access; no live session or provider calls"
+  },
+  "raw_decoded_eligible_seconds": 122.624,
+  "original_bmw": {
+    "id": "dm_b3a502ce",
+    "files_unchanged": 150
+  }
+}

@@ -1,0 +1,322 @@
+Legacy baseline 85 87
+PASS 1440px hero remains native
+PASS 1440px gallery default mounted
+PASS 1440px shell geometry and type unchanged from baseline
+PASS 1440px line 0 retains exact audio, caption and checkpoint
+PASS 1440px line 0 audio begins after gallery ready
+PASS 1440px line 0 uses mapped image
+PASS 1440px line 0 shows exact reviewed tag
+PASS 1440px line 0 viewport remains bounded
+PASS 1440px line 1 retains exact audio, caption and checkpoint
+PASS 1440px line 1 audio begins after gallery ready
+PASS 1440px line 1 uses mapped image
+PASS 1440px line 1 shows exact reviewed tag
+PASS 1440px line 1 viewport remains bounded
+PASS 1440px line 2 retains exact audio, caption and checkpoint
+PASS 1440px line 2 audio begins after gallery ready
+PASS 1440px line 2 uses mapped image
+PASS 1440px line 2 shows exact reviewed tag
+PASS 1440px source caption gets no invented pointer
+PASS 1440px line 2 viewport remains bounded
+PASS 1440px approved bundle remains byte-equivalent
+PASS 1440px explicit media-empty stays native text-only
+PASS 1440px illustration caption has no pointer
+PASS 390px hero remains native
+PASS 390px gallery default mounted
+PASS 390px shell geometry and type unchanged from baseline
+PASS 390px line 0 retains exact audio, caption and checkpoint
+PASS 390px line 0 audio begins after gallery ready
+PASS 390px line 0 uses mapped image
+PASS 390px line 0 shows exact reviewed tag
+PASS 390px line 0 viewport remains bounded
+PASS 390px line 1 retains exact audio, caption and checkpoint
+PASS 390px line 1 audio begins after gallery ready
+PASS 390px line 1 uses mapped image
+PASS 390px line 1 shows exact reviewed tag
+PASS 390px line 1 viewport remains bounded
+PASS 390px line 2 retains exact audio, caption and checkpoint
+PASS 390px line 2 audio begins after gallery ready
+PASS 390px line 2 uses mapped image
+PASS 390px line 2 shows exact reviewed tag
+PASS 390px source caption gets no invented pointer
+PASS 390px line 2 viewport remains bounded
+PASS 390px approved bundle remains byte-equivalent
+PASS 390px explicit media-empty stays native text-only
+PASS 390px illustration caption has no pointer
+PASS Narration waits during visual entrance
+PASS Pause during move freezes camera and cancels stale audio
+PASS Resume starts the exact interrupted line once
+PASS Question retains original line checkpoint
+PASS Return restores exact approved line and one voice
+PASS Rapid jump leaves only newest slide and audio
+PASS Stop during move prevents delayed narration
+PASS Restart creates clean first line ownership
+PASS Resize during narration preserves active line and viewport
+PASS Resize during move releases preparation without hanging
+PASS Reduced motion settles without a running camera animation
+PASS CRETA 1440px opening clip 0 exact caption
+PASS CRETA 1440px opening clip 0 stays central
+PASS CRETA 1440px opening clip 0 actual photo loaded
+PASS CRETA 1440px opening clip 1 exact caption
+PASS CRETA 1440px opening clip 1 stays central
+PASS CRETA 1440px opening clip 1 actual photo loaded
+PASS CRETA 1440px opening clip 2 exact caption
+PASS CRETA 1440px opening clip 2 stays central
+PASS CRETA 1440px opening clip 2 actual photo loaded
+PASS CRETA 1440px representative published route is nonempty
+PASS CRETA 1440px sl03 line 0 exact audio and caption
+PASS CRETA 1440px sl03 line 0 actual photo loaded
+PASS CRETA 1440px sl03 line 0 stays inside central stage
+PASS CRETA 1440px sl03 line 0 no fabricated pointer
+PASS CRETA 1440px sl03 line 0 correct reviewed photo
+PASS CRETA 1440px sl03 simultaneous pictures both loaded
+PASS CRETA 1440px sl03 callout sl03-review-1 exact source text
+PASS CRETA 1440px sl03 callout sl03-review-1 focuses exact source without replay
+PASS CRETA 1440px sl03 callout sl03-review-2 exact source text
+PASS CRETA 1440px sl03 callout sl03-review-2 focuses exact source without replay
+PASS CRETA 1440px sl03 bundle not mutated
+PASS CRETA 1440px sl04 line 0 exact audio and caption
+PASS CRETA 1440px sl04 line 0 actual photo loaded
+PASS CRETA 1440px sl04 line 0 stays inside central stage
+PASS CRETA 1440px sl04 line 0 no fabricated pointer
+PASS CRETA 1440px sl04 line 0 correct reviewed photo
+PASS CRETA 1440px sl04 simultaneous pictures both loaded
+PASS CRETA 1440px sl04 callout sl04-review-1 exact source text
+PASS CRETA 1440px sl04 callout sl04-review-1 focuses exact source without replay
+PASS CRETA 1440px sl04 callout sl04-review-2 exact source text
+PASS CRETA 1440px sl04 callout sl04-review-2 focuses exact source without replay
+PASS CRETA 1440px sl04 bundle not mutated
+PASS CRETA 1440px sl05 line 0 exact audio and caption
+PASS CRETA 1440px sl05 line 0 actual photo loaded
+PASS CRETA 1440px sl05 line 0 stays inside central stage
+PASS CRETA 1440px sl05 line 0 no fabricated pointer
+PASS CRETA 1440px sl05 callout sl05-review-1 exact source text
+PASS CRETA 1440px sl05 bundle not mutated
+PASS CRETA 1440px sl06 line 0 exact audio and caption
+PASS CRETA 1440px sl06 line 0 actual photo loaded
+PASS CRETA 1440px sl06 line 0 stays inside central stage
+PASS CRETA 1440px sl06 line 0 no fabricated pointer
+PASS CRETA 1440px sl06 line 0 correct reviewed photo
+PASS CRETA 1440px sl06 simultaneous pictures both loaded
+PASS CRETA 1440px sl06 callout sl06-review-1 exact source text
+PASS CRETA 1440px sl06 callout sl06-review-1 focuses exact source without replay
+PASS CRETA 1440px sl06 callout sl06-review-2 exact source text
+PASS CRETA 1440px sl06 callout sl06-review-2 focuses exact source without replay
+PASS CRETA 1440px sl06 callout sl06-review-3 exact source text
+PASS CRETA 1440px sl06 callout sl06-review-3 focuses exact source without replay
+PASS CRETA 1440px sl06 bundle not mutated
+PASS CRETA 1440px sl07 line 0 exact audio and caption
+PASS CRETA 1440px sl07 line 0 actual photo loaded
+PASS CRETA 1440px sl07 line 0 stays inside central stage
+PASS CRETA 1440px sl07 line 0 no fabricated pointer
+PASS CRETA 1440px sl07 callout sl07-review-1 exact source text
+PASS CRETA 1440px sl07 callout sl07-review-2 exact source text
+PASS CRETA 1440px sl07 bundle not mutated
+PASS CRETA 1440px sl08 line 0 exact audio and caption
+PASS CRETA 1440px sl08 line 0 actual photo loaded
+PASS CRETA 1440px sl08 line 0 stays inside central stage
+PASS CRETA 1440px sl08 line 0 no fabricated pointer
+PASS CRETA 1440px sl08 callout sl08-review-1 exact source text
+PASS CRETA 1440px sl08 bundle not mutated
+PASS CRETA 1440px sl09 line 0 exact audio and caption
+PASS CRETA 1440px sl09 line 0 actual photo loaded
+PASS CRETA 1440px sl09 line 0 stays inside central stage
+PASS CRETA 1440px sl09 line 0 no fabricated pointer
+PASS CRETA 1440px sl09 callout sl09-review-1 exact source text
+PASS CRETA 1440px sl09 callout sl09-review-2 exact source text
+PASS CRETA 1440px sl09 bundle not mutated
+PASS CRETA 1440px sl10 line 0 exact audio and caption
+PASS CRETA 1440px sl10 line 0 actual photo loaded
+PASS CRETA 1440px sl10 line 0 stays inside central stage
+PASS CRETA 1440px sl10 line 0 no fabricated pointer
+PASS CRETA 1440px sl10 callout sl10-review-1 exact source text
+PASS CRETA 1440px sl10 callout sl10-review-2 exact source text
+PASS CRETA 1440px sl10 bundle not mutated
+PASS CRETA 1440px sl11 line 0 exact audio and caption
+PASS CRETA 1440px sl11 line 0 actual photo loaded
+PASS CRETA 1440px sl11 line 0 stays inside central stage
+PASS CRETA 1440px sl11 line 0 no fabricated pointer
+PASS CRETA 1440px sl11 callout sl11-review-1 exact source text
+PASS CRETA 1440px sl11 callout sl11-review-2 exact source text
+PASS CRETA 1440px sl11 bundle not mutated
+PASS CRETA 1440px sl12 line 0 exact audio and caption
+PASS CRETA 1440px sl12 line 0 actual photo loaded
+PASS CRETA 1440px sl12 line 0 stays inside central stage
+PASS CRETA 1440px sl12 line 0 no fabricated pointer
+PASS CRETA 1440px sl12 callout sl12-review-1 exact source text
+PASS CRETA 1440px sl12 callout sl12-review-2 exact source text
+PASS CRETA 1440px sl12 bundle not mutated
+PASS CRETA 1440px sl13 line 0 exact audio and caption
+PASS CRETA 1440px sl13 line 0 actual photo loaded
+PASS CRETA 1440px sl13 line 0 stays inside central stage
+PASS CRETA 1440px sl13 line 0 no fabricated pointer
+PASS CRETA 1440px sl13 callout sl13-review-1 exact source text
+PASS CRETA 1440px sl13 callout sl13-review-2 exact source text
+PASS CRETA 1440px sl13 callout sl13-review-3 exact source text
+PASS CRETA 1440px sl13 bundle not mutated
+PASS CRETA 1440px sl14 line 0 exact audio and caption
+PASS CRETA 1440px sl14 line 0 actual photo loaded
+PASS CRETA 1440px sl14 line 0 stays inside central stage
+PASS CRETA 1440px sl14 line 0 no fabricated pointer
+PASS CRETA 1440px sl14 callout sl14-review-1 exact source text
+PASS CRETA 1440px sl14 bundle not mutated
+PASS CRETA 1440px sl15 line 0 exact audio and caption
+PASS CRETA 1440px sl15 line 0 actual photo loaded
+PASS CRETA 1440px sl15 line 0 stays inside central stage
+PASS CRETA 1440px sl15 line 0 no fabricated pointer
+PASS CRETA 1440px sl15 callout sl15-review-1 exact source text
+PASS CRETA 1440px sl15 callout sl15-review-2 exact source text
+PASS CRETA 1440px sl15 bundle not mutated
+PASS CRETA 1440px sl16 line 0 exact audio and caption
+PASS CRETA 1440px sl16 line 0 actual photo loaded
+PASS CRETA 1440px sl16 line 0 stays inside central stage
+PASS CRETA 1440px sl16 line 0 no fabricated pointer
+PASS CRETA 1440px sl16 callout sl16-review-1 exact source text
+PASS CRETA 1440px sl16 bundle not mutated
+PASS CRETA 1440px sl17 line 0 exact audio and caption
+PASS CRETA 1440px sl17 line 0 actual photo loaded
+PASS CRETA 1440px sl17 line 0 stays inside central stage
+PASS CRETA 1440px sl17 line 0 no fabricated pointer
+PASS CRETA 1440px sl17 callout sl17-review-1 exact source text
+PASS CRETA 1440px sl17 callout sl17-review-2 exact source text
+PASS CRETA 1440px sl17 bundle not mutated
+PASS CRETA 1440px two-photo source locks every picture/tag control during preparation
+PASS CRETA 1440px two-photo source ignores native and dispatched preparation clicks
+PASS CRETA 1440px two-photo source releases the original line once after attempted clicks
+PASS CRETA 1440px two-photo source unlocks picture/tag controls when ready
+PASS CRETA 1440px final image and reviewed tags are loaded
+PASS CRETA 1440px no microphone access
+PASS CRETA 390px opening clip 0 exact caption
+PASS CRETA 390px opening clip 0 stays central
+PASS CRETA 390px opening clip 0 actual photo loaded
+PASS CRETA 390px opening clip 1 exact caption
+PASS CRETA 390px opening clip 1 stays central
+PASS CRETA 390px opening clip 1 actual photo loaded
+PASS CRETA 390px opening clip 2 exact caption
+PASS CRETA 390px opening clip 2 stays central
+PASS CRETA 390px opening clip 2 actual photo loaded
+PASS CRETA 390px representative published route is nonempty
+PASS CRETA 390px sl03 line 0 exact audio and caption
+PASS CRETA 390px sl03 line 0 actual photo loaded
+PASS CRETA 390px sl03 line 0 stays inside central stage
+PASS CRETA 390px sl03 line 0 no fabricated pointer
+PASS CRETA 390px sl03 line 0 correct reviewed photo
+PASS CRETA 390px sl03 simultaneous pictures both loaded
+PASS CRETA 390px sl03 callout sl03-review-1 exact source text
+PASS CRETA 390px sl03 callout sl03-review-1 focuses exact source without replay
+PASS CRETA 390px sl03 callout sl03-review-2 exact source text
+PASS CRETA 390px sl03 callout sl03-review-2 focuses exact source without replay
+PASS CRETA 390px sl03 bundle not mutated
+PASS CRETA 390px sl04 line 0 exact audio and caption
+PASS CRETA 390px sl04 line 0 actual photo loaded
+PASS CRETA 390px sl04 line 0 stays inside central stage
+PASS CRETA 390px sl04 line 0 no fabricated pointer
+PASS CRETA 390px sl04 line 0 correct reviewed photo
+PASS CRETA 390px sl04 simultaneous pictures both loaded
+PASS CRETA 390px sl04 callout sl04-review-1 exact source text
+PASS CRETA 390px sl04 callout sl04-review-1 focuses exact source without replay
+PASS CRETA 390px sl04 callout sl04-review-2 exact source text
+PASS CRETA 390px sl04 callout sl04-review-2 focuses exact source without replay
+PASS CRETA 390px sl04 bundle not mutated
+PASS CRETA 390px sl05 line 0 exact audio and caption
+PASS CRETA 390px sl05 line 0 actual photo loaded
+PASS CRETA 390px sl05 line 0 stays inside central stage
+PASS CRETA 390px sl05 line 0 no fabricated pointer
+PASS CRETA 390px sl05 callout sl05-review-1 exact source text
+PASS CRETA 390px sl05 bundle not mutated
+PASS CRETA 390px sl06 line 0 exact audio and caption
+PASS CRETA 390px sl06 line 0 actual photo loaded
+PASS CRETA 390px sl06 line 0 stays inside central stage
+PASS CRETA 390px sl06 line 0 no fabricated pointer
+PASS CRETA 390px sl06 line 0 correct reviewed photo
+PASS CRETA 390px sl06 simultaneous pictures both loaded
+PASS CRETA 390px sl06 callout sl06-review-1 exact source text
+PASS CRETA 390px sl06 callout sl06-review-1 focuses exact source without replay
+PASS CRETA 390px sl06 callout sl06-review-2 exact source text
+PASS CRETA 390px sl06 callout sl06-review-2 focuses exact source without replay
+PASS CRETA 390px sl06 callout sl06-review-3 exact source text
+PASS CRETA 390px sl06 callout sl06-review-3 focuses exact source without replay
+PASS CRETA 390px sl06 bundle not mutated
+PASS CRETA 390px sl07 line 0 exact audio and caption
+PASS CRETA 390px sl07 line 0 actual photo loaded
+PASS CRETA 390px sl07 line 0 stays inside central stage
+PASS CRETA 390px sl07 line 0 no fabricated pointer
+PASS CRETA 390px sl07 callout sl07-review-1 exact source text
+PASS CRETA 390px sl07 callout sl07-review-2 exact source text
+PASS CRETA 390px sl07 bundle not mutated
+PASS CRETA 390px sl08 line 0 exact audio and caption
+PASS CRETA 390px sl08 line 0 actual photo loaded
+PASS CRETA 390px sl08 line 0 stays inside central stage
+PASS CRETA 390px sl08 line 0 no fabricated pointer
+PASS CRETA 390px sl08 callout sl08-review-1 exact source text
+PASS CRETA 390px sl08 bundle not mutated
+PASS CRETA 390px sl09 line 0 exact audio and caption
+PASS CRETA 390px sl09 line 0 actual photo loaded
+PASS CRETA 390px sl09 line 0 stays inside central stage
+PASS CRETA 390px sl09 line 0 no fabricated pointer
+PASS CRETA 390px sl09 callout sl09-review-1 exact source text
+PASS CRETA 390px sl09 callout sl09-review-2 exact source text
+PASS CRETA 390px sl09 bundle not mutated
+PASS CRETA 390px sl10 line 0 exact audio and caption
+PASS CRETA 390px sl10 line 0 actual photo loaded
+PASS CRETA 390px sl10 line 0 stays inside central stage
+PASS CRETA 390px sl10 line 0 no fabricated pointer
+PASS CRETA 390px sl10 callout sl10-review-1 exact source text
+PASS CRETA 390px sl10 callout sl10-review-2 exact source text
+PASS CRETA 390px sl10 bundle not mutated
+PASS CRETA 390px sl11 line 0 exact audio and caption
+PASS CRETA 390px sl11 line 0 actual photo loaded
+PASS CRETA 390px sl11 line 0 stays inside central stage
+PASS CRETA 390px sl11 line 0 no fabricated pointer
+PASS CRETA 390px sl11 callout sl11-review-1 exact source text
+PASS CRETA 390px sl11 callout sl11-review-2 exact source text
+PASS CRETA 390px sl11 bundle not mutated
+PASS CRETA 390px sl12 line 0 exact audio and caption
+PASS CRETA 390px sl12 line 0 actual photo loaded
+PASS CRETA 390px sl12 line 0 stays inside central stage
+PASS CRETA 390px sl12 line 0 no fabricated pointer
+PASS CRETA 390px sl12 callout sl12-review-1 exact source text
+PASS CRETA 390px sl12 callout sl12-review-2 exact source text
+PASS CRETA 390px sl12 bundle not mutated
+PASS CRETA 390px sl13 line 0 exact audio and caption
+PASS CRETA 390px sl13 line 0 actual photo loaded
+PASS CRETA 390px sl13 line 0 stays inside central stage
+PASS CRETA 390px sl13 line 0 no fabricated pointer
+PASS CRETA 390px sl13 callout sl13-review-1 exact source text
+PASS CRETA 390px sl13 callout sl13-review-2 exact source text
+PASS CRETA 390px sl13 callout sl13-review-3 exact source text
+PASS CRETA 390px sl13 bundle not mutated
+PASS CRETA 390px sl14 line 0 exact audio and caption
+PASS CRETA 390px sl14 line 0 actual photo loaded
+PASS CRETA 390px sl14 line 0 stays inside central stage
+PASS CRETA 390px sl14 line 0 no fabricated pointer
+PASS CRETA 390px sl14 callout sl14-review-1 exact source text
+PASS CRETA 390px sl14 bundle not mutated
+PASS CRETA 390px sl15 line 0 exact audio and caption
+PASS CRETA 390px sl15 line 0 actual photo loaded
+PASS CRETA 390px sl15 line 0 stays inside central stage
+PASS CRETA 390px sl15 line 0 no fabricated pointer
+PASS CRETA 390px sl15 callout sl15-review-1 exact source text
+PASS CRETA 390px sl15 callout sl15-review-2 exact source text
+PASS CRETA 390px sl15 bundle not mutated
+PASS CRETA 390px sl16 line 0 exact audio and caption
+PASS CRETA 390px sl16 line 0 actual photo loaded
+PASS CRETA 390px sl16 line 0 stays inside central stage
+PASS CRETA 390px sl16 line 0 no fabricated pointer
+PASS CRETA 390px sl16 callout sl16-review-1 exact source text
+PASS CRETA 390px sl16 bundle not mutated
+PASS CRETA 390px sl17 line 0 exact audio and caption
+PASS CRETA 390px sl17 line 0 actual photo loaded
+PASS CRETA 390px sl17 line 0 stays inside central stage
+PASS CRETA 390px sl17 line 0 no fabricated pointer
+PASS CRETA 390px sl17 callout sl17-review-1 exact source text
+PASS CRETA 390px sl17 callout sl17-review-2 exact source text
+PASS CRETA 390px sl17 bundle not mutated
+PASS CRETA 390px two-photo source locks every picture/tag control during preparation
+PASS CRETA 390px two-photo source ignores native and dispatched preparation clicks
+PASS CRETA 390px two-photo source releases the original line once after attempted clicks
+PASS CRETA 390px two-photo source unlocks picture/tag controls when ready
+PASS CRETA 390px final image and reviewed tags are loaded
+PASS CRETA 390px no microphone access
+Legacy current 87 87
+PASS No browser script errors, failed source images or external requests
