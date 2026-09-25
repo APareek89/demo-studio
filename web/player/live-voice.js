@@ -42,10 +42,11 @@ export class LiveVoiceClient {
     if (this.ready) return Promise.resolve();
     if (this.connecting) return this.connecting;
     this.closed = false;
+    let connectingSocket;
     const raw = new Promise((resolve, reject) => {
       const url = new URL(this.url, this.env.location?.href || "http://localhost/"); url.protocol = url.protocol === "https:" ? "wss:" : url.protocol === "http:" ? "ws:" : url.protocol;
       url.searchParams.set("session_id", this.sessionId);
-      const socket = new this.env.WebSocket(url.href); this.socket = socket;
+      const socket = new this.env.WebSocket(url.href); this.socket = connectingSocket = socket;
       socket.onopen = () => { if (this.socket === socket) this.send("session.start", { language: this.language, mic: false, input_mode: this.inputMode }); };
       socket.onmessage = event => {
         if (this.socket !== socket) return;
@@ -66,7 +67,10 @@ export class LiveVoiceClient {
         if (!this.closed) { this.onState("unavailable"); this.onError("Connection lost. Type your reply, or tap the microphone to reconnect."); }
       };
     });
-    this.connecting = deadline(raw, 8000, "Live connection timed out").catch(error => { const socket = this.socket; this.socket = null; this.ready = false; this.connecting = null; socket?.close(); throw error; });
+    this.connecting = deadline(raw, this.connectTimeoutMs || 8000, "Live connection timed out").catch(error => {
+      if (this.socket === connectingSocket) { this.socket = null; this.ready = false; this.connecting = null; }
+      connectingSocket?.close(); throw error;
+    });
     return this.connecting;
   }
   // Text mode retains the live socket for streamed speech without opening a device.

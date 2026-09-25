@@ -1,5 +1,11 @@
 # Loop.MD — Demo Studio
 
+## LiveKit default adoption — 25 September 2026 · implementation checkpoint
+
+Finite QA, loop off. Core deck445/445, acceptance24/24, smoke3/3 and full mock28/28 pass with isolated DATA/GRAPH, blank provider keys and blocked outbound sockets. Twenty-six adjacent Python suites also pass with zero outbound attempts; exact inventory is in [the current QA receipt](docs/qa/livekit-default-2026-09-25/README.md). Hosted policy/room29, legacy LiveKit50, normal local launcher15 and isolated-copy launcher16 pass. Frontend selection, ownership/navigation and native RTC receipts are updated with the frozen code; hosted Internet relay and production cutover remain separate gates.
+
+The normal local launcher preserves the existing workspace and advertises LiveKit automatically to both player entry points. AWS still runs the previous application until the new dated release receipt records cutover. No new paid provider/acoustic QA. Earlier receipts below remain historical evidence for their own source revisions.
+
 ## Approved runtime/gallery release — 25 September 2026
 
 Finite QA, loop off. Final local core **445/445 deck,24/24 acceptance,3/3 smoke,28/28 full mock**. Seventeen isolated/mock/socket-blocked Python suites and seven free Node suites pass; zero outbound attempts/providers. New acknowledgement14/14; actual native player88/88 includes11questions, full ten-phrase cycle, legacy clips, commands and restart. Domain25/25 (four new failed-crawl/explicit-exclusion/failure-evidence groups), web search37/37. Adjacent graph130, tool replay20, customer sites20, delivery27, visuals23, live transport25, Sarvam17, FAQ27, transmission17, checkpoint26, LiveKit backend50/client47, voice96, hold26, listen16, recovery17 and saves18. Counts overlap. Exact inventory and limits: [local release QA](docs/qa/runtime-gallery-release-2026-09-25/README.md). AWS applicationd94d6ef is now deployed:27/27staged processes pass; core445/24/smoke3/full mock28, knowledge58passed+2environment skips. Public17/17, frontend32/32, media96/96, desktop/phone welcome and4267unchanged data files verified. Exact counts, two initial harness failures, stale-marker preflight and rollback evidence: [AWS receipt](docs/aws/release-runtime-gallery-2026-09-25.md). No paid QA or hosted LiveKit adoption.

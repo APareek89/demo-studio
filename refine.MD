@@ -1,5 +1,13 @@
 # refine.MD — running log of Anand's questions and proposed solutions
 
+## LiveKit adoption — 25 September 2026
+
+Anand accepted the trial and explicitly requested LiveKit everywhere. Promote the existing transport adapter to the default for the public player and Rehearse using server-advertised configuration; retain explicit WebSocket selection only for diagnosis/rollback. Keep the existing runtime graph, grounded answers, selected voice, gallery, source scope and incremental sessions.
+
+Implementation sequence: secure local/hosted room configuration and exact-origin token issuance; default client selection and server-supplied ICE/TURN; a stable local launcher; self-hosted pinned LiveKit on AWS with secure signaling and authenticated relay; isolated whole-flow mock QA, Internet TLS-relay transport checks and FMEA; backup, master/GitHub publication and AWS cutover with rollback. Existing source/recordings/customer data remain intact. No new paid model QA. A failed connection must be visible and must never silently replay a question or open a second microphone.
+
+The previous local-only restriction is superseded by this request. Network/resource checks determine the deployment wiring; they do not reopen the approved product decision.
+
 ## Varied question acknowledgements and approved AWS release — 25 September 2026
 
 Anand accepted the improved demo, requested confirmation of website search, asked for8–10 rotating acknowledgements, and explicitly authorized master/GitHub plus AWS deployment. Use ten short neutral holding lines, once each per visit before repeating; skip them for answers ready within the existing250ms grace and for local playback commands. Preserve one locked voice and answer-first cancellation. Existing publications use exact matching clips when available or the existing runtime voice path; no rebuild or narration regeneration.

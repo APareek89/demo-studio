@@ -19,6 +19,8 @@ Automatic selective feedback routing is still pending: wording-only changes shou
 
 ## Run the customer conversation
 
+Public playback and Rehearse discover the configured LiveKit transport automatically. One microphone track uses WebRTC; controls and validated answer/audio delivery retain the existing runtime owners. The normal local launcher preserves workspace data; hosted signaling uses WSS and authenticated TURN/TLS. See [transport configuration](livekit.md) and Handoff for the actual deployment status. No Build/Align agent or evidence gate changes.
+
 `web/player/player.js` owns playback, captions, current image/tag reveal, interruption and exact return point. `live-voice.js` owns speech transport/capture. The server runtime graph owns retrieval, reasoning, bounded tools and validation; streaming delivery stays outside replay.
 
 - **Welcome and intake:** show the hero, choose voice/text mode, and ask one focus question. A generic show-me-around request uses the reviewed default tour without inventing a buyer preference. The optional film uses only video plus a separate Skip button.

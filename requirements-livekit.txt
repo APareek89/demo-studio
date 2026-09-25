@@ -1,0 +1,3 @@
+# Default Demo Run room transport; versions verified in the accepted trial.
+livekit==1.1.20
+livekit-api==1.2.1

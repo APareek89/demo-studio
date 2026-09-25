@@ -1,0 +1,216 @@
+[
+  {
+    "suite": "qa_deck",
+    "exit_code": 0,
+    "seconds": 10.72,
+    "log_sha256": "7b389d3364d38854b7ea7abff3568f39e5d4d14da0f8670fa153fe9027c83559",
+    "passed": 445,
+    "total": 445,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "qa_accept",
+    "exit_code": 0,
+    "seconds": 2.74,
+    "log_sha256": "18e698bd4c712d7f2a3fd918eeec1494666a20513044fbf0b82968a434ca941b",
+    "passed": 24,
+    "total": 24,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "smoke_mock",
+    "exit_code": 0,
+    "seconds": 4.22,
+    "log_sha256": "cd8e5912a5397f8a40bc7a787b152909f047ce31a6a86dc4e9b7d7141b76ed05",
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "release_mock_contract",
+    "exit_code": 0,
+    "seconds": 16.2,
+    "log_sha256": "2530d7ee797c9c8f5d89bf421b42c88d0ffccfcf1e2229bc778dff504bb41169",
+    "passed": 28,
+    "total": 28,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "knowledge_contract",
+    "exit_code": 0,
+    "seconds": 8.65,
+    "log_sha256": "d3197edf5bdedbed6b5ed02bc3c7fd51d92385150c86a9b8f2b882e42a69be29",
+    "total": 60,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "retrieval_io_contract",
+    "exit_code": 0,
+    "seconds": 0.29,
+    "log_sha256": "6904d99ae8a4db8b6f657b5391b82e8297e5e2321d0ff9440ba9939839dbd823",
+    "total": 12,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_visuals_contract",
+    "exit_code": 0,
+    "seconds": 1.41,
+    "log_sha256": "830540ae674c26a4460a85f72a6d5ac3e080db618e6ea55abacca549ba564810",
+    "total": 23,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_graph_contract",
+    "exit_code": 0,
+    "seconds": 1.15,
+    "log_sha256": "e92b30c072f1695c2fb74a42a13ac6b89c5ba34d3287afe3b0062e17c0562bba",
+    "passed": 130,
+    "total": 130,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_repair_contract",
+    "exit_code": 0,
+    "seconds": 1.1,
+    "log_sha256": "d1443896286a9362f4bcb383beca7da92545852bd7fe6a93229fb254a6094042",
+    "passed": 106,
+    "total": 106,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_delivery_contract",
+    "exit_code": 0,
+    "seconds": 1.27,
+    "log_sha256": "a72e8e9603b83a7a322794f084eab0e811d833ddb603d8d0fcc0a91b482529bc",
+    "passed": 27,
+    "total": 27,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_hedge_contract",
+    "exit_code": 0,
+    "seconds": 1.75,
+    "log_sha256": "72e81a38b043dfa907109c1920f7c09380b13e9bddecd2dcbc57c71b24c539bf",
+    "passed": 35,
+    "total": 35,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_hedge_config_contract",
+    "exit_code": 0,
+    "seconds": 5.12,
+    "log_sha256": "5c69b37760b573ae2f3cbb9f5657fb58e7507fc1d5f41c406cd66ab1d46280e3",
+    "total": 6,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_operational_failure_contract",
+    "exit_code": 0,
+    "seconds": 1.0,
+    "log_sha256": "5ed169628d99117549d3ba7a7c0e84b4f1fa9e40bea4eaee1923cd3404685e76",
+    "passed": 13,
+    "total": 13,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_domain_contract",
+    "exit_code": 0,
+    "seconds": 1.37,
+    "log_sha256": "3c2d51f993aa3b7013b2fd4f6d9cb5ba53361dc80df8fae2043022f18dffb604",
+    "total": 25,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_customer_sites_contract",
+    "exit_code": 0,
+    "seconds": 1.43,
+    "log_sha256": "101bd9594b42793375527ed0def99a5fd838ac478f9f9e14634e10ac1517046f",
+    "total": 20,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_web_search_contract",
+    "exit_code": 0,
+    "seconds": 2.08,
+    "log_sha256": "5ed15dab39494e56c81e8db17db4fe718252c03ea580c0c5843e407ef02f8d72",
+    "total": 37,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_live_table_contract",
+    "exit_code": 0,
+    "seconds": 1.16,
+    "log_sha256": "6df103de522fd07881ae6c1336f512d973b1102fb831591a749921fb1e3b55ac",
+    "total": 21,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "runtime_transmission_conditions_contract",
+    "exit_code": 0,
+    "seconds": 1.1,
+    "log_sha256": "1c7be08fd42f3aa99806fcfe786bc07de556aea73e4824eb9dfa57b0d7ebf02c",
+    "total": 17,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "faq_cache_contract",
+    "exit_code": 0,
+    "seconds": 1.38,
+    "log_sha256": "930625395cf6a3697b5ecd216eba69e6e4b36256f48543ea7887a2ae4a9fd7de",
+    "total": 27,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "live_transport_contract",
+    "exit_code": 0,
+    "seconds": 1.21,
+    "log_sha256": "709ecde42fd2a0aa2d6749d9b1ceec90a71334c8d1e583f3f8ebb6ca0a77b82f",
+    "passed": 25,
+    "total": 25,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "sarvam_stream_contract",
+    "exit_code": 0,
+    "seconds": 0.24,
+    "log_sha256": "5c1a10029a4602249c304cce034883542e08c7f4efa00b26aa2fc1b39a1f4bfc",
+    "passed": 17,
+    "total": 17,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "session_checkpoint_contract",
+    "exit_code": 0,
+    "seconds": 1.21,
+    "log_sha256": "b7c8a905339fdb8347f3d4642800e6391a3af39491ccf54bcb3864f5d802ab26",
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "session_input_mode_contract",
+    "exit_code": 0,
+    "seconds": 1.22,
+    "log_sha256": "6922b68d32dbf2cdf09287819afeb85eb0f4491e59f1f9e8f32ff0ad99d68890",
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "explore_cancellation_contract",
+    "exit_code": 0,
+    "seconds": 1.15,
+    "log_sha256": "51c3eeb6a684c706f97ceda8fd854a4b5df232e4aa90e6e09055bc1d11ba47d7",
+    "passed": 9,
+    "total": 9,
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "speech_style_contract",
+    "exit_code": 0,
+    "seconds": 0.89,
+    "log_sha256": "0462346c8fc80f079f0d39245473bded819f046205f56dce66ccbc55af967288",
+    "outbound_attempts": 0
+  },
+  {
+    "suite": "voice_lock_contract",
+    "exit_code": 0,
+    "seconds": 0.72,
+    "log_sha256": "904632ef8b68868c9648171446a26bef3dddbd071aa17c194b87478f3bd9a160",
+    "outbound_attempts": 0
+  }
+]

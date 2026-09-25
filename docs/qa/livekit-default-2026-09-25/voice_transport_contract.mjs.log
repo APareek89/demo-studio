@@ -1,0 +1,16 @@
+PASS normal URLs select server-advertised hosted LiveKit
+PASS selection pins the loaded publication before any token request
+PASS restart gets a new client in the same selected transport
+PASS misconfigured enabled LiveKit remains selected for visible player recovery
+PASS a configured local trial also works without a URL flag
+PASS explicit websocket diagnostic avoids discovery and LiveKit import
+PASS explicit legacy LiveKit flag works without a capability endpoint
+PASS disabled server retains the established websocket rollback
+PASS legacy publications retain their recorded player without discovery
+PASS explicit LiveKit cannot pretend a legacy publication is compatible
+PASS invalid capability cannot silently load an alternative client
+PASS discovery failure cannot create a microphone or fallback client
+PASS capability discovery has a finite deadline
+PASS SDK load failure cannot open or replay through another transport
+PASS stalled SDK import has a finite deadline and late completion cannot acquire a client
+voice_transport: 15/15

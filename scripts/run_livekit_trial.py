@@ -171,7 +171,7 @@ def main() -> None:
     with os.fdopen(descriptor, "w") as stream:
         stream.write(config_text("demo_trial", secret, args.signal_port, args.rtc_udp_port, rtc_host))
     config.chmod(0o600)
-    env = {**os.environ, "LIVEKIT_TRIAL_ENABLED": "1", "LIVEKIT_URL": f"ws://127.0.0.1:{args.signal_port}",
+    env = {**os.environ, "LIVEKIT_ENABLED": "0", "LIVEKIT_TRIAL_ENABLED": "1", "LIVEKIT_URL": f"ws://127.0.0.1:{args.signal_port}",
            "LIVEKIT_API_KEY": "demo_trial", "LIVEKIT_API_SECRET": secret,
            "LIVEKIT_TRIAL_STUN_URL": f"stun:127.0.0.1:{args.rtc_udp_port}",
            "MOCK_LLM": "0" if args.live_providers else "1", "CLOUD_SYNC": "0", "STORAGE_BACKEND": "local",
@@ -190,7 +190,7 @@ def main() -> None:
             app = subprocess.Popen([sys.executable, str(ROOT / "scripts/livekit_trial_server.py"), str(args.port)], cwd=ROOT, env=env, stdout=applog, stderr=subprocess.STDOUT, start_new_session=True)
             children.append(app)
             wait_http(f"http://127.0.0.1:{args.port}/api/health", app)
-            url = f"http://127.0.0.1:{args.port}/?voice_transport=livekit#/play/{demo_id}"
+            url = f"http://127.0.0.1:{args.port}/#/play/{demo_id}"
             print(("LIVE providers (configured usage charges apply)." if args.live_providers else "MOCK providers: real local LiveKit connection; no provider calls."), flush=True)
             print(url, flush=True)
             print(f"Trial data/logs: {state}\nCtrl-C stops only these trial processes.", flush=True)

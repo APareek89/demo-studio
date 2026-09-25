@@ -2,6 +2,13 @@
 
 Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
+## Active follow-up — LiveKit everywhere · 25 September
+
+Anand accepted the trial and requested default LiveKit locally and on AWS. Work is in progress on the existing branch; the deployed d94d6ef release below remains the rollback baseline until a new verified receipt says otherwise. Implement public player plus Rehearse, secure hosted origin/room configuration, Internet ICE/TURN and stable local launch. Preserve graph/evidence/gallery/one-voice/session ownership and all stored demos. No new paid model QA. Prior local-only restriction is superseded; network acceptance still must be measured.
+
+- Local app8910 now runs `scripts/run_local.py --live-providers` in the normal `.venv`, with customer tier and unchanged `/tmp/demo-runtime-final-20260924/data` plus adjacent graph.sqlite. All702data files remained byte-identical across restart. Use the normal app URL without transport or mute flags. Default local signaling7890/UDP7892; owned processes and private state under `~/.local/state/demo-studio/livekit`.
+- Application review fixed lifetime publication pins, nested JSON failure, same-tick connection disposal and bounded lazy SDK loading. Core445/24/smoke3/full mock28 and isolated contracts pass; actual local native RTC and hosted policy are recorded in [current QA](docs/qa/livekit-default-2026-09-25/README.md). Hosted Internet verification and master/AWS completion remain pending at this checkpoint.
+
 ## Current deployed release — 25 September
 
 Application **d94d6ef** is on master/GitHub and AWS, cut over **2026-09-25T11:35:49Z**. [Public BMW demo](https://13-202-0-79.sslip.io/#/play/dm_29df0418); [release/rollback receipt](docs/aws/release-runtime-gallery-2026-09-25.md). This release supersedes the local-only/master-pending status in the historical checkpoints below for the shared application fixes.

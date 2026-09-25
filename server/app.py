@@ -61,6 +61,13 @@ def media(demo_id: str, rel: str):
 
 # ---------- demos ----------
 
+@app.get("/api/runtime/transport")
+def runtime_transport():
+    """Public, non-secret transport selection; never cache a deployment switch."""
+    from .livekit_trial import transport_capability
+    return JSONResponse(transport_capability(), headers={"Cache-Control": "no-store"})
+
+
 @app.get("/api/health")
 def health():
     return {**config.health(), "cloud": cloud.status() if cloud.enabled() or True else {}}

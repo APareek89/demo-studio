@@ -1,0 +1,35 @@
+test_cleanup_attempts_both_owned_children_despite_exit_race (__main__.LocalLauncher.test_cleanup_attempts_both_owned_children_despite_exit_race) ... ok
+test_defaults_keep_normal_app_port_and_avoid_existing_trial_ports (__main__.LocalLauncher.test_defaults_keep_normal_app_port_and_avoid_existing_trial_ports) ... ok
+test_environment_paths_honored_and_graph_default_sits_beside_demos (__main__.LocalLauncher.test_environment_paths_honored_and_graph_default_sits_beside_demos) ... ok
+test_exclusive_state_lock_does_not_overwrite_running_configuration (__main__.LocalLauncher.test_exclusive_state_lock_does_not_overwrite_running_configuration) ... usage: local_launcher_contract.py [-h] [--data DATA] [--graph-db GRAPH_DB]
+                                  [--state-dir STATE_DIR]
+                                  [--livekit-server LIVEKIT_SERVER]
+                                  [--port PORT] [--signal-port SIGNAL_PORT]
+                                  [--rtc-udp-port RTC_UDP_PORT]
+                                  [--rtc-host RTC_HOST] [--live-providers]
+local_launcher_contract.py: error: This local launcher state is already in use; the running app was not stopped.
+ok
+test_launcher_uses_workspace_without_copy_and_stops_only_its_children (__main__.LocalLauncher.test_launcher_uses_workspace_without_copy_and_stops_only_its_children) ... ok
+test_linux_requires_explicit_private_host_and_never_discovers_via_internet (__main__.LocalLauncher.test_linux_requires_explicit_private_host_and_never_discovers_via_internet) ... ok
+test_live_mode_preserves_selected_provider_flags_and_workspace_paths (__main__.LocalLauncher.test_live_mode_preserves_selected_provider_flags_and_workspace_paths) ... ok
+test_mac_auto_detection_validates_en0_then_en1_without_public_probe (__main__.LocalLauncher.test_mac_auto_detection_validates_en0_then_en1_without_public_probe) ... ok
+test_mock_mode_overrides_inherited_hosted_and_provider_configuration (__main__.LocalLauncher.test_mock_mode_overrides_inherited_hosted_and_provider_configuration) ... ok
+test_port_conflict_or_protected_port_never_stops_an_existing_process (__main__.LocalLauncher.test_port_conflict_or_protected_port_never_stops_an_existing_process) ... usage: local_launcher_contract.py [-h] [--data DATA] [--graph-db GRAPH_DB]
+                                  [--state-dir STATE_DIR]
+                                  [--livekit-server LIVEKIT_SERVER]
+                                  [--port PORT] [--signal-port SIGNAL_PORT]
+                                  [--rtc-udp-port RTC_UDP_PORT]
+                                  [--rtc-host RTC_HOST] [--live-providers]
+local_launcher_contract.py: error: Address already in use
+ok
+test_private_state_files_reject_symlink_and_hardlink_before_writing (__main__.LocalLauncher.test_private_state_files_reject_symlink_and_hardlink_before_writing) ... ok
+test_second_process_start_failure_stops_only_first_owned_child (__main__.LocalLauncher.test_second_process_start_failure_stops_only_first_owned_child) ... ok
+test_state_and_private_files_have_owner_only_permissions (__main__.LocalLauncher.test_state_and_private_files_have_owner_only_permissions) ... ok
+test_state_cannot_overlap_data_graph_repository_or_protected_demo (__main__.LocalLauncher.test_state_cannot_overlap_data_graph_repository_or_protected_demo) ... ok
+test_state_symlink_and_parent_symlink_are_rejected (__main__.LocalLauncher.test_state_symlink_and_parent_symlink_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.046s
+
+OK
+STAGED_OUTBOUND_ATTEMPTS 0

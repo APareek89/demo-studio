@@ -1,8 +1,8 @@
 # LiveKit Demo Run trial
 
-The trial wraps the existing demo runtime. Build, Align, approved evidence, model/provider order, gallery, early speech holds, interruption ownership and session saves remain unchanged. The normal player remains the default and does not import the optional SDK.
+The trial wraps the existing demo runtime. Build, Align, approved evidence, model/provider order, gallery, early speech holds, interruption ownership and session saves remain unchanged. The accepted transport now also has a [normal workspace launcher and hosted configuration](livekit.md); this page describes the isolated-copy review tool.
 
-Use `?voice_transport=livekit` before the route hash to opt in. The local server must also have `LIVEKIT_TRIAL_ENABLED=1`; the launcher sets it only for its own process. Removing the URL flag uses the existing WebSocket transport.
+The launcher sets `LIVEKIT_TRIAL_ENABLED=1` only for its own process. Both player entry points discover that setting and select LiveKit without a URL flag. The old explicit `?voice_transport=livekit` link remains compatible; `?voice_transport=websocket` deliberately selects the diagnostic older transport.
 
 ## What this stage tests
 
@@ -13,7 +13,7 @@ Use `?voice_transport=livekit` before the route hash to opt in. The local server
 
 ## Start an isolated trial
 
-Use Python 3.11 and a LiveKit Server binary. The tested pins are Python `livekit==1.1.20`, `livekit-api==1.2.1`, browser SDK `2.22.3` and LiveKit Server `1.13.7`. Browser code and its Apache license are vendored; no CDN is required. Keep the existing tested app versions as constraints and optional dependencies in their own environment:
+Use Python 3.11 and a LiveKit Server binary. The tested pins are Python `livekit==1.1.20`, `livekit-api==1.2.1`, browser SDK `2.22.3` and LiveKit Server `1.13.7`. Browser code and its Apache license are vendored; no CDN is required. The standard requirements now include the pinned SDK. Keep existing tested app versions as constraints when creating a separate review environment:
 
 ```bash
 .venv/bin/python -m pip freeze > /tmp/demo-app-constraints.txt
@@ -44,6 +44,6 @@ A mock RTC pass proves transport, not recognition or a useful spoken answer. The
 
 Token issuance requires a loopback caller and exact matching Origin. Tokens grant one random room and viewer identity, microphone/data permissions, and a120second join lifetime. The worker independently bounds room lifetime, active room count, queues, fragments and input generations. Secrets stay in a mode0600 local configuration file and never enter the repository or browser receipt.
 
-This launcher is intentionally for local review. Hosted deployment still requires production authentication, TURN/network policy, capacity testing, monitoring and physical-device acceptance. Do not expose these ports or promote the flag based solely on mock results. Normal app/AWS configuration is untouched; omit the query flag to return to the existing transport.
+This launcher remains local-only. Do not expose its signaling/token ports. Hosted rollout uses the separate secure configuration, Internet relay tests and release/rollback procedure described in [LiveKit Demo Run](livekit.md). This isolated-copy command does not change another running app or AWS configuration.
 
 Acceptance evidence and remaining limits: [QA receipt](qa/livekit-trial-2026-09-25/README.md).

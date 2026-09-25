@@ -2,8 +2,8 @@
 flowchart TD
   START["Customer starts Explore or Browse<br/>[ASK · welcome Voice mode switch]<br/>default on iff continuous voice and no mute=1; typing always available"]:::ask
   MODE["Connect session socket for guide speech<br/>[FUNCTION · startLive / runtime_live.py]<br/>voice on: one capture request; off: mic.set false, no permission prompt<br/>player Voice mode switch and mic button share capture ownership without reconnecting"]:::fn
-  TRANSPORT{"Explicit voice_transport=livekit URL flag?<br/>[FUNCTION · web/app.js]<br/>absent: existing socket; trial: local enabled server only"}:::dec
-  LK["Opt-in local LiveKit trial<br/>[LIBRARY · livekit-voice.js / livekit_trial.py]<br/>one existing capture publishes microphone over WebRTC<br/>scoped short-lived room token; owner + capture generation bound<br/>reliable fragmented data carries existing controls and owned PCM output<br/>explicit failure on disconnect; no replay, second voice or autonomous agent<br/>same-machine private host ICE; localhost signaling; mock providers and separate publication copy by default"]:::data
+  TRANSPORT{"Server-selected voice transport<br/>[FUNCTION · app.js / rehearse.js / voice-transport.js]<br/>GET /api/runtime/transport; no URL flag needed<br/>explicit websocket diagnostic; failed joins never replay or silently switch"}:::dec
+  LK["Default LiveKit transport<br/>[LIBRARY · livekit-voice.js / livekit_trial.py]<br/>one existing capture publishes microphone over WebRTC<br/>120s room token; publication pin, owner and capture generation bound<br/>reliable bounded data carries existing controls and owned PCM output<br/>hosted: public WSS + authenticated TURN/TLS443; private worker ICE<br/>AWS two active rooms; exact origins + real-client rate limits<br/>local launcher preserves workspace; local-only ICE; mock providers by default<br/>explicit failure; no replay, second voice or autonomous agent"]:::data
   INPUT["Continuous PCM capture<br/>[LIBRARY · live-voice.js / voice-worklet.js]<br/>sustained speech-like local frames may open a reversible hold; a raw volume spike cannot<br/>AEC requested; capture generation owns ready/transcript/error events"]:::data
   STT["Realtime STT over private session WebSocket<br/>[LIBRARY · runtime_live.py / sarvam_stream.py]<br/>qualified partial may open a reversible hold; only qualified final owns a semantic turn<br/>known throat/cough annotations and standalone ahem cannot qualify via punctuation<br/>active prompt / question / product / command checks; local Continue/Pause/Stop/Not now"]:::data
   HOLD["Quiet the guide locally before server recognition completes<br/>[FUNCTION · live-voice.js / player.js]<br/>pause current recorded/streamed audio and visual transition without cancelling its owner<br/>final speech commits interruption; rejected/no-final input resumes the same clip position<br/>silence and bounded no-progress watchdog prevent a permanent hold<br/>not speaker identification; sustained TV speech may cause a temporary pause"]:::fn
@@ -46,8 +46,8 @@ flowchart TD
   START --> INTAKE
   START --> MODE
   MODE --> TRANSPORT
-  TRANSPORT -- "default existing WebSocket" --> INPUT
-  TRANSPORT -- "explicit local trial" --> LK --> INPUT
+  TRANSPORT -- "disabled or diagnostic WebSocket" --> INPUT
+  TRANSPORT -- "configured LiveKit" --> LK --> INPUT
   INPUT -- "same private runtime and STT policy" --> STT
   INPUT -- "sustained locally speech-like frames" --> HOLD
   STT -- "qualified partial before final" --> HOLD

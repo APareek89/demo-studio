@@ -8,19 +8,21 @@ Turn product images, documents, videos and owner-supplied websites into a voice-
 
 The current gallery integration keeps the reviewed script pipeline, runtime recovery and image/tag/voice continuity. Anand authorized master/GitHub publication; the [gallery-template receipt](docs/qa/gallery-template-2026-09-25/README.md) records verification and Git status. AWS is a separate release: see [current release status](Handoff.MD#release-and-authorization), not this repository's branch name. The previous README is retained in [history](docs/history/context-before-master-2026-09-25/README.md).
 
-## Local mock app
+## Local app with LiveKit
 
-Install dependencies in a virtual environment using `requirements.txt`. For an isolated free preview:
+Install dependencies in a Python3.11 virtual environment using `requirements.txt` and install LiveKit Server1.13.7. The launcher finds the server on PATH or at `~/.local/lib/demo-studio/livekit-1.13.7/livekit-server`. For an isolated free preview:
 
 ```bash
 preview_root=$(mktemp -d /tmp/demo-studio-preview.XXXXXX)
 MOCK_LLM=1 CLOUD_SYNC=0 STORAGE_BACKEND=local \
   DEMO_STUDIO_DATA="$preview_root/data" \
   DEMO_STUDIO_GRAPH_DB="$preview_root/graph.sqlite" \
-  .venv/bin/uvicorn server.app:app --host 127.0.0.1 --port 8877
+  .venv/bin/python scripts/run_local.py --state-dir "$HOME/.local/state/demo-studio/mock-preview"
 ```
 
-Open [localhost:8877](http://127.0.0.1:8877). Mock outputs demonstrate plumbing, not customer-ready content or acoustic quality. Do not use protected port8896. Real provider calls require configured server-side credentials and explicit run authorization; `.env` must stay untracked.
+Open [localhost:8910](http://127.0.0.1:8910). Public playback and Rehearse select LiveKit automatically; no URL flag is needed. The launcher starts only its own app and SFU and preserves the selected workspace data. On this Mac it detects the active private interface; other machines can pass `--rtc-host PRIVATE_IPV4`. See [transport and launch configuration](docs/livekit.md).
+
+Mock outputs demonstrate plumbing, not customer-ready content or acoustic quality. For an authorized real build/conversation, retain the intended DATA/GRAPH paths and pass `--live-providers` with configured server-side credentials. Do not use protected port8896; `.env` must stay untracked. Raw uvicorn without transport configuration retains the diagnostic WebSocket transport.
 
 ## Current flow
 

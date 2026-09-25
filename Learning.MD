@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Promoting a transport requires both player entry points and hosted boundaries
+
+**Observed:** the accepted LiveKit adapter was selected only by a public-player URL flag. Rehearse still mounted the old transport, local ICE could not serve remote browsers, and the old outer eight-second connection limit could expire before hosted joining finished. Review also reproduced RecursionError from deeply nested JSON inside the existing body-size limit.
+
+**Five whys:** (1) acceptance covered an isolated local trial; (2) transport selection lived in one route; (3) loopback signaling/ICE and the old WebSocket deadline were inherited; (4) per-byte message limits did not bound JSON nesting; (5) promotion needed a separate cross-entry, cross-network and malformed-input review, beyond mocked local success.
+
+**Correction:** shared server-selected transport for public playback and Rehearse, bounded30-second LiveKit joining with cancellation ownership, secure hosted origins and scoped grants, authenticated TLS relay and actual-client rate limiting. Preserve the older diagnostic transport without automatic replay. Malformed deeply nested token JSON returns400; malformed RTC envelopes close their owned room. A normal local launcher preserves the existing workspace, while QA uses isolated copies and mock providers.
+
+**Prevention:** entry-point/navigation, hosted configuration/token, timeout/late-completion, nested JSON and local-launcher contracts; real native RTC and hosted relay acceptance must be reported separately from provider/acoustic quality. No graph/provider/grounding change. The dated release receipt records which deployment checks actually completed.
+
 ## 2026-09-25 — Network isolation must preserve local address parsing
 
 **Observed:** the first AWS staging harness failed five private-address safety cases by treating numeric IP parsing as outbound DNS. The next run reached an existing Python/JavaScript parity test whose Node executable was absent from system PATH. Both stopped staging before any service change.

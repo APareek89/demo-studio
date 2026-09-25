@@ -2,6 +2,8 @@
 
 Refreshed 25 September 2026. This is the entrypoint for a fresh session; [the previous version](docs/history/context-before-master-2026-09-25/CODEX_INSTRUCTIONS.MD) preserves the old task list. Do not restart historical tasks or paid runs from that list.
 
+Active authorized follow-up: Anand accepted LiveKit and requested it everywhere. Public playback and Rehearse now discover the configured transport; the normal workspace launcher uses it without a URL flag. Local app8910 preserves the existing DATA/GRAPH and live provider mode. Secure AWS relay rollout and separate deployment acceptance are in progress; the prior d94d6ef release remains the live/rollback baseline until the dated receipt records a completed cutover. This supersedes historical local-only restrictions, without changing Build/Align, graph nodes or paid-QA permissions. See [LiveKit configuration](docs/livekit.md) and the current Handoff.
+
 ## Read first
 
 1. `Handoff.MD`: current code versus deployment, decisions, pending work and review-demo location.

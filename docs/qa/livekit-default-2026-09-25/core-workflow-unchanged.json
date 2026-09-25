@@ -1,0 +1,14 @@
+{
+  "baseline": "fb9a627",
+  "byte_identical": [
+    "server/graph.py",
+    "server/runtime_graph.py",
+    "server/runtime_live.py",
+    "server/runtime_delivery.py",
+    "server/store.py",
+    "server/knowledge.py",
+    "web/player/player.js",
+    "web/player/walkthrough.js",
+    "web/player-ui.css"
+  ]
+}

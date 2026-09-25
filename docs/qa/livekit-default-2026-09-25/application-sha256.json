@@ -1,0 +1,13 @@
+{
+  "server/app.py": "8efb4319b30e2102321257bded4559c07bed77984fa6192cbbe844e44123d796",
+  "server/livekit_trial.py": "07d9e64a269541902830159de5a1ac3514dd845e364d51ab6280b8600e43563d",
+  "web/app.js": "cc1d6515010e46f559685d8816ba4bf27ad957a56c24633b5fd0a150127ed7d7",
+  "web/studio/rehearse.js": "160107d2762affd6cd100382aebcaf904766722632a55b5ec19f71ccdfbf69e3",
+  "web/player/voice-transport.js": "112bcbc45a106839921526a9259593421b4ebaaf89e6324566983021a0147da2",
+  "web/player/live-voice.js": "9fa2edddc9ca5cc2442db2886ae88921a6a3c10ea4f606e01cb6f2cc00665ae8",
+  "web/player/livekit-voice.js": "e7c6c3e8600dc489323e6889bc96eaccbdc3d7e7efb0270668de5bc8828a9e9d",
+  "scripts/run_local.py": "5283da8b9b80fec14ed50c634ecc0770b681f43068c85921a98f4dcf6d4b0f85",
+  "scripts/run_livekit_trial.py": "5c690f39acb83e39257b2dcbf7935687680de1fcdf0b18b37395de70a9f42ab2",
+  "requirements.txt": "3e3af89ac2a7d4ef8a9c99b6b565b8e9de48c87ddf032ad738689fe7063491f5",
+  "requirements-livekit.txt": "a9ea8cba0b16810e79d11b7c382fb9a474432279f6b2da109520966da075dfdc"
+}

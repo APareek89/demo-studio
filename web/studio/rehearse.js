@@ -1,5 +1,6 @@
 import { api, h } from "/web/api.js";
 import { mountPlayer } from "/web/player/player.js";
+import { resolveLiveClientFactory } from "/web/player/voice-transport.js";
 import { icon } from "/web/icons.js";
 
 export function renderRehearse(ctx) {
@@ -72,9 +73,21 @@ export function renderRehearse(ctx) {
     try { bundle = await api.get(`/api/demos/${demoId}/bundle`); }
     catch (e) { if (!active() || epoch !== mountEpoch) return; host.replaceChildren(h("div", { class: "studio-empty rehearse-empty" }, icon(demo.status === "building" ? "clock" : "play", { size: 30 }), h("h2", {}, demo.status === "building" ? "Your demo is being built" : "Your demo will appear here"), h("p", {}, demo.status === "building" ? "The preview becomes available when your build is complete." : "Approve the six cards in Align, then build your demo to start rehearsing."))); return; }
     if (!active() || epoch !== mountEpoch) return;
+    let liveClientFactory;
+    try { liveClientFactory = await resolveLiveClientFactory(bundle, { loadCapability: () => api.get("/api/runtime/transport") }); }
+    catch (error) {
+      if (!active() || epoch !== mountEpoch) return;
+      player?.destroy(); player = null;
+      host.replaceChildren(h("div", { class: "studio-empty rehearse-empty", role: "alert" },
+        h("p", {}, "The live connection could not load. Please retry."),
+        h("button", { class: "btn primary", onclick: mount }, "Retry")));
+      return;
+    }
+    if (!active() || epoch !== mountEpoch) return;
     if (player) player.destroy();
     player = mountPlayer(host, bundle, {
       liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
+      liveClientFactory,
       qa: (body, options) => api.post(`/api/demos/${demoId}/run/qa`, body, options),
       tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
       tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),

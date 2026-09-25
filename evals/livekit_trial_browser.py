@@ -37,10 +37,13 @@ CAPTURE = r"""(() => {
 })();"""
 
 
-def main():
+def main(*, hosted=False):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", default="http://127.0.0.1:8920")
     parser.add_argument("--signal-port", type=int, default=7880)
+    parser.add_argument("--signal-url", help="Explicit public WSS origin, allowed only by the hosted mock wrapper.")
+    parser.add_argument("--turn-host", help="Explicit hosted TURN hostname allowed for native WebRTC DNS.")
+    parser.add_argument("--require-relay", action="store_true", help="Require the selected browser candidate to use TURN relay.")
     parser.add_argument("--rtc-host", default="127.0.0.1", help="Exact validated local host IP configured by the trial launcher.")
     parser.add_argument("--demo", default="dm_29df0418")
     parser.add_argument("--output", type=Path, default=ROOT / "output/playwright/livekit-trial")
@@ -50,12 +53,25 @@ def main():
     if address.hostname not in ("127.0.0.1", "localhost") or address.port == 8896 or args.demo == "dm_41513908":
         raise ValueError("Use only an isolated, unprotected loopback trial.")
     rtc_address = ipaddress.ip_address(args.rtc_host)
-    if not rtc_address.is_private or rtc_address.is_unspecified or rtc_address.is_multicast:
-        raise ValueError("The expected RTC candidate must be the launcher's local private/loopback host.")
+    if rtc_address.is_unspecified or rtc_address.is_multicast or (not hosted and not rtc_address.is_private):
+        raise ValueError("Use the exact expected RTC host; local trials require a private/loopback host.")
+    signaling = urlsplit(args.signal_url or f"ws://127.0.0.1:{args.signal_port}")
+    if (hosted and (signaling.scheme != "wss" or not signaling.hostname)
+            or not hosted and args.signal_url
+            or signaling.username or signaling.password or signaling.query or signaling.fragment
+            or signaling.path not in ("", "/") or signaling.port == 8896):
+        raise ValueError("Hosted QA requires one explicit secure signaling origin without credentials.")
+    if args.turn_host and (not hosted or urlsplit("turns://" + args.turn_host).hostname != args.turn_host or any(c in args.turn_host for c in "/:@?#")):
+        raise ValueError("TURN must be one explicit hosted DNS name without credentials or a path.")
+    expected_transport = "livekit" if hosted else "livekit-trial"
     with urllib.request.urlopen(base + "/api/health", timeout=5) as response:
         health = json.load(response)
     assert health["mock"] and health["storage"] == "local" and not health["cloud"]["enabled"], "Refusing a non-mock trial"
     assert not any(health.get(key) for key in ("anthropic", "gemini", "runware", "sarvam", "gcloud_tts"))
+    with urllib.request.urlopen(base + "/api/runtime/transport", timeout=5) as response:
+        capability = json.load(response)
+    assert capability["transport"] == "livekit" and capability["livekit_available"], "LiveKit must be the advertised default"
+    assert capability["mode"] == ("hosted" if hosted else "trial")
     args.output.mkdir(parents=True, exist_ok=True)
     checks, failures, blocked, sockets, errors, styling = [], [], [], [], [], []
 
@@ -70,10 +86,11 @@ def main():
         os.environ.update(MOCK_LLM="1", CLOUD_SYNC="0", STORAGE_BACKEND="local", DEMO_STUDIO_DATA=temporary + "/data", DEMO_STUDIO_GRAPH_DB=temporary + "/graph.sqlite")
         from server.crawl import _render_executable
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=True, executable_path=_render_executable(pw.chromium), args=["--mute-audio", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required", "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1, EXCLUDE localhost"])
+            dns_exclusions = "".join(", EXCLUDE " + host for host in {signaling.hostname, args.turn_host} if host) if hosted else ""
+            browser = pw.chromium.launch(headless=True, executable_path=_render_executable(pw.chromium), args=["--mute-audio", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required", "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1, EXCLUDE localhost" + dns_exclusions])
             context = browser.new_context(viewport={"width": 1440, "height": 960}, reduced_motion="reduce", service_workers="block",permissions=["microphone"])
             context.add_init_script(CAPTURE)
-            allowed = {address.netloc, f"127.0.0.1:{args.signal_port}"}
+            allowed = {address.netloc, signaling.netloc}
 
             def safe_url(url):
                 parsed = urlsplit(url)
@@ -93,7 +110,7 @@ def main():
 
             def websocket(socket):
                 parsed = urlsplit(socket.url)
-                if parsed.hostname in ("127.0.0.1", "localhost") and parsed.port == args.signal_port:
+                if parsed.scheme == signaling.scheme and parsed.netloc == signaling.netloc:
                     sockets.append(safe_url(socket.url))
                     socket.connect_to_server()
                 else:
@@ -131,9 +148,9 @@ def main():
                   state.reader=reader;state.outgoing=outgoing;state.sdk=sdk;
                   return {ready:client.ready,transport:client.transport,captures:trialCapture.calls,runtime:bundle.runtime?.version,version:sdk.version};
                 }""", args.demo)
-                check("actual pinned SDK joins a local runtime room", result["ready"] and result["transport"] == "livekit-trial" and result["version"] == "2.22.3")
+                check("actual pinned SDK joins the configured runtime room", result["ready"] and result["transport"] == expected_transport and result["version"] == "2.22.3")
                 check("text connection does not acquire a microphone", result["captures"] == 0)
-                check("only local LiveKit signaling is opened", sockets and not blocked)
+                check("only the explicitly allowed LiveKit signaling is opened", sockets and not blocked)
                 check("real synthetic capture starts once", page.evaluate("async()=>await liveKitQA.client.startCapture() && trialCapture.calls===1"))
                 page.wait_for_function("()=>liveKitQA.client.micReady", timeout=15000)
                 page.wait_for_timeout(700)
@@ -147,9 +164,12 @@ def main():
                   const transport=values.find(v=>v.type==='transport'&&v.selectedCandidatePairId);
                   const pair=values.find(v=>v.id===transport?.selectedCandidatePairId)||values.find(v=>v.type==='candidate-pair'&&v.state==='succeeded'&&v.nominated);
                   const remote=values.find(v=>v.id===pair?.remoteCandidateId),local=values.find(v=>v.id===pair?.localCandidateId);
-                  return {bytes:values.filter(v=>v.type==='outbound-rtp'&&v.kind==='audio').reduce((n,v)=>n+(v.bytesSent||0),0),pairState:pair?.state,localType:local?.candidateType,remoteType:remote?.candidateType,remoteExpectedHost:expectedHost===(remote?.address||remote?.ip)};
+                  return {bytes:values.filter(v=>v.type==='outbound-rtp'&&v.kind==='audio').reduce((n,v)=>n+(v.bytesSent||0),0),pairState:pair?.state,localType:local?.candidateType,remoteType:remote?.candidateType,localRelayProtocol:local?.relayProtocol||null,relayUsesTLS:local?.relayProtocol==='tls'||/^turns:/.test(local?.url||''),localProtocol:local?.protocol||null,remoteProtocol:remote?.protocol||null,remoteExpectedHost:expectedHost===(remote?.address||remote?.ip)};
                 }""", args.rtc_host)
-                check("real RTC audio packets use the exact configured local candidate", stats["bytes"] > 0 and stats["pairState"] == "succeeded" and stats["remoteExpectedHost"])
+                check("real RTC audio packets use the exact configured candidate", stats["bytes"] > 0 and stats["pairState"] == "succeeded" and stats["remoteExpectedHost"])
+                if args.require_relay:
+                    check("actual browser audio reaches the worker through TURN relay", stats["localType"] == "relay")
+                    check("selected TURN relay uses TLS", stats["localRelayProtocol"] in ("tls", "tcp") and stats["relayUsesTLS"])
                 page.evaluate("trialCapture.gain.gain.value=0.09")
                 page.wait_for_function("()=>liveKitQA.holds.length>0", timeout=4000)
                 check("same RTC capture still drives immediate local speech hold", page.evaluate("!!liveKitQA.client.inputHold && trialCapture.calls===1"))
@@ -184,7 +204,7 @@ def main():
                 page.screenshot(path=str(args.output / "bmw-livekit-answer-image.png"), full_page=False)
                 page.evaluate("liveKitQA.client.send('session.end')")
                 page.wait_for_function("()=>!liveKitQA.client.ready && liveKitQA.client.socket?.readyState===3", timeout=8000)
-                check("real runtime worker departure closes the browser transport", page.evaluate("!liveKitQA.client.ready && !liveKitQA.client.mic && liveKitQA.errors.some(e=>e.includes('LiveKit trial:'))"))
+                check("real runtime worker departure closes the browser transport", page.evaluate("!liveKitQA.client.ready && !liveKitQA.client.mic && liveKitQA.errors.some(e=>e.includes('LiveKit:'))"))
                 page.evaluate("liveKitQA.client.close();liveKitQA.reader.close();liveKitQA.outgoing.close();liveKitQA.gallery.destroy()")
                 check("ended trial leaves no live synthetic device", page.evaluate("trialCapture.tracks.every(t=>t.readyState==='ended')"))
 
@@ -198,7 +218,7 @@ def main():
                   state.player=mountPlayer(host,bundle,{liveUrl:`/api/demos/${demo}/run/live`,liveClientFactory:options=>{const client=state.client=new LiveKitVoiceClient(options);const ask=client.ask.bind(client);client.ask=async body=>{const answer=await ask(body);state.answers.push(answer);return answer;};const speak=client.speak.bind(client);client.speak=(text,options={})=>speak(text,{...options,onStart:ts=>{state.played.push({text,image:document.querySelector('.slide.on .gallery-surface')?.dataset.imageId});options.onStart?.(ts);}});return client;},qa:body=>post('run/qa',body),tts:text=>post('run/tts',{text}).then(r=>r.url),pitch:body=>post('run/pitch',body),lead:body=>post('run/lead',body),saveSession:async body=>{state.saved.push(body);return post('run/session',body);},beacon:body=>{state.saved.push(body);post('run/session',body);},onClose(){}});
                   return {transport:state.client.transport,top:!!host.querySelector('.pl-top'),bottom:!!host.querySelector('.pl-dock')};
                 }""", args.demo)
-                check("actual player mounts with unchanged top and bottom controls", mounted["transport"] == "livekit-trial" and mounted["top"] and mounted["bottom"])
+                check("actual player mounts with unchanged top and bottom controls", mounted["transport"] == "livekit" and mounted["top"] and mounted["bottom"])
                 page.get_by_role("button", name="Browse at my pace", exact=True).click()
                 page.wait_for_function("()=>playerQA.client.ready", timeout=15000)
                 page.wait_for_function("()=>document.querySelector('.slide.on .gallery-surface[data-image-id]')", timeout=25000)
@@ -226,12 +246,16 @@ def main():
                 # harness: the shared user URL must deliver intake and text
                 # questions using web/app.js's own factory and API callbacks.
                 page.set_viewport_size({"width":1440,"height":960})
-                page.goto(base + f"/?voice_transport=livekit&mute=1#/play/{args.demo}")
+                page.goto(base + f"/?mute=1#/play/{args.demo}")
                 page.get_by_role("button", name="Explore with me", exact=True).wait_for()
+                check("stock application chooses LiveKit without a transport URL flag", "voice_transport" not in page.url and capability["transport"] == "livekit")
                 page.evaluate(r"""async()=>{
                   const {LiveKitVoiceClient}=await import('/web/player/livekit-voice.js');
-                  const state=window.routeQA={asked:[],answers:[],saved:[],played:[]};
-                  const ask=LiveKitVoiceClient.prototype.ask,speak=LiveKitVoiceClient.prototype.speak;
+                  const state=window.routeQA={asked:[],answers:[],saved:[],played:[],mediaPlayed:[]};
+                  const mediaPlay=HTMLMediaElement.prototype.play;
+                  HTMLMediaElement.prototype.play=function(...args){const url=this.currentSrc||this.src;return Promise.resolve(mediaPlay.apply(this,args)).then(value=>{state.mediaPlayed.push(url);return value;});};
+                  const ask=LiveKitVoiceClient.prototype.ask,speak=LiveKitVoiceClient.prototype.speak,connect=LiveKitVoiceClient.prototype.connect;
+                  LiveKitVoiceClient.prototype.connect=function(...args){state.client=this;return connect.apply(this,args);};
                   LiveKitVoiceClient.prototype.ask=async function(body){state.client=this;state.asked.push(body);const answer=await ask.call(this,body);state.answers.push(answer);return answer;};
                   LiveKitVoiceClient.prototype.speak=function(text,options={}){return speak.call(this,text,{...options,onStart:ts=>{state.played.push(text);options.onStart?.(ts);}});};
                   const fetch=window.fetch;window.fetch=async function(input,init){
@@ -245,13 +269,17 @@ def main():
                 page.get_by_role("textbox", name="Your answer", exact=True).fill("Show me around")
                 page.get_by_role("textbox", name="Your answer", exact=True).press("Enter")
                 page.wait_for_function("()=>!document.querySelector('.pl-intake:not(.pl-welcome)').classList.contains('open')", timeout=25000)
+                page.wait_for_function("()=>routeQA.saved.some(s=>s.transcript?.some(t=>t.role==='user'&&t.text==='Show me around'))", timeout=5000)
                 check("stock application accepts typed intake while voice mode is enabled", page.evaluate("()=>routeQA.saved.some(s=>s.transcript?.some(t=>t.role==='user'&&t.text==='Show me around'))"))
-                page.wait_for_function("()=>trialPeerConnections.some(p=>p.connectionState==='connected')", timeout=15000)
+                page.wait_for_function("()=>routeQA.client?.ready && routeQA.client.micReady && trialPeerConnections.some(p=>p.connectionState==='connected')", timeout=30000)
+                check("stock route establishes its own continuous microphone over RTC", page.evaluate("()=>routeQA.client.mic && !!routeQA.client.socket.localTrack && trialCapture.tracks.filter(t=>t.readyState==='live').length===1"))
                 question = "tell me more about interior of the car"
                 page.get_by_role("textbox", name="Your question or answer", exact=True).fill(question)
                 page.get_by_role("textbox", name="Your question or answer", exact=True).press("Enter")
-                page.wait_for_function("()=>routeQA.answers.length===1 && routeQA.played.includes(routeQA.answers[0].answer)", timeout=15000)
-                check("stock route sends typed question over LiveKit and delivers the answer", page.evaluate("q=>routeQA.client.transport==='livekit-trial' && routeQA.asked[0].question===q && routeQA.answers[0].answered && !!routeQA.answers[0].answer && routeQA.played.includes(routeQA.answers[0].answer)", question))
+                # Reusing isolated QA state can legitimately serve an exact
+                # customer cache clip. Observe that clip as well as streamed PCM.
+                page.wait_for_function("()=>routeQA.answers.length===1 && (routeQA.played.includes(routeQA.answers[0].answer) || routeQA.answers[0].audio && routeQA.mediaPlayed.includes(new URL(routeQA.answers[0].audio,location.href).href))", timeout=15000)
+                check("stock route sends typed question over LiveKit and delivers the answer", page.evaluate("([q,transport])=>routeQA.client.transport===transport && routeQA.asked[0].question===q && routeQA.answers[0].answered && !!routeQA.answers[0].answer && (routeQA.played.includes(routeQA.answers[0].answer) || routeQA.answers[0].audio && routeQA.mediaPlayed.includes(new URL(routeQA.answers[0].audio,location.href).href))", [question, expected_transport]))
                 check("stock route clears only the submitted question field", page.get_by_role("textbox", name="Your question or answer", exact=True).input_value() == "")
                 page.screenshot(path=str(args.output / "bmw-livekit-stock-route-answer.png"), full_page=False)
                 page.locator('.pl-top button[aria-label="Stop and see the summary"]').click()
@@ -262,14 +290,14 @@ def main():
                   routeQA.persisted=await response.json();return routeQA.persisted.ended===true;
                 }""", arg=args.demo, timeout=15000)
                 check("stock route persists the submitted question and actual answer", page.evaluate("q=>routeQA.persisted.questions.includes(q) && routeQA.persisted.turns.some(t=>t.question===q&&t.answered&&!t.failed) && routeQA.persisted.transcript.some(t=>t.role==='agent'&&t.text===routeQA.answers[0].answer)", question))
-                check("browser opens no external connection or legacy microphone WebSocket", not blocked and all(urlsplit(url).port == args.signal_port for url in sockets))
+                check("browser opens no unapproved connection or legacy microphone WebSocket", not blocked and all(urlsplit(url).netloc == signaling.netloc for url in sockets))
                 check("browser has no uncaught JavaScript error", not errors)
-                report = {"passed":len(checks),"total":len(checks),"checks":checks,"provider_calls":0,"physical_microphone":False,"transport":"real-local-livekit","rtc":stats,"frames":{k:counters[k] for k in ("received","forwarded")},"errors":errors,"blocked":blocked,"offline_stylesheets":styling,"screenshots":[p.name for p in args.output.glob("bmw-livekit-*.png")]}
+                report = {"passed":len(checks),"total":len(checks),"checks":checks,"provider_calls":0,"physical_microphone":False,"transport":"real-hosted-livekit" if hosted else "real-local-livekit","rtc":stats,"frames":{k:counters[k] for k in ("received","forwarded")},"errors":errors,"blocked":blocked,"offline_stylesheets":styling,"screenshots":[p.name for p in args.output.glob("bmw-livekit-*.png")]}
                 (args.output / "results.json").write_text(json.dumps(report, indent=2) + "\n")
                 print(json.dumps(report), flush=True)
             except Exception:
                 page.screenshot(path=str(args.output / "failure.png"), full_page=False)
-                state = page.evaluate("()=>({errors:window.liveKitQA?.errors,states:window.liveKitQA?.states,controls:window.liveKitQA?.control,wire:window.liveKitQA?.wire,received:window.liveKitQA?.received,earlyRTC:window.liveKitQA?.earlyRTC,room:window.liveKitQA?.socket?.room?.state,socket:window.liveKitQA?.socket?.readyState,peers:window.liveKitQA?.socket?.room?.remoteParticipants?.size,rtc:trialPeerConnections.map(p=>({connection:p.connectionState,ice:p.iceConnectionState,signal:p.signalingState,local:!!p.localDescription,remote:!!p.remoteDescription}))})")
+                state = page.evaluate("()=>({errors:window.liveKitQA?.errors,states:window.liveKitQA?.states,controls:window.liveKitQA?.control,wire:window.liveKitQA?.wire,received:window.liveKitQA?.received,earlyRTC:window.liveKitQA?.earlyRTC,room:window.liveKitQA?.socket?.room?.state,socket:window.liveKitQA?.socket?.readyState,peers:window.liveKitQA?.socket?.room?.remoteParticipants?.size,route:window.routeQA&&{asked:routeQA.asked,answers:routeQA.answers,played:routeQA.played,mediaPlayed:routeQA.mediaPlayed,ready:routeQA.client?.ready,micReady:routeQA.client?.micReady},rtc:trialPeerConnections.map(p=>({connection:p.connectionState,ice:p.iceConnectionState,signal:p.signalingState,local:!!p.localDescription,remote:!!p.remoteDescription}))})")
                 (args.output / "failure.json").write_text(json.dumps({"passed":checks,"failures":failures,"errors":errors,"blocked":blocked,"sockets":sockets,"state":state},indent=2)+"\n")
                 raise
             finally:

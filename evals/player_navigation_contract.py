@@ -28,6 +28,10 @@ api.get=async path=>{
  if(window.holdBundles&&path.endsWith('/bundle'))return new Promise((resolve,reject)=>held.push({resolve,reject}));
  if(path.endsWith('/bundle'))return structuredClone(bundle);
  if(path==='/api/demos')return [];
+ if(path==='/api/runtime/transport'){
+   if(window.holdCapability)return new Promise(resolve=>{window.releaseCapability=()=>{window.holdCapability=false;resolve(window.transportCapability);};});
+   return window.transportCapability||{transport:'websocket',livekit_enabled:false,livekit_available:false,mode:'disabled'};
+ }
  if(path==='/api/health'||path.endsWith('/readiness'))return {};
  return structuredClone(state);
 };
@@ -47,6 +51,11 @@ export class LiveVoiceClient {
  setMuted(){} unlockOutput(){return Promise.resolve();} connect(){this.ready=true;this.socketOpen=true;return Promise.resolve();}
  setMicEnabled(value){this.mic=value;return Promise.resolve(value);} startCapture(){this.mic=true;return Promise.resolve(true);}
  stopCapture(){this.mic=false;} interrupt(){this.playing=false;} close(){this.closeCalls++;this.closed=true;this.mic=false;this.ready=false;this.socketOpen=false;this.playing=false;}
+ endSpeechHold(){return false;}
+}'''
+LIVEKIT = r'''import {LiveVoiceClient} from '/web/player/live-voice.js';
+export class LiveKitVoiceClient extends LiveVoiceClient {
+ constructor(options){super(options);this.transport='livekit';}
 }'''
 
 
@@ -62,6 +71,8 @@ class Handler(BaseHTTPRequestHandler):
             data, mime = VOICE.encode(), 'text/javascript'
         elif path == '/web/player/live-voice-actual.js':
             data, mime = (ROOT / 'web/player/live-voice.js').read_bytes(), 'text/javascript'
+        elif path == '/web/player/livekit-voice.js':
+            data, mime = LIVEKIT.encode(), 'text/javascript'
         elif path.startswith('/web/'):
             file = (ROOT / path.lstrip('/')).resolve()
             if not file.is_relative_to(ROOT / 'web') or not file.is_file():
@@ -211,6 +222,22 @@ def main():
             page.wait_for_timeout(30)
             check('late timed-out HTTP answer cannot replace the failure caption', 'Obsolete' not in page.locator('.pl-cap .txt').text_content())
             page.get_by_role('link', name='Home', exact=True).click()
+            page.evaluate("window.transportCapability={transport:'livekit',livekit_enabled:true,livekit_available:true,mode:'hosted'}")
+            for rehearse in (False, True):
+                old = play(rehearse)
+                check(f'{"Rehearse" if rehearse else "public player"} normal URL uses server-selected LiveKit', page.evaluate(f'clients[{old}].transport==="livekit" && !location.search.includes("voice_transport")'))
+                page.get_by_role('link', name='Home', exact=True).click()
+                check(f'{"Rehearse" if rehearse else "public player"} closes its selected LiveKit client on navigation', closed(old))
+            for rehearse in (False, True):
+                count = page.evaluate('clients.length')
+                page.evaluate('window.holdCapability=true')
+                page.evaluate("location.hash=" + repr('#/studio/dm_12345678/rehearse' if rehearse else '#/play/dm_12345678'))
+                page.wait_for_function('typeof window.releaseCapability==="function"')
+                page.get_by_role('link', name='Home', exact=True).click()
+                page.evaluate('releaseCapability();delete window.releaseCapability')
+                page.wait_for_timeout(50)
+                check(f'{"Rehearse" if rehearse else "public player"} stale capability cannot open capture after navigation', page.evaluate(f'clients.length==={count} && !document.querySelector(".pl-welcome")'))
+            page.evaluate("window.transportCapability={transport:'websocket',livekit_enabled:false,livekit_available:false,mode:'disabled'}")
             play(True); page.evaluate('clients.at(-1).ready=false;document.querySelector(".pl-welcome").remove()')
             page.locator('.pl-reply input').fill('Keep this rehearsal question.')
             page.locator('.pl-reply').evaluate('form=>form.requestSubmit()')

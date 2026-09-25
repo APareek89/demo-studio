@@ -1,0 +1,59 @@
+PASS large UTF-8 messages round-trip with bounded wire packets
+PASS oversize outgoing messages and invalid ids are rejected
+PASS completed reliable-message replay does not repeat an answer
+PASS out-of-order and duplicate partial messages fail closed
+PASS invalid base64 and excessive part counts fail closed
+PASS inflight assembly is bounded to four messages
+PASS expired assembly cannot deliver an old turn
+PASS malformed UTF-8 and invalid JSON cannot enter runtime
+PASS trial token endpoint is same-origin and session-bound
+PASS text trial joins RTC without microphone or subscribed second voice
+PASS runtime controls use reliable data addressed only to the worker
+PASS one physical capture feeds both RTC and local onset detector
+PASS microphone generation control precedes matching named RTC publication
+PASS PCM is never duplicated onto reliable control data
+PASS same worklet still pauses immediately before any final transcript
+PASS noise qualification and reversible hold recovery remain inherited
+PASS other participant or topic cannot inject customer input
+PASS qualified RTC transcription enters the existing single semantic owner
+PASS only the exact worker can acknowledge runtime liveness
+PASS matching worker pong clears the bounded liveness deadline
+PASS mic off stops physical track and unpublishes while retaining text transport
+PASS reopened capture rejects transcripts from old microphone generation
+PASS answer preserves image and deferred audio ownership before playback
+PASS RTC data output uses the existing single audio queue
+PASS local interruption stops PCM immediately without ending capture
+PASS late audio cannot resurrect an interrupted utterance
+PASS reconnect closes ownership instead of replaying an answered or pending turn
+PASS destroy closes both contexts and all owned tracks
+PASS session start waits for the worker's participant visibility acknowledgement
+PASS an unrelated participant cannot unlock worker readiness
+PASS owned readiness starts one session without replay
+PASS repeated worker readiness cannot reopen or replay the session
+PASS runtime events cannot bypass the explicit worker readiness handshake
+PASS ending during worker readiness cannot open a late session
+PASS late RTC publication after mic-off is unbound and cannot survive
+PASS wrong session from even the assigned worker fails closed
+PASS unrelated participant departure does not disrupt this runtime
+PASS worker departure ends the live connection immediately
+PASS a late token after destroy cannot open a room
+PASS same-tick disposal before queued startup does not request a token, join or capture
+PASS disabled trial fails visibly and cannot instantiate legacy WebSocket
+PASS queued controls are invalidated on disconnect
+PASS bounded send backlog fails closed rather than consuming unbounded memory
+PASS hosted RTC preserves server TURN configuration and enforces advertised relay
+PASS hosted token fetch includes same-origin credentials and publication pins
+PASS hosted joining has finite internet-sized phase and overall deadlines
+PASS hosted servers without an ICE policy retain complete SDK ICE defaults
+PASS token fetch refuses cross-origin endpoints before transmitting publication or session
+PASS unsafe hosted rtc_mode cannot open a room
+PASS unsafe hosted rtc_policy cannot open a room
+PASS unsafe hosted url cannot open a room
+PASS late failed join cannot close its replacement room or open duplicate capture
+PASS ending during native RTC join releases a late completed connection without session replay
+PASS live SDK stays lazy-loaded through shared server-selected transport
+PASS legacy bundles cannot silently claim live transport
+PASS diagnostic and restarted players retain one configured client factory
+PASS vendored SDK has fixed provenance and license with no application build
+PASS vendored SDK and license exactly match recorded content hashes
+livekit_voice_contract: 58/58

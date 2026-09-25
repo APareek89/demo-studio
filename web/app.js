@@ -10,6 +10,7 @@ import { renderSessions, renderShare } from "/web/studio/sessions.js";
 import { renderPlayground } from "/web/playground.js";
 import { renderObservability } from "/web/observability.js";
 import { mountPlayer } from "/web/player/player.js";
+import { resolveLiveClientFactory } from "/web/player/voice-transport.js";
 
 const main = document.getElementById("main");
 let current = { unsub: null, dispose: null, demoId: null };
@@ -137,21 +138,16 @@ async function renderPlay(demoId, epoch = beginView()) {
   const host = h("div", { class: "play-page" });
   main.replaceChildren(host);
   let liveClientFactory;
-  if (new URLSearchParams(location.search).get("voice_transport") === "livekit") {
-    if (!(bundle.runtime?.version >= 1)) {
-      host.textContent = "The LiveKit trial requires a demo with the live runtime. Remove voice_transport=livekit from the URL to use this demo's standard player.";
-      return;
-    }
-    try {
-      const { LiveKitVoiceClient } = await import("/web/player/livekit-voice.js");
-      if (!isCurrentView(epoch)) return;
-      liveClientFactory = options => new LiveKitVoiceClient(options);
-    } catch (error) {
-      if (!isCurrentView(epoch)) return;
-      host.textContent = "The LiveKit trial could not load. Remove voice_transport=livekit from the URL to use the standard demo.";
-      return;
-    }
+  try {
+    liveClientFactory = await resolveLiveClientFactory(bundle, { loadCapability: () => api.get("/api/runtime/transport") });
+  } catch (error) {
+    if (!isCurrentView(epoch)) return;
+    host.replaceChildren(h("div", { class: "studio-empty", role: "alert" },
+      h("p", {}, "The live connection could not load. Please retry."),
+      h("button", { class: "btn primary", onclick: () => { if (isCurrentView(epoch)) renderPlay(demoId); } }, "Retry")));
+    return;
   }
+  if (!isCurrentView(epoch)) return;
   playInstance = mountPlayer(host, bundle, {
     liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
     liveClientFactory,

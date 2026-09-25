@@ -1,0 +1,66 @@
+[
+  {
+    "suite": "qa_deck",
+    "exit_code": 0,
+    "seconds": 10.31
+  },
+  {
+    "suite": "qa_accept",
+    "exit_code": 0,
+    "seconds": 2.77
+  },
+  {
+    "suite": "smoke_mock",
+    "exit_code": 0,
+    "seconds": 4.43
+  },
+  {
+    "suite": "release_mock_contract",
+    "exit_code": 0,
+    "seconds": 16.33
+  },
+  {
+    "suite": "livekit_hosted_contract",
+    "exit_code": 0,
+    "seconds": 1.64
+  },
+  {
+    "suite": "livekit_trial_contract",
+    "exit_code": 0,
+    "seconds": 2.4
+  },
+  {
+    "suite": "local_launcher_contract",
+    "exit_code": 0,
+    "seconds": 0.18
+  },
+  {
+    "suite": "livekit_launcher_contract",
+    "exit_code": 0,
+    "seconds": 0.18
+  },
+  {
+    "suite": "voice_transport_contract.mjs",
+    "exit_code": 0
+  },
+  {
+    "suite": "livekit_voice_contract.mjs",
+    "exit_code": 0
+  },
+  {
+    "suite": "live_voice_contract.mjs",
+    "exit_code": 0
+  },
+  {
+    "suite": "immediate_speech_hold_contract.mjs",
+    "exit_code": 0
+  },
+  {
+    "suite": "player_runtime_recovery_contract.cjs",
+    "exit_code": 0
+  },
+  {
+    "suite": "player_session_save_contract.cjs",
+    "exit_code": 0
+  }
+]

@@ -5,7 +5,7 @@ config:
     curve: linear
 ---
 graph TD;
-	REQUEST["run_turn wrapper<br/>claim owned turn; pin snapshot and registry<br/>same entry point for REST and live socket<br/>opt-in LiveKit facade calls existing runtime_live; no added graph node"]
+	REQUEST["run_turn wrapper<br/>claim owned turn; pin snapshot and registry<br/>same entry point for REST and live socket<br/>default configured LiveKit facade calls existing runtime_live; no added graph node"]
 	SHOW{"Wrapper: unambiguous picture-only request?<br/>generic tour controls and mixed questions stay on normal path"}
 	PICTURE["Wrapper: scoped published-picture lookup<br/>ordinary retrieve helper plus bounded reviewed-caption search hints<br/>strict snapshot/version, eligible facts and owning image/caption<br/>neutral show or no-photo reply; no reasoning model, FAQ or unknown write<br/>not an additional graph node"]
 	CACHE{"Eligible saved answer?<br/>faq.match before graph; skip_bank bypasses<br/>same pin/hash and approved citations; rejected tombstones excluded"}

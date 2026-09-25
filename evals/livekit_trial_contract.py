@@ -117,7 +117,9 @@ async def main():
         check("missing, cross-origin and scheme-mismatched origins rejected", all([await error_status(403,lambda origin=origin:trial.trial_token(did,request(origin=origin))) for origin in (None,"http://evil.example","https://127.0.0.1:8920")]))
         check("unpublished demo cannot obtain a room", await error_status(409, lambda:trial.trial_token(did,request())))
         store.update(did,lambda d:d.update(status="ready"))
-        store.write_json(did,"bundle.json",{"runtime":{"version":1},"knowledge_snapshot_id":"ks_test","version":1})
+        snapshot_id="kb_"+"1"*24
+        store.write_json(did,"bundle.json",{"runtime":{"version":1},"knowledge_snapshot_id":snapshot_id,"version":1})
+        store.write_json(did,f"knowledge/snapshots/{snapshot_id}.json",{"id":snapshot_id,"facts":[]})
         for bad in ("../../escape", "x"*101, None):
             assert await error_status(400,lambda bad=bad:trial.trial_token(did,request({"session_id":bad})))
         check("session identifiers must be path-safe and bounded", True)
@@ -305,6 +307,10 @@ async def main():
     await watch
 
 with ExitStack() as blocked:
+    # These many independent protocol cases share a synthetic client address;
+    # public rate-limit behavior is exercised separately in the hosted contract.
+    blocked.enter_context(patch.object(trial,"TOKEN_ATTEMPT_LIMIT",1000))
+    blocked.enter_context(patch.dict(os.environ,{"LIVEKIT_ENABLED":"0"}))
     for target in ("socket.create_connection","socket.getaddrinfo","socket.socket.connect","socket.socket.connect_ex","socket.socket.sendto"):
         blocked.enter_context(patch(target,side_effect=AssertionError("Sockets blocked")))
     asyncio.run(main())

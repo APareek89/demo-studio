@@ -1,4 +1,4 @@
-"""Local, opt-in LiveKit transport for the existing validated demo runtime.
+"""LiveKit transport for the existing validated demo runtime.
 
 The room replaces the WebSocket wire only. The private facade calls runtime_live
 unchanged; it does not create another agent, STT policy, answerer or delivery path.
@@ -30,9 +30,12 @@ MAX_BRIDGES, JOIN_SECONDS, IDLE_SECONDS, VISIT_SECONDS = 4, 30, 90, 3600
 CONNECT_SECONDS, DISCONNECT_SECONDS = 5, 5
 READY_ATTEMPTS, READY_RETRY_SECONDS = 4, .5
 PRE_ROLL_FRAMES, INPUT_QUEUE_SIZE = 400, 512
+TOKEN_ATTEMPT_LIMIT, TOKEN_WINDOW_SECONDS, MAX_TOKEN_CLIENTS = 12, 60, 2048
+TOKEN_BODY_SECONDS = 5
 _ID = re.compile(r"[A-Za-z0-9_-]{1,80}\Z")
 _SESSION = re.compile(r"[A-Za-z0-9_-]{1,100}\Z")
 _bridges: dict[str, "TrialBridge"] = {}
+_token_attempts: dict[str, tuple[float, int]] = {}
 
 
 def _loopback(host: str | None) -> bool:
@@ -44,9 +47,103 @@ def _loopback(host: str | None) -> bool:
         return False
 
 
+def _hosted() -> bool:
+    return os.getenv("LIVEKIT_ENABLED") == "1"
+
+
+def _enabled() -> bool:
+    return _hosted() or os.getenv("LIVEKIT_TRIAL_ENABLED") == "1"
+
+
+def _url(value: str):
+    """Parse configured addresses without resolving them or trusting HTTP headers."""
+    try:
+        parsed = urlsplit(value)
+        host, port = parsed.hostname, parsed.port
+        if (not host or len(value) > 2048 or re.search(r"[\x00-\x20\x7f]", value)
+                or parsed.username or parsed.password or parsed.query or parsed.fragment
+                or parsed.path not in ("", "/") or port == 8896
+                or (port is not None and not 1 <= port <= 65535)):
+            raise ValueError
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            if len(host) > 253 or not all(re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", label, re.I)
+                                          for label in host.split(".")):
+                raise ValueError
+        return parsed
+    except (ValueError, TypeError):
+        raise HTTPException(503, "LiveKit transport is not configured") from None
+
+
+def _allowed_origins() -> set[str]:
+    values = os.getenv("LIVEKIT_ALLOWED_ORIGINS", "").split(",")
+    origins = set()
+    for value in values:
+        origin = value.strip()
+        parsed = _url(origin)
+        if (parsed.path or parsed.scheme not in ("http", "https")
+                or (parsed.scheme == "http" and not _loopback(parsed.hostname))):
+            raise HTTPException(503, "LiveKit requires explicit HTTPS origins")
+        origins.add(origin)
+    if not origins or len(origins) > 16:
+        raise HTTPException(503, "LiveKit requires explicit allowed origins")
+    return origins
+
+
+def _max_bridges() -> int:
+    try:
+        value = int(os.getenv("LIVEKIT_MAX_ROOMS", str(MAX_BRIDGES))) if _hosted() else MAX_BRIDGES
+    except ValueError:
+        value = 0
+    if not 1 <= value <= 32:
+        raise HTTPException(503, "LiveKit room capacity is not configured")
+    return value
+
+
+def _ice_policy() -> str:
+    policy = os.getenv("LIVEKIT_ICE_TRANSPORT_POLICY", "all") if _hosted() else "all"
+    if policy not in ("all", "relay"):
+        raise HTTPException(503, "LiveKit ICE transport policy is not configured")
+    return policy
+
+
+def _rate_limit(request: Request) -> None:
+    """Bound all attempts, including bad origins and unpublished demo requests.
+
+    Only the ASGI peer is used. Deployment must restrict trusted proxy forwarding;
+    this endpoint never interprets client-supplied X-Forwarded-For itself.
+    """
+    now = time.monotonic()
+    for key, (started, _) in list(_token_attempts.items()):
+        if now - started >= TOKEN_WINDOW_SECONDS:
+            del _token_attempts[key]
+    try:
+        client = str(ipaddress.ip_address(request.client.host if request.client else ""))
+    except ValueError:
+        client = "unknown"
+    if client not in _token_attempts and len(_token_attempts) >= MAX_TOKEN_CLIENTS:
+        raise HTTPException(429, "Please retry the conversation shortly", headers={"Retry-After":str(TOKEN_WINDOW_SECONDS), "Cache-Control":"no-store"})
+    started, count = _token_attempts.get(client, (now, 0))
+    _token_attempts[client] = (started, min(count + 1, TOKEN_ATTEMPT_LIMIT + 1))
+    if count >= TOKEN_ATTEMPT_LIMIT:
+        retry = max(1, int(TOKEN_WINDOW_SECONDS - (now - started)) + 1)
+        raise HTTPException(429, "Too many conversation connection attempts", headers={"Retry-After":str(retry), "Cache-Control":"no-store"})
+
+
 def _authorize(request: Request) -> None:
-    if os.getenv("LIVEKIT_TRIAL_ENABLED") != "1":
-        raise HTTPException(404, "LiveKit trial is disabled")
+    if not _enabled():
+        raise HTTPException(404, "LiveKit transport is disabled")
+    _rate_limit(request)
+    if _hosted():
+        origins = _allowed_origins()
+        origin = request.headers.get("origin", "")
+        if origin not in origins:
+            raise HTTPException(403, "An allowed application origin is required")
+        # An explicitly configured HTTP origin is solely for a local developer.
+        if _loopback(urlsplit(origin).hostname) and (not request.client or not _loopback(request.client.host)):
+            raise HTTPException(403, "A local origin requires a local client")
+        return
     # Forwarded headers are deliberately not accepted as local authorization.
     if not request.client or not _loopback(request.client.host):
         raise HTTPException(403, "LiveKit trial is local only")
@@ -64,6 +161,18 @@ def _authorize(request: Request) -> None:
 def _configuration() -> tuple[str, str, str]:
     url = os.getenv("LIVEKIT_URL", "")
     key, secret = os.getenv("LIVEKIT_API_KEY", ""), os.getenv("LIVEKIT_API_SECRET", "")
+    if _hosted():
+        parsed = _url(url)
+        origins = _allowed_origins()
+        local = _loopback(parsed.hostname)
+        if (parsed.scheme != "wss"
+                or (local and not all(_loopback(urlsplit(origin).hostname) for origin in origins))
+                or not key or len(secret) < 32):
+            raise HTTPException(503, "Hosted LiveKit transport is not configured")
+        _worker_url(url)
+        _max_bridges()
+        _ice_policy()
+        return url, key, secret
     try:
         parsed = urlsplit(url)
         port = parsed.port
@@ -76,6 +185,38 @@ def _configuration() -> tuple[str, str, str]:
         raise HTTPException(503, "Local LiveKit trial is not configured")
     _stun_url()
     return url, key, secret
+
+
+def _worker_url(public_url: str) -> str:
+    value = os.getenv("LIVEKIT_INTERNAL_URL", "") if _hosted() else ""
+    if not value:
+        return public_url
+    parsed = _url(value)
+    private = _loopback(parsed.hostname)
+    try:
+        address = ipaddress.ip_address(parsed.hostname)
+        private = private or any(address in ipaddress.ip_network(block) for block in (
+            "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fc00::/7"))
+    except ValueError:
+        pass
+    if parsed.scheme != "wss" and not (private and parsed.scheme == "ws"):
+        raise HTTPException(503, "LiveKit internal signaling must be secure or private")
+    return value
+
+
+def transport_capability() -> dict:
+    """Nonsecret readiness; never connects, starts a room or silently falls back."""
+    enabled = _enabled()
+    available = False
+    if enabled:
+        try:
+            _configuration()
+            _sdk()
+            available = True
+        except HTTPException:
+            pass
+    return {"transport":"livekit" if enabled else "websocket", "livekit_enabled":enabled,
+            "livekit_available":available, "mode":"hosted" if _hosted() else "trial" if enabled else "disabled"}
 
 
 def _stun_url() -> str:
@@ -99,7 +240,7 @@ def _sdk():
     # The normal app remains importable with no optional LiveKit installation.
     try:
         from livekit import api, rtc
-    except ImportError:
+    except (ImportError, OSError):
         raise HTTPException(503, "LiveKit trial dependencies are not installed") from None
     return api, rtc
 
@@ -181,10 +322,12 @@ class Reassembler:
 
 class TrialBridge:
     """Private WebSocket-shaped session backed by one owner-bound local room."""
-    def __init__(self, demo_id, session_id, room_name, identity, agent_identity, rtc):
+    def __init__(self, demo_id, session_id, room_name, identity, agent_identity, rtc, *, hosted=False, publication=None):
         self.demo_id, self.session_id = demo_id, session_id
         self.room_name, self.identity, self.agent_identity = room_name, identity, agent_identity
         self.rtc, self.room = rtc, rtc.Room()
+        self.hosted = hosted
+        self.publication = publication
         self.headers, self.query_params = {}, {"session_id": session_id}
         self.incoming = asyncio.Queue(maxsize=INPUT_QUEUE_SIZE)
         self.assembler, self.send_lock = Reassembler(), asyncio.Lock()
@@ -245,8 +388,11 @@ class TrialBridge:
             self._fail()
 
     async def connect(self, url, token):
-        options = self.rtc.RoomOptions(rtc_config=self.rtc.RtcConfiguration(
-            ice_servers=[self.rtc.IceServer(urls=[_stun_url()])]))
+        # Hosted rooms inherit the SFU's ICE/TURN configuration. The single-Mac
+        # trial deliberately overrides public discovery with local STUN only.
+        options = (self.rtc.RoomOptions() if self.hosted else
+                   self.rtc.RoomOptions(rtc_config=self.rtc.RtcConfiguration(
+                       ice_servers=[self.rtc.IceServer(urls=[_stun_url()])])) )
         self.connect_task = asyncio.create_task(self.room.connect(url, token, options=options))
         # Cancelling the Python await does not cancel the native SDK's ICE join.
         # Keep its owner alive; on timeout close() retains this pool reservation
@@ -290,6 +436,15 @@ class TrialBridge:
             if message.get("session_id", self.session_id) != self.session_id:
                 raise ValueError("session ownership changed")
             message["session_id"] = self.session_id
+            if message.get("type") == "turn.ask" and self.publication is not None:
+                version, snapshot_id = self.publication
+                if (("demo_version" in message and (type(message["demo_version"]) is not int or message["demo_version"] != version))
+                        or ("snapshot_id" in message and message["snapshot_id"] != snapshot_id)
+                        or ("knowledge_snapshot_id" in message and message["knowledge_snapshot_id"] != snapshot_id)):
+                    raise ValueError("publication ownership changed")
+                # The room keeps the publication it was granted, including its
+                # first question after another publication becomes available.
+                message.update(demo_version=version, snapshot_id=snapshot_id)
             self.last_activity = time.monotonic()
             self.owner_joined = True
             if message.get("type") == "trial.ping":
@@ -326,7 +481,7 @@ class TrialBridge:
                     self.pre_roll.clear()
                     self.track_ready.set()
             self._put(message)
-        except (ValueError, TypeError, UnicodeError):
+        except (ValueError, TypeError, UnicodeError, RecursionError):
             self._fail()
 
     def _track(self, track, publication, participant):
@@ -495,48 +650,74 @@ class TrialBridge:
 @router.post("/api/demos/{demo_id}/run/livekit/token")
 async def trial_token(demo_id: str, request: Request, response: Response = None):
     _authorize(request)
+    if not _ID.fullmatch(demo_id):
+        raise HTTPException(400, "Invalid demo identifier")
     if not store.exists(demo_id):
         raise HTTPException(404, "Demo not found")
     bundle = store.read_json(demo_id, "bundle.json") or {}
     if (store.load(demo_id).get("status") != "ready" or bundle.get("runtime", {}).get("version") != 1
-            or not bundle.get("knowledge_snapshot_id")):
-        raise HTTPException(409, "Publish a runtime v1 demo before starting the trial")
-    raw = bytearray()
-    async for chunk in request.stream():
-        if len(raw) + len(chunk) > 2048:
-            raise HTTPException(413, "Trial request too large")
-        raw.extend(chunk)
+            or type(bundle.get("version")) is not int or bundle["version"] < 1
+            or not isinstance(bundle.get("knowledge_snapshot_id"),str)
+            or not re.fullmatch(r"kb_[a-f0-9]{24}",bundle["knowledge_snapshot_id"])):
+        raise HTTPException(409, "Publish a runtime v1 demo before starting the conversation")
+    publication = (bundle.get("version"), bundle["knowledge_snapshot_id"])
+    snapshot = store.read_json(demo_id,f"knowledge/snapshots/{publication[1]}.json") or {}
+    if not isinstance(snapshot,dict) or snapshot.get("id") != publication[1]:
+        raise HTTPException(409,"Published evidence is unavailable; restore the publication before connecting")
+    async def bounded_body():
+        raw = bytearray()
+        async for chunk in request.stream():
+            if len(raw) + len(chunk) > 2048:
+                raise HTTPException(413, "Conversation request too large")
+            raw.extend(chunk)
+        return raw
+    try:
+        raw = await asyncio.wait_for(bounded_body(), timeout=TOKEN_BODY_SECONDS)
+    except asyncio.TimeoutError:
+        raise HTTPException(408, "Conversation request timed out") from None
     try:
         body = json.loads(raw)
-    except ValueError:
+    except (ValueError, RecursionError):
         raise HTTPException(400, "Invalid trial request") from None
     session_id = body.get("session_id") if isinstance(body, dict) else None
     if not isinstance(session_id, str) or not _SESSION.fullmatch(session_id):
         raise HTTPException(400, "A valid session_id is required")
+    if ("demo_version" in body and (type(body["demo_version"]) is not int or body["demo_version"] != bundle.get("version"))
+            or "knowledge_snapshot_id" in body and body["knowledge_snapshot_id"] != bundle.get("knowledge_snapshot_id")):
+        raise HTTPException(409, "The published demo changed; reload before connecting")
     url, key, secret = _configuration()
     api, rtc = _sdk()
     # No await between capacity check and reservation; safe on the app loop.
-    if len(_bridges) >= MAX_BRIDGES:
-        raise HTTPException(429, "Four local trials are already running")
+    if len(_bridges) >= _max_bridges():
+        raise HTTPException(429, "Conversation capacity is full; please try again shortly", headers={"Retry-After":"15"})
     if any(value.demo_id == demo_id and value.session_id == session_id for value in _bridges.values()):
         raise HTTPException(409, "This trial session is already connected")
     room = "trial_" + secrets.token_hex(12)
     identity, agent_identity = "viewer_" + secrets.token_hex(8), "runtime_" + secrets.token_hex(8)
-    bridge = TrialBridge(demo_id, session_id, room, identity, agent_identity, rtc)
+    bridge = TrialBridge(demo_id, session_id, room, identity, agent_identity, rtc, hosted=_hosted(), publication=publication)
     _bridges[room] = bridge
     try:
-        await bridge.connect(url, _token(api, key, secret, room, agent_identity, viewer=False))
+        await bridge.connect(_worker_url(url), _token(api, key, secret, room, agent_identity, viewer=False))
+        current = store.read_json(demo_id, "bundle.json") or {}
+        if (store.load(demo_id).get("status") != "ready"
+                or (current.get("version"), current.get("knowledge_snapshot_id")) != publication):
+            raise HTTPException(409, "The published demo changed; reload before connecting")
         token = _token(api, key, secret, room, identity, viewer=True)
     except asyncio.CancelledError:
         await bridge.close()
         raise
+    except HTTPException:
+        await bridge.close()
+        raise
     except Exception:
         await bridge.close()
-        raise HTTPException(503, "Local LiveKit trial could not connect") from None
+        raise HTTPException(503, "LiveKit conversation could not connect") from None
     if response is not None:
         response.headers["Cache-Control"] = "no-store"
     return {"url": url, "token": token, "room": room, "identity": identity,
-            "agent_identity": agent_identity, "session_id": session_id, "transport": "livekit-trial"}
+            "agent_identity": agent_identity, "session_id": session_id,
+            "transport":"livekit" if bridge.hosted else "livekit-trial", "rtc_mode":"hosted" if bridge.hosted else "local",
+            "rtc_policy":_ice_policy()}
 
 
 @router.on_event("shutdown")
