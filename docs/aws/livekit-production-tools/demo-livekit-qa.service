@@ -1,0 +1,25 @@
+[Unit]
+Description=Temporary isolated LiveKit hosted mock QA
+After=demo-livekit.service
+Requires=demo-livekit.service
+
+[Service]
+Type=simple
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/opt/demo-studio-releases/20260925-livekit
+EnvironmentFile=/etc/demo-livekit/runtime.env
+EnvironmentFile=/opt/demo-studio-backups/20260925-livekit/hosted-qa/mock.env
+UnsetEnvironment=AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_PROFILE
+ExecStart=/opt/demo-studio-releases/20260925-livekit/.venv/bin/python /opt/demo-livekit/hosted_mock.py
+Restart=no
+TimeoutStopSec=30
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/demo-studio-backups/20260925-livekit/hosted-qa
+MemoryHigh=256M
+MemoryMax=384M
+CPUQuota=100%
+UMask=0077

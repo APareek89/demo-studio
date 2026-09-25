@@ -1,0 +1,33 @@
+[Unit]
+Description=Demo Studio LiveKit SFU and authenticated TURN
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=demo-livekit
+Group=demo-livekit
+ExecStart=/opt/demo-livekit/v1.13.7/livekit-server --config /etc/demo-livekit/server.yaml
+# Upstream prints certain fatal errors but returns exit0; explicit stop remains final.
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillMode=mixed
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+# Go enumerates the host interfaces/routes through netlink before binding RTC.
+# The unprivileged service has no CAP_NET_ADMIN and cannot modify host routes.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+MemoryHigh=192M
+MemoryMax=256M
+CPUQuota=100%
+LimitNOFILE=4096
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

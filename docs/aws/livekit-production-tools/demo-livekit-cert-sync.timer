@@ -1,0 +1,12 @@
+[Unit]
+Description=Check for a renewed Caddy TURN certificate
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=6h
+RandomizedDelaySec=5min
+Persistent=yes
+Unit=demo-livekit-cert-sync.service
+
+[Install]
+WantedBy=timers.target
