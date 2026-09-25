@@ -1,5 +1,13 @@
 # Loop.MD — Demo Studio
 
+## LiveKit review input and gallery continuity — 25 September 2026
+
+Finite QA, loop off. Final frozen application: **deck445/445, acceptance24/24, smoke3/3, full mock28/28** with isolated DATA/GRAPH, cloud off, blank keys and zero outbound socket attempts. Full mock still measures194.22seconds synthetic narration. New actual-player continuity28/28; prior97ef2ab fails four cases22/26. Current gallery320/320, native87/87, fallback18/18 and image-load14/14. Original BMW181/181 files unchanged. Independent FMEA12/12 categories found/fixed the same-photo opacity pulse; pixel RGB now stable before/during/after.
+
+Actual stock app-route LiveKit mock browser28/28 now types intake and the reported interior question, checks delivery and saved result. Backend50, client47, launcher16; adjacent voice96, hold26, listening16, recovery17 and session-save18 pass. Three input-free real-room joins pass at5.563/3.177/3.120seconds with zero provider requests. Counts overlap.
+
+Bounded live-provider review uses exactly two semantic questions and no rebuild: real STT captures a locally synthesized BMW question, preserves an honest unsupported-capacity decline and streams4.096s non-silent PCM. The original QA assertion wrongly required seven seats and remains failed, not rewritten green. The remaining typed interior check passes6/6 withF011/F014/F015, associated console image,22.828s non-silent speech and incremental/completed persistence. Total app-estimated usage **$0.024371 /₹2.0471**; no physical microphone or room-acoustic claim. An initial harness blocked LiveKit validation; a second join timed out before provider use without sufficient diagnostics to prove a root cause. Later five consecutive joins succeeded; no speculative transport change. Paid/harness failures and final evidence remain separate in [the receipt](docs/qa/livekit-input-gallery-2026-09-25/README.md). Master/AWS adoption remains pending.
+
 ## LiveKit opt-in local trial — 25 September 2026
 
 Finite QA only; recurring loop stays off. Default app final free gates: **qa_deck445/445, qa_accept24/24, smoke3/3, full mock28/28**, with isolated DATA/GRAPH, mocked providers, blank keys and zero outbound socket attempts. No optional LiveKit SDK is installed in the default `.venv`; disabled feature imports and all core workflow gates pass. Final runtime source hashes stay unchanged during those gates.

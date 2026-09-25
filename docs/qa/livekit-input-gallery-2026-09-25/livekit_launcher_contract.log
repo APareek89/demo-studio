@@ -1,0 +1,26 @@
+test_01_copies_pinned_publication_without_source_changes (__main__.LauncherContract.test_01_copies_pinned_publication_without_source_changes) ... ok
+test_02_prior_private_visits_are_not_copied (__main__.LauncherContract.test_02_prior_private_visits_are_not_copied) ... ok
+test_03_relaunch_preserves_trial_visits (__main__.LauncherContract.test_03_relaunch_preserves_trial_visits) ... ok
+test_04_changed_publication_requires_fresh_storage (__main__.LauncherContract.test_04_changed_publication_requires_fresh_storage) ... ok
+test_05_protected_demo_rejected (__main__.LauncherContract.test_05_protected_demo_rejected) ... ok
+test_06_unpublished_or_unpinned_rejected (__main__.LauncherContract.test_06_unpublished_or_unpinned_rejected) ... ok
+test_07_storage_cannot_contain_or_be_inside_source (__main__.LauncherContract.test_07_storage_cannot_contain_or_be_inside_source) ... ok
+test_08_symlink_asset_rejected_and_partial_copy_removed (__main__.LauncherContract.test_08_symlink_asset_rejected_and_partial_copy_removed) ... ok
+test_09_state_cannot_link_back_to_original (__main__.LauncherContract.test_09_state_cannot_link_back_to_original) ... ok
+test_10_destination_cannot_link_back_to_original (__main__.LauncherContract.test_10_destination_cannot_link_back_to_original) ... ok
+test_11_protected_duplicate_and_privileged_ports_rejected_before_bind (__main__.LauncherContract.test_11_protected_duplicate_and_privileged_ports_rejected_before_bind) ... ok
+test_12_checks_only_loopback_and_correct_protocol (__main__.LauncherContract.test_12_checks_only_loopback_and_correct_protocol) ... ok
+test_13_config_avoids_public_stun_and_wildcard_tcp (__main__.LauncherContract.test_13_config_avoids_public_stun_and_wildcard_tcp) ... ok
+test_14_mock_network_guard_blocks_dns_tcp_and_udp (__main__.LauncherContract.test_14_mock_network_guard_blocks_dns_tcp_and_udp) ... LIVEKIT_TRIAL_BLOCKED_EXTERNAL_SOCKET
+LIVEKIT_TRIAL_BLOCKED_EXTERNAL_SOCKET
+LIVEKIT_TRIAL_BLOCKED_EXTERNAL_SOCKET
+LIVEKIT_TRIAL_BLOCKED_EXTERNAL_SOCKET
+ok
+test_15_rtc_address_must_be_private_and_owned (__main__.LauncherContract.test_15_rtc_address_must_be_private_and_owned) ... ok
+test_16_private_rtc_does_not_expand_signaling_bind_or_stun (__main__.LauncherContract.test_16_private_rtc_does_not_expand_signaling_bind_or_stun) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.026s
+
+OK
+OUTBOUND_ATTEMPTS 0

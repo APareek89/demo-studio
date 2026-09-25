@@ -1,0 +1,54 @@
+{
+  "passed": 3,
+  "total": 3,
+  "mode": "real local LiveKit; session.start mic=false; no questions or audio requests",
+  "rows": [
+    {
+      "join": 1,
+      "sent": [
+        "session.start",
+        "turn.interrupt",
+        "session.end"
+      ],
+      "errors": [],
+      "deadline_ms": 8000,
+      "ready": true,
+      "elapsed_ms": 5563,
+      "worker_ready": true,
+      "room": "connected"
+    },
+    {
+      "join": 2,
+      "sent": [
+        "session.start",
+        "turn.interrupt",
+        "session.end"
+      ],
+      "errors": [],
+      "deadline_ms": 8000,
+      "ready": true,
+      "elapsed_ms": 3177,
+      "worker_ready": true,
+      "room": "connected"
+    },
+    {
+      "join": 3,
+      "sent": [
+        "session.start",
+        "turn.interrupt",
+        "session.end"
+      ],
+      "errors": [],
+      "deadline_ms": 8000,
+      "ready": true,
+      "elapsed_ms": 3120,
+      "worker_ready": true,
+      "room": "connected"
+    }
+  ],
+  "blocked": [],
+  "browser_errors": [],
+  "provider_requests_by_probe": 0,
+  "usage_rows_added_during_probe": 1,
+  "usage_may_include_parallel_authorized_QA": true
+}

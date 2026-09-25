@@ -1,0 +1,1724 @@
+{
+  "passed": 320,
+  "total": 320,
+  "checks": [
+    {
+      "name": "1440px hero remains native",
+      "passed": true
+    },
+    {
+      "name": "1440px gallery default mounted",
+      "passed": true
+    },
+    {
+      "name": "1440px shell geometry and type unchanged from baseline",
+      "passed": true,
+      "detail": {
+        "before": {
+          ".pl-top": {
+            "x": 0,
+            "y": 0,
+            "w": 1440,
+            "h": 54,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 27px",
+            "margin": "0px"
+          },
+          ".pl-progress": {
+            "x": 217.9375,
+            "y": 14.84375,
+            "w": 954.0625,
+            "h": 24.296875,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-dock": {
+            "x": 0,
+            "y": 774,
+            "w": 1440,
+            "h": 151,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "12px 25px 8px",
+            "margin": "0px"
+          },
+          ".pl-cap": {
+            "x": 25,
+            "y": 818.53125,
+            "w": 819.90625,
+            "h": 65.9375,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-controls": {
+            "x": 872.90625,
+            "y": 809.75,
+            "w": 542.09375,
+            "h": 83.5,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-reply": {
+            "x": 872.90625,
+            "y": 833.75,
+            "w": 542.09375,
+            "h": 42,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "3px",
+            "margin": "0px"
+          },
+          ".pl-action-bar": {
+            "x": 0,
+            "y": 925,
+            "w": 1440,
+            "h": 35,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 25px 7px",
+            "margin": "0px"
+          }
+        },
+        "after": {
+          ".pl-top": {
+            "x": 0,
+            "y": 0,
+            "w": 1440,
+            "h": 54,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 27px",
+            "margin": "0px"
+          },
+          ".pl-progress": {
+            "x": 217.9375,
+            "y": 14.84375,
+            "w": 954.0625,
+            "h": 24.296875,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-dock": {
+            "x": 0,
+            "y": 774,
+            "w": 1440,
+            "h": 151,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "12px 25px 8px",
+            "margin": "0px"
+          },
+          ".pl-cap": {
+            "x": 25,
+            "y": 818.53125,
+            "w": 819.90625,
+            "h": 65.9375,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-controls": {
+            "x": 872.90625,
+            "y": 809.75,
+            "w": 542.09375,
+            "h": 83.5,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-reply": {
+            "x": 872.90625,
+            "y": 833.75,
+            "w": 542.09375,
+            "h": 42,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "3px",
+            "margin": "0px"
+          },
+          ".pl-action-bar": {
+            "x": 0,
+            "y": 925,
+            "w": 1440,
+            "h": 35,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 25px 7px",
+            "margin": "0px"
+          }
+        }
+      }
+    },
+    {
+      "name": "1440px line 0 retains exact audio, caption and checkpoint",
+      "passed": true
+    },
+    {
+      "name": "1440px line 0 audio begins after gallery ready",
+      "passed": true,
+      "detail": {
+        "src": "fixture-audio:Approved%20first%20image%20detail.",
+        "text": "Approved first image detail.",
+        "at": 3376.5999999940395,
+        "slide": "pair",
+        "phase": "ready",
+        "imageId": "front",
+        "tag": "front-tag",
+        "cap": "Approved first image detail."
+      }
+    },
+    {
+      "name": "1440px line 0 uses mapped image",
+      "passed": true
+    },
+    {
+      "name": "1440px line 0 shows exact reviewed tag",
+      "passed": true,
+      "detail": [
+        "1Front wheelFront feature"
+      ]
+    },
+    {
+      "name": "1440px line 0 viewport remains bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px line 1 retains exact audio, caption and checkpoint",
+      "passed": true
+    },
+    {
+      "name": "1440px line 1 audio begins after gallery ready",
+      "passed": true,
+      "detail": {
+        "src": "fixture-audio:Approved%20second%20image%20detail.",
+        "text": "Approved second image detail.",
+        "at": 7542.700000017881,
+        "slide": "pair",
+        "phase": "ready",
+        "imageId": "cabin",
+        "tag": "cabin-tag",
+        "cap": "Approved second image detail."
+      }
+    },
+    {
+      "name": "1440px line 1 uses mapped image",
+      "passed": true
+    },
+    {
+      "name": "1440px line 1 shows exact reviewed tag",
+      "passed": true,
+      "detail": [
+        "2Rear detailCabin feature"
+      ]
+    },
+    {
+      "name": "1440px line 1 viewport remains bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px line 2 retains exact audio, caption and checkpoint",
+      "passed": true
+    },
+    {
+      "name": "1440px line 2 audio begins after gallery ready",
+      "passed": true,
+      "detail": {
+        "src": "fixture-audio:Approved%20source%20caption%20without%20a%20pointer.",
+        "text": "Approved source caption without a pointer.",
+        "at": 8014.4000000059605,
+        "slide": "pair",
+        "phase": "ready",
+        "imageId": "cabin",
+        "tag": "panel-tag",
+        "cap": "Approved source caption without a pointer."
+      }
+    },
+    {
+      "name": "1440px line 2 uses mapped image",
+      "passed": true
+    },
+    {
+      "name": "1440px line 2 shows exact reviewed tag",
+      "passed": true,
+      "detail": [
+        "2Rear detailCabin feature",
+        "3Supported source caption"
+      ]
+    },
+    {
+      "name": "1440px source caption gets no invented pointer",
+      "passed": true
+    },
+    {
+      "name": "1440px line 2 viewport remains bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px approved bundle remains byte-equivalent",
+      "passed": true
+    },
+    {
+      "name": "1440px explicit media-empty stays native text-only",
+      "passed": true
+    },
+    {
+      "name": "1440px illustration caption has no pointer",
+      "passed": true
+    },
+    {
+      "name": "390px hero remains native",
+      "passed": true
+    },
+    {
+      "name": "390px gallery default mounted",
+      "passed": true
+    },
+    {
+      "name": "390px shell geometry and type unchanged from baseline",
+      "passed": true,
+      "detail": {
+        "before": {
+          ".pl-top": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 49,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 10px",
+            "margin": "0px"
+          },
+          ".pl-progress": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-dock": {
+            "x": 0,
+            "y": 682,
+            "w": 390,
+            "h": 132,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "9px 14px 4px",
+            "margin": "0px"
+          },
+          ".pl-cap": {
+            "x": 14,
+            "y": 691,
+            "w": 362,
+            "h": 53.1875,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-controls": {
+            "x": 14,
+            "y": 757.25,
+            "w": 362,
+            "h": 49.5,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-reply": {
+            "x": 14,
+            "y": 757.25,
+            "w": 362,
+            "h": 34.5,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "2px",
+            "margin": "0px"
+          },
+          ".pl-action-bar": {
+            "x": 0,
+            "y": 814,
+            "w": 390,
+            "h": 30,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 14px 5px",
+            "margin": "0px"
+          }
+        },
+        "after": {
+          ".pl-top": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 49,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 10px",
+            "margin": "0px"
+          },
+          ".pl-progress": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-dock": {
+            "x": 0,
+            "y": 682,
+            "w": 390,
+            "h": 132,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "9px 14px 4px",
+            "margin": "0px"
+          },
+          ".pl-cap": {
+            "x": 14,
+            "y": 691,
+            "w": 362,
+            "h": 53.1875,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-controls": {
+            "x": 14,
+            "y": 757.25,
+            "w": 362,
+            "h": 49.5,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          ".pl-reply": {
+            "x": 14,
+            "y": 757.25,
+            "w": 362,
+            "h": 34.5,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "2px",
+            "margin": "0px"
+          },
+          ".pl-action-bar": {
+            "x": 0,
+            "y": 814,
+            "w": 390,
+            "h": 30,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 14px 5px",
+            "margin": "0px"
+          }
+        }
+      }
+    },
+    {
+      "name": "390px line 0 retains exact audio, caption and checkpoint",
+      "passed": true
+    },
+    {
+      "name": "390px line 0 audio begins after gallery ready",
+      "passed": true,
+      "detail": {
+        "src": "fixture-audio:Approved%20first%20image%20detail.",
+        "text": "Approved first image detail.",
+        "at": 4102.200000017881,
+        "slide": "pair",
+        "phase": "ready",
+        "imageId": "front",
+        "tag": "front-tag",
+        "cap": "Approved first image detail."
+      }
+    },
+    {
+      "name": "390px line 0 uses mapped image",
+      "passed": true
+    },
+    {
+      "name": "390px line 0 shows exact reviewed tag",
+      "passed": true,
+      "detail": [
+        "1Front wheelFront feature"
+      ]
+    },
+    {
+      "name": "390px line 0 viewport remains bounded",
+      "passed": true
+    },
+    {
+      "name": "390px line 1 retains exact audio, caption and checkpoint",
+      "passed": true
+    },
+    {
+      "name": "390px line 1 audio begins after gallery ready",
+      "passed": true,
+      "detail": {
+        "src": "fixture-audio:Approved%20second%20image%20detail.",
+        "text": "Approved second image detail.",
+        "at": 8146.100000023842,
+        "slide": "pair",
+        "phase": "ready",
+        "imageId": "cabin",
+        "tag": "cabin-tag",
+        "cap": "Approved second image detail."
+      }
+    },
+    {
+      "name": "390px line 1 uses mapped image",
+      "passed": true
+    },
+    {
+      "name": "390px line 1 shows exact reviewed tag",
+      "passed": true,
+      "detail": [
+        "2Rear detailCabin feature"
+      ]
+    },
+    {
+      "name": "390px line 1 viewport remains bounded",
+      "passed": true
+    },
+    {
+      "name": "390px line 2 retains exact audio, caption and checkpoint",
+      "passed": true
+    },
+    {
+      "name": "390px line 2 audio begins after gallery ready",
+      "passed": true,
+      "detail": {
+        "src": "fixture-audio:Approved%20source%20caption%20without%20a%20pointer.",
+        "text": "Approved source caption without a pointer.",
+        "at": 8514.600000023842,
+        "slide": "pair",
+        "phase": "ready",
+        "imageId": "cabin",
+        "tag": "panel-tag",
+        "cap": "Approved source caption without a pointer."
+      }
+    },
+    {
+      "name": "390px line 2 uses mapped image",
+      "passed": true
+    },
+    {
+      "name": "390px line 2 shows exact reviewed tag",
+      "passed": true,
+      "detail": [
+        "2Rear detailCabin feature",
+        "3Supported source caption"
+      ]
+    },
+    {
+      "name": "390px source caption gets no invented pointer",
+      "passed": true
+    },
+    {
+      "name": "390px line 2 viewport remains bounded",
+      "passed": true
+    },
+    {
+      "name": "390px approved bundle remains byte-equivalent",
+      "passed": true
+    },
+    {
+      "name": "390px explicit media-empty stays native text-only",
+      "passed": true
+    },
+    {
+      "name": "390px illustration caption has no pointer",
+      "passed": true
+    },
+    {
+      "name": "Narration waits during visual entrance",
+      "passed": true
+    },
+    {
+      "name": "Pause during move freezes camera and cancels stale audio",
+      "passed": true
+    },
+    {
+      "name": "Resume starts the exact interrupted line once",
+      "passed": true
+    },
+    {
+      "name": "Question retains original line checkpoint",
+      "passed": true,
+      "detail": {
+        "question": "What is supported?",
+        "history": [
+          {
+            "role": "user",
+            "text": "What is supported?"
+          }
+        ],
+        "profile": {
+          "name": "",
+          "why": "",
+          "followup": "What is supported?",
+          "focus": [],
+          "customer_urls": [],
+          "customer_state": null,
+          "language": "en-IN"
+        },
+        "input_mode": "text",
+        "slide_id": "pair",
+        "session_id": "s_mugup7fuifr3",
+        "demo_version": 1,
+        "voice_ended_at": 1790334115004,
+        "cursor": {
+          "phase": "route",
+          "index": 0,
+          "line": 0,
+          "checkin": false,
+          "bridgeDone": false
+        }
+      }
+    },
+    {
+      "name": "Return restores exact approved line and one voice",
+      "passed": true
+    },
+    {
+      "name": "Rapid jump leaves only newest slide and audio",
+      "passed": true
+    },
+    {
+      "name": "Stop during move prevents delayed narration",
+      "passed": true
+    },
+    {
+      "name": "Restart creates clean first line ownership",
+      "passed": true
+    },
+    {
+      "name": "Resize during narration preserves active line and viewport",
+      "passed": true
+    },
+    {
+      "name": "Resize during move releases preparation without hanging",
+      "passed": true
+    },
+    {
+      "name": "Reduced motion settles without a running camera animation",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "CRETA 1440px opening clip 0 exact caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 0 stays central",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 1 exact caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 1 stays central",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 1 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 2 exact caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 2 stays central",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px opening clip 2 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px representative published route is nonempty",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 line 0 correct reviewed photo",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 simultaneous pictures both loaded",
+      "passed": true,
+      "detail": [
+        "/media/dm_7bbf10d0/derived/src_648d3c_creta-highlights-knightking__cretakingleathergear_clean.jpg",
+        "/media/dm_7bbf10d0/derived/src_3e0859_creta-highlights__Hyundai-creta-suv-highlight-small-800x530-5-transmission_clean.jpg"
+      ]
+    },
+    {
+      "name": "CRETA 1440px sl03 callout sl03-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 callout sl03-review-1 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 callout sl03-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 callout sl03-review-2 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl03 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 line 0 correct reviewed photo",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 simultaneous pictures both loaded",
+      "passed": true,
+      "detail": [
+        "/media/dm_7bbf10d0/derived/src_648d3c_creta-highlights-knightking__cretakingleathergear_clean.jpg",
+        "/media/dm_7bbf10d0/derived/src_3e0859_creta-highlights__Hyundai-creta-suv-highlight-small-800x530-5-transmission_clean.jpg"
+      ]
+    },
+    {
+      "name": "CRETA 1440px sl04 callout sl04-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 callout sl04-review-1 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 callout sl04-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 callout sl04-review-2 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl04 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl05 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl05 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl05 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl05 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl05 callout sl05-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl05 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 line 0 correct reviewed photo",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 simultaneous pictures both loaded",
+      "passed": true,
+      "detail": [
+        "/media/dm_7bbf10d0/derived/e417292d6339045baae58605694356e6f9387e0a8a01324f730f1f9c751f8310_clean.jpg",
+        "/media/dm_7bbf10d0/derived/f7323ba15c324046d54f5ba682e6370a5095ec5ae64336f6d075c9c7867103c6_clean.jpg"
+      ]
+    },
+    {
+      "name": "CRETA 1440px sl06 callout sl06-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 callout sl06-review-1 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 callout sl06-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 callout sl06-review-2 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 callout sl06-review-3 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 callout sl06-review-3 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl06 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 callout sl07-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 callout sl07-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl07 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl08 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl08 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl08 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl08 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl08 callout sl08-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl08 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 callout sl09-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 callout sl09-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl09 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 callout sl10-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 callout sl10-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl10 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 callout sl11-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 callout sl11-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl11 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 callout sl12-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 callout sl12-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl12 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 callout sl13-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 callout sl13-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 callout sl13-review-3 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl13 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl14 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl14 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl14 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl14 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl14 callout sl14-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl14 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 callout sl15-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 callout sl15-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl15 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl16 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl16 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl16 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl16 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl16 callout sl16-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl16 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 callout sl17-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 callout sl17-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px sl17 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px two-photo source locks every picture/tag control during preparation",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px two-photo source ignores native and dispatched preparation clicks",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px two-photo source releases the original line once after attempted clicks",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px two-photo source unlocks picture/tag controls when ready",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px final image and reviewed tags are loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 1440px no microphone access",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 0 exact caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 0 stays central",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 1 exact caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 1 stays central",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 1 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 2 exact caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 2 stays central",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px opening clip 2 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px representative published route is nonempty",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 line 0 correct reviewed photo",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 simultaneous pictures both loaded",
+      "passed": true,
+      "detail": [
+        "/media/dm_7bbf10d0/derived/src_648d3c_creta-highlights-knightking__cretakingleathergear_clean.jpg",
+        "/media/dm_7bbf10d0/derived/src_3e0859_creta-highlights__Hyundai-creta-suv-highlight-small-800x530-5-transmission_clean.jpg"
+      ]
+    },
+    {
+      "name": "CRETA 390px sl03 callout sl03-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 callout sl03-review-1 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 callout sl03-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 callout sl03-review-2 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl03 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 line 0 correct reviewed photo",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 simultaneous pictures both loaded",
+      "passed": true,
+      "detail": [
+        "/media/dm_7bbf10d0/derived/src_648d3c_creta-highlights-knightking__cretakingleathergear_clean.jpg",
+        "/media/dm_7bbf10d0/derived/src_3e0859_creta-highlights__Hyundai-creta-suv-highlight-small-800x530-5-transmission_clean.jpg"
+      ]
+    },
+    {
+      "name": "CRETA 390px sl04 callout sl04-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 callout sl04-review-1 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 callout sl04-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 callout sl04-review-2 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl04 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl05 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl05 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl05 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl05 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl05 callout sl05-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl05 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 line 0 correct reviewed photo",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 simultaneous pictures both loaded",
+      "passed": true,
+      "detail": [
+        "/media/dm_7bbf10d0/derived/e417292d6339045baae58605694356e6f9387e0a8a01324f730f1f9c751f8310_clean.jpg",
+        "/media/dm_7bbf10d0/derived/f7323ba15c324046d54f5ba682e6370a5095ec5ae64336f6d075c9c7867103c6_clean.jpg"
+      ]
+    },
+    {
+      "name": "CRETA 390px sl06 callout sl06-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 callout sl06-review-1 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 callout sl06-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 callout sl06-review-2 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 callout sl06-review-3 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 callout sl06-review-3 focuses exact source without replay",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl06 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 callout sl07-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 callout sl07-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl07 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl08 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl08 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl08 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl08 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl08 callout sl08-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl08 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 callout sl09-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 callout sl09-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl09 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 callout sl10-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 callout sl10-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl10 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 callout sl11-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 callout sl11-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl11 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 callout sl12-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 callout sl12-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl12 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 callout sl13-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 callout sl13-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 callout sl13-review-3 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl13 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl14 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl14 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl14 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl14 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl14 callout sl14-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl14 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 callout sl15-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 callout sl15-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl15 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl16 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl16 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl16 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl16 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl16 callout sl16-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl16 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 line 0 exact audio and caption",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 line 0 actual photo loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 line 0 stays inside central stage",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 line 0 no fabricated pointer",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 callout sl17-review-1 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 callout sl17-review-2 exact source text",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px sl17 bundle not mutated",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px two-photo source locks every picture/tag control during preparation",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px two-photo source ignores native and dispatched preparation clicks",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px two-photo source releases the original line once after attempted clicks",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px two-photo source unlocks picture/tag controls when ready",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px final image and reviewed tags are loaded",
+      "passed": true
+    },
+    {
+      "name": "CRETA 390px no microphone access",
+      "passed": true
+    },
+    {
+      "name": "No browser script errors, failed source images or external requests",
+      "passed": true,
+      "detail": {
+        "errors": [],
+        "blocked": [],
+        "asset_errors": []
+      }
+    }
+  ],
+  "errors": [],
+  "blocked": [],
+  "asset_errors": [],
+  "baseline_revision": "eacbb57",
+  "scope": "Actual mountPlayer, isolated muted browser, approved local fixture bytes; fake audio/API, no acoustic claim",
+  "provider_calls": 0
+}

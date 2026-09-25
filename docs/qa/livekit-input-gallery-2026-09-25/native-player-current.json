@@ -1,0 +1,446 @@
+{
+  "passed": 87,
+  "total": 87,
+  "cases": [
+    {
+      "name": "Runtime section invitations wait exactly three seconds without requiring a reply",
+      "passed": true,
+      "evidence_sha256": "898a41aecc6e7b8c9273c9a091d807ae8ea8d26d3c0eae66a8a12ff8a5dddd31"
+    },
+    {
+      "name": "A generic tour request stays neutral and never invents personalization",
+      "passed": true,
+      "evidence_sha256": "86ff1992741246fc89ebb9fed768a036e7016c05ad75e14eec3f1518177ed775"
+    },
+    {
+      "name": "False onset and a recognition fragment cannot freeze the three-second answer window",
+      "passed": true,
+      "evidence_sha256": "edaadcbb123289525316aa8a2614195f34c8f5611dc1d51d2afc893021a87127"
+    },
+    {
+      "name": "Partial intake stays provisional and a final fragment never becomes a preference",
+      "passed": true,
+      "evidence_sha256": "6a36669a91ff2a00c5f6ac94359d3b783360b21c3674ab34c0104573ee60568c"
+    },
+    {
+      "name": "Active visits save incrementally and pagehide retains started speech without ending the visit",
+      "passed": true,
+      "evidence_sha256": "90d293617b7c34deda6a8454e3d2473bb113516de380cb638107aebd209cad51"
+    },
+    {
+      "name": "Typed Continue stays in playback control and does not ask the answer graph",
+      "passed": true,
+      "evidence_sha256": "5b31f2080c49cbe334cb45feae5ff234936785a76b5478981b648a89ce6af0ac"
+    },
+    {
+      "name": "A minimum-duration bundle uses its recorded overview without live transport and resumes it after Q&A",
+      "passed": true,
+      "evidence_sha256": "4566803665b9712016ea17a8e05f228fdd27f11de0248893a2c0cf0c38ee6844"
+    },
+    {
+      "name": "A legacy bundle without the narration minimum keeps its existing no-transport opening",
+      "passed": true,
+      "evidence_sha256": "f509cda4feb7d16ff0938f4ab28d9dc21d798aa1a082402b7fc13c0390c49fad"
+    },
+    {
+      "name": "Default minimum tour keeps complete Q&A-covered stops and both reviewed closing lines",
+      "passed": true,
+      "evidence_sha256": "f4d2dc42460950de399d59933e81d789dec51e30de8032882c0ae5402071e38c"
+    },
+    {
+      "name": "Optional intake websites reach planning and remain available across later questions",
+      "passed": true,
+      "evidence_sha256": "c28ca491f0d5c43ab04669ed33cad59d2ae2f777d70245dd201e578cf371f30a"
+    },
+    {
+      "name": "Intake sites cap at five and later typed and spoken URLs append without duplicates",
+      "passed": true,
+      "evidence_sha256": "52d93516ee6b45255d015cfb0d58013d1d13d213f631036a4ed24ac1df3d5b14"
+    },
+    {
+      "name": "Restart clears supplied sites and an email address never becomes lookup permission",
+      "passed": true,
+      "evidence_sha256": "1a5f591420182004f074c8e52ec788d30e669991a88f5e62199f8db4e51c5efc"
+    },
+    {
+      "name": "Websites submitted during the intake prompt continue without inventing a customer answer",
+      "passed": true,
+      "evidence_sha256": "114d9d9d43bb1cbab2584ceeff4a6ca196080b05a746d79d9ab0c2e526a83239"
+    },
+    {
+      "name": "Voice mode welcome defaults follow continuous voice and muted automation",
+      "passed": true,
+      "evidence_sha256": "a40d165a4ea12585b244cd004fe4160271bc93ca5465e229704ba9a753d1e4ec"
+    },
+    {
+      "name": "Text mode starts and accepts intake and questions without a microphone prompt",
+      "passed": true,
+      "evidence_sha256": "fcb15c071d3ed0ec308ce2df46ee91e66548cc26ed2cd6806db3440798eea2e3"
+    },
+    {
+      "name": "Voice-mode visits still accept typed input and save the selected mode separately",
+      "passed": true,
+      "evidence_sha256": "d809e5db62143589826d61e32b61e5bad35aa3ad9c5e6e86903a2f25f73ff4be"
+    },
+    {
+      "name": "The player microphone button toggles mode during a text visit",
+      "passed": true,
+      "evidence_sha256": "f7289dc2354ebd5c01bfddf6461afb84a305dacb4fe8037f1f9368eba52ce77c"
+    },
+    {
+      "name": "The visible conversation voice switch and microphone share real capture ownership",
+      "passed": true,
+      "evidence_sha256": "fecd9038b5c3e4d48d4d5054d7afc698bfe361fad45b7ef54b6b5f6a8a7cb798"
+    },
+    {
+      "name": "Narration, listening and an answer keep the slide, dock and CTA footer fixed",
+      "passed": true,
+      "evidence_sha256": "5587492bbcf17d55b4052ccfdc1edb8b8d28b38ecb37daa32a70422d8b9103b6"
+    },
+    {
+      "name": "Film view shows only native-fit video and a separate Skip control at desktop and mobile widths",
+      "passed": true,
+      "evidence_sha256": "927ee18f572af4d4545319fd0da2b40d014742017fee5a898cb20d6a0259c184"
+    },
+    {
+      "name": "Natural film completion and media error restore the slide player once",
+      "passed": true,
+      "evidence_sha256": "8d43be68ba7f4faa36e01b69838fc7748927b8c1a5868ce73e51dd0ba0e53a3c"
+    },
+    {
+      "name": "Destroy during a film suppresses its late completion",
+      "passed": true,
+      "evidence_sha256": "875920d1d97ca3e4ea1bf8a232d986ddcce902da10f19586f8299893c7ff5e72"
+    },
+    {
+      "name": "Legacy question check-ins are skipped and logged without a wait",
+      "passed": true,
+      "evidence_sha256": "d111909b1e0cb831229b30c33bca83b80c7a1a97a5cf6b2a26aa7a1c6f3a9659"
+    },
+    {
+      "name": "An answer listens for exactly 3000 ms then resumes its interrupted line once and logs it",
+      "passed": true,
+      "evidence_sha256": "ca4a7f2cc2d220fcd52b67c9c49f513d207351cec410dfa2f4a08342bdad790b"
+    },
+    {
+      "name": "Auto-resume uses only an existing back-to-demo clip and otherwise stays silent",
+      "passed": true,
+      "evidence_sha256": "e4a60ee6dd9aaa1eda9692d0d872f7874f91c59669f97736ef4560519696f8db"
+    },
+    {
+      "name": "False speech onset leaves the timer running; qualified final follow-up cancels it",
+      "passed": true,
+      "evidence_sha256": "73c49ace4cc9d0d4225645874d3e1bfd0a904da6c38c1bee45bdf037bb207871"
+    },
+    {
+      "name": "One typed character cancels automatic continuation without submitting a partial question",
+      "passed": true,
+      "evidence_sha256": "b4eb9e5095c99b9231e317e9ab92150a0c1f8480bf9f144d609150ba922acb27"
+    },
+    {
+      "name": "A draft typed during answer audio keeps its turn after the answer finishes",
+      "passed": true,
+      "evidence_sha256": "4ae14b354af43a311fccbe491398e2cf1fdd265f2aa628076b682cb983f350a5"
+    },
+    {
+      "name": "Navigation and Stop cancel a pending post-answer timer",
+      "passed": true,
+      "evidence_sha256": "96168a02d340d2a9662f52784b95f7617330720902a04357ec95fe089a80c81e"
+    },
+    {
+      "name": "A guide clarification keeps waiting beyond three seconds and an empty voice attempt",
+      "passed": true,
+      "evidence_sha256": "9122c092ceebdf42c1dd6c1b1f22e2e002c574c1b29cabcfdd63bd5d83300472"
+    },
+    {
+      "name": "A declined answer defers its listen timer until the optional contact form is dismissed",
+      "passed": true,
+      "evidence_sha256": "0bd600b1787c4c75d676ad61ba4b4a84843f88cf120df38c56b85ee8e63d219f"
+    },
+    {
+      "name": "A pending callback save cannot change a restarted session or its newer form",
+      "passed": true,
+      "evidence_sha256": "653d27866f344ea6d603f09a08d32a4f556b3ae147259298c69be5ad8b0031e0"
+    },
+    {
+      "name": "Closing CTA choices require explicit customer selection after narration finishes",
+      "passed": true,
+      "evidence_sha256": "82ef4754588685a67a40e8a1af7da7d335ccdf5d4b65a37c6112bd0370307ed4"
+    },
+    {
+      "name": "A ready answer bypasses acknowledgment and persists classification and plain-language substitutions",
+      "passed": true,
+      "evidence_sha256": "e9e31da80a2af49bf5978f22cffe97a033aa4d527c66d4391553aaba55b3b06f"
+    },
+    {
+      "name": "An answer arriving during acknowledgment cuts only the filler and never overlaps voices",
+      "passed": true,
+      "evidence_sha256": "28e06a5cb5930456d4cc90b2c507ecd7e80c896544f44339413fef84c4241663"
+    },
+    {
+      "name": "Typing keeps later question waits closed to ambient speech until an explicit mic tap",
+      "passed": true,
+      "evidence_sha256": "007319c00e41b4b8b399f830bfb3fde30cb7c1bb9f036fe6df2527826f38331e"
+    },
+    {
+      "name": "Typing preference survives Restart and intake microphone explicitly restores voice mode",
+      "passed": true,
+      "evidence_sha256": "9455de0b3fca7c08ad49354ed5338c22fa9f911c6c11ff77c042cd1e016e0a13"
+    },
+    {
+      "name": "Question mode holds its place after 30 seconds of silence",
+      "passed": true,
+      "evidence_sha256": "94f094ca3932a58303703ed7fe49b3c6c67f76edc860eae939393bc5454dc108"
+    },
+    {
+      "name": "A yes-prefixed question reaches QA instead of the next slide",
+      "passed": true,
+      "evidence_sha256": "0a6650be40e9ef5f50c6c398635d17dc4c7cedc50448093e550003e5516a2d14"
+    },
+    {
+      "name": "A typed clarification is accepted once with conversation history",
+      "passed": true,
+      "evidence_sha256": "f8cb8985672b2d850a99397e840160de83197376f48188d7049e477fb7d27cad"
+    },
+    {
+      "name": "A direct customer statement survives later QA without turning question history into recap preferences",
+      "passed": true,
+      "evidence_sha256": "e980628579dee82599285d31f90a749b3ec46d464731f569e648c0a04454de4e"
+    },
+    {
+      "name": "An unknown answer holds the callback form without narration behind it",
+      "passed": true,
+      "evidence_sha256": "99fed8bdb0278c1b89a3e00d677138c7fc649e4f83c8dc6e26f45c80b86d7d71"
+    },
+    {
+      "name": "A model-suggested CTA is not a customer selection or an automatic recap",
+      "passed": true,
+      "evidence_sha256": "d7acda672d0061cb8c7db3d057541a6488a6f87b8575afbcc2a810aafb1a4afc"
+    },
+    {
+      "name": "An explicitly chosen proposed CTA records the choice without claiming an unsent handoff",
+      "passed": true,
+      "evidence_sha256": "b1fd8a1a74ac3d977ffda4f175af41f157f4af02d5daf9988726368b6954b0c2"
+    },
+    {
+      "name": "A negated CTA mention at closing remains a question while an exact selection still works",
+      "passed": true,
+      "evidence_sha256": "9c31fa367d69d9fc90b07ed0f9a8e0d34ab745065a48bfe5752bfaa12badeb65"
+    },
+    {
+      "name": "Brochure and dealer selections expose their exact HTTPS link only after customer selection",
+      "passed": true,
+      "evidence_sha256": "91f7d11cae73bbdf874eae87e287aaf9d56dca5e8326c85c8f91a031de89abf2"
+    },
+    {
+      "name": "Booking links retain optional consent and invalid CTA URLs never become active links",
+      "passed": true,
+      "evidence_sha256": "c6f6cddbc85f3e801de3724874d57a4d0c85aeccea2ac62513a293daa1d40e1b"
+    },
+    {
+      "name": "A late speech result cannot answer the wait after a slide skip",
+      "passed": true,
+      "evidence_sha256": "ad1e3dcb09e3e03f56db47244f2126563de17ec44fbc1b83d89446c114ba755b"
+    },
+    {
+      "name": "A late speech result after restart leaves the new intake untouched",
+      "passed": true,
+      "evidence_sha256": "2b023f8cd312baa6c093aa02e03396c8aecbe7b63292a79a93aa0022a44b5b8a"
+    },
+    {
+      "name": "Opening Q&A resumes the interrupted line without replaying completed lines",
+      "passed": true,
+      "evidence_sha256": "a6b6165e6b9e6e06fe023ae16f23018dd6e11befd19662d710beadb5dc4b2ad6"
+    },
+    {
+      "name": "A superseded QA response cannot speak over the current answer",
+      "passed": true,
+      "evidence_sha256": "c0f916c907b39a804d625f44d0e68c1a8e4f637d9dacca00112106aeae0c31f7"
+    },
+    {
+      "name": "Q&A labels prerequisite citations separately and clears them when a new answer takes ownership",
+      "passed": true,
+      "evidence_sha256": "9b02109330da9d18e462b506bd8b498b54e00713a0d14a56d21edc9154995ea6"
+    },
+    {
+      "name": "Off-slide Q&A returns to the exact interrupted proof line",
+      "passed": true,
+      "evidence_sha256": "5272fbd2794161b920bd6e23a0a0678a9e49e3d4ad32ae939fed287a1bd0d3e6"
+    },
+    {
+      "name": "Runtime v1 jumps directly to evidence and auto-returns to the exact interrupted line",
+      "passed": true,
+      "evidence_sha256": "a472c79d561fd292353600c29ebd8b0530285baa87af0827f570469732affb50"
+    },
+    {
+      "name": "A new question interrupts a direct runtime jump without stealing its original return point",
+      "passed": true,
+      "evidence_sha256": "bf79eed10615154f1be85a1755458c4ca5e1399fc3a92d5984c87f0ea821190a"
+    },
+    {
+      "name": "Same-slide Q&A restores the resumed narration inside a long text card",
+      "passed": true,
+      "evidence_sha256": "c32da72b4bf9cabf08d02c7ac53562c54bd350fb96fbcaf076ff1586a7f369f3"
+    },
+    {
+      "name": "Explicit slide navigation cancels a direct runtime answer and cannot be undone by its late ending",
+      "passed": true,
+      "evidence_sha256": "d739fbd4f2112137a12418d8796d63febd1dac6dc20bc53f3bf24c45316ae967"
+    },
+    {
+      "name": "A cached jump transition completes before the view and answer-latency stamp change",
+      "passed": true,
+      "evidence_sha256": "5daca107bb67e359c516492c969a4da8ce8c9cb6c6d82628d901698ff3dcbf1a"
+    },
+    {
+      "name": "Interrupting a jump announcement cancels its pending view change and answer",
+      "passed": true,
+      "evidence_sha256": "b21cec873e2e02d41edccc89a2067d810ddce95d7b6e17030d4e80514ac05d7b"
+    },
+    {
+      "name": "Stop, Done and pagehide preserve the same ended session duration",
+      "passed": true,
+      "evidence_sha256": "2f68d7026aca32a217002e2be3f81843152965be57251726208ac9c3127bbf66"
+    },
+    {
+      "name": "Back resumes active session time without counting recap idle, and restart resets it",
+      "passed": true,
+      "evidence_sha256": "a0e1117e7aedacb6e237abe3383616c0c7ca7ea821425af54fac0f3d34528e46"
+    },
+    {
+      "name": "An intentional new typed question after Done reopens timing without the idle gap",
+      "passed": true,
+      "evidence_sha256": "af858ac540628910ba4942a0f5dde942f8e77458453dfee9b9c4a21531323d3a"
+    },
+    {
+      "name": "Declining callback still permits completion and saves the finished session",
+      "passed": true,
+      "evidence_sha256": "6d22e46de8ba0221d3737bf2846f7f2ec648f733feb120057aa5ddff9fc402c9"
+    },
+    {
+      "name": "Reviewed detail owns its citations across Q&A return and clears them for question prompts",
+      "passed": true,
+      "evidence_sha256": "c272075969d70e510df7dc3db89bbb4a401b77d11cdd404d4de79892fc48f1bb"
+    },
+    {
+      "name": "Legacy reviewed questions continue as narration without a customer wait",
+      "passed": true,
+      "evidence_sha256": "820bc06e769a6fc7f144881342a35c96e8ddfdd3a5419fec4cf33404289cba31"
+    },
+    {
+      "name": "Stopping with a callback open shows a buyer recap while retaining internal session detail",
+      "passed": true,
+      "evidence_sha256": "ad64bf78e0a1a8be2b55336bd6afdd6a4dbd717f43ff993fa750e0440bf89968"
+    },
+    {
+      "name": "Personalized boot evidence reuses its complete reviewed label and image, not the current cabin",
+      "passed": true,
+      "evidence_sha256": "85dc55abdd835095c37f217e20e66d1bb7ba4b0a28acd70b129be7f20657661b"
+    },
+    {
+      "name": "Personalized evidence omits an overlong fact and cannot borrow a differently scoped callout",
+      "passed": true,
+      "evidence_sha256": "726b5a84302f2280a1d20b8553fd49bcb17736bd786f466964decc2aa87f1528"
+    },
+    {
+      "name": "Personalized fallback retains complete conditions and truth, and excludes rejected facts",
+      "passed": true,
+      "evidence_sha256": "69c564ead0f3affe83783c2e19e3a86562f13cf9cc492a52ef1b4e1b9658c578"
+    },
+    {
+      "name": "Condition-only evidence shows its full prerequisite and cannot reuse donor claims or imagery",
+      "passed": true,
+      "evidence_sha256": "6735892d036d32158fdc79edad560d59cc9817f5c9744890e902fa2e51eb7dd0"
+    },
+    {
+      "name": "An explicitly primary fact still renders its reviewed claim beside condition-only evidence",
+      "passed": true,
+      "evidence_sha256": "21762a74f9d1b1fae0f90ff1f269e18e4fb3471f285af86c01c5b21b3214188a"
+    },
+    {
+      "name": "A text-only question scrolls only its card to the exact cited narration",
+      "passed": true,
+      "evidence_sha256": "291fe28567e5b15d5c377f4d3a0c4a1cccb36c9559eb51b3e905b51f7df60691"
+    },
+    {
+      "name": "Two pictures use separate native-aspect boxes side by side at one thousand pixels",
+      "passed": true,
+      "evidence_sha256": "e7c4f19a05dfef9bc59b7366a78dcbb95f584a0d35f1a36c10a97b92fbedc780"
+    },
+    {
+      "name": "Two fitted pictures stay side by side without distortion at four hundred pixels",
+      "passed": true,
+      "evidence_sha256": "8de7371ce9bdf34abe96338714b685456d27cc870c11dc89ca77918353481b61"
+    },
+    {
+      "name": "Line emphasis changes picture opacity without moving media or misrepresenting a proxy",
+      "passed": true,
+      "evidence_sha256": "358bc98c7b1050c661866e253a14cc00e605e89fe4b7e74afa8fca08d5ef7663"
+    },
+    {
+      "name": "Dragging the second picture reports fractions of that picture",
+      "passed": true,
+      "evidence_sha256": "358bc98c7b1050c661866e253a14cc00e605e89fe4b7e74afa8fca08d5ef7663"
+    },
+    {
+      "name": "Revealing an overlay connects its leader at the visible label edge",
+      "passed": true,
+      "evidence_sha256": "ee78e4b1ac2c7bc9c82ee441a5b5494fe2ffe347ebe425bb7caef28d4c954f91"
+    },
+    {
+      "name": "Wide and narrow slides keep the native image ratio inside the stage",
+      "passed": true,
+      "evidence_sha256": "3b9d943473b19847dc4381260da56e0e5adb602137ef8e1c5b43647624c450c5"
+    },
+    {
+      "name": "Resizing keeps the exact native-image anchor without changing saved callout coordinates",
+      "passed": true,
+      "evidence_sha256": "357e03c692e389c1006bdc797895811cf5b63b37522135650d187c9fce5c4018"
+    },
+    {
+      "name": "A narrow slide shows complete feature cards with small trusted anchors and no layout mutation",
+      "passed": true,
+      "evidence_sha256": "244e2a71e83d8b8e153188daebf25d5d9737a6de93db125a6b9864a6d9eaab71"
+    },
+    {
+      "name": "Feature leaders stay visible with their labels and disappear together only on fallback",
+      "passed": true,
+      "evidence_sha256": "d258e8938d605fb08169ee010c96988266c7a2696e118dd8b235062bfd329b30"
+    },
+    {
+      "name": "Phone evidence wraps complete trim qualifiers inside each card without shrinking the type",
+      "passed": true,
+      "evidence_sha256": "c031d756a4b057b9b00f84e46f1d2866b7898f7a6301e4052de36552739d5d87"
+    },
+    {
+      "name": "Opening and closing hero images retain their native ratio within wide and narrow stages",
+      "passed": true,
+      "evidence_sha256": "d1911c5bcf3801ab02a1b930dfc591166131b348e637d2e6a5d79e531b1fb74e"
+    },
+    {
+      "name": "Crowded overlay labels settle in one pass without colliding with their fallback evidence",
+      "passed": true,
+      "evidence_sha256": "3385129919eb8589073b1b6d3fc72cfab93cceb507bb1be55d4005a156b2fdab"
+    },
+    {
+      "name": "A tall native image stays above wrapped mobile evidence",
+      "passed": true,
+      "evidence_sha256": "0117ef1a77c32197462b112439b703a67495c4ed69b2c7475016a874dea0650f"
+    },
+    {
+      "name": "The mobile evidence cue follows actual overflow without changing slide geometry",
+      "passed": true,
+      "evidence_sha256": "358bc98c7b1050c661866e253a14cc00e605e89fe4b7e74afa8fca08d5ef7663"
+    },
+    {
+      "name": "Default gallery and walkthrough URL prepare the current photo and tag before its exact narration",
+      "passed": true,
+      "evidence_sha256": "69518f87e109e47d9726f29d36bfc29f09c50c636ecb11189f27ae0fcf3f71dc"
+    }
+  ],
+  "boundaries": "Real DOM/events and mountPlayer; synthetic audio/SpeechRecognition/API; virtual timers. Not an acoustic or native microphone check.",
+  "scope": "Current working tree; muted isolated Chromium; local fake Audio/API; blocked network",
+  "page_errors": [],
+  "full_local_receipt": "output/gallery-continuity-2026-09-25/player-browser-current.json",
+  "full_local_receipt_sha256": "193bd455b558ada8b6601cee8c13a3df59d91136570e0cea2937cb81511c7e64"
+}

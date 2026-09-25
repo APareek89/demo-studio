@@ -1,0 +1,12 @@
+livekit_launcher_contract (unittest.loader._FailedTest.livekit_launcher_contract) ... ERROR
+
+======================================================================
+ERROR: livekit_launcher_contract (unittest.loader._FailedTest.livekit_launcher_contract)
+----------------------------------------------------------------------
+AttributeError: module '__main__' has no attribute 'livekit_launcher_contract'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+OUTBOUND_ATTEMPTS 0

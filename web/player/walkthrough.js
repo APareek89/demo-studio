@@ -34,12 +34,15 @@ export function createWalkthrough({ enabled = true } = {}) {
       const entries = photos(slide);
       // Native hero/closing hero, no-picture and non-DOM consumers retain their
       // original view. Align never instantiates this player-only adapter.
-      if (!enabled || /^(hero_open|hero_close)$/.test(slide.kind) || !entries.length || !view.el?.append) return view;
+      if (!enabled || /^(hero_open|hero_close)$/.test(slide.kind) || !entries.length || !view.el?.append) {
+        current?.cancel();current=null;return view;
+      }
       const previous = current?.photo();
+      const continuing = current?.frame();
       current?.cancel();
       const index = catalogue.findIndex(s => s.id === slide.id);
       const next = catalogue.slice(Math.max(0,index+1)).find(s => !/^(hero_open|hero_close)$/.test(s.kind) && photos(s).length);
-      const controller = galleryView(slide, view, entries, previous, next ? photos(next)[0] : null, options);
+      const controller = galleryView(slide, view, entries, previous, next ? photos(next)[0] : null, options, continuing);
       controller.onDispose = () => views.delete(controller);
       current = controller; views.add(controller);
       return controller.view;
@@ -53,7 +56,7 @@ export function createWalkthrough({ enabled = true } = {}) {
   };
 }
 
-function galleryView(slide, native, entries, previous, next, options) {
+function galleryView(slide, native, entries, previous, next, options, continuing) {
   const node = (tag, cls, text) => { const el = document.createElement(tag); el.className = cls; if (text !== undefined) el.textContent = text; return el; };
   const ns = 'http://www.w3.org/2000/svg';
   const svg = tag => document.createElementNS(ns,tag);
@@ -76,7 +79,7 @@ function galleryView(slide, native, entries, previous, next, options) {
   focus.append(camera,pointer,secondary,captions,disclosure); surface.append(hall,focus); native.el.append(surface); native.el.classList.add('gallery-slide');
   const reduced=typeof matchMedia==='function' ? matchMedia('(prefers-reduced-motion: reduce)') : {matches:false};
   const animations=new Set(), pending=new Set();
-  let epoch=0, dead=false, active=entries[0], line=-1, prepared=-1, preparing=false, selected=null, cards=[], target=0, ready=false, geometry=null, lastSize='', fallback=false;
+  let epoch=0, dead=false, active=entries[0], line=-1, prepared=-1, preparing=false, selected=null, cards=[], target=0, ready=false, settled=false, inherited=false, geometry=null, lastSize='', fallback=false;
   const allLabels=(slide.callouts || []).filter(c => typeof c.text==='string' && c.text.trim());
   const state=value => {surface.dataset.state=value;};
   const labelOwner=c => entries.find(p => p.image_id===c.image_id) || entries[0];
@@ -220,7 +223,7 @@ function galleryView(slide, native, entries, previous, next, options) {
   async function showInstant(i,id=null,entry=null,awaitPlayback=null) {
     const owner=epoch;
     if(awaitPlayback && !await awaitPlayback())return false;
-    if(dead || owner!==epoch)return false;active=entry || photoFor(i);if(id){const c=allLabels.find(c=>c.id===id);if(c)active=labelOwner(c);}
+    if(dead || owner!==epoch)return false;settled=false;inherited=false;active=entry || photoFor(i);if(id){const c=allLabels.find(c=>c.id===id);if(c)active=labelOwner(c);}
     const loading=Promise.all([loadPhoto(active,owner,false,awaitPlayback),showSecondary(i,owner,awaitPlayback)]);
     // Answer captions stay immediate; a different pending picture cannot carry
     // their pointer or inherit a previous photo while its bytes are loading.
@@ -236,14 +239,14 @@ function galleryView(slide, native, entries, previous, next, options) {
         useNativeFallback();
         return native.focusMedia?.(active.image_id,{lineIndex:i,calloutId:id,awaitPlayback}) ?? false;
       }
-      camera.style.visibility='visible';geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();
+      camera.style.visibility='visible';geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();settled=true;
       return true;
     });
   }
   async function prepareLine(i,awaitPlayback=null) {
     if(dead)return false;
     const from=active, wasReady=ready && focus.classList.contains('visible');
-    cancel();const owner=epoch, entry=photoFor(i);line=i;setPreparing(true);
+    cancel();const owner=epoch, entry=photoFor(i);line=i;settled=false;setPreparing(true);
     try {
     if(fallback)return true;
     const photoLoaded=await loadPhoto(entry,owner,true,awaitPlayback);
@@ -261,8 +264,10 @@ function galleryView(slide, native, entries, previous, next, options) {
       useNativeFallback();return true;
     }
     if(dead || owner!==epoch)return false;
-    labels(i);captions.style.opacity='0';pointer.style.opacity='0';
-    if(!wasReady || from.image_url!==active.image_url) {
+    labels(i);inherited=false;
+    const samePhoto=wasReady && from.image_url===active.image_url;
+    if(!samePhoto) {
+      captions.style.opacity='0';pointer.style.opacity='0';
       buildHall(wasReady?from:previous);fit();camera.style.transform='translate(0px,0px) scale(1)';
       if(target>0){state('returning');if(!await move(cards[0],{transform:pose(0)},400,owner))return false;}
       state('walking');if(!await move(world,{transform:worldPose(target)},750,owner))return false;
@@ -270,10 +275,16 @@ function galleryView(slide, native, entries, previous, next, options) {
       focus.style.transform=frameTransform();focus.style.opacity='0';focus.classList.add('visible');state('entering');
       if(!await move(focus,{transform:'translate(0px,0px) scale(1)',opacity:'1'},600,owner))return false;
     }
-    state('focusing');geometry=focusGeometry();if(!await move(camera,{transform:geometry.transform},600,owner))return false;
+    const destination=focusGeometry();
+    // A new sentence/slide is not a new picture. Keep the settled camera unless
+    // the next reviewed feature actually needs a different focus.
+    if(!samePhoto || geometry?.transform!==destination.transform) {
+      captions.style.opacity='0';pointer.style.opacity='0';state('focusing');
+      if(!await move(camera,{transform:destination.transform},600,owner))return false;
+    }
     if(dead || owner!==epoch)return false;
     geometry=focusGeometry();camera.style.transform=geometry.transform;
-    captions.style.opacity='1';drawPointer();ready=true;prepared=i;state('ready');return true;
+    captions.style.opacity='1';drawPointer();ready=true;settled=true;prepared=i;state('ready');return true;
     } finally {if(owner===epoch)setPreparing(false);}
   }
   function layout() {
@@ -290,7 +301,7 @@ function galleryView(slide, native, entries, previous, next, options) {
     // Finish current moves into newly calculated geometry, without resolving an
     // old line as playable. The waiting prepareLine then uses current dimensions.
     for(const a of animations){try{a.finish();}catch(_) {}}
-    if(ready){geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();}
+    if(ready && !inherited){geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();}
     else {cards.forEach((c,i)=>c.style.transform=pose(i));world.style.transform=worldPose(target);}
   }
   function highlight(id,index=99) {
@@ -312,13 +323,28 @@ function galleryView(slide, native, entries, previous, next, options) {
   captions.addEventListener('scroll',()=>{if(!dead)drawPointer();},{passive:true});
   const ro=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;ro?.observe(native.el);ro?.observe(surface);
   const dispose=()=>{if(dead)return;cancel();dead=true;ro?.disconnect();surface.remove();controller.onDispose?.();};
-  buildHall(previous);layout();
+  buildHall(previous);
+  const carried=entries.find(entry=>entry.image_url===continuing?.image_url);
+  if(carried) {
+    // Carry only a fully loaded, settled frame from the immediately preceding
+    // gallery. The old slide keeps its own image through the normal crossfade.
+    active=carried;image=continuing.image.cloneNode(true);image.alt=slide.title || 'Product view';camera.replaceChildren(image);
+    camera.style.cssText=continuing.cameraStyle;geometry={...continuing.geometry};
+    focus.style.transform='translate(0px,0px) scale(1)';focus.style.opacity='1';focus.classList.add('visible');
+    // Crossfading two copies of the same photo would briefly wash out its
+    // pixels. Replace this middle slide at full opacity; new photos still fade.
+    native.el.style.transition='none';native.el.style.opacity='1';
+    ready=true;settled=true;inherited=true;surface.dataset.imageId=active.image_id || '';state('ready');
+  }
+  layout();
   const view={...native,prepareLine,layout,
     setRevealed(i){native.setRevealed(i);if(i>=0 && !fallback && !dead && prepared!==i){cancel();showInstant(i);} },
     highlight,focusMedia,
     setImage(...args){cancel();fallback=true;surface.hidden=true;native.el.classList.remove('gallery-slide');native.setImage(...args);},
     destroy(){dispose();native.destroy();},
   };
-  const controller={view,cancel,dispose,resize,photo:()=>({...active})};
+  const controller={view,cancel,dispose,resize,photo:()=>({...active}),
+    frame:()=>!dead && !fallback && settled && ready && image.complete && image.naturalWidth && image.getAttribute('src')===active.image_url
+      ? {image_url:active.image_url,image,cameraStyle:camera.style.cssText,geometry:{...geometry}} : null};
   return controller;
 }

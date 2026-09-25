@@ -1,5 +1,13 @@
 # refine.MD — running log of Anand's questions and proposed solutions
 
+## LiveKit input and consecutive-picture correction — 25 September 2026
+
+User review found no recognized speech, an apparently unanswered typed question and the same BMW photograph walking/zooming in again between the first two content slides. The saved visit proves the typed interior question reached the graph; mock reasoning and a roughly175ms mock audio clip made delivery unhelpful. The shared `mute=1` link additionally disabled default voice input/output. Mock RTC acceptance did not establish a usable conversational demo.
+
+Use the existing `--live-providers` launcher with customer-tier configured runtime providers and a fresh isolated publication copy. Give a link without `mute=1`. Scope live verification to one prerecorded spoken BMW question and one typed interior question through the actual app route; record provider usage. Other gates remain mocked and blocked from external sockets. No rebuild, source edit, master merge, AWS release or second answering agent.
+
+For adjacent content slides using the same settled source photograph, carry its framing into the next slide. Change the reviewed caption/pointer and move focus only where a different reviewed feature requires it. Changed photographs still use the gallery entrance. Do not carry a half-loaded/cancelled frame or continuity across a native hero/no-picture slide. Keep top/bottom controls and narration ownership unchanged. Reject a new controller entrance solely because the slide ID changed.
+
 ## LiveKit trial plan — 25 September 2026
 
 Anand explicitly requested a trial LiveKit implementation for Demo Run, followed by testing before adoption. This authorizes the optional transport dependency and local LiveKit server for the trial; it does not authorize changing Build/Align, model/provider order, grounded reasoning, gallery design or automatic AWS deployment.

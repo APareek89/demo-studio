@@ -1,0 +1,18 @@
+PASS fragments and noise never qualify as intake
+PASS unrelated completed broadcast does not interrupt narration
+PASS short feature question and relevant subject stay usable
+PASS intake preserves meaningful stated needs
+PASS yes needs an actual customer reply prompt
+PASS supported language and contact prompt are not filtered out
+PASS generic tour does not pretend a specific preference
+PASS controls match whole utterance, not words inside questions
+PASS Continue during active narration cannot cancel it or ask QA
+PASS Continue from a conversational wait resolves only that wait
+PASS Not now dismisses optional contact without a question
+PASS Pause and Stop retain their explicit playback semantics
+PASS section wait saves next section before invitation and waits exactly3s
+PASS section question preserves its next-section return checkpoint
+PASS intake acknowledgement depends on actual context and does not reuse mismatched audio
+PASS generic guided route keeps overview/minimum semantics without a personalization call
+PASS a sixteen-minute active session checkpoints without exit or CTA
+Player runtime recovery contracts: 17/17; no browser/network/providers

@@ -1,5 +1,25 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — A transport test link is not a working voice demo
+
+**Observed:** speech was not captured and the typed interior question seemed ignored. Its saved visit actually contains a completed mock graph answer: a short upholstery fragment with about175ms of mock audio. The shared link also had `mute=1`, which disables default voice input/output.
+
+**Why chain:** (1, code/config) mock STT intentionally emits no real transcript and mock TTS is not intelligible speech. (2, process) those settings were retained on the human review link. (3, process) successful SDK/data assertions were treated as readiness to converse. (4, test design) the original browser gate mounted the player directly and did not type the reported question through the stock app route. (5, process) transport, provider and user-review acceptance were not kept separate when delivering the link.
+
+**Correction:** retain mock defaults for safe automation, but launch this requested conversation review with configured live providers in a fresh isolated copy and remove the mute query from the user link. Add actual stock-route intake/question/persisted-answer coverage and bounded real-provider voice/text evidence. Do not invent a transport rewrite when trace evidence shows successful delivery.
+
+**Prevention:** every review link identifies mock versus live. Check default microphone/output settings and actual recognition plus answer delivery; count mock audio bytes only as transport evidence. Physical-room noise discrimination and hosted adoption remain separate tests.
+
+## 2026-09-25 — Picture continuity belongs to the photo, not the slide number
+
+**Observed:** BMW sl01 and sl02 share a photograph but the gallery walks in and enlarges it twice.
+
+**Why chain:** (1, code) each slide constructs a fresh gallery controller with an unready camera. (2, design) the controller treats a new slide as a new photograph. (3, code) previous-photo information builds the corridor but does not carry the settled framing. (4, test design) same-slide multi-line checks missed repeated media across slide boundaries. (5, process) acceptance counted image/tag presence without observing the first consecutive transitions.
+
+**Correction:** hand off only the immediately preceding decoded, settled photo and camera geometry; skip repeated entrance/no-op camera motion, while new reviewed features may change focus. Keep native/changed-image boundaries and cancellation ownership intact.
+
+**Prevention:** actual BMW desktop/phone and two-photo/feature fixtures measure camera/image bounds and animations across the transition, plus interruption/Stop ownership. The regression must fail on the prior revision and preserve the existing gallery suite.
+
 ## 2026-09-25 — Test the native transport, not just an SDK-shaped mock
 
 **Observed:** the new LiveKit facade passed its mocked contracts but the real worker could not establish media using loopback-only ICE. The pinned server also substituted public STUN for an empty list, and its RTC TCP listener ignored the loopback signaling bind. Cancelling a Python wait did not cancel the native SDK's ongoing connection attempt.

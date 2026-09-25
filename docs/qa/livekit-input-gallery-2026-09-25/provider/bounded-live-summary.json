@@ -1,0 +1,40 @@
+{
+  "paid_semantic_questions": 2,
+  "estimated_usd": 0.024371,
+  "estimated_inr": 2.0471,
+  "usage_rows": 9,
+  "speech_transcript_exact": true,
+  "speech_response": "honest decline; seating capacity not established by pinned publication",
+  "speech_pcm_seconds": 4.096,
+  "typed_checks": {
+    "passed": 6,
+    "total": 6
+  },
+  "typed_pcm_seconds": 22.828,
+  "voice_session_checkpoint": {
+    "save_seq": 3,
+    "ended": false,
+    "question_saved": true,
+    "answer_transcript_saved": false,
+    "reason": "fixture assertion aborted before final Stop/save; no complete voice-visit claim"
+  },
+  "startup_attempts_before_provider_calls": {
+    "first": "harness blocked local signaling HTTP validation; corrected",
+    "second": "join timeout; no blocked request; still under investigation by input agent",
+    "calls": 0,
+    "cost": 0
+  },
+  "physical_microphone": false,
+  "room_acoustic_validation": false,
+  "source_demo_mutated": false,
+  "startup_followup": {
+    "input_free_joins_passed": 3,
+    "milliseconds": [
+      5563,
+      3177,
+      3120
+    ],
+    "provider_calls": 0,
+    "conclusion": "Earlier timeout remains unexplained; not reproduced in five subsequent joins including voice/text. No speculative transport edit."
+  }
+}

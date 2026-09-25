@@ -1,0 +1,204 @@
+{
+  "status": "passed",
+  "passed": 6,
+  "checks": [
+    "stock app establishes text connection over LiveKit",
+    "typed interior question receives a grounded real answer",
+    "typed answer also has non-silent streamed speech",
+    "actual results persist in the completed visit",
+    "only the authorized questions were submitted",
+    "no browser error or unexpected external request"
+  ],
+  "seconds": 49.0,
+  "providers": "configured live runtime, unchanged order",
+  "physical_microphone": false,
+  "input_speech": "locally synthesized macOS voice",
+  "browser_playback": "muted; nonzero decoded PCM verified, no room-acoustic claim",
+  "question_limit": 1,
+  "observations": {
+    "asked": [
+      {
+        "question": "tell me more about interior of the car",
+        "input_mode": "text"
+      }
+    ],
+    "transcripts": [],
+    "answers": [
+      {
+        "answer": "The featured interior is shown with BMW Individual full-leather Merino in Ivory White / Atlas Grey. Its cockpit features a sharply contoured display, cleanly installed operating elements, flat air vents, and light elements. The CraftedClarity glass application provides a selector lever, BMW Controller, and Start/Stop button made of hand-made crystal glass.",
+        "answered": true,
+        "fact_ids": [
+          "F011",
+          "F014",
+          "F015"
+        ],
+        "from_bank": false,
+        "visual": true
+      }
+    ],
+    "audio": [
+      {
+        "seconds": 22.828,
+        "rms": 2908.732784708997,
+        "peak": 24574
+      }
+    ],
+    "played": [
+      "This is a good question, give me a moment.",
+      "The featured interior is shown with BMW Individual full-leather Merino in Ivory White / Atlas Grey. Its cockpit features a sharply contoured display, cleanly installed operating elements, flat air vents, and light elements. The CraftedClarity glass application provides a selector lever, BMW Controller, and Start/Stop button made of hand-made crystal glass."
+    ],
+    "completed": [
+      {
+        "text": "This is a good question, give me a moment.",
+        "ok": true
+      },
+      {
+        "text": "The featured interior is shown with BMW Individual full-leather Merino in Ivory White / Atlas Grey. Its cockpit features a sharply contoured display, cleanly installed operating elements, flat air vents, and light elements. The CraftedClarity glass application provides a selector lever, BMW Controller, and Start/Stop button made of hand-made crystal glass.",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "events": [
+      "turn.cancelled",
+      "audio.start",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.end",
+      "turn.result",
+      "audio.start",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.end",
+      "turn.cancelled"
+    ],
+    "states": [
+      "muted",
+      "muted"
+    ],
+    "capture": 0,
+    "ready": true,
+    "socket": 1,
+    "room": "connected",
+    "workerReady": true,
+    "peers": [
+      {
+        "connection": "connected",
+        "ice": "connected",
+        "signal": "stable"
+      }
+    ]
+  },
+  "browser_errors": [],
+  "blocked": [],
+  "usage": [
+    {
+      "t": 1790334302.769553,
+      "stage": "runtime",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 42,
+      "sec": 0.0
+    },
+    {
+      "t": 1790334304.570265,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 4704,
+      "out": 232,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1790334307.309233,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 5252,
+      "out": 196,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1790334312.492773,
+      "stage": "runtime",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 358,
+      "sec": 0.0
+    }
+  ],
+  "estimated_usd": 0.016215,
+  "estimated_inr": 1.362,
+  "price_basis": "existing app estimates, not a provider invoice"
+}

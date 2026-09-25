@@ -1,0 +1,463 @@
+{
+  "passed": 22,
+  "total": 26,
+  "checks": [
+    {
+      "name": "BMW 1440: opening is the published intro",
+      "passed": true
+    },
+    {
+      "name": "BMW 1440: first gallery visit retains its entrance",
+      "passed": true
+    },
+    {
+      "name": "BMW 1440: repeated source has no walk/enlarge replay",
+      "passed": false,
+      "detail": [
+        {
+          "target": "gallery-world",
+          "frames": [
+            {
+              "transform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            {
+              "transform": "translateZ(0px)"
+            }
+          ],
+          "at": 13526.5
+        },
+        {
+          "target": "gallery-frame",
+          "frames": [
+            {
+              "transform": "matrix3d(0.866025, 0, -0.5, 0, 0, 1, 0, 0, 0.5, 0, 0.866025, 0, -520, -170, 0, 1)"
+            },
+            {
+              "transform": "translate(-50%,-50%) translate3d(0px,0,0px) rotateY(0deg)"
+            }
+          ],
+          "at": 13565
+        },
+        {
+          "target": "gallery-focus visible",
+          "frames": [
+            {
+              "transform": "matrix(0.366379, 0, 0, 0.547504, 0, -24.8438)",
+              "opacity": "0"
+            },
+            {
+              "transform": "translate(0px,0px) scale(1)",
+              "opacity": "1"
+            }
+          ],
+          "at": 14271.600000023842
+        },
+        {
+          "target": "gallery-camera",
+          "frames": [
+            {
+              "transform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            {
+              "transform": "translate(0px,0px) scale(1)"
+            }
+          ],
+          "at": 14944.800000011921
+        }
+      ]
+    },
+    {
+      "name": "BMW 1440: repeated source remains loaded at the same framing",
+      "passed": true,
+      "detail": {
+        "before": {
+          "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+          "x": 24,
+          "y": 234.1875,
+          "w": 1392,
+          "h": 380.625,
+          "transform": "translate(0px, 0px) scale(1)",
+          "loaded": true
+        },
+        "after": {
+          "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+          "x": 24,
+          "y": 234.1875,
+          "w": 1392,
+          "h": 380.625,
+          "transform": "translate(0px, 0px) scale(1)",
+          "loaded": true
+        }
+      }
+    },
+    {
+      "name": "BMW 1440: next reviewed captions and exact recording are ready",
+      "passed": true
+    },
+    {
+      "name": "BMW 1440: outer shell and bundle stay unchanged",
+      "passed": true,
+      "detail": {
+        ".pl-top": {
+          "before": {
+            "x": 0,
+            "y": 0,
+            "w": 1440,
+            "h": 54,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 27px",
+            "margin": "0px"
+          },
+          "after": {
+            "x": 0,
+            "y": 0,
+            "w": 1440,
+            "h": 54,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 27px",
+            "margin": "0px"
+          }
+        },
+        ".pl-progress": {
+          "before": {
+            "x": 284.8125,
+            "y": 27,
+            "w": 887.1875,
+            "h": 0,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          "after": {
+            "x": 284.8125,
+            "y": 27,
+            "w": 887.1875,
+            "h": 0,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        ".pl-dock": {
+          "before": {
+            "x": 0,
+            "y": 774,
+            "w": 1440,
+            "h": 151,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "12px 25px 8px",
+            "margin": "0px"
+          },
+          "after": {
+            "x": 0,
+            "y": 774,
+            "w": 1440,
+            "h": 151,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "12px 25px 8px",
+            "margin": "0px"
+          }
+        }
+      }
+    },
+    {
+      "name": "BMW 390: opening is the published intro",
+      "passed": true
+    },
+    {
+      "name": "BMW 390: first gallery visit retains its entrance",
+      "passed": true
+    },
+    {
+      "name": "BMW 390: repeated source has no walk/enlarge replay",
+      "passed": false,
+      "detail": [
+        {
+          "target": "gallery-world",
+          "frames": [
+            {
+              "transform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            {
+              "transform": "translateZ(0px)"
+            }
+          ],
+          "at": 13844.699999988079
+        },
+        {
+          "target": "gallery-frame",
+          "frames": [
+            {
+              "transform": "matrix3d(0.866025, 0, -0.5, 0, 0, 1, 0, 0, 0.5, 0, 0.866025, 0, -215.453, -145.867, 0, 1)"
+            },
+            {
+              "transform": "translate(-50%,-50%) translate3d(0px,0,0px) rotateY(0deg)"
+            }
+          ],
+          "at": 13882
+        },
+        {
+          "target": "gallery-focus visible",
+          "frames": [
+            {
+              "transform": "matrix(0.75996, 0, 0, 0.579989, 0, -20.125)",
+              "opacity": "0"
+            },
+            {
+              "transform": "translate(0px,0px) scale(1)",
+              "opacity": "1"
+            }
+          ],
+          "at": 14560.300000011921
+        },
+        {
+          "target": "gallery-camera",
+          "frames": [
+            {
+              "transform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            {
+              "transform": "translate(0px,0px) scale(1)"
+            }
+          ],
+          "at": 15481.300000011921
+        }
+      ]
+    },
+    {
+      "name": "BMW 390: repeated source remains loaded at the same framing",
+      "passed": true,
+      "detail": {
+        "before": {
+          "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+          "x": 24,
+          "y": 340.734375,
+          "w": 342,
+          "h": 93.515625,
+          "transform": "translate(0px, 0px) scale(1)",
+          "loaded": true
+        },
+        "after": {
+          "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+          "x": 24,
+          "y": 340.734375,
+          "w": 342,
+          "h": 93.515625,
+          "transform": "translate(0px, 0px) scale(1)",
+          "loaded": true
+        }
+      }
+    },
+    {
+      "name": "BMW 390: next reviewed captions and exact recording are ready",
+      "passed": true
+    },
+    {
+      "name": "BMW 390: outer shell and bundle stay unchanged",
+      "passed": true,
+      "detail": {
+        ".pl-top": {
+          "before": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 49,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 10px",
+            "margin": "0px"
+          },
+          "after": {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 49,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px 10px",
+            "margin": "0px"
+          }
+        },
+        ".pl-progress": {
+          "before": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          "after": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        ".pl-dock": {
+          "before": {
+            "x": 0,
+            "y": 682,
+            "w": 390,
+            "h": 132,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "9px 14px 4px",
+            "margin": "0px"
+          },
+          "after": {
+            "x": 0,
+            "y": 682,
+            "w": 390,
+            "h": 132,
+            "font": "14px / 21.7px Inter, -apple-system, \"system-ui\", \"Segoe UI\", sans-serif",
+            "fontSize": "14px",
+            "padding": "9px 14px 4px",
+            "margin": "0px"
+          }
+        }
+      }
+    },
+    {
+      "name": "Same slide, same feature: no no-op camera or entrance animation",
+      "passed": false,
+      "detail": [
+        {
+          "target": "gallery-camera",
+          "frames": [
+            {
+              "transform": "matrix(1.35294, 0, 0, 1.35294, 168, -33.5)"
+            },
+            {
+              "transform": "translate(167.9999999999999px,-33.49999999999994px) scale(1.352941176470588)"
+            }
+          ],
+          "at": 13866.40000000596
+        }
+      ]
+    },
+    {
+      "name": "Same slide, same feature: picture framing is stable and new caption appears",
+      "passed": true
+    },
+    {
+      "name": "New slide, same source: only the new reviewed feature receives a focus move",
+      "passed": false,
+      "detail": [
+        {
+          "target": "gallery-world",
+          "frames": [
+            {
+              "transform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            {
+              "transform": "translateZ(0px)"
+            }
+          ],
+          "at": 16124.5
+        },
+        {
+          "target": "gallery-frame",
+          "frames": [
+            {
+              "transform": "matrix3d(0.866025, 0, -0.5, 0, 0, 1, 0, 0, 0.5, 0, 0.866025, 0, -466.477, -170, 0, 1)"
+            },
+            {
+              "transform": "translate(-50%,-50%) translate3d(0px,0,0px) rotateY(0deg)"
+            }
+          ],
+          "at": 16215
+        },
+        {
+          "target": "gallery-focus visible",
+          "frames": [
+            {
+              "transform": "matrix(0.479993, 0, 0, 0.545746, 0, -24.9219)",
+              "opacity": "0"
+            },
+            {
+              "transform": "translate(0px,0px) scale(1)",
+              "opacity": "1"
+            }
+          ],
+          "at": 17776.5
+        },
+        {
+          "target": "gallery-camera",
+          "frames": [
+            {
+              "transform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            {
+              "transform": "translate(-71.39999999999998px,0px) scale(1.15)"
+            }
+          ],
+          "at": 18436.40000000596
+        }
+      ]
+    },
+    {
+      "name": "New slide, same source: selected pointer belongs to the new reviewed tag",
+      "passed": true
+    },
+    {
+      "name": "Pause freezes the carried frame",
+      "passed": true
+    },
+    {
+      "name": "Resume does not replay the gallery entrance",
+      "passed": true
+    },
+    {
+      "name": "A distinct source keeps its gallery transition before narration",
+      "passed": true
+    },
+    {
+      "name": "Distinct source completes a real entrance and correct mapped picture",
+      "passed": true
+    },
+    {
+      "name": "An intervening native/text view ends the continuous-photo run",
+      "passed": true
+    },
+    {
+      "name": "Question cancels the pending entrance without starting its stale narration",
+      "passed": true
+    },
+    {
+      "name": "Question return restores the exact approved line with one voice",
+      "passed": true
+    },
+    {
+      "name": "All synthetic navigation leaves approved bundle bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "Two pictures in one slide retain bound-line ownership and transition",
+      "passed": true
+    },
+    {
+      "name": "No script errors or outbound browser requests",
+      "passed": true,
+      "detail": {
+        "errors": [],
+        "blocked": []
+      }
+    }
+  ],
+  "provider_calls": 0,
+  "scope": "Actual player/DOM/animations, real read-only BMW pictures, simulated muted audio/API, loopback-only network",
+  "revision": "97ef2ab"
+}

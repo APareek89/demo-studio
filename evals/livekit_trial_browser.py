@@ -221,6 +221,47 @@ def main():
                 }""", arg=args.demo, timeout=15000)
                 check("trial player saves the completed visit incrementally", page.evaluate("playerQA.saved.length>1 && playerQA.persisted.ended && playerQA.persisted.save_seq>1 && playerQA.persisted.questions.includes('Show me the cabin')"))
                 page.evaluate("playerQA.player.destroy();trialCapture.contexts.forEach(c=>c.close())")
+
+                # Cover the actual application route as well as the transport
+                # harness: the shared user URL must deliver intake and text
+                # questions using web/app.js's own factory and API callbacks.
+                page.set_viewport_size({"width":1440,"height":960})
+                page.goto(base + f"/?voice_transport=livekit&mute=1#/play/{args.demo}")
+                page.get_by_role("button", name="Explore with me", exact=True).wait_for()
+                page.evaluate(r"""async()=>{
+                  const {LiveKitVoiceClient}=await import('/web/player/livekit-voice.js');
+                  const state=window.routeQA={asked:[],answers:[],saved:[],played:[]};
+                  const ask=LiveKitVoiceClient.prototype.ask,speak=LiveKitVoiceClient.prototype.speak;
+                  LiveKitVoiceClient.prototype.ask=async function(body){state.client=this;state.asked.push(body);const answer=await ask.call(this,body);state.answers.push(answer);return answer;};
+                  LiveKitVoiceClient.prototype.speak=function(text,options={}){return speak.call(this,text,{...options,onStart:ts=>{state.played.push(text);options.onStart?.(ts);}});};
+                  const fetch=window.fetch;window.fetch=async function(input,init){
+                    const url=typeof input==='string'?input:input.url;
+                    if(url?.endsWith('/run/session')&&init?.body)state.saved.push(JSON.parse(init.body));
+                    return fetch.apply(this,arguments);
+                  };
+                }""")
+                page.get_by_role("switch", name="Voice mode", exact=True).check()
+                page.get_by_role("button", name="Explore with me", exact=True).click()
+                page.get_by_role("textbox", name="Your answer", exact=True).fill("Show me around")
+                page.get_by_role("textbox", name="Your answer", exact=True).press("Enter")
+                page.wait_for_function("()=>!document.querySelector('.pl-intake:not(.pl-welcome)').classList.contains('open')", timeout=25000)
+                check("stock application accepts typed intake while voice mode is enabled", page.evaluate("()=>routeQA.saved.some(s=>s.transcript?.some(t=>t.role==='user'&&t.text==='Show me around'))"))
+                page.wait_for_function("()=>trialPeerConnections.some(p=>p.connectionState==='connected')", timeout=15000)
+                question = "tell me more about interior of the car"
+                page.get_by_role("textbox", name="Your question or answer", exact=True).fill(question)
+                page.get_by_role("textbox", name="Your question or answer", exact=True).press("Enter")
+                page.wait_for_function("()=>routeQA.answers.length===1 && routeQA.played.includes(routeQA.answers[0].answer)", timeout=15000)
+                check("stock route sends typed question over LiveKit and delivers the answer", page.evaluate("q=>routeQA.client.transport==='livekit-trial' && routeQA.asked[0].question===q && routeQA.answers[0].answered && !!routeQA.answers[0].answer && routeQA.played.includes(routeQA.answers[0].answer)", question))
+                check("stock route clears only the submitted question field", page.get_by_role("textbox", name="Your question or answer", exact=True).input_value() == "")
+                page.screenshot(path=str(args.output / "bmw-livekit-stock-route-answer.png"), full_page=False)
+                page.locator('.pl-top button[aria-label="Stop and see the summary"]').click()
+                page.wait_for_function("()=>routeQA.saved.some(s=>s.ended)", timeout=15000)
+                page.wait_for_function("""async demo=>{
+                  const final=routeQA.saved.find(s=>s.ended);if(!final)return false;
+                  const response=await fetch(`/api/demos/${demo}/sessions/${final.id}`);if(!response.ok)return false;
+                  routeQA.persisted=await response.json();return routeQA.persisted.ended===true;
+                }""", arg=args.demo, timeout=15000)
+                check("stock route persists the submitted question and actual answer", page.evaluate("q=>routeQA.persisted.questions.includes(q) && routeQA.persisted.turns.some(t=>t.question===q&&t.answered&&!t.failed) && routeQA.persisted.transcript.some(t=>t.role==='agent'&&t.text===routeQA.answers[0].answer)", question))
                 check("browser opens no external connection or legacy microphone WebSocket", not blocked and all(urlsplit(url).port == args.signal_port for url in sockets))
                 check("browser has no uncaught JavaScript error", not errors)
                 report = {"passed":len(checks),"total":len(checks),"checks":checks,"provider_calls":0,"physical_microphone":False,"transport":"real-local-livekit","rtc":stats,"frames":{k:counters[k] for k in ("received","forwarded")},"errors":errors,"blocked":blocked,"offline_stylesheets":styling,"screenshots":[p.name for p in args.output.glob("bmw-livekit-*.png")]}

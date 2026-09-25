@@ -34,6 +34,12 @@ It copies the chosen publication, pinned knowledge and assets to its own DATA/GR
 
 **Mock mode is the default.** Existing recorded narration plays and synthetic QA can exercise real RTC delivery, but mock STT does not transcribe your microphone. Type questions to exercise the demo in this mode. Python external DNS/TCP/UDP is denied; native RTC is configured separately with same-machine host ICE and no public STUN. This is not a system-wide firewall. A physical speech/provider acceptance run requires an explicitly chosen `--live-providers` launch with configured credentials; that mode may incur provider charges and does not install the mock socket guard.
 
+## Conversational review versus transport QA
+
+For an actual spoken review, explicitly add `--live-providers` to the launcher command and use configured provider credentials. Match the intended runtime tier, for example `MODEL_TIER=customer`. This enables paid STT, grounded answering and TTS in the isolated copy; it does not rebuild the publication. The launcher's printed URL deliberately has no `mute=1`: that query disables output and default voice input and belongs only in muted automation.
+
+A mock RTC pass proves transport, not recognition or a useful spoken answer. The25September review failure demonstrated that typed text can reach the graph successfully while mock reasoning returns a fragment and mock speech produces a short silent clip. Review links must identify the mode; verify the stock app route and actual provider results before calling a link ready for conversation.
+
 ## Boundary and rollback
 
 Token issuance requires a loopback caller and exact matching Origin. Tokens grant one random room and viewer identity, microphone/data permissions, and a120second join lifetime. The worker independently bounds room lifetime, active room count, queues, fragments and input generations. Secrets stay in a mode0600 local configuration file and never enter the repository or browser receipt.

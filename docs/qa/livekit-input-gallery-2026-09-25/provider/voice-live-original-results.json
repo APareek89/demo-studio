@@ -1,0 +1,178 @@
+{
+  "status": "failed",
+  "passed": 4,
+  "checks": [
+    "stock app establishes live Sarvam capture over LiveKit",
+    "local synthetic speech is delivered as a real media track",
+    "real STT final reaches the ordinary question handler",
+    "microphone can close while the answer remains connected"
+  ],
+  "seconds": 38.9,
+  "providers": "configured live runtime, unchanged order",
+  "physical_microphone": false,
+  "input_speech": "locally synthesized macOS voice",
+  "browser_playback": "muted; nonzero decoded PCM verified, no room-acoustic claim",
+  "question_limit": 2,
+  "observations": {
+    "asked": [
+      {
+        "question": "How many seats does the BMW X7 have?",
+        "input_mode": "voice"
+      }
+    ],
+    "transcripts": [
+      "How many seats does the BMW X7 have?"
+    ],
+    "answers": [
+      {
+        "answer": "I couldn't verify the exact seating capacity for the BMW X7.",
+        "answered": false,
+        "fact_ids": [],
+        "from_bank": false,
+        "visual": false
+      }
+    ],
+    "audio": [
+      {
+        "seconds": 4.096,
+        "rms": 2936.003683053252,
+        "peak": 24670
+      }
+    ],
+    "played": [
+      "This is a good question, give me a moment.",
+      "I couldn't verify the exact seating capacity for the BMW X7."
+    ],
+    "completed": [
+      {
+        "text": "This is a good question, give me a moment.",
+        "ok": true
+      },
+      {
+        "text": "I couldn't verify the exact seating capacity for the BMW X7.",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "events": [
+      "mic.ready",
+      "input.speech_start",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "transcript.partial",
+      "input.speech_end",
+      "transcript.partial",
+      "transcript.final",
+      "turn.cancelled",
+      "turn.cancelled",
+      "audio.start",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.end",
+      "turn.result",
+      "audio.start",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.chunk",
+      "audio.end"
+    ],
+    "states": [
+      "opening",
+      "listening",
+      "muted"
+    ],
+    "capture": 1,
+    "ready": true,
+    "socket": 1,
+    "room": "connected",
+    "workerReady": true,
+    "peers": [
+      {
+        "connection": "connected",
+        "ice": "connected",
+        "signal": "stable"
+      }
+    ]
+  },
+  "browser_errors": [],
+  "blocked": [],
+  "usage": [
+    {
+      "t": 1790334230.808023,
+      "stage": "runtime",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 42,
+      "sec": 0.0
+    },
+    {
+      "t": 1790334231.692479,
+      "stage": "runtime",
+      "kind": "sarvam-stt",
+      "model": "saaras:v3-realtime",
+      "in": 0,
+      "out": 0,
+      "chars": 0,
+      "sec": 12.14
+    },
+    {
+      "t": 1790334231.960088,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 2863,
+      "out": 86,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1790334234.129055,
+      "stage": "runtime",
+      "kind": "runtime",
+      "model": "gemini-3.8-flash",
+      "in": 2937,
+      "out": 122,
+      "chars": 0,
+      "sec": 0.0
+    },
+    {
+      "t": 1790334235.437093,
+      "stage": "runtime",
+      "kind": "sarvam-tts",
+      "model": "bulbul:v3",
+      "in": 0,
+      "out": 0,
+      "chars": 60,
+      "sec": 0.0
+    }
+  ],
+  "estimated_usd": 0.008156,
+  "estimated_inr": 0.6851,
+  "price_basis": "existing app estimates, not a provider invoice"
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "suite": "qa_deck",
+    "passed": 445,
+    "total": 445
+  },
+  {
+    "suite": "qa_accept",
+    "passed": 24,
+    "total": 24
+  },
+  {
+    "suite": "smoke_mock",
+    "passed": 3,
+    "total": 3
+  },
+  {
+    "suite": "release_mock_contract",
+    "passed": 28,
+    "total": 28
+  },
+  {
+    "suite": "livekit_trial_contract",
+    "passed": 50,
+    "total": 50
+  },
+  {
+    "suite": "livekit_launcher_contract",
+    "passed": 16,
+    "total": 16
+  },
+  {
+    "suite": "livekit_voice_contract",
+    "passed": 47,
+    "total": 47
+  },
+  {
+    "suite": "live_voice_contract",
+    "passed": 96,
+    "total": 96
+  },
+  {
+    "suite": "immediate_speech_hold_contract",
+    "passed": 26,
+    "total": 26
+  },
+  {
+    "suite": "player_listen_contract",
+    "passed": 16,
+    "total": 16
+  },
+  {
+    "suite": "player_runtime_recovery_contract",
+    "passed": 17,
+    "total": 17
+  },
+  {
+    "suite": "player_session_save_contract",
+    "passed": 18,
+    "total": 18
+  },
+  {
+    "suite": "mock_livekit_stock_route_browser",
+    "passed": 28,
+    "total": 28
+  },
+  {
+    "suite": "gallery_continuity_browser",
+    "passed": 28,
+    "total": 28
+  },
+  {
+    "suite": "gallery_regression_browser",
+    "passed": 320,
+    "total": 320
+  },
+  {
+    "suite": "native_player_browser",
+    "passed": 87,
+    "total": 87
+  },
+  {
+    "suite": "player_walkthrough_contract",
+    "passed": 18,
+    "total": 18
+  },
+  {
+    "suite": "image_load_contract",
+    "passed": 14,
+    "total": 14
+  }
+]

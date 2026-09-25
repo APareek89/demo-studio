@@ -11,7 +11,7 @@ Refreshed 25 September 2026. This is the entrypoint for a fresh session; [the pr
 5. `docs/context-index-2026-09-25.md` indexes the remaining markdown. Consult current QA reports first; historical briefs/design samples are not automatically current requirements.
 6. Relevant source before editing: `server/app.py` (API), `server/graph.py` (build graph), `server/orchestrator.py` (staleness), `server/store.py` / `storage.py` (persistence), then the relevant stage/runtime module and UI.
 
-Current follow-up: immediate reversible speech holds, exact published answer/show pictures and request-local source-context retrieval are implemented on the working branch. Consult the newest Handoff/Loop/QA receipt for final checks. This follow-up is not merged/deployed; no paid QA or LiveKit integration.
+Current follow-up: local runtime fixes (`aeddec9`) and opt-in LiveKit transport (`97ef2ab`) are on the working branch, not merged/deployed. User review now corrects the mock/muted review link and repeated gallery entrance for adjacent uses of one photograph. Use the newest Handoff/Loop/QA receipt for current live-provider verification and limits; historical mock receipts are not conversational acceptance.
 
 Previous task completed: Anand approved BMW and explicitly requested master/GitHub plus AWS for public feedback. Application `278c21d` and operator proxy `0f7e2be` are deployed; public BMW is `https://13-202-0-79.sslip.io/#/play/dm_29df0418`. See Handoff and `docs/aws/release-bmw-gallery-2026-09-25.md` for exact gates, backup and limits. The approved recordings/snapshot were copied, with local test history excluded; no new paid QA. Receipt-only commits do not change the running application SHA.
 

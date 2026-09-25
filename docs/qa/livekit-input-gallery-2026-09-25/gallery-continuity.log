@@ -1,0 +1,29 @@
+PASS BMW 1440: opening is the published intro
+PASS BMW 1440: first gallery visit retains its entrance
+PASS BMW 1440: repeated source has no walk/enlarge replay
+PASS BMW 1440: repeated source remains loaded at the same framing
+PASS BMW 1440: identical pixels do not crossfade or wash out
+PASS BMW 1440: next reviewed captions and exact recording are ready
+PASS BMW 1440: outer shell and bundle stay unchanged
+PASS BMW 390: opening is the published intro
+PASS BMW 390: first gallery visit retains its entrance
+PASS BMW 390: repeated source has no walk/enlarge replay
+PASS BMW 390: repeated source remains loaded at the same framing
+PASS BMW 390: identical pixels do not crossfade or wash out
+PASS BMW 390: next reviewed captions and exact recording are ready
+PASS BMW 390: outer shell and bundle stay unchanged
+PASS Same slide, same feature: no no-op camera or entrance animation
+PASS Same slide, same feature: picture framing is stable and new caption appears
+PASS New slide, same source: only the new reviewed feature receives a focus move
+PASS New slide, same source: selected pointer belongs to the new reviewed tag
+PASS Pause freezes the carried frame
+PASS Resume does not replay the gallery entrance
+PASS A distinct source keeps its gallery transition before narration
+PASS Distinct source completes a real entrance and correct mapped picture
+PASS An intervening native/text view ends the continuous-photo run
+PASS Question cancels the pending entrance without starting its stale narration
+PASS Question return restores the exact approved line with one voice
+PASS All synthetic navigation leaves approved bundle bytes unchanged
+PASS Two pictures in one slide retain bound-line ownership and transition
+PASS No script errors or outbound browser requests
+Gallery continuity: 28/28
