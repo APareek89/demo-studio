@@ -7,8 +7,10 @@ your job is to make specific, agreed changes that fit them exactly. Start every 
 menu of options, never make him read code to understand a change.
 
 Hard rules — no exceptions:
-- Never touch `master` / `main`. Work on a branch off `slides-v1` named `codex/<task>`; merge into `slides-v1` only when
-  Anand says so in chat. Commit at every working state with a plain-language message.
+- Work on the existing implementation branch; use the current tested release for newly requested branch work.
+  Merge into the repository default `master` only when Anand explicitly instructs it. He authorized the completed
+  work through `cf30dba` on 25 September 2026; this does not authorize an AWS deployment. Commit working states
+  with plain-language messages. The former `slides-v1` starting point is historical.
 - No change to the architecture, the data model, services, dependencies, provider order, the product rules inside
   prompts, or the no-build front end (plain ES modules + CSS, no bundler) without Anand's written OK. When in doubt, ask
   first — one short paragraph, one recommendation. A "quick improvement" you were not asked for is a question, not a commit.

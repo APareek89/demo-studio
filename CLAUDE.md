@@ -2,8 +2,10 @@
 
 Local app that turns a product's video/images/documents into a voice-led, interruptible demo via an
 agentic pipeline with human checkpoints. Python FastAPI backend (`server/`), no-build ES-module
-frontend (`web/`), folder-per-demo JSON store (`data/demos/<id>/`). Claude Opus 5 = plan / author /
-align agent / grounded Q&A / rehearsal; Gemini = video & image understanding + TTS.
+frontend (`web/`), folder-per-demo JSON store (default `data/demos/<id>/`). Current text defaults
+are Gemini → Claude → Runware; vision and locked speech configuration are separate.
+Read `CODEX_INSTRUCTIONS.MD` and `Handoff.MD` for the current checkpoint and release boundary;
+historical tasks and provider descriptions do not authorize new work.
 
 Run: `.venv/bin/uvicorn server.app:app --port 8877` → http://127.0.0.1:8877 · keys in `.env` ·
 `MOCK_LLM=1` runs the whole path without keys. Docs: `PRD.md`, `docs/ARCHITECTURE_FLOW.md`,

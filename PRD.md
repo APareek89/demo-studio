@@ -83,7 +83,9 @@ same path without keys, including the Coach playbook and its review within the s
 
 **Current feedback gate receipt:** 51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps); deck380/380, acceptance24/24, smoke3/3, duration19/19, upload retry12/12, workbook player101/101, full-app integration19/19, layout193/193. Full counts and fixture boundaries are in `Loop.MD`; no paid/acoustic acceptance is implied.
 
-**Runtime recovery gate receipt:**60suites/2,335overlapping checks; core386/24/smoke3, full mock journey28, new allocation17, reader10, checkpoint26, domain21 and runtime recovery17. Exact per-contract results, screenshots, FMEA and the separate paid QA record are in `docs/qa/runtime-recovery-2026-09-24/`. Master/AWS release waits for hands-on approval.
+**Latest slide gate receipt:**15suites/2,635overlapping checks; actual published-v3 render1,505/1,505 across88states, core399/24/smoke3, full mock28. Evidence/screenshots: `docs/qa/slide-continuity-2026-09-24/`. The25September checkpoint adds a free core recheck without changing application source.
+
+**Runtime recovery gate receipt:**60suites/2,335overlapping checks; core386/24/smoke3, full mock journey28, new allocation17, reader10, checkpoint26, domain21 and runtime recovery17. Exact per-contract results, screenshots, FMEA and the separate paid QA record are in `docs/qa/runtime-recovery-2026-09-24/`. Master integration was authorized on25September; AWS deployment remains separate.
 
 ## Out of scope (for now)
 Auth, multi-user, hosted publishing/embed snippet, analytics dashboard, holdout
@@ -92,7 +94,7 @@ session resume after refresh and multi-worker runtime ownership.
 
 ## Approved runtime upgrade — 2026-09-19; D1–D8 reconciled 2026-09-23
 
-- D1: Use the approved Marine layout with supplied cinematic media. Open with the category's fundamentals in everyday language,
+- D1: Use the current workbook-approved slide layout with the selected Marine/Sage/Graphite palette and supplied media. Open with the category's fundamentals in everyday language,
   in reviewed playbook order; delighters come after fundamentals. No decision frame or digits in the
   first spoken line. This replaces the earlier supported-standout opening. Use a warm, cheerful guide
   with restrained pace and punctuation, never invented SSML/emotion controls.

@@ -1,5 +1,11 @@
 # Loop.MD — Demo Studio
 
+## Master integration checkpoint — 25 September 2026
+
+Loop remains **off**. This checkpoint changes documentation only and integrates the already-reviewed application through`cf30dba`. Fresh isolated/mock/blocked-socket core recheck: qa_deck399/399, qa_accept24/24, smoke3/3; zero outbound attempts. Receipt/logs: `docs/qa/master-checkpoint-2026-09-25/`. Previous slide acceptance and runtime contracts below remain evidence for the unchanged source; no new paid, acoustic or full browser run is claimed.
+
+Anand authorized master integration on25September, superseding the merge holds in these dated entries. AWS is unchanged from its last recorded feedback-workbook release; older “no master/AWS release” statements refer to their historical checkpoint. No application behavior or new eval contract is introduced by this documentation update.
+
 ## Slide continuity restoration — latest acceptance · 24 September 2026
 
 Loop remains off.15scoped suites /2,635overlapping reported checks, all green: backend8suites654; native adapter18, player HTML87, recorder39; responsive layout212, workbook101, Studio integration19; actual published-v3 screenshots/render1505. Required qa_deck399/399, qa_accept24/24, smoke3/3 and full mock journey28/28 (194.22s synthetic). Touched Deck media79/79, media Align39/39, visual25/25 and Align review57/57. Independent6APIcases and8stable-reveal comparisons are additional.

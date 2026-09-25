@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-25",
+  "application_commit": "cf30dba76cddc8979b32ba7477020279dc2b216c",
+  "scope": "Pre-merge free core recheck; application source unchanged from reviewed cf30dba",
+  "mock": true,
+  "isolated_storage": true,
+  "blocked_sockets": true,
+  "paid_calls": 0,
+  "suites": [
+    {
+      "suite": "qa_deck",
+      "exit": 0,
+      "seconds": 6.33,
+      "summary": [
+        "399/399 deck cases pass",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "test_sha256": "313a5d8d81937f7aab842bc305f7911d608641392f5204179fd6febb4cdd57ae",
+      "log_sha256": "b983fca4e58398950fb7fd48371a29669178c829c77b30250a3b2b1e5a81857c",
+      "count": 399
+    },
+    {
+      "suite": "qa_accept",
+      "exit": 0,
+      "count": 24,
+      "summary": [
+        "24/24 cases behave as required",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "test_sha256": "ecd3c3f7b9a49787c39e974048a1486c3863c77ac0ed2325475eb67bf640f030",
+      "log_sha256": "69625acf9d25beca78f4b53a938f7e8eda9dd32e1be863c709d1467575fc132c"
+    },
+    {
+      "suite": "smoke_mock",
+      "exit": 0,
+      "count": 3,
+      "summary": [
+        "SMOKE OK dm_e042125e",
+        "SMOKE OK (phase 2) dm_e042125e",
+        "SMOKE OK (on-demand rehearsal) dm_e042125e",
+        "OUTBOUND_ATTEMPTS 0"
+      ],
+      "test_sha256": "a2e8fb8c28aff29cde3453e5343e7d5a042baa2dfb03e1c411b4fbaccb155c07",
+      "log_sha256": "8c6ae9d34b4374edcbe48258a7c0be0dbea5eb13e22797e0a92f8a7a039975a7"
+    }
+  ],
+  "harness_correction": "The initial qa_deck wrapper omitted evals from sys.path and stopped at an import; only that suite was rerun after fixing the external wrapper. Application/tests were unchanged; failed log is retained.",
+  "outbound_attempts": 0
+}

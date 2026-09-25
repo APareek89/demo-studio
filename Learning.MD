@@ -1,5 +1,17 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Release context mixed current state with obsolete instructions
+
+**Symptom:** session re-entry encountered current slide/runtime receipts beside old master holds, public-web permission, gallery guidance, FAQ generation and browser-voice fallback descriptions. Some entrypoint docs still described18September tasks as next work.
+
+**Five whys:** (1) Each package appended a new checkpoint. (2) Superseded decisions stayed in active-looking lists. (3) The README and contributor entrypoint were not reconciled with recent code. (4) Code, GitHub and AWS status were conflated in historical narrative. (5) No compact current-state boundary distinguished evidence from fresh authorization.
+
+**Correction (documentation only):** archive the prior Handoff, contributor orientation, README and flow explanation byte-for-byte from`cf30dba`; rewrite current entrypoints against source and latest decisions. Record25September master authorization separately from the unchanged last AWS receipt. Retain all historical failures, paid-QA limits and pending items. Stop the completed worker team and use the files as the re-entry context.
+
+**Prevention:** one current handoff, dated release records and explicit supersession; read relevant source before applying an old brief. Verify local/master/remote independently. No app behavior changed in this checkpoint. Existing application QA remains attached to its revision; the three free core gates are rechecked for integration. Refreshing files does not erase chat history.
+
+Earlier entries are historical root-cause records. The newest decision and current Handoff govern behavior; for example, the paragraph-card/gallery remedies below do not supersede the later image/tag continuity restoration.
+
 
 ## 2026-09-24 — Slide continuity broke despite green geometry checks
 

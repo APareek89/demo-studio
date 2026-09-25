@@ -1,0 +1,12 @@
+DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract
+PREPARATION FIXTURE: synthetic for plumbing; real Read readiness covered by automatic_narration_contract and release_mock_contract
+OUTBOUND_ATTEMPTS 0
+Traceback (most recent call last):
+  File "/tmp/demo-master-20260925/blocked.py", line 11, in <module>
+    runpy.run_path(sys.argv[1], run_name="__main__")
+  File "<frozen runpy>", line 291, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/macbook/Documents/demo-studio/evals/qa_deck.py", line 446, in <module>
+    from provider_contract import run as provider_contract
+ModuleNotFoundError: No module named 'provider_contract'

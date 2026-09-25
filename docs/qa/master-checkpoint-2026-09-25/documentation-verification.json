@@ -1,0 +1,975 @@
+{
+  "date": "2026-09-25",
+  "application_commit": "cf30dba76cddc8979b32ba7477020279dc2b216c",
+  "checks": [
+    {
+      "check": "archive exact: Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "archive exact: CODEX_INSTRUCTIONS.MD",
+      "passed": true
+    },
+    {
+      "check": "archive exact: README.md",
+      "passed": true
+    },
+    {
+      "check": "archive exact: docs/DEMO_BUILD_AND_RUN.md",
+      "passed": true
+    },
+    {
+      "check": "application/test source unchanged",
+      "passed": true
+    },
+    {
+      "check": "master is ancestor",
+      "passed": true
+    },
+    {
+      "check": "fetched remote master equals local master",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/history/context-before-master-2026-09-25/Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/master-checkpoint-2026-09-25.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/aws/release-feedback-workbook-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/qa/slide-continuity-2026-09-24/review.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/qa/runtime-recovery-2026-09-24/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> Loop.MD",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/qa/runtime-recovery-2026-09-24/paid-acceptance.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/qa/crack-script-2026-09-24/sample-script.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/qa/crack-script-2026-09-24/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> CODEX_INSTRUCTIONS.MD",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> PRD.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/DEMO_BUILD_AND_RUN.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/ARCHITECTURE_FLOW.md",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> Loop.MD",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> Learning.MD",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> refine.MD",
+      "passed": true
+    },
+    {
+      "check": "link: Handoff.MD -> docs/context-index-2026-09-25.md",
+      "passed": true
+    },
+    {
+      "check": "link: CODEX_INSTRUCTIONS.MD -> docs/history/context-before-master-2026-09-25/CODEX_INSTRUCTIONS.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> CODEX_INSTRUCTIONS.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> PRD.md",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> docs/DEMO_BUILD_AND_RUN.md",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> docs/ARCHITECTURE_FLOW.md",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> Loop.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> Learning.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> docs/history/context-before-master-2026-09-25/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> Loop.MD",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> docs/qa/slide-continuity-2026-09-24/review.md",
+      "passed": true
+    },
+    {
+      "check": "link: README.md -> docs/qa/runtime-recovery-2026-09-24/paid-acceptance.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> ../Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> history/context-before-master-2026-09-25/DEMO_BUILD_AND_RUN.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> ARCHITECTURE_FLOW.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> qa/slide-continuity-2026-09-24/review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> qa/runtime-recovery-2026-09-24/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> qa/runtime-recovery-2026-09-24/paid-acceptance.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> ../Loop.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> ../Learning.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/DEMO_BUILD_AND_RUN.md -> ../Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../AGENTS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../CLAUDE.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../CODEX_INSTRUCTIONS.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/ARCHITECTURE_FLOW.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/DEMO_BUILD_AND_RUN.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/master-checkpoint-2026-09-25.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../Learning.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../Loop.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../PRD.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../refine.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/baseline-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/code-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/engine-trim-coverage-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final-source-revision.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final-source-visual-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final07-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final07-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final08-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final08-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final09-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final09-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final10-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final10-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final11-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final11-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final12-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/final12-source-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-00/author-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-00/coach-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-00/planner-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-01/coach-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-01/planner-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-02-criteria-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-02/author-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-02/coach-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-02/planner-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-03/calls/author-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-03/calls/author-02.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-03/calls/coach-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-03/calls/planner-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-03/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-04/calls/author-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-04/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-05/calls/author-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-05/calls/coach-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-05/calls/planner-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-06/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-07/calls/author-01.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-07/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-08/calls/author-01.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-08/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-09/calls/author-01.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-09/calls/author-02.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-09/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-10/calls/author-01.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-10/calls/author-02.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-10/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-11/calls/author-01.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-11/calls/author-02.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-11/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-12/calls/author-01.notes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/iteration-12/STATUS.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/sample-script.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/crack-script-2026-09-24/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/fmea.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/paid-acceptance.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/paid/final-source-script-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/paid/final-visual-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/paid/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/render-review/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-recovery-2026-09-24/renderer-interaction-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/slide-continuity-2026-09-24/fmea.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/slide-continuity-2026-09-24/review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/automatic-narration-qa-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/aws/release-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/aws/release-automatic-narration-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/aws/release-feedback-workbook-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/aws/release-narration-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/aws/release-wp11-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/codex-brief-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/core-flow-explained-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/core-workflow-walkthrough.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/CRETA_ACCEPTANCE.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/CRETA_NIGHT_REVIEW.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/design/atelier-ui.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/design/options-2026-09-18/qa/final-summary.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/design/options-2026-09-18/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/design/professional-ui.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/design/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/feedback-workbook-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/feedback-workbook-fmea-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/FMEA-2026-09-03.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/FMEA-2026-09-04.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/issues/2026-09-18-nexon.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/issues/2026-09-19-creta.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/narration-recovery-qa-2026-09-24.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/pending-tasks-2026-09-19.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/plan-runtime-experience-2026-09-19.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/prompt-audit-planner-author-2026-09-19.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/proposal-sales-trainer-flow-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/QA-2026-09-03.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/audi-q5-e2e-2026-09-06.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/dm_78890026.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/dm_f79d9170.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/harrier-e2e-2026-09-05.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/nexon-real-run-plan-checkpoint-d2ccd52.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/nexon-real-run-plan.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/playground-2026-09-03.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-2026-09-04.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/runtime-browser-2026-09-19.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/taigun-e2e-2026-09-05.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/qa/wp12-2026-09-24/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/QA_BEST_PRACTICES.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/runware-fallback.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/wp11-implementation-report-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/wp11-release-fmea-2026-09-23.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/context-before-master-2026-09-25/CODEX_INSTRUCTIONS.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/context-before-master-2026-09-25/DEMO_BUILD_AND_RUN.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/context-before-master-2026-09-25/Handoff.MD",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/context-before-master-2026-09-25/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/handoff-2026-09-19-before-final-repair.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/handoff-2026-09-19-before-final-stress-fixes.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/handoff-2026-09-19-before-night-script.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../docs/history/pending-before-final-stress-2026-09-19.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/atelier-ui/final/summary.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/atelier-ui/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/creta-night-final/plan.reasoning.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-1/build-integrity.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-1/competitor-registry-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-1/generation-prompt-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-1/product-registry-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-1/review-edits/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/build-integrity.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/competitor-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/final-confirmation/report.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/live-sample/report.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/narration-duration.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/nx40-cta-consent.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/nx42-summary-race.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/plan.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/completion-audit/visual-return-session/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-boundaries-final/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-boundaries-recovery/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-comparison-initial/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-comparison-repeat/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-initial/review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-latency-cost-final.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-routing-check/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-shorttrip-pre-nx34/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/customer-shorttrip-recovery/source-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/final-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/prebuild-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/product-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/raw-generation-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/review-checkpoint-d2ccd52.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/runtime-warranty-review.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/iteration-2/slide-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-real-evidence/provider-check/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-sources/comparison-audit.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/nexon-sources/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/professional-ui/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/runtime-plan-2026-09-19/README.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/workflow-handoff-2026-09-19/baseline/summary.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/workflow-handoff-2026-09-19/final/summary.md",
+      "passed": true
+    },
+    {
+      "check": "link: docs/context-index-2026-09-25.md -> ../output/workflow-handoff-2026-09-19/README.md",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 00-workflow.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 01-master.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 02-understand.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 03-align.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 04-build.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 05-runtime.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 06-playground.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 07-observability.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid copy: 08-runtime-graph.mmd",
+      "passed": true
+    },
+    {
+      "check": "whitespace",
+      "passed": true
+    }
+  ],
+  "links_checked": 210,
+  "syntax_files": [
+    "evals/align_review_contract.py",
+    "evals/deck_media_align_contract.py",
+    "evals/deck_media_contract.py",
+    "evals/fact_retry_contract.py",
+    "evals/knowledge_contract.py",
+    "evals/live_player_browser.py",
+    "evals/live_transport_contract.py",
+    "evals/live_voice_contract.mjs",
+    "evals/narration_preparation_contract.py",
+    "evals/narrative_roles_contract.py",
+    "evals/plan_playbook_contract.py",
+    "evals/player_customer_sites_contract.cjs",
+    "evals/player_focus_contract.cjs",
+    "evals/player_fundamental_contract.cjs",
+    "evals/player_listen_contract.cjs",
+    "evals/player_navigation_contract.py",
+    "evals/player_runtime_recovery_contract.cjs",
+    "evals/player_session_save_contract.cjs",
+    "evals/player_walkthrough_contract.cjs",
+    "evals/prepared_budget_contract.py",
+    "evals/runtime_customer_sites_contract.py",
+    "evals/runtime_domain_contract.py",
+    "evals/runtime_final_browser.py",
+    "evals/runtime_final_qa.py",
+    "evals/runtime_graph_contract.py",
+    "evals/runtime_powertrain_pairing_contract.py",
+    "evals/runtime_tools_replay_contract.py",
+    "evals/runtime_web_search_contract.py",
+    "evals/session_checkpoint_contract.py",
+    "evals/slide_continuity_browser.py",
+    "evals/ui_layout_contract.py",
+    "evals/understand_batch_contract.py",
+    "evals/wp12_browser_acceptance.py",
+    "server/agents/deck.py",
+    "server/agents/plan.py",
+    "server/agents/understand.py",
+    "server/app.py",
+    "server/knowledge.py",
+    "server/runtime_facts.py",
+    "server/runtime_graph.py",
+    "server/runtime_live.py",
+    "server/runtime_tools.py",
+    "web/player/live-voice.js",
+    "web/player/player.js",
+    "web/player/walkthrough.js",
+    "web/slide.js"
+  ],
+  "mermaid_copies": 9,
+  "local_health": {
+    "url": "http://127.0.0.1:8910/api/health",
+    "http": 200,
+    "mock": false,
+    "storage": "local",
+    "cloud_enabled": false,
+    "read_only": true
+  },
+  "no_aws_access": true,
+  "no_paid_calls": true,
+  "no_protected_resource_operations": true
+}
