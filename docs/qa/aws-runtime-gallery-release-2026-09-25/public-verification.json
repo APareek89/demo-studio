@@ -1,0 +1,212 @@
+{
+  "commit": "d94d6efc836a5ba08872aafbf9e37144dd113a99",
+  "passed": 17,
+  "total": 17,
+  "checks": [
+    {
+      "name": "Correct source release active",
+      "passed": true
+    },
+    {
+      "name": "All committed source bytes match",
+      "passed": true
+    },
+    {
+      "name": "Shared environment unchanged",
+      "passed": true
+    },
+    {
+      "name": "Caddy unchanged",
+      "passed": true
+    },
+    {
+      "name": "Caddy active",
+      "passed": true
+    },
+    {
+      "name": "Public health uses real providers",
+      "passed": true
+    },
+    {
+      "name": "Public shell loads",
+      "passed": true
+    },
+    {
+      "name": "Every frontend file matches source",
+      "passed": true,
+      "files": 32
+    },
+    {
+      "name": "Published BMW bundle retained",
+      "passed": true
+    },
+    {
+      "name": "Private path still needs operator login: /api/demos",
+      "passed": true
+    },
+    {
+      "name": "Private path still needs operator login: /api/demos/dm_29df0418/sessions",
+      "passed": true
+    },
+    {
+      "name": "Private path still needs operator login: /api/demos/dm_29df0418/trace",
+      "passed": true
+    },
+    {
+      "name": "Private path still needs operator login: /media/dm_29df0418/demo.json",
+      "passed": true
+    },
+    {
+      "name": "Private path still needs operator login: /media/dm_29df0418/knowledge/published.json",
+      "passed": true
+    },
+    {
+      "name": "Private path still needs operator login: /openapi.json",
+      "passed": true
+    },
+    {
+      "name": "Existing live transport handshakes without provider input",
+      "passed": true
+    },
+    {
+      "name": "Read-only deployment checks preserve all demo files",
+      "passed": true
+    }
+  ],
+  "web_files": [
+    {
+      "path": "web/api.js",
+      "matched": true
+    },
+    {
+      "path": "web/app.js",
+      "matched": true
+    },
+    {
+      "path": "web/brand.svg",
+      "matched": true
+    },
+    {
+      "path": "web/demos.js",
+      "matched": true
+    },
+    {
+      "path": "web/design-system.css",
+      "matched": true
+    },
+    {
+      "path": "web/home.js",
+      "matched": true
+    },
+    {
+      "path": "web/icons.js",
+      "matched": true
+    },
+    {
+      "path": "web/index.html",
+      "matched": true
+    },
+    {
+      "path": "web/insights-ui.css",
+      "matched": true
+    },
+    {
+      "path": "web/observability.js",
+      "matched": true
+    },
+    {
+      "path": "web/player-ui.css",
+      "matched": true
+    },
+    {
+      "path": "web/player/answer-visual.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/live-voice.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/livekit-voice.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/mascot.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/player.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/public-search-ui.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/question-ack.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/voice-worklet.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/walkthrough.js",
+      "matched": true
+    },
+    {
+      "path": "web/playground.js",
+      "matched": true
+    },
+    {
+      "path": "web/provider-readiness.js",
+      "matched": true
+    },
+    {
+      "path": "web/slide.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio-ui.css",
+      "matched": true
+    },
+    {
+      "path": "web/studio/align.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio/rehearse.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio/sessions.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio/sources.js",
+      "matched": true
+    },
+    {
+      "path": "web/styles.css",
+      "matched": true
+    },
+    {
+      "path": "web/vendor/livekit-client-2.22.3.esm.mjs",
+      "matched": true
+    },
+    {
+      "path": "web/vendor/livekit-client-LICENSE.txt",
+      "matched": true
+    },
+    {
+      "path": "web/vendor/livekit-client-provenance.json",
+      "matched": true
+    }
+  ],
+  "paid_calls": 0,
+  "data_missing": [],
+  "data_changed": [],
+  "data_added": [],
+  "transport": "existing_websocket",
+  "livekit_adopted": false
+}

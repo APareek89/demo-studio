@@ -8,6 +8,8 @@ The website check found a bug: BMW's enabled owner URL had a timed-out build cra
 
 Deploy the tested shared runtime/gallery/search/acknowledgement changes using AWS's existing WebSocket voice. LiveKit's local-only token/origin/ICE policy cannot simply be exposed as a hosted service; retain it as an optional local trial and explicitly report that boundary. Preserve AWS BMW, visits, credentials, proxy and shared storage; stage isolated mocked gates before a backed-up code-only cutover. No paid QA or live-provider rebuild is part of this release.
 
+Completed: applicationd94d6ef is on master/GitHub and AWS as of2026-09-25T11:35:49Z. All27staged suites pass with two documented optional environment skips; stored data and existing voice transport are preserved. [Release receipt](docs/aws/release-runtime-gallery-2026-09-25.md). No new product question.
+
 ## LiveKit input and consecutive-picture correction — 25 September 2026
 
 User review found no recognized speech, an apparently unanswered typed question and the same BMW photograph walking/zooming in again between the first two content slides. The saved visit proves the typed interior question reached the graph; mock reasoning and a roughly175ms mock audio clip made delivery unhelpful. The shared `mute=1` link additionally disabled default voice input/output. Mock RTC acceptance did not establish a usable conversational demo.

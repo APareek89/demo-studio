@@ -1,0 +1,77 @@
+{
+  "read_only": true,
+  "paid_calls": 0,
+  "errors": [],
+  "failed": [],
+  "blocked": [],
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "layout": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "title": "Demo Studio",
+        "body": "Skip to content\nDemoStudio\nPRODUCT EXPERIENCES\nHome\nMy demos\nStudio\nPlayground\nObservability\nWorkspace\nDS\nBMW X7 XDRIVE40I M SPORT\nGUIDED DEMO\nOPTIONAL \u00b7 DEALERSHIP FOLLOW-UP\nWould you like to try it in person?\n\nShare your details and the dealership can arrange a test drive.\n\nBy sharing your number you agree the dealership may call you about this product. Nothing else is shared.\n\nArrange a test drive\nNot now\nYOUR VIRTUAL SHOWROOM\nYour guide, Sumit\nBMW X7 xDrive40i M Sport\n\nTake a closer look. Ask what matters to you.\n\nVoice mode\nTalk to Sumit. You can also type at any time.\nExplore with me\nBrowse at my pace\nConversation",
+        "images": [
+          {
+            "src": "/web/brand.svg",
+            "width": 150,
+            "loaded": true
+          },
+          {
+            "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+            "width": 2560,
+            "loaded": true
+          },
+          {
+            "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+            "width": 2560,
+            "loaded": true
+          },
+          {
+            "src": "/media/dm_29df0418/media/mascot.png",
+            "width": 1024,
+            "loaded": true
+          }
+        ]
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layout": {
+        "width": 390,
+        "scrollWidth": 390,
+        "title": "Demo Studio",
+        "body": "Skip to content\nDemoStudio\nPRODUCT EXPERIENCES\nHome\nMy demos\nStudio\nPlayground\nObservability\nDS\nBMW X7 XDRIVE40I M SPORT\nGUIDED DEMO\n\nRotate your phone 90\u00b0 for a wider view. Controls remain available below.\n\nOPTIONAL \u00b7 DEALERSHIP FOLLOW-UP\nWould you like to try it in person?\n\nShare your details and the dealership can arrange a test drive.\n\nBy sharing your number you agree the dealership may call you about this product. Nothing else is shared.\n\nArrange a test drive\nNot now\nYOUR VIRTUAL SHOWROOM\nYour guide, Sumit\nBMW X7 xDrive40i M Sport\n\nTake a closer look. Ask what matters to you.\n\nVoice mode\nTalk to Sumit. You can also type at any time.\nExplore with me\nBrowse at my pace\nConversation",
+        "images": [
+          {
+            "src": "/web/brand.svg",
+            "width": 150,
+            "loaded": true
+          },
+          {
+            "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+            "width": 2560,
+            "loaded": true
+          },
+          {
+            "src": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+            "width": 2560,
+            "loaded": true
+          },
+          {
+            "src": "/media/dm_29df0418/media/mascot.png",
+            "width": 1024,
+            "loaded": true
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import json
 import os
 import re
 import subprocess
+import time
 import urllib.request
 
 RECEIPT = Path('/opt/demo-studio-backups/20260925-runtime-gallery')
@@ -79,13 +80,21 @@ def operational_metadata():
     for path in (DATA / 'demos').glob('dm_*/demo.json'):
         if path.parent.name == 'dm_41513908':
             continue
-        demo = json.loads(path.read_text())
+        original = path.read_bytes()
+        demo = json.loads(original)
         active = bool(demo.get('running')) or any(
             stage.get('status') == 'running' for stage in demo.get('stages', {}).values()
             if isinstance(stage, dict))
         # The API adds graph.is_running(), covering an active worker before its
         # next persisted stage marker. Never call the protected demo's API.
         with urllib.request.urlopen('http://127.0.0.1:8877/api/demos/' + path.parent.name, timeout=15) as response:
-            worker_active = bool(json.load(response).get('running'))
-        rows.append({'id': path.parent.name, 'active': active or worker_active})
+            worker_active = json.load(response).get('running')
+        assert isinstance(worker_active, bool), 'Worker state must be explicit'
+        # A persisted marker can outlive a crashed worker. Never alter the demo;
+        # accept it as idle only with an explicitly inactive actual thread, an
+        # unchanged file and both stored/file timestamps older than 24 hours.
+        marker_age = time.time() - max(float(demo.get('updated_at') or 0), path.stat().st_mtime)
+        stale = active and not worker_active and marker_age > 86400 and path.read_bytes() == original
+        rows.append({'id': path.parent.name, 'active': worker_active or (active and not stale),
+                     'stale_marker_ignored': bool(stale)})
     return rows

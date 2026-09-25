@@ -29,7 +29,9 @@ assert gates['source_manifest_sha256'] == sha(RECEIPT / 'source-manifest.json')
 assert gates['passed'] == gates['total'] >= 27 and gates['outbound_attempts'] == 0
 assert gates['mock'] and gates['isolated']
 assert gates['results_sha256'] == sha(RECEIPT / 'staged-gates.json')
-assert all(not row['active'] for row in operational_metadata()), 'Active Build; leave service untouched'
+activity = operational_metadata()
+save('idle-preflight.json', activity)
+assert all(not row['active'] for row in activity), 'Active Build; leave service untouched'
 assert not (RELEASE / '.env').exists() and not (RELEASE / 'data').exists()
 assert shutil.disk_usage(RECEIPT).free > 2 * int(run('du', '-sb', DATA).stdout.split()[0]) + 512*1024*1024
 

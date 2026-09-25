@@ -48,3 +48,9 @@ No additional finding in evidence grounding, authored speech, data schema, provi
 Five Python files parse. Seven isolated stage cases pass: exact source success; rejected digest mismatch, extra file, traversal, symlink, protected data manifest and occupied destination. These tests make no network call and do not inspect production files. Root owns final script review, execution, public browser check and release report.
 
 The root reported final local17backend/7Node suites green before packaging: core445/24/smoke3/full mock28, domain25, web37, new question acknowledgement14 and native browser88. Those are reported adjacent evidence, not tests rerun by this read-only deployment reviewer. The staged27backend suites must still run against the uploaded committed bytes.
+
+## Execution-time harness corrections
+
+These corrections affect operational scripts outside the frozen application release. Initial logs remain retained. The numeric-IP blocker correction independently passes the exact-wrapper knowledge suite60/60 with zero outbound attempts; AI_NUMERICHOST preserves local numeric parsing while DNS/connection attempts remain blocked. The Python/JavaScript parity case reuses already-installed Playwright driver Node24.21.0 through the staging subprocess PATH only. No dependency or production environment change. All remaining fixture files were checked against d94d6ef.
+
+The initial cutover preflight correctly stopped before service mutation on an old persisted voice marker. Two actual-worker observations were false; file/stored timestamps were504.1hours old. The revised operational check leaves that data intact and requires explicit Boolean inactive worker state, unchanged file bytes and both timestamps older than24hours. Independent fixtures12/12 verify actual workers, recent timestamps, file changes, ambiguous API state and the exact24hour boundary all block; stale inactive markers and clean idle states are accepted without writes.

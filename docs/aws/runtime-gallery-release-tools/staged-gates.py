@@ -3,6 +3,8 @@ import json
 import os
 import subprocess
 import time
+import shutil
+from pathlib import Path
 from release_common import RECEIPT, RELEASE, RUNTIME, PYTHON, package, sha, save, verify_source
 
 SUITES = ['qa_deck', 'qa_accept', 'smoke_mock', 'release_mock_contract',
@@ -15,7 +17,7 @@ SUITES = ['qa_deck', 'qa_accept', 'smoke_mock', 'release_mock_contract',
           'session_checkpoint_contract', 'session_input_mode_contract', 'explore_cancellation_contract',
           'speech_style_contract', 'voice_lock_contract', 'livekit_trial_contract']
 
-WRAPPER = '''import os, runpy, socket, sys, tempfile
+WRAPPER = '''import ipaddress, os, runpy, socket, sys, tempfile
 from pathlib import Path
 with tempfile.TemporaryDirectory(prefix="runtime-release-stage-") as d:
  os.environ.update(MOCK_LLM="1", CLOUD_SYNC="0", STORAGE_BACKEND="local", MODEL_TIER="eval", DEMO_STUDIO_DATA=d+"/demos", DEMO_STUDIO_GRAPH_DB=d+"/graph.sqlite", SHARE_SECRET="isolated-mock-only", ANTHROPIC_API_KEY="", GEMINI_API_KEY="", RUNWARE_API_KEY="", GCLOUD_TTS_API_KEY="", SARVAM_API_KEY="", AWS_EC2_METADATA_DISABLED="true", LIVEKIT_TRIAL_ENABLED="0", LIVEKIT_URL="", LIVEKIT_API_KEY="", LIVEKIT_API_SECRET="")
@@ -23,7 +25,14 @@ with tempfile.TemporaryDirectory(prefix="runtime-release-stage-") as d:
  def blocked(*args,**kwargs):
   attempts.append(True)
   raise AssertionError("Staged validation forbids outbound sockets")
- socket.socket.connect=socket.socket.connect_ex=socket.socket.sendto=socket.create_connection=socket.getaddrinfo=blocked
+ # Numeric IP parsing performs no DNS/network I/O; SSRF tests need its real result.
+ native_getaddrinfo=socket.getaddrinfo
+ def numeric_only(host, port, family=0, type=0, proto=0, flags=0):
+  try: ipaddress.ip_address(host)
+  except (ValueError, TypeError): return blocked()
+  return native_getaddrinfo(host,port,family,type,proto,flags | socket.AI_NUMERICHOST)
+ socket.socket.connect=socket.socket.connect_ex=socket.socket.sendto=socket.create_connection=blocked
+ socket.getaddrinfo=numeric_only
  target=sys.argv[1];sys.argv=[target];sys.path[:0]=[str(Path.cwd()),str(Path.cwd()/"evals")]
  try: runpy.run_path(target,run_name="__main__")
  finally:
@@ -37,6 +46,13 @@ assert all((RELEASE / 'evals' / (suite + '.py')).is_file() for suite in SUITES)
 marker = RECEIPT / 'staged-gates.ok.json'
 assert not marker.exists(), 'Do not reuse a prior successful staging marker'
 env = dict(os.environ, PLAYWRIGHT_BROWSERS_PATH=str(RUNTIME / 'browser-cache'))
+# One Python contract checks JS/Python parser parity. Reuse Playwright's bundled
+# Node when the system PATH has none; do not install or change production deps.
+if not shutil.which("node", path=env.get("PATH")):
+    import playwright
+    node_dir = Path(playwright.__file__).parent / "driver"
+    assert (node_dir / "node").is_file(), "Parser parity requires the bundled Node"
+    env["PATH"] = str(node_dir) + os.pathsep + env.get("PATH", "")
 results = []
 for suite in SUITES:
     started = time.monotonic()

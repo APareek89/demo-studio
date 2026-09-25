@@ -1,0 +1,807 @@
+{
+  "commit": "d94d6efc836a5ba08872aafbf9e37144dd113a99",
+  "working_directory": "/opt/demo-studio-releases/20260925-runtime-gallery",
+  "bundle_version": 2,
+  "snapshot_id": "kb_cd2f6a8cf905301b30a07d42",
+  "bundle_sha256": "7baeffb535e121fa793a1b8fc5dbec4537194a20bda517f8ab0ffeed96620a02",
+  "runtime_tools_sha256": "bf4122d202d1eff59fa20ef4779467c2977c94df3d3bb374b7fd81f5ede83247",
+  "permissions": {
+    "allowed_domains": [
+      "bmw.in"
+    ],
+    "sources": [
+      {
+        "domain": "bmw.in",
+        "explicit_owner_url": true,
+        "enabled": true,
+        "scope_excluded": false,
+        "crawl_active": false,
+        "runtime_allowed": true
+      }
+    ],
+    "enabled_bmw_allowed_despite_inactive_crawl": true,
+    "related_same_domain_page_allowed": true,
+    "different_domain_rejected": true,
+    "lookalike_domain_rejected": true,
+    "unapproved_subdomain_rejected": true,
+    "network_attempts": 0,
+    "evaluation": "actual deployed runtime_source_urls imported with isolated mock storage and blocked sockets"
+  },
+  "metadata_bundle_unchanged": true,
+  "paid_calls": 0,
+  "public_media": {
+    "passed": 96,
+    "total": 96,
+    "checks": [
+      {
+        "url": "/media/dm_29df0418/audio/01e99260ec801c99282b.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "ba17e7a2b0d9c9f1e878cb68c408aeef90f65e2fb8909b66f7d6e69f0c75d8c9",
+        "content_range": "bytes 0-1023/308626",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/0614bd543b5d7ba7b9bc.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "81d99188b6a92b496b2762135c92be557e615917376ca76c5a5344e1792f7a29",
+        "content_range": "bytes 0-1023/425286",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/0c5060504d36050c59d4.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "0fcc8b1c6cccaea512f12953728ac95126b970ccc21236274f75ad24e3bd80a7",
+        "content_range": "bytes 0-1023/161862",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/0dc09bfbace10654cb85.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "6eee61b35dde1c068782c7627c67459569253508f0d622f8291bc5ba42fc9e38",
+        "content_range": "bytes 0-1023/421522",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/0dd24a10250e95102bff.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "eb8d37f6933da7005dfc6d4286b13f6232db9cdec29b4aafb74efd537e68e580",
+        "content_range": "bytes 0-1023/64018",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/1a115cb80b13daa58bbb.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "e012cb0c5465bba2c4ecfeda2b44f116d790d9ce0ee3c4a555762108a6a5256f",
+        "content_range": "bytes 0-1023/350022",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/1a2f94321ac11ebb7327.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "12f4f331cc7cf74e403d899f19ffe77f1003ede7e6e2c8df585a8b828f5c9015",
+        "content_range": "bytes 0-1023/158098",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/223a04ec302d7682017e.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "8539ca7a0cb30c35df423c39988d455e24fc79998f502a4083a811e7fd72b6aa",
+        "content_range": "bytes 0-1023/274758",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/25944eb2efba95e2c71c.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "6feb47b5a62912da7ef1922519fd8489aecee0e3c09f912d5d92a80a7d3dd128",
+        "content_range": "bytes 0-1023/406470",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/2dbf9d55e2f9e05cbe87.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "e555383f5b54d634f6eaf52a6e19e0f1480459db610c4190bb9865e4138dd559",
+        "content_range": "bytes 0-1023/165624",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/32f7fa1a371dba6d6318.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d90cc96ee491c341b7751244087760be454c4df20e386de7721f547764f039e5",
+        "content_range": "bytes 0-1023/511840",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/333ad4490b6bc93fc4f3.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "ca8aaf9457e6f4bf9c0b3fed5a6ceb2a63b5474bbf8ad933fc6608c315b08e62",
+        "content_range": "bytes 0-1023/101650",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/3e82d30b206d841a32b7.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "317be4adf935b358e9c4d3100ab098f986682fa88e22285a894cd9f29dfebe8d",
+        "content_range": "bytes 0-1023/436576",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/451d14b8c9b2254724ef.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d9eb02084ab1f8e2412b023143f25575e86010e17c581c1fb0642fa960a8073f",
+        "content_range": "bytes 0-1023/52728",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/46ba1e611b23aa432db8.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "6057001950a142045bdf4025a0c46549cbccd019c14b846fa7d1a98fa442e48e",
+        "content_range": "bytes 0-1023/357548",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/479fc478cfc463eef558.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "c542340b8d9e9a682dd86b6990d47477f9f97e5d47527e9895a8e4b03be477a5",
+        "content_range": "bytes 0-1023/564524",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/4ffb5864f0cdc77c01c6.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "38645e1c6171e40ab6fe37bfd4e8b8a17c06f37d8fcb77640599c0cf69bf1e91",
+        "content_range": "bytes 0-1023/455392",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/580bbabbe8584033969c.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "34c45de64b5a0add50391718eac760e61a66eca865c8fd8a18387ee9dbb3f970",
+        "content_range": "bytes 0-1023/455392",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/5a896bde6e61e2f47581.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "ed5dd739dbf8a7720385180cf7723c13781b79453d4de8d37743079001709242",
+        "content_range": "bytes 0-1023/45202",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/5c3ddb0c675940c128ec.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "069a2bd1cd27a025cc2fa8af382ec24c63be4becfc9c3023d0c3ca67efc9b34d",
+        "content_range": "bytes 0-1023/165624",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/5f8f9470cf1b945e395a.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "599bc8f68bfc554ae19acdc99e6ee5bee0170d838e3db02e37b3c2f867778840",
+        "content_range": "bytes 0-1023/444102",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/7168e91ac1dced1fe34e.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "4842bd4c676a09d2035f07b1ed648635b3d91d88c0c36d6d8faf14f855da93f2",
+        "content_range": "bytes 0-1023/334968",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/774b15af896763224038.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "45fa735bed40fda59da29d1a5121f2a81385b9eeeff66ac4498f90e33010686a",
+        "content_range": "bytes 0-1023/406470",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/7982a2cfcac60121dba9.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d8e8c152b1916e45b8d7f93ed87d5f840136e1c8a5b393ad21d2babc1fad4707",
+        "content_range": "bytes 0-1023/316152",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/7bcd7e56be51f1ba4305.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "8f458da847eb11765c70083743f5f778fd1c973e410f98fcd09f62942c2fa61b",
+        "content_range": "bytes 0-1023/975360",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/7f5f5cc9b5ad0cb6c0e2.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "0fb7b9d4ce424f4c69e0e6cdc44e3c02731ae404742a3c67182679905cbbd5cf",
+        "content_range": "bytes 0-1023/112940",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/80df4d6090ef8c1d66d3.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "aaec81fd1a0feee5ef1f6d0ffa109b99c8618b70860e5c69cdfdc5bcb323734b",
+        "content_range": "bytes 0-1023/346258",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/81c2a9c1d021d68f2808.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "21e57d30ced86ed31630436953f261377fe5a8b8048633ff9c346ff3425860ef",
+        "content_range": "bytes 0-1023/500550",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/84a7e6610dd88c17317b.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "0fca2435b5afff556f85cd509913efa3d95742f78a7f6b593a0567228a6c9c4d",
+        "content_range": "bytes 0-1023/244652",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/857b50c40b1155798222.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "842322abaae6d9936798e3eae8835c222c338b7c02250464c6a669ad28957c08",
+        "content_range": "bytes 0-1023/590866",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/8855f247ce01ee4ae8f0.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "509990ad6be9590673cbdd47a830d931f3740792df3c83619506f5521ce614ac",
+        "content_range": "bytes 0-1023/485496",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/8c6c25b3d65896a24a3d.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "42e58edca7f614416c8887becab284c26e30e2e11cd4f7866c6149674a822844",
+        "content_range": "bytes 0-1023/94124",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/8f71a035d2dc8783b254.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d48047c197250ffe18434ef193c48f2e8ab2f75512e4b26610f35b4e1c5eb299",
+        "content_range": "bytes 0-1023/692472",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/9cba9b8359d2a69f1a1b.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d78bc0aac17d9913d75885a71198e232c73231f473178b3cdce4ebd5b177b551",
+        "content_range": "bytes 0-1023/109176",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/9e075e8e3b1c58db225c.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "2a3c7a0e0357ffd57e1fe14e1a27aad8dd478285f172241843fb147ad24d1b8b",
+        "content_range": "bytes 0-1023/33912",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/a3c1363e0884e3882520.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "6391491bed9859640a78d95f026e41526a40473569cadfc3721d8f2cbe373b1e",
+        "content_range": "bytes 0-1023/240888",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/ae28423abcd4d47dbc50.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "daada86845487ffcbc543549811d4402164245d843836eb185e908b282304b88",
+        "content_range": "bytes 0-1023/331206",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/ae8544691e356c859a03.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "5671e4fd07cf84329aa27a48e59b345f8f10d948a8346e0d814b6c4b9e878dac",
+        "content_range": "bytes 0-1023/286048",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/bb993868c2e903ba9b4c.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "a5dd562cb78e92ac8318c789679bb17ecb385dac6e4a5fdc00d7fc531f66d205",
+        "content_range": "bytes 0-1023/71544",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/cb3c2623d2f420f1d922.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "8ccae86df3592d7a8c3a89f3671ebf29062d5870610711fab55f080ac773a7c5",
+        "content_range": "bytes 0-1023/779026",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/cc9f7c5b6b8dd284386b.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "8bdca0c4a4faa00c0757e918d40f026029ef6585b11f75a8b1c3979972650bed",
+        "content_range": "bytes 0-1023/451628",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/e25f8ee8c370d956270d.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d91d7eb421d03c1a5720981324d95696b88a9fbe86f9413fcedb9476f9d78390",
+        "content_range": "bytes 0-1023/410232",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/e46d20f14cd0c567a62d.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "2c15ee65822e5340de9104c744d38177df311dec957ee493b5bd17208da80f7e",
+        "content_range": "bytes 0-1023/64018",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/e73866f73ce53ddd3d31.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "8d1c9449b6e541e6a2ab1ed26b1b94525fe2f11b68183f7a01120200f730fa16",
+        "content_range": "bytes 0-1023/406470",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/e78bfe3493d2eb899e7f.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "638315ef32d697a0cab9cff94a1b1d4f8a1fe679f81f9794d094b0a6bc010d60",
+        "content_range": "bytes 0-1023/48966",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/e8cc7662a219f54d62bf.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "6fd323593a17ac1652bac3c842af3e0d0d83b9b7b20e4c1358cece9fc832f75a",
+        "content_range": "bytes 0-1023/116704",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/ea3eada8d87c347eca08.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "7cb403376fd94954aeecb050c2a7ea7210149731895d0a491f9738ab9218a5a0",
+        "content_range": "bytes 0-1023/447864",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/f382cffe368c98c009c4.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "38cdc8181e3f2f9b1b548875011d628464e1cfb09509bf6c656d037e5436d45a",
+        "content_range": "bytes 0-1023/75308",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/f633ec07a6b6b00853cf.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "9f2a1d0ee86659bfb5f69b887d1b2d9d5ca8d6bd0013bf93ce4e0bb50b8cbecb",
+        "content_range": "bytes 0-1023/417760",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/f9fd35d6d3c9798b7cb5.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "b515264f862e9d1d3948e7e6c1d59042e74108f4f8c423a982f77cecd715b6da",
+        "content_range": "bytes 0-1023/297336",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/audio/fa38b637aac045f6d8e9.wav",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "1cfbd59e2a6d33ee473b429b0fa51d6c5c02fc91e426ed238e1f0fa1a4f34723",
+        "content_range": "bytes 0-1023/395180",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/3a89c7cb6070aa9be73fd7e922249546f9cee1b907c7392da84b4ea5e51e83b5_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "bcad5df6adfe8a6499b23a1cc0268b4ce337808e67432f7642d3d21f5a2838b0",
+        "content_range": "bytes 0-1023/548393",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/62ab75287ac2132ca08cc1c643aa57b093f2bf35d9ece609d3931c0d14198971_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "bcad5df6adfe8a6499b23a1cc0268b4ce337808e67432f7642d3d21f5a2838b0",
+        "content_range": "bytes 0-1023/495032",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/695c856163c532a5dcea8636522925532ee750de5992182cb70592acb6d2d2e9_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "bcad5df6adfe8a6499b23a1cc0268b4ce337808e67432f7642d3d21f5a2838b0",
+        "content_range": "bytes 0-1023/508376",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/7914f2b10e0f3d742e492d39b64853bb0a2fc593e62084c2f5c848b0c95e800b_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "35c03f7d20bc420eaa139739fdfad6e65940a1c2e3f3a4e6b2b5699ce1659314",
+        "content_range": "bytes 0-1023/330766",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/8ae251bbd4a349a2deb00670fa41bbaeb59400cfa98ad21ac3961860aa0047e5_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "bcad5df6adfe8a6499b23a1cc0268b4ce337808e67432f7642d3d21f5a2838b0",
+        "content_range": "bytes 0-1023/551776",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/baf340545d1b9081f37eaa7869624c6aaa78e145099384ee559c68829a7a0de0_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "5b11a07fd607f5f378f81831b0a482978abeb9fb82b2bcc79b40da6fd4ee40ba",
+        "content_range": "bytes 0-1023/509374",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/c586f086e9ad58a9cc7956ffc435eb558b6fcfcc920ee2927ca09f0a4863ea03_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "35c03f7d20bc420eaa139739fdfad6e65940a1c2e3f3a4e6b2b5699ce1659314",
+        "content_range": "bytes 0-1023/277840",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/f24988eda9d5ee5381ff9da1a6dd1e49ef58c0e648c88d9f01c3c61d8d9d376c_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "35c03f7d20bc420eaa139739fdfad6e65940a1c2e3f3a4e6b2b5699ce1659314",
+        "content_range": "bytes 0-1023/696487",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/f90f73a5a461cc6c19e0609747f167f84d6c61265c9c02289fbe614e243f688a_clean.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "e235152960b4db7c0f9fffd97cc3a73505459e9c85924ba9156109ced8a6f971",
+        "content_range": "bytes 0-1023/339535",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/1e13550664c1382a023967cdde04737add25ce861cc419404f325c27976156e4.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "60312245b49ad63b4a4e139bf1f2c98989655ea9ef1e17d5f25e4832b1e8118c",
+        "content_range": "bytes 0-1023/1241270",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/283fb89c2604e67c847282ab7633d5b4b476bdaf32c39e27f42dd822db5ae350.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "99643232cfc1b0d1961a9e96e3d009695546197058986d458dff1bc86ab4698d",
+        "content_range": "bytes 0-1023/2131351",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/44c42ab04840039a5b12295518c7b8d049f6c25b9a8ec58b2145af788d2b7e7e.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "7e06d0e79c7222d3bd167876bb2878a464bb4176f65398fd4b087fc7894ef113",
+        "content_range": "bytes 0-1023/1692966",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/4966eab370747a616c6ce52d9f3231fd782f8246a27bd72d705bbe89a1d07e49.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "e15a9ed8a06719af72ef17fb50dbdbd51c7d51184ac1c585a0218ce1c80659a2",
+        "content_range": "bytes 0-1023/1081698",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/5bbb9b239d6d813bf6e33ad8df57ff9e623f4e8ff8df6f3337231cc00e928a56.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "f7c0212cb7ea65f90e39d8f19b36ba586c2c8be39053be68b21f96bc055fe340",
+        "content_range": "bytes 0-1023/1591815",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/77cd529c8dbaa4a6020d6de9f8540041259a6c83f96866e04776fb357b3c97ac.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "33846f432bbb6792fb14987f213c82ffe315b2c9f50b30229073557923d5a2a0",
+        "content_range": "bytes 0-1023/1237060",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/79b18cac21d19389c197a2470030dad250333177fbda647cafcfc73f96ab56ba.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "e50636816bc1a07426231a282d06b4c74d304a95466d81b36946b6564d30642c",
+        "content_range": "bytes 0-1023/1311491",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/aa2b21d08dd256ba32b78df9091e35109f60e8d364952fac6418bb6d4bd4fcc3.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "466be2cee3990033df9b262d59e71b43f5f784e2c24b71b6d6d7bb2756d89be2",
+        "content_range": "bytes 0-1023/924627",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/be55b779d5f1888bb0a58267039290984f05d17420fb940fb6a74f8ff7c095e4.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "00baa380e67d03d1143125db7100dee0c05bc3456aca6f99e58a8fb704ecc5a6",
+        "content_range": "bytes 0-1023/1337210",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/c62641493168dc5a7aac3903477696c3326d4542ba79104d7c06cc85f2faff8e.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "ba7012281e494e343a11fbfd508364b74b60f11dd3817a7882cbff3769de282a",
+        "content_range": "bytes 0-1023/2265124",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/dc6d095a2b804ab3c499d001e363dc8568ddeb9dba9d626ae9278cf7a19ce562.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "99e0f6d6c5f90f69e659234cb984196697893291a29a17861bb6725b51585edb",
+        "content_range": "bytes 0-1023/1356301",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/e67550c9861139bd61643ca01e042b18b9b3cb7762cb6e0c4c6d0cd2d376cf79.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "17139d684c03a5dd03a7cded81ea156a500bac67dd973667364d9a2839cd7f3e",
+        "content_range": "bytes 0-1023/2560610",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/derived/pdf-images/src_407678/09ddd38d1a3bb932fcc642b88b6e73d51e66c132ac9904eee198a0a57ec69e47/edcbea36611430e7ce1f7f64a746ba2f595a7bfbd92fad3ea7f8b53bba1dc90b.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "455d841eb73207e20a1d6bafeebf22c5cb50d5f0a793ca5191583b228d934567",
+        "content_range": "bytes 0-1023/2392679",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/media/mascot.png",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "521b5218c304ddf164398599611d08592ffabec85e9bed232f6cd543ff1b893d",
+        "content_range": "bytes 0-1023/415534",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_00aaa3_03_exterior_overview.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "566e6a65b3575d0672c6b0878d5d1d9cf84c004e6e444d421d4582db578e8324",
+        "content_range": "bytes 0-1023/322326",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_08d983_22_accessory_travel_comfort_system.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "33e945d85c9f0f0eeab6b431a99de8c0aa44f31bb35e1ff8c6ca7b2db826db5e",
+        "content_range": "bytes 0-1023/262641",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_0ac711_11_driving_dynamics_overview.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "4aa7234b430bb06fc2467873e1ede5e325df1f245f4242128a56c8e974339baa",
+        "content_range": "bytes 0-1023/316886",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_0ebbe4_08_interior_cockpit_curved_display.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "448f71d5ee50b8cfed9e32f3a89365ea7c95aa6960a3df99a0c9ae48ba616c49",
+        "content_range": "bytes 0-1023/571388",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_24322d_10_interior_craftedclarity_glass_controls.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "e31f77e6a93bb5b64a8a0482bc7799e57572834093c16cdcd3c902b39f02bfec",
+        "content_range": "bytes 0-1023/558173",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_2fa70c_04_exterior_front_grille_headlights.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "6b9ab7d20a9b90cc4a7a0a5a358aee2b75d42a919d9e02d6289a9bb7cfde74f2",
+        "content_range": "bytes 0-1023/367920",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_346afb_15_parking_assistant_professional_b.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "7a8a3bcf84f271587da244c7f059050b16d2f0090e15b7f44a434cdcc86f59e6",
+        "content_range": "bytes 0-1023/508385",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_54acf2_06_exterior_rear_lights_spoiler.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "69cd11f2c6bb0ce83e4f4891afe293be8bee4cddffdae8bafab6973c1f1d731c",
+        "content_range": "bytes 0-1023/340468",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_5c3639_14_parking_assistant_professional_a.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "585b9f3355c788cd90b113dc3f182e250a4af81a02cceacf8ddc9b17608c85ff",
+        "content_range": "bytes 0-1023/147478",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_5c9fcb_16_digital_key.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "8be5b61275e40f682f3026c1391a98dad3196ff4b8057c86854cc9b1b62b7788",
+        "content_range": "bytes 0-1023/87454",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_642ce1_19_accessory_advanced_car_eye_dashcam.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "665fd1e2236a29be8c012541ce691268b249b9255a5b70175dc6d8e76eb6b629",
+        "content_range": "bytes 0-1023/435153",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_7450e1_20_accessory_led_door_projector.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "15778b5a031d91ea011902fb60fb82fa1a69f6e75bcc8fc0221f99544a57cb93",
+        "content_range": "bytes 0-1023/345630",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_796143_17_augmented_view_headup.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "18d580fae25044a8ef7e05cebf16a1538003af437fc1041b611ba801140252f2",
+        "content_range": "bytes 0-1023/138592",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_92378b_18_driving_assistant_video_still.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "a25c3a8fed1836a27dd7e16c4f13910c04d78a065f291f86eefe3ece1d062623",
+        "content_range": "bytes 0-1023/148667",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_9fc70c_07_interior_overview.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "cfd1f31182654c8dff56d05aba040b98def686f759ae1227cfa99ae00fbf8c67",
+        "content_range": "bytes 0-1023/363544",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_a63790_05_exterior_side_profile.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "b07a68cf4f50c91f9039b7d6d72d34897a3bdbcd87f1637a3824f895186cf0f1",
+        "content_range": "bytes 0-1023/375080",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_ba1896_21_accessory_floating_hub_cap.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "96fad129857341e3ed85c35686753b499aea7d3670af1a9b1b07804843b2369c",
+        "content_range": "bytes 0-1023/281047",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_bbc793_09_interior_space_seats.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "30f2344cb878b35428e216ddc7ca844d668f3f5a2bb7f45ccdb9f1f0dd52083e",
+        "content_range": "bytes 0-1023/672218",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_bf331d_13_technical_data_stage.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "0f0b7b97de407ecd6c5d8394a64f597ec67193a84206c80eb423535166a3127c",
+        "content_range": "bytes 0-1023/306230",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_cf3842_12_drive_and_air_suspension.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "d692015a3b7769348316f5ae5e07402f04fcf97e79dba181cf9269aa0007eb15",
+        "content_range": "bytes 0-1023/526405",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_d83000_02_positioning_front_three_quarter.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "c7854726d234b5cc4d2d158ed57fbb7b742999e996d1e31c6e48b0ef68d02be9",
+        "content_range": "bytes 0-1023/266419",
+        "passed": true
+      },
+      {
+        "url": "/media/dm_29df0418/sources/src_dbf803_01_hero_stage.jpg",
+        "status": 206,
+        "prefix_bytes": 1024,
+        "prefix_sha256": "1845d55666509255cbceead0e155e885aeaa43ef8fc10ec0c37830ef00fcb720",
+        "content_range": "bytes 0-1023/303047",
+        "passed": true
+      }
+    ]
+  },
+  "limitations": "Runtime website authorization verified without fetching BMW or running search; no website availability, grounding or paid acoustic acceptance claim. Prior build timeout is represented by the retained crawl_active=false source flag."
+}

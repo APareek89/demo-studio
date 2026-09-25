@@ -2,9 +2,14 @@
 
 Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
-## Approved release in progress — 25 September
+## Current deployed release — 25 September
 
-Anand accepted the improved demo and explicitly requested master/GitHub plus AWS after varied question acknowledgements. Ten per-visit neutral phrases now replace the repeated praise; playback commands/fast answers bypass them and the existing voice owner remains. Website inspection found the enabled BMW owner URL lost runtime access after a build fetch timeout; authorization now uses explicit enable/exclude intent while retaining domain, private-network and citation protections. No demo/source rebuild. Deployment will retain AWS's existing WebSocket voice and keep LiveKit local-only; source deployment alone cannot host its current loopback-only trial. Final checks and cutover receipt follow; do not describe this as deployed until verified below.
+Application **d94d6ef** is on master/GitHub and AWS, cut over **2026-09-25T11:35:49Z**. [Public BMW demo](https://13-202-0-79.sslip.io/#/play/dm_29df0418); [release/rollback receipt](docs/aws/release-runtime-gallery-2026-09-25.md). This release supersedes the local-only/master-pending status in the historical checkpoints below for the shared application fixes.
+
+- Ten neutral question acknowledgements rotate per visit; quick answers and Continue/Pause/Stop bypass them. Enabled owner websites remain available after a build crawl timeout; BMW runtime permits bmw.in and retains domain/citation/private-network protections. No demo rebuild or recording change.
+- Includes reviewed same-photo continuity, immediate reversible speech hold and exact answer-image/retrieval fixes. AWS retains **existing WebSocket voice**; LiveKit remains a local-only optional trial, not a hosted rollout.
+- AWS27/27staged processes pass: deck445/445, acceptance24/24, smoke3/3, full mock28/28; knowledge58passed+2environment skips. Local acknowledgement14/native88; public17, frontend32, media96; desktop/phone welcome verified. No new paid calls. Earlier harness/preflight failures and all per-contract counts are retained in the receipt.
+- All4267stored data files, environment, proxy and operator credentials unchanged. Source `/opt/demo-studio-releases/20260925-runtime-gallery`; full backup and prior release retained. Receipt/tooling-only commits after d94d6ef do not change running app bytes. No new open question.
 
 ## Latest correction — live conversation and same-photo continuity · 25 September
 

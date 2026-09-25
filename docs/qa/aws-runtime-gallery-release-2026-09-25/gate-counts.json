@@ -1,0 +1,191 @@
+[
+  {
+    "suite": "qa_deck",
+    "passed": 445,
+    "total": 445,
+    "skipped": 0,
+    "raw_log_sha256": "7b389d3364d38854b7ea7abff3568f39e5d4d14da0f8670fa153fe9027c83559"
+  },
+  {
+    "suite": "qa_accept",
+    "passed": 24,
+    "total": 24,
+    "skipped": 0,
+    "raw_log_sha256": "761cf5efa76f88fd04b11066c08230a2bb7c0d2ba43aaa861db07bc2a65daa55"
+  },
+  {
+    "suite": "smoke_mock",
+    "passed": 3,
+    "total": 3,
+    "skipped": 0,
+    "raw_log_sha256": "83a8b4f74dca4aeaadf1ffca127b6b12d75272f6763a5eaf69186cb4a542b731"
+  },
+  {
+    "suite": "release_mock_contract",
+    "passed": 28,
+    "total": 28,
+    "skipped": 0,
+    "raw_log_sha256": "2530d7ee797c9c8f5d89bf421b42c88d0ffccfcf1e2229bc778dff504bb41169"
+  },
+  {
+    "suite": "knowledge_contract",
+    "passed": 58,
+    "total": 60,
+    "skipped": 2,
+    "raw_log_sha256": "f06daa2b170a266fd64d4c76165702b54138c4fc03563bf776045f566f4cb508"
+  },
+  {
+    "suite": "retrieval_io_contract",
+    "passed": 12,
+    "total": 12,
+    "skipped": 0,
+    "raw_log_sha256": "3380b13dd2fce78b10612af4782c8cc1101bb9185cc3c248c19ea1cd67a0fd25"
+  },
+  {
+    "suite": "runtime_visuals_contract",
+    "passed": 23,
+    "total": 23,
+    "skipped": 0,
+    "raw_log_sha256": "bb50644e8c434b269f838e4231295bf79cc1d6eb6117a6601094758395bb4009"
+  },
+  {
+    "suite": "runtime_graph_contract",
+    "passed": 130,
+    "total": 130,
+    "skipped": 0,
+    "raw_log_sha256": "e92b30c072f1695c2fb74a42a13ac6b89c5ba34d3287afe3b0062e17c0562bba"
+  },
+  {
+    "suite": "runtime_repair_contract",
+    "passed": 106,
+    "total": 106,
+    "skipped": 0,
+    "raw_log_sha256": "d1443896286a9362f4bcb383beca7da92545852bd7fe6a93229fb254a6094042"
+  },
+  {
+    "suite": "runtime_delivery_contract",
+    "passed": 27,
+    "total": 27,
+    "skipped": 0,
+    "raw_log_sha256": "a72e8e9603b83a7a322794f084eab0e811d833ddb603d8d0fcc0a91b482529bc"
+  },
+  {
+    "suite": "runtime_hedge_contract",
+    "passed": 35,
+    "total": 35,
+    "skipped": 0,
+    "raw_log_sha256": "72e81a38b043dfa907109c1920f7c09380b13e9bddecd2dcbc57c71b24c539bf"
+  },
+  {
+    "suite": "runtime_hedge_config_contract",
+    "passed": 6,
+    "total": 6,
+    "skipped": 0,
+    "raw_log_sha256": "3a2cfd67760476765b878247bde15d287580f196726a032692cdf882bbf62d07"
+  },
+  {
+    "suite": "runtime_operational_failure_contract",
+    "passed": 13,
+    "total": 13,
+    "skipped": 0,
+    "raw_log_sha256": "5ed169628d99117549d3ba7a7c0e84b4f1fa9e40bea4eaee1923cd3404685e76"
+  },
+  {
+    "suite": "runtime_domain_contract",
+    "passed": 25,
+    "total": 25,
+    "skipped": 0,
+    "raw_log_sha256": "b3152d4e8404053679ad8e50833ad8661fa70ec92753153d5e7798c09b23d769"
+  },
+  {
+    "suite": "runtime_customer_sites_contract",
+    "passed": 20,
+    "total": 20,
+    "skipped": 0,
+    "raw_log_sha256": "1e9de4f04012e7fd3af02ff57086bebf4fbec28a5413c96050869db4454282cd"
+  },
+  {
+    "suite": "runtime_web_search_contract",
+    "passed": 37,
+    "total": 37,
+    "skipped": 0,
+    "raw_log_sha256": "91da973b87f0f14152a5ca3dfb8ee9146d7cbb541e70cfa2b68ff3eda93bc435"
+  },
+  {
+    "suite": "runtime_live_table_contract",
+    "passed": 21,
+    "total": 21,
+    "skipped": 0,
+    "raw_log_sha256": "6df3d58052eaf18c2a238c3f3afcf6857802ed86982d41d81940747cffc894cb"
+  },
+  {
+    "suite": "runtime_transmission_conditions_contract",
+    "passed": 17,
+    "total": 17,
+    "skipped": 0,
+    "raw_log_sha256": "87e973e3da575cb11ebf83481daea39d392fd85bba2599d1f453a553645f4a9a"
+  },
+  {
+    "suite": "faq_cache_contract",
+    "passed": 27,
+    "total": 27,
+    "skipped": 0,
+    "raw_log_sha256": "214f38b0e7ba409668ebdd0e0f6d51ee7c5fdeaa57499da16cea27e5e680f633"
+  },
+  {
+    "suite": "live_transport_contract",
+    "passed": 25,
+    "total": 25,
+    "skipped": 0,
+    "raw_log_sha256": "709ecde42fd2a0aa2d6749d9b1ceec90a71334c8d1e583f3f8ebb6ca0a77b82f"
+  },
+  {
+    "suite": "sarvam_stream_contract",
+    "passed": 17,
+    "total": 17,
+    "skipped": 0,
+    "raw_log_sha256": "5c1a10029a4602249c304cce034883542e08c7f4efa00b26aa2fc1b39a1f4bfc"
+  },
+  {
+    "suite": "session_checkpoint_contract",
+    "passed": 26,
+    "total": 26,
+    "skipped": 0,
+    "raw_log_sha256": "b7c8a905339fdb8347f3d4642800e6391a3af39491ccf54bcb3864f5d802ab26"
+  },
+  {
+    "suite": "session_input_mode_contract",
+    "passed": 8,
+    "total": 8,
+    "skipped": 0,
+    "raw_log_sha256": "6922b68d32dbf2cdf09287819afeb85eb0f4491e59f1f9e8f32ff0ad99d68890"
+  },
+  {
+    "suite": "explore_cancellation_contract",
+    "passed": 9,
+    "total": 9,
+    "skipped": 0,
+    "raw_log_sha256": "51c3eeb6a684c706f97ceda8fd854a4b5df232e4aa90e6e09055bc1d11ba47d7"
+  },
+  {
+    "suite": "speech_style_contract",
+    "passed": 30,
+    "total": 30,
+    "skipped": 0,
+    "raw_log_sha256": "0462346c8fc80f079f0d39245473bded819f046205f56dce66ccbc55af967288"
+  },
+  {
+    "suite": "voice_lock_contract",
+    "passed": 27,
+    "total": 27,
+    "skipped": 0,
+    "raw_log_sha256": "904632ef8b68868c9648171446a26bef3dddbd071aa17c194b87478f3bd9a160"
+  },
+  {
+    "suite": "livekit_trial_contract",
+    "passed": 50,
+    "total": 50,
+    "skipped": 0,
+    "raw_log_sha256": "1b9a46f05f94a8b910b4b0aaca81daf0f1c74497f2eef4f6fef1ef7086dff6f3"
+  }
+]

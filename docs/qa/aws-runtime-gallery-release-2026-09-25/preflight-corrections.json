@@ -1,0 +1,27 @@
+{
+  "application_commit": "d94d6efc836a5ba08872aafbf9e37144dd113a99",
+  "production_changed_before_gates": false,
+  "initial_gate_attempt": {
+    "suite": "knowledge_contract",
+    "cause": "Network blocker rejected numeric-only address resolution needed for SSRF tests",
+    "failures": 5,
+    "skipped": 2,
+    "total": 60,
+    "actual_outbound_connections": 0
+  },
+  "second_gate_attempt": {
+    "suite": "runtime_customer_sites_contract",
+    "cause": "Node missing from system PATH; existing Playwright driver Node reused for test subprocesses",
+    "errors": 1,
+    "total": 20,
+    "outbound_attempts": 0
+  },
+  "cutover_preflight": {
+    "cause": "Old persisted running marker, no active graph worker",
+    "stored_markers": 1,
+    "metadata_and_file_age_hours": 504.1,
+    "inactive_worker_observations": 2,
+    "service_stopped": false,
+    "demo_modified": false
+  }
+}

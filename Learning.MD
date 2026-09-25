@@ -1,5 +1,13 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Network isolation must preserve local address parsing
+
+**Observed:** the first AWS staging harness failed five private-address safety cases by treating numeric IP parsing as outbound DNS. The next run reached an existing Python/JavaScript parity test whose Node executable was absent from system PATH. Both stopped staging before any service change.
+
+**Why chain:** (1) the blocker replaced all getaddrinfo calls; (2) numeric parsing and hostname lookup share that API; (3) the broad contract uses real numeric resolution before rejecting private addresses; (4) the release preflight checked the system Node command rather than Playwright’s bundled executable; (5) the harness environment was not exercised against every deployment suite in advance.
+
+**Correction and prevention:** allow only validated numeric hosts with AI_NUMERICHOST while retaining all connection/hostname blocks; add the already-installed Playwright Node to the test subprocess PATH only. Preserve failed attempts, rerun the complete finite gate set, and keep application bytes/dependencies/production configuration unchanged. The independent local exact-wrapper knowledge check passes60/60 with zero outbound attempts.
+
 ## 2026-09-25 — Repeated holding speech and crawl availability confused with consent
 
 **Observed:** every slow question triggered the same praise/holding sentence. Separately, the approved BMW website existed as an enabled source but could not be searched because its initial crawl timed out.
