@@ -1,0 +1,31 @@
+test_allowed_domain_can_check_relevant_page_outside_seed_subtree (__main__.RuntimeDomains.test_allowed_domain_can_check_relevant_page_outside_seed_subtree) ... ok
+test_approved_upload_facts_still_answer_without_any_website (__main__.RuntimeDomains.test_approved_upload_facts_still_answer_without_any_website) ... ok
+test_authority_only_enabled_owner_root_url_rows (__main__.RuntimeDomains.test_authority_only_enabled_owner_root_url_rows) ... ok
+test_automatic_lookup_uses_owner_site_without_customer_url (__main__.RuntimeDomains.test_automatic_lookup_uses_owner_site_without_customer_url) ... ok
+test_direct_lookup_cannot_gain_permission_from_customer_context (__main__.RuntimeDomains.test_direct_lookup_cannot_gain_permission_from_customer_context) ... ok
+test_exact_domain_www_alias_and_explicit_subdomains (__main__.RuntimeDomains.test_exact_domain_www_alias_and_explicit_subdomains) ... ok
+test_explicit_allowed_path_and_unallowed_customer_context (__main__.RuntimeDomains.test_explicit_allowed_path_and_unallowed_customer_context) ... ok
+test_explicit_domain_search_actual_graph (__main__.RuntimeDomains.test_explicit_domain_search_actual_graph) ... ok
+test_failed_bmw_build_crawl_keeps_enabled_owner_permission (__main__.RuntimeDomains.test_failed_bmw_build_crawl_keeps_enabled_owner_permission) ... ok
+test_failed_build_crawl_still_allows_domain_restricted_search (__main__.RuntimeDomains.test_failed_build_crawl_still_allows_domain_restricted_search) ... ok
+test_failed_crawl_never_overrides_owner_disable_or_scope_exclusion (__main__.RuntimeDomains.test_failed_crawl_never_overrides_owner_disable_or_scope_exclusion) ... ok
+test_failed_crawl_permission_never_makes_failed_live_read_evidence (__main__.RuntimeDomains.test_failed_crawl_permission_never_makes_failed_live_read_evidence) ... ok
+test_failed_owner_lookup_falls_back_only_to_owner_domain_search (__main__.RuntimeDomains.test_failed_owner_lookup_falls_back_only_to_owner_domain_search) ... ok
+test_generic_owner_homepage_follows_relevant_links_only_on_its_domain (__main__.RuntimeDomains.test_generic_owner_homepage_follows_relevant_links_only_on_its_domain) ... ok
+test_invalid_credentials_and_non_http_never_authorized (__main__.RuntimeDomains.test_invalid_credentials_and_non_http_never_authorized) ... ok
+test_legacy_no_url_never_searches_even_with_customer_profile_url (__main__.RuntimeDomains.test_legacy_no_url_never_searches_even_with_customer_profile_url) ... ok
+test_live_evidence_never_written_to_registry_or_faq (__main__.RuntimeDomains.test_live_evidence_never_written_to_registry_or_faq) ... ok
+test_model_tool_call_cannot_bypass_owner_domain (__main__.RuntimeDomains.test_model_tool_call_cannot_bypass_owner_domain) ... ok
+test_no_accepted_discovery_never_fetches (__main__.RuntimeDomains.test_no_accepted_discovery_never_fetches) ... ok
+test_no_owner_url_blocks_discovery_and_direct_fetch (__main__.RuntimeDomains.test_no_owner_url_blocks_discovery_and_direct_fetch) ... ok
+test_private_dns_remains_blocked_even_for_owner_domain (__main__.RuntimeDomains.test_private_dns_remains_blocked_even_for_owner_domain) ... ok
+test_real_redirect_hop_rejects_unallowed_host_before_dns_or_connection (__main__.RuntimeDomains.test_real_redirect_hop_rejects_unallowed_host_before_dns_or_connection) ... ok
+test_returned_redirect_outside_owner_domains_is_never_evidence (__main__.RuntimeDomains.test_returned_redirect_outside_owner_domains_is_never_evidence) ... ok
+test_revoked_source_cannot_survive_session_history (__main__.RuntimeDomains.test_revoked_source_cannot_survive_session_history) ... ok
+test_search_filters_discovery_before_fetch_and_cites_fetched_page (__main__.RuntimeDomains.test_search_filters_discovery_before_fetch_and_cites_fetched_page) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.353s
+
+OK
+OUTBOUND_ATTEMPTS 0

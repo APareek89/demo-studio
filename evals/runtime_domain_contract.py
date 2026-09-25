@@ -60,15 +60,66 @@ class RuntimeDomains(unittest.IsolatedAsyncioTestCase):
              patch.object(crawl, "fetch_public", side_effect=self.fetch):
             return await graph.run_turn(self.did, {"question":question, "profile":profile or {}, "session_id":session, "skip_bank":True})
 
-    def test_authority_only_active_owner_root_url_rows(self):
+    def test_authority_only_enabled_owner_root_url_rows(self):
         demo = {"product":{"url":OUTSIDE}, "sources":[
             {"kind":"url", "url":OWNER}, {"kind":"url", "url":OWNER},
             {"kind":"url", "url":OUTSIDE, "crawl_parent":"s0"},
             {"kind":"url", "url":OUTSIDE, "use_in_demo":False},
-            {"kind":"url", "url":OUTSIDE, "crawl_active":False},
+            {"kind":"url", "url":OUTSIDE, "crawl_active":False, "use_in_demo":False},
             {"kind":"url", "url":OUTSIDE, "scope_excluded":True},
             {"kind":"file", "url":OUTSIDE}, {"kind":"url", "url":"file:///tmp/read"}]}
         self.assertEqual(tools.runtime_source_urls(demo), [OWNER])
+
+    async def test_failed_bmw_build_crawl_keeps_enabled_owner_permission(self):
+        # Reproduce the published BMW source shape; fetched pages remain fixtures.
+        owner = "https://www.bmw.in/en/all-models/x-series/x7/bmw-x7-overview.html"
+        self.demo["sources"] = [{"id":"bmw-owner", "kind":"url", "url":owner,
+                                 "use_in_demo":True, "crawl_active":False, "crawl_cached":False}]
+        store.save(self.did, self.demo)
+        before = copy.deepcopy(store.read_json(self.did, "understanding.json"))
+        final = await self.turn()
+        self.assertEqual([url for url,_ in self.reads], [owner])
+        self.assertEqual(self.reads[0][1]["allowed_hosts"], {"bmw.in", "www.bmw.in"})
+        self.assertTrue(final["result"]["answered"])
+        self.assertEqual(final["tool_results"][0]["tool"], "source_lookup")
+        self.assertEqual(store.read_json(self.did, "understanding.json"), before)
+        self.assertFalse(store.load(self.did)["sources"][0]["crawl_active"])
+        self.assertFalse((store.read_json(self.did, "faq.json") or {}).get("entries"))
+
+    async def test_failed_build_crawl_still_allows_domain_restricted_search(self):
+        self.demo["sources"][0].update(crawl_active=False, crawl_cached=False)
+        store.save(self.did, self.demo)
+        with patch.object(tools, "_search_sources", return_value={"urls":[OUTSIDE, PAGE]}) as search:
+            final = await self.turn("Search the web for airbags")
+        self.assertTrue(final["result"]["answered"])
+        self.assertEqual([url for url,_ in self.reads], [PAGE])
+        self.assertIn("site:maker.example", search.call_args.args[0])
+
+    async def test_failed_crawl_never_overrides_owner_disable_or_scope_exclusion(self):
+        for index, exclusion in enumerate(({"use_in_demo":False}, {"scope_excluded":True}, {"crawl_parent":"seed"})):
+            with self.subTest(exclusion=exclusion):
+                self.demo["sources"] = [{"id":"owner", "kind":"url", "url":OWNER,
+                                         "crawl_active":False, "use_in_demo":True, **exclusion}]
+                store.save(self.did, self.demo)
+                with patch.object(tools, "_search_sources") as search:
+                    await self.turn("Search the web for airbags", profile={"customer_urls":[PAGE]}, session=f"excluded{index}")
+                search.assert_not_called()
+                self.assertEqual(self.reads, [])
+                self.assertEqual(tools.runtime_source_urls(store.load(self.did)), [])
+
+    async def test_failed_crawl_permission_never_makes_failed_live_read_evidence(self):
+        self.demo["sources"][0].update(crawl_active=False, crawl_cached=False)
+        store.save(self.did, self.demo)
+        before = copy.deepcopy(store.read_json(self.did, "understanding.json"))
+        with patch.object(tools, "_search_sources", return_value={"urls":[PAGE]}), \
+             patch.object(crawl, "fetch_public", side_effect=TimeoutError("Read timed out")), \
+             patch("server.knowledge.retrieve", return_value={"evidence":[]}):
+            final = await graph.run_turn(self.did, {"question":"How many airbags?", "session_id":"failed-live", "skip_bank":True})
+        self.assertFalse(final["result"]["answered"])
+        self.assertFalse(final["result"]["fact_ids"])
+        self.assertEqual(final["evidence"], [])
+        self.assertEqual(store.read_json(self.did, "understanding.json"), before)
+        self.assertFalse((store.read_json(self.did, "faq.json") or {}).get("entries"))
 
     def test_exact_domain_www_alias_and_explicit_subdomains(self):
         for url in (PAGE, "https://www.maker.example/faq", "HTTP://MAKER.EXAMPLE/faq"):

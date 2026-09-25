@@ -143,7 +143,8 @@ check("capture preserves speech amplitude without sending audible output", packe
 const playerSource = fs.readFileSync(new URL("../web/player/player.js", import.meta.url), "utf8");
 const correctionSource = playerSource.slice(playerSource.indexOf("function explicitContextCorrection("), playerSource.indexOf("\nexport function mountPlayer"));
 const correction = vm.runInNewContext(correctionSource + "\nexplicitContextCorrection");
-const questionAckKey = vm.runInNewContext(correctionSource + "\nquestionAckKey");
+const ackSource = fs.readFileSync(new URL("../web/player/question-ack.js", import.meta.url), "utf8");
+const { nextQuestionAcknowledgement } = await import("data:text/javascript;base64," + Buffer.from(ackSource).toString("base64"));
 const qualification = vm.runInNewContext(correctionSource + "\n({qualifiesCustomerSpeech,playbackCommand,genericTour})",{meaningfulTranscript});
 check("actual player qualifier rejects fragment intake and unrelated TV statement",!qualification.qualifiesCustomerSpeech("It’s",{prompt:true}) && !qualification.qualifiesCustomerSpeech("Breaking news and the weather forecast",{terms:["warranty","creta"]}));
 check("actual player qualifier keeps short questions and prompt-owned phone input",qualification.qualifiesCustomerSpeech("Warranty?",{terms:[]}) && qualification.qualifiesCustomerSpeech("Automatic?",{terms:[]}) && qualification.qualifiesCustomerSpeech("9876543210",{prompt:true}) && !qualification.qualifiesCustomerSpeech("9876543210",{prompt:false}));
@@ -177,13 +178,13 @@ const resultSource = playerSource.slice(playerSource.indexOf("  async function q
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 function questionHarness() {
   const state = { run: 1 }, qa = deferred(), filler = deferred(), calls = { cancel: 0, filler: 0, status: 0, words: [] };
-  const result = vm.runInNewContext(resultSource + "\nquestionResult", { S: state, bundle: {}, questionAckKey, withTimeout: async () => null,
+  const result = vm.runInNewContext(resultSource + "\nquestionResult", { S: state, bundle: {}, nextQuestionAcknowledgement, withTimeout: async () => null,
     speak(text) { calls.filler++; calls.words.push(text); return filler.promise; }, cancelSpeech() { calls.cancel++; }, setStatus() { calls.status++; } });
   return { state, qa, filler, calls, result };
 }
 {
   const h = questionHarness(), turn = {}; const result = h.result(h.qa.promise, 1, turn); await tick(); h.state.onFirstAudio(100);
-  check("genuine question gets the requested acknowledgment instead of a lookup filler", h.calls.words.length === 1 && h.calls.words[0] === "This is a good question, give me a moment.");
+  check("genuine question gets the first rotating acknowledgment", h.calls.words.length === 1 && h.calls.words[0] === "Let me check that for you.");
   h.qa.resolve({ answer: "Useful answer" }); const value = await result;
   check("ready answer cuts acknowledgment without awaiting its obsolete delivery", value.answer === "Useful answer" && h.calls.cancel === 1 && turn.ack_audio === 100 && h.state.onFirstAudio === null);
   h.filler.resolve(false);

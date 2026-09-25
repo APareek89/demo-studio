@@ -1,0 +1,9 @@
+{
+  "web/player/player.js": "c9146de38460e99d3efc52d64ec2b1db2fea0cca5fd30698e08b41397c8437de",
+  "web/player/question-ack.js": "f3a86227c812bf2692245c3e9be1f0e5ea5e67c9a7106c73acd12e8c9794da81",
+  "server/runtime_tools.py": "bf4122d202d1eff59fa20ef4779467c2977c94df3d3bb374b7fd81f5ede83247",
+  "evals/question_ack_contract.mjs": "4e507a800b643b2c2670275d84de4648b1b234a56f8814e56e8857e195b7589e",
+  "evals/runtime_domain_contract.py": "e034c3ef40053cb88aee60b96d1fac0ae467bd3ade961e236771ca84713cd5df",
+  "evals/player_contract.html": "a84eac99b96e0e7ac0991d5682791c526311ae871a8aa65c03683658c6c340af",
+  "evals/live_voice_contract.mjs": "ba993af84e1a5671ddf8b3040554fb1d9f2de36a38b5eaee4a3405520dd58117"
+}

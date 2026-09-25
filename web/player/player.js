@@ -23,6 +23,7 @@ import { icon } from "/web/icons.js";
 import { LiveVoiceClient, meaningfulTranscript } from "/web/player/live-voice.js";
 import { renderPublicSearch } from "/web/player/public-search-ui.js";
 import { resolveAnswerVisual } from "/web/player/answer-visual.js";
+import { nextQuestionAcknowledgement } from "/web/player/question-ack.js";
 
 // Read browser speech support once; the other constants describe text helpers and contact consent.
 // These are local defaults; server speech is connected through web/app.js:renderPlay.
@@ -52,12 +53,6 @@ function explicitContextCorrection(text) {
   if (/[?？]/.test(value) || /^(?:what if|if |suppose|imagine|for example|hypothetically)\b/i.test(value)) return false;
   return /^(?:actually[,\s]+)?(?:my (?:priority|main concern) is\b|i (?:care (?:most|more) about|want to focus on|would (?:rather|prefer)|prefer)\b|(?:boot(?: space)?|safety|comfort|range|space|ownership costs?|running costs?|performance|technology) (?:matters? more|is (?:my )?priority)\b)/i.test(value);
 }
-// Compare the available recorded acknowledgments and return the shorter usable filler key.
-// player.js:questionResult uses it while server/runtime_graph.py:run_turn prepares an answer.
-function questionAckKey(fillers = {}) {
-  return "hold_on_question";
-}
-
 function playbackCommand(text) {
   const value = String(text || "").toLowerCase().trim().replace(/[.!?,]+$/g, "");
   if (/^(?:please )?(?:continue(?: the demo)?|carry on|go on|go ahead|next|move on|proceed|resume(?: the demo)?|चलो|आगे बढ़ो)$/.test(value)) return "continue";
@@ -1316,7 +1311,8 @@ export function mountPlayer(host, bundle, api) {
     // Stamp acknowledgment audio separately from useful answer audio.
     // The timestamp is stored on this turn for server/runtime_metrics.py:aggregate, not counted as answer onset.
     S.onFirstAudio = ts => { turn.ack_audio = ts; };
-    const filler = speak("This is a good question, give me a moment.", run);
+    const acknowledgement = nextQuestionAcknowledgement(S, bundle.fillers);
+    const filler = speak(acknowledgement.text, run, acknowledgement.audio);
     const ready = qaP.then(result => ({ kind: "answer", result }), error => ({ kind: "error", error }));
     const winner = await Promise.race([ready, filler.then(ok => ({ kind: "filler", ok }))]);
     if (run !== S.run) return null;
@@ -1926,7 +1922,7 @@ export function mountPlayer(host, bundle, api) {
   // ---------- lifecycle ----------
   // Start over with a fresh session ID, empty visit history and newly created live connection.
   // Destroy the old slide and capture before intake; live-voice.js:LiveVoiceClient.close ends the previous transport.
-  function restart() { interruptAll(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadDismissed = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  function restart() { interruptAll(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.questionAckIndex = 0; S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadDismissed = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   // Expose a simple pause method for callers without toggling an already paused demo back on.
   // web/app.js:renderPlay receives this method from mountPlayer.
   function pause() { if (!S.paused) togglePause(); }

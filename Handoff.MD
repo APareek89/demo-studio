@@ -2,6 +2,10 @@
 
 Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
+## Approved release in progress — 25 September
+
+Anand accepted the improved demo and explicitly requested master/GitHub plus AWS after varied question acknowledgements. Ten per-visit neutral phrases now replace the repeated praise; playback commands/fast answers bypass them and the existing voice owner remains. Website inspection found the enabled BMW owner URL lost runtime access after a build fetch timeout; authorization now uses explicit enable/exclude intent while retaining domain, private-network and citation protections. No demo/source rebuild. Deployment will retain AWS's existing WebSocket voice and keep LiveKit local-only; source deployment alone cannot host its current loopback-only trial. Final checks and cutover receipt follow; do not describe this as deployed until verified below.
+
 ## Latest correction — live conversation and same-photo continuity · 25 September
 
 - User review exposed a mock/muted review link: mock STT could not transcribe, and the typed interior question reached the graph but produced a fragment and roughly175ms mock audio. The URL also disabled voice by default. The new [BMW review link](http://127.0.0.1:8920/?voice_transport=livekit#/play/dm_29df0418) uses configured live providers and no mute query.

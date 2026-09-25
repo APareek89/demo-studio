@@ -1,0 +1,27 @@
+PASS worklet marks a structured voiced frame, not mere loudness
+PASS cup transient and short voiced throat-like burst cannot take playback
+PASS sustained voiced input pauses locally at160ms before any transcript or server turn
+PASS raw server VAD alone never pauses audio
+PASS qualified interim pauses immediately and does not ask or cancel server work
+PASS irrelevant TV interim and known noise annotations cannot independently hold output
+PASS rejected final releases provisional speech at the exact paused sample
+PASS silence without a final releases a local hold instead of freezing the tour
+PASS a qualifying partial extends the listening window until a final arrives
+PASS local tail frames cannot shorten a qualified partials final-text grace
+PASS duplicate/stale final still produces one semantic interruption
+PASS Continue remains a local command and resumes provisional media without a QA turn
+PASS superseding control abandons a hold without reviving the old audio
+PASS explicitly paused or ended player cannot acquire a listening hold
+PASS continuous background speech has a hard bound and cannot immediately reacquire hold
+PASS recognized question progress beyond20s keeps narration paused until the final
+PASS a late output resume promise cannot unmute a newer listening hold
+PASS microphone disconnect releases a provisional hold and its watchdogs
+PASS mute state survives temporary listening and release
+PASS actual player pauses recorded audio synchronously without seeking or cancelling its owner
+PASS rejected sound resumes exact recorded position and retains the three-second reply owner
+PASS committed question or newer run cannot auto-resume recorded narration
+PASS readable caption deadline pauses during listening and retains its remaining time
+PASS readable caption deadline pauses during listening and cannot revive after cancellation
+PASS browser voice deadline pauses during listening and retains its remaining time
+PASS browser voice deadline pauses during listening and cannot revive after cancellation
+Immediate speech hold: 26/26 passed (synthetic signals; physical speaker/noise quality unverified)

@@ -1,0 +1,15 @@
+PASS ten distinct short acknowledgements contain no automatic question praise
+PASS every phrase plays once before repeating across three cycles
+PASS new visits have independent rotation state
+PASS only an exact matching published clip is reused
+PASS legacy hold-on-question wording cannot play under a new caption
+PASS empty or partial old filler banks use the locked runtime speech path
+PASS fast answers do not speak or consume a phrase
+PASS a superseded run does not consume a phrase after its grace
+PASS actual question coordinator rotates the complete pool within one visit
+PASS coordinator sends exact recorded audio and keeps acknowledgement timing separate
+PASS ready answer immediately cancels filler without waiting for its audio
+PASS late old answer cannot cancel newer voice or steal its timing callback
+PASS provider failure cancels only filler and propagates existing recovery
+PASS completed acknowledgement waits for the original answer without inventing a turn
+question_ack: 14/14

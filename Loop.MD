@@ -1,5 +1,9 @@
 # Loop.MD — Demo Studio
 
+## Approved runtime/gallery release — 25 September 2026
+
+Finite QA, loop off. Final local core **445/445 deck,24/24 acceptance,3/3 smoke,28/28 full mock**. Seventeen isolated/mock/socket-blocked Python suites and seven free Node suites pass; zero outbound attempts/providers. New acknowledgement14/14; actual native player88/88 includes11questions, full ten-phrase cycle, legacy clips, commands and restart. Domain25/25 (four new failed-crawl/explicit-exclusion/failure-evidence groups), web search37/37. Adjacent graph130, tool replay20, customer sites20, delivery27, visuals23, live transport25, Sarvam17, FAQ27, transmission17, checkpoint26, LiveKit backend50/client47, voice96, hold26, listen16, recovery17 and saves18. Counts overlap. Exact inventory and limits: [local release QA](docs/qa/runtime-gallery-release-2026-09-25/README.md). AWS staging/cutover follows in its release receipt; do not infer deployment from these local passes.
+
 ## LiveKit review input and gallery continuity — 25 September 2026
 
 Finite QA, loop off. Final frozen application: **deck445/445, acceptance24/24, smoke3/3, full mock28/28** with isolated DATA/GRAPH, cloud off, blank keys and zero outbound socket attempts. Full mock still measures194.22seconds synthetic narration. New actual-player continuity28/28; prior97ef2ab fails four cases22/26. Current gallery320/320, native87/87, fallback18/18 and image-load14/14. Original BMW181/181 files unchanged. Independent FMEA12/12 categories found/fixed the same-photo opacity pulse; pixel RGB now stable before/during/after.

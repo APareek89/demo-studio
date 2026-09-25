@@ -84,10 +84,13 @@ def runtime_source_urls(demo: dict) -> list[str]:
     Customer messages, provider results, crawl children and URLs inside uploaded
     documents are context, never new network permissions. Re-read this on each
     turn/tool attempt so an excluded source cannot survive in session history.
+    crawl_active records the last build fetch's availability, not owner consent:
+    a timeout must not revoke an enabled URL's permission to be checked live.
+    Build evidence still has its separate crawl/freshness checks.
     """
     return list(dict.fromkeys(str(source.get("url") or "") for source in demo.get("sources", [])
         if source.get("kind") == "url" and not source.get("crawl_parent")
-        and source.get("use_in_demo", True) and source.get("crawl_active", True)
+        and source.get("use_in_demo", True)
         and not source.get("scope_excluded") and source_domain(source.get("url", ""))))
 
 

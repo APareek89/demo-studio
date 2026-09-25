@@ -100,6 +100,7 @@ window.webkitSpeechRecognition = FakeRecognition;
 window.fetch = () => Promise.reject(new Error('Network is disabled in this harness'));
 const { mountPlayer } = await import('/web/player/player.js');
 const { renderSlide } = await import('/web/slide.js');
+const { QUESTION_ACKNOWLEDGEMENTS } = await import('/web/player/question-ack.js');
 
 const line = (id, text) => ({ id, text, fact_ids: ['f1'], audio: audioURL(text) });
 function slide(id, kind, text, checkin = '') {
@@ -186,7 +187,7 @@ test('Active visits save incrementally and pagehide retains started speech witho
 test('Typed Continue stays in playback control and does not ask the answer graph', async () => {
   await setup({voiceMode:false}); await atProof(); await type('What is supported?'); const count=env.calls.length;
   await type('Continue');
-  assert(env.calls.length===count && env.played.filter(t=>t==='First proof.').length===2 && !env.played.includes('This is a good question, give me a moment.'), 'Continue became a question or failed to resume');
+  assert(env.calls.length===count && env.played.filter(t=>t==='First proof.').length===2 && !env.played.some(text => QUESTION_ACKNOWLEDGEMENTS.includes(text)), 'Continue became a question or failed to resume');
 });
 
 test('A minimum-duration bundle uses its recorded overview without live transport and resumes it after Q&A', async () => {
@@ -518,7 +519,7 @@ test('Closing CTA choices require explicit customer selection after narration fi
 });
 
 test('A ready answer bypasses acknowledgment and persists classification and plain-language substitutions', async () => {
-  const answer = 'The approved answer is already ready.', filler = 'Let me check that.';
+  const answer = 'The approved answer is already ready.', filler = QUESTION_ACKNOWLEDGEMENTS[0];
   const substitutions = [['ivt', 'automatic gearbox']];
   await setup({ hold: text => text === answer, qa: async () => answered({ answer, plain_language_substitutions: substitutions }), configure: b => ({ ...b, fillers: { hold_on_question: { text: filler, audio: audioURL(filler) } } }) });
   await atProof(); await type('What does the approved source say?');
@@ -533,7 +534,7 @@ test('A ready answer bypasses acknowledgment and persists classification and pla
 
 test('An answer arriving during acknowledgment cuts only the filler and never overlaps voices', async () => {
   let release;
-  const filler = 'This is a good question, give me a moment.';
+  const filler = QUESTION_ACKNOWLEDGEMENTS[0];
   await setup({ hold: text => text === filler, qa: () => new Promise(resolve => { release = resolve; }) });
   await atProof(); await type('What does the approved source say?'); await clock.tick(249);
   assert(!env.played.includes(filler), 'Acknowledgment started before its fast-answer grace');
@@ -545,6 +546,26 @@ test('An answer arriving during acknowledgment cuts only the filler and never ov
   assert(env.maxActive === 1 && env.calls.length === 1, 'Filler overlapped the answer or restarted reasoning');
   const spoken = env.played.length; oldAudio.finish(); await flush();
   assert(env.played.length === spoken, 'A late filler ending resumed stale playback');
+});
+
+test('Question acknowledgments rotate through ten phrases for an existing publication', async () => {
+  let release;
+  await setup({ qa: () => new Promise(resolve => { release = resolve; }), configure: b => ({ ...b, fillers: { hold_on_question: { text: 'Let me check that.', audio: audioURL('Let me check that.') } } }) });
+  await atProof();
+  for (let i = 0; i < QUESTION_ACKNOWLEDGEMENTS.length + 1; i++) {
+    await type(`What does the approved source say about detail ${i + 1}?`);
+    await clock.tick(250);
+    assert(env.played.at(-1) === QUESTION_ACKNOWLEDGEMENTS[i % QUESTION_ACKNOWLEDGEMENTS.length], 'The question reused a phrase before completing its cycle');
+    release(answered()); await flush();
+  }
+  assert(!env.played.includes('Let me check that.') && env.maxActive === 1 && env.calls.length === 11, 'Stale published audio, overlapping speech or duplicate reasoning was used');
+  const calls = env.calls.length, heard = env.played.filter(text => QUESTION_ACKNOWLEDGEMENTS.includes(text)).length;
+  await type('Continue'); await type('Pause'); await type('Stop');
+  assert(env.calls.length === calls && env.played.filter(text => QUESTION_ACKNOWLEDGEMENTS.includes(text)).length === heard, 'Playback commands consumed a question acknowledgement');
+  player.restart(); await flush(); await click('Skip, start the demo');
+  await type('What does the approved source say after restarting?'); await clock.tick(250);
+  assert(env.played.at(-1) === QUESTION_ACKNOWLEDGEMENTS[0], 'A fresh visit retained the previous rotation position');
+  release(answered()); await flush();
 });
 
 test('Typing keeps later question waits closed to ambient speech until an explicit mic tap', async () => {

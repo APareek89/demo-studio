@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Repeated holding speech and crawl availability confused with consent
+
+**Observed:** every slow question triggered the same praise/holding sentence. Separately, the approved BMW website existed as an enabled source but could not be searched because its initial crawl timed out.
+
+**Why chain:** (1, code) questionResult selected one literal and runtime_source_urls required crawl_active. (2, design) acknowledgement content had no per-visit sequence; build availability doubled as network authorization. (3, process) the current flow inherited narrow fixes rather than checking repeated customer questions and failed initial reads. (4, tests) assertions pinned the old literal and explicitly required inactive crawls to revoke access. (5, modeling) temporary operational state was confused with lasting user intent in both repeated presentation and source permission.
+
+**Correction:** a ten-line neutral acknowledgement cycle per visit, with exact-audio matching and the existing grace/cancellation/voice owner. Explicit source enable/exclude controls determine runtime domains; a crawl timeout does not revoke consent. Source/domain/citation/failure protections remain.
+
+**Prevention:** actual player exercises eleven questions, command bypass and restart; focused contracts check fast/stale runs, ownership, full cycles and old recordings. Domain contracts reproduce the BMW failed-crawl row, domain-only lookup/search, explicit exclusion and failed live reads producing no facts/evidence/cache. Deployment distinguishes the functioning shared fixes from local-only LiveKit infrastructure.
+
 ## 2026-09-25 — A transport test link is not a working voice demo
 
 **Observed:** speech was not captured and the typed interior question seemed ignored. Its saved visit actually contains a completed mock graph answer: a short upholstery fragment with about175ms of mock audio. The shared link also had `mute=1`, which disables default voice input/output.

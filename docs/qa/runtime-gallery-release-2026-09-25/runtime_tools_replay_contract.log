@@ -1,0 +1,26 @@
+test_annual_rate_cannot_be_relabelled_monthly (__main__.RuntimeToolsReplay.test_annual_rate_cannot_be_relabelled_monthly) ... ok
+test_answer_paragraph_with_trailing_question_is_not_dropped (__main__.RuntimeToolsReplay.test_answer_paragraph_with_trailing_question_is_not_dropped) ... ok
+test_assistant_city_and_partial_word_are_not_customer_locality (__main__.RuntimeToolsReplay.test_assistant_city_and_partial_word_are_not_customer_locality) ... ok
+test_customer_history_can_name_a_multiword_city_but_assistant_history_cannot_add_one (__main__.RuntimeToolsReplay.test_customer_history_can_name_a_multiword_city_but_assistant_history_cannot_add_one) ... ok
+test_customer_named_city_keeps_its_page_and_excludes_other_cities (__main__.RuntimeToolsReplay.test_customer_named_city_keeps_its_page_and_excludes_other_cities) ... ok
+test_directly_supplied_city_price_url_does_not_require_repeating_the_city (__main__.RuntimeToolsReplay.test_directly_supplied_city_price_url_does_not_require_repeating_the_city) ... ok
+test_explicit_city_redirect_cannot_switch_to_another_city (__main__.RuntimeToolsReplay.test_explicit_city_redirect_cannot_switch_to_another_city) ... ok
+test_feature_heading_remains_evidence_that_page_mentions_feature (__main__.RuntimeToolsReplay.test_feature_heading_remains_evidence_that_page_mentions_feature) ... ok
+test_generic_owner_homepage_can_follow_relevant_same_domain_pages (__main__.RuntimeToolsReplay.test_generic_owner_homepage_can_follow_relevant_same_domain_pages) ... ok
+test_hyphenated_model_slug_is_tokenized_like_the_question (__main__.RuntimeToolsReplay.test_hyphenated_model_slug_is_tokenized_like_the_question) ... ok
+test_live_lookup_stays_with_selected_model_and_market (__main__.RuntimeToolsReplay.test_live_lookup_stays_with_selected_model_and_market) ... ok
+test_lookup_prefers_answer_body_over_titles_questions_and_contact_forms (__main__.RuntimeToolsReplay.test_lookup_prefers_answer_body_over_titles_questions_and_contact_forms) ... ok
+test_model_name_alone_does_not_displace_topic_evidence (__main__.RuntimeToolsReplay.test_model_name_alone_does_not_displace_topic_evidence) ... ok
+test_model_wide_price_lookup_cannot_choose_a_city_from_menu_or_model_query (__main__.RuntimeToolsReplay.test_model_wide_price_lookup_cannot_choose_a_city_from_menu_or_model_query) ... ok
+test_model_wide_redirect_cannot_select_an_unsupplied_city (__main__.RuntimeToolsReplay.test_model_wide_redirect_cannot_select_an_unsupplied_city) ... ok
+test_monthly_basis_is_calculated_without_invented_annual_input (__main__.RuntimeToolsReplay.test_monthly_basis_is_calculated_without_invented_annual_input) ... ok
+test_monthly_rate_cannot_be_relabelled_annual (__main__.RuntimeToolsReplay.test_monthly_rate_cannot_be_relabelled_annual) ... ok
+test_redirect_cannot_change_the_model (__main__.RuntimeToolsReplay.test_redirect_cannot_change_the_model) ... ok
+test_relevant_answer_with_contact_footer_keeps_its_full_quote (__main__.RuntimeToolsReplay.test_relevant_answer_with_contact_footer_keeps_its_full_quote) ... ok
+test_two_competing_rate_bases_are_not_silently_chosen (__main__.RuntimeToolsReplay.test_two_competing_rate_bases_are_not_silently_chosen) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.757s
+
+OK
+OUTBOUND_ATTEMPTS 0

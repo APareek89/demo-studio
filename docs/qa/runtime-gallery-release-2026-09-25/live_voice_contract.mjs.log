@@ -1,0 +1,97 @@
+PASS text-only session never opens microphone
+PASS concurrent mic starts acquire one continuous stream
+PASS first audio is retained until provider ready
+PASS provider readiness flushes initial audio instead of losing first words
+PASS partial and raw VAD cannot commit a semantic interruption before a final
+PASS qualified final interrupts once and uses the browser receipt clock
+PASS server timestamp is provenance and cannot skew browser latency
+PASS same wording without provider identity is not permanently swallowed
+PASS an unsegmented later final cannot reuse an older endpoint
+PASS a completed utterance keeps capture open
+PASS another session cannot resolve this question
+PASS another turn cannot resolve this question
+PASS validated result retains deferred delivery identity
+PASS PCM signed samples decode accurately
+PASS duplicate audio sequence is not replayed
+PASS provider completion does not advance before local audio ends
+PASS local audio ending completes delivery
+PASS speech onset stops active audio immediately
+PASS interrupt does not stop microphone
+PASS late chunks of interrupted utterance are discarded
+PASS interrupt rejects owned waiting question
+PASS server cancellation takes the same new owner as client
+PASS media-only cancellation explicitly preserves background planning
+PASS ordinary cancellation never implicitly preserves a planner
+PASS review mute applies to streamed audio gain
+PASS cancel during audio initialization cannot start obsolete speech
+PASS new speech can acquire delivery after earlier cancellation
+PASS microphone mute releases device but keeps text transport
+PASS explicit retry can recover microphone
+PASS mute then unmute rejects stale ready, onset, final and error
+PASS unowned microphone event cannot cross capture boundary
+PASS new capture accepts its own final even when input ID repeats
+PASS capture commands and audio carry microphone ownership
+PASS fatal input connection failure releases microphone
+PASS end releases microphone and both audio contexts
+PASS permission arriving after cancellation releases its device
+PASS cancel during socket initialization fences the old request
+PASS unexpected connection loss rejects farewell speech for readable fallback
+PASS new turn before connection loss retains cancellation instead of reviving farewell
+PASS capture resamples one second into exactly 50 PCM16 packets
+PASS capture preserves speech amplitude without sending audible output
+PASS actual player qualifier rejects fragment intake and unrelated TV statement
+PASS actual player qualifier keeps short questions and prompt-owned phone input
+PASS actual player qualifier accepts repeated yes only for a current question
+PASS generic tour and playback commands are recognized without product preference
+PASS explicit stated priority triggers refinement
+PASS factual questions and hypotheticals cannot rewrite customer preference
+PASS caption fallback never fabricates first answer audio
+PASS interrupting a failed farewell caption cannot force the obsolete recap
+PASS genuine question gets the first rotating acknowledgment
+PASS ready answer cuts acknowledgment without awaiting its obsolete delivery
+PASS finished acknowledgment never fabricates an answer or advances the wait
+PASS superseded question cannot cancel newer speech or steal its callback
+PASS question failure stops only acknowledgment before error recovery
+PASS personalized speech remaps callouts to their reviewed source line
+PASS personalization preserves native geometry and stored master
+PASS legacy script checkin strings cannot erase the reviewed closing narration
+PASS completed overview enters reviewed selected route even when personalized script falls back
+PASS unusable live plan reports stable fallback without claiming personalization
+PASS generic initial tour keeps recorded overview and reviewed route without starting personalization
+PASS generic or fragment intake "show me around" never claims customer-specific focus
+PASS generic or fragment intake "It's" never claims customer-specific focus
+PASS a URL-only intake submits without inventing preference text
+PASS a URL does not turn a recognition fragment into preference evidence
+PASS empty intake without a customer URL still asks for input or Skip
+PASS Voice mode off explicitly connects text transport without requesting microphone
+PASS text mode plays streamed speech without capture
+PASS Voice mode on opens one microphone and retains it across three full turns
+PASS capture reports selected voice mode to the server
+PASS mid-demo Voice mode off releases capture and retains the same speech socket
+PASS mid-demo Voice mode on reacquires capture without reconnecting
+PASS session teardown releases microphone without relabelling selected voice mode
+PASS muted review still opens no capture and keeps streamed output gain at zero
+PASS switching off before context resume prevents a later microphone permission request
+PASS permission granted after close releases the track without reopening an orphan socket
+PASS denied microphone leaves the established text speech transport available
+PASS unexpected disconnect falls back to text mode while releasing active capture
+PASS cup impulse, raw VAD and noise-only transcripts preserve active narration
+PASS a qualified partial holds output without cancelling its delivery or creating a turn
+PASS short qualified warranty final interrupts exactly once
+PASS a duplicated final cannot interrupt the next owned narration
+PASS short final-only speech interrupts and preserves its endpoint timing
+PASS explicit interruption still cancels without transcript confirmation
+PASS speech confirmation keeps words and numbers while discarding annotations
+PASS recognition fragment It’s followed by noise creates no turn or audio cancellation
+PASS application qualifier rejects unrelated TV final without taking playback ownership
+PASS qualifier keeps a short relevant question actionable
+PASS qualification never deduplicates separate unowned yes replies by text
+PASS Continue is delivered as a local command without pre-cancelling narration
+PASS a genuine query still interrupts after a non-interrupting local command
+PASS healthy scheduled narration remains owned after the old thirty-second cutoff
+PASS healthy forty-five-second narration completes after local audio drains
+PASS stream that never starts rejects with a non-cancellation error for caption fallback
+PASS local chunk ending alone cannot fabricate provider completion
+PASS missing provider end becomes an owned delivery failure instead of swallowing closing
+PASS cancelled stream ignores even a late timeout callback and never revives
+Live voice: 96/96 passed (fake devices and transports only)

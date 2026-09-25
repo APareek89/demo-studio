@@ -1,0 +1,26 @@
+test_as_per_website_cannot_attribute_stored_fact_to_an_unread_page (__main__.CustomerSites.test_as_per_website_cannot_attribute_stored_fact_to_an_unread_page) ... ok
+test_bare_filenames_and_unlisted_suffixes_are_not_customer_sites (__main__.CustomerSites.test_bare_filenames_and_unlisted_suffixes_are_not_customer_sites) ... ok
+test_cancellation_during_fetch_does_not_publish_live_evidence (__main__.CustomerSites.test_cancellation_during_fetch_does_not_publish_live_evidence) ... ok
+test_decline_ignores_unrequested_stale_tool_calls (__main__.CustomerSites.test_decline_ignores_unrequested_stale_tool_calls) ... ok
+test_explicit_check_bare_url_still_overrides_existing_registry_evidence (__main__.CustomerSites.test_explicit_check_bare_url_still_overrides_existing_registry_evidence) ... ok
+test_extra_allowlist_still_rejects_off_host_seed_and_cross_host_redirect (__main__.CustomerSites.test_extra_allowlist_still_rejects_off_host_seed_and_cross_host_redirect) ... ok
+test_fake_clock_lookup_stays_within_tool_and_total_deadlines (__main__.CustomerSites.test_fake_clock_lookup_stays_within_tool_and_total_deadlines) ... ok
+test_intake_urls_persist_and_merge_across_three_actual_graph_turns (__main__.CustomerSites.test_intake_urls_persist_and_merge_across_three_actual_graph_turns) ... ok
+test_interactions_and_explicit_no_lookup_never_auto_fetch (__main__.CustomerSites.test_interactions_and_explicit_no_lookup_never_auto_fetch) ... ok
+test_legacy_default_setting_cannot_override_owner_source_permission (__main__.CustomerSites.test_legacy_default_setting_cannot_override_owner_source_permission) ... ok
+test_model_decline_with_retrieved_evidence_gets_one_lookup_then_reasons_again (__main__.CustomerSites.test_model_decline_with_retrieved_evidence_gets_one_lookup_then_reasons_again) ... ok
+test_no_registry_evidence_fetches_once_and_attributes_live_answer (__main__.CustomerSites.test_no_registry_evidence_fetches_once_and_attributes_live_answer) ... ok
+test_owner_restricted_prompt_and_isolated_storage (__main__.CustomerSites.test_owner_restricted_prompt_and_isolated_storage) ... ok
+test_parser_accepts_bare_www_https_and_excludes_email_number_fragments (__main__.CustomerSites.test_parser_accepts_bare_www_https_and_excludes_email_number_fragments) ... ok
+test_private_source_still_fails_before_outbound_connection (__main__.CustomerSites.test_private_source_still_fails_before_outbound_connection) ... ok
+test_public_suffixes_two_level_forms_and_explicit_urls_keep_their_scope (__main__.CustomerSites.test_public_suffixes_two_level_forms_and_explicit_urls_keep_their_scope) ... ok
+test_reason_payload_includes_persisted_customer_urls (__main__.CustomerSites.test_reason_payload_includes_persisted_customer_urls) ... ok
+test_selector_prefers_product_host_then_falls_back_to_first_supplied (__main__.CustomerSites.test_selector_prefers_product_host_then_falls_back_to_first_supplied) ... ok
+test_shared_javascript_python_parser_parity_and_limits (__main__.CustomerSites.test_shared_javascript_python_parser_parity_and_limits) ... ok
+test_supported_registry_answer_does_not_fetch (__main__.CustomerSites.test_supported_registry_answer_does_not_fetch) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.774s
+
+OK
+OUTBOUND_ATTEMPTS 1

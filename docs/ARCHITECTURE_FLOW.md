@@ -157,3 +157,5 @@ flowchart TD
 
 Full-detail versions of 01–05 are in `docs/mermaid/` and rendered together in
 `docs/architecture-flow.html`.
+
+Runtime release25September: questionResult retains its250ms grace and existing speech/answer race, with a ten-phrase per-visit cycle and exact-text recorded-audio matching. Continue/Pause/Stop bypass this flow. runtime_source_urls reads enabled, top-level, non-excluded owner URLs each turn; crawl_active is build availability, not consent. Domain/SSRF and citation guards remain unchanged. AWS uses the existing WebSocket transport; the LiveKit option remains local-only.

@@ -1,0 +1,127 @@
+[
+  {
+    "suite": "runtime_delivery_contract",
+    "passed": 27,
+    "total": 27
+  },
+  {
+    "suite": "immediate_speech_hold_contract.mjs",
+    "passed": 26,
+    "total": 26
+  },
+  {
+    "suite": "runtime_web_search_contract",
+    "passed": 37,
+    "total": 37
+  },
+  {
+    "suite": "sarvam_stream_contract",
+    "passed": 17,
+    "total": 17
+  },
+  {
+    "suite": "livekit_trial_contract",
+    "passed": 50,
+    "total": 50
+  },
+  {
+    "suite": "player_listen_contract.cjs",
+    "passed": 16,
+    "total": 16
+  },
+  {
+    "suite": "livekit_voice_contract.mjs",
+    "passed": 47,
+    "total": 47
+  },
+  {
+    "suite": "runtime_tools_replay_contract",
+    "passed": 20,
+    "total": 20
+  },
+  {
+    "suite": "runtime_graph_contract",
+    "passed": 130,
+    "total": 130
+  },
+  {
+    "suite": "runtime_transmission_conditions_contract",
+    "passed": 17,
+    "total": 17
+  },
+  {
+    "suite": "runtime_domain_contract",
+    "passed": 25,
+    "total": 25
+  },
+  {
+    "suite": "qa_accept",
+    "passed": 24,
+    "total": 24
+  },
+  {
+    "suite": "release_mock_contract",
+    "passed": 28,
+    "total": 28
+  },
+  {
+    "suite": "runtime_visuals_contract",
+    "passed": 23,
+    "total": 23
+  },
+  {
+    "suite": "live_transport_contract",
+    "passed": 25,
+    "total": 25
+  },
+  {
+    "suite": "smoke_mock",
+    "passed": 3,
+    "total": 3
+  },
+  {
+    "suite": "qa_deck",
+    "passed": 445,
+    "total": 445
+  },
+  {
+    "suite": "player_runtime_recovery_contract.cjs",
+    "passed": 17,
+    "total": 17
+  },
+  {
+    "suite": "question_ack_contract.mjs",
+    "passed": 14,
+    "total": 14
+  },
+  {
+    "suite": "faq_cache_contract",
+    "passed": 27,
+    "total": 27
+  },
+  {
+    "suite": "live_voice_contract.mjs",
+    "passed": 96,
+    "total": 96
+  },
+  {
+    "suite": "session_checkpoint_contract",
+    "passed": 26,
+    "total": 26
+  },
+  {
+    "suite": "player_session_save_contract.cjs",
+    "passed": 18,
+    "total": 18
+  },
+  {
+    "suite": "runtime_customer_sites_contract",
+    "passed": 20,
+    "total": 20
+  },
+  {
+    "suite": "native_player_browser",
+    "passed": 88,
+    "total": 88
+  }
+]

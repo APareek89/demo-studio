@@ -1,0 +1,34 @@
+DURATION FIXTURE: synthetic for plumbing; actual gate covered by minimum_narration_contract
+PREPARATION FIXTURE: synthetic for plumbing; real Read readiness covered by automatic_narration_contract and release_mock_contract
+created dm_31ac9733
+sources 8
+read → align ok
+cards: images 5 facts 3 ctas 3 script batches 4 seconds 16.5 faq 0
+align reply: reply (mock)
+CTA revision → human Align ok
+approved all
+build → ready ok
+bundle v 1 segments 4 closing 3 ctas ['Book a test ride']
+lines with audio 8 / 8
+qa don't-guess ok: I'm not sure about that from the material I've bee
+pitch route ['mock4', 'mock5'] state unknown
+lead saved
+stt ok: (mock transcript)
+voices: sarvam 37
+source toggle ok
+faq template ok: 408 chars
+usage rows 0 usd 0.0
+evals ok coverage 0.0
+feedback reply: reply (mock)
+rehearsal coverage None gaps None scorecard None
+fillers 19 faq 0 timeline 9.0
+roles ['intro', 'outcome', 'features', 'establish']
+SMOKE OK dm_31ac9733
+settings ok ['en-IN', 'hi-IN'] everyday
+multi-language bundle ok: hi-IN 4 segments, audio True
+tts with language ok
+trace ok: stages {'understand': 0.5, 'coach': 0.0, 'plan': 0.0, 'author': 0.0, 'deck': 0.0, 'faq': 0.0, 'voice': 0.0, 'rehearsal': None, 'bundle': 0.0} rows 12
+jargon check ok: ['s1 line 1: states a figure or claim without a fact id — “It has a 3.4 kWh battery and 15A charging with IDC range.”', "s1 line 1: everyday register warning — jargon 'kWh' in the main narration; move the complete technical quantity to deeper unless explicitly requested, never keep a number while dropping its unit"]
+SMOKE OK (phase 2) dm_31ac9733
+SMOKE OK (on-demand rehearsal) dm_31ac9733
+OUTBOUND_ATTEMPTS 0

@@ -1,5 +1,13 @@
 # refine.MD — running log of Anand's questions and proposed solutions
 
+## Varied question acknowledgements and approved AWS release — 25 September 2026
+
+Anand accepted the improved demo, requested confirmation of website search, asked for8–10 rotating acknowledgements, and explicitly authorized master/GitHub plus AWS deployment. Use ten short neutral holding lines, once each per visit before repeating; skip them for answers ready within the existing250ms grace and for local playback commands. Preserve one locked voice and answer-first cancellation. Existing publications use exact matching clips when available or the existing runtime voice path; no rebuild or narration regeneration.
+
+The website check found a bug: BMW's enabled owner URL had a timed-out build crawl, and runtime incorrectly treated`crawl_active=false` as revoked consent. Authorize only enabled, top-level, non-excluded owner URLs independently of crawl success. Retain private-host/redirect protections, exact-domain/www equivalence, existing tool budgets and citation validation. A failed live read supplies no evidence; it never creates facts or cache entries. No public-web expansion or source/data rewrite.
+
+Deploy the tested shared runtime/gallery/search/acknowledgement changes using AWS's existing WebSocket voice. LiveKit's local-only token/origin/ICE policy cannot simply be exposed as a hosted service; retain it as an optional local trial and explicitly report that boundary. Preserve AWS BMW, visits, credentials, proxy and shared storage; stage isolated mocked gates before a backed-up code-only cutover. No paid QA or live-provider rebuild is part of this release.
+
 ## LiveKit input and consecutive-picture correction — 25 September 2026
 
 User review found no recognized speech, an apparently unanswered typed question and the same BMW photograph walking/zooming in again between the first two content slides. The saved visit proves the typed interior question reached the graph; mock reasoning and a roughly175ms mock audio clip made delivery unhelpful. The shared `mute=1` link additionally disabled default voice input/output. Mock RTC acceptance did not establish a usable conversational demo.
