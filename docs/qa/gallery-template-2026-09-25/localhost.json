@@ -1,0 +1,26 @@
+{
+  "url": "http://127.0.0.1:8910/#/home",
+  "status": 200,
+  "storage": "local",
+  "mock": false,
+  "cloud_enabled": false,
+  "new_session_created": false,
+  "provider_requests": 0,
+  "frontend": [
+    {
+      "path": "web/player/walkthrough.js",
+      "served_matches_checkout": true,
+      "sha256": "d978391e65d654f60fa94c8ce61103b1c7846c8019f8efb78d04aa6cfb52bc5b"
+    },
+    {
+      "path": "web/player/player.js",
+      "served_matches_checkout": true,
+      "sha256": "e03be1b3c969b58009c08d0f5b8439417e21c680d24305aa68bbe2e7beaacea7"
+    },
+    {
+      "path": "web/player-ui.css",
+      "served_matches_checkout": true,
+      "sha256": "905ac3369b803c6a023e7be18d2a08e0b3902e2ff669b2d6084c3899b48e8c62"
+    }
+  ]
+}

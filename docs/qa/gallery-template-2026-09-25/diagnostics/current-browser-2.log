@@ -1,0 +1,56 @@
+PASS 1440px hero remains native
+PASS 1440px gallery default mounted
+PASS 1440px shell geometry and type unchanged from baseline
+PASS 1440px line 0 retains exact audio, caption and checkpoint
+PASS 1440px line 0 audio begins after gallery ready
+PASS 1440px line 0 uses mapped image
+PASS 1440px line 0 shows exact reviewed tag
+PASS 1440px line 0 viewport remains bounded
+PASS 1440px line 1 retains exact audio, caption and checkpoint
+PASS 1440px line 1 audio begins after gallery ready
+PASS 1440px line 1 uses mapped image
+PASS 1440px line 1 shows exact reviewed tag
+PASS 1440px line 1 viewport remains bounded
+PASS 1440px line 2 retains exact audio, caption and checkpoint
+PASS 1440px line 2 audio begins after gallery ready
+PASS 1440px line 2 uses mapped image
+PASS 1440px line 2 shows exact reviewed tag
+PASS 1440px source caption gets no invented pointer
+PASS 1440px line 2 viewport remains bounded
+PASS 1440px approved bundle remains byte-equivalent
+PASS 1440px explicit media-empty stays native text-only
+PASS 1440px illustration caption has no pointer
+PASS 390px hero remains native
+PASS 390px gallery default mounted
+PASS 390px shell geometry and type unchanged from baseline
+PASS 390px line 0 retains exact audio, caption and checkpoint
+PASS 390px line 0 audio begins after gallery ready
+PASS 390px line 0 uses mapped image
+PASS 390px line 0 shows exact reviewed tag
+PASS 390px line 0 viewport remains bounded
+PASS 390px line 1 retains exact audio, caption and checkpoint
+PASS 390px line 1 audio begins after gallery ready
+PASS 390px line 1 uses mapped image
+PASS 390px line 1 shows exact reviewed tag
+PASS 390px line 1 viewport remains bounded
+PASS 390px line 2 retains exact audio, caption and checkpoint
+PASS 390px line 2 audio begins after gallery ready
+PASS 390px line 2 uses mapped image
+PASS 390px line 2 shows exact reviewed tag
+PASS 390px source caption gets no invented pointer
+PASS 390px line 2 viewport remains bounded
+PASS 390px approved bundle remains byte-equivalent
+PASS 390px explicit media-empty stays native text-only
+PASS 390px illustration caption has no pointer
+PASS Narration waits during visual entrance
+PASS Pause during move freezes camera and cancels stale audio
+PASS Resume starts the exact interrupted line once
+PASS Question retains original line checkpoint
+PASS Return restores exact approved line and one voice
+PASS Rapid jump leaves only newest slide and audio
+PASS Stop during move prevents delayed narration
+PASS Restart creates clean first line ownership
+PASS Resize during narration preserves active line and viewport
+PASS Resize during move releases preparation without hanging
+PASS Reduced motion settles without a running camera animation
+PASS No browser script errors or external requests

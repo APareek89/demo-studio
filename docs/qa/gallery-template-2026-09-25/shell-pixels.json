@@ -1,0 +1,47 @@
+{
+  "capture": "Playwright animations=disabled, actual mountPlayer same fixture and viewport, eacbb57 vs current",
+  "comparisons": [
+    {
+      "width": 1440,
+      "selector": ".pl-top",
+      "different_pixels": 0,
+      "max_channel_delta": 0,
+      "pixels": 77760
+    },
+    {
+      "width": 1440,
+      "selector": ".pl-dock",
+      "different_pixels": 3019,
+      "max_channel_delta": 1,
+      "pixels": 217440
+    },
+    {
+      "width": 1440,
+      "selector": ".pl-action-bar",
+      "different_pixels": 609,
+      "max_channel_delta": 1,
+      "pixels": 50400
+    },
+    {
+      "width": 390,
+      "selector": ".pl-top",
+      "different_pixels": 0,
+      "max_channel_delta": 0,
+      "pixels": 19110
+    },
+    {
+      "width": 390,
+      "selector": ".pl-dock",
+      "different_pixels": 2646,
+      "max_channel_delta": 9,
+      "pixels": 51480
+    },
+    {
+      "width": 390,
+      "selector": ".pl-action-bar",
+      "different_pixels": 514,
+      "max_channel_delta": 1,
+      "pixels": 11700
+    }
+  ]
+}

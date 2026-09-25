@@ -108,7 +108,7 @@ function customerUrls(text, limit = 8) {
 // Return lifecycle methods for web/app.js:renderPlay; all visit state stays inside this player.
 export function mountPlayer(host, bundle, api) {
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
-  const walkthroughEnabled = new URLSearchParams(window.location.search).get("presentation") === "walkthrough";
+  const walkthroughEnabled = new URLSearchParams(window.location.search).get("presentation") !== "native";
   // Keep the current route, audio, customer input, timing and report fields together for this visit.
   // Run and listening counters identify the owner of asynchronous work; server/runtime_state.py:claim_turn uses matching session IDs.
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: null, intakeOpen: false,
@@ -474,7 +474,7 @@ export function mountPlayer(host, bundle, api) {
   function showSlideView(slide, { reveal = -1 } = {}) {
     if (cur && cur.slide.id === slide.id && cur.view.el.isConnected) { cur.view.setRevealed(reveal); cur.view.highlight(null); cur.view.setPosition?.(slidePosition(slide)); return cur.view; }
     if (cur) { const old = cur; noteVisit(old); old.view.el.classList.remove("on"); setTimeout(() => old.view.destroy(), 700); }
-    let view = renderSlide(slide, { fit: true, theme: visualTheme, position: slidePosition(slide), walkthrough: walkthroughEnabled });
+    let view = renderSlide(slide, { fit: true, theme: visualTheme, position: slidePosition(slide) });
     view = presentation.wrap(slide, view, { reveal, jump: !!S.conversationOrigin, position: slidePosition(slide) });
     view.setRevealed(reveal);
     el.stack.append(view.el);
@@ -1062,6 +1062,9 @@ export function mountPlayer(host, bundle, api) {
     for (let j = from; j < upto; j++) {
       if (run !== S.run) return false;
       S.line = j; S.playback.line = j;
+      // Finish the gallery's current camera move before the existing audio owner starts this line.
+      if (view.prepareLine && !(await view.prepareLine(j))) return false;
+      if (run !== S.run) return false;
       const ln = sl.lines[j]; view.setRevealed(j); el.cite.textContent = ln.fact_ids?.length ? "sources: " + ln.fact_ids.join(", ") : "";
       const spoken = await speak(ln.text, run, ln.audio);
       if (!spoken) return false;

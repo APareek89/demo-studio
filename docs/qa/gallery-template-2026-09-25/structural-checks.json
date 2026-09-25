@@ -1,0 +1,73 @@
+{
+  "passed": 17,
+  "checks": [
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/00-workflow.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/01-master.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/02-understand.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/03-align.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/04-build.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/05-runtime.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/06-playground.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/07-observability.mmd",
+      "passed": true
+    },
+    {
+      "check": "Mermaid source/viewer parity docs/mermaid/08-runtime-graph.mmd",
+      "passed": true
+    },
+    {
+      "check": "JS syntax web/player/walkthrough.js",
+      "passed": true
+    },
+    {
+      "check": "JS syntax web/player/player.js",
+      "passed": true
+    },
+    {
+      "check": "JS syntax evals/player_walkthrough_contract.cjs",
+      "passed": true
+    },
+    {
+      "check": "JS syntax evals/gallery_image_load_contract.cjs",
+      "passed": true
+    },
+    {
+      "check": "Python syntax evals/gallery_template_browser.py",
+      "passed": true
+    },
+    {
+      "check": "Inline JS syntax evals/gallery_template_contract.html #0",
+      "passed": true
+    },
+    {
+      "check": "Inline JS syntax evals/player_contract.html #0",
+      "passed": true
+    },
+    {
+      "check": "Whitespace diff",
+      "passed": true
+    }
+  ]
+}

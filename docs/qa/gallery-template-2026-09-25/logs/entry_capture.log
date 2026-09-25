@@ -1,0 +1,42 @@
+[
+  {
+    "width": 1440,
+    "phase": "walking",
+    "opacity": "1",
+    "decoded": [
+      {
+        "width": 1576,
+        "src": "/media/dm_7bbf10d0/derived/src_648d3c_creta-highlights-knightking__cretakingleathergear_clean.jpg"
+      },
+      {
+        "width": 1576,
+        "src": "/media/dm_7bbf10d0/derived/e417292d6339045baae58605694356e6f9387e0a8a01324f730f1f9c751f8310_clean.jpg"
+      },
+      {
+        "width": 1576,
+        "src": "/media/dm_7bbf10d0/derived/f7323ba15c324046d54f5ba682e6370a5095ec5ae64336f6d075c9c7867103c6_clean.jpg"
+      }
+    ],
+    "audio": []
+  },
+  {
+    "width": 390,
+    "phase": "walking",
+    "opacity": "0.992914",
+    "decoded": [
+      {
+        "width": 1576,
+        "src": "/media/dm_7bbf10d0/derived/src_648d3c_creta-highlights-knightking__cretakingleathergear_clean.jpg"
+      },
+      {
+        "width": 1576,
+        "src": "/media/dm_7bbf10d0/derived/e417292d6339045baae58605694356e6f9387e0a8a01324f730f1f9c751f8310_clean.jpg"
+      },
+      {
+        "width": 1576,
+        "src": "/media/dm_7bbf10d0/derived/f7323ba15c324046d54f5ba682e6370a5095ec5ae64336f6d075c9c7867103c6_clean.jpg"
+      }
+    ],
+    "audio": []
+  }
+]

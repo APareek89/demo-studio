@@ -1,0 +1,152 @@
+{
+  "scroll": 780,
+  "width": 390,
+  "body": 390,
+  "offenders": [
+    {
+      "class": "pl-drawer",
+      "left": 390,
+      "right": 780,
+      "width": 390,
+      "overflow": "visible",
+      "position": "absolute",
+      "visibility": "visible"
+    },
+    {
+      "class": "head",
+      "left": 390,
+      "right": 780,
+      "width": 390,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": "drawer-title",
+      "left": 408,
+      "right": 524.34375,
+      "width": 116.34375,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 408,
+      "right": 427,
+      "width": 19,
+      "overflow": "hidden",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 409.5833435058594,
+      "right": 425.4166564941406,
+      "width": 15.83331298828125,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 413.5416564941406,
+      "right": 421.4583435058594,
+      "width": 7.91668701171875,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": "icon-btn",
+      "left": 731,
+      "right": 762,
+      "width": 31,
+      "overflow": "visible",
+      "position": "relative",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 737.5,
+      "right": 755.5,
+      "width": 18,
+      "overflow": "hidden",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 742,
+      "right": 751,
+      "width": 9,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": "body",
+      "left": 390,
+      "right": 780,
+      "width": 390,
+      "overflow": "auto",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": "composer",
+      "left": 390,
+      "right": 780,
+      "width": 390,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": "",
+      "left": 404,
+      "right": 716,
+      "width": 312,
+      "overflow": "clip",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": "btn primary sm",
+      "left": 724,
+      "right": 766,
+      "width": 42,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 736,
+      "right": 754,
+      "width": 18,
+      "overflow": "hidden",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 738.25,
+      "right": 751.75,
+      "width": 13.5,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    },
+    {
+      "class": {},
+      "left": 743.5,
+      "right": 751.75,
+      "width": 8.25,
+      "overflow": "visible",
+      "position": "static",
+      "visibility": "visible"
+    }
+  ],
+  "animations": []
+}

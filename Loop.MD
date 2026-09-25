@@ -1,5 +1,13 @@
 # Loop.MD — Demo Studio
 
+## Default middle-slide gallery — 25 September 2026
+
+Loop remains off. The user approved template integration only in the middle image area and authorized master/GitHub publication. Top navigation and bottom transcript/microphone/chat/actions retain their current structure and geometry. No Build/agent/node/prompt or grounding/duration changes; no paid run or AWS deployment.
+
+Final free gates: qa_deck399/399, qa_accept24/24, smoke3/3; full mock release28/28 with194.22seconds measured synthetic narration, real publication guard and saved session. Noise31/31, live voice96/96. Focused player/native contracts143/143: fundamental10, listen16, HTTP6, customer sites19, focus21, priority11, media7, native fallback/geometry18, runtime recovery17, session save18. New gallery image/interaction contract14/14. Actual-player gallery browser312/312; final targeted preparation-click/scroll checks12/12; existing player browser87/87. Syntax/structure/whitespace17/17 includes all9 Mermaid source/viewer copies.
+
+Baseline85/87 is retained alongside the two phone evidence corrections and the cold-image fixture wait. Actual published CRETA acceptance requires loaded photos, all reviewed captions, exact text/audio, same-line two-picture ownership and desktop/phone shell comparisons; no vacuous empty route. The full mock journey separately verifies fresh creation/build/publication. Blocked outbound sockets and isolated DATA/GRAPH, cloud off,0provider calls; browser captures are muted/fake-audio checks, not acoustic evidence. Independent review and12-category FMEA caught/corrected cancelled loads, runtime fallback, local clicks interrupting pending narration, multi-picture evidence loss and per-photo disclosure. Source hashes, all counts, failure notes and screenshots: [gallery-template receipt](docs/qa/gallery-template-2026-09-25/README.md). No new open design question.
+
 ## Noise qualification and gallery prototype — 25 September 2026
 
 Loop remains off. Application: qa_deck399/399, qa_accept24/24, smoke3/3, zero outbound attempts. Focused contracts258/258: speech_noise31, live_voice96, live_transport25, player_listen16, player_focus21, player_runtime_recovery17, player_http_question6, player_priority_revision11, player_session_save18, sarvam_stream17. Independent review additionally exercised both real automatic-resume call chains. No new agent/node/provider or paid call.

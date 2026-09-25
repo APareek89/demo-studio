@@ -58,12 +58,16 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
 
 The 24 September feedback workbook supersedes the earlier dark Marine sample. The player
 uses a white borderless surface, selected-template dark text/buttons and native-aspect
-hero imagery across welcome/intake, faded behind the text. Content slides have a smaller
-heading and up to two distinct supported pictures side by side, rounded with a subtle shadow.
-Reviewed feature labels and anchors remain on-slide; neither a second picture nor a position
-is invented when evidence is unavailable. The current image and tags must remain visible
-while their recorded narration plays; gallery experiments cannot replace this accompaniment.
-Illustrative pictures may carry source-cited captions without guessed feature coordinates. Ordinary slides retain 75% of the player viewport,
+hero imagery across welcome/intake, faded behind the text. The approved25September gallery
+changes only the middle content-slide presentation: walk through source pictures, enlarge the
+current picture and focus its reviewed feature label. Up to two supported pictures follow their
+existing line bindings; a selectable inset retains the second picture when both support one line. Main narration begins when its image and labels are ready; the player
+retains interruption, pause, return and speech ownership. Reviewed anchors alone receive a
+pointer; illustrative or unanchored pictures retain source-cited captions without guessed
+coordinates. `hero_open`/`hero_close` (welcome/end heroes) and picture-free slides keep the native view; the
+`presentation=native` URL is a diagnostic fallback. Align’s native editor remains unchanged.
+Slide heading/footer, top navbar and bottom articulation/microphone/chat/action controls
+retain their existing structure and geometry. Ordinary slides retain 75% of the player viewport,
 with a white fixed conversation dock; short windows reserve usable controls. Portrait phones
 show rotation guidance and remain usable. Visuals retains Marine/Sage/Graphite color approval.
 Studio navigation opens blank Sources without creating a record until the first mutation;
@@ -83,7 +87,9 @@ same path without keys, including the Coach playbook and its review within the s
 
 **Current feedback gate receipt:** 51/51 suites; 1,790/1,790 reported checks/groups/phases (nested coverage overlaps); deck380/380, acceptance24/24, smoke3/3, duration19/19, upload retry12/12, workbook player101/101, full-app integration19/19, layout193/193. Full counts and fixture boundaries are in `Loop.MD`; no paid/acoustic acceptance is implied.
 
-**Latest slide gate receipt:**15suites/2,635overlapping checks; actual published-v3 render1,505/1,505 across88states, core399/24/smoke3, full mock28. Evidence/screenshots: `docs/qa/slide-continuity-2026-09-24/`. The25September checkpoint adds a free core recheck without changing application source.
+**Current gallery-template acceptance:** `docs/qa/gallery-template-2026-09-25/README.md` records the scoped browser checks, full mock verification, screenshots and release status. No paid or acoustic acceptance is implied. The preceding native browser baseline remains in `docs/qa/noise-gallery-2026-09-25/README.md`.
+
+**Earlier native-slide gate receipt:**15suites/2,635overlapping checks; actual published-v3 render1,505/1,505 across88states, core399/24/smoke3, full mock28. Evidence/screenshots: `docs/qa/slide-continuity-2026-09-24/`. The25September checkpoint adds a free core recheck without changing application source.
 
 **Runtime recovery gate receipt:**60suites/2,335overlapping checks; core386/24/smoke3, full mock journey28, new allocation17, reader10, checkpoint26, domain21 and runtime recovery17. Exact per-contract results, screenshots, FMEA and the separate paid QA record are in `docs/qa/runtime-recovery-2026-09-24/`. Master integration was authorized on25September; AWS deployment remains separate.
 

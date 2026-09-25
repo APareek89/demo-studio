@@ -1,0 +1,31 @@
+PASS new demo has exactly six review cards and no publication
+PASS text and real local image upload through source API
+PASS Read traverses extraction, Coach, Plan, Author and Deck into Align
+PASS ordinary Read prepares enough distinct cited narration without a manual preparation action
+PASS source citations survive actual extraction and reconciliation
+PASS empty Asked and answered is auto-approved without invented FAQs or rehearsal
+PASS all six Align approvals are explicit before Build
+PASS real Build/Voice/Bundle passes unchanged measured publication minimum
+PASS publication creates immutable evidence snapshot and default Marine player payload
+PASS recorded content-hash WAV is served through actual media route
+PASS Build never runs rehearsal
+PASS default player route keeps measured minimum and extends beyond three proofs
+PASS runtime answers from pinned approved evidence and learns customer answer
+PASS repeated question uses validated cache before graph reasoning and increments count
+PASS cached exact wording keeps the same recorded audio
+PASS unsupported question declines and learns a customer evidence gap
+PASS new answer and unknown require human FAQ review without changing publication
+PASS reviewer can approve learned answer
+PASS reviewed FAQ edit preserves exact words and invalidates previous audio
+PASS rejected FAQ persists as tombstone and cannot match
+PASS on-demand rehearsal creates scorecard while keeping publication and approvals
+PASS session final save is idempotent and summary follows actual transcript
+PASS share link exposes summary with no full transcript and rejects wrong key
+PASS stage and runtime traces are retained for diagnosis
+PASS newly published Marine app uses full-area welcome hero then the actual white slide renderer
+PASS typed player question traverses real HTTP runtime fallback and renders cited answer
+PASS actual player Stop saves its ended text-mode visit and heard transcript
+PASS browser journey uses no microphone, external HTTP or unhandled exception
+FIXTURES: canned provider responses; silent WAV files measured by real publication gate; no duration bypass
+RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0
+OUTBOUND_ATTEMPTS 0

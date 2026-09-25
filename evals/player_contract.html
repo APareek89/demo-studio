@@ -74,6 +74,7 @@ class FakeAudio {
     this.paused = false;
     const e = this.owner, text = decodeURIComponent(this.src.replace('fake-audio:', ''));
     e.active.add(this); e.maxActive = Math.max(e.maxActive, e.active.size); e.played.push(text); this.text = text;
+    this.visualPhase = host.querySelector('.slide.on .gallery-surface')?.dataset.state || null;
     this.onplaying?.();
     if (!e.hold(text)) queueMicrotask(() => this.finish());
     return Promise.resolve();
@@ -1037,6 +1038,13 @@ async function customLabels(facts, factIds, callouts = []) {
   assert(intake, 'Personalized fixture intake did not open');
   intake.value = 'I need room for family luggage.';
   intake.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); await flush();
+  // A cold approved opening image now prepares asynchronously before narration.
+  // Wait for that real browser event before checking the unchanged evidence rules.
+  const readyBy = performance.now() + 8000;
+  while (player.context().slide !== 'custom-1' || !env.played.includes(narration)) {
+    assert(performance.now() < readyBy, 'Fixture did not reach its personalized slide');
+    await new Promise(resolve => native.timeout.call(window, resolve, 16)); await flush();
+  }
   assert(player.context().slide === 'custom-1' && env.played.includes(narration), 'Fixture did not reach its personalized slide');
   assert(JSON.stringify(fixture.slides) === JSON.stringify(saved), 'Transient evidence mutated a reviewed deck slide');
   return {
@@ -1411,7 +1419,7 @@ test('A tall native image stays above wrapped mobile evidence', async () => {
   } finally { view.destroy(); frame.remove(); }
 });
 test('The mobile evidence cue follows actual overflow without changing slide geometry', async () => {
-  const callouts = [0, 1, 2].map(i => ({ id: 'scroll-' + i, text: 'Reviewed evidence point ' + (i + 1), fact_ids: ['f1'], placement: 'panel', reveal_on_line: i < 2 ? 0 : 1 }));
+  const callouts = [0, 1, 2, 3].map(i => ({ id: 'scroll-' + i, text: 'Reviewed evidence point ' + (i + 1), fact_ids: ['f1'], placement: 'panel', reveal_on_line: i < 2 ? 0 : 1 }));
   const saved = snapshot(callouts), { frame, view } = await renderFixture(390, { callouts });
   try {
     const hint = view.el.querySelector('.slide-scroll-hint'), panel = view.el.querySelector('.slide-panel');
@@ -1430,29 +1438,40 @@ test('The mobile evidence cue follows actual overflow without changing slide geo
   } finally { view.destroy(); frame.remove(); }
 });
 
-test('The walkthrough URL keeps the current native photo and feature tags visible with identical playback', async () => {
-  const original = location.href;
+test('Default gallery and walkthrough URL prepare the current photo and tag before its exact narration', async () => {
+  const original = location.href, originalMatchMedia = window.matchMedia;
   const configure = b => { for (const s of b.slides) { s.image_url = imageFixture; s.callouts = [{id:'native-feature',text:'Current reviewed feature',fact_ids:['f1'],placement:'overlay',anchor:{x:.64,y:.47},label_pos:{x:.12,y:.16},reveal_on_line:0}]; } return b; };
-  const currentPicture = () => {
-    const slide = host.querySelector('.slide.on'), pic = slide.querySelector('.slide-pic'), img = pic.querySelector('img'), tag = pic.querySelector('.callout[data-id="native-feature"]');
-    assert(img.src === imageFixture && tag.textContent.includes('Current reviewed feature'), 'Current narrated photo or reviewed feature was replaced');
-    assert(getComputedStyle(pic).opacity !== '0' && getComputedStyle(pic).visibility === 'visible' && getComputedStyle(tag).visibility === 'visible' && getComputedStyle(tag).opacity !== '0' && tag.getBoundingClientRect().width > 0, 'Native narrated photo or feature tag is hidden behind a presentation phase');
-    assert(!host.querySelector('.wt-hall,.wt-caption,.wt-frame'), 'An unrelated gallery or duplicate caption replaced the current slide');
-    return {image:rect(img),tag:rect(tag),picture:rect(pic)};
+  // This contract exercises real image-load/DOM handoff without spending several
+  // seconds on each decorative move. Full-motion interruption is covered by
+  // gallery_template_browser.py against the actual mountPlayer.
+  window.matchMedia = query => query === '(prefers-reduced-motion: reduce)' ? {matches:true} : originalMatchMedia.call(window, query);
+  const waitForNarration = async () => {
+    const start = performance.now();
+    while (![...env.active].some(audio => audio.text === 'First proof.')) {
+      assert(performance.now() - start < 5000, 'Prepared picture never released its recorded line');
+      await new Promise(resolve => native.timeout.call(window, resolve, 16)); await flush();
+    }
   };
   try {
-    const url = new URL(original); url.searchParams.delete('presentation'); history.replaceState(null, '', url);
-    await setup({voiceMode:false, configure}); await atProof();
-    const baseline = snapshot(player.context()), baselineSpeech = snapshot(env.played), baselinePicture = currentPicture();
-    assert(!host.querySelector('.slide-cam'), 'Default renderer acquired a camera wrapper');
-    url.searchParams.set('presentation', 'walkthrough'); history.replaceState(null, '', url);
-    await setup({voiceMode:false, configure}); await atProof();
-    assert(host.querySelector('.slide-cam') && getComputedStyle(host.querySelector('.slide-cam')).display === 'contents', 'Compatible flag changed the native camera wrapper layout');
-    assert(host.querySelectorAll('.slide-stack .slide.on').length === 1 && JSON.stringify(currentPicture()) === JSON.stringify(baselinePicture), 'Flag moved the current photo or feature tag');
-    assert(JSON.stringify(player.context()) === JSON.stringify(baseline), 'Presentation changed the playback checkpoint or profile');
-    assert(JSON.stringify(env.played) === JSON.stringify(baselineSpeech), 'Camera movement delayed or changed narration');
-    assert(host.querySelectorAll('.pl-top').length === 1 && host.querySelectorAll('.pl-dock').length === 1, 'Presentation replaced player controls');
-  } finally { player?.destroy(); player = null; history.replaceState(null, '', original); }
+    let expectedContext = null, expectedSpeech = null;
+    for (const mode of ['native', '', 'walkthrough']) {
+      const url = new URL(original); if(mode) url.searchParams.set('presentation',mode); else url.searchParams.delete('presentation'); history.replaceState(null,'',url);
+      await setup({voiceMode:false,configure});
+      assert(!host.querySelector('.slide.on.gallery-slide'), 'Welcome hero was replaced by the gallery');
+      await click('Skip the intro'); await waitForNarration();
+      const slide = host.querySelector('.slide.on'), audio = [...env.active].find(a => a.text === 'First proof.');
+      if(mode === 'native') {
+        assert(!slide.querySelector('.gallery-surface') && slide.querySelector('.slide-pic img').src === imageFixture, 'Native opt-out changed its approved picture');
+        expectedContext = snapshot(player.context()); expectedSpeech = snapshot(env.played);
+      } else {
+        const surface=slide.querySelector('.gallery-surface'),image=surface?.querySelector('.gallery-image'),tag=surface?.querySelector('.gallery-tag');
+        assert(surface?.dataset.state === 'ready' && audio.visualPhase === 'ready', 'Recorded narration began before the image and focus were ready');
+        assert(image?.src === imageFixture && tag?.textContent.includes('Current reviewed feature'), 'Gallery replaced an approved image or label');
+        assert(JSON.stringify(player.context()) === JSON.stringify(expectedContext) && JSON.stringify(env.played) === JSON.stringify(expectedSpeech), 'Gallery changed the route, checkpoint or exact narration');
+      }
+      assert(env.maxActive === 1 && host.querySelectorAll('.pl-top').length === 1 && host.querySelectorAll('.pl-dock').length === 1, 'Gallery duplicated controls or audio ownership');
+    }
+  } finally { player?.destroy(); player=null; window.matchMedia=originalMatchMedia; history.replaceState(null,'',original); }
 });
 
 runButton.textContent = 'Run checks'; runButton.disabled = false; summary.textContent = `Ready — ${cases.length} browser checks`;

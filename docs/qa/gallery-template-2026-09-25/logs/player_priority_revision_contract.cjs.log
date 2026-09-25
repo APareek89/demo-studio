@@ -1,0 +1,12 @@
+PASS actual selected rear proof survives seen filtering with exact reviewed audio/visual
+PASS ordinary continuation does not repeat a seen route
+PASS unselected or unknown permission cannot authorize a seen route
+PASS completed prefix is retained before explicit selected revisit
+PASS pending plan never applies prematurely
+PASS current return boundary stays owned before refined route
+PASS explicit continue from actual closing point plays full reviewed revisit, not only preface
+PASS ordinary covered slide still uses its original brief replay
+PASS ordinary closing remains unchanged without ready refinement
+PASS superseded closing continuation never delivers revised proof
+PASS a reviewed revisit skips its legacy question check-in without reopening a wait
+Player priority revision contracts: 11/11; no browser/network/provider

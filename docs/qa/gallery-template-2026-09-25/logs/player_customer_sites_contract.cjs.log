@@ -1,0 +1,20 @@
+PASS bare placeholder is normalized to HTTPS
+PASS full HTTP, HTTPS and www URLs are retained in order
+PASS uppercase HTTP scheme is not prefixed a second time
+PASS brackets and trailing sentence marks stay outside the URL
+PASS emails do not become domains or subdomain fragments
+PASS decimal specifications do not become sites
+PASS bare documents, code files and unlisted suffixes are not websites
+PASS public suffixes and supported two-level domains remain websites
+PASS explicit scheme and www tokens retain existing suffix acceptance
+PASS normalization deduplicates bare and full copies
+PASS intake URL parsing keeps the first five distinct sites
+PASS intake submits the actual answer once and stores only five field URLs
+PASS a sites-only submission does not fabricate an intake response
+PASS a sites-only submission before the prompt ends resolves the later intake wait
+PASS accepted customer messages append sites up to eight without duplicates
+PASS URLs in guide speech never join the customer allow-list
+PASS every runtime profile carries an independent copy of the saved sites
+PASS skipping context retains websites the customer entered
+PASS restart clears field and URL profile for the new visit
+Player customer sites contracts: 19/19; real helpers, no browser/network/provider

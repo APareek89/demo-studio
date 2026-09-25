@@ -1,0 +1,7 @@
+PASS successful HTTP answer clears its deadline and ownership
+PASS timeout is exactly 16s and aborts even an uncooperative request
+PASS run cancellation settles immediately and aborts the request
+PASS late old completion cannot clear the replacement request owner
+PASS synchronous API failure clears timeout and retains the original error
+PASS HTTP API forwards optional AbortSignal without altering request body
+Player HTTP question contracts: 6/6; no network/providers

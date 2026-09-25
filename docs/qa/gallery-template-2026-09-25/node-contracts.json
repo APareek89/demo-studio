@@ -1,0 +1,62 @@
+[
+  {
+    "test": "evals/player_fundamental_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player fundamental contracts: 10/10; no browser/network/provider",
+    "test_sha256": "1f52e8edc2788968141df2a9816a7baf6f92ceeab4679ee0842938d1ed5dcf94"
+  },
+  {
+    "test": "evals/player_listen_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player listen contracts: 16/16; real functions, virtual time, no browser/network/provider",
+    "test_sha256": "f2d6dfc5c3b2e577fb854f94d6d9155d0db0b2bae02276be2e475e38ae56ea3d"
+  },
+  {
+    "test": "evals/player_http_question_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player HTTP question contracts: 6/6; no network/providers",
+    "test_sha256": "b4e79e9981f2ca141f8fb8873ff6f136d300f159c60bf8b5dcd56300575aca91"
+  },
+  {
+    "test": "evals/player_customer_sites_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player customer sites contracts: 19/19; real helpers, no browser/network/provider",
+    "test_sha256": "9cd5cc7c14d64bb46aa524754476019617fd55dd564bbb38391b332fce328f58"
+  },
+  {
+    "test": "evals/player_focus_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player focus contracts: 21/21 (real function; no UI/network/providers)",
+    "test_sha256": "30c99d1ee6edb3f26d5d5749f7c1e4964dd2c5ce0d9a4749358e020fa5ffb221"
+  },
+  {
+    "test": "evals/player_priority_revision_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player priority revision contracts: 11/11; no browser/network/provider",
+    "test_sha256": "81bb7311447dbf48cd4655d497e7cd27ca59cb0013c6368bab9b8d340f15217d"
+  },
+  {
+    "test": "evals/player_media_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player media contracts: 7/7; no browser/network/provider",
+    "test_sha256": "e790dac0f28900ca4b4838c2b50b27e1c5710254062e55ae12144ef19a10773e"
+  },
+  {
+    "test": "evals/player_walkthrough_contract.cjs",
+    "exit_code": 0,
+    "summary": "Walkthrough native fallback and geometry: 18/18 (non-DOM fallback and geometry; full gallery covered by browser contract)",
+    "test_sha256": "8d97a84b048f56afa0a0ed646cf2c5fc5ce6732807d94f5619568f0b5f29f5f6"
+  },
+  {
+    "test": "evals/player_runtime_recovery_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player runtime recovery contracts: 17/17; no browser/network/providers",
+    "test_sha256": "0d64b30c83e7d1524b7addee497dd6f43e75dbbc6362cde331a9a367c96aee11"
+  },
+  {
+    "test": "evals/player_session_save_contract.cjs",
+    "exit_code": 0,
+    "summary": "Player session save contracts: 18/18; no network/providers",
+    "test_sha256": "52f1eb7802c7712f8be237380bf9750192b92cc9a3e5f8433e934a8db04e57e7"
+  }
+]

@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Gallery integration must preserve the whole narrated evidence set
+
+**Symptom found before release:** the approved gallery prototype used one curated feature picture per step, while real published slides sometimes contain two pictures and labels starting on the same narration line. A last-picture choice silently hid the other evidence. Independent review also reproduced cancelled image loads moving a paused view, immediate Q&A failures hiding the native view, and a local feature click cancelling pending preparation without changing the player’s run owner.
+
+**Correction:** keep the gallery inside the middle slide only, preserve both same-line pictures and their exact labels, and focus the owning picture when a label is selected. Stage image loads under the current generation; bound failures and restore native rendering. Guard local selections during preparation. The existing player awaits ready pictures/labels before starting the unchanged clip and still owns cancellation, navigation and resume. No prototype example coordinates are transplanted into new demos; only reviewed anchors can produce pointers.
+
+**Prevention:** test actual published multi-image data, not only a curated prototype. Require positive decoded-image and label counts, exact audio/text identity, unchanged top/bottom geometry, cancellation and failure recovery. The first CRETA harness accidentally exercised an empty route and then misresolved macOS /tmp assets; these harness failures are retained and corrected before final acceptance. The old native phone-font failure is fixed within the now-authorized slide scope, and a four-label fixture tests real overflow instead of contradicting intentional three-label wrapping.
+
+**Evidence:** [gallery template acceptance](docs/qa/gallery-template-2026-09-25/README.md) and its twelve-category FMEA retain baseline, final counts, source hashes and screenshots. No paid provider or physical microphone acceptance is implied. The earlier preview-only decision is superseded by explicit approval to integrate only the middle presentation and commit to master; navbar, transcript, microphone and other bottom controls remain unchanged.
+
 ## 2026-09-25 — Throat-clearing could own a customer turn
 
 **Symptom:** Anand reports throat-clearing interrupts the localhost demo. Confirmed code loopholes: `[clears throat]`, `[coughing]?` and `Ahem?` escaped the limited noise filter; question punctuation qualified them. Legacy one-shot capture cancelled the three-second timer on volume alone.

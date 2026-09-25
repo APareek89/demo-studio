@@ -1,0 +1,86 @@
+Legacy baseline 85 87
+PASS 1440px hero remains native
+PASS 1440px gallery default mounted
+PASS 1440px shell geometry and type unchanged from baseline
+PASS 1440px line 0 retains exact audio, caption and checkpoint
+PASS 1440px line 0 audio begins after gallery ready
+PASS 1440px line 0 uses mapped image
+PASS 1440px line 0 shows exact reviewed tag
+FAIL 1440px line 0 viewport remains bounded
+PASS 1440px line 1 retains exact audio, caption and checkpoint
+PASS 1440px line 1 audio begins after gallery ready
+PASS 1440px line 1 uses mapped image
+PASS 1440px line 1 shows exact reviewed tag
+FAIL 1440px line 1 viewport remains bounded
+PASS 1440px line 2 retains exact audio, caption and checkpoint
+PASS 1440px line 2 audio begins after gallery ready
+PASS 1440px line 2 uses mapped image
+PASS 1440px line 2 shows exact reviewed tag
+FAIL 1440px source caption gets no invented pointer
+FAIL 1440px line 2 viewport remains bounded
+PASS 1440px approved bundle remains byte-equivalent
+PASS 1440px explicit media-empty stays native text-only
+PASS 1440px illustration caption has no pointer
+PASS 390px hero remains native
+PASS 390px gallery default mounted
+PASS 390px shell geometry and type unchanged from baseline
+PASS 390px line 0 retains exact audio, caption and checkpoint
+PASS 390px line 0 audio begins after gallery ready
+PASS 390px line 0 uses mapped image
+PASS 390px line 0 shows exact reviewed tag
+FAIL 390px line 0 viewport remains bounded
+PASS 390px line 1 retains exact audio, caption and checkpoint
+PASS 390px line 1 audio begins after gallery ready
+PASS 390px line 1 uses mapped image
+PASS 390px line 1 shows exact reviewed tag
+FAIL 390px line 1 viewport remains bounded
+PASS 390px line 2 retains exact audio, caption and checkpoint
+PASS 390px line 2 audio begins after gallery ready
+PASS 390px line 2 uses mapped image
+PASS 390px line 2 shows exact reviewed tag
+PASS 390px source caption gets no invented pointer
+FAIL 390px line 2 viewport remains bounded
+PASS 390px approved bundle remains byte-equivalent
+PASS 390px explicit media-empty stays native text-only
+PASS 390px illustration caption has no pointer
+PASS Narration waits during visual entrance
+PASS Pause during move freezes camera and cancels stale audio
+PASS Resume starts the exact interrupted line once
+PASS Question retains original line checkpoint
+PASS Return restores exact approved line and one voice
+PASS Rapid jump leaves only newest slide and audio
+PASS Stop during move prevents delayed narration
+PASS Restart creates clean first line ownership
+FAIL Resize during narration preserves active line and viewport
+PASS Resize during move releases preparation without hanging
+FAIL Reduced motion settles without a running camera animation
+Traceback (most recent call last):
+  File "/Users/macbook/Documents/demo-studio/evals/gallery_template_browser.py", line 175, in <module>
+    for server in servers:server.shutdown()
+                                         ^^^
+  File "/Users/macbook/Documents/demo-studio/evals/gallery_template_browser.py", line 157, in main
+    if args.creta.exists():
+                ^^^^^^^^^^^^
+  File "/Users/macbook/Documents/demo-studio/evals/gallery_template_browser.py", line 89, in click
+    def setup(page,base):
+                         ^
+  File "/Users/macbook/Documents/demo-studio/.venv/lib/python3.11/site-packages/playwright/sync_api/_generated.py", line 9413, in evaluate
+    self._sync(
+  File "/Users/macbook/Documents/demo-studio/.venv/lib/python3.11/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/Users/macbook/Documents/demo-studio/.venv/lib/python3.11/site-packages/playwright/_impl/_page.py", line 474, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/macbook/Documents/demo-studio/.venv/lib/python3.11/site-packages/playwright/_impl/_frame.py", line 346, in evaluate
+    await self._channel.send(
+  File "/Users/macbook/Documents/demo-studio/.venv/lib/python3.11/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/macbook/Documents/demo-studio/.venv/lib/python3.11/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: Error: Missing button The key choices
+    at Object.click (http://127.0.0.1:49676/:40:61)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:16)
+    at UtilityScript.evaluate (<anonymous>:318:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)

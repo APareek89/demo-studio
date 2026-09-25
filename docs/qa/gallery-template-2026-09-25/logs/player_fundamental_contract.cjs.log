@@ -1,0 +1,11 @@
+PASS initial fallback reserves one fundamental before buyer focus
+PASS already-first fundamental is not duplicated
+PASS visited and covered fundamentals cannot be forced ahead of buyer focus
+PASS all fundamentals seen leaves focus first
+PASS later fallback retains focus order without another reservation
+PASS validated server route is not locally rewritten
+PASS legacy flags absent keep existing route order
+PASS legacy segment-to-slide adapter carries fundamental flag
+PASS intake request is initial and explicit priority correction is refinement
+PASS opening-resume request also stays initial
+Player fundamental contracts: 10/10; no browser/network/provider

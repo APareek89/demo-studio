@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery production player acceptance</title>
+<link rel="stylesheet" href="/web/styles.css"><link rel="stylesheet" href="/web/design-system.css"><link rel="stylesheet" href="/web/player-ui.css">
+<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}#fixture{width:100%;height:100vh}#fixture .pl{height:100%}</style>
+<div id="fixture"></div>
+<script type="module">
+const host=document.querySelector('#fixture');
+const audioURL=text=>'fixture-audio:'+encodeURIComponent(text);
+const svg=(color,other)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="600"><rect width="1120" height="600" fill="${color}"/><rect x="140" y="100" width="800" height="390" rx="50" fill="${other}"/><circle cx="270" cy="450" r="72" fill="#263443"/><circle cx="820" cy="450" r="72" fill="#263443"/></svg>`);
+const photos=[svg('#dbe5e6','#668c8e'),svg('#ece8df','#a58d72'),svg('#dce2ee','#7e8a9e')];
+const line=(id,text)=>({id,text,fact_ids:['F1'],audio:audioURL(text)});
+const slide=(id,kind,title,lines=[])=>({id,segment_id:id,kind,title,topics:['Details'],lines:lines.map((t,i)=>line(id+'-'+i,t)),deeper:[],checkin:{text:'',audio:null},callouts:[],motion:'none',image_parts:[]});
+function synthetic(){
+ const a=slide('pair','proof','Two reviewed pictures',['Approved first image detail.','Approved second image detail.','Approved source caption without a pointer.']);
+ a.media=[{image_id:'front',image_url:photos[0],from_line:0},{image_id:'cabin',image_url:photos[1],from_line:1},{image_id:'ignored-third',image_url:photos[2],from_line:2}];a.image_url=photos[0];a.image_id='front';
+ a.callouts=[{id:'front-tag',image_id:'front',text:'Front feature',fact_ids:['F1'],part:'Front wheel',part_box:{x:.2,y:.5,w:.13,h:.25},placement:'overlay',confidence:.98,anchor:{x:.241,y:.75},label_pos:{x:.06,y:.08},reveal_on_line:0},
+ {id:'cabin-tag',image_id:'cabin',text:'Cabin feature',fact_ids:['F2'],part:'Rear detail',part_box:{x:.66,y:.5,w:.14,h:.25},placement:'overlay',confidence:.98,anchor:{x:.732,y:.75},label_pos:{x:.55,y:.08},reveal_on_line:1},
+ {id:'panel-tag',image_id:'cabin',text:'Supported source caption',fact_ids:['F3'],placement:'panel',anchor:null,label_pos:null,reveal_on_line:2}];
+ const text=slide('text','proof','Reviewed terms',['Approved terms remain exactly as written.']);text.media=[];text.image_url=photos[2];
+ const untrusted=slide('untrusted','proof','Unanchored illustration',['Approved illustrated caption.']);untrusted.media=[{image_id:'illustration',image_url:photos[1],from_line:0,proxy:true}];untrusted.image_url=photos[1];untrusted.callouts=[{id:'illustrated-tag',image_id:'illustration',text:'Cited illustrated fact',fact_ids:['F3'],placement:'panel',anchor:null,label_pos:null,reveal_on_line:0}];
+ const hero=slide('hero','hero_open','Welcome');hero.image_url=photos[0];const close=slide('hero-end','hero_close','Closing');close.image_url=photos[1];
+ return {name:'Free gallery fixture',version:1,language:'en-IN',visual_theme:'marine',product:{name:'Reviewed product'},voice:{provider:'sarvam',persona:{persona_name:'Guide'}},intake:{q1:'What matters to you?',audio:{q1:audioURL('What matters to you?')}},slides:[hero,a,text,untrusted,close],facts:[{id:'F1',claim:'Front feature',value:'Approved'},{id:'F2',claim:'Cabin feature',value:'Approved'},{id:'F3',claim:'Source caption',value:'Approved'}],media:{},ctas:[],fillers:{}};
+}
+let player,bundle,env;
+class FakeAudio {
+ constructor(src){this.src=src;this.currentTime=0;this.duration=8;this.paused=true;this.playbackRate=1;this.owner=env;}
+ load(){}removeAttribute(){}addEventListener(type,fn){this['on'+type]=fn;}removeEventListener(type,fn){if(this['on'+type]===fn)this['on'+type]=null;}
+ play(){this.paused=false;const e=this.owner;e.active.add(this);e.maxActive=Math.max(e.maxActive,e.active.size);const sl=host.querySelector('.slide.on');const record={src:this.src,text:e.audioMap[this.src]||decodeURIComponent(this.src.replace('fixture-audio:','')),at:performance.now(),slide:player?.context().slide,phase:sl?.querySelector('.gallery-surface')?.dataset.state||null,cap:host.querySelector('.pl-cap .txt')?.textContent};e.played.push(record);this.text=record.text;this.onplaying?.();if(!e.held.has(this.src))queueMicrotask(()=>this.finish());return Promise.resolve();}
+ pause(){this.paused=true;this.owner.active.delete(this);}
+ finish(){if(this.paused)return;this.currentTime=this.duration;this.paused=true;this.owner.active.delete(this);this.onended?.();}
+}
+window.Audio=FakeAudio;window.SpeechRecognition=undefined;window.webkitSpeechRecognition=undefined;window.microphoneAttempts=0;
+if(navigator.mediaDevices)navigator.mediaDevices.getUserMedia=()=>{window.microphoneAttempts++;return Promise.reject(new Error('Microphone disabled in gallery acceptance'));};
+const {mountPlayer}=await import('/web/player/player.js');
+const originalFetch=window.fetch.bind(window);
+const flush=async()=>{for(let i=0;i<60;i++)await Promise.resolve();};
+async function setup(input){player?.destroy();await flush();bundle=input||synthetic();env={played:[],active:new Set(),held:new Set(),audioMap:{},qa:[],saved:[],maxActive:0,original:JSON.stringify(bundle)};for(const s of bundle.slides||[])for(const l of [...s.lines||[],...s.deeper||[]])if(l.audio){env.audioMap[l.audio]=l.text;env.held.add(l.audio);}
+ player=mountPlayer(host,bundle,{qa:async request=>{env.qa.push(structuredClone(request));return {answered:true,answer:'The approved source answers this.',audio:audioURL('The approved source answers this.'),fact_ids:['F1'],topic:'Details',route:'stay',from_bank:true};},tts:async text=>audioURL(text),pitch:async()=>null,lead:async()=>({}),saveSession:async record=>env.saved.push(structuredClone(record)),beacon:record=>env.saved.push(structuredClone(record))});await flush();return state();}
+function button(text){return [...host.querySelectorAll('button')].find(b=>b.textContent.trim()===text||b.title===text||b.getAttribute('aria-label')===text);}
+async function click(text){const b=button(text);if(!b)throw Error('Missing button '+text);b.click();await flush();}
+async function question(text){const i=host.querySelector('.pl-reply input');i.value=text;i.form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));i.blur();await flush();}
+function geometry(){const selectors=['.pl-top','.pl-progress','.pl-dock','.pl-cap','.pl-controls','.pl-reply','.pl-action-bar'];return Object.fromEntries(selectors.map(s=>{const e=host.querySelector(s),r=e?.getBoundingClientRect();return[s,r?{x:r.x,y:r.y,w:r.width,h:r.height,font:getComputedStyle(e).font,fontSize:getComputedStyle(e).fontSize,padding:getComputedStyle(e).padding,margin:getComputedStyle(e).margin}:null]}));}
+function state(){const sl=host.querySelector('.slide.on');return {context:player?.context(),played:env.played,active:[...env.active].map(a=>({src:a.src,text:a.text,time:a.currentTime})),maxActive:env.maxActive,qa:env.qa,geometry:geometry(),unchanged:JSON.stringify(bundle)===env.original,slideClass:sl?.className,slideData:{...sl?.dataset},animations:host.getAnimations({subtree:true}).map(a=>({state:a.playState,time:a.currentTime,target:a.effect?.target?.className})),caption:host.querySelector('.pl-cap .txt')?.textContent};}
+window.galleryQA={setup,synthetic,state,click,question,bundle:()=>bundle,finish:async()=>{[...env.active].forEach(a=>a.finish());await flush();},destroy:()=>player.destroy(),loadCreta:async()=>setup(await (await originalFetch('/fixtures/creta.json')).json())};
+await setup();window.galleryQA.ready=true;
+</script></html>

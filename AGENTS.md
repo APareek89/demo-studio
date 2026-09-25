@@ -9,7 +9,7 @@ menu of options, never make him read code to understand a change.
 Hard rules — no exceptions:
 - Work on the existing implementation branch; use the current tested release for newly requested branch work.
   Merge into the repository default `master` only when Anand explicitly instructs it. He authorized the completed
-  work through `cf30dba` on 25 September 2026; this does not authorize an AWS deployment. Commit working states
+  approved middle-only gallery integration and preceding `eacbb57` noise fix on 25 September 2026; this does not authorize an AWS deployment. Commit working states
   with plain-language messages. The former `slides-v1` starting point is historical.
 - No change to the architecture, the data model, services, dependencies, provider order, the product rules inside
   prompts, or the no-build front end (plain ES modules + CSS, no bundler) without Anand's written OK. When in doubt, ask

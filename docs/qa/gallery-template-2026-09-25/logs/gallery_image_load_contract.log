@@ -1,0 +1,15 @@
+PASS a canceled pending narration photo cannot replace or reposition the frozen image
+PASS runtime reveal stays synchronous and a failed photo restores native content
+PASS a stalled runtime photo reaches native fallback at the bounded load deadline
+PASS a frozen runtime reveal ignores its late load, error and expired deadline
+PASS a superseding answer retains its photo after the previous load completes
+PASS an owned successful runtime load attaches the decoded image and releases its resources
+PASS failed narration image preparation permits native narration fallback
+PASS destroy releases pending loads, listeners and observers without a late DOM change
+PASS same-line photos retain both exact captions and swap image ownership without narration
+PASS an explicit per-line image mapping retains single-picture presentation
+PASS same-line unanchored captions never invent a pointer when either photo is focused
+PASS illustration disclosure follows its own photo through primary and inset swaps
+PASS local caption and inset clicks during entrance and focusing cannot cancel narration preparation
+PASS new primary pixels cannot retain the previous photo captions while the inset loads
+Gallery image loading contracts: 14/14; no browser/network/providers

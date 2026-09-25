@@ -1,0 +1,19 @@
+PASS walkthrough compatibility: non-DOM fallback returns the exact renderer and every original method
+PASS walkthrough compatibility: flag-off compatibility leaves the renderer and source unchanged
+PASS walkthrough compatibility: hero and closing keep their own source pictures without gallery substitution
+PASS walkthrough compatibility: narration reveal reaches the native view synchronously
+PASS walkthrough compatibility: question highlight and exact-line return remain native calls in order
+PASS walkthrough compatibility: two-picture ownership and line mapping stay with the reviewed renderer
+PASS walkthrough compatibility: explicit no-picture view never restores a stale legacy image
+PASS walkthrough compatibility: pause freeze and resume cannot hide or transform native content
+PASS walkthrough compatibility: reset and remount do not replace or destroy the current renderer
+PASS walkthrough compatibility: presentation teardown leaves native teardown owned exactly once by the player
+PASS walkthrough compatibility: viewport resizing never inserts timing or changes stage geometry
+PASS walkthrough compatibility: all compatibility operations preserve reviewed facts and image references
+PASS walkthrough compatibility: retained zoom helper never exceeds the native-pixel cap
+PASS walkthrough compatibility: retained anchored zoom clamps pan to the available image
+PASS walkthrough compatibility: caption-only or missing-anchor evidence cannot produce a zoom target
+PASS walkthrough compatibility: retained native fit never enlarges a small source
+PASS walkthrough compatibility: retained native fit contains portrait and landscape without changing aspect
+PASS walkthrough compatibility: gallery visibility overrides require the gallery slide opt-in class
+Walkthrough native fallback and geometry: 18/18 (non-DOM fallback and geometry; full gallery covered by browser contract)

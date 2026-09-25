@@ -1,0 +1,8 @@
+PASS preface shifts second picture and matching callout together
+PASS subset drops unused image and retains the selected picture provenance and aliases
+PASS reordered reviewed speech reorders picture activation without changing geometry
+PASS A B A repeated ownership emphasizes each played line using only two pictures
+PASS reviewed deeper visual chooses its matching picture without a main-line index
+PASS published reviewed slide is not mutated by visit-local remapping
+PASS legacy single image slide keeps its original shape
+Player media contracts: 7/7; no browser/network/provider

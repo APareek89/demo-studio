@@ -1,12 +1,14 @@
-// Production walkthrough URL compatibility and retained geometry helpers.
-// Actual native image/tag visibility is verified by the browser contracts.
+// Native fallback compatibility and gallery geometry helpers.
+// This deliberately non-DOM harness tests fallback forwarding only. Eligible
+// gallery DOM, before-audio timing and shell parity are tested in
+// gallery_template_browser.py and gallery_template_contract.html.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../web/player/walkthrough.js'), 'utf8');
 function harness(enabled = true) {
-  const unexpected = () => { throw Error('Native playback cannot allocate a gallery, observer or presentation timer'); };
+  const unexpected = () => { throw Error('Non-DOM/native fallback cannot allocate gallery resources'); };
   const api = vm.runInNewContext(source.replace(/export function /g, 'function ') + '\n({createWalkthrough,walkthroughStopGeometry,walkthroughFit})', {
     document: {createElement: unexpected}, setTimeout: unexpected, clearTimeout: unexpected,
     queueMicrotask: unexpected, matchMedia: unexpected, ResizeObserver: class {constructor() {unexpected();}},
@@ -25,7 +27,7 @@ function harness(enabled = true) {
 }
 const groups=[];
 function group(name,test){groups.push([name,test]);}
-group('flagged URL returns the exact renderer and every original method',()=>{const h=harness();h.presentation.mount(h.slides);assert.equal(h.presentation.wrap(h.slides[1],h.view,{reveal:0}),h.view);for(const key of Object.keys(h.originals))assert.equal(h.view[key],h.originals[key]);});
+group('non-DOM fallback returns the exact renderer and every original method',()=>{const h=harness();h.presentation.mount(h.slides);assert.equal(h.presentation.wrap(h.slides[1],h.view,{reveal:0}),h.view);for(const key of Object.keys(h.originals))assert.equal(h.view[key],h.originals[key]);});
 group('flag-off compatibility leaves the renderer and source unchanged',()=>{const h=harness(false);assert.equal(h.presentation.wrap(h.slides[1],h.view),h.view);assert.equal(JSON.stringify(h.bundle),h.before);assert.deepEqual(h.calls,[]);});
 group('hero and closing keep their own source pictures without gallery substitution',()=>{const h=harness();for(const slide of [h.slides[0],h.slides[2]]){const view={...h.view,images:[{src:slide.image_url}]};assert.equal(h.presentation.wrap(slide,view,{reveal:0}),view);assert.equal(view.images[0].src,slide.image_url);assert.equal(view.el.className,'slide cinematic on');}});
 group('narration reveal reaches the native view synchronously',()=>{const h=harness(),view=h.presentation.wrap(h.slides[1],h.view);view.setRevealed(0);assert.deepEqual(h.calls,[['reveal',0]]);assert.equal(view.walkthroughPictures[0].cam.style.display,'contents');});
@@ -42,6 +44,6 @@ group('retained anchored zoom clamps pan to the available image',()=>{const h=ha
 group('caption-only or missing-anchor evidence cannot produce a zoom target',()=>{const h=harness();for(const callout of[{placement:'panel',anchor:{x:0,y:1}},{placement:'overlay'},null]){const g=h.api.walkthroughStopGeometry(callout,1120,760);assert.equal(g.z,1);assert.equal(Math.abs(g.x),0);assert.equal(Math.abs(g.y),0);}});
 group('retained native fit never enlarges a small source',()=>{const fit=harness().api.walkthroughFit(200,100,900,400);assert.equal(fit.width,200);assert.equal(fit.height,100);assert.equal(fit.scale,1);});
 group('retained native fit contains portrait and landscape without changing aspect',()=>{const h=harness();for(const[w,hh]of[[600,1000],[1120,600]]){const fit=h.api.walkthroughFit(w,hh,390,180);assert.ok(fit.width<=390&&fit.height<=180);assert.ok(Math.abs(fit.width/fit.height-w/hh)<.0001);}});
-group('current stylesheet has no gallery visibility override for native tags',()=>{const css=fs.readFileSync(path.join(__dirname,'../web/player-ui.css'),'utf8');assert.ok(!/\.wt-(?:wide|tour|view|hall)\b/.test(css));});
+group('gallery visibility overrides require the gallery slide opt-in class',()=>{const css=fs.readFileSync(path.join(__dirname,'../web/player-ui.css'),'utf8');assert.ok(!/\.wt-(?:wide|tour|view|hall)\b/.test(css));assert.match(css,/\.slide\.gallery-slide > \.slide-media/);assert.match(css,/\.slide\.gallery-slide > \.slide-panel/);});
 let passed=0;for(const[name,test]of groups){try{test();passed++;console.log(`PASS walkthrough compatibility: ${name}`);}catch(e){console.error(`FAIL ${name}\n${e.stack}`);}}
-console.log(`Walkthrough URL compatibility: ${passed}/${groups.length} (production adapter and geometry; no browser/providers)`);process.exitCode=passed===groups.length?0:1;
+console.log(`Walkthrough native fallback and geometry: ${passed}/${groups.length} (non-DOM fallback and geometry; full gallery covered by browser contract)`);process.exitCode=passed===groups.length?0:1;

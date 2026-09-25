@@ -1,0 +1,31 @@
+# Gallery template review — 25 September 2026
+
+Product intent: the approved gallery replaces only the middle slide presentation. The existing top navigation, bottom conversation controls, approved pictures/tags and exact narration stay together. Sources: current PRD, architecture flow, Learning.MD and Anand’s explicit middle-only/master approval. Source scope: player.js, walkthrough.js and scoped player-ui.css changes after eacbb57. The preceding noise fix is included in master integration and retains its separate review plus fresh regression checks.
+
+## Findings addressed before integration
+
+- **P1 — stale image load changes a paused view (6×4×5=120).** Independent review reproduced a late second-image load changing camera dimensions after Pause had cancelled preparation. Load ownership must extend through image decode, not only animation completion. Load off-DOM, commit only for the current generation and remove unowned load callbacks. Regression: cancel/late-load and frozen-geometry checks.
+- **P1 — runtime answer image failure hides the reviewed slide (6×4×5=120).** Immediate Q&A reveal originally bypassed the bounded image-load path. Share its bounded load/error fallback; a broken image restores the native view while the existing answer voice remains independent. Regression: error, stalled load, replacement and cleanup checks.
+- **P1 — same-line second photo loses its labels (7×5×5=175).** Actual CRETA proof slides contain two media entries starting on line zero with no explicit per-line selection. Choosing only the last entry hides approved evidence during its narration. Preserve both pictures and all eligible labels, with explicit picture/label focus selection; never invent a new line-to-image assignment. Verify against the actual published fixture as well as a small deterministic fixture.
+- **P1 — local feature selection can cancel pending narration (6×4×5=120).** A label/inset click during awaited camera preparation must not cancel that same line and leave the route silent. Local selection is guarded during preparation while external Pause/question/Stop retain cancellation ownership. Regression: click during prepare, then verify original line reaches ready and audio.
+- **P2 — inset hides illustration status (4×3×3=36).** A secondary proxy picture needs its own visible illustration disclosure even when the primary is literal. Keep disclosure tied to each displayed media entry; switching focus must retain it.
+- **P2 — tiny native phone labels (3×5×2=30).** The retained native fallback had11/11.5px evidence labels. Raise only those middle-slide label rules to12px. The old three-label overflow test also contradicted intentional three-label wrapping; four labels now exercise actual scrolling. Original85/87 baseline receipt is retained.
+
+## Twelve-category coverage
+
+1. **Unhandled errors:** bounded image failures restore native content; rejected/cancelled animations cannot release stale narration. Native text and hero views remain available. Source and browser tests cover these paths.
+2. **External dependencies:** no provider, microphone classifier or remote dependency added. Existing picture requests can fail/timeout; no new paid QA. Local browser fixtures block external requests.
+3. **Races/state:** Pause, Stop, question, rapid navigation, restart and resize invalidate old preparation. The existing run counter still gates audio; captions/images become ready before normal line playback. Image-load findings above are covered explicitly.
+4. **Resource exhaustion:** at most two current source pictures and three gallery frames; old views disconnect observers, cancel animations and release load timers. No background render loop or unbounded retry queue.
+5. **Security/access:** labels use textContent; reviewed URLs retain existing ownership. No endpoint, authentication, source-domain rule or public-write boundary changes. The previously recorded hosted authentication question remains outside this local UI release.
+6. **Data integrity:** bundle/script/facts/audio are read-only inputs. No graph, schema, registry, approval or storage edits. Actual source fixture is never mutated; mock builds use separate storage.
+7. **Observability:** gallery state and current image/line are inspectable DOM attributes; dated receipts preserve baseline, harness failures and final results. Screenshots alone do not establish microphone or narration quality.
+8. **Scale/load:** animations are scoped to one active middle slide; no server workload added. Native-size cap limits zoom, not source decode memory; very large existing image assets retain the renderer’s pre-existing memory cost.
+9. **Billing/credits:** existing recorded clips are reused. Camera movement adds presentation time and never counts toward the measured narration minimum. No new provider or billing path.
+10. **Retry/idempotency:** same generation commits once; stale load completion cannot switch the newer picture. Cancelled line preparation returns false and the existing resume checkpoint replays the interrupted line. No automatic generation/voice retries added.
+11. **Configuration drift:** ordinary URLs use gallery; legacy walkthrough URLs remain accepted; presentation=native is a diagnostic opt-out. Align remains the native editor. Reduced-motion uses immediate stable presentation. Local/master/GitHub and AWS release identities are reported separately.
+12. **PRD edge cases:** two simultaneous pictures, explicit line ownership, caption-only/illustrative images, missing media, opening/closing hero, mobile geometry, source aspect, current feature pointer and every ordinary recorded line are checked. Unreviewed anchors never become pointers; top and bottom geometry remain unchanged.
+
+**Coverage:12/12 categories.** No new unresolved P0/P1 is accepted for merge. Existing acoustic recognition, hosted access and deployment limits are not certified by this UI task. Final check counts, source hashes and screenshots are in README.md and adjacent receipts.
+
+Final four-lens sweep covers mistaken customer actions, stored-data boundaries, scaling/cost and maintainability: the adapter stays inside the existing player, exact narration is still owned by that player, and no new workflow/agent is introduced.

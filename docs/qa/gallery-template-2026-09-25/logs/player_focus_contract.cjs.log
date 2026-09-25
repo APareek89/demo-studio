@@ -1,0 +1,22 @@
+PASS focus: exact B intake does not invent safety priority from with
+PASS focus: exact B intake retains explicitly requested automatic topic
+PASS focus: incidental slide-title words do not become customer focus
+PASS focus: explicit safety still routes to safety
+PASS focus: explicit boot still routes to practicality
+PASS focus: explicit running costs still route to ownership
+PASS focus: stroller is an explicit practicality term, with is not safety
+PASS focus: whole words prevent accidental topic substring matches
+PASS focus: punctuation and case preserve explicit matching
+PASS focus: configured labels support other products without slide-title inference
+PASS focus: configured multiword topic matches as a phrase
+PASS focus: configured Hindi phrase remains matchable
+PASS focus: voice mode defaults on only for a continuous voice bundle
+PASS focus: muted automation overrides the continuous voice default
+PASS focus: text mode connects output and explicitly disables the microphone without capture
+PASS focus: voice mode start requests capture once
+PASS focus: bar toggle turns capture on and off without reconnecting the socket
+PASS focus: typing during continuous voice cancels answer timing but keeps selected voice mode and capture
+PASS focus: legacy typing pauses one-shot listening while retaining the chosen visit mode
+PASS focus: legacy restart preserves typing preference until an explicit microphone tap
+PASS focus: session records selected mode without rewriting per-turn input source
+Player focus contracts: 21/21 (real function; no UI/network/providers)

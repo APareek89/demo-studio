@@ -1,0 +1,12 @@
+PASS Two-photo source locks every picture/tag control during preparation
+PASS Two-photo source ignores native and dispatched preparation clicks
+PASS Two-photo source releases the original line once after attempted clicks
+PASS Two-photo source unlocks picture/tag controls when ready
+PASS Preparation click attempts retain exact approved audio and caption
+PASS Preparation click check uses no external requests or script errors
+PASS Long caption rail scrolls the current reviewed tag fully into view
+PASS Current long-caption anchor has a visible source pointer
+PASS Local caption scroll redraws the pointer endpoint
+PASS Scrolling the selected tag out of view hides its pointer
+PASS Caption scrolling preserves top navigation and dock geometry
+PASS Caption scrolling preserves the active audio and route

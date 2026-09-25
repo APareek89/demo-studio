@@ -1,0 +1,87 @@
+{
+  "baseline": {
+    "qa_deck": {
+      "passed": 399,
+      "total": 399
+    },
+    "qa_accept": {
+      "passed": 24,
+      "total": 24
+    },
+    "smoke_mock": {
+      "phases": 3
+    },
+    "player_browser": {
+      "passed": 85,
+      "total": 87,
+      "revision": "eacbb57",
+      "failures": [
+        "Phone evidence wraps complete trim qualifiers inside each card without shrinking the type",
+        "The mobile evidence cue follows actual overflow without changing slide geometry"
+      ]
+    }
+  },
+  "final_free_gates": {
+    "qa_deck": {
+      "passed": 399,
+      "total": 399
+    },
+    "qa_accept": {
+      "passed": 24,
+      "total": 24
+    },
+    "smoke_mock": {
+      "phases": 3
+    },
+    "release_mock_contract": {
+      "passed": 28,
+      "total": 28,
+      "measured_narration_seconds": 194.22,
+      "provider_calls": 0,
+      "outbound_attempts": 0
+    },
+    "speech_noise_contract": {
+      "passed": 31,
+      "total": 31
+    },
+    "live_voice_contract": {
+      "passed": 96,
+      "total": 96
+    }
+  },
+  "isolation": {
+    "MOCK_LLM": 1,
+    "CLOUD_SYNC": 0,
+    "separate_data_and_graph_per_suite": true,
+    "outbound_sockets_blocked": true,
+    "muted_isolated_browser": true,
+    "protected_port_and_demo_untouched": true
+  },
+  "limits": [
+    "Canned provider and fake/silent audio checks establish mechanics only, not acoustic or production-model quality."
+  ],
+  "final_browser": {
+    "player_contract": {
+      "passed": 87,
+      "total": 87
+    },
+    "gallery_template": {
+      "passed": 312,
+      "total": 312,
+      "note": "Complete actual-player synthetic and published CRETA acceptance; final local caption-scroll change received the targeted checks below."
+    },
+    "gallery_targeted": {
+      "passed": 12,
+      "total": 12,
+      "note": "After final module freeze: prepare-time controls and long caption scroll/leader ownership."
+    },
+    "decoded_asset_failures": 0,
+    "external_requests": 0,
+    "microphone_attempts": 0
+  },
+  "test_updates": [
+    "Replaced obsolete always-native gallery assertion with default-gallery readiness before exact speech plus native opt-out compatibility.",
+    "Overflow cue fixture uses four labels; the intended compact three-label layout wraps without overflow.",
+    "Personalized evidence helper awaits actual cold-image preparation before preserving all original scope/image assertions."
+  ]
+}
