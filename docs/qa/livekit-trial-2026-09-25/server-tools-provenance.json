@@ -1,0 +1,7 @@
+{
+  "go_version": "go1.27.1",
+  "go_sha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
+  "livekit": "v1.13.7",
+  "source_url": "https://github.com/livekit/livekit/archive/refs/tags/v1.13.7.tar.gz",
+  "source_sha256": "b42f34b095dff22639a40256c3f98fd563fdbce5d497e449ceb06ee010de88c5"
+}

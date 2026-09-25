@@ -1,0 +1,19 @@
+PASS each queued revision freezes its own content
+PASS equal pending and successful revisions use one POST
+PASS new recap lead content saves another revision under the same visit ID
+PASS changed revision waits for the older save to settle
+PASS failed changed revision retries its exact snapshot once
+PASS older failure does not prevent the queued current revision from saving
+PASS separate visits do not wait for each other
+PASS ongoing A to ended B to resumed A always advances the sequence
+PASS immutable retry token keeps its old sequence after newer observed state
+PASS healthy retries resend the identical failed snapshot and sequence
+PASS beacon snapshot has a higher sequence than an older pending autosave
+PASS hanging save times out in ten seconds and releases the newer queued snapshot
+PASS many queued autosaves retain one current and one latest request
+PASS an old retry cannot replace a newer queued checkpoint
+PASS queued browser speech is absent from snapshots until the actual start event
+PASS buffering recorded audio cannot fabricate heard words in an autosave
+PASS visibility snapshots grow a copied prefix without mutating eventual transcript completion
+PASS completed visit bookkeeping stays bounded across restarts
+Player session save contracts: 18/18; no network/providers

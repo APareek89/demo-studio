@@ -294,7 +294,8 @@ export function mountPlayer(host, bundle, api) {
   function createLive() {
     S.pendingRefinement = null; S.contextRevision = 0; S.interruptions.length = 0;
     if (!api.liveUrl) return;
-    live = new LiveVoiceClient({ url: api.liveUrl, sessionId: S.sessionId, language: LANG,
+    const clientFactory = api.liveClientFactory || (options => new LiveVoiceClient(options));
+    live = clientFactory({ url: api.liveUrl, sessionId: S.sessionId, language: LANG,
       qualifyInput: text => qualifiesCustomerSpeech(text, { prompt: S.intakeOpen || !!S.waiter || S.promptRun === S.run, terms: speechTerms }),
       shouldInterrupt: text => !playbackCommand(text),
       canHold: () => S.hasStarted && !S.ended && !S.paused && S.voiceMode,

@@ -1,0 +1,12 @@
+{
+  "version": "2.22.3",
+  "tarball": "https://registry.npmjs.org/livekit-client/-/livekit-client-2.22.3.tgz",
+  "integrity": "sha512-jw9zBKXY5Gtr5MZ7vEON3QhMNccuDvYHck1PFSyG1aaateQPqgKZFBMgZkFZaXHIf9RV4MDW5xpTK2b/+qbwOg==",
+  "sha256": "0f920230001fcbfdccb0bcd2efffd64da8594808908953ed466d4c39c1529fa3",
+  "files": {
+    "livekit-client-LICENSE.txt": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+    "livekit-client-2.22.3.esm.mjs": "23e6b0966c20ccaba8d39343035fcc49e64aa46c93e772ca0a3f1b5a6d30b573"
+  },
+  "purpose": "Opt-in local LiveKit transport trial; browser SDK served locally, no CDN or frontend bundler.",
+  "source": "https://github.com/livekit/client-sdk-js/releases/tag/v2.22.3"
+}

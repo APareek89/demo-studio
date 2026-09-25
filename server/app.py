@@ -23,6 +23,8 @@ from .llm import sarvam
 app = FastAPI(title="Demo Studio", version="0.1.0")
 from .runtime_live import router as runtime_live_router
 app.include_router(runtime_live_router)
+from .livekit_trial import router as livekit_trial_router
+app.include_router(livekit_trial_router)
 
 
 def _demo_or_404(demo_id: str) -> dict:

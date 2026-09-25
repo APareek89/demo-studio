@@ -1,0 +1,52 @@
+PASS default-off endpoint denies before SDK or demo access
+PASS remote caller cannot spoof forwarded loopback
+PASS missing, cross-origin and scheme-mismatched origins rejected
+PASS unpublished demo cannot obtain a room
+PASS session identifiers must be path-safe and bounded
+PASS trial cannot connect to a remote or credential-bearing LiveKit URL
+PASS native RTC override rejects external STUN, TURN and protected port
+PASS viewer gets unique room and exact bound identity without worker token or keys
+PASS two-minute token grants only joined room, microphone, data and subscription
+PASS server room is joined before token and uses no external ICE servers
+PASS duplicate session cannot open a second runtime owner
+PASS four-room capacity bounded before connection
+PASS shutdown closes every room and clears reservations
+PASS connection failure is bounded and releases reservation
+PASS join timeout retains bounded ownership of uncancellable native connection
+PASS late native join is disconnected and releases capacity without serving a token
+PASS native disconnect timeout keeps room capacity reserved until completion
+PASS native disconnect completion releases capacity without cancellation
+PASS UTF-8 multi-packet roundtrip and packet limits
+PASS completed replay cannot deliver a duplicate turn
+PASS malformed, oversized, invalid-base64 and reordered fragments rejected
+PASS incomplete fragments expire within ten seconds
+PASS fragment assembly permits only four bounded inflight messages
+PASS unbound participant cannot announce a ready session
+PASS worker coalesces duplicate identity visibility into one readiness task
+PASS late participant callbacks cannot reannounce a closed trial
+PASS readiness retries are bounded and contain no semantic turn
+PASS bound session start stops all readiness retries
+PASS unbound participant, wrong topic and lossy controls ignored
+PASS owner control enters existing JSON protocol unchanged
+PASS only owner microphone with current generation can be consumed
+PASS RTC is 16k mono 20ms and preserves eight-second pre-ready input
+PASS mic readiness flushes only current generation after track and provider ready
+PASS mic off prevents stale provider readiness from reopening capture
+PASS session teardown closes RTC audio and later packets are ignored
+PASS early RTC track waits boundedly when track event precedes mic.set
+PASS mic.set recovers already-subscribed matching track
+PASS duplicate named track cannot replace or unpublish current physical capture
+PASS late generation-one unpublish cannot close generation-two capture
+PASS unexpected loss of current microphone fails visibly
+PASS pre-ready overflow closes capture instead of truncating the question
+PASS unexpected RTC stream end cannot leave the demo waiting forever
+PASS native audio constructor failure closes the trial without a dead microphone
+PASS client cannot change bound session or inject alternate PCM data
+PASS overflow fails session instead of silently losing input
+PASS actual runtime_live handles session, validated answer and original delivery protocol
+PASS reliable output is ordered and addressed only to bound viewer
+PASS keepalive produces pong without another graph call
+PASS existing session.end tears down room and runtime
+PASS room lifetime is independently bounded beyond token expiry
+LiveKit trial: 50/50 passed
+FINAL_OUTBOUND_ATTEMPTS 0

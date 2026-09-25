@@ -1,5 +1,13 @@
 # Loop.MD — Demo Studio
 
+## LiveKit opt-in local trial — 25 September 2026
+
+Finite QA only; recurring loop stays off. Default app final free gates: **qa_deck445/445, qa_accept24/24, smoke3/3, full mock28/28**, with isolated DATA/GRAPH, mocked providers, blank keys and zero outbound socket attempts. No optional LiveKit SDK is installed in the default `.venv`; disabled feature imports and all core workflow gates pass. Final runtime source hashes stay unchanged during those gates.
+
+New backend50/50, client47/47, launcher16/16. Existing voice96/96, immediate speech hold26/26, listen16/16, recovery17/17 and session-save18/18. Actual default gallery320/320 and current native87/87 match the prior native87/87 baseline. Actual pinned SDK/SFU/browser trial24/24 verifies real RTC microphone traffic, exact same-machine candidate, server PCM frames, no duplicate data microphone, mic generations, reversible hold, reviewed picture before answer audio, worker loss, desktop/phone layout and saved visit. Synthetic capture and mocked providers do not establish acoustic quality. Counts overlap and must not be added.
+
+[Receipt, hashes, screenshots, dependency provenance and twelve-category FMEA](docs/qa/livekit-trial-2026-09-25/README.md). Real integration exposed native loopback ICE failure, uncancellable native operation ownership and first-control participant visibility; all were corrected before acceptance. Local signaling/API stay loopback; RTC uses one validated same-machine private interface, public STUN is disabled, and TCP media is off. No paid QA, default promotion, master merge, GitHub push or AWS rollout. Physical-device/provider and hosted-network acceptance remain pending.
+
 ## Immediate speech hold, answer pictures and retrieval — 25 September 2026
 
 Finite free QA, loop off; working branch only, no master/AWS release or paid call. Frozen baseline e80a180: deck445/445, acceptance24/24, smoke3/3, full mock28/28. Final actual working tree: **deck445/445, acceptance24/24, smoke3/3, full mock28/28** with194.22s synthetic measured narration. All89 application files stayed unchanged during final core/backend execution. Fresh isolated DATA/GRAPH, MOCK_LLM=1, cloud off, blank keys and blocked outbound; zero outbound attempts. The first444/445 deck result was a stale static callback/timestamp assertion; retained failure plus corrected behavioral-intent structural assertion and445/445 rerun are recorded.

@@ -136,8 +136,25 @@ async function renderPlay(demoId, epoch = beginView()) {
   if (!isCurrentView(epoch)) return;
   const host = h("div", { class: "play-page" });
   main.replaceChildren(host);
+  let liveClientFactory;
+  if (new URLSearchParams(location.search).get("voice_transport") === "livekit") {
+    if (!(bundle.runtime?.version >= 1)) {
+      host.textContent = "The LiveKit trial requires a demo with the live runtime. Remove voice_transport=livekit from the URL to use this demo's standard player.";
+      return;
+    }
+    try {
+      const { LiveKitVoiceClient } = await import("/web/player/livekit-voice.js");
+      if (!isCurrentView(epoch)) return;
+      liveClientFactory = options => new LiveKitVoiceClient(options);
+    } catch (error) {
+      if (!isCurrentView(epoch)) return;
+      host.textContent = "The LiveKit trial could not load. Remove voice_transport=livekit from the URL to use the standard demo.";
+      return;
+    }
+  }
   playInstance = mountPlayer(host, bundle, {
     liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
+    liveClientFactory,
     qa: (body, options) => api.post(`/api/demos/${demoId}/run/qa`, body, options),
     tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
     tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),

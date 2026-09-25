@@ -338,6 +338,8 @@ flowchart TD
 flowchart TD
   START[&quot;Customer starts Explore or Browse&lt;br/&gt;[ASK · welcome Voice mode switch]&lt;br/&gt;default on iff continuous voice and no mute=1; typing always available&quot;]:::ask
   MODE[&quot;Connect session socket for guide speech&lt;br/&gt;[FUNCTION · startLive / runtime_live.py]&lt;br/&gt;voice on: one capture request; off: mic.set false, no permission prompt&lt;br/&gt;player Voice mode switch and mic button share capture ownership without reconnecting&quot;]:::fn
+  TRANSPORT{&quot;Explicit voice_transport=livekit URL flag?&lt;br/&gt;[FUNCTION · web/app.js]&lt;br/&gt;absent: existing socket; trial: local enabled server only&quot;}:::dec
+  LK[&quot;Opt-in local LiveKit trial&lt;br/&gt;[LIBRARY · livekit-voice.js / livekit_trial.py]&lt;br/&gt;one existing capture publishes microphone over WebRTC&lt;br/&gt;scoped short-lived room token; owner + capture generation bound&lt;br/&gt;reliable fragmented data carries existing controls and owned PCM output&lt;br/&gt;explicit failure on disconnect; no replay, second voice or autonomous agent&lt;br/&gt;same-machine private host ICE; localhost signaling; mock providers and separate publication copy by default&quot;]:::data
   INPUT[&quot;Continuous PCM capture&lt;br/&gt;[LIBRARY · live-voice.js / voice-worklet.js]&lt;br/&gt;sustained speech-like local frames may open a reversible hold; a raw volume spike cannot&lt;br/&gt;AEC requested; capture generation owns ready/transcript/error events&quot;]:::data
   STT[&quot;Realtime STT over private session WebSocket&lt;br/&gt;[LIBRARY · runtime_live.py / sarvam_stream.py]&lt;br/&gt;qualified partial may open a reversible hold; only qualified final owns a semantic turn&lt;br/&gt;known throat/cough annotations and standalone ahem cannot qualify via punctuation&lt;br/&gt;active prompt / question / product / command checks; local Continue/Pause/Stop/Not now&quot;]:::data
   HOLD[&quot;Quiet the guide locally before server recognition completes&lt;br/&gt;[FUNCTION · live-voice.js / player.js]&lt;br/&gt;pause current recorded/streamed audio and visual transition without cancelling its owner&lt;br/&gt;final speech commits interruption; rejected/no-final input resumes the same clip position&lt;br/&gt;silence and bounded no-progress watchdog prevent a permanent hold&lt;br/&gt;not speaker identification; sustained TV speech may cause a temporary pause&quot;]:::fn
@@ -379,7 +381,10 @@ flowchart TD
   FAIL[&quot;Supported partial answer or temporary limitation&lt;br/&gt;[FUNCTION · bounded failure]&lt;br/&gt;no outage cached as a knowledge gap&quot;]:::fn
   START --&gt; INTAKE
   START --&gt; MODE
-  MODE -- &quot;voice on; capture permission granted&quot; --&gt; INPUT --&gt; STT
+  MODE --&gt; TRANSPORT
+  TRANSPORT -- &quot;default existing WebSocket&quot; --&gt; INPUT
+  TRANSPORT -- &quot;explicit local trial&quot; --&gt; LK --&gt; INPUT
+  INPUT -- &quot;same private runtime and STT policy&quot; --&gt; STT
   INPUT -- &quot;sustained locally speech-like frames&quot; --&gt; HOLD
   STT -- &quot;qualified partial before final&quot; --&gt; HOLD
   HOLD -- &quot;no qualified final; silence or no-progress deadline&quot; --&gt; PLAY
@@ -497,7 +502,7 @@ config:
     curve: linear
 ---
 graph TD;
-	REQUEST[&quot;run_turn wrapper&lt;br/&gt;claim owned turn; pin snapshot and registry&lt;br/&gt;same entry point for REST and live socket&quot;]
+	REQUEST[&quot;run_turn wrapper&lt;br/&gt;claim owned turn; pin snapshot and registry&lt;br/&gt;same entry point for REST and live socket&lt;br/&gt;opt-in LiveKit facade calls existing runtime_live; no added graph node&quot;]
 	SHOW{&quot;Wrapper: unambiguous picture-only request?&lt;br/&gt;generic tour controls and mixed questions stay on normal path&quot;}
 	PICTURE[&quot;Wrapper: scoped published-picture lookup&lt;br/&gt;ordinary retrieve helper plus bounded reviewed-caption search hints&lt;br/&gt;strict snapshot/version, eligible facts and owning image/caption&lt;br/&gt;neutral show or no-photo reply; no reasoning model, FAQ or unknown write&lt;br/&gt;not an additional graph node&quot;]
 	CACHE{&quot;Eligible saved answer?&lt;br/&gt;faq.match before graph; skip_bank bypasses&lt;br/&gt;same pin/hash and approved citations; rejected tombstones excluded&quot;}

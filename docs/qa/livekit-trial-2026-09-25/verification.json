@@ -1,0 +1,18 @@
+{
+  "all_passed": true,
+  "application_changed_during_final_gates": [],
+  "source_publication_files_unchanged_during_review": 181,
+  "diagram_parity": 9,
+  "provider_calls": 0,
+  "physical_microphone": false,
+  "default_promoted": false,
+  "master_merged": false,
+  "aws_deployed": false,
+  "network_boundary": "localhost API/signaling; one explicitly validated machine-owned private IPv4 RTC UDP interface; no public STUN or TCP media",
+  "limitations": [
+    "mock STT does not transcribe physical speech",
+    "no acoustic or real-provider latency acceptance",
+    "no WAN/TURN/load acceptance",
+    "output audio remains reliable data, not RTP"
+  ]
+}

@@ -1,0 +1,25 @@
+PASS actual pinned SDK joins a local runtime room
+PASS text connection does not acquire a microphone
+PASS only local LiveKit signaling is opened
+PASS real synthetic capture starts once
+PASS server receives and forwards actual RTC PCM frames
+PASS microphone PCM never uses the reliable data uplink
+PASS real RTC audio packets use the exact configured local candidate
+PASS same RTC capture still drives immediate local speech hold
+PASS no-final synthetic input releases the reversible hold
+PASS mic off releases the source but leaves text connected
+PASS second RTC capture starts
+PASS mic retry has a distinct generation and only its active track
+PASS actual runtime returns pinned BMW picture and deferred audio
+PASS runtime picture selection does not start speech prematurely
+PASS actual gallery picture is ready before real data-channel PCM playback
+PASS real runtime worker departure closes the browser transport
+PASS ended trial leaves no live synthetic device
+PASS actual player mounts with unchanged top and bottom controls
+PASS actual player brings the requested BMW picture before its answer voice
+PASS gallery and conversation remain inside the desktop viewport
+PASS same player remains within phone viewport
+PASS trial player saves the completed visit incrementally
+PASS browser opens no external connection or legacy microphone WebSocket
+PASS browser has no uncaught JavaScript error
+{"passed": 24, "total": 24, "checks": ["actual pinned SDK joins a local runtime room", "text connection does not acquire a microphone", "only local LiveKit signaling is opened", "real synthetic capture starts once", "server receives and forwards actual RTC PCM frames", "microphone PCM never uses the reliable data uplink", "real RTC audio packets use the exact configured local candidate", "same RTC capture still drives immediate local speech hold", "no-final synthetic input releases the reversible hold", "mic off releases the source but leaves text connected", "second RTC capture starts", "mic retry has a distinct generation and only its active track", "actual runtime returns pinned BMW picture and deferred audio", "runtime picture selection does not start speech prematurely", "actual gallery picture is ready before real data-channel PCM playback", "real runtime worker departure closes the browser transport", "ended trial leaves no live synthetic device", "actual player mounts with unchanged top and bottom controls", "actual player brings the requested BMW picture before its answer voice", "gallery and conversation remain inside the desktop viewport", "same player remains within phone viewport", "trial player saves the completed visit incrementally", "browser opens no external connection or legacy microphone WebSocket", "browser has no uncaught JavaScript error"], "provider_calls": 0, "physical_microphone": false, "transport": "real-local-livekit", "rtc": {"bytes": 10633, "pairState": "succeeded", "localType": "host", "remoteType": "host", "remoteExpectedHost": true}, "frames": {"received": 47, "forwarded": 47}, "errors": [], "blocked": [], "offline_stylesheets": ["https://fonts.googleapis.com/css2"], "screenshots": ["bmw-livekit-player-phone.png", "bmw-livekit-answer-image.png", "bmw-livekit-player-desktop.png"]}

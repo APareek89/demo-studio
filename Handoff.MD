@@ -2,6 +2,15 @@
 
 Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
+## LiveKit local trial — 25 September
+
+- Anand requested LiveKit for Demo Run as a trial first, with testing before adoption. Work remains on `codex/sales-trainer-flow`, following local runtime-fix commit `aeddec9`. No master merge, GitHub push or AWS deployment is part of this checkpoint.
+- Explicit `?voice_transport=livekit` selects the optional adapter. Existing microphone capture becomes a real WebRTC track; existing control/transcript/validated answer and PCM output use reliable LiveKit data. Build/Align, provider order, STT policy, graph nodes, evidence, gallery, output ownership and incremental sessions remain unchanged. This stage does not implement LiveKit Agents, outbound RTP speech or speaker isolation.
+- `scripts/run_livekit_trial.py` starts only owned processes and copies one publication to separate DATA/GRAPH. App/token/signaling bind127.0.0.1; native RTC needs one explicit machine-owned private IPv4 address for UDP. Public STUN and RTC TCP fallback are disabled. Default mock mode also blocks external Python sockets. Native RTC bypasses that Python guard and is verified separately; no system-wide firewall claim. Token origin/scope, rooms, queues/fragments, capture generations and native cleanup are bounded.
+- Installed optional SDKs only in `/tmp/demo-livekit-trial-20260925/venv311`; normal `.venv` has no LiveKit. Trial app8920 uses its own approved BMW copy under `/tmp/demo-livekit-trial-20260925/review`. The original BMW and app8910, protected demo/port and AWS are untouched. [Launch instructions](docs/livekit-trial.md), [QA/FMEA](docs/qa/livekit-trial-2026-09-25/README.md).
+- Final free gates: deck445/445, acceptance24/24, smoke3/3, mock journey28/28; new backend50, client47, launcher16; actual RTC browser24, default gallery320, native87 all pass. Full count and fixture boundaries are in Loop.MD.
+- Adoption stays pending physical microphone/provider comparison and hosted-network/capacity acceptance. Mock STT does not recognize spoken questions; mock mode supports real RTC frame verification, existing recorded narration and typed questions. A deliberate live-provider launch may incur charges and is separate from completed free QA.
+
 ## Runtime speech hold, answer pictures and retrieval — 25 September
 
 - Current follow-up implements Anand's request to stop talking at detected speech, fetch the associated reviewed picture/tag for answers and explicit picture requests, and inspect/improve information retrieval. Work is on `codex/sales-trainer-flow`; this follow-up is **not merged to master or deployed**. The prior AWS feedback release below remains live. No demo rebuild, source/media edit, paid call or LiveKit integration.

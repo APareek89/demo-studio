@@ -1,10 +1,25 @@
 # refine.MD — running log of Anand's questions and proposed solutions
 
+## LiveKit trial plan — 25 September 2026
+
+Anand explicitly requested a trial LiveKit implementation for Demo Run, followed by testing before adoption. This authorizes the optional transport dependency and local LiveKit server for the trial; it does not authorize changing Build/Align, model/provider order, grounded reasoning, gallery design or automatic AWS deployment.
+
+The first trial uses LiveKit WebRTC for the existing microphone track and reliable LiveKit data for the existing bounded session/turn/PCM-delivery protocol. Existing RealtimeSTT, run_turn, DeliveryCoordinator and the client player remain the owners of recognition, validated answers, one selected voice, exact playback pause/resume and image-before-audio. Recorded demo clips stay HTTP. This is a real transport trial, not LiveKit Agents adaptive turn detection, voice isolation or outbound RTP playback. Those need a separate measured comparison and are not claimed by this stage.
+
+- Opt in with `?voice_transport=livekit`; the default player remains unchanged. A separate local trial app/LiveKit server uses isolated DATA/GRAPH and a read-only source copy of the approved BMW. Optional SDK imports cannot break normal deployment.
+- Token issue requires feature flag, loopback caller, matching Origin and a published v1 demo; signed short-lived capabilities bind one viewer, room and session. API credentials stay server-side. Bound rooms, fragment/queue memory, ownership and cleanup; no automatic replay across disconnect.
+- Verify real local RTC audio frames and ICE candidates, token/scope isolation, microphone toggles, early holds, final-only semantic input, answer image/tag, recorded/streamed speech, reconnect failure, Continue/Stop and incremental saved sessions. Mock all provider calls, use local-only networking/no external STUN, rerun core gates and twelve-category FMEA.
+- Provide a trial link and single-command launcher. Promotion remains gated on real-device/real-provider review; mock tests cannot establish acoustic quality or justify silently making the trial the default.
+
+Actual RTC finding: the native SDK cannot connect using only loopback ICE candidates. The trial launcher therefore requires this machine’s validated private IPv4 address for media UDP on one interface; app, token and signaling remain loopback-only, public STUN stays disabled and actual selected candidates must resolve to this same machine. This adjusts the original isolation mechanism, not the runtime workflow.
+
+Rejected first-step approach: handing turn ownership to a second free-form LiveKit agent or moving output directly to RTP before measured end/hold synchronization. Either could bypass evidence validation or lose spoken content on false interruptions. The transport wrapper exercises LiveKit while keeping those guarantees intact.
+
 ## Runtime speech and picture follow-up — 25 September 2026
 
 Anand requested immediate quieting when customer speech begins, reviewed images alongside runtime answers or explicit show requests, and actual storage/retrieval diagnosis while discussing LiveKit. The chosen implementation separates a reversible browser output hold from qualified-final semantic input; it does not add a paid classifier. Image selection reuses eligible pinned facts and the exact published photo/caption association, with conservative no-picture behavior for missing/ambiguous/illustrative-only parts. Request-local source memoization removes duplicate disk reads without changing evidence or moving storage. No new workflow agents/nodes, prompts or provider dependencies.
 
-Rejected implementation alternatives: waiting for a final transcript (causes talk-over); cancelling the question/narration on raw volume (noise takes over); selecting a generic hero or guessed coordinates (misrepresents visual evidence); migrating to DynamoDB for a repeated JSON-read bug (unnecessary migration and no proven answer-latency benefit). LiveKit integration is a separate proposed trial, not an approved architecture change. Current AWS is local EC2 storage with cloud disabled; optional DynamoDB/S3 adapters are not the active data plane. Follow-up remains on the working branch; prior AWS release is unchanged. No new product question blocks this work.
+Rejected implementation alternatives: waiting for a final transcript (causes talk-over); cancelling the question/narration on raw volume (noise takes over); selecting a generic hero or guessed coordinates (misrepresents visual evidence); migrating to DynamoDB for a repeated JSON-read bug (unnecessary migration and no proven answer-latency benefit). At that earlier checkpoint LiveKit was discussion-only; the newer trial authorization above supersedes that status. Current AWS is local EC2 storage with cloud disabled; optional DynamoDB/S3 adapters are not the active data plane. Follow-up remains on the working branch; prior AWS release is unchanged. No new product question blocks this work.
 
 ## Current checkpoint — 25 September 2026
 

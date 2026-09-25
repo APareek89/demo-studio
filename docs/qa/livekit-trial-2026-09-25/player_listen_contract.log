@@ -1,0 +1,17 @@
+PASS post-answer choices retain voice listening and focus a visible text field
+PASS 3000ms expires exactly once and annotates the owning turn
+PASS typing one character cancels the silence timer without a question
+PASS explicit Continue cancels timeout and resumes once as an explicit choice
+PASS Ask another question cancels timeout and opens the question path
+PASS a proposed CTA is only selected by an explicit response
+PASS clarification holds beyond 3s and only resolves a real reply
+PASS explicit solicitation opts out of the answer timer
+PASS a superseded run cannot resume from an obsolete deadline
+PASS an ended session cannot resume from a pending deadline
+PASS a new genuine wait cancels the previous answer deadline
+PASS visible lead form holds indefinitely then dismiss starts a fresh 3s window
+PASS a typed answer while contact form is open cannot later resurrect its timer
+PASS legacy raw onset leaves the timer intact; qualified final takes the turn
+PASS automatic return speaks only a recorded bridge and restores the saved checkpoint
+PASS legacy question check-in is not spoken and does not wait
+Player listen contracts: 16/16; real functions, virtual time, no browser/network/provider

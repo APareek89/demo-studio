@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Test the native transport, not just an SDK-shaped mock
+
+**Observed:** the new LiveKit facade passed its mocked contracts but the real worker could not establish media using loopback-only ICE. The pinned server also substituted public STUN for an empty list, and its RTC TCP listener ignored the loopback signaling bind. Cancelling a Python wait did not cancel the native SDK's ongoing connection attempt.
+
+**Why chain:** (1) Protocol-shaped mocks proved ownership and packet handling but did not execute libwebrtc. (2) An empty ICE list was interpreted as disabling discovery, though it inherits server defaults. (3) Signaling and media use different listener/configuration paths. (4) Native candidate selection excludes the loopback-only setup. (5) Native operations outlive cancellation of their Python waiter, so releasing a room reservation on timeout can defeat the concurrency bound.
+
+**Correction:** explicit local-only STUN, no RTC TCP fallback, an explicitly validated machine-owned private IPv4 media interface, localhost-only API/signaling, and retained room capacity until native connection/disconnection completes. The launcher copies a publication to separate storage, defaults to mock providers and installs a Python external-socket guard; native RTC has separate candidate/listener verification. Keep existing answer validation, speech holds and playback ownership rather than adding another conversational agent.
+
+**Prevention:** real pinned SDK/browser acceptance must show actual RTC bytes/frames, selected same-machine ICE, capture generation changes, exact answer picture before output, disconnect behavior and saved visits. Unit tests force late native completion after timeout. Mock/provider fixtures and real transport tests are reported separately. [Trial receipt](docs/qa/livekit-trial-2026-09-25/README.md). Local structural success does not prove physical noise rejection, acoustic improvement or hosted readiness.
+
 ## 2026-09-25 — Noise qualification must not postpone output pause until the question ends
 
 **Observed:** the previous final-only interruption guard fixed false semantic turns but let prerecorded/streamed narration continue while a customer asked a question. A baseline replay on e80a180 confirms a qualified partial does not stop output. Runtime answers also returned no explicit photo identity; selecting a slide could retain another picture on that same slide. Knowledge retrieval repeatedly decoded the same source JSON for matching facts before trimming the result.
