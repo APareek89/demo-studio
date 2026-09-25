@@ -16,9 +16,18 @@ function encodePCM(buffer) { const bytes = new Uint8Array(buffer); let binary = 
 // VAD and recognition partials are provisional: a cup impact or TV fragment
 // must not take ownership of playback. Only a qualified final can interrupt.
 export function meaningfulTranscript(text) {
-  const words = String(text || "").replace(/[\[<(](?:background\s+noise|noise|silence|music|laughter|cough|breathing|inaudible|unintelligible|unk)[\])>]/gi, "");
-  const value = words.toLowerCase().replace(/[’]/g, "'").replace(/[.!?,]+$/g, "").trim();
-  return /[\p{L}\p{N}]/u.test(value) && !/^(?:i|i'm|i am|it's|it is|it|the|a|an|and|but|so|uh|um|hmm|you|you know|this|that|there|there's|well)$/.test(value);
+  // Providers can describe a sound instead of leaving the transcript empty.
+  // Remove only known sound annotations, retaining any real words around them.
+  const words = String(text || "").replace(/[\[<(]\s*(?:background\s+(?:noise|sound)|noise|silence|music|laughter|laughing|cough(?:ing|s)?|breathing|(?:clear(?:s|ing)?[\s-]+(?:the[\s-]+)?throat)|(?:throat[\s-]+clear(?:ing)?)|inaudible|unintelligible|unk)\s*[\])>]/gi, "");
+  const value = words.toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, " ").replace(/^[\s\p{P}]+|[\s\p{P}]+$/gu, "");
+  if (!/[\p{L}\p{N}]/u.test(value)) return false;
+  // A question mark supplied by STT does not turn an ahem into a question.
+  // This is deliberately a small list of sounds, not a minimum word count:
+  // short controls, feature questions and supported languages must still work.
+  const sounds = value.split(/[\s\p{P}]+/u).filter(Boolean);
+  if (sounds.length && sounds.every(word => /^(?:ahem+|ah+|uh+|um+|hm+|mm+|erm+|er+|eh+)$/.test(word))) return false;
+  if (/^(?:clear(?:s|ing)?[\s-]+(?:the[\s-]+)?throat|throat[\s-]+clear(?:ing)?|cough(?:ing|s)?)$/.test(value)) return false;
+  return !/^(?:i|i'm|i am|it's|it is|it|the|a|an|and|but|so|you|you know|this|that|there|there's|well)$/.test(value);
 }
 
 export class LiveVoiceClient {

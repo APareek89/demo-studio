@@ -69,6 +69,12 @@ Discovery and implementation log for 23 September 2026. The questions below reta
 
 **WP12 completed:** optional presentation implementation and evidence are in `docs/qa/wp12-2026-09-24/`. Final counts: deck380, acceptance24, smoke3, layout193, workbook101, integration19, navigation22, HTML79, parity9, walkthrough29, live26, motion85; all green. The browser's mid-walk pause regression was fixed by waiting for transform completion and freezing all owned layers. No open WP12 design question. The reference file source was read, but browser local-file playback was denied and not bypassed. Branch review only; no merge or AWS deployment.
 
+## Local noise and visual-preview follow-up — 25 September
+
+Anand confirmed the throat-clearing interruption occurs on localhost. Implement the narrow local text/noise and legacy timer ownership fixes, with existing agents/nodes and source/voice guardrails intact. No per-interruption Gemini classification is added; real acoustic performance remains to be observed.
+
+The supplied `agent-demo-gallery.html` is a close visual reference for a **separate preview**, not authorization to replace app slides. Use existing CRETA pictures/recordings: gallery walk → straighten/enlarge → focused feature with pointer and on-image box → return/next. Production keeps native image + tags + voice. No new merge/deployment is requested. Two unchanged-master phone evidence assertions reproduce in the browser and remain pending within the no-slide-code-change boundary.
+
 ## Questions from Codex
 
 WP10 questions C1 and C2 are resolved; both C2 strings stay unchanged. WP11 finishing decisions are recorded below.

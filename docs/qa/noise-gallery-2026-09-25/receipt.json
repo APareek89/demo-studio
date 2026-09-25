@@ -1,0 +1,104 @@
+{
+  "date": "2026-09-25",
+  "branch": "codex/sales-trainer-flow",
+  "base_commit": "cf33be27363a622d0fb0a710a0ef8edb3a3ceb4b",
+  "source_sha256": {
+    "web/player/live-voice.js": "2dc4e7f5bfc477e481d3e0cf2f8e04366e5ae539a5cd092e95978abf81f6ea6e",
+    "web/player/player.js": "0edca412e9e7f85925c825ba5d73155b0fef44cc2b51524beb2e3461c6710ae6",
+    "evals/speech_noise_contract.mjs": "a164cf42e8a59b0eac4895ff077fdc2e7846658e00ad3890ac33e1e0f14c0dc0",
+    "output/gallery-preview-2026-09-25/gallery.js": "76069261844850915bbe5f2b9121df1c8bb616538afd2e4f4b2bae9f25843bce",
+    "output/gallery-preview-2026-09-25/gallery.css": "5819456e9fbabcbdbda5561be61b9be9154768b00522e004a55eab6e229ff870",
+    "output/gallery-preview-2026-09-25/index.html": "e177b68ab2eeb2316e1cfe06759e06280965ad5795759723b604ccd840671160",
+    "output/gallery-preview-2026-09-25/preview.json": "f4934629d6c9bf522a41e67d9d7954ded1ba8a8e510d4384090ef8119ec076a2"
+  },
+  "core": {
+    "qa_deck": 399,
+    "qa_accept": 24,
+    "smoke_mock": 3,
+    "outbound_attempts": 0
+  },
+  "focused": {
+    "live_transport.log": {
+      "passed": 25,
+      "total": 25,
+      "summary": "Live transport: 25/25 passed"
+    },
+    "live_voice.log": {
+      "passed": 96,
+      "total": 96,
+      "summary": "Live voice: 96/96 passed (fake devices and transports only)"
+    },
+    "player_focus.log": {
+      "passed": 21,
+      "total": 21,
+      "summary": "Player focus contracts: 21/21 (real function; no UI/network/providers)"
+    },
+    "player_http_question.log": {
+      "passed": 6,
+      "total": 6,
+      "summary": "Player HTTP question contracts: 6/6; no network/providers"
+    },
+    "player_listen.log": {
+      "passed": 16,
+      "total": 16,
+      "summary": "Player listen contracts: 16/16; real functions, virtual time, no browser/network/provider"
+    },
+    "player_priority.log": {
+      "passed": 11,
+      "total": 11,
+      "summary": "Player priority revision contracts: 11/11; no browser/network/provider"
+    },
+    "player_runtime.log": {
+      "passed": 17,
+      "total": 17,
+      "summary": "Player runtime recovery contracts: 17/17; no browser/network/providers"
+    },
+    "player_session.log": {
+      "passed": 18,
+      "total": 18,
+      "summary": "Player session save contracts: 18/18; no network/providers"
+    },
+    "sarvam_stream.log": {
+      "passed": 17,
+      "total": 17,
+      "summary": "Sarvam streaming: 17/17 passed"
+    },
+    "speech_noise.log": {
+      "passed": 31,
+      "total": 31,
+      "summary": "Speech noise: 31/31 passed (synthetic events, no acoustic acceptance claim)"
+    }
+  },
+  "focused_total": 258,
+  "browser": {
+    "passed": 85,
+    "total": 87,
+    "baseline_passed": 85,
+    "same_failures": true,
+    "failures": [
+      {
+        "name": "Phone evidence wraps complete trim qualifiers inside each card without shrinking the type",
+        "error": "Phone labels were made smaller to hide overflow"
+      },
+      {
+        "name": "The mobile evidence cue follows actual overflow without changing slide geometry",
+        "error": "A newly revealed offscreen card has no directional cue"
+      }
+    ]
+  },
+  "gallery": {
+    "checks": 69,
+    "passed": 69,
+    "natural_replay": {
+      "scenes": 6,
+      "phase_changes": 37,
+      "elapsed_seconds": 118.7,
+      "script_errors": 0
+    },
+    "production_slide_files_unchanged": true,
+    "source_bundle_unchanged": true
+  },
+  "paid_calls": 0,
+  "acoustic_acceptance": false,
+  "deployment": "local branch only; master/GitHub cf33be2, no AWS deploy"
+}

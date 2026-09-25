@@ -1,5 +1,13 @@
 # Loop.MD — Demo Studio
 
+## Noise qualification and gallery prototype — 25 September 2026
+
+Loop remains off. Application: qa_deck399/399, qa_accept24/24, smoke3/3, zero outbound attempts. Focused contracts258/258: speech_noise31, live_voice96, live_transport25, player_listen16, player_focus21, player_runtime_recovery17, player_http_question6, player_priority_revision11, player_session_save18, sarvam_stream17. Independent review additionally exercised both real automatic-resume call chains. No new agent/node/provider or paid call.
+
+Current real-DOM browser result85/87 matches unchanged master85/87, with the identical two phone evidence font/cue failures. Historical87/87 receipts are not rewritten; this run does not claim full browser green. The task prohibits production slide changes. The initial core runner used the wrong smoke filename; corrected to smoke_mock and all three phases pass, retaining the initial failure log.
+
+The separate gallery's full natural-rate muted replay completed all six recordings and37 phase changes with no script errors. Desktop/phone geometry/control checks69/69 and source hashes are in [the receipt](docs/qa/noise-gallery-2026-09-25/README.md). Prototype media is copied from the isolated published demo; app slide modules/data remain unchanged. Synthetic STT/rooms and muted playback do not prove physical noise/echo rejection. Local branch only; master/GitHub/AWS remain at their previous releases.
+
 ## Master integration checkpoint — 25 September 2026
 
 Loop remains **off**. This checkpoint changes documentation only and integrates the already-reviewed application through`cf30dba`. Fresh isolated/mock/blocked-socket core recheck: qa_deck399/399, qa_accept24/24, smoke3/3; zero outbound attempts. Receipt/logs: `docs/qa/master-checkpoint-2026-09-25/`. Previous slide acceptance and runtime contracts below remain evidence for the unchanged source; no new paid, acoustic or full browser run is claimed.

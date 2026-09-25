@@ -1,0 +1,18 @@
+PASS realtime endpoint and PCM format selected
+PASS STT passes bounded base64 PCM without WAV header
+PASS VAD and transcript events normalize in order
+PASS partial/final share input identity
+PASS provider billing duration wins over sent estimate
+PASS STT close is explicit and releases socket
+PASS missing VAD identity cannot permanently dedupe repeated customer words
+PASS one-second caller PCM is split below provider fast-mode frame cap
+PASS split PCM preserves exactly the submitted duration
+PASS provider final terminates TTS without silence timer
+PASS TTS complete closes socket
+PASS TTS complete retains selected voice and raw PCM
+PASS TTS complete accounts submitted characters
+PASS TTS cancel closes socket
+PASS TTS cancel retains selected voice and raw PCM
+PASS TTS cancel accounts submitted characters
+PASS mock mode never opens provider connection
+Sarvam streaming: 17/17 passed

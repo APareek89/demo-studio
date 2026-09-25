@@ -397,6 +397,7 @@ export function mountPlayer(host, bundle, api) {
     const callbackOffered = S.waiter?.chips.some(c => c.value === "callback");
     if (!command || (command === "notnow" && !el.lead.classList.contains("open") && !callbackOffered)) return false;
     if (S.intakeOpen && command === "continue") return false;
+    if (S.waiterVoice?.autoResumed) stopListening();
     addMsg("user", text);
     if (command === "stop") { stopDemo(); return true; }
     if (command === "pause") { if (!S.paused) togglePause(); return true; }
@@ -420,7 +421,7 @@ export function mountPlayer(host, bundle, api) {
   function updateMuteUi() { el.muteBtn.replaceChildren(icon(S.muted ? "volume-off" : "volume", { size: 18 })); el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio"; el.muteBtn.setAttribute("aria-label", el.muteBtn.title); el.muteBtn.setAttribute("aria-pressed", String(S.muted)); el.muteBtn.classList.toggle("on", S.muted); }
   // Toggle output mute across live speech, recorded audio, browser speech and the film.
   // The state is shared with live-voice.js:LiveVoiceClient.setMuted; microphone capture is separate.
-  function toggleMute() { S.muted = !S.muted; live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !root.classList.contains("film-on"); updateMuteUi(); }
+  function toggleMute() { S.muted = !S.muted; if (S.muted && S.waiterVoice?.autoResumed) stopListening(); live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !root.classList.contains("film-on"); updateMuteUi(); }
   // Turn reply choices into buttons that belong to the current wait object.
   // A stale click cannot resolve a newer wait; web/api.js:h creates the buttons and resolveWait delivers the value.
   function setChips(list) { const owner = S.waiter; el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => { if (S.waiter === owner) resolveWait(c.value); } }, c.label))); }
@@ -737,10 +738,11 @@ export function mountPlayer(host, bundle, api) {
       let settled = false;
       // Resolve this capture once and clear its listening controls only when it is still current.
       // The text result returns to the waiting player flow after server/app.py:run_stt or local cancellation.
-      const settle = (text) => { if (settled) return; settled = true; if (current()) { S.cancelListen = null; S.finishListen = null; S.micOn = false; setMicUI(false); } res(text); };
+      const background = () => S.waiterVoice?.listenId === id && S.waiterVoice.autoResumed;
+      const settle = (text) => { if (settled) return; settled = true; if (current()) { S.cancelListen = null; S.finishListen = null; S.keepListenAfterResume = null; S.micOn = false; if (!background()) setMicUI(false); } res(text); };
       // Stop audio processing and microphone tracks, then clear capture timers and UI state.
       // This releases browser resources before or after server/app.py:run_stt; it does not submit text itself.
-      const cleanup = () => { if (!capturing) return; capturing = false; clearTimeout(t); try { proc.disconnect(); src.disconnect(); } catch (e) {} stream.getTracks().forEach((track) => track.stop()); ctx.close().catch(() => {}); if (current()) { S.micOn = false; setMicUI(false); } };
+      const cleanup = () => { if (!capturing) return; capturing = false; clearTimeout(t); try { proc.disconnect(); src.disconnect(); } catch (e) {} stream.getTracks().forEach((track) => track.stop()); ctx.close().catch(() => {}); if (current()) { S.micOn = false; if (!background()) setMicUI(false); } };
       // Cancel microphone capture and resolve it with no customer text.
       // This prevents stale input reaching server/app.py:run_qa after another turn has taken ownership.
       const cancel = () => { cleanup(); settle(""); };
@@ -749,18 +751,30 @@ export function mountPlayer(host, bundle, api) {
       const finish = async () => {
         if (!capturing || !current()) return; cleanup();
         if (!spoke || !chunks.length) { settle(""); return; }
-        const tVoice = Date.now(); setStatus("thinking", "Transcribing"); if (S.intakeOpen) el.inState.textContent = "Transcribing your answer…"; onInterim("Transcribing…");
-        try { const text = await api.stt(encodeWav(chunks, ctx.sampleRate), LANG); if (!current() || settled) return; S.lastListen = { voice_ended: tVoice, stt_done: Date.now(), via: "server" }; settle((text || "").trim()); }
+        const tVoice = Date.now();
+        if (!background()) { setStatus("thinking", "Transcribing"); if (S.intakeOpen) el.inState.textContent = "Transcribing your answer…"; onInterim("Transcribing…"); }
+        try {
+          const candidate = String(await api.stt(encodeWav(chunks, ctx.sampleRate), LANG) || "").trim();
+          if (!current() || settled) return;
+          // This deliberate, one-shot reply can be a name, place or freeform
+          // answer. Reject sounds/fragments without imposing product vocabulary.
+          const text = meaningfulTranscript(candidate) ? candidate : "";
+          if (text) { cancelPostAnswerListen(); S.lastListen = { voice_ended: tVoice, stt_done: Date.now(), via: "server" }; }
+          settle(text);
+        }
         catch (e) { if (!current() || settled) return; if (SR) { serverSTT = false; addMsg("note", "Server listening is unavailable — you can retry with browser listening or type below."); } settle(""); }
       };
       S.cancelListen = cancel; S.finishListen = finish;
+      S.keepListenAfterResume = () => current() && !settled && spoke;
       const t = setTimeout(finish, timeout);
       // Collect audio buffers and use their volume plus elapsed silence to decide when capture ends.
       // The event yields samples for encodeWav; server/app.py:run_stt receives the final WAV, not these callbacks.
       proc.onaudioprocess = (e) => {
         if (!current() || !capturing) return;
         const d = e.inputBuffer.getChannelData(0); chunks.push(new Float32Array(d)); let sum = 0; for (const sample of d) sum += sample * sample;
-        const now = Date.now(); if (Math.sqrt(sum / d.length) > 0.012) { if (!spoke) cancelPostAnswerListen(); spoke = true; lastVoice = now; }
+        // Energy detects a candidate recording, not customer intent. A cough
+        // must not cancel the three-second return window before STT qualifies it.
+        const now = Date.now(); if (Math.sqrt(sum / d.length) > 0.012) { spoke = true; lastVoice = now; }
         if ((spoke && now - lastVoice > 1300) || now - t0 > timeout || (!spoke && now - t0 > Math.min(timeout, 7000))) finish();
       };
       src.connect(proc); proc.connect(ctx.destination);
@@ -789,12 +803,13 @@ export function mountPlayer(host, bundle, api) {
         if (ended) return; ended = true; clearTimeout(t);
         const candidate = fin.trim();
         const text = !discard && current() && qualifiesCustomerSpeech(candidate, { prompt: true, terms: speechTerms }) ? candidate : "";
-        if (current()) { S.cancelListen = null; S.finishListen = null; S.rec = null; S.micOn = false; setMicUI(false); if (text) S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "browser" }; }
+        if (current()) { S.cancelListen = null; S.finishListen = null; S.keepListenAfterResume = null; S.rec = null; S.micOn = false; if (!S.waiterVoice?.autoResumed) setMicUI(false); if (text) S.lastListen = { voice_ended: Date.now(), stt_done: Date.now(), via: "browser" }; }
         res(text);
       };
       // Expose a discard action that resolves empty and aborts the browser recognizer.
       // stopListening uses it before a new turn; live-voice.js:LiveVoiceClient has independent capture cleanup.
       S.cancelListen = () => { end(true); try { rec.abort(); } catch (e) {} };
+      S.keepListenAfterResume = () => current() && !ended && meaningfulTranscript(fin || interim);
       // Expose a deliberate finish action that asks the recognizer to deliver its current result.
       // This differs from discarding a turn; returned text may later reach server/app.py:run_qa.
       S.finishListen = () => { try { rec.stop(); } catch (e) { end(); } };
@@ -816,6 +831,7 @@ export function mountPlayer(host, bundle, api) {
   function stopListening(discard = true) {
     if (live) { S.micOn = live.mic; setMicUI(S.micOn); return; }
     if (!discard) { S.finishListen?.(); return; }
+    clearTimeout(S.waiterVoice?.timer); S.waiterVoice = null; S.keepListenAfterResume = null;
     const cancel = S.cancelListen; S.listenId++; S.cancelListen = null; S.finishListen = null; S.rec = null;
     if (cancel) cancel(); S.micOn = false; setMicUI(false);
   }
@@ -886,7 +902,18 @@ export function mountPlayer(host, bundle, api) {
     if (S.inputMode !== "voice" || S.waiter !== turn || turn.run !== S.run || !canListen() || S.micDenied) return;
     // Update interim text only for this wait, then resolve a current result or keep the customer turn open.
     // The promise comes from listen; no empty recording is submitted as a server/app.py:run_qa question.
-    listen({ timeout: turn.listenSecs, onInterim: (t) => { if (S.waiter === turn) el.live.textContent = t; } }).then((t) => {
+    const recording = listen({ timeout: turn.listenSecs, onInterim: (t) => { if (S.waiter === turn) el.live.textContent = t; } });
+    const voice = { turn, listenId: S.listenId, sessionId: S.sessionId, autoResumed: false, timer: null };
+    S.waiterVoice = voice;
+    recording.then((t) => {
+      if (S.waiterVoice !== voice || S.listenId !== voice.listenId || S.sessionId !== voice.sessionId || S.inputMode !== "voice" || S.ended) return;
+      clearTimeout(voice.timer); S.waiterVoice = null;
+      if (voice.autoResumed) {
+        // The tour already continued; only the qualified words may now take a
+        // new turn. A discarded sound leaves that playback entirely alone.
+        if (t && !handlePlaybackCommand(t)) handleQuestion(t);
+        return;
+      }
       if (S.waiter !== turn || turn.run !== S.run) return;
       if (t) { addMsg("user", t); resolveWait(replyForTurn(t, turn)); }
       else { setStatus("idle", "Your turn"); el.hint.textContent = "Type your reply, tap the mic to try again, or choose an option."; }
@@ -906,7 +933,20 @@ export function mountPlayer(host, bundle, api) {
   }
   // Resolve the current wait once, clearing its prompt markers, listening callbacks and choices.
   // A reply object goes back to the flow; further questions can then use server/app.py:run_qa.
-  function resolveWait(v) { clearTimer(); if (S.waiter) { const w = S.waiter; S.waiter = null; S.promptRun = null; S.waitChips = []; stopListening(); setChips([]); w.resolve(typeof v === "string" ? { value: v } : v); } }
+  function resolveWait(v) {
+    clearTimer();
+    if (!S.waiter) return;
+    const w = S.waiter, reply = typeof v === "string" ? { value: v } : v;
+    S.waiter = null; S.promptRun = null; S.waitChips = [];
+    const voice = S.waiterVoice;
+    if (!live && reply.value === "__auto_resume" && voice?.turn === w && voice.listenId === S.listenId && S.keepListenAfterResume?.()) {
+      // Do not lose a real one-shot reply that finishes after the silent window.
+      // It cannot delay playback and has one bounded chance to deliver a final.
+      voice.autoResumed = true;
+      voice.timer = setTimeout(() => { if (S.waiterVoice === voice) stopListening(); }, 12000);
+    } else stopListening();
+    setChips([]); w.resolve(reply);
+  }
   // Speak a question and wait for an open reply or an explicit skip.
   // Return reply text only for the owning run; server/runtime_graph.py:run_turn may have supplied the clarification.
   async function askAndListen(question, run, secs = 10000, preset = null, delivery = null) { if (run !== S.run) return null; el.cite.textContent = ""; if (!(await speakPrompt(question, run, preset, delivery))) { S.promptRun = null; return null; } const r = await waitFor([{ label: "Skip this question", value: "skip" }], 0, { openAnswer: true, listenSecs: secs }); return run === S.run ? r.text || "" : null; }
@@ -1346,6 +1386,7 @@ export function mountPlayer(host, bundle, api) {
   // Open the optional dealership contact form with wording appropriate to the reason.
   // Local fields are prefilled only; server/app.py:run_lead is called only after form submission.
   function showLeadPrompt(reason, question = "") {
+    if (S.waiterVoice?.autoResumed) stopListening();
     if (S.leads.length || ((S.leadPromptShown || S.leadDismissed) && reason !== "requested")) return;
     S.leadFormId = (S.leadFormId || 0) + 1;
     S.leadPromptShown = true; S.leadReason = reason; S.leadQuestion = question || "test drive";

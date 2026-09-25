@@ -1,0 +1,288 @@
+{
+  "passed": 69,
+  "total": 69,
+  "checks": [
+    {
+      "name": "1440px scene 1 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 1 correct photo",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 1 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 1 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 1 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 2 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 2 correct photo",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 2 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 2 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 2 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 3 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 3 correct photo",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 3 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 3 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 3 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 4 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 4 correct photo",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 4 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 4 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 4 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 5 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 5 correct photo",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 5 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 5 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 5 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 6 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 6 correct photo",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 6 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 6 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "1440px scene 6 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "390px scene 1 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "390px scene 1 correct photo",
+      "passed": true
+    },
+    {
+      "name": "390px scene 1 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "390px scene 1 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "390px scene 1 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "390px scene 2 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "390px scene 2 correct photo",
+      "passed": true
+    },
+    {
+      "name": "390px scene 2 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "390px scene 2 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "390px scene 2 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "390px scene 3 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "390px scene 3 correct photo",
+      "passed": true
+    },
+    {
+      "name": "390px scene 3 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "390px scene 3 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "390px scene 3 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "390px scene 4 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "390px scene 4 correct photo",
+      "passed": true
+    },
+    {
+      "name": "390px scene 4 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "390px scene 4 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "390px scene 4 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "390px scene 5 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "390px scene 5 correct photo",
+      "passed": true
+    },
+    {
+      "name": "390px scene 5 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "390px scene 5 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "390px scene 5 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "390px scene 6 uses exact original caption and clip",
+      "passed": true
+    },
+    {
+      "name": "390px scene 6 correct photo",
+      "passed": true
+    },
+    {
+      "name": "390px scene 6 viewport bounded",
+      "passed": true
+    },
+    {
+      "name": "390px scene 6 focus clear of caption",
+      "passed": true
+    },
+    {
+      "name": "390px scene 6 audio remains paused",
+      "passed": true
+    },
+    {
+      "name": "Pause freezes a camera move",
+      "passed": true
+    },
+    {
+      "name": "Rapid next/jump keeps newest photo and clip",
+      "passed": true
+    },
+    {
+      "name": "Resize during narration preserves and resumes audio",
+      "passed": true
+    },
+    {
+      "name": "Resize during camera move releases animation ownership",
+      "passed": true
+    },
+    {
+      "name": "Reduced motion does not magnify image",
+      "passed": true
+    },
+    {
+      "name": "Completion survives resize",
+      "passed": true
+    },
+    {
+      "name": "Replay starts first feature",
+      "passed": true
+    },
+    {
+      "name": "Return to gallery clears all playback",
+      "passed": true
+    },
+    {
+      "name": "No script errors or external requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "blocked": [],
+  "muted": true,
+  "microphone": false,
+  "provider_calls": 0,
+  "scope": "Standalone gallery; fixture seek only for completion/replay test; natural full playback recorded separately"
+}

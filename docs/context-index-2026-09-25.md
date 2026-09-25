@@ -21,6 +21,8 @@ The local `docs/codex-brief-walkthrough-2026-09-24.md` and `Anand-observations.M
 
 ## Current application QA
 
+- [Noise and gallery follow-up](qa/noise-gallery-2026-09-25/README.md) — local branch audio fix, standalone prototype, source/test receipts and current baseline browser failures.
+
 - [docs/qa/crack-script-2026-09-24/baseline-criteria-audit.md](../docs/qa/crack-script-2026-09-24/baseline-criteria-audit.md) — Baseline script audit — iteration 00 (81 lines)
 - [docs/qa/crack-script-2026-09-24/code-review.md](../docs/qa/crack-script-2026-09-24/code-review.md) — Script pipeline code QA and FMEA — 24 September 2026 (143 lines)
 - [docs/qa/crack-script-2026-09-24/engine-trim-coverage-review.md](../docs/qa/crack-script-2026-09-24/engine-trim-coverage-review.md) — Engine/gearbox source coverage review (27 lines)

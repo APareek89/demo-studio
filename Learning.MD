@@ -1,5 +1,17 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — Throat-clearing could own a customer turn
+
+**Symptom:** Anand reports throat-clearing interrupts the localhost demo. Confirmed code loopholes: `[clears throat]`, `[coughing]?` and `Ahem?` escaped the limited noise filter; question punctuation qualified them. Legacy one-shot capture cancelled the three-second timer on volume alone.
+
+**Five whys:** (1) A sound was treated as customer intent. (2) Annotation variants and punctuation escaped filtering. (3) Acoustic energy cancelled a conversation timer before transcription. (4) Removing that cancellation alone would discard real replies finishing after automatic resume. (5) Prior synthetic tests lacked sound-description finals and the capture/resume race together.
+
+**Correction:** reject known sound annotations/standalone vocalizations before qualification; retain adjacent genuine speech and short controls. Volume records a candidate but cannot own playback. Preserve an already-started legacy capture through automatic resume, bound late delivery to12seconds, and cancel it on newer/explicit ownership. Independent review caught overly strict server question/topic qualification rejecting names/locations; deliberate legacy server capture now receives only the narrow noise/fragment filter. Live/browser qualification remains unchanged.
+
+**Evidence and limits:** speech_noise31/31 plus227 existing focused checks, core399/24/smoke3. Independent tests use real route/section resume functions. Browser85/87 is identical to unchanged master; two pre-existing slide assertions remain pending. No paid classification, new node or acoustic acceptance. A confident STT hallucination, meaningful background speech or speaker echo can still pass; test the actual microphone before claiming full rejection. The local relevance filter was chosen over a per-sound Gemini call to avoid adding latency/cost without measured acoustic evidence.
+
+**Separate prototype lesson:** gallery pointers must use the current displayed photo bytes; saved part boxes can predate baked-in white padding. Manually review the visible feature and keep illustrative/trim qualifiers. Pause must distinguish intentional audio AbortError from failure; resize must invalidate old camera geometry. All fixes here are isolated under `output/gallery-preview-2026-09-25`, not the production slide renderer.
+
 ## 2026-09-25 — Release context mixed current state with obsolete instructions
 
 **Symptom:** session re-entry encountered current slide/runtime receipts beside old master holds, public-web permission, gallery guidance, FAQ generation and browser-voice fallback descriptions. Some entrypoint docs still described18September tasks as next work.

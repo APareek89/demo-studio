@@ -1,0 +1,347 @@
+{
+  "state": {
+    "index": 5,
+    "phase": "complete",
+    "playing": false,
+    "paused": false,
+    "muted": true,
+    "audioTime": 11.946667,
+    "animations": 0,
+    "scene": "sl16",
+    "focus": {
+      "z": 1.62,
+      "dx": 0,
+      "dy": -63.33240000000001,
+      "x": 705.0688,
+      "y": 229.62,
+      "transform": "translate(0px,-63.33240000000001px) scale(1.62)"
+    },
+    "epoch": 1
+  },
+  "qa": {
+    "started": 1790312663190,
+    "states": [
+      {
+        "index": 0,
+        "phase": "walking",
+        "at": 53
+      },
+      {
+        "index": 0,
+        "phase": "straightening",
+        "at": 1502
+      },
+      {
+        "index": 0,
+        "phase": "entering",
+        "at": 2452
+      },
+      {
+        "index": 0,
+        "phase": "focusing",
+        "at": 3451
+      },
+      {
+        "index": 0,
+        "phase": "narrating",
+        "at": 5151
+      },
+      {
+        "index": 0,
+        "phase": "returning",
+        "at": 17202
+      },
+      {
+        "index": 1,
+        "phase": "walking",
+        "at": 19302
+      },
+      {
+        "index": 1,
+        "phase": "straightening",
+        "at": 20752
+      },
+      {
+        "index": 1,
+        "phase": "entering",
+        "at": 21652
+      },
+      {
+        "index": 1,
+        "phase": "focusing",
+        "at": 22702
+      },
+      {
+        "index": 1,
+        "phase": "narrating",
+        "at": 24402
+      },
+      {
+        "index": 1,
+        "phase": "returning",
+        "at": 37751
+      },
+      {
+        "index": 2,
+        "phase": "walking",
+        "at": 39852
+      },
+      {
+        "index": 2,
+        "phase": "straightening",
+        "at": 41301
+      },
+      {
+        "index": 2,
+        "phase": "entering",
+        "at": 42201
+      },
+      {
+        "index": 2,
+        "phase": "focusing",
+        "at": 43251
+      },
+      {
+        "index": 2,
+        "phase": "narrating",
+        "at": 44953
+      },
+      {
+        "index": 2,
+        "phase": "returning",
+        "at": 55853
+      },
+      {
+        "index": 3,
+        "phase": "walking",
+        "at": 57901
+      },
+      {
+        "index": 3,
+        "phase": "straightening",
+        "at": 59403
+      },
+      {
+        "index": 3,
+        "phase": "entering",
+        "at": 60302
+      },
+      {
+        "index": 3,
+        "phase": "focusing",
+        "at": 61353
+      },
+      {
+        "index": 3,
+        "phase": "narrating",
+        "at": 63052
+      },
+      {
+        "index": 3,
+        "phase": "returning",
+        "at": 78351
+      },
+      {
+        "index": 4,
+        "phase": "walking",
+        "at": 80451
+      },
+      {
+        "index": 4,
+        "phase": "straightening",
+        "at": 81953
+      },
+      {
+        "index": 4,
+        "phase": "entering",
+        "at": 82851
+      },
+      {
+        "index": 4,
+        "phase": "focusing",
+        "at": 83902
+      },
+      {
+        "index": 4,
+        "phase": "narrating",
+        "at": 85603
+      },
+      {
+        "index": 4,
+        "phase": "returning",
+        "at": 97403
+      },
+      {
+        "index": 5,
+        "phase": "walking",
+        "at": 99502
+      },
+      {
+        "index": 5,
+        "phase": "straightening",
+        "at": 100952
+      },
+      {
+        "index": 5,
+        "phase": "entering",
+        "at": 101851
+      },
+      {
+        "index": 5,
+        "phase": "focusing",
+        "at": 102901
+      },
+      {
+        "index": 5,
+        "phase": "narrating",
+        "at": 104602
+      },
+      {
+        "index": 5,
+        "phase": "returning",
+        "at": 116601
+      },
+      {
+        "index": 5,
+        "phase": "complete",
+        "at": 118702
+      }
+    ],
+    "errors": [],
+    "heard": [
+      {
+        "index": 0,
+        "src": "assets/audio-1-1.wav",
+        "text": "Choosing a wheel finish depends on the trim. SX and SX Premium have diamond-cut alloys; King has a larger diamond-cut design, while both Knight versions use matte black alloys.",
+        "duration": null,
+        "point": {
+          "z": 1.72,
+          "dx": 0,
+          "dy": -92.48880000000003,
+          "x": 682,
+          "y": 229.62,
+          "transform": "translate(0px,-92.48880000000003px) scale(1.72)"
+        },
+        "card": {
+          "left": 1015,
+          "top": 368.921875,
+          "right": 1340,
+          "bottom": 510
+        },
+        "width": 1364,
+        "height": 534
+      },
+      {
+        "index": 1,
+        "src": "assets/audio-2-1.wav",
+        "text": "At the front, E and EX use projector headlamps. The guide lists LED headlights and connected LED tail lamps from EX(O) onwards, making lighting another difference between trims.",
+        "duration": 13.312018,
+        "point": {
+          "z": 1.292134831460674,
+          "dx": 0,
+          "dy": -77.99999999999994,
+          "x": 958.92,
+          "y": 413.25,
+          "transform": "translate(0px,-77.99999999999994px) scale(1.292134831460674)"
+        },
+        "card": {
+          "left": 1015,
+          "top": 354.421875,
+          "right": 1340,
+          "bottom": 510
+        },
+        "width": 1364,
+        "height": 534
+      },
+      {
+        "index": 2,
+        "src": "assets/audio-3-1.wav",
+        "text": "Packing for a trip, the rear seat has a sixty-forty split. One section can fold while the other remains available, letting you consider passengers and bags together.",
+        "duration": 10.837324,
+        "point": {
+          "z": 1.38,
+          "dx": 0,
+          "dy": -66.85680000000002,
+          "x": 701.6428802709569,
+          "y": 229.62,
+          "transform": "translate(0px,-66.85680000000002px) scale(1.38)"
+        },
+        "card": {
+          "left": 1015,
+          "top": 354.421875,
+          "right": 1340,
+          "bottom": 510
+        },
+        "width": 1364,
+        "height": 534
+      },
+      {
+        "index": 3,
+        "src": "assets/audio-4-1.wav",
+        "text": "Before connecting your smartphone to the display, note that SX, SX Premium, King, King Knight and Lounge Edition use a wired-to-wireless adapter for wireless Android Auto and Apple CarPlay.",
+        "duration": 15.274649,
+        "point": {
+          "z": 1.66,
+          "dx": 0,
+          "dy": -99.43079999999998,
+          "x": 528.4154506350551,
+          "y": 229.62,
+          "transform": "translate(0px,-99.43079999999998px) scale(1.66)"
+        },
+        "card": {
+          "left": 1015,
+          "top": 368.921875,
+          "right": 1340,
+          "bottom": 510
+        },
+        "width": 1364,
+        "height": 534
+      },
+      {
+        "index": 4,
+        "src": "assets/audio-5-1.wav",
+        "text": "Looking overhead, SX, SX Premium, King, King Knight and Lounge Edition list the voice-enabled panoramic roof. The photograph shows the glass panel above the front seats.",
+        "duration": 11.776009,
+        "point": {
+          "z": 1.72,
+          "dx": 0,
+          "dy": 192.24,
+          "x": 882.84096,
+          "y": 215.84279999999998,
+          "transform": "translate(0px,192.24px) scale(1.72)"
+        },
+        "card": {
+          "left": 1015,
+          "top": 354.421875,
+          "right": 1340,
+          "bottom": 510
+        },
+        "width": 1364,
+        "height": 534
+      },
+      {
+        "index": 5,
+        "src": "assets/audio-6-1.wav",
+        "text": "For charging your phone, a wireless pad is listed on SX, SX Premium, King, King Knight and Lounge Edition. It works only with compatible smartphones, so check your device.",
+        "duration": 11.946667,
+        "point": {
+          "z": 1.62,
+          "dx": 0,
+          "dy": -63.33240000000001,
+          "x": 705.0688,
+          "y": 229.62,
+          "transform": "translate(0px,-63.33240000000001px) scale(1.62)"
+        },
+        "card": {
+          "left": 1015,
+          "top": 368.921875,
+          "right": 1340,
+          "bottom": 510
+        },
+        "width": 1364,
+        "height": 534
+      }
+    ],
+    "completed": 1790312781892
+  }
+}

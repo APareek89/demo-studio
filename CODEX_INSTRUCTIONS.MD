@@ -11,6 +11,8 @@ Refreshed 25 September 2026. This is the entrypoint for a fresh session; [the pr
 5. `docs/context-index-2026-09-25.md` indexes the remaining markdown. Consult current QA reports first; historical briefs/design samples are not automatically current requirements.
 6. Relevant source before editing: `server/app.py` (API), `server/graph.py` (build graph), `server/orchestrator.py` (staleness), `server/store.py` / `storage.py` (persistence), then the relevant stage/runtime module and UI.
 
+Latest local follow-up: [noise/gallery receipt](docs/qa/noise-gallery-2026-09-25/README.md). The gallery requested25September is an isolated review artifact; native app slides stay unchanged. Branch changes are not yet master/GitHub/AWS releases.
+
 ## Current task boundary
 
 Anand authorized integrating the completed branch into **master** on 25 September and refreshing these records. No further feature work or AWS deployment is part of that request. Continue implementation in the existing `codex/sales-trainer-flow` tree unless instructed otherwise; a fresh task must begin from the current tested release, not the obsolete `slides-v1` baseline. Preserve unrelated files. Do not infer permission to spend on providers or deploy from a Git merge.

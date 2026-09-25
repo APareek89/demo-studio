@@ -2,13 +2,21 @@
 
 Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
+## Current branch follow-up — 25 September
+
+- Local-only noise fix and standalone gallery preview follow the completed master checkpoint. Neither is a new master/GitHub/AWS release. Latest receipt: [noise and gallery QA](docs/qa/noise-gallery-2026-09-25/README.md).
+- Known cough/throat-clearing annotations and standalone vocalizations cannot interrupt. Legacy raw volume cannot cancel automatic resume; an already-started reply may finish afterward within a12-second ownership deadline. Deliberate server capture retains freeform names/locations. No Gemini classifier or paid call was added. Physical microphone/echo acceptance remains pending.
+- [Gallery preview](http://127.0.0.1:8911/) is a separate six-feature excerpt from CRETA v3: existing photos and75.1seconds of existing recordings, plus gallery/zoom transitions. It does not change the native app slides, saved demo, workflow or published duration. [Artifact and launch command](output/gallery-preview-2026-09-25/README.md). New gallery integration requires a later instruction.
+- Existing app stays on [localhost8910](http://127.0.0.1:8910/#/home). A separate real-provider builder may run on8912 with `/tmp/demo-studio-builder-20260925` storage (launch command in the receipt); this task does not launch a paid build.
+- Current browser recheck is85/87 on both unchanged master and the new noise code: the same two phone evidence font/cue assertions fail. They are recorded pending, not silently repaired by changing the slide code forbidden in this request. No newly failing browser case.
+
 ## Release and authorization
 
 - Anand explicitly requested committing the completed changes to `master` and refreshing the project context on 25 September. This supersedes the master-merge hold in the 24 September receipts. The repository uses `master`, not `main`.
 - Application commits included: `721611b` (WP12 experiment), `0f52e19` (runtime/source/preparation recovery), `cf30dba` (native image/tag slide restoration). The final commit supersedes the experiment's gallery behavior. Script-generation improvements were already on master at `74990ad`.
 - This documentation checkpoint integrates that completed application state into master/GitHub. See [integration record](docs/master-checkpoint-2026-09-25.md) for scope and verification; use `git log -1 master` / `git ls-remote origin refs/heads/master` for the exact final documentation commit.
 - **No new AWS deployment.** Last recorded AWS application release is `483755d`, `/opt/demo-studio-releases/20260924-feedback`, at [the release receipt](docs/aws/release-feedback-workbook-2026-09-24.md). This is recorded state, not a fresh host inspection. The later script/runtime/slide fixes are not established as deployed. Git publication does not transfer the isolated demo data.
-- All registered child agents were completed and interrupted on 25 September; none is running. No new worker team is active. Loop remains **off**. Previous finite paid-QA authorization is consumed; this checkpoint makes no paid calls.
+- The prior worker team was stopped at master integration. This follow-up used bounded noise implementation, gallery review and independent noise review tasks; their work is complete. Loop remains **off**. Previous finite paid-QA authorization is consumed; this follow-up makes no paid calls.
 
 ## Current product and decisions
 
@@ -50,4 +58,4 @@ Read [CODEX_INSTRUCTIONS.MD](CODEX_INSTRUCTIONS.MD), this snapshot, [PRD.md](PRD
 
 Stay in `/Users/macbook/Documents/demo-studio`; implementation work remains on `codex/sales-trainer-flow`. Master is a release target and future changes require their own user merge instruction. Preserve all intentional untracked files and `output/`. Never run `git clean` or `git stash -u`. Never touch `dm_41513908` or operate port **8896**. Use `MOCK_LLM=1`, isolated `DEMO_STUDIO_DATA`/`DEMO_STUDIO_GRAPH_DB`, cloud off and blocked outbound sockets for free tests. Muted UI review uses Codex's browser or the isolated test harness, not Anand's Chrome. Core invariants and the latest explicit chat instruction take precedence over stale historical tasks.
 
-This checkpoint reloads working context from files. It does not erase chat history. The previous handoff is archived byte-for-byte; old agents are inactive. No unfinished application edits are carried forward from this merge. Effort for this checkpoint: documentation/reconciliation and verification; no feature implementation.
+This checkpoint reloads working context from files. It does not erase chat history. The previous handoff is archived byte-for-byte; old agents are inactive. No unfinished application edits were carried forward from that merge. The new branch follow-up above records the subsequently requested noise fix and visual-only prototype separately.

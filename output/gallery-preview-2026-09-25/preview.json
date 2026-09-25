@@ -1,0 +1,328 @@
+{
+  "demo_id": "dm_7bbf10d0",
+  "bundle_version": 3,
+  "snapshot_id": "kb_2679d87aeeb0ab06c7284862",
+  "source_bundle_sha256": "a61c8c6b369f5288eeb31bff89e0bcf29886a4c79c4e2dedd26870574e3a2987",
+  "scope": "Standalone visual-flow excerpt. No app renderer or saved demo edits; no live Q&A, microphone or providers.",
+  "scenes": [
+    {
+      "id": "sl06",
+      "title": "Wheel design",
+      "image": "assets/photo-1.jpg",
+      "width": 1576,
+      "height": 1182,
+      "part": "alloy wheel",
+      "box": {
+        "x": 0.35,
+        "y": 0.259,
+        "w": 0.336,
+        "h": 0.607
+      },
+      "focus": {
+        "x": 0.518,
+        "y": 0.5625
+      },
+      "image_id": "im_pdf_98d8731144b7b826dbcb",
+      "labels": [
+        {
+          "text": "SX / SX Premium: diamond-cut alloys",
+          "fact_ids": [
+            "F052"
+          ]
+        },
+        {
+          "text": "King: larger diamond-cut alloys",
+          "fact_ids": [
+            "F053"
+          ]
+        },
+        {
+          "text": "Knight variants: matte-black alloys",
+          "fact_ids": [
+            "F054"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "id": "stance_and_ride-L1",
+          "text": "Choosing a wheel finish depends on the trim. SX and SX Premium have diamond-cut alloys; King has a larger diamond-cut design, while both Knight versions use matte black alloys.",
+          "fact_ids": [
+            "F052",
+            "F053",
+            "F054"
+          ],
+          "audio": "assets/audio-1-1.wav",
+          "duration": 11.95
+        }
+      ]
+    },
+    {
+      "id": "sl07",
+      "title": "Lighting",
+      "image": "assets/photo-2.png",
+      "width": 1120,
+      "height": 600,
+      "part": "headlamp",
+      "box": {
+        "x": 0.621,
+        "y": 0.661,
+        "w": 0.183,
+        "h": 0.339
+      },
+      "focus": {
+        "x": 0.7125,
+        "y": 0.8305
+      },
+      "image_id": "im_pdf_333fb98c5e3b93c4ae7d",
+      "labels": [
+        {
+          "text": "E / EX: projector headlamps",
+          "fact_ids": [
+            "F055"
+          ]
+        },
+        {
+          "text": "EX(O) upwards: LED headlamps and taillamps",
+          "fact_ids": [
+            "F056",
+            "F057"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "id": "stance_and_ride-L2",
+          "text": "At the front, E and EX use projector headlamps. The guide lists LED headlights and connected LED tail lamps from EX(O) onwards, making lighting another difference between trims.",
+          "fact_ids": [
+            "F055",
+            "F056",
+            "F057"
+          ],
+          "audio": "assets/audio-2-1.wav",
+          "duration": 13.31
+        }
+      ]
+    },
+    {
+      "id": "sl08",
+      "title": "Rear-seat flexibility",
+      "image": "assets/photo-3.jpg",
+      "width": 1574,
+      "height": 1181,
+      "part": "seat",
+      "box": {
+        "x": 0.0,
+        "y": 0.039,
+        "w": 0.982,
+        "h": 0.953
+      },
+      "focus": {
+        "x": 0.491,
+        "y": 0.5155
+      },
+      "image_id": "im_pdf_0b62835448ea81c472d0",
+      "labels": [
+        {
+          "text": "60:40 split rear seat",
+          "fact_ids": [
+            "F164"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "id": "space_and_practicality-L1",
+          "text": "Packing for a trip, the rear seat has a sixty-forty split. One section can fold while the other remains available, letting you consider passengers and bags together.",
+          "fact_ids": [
+            "F164"
+          ],
+          "audio": "assets/audio-3-1.wav",
+          "duration": 10.84
+        }
+      ]
+    },
+    {
+      "id": "sl12",
+      "title": "Your connected cabin",
+      "image": "assets/photo-4.jpg",
+      "width": 1574,
+      "height": 1181,
+      "part": "touchscreen",
+      "box": {
+        "x": 0.03,
+        "y": 0.303,
+        "w": 0.65,
+        "h": 0.472
+      },
+      "focus": {
+        "x": 0.355,
+        "y": 0.5389999999999999
+      },
+      "image_id": "im09",
+      "labels": [
+        {
+          "text": "Wireless mirroring: adapter on specified trims",
+          "fact_ids": [
+            "F192"
+          ]
+        },
+        {
+          "text": "Phone compatibility required",
+          "fact_ids": [
+            "F192"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "id": "cabin_and_tech-L1",
+          "text": "Before connecting your smartphone to the display, note that SX, SX Premium, King, King Knight and Lounge Edition use a wired-to-wireless adapter for wireless Android Auto and Apple CarPlay.",
+          "fact_ids": [
+            "F192"
+          ],
+          "audio": "assets/audio-4-1.wav",
+          "duration": 15.27
+        }
+      ]
+    },
+    {
+      "id": "sl14",
+      "title": "Panoramic roof",
+      "image": "assets/photo-5.jpg",
+      "width": 1576,
+      "height": 1182,
+      "part": "sunroof",
+      "box": {
+        "x": 0.431,
+        "y": 0.0,
+        "w": 0.522,
+        "h": 0.297
+      },
+      "focus": {
+        "x": 0.692,
+        "y": 0.1485
+      },
+      "image_id": "im07",
+      "labels": [
+        {
+          "text": "Voice-enabled panoramic roof on specified trims",
+          "fact_ids": [
+            "F135"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "id": "delighters-L1",
+          "text": "Looking overhead, SX, SX Premium, King, King Knight and Lounge Edition list the voice-enabled panoramic roof. The photograph shows the glass panel above the front seats.",
+          "fact_ids": [
+            "F135"
+          ],
+          "audio": "assets/audio-5-1.wav",
+          "duration": 11.78
+        }
+      ]
+    },
+    {
+      "id": "sl16",
+      "title": "Wireless charging",
+      "image": "assets/photo-6.jpg",
+      "width": 1576,
+      "height": 1182,
+      "part": "wireless charging pad",
+      "box": {
+        "x": 0.26,
+        "y": 0.191,
+        "w": 0.563,
+        "h": 0.632
+      },
+      "focus": {
+        "x": 0.5415,
+        "y": 0.507
+      },
+      "image_id": "im05",
+      "labels": [
+        {
+          "text": "Wireless charging: compatible phones on specified trims",
+          "fact_ids": [
+            "F140"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "id": "more_features-L1",
+          "text": "For charging your phone, a wireless pad is listed on SX, SX Premium, King, King Knight and Lounge Edition. It works only with compatible smartphones, so check your device.",
+          "fact_ids": [
+            "F140"
+          ],
+          "audio": "assets/audio-6-1.wav",
+          "duration": 11.95
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "file": "assets/audio-1-1.wav",
+      "sha256": "0ae3cfa324d6c530a056c82ae4e5945f9b324dcde2002ccb498cce9e4139b9e0",
+      "bytes": 526892
+    },
+    {
+      "file": "assets/audio-2-1.wav",
+      "sha256": "3d7d26d8b720884e13f6dd3abdf0704cb8a84160db419b52ab32da62840c53ca",
+      "bytes": 587104
+    },
+    {
+      "file": "assets/audio-3-1.wav",
+      "sha256": "dc84050da82f399e2c23a6c9467b6b9c3df9fa080e493f3ad3dd3e79972921ee",
+      "bytes": 477970
+    },
+    {
+      "file": "assets/audio-4-1.wav",
+      "sha256": "56d9d3ff713ff1a242df9a4e00a1c4ead806b80aaa18664f2107247c1ffed06f",
+      "bytes": 673656
+    },
+    {
+      "file": "assets/audio-5-1.wav",
+      "sha256": "26d04f8ba2f4ec3b99bb182184d2abf86ded77e05ba7a66da66d2db6ebf00a85",
+      "bytes": 519366
+    },
+    {
+      "file": "assets/audio-6-1.wav",
+      "sha256": "fd40844fa434852e5ba52bc1231f85ba05b9b614b95e0545dc59430c31e89d42",
+      "bytes": 526892
+    },
+    {
+      "file": "assets/photo-1.jpg",
+      "sha256": "4c9ad72c23946182ed6755fc053df4676b30ae5b1e72155096ed238e63adb320",
+      "bytes": 157666
+    },
+    {
+      "file": "assets/photo-2.png",
+      "sha256": "bdd5dc6eee035766ef69415c1895d82d473842b6ba01e090ba5896db8a525e2e",
+      "bytes": 397962
+    },
+    {
+      "file": "assets/photo-3.jpg",
+      "sha256": "0e0ed9c77f990b7ab59cc31e44399dbfcb3475a7af29eb5057fc6c1de5cd150f",
+      "bytes": 143230
+    },
+    {
+      "file": "assets/photo-4.jpg",
+      "sha256": "99b188dd9ce1e919df29560adda0ef73299869760dd22a1b3f5a5b924e7f84a3",
+      "bytes": 222029
+    },
+    {
+      "file": "assets/photo-5.jpg",
+      "sha256": "c26e69da73e35e2dbae13a19a659d66284cdd6833d6c1f6c278ea02579b20476",
+      "bytes": 185121
+    },
+    {
+      "file": "assets/photo-6.jpg",
+      "sha256": "e2e63299a3b036102e2fa0e19698a5e9c935d3db29077a6c87db6394263e9564",
+      "bytes": 172959
+    }
+  ]
+}
