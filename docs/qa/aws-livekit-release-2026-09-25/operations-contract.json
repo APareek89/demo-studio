@@ -1,0 +1,48 @@
+{
+  "passed": 10,
+  "total": 10,
+  "checks": [
+    {
+      "name": "private operator umask cannot remove service directory traversal",
+      "pass": true
+    },
+    {
+      "name": "explicit service traversal does not broaden secret file permissions",
+      "pass": true
+    },
+    {
+      "name": "a timed-out stop cannot prevent original Caddy recovery",
+      "pass": true
+    },
+    {
+      "name": "prior HAProxy copy failure cannot prevent public HTTPS verification",
+      "pass": true
+    },
+    {
+      "name": "all newly owned persistent services are disabled",
+      "pass": true
+    },
+    {
+      "name": "recovery receipt records independent failures",
+      "pass": true
+    },
+    {
+      "name": "SIGTERM after live Caddy replacement restores original edge",
+      "pass": true
+    },
+    {
+      "name": "failed served-leaf validation restores previous private PEM",
+      "pass": true
+    },
+    {
+      "name": "failed served-leaf validation reloads the previous working certificate",
+      "pass": true
+    },
+    {
+      "name": "restored private PEM remains0600",
+      "pass": true
+    }
+  ],
+  "production_mutations": false,
+  "paid_calls": 0
+}

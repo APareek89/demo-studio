@@ -1,0 +1,47 @@
+{
+  "passed": 9,
+  "total": 9,
+  "checks": [
+    "actual public publication opens without a transport flag",
+    "public capability selects configured hosted LiveKit",
+    "public no-input RTC session becomes ready",
+    "public join keeps microphone disabled and never requests a device",
+    "public data channel uses authenticated TLS relay on443",
+    "public session publishes no microphone track",
+    "public join closes without capture, question or speech",
+    "only one authorized token POST and public signaling were used",
+    "public browser has no uncaught error"
+  ],
+  "rtc": {
+    "pairState": "succeeded",
+    "localType": "relay",
+    "relayProtocol": "tls",
+    "relayTLS": true,
+    "relayPort443": true,
+    "relayExpectedHost": true,
+    "remoteExpectedHost": true,
+    "bytesSent": 1963,
+    "microphoneTracks": 0
+  },
+  "controls": [
+    {
+      "type": "session.start",
+      "mic": false
+    },
+    {
+      "type": "turn.interrupt",
+      "mic": null
+    },
+    {
+      "type": "session.end",
+      "mic": null
+    }
+  ],
+  "provider_calls": 0,
+  "capture_attempts": 0,
+  "microphone_tracks": 0,
+  "runtime_questions": 0,
+  "production_visit_writes": 0,
+  "errors": [],
+  "blocked": []
+}

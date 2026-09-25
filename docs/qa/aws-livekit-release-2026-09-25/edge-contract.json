@@ -1,0 +1,172 @@
+{
+  "passed": 41,
+  "total": 41,
+  "production_mutations": false,
+  "paid_calls": 0,
+  "checks": [
+    {
+      "name": "global JWT URI and header redaction configured",
+      "pass": true
+    },
+    {
+      "name": "real HAProxy configuration valid",
+      "pass": true
+    },
+    {
+      "name": "trusted app TLS through SNI mux",
+      "pass": true
+    },
+    {
+      "name": "public capability GET",
+      "pass": true
+    },
+    {
+      "name": "capability blocks HEAD",
+      "pass": true
+    },
+    {
+      "name": "capability blocks POST",
+      "pass": true
+    },
+    {
+      "name": "capability blocks PUT",
+      "pass": true
+    },
+    {
+      "name": "capability blocks DELETE",
+      "pass": true
+    },
+    {
+      "name": "capability blocks PATCH",
+      "pass": true
+    },
+    {
+      "name": "capability blocks OPTIONS",
+      "pass": true
+    },
+    {
+      "name": "exact public token POST",
+      "pass": true
+    },
+    {
+      "name": "token blocks GET",
+      "pass": true
+    },
+    {
+      "name": "token blocks HEAD",
+      "pass": true
+    },
+    {
+      "name": "token blocks PUT",
+      "pass": true
+    },
+    {
+      "name": "token blocks DELETE",
+      "pass": true
+    },
+    {
+      "name": "token blocks PATCH",
+      "pass": true
+    },
+    {
+      "name": "token blocks OPTIONS",
+      "pass": true
+    },
+    {
+      "name": "private boundary /api/demos/dm_29df0418/run/livekit/token/",
+      "pass": true
+    },
+    {
+      "name": "private boundary /api/demos/dm_29df0418/run/livekit/admin",
+      "pass": true
+    },
+    {
+      "name": "private boundary /api/demos/dm_29df0418/settings",
+      "pass": true
+    },
+    {
+      "name": "private boundary /api/demos",
+      "pass": true
+    },
+    {
+      "name": "private boundary /api/runtime/transport/",
+      "pass": true
+    },
+    {
+      "name": "actual client IP retained and spoofed XFF discarded",
+      "pass": true
+    },
+    {
+      "name": "spoofed forwarded scheme discarded",
+      "pass": true
+    },
+    {
+      "name": "RTC GET /rtc",
+      "pass": true
+    },
+    {
+      "name": "RTC POST blocked /rtc",
+      "pass": true
+    },
+    {
+      "name": "RTC GET /rtc/v1",
+      "pass": true
+    },
+    {
+      "name": "RTC POST blocked /rtc/v1",
+      "pass": true
+    },
+    {
+      "name": "RTC GET /rtc/validate",
+      "pass": true
+    },
+    {
+      "name": "RTC POST blocked /rtc/validate",
+      "pass": true
+    },
+    {
+      "name": "RTC GET /rtc/v1/validate",
+      "pass": true
+    },
+    {
+      "name": "RTC POST blocked /rtc/v1/validate",
+      "pass": true
+    },
+    {
+      "name": "RTC private path blocked /",
+      "pass": true
+    },
+    {
+      "name": "RTC private path blocked /twirp/livekit.RoomService/ListRooms",
+      "pass": true
+    },
+    {
+      "name": "RTC private path blocked /api/health",
+      "pass": true
+    },
+    {
+      "name": "RTC private path blocked /settings",
+      "pass": true
+    },
+    {
+      "name": "private Caddy requires PROXY header",
+      "pass": true
+    },
+    {
+      "name": "TURN SNI reaches TLS terminator",
+      "pass": true
+    },
+    {
+      "name": "TURN PROXYv2 retains actual peer IP",
+      "pass": true
+    },
+    {
+      "name": "signal upstream error is bounded",
+      "pass": true
+    },
+    {
+      "name": "JWT query absent from captured proxy errors",
+      "pass": true
+    }
+  ]
+}

@@ -8,6 +8,8 @@ Implementation sequence: secure local/hosted room configuration and exact-origin
 
 The previous local-only restriction is superseded by this request. Network/resource checks determine the deployment wiring; they do not reopen the approved product decision.
 
+Completed: applicationae98532 and tooling986e515 are on GitHub master; AWS cut over2026-09-25T13:47:23Z. Normal local8910, public Demo Run and Rehearse select LiveKit automatically. Hosted mocked RTC32/32 and public mic-off join9/9 verified actual TLS relay; all4267AWS files retained. Two-room host capacity, unchanged workflow and no new paid QA remain explicit. [Full release, failure history and rollback](docs/aws/release-livekit-2026-09-25.md). No new open question.
+
 ## Varied question acknowledgements and approved AWS release — 25 September 2026
 
 Anand accepted the improved demo, requested confirmation of website search, asked for8–10 rotating acknowledgements, and explicitly authorized master/GitHub plus AWS deployment. Use ten short neutral holding lines, once each per visit before repeating; skip them for answers ready within the existing250ms grace and for local playback commands. Preserve one locked voice and answer-first cancellation. Existing publications use exact matching clips when available or the existing runtime voice path; no rebuild or narration regeneration.

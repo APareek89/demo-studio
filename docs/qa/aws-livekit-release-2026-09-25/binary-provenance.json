@@ -1,0 +1,19 @@
+{
+  "version": "1.13.7",
+  "target": "linux/amd64",
+  "cgo": false,
+  "source_url": "https://github.com/livekit/livekit/archive/refs/tags/v1.13.7.tar.gz",
+  "source_archive_sha256": "b42f34b095dff22639a40256c3f98fd563fdbce5d497e449ceb06ee010de88c5",
+  "binary_sha256": "bcf05dcdb093657208efb1d85ac54c02ab28561bf66774db7e6bb173d3736ff3",
+  "binary_bytes": 55230624,
+  "go_version": "go version go1.27.1 darwin/arm64",
+  "build_flags": [
+    "-trimpath",
+    "-ldflags=-s -w"
+  ],
+  "goproxy": "https://proxy.golang.org",
+  "gosumdb": "sum.golang.org",
+  "aws_binary_version": "livekit-server version 1.13.7",
+  "aws_sha256_verified": true,
+  "aws_verification_source": "Root reported exact binary SHA/version check during isolated release staging"
+}

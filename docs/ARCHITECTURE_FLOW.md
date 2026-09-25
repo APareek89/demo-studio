@@ -20,7 +20,7 @@ BMW narration follow-up,25September: the existing customer text preset now defau
 
 ## Gates at a glance
 
-The25September speech-hold, runtime-picture and retrieval-I/O changes retain the existing graph nodes and storage abstraction. Accepted LiveKit now has server-selected defaults for both player entry points. See Handoff and the dated release receipt for deployment status; configuration alone does not establish Internet connectivity.
+The25September speech-hold, runtime-picture and retrieval-I/O changes retain the existing graph nodes and storage abstraction. Accepted LiveKit now has server-selected defaults for both player entry points, deployed asae98532 locally and on AWS. Real hosted TLS-relay32/32 and public mic-off join9/9 establish actual connectivity;34/34 isolated AWS suites and public28/28 pass. [Release receipt](aws/release-livekit-2026-09-25.md) records exact counts, capacity and rollback. Configuration alone does not establish connectivity or acoustic quality.
 
 | Gate | Enforcer | Threshold / rule | Where |
 |---|---|---|---|

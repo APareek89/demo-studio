@@ -1,0 +1,92 @@
+{
+  "observed_at_utc": "2026-09-25T13:50:50Z",
+  "cutover_at_utc": "2026-09-25T13:47:23Z",
+  "commit": "ae98532c6c9ef1a0fe86a7794c2b596fde7c4eaf",
+  "source_files_verified": 1385,
+  "source_exact": true,
+  "data_files_before": 4267,
+  "data_files_after": 4267,
+  "data_files_unchanged": 4267,
+  "data_missing_count": 0,
+  "data_changed_count": 0,
+  "data_added_count": 0,
+  "all_existing_data_bytes_identical": true,
+  "all_data_inventory_identical": true,
+  "configuration_hashes_match": {
+    "provider_environment": true,
+    "caddy": true,
+    "operator_auth": true,
+    "livekit_environment": true
+  },
+  "providers_unchanged": true,
+  "health": {
+    "mock": false,
+    "model_tier": "customer",
+    "tts_provider": "sarvam",
+    "stt_provider": "sarvam",
+    "runtime_providers": [
+      "gemini",
+      "claude",
+      "runware"
+    ]
+  },
+  "capability": {
+    "transport": "livekit",
+    "livekit_enabled": true,
+    "livekit_available": true,
+    "mode": "hosted"
+  },
+  "services": {
+    "demo-studio": {
+      "active": "active",
+      "unit_file_state": "enabled",
+      "sub_state": "running"
+    },
+    "caddy": {
+      "active": "active",
+      "unit_file_state": "enabled",
+      "sub_state": "running"
+    },
+    "haproxy": {
+      "active": "active",
+      "unit_file_state": "enabled",
+      "sub_state": "running"
+    },
+    "demo-livekit": {
+      "active": "active",
+      "unit_file_state": "enabled",
+      "sub_state": "running"
+    },
+    "demo-livekit-cert-sync.timer": {
+      "active": "active",
+      "unit_file_state": "enabled",
+      "sub_state": "waiting"
+    }
+  },
+  "certificate_sync": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "ExecMainExitTimestamp": "Fri 2026-09-25 13:48:11 UTC",
+    "ActiveState": "inactive"
+  },
+  "qa_unit_load_state": "not-found",
+  "rtc": {
+    "rooms": 0,
+    "participants": 0,
+    "nonempty_rooms": 0,
+    "app_sfu_signaling_connections": 0
+  },
+  "journal_since_cutover": {
+    "entries_examined": 153,
+    "unexpected_error_entries": 0,
+    "error_counts_by_service": {},
+    "http_5xx_count": 0,
+    "raw_logs_included": false
+  },
+  "old_release_retained": true,
+  "backup_retained": true,
+  "backup_bytes": 862035472,
+  "backup_sha256_matches_receipt": true,
+  "remote_mutations": false,
+  "paid_calls": 0
+}

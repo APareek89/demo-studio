@@ -1,0 +1,261 @@
+{
+  "commit": "ae98532c6c9ef1a0fe86a7794c2b596fde7c4eaf",
+  "passed": 28,
+  "total": 28,
+  "checks": [
+    {
+      "name": "Correct source release active",
+      "passed": true
+    },
+    {
+      "name": "All committed source bytes match",
+      "passed": true
+    },
+    {
+      "name": "Shared provider environment unchanged",
+      "passed": true
+    },
+    {
+      "name": "Caddy unchanged by application release",
+      "passed": true
+    },
+    {
+      "name": "Operator authentication unchanged by application release",
+      "passed": true
+    },
+    {
+      "name": "LiveKit configuration unchanged by application release",
+      "passed": true
+    },
+    {
+      "name": "caddy active",
+      "passed": true
+    },
+    {
+      "name": "haproxy active",
+      "passed": true
+    },
+    {
+      "name": "demo-livekit active",
+      "passed": true
+    },
+    {
+      "name": "Public health preserves configured real providers",
+      "passed": true
+    },
+    {
+      "name": "Public shell loads",
+      "passed": true
+    },
+    {
+      "name": "Normal public URLs select available hosted LiveKit",
+      "passed": true
+    },
+    {
+      "name": "Transport discovery is not cached",
+      "passed": true
+    },
+    {
+      "name": "Token request denies missing origin",
+      "passed": true
+    },
+    {
+      "name": "Denied token response contains no grant",
+      "passed": true
+    },
+    {
+      "name": "Token request denies unapproved origin",
+      "passed": true
+    },
+    {
+      "name": "Denied token response contains no grant",
+      "passed": true
+    },
+    {
+      "name": "Every frontend file matches source",
+      "passed": true,
+      "files": 33
+    },
+    {
+      "name": "Published BMW bundle retained",
+      "passed": true
+    },
+    {
+      "name": "Published BMW image supports exact byte ranges",
+      "passed": true
+    },
+    {
+      "name": "Published BMW audio supports exact byte ranges",
+      "passed": true
+    },
+    {
+      "name": "Private path still requires operator login: /api/demos",
+      "passed": true
+    },
+    {
+      "name": "Private path still requires operator login: /api/demos/dm_29df0418/sessions",
+      "passed": true
+    },
+    {
+      "name": "Private path still requires operator login: /api/demos/dm_29df0418/trace",
+      "passed": true
+    },
+    {
+      "name": "Private path still requires operator login: /media/dm_29df0418/demo.json",
+      "passed": true
+    },
+    {
+      "name": "Private path still requires operator login: /media/dm_29df0418/knowledge/published.json",
+      "passed": true
+    },
+    {
+      "name": "Private path still requires operator login: /openapi.json",
+      "passed": true
+    },
+    {
+      "name": "Verification preserves all existing demo files",
+      "passed": true
+    }
+  ],
+  "web_files": [
+    {
+      "path": "web/api.js",
+      "matched": true
+    },
+    {
+      "path": "web/app.js",
+      "matched": true
+    },
+    {
+      "path": "web/brand.svg",
+      "matched": true
+    },
+    {
+      "path": "web/demos.js",
+      "matched": true
+    },
+    {
+      "path": "web/design-system.css",
+      "matched": true
+    },
+    {
+      "path": "web/home.js",
+      "matched": true
+    },
+    {
+      "path": "web/icons.js",
+      "matched": true
+    },
+    {
+      "path": "web/index.html",
+      "matched": true
+    },
+    {
+      "path": "web/insights-ui.css",
+      "matched": true
+    },
+    {
+      "path": "web/observability.js",
+      "matched": true
+    },
+    {
+      "path": "web/player-ui.css",
+      "matched": true
+    },
+    {
+      "path": "web/player/answer-visual.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/live-voice.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/livekit-voice.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/mascot.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/player.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/public-search-ui.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/question-ack.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/voice-transport.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/voice-worklet.js",
+      "matched": true
+    },
+    {
+      "path": "web/player/walkthrough.js",
+      "matched": true
+    },
+    {
+      "path": "web/playground.js",
+      "matched": true
+    },
+    {
+      "path": "web/provider-readiness.js",
+      "matched": true
+    },
+    {
+      "path": "web/slide.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio-ui.css",
+      "matched": true
+    },
+    {
+      "path": "web/studio/align.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio/rehearse.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio/sessions.js",
+      "matched": true
+    },
+    {
+      "path": "web/studio/sources.js",
+      "matched": true
+    },
+    {
+      "path": "web/styles.css",
+      "matched": true
+    },
+    {
+      "path": "web/vendor/livekit-client-2.22.3.esm.mjs",
+      "matched": true
+    },
+    {
+      "path": "web/vendor/livekit-client-LICENSE.txt",
+      "matched": true
+    },
+    {
+      "path": "web/vendor/livekit-client-provenance.json",
+      "matched": true
+    }
+  ],
+  "paid_calls": 0,
+  "data_missing": [],
+  "data_changed": [],
+  "data_added": [],
+  "transport": "livekit",
+  "livekit_adopted": true,
+  "production_rtc_join": "separate browser receipt required"
+}

@@ -6,7 +6,7 @@ Turn product images, documents, videos and owner-supplied websites into a voice-
 
 [Current handoff](Handoff.MD) · [Contributor orientation](CODEX_INSTRUCTIONS.MD) · [Product rules](PRD.md) · [Build and runtime flow](docs/DEMO_BUILD_AND_RUN.md) · [Architecture](docs/ARCHITECTURE_FLOW.md) · [QA](Loop.MD) · [Lessons](Learning.MD).
 
-The current gallery integration keeps the reviewed script pipeline, runtime recovery and image/tag/voice continuity. Anand authorized master/GitHub publication; the [gallery-template receipt](docs/qa/gallery-template-2026-09-25/README.md) records verification and Git status. AWS is a separate release: see [current release status](Handoff.MD#release-and-authorization), not this repository's branch name. The previous README is retained in [history](docs/history/context-before-master-2026-09-25/README.md).
+The current release uses LiveKit automatically for Demo Run and Rehearse, retaining the reviewed script pipeline, gallery and image/tag/voice continuity. Application `ae98532` is on GitHub master and AWS. [Try the BMW demo](https://13-202-0-79.sslip.io/#/play/dm_29df0418); [verification and rollback](docs/aws/release-livekit-2026-09-25.md). The current small AWS host admits two simultaneous LiveKit rooms. The previous README is retained in [history](docs/history/context-before-master-2026-09-25/README.md).
 
 ## Local app with LiveKit
 

@@ -1,6 +1,6 @@
 # LiveKit Demo Run
 
-The accepted LiveKit trial is being promoted to the default public player and Rehearse transport. [Handoff](../Handoff.MD) and the release receipt distinguish implementation from the version actually running on AWS.
+LiveKit is the default public player and Rehearse transport locally and on AWS. Applicationae98532 is deployed after actual public TLS-relay verification. [Release receipt](aws/release-livekit-2026-09-25.md) records the source, gates, preserved data, two-room hosted capacity and rollback; [Handoff](../Handoff.MD) identifies the current local workspace.
 
 Both entry points request `GET /api/runtime/transport` before mounting the player. Configured LiveKit needs no URL flag. `?voice_transport=websocket` is a diagnostic override; it never activates automatically after a failed join. Configuration discovery returns only mode/readiness, has `Cache-Control: no-store`, and never creates a room or calls a provider.
 

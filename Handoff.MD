@@ -2,14 +2,17 @@
 
 Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
-## Active follow-up — LiveKit everywhere · 25 September
+## Current deployed release — LiveKit everywhere · 25 September
 
-Anand accepted the trial and requested default LiveKit locally and on AWS. Work is in progress on the existing branch; the deployed d94d6ef release below remains the rollback baseline until a new verified receipt says otherwise. Implement public player plus Rehearse, secure hosted origin/room configuration, Internet ICE/TURN and stable local launch. Preserve graph/evidence/gallery/one-voice/session ownership and all stored demos. No new paid model QA. Prior local-only restriction is superseded; network acceptance still must be measured.
+Anand accepted the trial and authorized default LiveKit locally and on AWS. Application **ae98532** and deployment tooling **986e515** are on GitHub master. AWS cut over **2026-09-25T13:47:23Z** to `/opt/demo-studio-releases/20260925-livekit`. [Public BMW](https://13-202-0-79.sslip.io/#/play/dm_29df0418), [local app](http://127.0.0.1:8910/), [release and rollback receipt](docs/aws/release-livekit-2026-09-25.md). Subsequent documentation commits do not change deployed application bytes. Older optional/local-only statements below are historical.
 
-- Local app8910 now runs `scripts/run_local.py --live-providers` in the normal `.venv`, with customer tier and unchanged `/tmp/demo-runtime-final-20260924/data` plus adjacent graph.sqlite. All702data files remained byte-identical across restart. Use the normal app URL without transport or mute flags. Default local signaling7890/UDP7892; owned processes and private state under `~/.local/state/demo-studio/livekit`.
-- Application review fixed lifetime publication pins, nested JSON failure, same-tick connection disposal and bounded lazy SDK loading. Core445/24/smoke3/full mock28 and isolated contracts pass; actual local native RTC and hosted policy are recorded in [current QA](docs/qa/livekit-default-2026-09-25/README.md). Hosted Internet verification and master/AWS completion remain pending at this checkpoint.
+- Demo Run and Rehearse discover LiveKit automatically; no transport flag is needed. Real configured Sarvam/customer-tier providers remain. Build/Align, graph nodes, grounding, gallery and recorded audio are retained; one existing capture and runtime own the conversation. No automatic fallback/replay.
+- Public WSS and authenticated TURN/TLS use existing443, with preserved operator auth and visitor identity. Dedicated unprivileged SFU, exact origins, scoped grants, publication pins, request/room bounds, managed certificates and startup persistence are enabled. Current small AWS host admits **two simultaneous LiveKit rooms**; no broad capacity or new acoustic claim.
+- Local app8910 uses `scripts/run_local.py --live-providers`, normal `.venv`, `/tmp/demo-runtime-final-20260924/data` and adjacent graph.sqlite. All702files survived restart unchanged. Default signaling7890/UDP7892; private state `~/.local/state/demo-studio/livekit`. The older8920 trial is not the canonical app. Launcher defaults to mock; use explicit live-provider mode for conversation/builds.
+- Core445/445 deck,24/24 acceptance, smoke3/3, full mock28/28. AWS34/34 staged suites, two knowledge environment skips; local native RTC30/30; real Internet TLS-relay mock32/32; public verification28/28 and mic-off public RTC9/9. Exact contracts, screenshots and failure history are in [QA](docs/qa/livekit-default-2026-09-25/README.md) and the release receipt. No new paid QA.
+- All4267existing AWS files and provider environment unchanged. Full stopped-service backup and old d94d6ef release retained. Proxy ordering, service-directory modes and network-discovery sandbox failures were fixed and independently checked before application cutover; both startup failures recovered the prior public edge. Temporary hosted QA service/tunnel removed. No new open product question.
 
-## Current deployed release — 25 September
+## Previous deployed release — 25 September
 
 Application **d94d6ef** is on master/GitHub and AWS, cut over **2026-09-25T11:35:49Z**. [Public BMW demo](https://13-202-0-79.sslip.io/#/play/dm_29df0418); [release/rollback receipt](docs/aws/release-runtime-gallery-2026-09-25.md). This release supersedes the local-only/master-pending status in the historical checkpoints below for the shared application fixes.
 

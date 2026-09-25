@@ -1,5 +1,15 @@
 # Learning.MD — Demo Studio
 
+## 2026-09-25 — A parsed service configuration is not a working hosted transport
+
+**Observed:** isolated proxy checks caught Caddy sorting a fallback response ahead of RTC routing. Real SFU startup then caught two Linux-only failures: private umask removed service-account directory traversal, and the systemd address-family restriction blocked Go's network-interface discovery. Both startup failures triggered recovery of the original public edge before application cutover.
+
+**Five whys:** (1) configuration parsing did not execute request routing or the service sandbox; (2) Caddy directives have their own execution order; (3) mkdir permissions are filtered by the process umask; (4) network discovery uses AF_NETLINK as well as IPv4/IPv6; (5) local application and synthetic proxy acceptance had not exercised the deployed service identity. Pinned LiveKit also returns exit zero for some startup failures, so exit status alone cannot establish readiness.
+
+**Correction:** exclusive RTC route/fallback handles, explicit traversal modes with real service-user access checks, unprivileged AF_NETLINK discovery, bounded HTTP readiness and restart-on-exit. Keep configuration and keys private. Rollback independently stops/disables the new services and verifies the restored public HTTPS app.
+
+**Prevention:** actual AWS boundary153/153 and TLS/PROXY41/41, failure-injection10/10 including restrictive-umask and certificate recovery, plus real external-browser relay32/32 with54 received/forwarded synthetic PCM frames. Separate private service startup, public relay, application cutover and provider/acoustic acceptance. No new paid call or acoustic guarantee follows from these transport checks.
+
 ## 2026-09-25 — Promoting a transport requires both player entry points and hosted boundaries
 
 **Observed:** the accepted LiveKit adapter was selected only by a public-player URL flag. Rehearse still mounted the old transport, local ICE could not serve remote browsers, and the old outer eight-second connection limit could expire before hosted joining finished. Review also reproduced RecursionError from deeply nested JSON inside the existing body-size limit.

@@ -1,10 +1,10 @@
 # Loop.MD — Demo Studio
 
-## LiveKit default adoption — 25 September 2026 · implementation checkpoint
+## LiveKit default adoption — 25 September 2026 · released
 
-Finite QA, loop off. Core deck445/445, acceptance24/24, smoke3/3 and full mock28/28 pass with isolated DATA/GRAPH, blank provider keys and blocked outbound sockets. Twenty-six adjacent Python suites also pass with zero outbound attempts; exact inventory is in [the current QA receipt](docs/qa/livekit-default-2026-09-25/README.md). Hosted policy/room29, legacy LiveKit50, normal local launcher15 and isolated-copy launcher16 pass. Frontend selection, ownership/navigation and native RTC receipts are updated with the frozen code; hosted Internet relay and production cutover remain separate gates.
+Finite QA, loop off. Core deck445/445, acceptance24/24, smoke3/3 and full mock28/28 pass with isolated DATA/GRAPH, blank provider keys and blocked outbound sockets. Twenty-six adjacent Python suites also pass with zero outbound attempts; exact inventory is in [the current QA receipt](docs/qa/livekit-default-2026-09-25/README.md). Hosted policy/room29, legacy LiveKit50, normal local launcher15 and isolated-copy launcher16 pass. Frontend selector15, LiveKit58, base voice96, hold26, recovery17, saves18, acknowledgements14; actual public/Rehearse/navigation28. Real local RTC30/30.
 
-The normal local launcher preserves the existing workspace and advertises LiveKit automatically to both player entry points. AWS still runs the previous application until the new dated release receipt records cutover. No new paid provider/acoustic QA. Earlier receipts below remain historical evidence for their own source revisions.
+AWS applicationae98532 is live after34/34 staged suites with zero outbound attempts; knowledge58passed+2environment skips of60, all other applicable checks green. Real public WSS/TURN mock32/32 confirms54 received/forwarded PCM frames, typed questions, picture before voice and saved visits. Boundary153/153, actual TLS/PROXY41/41, recovery10/10 and application release15/15. Public code/media/privacy28/28 (33frontend files) and real mic-off public RTC9/9 pass. All4267stored files unchanged; local restart preserved702. Source1385/1385, backup and actual failure history are in the [release receipt](docs/aws/release-livekit-2026-09-25.md). Counts overlap; do not sum. No new paid provider/acoustic QA or broad load claim; hosted capacity is two rooms. Earlier receipts below remain historical evidence for their own source revisions.
 
 ## Approved runtime/gallery release — 25 September 2026
 

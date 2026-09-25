@@ -1,0 +1,67 @@
+{
+  "passed": 32,
+  "total": 32,
+  "checks": [
+    "actual pinned SDK joins the configured runtime room",
+    "text connection does not acquire a microphone",
+    "only the explicitly allowed LiveKit signaling is opened",
+    "real synthetic capture starts once",
+    "server receives and forwards actual RTC PCM frames",
+    "microphone PCM never uses the reliable data uplink",
+    "real RTC audio packets use the exact configured candidate",
+    "actual browser audio reaches the worker through TURN relay",
+    "selected TURN relay uses TLS",
+    "same RTC capture still drives immediate local speech hold",
+    "no-final synthetic input releases the reversible hold",
+    "mic off releases the source but leaves text connected",
+    "second RTC capture starts",
+    "mic retry has a distinct generation and only its active track",
+    "actual runtime returns pinned BMW picture and deferred audio",
+    "runtime picture selection does not start speech prematurely",
+    "actual gallery picture is ready before real data-channel PCM playback",
+    "real runtime worker departure closes the browser transport",
+    "ended trial leaves no live synthetic device",
+    "actual player mounts with unchanged top and bottom controls",
+    "actual player brings the requested BMW picture before its answer voice",
+    "gallery and conversation remain inside the desktop viewport",
+    "same player remains within phone viewport",
+    "trial player saves the completed visit incrementally",
+    "stock application chooses LiveKit without a transport URL flag",
+    "stock application accepts typed intake while voice mode is enabled",
+    "stock route establishes its own continuous microphone over RTC",
+    "stock route sends typed question over LiveKit and delivers the answer",
+    "stock route clears only the submitted question field",
+    "stock route persists the submitted question and actual answer",
+    "browser opens no unapproved connection or legacy microphone WebSocket",
+    "browser has no uncaught JavaScript error"
+  ],
+  "provider_calls": 0,
+  "physical_microphone": false,
+  "transport": "real-hosted-livekit",
+  "rtc": {
+    "bytes": 15565,
+    "pairState": "succeeded",
+    "localType": "relay",
+    "remoteType": "host",
+    "localRelayProtocol": "tls",
+    "relayUsesTLS": true,
+    "localProtocol": "udp",
+    "remoteProtocol": "udp",
+    "remoteExpectedHost": true
+  },
+  "frames": {
+    "received": 54,
+    "forwarded": 54
+  },
+  "errors": [],
+  "blocked": [],
+  "offline_stylesheets": [
+    "https://fonts.googleapis.com/css2"
+  ],
+  "screenshots": [
+    "bmw-livekit-stock-route-answer.png",
+    "bmw-livekit-player-phone.png",
+    "bmw-livekit-answer-image.png",
+    "bmw-livekit-player-desktop.png"
+  ]
+}

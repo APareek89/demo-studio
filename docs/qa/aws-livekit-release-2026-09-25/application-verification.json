@@ -1,0 +1,32 @@
+{
+  "commit": "ae98532c6c9ef1a0fe86a7794c2b596fde7c4eaf",
+  "source_files": 1385,
+  "existing_files_verified": 4267,
+  "missing": [],
+  "changed": [],
+  "added": [],
+  "all_existing_demo_bytes_unchanged": true,
+  "environment_unchanged": true,
+  "caddy_unchanged": true,
+  "operator_auth_unchanged": true,
+  "health": {
+    "mock": false,
+    "model_tier": "customer",
+    "tts_provider": "sarvam",
+    "stt_provider": "sarvam",
+    "runtime_providers": [
+      "gemini",
+      "claude",
+      "runware"
+    ]
+  },
+  "capability": {
+    "transport": "livekit",
+    "livekit_enabled": true,
+    "livekit_available": true,
+    "mode": "hosted"
+  },
+  "transport": "livekit",
+  "livekit_adopted": true,
+  "shared_data_retained": true
+}
