@@ -1,0 +1,68 @@
+# Feedback sharing: the public player is available without editor credentials.
+# The operator supplies /etc/caddy/demo-studio-admin.auth privately, containing
+# one Caddy basic_auth entry: username bcrypt-hash. Never commit that file.
+# This is a deployment boundary, not a replacement for application role auth.
+(feedback_upstream) {
+	reverse_proxy 127.0.0.1:8877 {
+		transport http {
+			read_timeout 600s
+			write_timeout 600s
+			response_header_timeout 600s
+		}
+	}
+}
+
+13-202-0-79.sslip.io {
+	request_body {
+		max_size 1GB
+	}
+
+	# Anchored, method-specific paths. Segment patterns exclude dot segments,
+	# backslashes and residual '%' escapes, including double-encoded traversal.
+	@player_read {
+		method GET HEAD
+		path_regexp player_read ^(/|/api/health|/web/([A-Za-z0-9_-]+[./-])*[A-Za-z0-9_-]+|/api/demos/dm_[0-9a-f]{8}/(bundle|export\.mp4))$
+	}
+	@player_media {
+		method GET HEAD
+		path_regexp player_media `^/media/dm_[0-9a-f]{8}/(sources|derived|media|audio)/([A-Za-z0-9_-][A-Za-z0-9_. -]*/)*[A-Za-z0-9_-][A-Za-z0-9_. -]*\.(?i:jpg|jpeg|png|webp|gif|avif|bmp|ico|mp3|wav|ogg|m4a|aac|flac|opus|mp4|webm|mov|m4v)$`
+	}
+	@player_write {
+		method POST
+		path_regexp player_write ^/api/demos/dm_[0-9a-f]{8}/run/(qa|tts|pitch|lead|stt|session)$
+	}
+	@player_live {
+		method GET
+		path_regexp player_live ^/api/demos/dm_[0-9a-f]{8}/run/live$
+		header Connection *Upgrade*
+		header Upgrade websocket
+	}
+	@session_share {
+		method GET HEAD
+		path_regexp session_share ^/api/share/dm_[0-9a-f]{8}/[A-Za-z0-9_-]+$
+		# App verifies the signed key and returns only the redacted summary.
+		query k=*
+	}
+
+	handle @player_read {
+		import feedback_upstream
+	}
+	handle @player_media {
+		import feedback_upstream
+	}
+	handle @player_write {
+		import feedback_upstream
+	}
+	handle @player_live {
+		import feedback_upstream
+	}
+	handle @session_share {
+		import feedback_upstream
+	}
+	handle {
+		basic_auth {
+			import /etc/caddy/demo-studio-admin.auth
+		}
+		import feedback_upstream
+	}
+}
