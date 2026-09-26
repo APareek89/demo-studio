@@ -1,5 +1,14 @@
 # Learning.MD — Demo Studio
 
+
+## 26 September 2026 — Mobile playback requires browser-policy tests
+
+Shared iPhone feedback exposed recorded-audio and layout defects that muted desktop checks missed. Native WebKit reproduced delayed new-element playback rejection even after Web Audio unlock. The existing welcome gesture now primes one persistent HTML audio element; explicit policy retry retains its current line, and late events are fenced by source/run/token ownership. Four-second Web Audio resume bounds prevent setup/hold waits from hanging.
+
+Landscape/keyboard-height gallery collapse came from measuring a hidden footer at offset zero. An unpositioned closed drawer also doubled WebKit page width and changed Chromium's rotation scale. The fixes keep hidden footer space small and establish the existing player's containing block; approved gallery, tags, top bar and conversation design remain.
+
+Why it escaped: desktop/muted/forced-autoplay tests exercised route and media ownership but bypassed real policy; welcome-only phone screenshots did not reach the gallery or rotate during narration. Why the tests missed it: each old fake Audio completed independently and omitted native src/ended semantics. Prevention: native unmuted silent-WAV WebKit policy checks plus mounted-player mobile geometry/rotation/drawer tests and accurate reusable-media fakes. Mocked or emulated checks must never be reported as physical iPhone acoustic acceptance. [Evidence and FMEA](docs/qa/mobile-runtime-2026-09-26/README.md).
+
 ## 2026-09-25 — A parsed service configuration is not a working hosted transport
 
 **Observed:** isolated proxy checks caught Caddy sorting a fallback response ahead of RTC routing. Real SFU startup then caught two Linux-only failures: private umask removed service-account directory traversal, and the systemd address-family restriction blocked Go's network-interface discovery. Both startup failures triggered recovery of the original public edge before application cutover.

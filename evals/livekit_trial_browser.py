@@ -166,6 +166,7 @@ def main(*, hosted=False):
                   const remote=values.find(v=>v.id===pair?.remoteCandidateId),local=values.find(v=>v.id===pair?.localCandidateId);
                   return {bytes:values.filter(v=>v.type==='outbound-rtp'&&v.kind==='audio').reduce((n,v)=>n+(v.bytesSent||0),0),pairState:pair?.state,localType:local?.candidateType,remoteType:remote?.candidateType,localRelayProtocol:local?.relayProtocol||null,relayUsesTLS:local?.relayProtocol==='tls'||/^turns:/.test(local?.url||''),localProtocol:local?.protocol||null,remoteProtocol:remote?.protocol||null,remoteExpectedHost:expectedHost===(remote?.address||remote?.ip)};
                 }""", args.rtc_host)
+                (args.output / "candidate-stats.json").write_text(json.dumps(stats, indent=2))
                 check("real RTC audio packets use the exact configured candidate", stats["bytes"] > 0 and stats["pairState"] == "succeeded" and stats["remoteExpectedHost"])
                 if args.require_relay:
                     check("actual browser audio reaches the worker through TURN relay", stats["localType"] == "relay")

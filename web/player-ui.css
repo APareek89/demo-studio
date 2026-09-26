@@ -3,6 +3,9 @@
 [data-visual-theme="sage"]{--theme-deep:#193b33;--theme-accent:#477463;--theme-soft:#eaf4ed;--theme-tint:#f3f6f1;--theme-line:#dbe4dc;--theme-muted:#64796c}
 [data-visual-theme="graphite"]{--theme-deep:#302c29;--theme-accent:#a8662e;--theme-soft:#fbf0e6;--theme-tint:#f6f4f0;--theme-line:#e6ddd3;--theme-muted:#7a7066}
 .pl{
+  /* Keep the closed absolute conversation drawer inside this clipped player,
+     including mobile browsers that do not use container-type as a containing block. */
+  position:relative;
   --showroom-ink:#08243c;
   --showroom-paper:#f8f9f6;
   --showroom-accent:#0879be;

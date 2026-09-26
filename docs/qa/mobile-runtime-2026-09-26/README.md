@@ -1,0 +1,51 @@
+# Mobile runtime correction — 26 September 2026
+
+Status: local implementation complete; AWS release verification in progress. The prior deployed application is ae98532; this document does not claim a completed AWS cutover.
+
+## Reproduced defects and changes
+
+- Native WebKit blocks a newly created HTML audio element after the welcome tap expires, even when Web Audio was unlocked. Reusing the element played during that tap succeeds. The player now primes a persistent recorded-audio element with an unmuted silent WAV synchronously from deliberate taps. Recorded lines retain their exact source and voice; browser-policy rejection holds the current line with an explicit Enable audio button. It never creates another provider request. Cancellation, source ownership and actual ended state fence late media events.
+- A short slide hides its footer. Measuring that hidden footer's zero offset consumed the gallery's full height in landscape and a keyboard-height viewport. Hidden footers now use the existing small inset.
+- The closed absolute conversation drawer lacked a positioned player containing block. WebKit document width doubled; Chromium changed the visual viewport scale after rotation. Positioning the existing clipped player contains its drawer without redesigning the controls.
+- Web Audio resume could remain pending before capture/output deadlines existed, or fail after a provisional speech hold removed the output deadline. Resume is now bounded to four seconds, checks the running state and retains context/delivery ownership. Late microphone grants remain fenced and typing remains available.
+- Optional browser icon/manifest probes encountered the operator authentication boundary. Only GET/HEAD on the four exact optional paths now return an unchallenged404. Adjacent paths, mutations, builder routes and private records retain authentication. The auth challenge was reproduced; an actual iPhone credential popup caused by these probes was not.
+
+## Evidence and limits
+
+Native policy12/12 used real WebKit HTML media with unmuted digital-silence audio and no autoplay bypass. No-gesture/new-element/Web-Audio-only failures and same-element success were observed after the activation window expired. The earlier probe that polled page JavaScript could contaminate activation and is not acceptance evidence. Final raw evidence: `output/playwright/mobile-audio-policy-20260926-final/`.
+
+Mobile gallery94/94 covers WebKit and Chromium portrait, landscape, narrow/small phones, synthetic keyboard resize, drawer open/close, feature taps, exact picture/caption and narration ownership. The baseline reproduces collapse/overflow. Raw evidence: `output/mobile-layout-2026-09-26/`.
+
+No physical iPhone or iOS simulator is available on this host. WebKit with Safari/Chrome-iOS user agents checks shared engine policy and layout, not either installed iOS app, actual keyboard behavior, microphone acoustics, OS background suspension or mobile-network reliability. Provider calls are mocked, storage and graph state isolated, and outbound provider sockets blocked. Existing BMW sources and recordings are not regenerated.
+
+Initial candidate gates found two test-harness dependencies on the former implementation: qa_deck444/445 expected an exact old onplaying string; speech_noise stopped after25groups because its extracted micTap fixture omitted the new unlock helper. The updated structural check retains ownership/hold assertions, and the speech fixture supplies a no-op unlock. Native browser regressions separately exercise that helper. Reusable-Audio fakes now implement native src/ended lifecycle instead of advancing a replaced source.
+
+## Final local gates
+
+- Core: deck445/445, acceptance24/24, smoke3/3, full mock28/28 (194.22s synthetic narration); isolated storage/graph, zero outbound provider attempts.
+- Native mounted WebKit recorded audio26/26: two Safari/CriOS profiles × continuous and delayed recording cases. The old application after a6.5s local recording delay fails7/13: both profiles reject the second/closing clip with NotAllowedError at inactive user activation. Candidate13/13 for that case. Continuous old playback can succeed; its11/13 baseline fails only reuse checks. New recorded ownership12/12; Web Audio lifecycle13/13.
+- Voice96/96, LiveKit58/58, transport15/15, immediate hold26/26, noise31/31, recovery17/17, listen16/16, session save18/18, HTTP question6/6, media7/7, walkthrough fallback18/18, priority revision11/11.
+- Gallery320/320, mobile geometry94/94, continuity28/28, image load14/14; current native player88/88. FakeAudio's obsolete old-element finish simulation now dispatches the saved old event callback; finishing a reused element would incorrectly finish its new source.
+- Native local RTC30/30: exact UDP candidate,64 actual received/forwarded synthetic frames, microphone off/retry, reversible hold, picture before answer, ordinary flag-free typed intake/question and saved visit. Two previous attempts failed (candidate assertion; microphone publication timeout), remain preserved, and caused no widening of network/timeout rules. This is bounded acceptance, not a universal network reliability claim.
+- Real isolated AWS edge58/58 and existing boundary153/153; deployment-helper fixtures18/18. Staged AWS suites and final public checks are recorded after actual execution.
+
+Raw receipts are under `output/playwright/mobile-20260926/`, `output/playwright/mobile-recorded-audio*-20260926/`, `output/mobile-layout-2026-09-26/` and `output/mobile-public-access-2026-09-26/`. Counts overlap and should not be summed as unique coverage.
+
+## FMEA and product boundary
+
+Product context: PRD's interruptible, grounded voice tour; existing gallery, three-second reply window, incremental session saves and human approvals. System context: existing LiveKit/runtime graph, local JSON/SQLite, single AWS worker and two-room admission on a t3.micro. This change adds no graph node, source, provider, migration or automatic turn replay.
+
+- Unhandled errors: bounded Web Audio resume and visible recorded-media policy retry replace unbounded waits/silent policy fallback. Prior S6/O7/D8=336; covered residual S6/O2/D2=24.
+- External dependency failures: browser policy and suspended contexts tested separately from provider failures; existing selected-voice caption fallback remains for non-policy media failures. Physical hardware behavior remains unverified.
+- Races/state: prime/source/token/run ownership, cancellation during permission/prime, rejected held playback and late events require regression coverage. No new independent narration clock.
+- Resource exhaustion: one active recorded element per mount, bounded prime/resume; destroy releases it and existing preloads. Existing room/body/queue limits retained.
+- Security/access: four exact GET/HEAD optional assets; no wildcard public route, token scope change or credential output. Real proxy edge58/58 and boundary153/153.
+- Data integrity: heard-only transcript and ordered incremental save behavior retained; deployment snapshots and verifies every current data file before code cutover.
+- Observability: retry/error status is visible; existing session timing remains. Production traces do not establish physical device acoustic quality or prove a browser-cancellation cause.
+- Scale/load: no new server work per recorded clip or retry. Existing two concurrent rooms remain a disclosed capacity limit; this is not a load test.
+- Billing: silent primer/local retry makes no model/STT/TTS request. No new paid QA.
+- Retry/idempotency: retry resumes the exact owned audio source; Pause/Stop/navigation remove pending retry; no question replay.
+- Configuration drift: no transport/provider flag change; verify exact frontend hashes on deployed release and ordinary flag-free public route.
+- PRD edge cases: portrait/rotation/keyboard, touch tags, voice off/permission failure, typing, interrupt/resume, restart and recorded/live ownership are the relevant user flows.
+
+Coverage:12/12 categories checked. Remaining acceptance limits are physical iPhone/acoustics, real cellular conditions and existing two-room hosted capacity, not claims resolved by mocked tests.

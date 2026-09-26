@@ -17,6 +17,7 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   concerns, interrupt with questions, get honest answers, take a call to action.
 
 ## Must never break
+- **Mobile playback:** the welcome tap unlocks the recorded-audio element reused through the visit. A browser-policy block retains the current line with an explicit Enable audio action. Gallery, feature tags and reply controls remain contained through rotation and a reduced keyboard viewport. Browser emulation is distinct from physical iPhone acceptance.
 - **No citation, no claim.** Authored speech uses the approved registry. Live answers use its pinned
   snapshot, attributed live evidence from enabled owner-supplied URL domains, or audited calculations from
   supplied inputs. Live evidence never silently updates the registry; promotion requires Align.

@@ -151,6 +151,32 @@ export function mountPlayer(host, bundle, api) {
   // Warm the browser cache with published audio, slide images and the optional opening film.
   // The delayed callback keeps preload objects alive; no new narration is requested from server/app.py:run_tts.
   let destroyed = false;
+  // iOS grants recorded-media playback per element. Keep the element unlocked by
+  // the welcome tap for the entire visit, including delayed narration and Q&A.
+  const recordedAudio = new Audio();
+  recordedAudio.playsInline = true;
+  const silentAudio = "data:audio/wav;base64,UklGRsQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  let audioPrime = null, blockedAudio = null;
+  function primeRecordedAudio() {
+    if (destroyed) return;
+    if (blockedAudio) { blockedAudio(); return; }
+    if (S.audio || audioPrime) return;
+    const a = recordedAudio;
+    a.src = silentAudio; a.muted = false;
+    let playing;
+    try { playing = a.play(); } catch (_) { playing = Promise.reject(); }
+    audioPrime = new Promise(resolve => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true; clearTimeout(timer);
+        if (a.src === silentAudio) { a.pause(); a.muted = S.muted; }
+        resolve();
+      };
+      const timer = setTimeout(finish, 4000);
+      Promise.resolve(playing).then(finish, finish);
+    }).finally(() => { audioPrime = null; });
+  }
   const preloadTimer = setTimeout(() => {
     if (destroyed) return;
     try {
@@ -209,7 +235,7 @@ export function mountPlayer(host, bundle, api) {
         // Keep the guide, captions, citations and reply controls together in the bottom dock.
         // Narration and question callbacks update these elements without remounting the controls.
         h("div", { class: "pl-cap" }, h("div", { class: "pl-guide-line" }, el.avatar = h("span", { class: "pl-guide-avatar", "aria-hidden": "true" }, Array.from(guide)[0]), h("span", { class: "who" }, guide), el.status = h("span", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
-        h("div", { class: "pl-controls" }, h("div", { class: "pl-composer-label" }, h("span", {}, `Ask ${guide}`), el.voiceToggle = h("button", { class: "pl-voice-toggle", type: "button", role: "switch", "aria-checked": String(S.voiceMode), "aria-label": "Conversation voice mode", onclick: () => micTap() }, h("span", { class: "pl-toggle", "aria-hidden": "true" }), "Voice mode")), h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" })),
+        h("div", { class: "pl-controls" }, h("div", { class: "pl-composer-label" }, h("span", {}, `Ask ${guide}`), el.voiceToggle = h("button", { class: "pl-voice-toggle", type: "button", role: "switch", "aria-checked": String(S.voiceMode), "aria-label": "Conversation voice mode", onclick: () => micTap() }, h("span", { class: "pl-toggle", "aria-hidden": "true" }), "Voice mode")), h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }), el.audioRetry = h("span", { class: "pl-audio-retry" })),
           // Submit the typed dock reply without reloading the page, then clear its input field.
           // acceptTypedAnswer routes it to the active wait or server/app.py:run_qa.
           h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: `Ask ${guide} a question…`, "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 17 })), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 16 }))),
@@ -363,7 +389,7 @@ export function mountPlayer(host, bundle, api) {
     if (!owned) return;
     hold.resumeDeadline?.();
     for (const animation of hold.animations) { try { animation.play(); } catch (_) {} }
-    if (hold.audio && S.audio === hold.audio) hold.audio.play().catch(() => {});
+    if (hold.audio && S.audio === hold.audio) hold.audio.play().catch(error => hold.speaking?.playbackError?.(error));
     if (hold.film && root.classList.contains("film-on")) hold.film.play().catch(() => {});
     if (S.utterance) { try { speechSynthesis.resume(); } catch (_) {} }
     setStatus(hold.status.replace(/^pl-status\s*/, ""), hold.statusText); el.live.textContent = hold.liveText;
@@ -376,6 +402,7 @@ export function mountPlayer(host, bundle, api) {
   // Unlock output, connect the live session and optionally begin microphone capture.
   // The capture flag selects voice or typing; live-voice.js:LiveVoiceClient owns the actual connection.
   function startLive(capture = S.voiceMode) {
+    primeRecordedAudio();
     if (!live) return;
     setVoiceMode(capture);
     live.unlockOutput().catch(() => {});
@@ -457,7 +484,7 @@ export function mountPlayer(host, bundle, api) {
   function updateMuteUi() { el.muteBtn.replaceChildren(icon(S.muted ? "volume-off" : "volume", { size: 18 })); el.muteBtn.title = S.muted ? "Unmute audio" : "Mute audio"; el.muteBtn.setAttribute("aria-label", el.muteBtn.title); el.muteBtn.setAttribute("aria-pressed", String(S.muted)); el.muteBtn.classList.toggle("on", S.muted); }
   // Toggle output mute across live speech, recorded audio, browser speech and the film.
   // The state is shared with live-voice.js:LiveVoiceClient.setMuted; microphone capture is separate.
-  function toggleMute() { S.muted = !S.muted; if (S.muted && S.waiterVoice?.autoResumed) stopListening(); live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !root.classList.contains("film-on"); updateMuteUi(); }
+  function toggleMute() { S.muted = !S.muted; if (!S.muted) primeRecordedAudio(); if (S.muted && S.waiterVoice?.autoResumed) stopListening(); live?.setMuted(S.muted); if (S.audio) S.audio.muted = S.muted; if (S.utterance) S.utterance.volume = S.muted ? 0 : 1; el.film.muted = S.muted || !root.classList.contains("film-on"); updateMuteUi(); }
   // Turn reply choices into buttons that belong to the current wait object.
   // A stale click cannot resolve a newer wait; web/api.js:h creates the buttons and resolveWait delivers the value.
   function setChips(list) { const owner = S.waiter; el.chips.replaceChildren(...list.map((c) => h("button", { class: "chip" + (c.primary ? " primary" : ""), onclick: () => { if (S.waiter === owner) resolveWait(c.value); } }, c.label))); }
@@ -701,35 +728,61 @@ export function mountPlayer(host, bundle, api) {
     // audioUrlFor may use server/app.py:run_tts; the checks prevent late responses from starting old narration.
     const voiceToken = S.ttsToken;
     let url = null; try { url = await audioUrlFor(text, preset); } catch (e) {}
+    if (url && audioPrime) await audioPrime;
     if (run !== S.run || voiceToken !== S.ttsToken) return false;
     if (S.localSpeechHold && !await awaitSpeechHold(run)) return false;
     let ok;
     // Play a recorded audio file and wait for playback events rather than advancing on a slide timer.
     // The URL comes from server/app.py:get_bundle or run_tts; completion is returned to the narration loop.
     if (url) ok = await new Promise((res) => {
-      const my = ++S.ttsToken, a = new Audio(url); a.muted = S.muted; S.audio = a;
+      const my = ++S.ttsToken, a = recordedAudio;
+      a.src = url; a.muted = S.muted; S.audio = a;
+      const source = a.src;
       const sp = { text, words: wordsOf(text), audio: a, startedAt: null, estMs: wordsOf(text) / 2.5 * 1000 }; S.speaking = sp;
       let done = false;
-      // Settle file playback once and clear only the audio objects owned by this attempt.
-      // Return completion with run and token checks; logHeard supplies the transcript for server/app.py:save_session.
-      const finish = (complete) => { if (done) return; done = true; if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.audio === a) S.audio = null; if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; } res(complete && my === S.ttsToken && run === S.run); };
-      // Pause this audio file and settle its promise as interrupted when cancellation is requested.
-      // This is the recorded-file counterpart to live-voice.js:LiveVoiceClient.cancelAudio.
-      const cancel = () => { a.pause(); finish(false); }; S.cancelVoice = cancel;
-      // Treat the file playing event as audio onset only for the current speech and run.
-      // Late playback is paused; server/runtime_metrics.py:aggregate later uses the retained first-audio timestamp.
-      a.onplaying = () => { if (S.localSpeechHold) { a.pause(); return; } if (!done && my === S.ttsToken && run === S.run) { sp.startedAt ||= Date.now(); setStatus("speaking", "Speaking"); firstAudio(); } else a.pause(); };
-      // Handle file playback failure without reviving a cancelled utterance.
-      // Return caption or browser-voice completion according to the configured provider from server/app.py:get_bundle.
-      const safeFallback = () => {
+      const owns = () => !done && my === S.ttsToken && run === S.run && S.audio === a && a.src === source;
+      const clearRetry = () => { if (blockedAudio === retry) { blockedAudio = null; el.audioRetry.replaceChildren(); } };
+      const release = () => {
+        clearRetry();
+        if (S.cancelVoice === cancel) S.cancelVoice = null;
+        if (S.audio === a) { S.audio = null; a.onplaying = a.onended = a.onerror = null; }
+      };
+      const finish = complete => {
         if (done) return;
-        if (my !== S.ttsToken || run !== S.run) { finish(false); return; }
-        done = true; a.pause(); if (S.audio === a) S.audio = null; if (S.cancelVoice === cancel) S.cancelVoice = null; if (S.speaking === sp) S.speaking = null;
+        done = true; release();
+        if (S.speaking === sp) { logHeard(sp, complete); S.speaking = null; }
+        res(complete && my === S.ttsToken && run === S.run);
+      };
+      const cancel = () => { if (S.audio === a && a.src === source) a.pause(); finish(false); }; S.cancelVoice = cancel;
+      a.onplaying = () => {
+        if (!owns() || a.paused) return;
+        if (S.localSpeechHold) { a.pause(); return; }
+        clearRetry(); sp.startedAt ||= Date.now(); setStatus("speaking", "Speaking"); firstAudio();
+      };
+      const safeFallback = error => {
+        if (!owns()) return;
+        if (error?.name === "NotAllowedError") {
+          // A browser policy block needs a fresh tap, not a silent caption-only
+          // tour. Retain the exact line and cancellation owner until that tap.
+          blockedAudio = retry;
+          el.audioRetry.replaceChildren(h("button", { class: "chip primary", type: "button", onclick: retry }, "Enable audio"));
+          setStatus("idle", "Tap Enable audio to continue");
+          return;
+        }
+        done = true; a.pause(); release();
+        if (S.speaking === sp) S.speaking = null;
         (useServerVoice ? captionOnly(text, run) : speakBrowser(text, run)).then(res);
       };
-      // Map file end and error events to completion or the provider-appropriate fallback.
-      // A rejected play request uses the same fallback; server/app.py:run_tts is not retried here.
-      a.onended = () => finish(true); a.onerror = safeFallback; a.play().catch(safeFallback);
+      const retry = () => {
+        if (!owns() || S.localSpeechHold) return;
+        clearRetry(); live?.unlockOutput().catch(() => {});
+        try { Promise.resolve(a.play()).catch(safeFallback); } catch (error) { safeFallback(error); }
+      };
+      sp.playbackError = safeFallback;
+      // A queued event from the previous source cannot finish the new clip.
+      a.onended = () => { if (owns() && a.ended) finish(true); };
+      a.onerror = () => { if (a.error) safeFallback(a.error); };
+      try { Promise.resolve(a.play()).catch(safeFallback); } catch (error) { safeFallback(error); }
     });
     else ok = useServerVoice ? await captionOnly(text, run) : await speakBrowser(text, run);
     if (ok && run === S.run) setStatus("idle", "Ready");
@@ -1252,6 +1305,8 @@ export function mountPlayer(host, bundle, api) {
   // Route a microphone click to live capture, intake, an existing wait or a new question.
   // Use live-voice.js:LiveVoiceClient.startCapture/stopCapture when available; otherwise use the legacy listener.
   function micTap() {
+    primeRecordedAudio();
+    live?.unlockOutput().catch(() => {});
     cancelPostAnswerListen();
     const enabled = live ? !S.voiceMode : S.inputMode !== "voice"; setVoiceMode(enabled);
     if (live) { if (!enabled) live.stopCapture(); else { resumeSession(); live.startCapture(); } return; }
@@ -1908,7 +1963,7 @@ export function mountPlayer(host, bundle, api) {
   // Pause the current phase or invoke its saved resume action after explicit customer input.
   // Output interruption reaches live-voice.js:LiveVoiceClient while pending opening planning may be preserved.
   function togglePause() {
-    if (S.paused) { resumeSession(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); const resume = S.resume; S.resume = null; if (resume) resume(); return; }
+    if (S.paused) { primeRecordedAudio(); live?.unlockOutput().catch(() => {}); resumeSession(); S.paused = false; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); const resume = S.resume; S.resume = null; if (resume) resume(); return; }
     const origin = { ...S.playback }, intake = S.intakeOpen, conversation = !!S.conversationOrigin;
     presentation.pause(); interruptAll({ preservePlanning: openingPlanPending() }); S.paused = true; el.pauseBtn.replaceChildren(icon("play", { size: 18 })); el.pauseBtn.classList.add("on"); setStatus("idle", "Paused"); el.cap.textContent = "Paused — press play to continue.";
     // Capture a resume action that returns to intake, conversation or the saved playback phase.
@@ -1938,7 +1993,7 @@ export function mountPlayer(host, bundle, api) {
   document.addEventListener("visibilitychange", onVisibility);
   // Remove observers and listeners, cancel active work, release preloads and destroy the player DOM.
   // web/app.js:renderPlay calls this lifecycle method when navigating away or mounting another demo.
-  function destroy() { if (destroyed) return; destroyed = true; presentation.destroy(); clearTimeout(preloadTimer); clearTimeout(checkpointTimer); clearInterval(checkpointHeartbeat); document.removeEventListener("visibilitychange", onVisibility); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
+  function destroy() { if (destroyed) return; destroyed = true; recordedAudio.pause(); recordedAudio.removeAttribute("src"); recordedAudio.load(); presentation.destroy(); clearTimeout(preloadTimer); clearTimeout(checkpointTimer); clearInterval(checkpointHeartbeat); document.removeEventListener("visibilitychange", onVisibility); dockObserver?.disconnect(); window.removeEventListener("resize", sizePlayer); window.visualViewport?.removeEventListener("resize", sizePlayer); window.removeEventListener("pagehide", onHide); interruptAll(); live?.close(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); for (const media of S.preloads) { try { media.removeAttribute("src"); media.load(); } catch (e) {} } S.preloads.length = 0; if (cur) cur.view.destroy(); root.remove(); }
 
   // Initialize visible actions, mute state and the hero slide before starting any demo flow.
   // web/slide.js:renderSlide supplies the view; the welcome buttons below choose when interaction starts.

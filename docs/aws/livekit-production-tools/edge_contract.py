@@ -100,7 +100,7 @@ def main():
                 processes.append(subprocess.Popen(['/usr/bin/caddy','run','--config',str(caddy_file),'--adapter','caddyfile'],stdout=stream,stderr=stream,env=env))
                 processes.append(subprocess.Popen(['/usr/sbin/haproxy','-db','-f',str(haproxy_file)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL))
                 context=ssl.create_default_context(cafile=str(cert))
-                def request(host,path,method='GET',spoof=False):
+                def request(host,path,method='GET',spoof=False,with_headers=False):
                     with socket.socket() as raw_socket:
                         raw_socket.settimeout(5);raw_socket.bind(('127.0.0.2',0));raw_socket.connect(('127.0.0.1',public))
                         with context.wrap_socket(raw_socket,server_hostname=host) as stream_socket:
@@ -111,13 +111,27 @@ def main():
                                 chunk=stream_socket.recv(4096)
                                 if not chunk:break
                                 response+=chunk
-                    return int(response.split(b'\r\n',1)[0].split()[1])
+                    status=int(response.split(b'\r\n',1)[0].split()[1])
+                    if with_headers:
+                        header_lines=response.split(b'\r\n\r\n',1)[0].split(b'\r\n')[1:]
+                        response_headers={line.split(b':',1)[0].decode().lower():line.split(b':',1)[1].decode().strip() for line in header_lines if b':' in line}
+                        return status,response_headers
+                    return status
                 for attempt in range(30):
                     try:
                         if request(APP,'/api/health')==200:break
                     except OSError:time.sleep(0.1)
                 else:raise RuntimeError('Fixture edge did not start')
                 check('trusted app TLS through SNI mux',True)
+                for path in ['/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-precomposed.png','/manifest.json']:
+                    for method in ['GET','HEAD']:
+                        status,headers=request(APP,path,method,with_headers=True)
+                        check('optional browser asset '+method+' '+path,status==404 and 'www-authenticate' not in headers)
+                    status,headers=request(APP,path,'POST',with_headers=True)
+                    check('optional asset POST remains protected '+path,status==401 and 'www-authenticate' in headers)
+                for path in ['/favicon.ico/','/favicon.png','/apple-touch-icon-180x180.png','/site.webmanifest','/manifest.json.bak']:
+                    status,headers=request(APP,path,with_headers=True)
+                    check('nearby unapproved asset remains protected '+path,status==401 and 'www-authenticate' in headers)
                 check('public capability GET',request(APP,'/api/runtime/transport')==200)
                 for method in ['HEAD','POST','PUT','DELETE','PATCH','OPTIONS']:
                     check('capability blocks '+method,request(APP,'/api/runtime/transport',method)==401)

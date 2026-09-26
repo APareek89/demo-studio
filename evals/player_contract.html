@@ -68,10 +68,13 @@ class Clock {
 
 class FakeAudio {
   constructor(url) { this.src = url; this.currentTime = 0; this.duration = 10; this.paused = true; this.owner = env; }
+  get src() { return this.url || ""; }
+  set src(value) { this.url = value; this.currentTime = 0; this.ended = false; }
   load() {}
   removeAttribute() {}
   play() {
-    this.paused = false;
+    this.paused = false; this.ended = false;
+    if (this.src.startsWith("data:audio/")) return Promise.resolve();
     const e = this.owner, text = decodeURIComponent(this.src.replace('fake-audio:', ''));
     e.active.add(this); e.maxActive = Math.max(e.maxActive, e.active.size); e.played.push(text); this.text = text;
     this.visualPhase = host.querySelector('.slide.on .gallery-surface')?.dataset.state || null;
@@ -80,7 +83,7 @@ class FakeAudio {
     return Promise.resolve();
   }
   pause() { this.paused = true; this.owner.active.delete(this); }
-  finish() { if (this.paused) return; this.currentTime = this.duration; this.paused = true; this.owner.active.delete(this); this.onended?.(); }
+  finish() { if (this.paused) return; this.currentTime = this.duration; this.paused = true; this.ended = true; this.owner.active.delete(this); this.onended?.(); }
 }
 
 // abort intentionally permits an already queued recognition result to arrive.
@@ -895,8 +898,10 @@ test('Interrupting a jump announcement cancels its pending view change and answe
   await setup({ hold: (text) => text === bridge, qa: async () => answered({ route: 'jump', slide_id: 'proof-three', answer: 'Superseded routed answer.' }) });
   await atProof(); await type('Show the third proof.');
   assert(env.played.at(-1) === bridge, 'Fixture did not hold the jump announcement');
-  const oldAudio = [...env.active][0];
-  await click('proof-two', '.pl-progress button'); oldAudio.finish(); await flush(); await clock.tick(1000);
+  // Retain the queued old event callback: the native element is deliberately
+  // reused, so finishing its current source would finish the new narration.
+  const oldEnd = [...env.active][0].onended;
+  await click('proof-two', '.pl-progress button'); oldEnd(); await flush(); await clock.tick(1000);
   assert(player.context().slide === 'proof-two' && !env.played.includes('Superseded routed answer.'), 'Canceled announcement later changed the view or spoke its answer');
   window.dispatchEvent(new Event('pagehide'));
   assert(env.beacons.at(-1).jumps.length === 0 && env.maxActive === 1, 'Canceled transition recorded a jump or overlapped the new narration');

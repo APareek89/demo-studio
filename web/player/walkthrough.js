@@ -291,7 +291,9 @@ function galleryView(slide, native, entries, previous, next, options, continuing
     native.layout();if(dead)return;
     const heading=native.el.querySelector('.slide-heading'),foot=native.el.querySelector('.slide-foot');
     const top=heading ? heading.offsetTop+heading.offsetHeight+12 : 12;
-    const bottom=foot ? Math.max(8,native.el.clientHeight-foot.offsetTop+8) : 12;
+    // Compact stages hide the footer. Its zero offset must not consume the
+    // whole gallery when a phone rotates or its keyboard reduces the height.
+    const bottom=foot && foot.offsetHeight>0 ? Math.max(8,native.el.clientHeight-foot.offsetTop+8) : 12;
     Object.assign(surface.style,{top:top+'px',bottom:bottom+'px'});
     surface.classList.toggle('compact',surface.clientWidth<620);
   }

@@ -1,6 +1,12 @@
 # Handoff.MD — Demo Studio
 
-Current checkpoint: **25 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
+Current checkpoint: **26 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
+
+## Mobile correction in progress — 26 September
+
+Anand reported shared iPhone failure and requested Safari/Chrome diagnosis/fixes. Source fixes are complete: persistent gesture-primed recorded audio with explicit policy retry; bounded Web Audio resume/cleanup; hidden-footer gallery height; positioned clipped player/drawer. Core agents, workflow, voices, evidence and demo content are unchanged. Exact optional icon/manifest GET/HEAD routes avoid an operator challenge; other methods/private paths remain protected.
+
+Local core445/24/smoke3/full mock28, native WebKit26, recorded12/context13, gallery320/mobile94/continuity28/image load14, native RTC30 and adjacent contracts pass. Two local RTC attempts failed before the successful30/30 and remain recorded. No paid QA or physical iPhone acoustic test. [QA/FMEA](docs/qa/mobile-runtime-2026-09-26/README.md). Existing AWS ae98532 remains active until the mobile dated receipt records cutover. Deployment helper verifies a fresh complete backup including recent customer sessions and blocks active builds/visits. Never restore an old data archive as part of code rollback.
 
 ## Current deployed release — LiveKit everywhere · 25 September
 

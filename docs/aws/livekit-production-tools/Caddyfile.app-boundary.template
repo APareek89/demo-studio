@@ -31,6 +31,12 @@
 		method GET
 		path /api/runtime/transport
 	}
+	# Browsers may probe these optional files even without an explicit HTML link.
+	# They are absent, not operator resources; never challenge these exact reads.
+	@optional_browser_asset {
+		method GET HEAD
+		path /favicon.ico /apple-touch-icon.png /apple-touch-icon-precomposed.png /manifest.json
+	}
 	@livekit_token {
 		method POST
 		path_regexp livekit_token ^/api/demos/dm_[0-9a-f]{8}/run/livekit/token$
@@ -52,6 +58,9 @@
 		query k=*
 	}
 
+	handle @optional_browser_asset {
+		respond 404
+	}
 	handle @runtime_transport {
 		import feedback_upstream
 	}

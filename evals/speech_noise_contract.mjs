@@ -127,7 +127,7 @@ function replyWindowFixture(answer) {
     handleQuestion: text => calls.questions.push(text), handlePlaybackCommand: text => { const kind = helpers.playbackCommand(text); if (kind) calls.controls.push(kind); return !!kind; },
     ctaFlow: quiet, listenForQuestion: quiet, showLeadPrompt: quiet, newRun: () => ++S.run,
     presentation: { freeze: quiet }, root: { classList: classes }, cancelSpeech: quiet, setVoiceMode: enabled => { S.voiceMode = enabled; S.inputMode = enabled ? "voice" : "typed"; }, resumeSession: quiet, intakeMic: quiet,
-    updateMuteUi: quiet });
+    primeRecordedAudio: quiet, updateMuteUi: quiet });
   const code = [
     part(playerSource, "  function listen(opts", "  // Capture one turn with browser speech"),
     part(playerSource, "  function listenBrowser(", "  // Stop or finish legacy listening"),

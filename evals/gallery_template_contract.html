@@ -24,11 +24,18 @@ function synthetic(){
 }
 let player,bundle,env;
 class FakeAudio {
- constructor(src){this.src=src;this.currentTime=0;this.duration=8;this.paused=true;this.playbackRate=1;this.owner=env;}
- load(){}removeAttribute(){}addEventListener(type,fn){this['on'+type]=fn;}removeEventListener(type,fn){if(this['on'+type]===fn)this['on'+type]=null;}
- play(){this.paused=false;const e=this.owner;e.active.add(this);e.maxActive=Math.max(e.maxActive,e.active.size);const sl=host.querySelector('.slide.on');const record={src:this.src,text:e.audioMap[this.src]||decodeURIComponent(this.src.replace('fixture-audio:','')),at:performance.now(),slide:player?.context().slide,phase:sl?.querySelector('.gallery-surface')?.dataset.state||null,imageId:sl?.querySelector('.gallery-surface')?.dataset.imageId||null,tag:sl?.querySelector('.gallery-tag.active')?.dataset.id||null,cap:host.querySelector('.pl-cap .txt')?.textContent};e.played.push(record);this.text=record.text;this.onplaying?.();if(!e.held.has(this.src))queueMicrotask(()=>this.finish());return Promise.resolve();}
+ constructor(src=''){this.owner=env;this.duration=8;this.playbackRate=1;this._sourceVersion=0;this.src=src;}
+ get src(){return this._src;}
+ set src(value){this._src=String(value||'');this._sourceVersion++;this.currentTime=0;this.ended=false;this.paused=true;this.owner?.active.delete(this);}
+ load(){}removeAttribute(name){if(name==='src')this.src='';}addEventListener(type,fn){this['on'+type]=fn;}removeEventListener(type,fn){if(this['on'+type]===fn)this['on'+type]=null;}
+ play(){this.paused=false;this.ended=false;const e=this.owner,sourceVersion=this._sourceVersion;
+   // The native gesture primer is digital silence, not a narration clip.
+   if(!this.src.startsWith('data:audio/wav;base64,')){
+     e.active.add(this);e.maxActive=Math.max(e.maxActive,e.active.size);const sl=host.querySelector('.slide.on');const record={src:this.src,text:e.audioMap[this.src]||decodeURIComponent(this.src.replace('fixture-audio:','')),at:performance.now(),slide:player?.context().slide,phase:sl?.querySelector('.gallery-surface')?.dataset.state||null,imageId:sl?.querySelector('.gallery-surface')?.dataset.imageId||null,tag:sl?.querySelector('.gallery-tag.active')?.dataset.id||null,cap:host.querySelector('.pl-cap .txt')?.textContent};e.played.push(record);this.text=record.text;
+   }
+   this.onplaying?.();if(!e.held.has(this.src))queueMicrotask(()=>{if(this._sourceVersion===sourceVersion)this.finish();});return Promise.resolve();}
  pause(){this.paused=true;this.owner.active.delete(this);}
- finish(){if(this.paused)return;this.currentTime=this.duration;this.paused=true;this.owner.active.delete(this);this.onended?.();}
+ finish(){if(this.paused)return;this.currentTime=this.duration;this.ended=true;this.paused=true;this.owner.active.delete(this);this.onended?.();}
 }
 window.Audio=FakeAudio;window.SpeechRecognition=undefined;window.webkitSpeechRecognition=undefined;window.microphoneAttempts=0;
 if(navigator.mediaDevices)navigator.mediaDevices.getUserMedia=()=>{window.microphoneAttempts++;return Promise.reject(new Error('Microphone disabled in gallery acceptance'));};

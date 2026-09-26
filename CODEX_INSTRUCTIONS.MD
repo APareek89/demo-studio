@@ -1,8 +1,8 @@
 # Codex — current project orientation
 
-Refreshed 25 September 2026. This is the entrypoint for a fresh session; [the previous version](docs/history/context-before-master-2026-09-25/CODEX_INSTRUCTIONS.MD) preserves the old task list. Do not restart historical tasks or paid runs from that list.
+Refreshed 26 September 2026. This is the entrypoint for a fresh session; [the previous version](docs/history/context-before-master-2026-09-25/CODEX_INSTRUCTIONS.MD) preserves the old task list. Do not restart historical tasks or paid runs from that list.
 
-Active authorized follow-up: Anand accepted LiveKit and requested it everywhere. Public playback and Rehearse now discover the configured transport; the normal workspace launcher uses it without a URL flag. Local app8910 preserves the existing DATA/GRAPH and live provider mode. Secure AWS relay rollout and separate deployment acceptance are in progress; the prior d94d6ef release remains the live/rollback baseline until the dated receipt records a completed cutover. This supersedes historical local-only restrictions, without changing Build/Align, graph nodes or paid-QA permissions. See [LiveKit configuration](docs/livekit.md) and the current Handoff.
+Active authorized follow-up: fix the shared demo on iPhone Safari and Chrome. Source/mobile/mock verification is complete; AWS deployment verification is in progress. Current live application is ae98532 with default hosted LiveKit; the old d94d6ef/WebSocket-only statements below are historical. Handoff and the dated mobile release receipt take precedence. Preserve Build/Align, agents/nodes, gallery design, source grounding and demo data. No new paid QA. See [mobile evidence](docs/qa/mobile-runtime-2026-09-26/README.md).
 
 ## Read first
 

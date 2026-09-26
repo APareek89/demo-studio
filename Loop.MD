@@ -1,5 +1,10 @@
 # Loop.MD — Demo Studio
 
+
+## Mobile correction — 26 September 2026
+
+Finite QA, loop off. Local deck445/445, acceptance24/24, smoke3/3, full mock28/28; native mounted WebKit26/26 with Safari/CriOS profiles, recorded ownership12/12, audio lifecycle13/13; gallery320/320, mobile94/94, continuity28/28, image load14/14. Adjacent voice96, LiveKit58, transport15, hold26, noise31, recovery17, listen16, saves18, HTTP6, media7, fallback18, priority11 pass. Native local RTC30/30 after two retained failed attempts; no configuration relaxation or paid providers. Deployment fixtures18/18, actual isolated proxy58/58 plus153/153. [Full evidence, failures and FMEA](docs/qa/mobile-runtime-2026-09-26/README.md). AWS cutover/public verification remains pending until its dated release receipt; physical iPhone/acoustic acceptance is not established by emulation.
+
 ## LiveKit default adoption — 25 September 2026 · released
 
 Finite QA, loop off. Core deck445/445, acceptance24/24, smoke3/3 and full mock28/28 pass with isolated DATA/GRAPH, blank provider keys and blocked outbound sockets. Twenty-six adjacent Python suites also pass with zero outbound attempts; exact inventory is in [the current QA receipt](docs/qa/livekit-default-2026-09-25/README.md). Hosted policy/room29, legacy LiveKit50, normal local launcher15 and isolated-copy launcher16 pass. Frontend selector15, LiveKit58, base voice96, hold26, recovery17, saves18, acknowledgements14; actual public/Rehearse/navigation28. Real local RTC30/30.

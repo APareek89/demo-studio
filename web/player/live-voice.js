@@ -99,8 +99,12 @@ export class LiveVoiceClient {
     try {
       const Context = this.env.AudioContext || this.env.webkitAudioContext;
       if (!Context || !this.env.navigator?.mediaDevices?.getUserMedia) throw new Error("Microphone capture is unavailable in this browser");
-      context = new Context(); await context.resume();
+      context = new Context(); this.captureSetupContext = context;
+      // WebKit can leave resume pending when playback is blocked/interrupted.
+      // Bound setup before device permission and retain ownership for mic-off.
+      await deadline(context.resume(), 4000, "Audio could not start. Tap the microphone to retry");
       if (epoch !== this.captureEpoch || this.closed) { await context.close(); return false; }
+      if (context.state !== "running") throw new Error("Audio is paused by this browser. Tap the microphone to retry");
       const permission = this.env.navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
       // A late permission grant after timeout/stop must release the device immediately.
       permission.then(value => { if (epoch !== this.captureEpoch) value.getTracks().forEach(track => track.stop()); }, () => {});
@@ -110,7 +114,7 @@ export class LiveVoiceClient {
       if (epoch !== this.captureEpoch || this.closed) { stream.getTracks().forEach(track => track.stop()); await context.close(); return false; }
       await deadline(context.audioWorklet.addModule("/web/player/voice-worklet.js"), 4000, "Microphone initialization timed out");
       if (epoch !== this.captureEpoch) { stream.getTracks().forEach(track => track.stop()); await context.close(); return false; }
-      this.captureContext = context; this.stream = stream; this.input = context.createMediaStreamSource(stream);
+      this.captureContext = context; this.captureSetupContext = null; this.stream = stream; this.input = context.createMediaStreamSource(stream);
       this.worklet = new this.env.AudioWorkletNode(context, "demo-capture"); this.silent = context.createGain(); this.silent.gain.value = 0;
       this.input.connect(this.worklet); this.worklet.connect(this.silent); this.silent.connect(context.destination);
       this.inputMode = "voice"; this.mic = true; this.micReady = false; this.preRoll = []; this.speechActive = false; this.speechCandidateAt = null; this.seenInputs.clear(); this.inputGeneration++; this.loudFrames = 0; this.quietFrames = 0; this.noise = 0.003; this.speechFrames = []; this.localOnsetArmed = true; this.holdBlockedUntil = 0;
@@ -134,6 +138,8 @@ export class LiveVoiceClient {
       if (epoch === this.captureEpoch) { this.captureEpoch++; this.inputMode = "text"; this.mic = false; this.onState("unavailable"); this.onError(error.name === "NotAllowedError" ? "Microphone permission was not granted. Type below, or allow access and tap the mic." : `${error.message}. You can type below.`); }
       stream?.getTracks().forEach(track => track.stop()); if (context && context.state !== "closed") await context.close().catch(() => {});
       return false;
+    } finally {
+      if (this.captureSetupContext === context) this.captureSetupContext = null;
     }
   }
   stopCapture(notify = true) {
@@ -144,6 +150,7 @@ export class LiveVoiceClient {
     if (this.worklet) this.worklet.port.onmessage = null;
     for (const node of [this.input, this.worklet, this.silent]) { try { node?.disconnect(); } catch {} }
     this.stream?.getTracks().forEach(track => track.stop()); this.stream = null;
+    this.captureSetupContext?.close().catch(() => {}); this.captureSetupContext = null;
     this.captureContext?.close().catch(() => {}); this.captureContext = null;
     if (!this.closed) this.onState("muted");
   }
@@ -198,13 +205,16 @@ export class LiveVoiceClient {
     if (resume && !this.closed) this.resumeOutput();
   }
   resumeOutput() {
-    const context = this.outputContext;
-    if (context && context.state !== "closed") context.resume().then(() => {
+    const context = this.outputContext, active = this.delivery;
+    if (context && context.state !== "closed") deadline(context.resume(), 4000, "Audio could not resume. Tap to retry").then(() => {
       if (this.outputContext !== context || this.closed) return;
       if (this.inputHold) { context.suspend?.().catch(() => {}); return; }
+      if (context.state !== "running") throw new Error("Audio is paused by this browser");
       if (this.gain) this.gain.gain.value = this.muted ? 0 : 1;
       if (this.delivery) { this.armAudioDeadline(this.delivery); this.armAudioStart(this.delivery); }
-    }).catch(() => {});
+    }).catch(error => {
+      if (this.outputContext === context && !this.closed && !this.inputHold && active && this.delivery === active) this.finishAudio(false, error);
+    });
   }
   receive(data) {
     // Turn IDs own answers; a separate generation owns each microphone capture.
@@ -298,12 +308,16 @@ export class LiveVoiceClient {
     });
   }
   async unlockOutput() {
+    if (this.closed) throw abortError();
     const Context = this.env.AudioContext || this.env.webkitAudioContext;
     if (!this.outputContext || this.outputContext.state === "closed") { this.outputContext = new Context(); this.gain = this.outputContext.createGain(); this.gain.connect(this.outputContext.destination); }
+    const context = this.outputContext;
     this.gain.gain.value = this.muted || this.inputHold ? 0 : 1;
-    if (this.inputHold) await this.outputContext.suspend?.(); else {
-      await this.outputContext.resume();
-      if (this.inputHold) { this.gain.gain.value = 0; await this.outputContext.suspend?.(); }
+    if (this.inputHold) await context.suspend?.(); else {
+      await deadline(context.resume(), 4000, "Audio could not start. Tap to retry");
+      if (this.closed || this.outputContext !== context) throw abortError();
+      if (this.inputHold) { this.gain.gain.value = 0; await context.suspend?.(); }
+      else if (context.state !== "running") throw new Error("Audio is paused by this browser. Tap to retry");
     }
   }
   armAudioDeadline(active) {

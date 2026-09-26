@@ -390,7 +390,7 @@ check("player stamps voice ended + STT done for server STT, browser recognition 
 _result_start = pj.index("r = await questionResult(qaP, run, turn);")
 _result_stamp = pj.index("turn.qa_done = Date.now();", _result_start)
 _result_hold = pj.index("if (S.localSpeechHold && !await awaitSpeechHold(run)) return;", _result_start)
-check("player structure: QA stamps precede provisional hold; first-audio uses owned, unheld playback callbacks (behavior checked in player_browser)", _result_start < _result_stamp < _result_hold and "turn.qa_done ||= Date.now(); turn.from_bank" in pj and 'a.onplaying = () => { if (S.localSpeechHold) { a.pause(); return; } if (!done && my === S.ttsToken && run === S.run)' in pj and "firstAudio(); } else a.pause()" in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
+check("player structure: QA stamps precede provisional hold; first-audio uses owned, unheld playback callbacks (behavior checked in player_browser)", _result_start < _result_stamp < _result_hold and "turn.qa_done ||= Date.now(); turn.from_bank" in pj and 'if (!owns() || a.paused) return;' in pj and 'if (S.localSpeechHold) { a.pause(); return; }' in pj and 'my === S.ttsToken && run === S.run && S.audio === a && a.src === source' in pj and 'setStatus("speaking", "Speaking"); firstAudio();' in pj and "S.onFirstAudio = (ts) => { turn.answer_audio = ts; }" in pj)
 check("the turns travel on the session record", "turns: S.turns," in pj)
 check("Observability shows the percentiles", "p50" in c.get("/web/observability.js").text and "latency" in c.get("/web/observability.js").text)
 _r = c.get("/web/observability.js")
